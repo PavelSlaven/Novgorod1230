@@ -1,0 +1,25 @@
+palette_id,kind,name_ru,typical_scope,social_notes,dye_evidence_refs,visual_value,source_refs,confidence,status
+MAT001,material,Лён,все слои; качество различалось,тонкое и хорошо выбеленное полотно дороже грубого,,light_linen,costume:MAT001|costume:SRC008|costume:SRC009,A,candidate
+MAT002,material,Конопляное полотно,"бедные/рабочие слои, хозяйственные вещи",не делать похожим на грубую джутовую мешковину,,light_linen,costume:MAT002|costume:SRC009|costume:SRC034,B,candidate
+MAT003,material,Обычная шерстяная ткань,все слои,"различия в тонкости, плотности и окраске",,wool,costume:MAT003|costume:SRC007|costume:SRC008|costume:SRC009,A,candidate
+MAT004,material,Тонкое импортное сукно,"купцы, знать, приезжие",не массовый материал бедного костюма,,wool,costume:MAT004|costume:SRC010|costume:SRC028|costume:SRC029,A–B,candidate
+MAT005,material,Войлок,широкий практический,"головные уборы около 1230 менее прямо подтверждены, чем стельки",,felt,costume:MAT005|costume:SRC001|costume:SRC007,A для стелек; C для части одежды,candidate
+MAT006,material,Кожа крупного и мелкого рогатого скота,все слои,качество выделки и декор различали достаток,,leather,costume:MAT006|costume:SRC001|costume:SRC002|costume:SRC044,A,candidate
+MAT007,material,Овчина,все слои,простая овчина шире дорогих мехов,,sheepskin,costume:MAT007|costume:SRC016|costume:SRC020|costume:SRC034,A–B,candidate
+MAT008,material,Ценный мех,"богатые купцы, знать, дипломатический/торговый контекст",редкий и дорогой; не у всех бояр одинаково,,fur,costume:MAT008|costume:SRC016|costume:SRC020,A–B,candidate
+MAT009,material,Шёлк,"элита, богатое духовенство, редкий импорт",очень ограниченное использование,,silk,costume:MAT009|costume:SRC008|costume:SRC010,A,candidate
+MAT010,material,Золотная нить/золото-тканая деталь,высшая элита и богатый храм,исключительный материал,,,costume:MAT010|costume:SRC010|costume:SRC043,A–B,candidate
+MAT011,material,Железо/сталь,все слои по назначению,большой объём металла в доспехе дорог,,,costume:MAT011|costume:SRC006|costume:SRC021|costume:SRC022|costume:SRC023,A,candidate
+MAT012,material,Бронза/медный сплав,"широкий, но сложность и вес различались",в живом виде не покрывать музейной зелёной патиной,,,costume:MAT012|costume:SRC005|costume:SRC028|costume:SRC032,A,candidate
+MAT013,material,Серебро,средний/богатый слой и элита,не массовое покрытие одежды,,,costume:MAT013|costume:SRC013|costume:SRC016|costume:SRC032,A,candidate
+MAT014,material,Золото и эмаль,высшая элита,единичные вещи,,,costume:MAT014|costume:SRC004,A,candidate
+MAT015,material,"Кость, рог и дерево",все слои,декор зависит от предмета и статуса,,,costume:MAT015|costume:SRC001|costume:SRC006|costume:SRC018,A,candidate
+COL001,color,Небелёный лён,повседневный и рабочий,самый безопасный базовый цвет нижних слоёв,undyed,undyed_linen,costume:COL001|costume:SRC008|costume:SRC009,A–B,candidate
+COL002,color,Выбеленный молочный,"чистая сорочица, головное покрывало, обеспеченный комплект",лучшее отбеливание — признак труда/качества,undyed(bleached),bleached_linen,costume:COL002|costume:SRC016|costume:SRC008,A–B,candidate
+COL003,color,Натуральные серые и бурые шерсти,"все слои, особенно рабочие и зимние вещи",не означает бедность автоматически,undyed(natural wool),brown,costume:COL003|costume:SRC007|costume:SRC008,A,candidate
+COL004,color,Буро-красный/мареновый,"городской, торговый, статусный и обычный при разной насыщенности",ровная насыщенность дороже,claim:textile-lac-dye-analysis|costume:SRC015|costume:SRC016,red_brown,costume:COL004|costume:SRC015|costume:SRC016,A,candidate
+COL005,color,Приглушённый синий,средний/богатый слой; не исключён у обычных вещей в бледном варианте,глубокий ровный синий — дороже,claim:textile-indigo-yellow-analysis|costume:SRC007,muted_blue,costume:COL005|costume:SRC007|costume:SRC010|costume:SRC043,B,candidate
+COL006,color,Приглушённый зелёный,средний/богатый слой или небольшая деталь,не делать массовой ярко-зелёной униформой,claim:textile-indigo-yellow-analysis|costume:SRC007,muted_green,costume:COL006|costume:SRC007|costume:SRC010,B,candidate
+COL007,color,Охристо-жёлтый,одежда и отделка по возможности красителя,умеренная насыщенность,claim:textile-chrysin-analysis|costume:SRC007,ochre,costume:COL007|costume:SRC007|costume:SRC008,B,candidate
+COL008,color,Тёмный натуральный/почти чёрный,"монашеские, зимние, статусные и практические вещи",глубокая ровная окраска могла быть дороже,claim:textile-ellagic-acid-analysis|costume:SRC007|costume:SRC043,dark,costume:COL008|costume:SRC007|costume:SRC043,B,candidate
+COL009,color,Полихромная эмаль,единичный элитный предмет,не палитра всего костюма,,,costume:COL009|costume:SRC004,A,candidate

@@ -1,0 +1,36 @@
+ev_id,year,event_type,event_title,first_phase_id,source_titles,status,confidence
+nov_hist_1230_001,1230,church,"Знамения, приход владыки Спиридона и церковная тревога",nov_hist_1230_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1230_002,1230,political,Вечевая смута у Ярославова дворища и убийство Иванка,nov_hist_1230_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1230_003,1230,famine,"Голод, мороз и распад запасов 1230–1231 годов",nov_hist_1230_003_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1230_004,1230,political,Торжокская расправа и возвращение Ярослава,nov_hist_1230_004_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1231_001,1231,fire,Славенский пожар и гибель людей у Волхова,nov_hist_1231_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1231_002,1231,military,Поход Ярослава к Черниговской волости и смерть Водовика,nov_hist_1231_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1232_001,1232,trade,"Псковский конфликт, остановка купцов и соляное давление",nov_hist_1232_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1232_002,1232,church,Смерть владыки Антония,nov_hist_1232_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1233_001,1233,military,Изборско-псковское немецкое давление,nov_hist_1233_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1233_002,1233,church,Смерть княжича Фёдора и основание церкви у Неревских ворот,nov_hist_1233_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1233_003,1233,political,Тёсовская расправа над Кюрилом и сбор Ярослава,nov_hist_1233_003_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1234_001,1234,military,"Поход Ярослава к Юрьеву, Омовжа и мир",nov_hist_1234_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1234_002,1234,military,Литовский набег к Русе и погоня по Ловати,nov_hist_1234_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1235_001,1235,political,Южные княжеские войны и киевско-черниговское давление,nov_hist_1235_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1236_001,1236,political,Уход Ярослава в Киев и постановка Александра в Новгороде,nov_hist_1236_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1236_002,1236,military,Падение Булгарской земли под татарами как дальний торговый страх,nov_hist_1236_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1237_001,1237,weather,Солнечное знамение августа 1237 года,nov_hist_1237_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1237_002,1237,military,Поражение псковско-рижского войска от Литвы,nov_hist_1237_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1238_001,1238,church,Монастырь при церкви святого Павла,nov_hist_1238_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1238_002,1238,military,"Татарское разорение северо-востока, Торжок и Игнач Крест",nov_hist_1238_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1239_001,1239,political,Брак Александра и укрепление на Шелони,nov_hist_1239_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1240_001,1240,military,Невская угроза и победа Александра,nov_hist_1240_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1240_002,1240,military,"Псков, Копорье, Тёсов и возвращение угрозы к Новгороду",nov_hist_1240_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1241_001,1241,military,Возвращение Александра и взятие Копорья,nov_hist_1241_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1242_001,1242,military,"Освобождение Пскова, Чудское сражение и мир",nov_hist_1242_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1242_002,1242,political,Вызов Ярослава к Батыю и начало ордынского давления,nov_hist_1242_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1243_001,1243,church,Смерть Варлаама Хутынского и церковная память,nov_hist_1243_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1243_002,1243,political,Смерть посадника Степана Твердиславича,nov_hist_1243_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1244_001,1244,church,Смерть княгини Ярослава и погребение в Юрьевом монастыре,nov_hist_1244_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1245_001,1245,political,Казнь Михаила Черниговского у Батыя как дальний ордынский страх,nov_hist_1245_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1245_002,1245,military,Поход Александра против литовцев у Торопца и западная разрядка,nov_hist_1245_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1246_001,1246,political,Смерть Ярослава в Орде и поездка Александра к татарам,nov_hist_1246_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1247_001,1247,church,Смерть Анкудина/Константина и погребение в Хутыни,nov_hist_1247_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1249_001,1249,church,Смерть владыки Спиридона,nov_hist_1249_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1250_001,1250,political,Возвращение Александра из Орды и радость в Новгороде,nov_hist_1250_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C

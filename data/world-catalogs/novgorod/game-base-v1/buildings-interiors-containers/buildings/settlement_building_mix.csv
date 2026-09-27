@@ -1,0 +1,113 @@
+sf_id,member_id,count_min,count_max,count_rule,basis_ref,status
+sf_yard_urban_poor,bt_izba_heated_single,1,1,1 жилое строение,matcult_scene:SCN006,candidate
+sf_yard_urban_poor,bt_klet_ambar,0,1,0–2 хозяйственных строения всего,matcult_scene:SCN006,candidate
+sf_yard_urban_poor,bt_light_shed,0,1,0–2 хозяйственных строения всего,matcult_scene:SCN006,candidate
+sf_yard_urban_poor,bt_palisade_fence,1,1,граница владения,nov1230db:B027,candidate
+sf_yard_urban_poor,bt_yard_gate,1,1,ворота на улицу,nov1230db:B027,candidate
+sf_yard_urban_ordinary,bt_izba_heated_single,0,1,"1 жилой дом: изба, трёхчастный дом или пятистенок",nov1230db:B028,candidate
+sf_yard_urban_ordinary,bt_pyatistenok,0,1,альтернатива избе,ref:dissercat_ljudin,candidate
+sf_yard_urban_ordinary,bt_three_part_house,0,1,альтернатива избе,nov1230db:B029,candidate
+sf_yard_urban_ordinary,bt_klet_ambar,1,2,,nov1230db:B031,candidate
+sf_yard_urban_ordinary,bt_cellar_log,0,1,,matcult:ARC0026,candidate
+sf_yard_urban_ordinary,bt_light_shed,0,2,,matcult:ARC0017,candidate
+sf_yard_urban_ordinary,bt_khlev,0,1,,matcult:ARC0002,candidate
+sf_yard_urban_ordinary,bt_bathhouse,0,1,частота на усадьбе неизвестна,nov1230db:B032,candidate
+sf_yard_urban_ordinary,bt_well_log,0,1,,matcult:ARC0027,candidate
+sf_yard_urban_ordinary,bt_privy,0,1,,matcult:ARC0025,candidate
+sf_yard_urban_ordinary,bt_yard_deck,0,1,,matcult:STR0013,candidate
+sf_yard_urban_ordinary,bt_palisade_fence,1,1,,nov1230db:B027,candidate
+sf_yard_urban_ordinary,bt_yard_gate,1,1,,matcult:ARC0015,candidate
+sf_yard_urban_craft,bt_izba_heated_single,0,1,1 жилой сруб (или пятистенок),matcult_scene:SCN003,candidate
+sf_yard_urban_craft,bt_pyatistenok,0,1,альтернатива избе,ref:dissercat_ljudin,candidate
+sf_yard_urban_craft,bt_workshop_yard,1,1,1 рабочая зона,matcult_scene:SCN003,candidate
+sf_yard_urban_craft,bt_smithy,0,1,только у кузнеца,matcult_scene:SCN011,candidate
+sf_yard_urban_craft,bt_pottery_workshop,0,1,только у гончара,matcult_scene:SCN013,candidate
+sf_yard_urban_craft,bt_klet_ambar,0,1,запас сырья,matcult_scene:SCN003,candidate
+sf_yard_urban_craft,bt_light_shed,0,1,,matcult:ARC0017,candidate
+sf_yard_urban_craft,bt_palisade_fence,1,1,,nov1230db:B027,candidate
+sf_yard_urban_craft,bt_yard_gate,1,1,,matcult:ARC0015,candidate
+sf_yard_urban_merchant,bt_pyatistenok,0,1,1 жилой дом,matcult_scene:SCN004,candidate
+sf_yard_urban_merchant,bt_three_part_house,0,1,альтернатива,nov1230db:B029,candidate
+sf_yard_urban_merchant,bt_klet_ambar,1,2,1–2 жилых/складских строения,matcult_scene:SCN004,candidate
+sf_yard_urban_merchant,bt_cellar_log,0,1,,matcult:ARC0026,candidate
+sf_yard_urban_merchant,bt_konyushnya,0,1,,matcult_scene:SCN031,candidate
+sf_yard_urban_merchant,bt_palisade_fence,1,1,,nov1230db:B027,candidate
+sf_yard_urban_merchant,bt_yard_gate,1,1,,matcult:ARC0015,candidate
+sf_yard_merchant_riverside,bt_riverside_warehouse,1,1,1 склад,matcult_scene:SCN007,candidate
+sf_yard_merchant_riverside,bt_wharf_vymol,0,1,1 пристань/сходни,matcult_scene:SCN007,candidate
+sf_yard_merchant_riverside,bt_river_steps,0,1,альтернатива пристани,matcult:STR0010,candidate
+sf_yard_merchant_riverside,bt_izba_heated_single,0,1,жильё держателя,matcult_scene:SCN007,candidate
+sf_yard_merchant_riverside,bt_palisade_fence,0,1,,nov1230db:B027,candidate
+sf_yard_boyar,bt_horomy,1,1,главное жилище,nov1230db:B030,candidate
+sf_yard_boyar,bt_klet_ambar,1,2,1–2 склада,matcult_scene:SCN005,candidate
+sf_yard_boyar,bt_konyushnya,0,1,,matcult:ARC0001,candidate
+sf_yard_boyar,bt_khlev,0,1,,matcult:ARC0002,candidate
+sf_yard_boyar,bt_bathhouse,0,1,,nov1230db:B032,candidate
+sf_yard_boyar,bt_cellar_log,0,1,,matcult:ARC0026,candidate
+sf_yard_boyar,bt_well_log,0,1,,matcult:ARC0027,candidate
+sf_yard_boyar,bt_workshop_yard,0,2,зависимые ремесленники,nov1230db:B033,candidate
+sf_yard_boyar,bt_palisade_fence,1,1,,nov1230db:B027,candidate
+sf_yard_boyar,bt_yard_gate,1,1,,matcult:ARC0015,candidate
+sf_yard_church,bt_church_wooden,0,1,1 храм: деревянный или каменный,matcult_scene:SCN009,candidate
+sf_yard_church,bt_church_stone,0,1,альтернатива,matcult_scene:SCN009,candidate
+sf_yard_church,bt_izba_heated_single,0,1,жильё причта,matcult_scene:SCN009,candidate
+sf_yard_church,bt_klet_ambar,0,1,1–3 хозяйственных всего,matcult_scene:SCN009,candidate
+sf_yard_church,bt_light_shed,0,1,1–3 хозяйственных всего,matcult_scene:SCN009,candidate
+sf_yard_church,bt_palisade_fence,0,1,,nov1230db:B027,candidate
+sf_yard_peasant,bt_izba_heated_single,1,1,1 жилое строение,matcult_scene:SCN008,candidate
+sf_yard_peasant,bt_klet_ambar,0,1,2–5 хозяйственных всего,matcult_scene:SCN008,candidate
+sf_yard_peasant,bt_khlev,1,1,2–5 хозяйственных всего,matcult_scene:SCN008,candidate
+sf_yard_peasant,bt_light_shed,0,1,2–5 хозяйственных всего,matcult_scene:SCN008,candidate
+sf_yard_peasant,bt_cellar_log,0,1,2–5 хозяйственных всего,matcult:ARC0026,candidate
+sf_yard_peasant,bt_bathhouse,0,1,частота неизвестна,nov1230db:B032,candidate
+sf_yard_peasant,bt_gumno_tok,0,1,,matcult_scene:SCN035,candidate
+sf_yard_peasant,bt_ovin,0,1,реконструкция C,wk:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates,candidate
+sf_yard_peasant,bt_wattle_fence,0,1,,matcult:ARC0002,candidate
+sf_monastery,bt_church_stone,0,1,главный храм у крупных монастырей каменный,nov1230db:B018,candidate
+sf_monastery,bt_church_wooden,0,1,у малых — деревянный,matcult:ARC0009,candidate
+sf_monastery,bt_monastery_cell,2,,по числу братии; верх не задан,matcult:ARC0016,candidate
+sf_monastery,bt_klet_ambar,1,2,,rus13tpl:container:monastery_klet,candidate
+sf_monastery,bt_well_log,0,1,,matcult:ARC0027,candidate
+sf_monastery,bt_malt_dryer,0,1,,matcult:CRF0131,candidate
+sf_monastery,bt_palisade_fence,1,1,,matcult:ARC0014,candidate
+sf_monastery,bt_yard_gate,1,1,,matcult:ARC0015,candidate
+sf_foreign_court,bt_church_wooden,0,1,церковь двора; материал храма св. Петра к 1230 не проверен,nov1230db:B014,candidate
+sf_foreign_court,bt_klet_ambar,1,3,1–3 складских/жилых пространства,matcult_scene:SCN024,candidate
+sf_foreign_court,bt_palisade_fence,1,1,,nov1230db:B013,candidate
+sf_foreign_court,bt_yard_gate,1,1,закрывается на ночь,nov1230db:B013,candidate
+sf_street_urban,bt_street_pavement,1,1,"ширина 3,5–5 м, главные до 8 м",ref:arhitekto_2russ27,candidate
+sf_street_urban,bt_street_drain,0,1,,matcult:STR0004,candidate
+sf_street_urban,bt_palisade_fence,2,,обе стороны,nov1230db:B027,candidate
+sf_street_urban,bt_yard_gate,2,,по усадьбам,nov1230db:B027,candidate
+sf_street_urban,bt_workshop_yard,0,,мастерские у улицы,wk:claim:settlement-workshop-street,candidate
+sf_quarter_urban_end,sf_street_urban,1,,улицы конца,nov1230db:I03,candidate
+sf_quarter_urban_end,sf_yard_urban_ordinary,1,,,nov1230db:B028,candidate
+sf_quarter_urban_end,sf_yard_boyar,0,,,nov1230db:B030,candidate
+sf_quarter_urban_end,sf_yard_church,1,,приходские храмы,nov1230db:I02,candidate
+sf_torg,bt_market_stall,6,20,6–20 торговых точек в кадре,matcult_scene:SCN022,candidate
+sf_torg,bt_church_stone,1,5,"храмы на Торгу (Иоанн на Опоках, Успение, Параскева, Георгий)",nov1230db:B008,candidate
+sf_torg,bt_klet_ambar,1,,склады,nov1230db:B031,candidate
+sf_torg,bt_wharf_vymol,1,5,пять вымолов Торговой стороны по Уставу,wk:claim:river-landing-named-list,candidate
+sf_detinets,bt_wall_timber_earth,1,,периметр,nov1230db:B002,candidate
+sf_detinets,bt_gate_passage,1,,,matcult:FOR0003,candidate
+sf_detinets,bt_church_stone,2,,"Софийский собор, Борисоглебская церковь и др.",nov1230db:B004,candidate
+sf_detinets,bt_horomy,1,,владычный двор: дерево и отдельные каменные объёмы,nov1230db:B003,candidate
+sf_village_derevnya,sf_yard_peasant,7,18,все дворы: 1 старший + 5–12 обычных + 1–5 крайних/бедных,v6tsv:g3_places:деревня,candidate
+sf_village_selo,sf_yard_peasant,16,43,1–3 зажиточных + 12–30 обычных + 3–10 бедных,v6tsv:g3_places:село,candidate
+sf_village_selo,sf_yard_church,1,1,1 церковный/причтовый двор,v6tsv:g3_places:село,candidate
+sf_pogost,sf_yard_church,1,3,церковный/причтовый 1–3,v6tsv:g3_places:погост,candidate
+sf_pogost,sf_yard_peasant,5,18,крестьянские 5–18,v6tsv:g3_places:погост,candidate
+sf_landing_pristan,bt_wharf_vymol,1,1,,matcult:STR0011,candidate
+sf_landing_pristan,bt_izba_heated_single,0,6,0–6 постоянных дворов/изб,v6tsv:g3_places:пристань,candidate
+sf_landing_pristan,bt_klet_ambar,0,2,0–2 хозяйственных двора,v6tsv:g3_places:пристань,candidate
+sf_fishing_stan,bt_fishing_camp_shelter,1,1,,matcult_scene:SCN029,candidate
+sf_fishing_stan,bt_izba_heated_single,0,6,0–6 дворов/изб рыбаков,v6tsv:g3_places:рыбный стан,candidate
+sf_hunting_stan,bt_izba_heated_single,0,3,0–3 временных двора/избы,v6tsv:g3_places:охотничий стан,candidate
+sf_hunting_stan,bt_light_shed,0,1,,matcult:ARC0017,candidate
+sf_single_homestead,sf_yard_peasant,1,3,1 старший + 0–2 зависимых,v6tsv:g3_places:двор,candidate
+sf_posad_quarter,sf_street_urban,1,,,nov1230db:B026,candidate
+sf_posad_quarter,sf_yard_urban_craft,1,,ремесленные 35–60%,"v6tsv:g3_places:городская часть/функциональный узел, не отдельный город",candidate
+sf_posad_quarter,sf_yard_urban_ordinary,1,,рядовые,"v6tsv:g3_places:городская часть/функциональный узел, не отдельный город",candidate
+sf_posad_quarter,sf_yard_boyar,0,,зажиточные 5–15%,"v6tsv:g3_places:городская часть/функциональный узел, не отдельный город",candidate
+sf_posad_quarter,sf_yard_urban_merchant,0,,торговые 5–15%,"v6tsv:g3_places:городская часть/функциональный узел, не отдельный город",candidate
+sf_posad_quarter,sf_yard_church,0,,церковные/служилые 3–8%,"v6tsv:g3_places:городская часть/функциональный узел, не отдельный город",candidate

@@ -1,0 +1,912 @@
+tp_id,name_ru,object_kind,node_ref,name_status,first_attestation,source_refs,confidence
+pn_v6_0001,Березье: охотничий стан,hunting_camp,nov_g1_00_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_00:1,C
+pn_v6_0002,Лужицы: двор,isolated_farmstead,nov_g1_00_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_00:2,C
+pn_v6_0003,Верхнее Селище: зимовье,wintering_hut,nov_g1_00_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_00:3,C
+pn_v6_0004,Верхний Наволок: охотничий стан,hunting_camp,nov_g1_00_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_01:4,C
+pn_v6_0005,Верхняя Глинка: двор,isolated_farmstead,nov_g1_00_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_01:5,C
+pn_v6_0006,Верхние Луки: зимовье,wintering_hut,nov_g1_00_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_01:6,C
+pn_v6_0007,Верхний Ольшаник: пристань,river_landing,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:7,C
+pn_v6_0008,Верхнее Следово: брод,ford_place,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:8,C
+pn_v6_0009,Верхняя Каменка: село,village,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:9,C
+pn_v6_0010,Верхнее Заречье: село,village,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:10,C
+pn_v6_0011,Подборье: пристань,river_landing,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:11,C
+pn_v6_0012,Верхние Ручьи: деревня,hamlet,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:12,C
+pn_v6_0013,Верхний Малый Бор: брод,ford_place,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:13,C
+pn_v6_0014,Верхние Луга: село,village,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:14,C
+pn_v6_0015,Верхнее Починье: пристань,river_landing,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:15,C
+pn_v6_0016,Верхнее Березье: село,village,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:16,C
+pn_v6_0017,Верхние Лужицы: пристань,river_landing,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:17,C
+pn_v6_0018,Верхнее Селище: брод,ford_place,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:18,C
+pn_v6_0019,Верхний Починок: село,village,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:19,C
+pn_v6_0020,Дуброво: село,village,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:20,C
+pn_v6_0021,Сосновец: пристань,river_landing,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:21,C
+pn_v6_0022,Верхнее Мховое: деревня,hamlet,nov_g1_00_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_02:22,C
+pn_v6_0023,Селище на Шелони: пристань,river_landing,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:23,C
+pn_v6_0024,Починок на Шелони: брод,ford_place,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:24,C
+pn_v6_0025,Дуброво у Шелони: село,village,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:25,C
+pn_v6_0026,Сосновец у Шелони: село,village,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:26,C
+pn_v6_0027,Мховое на Шелони: пристань,river_landing,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:27,C
+pn_v6_0028,Озерец у Шелони: деревня,hamlet,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:28,C
+pn_v6_0029,Плесо на Шелони: брод,ford_place,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:29,C
+pn_v6_0030,Залесье у Шелони: село,village,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:30,C
+pn_v6_0031,Борок на Шелони: пристань,river_landing,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:31,C
+pn_v6_0032,Наволок у Шелони: село,village,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:32,C
+pn_v6_0033,Глинка на Шелони: пристань,river_landing,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:33,C
+pn_v6_0034,Луки на Шелони: брод,ford_place,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:34,C
+pn_v6_0035,Погосток у Шелони: село,village,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:35,C
+pn_v6_0036,Рыбный Стан у Шелони: село,village,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:36,C
+pn_v6_0037,Волчий Бор на Шелони: пристань,river_landing,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:37,C
+pn_v6_0038,Кривой Ручей у Шелони: деревня,hamlet,nov_g1_00_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_03:38,C
+pn_v6_0039,Верхние Луки: село,village,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:39,C
+pn_v6_0040,Верхний Погосток: село,village,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:40,C
+pn_v6_0041,Верхний Рыбный Стан: брод,ford_place,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:41,C
+pn_v6_0042,Верхний Волчий Бор: брод,ford_place,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:42,C
+pn_v6_0043,Кривой Ручей: деревня,hamlet,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:43,C
+pn_v6_0044,Зимний Стан: село,village,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:44,C
+pn_v6_0045,Верхняя Сухая Грива: село,village,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:45,C
+pn_v6_0046,Верхний Чёрный Мох: брод,ford_place,nov_g1_00_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_04:46,C
+pn_v6_0047,Верхняя Каменка на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:47,C
+pn_v6_0048,Верхнее Заречье на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:48,C
+pn_v6_0049,Подборье у Волхова: деревня,hamlet,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:49,C
+pn_v6_0050,Верхние Ручьи у Волхова: деревня,hamlet,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:50,C
+pn_v6_0051,Верхний Малый Бор на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:51,C
+pn_v6_0052,Верхние Луга: охотничий стан,hunting_camp,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:52,C
+pn_v6_0053,Нижний Починок на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:53,C
+pn_v6_0054,Верхнее Березье у Волхова: деревня,hamlet,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:54,C
+pn_v6_0055,Верхние Лужицы на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:55,C
+pn_v6_0056,Верхнее Селище у Волхова: деревня,hamlet,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:56,C
+pn_v6_0057,Починок на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:57,C
+pn_v6_0058,Верхнее Дуброво на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:58,C
+pn_v6_0059,Сосновец у Волхова: деревня,hamlet,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:59,C
+pn_v6_0060,Верхнее Мховое у Волхова: деревня,hamlet,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:60,C
+pn_v6_0061,Озерец на Волхове: брод,ford_place,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:61,C
+pn_v6_0062,Верхнее Плесо: охотничий стан,hunting_camp,nov_g1_00_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_05:62,C
+pn_v6_0063,Нижнее Дуброво на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:63,C
+pn_v6_0064,Сосновец на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:64,C
+pn_v6_0065,Нижнее Мховое у Волхова: деревня,hamlet,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:65,C
+pn_v6_0066,Верхний Озерец у Волхова: деревня,hamlet,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:66,C
+pn_v6_0067,Плесо на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:67,C
+pn_v6_0068,Верхнее Залесье: охотничий стан,hunting_camp,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:68,C
+pn_v6_0069,Борок на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:69,C
+pn_v6_0070,Наволок у Волхова: деревня,hamlet,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:70,C
+pn_v6_0071,Верхняя Глинка на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:71,C
+pn_v6_0072,Верхние Луки у Волхова: деревня,hamlet,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:72,C
+pn_v6_0073,Погосток на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:73,C
+pn_v6_0074,Верхний Рыбный Стан на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:74,C
+pn_v6_0075,Волчий Бор у Волхова: деревня,hamlet,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:75,C
+pn_v6_0076,Кривой Ручей у Волхова: деревня,hamlet,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:76,C
+pn_v6_0077,Верхний Зимний Стан на Волхове: брод,ford_place,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:77,C
+pn_v6_0078,Верхняя Сухая Грива: охотничий стан,hunting_camp,nov_g1_00_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_00_06:78,C
+pn_v6_0079,Верхний Озерец на Ильмене: пристань,river_landing,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:79,C
+pn_v6_0080,Плесо на Ильмене: брод,ford_place,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:80,C
+pn_v6_0081,Залесье у Ильменя: деревня,hamlet,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:81,C
+pn_v6_0082,Верхний Борок у Ильменя: деревня,hamlet,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:82,C
+pn_v6_0083,Верхний Наволок на Ильмене: пристань,river_landing,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:83,C
+pn_v6_0084,Верхняя Глинка: охотничий стан,hunting_camp,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:84,C
+pn_v6_0085,Луки на Ильмене: брод,ford_place,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:85,C
+pn_v6_0086,Верхний Погосток у Ильменя: деревня,hamlet,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:86,C
+pn_v6_0087,Верхний Рыбный Стан на Ильмене: пристань,river_landing,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:87,C
+pn_v6_0088,Верхний Волчий Бор у Ильменя: деревня,hamlet,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:88,C
+pn_v6_0089,Верхний Кривой Ручей на Ильмене: пристань,river_landing,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:89,C
+pn_v6_0090,Зимний Стан на Ильмене: брод,ford_place,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:90,C
+pn_v6_0091,Верхняя Сухая Грива у Ильменя: деревня,hamlet,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:91,C
+pn_v6_0092,Верхний Чёрный Мох у Ильменя: деревня,hamlet,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:92,C
+pn_v6_0093,Верхняя Глухая Лука на Ильмене: пристань,river_landing,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:93,C
+pn_v6_0094,Верхний Ольшаник: охотничий стан,hunting_camp,nov_g1_01_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_00:94,C
+pn_v6_0095,Верхний Зимний Стан на Ильмене: пристань,river_landing,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:95,C
+pn_v6_0096,Сухая Грива на Ильмене: брод,ford_place,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:96,C
+pn_v6_0097,Нижний Чёрный Мох у Ильменя: деревня,hamlet,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:97,C
+pn_v6_0098,Верхняя Глухая Лука у Ильменя: деревня,hamlet,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:98,C
+pn_v6_0099,Верхний Ольшаник на Ильмене: пристань,river_landing,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:99,C
+pn_v6_0100,Верхнее Следово: охотничий стан,hunting_camp,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:100,C
+pn_v6_0101,Каменка на Ильмене: брод,ford_place,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:101,C
+pn_v6_0102,Верхнее Заречье у Ильменя: деревня,hamlet,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:102,C
+pn_v6_0103,Верхнее Подборье на Ильмене: пристань,river_landing,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:103,C
+pn_v6_0104,Верхние Ручьи у Ильменя: деревня,hamlet,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:104,C
+pn_v6_0105,Верхний Малый Бор на Ильмене: пристань,river_landing,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:105,C
+pn_v6_0106,Верхние Луга на Ильмене: брод,ford_place,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:106,C
+pn_v6_0107,Верхнее Починье у Ильменя: деревня,hamlet,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:107,C
+pn_v6_0108,Верхнее Березье у Ильменя: деревня,hamlet,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:108,C
+pn_v6_0109,Верхние Лужицы на Ильмене: пристань,river_landing,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:109,C
+pn_v6_0110,Верхнее Селище: охотничий стан,hunting_camp,nov_g1_01_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_01:110,C
+pn_v6_0111,Верхние Луга на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:111,C
+pn_v6_0112,Верхнее Починье на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:112,C
+pn_v6_0113,Верхнее Березье у Ильменя: село,village,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:113,C
+pn_v6_0114,Верхние Лужицы у Ильменя: село,village,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:114,C
+pn_v6_0115,Верхнее Селище на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:115,C
+pn_v6_0116,Верхний Починок у Ильменя: деревня,hamlet,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:116,C
+pn_v6_0117,Верхнее Дуброво на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:117,C
+pn_v6_0118,Верхний Сосновец у Ильменя: село,village,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:118,C
+pn_v6_0119,Верхнее Мховое на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:119,C
+pn_v6_0120,Верхний Озерец у Ильменя: село,village,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:120,C
+pn_v6_0121,Верхнее Плесо на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:121,C
+pn_v6_0122,Верхнее Залесье на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:122,C
+pn_v6_0123,Верхний Борок у Ильменя: село,village,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:123,C
+pn_v6_0124,Верхний Наволок у Ильменя: село,village,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:124,C
+pn_v6_0125,Верхняя Глинка на Ильмене: пристань,river_landing,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:125,C
+pn_v6_0126,Верхние Луки у Ильменя: деревня,hamlet,nov_g1_01_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_02:126,C
+pn_v6_0127,Нижнее Залесье на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:127,C
+pn_v6_0128,Верхний Борок на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:128,C
+pn_v6_0129,Нижний Наволок у Ильменя: село,village,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:129,C
+pn_v6_0130,Верхняя Глинка у Ильменя: село,village,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:130,C
+pn_v6_0131,Верхние Луки на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:131,C
+pn_v6_0132,Нижний Погосток у Ильменя: деревня,hamlet,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:132,C
+pn_v6_0133,Нижний Рыбный Стан на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:133,C
+pn_v6_0134,Верхний Волчий Бор у Ильменя: село,village,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:134,C
+pn_v6_0135,Нижний Кривой Ручей на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:135,C
+pn_v6_0136,Верхний Зимний Стан у Ильменя: село,village,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:136,C
+pn_v6_0137,Верхняя Сухая Грива на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:137,C
+pn_v6_0138,Верхний Чёрный Мох на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:138,C
+pn_v6_0139,Верхняя Глухая Лука у Ильменя: село,village,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:139,C
+pn_v6_0140,Верхний Ольшаник у Ильменя: село,village,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:140,C
+pn_v6_0141,Верхнее Следово на Ильмене: пристань,river_landing,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:141,C
+pn_v6_0142,Верхняя Каменка у Ильменя: деревня,hamlet,nov_g1_01_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_03:142,C
+pn_v6_0143,Верхний Чёрный Мох у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:143,C
+pn_v6_0144,Глухая Лука у Ильменя: погост,pogost_center,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:144,C
+pn_v6_0145,Нижний Ольшаник у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:145,C
+pn_v6_0146,Верхнее Следово у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:146,C
+pn_v6_0147,Верхняя Каменка: церковный двор,rural_church_center,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:147,C
+pn_v6_0148,Нижнее Заречье у Ильменя: деревня,hamlet,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:148,C
+pn_v6_0149,Подборье у Ильменя: погост,pogost_center,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:149,C
+pn_v6_0150,Верхние Ручьи у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:150,C
+pn_v6_0151,Верхний Малый Бор: двор,isolated_farmstead,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:151,C
+pn_v6_0152,Верхние Луга у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:152,C
+pn_v6_0153,Нижний Починок: церковный двор,rural_church_center,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:153,C
+pn_v6_0154,Березье у Ильменя: погост,pogost_center,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:154,C
+pn_v6_0155,Нижние Лужицы у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:155,C
+pn_v6_0156,Верхнее Селище у Ильменя: село,village,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:156,C
+pn_v6_0157,Починок: двор,isolated_farmstead,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:157,C
+pn_v6_0158,Верхнее Дуброво у Ильменя: деревня,hamlet,nov_g1_01_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_04:158,C
+pn_v6_0159,Нижнее Березье у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:159,C
+pn_v6_0160,Лужицы у Ильменя: погост,pogost_center,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:160,C
+pn_v6_0161,Нижнее Селище у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:161,C
+pn_v6_0162,Верхний Починок у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:162,C
+pn_v6_0163,Дуброво: церковный двор,rural_church_center,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:163,C
+pn_v6_0164,Сосновец у Ильменя: деревня,hamlet,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:164,C
+pn_v6_0165,Мховое у Ильменя: погост,pogost_center,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:165,C
+pn_v6_0166,Нижний Озерец у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:166,C
+pn_v6_0167,Плесо: двор,isolated_farmstead,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:167,C
+pn_v6_0168,Верхнее Залесье у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:168,C
+pn_v6_0169,Борок: церковный двор,rural_church_center,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:169,C
+pn_v6_0170,Наволок у Ильменя: погост,pogost_center,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:170,C
+pn_v6_0171,Нижняя Глинка у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:171,C
+pn_v6_0172,Верхние Луки у Ильменя: село,village,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:172,C
+pn_v6_0173,Погосток: двор,isolated_farmstead,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:173,C
+pn_v6_0174,Рыбный Стан у Ильменя: деревня,hamlet,nov_g1_01_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_05:174,C
+pn_v6_0175,Наволок на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:175,C
+pn_v6_0176,Нижняя Глинка на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:176,C
+pn_v6_0177,Нижние Луки у Волхова: деревня,hamlet,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:177,C
+pn_v6_0178,Верхний Погосток у Волхова: деревня,hamlet,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:178,C
+pn_v6_0179,Нижний Рыбный Стан на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:179,C
+pn_v6_0180,Верхний Волчий Бор: охотничий стан,hunting_camp,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:180,C
+pn_v6_0181,Кривой Ручей на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:181,C
+pn_v6_0182,Зимний Стан у Волхова: деревня,hamlet,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:182,C
+pn_v6_0183,Верхняя Сухая Грива на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:183,C
+pn_v6_0184,Верхний Чёрный Мох у Волхова: деревня,hamlet,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:184,C
+pn_v6_0185,Глухая Лука на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:185,C
+pn_v6_0186,Верхний Ольшаник на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:186,C
+pn_v6_0187,Верхнее Следово у Волхова: деревня,hamlet,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:187,C
+pn_v6_0188,Верхняя Каменка у Волхова: деревня,hamlet,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:188,C
+pn_v6_0189,Нижнее Заречье на Волхове: брод,ford_place,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:189,C
+pn_v6_0190,Верхнее Подборье: охотничий стан,hunting_camp,nov_g1_01_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_01_06:190,C
+pn_v6_0191,Верхний Погосток на Ильмене: пристань,river_landing,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:191,C
+pn_v6_0192,Рыбный Стан на Ильмене: брод,ford_place,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:192,C
+pn_v6_0193,Нижний Волчий Бор у Ильменя: деревня,hamlet,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:193,C
+pn_v6_0194,Кривой Ручей у Ильменя: деревня,hamlet,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:194,C
+pn_v6_0195,Нижний Зимний Стан на Ильмене: пристань,river_landing,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:195,C
+pn_v6_0196,Нижняя Сухая Грива: охотничий стан,hunting_camp,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:196,C
+pn_v6_0197,Чёрный Мох на Ильмене: брод,ford_place,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:197,C
+pn_v6_0198,Нижняя Глухая Лука у Ильменя: деревня,hamlet,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:198,C
+pn_v6_0199,Нижний Ольшаник на Ильмене: пристань,river_landing,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:199,C
+pn_v6_0200,Верхнее Следово у Ильменя: деревня,hamlet,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:200,C
+pn_v6_0201,Верхняя Каменка на Ильмене: пристань,river_landing,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:201,C
+pn_v6_0202,Заречье на Ильмене: брод,ford_place,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:202,C
+pn_v6_0203,Подборье у Ильменя: деревня,hamlet,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:203,C
+pn_v6_0204,Нижние Ручьи у Ильменя: деревня,hamlet,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:204,C
+pn_v6_0205,Нижний Малый Бор на Ильмене: пристань,river_landing,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:205,C
+pn_v6_0206,Нижние Луга: охотничий стан,hunting_camp,nov_g1_02_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_00:206,C
+pn_v6_0207,Верхнее Заречье на Ильмене: пристань,river_landing,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:207,C
+pn_v6_0208,Подборье на Ильмене: брод,ford_place,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:208,C
+pn_v6_0209,Старые Ручьи у Ильменя: деревня,hamlet,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:209,C
+pn_v6_0210,Верхний Малый Бор у Ильменя: деревня,hamlet,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:210,C
+pn_v6_0211,Нижние Луга на Ильмене: пристань,river_landing,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:211,C
+pn_v6_0212,Верхнее Починье: охотничий стан,hunting_camp,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:212,C
+pn_v6_0213,Березье на Ильмене: брод,ford_place,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:213,C
+pn_v6_0214,Верхние Лужицы у Ильменя: деревня,hamlet,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:214,C
+pn_v6_0215,Нижнее Селище на Ильмене: пристань,river_landing,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:215,C
+pn_v6_0216,Нижний Починок у Ильменя: деревня,hamlet,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:216,C
+pn_v6_0217,Нижнее Дуброво на Ильмене: пристань,river_landing,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:217,C
+pn_v6_0218,Сосновец на Ильмене: брод,ford_place,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:218,C
+pn_v6_0219,Мховое у Ильменя: деревня,hamlet,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:219,C
+pn_v6_0220,Озерец у Ильменя: деревня,hamlet,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:220,C
+pn_v6_0221,Нижнее Плесо на Ильмене: пристань,river_landing,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:221,C
+pn_v6_0222,Нижнее Залесье: охотничий стан,hunting_camp,nov_g1_02_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_01:222,C
+pn_v6_0223,Верхний Сосновец на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:223,C
+pn_v6_0224,Нижнее Мховое на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:224,C
+pn_v6_0225,Старый Озерец у Ильменя: село,village,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:225,C
+pn_v6_0226,Верхнее Плесо у Ильменя: село,village,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:226,C
+pn_v6_0227,Старое Залесье на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:227,C
+pn_v6_0228,Нижний Борок у Ильменя: деревня,hamlet,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:228,C
+pn_v6_0229,Нижний Наволок на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:229,C
+pn_v6_0230,Старая Глинка у Ильменя: село,village,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:230,C
+pn_v6_0231,Нижние Луки на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:231,C
+pn_v6_0232,Верхний Погосток у Ильменя: село,village,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:232,C
+pn_v6_0233,Старый Рыбный Стан на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:233,C
+pn_v6_0234,Верхний Волчий Бор на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:234,C
+pn_v6_0235,Верхний Кривой Ручей у Ильменя: село,village,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:235,C
+pn_v6_0236,Нижний Зимний Стан у Ильменя: село,village,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:236,C
+pn_v6_0237,Нижняя Сухая Грива на Ильмене: пристань,river_landing,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:237,C
+pn_v6_0238,Старый Чёрный Мох у Ильменя: деревня,hamlet,nov_g1_02_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_02:238,C
+pn_v6_0239,Нижний Волчий Бор на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:239,C
+pn_v6_0240,Старый Кривой Ручей на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:240,C
+pn_v6_0241,Зимний Стан у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:241,C
+pn_v6_0242,Нижняя Сухая Грива у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:242,C
+pn_v6_0243,Нижний Чёрный Мох на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:243,C
+pn_v6_0244,Старая Глухая Лука у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:244,C
+pn_v6_0245,Старый Ольшаник на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:245,C
+pn_v6_0246,Нижнее Следово у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:246,C
+pn_v6_0247,Нижняя Каменка на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:247,C
+pn_v6_0248,Старое Заречье у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:248,C
+pn_v6_0249,Нижнее Подборье на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:249,C
+pn_v6_0250,Верхние Ручьи на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:250,C
+pn_v6_0251,Нижний Малый Бор у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:251,C
+pn_v6_0252,Верхние Луга у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:252,C
+pn_v6_0253,Дальнее Починье на Ильмене: пристань,river_landing,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:253,C
+pn_v6_0254,Нижнее Березье у Ильменя: деревня,hamlet,nov_g1_02_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_03:254,C
+pn_v6_0255,Нижние Ручьи у Ильменя: село,village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:255,C
+pn_v6_0256,Малый Бор у Ильменя: погост,pogost_center,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:256,C
+pn_v6_0257,Нижние Луга у Ильменя: село,village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:257,C
+pn_v6_0258,Нижний Починок у Ильменя: село,village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:258,C
+pn_v6_0259,Березье: церковный двор,rural_church_center,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:259,C
+pn_v6_0260,Нижние Лужицы у Ильменя: деревня,hamlet,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:260,C
+pn_v6_0261,Селище у Ильменя: погост,pogost_center,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:261,C
+pn_v6_0262,Нижний Починок у Ильменя: село (участок 02_04),village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:262,C
+pn_v6_0263,Дуброво: двор,isolated_farmstead,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:263,C
+pn_v6_0264,Нижний Сосновец у Ильменя: село,village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:264,C
+pn_v6_0265,Мховое: церковный двор,rural_church_center,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:265,C
+pn_v6_0266,Озерец у Ильменя: погост,pogost_center,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:266,C
+pn_v6_0267,Нижнее Плесо у Ильменя: село,village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:267,C
+pn_v6_0268,Нижнее Залесье у Ильменя: село,village,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:268,C
+pn_v6_0269,Борок: двор,isolated_farmstead,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:269,C
+pn_v6_0270,Верхний Наволок у Ильменя: деревня,hamlet,nov_g1_02_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_04:270,C
+pn_v6_0271,Новый Озерец у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:271,C
+pn_v6_0272,Плесо у Ильменя: погост,pogost_center,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:272,C
+pn_v6_0273,Старое Залесье у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:273,C
+pn_v6_0274,Нижний Борок у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:274,C
+pn_v6_0275,Наволок: церковный двор,rural_church_center,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:275,C
+pn_v6_0276,Глинка у Ильменя: деревня,hamlet,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:276,C
+pn_v6_0277,Луки у Ильменя: погост,pogost_center,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:277,C
+pn_v6_0278,Нижний Погосток у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:278,C
+pn_v6_0279,Рыбный Стан: двор,isolated_farmstead,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:279,C
+pn_v6_0280,Нижний Волчий Бор у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:280,C
+pn_v6_0281,Кривой Ручей: церковный двор,rural_church_center,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:281,C
+pn_v6_0282,Зимний Стан у Ильменя: погост,pogost_center,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:282,C
+pn_v6_0283,Верхняя Сухая Грива у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:283,C
+pn_v6_0284,Нижний Чёрный Мох у Ильменя: село,village,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:284,C
+pn_v6_0285,Глухая Лука: двор,isolated_farmstead,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:285,C
+pn_v6_0286,Ольшаник у Ильменя: деревня,hamlet,nov_g1_02_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_05:286,C
+pn_v6_0287,Нижний Зимний Стан на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:287,C
+pn_v6_0288,Нижняя Сухая Грива на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:288,C
+pn_v6_0289,Нижний Чёрный Мох у Волхова: деревня,hamlet,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:289,C
+pn_v6_0290,Глухая Лука у Волхова: деревня,hamlet,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:290,C
+pn_v6_0291,Нижний Ольшаник на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:291,C
+pn_v6_0292,Нижнее Следово: охотничий стан,hunting_camp,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:292,C
+pn_v6_0293,Нижняя Каменка на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:293,C
+pn_v6_0294,Заречье у Волхова: деревня,hamlet,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:294,C
+pn_v6_0295,Подборье на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:295,C
+pn_v6_0296,Нижние Ручьи у Волхова: деревня,hamlet,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:296,C
+pn_v6_0297,Нижний Малый Бор на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:297,C
+pn_v6_0298,Верхние Луга на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:298,C
+pn_v6_0299,Верхнее Починье у Волхова: деревня,hamlet,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:299,C
+pn_v6_0300,Нижнее Березье у Волхова: деревня,hamlet,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:300,C
+pn_v6_0301,Нижние Лужицы на Волхове: брод,ford_place,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:301,C
+pn_v6_0302,Нижнее Селище: охотничий стан,hunting_camp,nov_g1_02_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_02_06:302,C
+pn_v6_0303,Нижняя Глухая Лука на Ильмене: пристань,river_landing,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:303,C
+pn_v6_0304,Ольшаник на Ильмене: брод,ford_place,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:304,C
+pn_v6_0305,Дальнее Следово у Ильменя: деревня,hamlet,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:305,C
+pn_v6_0306,Нижняя Каменка у Ильменя: деревня,hamlet,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:306,C
+pn_v6_0307,Нижнее Заречье на Ильмене: пристань,river_landing,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:307,C
+pn_v6_0308,Нижнее Подборье: охотничий стан,hunting_camp,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:308,C
+pn_v6_0309,Ручьи на Ильмене: брод,ford_place,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:309,C
+pn_v6_0310,Старый Малый Бор у Ильменя: деревня,hamlet,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:310,C
+pn_v6_0311,Старые Луга на Ильмене: пристань,river_landing,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:311,C
+pn_v6_0312,Дальнее Починье у Ильменя: деревня,hamlet,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:312,C
+pn_v6_0313,Березье на Ильмене: пристань,river_landing,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:313,C
+pn_v6_0314,Лужицы на Ильмене: брод,ford_place,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:314,C
+pn_v6_0315,Селище у Ильменя: деревня,hamlet,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:315,C
+pn_v6_0316,Старый Починок у Ильменя: деревня,hamlet,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:316,C
+pn_v6_0317,Старое Дуброво на Ильмене: пристань,river_landing,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:317,C
+pn_v6_0318,Верхний Сосновец: охотничий стан,hunting_camp,nov_g1_03_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_00:318,C
+pn_v6_0319,Нижние Лужицы на Ильмене: пристань,river_landing,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:319,C
+pn_v6_0320,Селище на Ильмене: брод,ford_place,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:320,C
+pn_v6_0321,Новый Починок у Ильменя: деревня,hamlet,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:321,C
+pn_v6_0322,Нижнее Дуброво у Ильменя: деревня,hamlet,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:322,C
+pn_v6_0323,Нижний Сосновец на Ильмене: пристань,river_landing,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:323,C
+pn_v6_0324,Верхнее Мховое: охотничий стан,hunting_camp,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:324,C
+pn_v6_0325,Озерец на Ильмене: брод,ford_place,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:325,C
+pn_v6_0326,Плесо у Ильменя: деревня,hamlet,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:326,C
+pn_v6_0327,Новое Залесье на Ильмене: пристань,river_landing,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:327,C
+pn_v6_0328,Старый Борок у Ильменя: деревня,hamlet,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:328,C
+pn_v6_0329,Старый Наволок на Ильмене: пристань,river_landing,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:329,C
+pn_v6_0330,Глинка на Ильмене: брод,ford_place,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:330,C
+pn_v6_0331,Нижние Луки у Ильменя: деревня,hamlet,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:331,C
+pn_v6_0332,Старый Погосток у Ильменя: деревня,hamlet,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:332,C
+pn_v6_0333,Новый Рыбный Стан на Ильмене: пристань,river_landing,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:333,C
+pn_v6_0334,Нижний Волчий Бор: охотничий стан,hunting_camp,nov_g1_03_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_01:334,C
+pn_v6_0335,Руса (Старая Русса),town,nov_g1_03_02,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_02:335,B
+pn_v6_0336,Русские варницы,saltworks,nov_g1_03_02,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_02:336,B
+pn_v6_0337,Русанский торг,market_place,nov_g1_03_02,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_02:337,B
+pn_v6_0338,Полистская пристань,river_landing,nov_g1_03_02,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_02:338,B
+pn_v6_0339,Волчий Бор у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:339,C
+pn_v6_0340,Кривой Ручей на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:340,C
+pn_v6_0341,Зимний Стан на Полисти: пристань,river_landing,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:341,C
+pn_v6_0342,Сухая Грива на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:342,C
+pn_v6_0343,Чёрный Мох у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:343,C
+pn_v6_0344,Глухая Лука на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:344,C
+pn_v6_0345,Ольшаник на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:345,C
+pn_v6_0346,Следово на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:346,C
+pn_v6_0347,Каменка на Полисти: пристань,river_landing,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:347,C
+pn_v6_0348,Заречье на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:348,C
+pn_v6_0349,Подборье у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:349,C
+pn_v6_0350,Ручьи на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:350,C
+pn_v6_0351,Малый Бор на Полисти: пристань,river_landing,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:351,C
+pn_v6_0352,Верхние Луга на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:352,C
+pn_v6_0353,Нижний Починок у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:353,C
+pn_v6_0354,Березье на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:354,C
+pn_v6_0355,Лужицы на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:355,C
+pn_v6_0356,Селище на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:356,C
+pn_v6_0357,Починок на Полисти: пристань,river_landing,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:357,C
+pn_v6_0358,Дуброво на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:358,C
+pn_v6_0359,Сосновец у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:359,C
+pn_v6_0360,Мховое на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:360,C
+pn_v6_0361,Озерец на Полисти: пристань,river_landing,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:361,C
+pn_v6_0362,Плесо на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:362,C
+pn_v6_0363,Залесье у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:363,C
+pn_v6_0364,Борок на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:364,C
+pn_v6_0365,Наволок на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:365,C
+pn_v6_0366,Глинка на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:366,C
+pn_v6_0367,Луки на Полисти: пристань,river_landing,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:367,C
+pn_v6_0368,Погосток на Полисти: торг,market_place,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:368,C
+pn_v6_0369,Рыбный Стан у Полисти: село,village,nov_g1_03_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_02:369,C
+pn_v6_0370,Следово на Волхове: пристань,river_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:370,C
+pn_v6_0371,Каменка на Волхове: перевоз,ferry_place,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:371,C
+pn_v6_0372,Заречье на Волхове: рыбный стан,fishing_station,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:372,C
+pn_v6_0373,Подборье на Волхове: рыбный запор,fish_weir_site,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:373,C
+pn_v6_0374,Ручьи на Волхове: пристань,river_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:374,C
+pn_v6_0375,Малый Бор на Волхове: лодочная стоянка,boat_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:375,C
+pn_v6_0376,Верхние Луга на Волхове: перевоз,ferry_place,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:376,C
+pn_v6_0377,Нижний Починок на Волхове: рыбный стан,fishing_station,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:377,C
+pn_v6_0378,Верхнее Березье на Волхове: пристань,river_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:378,C
+pn_v6_0379,Верхние Лужицы на Волхове: перевоз,ferry_place,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:379,C
+pn_v6_0380,Верхнее Селище на Волхове: пристань,river_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:380,C
+pn_v6_0381,Починок на Волхове: перевоз,ferry_place,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:381,C
+pn_v6_0382,Дуброво на Волхове: рыбный стан,fishing_station,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:382,C
+pn_v6_0383,Сосновец на Волхове: рыбный запор,fish_weir_site,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:383,C
+pn_v6_0384,Мховое на Волхове: пристань,river_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:384,C
+pn_v6_0385,Озерец на Волхове: лодочная стоянка,boat_landing,nov_g1_03_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_03:385,C
+pn_v6_0386,Новгород,city_major_center,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:386,B
+pn_v6_0387,Новгородский посад,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:387,B
+pn_v6_0388,Новгородский торг,market_place,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:388,B
+pn_v6_0389,Рюриково городище,hillfort_gorodishche,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:389,B
+pn_v6_0390,Юрьев монастырь,monastery,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:390,B
+pn_v6_0391,Перынь,monastery,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:391,B
+pn_v6_0392,Новгородская пристань на Волхове,river_landing,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:392,B
+pn_v6_0393,Новгородская лодейная площадка,shipyard_boatyard,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:393,B
+pn_v6_0394,Двор власти в Новгороде,administrative_court,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:394,B
+pn_v6_0395,Софийская сторона,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:395,B
+pn_v6_0396,Торговая сторона,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:396,B
+pn_v6_0397,Неревский конец,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:397,B
+pn_v6_0398,Верхний Рыбный Стан на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:398,C
+pn_v6_0399,Людин конец,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:399,B
+pn_v6_0400,Кривой Ручей на Волхове: лодочная стоянка,boat_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:400,C
+pn_v6_0401,Зимний Стан на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:401,C
+pn_v6_0402,Сухая Грива на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:402,C
+pn_v6_0403,Загородский конец,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:403,B
+pn_v6_0404,Славенский конец,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:404,B
+pn_v6_0405,Ольшаник: посад,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:405,C
+pn_v6_0406,Плотницкий конец,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:406,B
+pn_v6_0407,Новгородский детинец,administrative_court,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:407,B
+pn_v6_0408,Верхнее Заречье на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:408,C
+pn_v6_0409,Владычный двор у Софии,administrative_court,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:409,B
+pn_v6_0410,Ручьи: лодейная площадка,shipyard_boatyard,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:410,C
+pn_v6_0411,Малый Бор на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:411,C
+pn_v6_0412,Верхние Луга на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:412,C
+pn_v6_0413,Ярославово дворище,market_place,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:413,B
+pn_v6_0414,Березье: посад,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:414,C
+pn_v6_0415,Лужицы: городище,hillfort_gorodishche,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:415,C
+pn_v6_0416,Готский двор у Торга,market_place,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:416,B
+pn_v6_0417,Немецкий двор у Торга,market_place,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:417,B
+pn_v6_0418,Верхнее Дуброво на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:418,C
+pn_v6_0419,Великий мост и мостовые подходы,crossroads,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:419,B
+pn_v6_0420,Верхнее Мховое на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:420,C
+pn_v6_0421,Озерец на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:421,C
+pn_v6_0422,Верхнее Плесо на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:422,C
+pn_v6_0423,Судный двор у Торга,administrative_court,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:423,B
+pn_v6_0424,Борок: городище,hillfort_gorodishche,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:424,C
+pn_v6_0425,Наволок: монастырь,monastery,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:425,C
+pn_v6_0426,Торговые ряды на Торговой стороне,market_place,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:426,B
+pn_v6_0427,Плотницкая слобода,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:427,B
+pn_v6_0428,Верхний Погосток на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:428,C
+pn_v6_0429,Гончарная слобода Людина конца,posad_suburb,nov_g1_03_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_03_04:429,B
+pn_v6_0430,Волчий Бор: двор управления,administrative_court,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:430,C
+pn_v6_0431,Кривой Ручей на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:431,C
+pn_v6_0432,Верхний Зимний Стан на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:432,C
+pn_v6_0433,Прибрежные клети и житницы,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:433,C
+pn_v6_0434,Чёрный Мох: монастырь,monastery,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:434,C
+pn_v6_0435,Верхняя Глухая Лука на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:435,C
+pn_v6_0436,Гостьевой двор у Торга,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:436,C
+pn_v6_0437,Приречный посад Волхова,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:437,C
+pn_v6_0438,Верхняя Каменка на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:438,C
+pn_v6_0439,Архиепископский хозяйственный двор,administrative_court,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:439,C
+pn_v6_0440,Загородский посадский край,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:440,C
+pn_v6_0441,Ручьи на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:441,C
+pn_v6_0442,Малый Бор на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:442,C
+pn_v6_0443,Окологородные огороды и гумна,estate_center,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:443,C
+pn_v6_0444,Нижний Починок на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:444,C
+pn_v6_0445,Березье на Волхове: лодочная стоянка,boat_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:445,C
+pn_v6_0446,Посадские дворы у Волхова,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:446,C
+pn_v6_0447,Селищенская посадская улица,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:447,C
+pn_v6_0448,Починок на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:448,C
+pn_v6_0449,Дубровская слобода,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:449,C
+pn_v6_0450,Сосновец: посад,posad_suburb,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:450,C
+pn_v6_0451,Нижнее Мховое на Волхове: торг,market_place,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:451,C
+pn_v6_0452,Озерец на Волхове: пристань,river_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:452,C
+pn_v6_0453,Рыбные садки и плёсо у пристаней,fishing_station,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:453,C
+pn_v6_0454,Залесье на Волхове: лодочная стоянка,boat_landing,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:454,C
+pn_v6_0455,Борок: лодейная площадка,shipyard_boatyard,nov_g1_03_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_04:455,C
+pn_v6_0456,Старый Погосток у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:456,C
+pn_v6_0457,Рыбный Стан у Ильменя: погост,pogost_center,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:457,C
+pn_v6_0458,Старый Волчий Бор у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:458,C
+pn_v6_0459,Нижний Кривой Ручей у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:459,C
+pn_v6_0460,Зимний Стан: церковный двор,rural_church_center,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:460,C
+pn_v6_0461,Старая Сухая Грива у Ильменя: деревня,hamlet,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:461,C
+pn_v6_0462,Чёрный Мох у Ильменя: погост,pogost_center,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:462,C
+pn_v6_0463,Нижняя Глухая Лука у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:463,C
+pn_v6_0464,Ольшаник: двор,isolated_farmstead,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:464,C
+pn_v6_0465,Нижнее Следово у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:465,C
+pn_v6_0466,Нижняя Каменка: церковный двор,rural_church_center,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:466,C
+pn_v6_0467,Заречье у Ильменя: погост,pogost_center,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:467,C
+pn_v6_0468,Верхнее Подборье у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:468,C
+pn_v6_0469,Старые Ручьи у Ильменя: село,village,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:469,C
+pn_v6_0470,Нижний Малый Бор: двор,isolated_farmstead,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:470,C
+pn_v6_0471,Нижние Луга у Ильменя: деревня,hamlet,nov_g1_03_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_05:471,C
+pn_v6_0472,Нижнее Заречье на Волхове: пристань,river_landing,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:472,C
+pn_v6_0473,Подборье на Волхове: перевоз,ferry_place,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:473,C
+pn_v6_0474,Старые Ручьи у Волхова: деревня,hamlet,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:474,C
+pn_v6_0475,Верхний Малый Бор у Волхова: деревня,hamlet,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:475,C
+pn_v6_0476,Нижние Луга на Волхове: пристань,river_landing,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:476,C
+pn_v6_0477,Верхнее Починье: зимовье,wintering_hut,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:477,C
+pn_v6_0478,Березье на Волхове: перевоз,ferry_place,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:478,C
+pn_v6_0479,Лужицы у Волхова: деревня,hamlet,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:479,C
+pn_v6_0480,Нижнее Селище на Волхове: пристань,river_landing,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:480,C
+pn_v6_0481,Верхний Починок у Волхова: деревня,hamlet,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:481,C
+pn_v6_0482,Нижнее Дуброво на Волхове: пристань,river_landing,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:482,C
+pn_v6_0483,Сосновец на Волхове: перевоз,ferry_place,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:483,C
+pn_v6_0484,Старое Мховое у Волхова: деревня,hamlet,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:484,C
+pn_v6_0485,Нижний Озерец у Волхова: деревня,hamlet,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:485,C
+pn_v6_0486,Нижнее Плесо на Волхове: пристань,river_landing,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:486,C
+pn_v6_0487,Верхнее Залесье: зимовье,wintering_hut,nov_g1_03_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_03_06:487,C
+pn_v6_0488,Верхний Малый Бор: охотничий стан,hunting_camp,nov_g1_04_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_00:488,C
+pn_v6_0489,Верхние Луга: двор,isolated_farmstead,nov_g1_04_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_00:489,C
+pn_v6_0490,Дальнее Починье: зимовье,wintering_hut,nov_g1_04_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_00:490,C
+pn_v6_0491,Нижнее Плесо: охотничий стан,hunting_camp,nov_g1_04_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_01:491,C
+pn_v6_0492,Залесье: двор,isolated_farmstead,nov_g1_04_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_01:492,C
+pn_v6_0493,Верхний Борок: зимовье,wintering_hut,nov_g1_04_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_01:493,C
+pn_v6_0494,Старая Сухая Грива на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:494,C
+pn_v6_0495,Старый Чёрный Мох на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:495,C
+pn_v6_0496,Старая Глухая Лука у Ильменя: село,village,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:496,C
+pn_v6_0497,Старый Ольшаник у Ильменя: село,village,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:497,C
+pn_v6_0498,Нижнее Следово на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:498,C
+pn_v6_0499,Старая Каменка у Ильменя: деревня,hamlet,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:499,C
+pn_v6_0500,Старое Заречье на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:500,C
+pn_v6_0501,Нижнее Подборье у Ильменя: село,village,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:501,C
+pn_v6_0502,Нижние Ручьи на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:502,C
+pn_v6_0503,Малый Бор у Ильменя: село,village,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:503,C
+pn_v6_0504,Новые Луга на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:504,C
+pn_v6_0505,Старое Починье на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:505,C
+pn_v6_0506,Старое Березье у Ильменя: село,village,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:506,C
+pn_v6_0507,Старые Лужицы у Ильменя: село,village,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:507,C
+pn_v6_0508,Старое Селище на Ильмене: пристань,river_landing,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:508,C
+pn_v6_0509,Большой Починок у Ильменя: деревня,hamlet,nov_g1_04_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_02:509,C
+pn_v6_0510,Новое Починье на Ильмене: пристань,river_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:510,C
+pn_v6_0511,Березье на Ильмене: перевоз,ferry_place,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:511,C
+pn_v6_0512,Лужицы на Ильмене: рыбный стан,fishing_station,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:512,C
+pn_v6_0513,Селище на Ильмене: рыбный запор,fish_weir_site,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:513,C
+pn_v6_0514,Починок на Ильмене: пристань,river_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:514,C
+pn_v6_0515,Дуброво на Ильмене: лодочная стоянка,boat_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:515,C
+pn_v6_0516,Сосновец на Ильмене: перевоз,ferry_place,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:516,C
+pn_v6_0517,Мховое на Ильмене: рыбный стан,fishing_station,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:517,C
+pn_v6_0518,Нижний Озерец на Ильмене: пристань,river_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:518,C
+pn_v6_0519,Плесо на Ильмене: перевоз,ferry_place,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:519,C
+pn_v6_0520,Большой Залесье на Ильмене: пристань,river_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:520,C
+pn_v6_0521,Борок на Ильмене: перевоз,ferry_place,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:521,C
+pn_v6_0522,Наволок на Ильмене: рыбный стан,fishing_station,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:522,C
+pn_v6_0523,Глинка на Ильмене: рыбный запор,fish_weir_site,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:523,C
+pn_v6_0524,Старые Луки на Ильмене: пристань,river_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:524,C
+pn_v6_0525,Погосток на Ильмене: лодочная стоянка,boat_landing,nov_g1_04_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_03:525,C
+pn_v6_0526,Хутынская монастырская округа,monastery,nov_g1_04_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_04_04:526,B
+pn_v6_0527,Хутынская высадка на Волхове,river_landing,nov_g1_04_04,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_04_04:527,B
+pn_v6_0528,Глинка у Волхова: село,village,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:528,C
+pn_v6_0529,Луки у Волхова: село,village,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:529,C
+pn_v6_0530,Нижний Погосток на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:530,C
+pn_v6_0531,Рыбный Стан: двор владыки/боярина,estate_center,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:531,C
+pn_v6_0532,Волчий Бор на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:532,C
+pn_v6_0533,Кривой Ручей у Волхова: село,village,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:533,C
+pn_v6_0534,Нижний Зимний Стан на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:534,C
+pn_v6_0535,Сухая Грива у Волхова: село,village,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:535,C
+pn_v6_0536,Чёрный Мох на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:536,C
+pn_v6_0537,Нижняя Глухая Лука на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:537,C
+pn_v6_0538,Ольшаник у Волхова: село,village,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:538,C
+pn_v6_0539,Следово у Волхова: село,village,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:539,C
+pn_v6_0540,Нижняя Каменка на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:540,C
+pn_v6_0541,Старое Заречье на Волхове: пристань,river_landing,nov_g1_04_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_04:541,C
+pn_v6_0542,Старая Глухая Лука на Волхове: пристань,river_landing,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:542,C
+pn_v6_0543,Ольшаник на Волхове: перевоз,ferry_place,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:543,C
+pn_v6_0544,Нижнее Следово у Волхова: деревня,hamlet,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:544,C
+pn_v6_0545,Нижняя Каменка у Волхова: деревня,hamlet,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:545,C
+pn_v6_0546,Новое Заречье на Волхове: пристань,river_landing,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:546,C
+pn_v6_0547,Верхнее Подборье: зимовье,wintering_hut,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:547,C
+pn_v6_0548,Ручьи на Волхове: перевоз,ferry_place,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:548,C
+pn_v6_0549,Нижний Малый Бор у Волхова: деревня,hamlet,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:549,C
+pn_v6_0550,Старые Луга на Волхове: пристань,river_landing,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:550,C
+pn_v6_0551,Дальнее Починье у Волхова: деревня,hamlet,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:551,C
+pn_v6_0552,Нижнее Березье на Волхове: пристань,river_landing,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:552,C
+pn_v6_0553,Нижние Лужицы на Волхове: перевоз,ferry_place,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:553,C
+pn_v6_0554,Нижнее Селище у Волхова: деревня,hamlet,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:554,C
+pn_v6_0555,Нижний Починок у Волхова: деревня,hamlet,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:555,C
+pn_v6_0556,Старое Дуброво на Волхове: пристань,river_landing,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:556,C
+pn_v6_0557,Сосновец: зимовье,wintering_hut,nov_g1_04_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_05:557,C
+pn_v6_0558,Лужицы на Волхове: пристань,river_landing,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:558,C
+pn_v6_0559,Селище на Волхове: перевоз,ferry_place,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:559,C
+pn_v6_0560,Старый Починок у Волхова: деревня,hamlet,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:560,C
+pn_v6_0561,Дуброво у Волхова: деревня,hamlet,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:561,C
+pn_v6_0562,Сосновец на Волхове: пристань,river_landing,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:562,C
+pn_v6_0563,Верхнее Мховое: зимовье,wintering_hut,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:563,C
+pn_v6_0564,Озерец на Волхове: перевоз,ferry_place,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:564,C
+pn_v6_0565,Плесо у Волхова: деревня,hamlet,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:565,C
+pn_v6_0566,Залесье на Волхове: пристань,river_landing,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:566,C
+pn_v6_0567,Борок у Волхова: деревня,hamlet,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:567,C
+pn_v6_0568,Наволок на Волхове: пристань,river_landing,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:568,C
+pn_v6_0569,Глинка на Волхове: перевоз,ferry_place,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:569,C
+pn_v6_0570,Старые Луки у Волхова: деревня,hamlet,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:570,C
+pn_v6_0571,Нижний Погосток у Волхова: деревня,hamlet,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:571,C
+pn_v6_0572,Нижний Рыбный Стан на Волхове: пристань,river_landing,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:572,C
+pn_v6_0573,Верхний Волчий Бор: зимовье,wintering_hut,nov_g1_04_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_04_06:573,C
+pn_v6_0574,Верхнее Дуброво: охотничий стан,hunting_camp,nov_g1_05_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_00:574,C
+pn_v6_0575,Сосновец: двор,isolated_farmstead,nov_g1_05_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_00:575,C
+pn_v6_0576,Нижнее Мховое: зимовье,wintering_hut,nov_g1_05_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_00:576,C
+pn_v6_0577,Верхний Рыбный Стан: охотничий стан,hunting_camp,nov_g1_05_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_01:577,C
+pn_v6_0578,Волчий Бор: двор,isolated_farmstead,nov_g1_05_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_01:578,C
+pn_v6_0579,Верхний Кривой Ручей: зимовье,wintering_hut,nov_g1_05_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_01:579,C
+pn_v6_0580,Верхнее Подборье: село,village,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:580,C
+pn_v6_0581,Верхние Ручьи: село,village,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:581,C
+pn_v6_0582,Нижний Малый Бор: брод,ford_place,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:582,C
+pn_v6_0583,Верхние Луга: брод,ford_place,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:583,C
+pn_v6_0584,Нижний Починок: деревня,hamlet,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:584,C
+pn_v6_0585,Нижнее Березье: село,village,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:585,C
+pn_v6_0586,Верхние Лужицы: село,village,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:586,C
+pn_v6_0587,Нижнее Селище: брод,ford_place,nov_g1_05_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_02:587,C
+pn_v6_0588,Старое Мховое на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:588,C
+pn_v6_0589,Старый Озерец на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:589,C
+pn_v6_0590,Старое Плесо у Ильменя: село,village,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:590,C
+pn_v6_0591,Новое Залесье у Ильменя: село,village,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:591,C
+pn_v6_0592,Нижний Борок на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:592,C
+pn_v6_0593,Нижний Наволок у Ильменя: деревня,hamlet,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:593,C
+pn_v6_0594,Нижняя Глинка на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:594,C
+pn_v6_0595,Нижние Луки у Ильменя: село,village,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:595,C
+pn_v6_0596,Нижний Погосток на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:596,C
+pn_v6_0597,Рыбный Стан у Ильменя: село,village,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:597,C
+pn_v6_0598,Старый Волчий Бор на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:598,C
+pn_v6_0599,Новый Кривой Ручей на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:599,C
+pn_v6_0600,Старый Зимний Стан у Ильменя: село,village,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:600,C
+pn_v6_0601,Нижняя Сухая Грива у Ильменя: село,village,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:601,C
+pn_v6_0602,Новый Чёрный Мох на Ильмене: пристань,river_landing,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:602,C
+pn_v6_0603,Новая Глухая Лука у Ильменя: деревня,hamlet,nov_g1_05_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_03:603,C
+pn_v6_0604,Кривой Ручей на Мсте: пристань,river_landing,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:604,C
+pn_v6_0605,Зимний Стан на Мсте: брод,ford_place,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:605,C
+pn_v6_0606,Сухая Грива у Мсты: село,village,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:606,C
+pn_v6_0607,Чёрный Мох у Мсты: село,village,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:607,C
+pn_v6_0608,Глухая Лука на Мсте: пристань,river_landing,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:608,C
+pn_v6_0609,Ольшаник у Мсты: деревня,hamlet,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:609,C
+pn_v6_0610,Следово на Мсте: брод,ford_place,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:610,C
+pn_v6_0611,Каменка у Мсты: село,village,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:611,C
+pn_v6_0612,Заречье на Мсте: пристань,river_landing,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:612,C
+pn_v6_0613,Подборье у Мсты: село,village,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:613,C
+pn_v6_0614,Ручьи на Мсте: пристань,river_landing,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:614,C
+pn_v6_0615,Малый Бор на Мсте: брод,ford_place,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:615,C
+pn_v6_0616,Верхние Луга у Мсты: село,village,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:616,C
+pn_v6_0617,Нижний Починок у Мсты: село,village,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:617,C
+pn_v6_0618,Березье на Мсте: пристань,river_landing,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:618,C
+pn_v6_0619,Лужицы у Мсты: деревня,hamlet,nov_g1_05_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_04:619,C
+pn_v6_0620,Нижний Малый Бор: охотничий стан,hunting_camp,nov_g1_05_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_05:620,C
+pn_v6_0621,Старые Луга: охотничий стан,hunting_camp,nov_g1_05_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_05:621,C
+pn_v6_0622,Нижний Починок: лесной стан,forest_work_camp,nov_g1_05_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_05:622,C
+pn_v6_0623,Старое Плесо: охотничий стан,hunting_camp,nov_g1_05_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_06:623,C
+pn_v6_0624,Старое Залесье: охотничий стан,hunting_camp,nov_g1_05_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_06:624,C
+pn_v6_0625,Борок: лесной стан,forest_work_camp,nov_g1_05_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_05_06:625,C
+pn_v6_0626,Нижний Наволок: охотничий стан,hunting_camp,nov_g1_06_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_00:626,C
+pn_v6_0627,Нижняя Глинка: двор,isolated_farmstead,nov_g1_06_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_00:627,C
+pn_v6_0628,Нижние Луки: зимовье,wintering_hut,nov_g1_06_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_00:628,C
+pn_v6_0629,Нижний Ольшаник: охотничий стан,hunting_camp,nov_g1_06_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_01:629,C
+pn_v6_0630,Следово: двор,isolated_farmstead,nov_g1_06_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_01:630,C
+pn_v6_0631,Каменка: зимовье,wintering_hut,nov_g1_06_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_01:631,C
+pn_v6_0632,Верхнее Селище: село,village,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:632,C
+pn_v6_0633,Нижний Починок: село,village,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:633,C
+pn_v6_0634,Верхнее Дуброво: брод,ford_place,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:634,C
+pn_v6_0635,Сосновец: брод,ford_place,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:635,C
+pn_v6_0636,Нижнее Мховое: деревня,hamlet,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:636,C
+pn_v6_0637,Верхний Озерец: село,village,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:637,C
+pn_v6_0638,Верхнее Плесо: село,village,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:638,C
+pn_v6_0639,Верхнее Залесье: брод,ford_place,nov_g1_06_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_02:639,C
+pn_v6_0640,Верхние Луки: пристань,river_landing,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:640,C
+pn_v6_0641,Верхний Погосток: брод,ford_place,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:641,C
+pn_v6_0642,Верхний Рыбный Стан: село,village,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:642,C
+pn_v6_0643,Верхний Волчий Бор: село,village,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:643,C
+pn_v6_0644,Верхний Кривой Ручей: пристань,river_landing,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:644,C
+pn_v6_0645,Верхний Зимний Стан: деревня,hamlet,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:645,C
+pn_v6_0646,Верхняя Сухая Грива: брод,ford_place,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:646,C
+pn_v6_0647,Верхний Чёрный Мох: село,village,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:647,C
+pn_v6_0648,Верхняя Глухая Лука: пристань,river_landing,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:648,C
+pn_v6_0649,Верхний Ольшаник: село,village,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:649,C
+pn_v6_0650,Следово: пристань,river_landing,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:650,C
+pn_v6_0651,Каменка: брод,ford_place,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:651,C
+pn_v6_0652,Нижнее Заречье: село,village,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:652,C
+pn_v6_0653,Нижнее Подборье: село,village,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:653,C
+pn_v6_0654,Верхние Ручьи: пристань,river_landing,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:654,C
+pn_v6_0655,Малый Бор: деревня,hamlet,nov_g1_06_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_03:655,C
+pn_v6_0656,Верхняя Каменка: пристань,river_landing,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:656,C
+pn_v6_0657,Верхнее Заречье: брод,ford_place,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:657,C
+pn_v6_0658,Старое Подборье: село,village,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:658,C
+pn_v6_0659,Нижние Ручьи: село,village,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:659,C
+pn_v6_0660,Верхний Малый Бор: пристань,river_landing,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:660,C
+pn_v6_0661,Верхние Луга: деревня,hamlet,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:661,C
+pn_v6_0662,Верхнее Починье: брод,ford_place,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:662,C
+pn_v6_0663,Старое Березье: село,village,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:663,C
+pn_v6_0664,Нижние Лужицы: пристань,river_landing,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:664,C
+pn_v6_0665,Нижнее Селище: село,village,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:665,C
+pn_v6_0666,Верхний Починок: пристань,river_landing,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:666,C
+pn_v6_0667,Нижнее Дуброво: брод,ford_place,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:667,C
+pn_v6_0668,Верхний Сосновец: село,village,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:668,C
+pn_v6_0669,Верхнее Мховое: село,village,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:669,C
+pn_v6_0670,Верхний Озерец: пристань,river_landing,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:670,C
+pn_v6_0671,Верхнее Плесо: деревня,hamlet,nov_g1_06_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_04:671,C
+pn_v6_0672,Нижнее Дуброво: охотничий стан,hunting_camp,nov_g1_06_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_05:672,C
+pn_v6_0673,Нижний Сосновец: охотничий стан,hunting_camp,nov_g1_06_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_05:673,C
+pn_v6_0674,Мховое: лесной стан,forest_work_camp,nov_g1_06_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_05:674,C
+pn_v6_0675,Нижний Рыбный Стан: охотничий стан,hunting_camp,nov_g1_06_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_06:675,C
+pn_v6_0676,Старый Волчий Бор: охотничий стан,hunting_camp,nov_g1_06_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_06:676,C
+pn_v6_0677,Кривой Ручей: лесной стан,forest_work_camp,nov_g1_06_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_06_06:677,C
+pn_v6_0678,Зимний Стан у Торжка: деревня,hamlet,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:678,C
+pn_v6_0679,Сухая Грива: перекрёсток,crossroads,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:679,C
+pn_v6_0680,Чёрный Мох у Торжка: село,village,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:680,C
+pn_v6_0681,Верхняя Глухая Лука у Торжка: село,village,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:681,C
+pn_v6_0682,Ольшаник: зимовье,wintering_hut,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:682,C
+pn_v6_0683,Следово: зимовье,wintering_hut,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:683,C
+pn_v6_0684,Каменка: перекрёсток,crossroads,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:684,C
+pn_v6_0685,Верхнее Заречье у Торжка: село,village,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:685,C
+pn_v6_0686,Верхнее Подборье: перекрёсток,crossroads,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:686,C
+pn_v6_0687,Верхние Ручьи у Торжка: село,village,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:687,C
+pn_v6_0688,Малый Бор у Торжка: деревня,hamlet,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:688,C
+pn_v6_0689,Верхние Луга: перекрёсток,crossroads,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:689,C
+pn_v6_0690,Нижний Починок у Торжка: село,village,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:690,C
+pn_v6_0691,Верхнее Березье у Торжка: село,village,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:691,C
+pn_v6_0692,Лужицы: зимовье,wintering_hut,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:692,C
+pn_v6_0693,Нижнее Селище: зимовье,wintering_hut,nov_g1_07_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_00:693,C
+pn_v6_0694,Верхние Луга у Торжка: деревня,hamlet,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:694,C
+pn_v6_0695,Нижний Починок: перекрёсток,crossroads,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:695,C
+pn_v6_0696,Нижнее Березье у Торжка: село,village,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:696,C
+pn_v6_0697,Верхние Лужицы у Торжка: село,village,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:697,C
+pn_v6_0698,Старое Селище: зимовье,wintering_hut,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:698,C
+pn_v6_0699,Починок: зимовье,wintering_hut,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:699,C
+pn_v6_0700,Дуброво: перекрёсток,crossroads,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:700,C
+pn_v6_0701,Сосновец у Торжка: село,village,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:701,C
+pn_v6_0702,Верхнее Мховое: перекрёсток,crossroads,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:702,C
+pn_v6_0703,Верхний Озерец у Торжка: село,village,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:703,C
+pn_v6_0704,Плесо у Торжка: деревня,hamlet,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:704,C
+pn_v6_0705,Залесье: перекрёсток,crossroads,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:705,C
+pn_v6_0706,Борок у Торжка: село,village,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:706,C
+pn_v6_0707,Наволок у Торжка: село,village,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:707,C
+pn_v6_0708,Глинка: зимовье,wintering_hut,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:708,C
+pn_v6_0709,Старые Луки: зимовье,wintering_hut,nov_g1_07_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_01:709,C
+pn_v6_0710,Верхнее Залесье: село,village,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:710,C
+pn_v6_0711,Верхний Борок: село,village,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:711,C
+pn_v6_0712,Верхний Наволок: брод,ford_place,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:712,C
+pn_v6_0713,Глинка: брод,ford_place,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:713,C
+pn_v6_0714,Луки: деревня,hamlet,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:714,C
+pn_v6_0715,Нижний Погосток: село,village,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:715,C
+pn_v6_0716,Нижний Рыбный Стан: село,village,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:716,C
+pn_v6_0717,Нижний Волчий Бор: брод,ford_place,nov_g1_07_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_02:717,C
+pn_v6_0718,Чёрный Мох: пристань,river_landing,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:718,C
+pn_v6_0719,Глухая Лука: брод,ford_place,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:719,C
+pn_v6_0720,Нижний Ольшаник: село,village,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:720,C
+pn_v6_0721,Верхнее Следово: село,village,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:721,C
+pn_v6_0722,Нижняя Каменка: пристань,river_landing,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:722,C
+pn_v6_0723,Заречье: деревня,hamlet,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:723,C
+pn_v6_0724,Верхнее Подборье: брод,ford_place,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:724,C
+pn_v6_0725,Старые Ручьи: село,village,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:725,C
+pn_v6_0726,Нижний Малый Бор: пристань,river_landing,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:726,C
+pn_v6_0727,Нижние Луга: село,village,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:727,C
+pn_v6_0728,Дальнее Починье: пристань,river_landing,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:728,C
+pn_v6_0729,Березье: брод,ford_place,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:729,C
+pn_v6_0730,Нижние Лужицы: село,village,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:730,C
+pn_v6_0731,Старое Селище: село,village,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:731,C
+pn_v6_0732,Нижний Починок: пристань,river_landing,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:732,C
+pn_v6_0733,Дуброво: деревня,hamlet,nov_g1_07_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_03:733,C
+pn_v6_0734,Верхнее Березье: пристань,river_landing,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:734,C
+pn_v6_0735,Лужицы: брод,ford_place,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:735,C
+pn_v6_0736,Новое Селище: село,village,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:736,C
+pn_v6_0737,Старый Починок: село,village,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:737,C
+pn_v6_0738,Верхнее Дуброво: пристань,river_landing,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:738,C
+pn_v6_0739,Сосновец: деревня,hamlet,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:739,C
+pn_v6_0740,Мховое: брод,ford_place,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:740,C
+pn_v6_0741,Нижний Озерец: село,village,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:741,C
+pn_v6_0742,Плесо: пристань,river_landing,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:742,C
+pn_v6_0743,Нижнее Залесье: село,village,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:743,C
+pn_v6_0744,Верхний Борок: пристань,river_landing,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:744,C
+pn_v6_0745,Нижний Наволок: брод,ford_place,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:745,C
+pn_v6_0746,Верхняя Глинка: село,village,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:746,C
+pn_v6_0747,Нижние Луки: село,village,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:747,C
+pn_v6_0748,Верхний Погосток: пристань,river_landing,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:748,C
+pn_v6_0749,Рыбный Стан: деревня,hamlet,nov_g1_07_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_04:749,C
+pn_v6_0750,Старый Наволок: охотничий стан,hunting_camp,nov_g1_07_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_05:750,C
+pn_v6_0751,Нижняя Глинка: охотничий стан,hunting_camp,nov_g1_07_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_05:751,C
+pn_v6_0752,Луки: лесной стан,forest_work_camp,nov_g1_07_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_05:752,C
+pn_v6_0753,Старый Ольшаник: охотничий стан,hunting_camp,nov_g1_07_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_06:753,C
+pn_v6_0754,Дальнее Следово: охотничий стан,hunting_camp,nov_g1_07_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_06:754,C
+pn_v6_0755,Каменка: лесной стан,forest_work_camp,nov_g1_07_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_07_06:755,C
+pn_v6_0756,Заречье у Торжка: деревня,hamlet,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:756,C
+pn_v6_0757,Нижнее Подборье: перекрёсток,crossroads,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:757,C
+pn_v6_0758,Нижние Ручьи у Торжка: село,village,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:758,C
+pn_v6_0759,Малый Бор у Торжка: село,village,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:759,C
+pn_v6_0760,Верхние Луга: зимовье,wintering_hut,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:760,C
+pn_v6_0761,Старое Починье: зимовье,wintering_hut,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:761,C
+pn_v6_0762,Березье: перекрёсток,crossroads,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:762,C
+pn_v6_0763,Нижние Лужицы у Торжка: село,village,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:763,C
+pn_v6_0764,Селище: перекрёсток,crossroads,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:764,C
+pn_v6_0765,Починок у Торжка: село,village,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:765,C
+pn_v6_0766,Дуброво у Торжка: деревня,hamlet,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:766,C
+pn_v6_0767,Сосновец: перекрёсток,crossroads,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:767,C
+pn_v6_0768,Мховое у Торжка: село,village,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:768,C
+pn_v6_0769,Нижний Озерец у Торжка: село,village,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:769,C
+pn_v6_0770,Плесо: зимовье,wintering_hut,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:770,C
+pn_v6_0771,Нижнее Залесье: зимовье,wintering_hut,nov_g1_08_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_00:771,C
+pn_v6_0772,Сосновец у Торжка: деревня,hamlet,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:772,C
+pn_v6_0773,Нижнее Мховое: перекрёсток,crossroads,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:773,C
+pn_v6_0774,Старый Озерец у Торжка: село,village,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:774,C
+pn_v6_0775,Плесо у Торжка: село,village,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:775,C
+pn_v6_0776,Старое Залесье: зимовье,wintering_hut,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:776,C
+pn_v6_0777,Нижний Борок: зимовье,wintering_hut,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:777,C
+pn_v6_0778,Наволок: перекрёсток,crossroads,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:778,C
+pn_v6_0779,Глинка у Торжка: село,village,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:779,C
+pn_v6_0780,Верхние Луки: перекрёсток,crossroads,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:780,C
+pn_v6_0781,Верхний Погосток у Торжка: село,village,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:781,C
+pn_v6_0782,Рыбный Стан у Торжка: деревня,hamlet,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:782,C
+pn_v6_0783,Волчий Бор: перекрёсток,crossroads,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:783,C
+pn_v6_0784,Кривой Ручей у Торжка: село,village,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:784,C
+pn_v6_0785,Зимний Стан у Торжка: село,village,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:785,C
+pn_v6_0786,Сухая Грива: зимовье,wintering_hut,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:786,C
+pn_v6_0787,Чёрный Мох: зимовье,wintering_hut,nov_g1_08_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_01:787,C
+pn_v6_0788,Нижний Волчий Бор: село,village,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:788,C
+pn_v6_0789,Верхний Кривой Ручей: село,village,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:789,C
+pn_v6_0790,Верхний Зимний Стан: брод,ford_place,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:790,C
+pn_v6_0791,Нижняя Сухая Грива: брод,ford_place,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:791,C
+pn_v6_0792,Чёрный Мох: деревня,hamlet,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:792,C
+pn_v6_0793,Верхняя Глухая Лука: село,village,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:793,C
+pn_v6_0794,Старый Ольшаник: село,village,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:794,C
+pn_v6_0795,Нижнее Следово: брод,ford_place,nov_g1_08_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_02:795,C
+pn_v6_0796,Нижние Ручьи: пристань,river_landing,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:796,C
+pn_v6_0797,Старый Малый Бор: брод,ford_place,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:797,C
+pn_v6_0798,Старые Луга: село,village,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:798,C
+pn_v6_0799,Нижний Починок: село (участок 08_03),village,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:799,C
+pn_v6_0800,Нижнее Березье: пристань,river_landing,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:800,C
+pn_v6_0801,Лужицы: деревня,hamlet,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:801,C
+pn_v6_0802,Старое Селище: брод,ford_place,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:802,C
+pn_v6_0803,Новый Починок: село,village,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:803,C
+pn_v6_0804,Нижнее Дуброво: пристань,river_landing,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:804,C
+pn_v6_0805,Нижний Сосновец: село,village,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:805,C
+pn_v6_0806,Мховое: пристань,river_landing,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:806,C
+pn_v6_0807,Озерец: брод,ford_place,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:807,C
+pn_v6_0808,Нижнее Плесо: село,village,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:808,C
+pn_v6_0809,Старое Залесье: село,village,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:809,C
+pn_v6_0810,Нижний Борок: пристань,river_landing,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:810,C
+pn_v6_0811,Наволок: деревня,hamlet,nov_g1_08_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_03:811,C
+pn_v6_0812,Нижний Озерец: пристань,river_landing,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:812,C
+pn_v6_0813,Плесо: брод,ford_place,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:813,C
+pn_v6_0814,Новое Залесье: село,village,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:814,C
+pn_v6_0815,Нижний Борок: село,village,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:815,C
+pn_v6_0816,Верхний Наволок: пристань,river_landing,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:816,C
+pn_v6_0817,Глинка: деревня,hamlet,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:817,C
+pn_v6_0818,Луки: брод,ford_place,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:818,C
+pn_v6_0819,Старый Погосток: село,village,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:819,C
+pn_v6_0820,Рыбный Стан: пристань,river_landing,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:820,C
+pn_v6_0821,Старый Волчий Бор: село,village,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:821,C
+pn_v6_0822,Нижний Кривой Ручей: пристань,river_landing,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:822,C
+pn_v6_0823,Нижний Зимний Стан: брод,ford_place,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:823,C
+pn_v6_0824,Нижняя Сухая Грива: село,village,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:824,C
+pn_v6_0825,Нижний Чёрный Мох: село,village,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:825,C
+pn_v6_0826,Нижняя Глухая Лука: пристань,river_landing,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:826,C
+pn_v6_0827,Ольшаник: деревня,hamlet,nov_g1_08_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_04:827,C
+pn_v6_0828,Зимний Стан: охотничий стан,hunting_camp,nov_g1_08_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_05:828,C
+pn_v6_0829,Старая Сухая Грива: охотничий стан,hunting_camp,nov_g1_08_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_05:829,C
+pn_v6_0830,Чёрный Мох: лесной стан,forest_work_camp,nov_g1_08_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_05:830,C
+pn_v6_0831,Новые Луга: охотничий стан,hunting_camp,nov_g1_08_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_06:831,C
+pn_v6_0832,Дальнее Починье: охотничий стан,hunting_camp,nov_g1_08_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_06:832,C
+pn_v6_0833,Березье: лесной стан,forest_work_camp,nov_g1_08_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_08_06:833,C
+pn_v6_0834,Торжок,town,nov_g1_09_00,historical_or_functional_label,,game-base:sources.v6-naming-register#nov_g1_09_00:834,B
+pn_v6_0835,Селище на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:835,C
+pn_v6_0836,Починок у Торжка: погост,pogost_center,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:836,C
+pn_v6_0837,Дуброво у Торжка: погост,pogost_center,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:837,C
+pn_v6_0838,Сосновец на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:838,C
+pn_v6_0839,Мховое у Торжка: городище,hillfort_gorodishche,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:839,C
+pn_v6_0840,Озерец на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:840,C
+pn_v6_0841,Плесо у Торжка: погост,pogost_center,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:841,C
+pn_v6_0842,Залесье на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:842,C
+pn_v6_0843,Борок у Торжка: погост,pogost_center,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:843,C
+pn_v6_0844,Наволок на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:844,C
+pn_v6_0845,Глинка на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:845,C
+pn_v6_0846,Луки у Торжка: погост,pogost_center,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:846,C
+pn_v6_0847,Погосток у Торжка: погост,pogost_center,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:847,C
+pn_v6_0848,Рыбный Стан на Торжокском пути: брод,ford_place,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:848,C
+pn_v6_0849,Волчий Бор у Торжка: городище,hillfort_gorodishche,nov_g1_09_00,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_00:849,C
+pn_v6_0850,Глинка у Торжка: деревня,hamlet,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:850,C
+pn_v6_0851,Нижние Луки: перекрёсток,crossroads,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:851,C
+pn_v6_0852,Нижний Погосток у Торжка: село,village,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:852,C
+pn_v6_0853,Рыбный Стан у Торжка: село,village,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:853,C
+pn_v6_0854,Нижний Волчий Бор: зимовье,wintering_hut,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:854,C
+pn_v6_0855,Нижний Кривой Ручей: зимовье,wintering_hut,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:855,C
+pn_v6_0856,Зимний Стан: перекрёсток,crossroads,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:856,C
+pn_v6_0857,Сухая Грива у Торжка: село,village,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:857,C
+pn_v6_0858,Чёрный Мох: перекрёсток,crossroads,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:858,C
+pn_v6_0859,Нижняя Глухая Лука у Торжка: село,village,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:859,C
+pn_v6_0860,Ольшаник у Торжка: деревня,hamlet,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:860,C
+pn_v6_0861,Следово: перекрёсток,crossroads,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:861,C
+pn_v6_0862,Каменка у Торжка: село,village,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:862,C
+pn_v6_0863,Нижнее Заречье у Торжка: село,village,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:863,C
+pn_v6_0864,Нижнее Подборье: зимовье,wintering_hut,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:864,C
+pn_v6_0865,Ручьи: зимовье,wintering_hut,nov_g1_09_01,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_01:865,C
+pn_v6_0866,Нижнее Следово: село,village,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:866,C
+pn_v6_0867,Нижняя Каменка: село,village,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:867,C
+pn_v6_0868,Нижнее Заречье: брод,ford_place,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:868,C
+pn_v6_0869,Нижнее Подборье: брод,ford_place,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:869,C
+pn_v6_0870,Нижние Ручьи: деревня,hamlet,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:870,C
+pn_v6_0871,Малый Бор: село,village,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:871,C
+pn_v6_0872,Новые Луга: село,village,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:872,C
+pn_v6_0873,Дальнее Починье: брод,ford_place,nov_g1_09_02,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_02:873,C
+pn_v6_0874,Старый Починок: пристань,river_landing,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:874,C
+pn_v6_0875,Старое Дуброво: брод,ford_place,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:875,C
+pn_v6_0876,Старый Сосновец: село,village,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:876,C
+pn_v6_0877,Нижнее Мховое: село,village,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:877,C
+pn_v6_0878,Старый Озерец: пристань,river_landing,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:878,C
+pn_v6_0879,Нижнее Плесо: деревня,hamlet,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:879,C
+pn_v6_0880,Нижнее Залесье: брод,ford_place,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:880,C
+pn_v6_0881,Старый Борок: село,village,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:881,C
+pn_v6_0882,Нижний Наволок: пристань,river_landing,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:882,C
+pn_v6_0883,Нижняя Глинка: село,village,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:883,C
+pn_v6_0884,Нижние Луки: пристань,river_landing,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:884,C
+pn_v6_0885,Нижний Погосток: брод,ford_place,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:885,C
+pn_v6_0886,Старый Рыбный Стан: село,village,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:886,C
+pn_v6_0887,Новый Волчий Бор: село,village,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:887,C
+pn_v6_0888,Старый Кривой Ручей: пристань,river_landing,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:888,C
+pn_v6_0889,Нижний Зимний Стан: деревня,hamlet,nov_g1_09_03,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_03:889,C
+pn_v6_0890,Нижний Погосток: пристань,river_landing,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:890,C
+pn_v6_0891,Нижний Рыбный Стан: брод,ford_place,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:891,C
+pn_v6_0892,Большой Волчий Бор: село,village,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:892,C
+pn_v6_0893,Нижний Кривой Ручей: село,village,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:893,C
+pn_v6_0894,Зимний Стан: пристань,river_landing,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:894,C
+pn_v6_0895,Сухая Грива: деревня,hamlet,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:895,C
+pn_v6_0896,Нижний Чёрный Мох: брод,ford_place,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:896,C
+pn_v6_0897,Нижняя Глухая Лука: село,village,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:897,C
+pn_v6_0898,Нижний Ольшаник: пристань,river_landing,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:898,C
+pn_v6_0899,Дальнее Следово: село,village,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:899,C
+pn_v6_0900,Старая Каменка: пристань,river_landing,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:900,C
+pn_v6_0901,Старое Заречье: брод,ford_place,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:901,C
+pn_v6_0902,Новое Подборье: село,village,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:902,C
+pn_v6_0903,Новые Ручьи: село,village,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:903,C
+pn_v6_0904,Старый Малый Бор: пристань,river_landing,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:904,C
+pn_v6_0905,Нижние Луга: деревня,hamlet,nov_g1_09_04,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_04:905,C
+pn_v6_0906,Заречье: охотничий стан,hunting_camp,nov_g1_09_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_05:906,C
+pn_v6_0907,Старое Подборье: охотничий стан,hunting_camp,nov_g1_09_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_05:907,C
+pn_v6_0908,Ручьи: лесной стан,forest_work_camp,nov_g1_09_05,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_05:908,C
+pn_v6_0909,Старый Сосновец: охотничий стан,hunting_camp,nov_g1_09_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_06:909,C
+pn_v6_0910,Нижнее Мховое: охотничий стан,hunting_camp,nov_g1_09_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_06:910,C
+pn_v6_0911,Озерец: лесной стан,forest_work_camp,nov_g1_09_06,fictional_historicized_name,,game-base:sources.v6-naming-register#nov_g1_09_06:911,C

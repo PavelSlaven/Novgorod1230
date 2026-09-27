@@ -1,0 +1,19 @@
+// Source registry for natural_materials_soils. Keys are used in source_refs columns.
+export default {
+  wk_terrain_assemblage: { ref: 'wk:claim:terrain-parent-material-assemblage', kind: 'wk_claim', note: 'Approved WK: boulder and sandy loams, fluvioglacial sands with gravel and pebbles, lacustrine-glacial sands and clays (regional, inferred/medium).' },
+  wk_terrain_background: { ref: 'wk:claim:terrain-background', kind: 'wk_claim' },
+  dd2020: { ref: 'Dmitruk N.G., Druzhnova M.P. Soil areas of the Novgorod region in the context of their agricultural use // IOP Conf. Ser.: Earth Environ. Sci. 613 (2020) 012025. https://doi.org/10.1088/1755-1315/613/1/012025 (read in main:data/world-catalogs/novgorod/world-knowledge/research/population-terrain-sources.md TR-01..TR-06)', kind: 'scholarly_modern', note: 'Ilmen–Volkhov floodplain: lake-alluvial and alluvial gravel, pebbles, clay, sand, loam, sandy loam; Chudovo–Novgorod district: tape clay and river alluvium.' },
+  bulkin_antipov_2017: { ref: 'Булкин В.А., Антипов И.В. Об особенностях организации строительства … в Новгородской земле в домонгольское время // АПТИИ 7 (2017) 410–418. https://doi.org/10.18688/aa177-4-40 (via WK research population-terrain-resource-context.md TRC-01)', kind: 'scholarly' },
+  wk_quarry: { ref: 'wk:claim:construction-quarry-procurement', kind: 'wk_claim' },
+  volkhov_limestone: { ref: 'Путиловский известняк — Википедия (нижний ордовик, плитчатый; добыча на Волхове, Тосне, Ижоре; кладка крепостей Новгорода и Старой Ладоги). https://ru.wikipedia.org/wiki/Путиловский_известняк', kind: 'encyclopedic' },
+  volkhov_glint: { ref: 'Волховская плита: известняки волховского горизонта нижнего ордовика в верхней части Балтийско-Ладожского глинта; ammonit.ru «Палеонтология, Ленинградская область. Волхов, ордовикский период» https://www.ammonit.ru/place/22.htm', kind: 'encyclopedic' },
+  novg_masonry_web: { ref: 'Новгородская кладка XII в.: плиты плотного светло-серого известняка, позднее (вторая пол. XII – нач. XIII в.) пористый ракушечник бурого, красноватого, зеленоватого цвета; плинфа для арок и сводов. Обзор: https://tehlib.com/arhitektura/stroitel-ny-e-materialy-kamen/', kind: 'secondary_popular' },
+  kolchin_1953: { ref: 'Колчин Б.А. Черная металлургия и металлообработка в древней Руси (домонгольский период) // МИА 32. М., 1953. https://archaeolog.ru/el-bib/el-cat/el-series/mia/kolchin-1953', kind: 'scholarly', note: 'Bog/lake/meadow ores as raw material of Rus bloomery iron; smelting furnaces of 12th–early 13th c. Not reread page-by-page in this pass.' },
+  trasa_climate: { ref: 'Климат Новгородской области — trasa.ru (макс. глубина промерзания почв до 50 см; безморозный период 143 дня; распутица с начала апреля 20–30 дней). http://trasa.ru/region/novgorodskaya_clim.html', kind: 'secondary_popular' },
+  lu_templates: { ref: 'world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)', kind: 'project_seed_draft' },
+  lt_templates: { ref: 'world_db.world_base.landscape_templates + region_landscape_templates region_novgorod_land (draft; exported to _shared/novgorod_landscape_templates.world_db.tsv)', kind: 'project_seed_draft' },
+  v17_finite: { ref: 'pr98:data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json#finite_source_profiles', kind: 'project_candidate' },
+  pr98_rights: { ref: 'pr98:docs/work/M2C_NATURAL_RESOURCE_RIGHTS_RESEARCH.md (owner editorial free-gathering rule for reeds/deadwood/driftwood/standing wood)', kind: 'project_decision' },
+  g4_index: { ref: 'pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json (via _shared/g4_nature_index.json)', kind: 'project_candidate' },
+  master_me: { ref: 'master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv', kind: 'project_archive_candidate' },
+};

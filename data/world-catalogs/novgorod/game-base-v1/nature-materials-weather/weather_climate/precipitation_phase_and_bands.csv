@@ -1,0 +1,10 @@
+kind,id,min_c,max_c,contract_value,source_refs,confidence
+precipitation_phase,snow,,-1,snow,"Jennings K.S. et al. Spatial variation of the rain–snow temperature threshold across the Northern Hemisphere // Nature Communications 9, 1148 (2018). https://doi.org/10.1038/s41467-018-03629-7 (thresholds near +1…+2 °C; used as rule-of-thumb band)",B
+precipitation_phase,sleet,-1,2,sleet,"Jennings K.S. et al. Spatial variation of the rain–snow temperature threshold across the Northern Hemisphere // Nature Communications 9, 1148 (2018). https://doi.org/10.1038/s41467-018-03629-7 (thresholds near +1…+2 °C; used as rule-of-thumb band)",B
+precipitation_phase,rain,2,,rain,"Jennings K.S. et al. Spatial variation of the rain–snow temperature threshold across the Northern Hemisphere // Nature Communications 9, 1148 (2018). https://doi.org/10.1038/s41467-018-03629-7 (thresholds near +1…+2 °C; used as rule-of-thumb band)",B
+temperature_band,severe_cold,,-15,severe_cold,"pr98:packages/contracts/src/weather-state.js (WEATHER_KINDS, TEMPERATURE_BANDS, PRECIPITATION_KINDS, WIND_BANDS, VISIBILITY_WEATHER_MODIFIERS, GROUND_STATES)",C
+temperature_band,cold,-15,-3,cold,"pr98:packages/contracts/src/weather-state.js (WEATHER_KINDS, TEMPERATURE_BANDS, PRECIPITATION_KINDS, WIND_BANDS, VISIBILITY_WEATHER_MODIFIERS, GROUND_STATES)",C
+temperature_band,cool,-3,5,cool,"pr98:packages/contracts/src/weather-state.js (WEATHER_KINDS, TEMPERATURE_BANDS, PRECIPITATION_KINDS, WIND_BANDS, VISIBILITY_WEATHER_MODIFIERS, GROUND_STATES)",C
+temperature_band,mild,5,15,mild,"pr98:packages/contracts/src/weather-state.js (WEATHER_KINDS, TEMPERATURE_BANDS, PRECIPITATION_KINDS, WIND_BANDS, VISIBILITY_WEATHER_MODIFIERS, GROUND_STATES)",C
+temperature_band,warm,15,24,warm,"pr98:packages/contracts/src/weather-state.js (WEATHER_KINDS, TEMPERATURE_BANDS, PRECIPITATION_KINDS, WIND_BANDS, VISIBILITY_WEATHER_MODIFIERS, GROUND_STATES)",C
+temperature_band,hot,24,,hot,"pr98:packages/contracts/src/weather-state.js (WEATHER_KINDS, TEMPERATURE_BANDS, PRECIPITATION_KINDS, WIND_BANDS, VISIBILITY_WEATHER_MODIFIERS, GROUND_STATES)",C

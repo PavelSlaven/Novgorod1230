@@ -1,0 +1,28 @@
+deny_id,term_ru,match_terms,kind,reason,source_refs,confidence,status
+deny_firearm,"огнестрельное оружие (пищаль, ружьё, пистоль, мушкет, аркебуза, пушка, порох)",пищал | ружь | пистол | мушкет | аркебуз | пушк | порох | firearm | gun | musket | cannon | gunpowder,anachronism,огнестрел и порох в Европе и на Руси — XIV в. и позже,catalog:conventions.anachronism,A,candidate
+deny_berdysh,бердыш,бердыш,anachronism,поздняя форма XV–XVII вв.,master:mc:WPN0041,A,candidate
+deny_two_handed_sword,двуручный меч,двуручн,anachronism,поздняя форма XIV–XVI вв.,master:mc:WPN0058 | costume:AR020,A,candidate
+deny_plate_harness,"полный латный доспех, латы",латн | латы | plate harness | full plate,anachronism,латы XIV–XV вв.,master:mc:ARM0025 | costume:anti:ANTI010,A,candidate
+deny_brigandine,бригантина,бригантин | brigandine,anachronism,XIV–XV вв.,master:mc:ARM0024 | costume:AR007,A,candidate
+deny_leather_cuirass,кожаная кираса как самостоятельный доспех,кожаная кираса | кожаный доспех,fantasy,не доказан для Руси XIII в.; фэнтези-штамп,master:mc:ARM0021 | bible:§18 Фэнтезийная кожа,B,candidate
+deny_leather_limb_armour,кожаные наплечники и поножи без металла,наплечник,fantasy,недоказано; фэнтези-штамп,master:mc:ARM0029 | bible:§18 Фэнтезийная кожа,B,candidate
+deny_horse_armour,конский доспех (броня коня),конский доспех | конская броня,disputed_not_for_generation,не норма 1230,master:mc:ARM0030 | costume:AR035,B,candidate
+deny_bascinet,бацинет с забралом,бацинет | забрал,anachronism,XIV–XV вв.,master:mc:HLM0012 | costume:AR008,A,candidate
+deny_kettle_hat,шапель («железная шляпа»),шапель | железная шляпа,disputed_not_for_generation,"возможный западный импорт, в Новгороде 1230 не подтверждён",master:mc:HLM0013,C,candidate
+deny_great_helm,западный шлем-«горшок»,горшок | great helm | топфхельм,foreign_late,"западный рыцарский тип, для новгородца не применять; у приезжего только по конкретному основанию",master:mc:HLM0014 | costume:AR010,B,candidate
+deny_full_mask_helmet,шлем с полной личиной,личин,disputed_not_for_generation,исключительная и спорная форма (тип III по Кирпичникову — ранний),master:mc:HLM0018 | lit:kirpichnikov_1971_shlemy,C,candidate
+deny_later_halfmask,полумаска второй половины XIII–XIV в. как вещь 1230 г.,,anachronism,находка датирована 1260–1325; для 1230 брать тип IV по Кирпичникову,master:mc:HLM0006 | wk:claim:candidate-novgorod-helmet-half-mask-find,B,candidate
+deny_horned_helmet,рогатый шлем,рогатый шлем | с рогами | horned,fantasy,театральный штамп,master:mc:HLM0019 | costume:anti:ANTI011,A,candidate
+deny_pavise,павеза,павез | pavise,anachronism,XIV–XVI вв.,master:mc:SHD0013,A,candidate
+deny_heraldic_shield,геральдический щит с гербом,герб,anachronism,развитая геральдика на Руси отсутствует; поздний западный штамп,costume:AR015 | costume:AR016,B,candidate
+deny_morningstar,"моргенштерн, огромный шипованный шар",моргенштерн | morning star,fantasy,поздний тип и фэнтези-гипербола,costume:AR024 | costume:AR025,B,candidate
+deny_halberd,алебарда,алебард | halberd,anachronism,XIV–XVI вв.,catalog:conventions.anachronism,B,candidate
+deny_rapier,"шпага, рапира, эсток",шпаг | рапир | эсток | rapier | estoc,anachronism,XVI в. и позже; колющий поздний меч,master:mc:WPN0024,A,candidate
+deny_katana,катана и фэнтезийные клинки,катан | katana,fantasy,чужая традиция и штамп,costume:AR020,A,candidate
+deny_double_bladed_axe,двулезвийная фэнтезийная секира,двулезвийн,fantasy,штамп; см. costume AR022/AR023,costume:AR022 | costume:AR023,A,candidate
+deny_steel_trap,стальной пружинный капкан,капкан,anachronism,современный тип (для охоты — домен hunting),master:mc:HNT0022 | master:mc:HNT0024,B,candidate
+deny_gambeson_thick,толстый стёганый акетон XIV в. как норма,акетон | гамбезон,anachronism,поздняя форма; поддоспешник 1230 умеренной толщины,costume:AR001 | costume:AR002,B,candidate
+deny_uniform,одинаковая униформа дружины и ополчения,униформ,fantasy,снаряжение зависело от достатка и службы,costume:anti:ANTI009 | costume:anti:ANTI018,A,candidate
+deny_mongol_default,«монгольский» облик по умолчанию,,fantasy,монгольские клише не объясняют новгородское вооружение,costume:anti:ANTI008,A,candidate
+deny_stone_kremlin,кирпичные стены и каменные башни кремля,кирпичная стена | кирпичные стены | кирпичный кремль | каменная башня | каменные башни,anachronism,кирпичный кремль — конец XV в.; в 1230 укрепления деревянно-земляные,master:mc:FOR0008 | master:mc:FOR0009 | sqlite:city_features:B002,A,candidate
+deny_late_rampart,большой глиняный вал Детинца рубежа XIII–XIV вв.,,anachronism,датирован 1270–1320,master:mc:FOR0010,B,candidate

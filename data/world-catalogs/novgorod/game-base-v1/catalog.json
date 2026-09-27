@@ -1,0 +1,2480 @@
+{
+  "schema": "rus.game_base_catalog.v1",
+  "version": "game-base-v1",
+  "created": "2026-09-26",
+  "status": "candidate_plan_not_approved",
+  "roots": {
+    "main": "C:/Users/Slaven/Documents/Novgorod (main checkout)",
+    "pr98": "C:/Users/Slaven/Documents/Novgorod-runtime (PR #98, codex/live-world-runtime, v17 runtime)",
+    "wk": "main:data/world-catalogs/novgorod/world-knowledge/production-v1 (WK, approved, в runtime-bundle 1032 concepts / 1723 claims)",
+    "world_db": "docker world-base-postgres-1, world_db.world_base (dev: старый gate1 seed, не v17)",
+    "v17": "БД novgorod_world_v17 в Codex MSIX LocalCache; счёты из readback-файлов pr98:data/world-catalogs/novgorod/live-world-runtime-v17/",
+    "master": "Downloads/Novgorod1230_MASTER_ARCHIVE_v1.zip (распакован во временный scratchpad/zips/Novgorod1230_MASTER_ARCHIVE_v1/…/data/)",
+    "costume": "Downloads/Novgorod1230_costume_dataset_v1.zip (data/catalog_items.csv 180, combinations.csv 46, foreigner_profiles.csv 10, materials_palette.csv, anti_patterns.csv 20, sources.csv 50)",
+    "matcult": "Downloads/Novgorod1230_material_culture_dataset_v1.zip (data/catalog_items.csv 1137, scenes.csv 66, sources.csv)",
+    "audit": "C:/Users/Slaven/Documents/Одним ПРОМТОМ/data/rus13-base-staging/nov_region_audit (draft, LLM, требует аудита)",
+    "rus13tpl": "main:tools/rus13-novgorod-regional-templates (16 JSON + TSV, draft, requires_human_audit)",
+    "v6tsv": "main:DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv (граф v6: g3_places 911, g4_locations 9332, naming_register)",
+    "risovalka": "C:/Users/Slaven/Documents/РИСОВАЛКА ВЕБ/novgorod_character_1230.md (авторская библия персонажа, A/B/C, 15 ссылок)",
+    "mia65": "C:/Users/Slaven/Documents/Новгород_PR92_restack/.tmp-pr92-sources/MIA_65.pdf (МИА №65, 1959; скан без текста, нужен OCR)"
+  },
+  "conventions": {
+    "id": "Стабильный slug с префиксом домена (колонка id_prefix в key_fields), латиница, snake_case; не переиспользуется после удаления.",
+    "frequency_class": "ubiquitous/common/contextual/rare -> вес 8/4/2/1 (политика richness M2c). Иные числа только по заявленному правилу из заявленной основы.",
+    "confidence": "A — первоисточник/археология; B — научная вторичная литература; C — правдоподобная реконструкция/аналогия (с note).",
+    "source_refs": "WK concept/claim id, либо путь файла + id строки, либо библиографическая ссылка с URL. Без source_refs строка не принимается.",
+    "keys": "Каждый пул ключуется на place_family_id (домен place_families) и season_period (календарь time-events-history: winter, spring_rasputitsa, summer, autumn и т.д.).",
+    "anachronism": "Общий denylist (картофель, кукуруза, томат, подсолнечник, табак, индейка, кролик как скот, тяжеловозы, чай, кофе, сахар-песок, огнестрел и др.) проверяется скриптом по всем доменам.",
+    "item_identity": "D9/D14: владельца вещи и приметы (клеймо, узор, починка, износ) задаёт код из пулов; опознавательный текст (имена, даты, текст грамоты, клеймо) — только из пулов кода или сущностей, не от LLM.",
+    "approval": "Автор не утверждает сам себя: каждый домен — отдельный проход утверждения (Opus high или владелец) по WR §21.1; механические переносы проверяются тестами.",
+    "priority": "M2c — нужно для 32 G4 / 195 G5 стартовой территории v17 и богатства первого прибытия; M3 — свободная конкретизация; later — после M3."
+  },
+  "summary_ru": "Каталог игровой базы game-base-v1: 60 доменов в 20 узких группах-сборщиках. Основа — три карты (схема world_base, потребители v17, дизайн владельца) и прежние обзоры (sweep-d4, archive-sweep, flora-fauna, documents-review). Главное: (1) одобренных фактов много (WK 1723 claims), но почти нет пулов «что есть в каком месте и как часто» — их собирают скриптами из WK, MASTER и кандидатов с весами 8/4/2/1; (2) для флоры, фауны, еды, ремёсел и здоровья в world_base нет таблиц вообще, а таблицы имён, экономики, законов, религии, погоды, расписаний, истории, одежды и материальной культуры пусты — новые таблицы требуют CR и Contract Auditor; (3) многие заполненные таблицы v17 не читает (имена, история, member_selection природы, approved_runtime_basis NPC, WK для narration) — данные таких доменов окупятся только после кодовой проводки, это отмечено в consumers; (4) сразу окупаются без кода: утверждённые WK claims (после пересборки бандла), профили NPC для 37 одобренных занятий, варианты одежды, тексты природных слоёв по G4×сезону, тексты observable_activity; (5) для предметов по решениям владельца D9/D14 введены домены правил владения и пулов примет/опознавательного текста. По приоритетам: M2c — 38, M3 — 19, later — 3.",
+  "counts": {
+    "domains": 60,
+    "groups": 20,
+    "by_priority": {
+      "M2c": 38,
+      "M3": 19,
+      "later": 3
+    },
+    "by_fill_method": {
+      "derive": 9,
+      "rule": 6,
+      "mixed": 25,
+      "research": 16,
+      "import": 4
+    },
+    "by_group": {
+      "places-binding": 5,
+      "flora-trees-shrubs": 1,
+      "flora-herbs-berries-mushrooms": 3,
+      "fauna-mammals-birds": 2,
+      "fauna-fish-invertebrates-livestock": 3,
+      "nature-materials-weather": 3,
+      "buildings-interiors-containers": 4,
+      "items-household-personal": 5,
+      "crafts-tools-processes": 3,
+      "items-weapons-armour": 2,
+      "clothing-appearance": 3,
+      "food-drink": 2,
+      "economy-trade-measures": 3,
+      "social-strata-law": 2,
+      "occupations-activities": 4,
+      "households-psychology-speech": 3,
+      "names-peoples": 3,
+      "time-calendar-church": 3,
+      "history-events-knowledge": 3,
+      "transport-health-recreation": 3
+    }
+  },
+  "groups": [
+    {
+      "id": "places-binding",
+      "name_ru": "Места: семейства, привязка узлов, носитель наличия, реестр категорий",
+      "collector_brief_ru": "Сделать ключ, на который вешаются все остальные пулы. (1) places/place_families.csv: 44 семейства WK place-first-cartography.json (rural_yard … grain_drying_shed_ovin) с id pf_*, name_ru, применимыми слоями (9 слоёв M2c) и 4–5 фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk на landscape/land_use/place/water templates (world_db + regional-environment кандидат pr98), на 198 g4_location_type графа v6 (v6tsv g4_locations) и на 17 spatial_v3 scene templates. (2) places/node_binding.csv: 32 G4 и 195 G5 v17 → place_family, landscape, land_use, place_template, water_body; брать authoring_axes из pr98 m2c-natural/candidate.json, spatial-v3 datasets и regional-environment кандидата, ничего не угадывать; неясное — gap. (3) presence/presence_rules.csv: единый носитель наличия (#133 D4/D6): scope_kind, scope_ref, region_id, category_ref, frequency_class, probability_ppm (по заявленному правилу из класса), count_limit, allowed_seasons, refresh_class none|season, source_refs — строится скриптом из пулов других групп, сам группа пишет только правило перевода и сборщик. (4) categories/: сводный реестр universal_categories для новых доменов (flora, fauna, food, garment, behavior, motive, knowledge, activity) по контракту §4 — скрипт собирает из выходов групп и проверяет уникальность stable_code. (5) place_generation_limits: пересчитать лимиты дворов/NPC/предметов по правилу из v6 household_estimate/household_mix, черновик audit generation_limits только как сверка. Новое исследование не нужно; нужны скрипты-сборщики и crosswalk."
+    },
+    {
+      "id": "flora-trees-shrubs",
+      "name_ru": "Флора: деревья, кустарники, кустарнички",
+      "collector_brief_ru": "Полный список деревьев, кустарников и кустарничков (кроме ягодных — они в flora-herbs-berries-mushrooms), которых видит и использует человек в южнотаёжной зоне Новгородской земли ~1230: flora/trees_shrubs.csv (fl_*) и flora/tree_habitat_presence.csv (taxon × place_family × season, frequency_class). Поля: name_ru, древнерусское/народное название если засвидетельствовано, lat, life_form, habitat/moisture/soil, фенология по сезонным периодам (распускание, цветение, плоды, листопад, зимний облик, снеговая нагрузка), перцептивные признаки (кора, лист, запах, звук на ветру), использование (древесина, лыко, береста, смола, дёготь, корм, топливо) и качество, опасности. Источники: WK residual-tree-properties-v1, wild-flora, gameplay-flora-ecology-v3, gameplay-plant-identification-v3, static-plant-*, place-plant-frost-context-v1, place-orchard-peat-processes-v1, пыльцевые/макрофоссильные claims (Троицкий раскоп, Рюриково городище); research/population-wild-flora-modern.md; pr98 m2c-natural/nature-richness-candidate-v1.json; landscape_templates.dominant_vegetation. Исследовать (веб, B/C): обилие по местообитаниям (флора Новгородской области, палинология Приильменья), даты фенофаз; сегодняшние интродуценты (клён ясенелистный, робиния и т.п.) — в denylist."
+    },
+    {
+      "id": "flora-herbs-berries-mushrooms",
+      "name_ru": "Флора: травы, мхи, лишайники, водные, ягоды, грибы, культурные растения",
+      "collector_brief_ru": "Три таблицы: flora/herbs_mosses_aquatic.csv (травы, злаки, осоки, папоротники, хвощи, мхи, лишайники, водные и прибрежные: рогоз, тростник, кувшинка, кубышка, пушица, сфагнум), flora/berries_mushrooms.csv (клюква, морошка, голубика, черника, брусника, малина, земляника, костяника, смородина; съедобные и ядовитые грибы с двойниками) и flora/cultivated_plants.csv (рожь, ячмень, овёс, пшеница, просо, горох, бобы, лён, конопля, репа, капуста, лук, чеснок, хмель, огородные и сорные), все с habitat_presence по place_family × season. Поля как у деревьев + съедобность/ядовитость/двойники, лекарственное применение как практика эпохи (не совет), выход (корзина, горсть, охапка). Источники: WK (≈78 ботанических + ≈50 культурных claims), research md (кандидаты-only: клюква, морошка, голубика, пушица, рогоз, кувшинка, пшеница, бобы), MASTER food_system ingredients + food_seasonality (растения как еда, по месяцам), Троицкий раскоп (растительные остатки). Реальные пробелы для веб-исследования: лишайники (0 в WK), названные грибы (0), сорные и огородные культуры Новгорода по археоботанике (B). Anachronism denylist обязателен."
+    },
+    {
+      "id": "fauna-mammals-birds",
+      "name_ru": "Фауна: дикие звери и птицы",
+      "collector_brief_ru": "fauna/mammals.csv и fauna/birds.csv (fa_*) + fauna/wild_habitat_presence.csv (taxon × place_family × season, frequency_class, activity_time). Поля: name_ru, lat, класс, сезонность (гон, спячка, линька, перелёт, зимний мех), время активности, признаки для прозы (следы, помёт, погрызы, гнёзда, хатки/плотины, голоса и песни, запах), поведение к человеку, опасность, промысловая ценность (мясо, мех, перо, жир, кость), связь со способом охоты. Покрыть: все обычные промысловые и пушные звери (в WK 11 диких), грызуны и насекомоядные, летучие мыши; птицы, которых слышит путник: журавль, тетерев, глухарь, рябчик, дятлы, врановые, водоплавающие, кулики, хищные (включая соколиную охоту — проверить), певчие (в WK всего 6 птиц). Источники: WK fauna-mammals, fauna-ecology, fauna-supplement, research population-fauna-ecology-modern.md, fauna-mammals-modern/winter; pr98 m2c-nature-coverage.json (42 концепта); MASTER food ingredients (дичь). Исследовать: орнитофауна Новгородской/Ильменской низменности (B), археозоология птичьих костей Новгорода (A/B)."
+    },
+    {
+      "id": "fauna-fish-invertebrates-livestock",
+      "name_ru": "Фауна: рыбы, земноводные и гады, беспозвоночные, домашний скот",
+      "collector_brief_ru": "fauna/fish.csv (Волхов, Ильмень, Ловать, Мста, озёра: сезон нереста, способ лова, места), fauna/invertebrates_herps.csv (комар, мошка, слепни, клещи, пчёлы, муравьи, жемчужница, раки; лягушки, жабы, гадюка, уж; вредители амбаров — мыши, крысы: крыса чёрная для XIII в. проверить), fauna/livestock_types.csv и fauna/livestock_care.csv (корова, мелкая лошадь, свинья, овца, коза, куры, гуси, утки, собака, кошка: масть/возраст/размер для облика, содержание, корм по сезону, продукты, болезни и признаки, метки владения, пастьба и пастух). Плюс herd_composition по типу двора (из v6 household_mix и TSV typical_animals, по правилу). Источники: WK agriculture-fauna, static-animal-care-traces-b05, static-animal-context-b06, static-ruminant-feed-b11, place-animal-brood-cat-hoof-v1, place-salt-poultry-processes-v1, place-young-bird-poultry-handling-v1, археозоология (крупный рогатый скот доминирует), MASTER livestock 30/fishing 32/ingredients (~14 рыб), occupations TSV. Исследовать: ихтиофауна Ильменя и Волхова и археоихтиология Новгорода (в WK всего 4 рыбы). Denylist: индейка, кролик-скот, тяжеловозы."
+    },
+    {
+      "id": "nature-materials-weather",
+      "name_ru": "Природные материалы, грунты, погода, природные тексты",
+      "collector_brief_ru": "(1) nature/materials_soils.csv: грунты по ландшафтам (песок, супесь, суглинок, глина, торф, гравий, валуны, выходы известняка — проверить для Волхова) и природное сырьё места: глина, песок, камень, болотная руда, торф, береста, лыко, кора, смола/осмол, валежник, сушняк, плавник, тростник, мох для конопатки, вода; для каждого — конечный запас (единица, объём по правилу), инструмент доступа, сезон (мёрзлый грунт), признаки (цвет, запах, фактура), связь с ремеслом. Расширяет 4 finite_source_profiles v17. (2) nature/weather_climate: v2-профиль инерции погоды (1–3 дня, держащееся отклонение температуры, вид осадков от температуры — D7), снег, ледостав/ледоход, половодье, распутица; климатологические веса вместо равных. (3) nature/presentation_texts: clear_text/partial_text по 13 слоям для каждого из 32 G4 × 4 сезона и фразы на член пула (визуальные и акустические) — единственные природные строки, которые видит рассказчик. Источники: WK terrain, static-ground-material-b05, foundations-earth, gameplay-granular-materials-v3, mineral-pigments, place-orchard-peat-processes-v1, woodwork-ceramics; land_use_templates; pr98 m2c-items и m2c-finite-source-capability-candidate; temporal-v4 weather + WEATHER_RECONSTRUCTION_DECISIONS.md; rus13tpl novgorod_weather_season_rules_v1.json (draft); pr98 m2c-natural-presentation, nature-successor-phrases-v1.json, m2c-acoustic. Исследовать: климатические нормы (температура, снег) для реконструкции (B/C с заявленной аналогией)."
+    },
+    {
+      "id": "buildings-interiors-containers",
+      "name_ru": "Постройки, облик поселения, интерьеры, ёмкости и запасы",
+      "collector_brief_ru": "(1) buildings/building_types.csv + building_parts.csv: срубы (клеть, подклет, сени, изба-курная/печь, пятистенок — проверить датировку), баня, амбар, хлев/конюшня, овин/гумно, погреб, колодец, заборы (тын, плетень), мостовые и водоотводы, двор-усадьба, мастерские, церкви деревянные и каменные, монастырь, стены/башни/ворота, пристань, мост, мельница; материалы, размеры (диапазон), состояния/возраст, пожарный риск, кто живёт/работает. (2) buildings/settlement_form.csv: планировка двора и улицы, концы Новгорода, сельское поселение. (3) interiors/scenes.csv: 66 сцен material_culture (обязательное/допустимое/запрещённое содержимое, количества, правила расстановки) → привязка к place_family, мебель (лавки, полки, стол, постель, красный угол — проверить для XIII в.), свет/дым/запах. (4) containers/: формы ёмкостей (сундук, короб, берестяной туес, бочка, кадь, ушат, корзина, мешок, горшок, яма/погреб), ёмкость, запор, переносимость, совместимые содержимые и профили содержимого по месту (амбар, погреб, мастерская, лавка, лодка) с правилом первого открытия (D3). Источники: WK approved-construction, settlement-craft, reconstructed-place-interiors-v1/outdoors-v1, static-historical-household-practice-v1; v5 кандидат (building_templates 9, room_templates 9, ~100 container категорий); matcult scenes.csv, ARC*-предметы; master workshop_profiles 20, locations 54; rus13tpl container_profiles, g5_scene_templates 198 (draft); v6 g4_location_type. Исследовать: размеры и конструкции по Засурцеву (mia65, нужен OCR) и сводам по новгородскому домостроительству (B)."
+    },
+    {
+      "id": "items-household-personal",
+      "name_ru": "Вещи быта и личные, частота по местам, владение и приметы (D9/D14)",
+      "collector_brief_ru": "(1) items/household.csv и items/personal.csv: посуда и утварь (дерево, керамика), освещение и огонь (светец, лучина, кресало), уборка, мелкие хранилища, замки и ключи, пломбы, писала и берёста, кресты и иконки, гребни, ножи, кошели, игрушки и игры (шахматы, кости, бабки), музыкальные инструменты (гусли, дудки) — категория/подкатегория (код), материал, техника, размер/масса по правилу категории, единица количества, состояния, признаки для прозы, функции, засвидетельствованность и confidence. (2) items/item_place_frequency.csv: вещь × place_family × frequency_class (из master item_location_links 12 997 после сверки с WK и археологией). (3) items/ownership_rules.csv (D14): для каждой пары place_family × контекст находки правило владельца: household, master, trader, church, authority; дикое место — ownerless или lost_by_someone без выдуманного лица; кто знает вещь (домашние, свидетели). (4) items/mark_pools.csv: пулы примет — клеймо/знак собственности, узор, починка (заклёпка, заплата, скоба), износ, повреждение — по категории и материалу, с засвидетельствованием; и identifying_text_pools (надписи на пряслицах и деревянных вещах, владельческие знаки, пломбы) — только из пулов кода (D9). Источники: v5 item-container кандидат (102 типа, 366 категорий), matcult catalog_items 1137, master material_items, item_location_links, spawn_profiles 46, state_variants 90, material_entities 2196; rus13tpl item_profiles и property_rules (draft); world_base property_profiles 19; WK material_culture; pr98 m2c-items (25 семейств). Исследовать: владельческие знаки и надписи на новгородских находках (A/B)."
+    },
+    {
+      "id": "crafts-tools-processes",
+      "name_ru": "Ремёсла: инструменты и снаряжение, технологические цепочки, мастерские",
+      "collector_brief_ru": "(1) crafts/tools_gear.csv: инструменты плотника, кузнеца, кожевника/сапожника, ткачихи/пряхи, гончара, ювелира/литейщика, косторезa, токаря; сельскохозяйственные (соха, серп, коса-горбуша, цеп), рыболовные (сети, верши, остроги, крючки) и охотничьи (лук, силки, капканы — проверить) — с материалом, массой по правилу, владельцем по роли. (2) crafts/processes.csv + process_steps.csv: вход, инструменты, место, топливо/жар, шаги с длительностью, навык, выход и отходы, брак и его признаки, сезонные ограничения — ковка, кричное железо из болотной руды, литьё, кожевенное дело, ткачество, гончарство, дёготь, уголь, плотницкое, лодочное дело, изготовление печатей и надписей (чтобы WK/LLM судили реалистичность попытки игрока, вкл. оружие и подделки — подлинность решает @rus/items-property/@rus/social-law). (3) crafts/workshops.csv: мастерская = place_family + инструменты + запасы + отходы-следы. Источники: WK craft_technology 151, chemistry_process 83, joining-metals, nonferrous-casting, leather-plant-fibre-water, woodwork-ceramics, fuel-processes, wax-candles, gameplay-material-process-v3, gameplay-cordage-reworking-v1, place-*-processes; master technology_processes 679/steps 3300/workshops 20/defects 103 и activities 2442 — только вспомогательно после проверки по WK (validation FAIL, 6 источников); region_occupations required_tools. Исследовать: Колчин, Изюмова, Седова в mia65 (OCR), Рыбина «Промыслы» (есть в source_records)."
+    },
+    {
+      "id": "items-weapons-armour",
+      "name_ru": "Оружие, доспех, военная организация и охрана",
+      "collector_brief_ru": "(1) items/weapons_armour.csv: меч, боевой топор, копьё, сулица, лук и стрелы (наконечники по типам), кистень/булава, нож боевой, щит, шлем, кольчуга, бармица, пластинчатый доспех — по статусу носителя, доступности, праву ношения, состоянию и приметам (D14). (2) military/security.csv: княжья дружина, городовое ополчение (тысяцкий/сотские), стража у ворот/торга/перевозов, укрепления, походы и набеги 1230-х (из летописи), последствия (пленные, выкуп), вероятность боя по роли. Источники: WK reconstructed-military-world-v1, military-first-cartography.json; v5 объектные типы оружия; costume и risovalka (оружие и доспех по 8+1 ролям); occupations TSV weapon_access/combat_likelihood, roles weapon_rights. Исследовать: Кирпичников «Древнерусское оружие» (B), Медведев в mia65 (OCR). Приоритет M3, кроме оружия-инструментов охотника/сторожа для NPC M2c."
+    },
+    {
+      "id": "clothing-appearance",
+      "name_ru": "Одежда, комплекты по ролям, украшения и облик",
+      "collector_brief_ru": "(1) clothing/garments.csv: рубаха, порты, свита, плащ/корзно, шуба/кожух, пояс, онучи, обувь (лапти — проверить датировку для XIII в., поршни, башмаки, сапоги), головные уборы, женский головной убор и понёва/нижняя одежда (проверить); материал, цвет/краситель, декор, пол/возраст/брачный статус/статус/сезон, слот экипировки, состояния износа (новое, латаное, грязное, рваное). (2) clothing/outfits.csv: варианты одежды NPC по полу × возрасту × сезону × статусу/занятию — ровно один вариант на комбинацию для runtime (approvedClothing), с exactly one equipment_template на слот, property_binding owner=actor. (3) appearance/adornment.csv: височные кольца, бусы, стеклянные браслеты, кресты, обереги (с confidence), причёски и бороды — только значения внутри закрытого словаря @rus/actors или с пометкой «нужно расширение словаря». Источники: costume (180/46/10/палитра/20 антипаттернов/50 источников, проверка PASS), risovalka, WK clothing.json (13/27), pr98 m2c-npc runtime-bindings (4 варианта), appearance-transfer-v3 (approved), procedural-scene-v2/npc-equipment-v1. Новое исследование — только для спорных датировок."
+    },
+    {
+      "id": "food-drink",
+      "name_ru": "Еда и питьё: продукты, сезонность, блюда, трапезы, хранение, посты",
+      "collector_brief_ru": "(1) food/ingredients.csv: зерно (рожь, ячмень, овёс, пшеница, просо), горох, бобы, репа, капуста, лук, чеснок, рыба, дичь, молочное, мёд, ягоды, грибы, орехи, соль — с сезонностью по месяцам/периодам, происхождением (своё/привозное), доступом по классу. (2) food/dishes_meals.csv: хлебы, каши, кисель, квас, пиво, мёд-напиток, похлёбки; процесс приготовления (ссылка на crafts processes), трапезы в день по классу и сезону, постные/скоромные дни (из календаря), способы хранения (сушка, соление, копчение, квашение, погреб/ледник), состояния порчи, голодные заменители 1230 г., запахи/вкусы для прозы, порции и связь с телом; household_food_stock профили по типу двора и сезону. Источники: master food_system (ingredients 191, recipes 268, recipe_steps 1164, preservation 44, drinks 17, meal_sets 21, religious_food_rules 12, food_seasonality 5508, famine_1230) как кандидаты с проверкой; WK food-processes, grain-processing, static-food-bio-gap-v1, static-food-contact-v1, place-wet-food-processes-v1, place-milk-dye-processes-v1; temporal-v4 правило голода 1230. Исследовать: археоботаника Новгорода, берестяные грамоты о еде (A/B); рецепты master на 220/268 реконструкция — пометить C."
+    },
+    {
+      "id": "economy-trade-measures",
+      "name_ru": "Экономика: денежные единицы, меры, товары, торг, ценовые полосы",
+      "collector_brief_ru": "(1) economy/currency_units.csv: гривна, куна, ногата, резана, векша (проверить соотношения для XIII в.), серебряный слиток-гривна, меха и ткань как платёж; как единицы счёта и как предметы (связь с items). (2) economy/measures.csv: меры веса, сыпучие, длины, ткани, воска, соли, мёда (пуд, берковец, кадь, локоть, сажень — проверить период). (3) economy/trade_goods.csv и markets.csv: экспорт (меха, воск, мёд, кожи), импорт (сукно, соль, металлы, вино — проверить, пряности — проверить), практика торга (лавки, весы, торг, кредит, залог, долговые записи на бересте), купеческие объединения, пошлины, иноземные дворы. (4) economy/price_bands.csv: только относительные полосы с основанием; цены MASTER не использовать (решение владельца). Источники: WK trade-economy-gap-closure-v1, trade-economy-batch-03-gap-closure-v1; master currencies 13, units_and_measures 19, item_origin_models, income_models (кандидаты); matcult TRD*-предметы (гривна-слиток, весы, иноземные монеты); rus13tpl goods_prices (65 относительных полос, draft) и trade_rules (draft); v17 quantity_unit_definitions 5, v5 56. Исследовать: денежно-весовая система (Янин, B)."
+    },
+    {
+      "id": "social-strata-law",
+      "name_ru": "Сословия, правовые статусы, право и суд, управление",
+      "collector_brief_ru": "(1) social/strata_roles.csv: дополнить 71 роль (51 approved / 20 caution) проверенными кандидатами — тиун, вирник, мечник, бирич/подвойский, закуп, рядович, холоп, изгой, смерд, скоморох, женские роли сверх хозяйки/вдовы/повитухи — с рангом, свободой/зависимостью, правоспособностью, правами на имущество/передвижение/оружие, весом показаний, доступом к местам, повинностями/долгами; маппинг на archetype-таблицы (роль без маппинга не проходит фильтр v17). Новые строки — отдельным файлом, pinned TSV не править. (2) law/offences_sanctions.csv, law/procedures.csv, law/institutions.csv: правонарушения и взыскания по Русской Правде (вира, продажа, урок, поток и разграбление), процедуры (послухи/видоки, свод, рота, испытание железом/водой), кражи, побои, долг, холопство, находка чужой вещи и возврат (стыковка с D14), кто реагирует на увиденное преступление; вече, князь, посадник, тысяцкий, архиепископ, сотские/старосты, юрисдикция по месту и лицу, статус гостей-иноземцев. Источники: region_social_roles TSV, world-base-seeds/*.csv, WK residual-government-law-v1/v2, residual-law-norms-v1, social-institutions, social-norms, macro-novgorod-human-society-v4; master legal_rules, social_role_profiles (кандидаты); audit status_rules (draft); rus13tpl property_rules (draft). Исследовать: текст Пространной редакции Русской Правды (A, публичное издание с URL), Янин о посадничестве (B)."
+    },
+    {
+      "id": "occupations-activities",
+      "name_ru": "Занятия, runtime-профили NPC, носимые наборы, наблюдаемая деятельность",
+      "collector_brief_ru": "(1) occupations/occupations_additions.csv: недостающие ремёсла (ювелир-литейщик, косторез, токарь, скорняк, кожевник отдельно от сапожника, красильщик, верёвочник/сетевяз, замочник, щитник/лучник/стрельник, каменщик и известежог, иконописец, пивовар/медовар, мясник, хлебник, рыботорговец, пряха/ткачиха, кормилица — каждое проверить по WK/археологии) и материалы для перевода 31 caution-занятия в approved: все обязательные поля approved-npc-runtime-basis.js (4 сезонных расписания, how_to_materialize_*, typical_*, common_fears/goals, llm_adaptation_rules, llm_forbidden_uses). Pinned TSV не править: новые строки отдельно, перепин — задача координатора. (2) npc/runtime_profiles: для каждого одобренного занятия профили npc_binding, body, activity, routine, clothing (из clothing-appearance), item_inventory, observable_activity (русские тексты для рассказчика по сезону и времени дня) + G4 composition entries (weights положительные целые по правилу). Сейчас 9 профилей / 8 занятий из 37. (3) occupations/carried_inventories.csv: что человек носит при себе по роли/занятию/сезону (master inventory_profiles 26, profession_resource_profiles, rus13tpl occupation_item_profiles 68 — draft), с владельцем actor и приметами. (4) activities/: цепочки действий (master activities 2442 с prev/next) → region_activity_profiles после сверки. Источники: occupations/roles TSV, pr98 m2c-npc (candidate, runtime-bindings), procedural-scene-v2 npc-equipment-v1, temporal-v4 activity_categories 6, rus13tpl npc_archetypes (draft), master professions 479."
+    },
+    {
+      "id": "households-psychology-speech",
+      "name_ru": "Двор и семья, психология NPC, речь и этикет",
+      "collector_brief_ru": "(1) households/composition_profiles.csv: состав двора по роли, достатку и типу места (размер, поколения, слуги, зависимые, лимиты для генерации и проверки биографии), термины родства, брак и приданое, вдовство, сироты, наследование, работа детей и стариков, разделение труда по полу. Основа: v6 g3 household_estimate/household_mix, rus13tpl household_wealth_profiles 23 (draft), audit status_rules (draft), WK family-social-context, reconstructed-human-lifeways-v1, reconstructed-ordinary-lifeways-v1. (2) npc/psychology_profiles.csv (D1): распределения темперамента и ценностей по роли/занятию, мотивы, риск-черты (кража, насилие, свидетель), начальное настроение по обстоятельствам — только закрытые значения для выбора кодом по seed; шкалу выбирает владелец (вынести вопрос), confidence как правило C с заявленным правилом вывода из TSV-полей (attitude_*, violence_risk, theft_risk, common_goals/fears). (3) speech/address_forms.csv: обращения по паре статусов (к боярину, священнику, мастеру, чужаку, родне), приветствия, прощания, клятвы, благословения, брань и её правовой вес, речь слуги/крестьянина/купца/клирика, языки общения с иноземцами; seed манеры речи по роли. Источники: берестяные грамоты (формулы «поклон от … к …», A, gramoty.ru), Зализняк «Древненовгородский диалект» (B), WK residual-language-education-v1/v2, static-memory-social-v1, foundations-mind-society; TSV typical_speech_register."
+    },
+    {
+      "id": "names-peoples",
+      "name_ru": "Имена, топонимы, народы и происхождение",
+      "collector_brief_ru": "(1) names/personal_names.csv: крестильные (календарные) и мирские имена, отчества (-ич, -ов), прозвища, женские именования через мужа/отца; пол, народ, статус, частотный класс, источник (берестяные грамоты A, летопись A, словарь Тупикова B). Кандидат onomastics pr98 (54 имени, pending) и rus13tpl npc_name_pools (35/20/15, draft) — сверить и расширить. (2) names/place_names.csv: сёла, реки, концы (Неревский, Людин, Загородский, Славенский, Плотницкий), улицы и урочища — из v6 naming_register (911, со статусом) и летописи. (3) peoples/origins.csv: новгородцы, псковичи, суздальцы/владимирцы, смоляне, карелы, ижора, водь, чудь/эсты, весь, емь/сумь, готландцы, немцы (Любек), скандинавы — язык, вера, типичные занятия и места, облик и одежда (costume foreigner_profiles 10), правовой статус гостя, частота по place_family и сезону навигации, пулы имён. Исследовать: пулы имён для финно-угорских, балтийских, скандинавских и немецких приезжих (B/C) — сейчас 0."
+    },
+    {
+      "id": "time-calendar-church",
+      "name_ru": "Календарь, праздники и посты, торговые дни, расписания, церковная практика",
+      "collector_brief_ru": "(1) time/calendar_1230_1250.csv: юлианский календарь, неподвижные праздники и посты, подвижные (Пасха, Великий пост, Петров пост) — вычислить детерминированным скриптом пасхалии на 1230–1250, не руками; торговые дни, сельскохозяйственный, рыболовный и охотничий годовой цикл (пахота, сенокос, жатва, молотьба). (2) time/schedules_routines.csv: распорядки дня по роли и типу дня (обычный, зима, распутица, лето, осень, торговый, церковный, кризис) — из TSV daily_schedule_*, расписания доступа мест (D5: не условие броска наличия). (3) religion/church_practice.csv: приходская и монашеская жизнь, клир, службы и звоны по часам, таинства и обряды (крещение, венчание, погребение, исповедь, поминовение), милостыня, паломничество; народные верования и обереги с явной confidence; латинская церковь иноземных купцов. Источники: temporal-v4 (calendar 1, place_access_schedules 1, npc_temporal_profiles 2, activity_categories 6), occupations TSV расписания, master religious_food_rules 12, WK social-institutions, reconstructed-public-world-v1, rus13 region_profile (draft). Проверить блокер: temporal_authoring_records в v17 = 0, а старт требует календарную запись."
+    },
+    {
+      "id": "history-events-knowledge",
+      "name_ru": "События 1230–1250, исторические лица, слухи и знание",
+      "collector_brief_ru": "(1) history/events.csv + event_phases.csv: 35 событий / 175 фаз из audit historical_timeline (draft LLM) проверить построчно по Новгородской первой летописи (перевод Michell & Forbes 1914 и издание Насонова 1950, A) — видимые признаки, слухи, эффекты на дороги/торг/власть/NPC, что игрок может знать; привязки к графу v6 перевести на узлы v17 где есть. (2) history/figures.csv: исторические лица только как authority-записи (LLM их не выдумывает): князья, посадники, тысяцкие, архиепископ, с датами должностей; 12 key NPC из status_rules/key_npc_seeds сверить. (3) knowledge/rumors_knowledge.csv: шаблоны слухов (источник, носитель, искажение), профили знания по роли (местное, дорожное, торговое, правовое), грамотность по роли, жанры берестяных грамот как пулы текста (стык с пулами опознавательного текста D9). Источники: audit timeline и status_rules, rus13tpl rumor_templates, common_knowledge, route_knowledge_rules, deferred_event_templates (все draft), world_base historical_anchors 28 (draft), temporal-v4 famine rule, corpus historical_events_and_figures.txt. В v17 historical_events захардкожен [] — данным нужен код."
+    },
+    {
+      "id": "transport-health-recreation",
+      "name_ru": "Транспорт и путь, здоровье и тело, досуг",
+      "collector_brief_ru": "(1) transport/: суда (однодеревка, набойная лодка, плот, ладья — проверить), сани, телеги, верховые и вьючные лошади, перевозы, броды, мосты, волоки, зимник по льду; скорость/время по способу и сезону, опасности (лёд, половодье, разбой), проводники, ночлег и гостеприимство, кормление путника, дорожные вести; восстановить потерянные в v17 traversal risk/hazard/check строки v16. (2) health/: травмы и их течение, болезни и эпидемии (в т.ч. голодные 1230–31), переохлаждение/жара/сырость, голод, жажда, усталость, беременность/роды/послеродовое, детство, старость, увечья; практика ухода эпохи и кто её оказывает (знахари, повитухи, монахи) — как практика, не медицинский совет; признаки на теле для прозы. (3) recreation/: игры (шахматы, тавлеи — проверить, кости, бабки, детские игрушки), инструменты (гусли, дудки, рожки), песни и сказывание, братчины, скоморохи — где и когда, звуки. Источники: route_templates 21, spatial_v3 movement costs 9, rus13tpl route_season_modifiers 29 (draft), audit route_guidance 16; WK biology_physiology 476, macro-universal-health-lifecycle-v3, reconstructed-healer-practice-v1, residual-postpartum-v1, static-exposure-*, gameplay-physiology-v3; matcult игрушки/инструменты. Исследовать: WK семейства hospitality-travel, recreation-oral-culture, sickness-disability отмечены missing (partial)."
+    }
+  ],
+  "domains": [
+    {
+      "id": "place_families",
+      "name_ru": "Семейства мест и слои",
+      "group": "places-binding",
+      "entities_ru": "44 семейства мест WK place-first (двор, улица, торг, пристань, берег, пойменный луг, пашня, лес хвойный/смешанный/широколиственный, опушка, болото, баня, кузница, мельница, овин, погост, монастырский двор, дорога, мост, перевоз, лесная тропа, огород, пастбище, зимняя переправа, рыбацкий стан, интерьер жилья, церкви, мастерской и др.) с применимыми слоями M2c и фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk к шаблонам и типам узлов.",
+      "key_fields": [
+        "pf_id",
+        "name_ru",
+        "name_en",
+        "wk_family_ref",
+        "layers_applicable[]",
+        "facet_ground",
+        "facet_use_people",
+        "facet_senses_traces",
+        "facet_risks_upkeep",
+        "landscape_template_refs[]",
+        "land_use_template_refs[]",
+        "place_template_refs[]",
+        "water_body_template_refs[]",
+        "v6_g4_location_types[]",
+        "spatial_v3_scene_template_refs[]",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: place_families (или universal_categories domain=place_family)",
+        "world_base.place_templates",
+        "world_base.land_use_templates",
+        "world_base.landscape_templates",
+        "world_base.water_body_templates",
+        "WK place-first-cartography.environment_families"
+      ],
+      "consumers": [
+        "все пулы наличия (ключ place_family_id)",
+        "@rus/materialization g4-natural-baseline (через профили G4)",
+        "spatial_v3 scene_materialization_profiles"
+      ],
+      "existing_sources": [
+        "wk:place-first-cartography.json — 44 семейства, 634 WK refs, без статуса и весов",
+        "wk:category-cartography.json — 304 семейства, 14 missing (partial)",
+        "world_db landscape 70 / land_use 45 / place 64 / water 41 — draft",
+        "pr98:regional-environment/candidates/novgorod-1230-1250-v1/candidate.json — 115 строк, pending_independent_approval",
+        "v6tsv g4_locations — 198 g4_location_type, draft/usable_with_caution",
+        "pr98:spatial-v3 datasets — 17 scene templates, approved"
+      ],
+      "gaps_ru": "Нет единого реестра семейств, связанного и с шаблонами world_base, и с типами G4 v6, и со scene templates v17. Фасеты семейств в WK есть, но без статуса. Шаблоны world_db — draft.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: 44 id из place-first-cartography присутствуют ровно один раз; каждый pf_id имеет ≥1 ссылку на landscape или place template и все ссылки резолвятся в seed/кандидате; каждый из 17 scene templates и 198 g4_location_type покрыт ≥1 pf_id или явно помечен not_applicable."
+    },
+    {
+      "id": "place_binding",
+      "name_ru": "Привязка узлов G4/G5 к типам мест",
+      "group": "places-binding",
+      "entities_ru": "Для 32 G4 и 195 G5 стартовой территории v17: семейство места, ландшафт, землепользование, тип места, водоём; основа для выбора пулов при первом прибытии.",
+      "key_fields": [
+        "node_ref",
+        "node_level (G4|G5)",
+        "pf_id",
+        "landscape_template_id",
+        "land_use_template_id",
+        "place_template_id",
+        "water_body_template_id",
+        "binding_basis",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.g4_materialization_bindings / spatial_v3_g4_expansion_profiles (через CR)",
+        "new: node_place_family_bindings"
+      ],
+      "consumers": [
+        "@rus/materialization (выбор пулов наличия)",
+        "runtime-catalog g4-natural-catalog",
+        "spatial-v3-world-base-reader (узлы)"
+      ],
+      "existing_sources": [
+        "pr98:m2c-natural/candidate.json — authoring_axes landscape/land_use/function для 32 G4, candidate_approval_pending",
+        "pr98:spatial-v3/candidates/m2c-g4-expansion-v1 — 25 G5 generation templates",
+        "pr98:m2c-nature-coverage.json — 128 региональных связей (draft)",
+        "v17 readback — 32 G4 / 195 G5 / 908 connection bindings"
+      ],
+      "gaps_ru": "G5 не привязаны к семействам мест; G4 привязаны только осями authoring, не к place_family; региональные связи — draft.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: все 32 G4 и 195 G5 из v17 readback/spatial-v3 datasets имеют ровно одну строку; pf_id существует в place_families; для каждой строки binding_basis ссылается на существующий файл+id."
+    },
+    {
+      "id": "presence_rules",
+      "name_ru": "Единый носитель наличия (природа, вещи, люди)",
+      "group": "places-binding",
+      "entities_ru": "Правила наличия категории в области: вероятность, лимит количества, допустимые сезоны, класс обновления none|season; разыгрываются кодом один раз при первом прибытии (D3/D4/D6).",
+      "key_fields": [
+        "pr_id",
+        "scope_kind (place_family|g4|g5|region)",
+        "scope_ref",
+        "region_id",
+        "category_ref",
+        "frequency_class",
+        "probability_ppm",
+        "probability_rule_ref",
+        "count_limit",
+        "allowed_seasons[]",
+        "refresh_class",
+        "source_refs"
+      ],
+      "target_tables": [
+        "new: presence rule table по контракту §8.1 (presence_probability_ppm, count_limit, seasons) — DDL нет, нужен CR + Contract Auditor",
+        "world_base.region_category_options.weight (сейчас все =1)"
+      ],
+      "consumers": [
+        "@rus/materialization (бросок первого прибытия, D3)",
+        "@rus/turn / party-store (сохранение исходов)"
+      ],
+      "existing_sources": [
+        "pr98:m2c-natural/nature-richness-candidate-v1.json — веса 8/4/2/1, 34 строки, pending",
+        "world_db region_category_options — 362/404 строки, все weight=1",
+        "master item_location_links — 12 997 связей с классом частоты (кандидат)",
+        "audit novgorod_region_generation_limits_v1.json — бюджеты на узел (draft LLM)",
+        "pr98:m2c-npc composition bindings — min/max NPC на G4"
+      ],
+      "gaps_ru": "Носитель не существует (ни DDL, ни данных). Правило перевода класса частоты в вероятность не утверждено. Веса категорий все равны 1.",
+      "fill_method": "rule",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая строка резолвит category_ref и scope_ref; probability_ppm = функция(frequency_class) по одному заявленному правилу (проверка пересчётом); count_limit ≥1; allowed_seasons ⊂ словаря календаря; refresh_class ∈ {none, season}; нет дубликатов (scope, region, category)."
+    },
+    {
+      "id": "category_registry",
+      "name_ru": "Реестр категорий кода для новых доменов",
+      "group": "places-binding",
+      "entities_ru": "Категории и подкатегории, которые задаёт код: flora, fauna, food, garment, behavior, motive, knowledge, activity, place_family, mark (по контракту §4), сверх имеющихся item/container/actor_appearance/spatial.",
+      "key_fields": [
+        "category_id",
+        "domain",
+        "facet",
+        "stable_code",
+        "parent_category_id",
+        "name_ru",
+        "name_en",
+        "source_domain_file",
+        "status"
+      ],
+      "target_tables": [
+        "world_base.universal_categories",
+        "world_base.universal_category_relations",
+        "world_base.category_labels",
+        "world_base.region_category_options"
+      ],
+      "consumers": [
+        "runtime-catalog (catalog_import_records)",
+        "ordinary materialization (рельсы категорий для LLM)",
+        "actor-profile-catalog"
+      ],
+      "existing_sources": [
+        "v17 universal_categories 465 (item, container, actor_appearance, spatial) — approved",
+        "main:data/knowledge-source/imports/item-container-120-v5 — 366 категорий, manifest pending_approve_all_120",
+        "wk:category-cartography.json — 304 семейства"
+      ],
+      "gaps_ru": "Нет доменов flora, fauna, food, garment, behavior, motive, knowledge, activity. Обычные предметы не связаны с категориями (ordinary materialization без шаблона).",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт собирает категории из выходов всех групп: stable_code уникален в домене, каждый parent существует, нет циклов, каждая строка пулов других доменов ссылается на существующую категорию."
+    },
+    {
+      "id": "place_generation_limits",
+      "name_ru": "Лимиты генерации по месту",
+      "group": "places-binding",
+      "entities_ru": "Бюджеты материализации по типу места и узлу: дворы, постоянные жители, значимые и скрытые предметы, ёмкости, якоря G5.",
+      "key_fields": [
+        "pgl_id",
+        "scope_kind",
+        "scope_ref",
+        "households_min/max",
+        "residents_min/max",
+        "items_notable_max",
+        "containers_max",
+        "g5_anchor_max",
+        "rule_ref",
+        "source_refs"
+      ],
+      "target_tables": [
+        "world_base.place_generation_limits",
+        "world_base.region_place_generation_rules"
+      ],
+      "consumers": [
+        "@rus/materialization (ограничение count_limit)",
+        "нет прямого потребителя в v17 — нужна проводка"
+      ],
+      "existing_sources": [
+        "v6tsv g3_places / g3_scale_register — household_estimate, household_mix (draft/usable_with_caution)",
+        "audit novgorod_region_generation_limits_v1.json — 11 359 записей (draft LLM, граф v6)",
+        "main place_generation_limits_v2_economic TSV (агрегат)",
+        "world_db place_generation_limits = 0"
+      ],
+      "gaps_ru": "Таблица пуста; черновые лимиты сгенерированы LLM на граф v6, не на узлы v17.",
+      "fill_method": "rule",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: лимиты пересчитываются по заявленному правилу из household_estimate/household_mix; min ≤ max; каждый scope_ref существует; сверка с audit-черновиком выдаёт отчёт расхождений, а не копирует его."
+    },
+    {
+      "id": "flora_trees_shrubs",
+      "name_ru": "Деревья, кустарники, кустарнички",
+      "group": "flora-trees-shrubs",
+      "entities_ru": "Сосна, ель, берёза повислая и пушистая, осина, ольха чёрная и серая, липа, дуб, ясень, вяз, клён, ивы, рябина, черёмуха, лесная яблоня, лещина, можжевельник, крушина, калина, шиповник, волчеягодник, багульник, вереск, мирт болотный и др. — с местообитаниями, фенологией, признаками и использованием.",
+      "key_fields": [
+        "fl_id",
+        "name_ru",
+        "name_old_ru",
+        "name_lat",
+        "life_form",
+        "moisture",
+        "soil",
+        "phenology_by_season{}",
+        "winter_look",
+        "perceptual_cues",
+        "uses[]",
+        "timber_quality",
+        "hazards",
+        "yield_unit",
+        "source_refs",
+        "confidence",
+        "habitat_presence[pf_id, season, frequency_class]"
+      ],
+      "target_tables": [
+        "new: flora_taxa + flora_habitat_presence (CR)",
+        "world_base.universal_categories domain=flora",
+        "presence_rules",
+        "WK claims (пересборка бандла)"
+      ],
+      "consumers": [
+        "g4-natural-baseline member_selection (считается, но не показывается — нужен код)",
+        "natural_presentation_texts (фразы на член пула)",
+        "WK materialization_support/semantic_resolution",
+        "finite sources (древесина, береста, лыко)"
+      ],
+      "existing_sources": [
+        "wk:residual-tree-properties-v1.json (4/12), wild-flora.json, gameplay-flora-ecology-v3.json, gameplay-plant-identification-v3.json, static-plant-use-v1.json, static-plant-context-b06.json, place-plant-frost-context-v1.json — approved; ≈10 деревьев, 3 кустарника",
+        "main:world-knowledge/research/population-wild-flora-modern.md — research",
+        "pr98:m2c-natural/nature-richness-candidate-v1.json — флора 13 строк, pending",
+        "world_db landscape_templates.dominant_vegetation — свободный текст, draft"
+      ],
+      "gaps_ru": "Нет обилия и присутствия по местам, нет календаря фенофаз; дуб, ясень, осина только как материал; вяз, клён, рябина, черёмуха, можжевельник и вересковые не покрыты.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый таксон имеет ≥1 habitat_presence с существующим pf_id и frequency_class ∈ {8,4,2,1}; source_refs резолвятся (WK claim id в runtime-bundle.json или URL); lat уникален; нет таксонов из denylist; каждое лесное семейство мест имеет ≥5 древесных таксонов на сезон."
+    },
+    {
+      "id": "flora_herbs_grasses_mosses",
+      "name_ru": "Травы, злаки, осоки, папоротники, мхи, лишайники, водные растения",
+      "group": "flora-herbs-berries-mushrooms",
+      "entities_ru": "Луговые и лесные травы, злаки и осоки, папоротники и хвощи, мхи (сфагнум, зелёные), лишайники (кладония, уснея и др.), водные и прибрежные (рогоз, тростник, камыш, кувшинка, кубышка, пушица), ядовитые (болиголов, лютики, вех — проверить).",
+      "key_fields": [
+        "fl_id",
+        "name_ru",
+        "name_lat",
+        "life_form",
+        "habitat_presence[pf_id, season, frequency_class]",
+        "phenology_by_season{}",
+        "perceptual_cues",
+        "uses[] (корм, подстилка, кровля, конопатка, краситель, лечебная практика эпохи)",
+        "toxicity",
+        "lookalikes",
+        "yield_unit",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: flora_taxa + flora_habitat_presence",
+        "presence_rules",
+        "WK claims"
+      ],
+      "consumers": [
+        "g4-natural-baseline слои ground_cover / riparian_vegetation",
+        "natural_presentation_texts",
+        "finite sources (тростник, мох)",
+        "WK"
+      ],
+      "existing_sources": [
+        "wk: ≈9 трав, сфагнум только по пыльце, тростник/камыш — approved",
+        "main:world-knowledge/research/population-wild-flora-modern.md — пушица, рогоз, кувшинка only-research",
+        "pr98:nature-successor-candidate-v2 — 11 таксонов/гильдий на 32 G4 (в v17)"
+      ],
+      "gaps_ru": "Лишайников 0; мхи и водные почти не покрыты; нет присутствия по местам и сезонам.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждое болотное, луговое, прибрежное и лесное семейство мест имеет ≥8 таксонов нижнего яруса на лето и ≥3 видимых зимой/под снегом; все ссылки резолвятся; ядовитые таксоны имеют toxicity и lookalikes."
+    },
+    {
+      "id": "flora_berries_mushrooms",
+      "name_ru": "Ягоды и грибы",
+      "group": "flora-herbs-berries-mushrooms",
+      "entities_ru": "Ягоды: черника, брусника, клюква, морошка, голубика, малина, земляника, костяника, смородина, толокнянка (двойник); грибы съедобные и ядовитые с двойниками (белый, подберёзовик, подосиновик, грузди, рыжики, лисички, опята; мухоморы, бледная поганка — проверить виды).",
+      "key_fields": [
+        "fl_id",
+        "name_ru",
+        "name_lat",
+        "kind (berry|fungus)",
+        "habitat_presence[pf_id, season, frequency_class]",
+        "ripening_months",
+        "edibility",
+        "lookalikes",
+        "preparation_needed",
+        "perceptual_cues",
+        "yield_unit",
+        "food_ingredient_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: flora_taxa",
+        "presence_rules (refresh_class=season)",
+        "food_ingredients (ссылка)",
+        "WK claims"
+      ],
+      "consumers": [
+        "сбор игроком (ordinary materialization / finite sources)",
+        "food домен",
+        "WK conversation/npc_decision"
+      ],
+      "existing_sources": [
+        "wk: малина, брусника, черника, земляника; правила «похожесть ≠ съедобность», микотоксины — approved",
+        "master food_system ingredients + food_seasonality (месяцы) — кандидат",
+        "research md: клюква, морошка, голубика — only-research"
+      ],
+      "gaps_ru": "Названных видов грибов в WK 0; болотные ягоды только в research; нет месяцев созревания в одобренных данных.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: у каждой ягоды/гриба ripening_months ⊂ 1..12 и allowed_seasons согласованы с календарём; у каждого съедобного гриба с ядовитым двойником есть ссылка на двойника; refresh_class=season."
+    },
+    {
+      "id": "cultivated_plants",
+      "name_ru": "Полевые, огородные культуры и сорняки",
+      "group": "flora-herbs-berries-mushrooms",
+      "entities_ru": "Рожь, ячмень, овёс, пшеница, просо, горох, бобы, лён, конопля, репа, капуста, лук, чеснок, хмель, огурец (проверить датировку), сорные полевые (василёк, куколь, марь — проверить); поле/огород по сезону (всходы, колошение, жнивьё, пар, озимь).",
+      "key_fields": [
+        "fl_id",
+        "name_ru",
+        "name_lat",
+        "crop_kind",
+        "sowing_period",
+        "harvest_period",
+        "field_look_by_season{}",
+        "place_family_refs",
+        "uses[]",
+        "archaeobotanical_attestation",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: flora_taxa",
+        "presence_rules",
+        "food_ingredients",
+        "WK claims"
+      ],
+      "consumers": [
+        "слои arable_field / orchard_garden",
+        "food",
+        "calendar (полевые работы)",
+        "occupations (пахарь)"
+      ],
+      "existing_sources": [
+        "wk: 10 культур (рожь, ячмень, овёс, просо, лён, конопля, капуста, лук; кукуруза и соя только как пример заморозков — не для Новгорода) — approved",
+        "wk:household-agriculture.json, grain-processing.json",
+        "master food ingredients — кандидат"
+      ],
+      "gaps_ru": "Пшеница и бобы только в research; сорняки и облик поля по сезонам отсутствуют.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: кукуруза/соя/картофель/подсолнечник/томат отсутствуют (denylist); каждая культура имеет sowing/harvest в календарных периодах и ≥1 archaeobotanical_attestation или confidence C с note."
+    },
+    {
+      "id": "fauna_mammals",
+      "name_ru": "Дикие звери",
+      "group": "fauna-mammals-birds",
+      "entities_ru": "Лось, кабан, косуля, северный олень (проверить для XIII в.), медведь, волк, лиса, рысь, росомаха (проверить), куница, соболь (проверить ареал), горностай, ласка, хорь, норка, выдра, бобр, белка, заяц-беляк и русак (проверить), ёж, крот, землеройки, мыши и полёвки, летучие мыши — с признаками, сезонами, промысловой ценностью.",
+      "key_fields": [
+        "fa_id",
+        "name_ru",
+        "name_lat",
+        "class",
+        "habitat_presence[pf_id, season, frequency_class]",
+        "activity_time",
+        "season_states{}",
+        "signs (tracks, droppings, feeding, dens, sounds, smell)",
+        "behaviour_to_humans",
+        "danger_level",
+        "products[]",
+        "hunting_method_refs",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: fauna_taxa + fauna_habitat_presence",
+        "presence_rules",
+        "world_base.landscape_templates.typical_animals (0 значений)",
+        "WK claims"
+      ],
+      "consumers": [
+        "g4-natural-baseline слой fauna (successor)",
+        "natural_presentation_texts (следы, звуки)",
+        "WK",
+        "occupations (охотник)"
+      ],
+      "existing_sources": [
+        "wk:fauna-mammals.json (16/57), fauna-ecology.json (26/79), fauna-supplement.json (2/9) — approved; 11 диких зверей",
+        "main:world-knowledge/research/population-fauna-ecology-modern.md, fauna-mammals-modern/winter — research",
+        "pr98:m2c-nature-coverage.json — 42 концепта против 32 G4",
+        "v17: только лось и бобр как следы"
+      ],
+      "gaps_ru": "Нет присутствия и обилия по местам и сезонам; мелкие звери и пушные (куница, горностай) почти не покрыты.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый таксон имеет signs хотя бы одного вида и ≥1 habitat_presence; каждое лесное и прибрежное семейство мест имеет ≥6 таксонов с признаками на каждый сезон; зимние записи не содержат спящих в спячке зверей в активном состоянии."
+    },
+    {
+      "id": "fauna_birds",
+      "name_ru": "Птицы",
+      "group": "fauna-mammals-birds",
+      "entities_ru": "Журавль, аист (проверить), цапля, лебедь, гуси и утки, кулики, чайки, глухарь, тетерев, рябчик, куропатка, дятлы, кукушка, врановые, хищные (ястреб, сокол, орлан, коршун) и совы, певчие (соловей, дрозды, зяблик, синицы, жаворонок), ласточки, стрижи, воробьи; перелёт по сезонам, голоса.",
+      "key_fields": [
+        "fa_id",
+        "name_ru",
+        "name_lat",
+        "habitat_presence[pf_id, season, frequency_class]",
+        "migration_status_by_season",
+        "voice_description",
+        "activity_time",
+        "nesting",
+        "game_value",
+        "falconry_relevance",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: fauna_taxa + fauna_habitat_presence",
+        "presence_rules",
+        "WK claims"
+      ],
+      "consumers": [
+        "слой audible_context и fauna",
+        "natural_presentation_texts (акустика)",
+        "g6_acoustic_baselines",
+        "WK"
+      ],
+      "existing_sources": [
+        "wk: 6 птиц (кряква, неясыть, большая синица, курица, гуси, голубь) — approved",
+        "wk:place-garden-birds-dyes-v1.json — approved",
+        "research: хищные/соколиная охота не дошли"
+      ],
+      "gaps_ru": "Птиц всего 6; нет перелётного календаря и голосов — главный источник звуков для прозы.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: ≥40 таксонов птиц; у каждого voice_description и migration_status для всех 4 сезонов; каждое семейство мест под открытым небом имеет ≥3 слышимых вида в каждом сезоне."
+    },
+    {
+      "id": "fauna_fish",
+      "name_ru": "Рыбы и водные промысловые",
+      "group": "fauna-fish-invertebrates-livestock",
+      "entities_ru": "Щука, окунь, лещ, плотва, ёрш, налим, судак, сиг, снеток, сом, язь, линь, карась, угорь (проверить для бассейна), осётр/стерлядь (проверить), лосось (проверить для Волхова), раки; нерест, способ лова, места (речной канал, озеро, заводь).",
+      "key_fields": [
+        "fa_id",
+        "name_ru",
+        "name_lat",
+        "water_body_types",
+        "habitat_presence[pf_id, season, frequency_class]",
+        "spawning_period",
+        "fishing_methods[]",
+        "size_classes",
+        "food_ingredient_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: fauna_taxa",
+        "presence_rules",
+        "food_ingredients (ссылка)",
+        "WK claims"
+      ],
+      "consumers": [
+        "рыбак/лодочник NPC (m2c-npc)",
+        "food",
+        "WK",
+        "finite sources (улов)"
+      ],
+      "existing_sources": [
+        "wk: щука, лосось, угорь, окунь (окунь только по опытам) — approved",
+        "master food ingredients: ≈14 рыб — кандидат",
+        "master material_items fishing 32 — кандидат"
+      ],
+      "gaps_ru": "В WK 4 рыбы, без привязки к Ильменю/Волхову; нет нерестового календаря.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый вид резолвит ≥1 water_body_type из water_body_templates; spawning_period в календарных периодах; каждый речной/озёрный pf_id имеет ≥6 видов."
+    },
+    {
+      "id": "fauna_invertebrates_herps",
+      "name_ru": "Земноводные, пресмыкающиеся, насекомые и вредители",
+      "group": "fauna-fish-invertebrates-livestock",
+      "entities_ru": "Лягушки, жабы, тритоны, гадюка, уж, ящерица; комары, мошка, слепни, клещи, пчёлы (дикие и бортевые), осы, муравьи, бабочки, стрекозы, жуки, пиявки, жемчужница; амбарные вредители, мыши, крысы (чёрная крыса — проверить датировку), блохи, вши, клопы (проверить).",
+      "key_fields": [
+        "fa_id",
+        "name_ru",
+        "name_lat",
+        "group",
+        "habitat_presence[pf_id, season, frequency_class]",
+        "nuisance_or_danger",
+        "perceptual_cues",
+        "season_peak",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: fauna_taxa",
+        "presence_rules",
+        "WK claims"
+      ],
+      "consumers": [
+        "ощущения на месте (гнус, укусы) → natural_presentation_texts",
+        "health (укусы, паразиты)",
+        "WK"
+      ],
+      "existing_sources": [
+        "wk: 3 земноводных/гада, 12 беспозвоночных (пчела, стрекозы, комар, жемчужница…) — approved",
+        "wk:static-bee-smoke-b09.json, static-bait-b11.json — approved"
+      ],
+      "gaps_ru": "Гнус и вредители без сезонов; нет присутствия по местам.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: все летние болотные/прибрежные pf_id имеют ≥1 кровососущее; зимой нет активных летающих насекомых на открытом воздухе; ссылки резолвятся."
+    },
+    {
+      "id": "livestock_husbandry",
+      "name_ru": "Домашний скот и уход",
+      "group": "fauna-fish-invertebrates-livestock",
+      "entities_ru": "Корова, бык, мелкая лошадь, свинья, овца, коза, куры, гуси, утки, собака, кошка; облик (масть, возраст, размер), содержание (хлев, загон), корм по сезону, продукты, болезни и признаки, метки владения, пастьба и пастух; состав стада по типу двора.",
+      "key_fields": [
+        "ls_id",
+        "species_ref",
+        "name_ru",
+        "appearance_classes",
+        "housing",
+        "fodder_by_season",
+        "care_tasks_daily/seasonal",
+        "products[]",
+        "ailments[]",
+        "ownership_marks_pool_ref",
+        "herd_composition[household_type, min, max]",
+        "value_band",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: livestock_types, livestock_care_profiles, household_herd_profiles",
+        "item/content categories для продуктов",
+        "WK claims"
+      ],
+      "consumers": [
+        "двор Вихтуй и поселения (M2c старт)",
+        "occupations typical_animals",
+        "D14 приметы (метки скота)",
+        "WK"
+      ],
+      "existing_sources": [
+        "wk:agriculture-fauna.json (17), static-animal-care-traces-b05, static-animal-context-b06, static-ruminant-feed-b11, place-animal-brood-cat-hoof-v1, place-salt-poultry-processes-v1, place-young-bird-poultry-handling-v1 — approved",
+        "master material_items livestock 30 — кандидат",
+        "main:data/novgorod-region/novgorod_occupations_v1_enriched.tsv typical_animals"
+      ],
+      "gaps_ru": "Нет состава стада по двору и сезонного цикла содержания; метки владения скотом не собраны.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: нет индейки, кролика, тяжеловозов; herd_composition min ≤ max; каждый тип двора из households_kinship имеет профиль стада или явное «нет скота»."
+    },
+    {
+      "id": "natural_materials_soils",
+      "name_ru": "Природное сырьё, грунты, конечные запасы",
+      "group": "nature-materials-weather",
+      "entities_ru": "Грунты по ландшафтам и сырьё места: глина, песок, гравий, валуны, известняк (проверить), болотная руда, торф, береста, лыко, кора, смола/осмол, валежник, сушняк, плавник, тростник, мох, вода; конечный запас, инструмент, сезон доступа, признаки.",
+      "key_fields": [
+        "nm_id",
+        "name_ru",
+        "material_kind",
+        "pf_id / landscape_template_id",
+        "stock_unit",
+        "stock_rule",
+        "access_tool_refs",
+        "season_access",
+        "perceptual_cues",
+        "craft_process_refs",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "finite_source_profiles (v17 m2c-finite-source capability)",
+        "party_resource_nodes",
+        "world_base.land_use_templates",
+        "world_base.landscape_templates.soil_ground_type"
+      ],
+      "consumers": [
+        "finite sources (копание, сбор даёт только природный ресурс)",
+        "crafts processes",
+        "WK materialization_support"
+      ],
+      "existing_sources": [
+        "wk:terrain.json, static-ground-material-b05, foundations-earth (45), gameplay-granular-materials-v3, mineral-pigments, woodwork-ceramics — approved (≈300 claims)",
+        "world_db land_use_templates 45 (clay/bog_iron/peat/sand_gravel/stone/bark_bast/resin_tar/charcoal/salt) — draft",
+        "pr98:live-world-runtime-v17/m2c-finite-source-capability-candidate.json — 4 источника",
+        "master material_entities 2196 OMI — кандидат"
+      ],
+      "gaps_ru": "В runtime только 4 конечных источника; глина, песок, камень, руда, торф, кора как сырьё места отсутствуют; почв нет нигде структурированно.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый из 32 G4 имеет ≥1 грунт и ≥3 природных сырья; stock_rule вычисляет число порций по формуле; season_access согласован с календарём (мёрзлый грунт зимой)."
+    },
+    {
+      "id": "weather_climate",
+      "name_ru": "Погода, климат, свет, сезонные явления",
+      "group": "nature-materials-weather",
+      "entities_ru": "Состояния погоды с инерцией 1–3 дня, держащееся отклонение температуры, вид осадков от температуры (D7), климатологические веса по сезонам, снег, ледостав и ледоход, половодье, распутица, свет по часу и сезону.",
+      "key_fields": [
+        "wx_state_id",
+        "season_period",
+        "temperature_band",
+        "precipitation_type",
+        "wind",
+        "visibility",
+        "ground_condition",
+        "water_condition",
+        "persistence_days",
+        "transition_weights",
+        "body_state_risk",
+        "movement_effect",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "temporal_authoring_records (weather_transition_profile v2)",
+        "world_base.weather_profiles",
+        "world_base.seasonal_rules"
+      ],
+      "consumers": [
+        "@rus/environment-state (D7)",
+        "approved-initial-environment.js",
+        "narration visible_changes"
+      ],
+      "existing_sources": [
+        "main:data/world-catalogs/novgorod/temporal-v4/datasets — 6 состояний, равные веса, approved",
+        "temporal-v4/sources WEATHER_RECONSTRUCTION_DECISIONS.md, NOAA/USNO выдержки",
+        "rus13tpl novgorod_weather_season_rules_v1.json — 12 сезонных и 12 погодных профилей (draft)",
+        "wk:static-floating-weather-envelope-v1, static-weather-traces-b06 — approved"
+      ],
+      "gaps_ru": "Веса равные (не климатология), температур почти нет, v2-инерция не собрана; weather_profiles/seasonal_rules пусты.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: сумма весов переходов на состояние > 0 и целая; снег невозможен при band выше порога, дождь невозможен при сильном морозе; каждое состояние достижимо в своём сезоне; persistence_days ∈ 1..3."
+    },
+    {
+      "id": "natural_presentation_texts",
+      "name_ru": "Природные тексты для рассказчика (слои × G4 × сезон)",
+      "group": "nature-materials-weather",
+      "entities_ru": "clear_text / partial_text по 13 природным слоям для 32 G4 × 4 сезона (визуальные и акустические, громкость), плюс фразы на каждый член пула флоры/фауны для будущего показа выбранных членов.",
+      "key_fields": [
+        "npt_id",
+        "g4_ref",
+        "layer",
+        "season_period",
+        "channel (visual|acoustic)",
+        "clear_text",
+        "partial_text",
+        "loudness",
+        "member_ref (опц.)",
+        "source_refs"
+      ],
+      "target_tables": [
+        "procedural_scene_compiled_records rus.g4_natural_presentation_profile.v1",
+        "pr98 m2c-natural-presentation successor"
+      ],
+      "consumers": [
+        "presentation spatial-v3-projection → sensory_details рассказчика (сразу, без кода)",
+        "member-фразы — только после кода, рендерящего member_selection"
+      ],
+      "existing_sources": [
+        "pr98:m2c-natural-presentation/candidate.json — 32 профиля, APPROVE_M2C_NATURAL_PRESENTATION_AUTHORING_V1",
+        "pr98:m2c-natural/nature-successor-phrases-v1.json",
+        "pr98:m2c-natural-placement — 160/320 размещений",
+        "pr98:m2c-acoustic — 71 approved"
+      ],
+      "gaps_ru": "Тексты фиксированы по слою, мало сезонного разнообразия; фраз на члены пула нет; member_selection не рендерится (код).",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: для каждого G4 × сезон × применимый слой есть clear_text и partial_text; каждый текст упоминает только таксоны, присутствующие в habitat_presence этого места и сезона (проверка по словарю названий); нет анахронизмов по denylist."
+    },
+    {
+      "id": "buildings_structures",
+      "name_ru": "Типы построек и их части",
+      "group": "buildings-interiors-containers",
+      "entities_ru": "Срубные жилища (клеть, подклет, сени, курная изба с печью), баня, амбар, хлев, конюшня, овин, гумно, погреб, колодец, мастерская, лавка, церковь деревянная и каменная, монастырские постройки, стены, башни, ворота, пристань, мост, мельница; части (венцы, кровля, печь, двери, окна-волоковые), материалы, размеры, состояния, пожарный риск.",
+      "key_fields": [
+        "bt_id",
+        "name_ru",
+        "pf_id",
+        "parts[bp_id, material, size_range, count_rule]",
+        "rooms[]",
+        "condition_states",
+        "age_states",
+        "fire_risk",
+        "occupants_roles",
+        "light_smoke_smell",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.building_templates",
+        "world_base.building_layout_templates/nodes/edges",
+        "world_base.room_templates",
+        "spatial_v3_stable_structure_templates (пусто)",
+        "WK architecture_settlement"
+      ],
+      "consumers": [
+        "нет потребителя building_templates в v17 (0 ссылок в коде) — нужна проводка; сейчас окупается через scene_context стартов и WK",
+        "S1 structures capability gap"
+      ],
+      "existing_sources": [
+        "wk:approved-construction.json (20), settlement-craft.json, reconstructed-place-interiors-v1, reconstructed-place-outdoors-v1, static-historical-household-practice-v1 — approved (architecture_settlement 97)",
+        "main:data/knowledge-source/imports/item-container-120-v5 — building_templates 9, room_templates 9 (manifest pending)",
+        "matcult ARC0019 пятистенок, ARC0023 сени, ARC0024 кровля, ARC0026 погреб, ARC0027 колодец — кандидат",
+        "mia65 Засурцев — нужен OCR"
+      ],
+      "gaps_ru": "Нет шаблонов зданий с перечнем частей и размерами; v5 — лишь 9 крупных комплексов.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая часть ссылается на материал из natural_materials_soils или items; size_range min ≤ max; каждое жилое/хозяйственное семейство мест имеет ≥1 тип постройки; анахронизмы (кирпичные избы, трубы-дымоходы для курных изб, стекольные окна в крестьянских избах) отсутствуют."
+    },
+    {
+      "id": "settlement_form",
+      "name_ru": "Облик поселения и двора",
+      "group": "buildings-interiors-containers",
+      "entities_ru": "Планировка усадьбы и двора, улица с деревянной мостовой и водоотводом, заборы (тын, плетень), концы и улицы Новгорода, сельское поселение и погост, расположение построек и огорода.",
+      "key_fields": [
+        "sf_id",
+        "settlement_kind",
+        "yard_layout[]",
+        "street_elements[]",
+        "fence_types",
+        "building_mix[bt_id, count_rule]",
+        "pf_ids",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.place_templates (settlement_*)",
+        "g5_generation_templates (layout)",
+        "WK claims"
+      ],
+      "consumers": [
+        "scene_context стартов (Вихтуй, Заостровье)",
+        "G5 генерация",
+        "WK"
+      ],
+      "existing_sources": [
+        "v6tsv g3_places household_mix — draft",
+        "wk:civic-space.json, place-community-environments-v1 — approved",
+        "world_db place_templates rural/urban_settlement — draft"
+      ],
+      "gaps_ru": "Нет структурированного состава построек по типу поселения/двора.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый bt_id существует; count_rule согласован с household_mix; каждый settlement_kind связан с place_template."
+    },
+    {
+      "id": "interiors_scenes",
+      "name_ru": "Интерьеры и сцены",
+      "group": "buildings-interiors-containers",
+      "entities_ru": "66 сцен-интерьеров (жилая клеть, мастерская, амбар, лавка, церковь и др.): обязательное, допустимое и запрещённое содержимое, количества, правила расстановки, мебель, свет, дым, запах.",
+      "key_fields": [
+        "sc_id",
+        "name_ru",
+        "pf_id",
+        "bt_id",
+        "required_items[]",
+        "allowed_items[frequency_class]",
+        "forbidden_items[]",
+        "quantity_rules",
+        "placement_rules",
+        "furniture[]",
+        "ambience (light, smoke, smell, sound)",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "spatial_v3_scene_templates (v3 интерьеры)",
+        "g5_minilocation_templates",
+        "presence_rules (scope=scene)",
+        "container_content_profiles"
+      ],
+      "consumers": [
+        "O2a ambient items / O2b container contents (capability gaps)",
+        "scene_context",
+        "visible_objects рассказчика"
+      ],
+      "existing_sources": [
+        "matcult scenes.csv — 66 сцен (только здесь), кандидат",
+        "wk:reconstructed-place-interiors-v1 — approved",
+        "rus13tpl g5_scene_templates_v1.json — 198 (draft)"
+      ],
+      "gaps_ru": "Сцены не привязаны к place_family и шаблонам v17; ссылки на предметы по старым id (GM/SCN/OMI).",
+      "fill_method": "import",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: все 66 сцен перенесены; каждая ссылка на предмет резолвится в items (через crosswalk); required ∩ forbidden = ∅; каждое интерьерное семейство мест имеет ≥1 сцену."
+    },
+    {
+      "id": "containers_contents",
+      "name_ru": "Ёмкости и профили содержимого",
+      "group": "buildings-interiors-containers",
+      "entities_ru": "Сундуки, короба, берестяные туеса, бочки, кади, ушаты, корзины, мешки, горшки, корчаги, ямы и погреба; ёмкость, запор, доступ, переносимость, совместимое содержимое, профили содержимого по месту (амбар, погреб, мастерская, лавка, лодка), правило первого открытия.",
+      "key_fields": [
+        "ct_id",
+        "name_ru",
+        "container_category",
+        "capacity_band",
+        "closure",
+        "lock",
+        "portability",
+        "compatible_content_categories",
+        "content_profiles[place_family, entries[category, frequency_class, qty_rule]]",
+        "owner_rule_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.container_templates",
+        "world_base.container_content_profiles/entries (сейчас 4)",
+        "world_base.container_content_category_relations",
+        "g4_container_materialization_rules"
+      ],
+      "consumers": [
+        "O2b container contents (capability gap во всех 33 scope)",
+        "@rus/items-property",
+        "первое открытие (D3)"
+      ],
+      "existing_sources": [
+        "v17 container_templates 18, content entries 4 — approved",
+        "item-container-120-v5 — ~100 контейнерных категорий (pending)",
+        "rus13tpl novgorod_container_profiles_v1.json — draft",
+        "matcult scenes.csv (содержимое)"
+      ],
+      "gaps_ru": "Профили содержимого почти пусты (4 записи); нет профилей по месту.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая запись содержимого совместима с container_content_category_relations; qty_rule не превышает capacity_band; каждый контейнер из сцен интерьера имеет ≥1 профиль содержимого."
+    },
+    {
+      "id": "household_items",
+      "name_ru": "Вещи быта",
+      "group": "items-household-personal",
+      "entities_ru": "Деревянная и керамическая посуда, ложки, ковши, ступы, жернова ручные, светец, лучина, кресало, кочерга, ухват (проверить), веники, лохани, полотенца, постель, мелкие хранилища, пряслица, веретёна.",
+      "key_fields": [
+        "it_id",
+        "name_ru",
+        "category_id",
+        "subcategory",
+        "material",
+        "technique",
+        "size_band",
+        "mass_rule",
+        "quantity_unit",
+        "condition_states",
+        "perceptual_cues",
+        "functions[]",
+        "typical_owner_roles",
+        "attestation",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.item_templates + item_template_* bindings",
+        "world_base.universal_categories (item)",
+        "world_base.region_category_options (веса)",
+        "world_base.region_material_culture (пусто)"
+      ],
+      "consumers": [
+        "authored-start resources",
+        "procedural item_profile_sets",
+        "ordinary materialization (рельсы категорий)",
+        "visible_objects рассказчика"
+      ],
+      "existing_sources": [
+        "v17 item_templates 102 — approved",
+        "item-container-120-v5 — 102 типа, 366 категорий (pending)",
+        "matcult catalog_items.csv 1137 — кандидат",
+        "master material_items 3435 — кандидат, массы «не указано»"
+      ],
+      "gaps_ru": "Массы не указаны нигде — назначать правилом по категории/форме; веса выбора все =1.",
+      "fill_method": "import",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый предмет резолвит category_id; mass_rule вычисляет массу в пределах политики категории; нет дубликатов по (категория, материал, name_ru); каждый предмет имеет ≥1 attestation или confidence C с note."
+    },
+    {
+      "id": "personal_items",
+      "name_ru": "Личные вещи, ценности, письмо, культ, игры",
+      "group": "items-household-personal",
+      "entities_ru": "Гребни, ножи, кошели, поясные сумки, ключи и замки, пломбы, писала и берестяные листы, вощёные дощечки (цера), кресты-тельники и энколпионы, иконки, игральные кости, шахматные фигуры, бабки, игрушки, гусли, дудки.",
+      "key_fields": [
+        "it_id",
+        "name_ru",
+        "category_id",
+        "material",
+        "size_band",
+        "mass_rule",
+        "value_band",
+        "carry_form",
+        "typical_owner_roles",
+        "identifying_text_slot (none|pool_ref)",
+        "mark_slots",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.item_templates",
+        "world_base.universal_categories",
+        "region_category_options"
+      ],
+      "consumers": [
+        "carried inventories NPC",
+        "D9 identifying text pools",
+        "@rus/items-property"
+      ],
+      "existing_sources": [
+        "matcult catalog_items (TRD/ личные) — кандидат",
+        "risovalka items.json (9) — кандидат",
+        "wk: material_culture 195 claims — approved"
+      ],
+      "gaps_ru": "В v5 нет монет, слитков, украшений, игрушек и инструментов как предметов.",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: предметы с identifying_text_slot ссылаются на существующий пул; ни один предмет не содержит готового опознавательного текста в описании."
+    },
+    {
+      "id": "item_place_frequency",
+      "name_ru": "Частота вещей по местам",
+      "group": "items-household-personal",
+      "entities_ru": "Связь «вещь × семейство места × класс частоты» для бытовых, ремесленных, промысловых вещей и материи (стружка, окалина, обрезки).",
+      "key_fields": [
+        "ipf_id",
+        "item_or_category_ref",
+        "pf_id",
+        "frequency_class",
+        "count_limit_rule",
+        "allowed_seasons",
+        "owner_rule_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "presence_rules (scope=place_family, category=item)",
+        "world_base.location_object_rules (пусто)",
+        "region_category_options.weight"
+      ],
+      "consumers": [
+        "бросок первого прибытия (D3)",
+        "O2a ambient items"
+      ],
+      "existing_sources": [
+        "master item_location_links 12 997 (ubiquitous/common/contextual/rare) — кандидат (владелец переоткрыл)",
+        "master spawn_profiles 46, material_entities 2196 — кандидат",
+        "rus13tpl item_profiles place_item_profiles 25 — draft",
+        "v6tsv g4_locations item_profile — draft"
+      ],
+      "gaps_ru": "Типы мест master не совпадают с place_family; нужна сверка каждой связи с WK/археологией.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: 100% строк резолвят item и pf_id; класс ∈ 4 значения; каждое семейство мест с людьми имеет ≥10 вещей; отчёт о связях master, отброшенных при сверке, с причиной."
+    },
+    {
+      "id": "item_ownership_rules",
+      "name_ru": "Правила владения вещами (D14)",
+      "group": "items-household-personal",
+      "entities_ru": "Кто владеет вещью при создании по месту и контексту: двор, мастер, торговец, церковь, власть; в диком месте — ничьё или «потеряно кем-то» без выдуманного лица; кто знает вещь (домашние, частые свидетели).",
+      "key_fields": [
+        "own_id",
+        "pf_id / scene_ref / container_ref",
+        "item_category_ref",
+        "owner_kind (household|master|trader|church|authority|ownerless|lost_unknown)",
+        "holder_kind",
+        "controller_kind",
+        "access_policy",
+        "recognizers_rule (owner, household_members, frequent_witnesses)",
+        "source_refs"
+      ],
+      "target_tables": [
+        "world_base.property_profiles / property_profile_rules",
+        "@rus/items-property поля owner_npc_id, owner_character_id, owner_party, owner_external_ref"
+      ],
+      "consumers": [
+        "@rus/items-property",
+        "@rus/visibility-knowledge-memory (знание примет)",
+        "@rus/social-law (кража, находка, возврат)"
+      ],
+      "existing_sources": [
+        "world_base property_profiles 19 / rules 19 — approved (gate1)",
+        "pr98:m2c-items/property-context-candidate.json — 25 семейств, 32 G4 (pending)",
+        "rus13tpl novgorod_property_rules_v1.json — draft",
+        "#133 D14 (issuecomment 5844152943)"
+      ],
+      "gaps_ru": "Нет правил по place_family; нет правила «кто узнаёт».",
+      "fill_method": "rule",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждое pf_id с людьми имеет правило для каждой категории вещей из item_place_frequency; дикие места имеют только ownerless|lost_unknown; нет правил с именованным лицом."
+    },
+    {
+      "id": "item_marks_text_pools",
+      "name_ru": "Пулы примет и опознавательного текста (D9/D14)",
+      "group": "items-household-personal",
+      "entities_ru": "Приметы вещи, которые задаёт код: знак собственности/клеймо, узор, починка (заклёпка, скоба, заплата), износ, повреждение; пулы опознавательного текста: владельческие надписи на пряслицах и деревянных вещах, знаки на пломбах, типы надписей на крестах — только из пулов кода.",
+      "key_fields": [
+        "mk_id",
+        "mark_kind",
+        "applicable_categories",
+        "applicable_materials",
+        "text_ru (описание приметы кодом)",
+        "distinctiveness (unique|rare|common)",
+        "attestation",
+        "text_pool_id",
+        "text_template",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: item_mark_pools, item_text_pools (или universal_categories facet=condition/mark)",
+        "@rus/items-property"
+      ],
+      "consumers": [
+        "@rus/items-property (приметы)",
+        "@rus/visibility-knowledge-memory (узнавание)",
+        "D9: LLM не пишет опознавательный текст"
+      ],
+      "existing_sources": [
+        "master state_variants 90 — кандидат (состояния)",
+        "v5 facet condition — pending",
+        "matcult catalog_items (надписи/знаки) — кандидат"
+      ],
+      "gaps_ru": "Пулов примет и текстов нет вообще; нужна проверка засвидетельствованных владельческих знаков и надписей на новгородских находках.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая категория вещей с mark_slots имеет ≥5 примет разных видов; типовые вещи (гвоздь, зерно) не имеют уникальных примет; тексты шаблонов не содержат имён вне пула имён."
+    },
+    {
+      "id": "craft_tools_gear",
+      "name_ru": "Инструменты ремесла, промысла и земледелия",
+      "group": "crafts-tools-processes",
+      "entities_ru": "Топоры, тёсла, долота, пилы (проверить), свёрла, молоты, клещи, наковальня, горн, мехи, шилья, колодки, ткацкий стан, прялка, гончарный круг, тигли и литейные формы, резцы, токарный станок; соха, серп, коса-горбуша, цеп, борона; сети, верши, остроги, крючки, лодочные снасти; лук охотничий, силки, ловушки.",
+      "key_fields": [
+        "tl_id",
+        "name_ru",
+        "category_id",
+        "material",
+        "mass_rule",
+        "used_in_process_refs",
+        "used_by_occupations",
+        "workplace_pf_id",
+        "condition_states",
+        "mark_slots",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.item_templates",
+        "universal_categories (function/use_context)",
+        "spatial_v3_npc_runtime_profiles initial_equipment_templates"
+      ],
+      "consumers": [
+        "NPC equipment (PROCEDURAL_NPC_EQUIPMENT_DATA_GAP без снаряжения)",
+        "occupations typical_tools",
+        "WK"
+      ],
+      "existing_sources": [
+        "main:data/novgorod-region/novgorod_occupations_v1_enriched.tsv typical_tools/required_tools",
+        "master tool_concepts 53, material_items — кандидат",
+        "wk: craft_technology 151 — approved",
+        "pr98 npc-equipment-v1 — снаряжение только для рыбака и лодочника"
+      ],
+      "gaps_ru": "Снаряжение NPC есть только у 2 занятий; инструменты не связаны с процессами.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждое одобренное занятие имеет ≥2 инструмента, резолвящихся в item_templates; каждый инструмент используется ≥1 процессом или занятием."
+    },
+    {
+      "id": "craft_processes",
+      "name_ru": "Технологические цепочки",
+      "group": "crafts-tools-processes",
+      "entities_ru": "Ковка, кричное железо, литьё цветных металлов, кожевенное и сапожное дело, прядение и ткачество, крашение, гончарство, дёгтекурение, углежжение, плотницкое и лодочное дело, косторезное, изготовление печатей/надписей; шаги, длительность, навык, выход, отходы, брак.",
+      "key_fields": [
+        "pc_id",
+        "name_ru",
+        "inputs[]",
+        "tools[]",
+        "workplace_pf_id",
+        "fuel_heat",
+        "steps[step_no, action, duration_band, skill_level, output, waste]",
+        "failure_modes[]",
+        "defect_signs[]",
+        "season_constraints",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: process_templates, process_steps (CR)",
+        "world_base.region_economy.production_method",
+        "WK craft_technology / chemistry_process claims"
+      ],
+      "consumers": [
+        "WK/LLM: реалистичность попытки игрока (изготовление, оружие, подделки)",
+        "@rus/items-property (подлинность вне процесса)"
+      ],
+      "existing_sources": [
+        "wk: craft_technology 151, chemistry_process 83, joining-metals, nonferrous-casting, leather-plant-fibre-water, fuel-processes, wax-candles, gameplay-material-process-v3 — approved",
+        "master technology_processes 679 / steps 3300 / defects 103 — вспомогательный кандидат, validation FAIL",
+        "master activities 2442 (prev/next) — кандидат"
+      ],
+      "gaps_ru": "В runtime нет цепочек; master слабо обоснован (6 источников, 8473 текстовых ссылки).",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: шаги упорядочены без разрывов; выход шага i — вход шага i+1 или конечный продукт; каждый вход резолвится в natural_materials_soils/items; каждая цепочка имеет ≥1 WK claim ref."
+    },
+    {
+      "id": "workshops",
+      "name_ru": "Мастерские",
+      "group": "crafts-tools-processes",
+      "entities_ru": "Кузница, литейная, кожевня, сапожная, гончарная, косторезная, токарная, ткацкая, плотницкий двор, смолокурня, угольная яма — инструменты, запасы, отходы как следы, звуки, запахи.",
+      "key_fields": [
+        "ws_id",
+        "name_ru",
+        "pf_id",
+        "bt_id",
+        "tools[]",
+        "stocks[]",
+        "waste_traces[]",
+        "ambience",
+        "occupations[]",
+        "process_refs[]",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "spatial_v3_scene_templates / interiors_scenes",
+        "presence_rules (scope=workshop)"
+      ],
+      "consumers": [
+        "сцены мастерских",
+        "O2a ambient items"
+      ],
+      "existing_sources": [
+        "master workshop_profiles 20 — кандидат",
+        "wk: smithy/ordinary_workshop семейства — approved",
+        "matcult scenes.csv — кандидат"
+      ],
+      "gaps_ru": "Мастерские не привязаны к семействам мест v17.",
+      "fill_method": "derive",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждый tool/stock резолвится; каждое ремесленное занятие имеет ≥1 мастерскую или явно «работает на дворе/в поле»."
+    },
+    {
+      "id": "weapons_armour",
+      "name_ru": "Оружие и доспех",
+      "group": "items-weapons-armour",
+      "entities_ru": "Мечи, боевые топоры, копья, сулицы, луки и стрелы, кистени, булавы, ножи, щиты, шлемы, кольчуги, бармицы, пластинчатые доспехи — по статусу, праву ношения, состоянию, приметам.",
+      "key_fields": [
+        "wp_id",
+        "name_ru",
+        "category_id",
+        "material",
+        "mass_rule",
+        "status_access[]",
+        "legal_right_ref",
+        "condition_states",
+        "mark_slots",
+        "attestation",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.item_templates",
+        "universal_categories (weapon/protection)",
+        "region_equipment_profiles/entries"
+      ],
+      "consumers": [
+        "NPC equipment (охрана, дружинник)",
+        "@rus/social-law (право ношения)",
+        "combat"
+      ],
+      "existing_sources": [
+        "wk:reconstructed-military-world-v1, military-first-cartography — approved",
+        "costume/risovalka — оружие и доспех по 8+1 ролям (кандидат)",
+        "v5 объектные типы оружия — pending",
+        "mia65 Медведев — нужен OCR"
+      ],
+      "gaps_ru": "Нет таблицы оружия по статусу; семейство warfare-organization в WK missing (partial).",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждое оружие имеет status_access, связанный с ролями; нет огнестрела и позднесредневековых типов (denylist); ссылки резолвятся."
+    },
+    {
+      "id": "military_security",
+      "name_ru": "Военная организация и охрана",
+      "group": "items-weapons-armour",
+      "entities_ru": "Княжья дружина, городовое ополчение, сотни, стража у ворот, торга и перевозов, укрепления, походы и набеги 1230-х, пленные и выкуп, вероятность боя по роли.",
+      "key_fields": [
+        "ms_id",
+        "unit_or_post_kind",
+        "pf_id",
+        "roles[]",
+        "equipment_profile_ref",
+        "duty_schedule_ref",
+        "event_refs",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "region_social_roles (weapon_rights, combat_likelihood)",
+        "region_risks, conflict_templates (пусто)",
+        "WK claims"
+      ],
+      "consumers": [
+        "NPC composition у ворот/торга (M3)",
+        "history events",
+        "WK npc_decision"
+      ],
+      "existing_sources": [
+        "wk:military-first-cartography.json — approved",
+        "audit historical_timeline военные фазы 60 — draft",
+        "rus13tpl local_conflict_templates — draft"
+      ],
+      "gaps_ru": "Нет структурированных постов и отрядов.",
+      "fill_method": "research",
+      "priority": "later",
+      "acceptance_ru": "Скрипт: каждый пост ссылается на pf_id и роли из strata; события ссылаются на historical_events."
+    },
+    {
+      "id": "garments",
+      "name_ru": "Предметы одежды и обуви",
+      "group": "clothing-appearance",
+      "entities_ru": "Рубахи, порты, свиты, плащи/корзно, шубы и кожухи, пояса, онучи, обувь (поршни, башмаки, сапоги, лапти — проверить датировку), головные уборы мужские и женские, женская нижняя/поясная одежда; материалы, цвета и красители, декор, состояния износа.",
+      "key_fields": [
+        "gm_id",
+        "name_ru",
+        "garment_category",
+        "equipment_slot",
+        "material",
+        "dye_color",
+        "decoration",
+        "sex",
+        "age",
+        "marital_status",
+        "status_band",
+        "season",
+        "wear_states",
+        "mark_slots",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.item_templates (одежда)",
+        "universal_categories domain=garment (нет)",
+        "world_base.region_clothing_profiles (пусто)"
+      ],
+      "consumers": [
+        "approvedClothing (exactly one equipment_template на слот)",
+        "observable_cues.equipment → рассказчик"
+      ],
+      "existing_sources": [
+        "costume data/catalog_items.csv 180, materials_palette.csv, anti_patterns.csv 20, sources.csv 50 — кандидат, проверка PASS",
+        "risovalka — F01–F05, H01–H05, пояс, A/B/C, 15 ссылок",
+        "wk:clothing.json 13/27 — approved",
+        "v17: 4 шаблона (рубаха, порты, башмаки, верхняя шерстяная)"
+      ],
+      "gaps_ru": "В runtime 4 вещи; нет женской нижней одежды, головных уборов и поясов; нет домена garment в категориях.",
+      "fill_method": "import",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: все 180 предметов костюмного набора перенесены или отклонены с причиной; каждый предмет имеет слот и сезон; 20 антипаттернов проверяются как denylist."
+    },
+    {
+      "id": "outfits_by_role",
+      "name_ru": "Комплекты одежды NPC по роли, полу, возрасту, сезону",
+      "group": "clothing-appearance",
+      "entities_ru": "Варианты одежды для каждой одобренной роли/занятия × пол × возраст × сезон, ровно один вариант на комбинацию; иноземные профили.",
+      "key_fields": [
+        "of_id",
+        "role_or_occupation_ref",
+        "sex_categories",
+        "age_categories",
+        "seasons",
+        "required_clothing_slot_refs",
+        "equipment_templates[slot → gm_id]",
+        "property_binding (owner=actor)",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "spatial_v3_npc_runtime_profiles profile_kind=clothing",
+        "world_base.region_clothing_profiles"
+      ],
+      "consumers": [
+        "generated-npc-bindings / approved-procedural-npc approvedClothing (PROCEDURAL_NPC_CLOTHING_DATA_GAP при неоднозначности)",
+        "рассказчик (observable_cues)"
+      ],
+      "existing_sources": [
+        "costume combinations.csv 46, foreigner_profiles.csv 10 — кандидат",
+        "pr98:m2c-npc/runtime-bindings.json — 1 профиль, 4 варианта (pending gaps M2C_NPC_CLOTHING_STATUS_COMPATIBILITY_PENDING и др.)",
+        "pr98:procedural-scene-v2/npc-equipment-v1"
+      ],
+      "gaps_ru": "Один профиль на всех; нет различий по статусу и занятию.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт-проверка тем же правилом, что runtime: для каждой (роль, пол, возраст, сезон) ровно один вариант; каждый слот — ровно один gm_id; owner/holder/controller = actor."
+    },
+    {
+      "id": "adornment_appearance",
+      "name_ru": "Украшения, причёски, облик",
+      "group": "clothing-appearance",
+      "entities_ru": "Височные кольца, бусы, стеклянные браслеты, перстни, кресты, обереги (с confidence), причёски, бороды; веса значений облика по полу/возрасту/происхождению внутри закрытого словаря @rus/actors.",
+      "key_fields": [
+        "ad_id",
+        "kind",
+        "material",
+        "sex",
+        "status_band",
+        "origin_refs",
+        "appearance_facet",
+        "vocabulary_value",
+        "weight_rule",
+        "needs_vocabulary_extension (bool)",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.region_appearance_profile_entries",
+        "region_category_options (actor_appearance)",
+        "item_templates (украшения)"
+      ],
+      "consumers": [
+        "actor-base-appearance.js (значение вне словаря → ACTOR_APPEARANCE_SOURCE_DATA_GAP)",
+        "рассказчик"
+      ],
+      "existing_sources": [
+        "v17 appearance-transfer-v3 — 36 entries, 42 категории, approved",
+        "costume materials_palette и украшения — кандидат",
+        "risovalka — кандидат"
+      ],
+      "gaps_ru": "Словарь облика закрыт в коде: новые значения требуют смены словаря владельцем @rus/actors; украшения как предметы отсутствуют.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждое значение облика ∈ ACTOR_BASE_APPEARANCE_VOCABULARY, иначе needs_vocabulary_extension=true и строка в отчёт для владельца; веса — положительные целые по правилу."
+    },
+    {
+      "id": "food_ingredients",
+      "name_ru": "Продукты и сезонность",
+      "group": "food-drink",
+      "entities_ru": "Зерно, бобовые, овощи, рыба, дичь, мясо, молочное, мёд, ягоды, грибы, орехи, соль, пряности (проверить); сезонность по месяцам, происхождение, доступ по классу, запасы двора по сезону.",
+      "key_fields": [
+        "fd_id",
+        "name_ru",
+        "source_taxon_ref",
+        "food_category",
+        "months_available[]",
+        "origin (local|import)",
+        "access_by_class",
+        "storage_forms",
+        "household_stock_profile[household_type, season, qty_rule]",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: food_ingredients, food_seasonality (CR)",
+        "item content categories (content_food)",
+        "world_base.seasonal_rules.food_effects"
+      ],
+      "consumers": [
+        "household stock (M2c двор Вихтуй)",
+        "ordinary materialization",
+        "WK food-system"
+      ],
+      "existing_sources": [
+        "master food_system ingredients 191, food_seasonality 5508 — кандидат (владелец переоткрыл)",
+        "wk:food-processes, grain-processing, static-food-bio-gap-v1, static-food-contact-v1 — approved",
+        "temporal-v4 правило голода 1230 — approved"
+      ],
+      "gaps_ru": "Нет таблицы продуктов в world_base; WK food-system family partial.",
+      "fill_method": "import",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый продукт из растения/животного ссылается на существующий таксон; months_available согласованы с фенологией/нерестом таксона; denylist пройден."
+    },
+    {
+      "id": "dishes_meals_preservation",
+      "name_ru": "Блюда, напитки, трапезы, хранение, посты, голод",
+      "group": "food-drink",
+      "entities_ru": "Хлебы, каши, кисели, похлёбки, квас, пиво, мёд; трапезы по классу и сезону, постные/скоромные дни, сушка, соление, копчение, квашение, погреб и ледник, порча, голодные заменители 1230 г., запахи и вкусы.",
+      "key_fields": [
+        "ds_id",
+        "name_ru",
+        "ingredients[fd_id, qty_rule]",
+        "process_ref",
+        "fasting_compatible",
+        "meal_slots",
+        "class_access",
+        "preservation_method",
+        "spoilage_states",
+        "famine_substitute",
+        "sensory_cues",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: dishes, meal_profiles (CR)",
+        "WK claims"
+      ],
+      "consumers": [
+        "WK (conversation, npc_decision)",
+        "body state (M3)",
+        "calendar (посты)"
+      ],
+      "existing_sources": [
+        "master recipes 268 (220 реконструкция), recipe_steps 1164, preservation 44, drinks 17, meal_sets 21, religious_food_rules 12, famine_1230 — кандидат",
+        "wk:place-wet-food-processes-v1, place-milk-dye-processes-v1 — approved"
+      ],
+      "gaps_ru": "Рецепты в основном реконструкция (C); нет потребителя трапез в v17.",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждый ингредиент резолвится; блюдо с fasting_compatible=true не содержит мяса/молочного; реконструированные рецепты имеют confidence C."
+    },
+    {
+      "id": "currencies_measures",
+      "name_ru": "Денежные единицы и меры",
+      "group": "economy-trade-measures",
+      "entities_ru": "Гривна серебра и кун, куна, ногата, резана, векша (соотношения проверить для XIII в.), слитки, иноземные монеты, меха и ткань как платёж; меры веса, сыпучих, длины, ткани, воска, соли, мёда.",
+      "key_fields": [
+        "cu_id / ms_id",
+        "name_ru",
+        "kind (account_unit|physical_money|measure)",
+        "ratio_to_base",
+        "ratio_basis",
+        "item_template_ref",
+        "period_validity",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.quantity_unit_definitions",
+        "item_templates (слитки, монеты)",
+        "new: currency_units, measure_units"
+      ],
+      "consumers": [
+        "@rus/social-law (штрафы Правды в гривнах)",
+        "@rus/items-property (платёжное средство)",
+        "WK"
+      ],
+      "existing_sources": [
+        "master currencies 13, units_and_measures 19 — кандидат",
+        "matcult TRD0046 гривна-слиток, CRF0068 слиток, TRD0043/FRN0046 монеты, весы TRD0037/0038/0058 — кандидат",
+        "wk:trade-economy-gap-closure-v1 (гривна как счётная единица) — approved",
+        "v17 quantity_unit_definitions 5"
+      ],
+      "gaps_ru": "Нет денег и слитков как предметов; соотношения единиц не утверждены.",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: соотношения образуют непротиворечивую систему (пересчёт по кругу даёт 1); у каждой физической единицы есть item_template; period_validity покрывает 1230–1250."
+    },
+    {
+      "id": "trade_goods_markets",
+      "name_ru": "Товары, торг, купеческие объединения, пошлины",
+      "group": "economy-trade-measures",
+      "entities_ru": "Экспорт (меха, воск, мёд, кожи), импорт (сукно, соль, металлы, вино и пряности — проверить), практика торга (лавки, весы, торг, кредит, залог, долговые записи), купеческие объединения, иноземные дворы, пошлины, сезон навигации.",
+      "key_fields": [
+        "tg_id",
+        "name_ru",
+        "item_category_ref",
+        "direction (export|import|local)",
+        "origin_region",
+        "season",
+        "market_pf_ids",
+        "trader_roles",
+        "practice_notes",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.region_economy (пусто)",
+        "WK claims (social_law_economy)"
+      ],
+      "consumers": [
+        "WK (conversation торговца)",
+        "торговые NPC (local_trader, merchants)",
+        "events (привоз — процесс мира, D6)"
+      ],
+      "existing_sources": [
+        "wk:trade-economy-batch-03-gap-closure-v1 — approved (мало)",
+        "master item_origin_models, income_models — кандидат",
+        "rus13tpl trade_rules (8 сезонных, 9 по месту) — draft"
+      ],
+      "gaps_ru": "region_economy пуст; торговая практика почти не описана в WK.",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждый товар резолвит категорию; импорт имеет origin_region; сезон согласован с навигацией в календаре."
+    },
+    {
+      "id": "price_bands",
+      "name_ru": "Относительные ценовые полосы",
+      "group": "economy-trade-measures",
+      "entities_ru": "Относительные полосы ценности (дёшево … очень дорого) по категориям с сезонными, военными, дорожными и голодными поправками; без абсолютных цен.",
+      "key_fields": [
+        "pb_id",
+        "item_category_ref",
+        "value_band",
+        "seasonal_modifier",
+        "war_modifier",
+        "road_modifier",
+        "famine_modifier",
+        "basis",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.price_bands (пусто)"
+      ],
+      "consumers": [
+        "нет потребителя в v17"
+      ],
+      "existing_sources": [
+        "rus13tpl novgorod_goods_prices_v1.tsv — 65 относительных полос (draft)",
+        "master prices 3446 — отклонены владельцем"
+      ],
+      "gaps_ru": "Надёжных цен нет по дизайну; полосы требуют основания.",
+      "fill_method": "rule",
+      "priority": "later",
+      "acceptance_ru": "Скрипт: value_band ∈ закрытого словаря; ни одна строка не содержит абсолютной цены; basis непустой."
+    },
+    {
+      "id": "social_strata_legal_status",
+      "name_ru": "Сословия, роли, правовые статусы",
+      "group": "social-strata-law",
+      "entities_ru": "71 роль + проверенные кандидаты (тиун, вирник, мечник, бирич/подвойский, закуп, рядович, холоп, изгой, смерд, скоморох, женские роли); ранг, свобода, правоспособность, права на имущество/передвижение/оружие, вес показаний, доступ к местам, повинности, отношения (к чужим, власти, церкви, насилию).",
+      "key_fields": [
+        "role_id",
+        "name_ru",
+        "social_class_id",
+        "role_archetype_id",
+        "legal_status_archetype_id",
+        "social_position_archetype_id",
+        "dependency_archetype_id",
+        "rights{property, movement, weapon}",
+        "testimony_weight",
+        "place_access",
+        "obligations",
+        "attitude_to_strangers/authority/church/violence",
+        "status",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "region_social_roles TSV (pinned sha256 — новые строки отдельно)",
+        "world_base.social_* archetypes",
+        "legal_status_archetypes (8)"
+      ],
+      "consumers": [
+        "live-world-authored-starts readPinnedTsv (только approved)",
+        "procedural-scene-records (резолв архетипов)",
+        "@rus/social-law"
+      ],
+      "existing_sources": [
+        "main:data/novgorod-region/novgorod_social_roles_v1_enriched.tsv — 51 approved / 20 caution",
+        "main:data/world-base-seeds/*.csv — archetypes approved",
+        "wk:social-institutions, macro-novgorod-human-society-v4 — approved",
+        "master social_role_profiles, source_social_roles — кандидат"
+      ],
+      "gaps_ru": "20 caution-ролей отбрасываются фильтром; нет княжьих чинов и зависимых категорий Правды; гендерно-возрастные семейства WK partial.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая роль имеет все 4 archetype id, резолвящиеся в seeds со status=approved; attitude_* непусты; pinned TSV не изменён (sha256 совпадает)."
+    },
+    {
+      "id": "law_justice_governance",
+      "name_ru": "Право, суд, управление",
+      "group": "social-strata-law",
+      "entities_ru": "Правонарушения и взыскания Русской Правды (вира, продажа, урок, поток и разграбление), процедуры (послухи, видоки, свод, рота, испытание), кражи, побои, долг, холопство, находка чужой вещи, реакция очевидцев; институты (вече, князь, посадник, тысяцкий, архиепископ, сотские, старосты), юрисдикция, статус гостей.",
+      "key_fields": [
+        "lw_id",
+        "law_type",
+        "offence",
+        "victim_status_ref",
+        "sanction_kind",
+        "amount_units_ref",
+        "procedure_refs",
+        "jurisdiction",
+        "who_reacts_rule",
+        "property_effect",
+        "source_article_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.region_laws (пусто)",
+        "legal_status_archetypes",
+        "WK social_law_economy"
+      ],
+      "consumers": [
+        "@rus/social-law (evaluateRights, buildLegalConsequencePackage)",
+        "NPC reaction на кражу/находку (D14)",
+        "WK"
+      ],
+      "existing_sources": [
+        "wk:residual-government-law-v1/v2, residual-law-norms-v1, social-norms — approved",
+        "master legal_rules — кандидат",
+        "audit status_rules — draft",
+        "Русская Правда (Пространная редакция) — первоисточник A, нужен выбор издания с URL"
+      ],
+      "gaps_ru": "region_laws пуст; семейства crime-sanctions и legal-locality-period-status в WK missing (partial).",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждая санкция в денежных единицах резолвит currencies_measures; каждая норма имеет source_article_ref на статью издания; who_reacts_rule ссылается на существующие роли."
+    },
+    {
+      "id": "occupations",
+      "name_ru": "Занятия",
+      "group": "occupations-activities",
+      "entities_ru": "68 занятий + недостающие ремёсла (ювелир-литейщик, косторез, токарь, скорняк, кожевник, красильщик, верёвочник/сетевяз, замочник, щитник/лучник, каменщик, известежог, иконописец, пивовар/медовар, мясник, хлебник, рыботорговец, пряха/ткачиха, кормилица — проверить каждое); обязательные поля runtime basis для перевода 31 caution в approved.",
+      "key_fields": [
+        "occupation_id",
+        "occupation_archetype_id",
+        "daily_schedule_winter/spring_rasputitsa/summer/autumn",
+        "how_to_materialize_as_background/scene/key_npc",
+        "typical_property/tools/clothing/containers",
+        "typical_local/route_knowledge",
+        "common_relationships/fears/goals",
+        "llm_adaptation_rules",
+        "llm_forbidden_uses",
+        "status",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "region_occupations TSV (pinned; новые строки отдельно)",
+        "occupation_archetypes (15)",
+        "occupation_skill_defaults",
+        "skill_catalog (12)"
+      ],
+      "consumers": [
+        "approved-npc-runtime-basis.js (NPC_RUNTIME_BASIS_DATA_GAP при пустом поле)",
+        "procedural-scene-records",
+        "D8 сопоставление запроса игрока с занятием"
+      ],
+      "existing_sources": [
+        "main:data/novgorod-region/novgorod_occupations_v1_enriched.tsv — 37 approved / 31 caution",
+        "master professions 479 — кандидат (superseded)",
+        "wk:occupation-context.json — approved"
+      ],
+      "gaps_ru": "31 занятие отбрасывается фильтром; многие засвидетельствованные ремёсла отсутствуют; skill_catalog 12 навыков.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт повторяет проверку approved-npc-runtime-basis: все обязательные поля непусты; archetype id резолвятся; каждое новое ремесло имеет ≥1 WK/археологическую ссылку."
+    },
+    {
+      "id": "npc_runtime_profiles",
+      "name_ru": "Runtime-профили генерируемых NPC",
+      "group": "occupations-activities",
+      "entities_ru": "Для каждого одобренного занятия: npc_binding, body, activity, routine, clothing, item_inventory, item_visual и observable_activity (тексты для рассказчика по сезону/времени дня) + записи состава G4 (кто и сколько может быть в месте).",
+      "key_fields": [
+        "profile_id",
+        "profile_kind",
+        "occupation_ref",
+        "role_ref",
+        "regional_context_ref",
+        "observable_activity{season, day_part, text_ru}",
+        "initial_equipment_templates",
+        "composition[g4_ref, weighted_profile_refs, count_weights, placement_policy]",
+        "source_refs"
+      ],
+      "target_tables": [
+        "spatial_v3_npc_runtime_profiles",
+        "spatial_v3_g4_npc_composition_bindings",
+        "spatial_v3_npc_regional_context_profiles"
+      ],
+      "consumers": [
+        "generated-npc-bindings.js (NPC_COMPOSITION_*_GAP, PROCEDURAL_NPC_*_DATA_GAP)",
+        "рассказчик: visible_status из observable_activity"
+      ],
+      "existing_sources": [
+        "pr98:m2c-npc/candidate.json, runtime-bindings.json — 9 профилей / 8 занятий, 32 композиции, 5 regional-context (pending/approved authoring)"
+      ],
+      "gaps_ru": "Генерироваться могут только 8 занятий из 37; observable_activity мало.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт повторяет проверки generated-npc-bindings: веса — положительные безопасные целые; каждый ref существует; каждое одобренное занятие, уместное на 32 G4, имеет полный набор profile_kind."
+    },
+    {
+      "id": "carried_inventories",
+      "name_ru": "Носимые наборы вещей",
+      "group": "occupations-activities",
+      "entities_ru": "Что человек несёт при себе по роли/занятию/сезону/обстоятельству (дорога, работа, торг): нож, огниво, кошель, снедь, инструмент, товар.",
+      "key_fields": [
+        "ci_id",
+        "role_or_occupation_ref",
+        "season",
+        "circumstance",
+        "entries[item_ref, qty_rule, frequency_class, carry_form]",
+        "owner=actor",
+        "mark_rule_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "spatial_v3_npc_runtime_profiles profile_kind=item_inventory",
+        "region_equipment_profiles/entries (1 строка)"
+      ],
+      "consumers": [
+        "NPC equipment → observable_cues.equipment",
+        "@rus/items-property (владелец actor)",
+        "D14 узнавание"
+      ],
+      "existing_sources": [
+        "master inventory_profiles 26 (carry kits), profession_resource_profiles — кандидат",
+        "rus13tpl item_profiles occupation_item_profiles 68 — draft",
+        "occupations TSV typical_* поля"
+      ],
+      "gaps_ru": "Носимых наборов в runtime почти нет (снаряжение у 2 занятий).",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: суммарная масса набора ≤ лимита переноса; каждый item_ref существует; carry_form ∈ разрешённых форм политики."
+    },
+    {
+      "id": "activities_observable",
+      "name_ru": "Действия и цепочки деятельности",
+      "group": "occupations-activities",
+      "entities_ru": "Цепочки действий занятий (подготовка, работа, отдых) с входами/выходами, длительностью и видимыми признаками; профили деятельности по месту и времени.",
+      "key_fields": [
+        "ac_id",
+        "occupation_ref",
+        "prev_ref",
+        "next_ref",
+        "inputs",
+        "outputs",
+        "duration_band",
+        "pf_id",
+        "season",
+        "observable_text_ru",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.region_activity_profiles (пусто)",
+        "temporal_authoring_records activity_profile",
+        "universal_categories domain=activity (нет)"
+      ],
+      "consumers": [
+        "NPC routine (@rus/npc-runtime)",
+        "observable_activity рассказчика"
+      ],
+      "existing_sources": [
+        "master activities 2442 (1916 со связями prev/next) — кандидат",
+        "temporal-v4 activity_categories_profiles 6 — approved"
+      ],
+      "gaps_ru": "Деятельность в runtime описана 6 категориями.",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: граф prev/next без циклов внутри цепочки; входы/выходы резолвятся в items; каждая цепочка имеет observable_text_ru."
+    },
+    {
+      "id": "households_kinship",
+      "name_ru": "Двор, семья, родство, демография",
+      "group": "households-psychology-speech",
+      "entities_ru": "Состав двора по роли, достатку и типу места (размер, поколения, слуги, зависимые) с лимитами; термины родства; брак, приданое, вдовство, сироты, наследование; работа детей и стариков; разделение труда по полу.",
+      "key_fields": [
+        "hh_id",
+        "household_type",
+        "wealth_band",
+        "pf_id",
+        "members[relation, sex, age_band, min, max]",
+        "servants_dependants",
+        "kinship_terms",
+        "customs_refs",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: household_composition_profiles",
+        "world_base.region_demographic_profiles/entries (1/6)",
+        "world_base.region_relationship_profiles (пусто)"
+      ],
+      "consumers": [
+        "D1 проверка биографии (код отклоняет выдуманное родство)",
+        "materialization постоянных жителей (D5)",
+        "WK"
+      ],
+      "existing_sources": [
+        "v6tsv g3 household_estimate/household_mix — draft",
+        "rus13tpl household_wealth_profiles 23 — draft",
+        "audit status_rules (семья и двор) — draft",
+        "wk:family-social-context, reconstructed-human-lifeways-v1, reconstructed-ordinary-lifeways-v1 — approved"
+      ],
+      "gaps_ru": "Нет таблицы состава двора; семейство marriage-kinship в WK missing (partial).",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: min ≤ max; сумма min членов ≤ household_estimate типа места; возрасты родства согласованы (родитель старше ребёнка на ≥ заявленный порог)."
+    },
+    {
+      "id": "npc_psychology",
+      "name_ru": "Психологические профили NPC (D1)",
+      "group": "households-psychology-speech",
+      "entities_ru": "Распределения темперамента и ценностей по роли/занятию, мотивы, риск-черты (кража, насилие, склонность свидетельствовать), начальное настроение по обстоятельствам — закрытые значения для выбора кодом по seed.",
+      "key_fields": [
+        "ps_id",
+        "role_or_occupation_ref",
+        "temperament_weights{value: weight}",
+        "values_weights{value: weight}",
+        "motives[]",
+        "risk_traits{theft, violence, witness}",
+        "initial_mood_rules",
+        "derivation_rule",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.region_behavior_profiles (пусто)",
+        "decision_policy_profiles (пусто)",
+        "universal_categories domain=behavior/motive (нет)"
+      ],
+      "consumers": [
+        "D1: код выбирает при создании NPC и сохраняет",
+        "LLM пишет только манеру речи и биографию по фактам кода",
+        "npc_decision"
+      ],
+      "existing_sources": [
+        "occupations TSV common_goals/common_fears/violence_risk/theft_risk; roles TSV attitude_*",
+        "wk: psychology_behavior 29, social_behavior 40 — approved"
+      ],
+      "gaps_ru": "Профилей темперамента и ценностей нет; шкалу значений должен выбрать владелец.",
+      "fill_method": "rule",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: значения ∈ закрытого словаря; веса положительные целые; derivation_rule воспроизводится из полей TSV; каждое одобренное занятие и роль имеет профиль."
+    },
+    {
+      "id": "speech_address",
+      "name_ru": "Речь, обращения, этикет",
+      "group": "households-psychology-speech",
+      "entities_ru": "Обращения по паре статусов, приветствия и прощания, клятвы и благословения, брань и её правовой вес, вежливые просьбы, речь слуги/крестьянина/купца/клирика, языки общения с иноземцами, seed манеры речи по роли.",
+      "key_fields": [
+        "sp_id",
+        "speaker_role_ref",
+        "addressee_role_ref",
+        "form_ru",
+        "register",
+        "situation",
+        "legal_weight_ref",
+        "attestation (грамота №, летопись)",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "new: address_forms",
+        "region_social_roles.languages_or_speech_notes",
+        "WK claims (residual-language-education)"
+      ],
+      "consumers": [
+        "conversation (WK)",
+        "LLM манера речи (D1)"
+      ],
+      "existing_sources": [
+        "wk:residual-language-education-v1/v2 — approved",
+        "roles TSV typical_speech_register",
+        "rus13tpl name_pools status_based_address 5 — draft",
+        "берестяные грамоты (gramoty.ru) — A, не собраны"
+      ],
+      "gaps_ru": "Нет таблицы обращений и формул; семейство everyday-literacy в WK partial.",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждая формула имеет attestation или confidence C; роли резолвятся; нет современной лексики из denylist."
+    },
+    {
+      "id": "personal_names",
+      "name_ru": "Личные имена, отчества, прозвища",
+      "group": "names-peoples",
+      "entities_ru": "Крестильные и мирские имена по полу, народу, статусу; формы отчеств, прозвища, женские именования через мужа/отца; частотный класс; источник.",
+      "key_fields": [
+        "nm_id",
+        "name_form",
+        "sex",
+        "people_ref",
+        "status_band",
+        "name_kind (baptismal|vernacular|nickname|patronymic_pattern)",
+        "frequency_class",
+        "variants",
+        "attestation",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.region_name_pools / region_name_pool_entries (пусто)"
+      ],
+      "consumers": [
+        "D8 имя генерируемого NPC из пула (сейчас пулы не читаются в v17 — нужен код)",
+        "D11 проверка имени игрока"
+      ],
+      "existing_sources": [
+        "pr98:onomastics/candidates/novgorod-1230-1250-v1 — 54 имени, pending_independent_review",
+        "rus13tpl novgorod_npc_name_pools_v1.json — 35/20/15, draft",
+        "берестяные грамоты (указатель имён), Тупиков 1903 — источники"
+      ],
+      "gaps_ru": "Пулы пусты; неславянских пулов нет.",
+      "fill_method": "research",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждое имя имеет attestation; нет дубликатов (name_form, sex, people); каждый народ из peoples_origins имеет ≥10 мужских и ≥10 женских имён или отмечен gap."
+    },
+    {
+      "id": "place_names",
+      "name_ru": "Топонимы",
+      "group": "names-peoples",
+      "entities_ru": "Сёла, реки, озёра, концы и улицы Новгорода, урочища, погосты; статус засвидетельствованности.",
+      "key_fields": [
+        "tp_id",
+        "name_ru",
+        "object_kind",
+        "node_ref",
+        "name_status (attested|reconstructed)",
+        "first_attestation",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "graph_nodes names",
+        "spatial_v3 nodes display names"
+      ],
+      "consumers": [
+        "visible_scene (метка места)",
+        "WK"
+      ],
+      "existing_sources": [
+        "v6tsv naming_register — 911 имён со статусом",
+        "world_db graph_nodes (rus13) — draft"
+      ],
+      "gaps_ru": "Имена v6 не перенесены на узлы v17; статус засвидетельствованности не проверен.",
+      "fill_method": "derive",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждый node_ref существует; reconstructed-имена имеют confidence C; нет двух объектов одного вида с одним именем в одной зоне без различителя."
+    },
+    {
+      "id": "peoples_origins",
+      "name_ru": "Народы и происхождение",
+      "group": "names-peoples",
+      "entities_ru": "Новгородцы, псковичи, суздальцы/владимирцы, смоляне, карелы, ижора, водь, чудь/эсты, весь, емь/сумь, готландцы, немцы, скандинавы: язык, вера, занятия и места, облик и одежда, статус гостя, частота по месту и сезону навигации.",
+      "key_fields": [
+        "pp_id",
+        "name_ru",
+        "endonym",
+        "languages",
+        "faith",
+        "typical_occupations",
+        "pf_ids",
+        "presence[pf_id, season, frequency_class]",
+        "clothing_profile_ref",
+        "name_pool_ref",
+        "legal_status_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "spatial_v3_npc_regional_context_profiles (5)",
+        "world_base.region_neighbors (6)",
+        "region_demographic_profiles"
+      ],
+      "consumers": [
+        "NPC regional context (origin, language_repertoire)",
+        "outfits (иноземцы)",
+        "names"
+      ],
+      "existing_sources": [
+        "pr98:m2c-npc regional context — Новгород, Готланд, немцы, карелы, ижора",
+        "costume foreigner_profiles.csv 10 — кандидат",
+        "rus13 novgorod_neighbor_regions_v1.json — draft"
+      ],
+      "gaps_ru": "Нет весов присутствия по месту; водь, чудь, весь, емь не описаны.",
+      "fill_method": "mixed",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждый народ имеет clothing_profile_ref и name_pool_ref или gap; presence веса по правилу; языки ∈ словаря."
+    },
+    {
+      "id": "calendar_feasts_fasts",
+      "name_ru": "Календарь 1230–1250: праздники, посты, торговые дни, годовой труд",
+      "group": "time-calendar-church",
+      "entities_ru": "Юлианский календарь, неподвижные и подвижные праздники (Пасха по пасхалии), посты, торговые дни, сельскохозяйственный, рыболовный и охотничий цикл, навигация, ледостав.",
+      "key_fields": [
+        "cal_id",
+        "date_or_rule",
+        "year",
+        "kind (feast|fast|market|work_season)",
+        "name_ru",
+        "effects (food, work, trade, church)",
+        "computation_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "temporal_authoring_records (calendar)",
+        "world_base.seasonal_rules",
+        "world_base.region_schedule_profiles"
+      ],
+      "consumers": [
+        "target-authored-start-runtime (SPATIAL_V3_TARGET_START_TEMPORAL_REQUIRED)",
+        "food (посты)",
+        "schedules"
+      ],
+      "existing_sources": [
+        "main:data/world-catalogs/novgorod/temporal-v4/datasets — календарь 1230–1233 + правило голода, approved",
+        "master religious_food_rules 12 — кандидат"
+      ],
+      "gaps_ru": "Праздники и посты не табулированы; в v17 temporal_authoring_records = 0 при требовании календаря — проверить блокер.",
+      "fill_method": "rule",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: даты Пасхи 1230–1250 пересчитываются алгоритмом юлианской пасхалии и совпадают с таблицей; посты не пересекаются противоречиво; каждый год 1230–1250 покрыт."
+    },
+    {
+      "id": "schedules_routines",
+      "name_ru": "Распорядки дня и расписания мест",
+      "group": "time-calendar-church",
+      "entities_ru": "Распорядок по роли и типу дня (обычный, зима, распутица, лето, осень, торговый, церковный, кризис, ночь), расписания доступа мест (D5: не условие броска наличия).",
+      "key_fields": [
+        "sch_id",
+        "role_or_occupation_ref / pf_id",
+        "day_type",
+        "season",
+        "time_blocks[start, end, activity_ref, pf_id]",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "temporal_authoring_records (npc_schedule, place_access_schedule)",
+        "world_base.region_schedule_profiles (пусто)"
+      ],
+      "consumers": [
+        "@rus/npc-runtime распорядки (D5)",
+        "@rus/turn / party-store (открыто ли место)"
+      ],
+      "existing_sources": [
+        "occupations TSV daily_schedule_* (все сезоны)",
+        "temporal-v4 place_access_schedules 1, npc_temporal_profiles 2 — approved",
+        "rus13tpl weather_season_rules npc_schedule_effects 5 — draft"
+      ],
+      "gaps_ru": "В runtime 2 профиля NPC-времени и 1 расписание места.",
+      "fill_method": "derive",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: блоки времени покрывают 24 ч без перекрытий; activity_ref и pf_id резолвятся; каждое одобренное занятие имеет расписание на каждый сезон."
+    },
+    {
+      "id": "religion_church",
+      "name_ru": "Церковь, обряды, верования",
+      "group": "time-calendar-church",
+      "entities_ru": "Приход и монастырь, клир, службы и звоны по часам, таинства и обряды, милостыня, паломничество, церковные предметы; народные верования и обереги с явной confidence; латинская церковь иноземцев; отношения по ролям.",
+      "key_fields": [
+        "rl_id",
+        "kind (practice|rite|service|belief|institution)",
+        "name_ru",
+        "roles[]",
+        "pf_ids",
+        "calendar_refs",
+        "items_refs",
+        "sensory_cues (звон, пение, запах ладана)",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.religious_context (пусто)",
+        "WK claims (social-institutions)"
+      ],
+      "consumers": [
+        "WK (conversation, npc_decision)",
+        "acoustic (звоны)",
+        "churchyard / church_interior сцены"
+      ],
+      "existing_sources": [
+        "wk:social-institutions, reconstructed-public-world-v1 — approved (partial)",
+        "roles/occupations TSV attitude_to_church, typical_religious_behavior",
+        "rus13 region_profile religion — draft"
+      ],
+      "gaps_ru": "religious_context пуст; нет таблицы обрядов и верований.",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: верования имеют confidence и note; службы ссылаются на calendar; роли резолвятся."
+    },
+    {
+      "id": "historical_events",
+      "name_ru": "События 1230–1250 и их фазы",
+      "group": "history-events-knowledge",
+      "entities_ru": "35 событий / 175 фаз (голод и мор 1230–31, смены князей, походы, пожары, торговля, погода): даты, видимые признаки, слухи, эффекты на дороги, торг, власть, NPC, что может знать игрок.",
+      "key_fields": [
+        "ev_id",
+        "phase_id",
+        "date_range",
+        "event_type",
+        "visible_signs",
+        "rumors[]",
+        "effects{roads, market, power, npc, items}",
+        "player_knowable",
+        "node_refs_v17",
+        "chronicle_ref (год/статья)",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.historical_events, historical_event_phases (пусто)",
+        "temporal historical_phase_local_effect_rules"
+      ],
+      "consumers": [
+        "turn time-update (в v17 historical_events захардкожен [] — нужен код)",
+        "rumors",
+        "WK"
+      ],
+      "existing_sources": [
+        "audit novgorod_historical_timeline_1230_1250_v1.json — 35/175, draft LLM, нужен аудит",
+        "temporal-v4 novgorod_famine_1230 — approved",
+        "world_base historical_anchors 28 — draft",
+        "НПЛ: Michell & Forbes 1914, Насонов 1950 — A"
+      ],
+      "gaps_ru": "Черновик LLM не проверен по летописи; привязки к графу v6, не к v17.",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждая фаза имеет chronicle_ref на год/статью; даты внутри 1230–1250; каждая фаза с node_refs резолвит узлы; отчёт фаз, отклонённых при аудите."
+    },
+    {
+      "id": "historical_figures",
+      "name_ru": "Исторические лица",
+      "group": "history-events-knowledge",
+      "entities_ru": "Князья, посадники, тысяцкие, архиепископ и другие засвидетельствованные лица — только как authority-записи (LLM не выдумывает): даты, должности, места, связи.",
+      "key_fields": [
+        "hf_id",
+        "name_ru",
+        "office",
+        "office_start/end",
+        "event_refs",
+        "location_refs",
+        "significance",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.historical_figures (пусто)"
+      ],
+      "consumers": [
+        "D1 проверка биографии (запрет выдуманных лиц)",
+        "events",
+        "WK"
+      ],
+      "existing_sources": [
+        "audit status_rules — 12 historical_key_npc_profiles (draft)",
+        "rus13tpl novgorod_key_npc_seeds_v1.json — draft",
+        "corpus historical_events_and_figures.txt"
+      ],
+      "gaps_ru": "Таблица пуста; черновые профили не проверены.",
+      "fill_method": "research",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждое лицо имеет ≥1 ссылку на летопись/научный свод; сроки должностей не перекрываются для одной должности."
+    },
+    {
+      "id": "knowledge_rumors",
+      "name_ru": "Знание, слухи, грамотность",
+      "group": "history-events-knowledge",
+      "entities_ru": "Шаблоны слухов (источник, носитель, искажение), профили знания по роли (местное, дорожное, торговое, правовое), грамотность по роли, жанры берестяных грамот как пулы текста.",
+      "key_fields": [
+        "kn_id",
+        "kind (rumor|knowledge_profile|literacy|letter_genre)",
+        "role_refs",
+        "topic",
+        "event_ref",
+        "carrier_rule",
+        "distortion_rule",
+        "text_pool_ref",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.rumor_templates, region_npc_knowledge, region_knowledge_profiles (пусто)",
+        "item_text_pools (стык с D9)"
+      ],
+      "consumers": [
+        "conversation (WK)",
+        "нет потребителя в v17 для rumor_templates"
+      ],
+      "existing_sources": [
+        "rus13tpl rumor_templates, common_knowledge, route_knowledge_rules, deferred_event_templates — draft",
+        "occupations TSV typical_rumors_known/typical_*_knowledge",
+        "audit timeline слухи по фазам — draft"
+      ],
+      "gaps_ru": "Таблицы пусты; жанры грамот не собраны.",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждый слух ссылается на событие или явный generic-класс; роли резолвятся; тексты грамот только в пулах."
+    },
+    {
+      "id": "transport_travel",
+      "name_ru": "Транспорт, пути, ночлег",
+      "group": "transport-health-recreation",
+      "entities_ru": "Однодеревки, набойные лодки, плоты, ладьи (проверить), сани, телеги, верховые и вьючные лошади, перевозы, броды, мосты, волоки, зимник; скорости по способу и сезону, опасности, проводники, ночлег и гостеприимство, дорожные вести.",
+      "key_fields": [
+        "tr_id",
+        "kind",
+        "name_ru",
+        "capacity",
+        "speed_band_by_season",
+        "route_template_refs",
+        "hazards",
+        "required_animals",
+        "hospitality_rules",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "world_base.transport_templates (пусто)",
+        "route_templates (21)",
+        "spatial_v3_traversal_* (пусто в v17)",
+        "spatial_v3_movement_method_cost_profiles"
+      ],
+      "consumers": [
+        "movement cost / traversal",
+        "лодочник, проводник NPC",
+        "WK"
+      ],
+      "existing_sources": [
+        "world_db route_templates 21 — draft",
+        "v17 movement costs 9, transition env 8 — approved",
+        "rus13tpl route_season_modifiers 29 — draft",
+        "audit route_guidance 16",
+        "v16 traversal rows (risk 3, hazards 10, checks 2) — потеряны в v17"
+      ],
+      "gaps_ru": "Нет шаблонов транспорта; traversal-строки v16 потеряны; семейство hospitality-travel в WK partial.",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: каждый вид транспорта резолвит route_template; сезонная недоступность согласована (лодка зимой нет, сани летом нет); тяжеловозов нет."
+    },
+    {
+      "id": "health_body",
+      "name_ru": "Здоровье, тело, болезни, уход",
+      "group": "transport-health-recreation",
+      "entities_ru": "Травмы и течение, болезни и эпидемии (голодные 1230–31), переохлаждение, жара, сырость, голод, жажда, усталость, беременность, роды, детство, старость, увечья; практика ухода эпохи и кто её оказывает; признаки на теле для прозы.",
+      "key_fields": [
+        "hl_id",
+        "condition",
+        "cause",
+        "course_stages",
+        "visible_signs",
+        "period_care_practice",
+        "caregiver_roles",
+        "season_risk",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "temporal body_time_effect_profile",
+        "weather_profiles.body_state_risk",
+        "seasonal_rules.disease_effects",
+        "WK biology_physiology"
+      ],
+      "consumers": [
+        "body state (turn)",
+        "WK",
+        "healer/midwife NPC"
+      ],
+      "existing_sources": [
+        "wk: biology_physiology 476, macro-universal-health-lifecycle-v3, reconstructed-healer-practice-v1, residual-postpartum-v1, static-exposure-*, gameplay-physiology-v3 — approved",
+        "temporal-v4 body_time_effect_profiles 4 — approved"
+      ],
+      "gaps_ru": "Семейства sickness-symptoms-disability и human-lifecycle partial; нет структурированной таблицы состояний.",
+      "fill_method": "mixed",
+      "priority": "M3",
+      "acceptance_ru": "Скрипт: практики помечены как историческая практика; каждое состояние имеет visible_signs; ссылки резолвятся."
+    },
+    {
+      "id": "recreation_culture",
+      "name_ru": "Досуг, музыка, игры, устная культура",
+      "group": "transport-health-recreation",
+      "entities_ru": "Игры (шахматы, тавлеи — проверить, кости, бабки, детские игрушки), инструменты (гусли, дудки, рожки), песни и сказывание, братчины, скоморохи: где и когда, звуки.",
+      "key_fields": [
+        "rc_id",
+        "kind",
+        "name_ru",
+        "items_refs",
+        "occasions (calendar_refs)",
+        "pf_ids",
+        "roles",
+        "sounds",
+        "source_refs",
+        "confidence"
+      ],
+      "target_tables": [
+        "region_activity_profiles",
+        "item_templates (игрушки, инструменты)",
+        "WK claims"
+      ],
+      "consumers": [
+        "acoustic / сцены праздников",
+        "WK"
+      ],
+      "existing_sources": [
+        "matcult игрушки/инструменты — кандидат",
+        "wk: семейство recreation-oral-culture missing (partial)"
+      ],
+      "gaps_ru": "Нет предметов игр и инструментов в v5; нет таблицы досуга.",
+      "fill_method": "research",
+      "priority": "later",
+      "acceptance_ru": "Скрипт: каждый досуг ссылается на календарь или тип дня; предметы резолвятся; анахронизмы (карты игральные) в denylist."
+    }
+  ]
+}

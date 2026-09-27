@@ -1,0 +1,2678 @@
+{
+ "source": "SRC_MALPUK1983",
+ "count": 250,
+ "species": {
+  "1": {
+   "name_ru": "КРАСНОЗОБАЯ ГАГАРА",
+   "latin_heading": "Gavia Stellata",
+   "page": "https://zoomet.ru/mal/malchevski_1.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "10": {
+   "name_ru": "ВОЛЧОК",
+   "latin_heading": "Ixobrychus Minutus",
+   "page": "https://zoomet.ru/mal/malchevski_10.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "100": {
+   "name_ru": "ГАРШНЕП",
+   "latin_heading": "Lymnocryptes Minima",
+   "page": "https://zoomet.ru/mal/malchevski_100.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "101": {
+   "name_ru": "ДУПЕЛЬ",
+   "latin_heading": "Gallinago Media",
+   "page": "https://zoomet.ru/mal/malchevski_101.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "102": {
+   "name_ru": "БЕКАС",
+   "latin_heading": "Gallinago Gallinago",
+   "page": "https://zoomet.ru/mal/malchevski_102.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "103": {
+   "name_ru": "ВАЛЬДШНЕП",
+   "latin_heading": "Scolopax Rusticola",
+   "page": "https://zoomet.ru/mal/malchevski_103.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "104": {
+   "name_ru": "БОЛЬШОЙ КРОНШНЕП",
+   "latin_heading": "Numenius Arquata",
+   "page": "https://zoomet.ru/mal/malchevski_104.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "105": {
+   "name_ru": "СРЕДНИЙ КРОНШНЕП",
+   "latin_heading": "Nimenius Phaeopus",
+   "page": "https://zoomet.ru/mal/malchevski_105.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "106": {
+   "name_ru": "БОЛЬШОЙ ВЕРЕТЕННИК",
+   "latin_heading": "Limosa Limosa",
+   "page": "https://zoomet.ru/mal/malchevski_106.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "107": {
+   "name_ru": "МАЛЫЙ ВЕРЕТЕННИК",
+   "latin_heading": "Limosa Lapponica",
+   "page": "https://zoomet.ru/mal/malchevski_107.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "108": {
+   "name_ru": "СРЕДНИЙ ПОМОРНИК",
+   "latin_heading": "Stercorarius Pomarinus",
+   "page": "https://zoomet.ru/mal/malchevski_108.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "109": {
+   "name_ru": "КОРОТКОХВОСТЫЙ ПОМОРНИК",
+   "latin_heading": "Stercorarius Parasiticus",
+   "page": "https://zoomet.ru/mal/malchevski_109.html",
+   "status_flags": [
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "11": {
+   "name_ru": "СЕРАЯ ЦАПЛЯ",
+   "latin_heading": "Ardea Cinerea",
+   "page": "https://zoomet.ru/mal/malchevski_11.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "110": {
+   "name_ru": "СИЗАЯ ЧАЙКА",
+   "latin_heading": "Larus Canus",
+   "page": "https://zoomet.ru/mal/malchevski_110.html",
+   "status_flags": [
+    "resident",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "111": {
+   "name_ru": "СЕРЕБРИСТАЯ ЧАЙКА",
+   "latin_heading": "Larus Argentatus",
+   "page": "https://zoomet.ru/mal/malchevski_111.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "112": {
+   "name_ru": "КЛУША",
+   "latin_heading": "Larus Fuscus",
+   "page": "https://zoomet.ru/mal/malchevski_112.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "113": {
+   "name_ru": "МОРСКАЯ ЧАЙКА",
+   "latin_heading": "Larus Marinus",
+   "page": "https://zoomet.ru/mal/malchevski_113.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "114": {
+   "name_ru": "ОЗЕРНАЯ ЧАЙКА",
+   "latin_heading": "Larus Ridibundus",
+   "page": "https://zoomet.ru/mal/malchevski_114.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "115": {
+   "name_ru": "МАЛАЯ ЧАЙКА",
+   "latin_heading": "Larus Minutus",
+   "page": "https://zoomet.ru/mal/malchevski_115.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "116": {
+   "name_ru": "МОЕВКА",
+   "latin_heading": "Rissa Tridactyla",
+   "page": "https://zoomet.ru/mal/malchevski_116.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "117": {
+   "name_ru": "ЧЕРНАЯ КРАЧКА",
+   "latin_heading": "Chlidonias Nigra",
+   "page": "https://zoomet.ru/mal/malchevski_117.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "118": {
+   "name_ru": "РЕЧНАЯ КРАЧКА",
+   "latin_heading": "Sterna Hirundo",
+   "page": "https://zoomet.ru/mal/malchevski_118.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce",
+    "rare"
+   ]
+  },
+  "119": {
+   "name_ru": "ПОЛЯРНАЯ КРАЧКА",
+   "latin_heading": "Sterna Paradisaea",
+   "page": "https://zoomet.ru/mal/malchevski_119.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "12": {
+   "name_ru": "БЕЛЫЙ АИСТ",
+   "latin_heading": "Ciconia Ciconia",
+   "page": "https://zoomet.ru/mal/malchevski_12.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "120": {
+   "name_ru": "МАЛАЯ КРАЧКА",
+   "latin_heading": "Sterna Albifrons",
+   "page": "https://zoomet.ru/mal/malchevski_120.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "121": {
+   "name_ru": "ЧЕГРАВА",
+   "latin_heading": "Hydroprogne Caspia",
+   "page": "https://zoomet.ru/mal/malchevski_121.html",
+   "status_flags": [],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "122": {
+   "name_ru": "ГАГАРКА",
+   "latin_heading": "Alca Torda",
+   "page": "https://zoomet.ru/mal/malchevski_122.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "123": {
+   "name_ru": "СИЗЫЙ ГОЛУБЬ",
+   "latin_heading": "Columba Livia",
+   "page": "https://zoomet.ru/mal/malchevski_123.html",
+   "status_flags": [
+    "resident"
+   ],
+   "abundance_flags_head": []
+  },
+  "124": {
+   "name_ru": "КЛИНТУХ",
+   "latin_heading": "Columba Oenas",
+   "page": "https://zoomet.ru/mal/malchevski_124.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "125": {
+   "name_ru": "ВЯХИРЬ",
+   "latin_heading": "Columba Palumbus",
+   "page": "https://zoomet.ru/mal/malchevski_125.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "126": {
+   "name_ru": "ГОРЛИЦА",
+   "latin_heading": "Streptopelia Turtur",
+   "page": "https://zoomet.ru/mal/malchevski_126.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "127": {
+   "name_ru": "КОЛЬЧАТАЯ ГОРЛИЦА",
+   "latin_heading": "Streptopelia Decaocto",
+   "page": "https://zoomet.ru/mal/malchevski_127.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "128": {
+   "name_ru": "КУКУШКА",
+   "latin_heading": "Cuculus Canorus",
+   "page": "https://zoomet.ru/mal/malchevski_128.html",
+   "status_flags": [],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "129": {
+   "name_ru": "СПЛЮШКА",
+   "latin_heading": "Otus Scops",
+   "page": "https://zoomet.ru/mal/malchevski_129.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "13": {
+   "name_ru": "ЧЕРНЫЙ АИСТ",
+   "latin_heading": "Ciconia Nigra",
+   "page": "https://zoomet.ru/mal/malchevski_13.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "130": {
+   "name_ru": "ФИЛИН",
+   "latin_heading": "Bubo Bubo",
+   "page": "https://zoomet.ru/mal/malchevski_130.html",
+   "status_flags": [
+    "resident",
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "131": {
+   "name_ru": "БЕЛАЯ СОВА",
+   "latin_heading": "Nyctea Scandiaca",
+   "page": "https://zoomet.ru/mal/malchevski_131.html",
+   "status_flags": [
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "132": {
+   "name_ru": "ЯСТРЕБИНАЯ СОВА",
+   "latin_heading": "Surnia Ulula",
+   "page": "https://zoomet.ru/mal/malchevski_132.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "133": {
+   "name_ru": "ВОРОБЬИНЫЙ СЫЧИК",
+   "latin_heading": "Glaucidium Passerinum",
+   "page": "https://zoomet.ru/mal/malchevski_133.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "134": {
+   "name_ru": "БОРОДАТАЯ НЕЯСЫТЬ",
+   "latin_heading": "Strix Nebulosa",
+   "page": "https://zoomet.ru/mal/malchevski_134.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "135": {
+   "name_ru": "СЕРАЯ НЕЯСЫТЬ",
+   "latin_heading": "Strix Aluco",
+   "page": "https://zoomet.ru/mal/malchevski_135.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "136": {
+   "name_ru": "ДЛИННОХВОСТАЯ НЕЯСЫТЬ",
+   "latin_heading": "Strix Uralensis",
+   "page": "https://zoomet.ru/mal/malchevski_136.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "137": {
+   "name_ru": "УШАСТАЯ СОВА",
+   "latin_heading": "Asio Otus",
+   "page": "https://zoomet.ru/mal/malchevski_137.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "139": {
+   "name_ru": "МОХНОНОГИЙ СЫЧ",
+   "latin_heading": "Aegolius Funereus",
+   "page": "https://zoomet.ru/mal/malchevski_139.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "14": {
+   "name_ru": "ЛЕБЕДЬ - ШИПУН",
+   "latin_heading": "Cygnys Olor",
+   "page": "https://zoomet.ru/mal/malchevski_14.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "140": {
+   "name_ru": "КОЗОДОЙ",
+   "latin_heading": "Caprimulgus Europaeus",
+   "page": "https://zoomet.ru/mal/malchevski_140.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "141": {
+   "name_ru": "ЧЕРНЫЙ СТРИЖ",
+   "latin_heading": "Apus Apus",
+   "page": "https://zoomet.ru/mal/malchevski_141.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "142": {
+   "name_ru": "ГОЛУБОЙ ЗИМОРОДОК",
+   "latin_heading": "Alcedo Atthis",
+   "page": "https://zoomet.ru/mal/malchevski_142.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "143": {
+   "name_ru": "СИЗОВОРОНКА",
+   "latin_heading": "Coracias Garrulus",
+   "page": "https://zoomet.ru/mal/malchevski_143.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "144": {
+   "name_ru": "УДОД",
+   "latin_heading": "Upupa Epops",
+   "page": "https://zoomet.ru/mal/malchevski_144.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "145": {
+   "name_ru": "ВЕРТИШЕЙКА",
+   "latin_heading": "Jynx Torquilla",
+   "page": "https://zoomet.ru/mal/malchevski_145.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "146": {
+   "name_ru": "ЖЕЛНА",
+   "latin_heading": "Dryocopus Martius",
+   "page": "https://zoomet.ru/mal/malchevski_146.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "147": {
+   "name_ru": "ЗЕЛЕНЫЙ ДЯТЕЛ",
+   "latin_heading": "Picus Viridis",
+   "page": "https://zoomet.ru/mal/malchevski_147.html",
+   "status_flags": [
+    "breeding",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "148": {
+   "name_ru": "СЕДОЙ ДЯТЕЛ",
+   "latin_heading": "Picus Canus",
+   "page": "https://zoomet.ru/mal/malchevski_148.html",
+   "status_flags": [
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "149": {
+   "name_ru": "БОЛЬШОЙ ПЕСТРЫЙ ДЯТЕЛ",
+   "latin_heading": "Dendrocopos Major",
+   "page": "https://zoomet.ru/mal/malchevski_149.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "15": {
+   "name_ru": "ЛЕБЕДЬ-КЛИКУН",
+   "latin_heading": "Cygnus Cygnus",
+   "page": "https://zoomet.ru/mal/malchevski_15.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "150": {
+   "name_ru": "БЕЛОСПИННЫЙ ДЯТЕЛ",
+   "latin_heading": "Dendrocopos Leucotos",
+   "page": "https://zoomet.ru/mal/malchevski_150.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "151": {
+   "name_ru": "МАЛЫЙ ПЕСТРЫЙ ДЯТЕЛ",
+   "latin_heading": "Dendrocopos Minor",
+   "page": "https://zoomet.ru/mal/malchevski_151.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "152": {
+   "name_ru": "ТРЕХПАЛЫЙ ДЯТЕЛ",
+   "latin_heading": "Picoides Tridactylus",
+   "page": "https://zoomet.ru/mal/malchevski_152.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "153": {
+   "name_ru": "ХОХЛАТЫЙ ЖАВОРОНОК",
+   "latin_heading": "Galerida Cristata",
+   "page": "https://zoomet.ru/mal/malchevski_153.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "154": {
+   "name_ru": "ЛЕСНОЙ ЖАВОРОНОК",
+   "latin_heading": "Lullula Arborea",
+   "page": "https://zoomet.ru/mal/malchevski_154.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "155": {
+   "name_ru": "ПОЛЕВОЙ ЖАВОРОНОК",
+   "latin_heading": "Alauda Arvensis",
+   "page": "https://zoomet.ru/mal/malchevski_155.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "156": {
+   "name_ru": "РОГАТЫЙ ЖАВОРОНОК",
+   "latin_heading": "Eremophila Alpestris",
+   "page": "https://zoomet.ru/mal/malchevski_156.html",
+   "status_flags": [
+    "passage",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "157": {
+   "name_ru": "БЕРЕГОВАЯ ЛАСТОЧКА",
+   "latin_heading": "Riparia Riparia",
+   "page": "https://zoomet.ru/mal/malchevski_157.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "158": {
+   "name_ru": "ДЕРЕВЕНСКАЯ ЛАСТОЧКА",
+   "latin_heading": "Hirundo Rustica",
+   "page": "https://zoomet.ru/mal/malchevski_158.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "159": {
+   "name_ru": "ГОРОДСКАЯ ЛАСТОЧКА",
+   "latin_heading": "Delichon Urbica",
+   "page": "https://zoomet.ru/mal/malchevski_159.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "16": {
+   "name_ru": "ТУНДРЯНЫЙ ЛЕБЕДЬ",
+   "latin_heading": "Cygnus Bewickii",
+   "page": "https://zoomet.ru/mal/malchevski_16.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "160": {
+   "name_ru": "ЖЕЛТАЯ ТРЯСОГУЗКА",
+   "latin_heading": "Motacilla Flava",
+   "page": "https://zoomet.ru/mal/malchevski_160.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "161": {
+   "name_ru": "БЕЛАЯ ТРЯСОГУЗКА",
+   "latin_heading": "Motacilla Alba",
+   "page": "https://zoomet.ru/mal/malchevski_161.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "162": {
+   "name_ru": "ПОЛЕВОЙ КОНЕК",
+   "latin_heading": "Anthus Campestris",
+   "page": "https://zoomet.ru/mal/malchevski_162.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "163": {
+   "name_ru": "ЛЕСНОЙ КОНЕК",
+   "latin_heading": "Anthus Trivialis",
+   "page": "https://zoomet.ru/mal/malchevski_163.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "164": {
+   "name_ru": "ЛУГОВОЙ КОНЕК",
+   "latin_heading": "Anthus Pratensis",
+   "page": "https://zoomet.ru/mal/malchevski_164.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "165": {
+   "name_ru": "КРАСНОЗОБЫИ КОНЕК",
+   "latin_heading": "Anthus Cervina",
+   "page": "https://zoomet.ru/mal/malchevski_165.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "166": {
+   "name_ru": "ЖУЛАН",
+   "latin_heading": "Lanius Collurio",
+   "page": "https://zoomet.ru/mal/malchevski_166.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "167": {
+   "name_ru": "БОЛЬШОЙ СОРОКОПУТ",
+   "latin_heading": "Lanius Excubitor",
+   "page": "https://zoomet.ru/mal/malchevski_167.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "168": {
+   "name_ru": "СВИРИСТЕЛЬ",
+   "latin_heading": "Bombycilla Garrulus",
+   "page": "https://zoomet.ru/mal/malchevski_168.html",
+   "status_flags": [
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "169": {
+   "name_ru": "ОЛЯПКА",
+   "latin_heading": "Cinclus Cinclus",
+   "page": "https://zoomet.ru/mal/malchevski_169.html",
+   "status_flags": [
+    "resident",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "17": {
+   "name_ru": "СЕРЫЙ ГУСЬ",
+   "latin_heading": "Anser Anser",
+   "page": "https://zoomet.ru/mal/malchevski_17.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "170": {
+   "name_ru": "КРАПИВНИК",
+   "latin_heading": "Troglodytes Troglodytes",
+   "page": "https://zoomet.ru/mal/malchevski_170.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "171": {
+   "name_ru": "ЛЕСНАЯ ЗАВИРУШКА",
+   "latin_heading": "Prunella Modularis",
+   "page": "https://zoomet.ru/mal/malchevski_171.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "172": {
+   "name_ru": "ЗАРЯНКА",
+   "latin_heading": "Erithacus Rubecula",
+   "page": "https://zoomet.ru/mal/malchevski_172.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "173": {
+   "name_ru": "СОЛОВЕЙ",
+   "latin_heading": "Luscinia Luscinia",
+   "page": "https://zoomet.ru/mal/malchevski_173.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "174": {
+   "name_ru": "ВАРАКУШКА",
+   "latin_heading": "Cyanosylvia Svecica",
+   "page": "https://zoomet.ru/mal/malchevski_174.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce",
+    "rare"
+   ]
+  },
+  "175": {
+   "name_ru": "СИНЕХВОСТКА",
+   "latin_heading": "Tarsiger Cyanurus",
+   "page": "https://zoomet.ru/mal/malchevski_175.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "176": {
+   "name_ru": "ГОРИХВОСТКА - ЛЫСУШКА",
+   "latin_heading": "Phoenicurus Phoenicurus",
+   "page": "https://zoomet.ru/mal/malchevski_176.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "177": {
+   "name_ru": "ЛУГОВОЙ ЧЕКАН",
+   "latin_heading": "Saxicola Rubetra",
+   "page": "https://zoomet.ru/mal/malchevski_177.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "178": {
+   "name_ru": "КАМЕНКА",
+   "latin_heading": "Oenanthe Oenanthe",
+   "page": "https://zoomet.ru/mal/malchevski_178.html",
+   "status_flags": [],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "179": {
+   "name_ru": "ЧЕРНЫЙ ДРОЗД",
+   "latin_heading": "Turdus Merula",
+   "page": "https://zoomet.ru/mal/malchevski_179.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "18": {
+   "name_ru": "БЕЛОЛОБЫЙ ГУСЬ",
+   "latin_heading": "Anser Albifrons",
+   "page": "https://zoomet.ru/mal/malchevski_18.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "180": {
+   "name_ru": "РЯБИННИК",
+   "latin_heading": "Turdus Pilaris",
+   "page": "https://zoomet.ru/mal/malchevski_180.html",
+   "status_flags": [
+    "resident",
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "181": {
+   "name_ru": "БЕЛОБРОВИК",
+   "latin_heading": "Turdus Iliacus",
+   "page": "https://zoomet.ru/mal/malchevski_181.html",
+   "status_flags": [
+    "breeding",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "182": {
+   "name_ru": "ПЕВЧИЙ ДРОЗД",
+   "latin_heading": "Turdus Philomelos",
+   "page": "https://zoomet.ru/mal/malchevski_182.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "183": {
+   "name_ru": "ДЕРЯБА",
+   "latin_heading": "Turdus Viscivorus",
+   "page": "https://zoomet.ru/mal/malchevski_183.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "184": {
+   "name_ru": "РЕЧНОЙ СВЕРЧОК",
+   "latin_heading": "Locustella Fluviatilis",
+   "page": "https://zoomet.ru/mal/malchevski_184.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "185": {
+   "name_ru": "СВЕРЧОК",
+   "latin_heading": "Locustella Naevia",
+   "page": "https://zoomet.ru/mal/malchevski_185.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "186": {
+   "name_ru": "БАРСУЧОК",
+   "latin_heading": "Acrocephalus Schoenobaenus",
+   "page": "https://zoomet.ru/mal/malchevski_186.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "187": {
+   "name_ru": "САДОВАЯ КАМЫШЕВКА",
+   "latin_heading": "Acrocephalus Dumetorum",
+   "page": "https://zoomet.ru/mal/malchevski_187.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "188": {
+   "name_ru": "БОЛОТНАЯ КАМЫШЕВКА",
+   "latin_heading": "Acrocephalus Palustris",
+   "page": "https://zoomet.ru/mal/malchevski_188.html",
+   "status_flags": [],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "189": {
+   "name_ru": "ТРОСТНИКОВАЯ КАМЫШЕВКА",
+   "latin_heading": "Acrocephalus Scirpaceus",
+   "page": "https://zoomet.ru/mal/malchevski_189.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "19": {
+   "name_ru": "ПИСКУЛЬКА",
+   "latin_heading": "Anser Erythropus",
+   "page": "https://zoomet.ru/mal/malchevski_19.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "190": {
+   "name_ru": "ДРОЗДОВИДНАЯ КАМЫШЕВКА",
+   "latin_heading": "Acrocephalus Arundinaceus",
+   "page": "https://zoomet.ru/mal/malchevski_190.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "191": {
+   "name_ru": "ПЕРЕСМЕШКА",
+   "latin_heading": "Hippolais Icterina",
+   "page": "https://zoomet.ru/mal/malchevski_191.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "192": {
+   "name_ru": "БОРМОТУШКА",
+   "latin_heading": "Hippolais Caligata",
+   "page": "https://zoomet.ru/mal/malchevski_192.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "193": {
+   "name_ru": "ЯСТРЕБИНАЯ СЛАВКА",
+   "latin_heading": "Sylvia Nisoria",
+   "page": "https://zoomet.ru/mal/malchevski_193.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "194": {
+   "name_ru": "САДОВАЯ СЛАВКА",
+   "latin_heading": "Sylvia Borin",
+   "page": "https://zoomet.ru/mal/malchevski_194.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "195": {
+   "name_ru": "СЛАВКА ЧЕРНОГОЛОВАЯ",
+   "latin_heading": "Sylvia Atricapilla",
+   "page": "https://zoomet.ru/mal/malchevski_195.html",
+   "status_flags": [
+    "breeding",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "196": {
+   "name_ru": "СЕРАЯ СЛАВКА",
+   "latin_heading": "Sylvia Communis",
+   "page": "https://zoomet.ru/mal/malchevski_196.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "197": {
+   "name_ru": "СЛАВКА - ЗАВИРУШКА",
+   "latin_heading": "Sylvia Curruca",
+   "page": "https://zoomet.ru/mal/malchevski_197.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "198": {
+   "name_ru": "ВЕСНИЧКА",
+   "latin_heading": "Phylloscopus Trochilus",
+   "page": "https://zoomet.ru/mal/malchevski_198.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "199": {
+   "name_ru": "ТЕНЬКОВКА",
+   "latin_heading": "Phylloscopus Collybita",
+   "page": "https://zoomet.ru/mal/malchevski_199.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "2": {
+   "name_ru": "ЧЕРНОЗОБАЯ ГАГАРА",
+   "latin_heading": "Gavia Arctica",
+   "page": "https://zoomet.ru/mal/malchevski_2.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "20": {
+   "name_ru": "ГУМЕННИК",
+   "latin_heading": "Anser Fabalis",
+   "page": "https://zoomet.ru/mal/malchevski_20.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "200": {
+   "name_ru": "ПЕНОЧКА-ТРЕЩОТКА",
+   "latin_heading": "Phylloscopus Sibilatrix",
+   "page": "https://zoomet.ru/mal/malchevski_200.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "201": {
+   "name_ru": "ТАЛОВКА",
+   "latin_heading": "Phylloscopus Borealis",
+   "page": "https://zoomet.ru/mal/malchevski_201.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "202": {
+   "name_ru": "ЗЕЛЕНАЯ ПЕНОЧКА",
+   "latin_heading": "Phylloscopus Trochiloides",
+   "page": "https://zoomet.ru/mal/malchevski_202.html",
+   "status_flags": [
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "203": {
+   "name_ru": "ЖЕЛТОГОЛОВЫЙ КОРОЛЕК",
+   "latin_heading": "Regulus Regulus",
+   "page": "https://zoomet.ru/mal/malchevski_203.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "204": {
+   "name_ru": "СЕРАЯ МУХОЛОВКА",
+   "latin_heading": "Muscicapa Striata",
+   "page": "https://zoomet.ru/mal/malchevski_204.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "207": {
+   "name_ru": "ДЛИННОХВОСТАЯ СИНИЦА",
+   "latin_heading": "Aegithalos Caudatus",
+   "page": "https://zoomet.ru/mal/malchevski_207.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "208": {
+   "name_ru": "РЕМЕЗ",
+   "latin_heading": "Remiz Pendulinus",
+   "page": "https://zoomet.ru/mal/malchevski_208.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "209": {
+   "name_ru": "ГАИЧКА",
+   "latin_heading": "Parus Palustris",
+   "page": "https://zoomet.ru/mal/malchevski_209.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "21": {
+   "name_ru": "БЕЛОЩЕКАЯ КАЗАРКА",
+   "latin_heading": "Branta Leucopsis",
+   "page": "https://zoomet.ru/mal/malchevski_21.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "210": {
+   "name_ru": "ПУХЛЯК",
+   "latin_heading": "Parus Montanus",
+   "page": "https://zoomet.ru/mal/malchevski_210.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "211": {
+   "name_ru": "МОСКОВКА",
+   "latin_heading": "Parus Ater",
+   "page": "https://zoomet.ru/mal/malchevski_211.html",
+   "status_flags": [
+    "resident",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "212": {
+   "name_ru": "ХОХЛАТАЯ СИНИЦА",
+   "latin_heading": "Parus Cristatus",
+   "page": "https://zoomet.ru/mal/malchevski_212.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "213": {
+   "name_ru": "БОЛЬШАЯ СИНИЦА",
+   "latin_heading": "Parus Major",
+   "page": "https://zoomet.ru/mal/malchevski_213.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "214": {
+   "name_ru": "ЛАЗОРЕВКА",
+   "latin_heading": "Parus Caeruleus",
+   "page": "https://zoomet.ru/mal/malchevski_214.html",
+   "status_flags": [
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "215": {
+   "name_ru": "ПОПОЛЗЕНЬ",
+   "latin_heading": "Sitta Europaea",
+   "page": "https://zoomet.ru/mal/malchevski_215.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "216": {
+   "name_ru": "ПИЩУХА",
+   "latin_heading": "Certhia Familiaris",
+   "page": "https://zoomet.ru/mal/malchevski_216.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "217": {
+   "name_ru": "ОБЫКНОВЕННАЯ ОВСЯНКА",
+   "latin_heading": "Emberiza Citrinella",
+   "page": "https://zoomet.ru/mal/malchevski_217.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "218": {
+   "name_ru": "САДОВАЯ ОВСЯНКА",
+   "latin_heading": "Emberiza Hortulana",
+   "page": "https://zoomet.ru/mal/malchevski_218.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "219": {
+   "name_ru": "ОВСЯНКА-КРОШКА",
+   "latin_heading": "Emberiza Pusilla",
+   "page": "https://zoomet.ru/mal/malchevski_219.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "22": {
+   "name_ru": "ЧЕРНАЯ КАЗАРКА",
+   "latin_heading": "Branta Bernicla",
+   "page": "https://zoomet.ru/mal/malchevski_22.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "220": {
+   "name_ru": "ОВСЯНКА-РЕМЕЗ",
+   "latin_heading": "Emberiza Rustica",
+   "page": "https://zoomet.ru/mal/malchevski_220.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "221": {
+   "name_ru": "ДУБРОВНИК",
+   "latin_heading": "Emberiza Aureola",
+   "page": "https://zoomet.ru/mal/malchevski_221.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "222": {
+   "name_ru": "КАМЫШЕВАЯ ОВСЯНКА",
+   "latin_heading": "Emberiza Schoeniclus",
+   "page": "https://zoomet.ru/mal/malchevski_222.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "223": {
+   "name_ru": "ЛАПЛАНДСКИЙ ПОДОРОЖНИК",
+   "latin_heading": "Calcarius Lapponicus",
+   "page": "https://zoomet.ru/mal/malchevski_223.html",
+   "status_flags": [
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "224": {
+   "name_ru": "ПУНОЧКА",
+   "latin_heading": "Plectrophenax Nivalis",
+   "page": "https://zoomet.ru/mal/malchevski_224.html",
+   "status_flags": [
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "225": {
+   "name_ru": "ЗЯБЛИК",
+   "latin_heading": "Fringilla Coelebs",
+   "page": "https://zoomet.ru/mal/malchevski_225.html",
+   "status_flags": [
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "226": {
+   "name_ru": "ЮРОК",
+   "latin_heading": "Fringilla Montifringilla",
+   "page": "https://zoomet.ru/mal/malchevski_226.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "227": {
+   "name_ru": "КАНАРЕЕЧНЫЙ ВЬЮРОК",
+   "latin_heading": "Serinus Serinus",
+   "page": "https://zoomet.ru/mal/malchevski_227.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "228": {
+   "name_ru": "ЗЕЛЕНУШКА",
+   "latin_heading": "Chloris Chloris",
+   "page": "https://zoomet.ru/mal/malchevski_228.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "229": {
+   "name_ru": "ЧИЖ",
+   "latin_heading": "Spinus Spinus",
+   "page": "https://zoomet.ru/mal/malchevski_229.html",
+   "status_flags": [
+    "resident",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "23": {
+   "name_ru": "ПЕГАНКА",
+   "latin_heading": "Tadorna Tadorna",
+   "page": "https://zoomet.ru/mal/malchevski_23.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "230": {
+   "name_ru": "ЩЕГОЛ",
+   "latin_heading": "Arduelis Carduelis",
+   "page": "https://zoomet.ru/mal/malchevski_230.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "231": {
+   "name_ru": "ЧЕЧЕТКА",
+   "latin_heading": "Acanthis Flammea",
+   "page": "https://zoomet.ru/mal/malchevski_231.html",
+   "status_flags": [
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "232": {
+   "name_ru": "ТУНДРЯНАЯ ЧЕЧЕТКА",
+   "latin_heading": "Acanthis Hornemanni",
+   "page": "https://zoomet.ru/mal/malchevski_232.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "233": {
+   "name_ru": "ГОРНАЯ КОНОПЛЯНКА",
+   "latin_heading": "Cannabina Flavirostris",
+   "page": "https://zoomet.ru/mal/malchevski_233.html",
+   "status_flags": [
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "234": {
+   "name_ru": "КОНОПЛЯНКА",
+   "latin_heading": "Cannabina Cannabina",
+   "page": "https://zoomet.ru/mal/malchevski_234.html",
+   "status_flags": [
+    "resident",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "235": {
+   "name_ru": "ЧЕЧЕВИЦА",
+   "latin_heading": "Carpodacus Erythrinus",
+   "page": "https://zoomet.ru/mal/malchevski_235.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "236": {
+   "name_ru": "ЩУР",
+   "latin_heading": "Pinicola Enucleator",
+   "page": "https://zoomet.ru/mal/malchevski_236.html",
+   "status_flags": [
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "237": {
+   "name_ru": "КЛЕСТ - СОСНОВИК",
+   "latin_heading": "Loxia Pityopsittacus",
+   "page": "https://zoomet.ru/mal/malchevski_237.html",
+   "status_flags": [],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "238": {
+   "name_ru": "КЛЕСТ - ЕЛОВИК",
+   "latin_heading": "Loxia Curvirostra",
+   "page": "https://zoomet.ru/mal/malchevski_238.html",
+   "status_flags": [
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "239": {
+   "name_ru": "БЕЛОКРЫЛЫЙ КЛЕСТ",
+   "latin_heading": "Loxia Leucoptera",
+   "page": "https://zoomet.ru/mal/malchevski_239.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "24": {
+   "name_ru": "КРЯКВА",
+   "latin_heading": "Anas Platyrhynchos",
+   "page": "https://zoomet.ru/mal/malchevski_24.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "240": {
+   "name_ru": "СНЕГИРЬ",
+   "latin_heading": "Pyrrhula Pyrrhula",
+   "page": "https://zoomet.ru/mal/malchevski_240.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "241": {
+   "name_ru": "ДУБОНОС",
+   "latin_heading": "Coccothraustes Coccothraustes",
+   "page": "https://zoomet.ru/mal/malchevski_241.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "242": {
+   "name_ru": "ДОМОВЫЙ ВОРОБЕЙ",
+   "latin_heading": "Passer Domesticus",
+   "page": "https://zoomet.ru/mal/malchevski_242.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "243": {
+   "name_ru": "ПОЛЕВОЙ ВОРОБЕЙ",
+   "latin_heading": "Passer Montanus",
+   "page": "https://zoomet.ru/mal/malchevski_243.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "244": {
+   "name_ru": "СКВОРЕЦ",
+   "latin_heading": "Sturnus Vulgaris",
+   "page": "https://zoomet.ru/mal/malchevski_244.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "245": {
+   "name_ru": "ИВОЛГА",
+   "latin_heading": "Oriolus Oriolus",
+   "page": "https://zoomet.ru/mal/malchevski_245.html",
+   "status_flags": [
+    "breeding",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "246": {
+   "name_ru": "СОЙКА",
+   "latin_heading": "Garrulus Glandarius",
+   "page": "https://zoomet.ru/mal/malchevski_246.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "247": {
+   "name_ru": "КУКША",
+   "latin_heading": "Perisoreus Infaustus",
+   "page": "https://zoomet.ru/mal/malchevski_247.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "248": {
+   "name_ru": "СОРОКА",
+   "latin_heading": "Pica Pica",
+   "page": "https://zoomet.ru/mal/malchevski_248.html",
+   "status_flags": [
+    "resident",
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "249": {
+   "name_ru": "КЕДРОВКА",
+   "latin_heading": "Nucifraga Caryocatactes",
+   "page": "https://zoomet.ru/mal/malchevski_249.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "25": {
+   "name_ru": "ЧИРОК-СВИСТУНОК",
+   "latin_heading": "Anas Crecca",
+   "page": "https://zoomet.ru/mal/malchevski_25.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "250": {
+   "name_ru": "ГАЛКА",
+   "latin_heading": "Corvus Monedula",
+   "page": "https://zoomet.ru/mal/malchevski_250.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "251": {
+   "name_ru": "ГРАЧ",
+   "latin_heading": "Corvus Frugilegus",
+   "page": "https://zoomet.ru/mal/malchevski_251.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "252": {
+   "name_ru": "СЕРАЯ ВОРОНА",
+   "latin_heading": "Corvus Cornix",
+   "page": "https://zoomet.ru/mal/malchevski_252.html",
+   "status_flags": [
+    "resident",
+    "breeding",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "253": {
+   "name_ru": "ВОРОН",
+   "latin_heading": "Corvus Corax",
+   "page": "https://zoomet.ru/mal/malchevski_253.html",
+   "status_flags": [
+    "resident",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "26": {
+   "name_ru": "СЕРАЯ УТКА",
+   "latin_heading": "Anas Strepera",
+   "page": "https://zoomet.ru/mal/malchevski_26.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "27": {
+   "name_ru": "СВИЯЗЬ",
+   "latin_heading": "Anas Penelope",
+   "page": "https://zoomet.ru/mal/malchevski_27.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "28": {
+   "name_ru": "ШИЛОХВОСТЬ",
+   "latin_heading": "Anas Acuta",
+   "page": "https://zoomet.ru/mal/malchevski_28.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "29": {
+   "name_ru": "ЧИРОК-ТРЕСКУНОК",
+   "latin_heading": "Anas Querquedula",
+   "page": "https://zoomet.ru/mal/malchevski_29.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "3": {
+   "name_ru": "МАЛАЯ ПОГАНКА",
+   "latin_heading": "Podiceps Ruficollis",
+   "page": "https://zoomet.ru/mal/malchevski_3.html",
+   "status_flags": [
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "30": {
+   "name_ru": "ШИРОКОНОСКА",
+   "latin_heading": "Anas Clypeata",
+   "page": "https://zoomet.ru/mal/malchevski_30.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "31": {
+   "name_ru": "ГАГА",
+   "latin_heading": "Somateria Mollissima",
+   "page": "https://zoomet.ru/mal/malchevski_31.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "32": {
+   "name_ru": "КРАСНОГОЛОВЫЙ НЫРОК",
+   "latin_heading": "Aythya Ferina",
+   "page": "https://zoomet.ru/mal/malchevski_32.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "33": {
+   "name_ru": "ХОХЛАТАЯ ЧЕРНЕТЬ",
+   "latin_heading": "Aythya Fuligula",
+   "page": "https://zoomet.ru/mal/malchevski_33.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "34": {
+   "name_ru": "МОРСКАЯ ЧЕРНЕТЬ",
+   "latin_heading": "Aythya Marila",
+   "page": "https://zoomet.ru/mal/malchevski_34.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "35": {
+   "name_ru": "ТУРПАН",
+   "latin_heading": "Melanitta Fusca",
+   "page": "https://zoomet.ru/mal/malchevski_35.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "36": {
+   "name_ru": "СИНЬГА",
+   "latin_heading": "Melanitta Nigra",
+   "page": "https://zoomet.ru/mal/malchevski_36.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "37": {
+   "name_ru": "МОРЯНКА",
+   "latin_heading": "Clangula Hyemalis",
+   "page": "https://zoomet.ru/mal/malchevski_37.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "38": {
+   "name_ru": "ГОГОЛЬ",
+   "latin_heading": "Bucephala Clangula",
+   "page": "https://zoomet.ru/mal/malchevski_38.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "39": {
+   "name_ru": "ЛУТОК",
+   "latin_heading": "Mergus Albellus",
+   "page": "https://zoomet.ru/mal/malchevski_39.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "4": {
+   "name_ru": "ЧЕРНОШЕЙНАЯ ПОГАНКА",
+   "latin_heading": "Podiceps Nigricollis",
+   "page": "https://zoomet.ru/mal/malchevski_4.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "40": {
+   "name_ru": "СРЕДНИЙ КРОХАЛЬ",
+   "latin_heading": "Mergus Serrator",
+   "page": "https://zoomet.ru/mal/malchevski_40.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "41": {
+   "name_ru": "БОЛЬШОЙ КРОХАЛЬ",
+   "latin_heading": "Mergus Merganser",
+   "page": "https://zoomet.ru/mal/malchevski_41.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "42": {
+   "name_ru": "СКОПА",
+   "latin_heading": "Pandion Haliaetus",
+   "page": "https://zoomet.ru/mal/malchevski_42.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "43": {
+   "name_ru": "ОСОЕД",
+   "latin_heading": "Pernis Apivorus",
+   "page": "https://zoomet.ru/mal/malchevski_43.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "44": {
+   "name_ru": "ЧЕРНЫЙ КОРШУН",
+   "latin_heading": "Milvus Korschun",
+   "page": "https://zoomet.ru/mal/malchevski_44.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "45": {
+   "name_ru": "ОРЛАН-БЕЛОХВОСТ",
+   "latin_heading": "Haliaeetus Albicilla",
+   "page": "https://zoomet.ru/mal/malchevski_45.html",
+   "status_flags": [
+    "breeding",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "46": {
+   "name_ru": "ТЕТЕРЕВЯТНИК",
+   "latin_heading": "Accipiter Gentilis",
+   "page": "https://zoomet.ru/mal/malchevski_46.html",
+   "status_flags": [
+    "resident",
+    "wintering",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "47": {
+   "name_ru": "ПЕРЕПЕЛЯТНИК",
+   "latin_heading": "Accipiter Nisus",
+   "page": "https://zoomet.ru/mal/malchevski_47.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "48": {
+   "name_ru": "ЗИМНЯК",
+   "latin_heading": "Buteo Lagopus",
+   "page": "https://zoomet.ru/mal/malchevski_48.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "49": {
+   "name_ru": "КАНЮК",
+   "latin_heading": "Buteo Buteo",
+   "page": "https://zoomet.ru/mal/malchevski_49.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "5": {
+   "name_ru": "КРАСНОШЕЙНАЯ ПОГАНКА",
+   "latin_heading": "Podiceps Auritus",
+   "page": "https://zoomet.ru/mal/malchevski_5.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "50": {
+   "name_ru": "БОЛЬШОЙ ПОДОРЛИК",
+   "latin_heading": "Aquila Clanga",
+   "page": "https://zoomet.ru/mal/malchevski_50.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "51": {
+   "name_ru": "МАЛЫЙ ПОДОРЛИК",
+   "latin_heading": "Aquila Pomarina",
+   "page": "https://zoomet.ru/mal/malchevski_51.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "52": {
+   "name_ru": "БЕРКУТ",
+   "latin_heading": "Aquila Chrysaetus",
+   "page": "https://zoomet.ru/mal/malchevski_52.html",
+   "status_flags": [
+    "breeding",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "53": {
+   "name_ru": "ЗМЕЕЯД",
+   "latin_heading": "Circaetus Ferox",
+   "page": "https://zoomet.ru/mal/malchevski_53.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "54": {
+   "name_ru": "ПОЛЕВОЙ ЛУНЬ",
+   "latin_heading": "Circus Cyaneus",
+   "page": "https://zoomet.ru/mal/malchevski_54.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "55": {
+   "name_ru": "СТЕПНОЙ ЛУНЬ",
+   "latin_heading": "Circus Macrourus",
+   "page": "https://zoomet.ru/mal/malchevski_55.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "56": {
+   "name_ru": "ЛУГОВОЙ ЛУНЬ",
+   "latin_heading": "Circus Pygargus",
+   "page": "https://zoomet.ru/mal/malchevski_56.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "57": {
+   "name_ru": "БОЛОТНЫЙ ЛУНЬ",
+   "latin_heading": "Circus Aeruginosus",
+   "page": "https://zoomet.ru/mal/malchevski_57.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "58": {
+   "name_ru": "ПУСТЕЛЬГА",
+   "latin_heading": "Cerchneis Tinnunculus",
+   "page": "https://zoomet.ru/mal/malchevski_58.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "59": {
+   "name_ru": "ДЕРБНИК",
+   "latin_heading": "Aesalon Columbarius",
+   "page": "https://zoomet.ru/mal/malchevski_59.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "wintering"
+   ],
+   "abundance_flags_head": []
+  },
+  "6": {
+   "name_ru": "СЕРОЩЕКАЯ ПОГАНКА",
+   "latin_heading": "Podiceps Griseigena",
+   "page": "https://zoomet.ru/mal/malchevski_6.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "60": {
+   "name_ru": "КОБЧИК",
+   "latin_heading": "Erythropus Vespertinus",
+   "page": "https://zoomet.ru/mal/malchevski_60.html",
+   "status_flags": [
+    "breeding",
+    "irruptive"
+   ],
+   "abundance_flags_head": []
+  },
+  "61": {
+   "name_ru": "ЧЕГЛОК",
+   "latin_heading": "Hypotriorchis Subbuteo",
+   "page": "https://zoomet.ru/mal/malchevski_61.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "62": {
+   "name_ru": "САПСАН",
+   "latin_heading": "Falco Peregrinus",
+   "page": "https://zoomet.ru/mal/malchevski_62.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "63": {
+   "name_ru": "СЕРАЯ КУРОПАТКА",
+   "latin_heading": "Perdix Perdix",
+   "page": "https://zoomet.ru/mal/malchevski_63.html",
+   "status_flags": [
+    "breeding",
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "64": {
+   "name_ru": "ПЕРЕПЕЛ",
+   "latin_heading": "Coturnix Coturnix",
+   "page": "https://zoomet.ru/mal/malchevski_64.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "65": {
+   "name_ru": "БЕЛАЯ КУРОПАТКА",
+   "latin_heading": "Lagopus Lagopus",
+   "page": "https://zoomet.ru/mal/malchevski_65.html",
+   "status_flags": [
+    "wintering"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "66": {
+   "name_ru": "ГЛУХАРЬ",
+   "latin_heading": "Tetrao Urogallus",
+   "page": "https://zoomet.ru/mal/malchevski_66.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "67": {
+   "name_ru": "ТЕТЕРЕВ",
+   "latin_heading": "Lyrurus Tetrix",
+   "page": "https://zoomet.ru/mal/malchevski_67.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "68": {
+   "name_ru": "РЯБЧИК",
+   "latin_heading": "Tetrastes Bonasia",
+   "page": "https://zoomet.ru/mal/malchevski_68.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "69": {
+   "name_ru": "СЕРЫЙ ЖУРАВЛЬ",
+   "latin_heading": "Grus Grus",
+   "page": "https://zoomet.ru/mal/malchevski_69.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "7": {
+   "name_ru": "ЧОМГА",
+   "latin_heading": "Podiceps Cristatus",
+   "page": "https://zoomet.ru/mal/malchevski_7.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "70": {
+   "name_ru": "КОРОСТЕЛЬ",
+   "latin_heading": "Crex Crex",
+   "page": "https://zoomet.ru/mal/malchevski_70.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "71": {
+   "name_ru": "ПОГОНЫШ",
+   "latin_heading": "Porzana Porzana",
+   "page": "https://zoomet.ru/mal/malchevski_71.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "scarce"
+   ]
+  },
+  "72": {
+   "name_ru": "ВОДЯНОЙ ПАСТУШОК",
+   "latin_heading": "Rallus Aquaticus",
+   "page": "https://zoomet.ru/mal/malchevski_72.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "73": {
+   "name_ru": "КАМЫШНИЦА",
+   "latin_heading": "Gallinula Chloropus",
+   "page": "https://zoomet.ru/mal/malchevski_73.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "74": {
+   "name_ru": "ЛЫСУХА",
+   "latin_heading": "Fulica Atra",
+   "page": "https://zoomet.ru/mal/malchevski_74.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "75": {
+   "name_ru": "ТУЛЕС",
+   "latin_heading": "Squatarola Squatarola",
+   "page": "https://zoomet.ru/mal/malchevski_75.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "76": {
+   "name_ru": "ЗОЛОТИСТАЯ РЖАНКА",
+   "latin_heading": "Pluvialis Apricarius",
+   "page": "https://zoomet.ru/mal/malchevski_76.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "77": {
+   "name_ru": "ГАЛСТУЧНИК",
+   "latin_heading": "Charadrius Hiaticula",
+   "page": "https://zoomet.ru/mal/malchevski_77.html",
+   "status_flags": [
+    "breeding",
+    "passage",
+    "irruptive"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "78": {
+   "name_ru": "МАЛЫЙ ЗУЕК",
+   "latin_heading": "Charadrius Dubius",
+   "page": "https://zoomet.ru/mal/malchevski_78.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "79": {
+   "name_ru": "ХРУСТАН",
+   "latin_heading": "Charadrius Morinellus",
+   "page": "https://zoomet.ru/mal/malchevski_79.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "8": {
+   "name_ru": "БОЛЬШОЙ БАКЛАН",
+   "latin_heading": "Phalacrocorax Carbo",
+   "page": "https://zoomet.ru/mal/malchevski_8.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "80": {
+   "name_ru": "ЧИБИС",
+   "latin_heading": "Vanellus Vanellus",
+   "page": "https://zoomet.ru/mal/malchevski_80.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "81": {
+   "name_ru": "КУЛИК-СОРОКА",
+   "latin_heading": "Haematopus Ostralegus",
+   "page": "https://zoomet.ru/mal/malchevski_81.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "82": {
+   "name_ru": "ЧЕРНЫШ",
+   "latin_heading": "Tringa Ochropus",
+   "page": "https://zoomet.ru/mal/malchevski_82.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "83": {
+   "name_ru": "ФИФИ",
+   "latin_heading": "Tringa Glareola",
+   "page": "https://zoomet.ru/mal/malchevski_83.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "84": {
+   "name_ru": "БОЛЬШОЙ УЛИТ",
+   "latin_heading": "Tringa Nebularia",
+   "page": "https://zoomet.ru/mal/malchevski_84.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "scarce"
+   ]
+  },
+  "85": {
+   "name_ru": "ТРАВНИК",
+   "latin_heading": "Tringa Totanus",
+   "page": "https://zoomet.ru/mal/malchevski_85.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": []
+  },
+  "86": {
+   "name_ru": "ЩЕГОЛЬ",
+   "latin_heading": "Tringa Erythropus",
+   "page": "https://zoomet.ru/mal/malchevski_86.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "87": {
+   "name_ru": "ПОРУЧЕЙНИК",
+   "latin_heading": "Tringa Stagnatilis",
+   "page": "https://zoomet.ru/mal/malchevski_87.html",
+   "status_flags": [],
+   "abundance_flags_head": []
+  },
+  "88": {
+   "name_ru": "ПЕРЕВОЗЧИК",
+   "latin_heading": "Actitis Hypoleucos",
+   "page": "https://zoomet.ru/mal/malchevski_88.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "most_numerous",
+    "common"
+   ]
+  },
+  "89": {
+   "name_ru": "МОРОДУНКА",
+   "latin_heading": "Xenus Cinereus",
+   "page": "https://zoomet.ru/mal/malchevski_89.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "9": {
+   "name_ru": "ВЫПЬ",
+   "latin_heading": "Botaurus Stellaris",
+   "page": "https://zoomet.ru/mal/malchevski_9.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "common",
+    "rare"
+   ]
+  },
+  "90": {
+   "name_ru": "КРУГЛОНОСЫЙ ПЛАВУНЧИК",
+   "latin_heading": "Phalaropus Lobatus",
+   "page": "https://zoomet.ru/mal/malchevski_90.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "91": {
+   "name_ru": "КАМНЕШАРКА",
+   "latin_heading": "Arenaria Interpres",
+   "page": "https://zoomet.ru/mal/malchevski_91.html",
+   "status_flags": [
+    "breeding"
+   ],
+   "abundance_flags_head": [
+    "common"
+   ]
+  },
+  "92": {
+   "name_ru": "ТУРУХТАН",
+   "latin_heading": "Philomachus Pugnax",
+   "page": "https://zoomet.ru/mal/malchevski_92.html",
+   "status_flags": [
+    "breeding",
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "93": {
+   "name_ru": "КУЛИК-ВОРОБЕЙ",
+   "latin_heading": "Calidris Minutus",
+   "page": "https://zoomet.ru/mal/malchevski_93.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "94": {
+   "name_ru": "БЕЛОХВОСТЫЙ ПЕСОЧНИК",
+   "latin_heading": "Calidris Temminckii",
+   "page": "https://zoomet.ru/mal/malchevski_94.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "95": {
+   "name_ru": "КРАСНОЗОБИК",
+   "latin_heading": "Calidris Ferruginea",
+   "page": "https://zoomet.ru/mal/malchevski_95.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "96": {
+   "name_ru": "ЧЕРНОЗОБИК",
+   "latin_heading": "Calidris Alpina",
+   "page": "https://zoomet.ru/mal/malchevski_96.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": []
+  },
+  "97": {
+   "name_ru": "ПЕСЧАНКА",
+   "latin_heading": "Calidris Alba",
+   "page": "https://zoomet.ru/mal/malchevski_97.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "98": {
+   "name_ru": "ИСЛАНДСКИЙ ПЕСОЧНИК",
+   "latin_heading": "Calidris Canutus",
+   "page": "https://zoomet.ru/mal/malchevski_98.html",
+   "status_flags": [
+    "passage"
+   ],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  },
+  "99": {
+   "name_ru": "ГРЯЗОВИК",
+   "latin_heading": "Limicola Falcinellus",
+   "page": "https://zoomet.ru/mal/malchevski_99.html",
+   "status_flags": [],
+   "abundance_flags_head": [
+    "rare"
+   ]
+  }
+ }
+}

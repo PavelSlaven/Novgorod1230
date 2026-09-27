@@ -1,0 +1,796 @@
+sc_id,role,item_ref,resolves_to,name_ru,category,historical_confidence,generation_policy,frequency_class,weight,status
+sc_scn001,required,ARC0021,matcult_item,Жилая клеть,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn001,required,INT0007,matcult_item,Каменно-глиняная печь,interiors,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn001,required,FUR0002,matcult_item,Длинная лавка на ножках,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn001,required,FUR0008,matcult_item,Низкий рабочий столик,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn001,required,POT0019,matcult_item,Керамический горшок малый,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn001,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn001,allowed,HOU0016,matcult_item,Плетёная корзина,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn001,allowed,HOU0015,matcult_item,Мешок тканевый,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn001,allowed,HOU0001,matcult_item,Деревянное ведро с обручами,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn001,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn001,allowed,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn001,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn001,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn001,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn002,required,ARC0021,matcult_item,Жилая клеть,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn002,required,INT0007,matcult_item,Каменно-глиняная печь,interiors,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn002,required,FUR0002,matcult_item,Длинная лавка на ножках,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn002,required,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn002,required,MSC0025,matcult_item,Зола и угли очага,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn002,allowed,HOU0016,matcult_item,Плетёная корзина,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn002,allowed,HOU0001,matcult_item,Деревянное ведро с обручами,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn002,allowed,HOU0002,matcult_item,Железный дверной замок,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn002,allowed,POT0019,matcult_item,Керамический горшок малый,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn002,allowed,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn002,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn002,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn002,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn003,required,ARC0020,matcult_item,Однокамерный отапливаемый срубный дом,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn003,required,ARC0031,matcult_item,Дворовая ремесленная мастерская,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn003,required,FUR0008,matcult_item,Низкий рабочий столик,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn003,required,FUR0001,matcult_item,Деревянная колыбель подвесная,furniture,C,reference_required,ubiquitous,8,candidate
+sc_scn003,required,CRF0138,matcult_item,Отвес,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn003,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn003,required,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn003,allowed,HOU0002,matcult_item,Железный дверной замок,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn003,allowed,HOU0016,matcult_item,Плетёная корзина,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn003,allowed,MSC0002,matcult_item,Куча коры,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn003,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn003,allowed,MSC0003,matcult_item,Обрезки кожи,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn003,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn003,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn003,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn004,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn004,required,ARC0002,matcult_item,Хлев для крупного и мелкого скота,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn004,required,FUR0026,matcult_item,Сундук дощатый с плоской крышкой,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn004,required,FUR0006,matcult_item,Ларь крупный,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn004,required,FUR0008,matcult_item,Низкий рабочий столик,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn004,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn004,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn004,required,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,ubiquitous,8,candidate
+sc_scn004,allowed,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn004,allowed,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn004,allowed,POT0003,matcult_item,Деревянная ложка длинноручная,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn004,allowed,WRT0014,matcult_item,Свинцовая вислая печать,writing,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn004,allowed,WRT0001,matcult_item,Пакет/связка документов в сундуке,writing,C,reference_required,contextual,2,candidate
+sc_scn004,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn004,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn004,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn005,required,ARC0018,matcult_item,Клеть-амбар,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn005,required,ARC0015,matcult_item,Дворовые ворота в частоколе,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn005,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn005,required,ARC0002,matcult_item,Хлев для крупного и мелкого скота,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn005,required,FUR0026,matcult_item,Сундук дощатый с плоской крышкой,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn005,required,FUR0008,matcult_item,Низкий рабочий столик,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn005,required,TRD0006,matcult_item,Бобровые шкуры торговой партии,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn005,required,TRD0050,matcult_item,Редкая импортная поливная чаша,trade,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn005,allowed,HRS0034,matcult_item,Шпора с шипом,horse_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn005,allowed,HRS0035,matcult_item,Кожаная узда,horse_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn005,allowed,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn005,allowed,REL0008,matcult_item,Нательный крест,religious_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn005,allowed,MIL0003,matcult_item,Оружейная стойка из жердей,military_equipment,C,reference_required,contextual,2,candidate
+sc_scn005,allowed,MIL0001,matcult_item,Связка запасных стрел,military_equipment,B,safe_with_constraints,contextual,2,candidate
+sc_scn005,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn005,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn005,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn006,required,ARC0021,matcult_item,Жилая клеть,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn006,required,ARC0017,matcult_item,Легкий хозяйственный сарай,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn006,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn006,required,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn006,required,MSC0011,matcult_item,Городская мусорная яма,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn006,allowed,LIV0005,matcult_item,Домашняя курица,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn006,allowed,LIV0016,matcult_item,Средневековая свинья,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn006,allowed,HOU0031,matcult_item,Долбленое ведро,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn006,allowed,HOU0019,matcult_item,Корыто долбленое,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn006,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn006,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn006,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn007,required,ARC0020,matcult_item,Однокамерный отапливаемый срубный дом,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn007,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn007,required,STR0011,matcult_item,Небольшие деревянные мостки/причал,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn007,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn007,required,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn007,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn007,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn007,allowed,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn007,allowed,WTR0017,matcult_item,Боковое рулевое весло,water_transport,B,safe_with_constraints,contextual,2,candidate
+sc_scn007,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn007,allowed,LTR0028,matcult_item,Поперечина саней,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn007,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn007,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn007,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn008,required,ARC0020,matcult_item,Однокамерный отапливаемый срубный дом,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,required,ARC0018,matcult_item,Клеть-амбар,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,required,ARC0002,matcult_item,Хлев для крупного и мелкого скота,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn008,required,AGR0023,matcult_item,Соха деревянная с железными сошниками,agriculture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn008,required,AGR0012,matcult_item,Железный серп,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,required,AGR0003,matcult_item,Деревянная лопата,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,required,LIV0024,matcult_item,Невысокая домашняя корова северного средневекового типа,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,required,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,required,LIV0005,matcult_item,Домашняя курица,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn008,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn008,allowed,LTR0028,matcult_item,Поперечина саней,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn008,allowed,MSC0040,matcult_item,Навоз в конюшне/хлеву,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn008,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn008,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn008,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn008,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn008,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn009,required,ARC0008,matcult_item,Церковь Спаса на Нередице в 1230 году,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn009,required,ARC0018,matcult_item,Клеть-амбар,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn009,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn009,required,REL0008,matcult_item,Нательный крест,religious_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn009,required,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn009,allowed,WRT0022,matcult_item,Книжная застёжка,writing,B,safe_with_constraints,contextual,2,candidate
+sc_scn009,allowed,WRT0001,matcult_item,Пакет/связка документов в сундуке,writing,C,reference_required,contextual,2,candidate
+sc_scn009,allowed,HOU0031,matcult_item,Долбленое ведро,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn009,allowed,HOU0002,matcult_item,Железный дверной замок,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn009,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn009,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn009,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn010,required,CRF0106,matcult_item,Кожевенное шило,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn010,required,CRF0050,matcult_item,Кожевенная игла,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn010,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn010,required,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn010,required,FUR0001,matcult_item,Деревянная колыбель подвесная,furniture,C,reference_required,ubiquitous,8,candidate
+sc_scn010,required,MSC0003,matcult_item,Обрезки кожи,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn010,allowed,HOU0016,matcult_item,Плетёная корзина,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn010,allowed,HOU0015,matcult_item,Мешок тканевый,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn010,allowed,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,contextual,2,candidate
+sc_scn010,allowed,TRD0003,matcult_item,Восковый круг/слиток,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn010,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn010,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn010,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn011,required,CRF0121,matcult_item,Кузнечный горн,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn011,required,CRF0123,matcult_item,Наковальня-вставка,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn011,required,CRF0079,matcult_item,Кузнечный молот,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn011,required,CRF0082,matcult_item,Кузнечные клещи плоскогубые,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn011,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn011,required,MSC0005,matcult_item,Уголья и головни,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn011,required,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn011,allowed,CON0001,matcult_item,Железная дверная петля,construction,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn011,allowed,CON0002,matcult_item,Железный дверной пробой/накладка,construction,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn011,allowed,HOU0031,matcult_item,Долбленое ведро,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn011,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn011,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn011,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn012,required,CRF0020,matcult_item,Плотницкий топор узколезвийный,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,CRF0102,matcult_item,Тесло,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,CRF0098,matcult_item,Долото плотницкое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,CRF0030,matcult_item,Ложечное сверло,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,CON0012,matcult_item,Подкладное бревно/лежень,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,CON0035,matcult_item,Тёсаная доска,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn012,required,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn012,allowed,CRF0049,matcult_item,Шнур разметочный,crafts,B,safe_with_constraints,contextual,2,candidate
+sc_scn012,allowed,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn012,allowed,LTR0007,matcult_item,Волокуша из двух жердей,land_transport,B,safe_with_constraints,contextual,2,candidate
+sc_scn012,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn012,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn012,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn013,required,CRF0096,matcult_item,Ручной гончарный круг,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn013,required,CRF0093,matcult_item,Гончарная печь,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn013,required,POT0019,matcult_item,Керамический горшок малый,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn013,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn013,required,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn013,required,MSC0007,matcult_item,Глина в яме/куче,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn013,allowed,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn013,allowed,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,contextual,2,candidate
+sc_scn013,allowed,CRF0003,matcult_item,Пекарная печь,crafts,B,safe_with_constraints,contextual,2,candidate
+sc_scn013,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn013,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn013,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn013,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn014,required,CRF0152,matcult_item,Ювелирный глиняный тигель,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn014,required,CRF0022,matcult_item,Литейная форма глиняная,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn014,required,CRF0153,matcult_item,Ювелирный молоток,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn014,required,CRF0147,matcult_item,Малые равноплечие весы ювелира,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn014,allowed,TRD0016,matcult_item,Рубленое серебро,trade,B,safe_with_constraints,contextual,2,candidate
+sc_scn014,allowed,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,contextual,2,candidate
+sc_scn014,allowed,MSC0005,matcult_item,Уголья и головни,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn014,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn014,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn014,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn015,required,CRF0132,matcult_item,Глиняное пряслице,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn015,required,CRF0133,matcult_item,Деревянное веретено,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn015,required,CRF0127,matcult_item,Гребень для расчёсывания волокна,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn015,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn015,allowed,TRD0053,matcult_item,Тюк шерстяной ткани,trade,B,safe_with_constraints,contextual,2,candidate
+sc_scn015,allowed,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,contextual,2,candidate
+sc_scn015,allowed,HOU0016,matcult_item,Плетёная корзина,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn015,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn015,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn015,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn016,required,CRF0112,matcult_item,Скребок кожевника,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn016,required,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn016,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn016,required,MSC0003,matcult_item,Обрезки кожи,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn016,required,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn016,allowed,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn016,allowed,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn016,allowed,HOU0031,matcult_item,Долбленое ведро,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn016,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn016,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn016,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn017,required,CRF0114,matcult_item,Косторезный нож,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn017,required,CRF0015,matcult_item,Косторезная пила/ножовка,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn017,required,CRF0030,matcult_item,Ложечное сверло,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn017,required,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn017,allowed,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn017,allowed,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,contextual,2,candidate
+sc_scn017,allowed,CRF0003,matcult_item,Пекарная печь,crafts,B,safe_with_constraints,contextual,2,candidate
+sc_scn017,allowed,FUR0001,matcult_item,Деревянная колыбель подвесная,furniture,C,reference_required,contextual,2,candidate
+sc_scn017,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn017,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn017,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn018,required,CRF0017,matcult_item,Сусловарочный котёл,crafts,C,reference_required,ubiquitous,8,candidate
+sc_scn018,required,CRF0130,matcult_item,Пивоваренный чан,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn018,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn018,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn018,required,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn018,allowed,FOD0025,matcult_item,Жидкий мёд,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn018,allowed,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn018,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn018,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn018,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn018,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn019,required,INT0007,matcult_item,Каменно-глиняная печь,interiors,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn019,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn019,required,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn019,required,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn019,required,FOD0050,matcult_item,Зерно овса,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn019,allowed,POT0015,matcult_item,Керамическая миска,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn019,allowed,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn019,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn019,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn019,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn019,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn020,required,AGR0017,matcult_item,Ручные жернова,agriculture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn020,required,AGR0001,matcult_item,Деревянное ведро для доения,agriculture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn020,required,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn020,required,FOD0050,matcult_item,Зерно овса,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn020,allowed,CON0001,matcult_item,Железная дверная петля,construction,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn020,allowed,CON0002,matcult_item,Железный дверной пробой/накладка,construction,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn020,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn020,allowed,LTR0001,matcult_item,Деревянная ось телеги,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn020,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn020,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn020,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn021,required,TRD0017,matcult_item,Деревянный прилавок на козлах,trade,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn021,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn021,required,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,ubiquitous,8,candidate
+sc_scn021,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn021,required,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn021,allowed,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn021,allowed,TRD0028,matcult_item,Свинцовая товарная пломба,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn021,allowed,TRD0019,matcult_item,Деревянная мера объёма,trade,B,safe_with_constraints,contextual,2,candidate
+sc_scn021,allowed,FOD0061,matcult_item,Дичь,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn021,allowed,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn021,allowed,FOD0025,matcult_item,Жидкий мёд,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn021,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn021,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn021,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn022,required,TRD0017,matcult_item,Деревянный прилавок на козлах,trade,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn022,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn022,required,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn022,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn022,required,STR0007,matcult_item,Деревянная уличная мостовая,streets_and_infrastructure,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn022,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn022,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn022,allowed,LTR0028,matcult_item,Поперечина саней,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn022,allowed,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn022,allowed,FRN0042,matcult_item,Готландский купеческий дорожный сундук,foreign_material_culture,B,safe_with_constraints,contextual,2,candidate
+sc_scn022,allowed,FRN0001,matcult_item,Балтийский бронзовый подвес/фурнитура как контактный предмет,foreign_material_culture,B,safe_with_constraints,contextual,2,candidate
+sc_scn022,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn022,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn022,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn023,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn023,required,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn023,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn023,required,TRD0009,matcult_item,Мешок ржи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn023,required,TRD0030,matcult_item,Купеческий сундук,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn023,allowed,WRT0014,matcult_item,Свинцовая вислая печать,writing,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn023,allowed,WRT0001,matcult_item,Пакет/связка документов в сундуке,writing,C,reference_required,contextual,2,candidate
+sc_scn023,allowed,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn023,allowed,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,contextual,2,candidate
+sc_scn023,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn023,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn023,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn024,required,FRN0042,matcult_item,Готландский купеческий дорожный сундук,foreign_material_culture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn024,required,FRN0028,matcult_item,Импортная дубовая бочка,foreign_material_culture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn024,required,FRN0019,matcult_item,Западная поливная керамика,foreign_material_culture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn024,required,FRN0001,matcult_item,Балтийский бронзовый подвес/фурнитура как контактный предмет,foreign_material_culture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn024,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn024,required,TRD0028,matcult_item,Свинцовая товарная пломба,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn024,required,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,ubiquitous,8,candidate
+sc_scn024,allowed,WTR0039,matcult_item,Балтийское клинкерное торговое судно,water_transport,B,safe_with_constraints,contextual,2,candidate
+sc_scn024,allowed,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn024,allowed,WRT0001,matcult_item,Пакет/связка документов в сундуке,writing,C,reference_required,contextual,2,candidate
+sc_scn024,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn024,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn024,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn024,forbidden,AP050,anti_pattern,Массовые монеты в каждой сцене,,,,,,candidate
+sc_scn025,required,STR0011,matcult_item,Небольшие деревянные мостки/причал,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn025,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn025,required,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn025,required,WTR0032,matcult_item,Швартовый канат,water_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn025,required,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn025,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn025,allowed,MSC0017,matcult_item,Обломок лодочной доски,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn025,allowed,MSC0015,matcult_item,Верёвочный узел/обрывок каната,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn025,allowed,FSH0027,matcult_item,Ставная сеть,fishing,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn025,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn025,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn025,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn025,forbidden,AP036,anti_pattern,Корабль Великих географических открытий,,,,,,candidate
+sc_scn025,forbidden,AP037,anti_pattern,Драккар эпохи викингов как универсальная ладья,,,,,,candidate
+sc_scn025,forbidden,AP038,anti_pattern,Большой когг в каждом новгородском причале,,,,,,candidate
+sc_scn026,required,WTR0027,matcult_item,Малая перевозочная лодка/паром,water_transport,C,reference_required,ubiquitous,8,candidate
+sc_scn026,required,WTR0011,matcult_item,Весло лодочное,water_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn026,allowed,TRD0009,matcult_item,Мешок ржи,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn026,allowed,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn026,allowed,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn026,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn026,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn026,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn026,forbidden,AP036,anti_pattern,Корабль Великих географических открытий,,,,,,candidate
+sc_scn026,forbidden,AP037,anti_pattern,Драккар эпохи викингов как универсальная ладья,,,,,,candidate
+sc_scn026,forbidden,AP038,anti_pattern,Большой когг в каждом новгородском причале,,,,,,candidate
+sc_scn027,required,WTR0018,matcult_item,Военная ладья без специализированного «боевого» корпуса,water_transport,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn027,required,WTR0012,matcult_item,Деревянная мачта,water_transport,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn027,required,WTR0011,matcult_item,Весло лодочное,water_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn027,required,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn027,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn027,allowed,MIL0008,matcult_item,Лагерная верёвка,military_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn027,allowed,MIL0007,matcult_item,Походный котёл с дужкой,military_equipment,B,safe_with_constraints,contextual,2,candidate
+sc_scn027,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn027,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn027,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn027,forbidden,AP036,anti_pattern,Корабль Великих географических открытий,,,,,,candidate
+sc_scn027,forbidden,AP037,anti_pattern,Драккар эпохи викингов как универсальная ладья,,,,,,candidate
+sc_scn027,forbidden,AP038,anti_pattern,Большой когг в каждом новгородском причале,,,,,,candidate
+sc_scn028,required,WTR0040,matcult_item,Ранний когг немецких купцов — внешний контекст,water_transport,C,reference_required,ubiquitous,8,candidate
+sc_scn028,required,FRN0001,matcult_item,Балтийский бронзовый подвес/фурнитура как контактный предмет,foreign_material_culture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn028,required,FRN0002,matcult_item,Ливонский/балтийский боевой наконечник как импорт/личная вещь,foreign_material_culture,C,reference_required,ubiquitous,8,candidate
+sc_scn028,allowed,TRD0028,matcult_item,Свинцовая товарная пломба,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn028,allowed,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn028,allowed,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn028,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn028,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn028,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn028,forbidden,AP036,anti_pattern,Корабль Великих географических открытий,,,,,,candidate
+sc_scn028,forbidden,AP037,anti_pattern,Драккар эпохи викингов как универсальная ладья,,,,,,candidate
+sc_scn028,forbidden,AP038,anti_pattern,Большой когг в каждом новгородском причале,,,,,,candidate
+sc_scn028,forbidden,AP050,anti_pattern,Массовые монеты в каждой сцене,,,,,,candidate
+sc_scn029,required,FSH0027,matcult_item,Ставная сеть,fishing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn029,required,FSH0007,matcult_item,Берестяной поплавок сети,fishing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn029,required,FSH0013,matcult_item,Каменное грузило сети,fishing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn029,required,FSH0006,matcult_item,Железный рыболовный крючок,fishing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn029,required,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn029,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn029,allowed,MSC0002,matcult_item,Куча коры,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn029,allowed,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn029,allowed,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn029,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn029,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn029,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn030,required,FSH0006,matcult_item,Железный рыболовный крючок,fishing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn030,required,FSH0004,matcult_item,Трёхзубая рыболовная острога,fishing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn030,required,MSC0014,matcult_item,Наледь на сходнях/причале,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn030,required,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn030,allowed,LTR0028,matcult_item,Поперечина саней,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn030,allowed,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn030,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn030,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn030,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn031,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn031,required,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn031,required,LIV0001,matcult_item,Кошка домашняя,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn031,required,HRS0035,matcult_item,Кожаная узда,horse_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn031,required,HRS0034,matcult_item,Шпора с шипом,horse_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn031,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn031,allowed,MSC0040,matcult_item,Навоз в конюшне/хлеву,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn031,allowed,MSC0002,matcult_item,Куча коры,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn031,allowed,HOU0031,matcult_item,Долбленое ведро,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn031,allowed,HOU0019,matcult_item,Корыто долбленое,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn031,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn031,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn031,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn032,required,ARC0002,matcult_item,Хлев для крупного и мелкого скота,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn032,required,LIV0024,matcult_item,Невысокая домашняя корова северного средневекового типа,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn032,required,LIV0002,matcult_item,Средневековый бык,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn032,required,LIV0003,matcult_item,Телёнок,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn032,allowed,MSC0030,matcult_item,Солома,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn032,allowed,MSC0040,matcult_item,Навоз в конюшне/хлеву,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn032,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn032,allowed,HOU0019,matcult_item,Корыто долбленое,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn032,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn032,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn032,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn033,required,ARC0018,matcult_item,Клеть-амбар,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn033,required,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn033,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn033,required,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn033,allowed,AGR0003,matcult_item,Деревянная лопата,agriculture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn033,allowed,AGR0001,matcult_item,Деревянное ведро для доения,agriculture,B,safe_with_constraints,contextual,2,candidate
+sc_scn033,allowed,TRD0019,matcult_item,Деревянная мера объёма,trade,B,safe_with_constraints,contextual,2,candidate
+sc_scn033,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn033,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn033,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn034,required,AGR0012,matcult_item,Железный серп,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn034,required,AGR0039,matcult_item,Сноп зерна,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn034,required,AGR0044,matcult_item,Деревянные грабли,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn034,required,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn034,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn034,allowed,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn034,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn034,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn034,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn035,required,AGR0021,matcult_item,Цеп для обмолота,agriculture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn035,required,AGR0016,matcult_item,Деревянные вилы из развилки,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn035,required,AGR0001,matcult_item,Деревянное ведро для доения,agriculture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn035,required,ARC0010,matcult_item,Дощатая дверь на деревянных навесах/петлях,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn035,required,ARC0018,matcult_item,Клеть-амбар,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn035,allowed,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn035,allowed,MSC0030,matcult_item,Солома,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn035,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn035,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn035,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn036,required,HNT0003,matcult_item,Охотничий лук простой,hunting,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn036,required,HNT0002,matcult_item,Охотничья стрела с широким наконечником,hunting,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn036,required,HNT0025,matcult_item,Охотничий нож,hunting,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn036,required,HNT0001,matcult_item,Охотничья стрела с тупым наконечником,hunting,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn036,allowed,HNT0026,matcult_item,Охотничья лыжа,hunting,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn036,allowed,HNT0015,matcult_item,Охотничья сеть,hunting,B,safe_with_constraints,contextual,2,candidate
+sc_scn036,allowed,HNT0005,matcult_item,Охотничье копьё/рогатина,hunting,B,safe_with_constraints,contextual,2,candidate
+sc_scn036,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn036,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn036,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn036,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn037,required,HNT0027,matcult_item,Скребок для мездрения шкуры,hunting,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn037,required,HNT0021,matcult_item,Связка пушных шкур,hunting,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn037,required,HNT0001,matcult_item,Охотничья стрела с тупым наконечником,hunting,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn037,allowed,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn037,allowed,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn037,allowed,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn037,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn037,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn037,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn038,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn038,required,STR0003,matcult_item,Грязевая канава у мостовой,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn038,required,STR0004,matcult_item,Деревянный водоотвод/дренаж улицы,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn038,required,MSC0023,matcult_item,Лужа в колее,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn038,required,MSC0022,matcult_item,Грязь с щепой на мостовой,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn038,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn038,allowed,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn038,allowed,LIV0007,matcult_item,Средняя хозяйственная собака,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn038,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn038,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn038,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn039,required,STR0007,matcult_item,Деревянная уличная мостовая,streets_and_infrastructure,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn039,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn039,required,MSC0031,matcult_item,Снежный вал у зимней мостовой,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn039,required,MSC0014,matcult_item,Наледь на сходнях/причале,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn039,required,LTR0028,matcult_item,Поперечина саней,land_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn039,allowed,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn039,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn039,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn039,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn039,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn040,required,STR0005,matcult_item,Узкий усадебный переулок/проход,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn040,required,STR0013,matcult_item,Дворовый деревянный настил,streets_and_infrastructure,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn040,required,ARC0015,matcult_item,Дворовые ворота в частоколе,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn040,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn040,allowed,MSC0018,matcult_item,Бочка пустая на боку,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn040,allowed,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn040,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn040,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn040,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn041,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn041,required,STR0003,matcult_item,Грязевая канава у мостовой,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn041,allowed,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn041,allowed,WTR0001,matcult_item,Каменный якорь/груз с отверстием,water_transport,B,safe_with_constraints,contextual,2,candidate
+sc_scn041,allowed,TRD0012,matcult_item,Свинец в слитках/листах,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn041,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn041,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn041,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn042,required,FOR0002,matcult_item,Деревянный переход через оборонительный ров,fortifications,C,reference_required,ubiquitous,8,candidate
+sc_scn042,required,FOR0001,matcult_item,Ров раннего Детинца — неопределенное состояние к 1230,fortifications,C,reference_required,ubiquitous,8,candidate
+sc_scn042,required,FOR0003,matcult_item,Деревянные ворота Детинца — осторожная реконструкция,fortifications,C,reference_required,ubiquitous,8,candidate
+sc_scn042,allowed,MIL0001,matcult_item,Связка запасных стрел,military_equipment,B,safe_with_constraints,contextual,2,candidate
+sc_scn042,allowed,MIL0002,matcult_item,Запасная тетива,military_equipment,B,safe_with_constraints,contextual,2,candidate
+sc_scn042,allowed,CON0012,matcult_item,Подкладное бревно/лежень,construction,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn042,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn042,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn042,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn042,forbidden,AP004,anti_pattern,Кирпичный Кремль,,,,,,candidate
+sc_scn042,forbidden,AP005,anti_pattern,Поздние кремлёвские башни,,,,,,candidate
+sc_scn042,forbidden,AP006,anti_pattern,Фэнтезийная крепость,,,,,,candidate
+sc_scn043,required,FOR0002,matcult_item,Деревянный переход через оборонительный ров,fortifications,C,reference_required,ubiquitous,8,candidate
+sc_scn043,required,FOR0001,matcult_item,Ров раннего Детинца — неопределенное состояние к 1230,fortifications,C,reference_required,ubiquitous,8,candidate
+sc_scn043,allowed,MIL0001,matcult_item,Связка запасных стрел,military_equipment,B,safe_with_constraints,contextual,2,candidate
+sc_scn043,allowed,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,contextual,2,candidate
+sc_scn043,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn043,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn043,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn043,forbidden,AP004,anti_pattern,Кирпичный Кремль,,,,,,candidate
+sc_scn043,forbidden,AP005,anti_pattern,Поздние кремлёвские башни,,,,,,candidate
+sc_scn043,forbidden,AP006,anti_pattern,Фэнтезийная крепость,,,,,,candidate
+sc_scn044,required,CON0012,matcult_item,Подкладное бревно/лежень,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn044,required,CON0047,matcult_item,Железная скоба строительная,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn044,required,CON0044,matcult_item,Приставная строительная лестница,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn044,required,CRF0020,matcult_item,Плотницкий топор узколезвийный,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn044,required,CRF0102,matcult_item,Тесло,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn044,allowed,LTR0007,matcult_item,Волокуша из двух жердей,land_transport,B,safe_with_constraints,contextual,2,candidate
+sc_scn044,allowed,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn044,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn044,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn044,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn044,forbidden,AP004,anti_pattern,Кирпичный Кремль,,,,,,candidate
+sc_scn044,forbidden,AP005,anti_pattern,Поздние кремлёвские башни,,,,,,candidate
+sc_scn044,forbidden,AP006,anti_pattern,Фэнтезийная крепость,,,,,,candidate
+sc_scn045,required,MIL0007,matcult_item,Походный котёл с дужкой,military_equipment,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn045,required,MIL0017,matcult_item,Кожаные ножны боевого/хозяйственного ножа,military_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn045,required,MIL0027,matcult_item,Колчан для стрел,military_equipment,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn045,required,MIL0008,matcult_item,Лагерная верёвка,military_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn045,required,WPN0049,matcult_item,Копьё с ромбическим пером,weapons,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn045,required,WPN0029,matcult_item,Прямая мечовая крестовина,weapons,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn045,required,WPN0006,matcult_item,Топор боевой бородовидный,weapons,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn045,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn045,allowed,LIV0030,matcult_item,Обозная лошадь,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn045,allowed,LIV0001,matcult_item,Кошка домашняя,livestock,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn045,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn045,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn045,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn045,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn045,forbidden,AP017,anti_pattern,Фэнтезийный меч,,,,,,candidate
+sc_scn045,forbidden,AP018,anti_pattern,Двуручный меч позднего времени,,,,,,candidate
+sc_scn045,forbidden,AP022,anti_pattern,Латы XIV–XV века,,,,,,candidate
+sc_scn045,forbidden,AP023,anti_pattern,Поздний бацинет/салад,,,,,,candidate
+sc_scn046,required,WPN0029,matcult_item,Прямая мечовая крестовина,weapons,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn046,required,WPN0049,matcult_item,Копьё с ромбическим пером,weapons,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn046,required,ARM0019,matcult_item,Кольчужная бармица,armor,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn046,required,HLM0007,matcult_item,Сфероконический шлем из железа,helmets,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn046,required,SHD0002,matcult_item,Умбон железный,shields,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn046,allowed,MIL0017,matcult_item,Кожаные ножны боевого/хозяйственного ножа,military_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn046,allowed,MIL0021,matcult_item,Поясная воинская сумка,military_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn046,allowed,MIL0001,matcult_item,Связка запасных стрел,military_equipment,B,safe_with_constraints,contextual,2,candidate
+sc_scn046,allowed,HRS0034,matcult_item,Шпора с шипом,horse_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn046,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn046,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn046,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn046,forbidden,AP017,anti_pattern,Фэнтезийный меч,,,,,,candidate
+sc_scn046,forbidden,AP018,anti_pattern,Двуручный меч позднего времени,,,,,,candidate
+sc_scn046,forbidden,AP022,anti_pattern,Латы XIV–XV века,,,,,,candidate
+sc_scn046,forbidden,AP023,anti_pattern,Поздний бацинет/салад,,,,,,candidate
+sc_scn047,required,WPN0049,matcult_item,Копьё с ромбическим пером,weapons,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn047,required,WPN0006,matcult_item,Топор боевой бородовидный,weapons,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn047,required,SHD0002,matcult_item,Умбон железный,shields,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn047,allowed,HLM0001,matcult_item,Шлем с креплением бармицы,helmets,B,safe_with_constraints,contextual,2,candidate
+sc_scn047,allowed,ARM0001,matcult_item,Кожаная защита предплечья лучника,armor,C,reference_required,contextual,2,candidate
+sc_scn047,allowed,MIL0011,matcult_item,Точильный брусок воина,military_equipment,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn047,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn047,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn047,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn047,forbidden,AP017,anti_pattern,Фэнтезийный меч,,,,,,candidate
+sc_scn047,forbidden,AP018,anti_pattern,Двуручный меч позднего времени,,,,,,candidate
+sc_scn047,forbidden,AP022,anti_pattern,Латы XIV–XV века,,,,,,candidate
+sc_scn047,forbidden,AP023,anti_pattern,Поздний бацинет/салад,,,,,,candidate
+sc_scn048,required,LIV0001,matcult_item,Кошка домашняя,livestock,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn048,required,HRS0034,matcult_item,Шпора с шипом,horse_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn048,required,HRS0035,matcult_item,Кожаная узда,horse_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn048,required,HRS0001,matcult_item,Удила с псалиями,horse_equipment,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn048,required,HRS0002,matcult_item,Деревянный валёк,horse_equipment,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn048,required,WPN0049,matcult_item,Копьё с ромбическим пером,weapons,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn048,allowed,ARM0019,matcult_item,Кольчужная бармица,armor,B,safe_with_constraints,contextual,2,candidate
+sc_scn048,allowed,HLM0017,matcult_item,Наносник шлема,helmets,B,safe_with_constraints,contextual,2,candidate
+sc_scn048,allowed,SHD0002,matcult_item,Умбон железный,shields,B,safe_with_constraints,contextual,2,candidate
+sc_scn048,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn048,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn048,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn048,forbidden,AP017,anti_pattern,Фэнтезийный меч,,,,,,candidate
+sc_scn048,forbidden,AP018,anti_pattern,Двуручный меч позднего времени,,,,,,candidate
+sc_scn048,forbidden,AP022,anti_pattern,Латы XIV–XV века,,,,,,candidate
+sc_scn048,forbidden,AP023,anti_pattern,Поздний бацинет/салад,,,,,,candidate
+sc_scn049,required,FUR0002,matcult_item,Длинная лавка на ножках,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn049,required,FUR0008,matcult_item,Низкий рабочий столик,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn049,required,FUR0006,matcult_item,Ларь крупный,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn049,required,REL0008,matcult_item,Нательный крест,religious_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn049,required,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn049,required,WRT0022,matcult_item,Книжная застёжка,writing,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn049,allowed,HOU0011,matcult_item,Кремень и трут,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn049,allowed,HOU0001,matcult_item,Деревянное ведро с обручами,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn049,allowed,POT0019,matcult_item,Керамический горшок малый,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn049,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn049,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn049,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn050,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn050,required,REL0018,matcult_item,Лампада подвесная,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn050,required,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn050,allowed,REL0015,matcult_item,Подсвечник церковный,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn050,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn050,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn050,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn051,required,ARC0005,matcult_item,Софийский собор в облике около 1230 года,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn051,required,REL0004,matcult_item,Церковная книга на аналое,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn051,required,REL0018,matcult_item,Лампада подвесная,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn051,allowed,REL0013,matcult_item,Кадило,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn051,allowed,REL0015,matcult_item,Подсвечник церковный,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn051,allowed,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn051,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn051,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn051,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn052,required,ARC0001,matcult_item,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn052,required,REL0001,matcult_item,Деревянная икона,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn052,required,REL0002,matcult_item,Малый церковный колокол,religious_items,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn052,allowed,REL0018,matcult_item,Лампада подвесная,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn052,allowed,REL0015,matcult_item,Подсвечник церковный,religious_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn052,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn052,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn052,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn053,required,CON0041,matcult_item,Плинфа,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn053,required,CON0036,matcult_item,Известковый раствор с наполнителем,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn053,required,CON0024,matcult_item,Жердь строительная,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn053,required,CON0044,matcult_item,Приставная строительная лестница,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn053,required,CRF0001,matcult_item,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn053,required,CRF0002,matcult_item,Наковальня-колода,crafts,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn053,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn053,allowed,MSC0010,matcult_item,Песок строительный,miscellaneous,B,safe_with_constraints,contextual,2,candidate
+sc_scn053,allowed,MSC0007,matcult_item,Глина в яме/куче,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn053,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn053,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn053,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn054,required,WRT0028,matcult_item,Костяное писало,writing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn054,required,WRT0001,matcult_item,Пакет/связка документов в сундуке,writing,C,reference_required,ubiquitous,8,candidate
+sc_scn054,allowed,FUR0008,matcult_item,Низкий рабочий столик,furniture,B,safe_with_constraints,contextual,2,candidate
+sc_scn054,allowed,FUR0002,matcult_item,Длинная лавка на ножках,furniture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn054,allowed,TRD0054,matcult_item,Вислая свинцовая печать,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn054,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn054,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn054,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn055,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn055,required,TRD0001,matcult_item,Купеческая печать-матрица — редкая,trade,C,reference_required,ubiquitous,8,candidate
+sc_scn055,required,WRT0028,matcult_item,Костяное писало,writing,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn055,required,WRT0001,matcult_item,Пакет/связка документов в сундуке,writing,C,reference_required,ubiquitous,8,candidate
+sc_scn055,required,TRD0019,matcult_item,Деревянная мера объёма,trade,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn055,allowed,TRD0028,matcult_item,Свинцовая товарная пломба,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn055,allowed,TRD0046,matcult_item,Серебряная гривна как слиток,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn055,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn055,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn055,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn056,required,MUS0016,matcult_item,Деревянный волчок,music_and_games,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn056,required,MUS0019,matcult_item,Кожаный мяч с набивкой,music_and_games,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn056,required,MUS0017,matcult_item,Деревянный конь-игрушка,music_and_games,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn056,allowed,MUS0012,matcult_item,Астрагал для игры,music_and_games,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn056,allowed,MUS0001,matcult_item,Шахматная ладья,music_and_games,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn056,allowed,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn056,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn056,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn056,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn057,required,MUS0033,matcult_item,Крыловидные гусли,music_and_games,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn057,required,MUS0030,matcult_item,Свирель деревянная,music_and_games,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn057,allowed,MUS0032,matcult_item,Варган,music_and_games,B,safe_with_constraints,contextual,2,candidate
+sc_scn057,allowed,MUS0029,matcult_item,Новгородская волынка XII–XIII века,music_and_games,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn057,allowed,MUS0001,matcult_item,Шахматная ладья,music_and_games,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn057,allowed,FUR0002,matcult_item,Длинная лавка на ножках,furniture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn057,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn057,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn057,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn058,required,POT0019,matcult_item,Керамический горшок малый,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn058,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn058,required,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn058,required,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn058,required,FOD0037,matcult_item,Соль крупная,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn058,allowed,FUR0007,matcult_item,Настенная открытая полка,furniture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn058,allowed,FUR0006,matcult_item,Ларь крупный,furniture,B,safe_with_constraints,contextual,2,candidate
+sc_scn058,allowed,HOU0016,matcult_item,Плетёная корзина,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_scn058,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn058,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn058,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn059,required,FUR0026,matcult_item,Сундук дощатый с плоской крышкой,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn059,required,FUR0006,matcult_item,Ларь крупный,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn059,required,FUR0007,matcult_item,Настенная открытая полка,furniture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn059,required,POT0020,matcult_item,Керамический кувшин,pottery_and_vessels,C,reference_required,ubiquitous,8,candidate
+sc_scn059,required,POT0001,matcult_item,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn059,required,POT0002,matcult_item,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn059,allowed,TRD0050,matcult_item,Редкая импортная поливная чаша,trade,B,safe_with_constraints,contextual,2,candidate
+sc_scn059,allowed,TRD0053,matcult_item,Тюк шерстяной ткани,trade,B,safe_with_constraints,contextual,2,candidate
+sc_scn059,allowed,FOD0025,matcult_item,Жидкий мёд,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn059,allowed,FOD0039,matcult_item,Лён-семя,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn059,allowed,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn059,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn059,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn059,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn060,required,TRD0017,matcult_item,Деревянный прилавок на козлах,trade,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn060,required,TRD0019,matcult_item,Деревянная мера объёма,trade,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn060,required,FOD0051,matcult_item,Зерно ржи,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn060,required,FOD0050,matcult_item,Зерно овса,food,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn060,allowed,LTR0028,matcult_item,Поперечина саней,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn060,allowed,FRN0001,matcult_item,Балтийский бронзовый подвес/фурнитура как контактный предмет,foreign_material_culture,B,safe_with_constraints,contextual,2,candidate
+sc_scn060,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn060,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn060,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn061,required,STR0011,matcult_item,Небольшие деревянные мостки/причал,streets_and_infrastructure,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn061,required,STR0001,matcult_item,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,ubiquitous,8,candidate
+sc_scn061,required,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn061,required,MSC0022,matcult_item,Грязь с щепой на мостовой,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn061,required,MSC0016,matcult_item,Выброшенный плавник,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn061,allowed,TRD0047,matcult_item,Бочка мёда,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn061,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn061,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn061,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn061,forbidden,AP036,anti_pattern,Корабль Великих географических открытий,,,,,,candidate
+sc_scn061,forbidden,AP037,anti_pattern,Драккар эпохи викингов как универсальная ладья,,,,,,candidate
+sc_scn061,forbidden,AP038,anti_pattern,Большой когг в каждом новгородском причале,,,,,,candidate
+sc_scn062,required,STR0007,matcult_item,Деревянная уличная мостовая,streets_and_infrastructure,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn062,required,STR0008,matcult_item,Поперечная плаха мостовой,streets_and_infrastructure,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn062,required,CON0012,matcult_item,Подкладное бревно/лежень,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn062,required,CON0035,matcult_item,Тёсаная доска,construction,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn062,required,CRF0020,matcult_item,Плотницкий топор узколезвийный,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn062,required,CRF0102,matcult_item,Тесло,crafts,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn062,allowed,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn062,allowed,MSC0004,matcult_item,Сгнившая доска настила,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn062,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn062,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn062,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn063,required,ARC0027,matcult_item,Срубный колодец,architecture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn063,required,HOU0031,matcult_item,Долбленое ведро,household_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn063,required,HOU0018,matcult_item,Веревка пеньковая или льняная,household_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn063,allowed,MSC0023,matcult_item,Лужа в колее,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn063,allowed,MSC0022,matcult_item,Грязь с щепой на мостовой,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn063,allowed,FUR0001,matcult_item,Деревянная колыбель подвесная,furniture,C,reference_required,contextual,2,candidate
+sc_scn063,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn063,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn063,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn064,required,MSC0011,matcult_item,Городская мусорная яма,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn064,required,MSC0025,matcult_item,Зола и угли очага,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn064,required,MSC0001,matcult_item,Соломенная подстилка,miscellaneous,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn064,required,MSC0002,matcult_item,Куча коры,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn064,allowed,MSC0003,matcult_item,Обрезки кожи,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn064,allowed,MSC0035,matcult_item,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn064,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn064,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn064,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn065,required,FRN0001,matcult_item,Балтийский бронзовый подвес/фурнитура как контактный предмет,foreign_material_culture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn065,required,FRN0002,matcult_item,Ливонский/балтийский боевой наконечник как импорт/личная вещь,foreign_material_culture,C,reference_required,ubiquitous,8,candidate
+sc_scn065,allowed,FSH0027,matcult_item,Ставная сеть,fishing,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn065,allowed,FSH0001,matcult_item,Деревянный колот/дубинка для рыбы,fishing,C,reference_required,contextual,2,candidate
+sc_scn065,allowed,WTR0038,matcult_item,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn065,allowed,TRD0051,matcult_item,Связка меховых шкурок,trade,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn065,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn065,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn065,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_scn065,forbidden,AP050,anti_pattern,Массовые монеты в каждой сцене,,,,,,candidate
+sc_scn066,required,FRN0025,matcult_item,Русский предмет из другого княжества,foreign_material_culture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_scn066,required,TRD0052,matcult_item,Тюк кожи,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn066,required,TRD0037,matcult_item,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_scn066,allowed,LTR0017,matcult_item,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_scn066,allowed,POT0020,matcult_item,Керамический кувшин,pottery_and_vessels,C,reference_required,contextual,2,candidate
+sc_scn066,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_scn066,forbidden,AP003,anti_pattern,Русское узорочье XVII века,,,,,,candidate
+sc_scn066,forbidden,AP052,anti_pattern,Сплошная живописная разруха,,,,,,candidate
+sc_x001_bathhouse,required,INT0042,matcult_item,Печь-каменка бани,interiors,C,reference_required,ubiquitous,8,candidate
+sc_x001_bathhouse,required,HOU0036,matcult_item,Кадка клепочная,household_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_x001_bathhouse,required,HOU0001,matcult_item,Деревянное ведро с обручами,household_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_x001_bathhouse,allowed,HOU0040,matcult_item,Лохань клепочная,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x001_bathhouse,allowed,INT0035,matcult_item,Лучина,interiors,B,safe_with_constraints,contextual,2,candidate
+sc_x001_bathhouse,allowed,HOU0017,matcult_item,Метла из прутьев,household_items,B,safe_with_constraints,contextual,2,candidate
+sc_x001_bathhouse,allowed,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x001_bathhouse,allowed,MSC0025,matcult_item,Зола и угли очага,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x001_bathhouse,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_x002_ovin,required,AGR0039,matcult_item,Сноп зерна,agriculture,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_x002_ovin,required,MSC0046,matcult_item,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_x002_ovin,allowed,AGR0016,matcult_item,Деревянные вилы из развилки,agriculture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x002_ovin,allowed,AGR0003,matcult_item,Деревянная лопата,agriculture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x002_ovin,allowed,MSC0030,matcult_item,Солома,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x002_ovin,allowed,MSC0005,matcult_item,Уголья и головни,miscellaneous,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x002_ovin,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate
+sc_x003_podklet_cold_store,required,FUR0006,matcult_item,Ларь крупный,furniture,B,safe_with_constraints,ubiquitous,8,candidate
+sc_x003_podklet_cold_store,required,HOU0036,matcult_item,Кадка клепочная,household_items,A,safe_with_record_specific_reference,ubiquitous,8,candidate
+sc_x003_podklet_cold_store,allowed,HOU0015,matcult_item,Мешок тканевый,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x003_podklet_cold_store,allowed,HOU0024,matcult_item,Бочка дубовая,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x003_podklet_cold_store,allowed,POT0018,matcult_item,Керамический горшок крупный,pottery_and_vessels,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x003_podklet_cold_store,allowed,HOU0022,matcult_item,Берестяной туес,household_items,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x003_podklet_cold_store,allowed,FUR0026,matcult_item,Сундук дощатый с плоской крышкой,furniture,A,safe_with_record_specific_reference,contextual,2,candidate
+sc_x003_podklet_cold_store,forbidden,AP001,anti_pattern,Изба XIX века,,,,,,candidate

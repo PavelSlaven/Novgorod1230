@@ -1,0 +1,698 @@
+{
+  "artifact_type": "skills_competences_candidate",
+  "status": "candidate",
+  "parent_skills": [
+    {
+      "id": "athletics",
+      "title": "Атлетика",
+      "status": "approved"
+    },
+    {
+      "id": "stealth",
+      "title": "Скрытность",
+      "status": "approved"
+    },
+    {
+      "id": "melee_combat",
+      "title": "Ближний бой",
+      "status": "approved"
+    },
+    {
+      "id": "ranged_combat",
+      "title": "Дальний бой",
+      "status": "approved"
+    },
+    {
+      "id": "craft",
+      "title": "Ремесло",
+      "status": "approved"
+    },
+    {
+      "id": "household",
+      "title": "Хозяйство",
+      "status": "approved"
+    },
+    {
+      "id": "survival",
+      "title": "Выживание",
+      "status": "approved"
+    },
+    {
+      "id": "travel_transport",
+      "title": "Путь и транспорт",
+      "status": "approved"
+    },
+    {
+      "id": "healing",
+      "title": "Лечение",
+      "status": "approved"
+    },
+    {
+      "id": "observation",
+      "title": "Наблюдательность",
+      "status": "approved"
+    },
+    {
+      "id": "communication_trade",
+      "title": "Общение и торг",
+      "status": "approved"
+    },
+    {
+      "id": "custom_law_literacy",
+      "title": "Обычай и закон",
+      "status": "approved"
+    }
+  ],
+  "competences": [
+    {
+      "competence_id": "competence_occ_jeweler_caster",
+      "occupation_ref": "occ_jeweler_caster",
+      "name_ru": "ювелир-литейщик: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_jeweler_caster"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_bone_carver",
+      "occupation_ref": "occ_bone_carver",
+      "name_ru": "косторез: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_bone_carver"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_wood_turner",
+      "occupation_ref": "occ_wood_turner",
+      "name_ru": "токарь по дереву: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_wood_turner"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_furrier",
+      "occupation_ref": "occ_furrier",
+      "name_ru": "скорняк: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_furrier"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_dyer",
+      "occupation_ref": "occ_dyer",
+      "name_ru": "красильщик: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_dyer"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_ropemaker_netmaker",
+      "occupation_ref": "occ_ropemaker_netmaker",
+      "name_ru": "верёвочник/канатчик: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_ropemaker_netmaker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_netmaker",
+      "occupation_ref": "occ_netmaker",
+      "name_ru": "сетевязальщик: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_netmaker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_locksmith",
+      "occupation_ref": "occ_locksmith",
+      "name_ru": "замочник: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_locksmith"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_bowyer",
+      "occupation_ref": "occ_bowyer",
+      "name_ru": "лучник-мастер (изготовитель луков): практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_bowyer"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_arrowsmith",
+      "occupation_ref": "occ_arrowsmith",
+      "name_ru": "стрельник (изготовитель стрел и наконечников): практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_arrowsmith"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_mason",
+      "occupation_ref": "occ_mason",
+      "name_ru": "каменщик: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_mason"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_limeburner",
+      "occupation_ref": "occ_limeburner",
+      "name_ru": "известежог: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_limeburner"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_icon_painter",
+      "occupation_ref": "occ_icon_painter",
+      "name_ru": "иконописец: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_icon_painter"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_brewer_meadmaker",
+      "occupation_ref": "occ_brewer_meadmaker",
+      "name_ru": "пивовар/медовар: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_brewer_meadmaker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_butcher",
+      "occupation_ref": "occ_butcher",
+      "name_ru": "мясник: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_butcher"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_market_baker",
+      "occupation_ref": "occ_market_baker",
+      "name_ru": "хлебник (рыночный пекарь): практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_market_baker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_fish_trader",
+      "occupation_ref": "occ_fish_trader",
+      "name_ru": "рыботорговец: практика занятия",
+      "parent_skill_ids": [
+        "communication_trade"
+      ],
+      "secondary_skill_ids": [
+        "observation",
+        "craft"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#trade_exchange",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_fish_trader"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_wetnurse",
+      "occupation_ref": "occ_wetnurse",
+      "name_ru": "кормилица: практика занятия",
+      "parent_skill_ids": [
+        "household"
+      ],
+      "secondary_skill_ids": [
+        "stealth",
+        "communication_trade"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#domestic_service",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_wetnurse"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_shield_maker",
+      "occupation_ref": "occ_shield_maker",
+      "name_ru": "щитник: практика занятия",
+      "parent_skill_ids": [
+        "craft"
+      ],
+      "secondary_skill_ids": [
+        "observation"
+      ],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "primary +2 typical, secondary +1 if biography supports",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_shield_maker"
+      ],
+      "status": "candidate"
+    }
+  ],
+  "rule": "Seed level modifiers are conditional; never assign an individual level without biography and code validation."
+}

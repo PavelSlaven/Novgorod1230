@@ -1,0 +1,814 @@
+{
+ "_about": "Authored rule tables for build.py (candidate, confidence C unless stated). Sensory cues are prose aids grounded in physical process (WK claims cited) — not historical testimony. Meal slots and satiety are reconstruction rules, not source facts.",
+ "sensory_lexicon": [
+  {
+   "cue_key": "bread_rye_sour",
+   "match_subcategory": [
+    "bread",
+    "bread_fermentation",
+    "dough_preparation"
+   ],
+   "smell_ru": "кисловатый хлебный дух закваски, подгорелая корка",
+   "taste_ru": "кисло-солоноватый, плотный ржаной вкус",
+   "texture_ru": "тяжёлый влажный мякиш, твёрдая корка с золой снизу",
+   "look_ru": "тёмный невысокий каравай, мука на боку",
+   "refs": [
+    "wk:claim:lactic-fermentation-affects-acidity-and-food-proteins",
+    "wk:claim:grain-processing-bread-oven-baking"
+   ]
+  },
+  {
+   "cue_key": "flatbread",
+   "match_subcategory": [
+    "flatbread",
+    "batter_cake",
+    "filled_baked_food",
+    "sweet_food"
+   ],
+   "smell_ru": "запах пригоревшей муки и тёплой золы",
+   "taste_ru": "пресный или чуть кислый, сухой",
+   "texture_ru": "тонкая, ломкая по краю, мягкая в середине",
+   "look_ru": "плоская лепёшка с тёмными пятнами жара",
+   "refs": [
+    "wk:claim:grain-processing-bread-open-fire-baking"
+   ]
+  },
+  {
+   "cue_key": "porridge",
+   "match_subcategory": [
+    "porridge",
+    "porridge_variant",
+    "grain_pottage"
+   ],
+   "smell_ru": "пар варёного зерна, иногда пригар со дна горшка",
+   "taste_ru": "мучнисто-сладковатый, пресный без соли",
+   "texture_ru": "густая, клейкая, стынет коркой",
+   "look_ru": "серая или желтоватая масса в горшке",
+   "refs": [
+    "wk:claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture"
+   ]
+  },
+  {
+   "cue_key": "pottage",
+   "match_subcategory": [
+    "mixed_pottage",
+    "vegetable_pottage",
+    "wild_green_pottage",
+    "legume_pottage",
+    "legume",
+    "turnip",
+    "allium_or_root",
+    "cabbage",
+    "mushrooms"
+   ],
+   "smell_ru": "пар варёных корней, лука, травы",
+   "taste_ru": "простой, травянистый, с горчинкой зелени или сладостью репы",
+   "texture_ru": "жидкая с разваренными кусками",
+   "look_ru": "мутное варево с плавающей зеленью",
+   "refs": [
+    "wk:claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture"
+   ]
+  },
+  {
+   "cue_key": "fish_fresh_cooked",
+   "match_subcategory": [
+    "fresh_fish",
+    "fish_species_variant",
+    "fish_pottage",
+    "pan_frying"
+   ],
+   "smell_ru": "речная рыба, тина, пар ухи",
+   "taste_ru": "сладковатое мясо, костистое",
+   "texture_ru": "слоистая белая плоть, мелкие кости",
+   "look_ru": "побелевшая мякоть, мутный отвар",
+   "refs": [
+    "wk:claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh"
+   ]
+  },
+  {
+   "cue_key": "fish_salted",
+   "match_subcategory": [
+    "fish_salted",
+    "fish_salting",
+    "preserved_fish_use"
+   ],
+   "smell_ru": "острый рассольный рыбный дух",
+   "taste_ru": "очень солёный, до жжения",
+   "texture_ru": "плотная, волокнистая",
+   "look_ru": "потемневшая, с кристаллами соли",
+   "refs": [
+    "wk:claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution"
+   ]
+  },
+  {
+   "cue_key": "fish_dried",
+   "match_subcategory": [
+    "fish_dried",
+    "drying"
+   ],
+   "smell_ru": "сухой рыбный запах, ветер и дым",
+   "taste_ru": "солоноватый, концентрированный",
+   "texture_ru": "жёсткая, тянется волокнами",
+   "look_ru": "сморщенная тушка на жерди или в связке",
+   "refs": [
+    "wk:claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+    "wk:claim:drying-reduces-microbial-growth-conditions"
+   ]
+  },
+  {
+   "cue_key": "meat_boiled",
+   "match_subcategory": [
+    "boiled_meat",
+    "meat_one_pot",
+    "offal",
+    "preserved_meat_use"
+   ],
+   "smell_ru": "жирный мясной пар",
+   "taste_ru": "сытный, с жиром",
+   "texture_ru": "волокнистое мясо, хрящ",
+   "look_ru": "куски на кости в горшке, жир плёнкой",
+   "refs": []
+  },
+  {
+   "cue_key": "meat_roasted",
+   "match_subcategory": [
+    "roasted_meat"
+   ],
+   "smell_ru": "дым и капающий жир",
+   "taste_ru": "подгорелый край, сочное нутро",
+   "texture_ru": "корка и тянущиеся волокна",
+   "look_ru": "тёмная корка, сок",
+   "refs": []
+  },
+  {
+   "cue_key": "dairy_fresh",
+   "match_subcategory": [
+    "milk",
+    "cheese"
+   ],
+   "smell_ru": "тёплое парное молоко, хлев",
+   "taste_ru": "сладковато-жирный",
+   "texture_ru": "жидкое, пенка",
+   "look_ru": "белое, с пеной",
+   "refs": [
+    "wk:claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use"
+   ]
+  },
+  {
+   "cue_key": "dairy_soured",
+   "match_subcategory": [
+    "sour_milk",
+    "curd",
+    "dairy_drink",
+    "dairy_fermentation",
+    "dairy"
+   ],
+   "smell_ru": "кислый молочный запах",
+   "taste_ru": "кислый, освежающий",
+   "texture_ru": "сгусток, отделяется сыворотка",
+   "look_ru": "белые хлопья в желтоватой сыворотке",
+   "refs": [
+    "wk:claim:place-milk-fresh-curd-can-progressively-separate-from-whey"
+   ]
+  },
+  {
+   "cue_key": "egg",
+   "match_subcategory": [
+    "egg"
+   ],
+   "smell_ru": "сера и дым от печёного яйца",
+   "taste_ru": "жирный желток",
+   "texture_ru": "упругий белок",
+   "look_ru": "мелкие яйца в золе или горшке",
+   "refs": []
+  },
+  {
+   "cue_key": "honey_drink",
+   "match_subcategory": [
+    "honey_drink"
+   ],
+   "smell_ru": "медовый, бродильный, воск",
+   "taste_ru": "сладкий с кислинкой и хмелем",
+   "texture_ru": "густоватый, пенистый",
+   "look_ru": "мутно-золотистый",
+   "refs": [
+    "wk:claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen"
+   ]
+  },
+  {
+   "cue_key": "beer",
+   "match_subcategory": [
+    "beer",
+    "malting"
+   ],
+   "smell_ru": "солод, хлебная кислинка, хмель",
+   "taste_ru": "горьковато-кислый, некрепкий",
+   "texture_ru": "мутный, с осадком",
+   "look_ru": "бурый, мутный, пена",
+   "refs": [
+    "wk:claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
+    "wk:claim:population-processes-malt-context"
+   ]
+  },
+  {
+   "cue_key": "kvass",
+   "match_subcategory": [
+    "kvass_like"
+   ],
+   "smell_ru": "кислый хлебный запах",
+   "taste_ru": "кисловатый, чуть шипучий",
+   "texture_ru": "жидкий, с крошками",
+   "look_ru": "бурый, мутный",
+   "refs": [
+    "wk:claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide"
+   ]
+  },
+  {
+   "cue_key": "berry_drink",
+   "match_subcategory": [
+    "berry_drink"
+   ],
+   "smell_ru": "ягодный, лесной",
+   "taste_ru": "кисло-сладкий, терпкий",
+   "texture_ru": "жидкий, мякоть",
+   "look_ru": "красный или тёмно-синий",
+   "refs": []
+  },
+  {
+   "cue_key": "cabbage_fermented",
+   "match_subcategory": [
+    "vegetable_fermentation"
+   ],
+   "smell_ru": "резкий кислый капустный дух",
+   "taste_ru": "кислый, солёный",
+   "texture_ru": "хрусткая или обмякшая",
+   "look_ru": "бледная капуста в рассоле под гнётом",
+   "refs": [
+    "wk:claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course"
+   ]
+  },
+  {
+   "cue_key": "grain_processing",
+   "match_subcategory": [
+    "grain_cleaning",
+    "milling_groats",
+    "milling_flour"
+   ],
+   "smell_ru": "мучная пыль, сухое зерно",
+   "taste_ru": "",
+   "texture_ru": "сыпучее, пыль в воздухе",
+   "look_ru": "мякина и шелуха вокруг",
+   "refs": [
+    "wk:claim:food-practices-threshing-chaff"
+   ]
+  },
+  {
+   "cue_key": "leftovers",
+   "match_subcategory": [
+    "leftovers"
+   ],
+   "smell_ru": "застоялый, холодный",
+   "taste_ru": "пресный, подсохший",
+   "texture_ru": "чёрствый, загустевший",
+   "look_ru": "остатки в миске",
+   "refs": []
+  },
+  {
+   "cue_key": "kissel",
+   "match_subcategory": [
+    "kissel"
+   ],
+   "smell_ru": "кислый овсяный дух, пар",
+   "taste_ru": "кисловатый, мучнистый, с мёдом — сладковатый",
+   "texture_ru": "густой, дрожащий, застывает студнем",
+   "look_ru": "серовато-белая масса в миске",
+   "refs": [
+    "ext:pvl_6505_997",
+    "wk:claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture"
+   ]
+  },
+  {
+   "cue_key": "honey_water",
+   "match_subcategory": [
+    "honey_water",
+    "turnip_variant",
+    "sweet_food"
+   ],
+   "smell_ru": "мёд, воск",
+   "taste_ru": "сладкий",
+   "texture_ru": "жидкий или тягучий",
+   "look_ru": "золотистый",
+   "refs": [
+    "ext:pvl_6505_997"
+   ]
+  },
+  {
+   "cue_key": "water",
+   "match_subcategory": [
+    "water"
+   ],
+   "smell_ru": "сырость колодезного сруба или речной запах",
+   "taste_ru": "холодная, иногда с привкусом дерева или ила",
+   "texture_ru": "",
+   "look_ru": "прозрачная или мутноватая",
+   "refs": [
+    "master-food:SRC082"
+   ]
+  },
+  {
+   "cue_key": "wine",
+   "match_subcategory": [
+    "wine"
+   ],
+   "smell_ru": "винный, кисловатый",
+   "taste_ru": "терпкий, кислый",
+   "texture_ru": "жидкий",
+   "look_ru": "тёмно-красный или бурый",
+   "refs": [
+    "ext:gramota586"
+   ]
+  }
+ ],
+ "spoilage_lexicon": [
+  {
+   "state_id": "stale",
+   "smell_ru": "затхлость",
+   "look_ru": "подсохший, потрескавшийся",
+   "applies_to_categories": [
+    "bread_baked",
+    "porridge",
+    "grain",
+    "groats_flour"
+   ],
+   "body_effect": "none_known",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv:stale"
+   ]
+  },
+  {
+   "state_id": "moldy",
+   "smell_ru": "затхлый плесневый",
+   "look_ru": "зелёный, белый или чёрный пух",
+   "applies_to_categories": [
+    "bread_baked",
+    "porridge",
+    "grain",
+    "groats_flour",
+    "vegetable",
+    "berry",
+    "fruit",
+    "mushroom",
+    "dairy",
+    "nut_seed"
+   ],
+   "body_effect": "illness_risk",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv:moldy",
+    "wk:claim:microbial-growth-depends-on-available-moisture"
+   ]
+  },
+  {
+   "state_id": "rotten",
+   "smell_ru": "гнилостный, сладковато-тошный",
+   "look_ru": "слизь, потемнение, мягкость",
+   "applies_to_categories": [
+    "meat_domestic",
+    "meat_game",
+    "offal",
+    "fish",
+    "vegetable",
+    "egg",
+    "fruit",
+    "berry",
+    "mushroom"
+   ],
+   "body_effect": "illness_risk",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv:rotten",
+    "wk:claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+   ]
+  },
+  {
+   "state_id": "rancid",
+   "smell_ru": "прогорклый, мыльный",
+   "look_ru": "пожелтение жира",
+   "applies_to_categories": [
+    "oil_fat",
+    "dairy",
+    "nut_seed",
+    "fish_product"
+   ],
+   "body_effect": "unpleasant",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv:rancid"
+   ]
+  },
+  {
+   "state_id": "soured",
+   "smell_ru": "кислый",
+   "look_ru": "сгусток, пузырьки",
+   "applies_to_categories": [
+    "dairy",
+    "drink",
+    "porridge",
+    "pottage"
+   ],
+   "body_effect": "none_known_if_controlled",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv:soured",
+    "wk:claim:lactic-fermentation-affects-acidity-and-food-proteins"
+   ]
+  },
+  {
+   "state_id": "spoiled",
+   "smell_ru": "неприятный, чужой",
+   "look_ru": "изменение цвета и вида",
+   "applies_to_categories": [
+    "*"
+   ],
+   "body_effect": "illness_risk",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv:spoiled"
+   ]
+  },
+  {
+   "state_id": "gnawed",
+   "smell_ru": "мышиный запах",
+   "look_ru": "погрызы, помёт",
+   "applies_to_categories": [
+    "grain",
+    "groats_flour",
+    "bread_baked",
+    "nut_seed",
+    "fish_product",
+    "meat_domestic"
+   ],
+   "body_effect": "illness_risk",
+   "refs": [
+    "wk:claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites"
+   ]
+  },
+  {
+   "state_id": "damp",
+   "smell_ru": "сырость",
+   "look_ru": "слипание, комки",
+   "applies_to_categories": [
+    "grain",
+    "groats_flour",
+    "seasoning"
+   ],
+   "body_effect": "none_known",
+   "refs": [
+    "wk:claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+   ]
+  }
+ ],
+ "meal_slots": {
+  "_about": "Confidence C. Number and names of daily meals for Novgorod 1230 are not attested in examined sources; slots are a reconstruction to drive NPC routines. Terms обед/вечеря are Old Russian words; 'утренняя еда' kept descriptive.",
+  "slots": [
+   {
+    "slot_id": "morning",
+    "name_ru": "утренняя еда",
+    "note": "малая еда перед работой"
+   },
+   {
+    "slot_id": "midday",
+    "name_ru": "обед",
+    "note": "главная еда дня"
+   },
+   {
+    "slot_id": "evening",
+    "name_ru": "вечеря",
+    "note": "вечерняя еда"
+   },
+   {
+    "slot_id": "field_carry",
+    "name_ru": "еда, взятая с собой",
+    "note": "в поле, на лову, в дороге"
+   },
+   {
+    "slot_id": "feast",
+    "name_ru": "пир, братчина, праздничная трапеза",
+    "note": "праздник, поминки, пир"
+   }
+  ],
+  "by_class_season": [
+   {
+    "class": "*",
+    "season": "*",
+    "day_kind": "ordinary",
+    "slots": [
+     "morning",
+     "midday",
+     "evening"
+    ]
+   },
+   {
+    "class": "rural",
+    "season": "summer",
+    "day_kind": "ordinary",
+    "slots": [
+     "morning",
+     "field_carry",
+     "evening"
+    ]
+   },
+   {
+    "class": "rural",
+    "season": "autumn",
+    "day_kind": "ordinary",
+    "slots": [
+     "morning",
+     "field_carry",
+     "evening"
+    ]
+   },
+   {
+    "class": "fisher",
+    "season": "*",
+    "day_kind": "ordinary",
+    "slots": [
+     "morning",
+     "field_carry",
+     "evening"
+    ]
+   },
+   {
+    "class": "military",
+    "season": "*",
+    "day_kind": "campaign",
+    "slots": [
+     "morning",
+     "evening"
+    ]
+   },
+   {
+    "class": "clergy_monastery",
+    "season": "*",
+    "day_kind": "fast",
+    "slots": [
+     "midday"
+    ]
+   },
+   {
+    "class": "clergy_monastery",
+    "season": "*",
+    "day_kind": "ordinary",
+    "slots": [
+     "midday",
+     "evening"
+    ]
+   },
+   {
+    "class": "*",
+    "season": "*",
+    "day_kind": "strict_fast",
+    "slots": [
+     "midday"
+    ]
+   },
+   {
+    "class": "*",
+    "season": "*",
+    "day_kind": "feast",
+    "slots": [
+     "morning",
+     "feast"
+    ]
+   },
+   {
+    "class": "*",
+    "season": "*",
+    "day_kind": "famine_1230",
+    "slots": [
+     "midday"
+    ]
+   }
+  ]
+ },
+ "dish_slot_rule": {
+  "_about": "Which slots a dish category serves (C).",
+  "bread": [
+   "morning",
+   "midday",
+   "evening",
+   "field_carry",
+   "feast"
+  ],
+  "flatbread": [
+   "morning",
+   "field_carry",
+   "midday"
+  ],
+  "porridge": [
+   "morning",
+   "midday",
+   "evening"
+  ],
+  "pottage": [
+   "midday",
+   "evening"
+  ],
+  "fish": [
+   "midday",
+   "evening",
+   "field_carry",
+   "feast"
+  ],
+  "meat": [
+   "midday",
+   "feast"
+  ],
+  "dairy": [
+   "morning",
+   "midday",
+   "evening"
+  ],
+  "egg": [
+   "morning",
+   "midday",
+   "feast"
+  ],
+  "sweet": [
+   "feast"
+  ],
+  "drink_everyday": [
+   "morning",
+   "midday",
+   "evening",
+   "field_carry"
+  ],
+  "drink_festive": [
+   "feast",
+   "evening"
+  ],
+  "leftovers": [
+   "morning",
+   "evening"
+  ],
+  "not_a_meal": []
+ },
+ "satiety_rule": {
+  "_about": "Body link (C): satiety band by dish category; alcohol flags intoxication; spoilage states flag illness risk (WK food-contact/microbial claims). No calories invented.",
+  "bread": "filling",
+  "flatbread": "moderate",
+  "porridge": "filling",
+  "pottage": "moderate",
+  "fish": "moderate",
+  "meat": "filling",
+  "dairy": "light",
+  "egg": "light",
+  "sweet": "light",
+  "drink_everyday": "negligible",
+  "drink_festive": "light",
+  "leftovers": "moderate",
+  "not_a_meal": "n/a"
+ },
+ "preservation_methods": [
+  {
+   "pm_id": "pm_drying",
+   "name_ru": "Сушка (на воздухе, в печи, на солнце)",
+   "applies_to": [
+    "fish",
+    "berry",
+    "fruit",
+    "mushroom",
+    "vegetable",
+    "meat_domestic",
+    "grain"
+   ],
+   "evidence": "Сушёная рыба — берестяные грамоты; сушка зерна в овине/риге — реконструкция",
+   "confidence": "B",
+   "refs": [
+    "wk:claim:population-fish-dried-form",
+    "wk:claim:drying-reduces-microbial-growth-conditions",
+    "wk:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates"
+   ]
+  },
+  {
+   "pm_id": "pm_salting",
+   "name_ru": "Соление (сухой посол, рассол)",
+   "applies_to": [
+    "fish",
+    "meat_domestic",
+    "vegetable"
+   ],
+   "evidence": "Соль Старой Руссы; посол рыбы — реконструкция по технологии",
+   "confidence": "B",
+   "refs": [
+    "sqlite:novgorod_1230:economy:соль",
+    "wk:claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
+    "wk:claim:solute-concentration-reduces-available-water-for-many-microbes"
+   ]
+  },
+  {
+   "pm_id": "pm_smoking",
+   "name_ru": "Копчение",
+   "applies_to": [
+    "fish",
+    "meat_domestic"
+   ],
+   "evidence": "Возможна; сознательное массовое копчение для Новгорода 1230 не доказано (master rejected: «копчёная рыба как универсальный продукт»)",
+   "confidence": "C",
+   "refs": [
+    "wk:claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+    "game-base-v1/food-drink/scripts/source_snapshot/rejected_recipes.csv:Копчёная рыба как универсальный повседневный продукт"
+   ]
+  },
+  {
+   "pm_id": "pm_fermenting",
+   "name_ru": "Квашение (капуста, молоко, тесто, солод)",
+   "applies_to": [
+    "vegetable",
+    "dairy",
+    "grain"
+   ],
+   "evidence": "Молочнокислое брожение технологически возможно; точная рецептура квашеной капусты XIII в. не установлена",
+   "confidence": "C",
+   "refs": [
+    "wk:claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
+    "wk:claim:lactic-fermentation-affects-acidity-and-food-proteins"
+   ]
+  },
+  {
+   "pm_id": "pm_cellar",
+   "name_ru": "Погреб, подклет, клеть (холод и темнота)",
+   "applies_to": [
+    "vegetable",
+    "dairy",
+    "drink",
+    "oil_fat",
+    "fish",
+    "meat_domestic"
+   ],
+   "evidence": "Хранение в прохладе; конкретные типы погребов 1230 — у домена buildings_structures",
+   "confidence": "B",
+   "refs": [
+    "wk:claim:low-temperature-reduces-many-microbial-metabolic-rates",
+    "wk:claim:household-riverside-storage"
+   ]
+  },
+  {
+   "pm_id": "pm_icehouse",
+   "name_ru": "Ледник (лёд, заготовленный зимой)",
+   "applies_to": [
+    "fish",
+    "meat_domestic",
+    "dairy",
+    "drink"
+   ],
+   "evidence": "Для Новгорода 1230 не найдено прямого свидетельства; оставлено как гипотеза",
+   "confidence": "C",
+   "refs": [
+    "wk:claim:low-temperature-reduces-many-microbial-metabolic-rates",
+    "wk:claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction"
+   ]
+  },
+  {
+   "pm_id": "pm_freezing_winter",
+   "name_ru": "Зимнее замораживание на холоде",
+   "applies_to": [
+    "fish",
+    "meat_domestic",
+    "dairy"
+   ],
+   "evidence": "Природный мороз; технологически очевидно, прямых текстов 1230 нет",
+   "confidence": "C",
+   "refs": [
+    "wk:claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction"
+   ]
+  },
+  {
+   "pm_id": "pm_dry_storage_grain",
+   "name_ru": "Сухое хранение зерна и муки (закрома, лари, ямы, сосуды)",
+   "applies_to": [
+    "grain",
+    "groats_flour",
+    "legume",
+    "nut_seed",
+    "seasoning"
+   ],
+   "evidence": "Защита от сырости и грызунов",
+   "confidence": "B",
+   "refs": [
+    "wk:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+    "wk:claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+    "wk:claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use"
+   ]
+  },
+  {
+   "pm_id": "pm_honey_wax",
+   "name_ru": "Мёд как консервант и хранение сот",
+   "applies_to": [
+    "honey",
+    "berry"
+   ],
+   "evidence": "Мёд хранится долго; ягоды в меду — реконструкция",
+   "confidence": "C",
+   "refs": [
+    "wk:claim:solute-concentration-reduces-available-water-for-many-microbes",
+    "wk:claim:agriculture-fauna-borts-honey"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+# Data dictionary
+
+- `item_id`
+- `name_ru`
+- `alt_names_ru`
+- `object_scope`
+- `category`
+- `subcategory`
+- `description_ru`
+- `function`
+- `who_used`
+- `where_used`
+- `social_scope`
+- `profession_scope`
+- `military_scope`
+- `season_scope`
+- `region_scope`
+- `period_from`
+- `period_to`
+- `materials`
+- `construction`
+- `dimensions`
+- `weight_if_known`
+- `colors`
+- `wear_and_condition`
+- `historical_confidence`
+- `locality_precision`
+- `evidence_basis`
+- `source_ids`
+- `image_refs`
+- `archaeological_examples`
+- `iconographic_examples`
+- `reconstruction_examples`
+- `trade_flow`
+- `do_not_confuse_with`
+- `anachronism_risk`
+- `notes_for_image_generation`
+- `period_note`
+- `generation_policy`
+- `visual_reference_required`
+- `tags`
+
+CSV lists are pipe-separated; JSON lists are arrays. `period_from/to` delimit the record, not universal use. `generation_policy` controls automatic Imagen use.

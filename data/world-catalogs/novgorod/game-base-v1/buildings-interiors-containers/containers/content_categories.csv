@@ -1,0 +1,42 @@
+content_category,name_ru,origin,status
+content_food_dry,"сухая пища (хлеб, сухари, крупа)",v5,candidate
+content_grain,зерно,v5,candidate
+content_flour,мука,v5,candidate
+content_salt,соль,v5,candidate
+content_fish,"рыба (свежая, солёная, вяленая)",v5,candidate
+content_meat,мясо,v5,candidate
+content_honey,мёд,v5,candidate
+content_liquid,"жидкость (квас, молоко, масло)",v5,candidate
+content_water,вода,v5,candidate
+content_fermented_liquid,брожёный напиток/квашение,v5,candidate
+content_wet_bulk,мокрый сыпучий/квашеный груз,v5,candidate
+content_dry_bulk,сухой сыпучий груз,v5,candidate
+content_hot,горячее содержимое,v5,candidate
+content_textiles,ткани и одежда,v5,candidate
+content_household_goods,домашняя утварь,v5,candidate
+content_trade_goods,товар (общий),v5,candidate
+content_personal_small_items,личные мелочи,v5,candidate
+content_small_dry_goods,мелкие сухие вещи,v5,candidate
+content_small_tools,мелкий инструмент,v5,candidate
+content_coins,монеты и серебро,v5,candidate
+content_weights,гири и весы,v5,candidate
+content_folded_documents,"грамоты, береста, записи",v5,candidate
+content_needles,иглы,v5,candidate
+content_arrows,стрелы,v5,candidate
+content_knife_fitted,нож по ножнам,v5,candidate
+content_sword_fitted,меч по ножнам,v5,candidate
+content_sharp_uncovered,открытое острое,v5,candidate
+content_fur,меха и шкурки,proposed,candidate
+content_wax,воск,proposed,candidate
+content_leather,"кожа, обрезки кожи",proposed,candidate
+content_fibre_yarn,"кудель, пряжа, нитки",proposed,candidate
+content_tools_large,"крупный инструмент (топор, серп, лопата)",proposed,candidate
+content_metal_stock,"металл-сырьё (крица, прутки, слитки)",proposed,candidate
+content_fishing_gear,рыболовные снасти,proposed,candidate
+content_horse_gear,конская упряжь,proposed,candidate
+content_fodder,"корм скоту (сено, овёс)",proposed,candidate
+content_fuel,"топливо (дрова, уголь, лучина)",proposed,candidate
+content_vegetables,"овощи и корнеплоды (репа, капуста)",proposed,candidate
+content_ritual_objects,культовые предметы,proposed,candidate
+content_rope_cordage,"верёвки, лыко",proposed,candidate
+content_waste,отходы ремесла,proposed,candidate

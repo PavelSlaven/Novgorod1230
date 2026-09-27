@@ -1,0 +1,253 @@
+source_kind,source_id,source_name_ru,source_category,source_confidence,period,mapping,target
+master_material_culture,FOR0001,Ров раннего Детинца — неопределенное состояние к 1230,fortifications/ditch,C,1180–1260,military_security,ms_fort_detinets | ms_fort_ditch_crossing
+master_material_culture,FOR0002,Деревянный переход через оборонительный ров,fortifications/ditch_crossing,C,1180–1260,military_security,ms_fort_ditch_crossing
+master_material_culture,FOR0003,Деревянные ворота Детинца — осторожная реконструкция,fortifications/gate,C,1180–1260,military_security,ms_post_city_gate | ms_fort_detinets
+master_material_culture,FOR0004,Деревянный засов крепостных/усадебных ворот,fortifications/gate_hardware,B,1180–1260,military_security,ms_post_yard_gate | ms_fort_gate_hardware
+master_material_culture,FOR0005,Опорный столб и пятник воротной створки,fortifications/gate_hardware,B,1180–1260,military_security,ms_fort_gate_hardware
+master_material_culture,FOR0006,Деревянная створка крепостных ворот,fortifications/gate_leaf,C,1180–1260,military_security,ms_fort_detinets | ms_fort_gate_hardware
+master_material_culture,FOR0007,Деревянный караульный навес у ворот,fortifications/guard_shelter,C,1180–1260,military_security,ms_post_city_gate | ms_fort_guard_shelter
+master_material_culture,FOR0008,Кирпичная стена Новгородского кремля конца XV века,fortifications/late_fortification,D,1480–1500,denylist,deny_stone_kremlin
+master_material_culture,FOR0009,Поздняя каменная башня Новгородского кремля — запрещённый слой,fortifications/later_exclusion,D,1400–1700,denylist,deny_stone_kremlin
+master_material_culture,FOR0010,Большой глиняный вал Детинца рубежа XIII–XIV вв.,fortifications/rampart,D,1270–1320,denylist,deny_late_rampart
+master_material_culture,FOR0011,Береговая срубная подпорная конструкция,fortifications/shore_revetment,B,1180–1260,military_security,ms_fort_shore_revetment
+master_material_culture,FOR0012,Острожная стена из вертикального частокола,fortifications/timber_palisade,C,1180–1260,military_security,ms_fort_okolny_gorod
+master_material_culture,FOR0013,Дубовая срубная стена раннего Детинца,fortifications/timber_wall,B,1180–1260,military_security,ms_fort_detinets
+master_material_culture,FOR0014,Срубная клетчатая конструкция деревянной стены,fortifications/timber_wall_structure,B,1180–1260,military_security,ms_fort_detinets
+master_material_culture,FOR0015,Внутренняя деревянная лестница на боевой ход,fortifications/wall_access,C,1180–1260,military_security,ms_fort_wall_walk
+master_material_culture,FOR0016,Деревянная дозорная/боевая площадка на стене,fortifications/wall_superstructure,C,1180–1260,military_security,ms_fort_wall_walk
+master_material_culture,WPN0001,"Стрела с древком, оперением и наконечником",weapons/arrow,A,1180–1260,wp,wp_arrow
+master_material_culture,WPN0002,Костяной наконечник стрелы,weapons/arrowhead,B,1180–1260,wp,wp_ah_bone
+master_material_culture,WPN0003,Наконечник стрелы втульчатый бронебойный,weapons/arrowhead,A,1180–1260,wp,wp_ah_socketed_ap
+master_material_culture,WPN0004,Наконечник стрелы черешковый ромбический,weapons/arrowhead,A,1180–1260,wp,wp_ah_rhomboid
+master_material_culture,WPN0005,Наконечник стрелы широколезвийный охотничий,weapons/arrowhead,A,1180–1260,wp,wp_ah_broad_hunting
+master_material_culture,WPN0006,Топор боевой бородовидный,weapons/battle_axe,A,1180–1260,wp,wp_battle_axe
+master_material_culture,WPN0007,Топор боевой с молоточковидным обухом,weapons/battle_axe,B,1180–1260,wp,wp_battle_axe
+master_material_culture,WPN0008,Лук простой деревянный,weapons/bow,B,1180–1260,wp,wp_bow_self
+master_material_culture,WPN0009,Лук сложносоставной,weapons/bow,C,1180–1260,wp,wp_bow_composite
+master_material_culture,WPN0010,Дубина деревянная,weapons/club,B,1180–1260,wp,wp_club
+master_material_culture,WPN0011,Арбалетный болт раннего типа,weapons/crossbow_projectile,C,1180–1260,wp,wp_crossbow_bolt
+master_material_culture,WPN0012,Наконечник сулицы,weapons/javelin_head,B,1180–1260,wp,wp_sulitsa
+master_material_culture,WPN0013,Нож с выгнутой спинкой,weapons/knife,A,1180–1260,wp,wp_knife
+master_material_culture,WPN0014,Нож универсальный с прямой спинкой,weapons/knife,A,1180–1260,wp,wp_knife
+master_material_culture,WPN0015,Ножны кожаные для ножа,weapons/knife_sheath,A,1180–1260,wp,wp_knife_sheath
+master_material_culture,WPN0016,Длинный однолезвийный нож,weapons/long_knife,C,1180–1260,wp,wp_long_knife
+master_material_culture,WPN0017,Булава с бронзовым ребристым навершием,weapons/mace,B,1180–1260,wp,wp_mace
+master_material_culture,WPN0018,Праща — спорная для локального военного набора,weapons/sling,D,1180–1260,wp,wp_sling
+master_material_culture,WPN0019,Подток копья,weapons/spear_butt,B,1180–1260,wp,wp_spear_butt
+master_material_culture,WPN0020,Копейное древко,weapons/spear_shaft,B,1180–1260,wp,wp_spear_shaft
+master_material_culture,WPN0021,Боевой наконечник копья ланцетовидный,weapons/spearhead,A,1180–1260,wp,wp_spear
+master_material_culture,WPN0022,Наконечник копья ромбический узкий,weapons/spearhead,A,1180–1260,wp,wp_spear
+master_material_culture,WPN0023,Наконечник копья с лавролистным пером,weapons/spearhead,B,1180–1260,wp,wp_spear
+master_material_culture,WPN0024,Меч с линзовидным сечением клинка без выраженного дола,weapons/sword_blade,B,1180–1260,wp,wp_sword
+master_material_culture,WPN0025,Обоюдоострый меч с широким долом,weapons/sword_blade,B,1180–1260,wp,wp_sword
+master_material_culture,WPN0026,Меч с дисковидным навершием,weapons/sword_hilt,B,1180–1260,wp,wp_sword_hilt_parts
+master_material_culture,WPN0027,Меч с ореховидным навершием,weapons/sword_hilt,B,1180–1260,wp,wp_sword_hilt_parts
+master_material_culture,WPN0028,Деревянная основа рукояти меча,weapons/sword_hilt_part,B,1180–1260,wp,wp_sword_hilt_parts
+master_material_culture,WPN0029,Прямая мечовая крестовина,weapons/sword_hilt_part,A,1180–1260,wp,wp_sword_hilt_parts
+master_material_culture,WPN0030,Топор универсальный малый,weapons/utility_axe,A,1180–1260,wp,wp_utility_axe
+master_material_culture,WPN0031,Узколезвийный боевой топор,weapons/боевые и универсальные топоры,B,1180–1260,wp,wp_battle_axe
+master_material_culture,WPN0032,Копьё с ланцетовидным наконечником,"weapons/копья, сулицы и рогатины",B,1180–1260,wp,wp_spear
+master_material_culture,WPN0033,Копьё с узким гранёным наконечником,"weapons/копья, сулицы и рогатины",B,1180–1260,wp,wp_spear
+master_material_culture,WPN0034,Наконечник копья с втулкой и крепёжным гвоздём,"weapons/копья, сулицы и рогатины",A,1180–1260,wp,wp_spear
+master_material_culture,WPN0035,Широколезвийная рогатина — охотничье/боевое копьё,"weapons/копья, сулицы и рогатины",B,1180–1260,wp,wp_rogatina
+master_material_culture,WPN0036,Бронебойный гранёный наконечник стрелы,"weapons/лук, стрелы и самострел",B,1180–1260,wp,wp_ah_tanged_ap
+master_material_culture,WPN0037,Тупой костяной или деревянный наконечник стрелы,"weapons/лук, стрелы и самострел",C,1180–1260,wp,wp_ah_blunt
+master_material_culture,WPN0038,Меч с дисковидным или линзовидным навершием,weapons/мечи и ножны,B,1200–1260,wp,wp_sword
+master_material_culture,WPN0039,Меч с прямым брусковидным навершием — ранняя форма,weapons/мечи и ножны,C,1100–1230,wp,wp_sword
+master_material_culture,WPN0040,Поясной ременной подвес меча,weapons/мечи и ножны,B,1180–1260,wp,wp_sword_belt
+master_material_culture,WPN0041,Бердыш,"weapons/мечи, копья, топоры, луки и другое оружие",D,1500–1700,denylist,deny_berdysh
+master_material_culture,WPN0042,Боевой нож с прямой спинкой,"weapons/мечи, копья, топоры, луки и другое оружие",A,1180–1260,wp,wp_knife
+master_material_culture,WPN0043,Бронзовая булава с пирамидальными шипами,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_mace
+master_material_culture,WPN0044,Булава с железным многогранным навершием,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_mace
+master_material_culture,WPN0045,Двушипный или гарпунный наконечник стрелы — специальный,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_ah_barbed
+master_material_culture,WPN0046,Древко стрелы,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_arrow
+master_material_culture,WPN0047,Каменное ядро для метательной машины — осадное,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_siege_stone
+master_material_culture,WPN0048,Конное копьё,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_lance
+master_material_culture,WPN0049,Копьё с ромбическим пером,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_spear
+master_material_culture,WPN0050,Копьё с узким удлинённым пером,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_spear
+master_material_culture,WPN0051,Копьё с широким ланцетовидным наконечником,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_spear
+master_material_culture,WPN0052,Листовидный наконечник стрелы,"weapons/мечи, копья, топоры, луки и другое оружие",A,1180–1260,wp,wp_ah_leaf
+master_material_culture,WPN0053,Наконечник ножен меча,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_sword_scabbard
+master_material_culture,WPN0054,Налуч для составного лука,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_bow_case
+master_material_culture,WPN0055,"Ножны меча деревянные, обтянутые кожей","weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_sword_scabbard
+master_material_culture,WPN0056,Оперение стрелы,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_arrow
+master_material_culture,WPN0057,Пехотное копьё средней длины,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_spear
+master_material_culture,WPN0058,Поздний двуручный меч,"weapons/мечи, копья, топоры, луки и другое оружие",D,1350–1600,denylist,deny_two_handed_sword
+master_material_culture,WPN0059,Поясной набор лучника: налуч и колчан,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_quiver
+master_material_culture,WPN0060,Пращевой камень,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_sling
+master_material_culture,WPN0061,Сабля восточноевропейского типа — редкая,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_sabre
+master_material_culture,WPN0062,Самострел раннего типа,"weapons/мечи, копья, топоры, луки и другое оружие",C,1180–1260,wp,wp_crossbow
+master_material_culture,WPN0063,Составной рефлексный лук восточноевропейской традиции,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_bow_composite
+master_material_culture,WPN0064,Срезень — широкий охотничий наконечник,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_ah_broad_hunting
+master_material_culture,WPN0065,Сулица — лёгкое метательное копьё,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_sulitsa
+master_material_culture,WPN0066,Тетива лука,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_bowstring
+master_material_culture,WPN0067,Черешковый наконечник стрелы узкий бронебойный,"weapons/мечи, копья, топоры, луки и другое оружие",A,1180–1260,wp,wp_ah_tanged_ap
+master_material_culture,WPN0068,Широколезвийный боевой топор,"weapons/мечи, копья, топоры, луки и другое оружие",B,1180–1260,wp,wp_battle_axe
+master_material_culture,WPN0069,Боевой нож в кожаных ножнах,"weapons/ножи, булавы, кистени и прочее",A,1180–1260,wp,wp_knife
+master_material_culture,WPN0070,Кистень с гирей на ремне или цепи,"weapons/ножи, булавы, кистени и прочее",B,1180–1260,wp,wp_flail
+master_material_culture,ARM0001,Кожаная защита предплечья лучника,armor/archer_bracer,C,1180–1260,wp,wp_archer_bracer
+master_material_culture,ARM0002,Пластинчатые наручи — спорная реконструкция,armor/arm_guard,C,1180–1260,wp,wp_arm_guards
+master_material_culture,ARM0003,Железная пластина доспеха,armor/armor_plate_fragment,A,1180–1260,wp,wp_lamellar
+master_material_culture,ARM0004,Кожаный ремень ремонта доспеха,armor/armor_repair_part,B,1180–1260,wp,wp_armour_repair
+master_material_culture,ARM0005,Кожаная подкладка под кольчугу,armor/armor_underlayer,C,1180–1260,wp,wp_padded
+master_material_culture,ARM0006,Пластинчатый доспех на ремнях/основе,armor/lamellar_armor,C,1180–1260,wp,wp_lamellar
+master_material_culture,ARM0007,Пластинчатые поножи — спорная реконструкция,armor/leg_guard,C,1180–1260,wp,wp_leg_guards
+master_material_culture,ARM0008,Кольчужный капюшон отдельный,armor/mail_coif,C,1180–1260,wp,wp_mail_coif
+master_material_culture,ARM0009,Клёпаное кольцо кольчуги,armor/mail_component,A,1180–1260,wp,wp_mail_rings
+master_material_culture,ARM0010,Кольца кольчуги цельносечёные,armor/mail_component,A,1180–1260,wp,wp_mail_rings
+master_material_culture,ARM0011,Кольчужная рубаха до середины бедра,armor/mail_hauberk,B,1180–1260,wp,wp_mail_shirt
+master_material_culture,ARM0012,Отдельный кольчужный ворот/оплечье,armor/mail_neck_protection,C,1180–1260,wp,wp_mail_collar
+master_material_culture,ARM0013,Заплатка кольчуги,armor/mail_repair,B,1180–1260,wp,wp_armour_repair
+master_material_culture,ARM0014,Кольчуга с рукавами до локтя,armor/mail_sleeve_variant,B,1180–1260,wp,wp_mail_shirt
+master_material_culture,ARM0015,Кольчужное полотно в ремонте,armor/mail_workpiece,B,1180–1260,wp,wp_armour_repair
+master_material_culture,ARM0016,Текстильная поддоспешная одежда — минимальная реконструкция,armor/padded_underarmor,C,1180–1260,wp,wp_padded
+master_material_culture,ARM0017,Нашивной пластинчатый доспех,armor/splinted_or_scale_armor,C,1180–1260,wp,wp_scale
+master_material_culture,ARM0018,Кожаная окантовка кольчуги,armor/кольчуга и мягкая основа,C,1180–1260,wp,wp_armour_repair
+master_material_culture,ARM0019,Кольчужная бармица,armor/кольчуга и мягкая основа,B,1180–1260,wp,wp_barmitsa
+master_material_culture,ARM0020,Кожаная ременная обвязка доспеха,armor/кольчуги и дополнительная защита,B,1180–1260,wp,wp_armour_repair
+master_material_culture,ARM0021,Кожаный доспех как самостоятельная кираса — недоказан,armor/кольчуги и дополнительная защита,D,1180–1260,denylist,deny_leather_cuirass
+master_material_culture,ARM0022,Короткая кольчужная рубаха с коротким рукавом,armor/кольчуги и дополнительная защита,B,1180–1260,wp,wp_mail_shirt
+master_material_culture,ARM0023,Отдельная ламеллярная пластина,armor/кольчуги и дополнительная защита,B,1180–1260,wp,wp_lamellar
+master_material_culture,ARM0024,Пластинчатый бригантинный доспех,armor/кольчуги и дополнительная защита,D,1300–1500,denylist,deny_brigandine
+master_material_culture,ARM0025,Полный латный доспех,armor/кольчуги и дополнительная защита,D,1350–1600,denylist,deny_plate_harness
+master_material_culture,ARM0026,Ремонтная связка колец и заклёпок,armor/кольчуги и дополнительная защита,C,1180–1260,wp,wp_armour_repair
+master_material_culture,ARM0027,Удлинённая кольчуга с разрезами,armor/кольчуги и дополнительная защита,C,1180–1260,wp,wp_mail_long
+master_material_culture,ARM0028,Чешуйчатый панцирь — спорная локальная реконструкция,armor/кольчуги и дополнительная защита,D,1180–1260,wp,wp_scale
+master_material_culture,ARM0029,Кожаная защита конечностей без металлических пластин,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_leather_limb_armour
+master_material_culture,ARM0030,Конский доспех — не норма 1230,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_horse_armour
+master_material_culture,ARM0031,Ламеллярный панцирь из малых пластин — ограниченно допустим,armor/пластинчатая и дополнительная защита,C,1180–1260,wp,wp_lamellar
+master_material_culture,HLM0001,Шлем с креплением бармицы,helmets/aventail_helmet,B,1180–1260,wp,wp_barmitsa
+master_material_culture,HLM0002,Конический шлем с наносником,helmets/conical_nasal,B,1180–1260,wp,wp_helmet_conical
+master_material_culture,HLM0003,"Шлем, связываемый с Ярославом Всеволодовичем — сравнительный референс",helmets/elite_half_mask_helmet,B,1180–1230,wp,wp_helmet_halfmask
+master_material_culture,HLM0004,Шлем с навершием-втулкой,helmets/helmet_finial,C,1180–1260,wp,wp_helmet_finial
+master_material_culture,HLM0005,Внутренняя кожаная подвеска шлема,helmets/helmet_liner,C,1180–1260,wp,wp_helmet_liner
+master_material_culture,HLM0006,Полумаска шлема второй половины XIII–начала XIV века,helmets/later_comparative_half_mask,D,1260–1325,denylist,deny_later_halfmask
+master_material_culture,HLM0007,Сфероконический шлем из железа,helmets/sphero_conical,B,1180–1260,wp,wp_helmet_spheroconical
+master_material_culture,HLM0008,Высокий сфероконический шлем с наносником,helmets/шлемы XII–первой половины XIII века,B,1180–1260,wp,wp_helmet_spheroconical
+master_material_culture,HLM0009,Куполовидный шлем западного типа с наносником,helmets/шлемы XII–первой половины XIII века,C,1180–1260,wp,wp_helmet_western
+master_material_culture,HLM0010,Стёганая подшлемная шапочка,helmets/шлемы XII–первой половины XIII века,C,1180–1260,wp,wp_helmet_liner
+master_material_culture,HLM0011,Сфероконический шлем без выраженного наносника,helmets/шлемы XII–первой половины XIII века,B,1180–1260,wp,wp_helmet_spheroconical
+master_material_culture,HLM0012,Бацинет с забралом,helmets/шлемы и защита головы,D,1320–1500,denylist,deny_bascinet
+master_material_culture,HLM0013,Железная шапель/«железная шляпа» — возможный западный импорт,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_kettle_hat
+master_material_culture,HLM0014,Западноевропейский шлем-«горшок» раннего типа — чужеземный и редкий,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_great_helm
+master_material_culture,HLM0015,Кольчужная бармица шлема,helmets/шлемы и защита головы,B,1180–1260,wp,wp_barmitsa
+master_material_culture,HLM0016,Конический сегментный шлем,helmets/шлемы и защита головы,C,1180–1260,wp,wp_helmet_conical
+master_material_culture,HLM0017,Наносник шлема,helmets/шлемы и защита головы,B,1180–1260,wp,wp_helmet_nasal
+master_material_culture,HLM0018,Полный личинный шлем — исключительная и спорная форма,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_full_mask_helmet
+master_material_culture,HLM0019,Шлем с рогами,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_horned_helmet
+master_material_culture,SHD0001,Круглый деревянный щит,shields/round_shield,B,1180–1260,wp,wp_shield_round
+master_material_culture,SHD0002,Умбон железный,shields/shield_boss,B,1180–1260,wp,wp_shield_umbo
+master_material_culture,SHD0003,Дощатая основа щита,shields/shield_core,B,1180–1260,wp,wp_shield_parts
+master_material_culture,SHD0004,Сыромятная окантовка щита,shields/shield_edge,C,1180–1260,wp,wp_shield_parts
+master_material_culture,SHD0005,Ременная рукоять щита,shields/shield_grip,B,1180–1260,wp,wp_shield_parts
+master_material_culture,SHD0006,Окрашенный щит с простым знаком,shields/щитовые формы,C,1180–1260,wp,wp_shield_facing
+master_material_culture,SHD0007,Переходный укороченный миндалевидный щит,shields/щитовые формы,B,1180–1260,wp,wp_shield_almond
+master_material_culture,SHD0008,Ранний треугольный щит с округлым верхом,shields/щитовые формы,B,1200–1260,wp,wp_shield_triangular
+master_material_culture,SHD0009,Кожаная или тканевая обтяжка щита,shields/щиты и их детали,B,1180–1260,wp,wp_shield_facing
+master_material_culture,SHD0010,Миндалевидный щит,shields/щиты и их детали,B,1180–1260,wp,wp_shield_almond
+master_material_culture,SHD0011,Переходный округло-треугольный щит,shields/щиты и их детали,B,1180–1260,wp,wp_shield_triangular
+master_material_culture,SHD0012,Плечевой ремень щита,shields/щиты и их детали,B,1180–1260,wp,wp_shield_parts
+master_material_culture,SHD0013,Поздний павезный щит,shields/щиты и их детали,D,1350–1600,denylist,deny_pavise
+master_material_culture,MIL0001,Связка запасных стрел,military_equipment/ammunition_bundle,B,1180–1260,wp,wp_arrow
+master_material_culture,MIL0002,Запасная тетива,military_equipment/archery_spare,B,1180–1260,wp,wp_bowstring
+master_material_culture,MIL0003,Оружейная стойка из жердей,military_equipment/armory_furnishing,C,1180–1260,out_of_scope,interiors (оружейная стойка)
+master_material_culture,MIL0004,Вьючная укладка военного обоза,military_equipment/baggage_load,B,1180–1260,out_of_scope,transport_travel (вьючная укладка обоза)
+master_material_culture,MIL0005,Перевязь оружия через плечо,military_equipment/baldric,C,1180–1260,wp,wp_baldric
+master_material_culture,MIL0006,Костровое место лагеря,military_equipment/camp_fireplace,B,1180–1260,out_of_scope,camp (костровое место)
+master_material_culture,MIL0007,Походный котёл с дужкой,military_equipment/camp_kettle,B,1180–1260,out_of_scope,household/camp (котёл)
+master_material_culture,MIL0008,Лагерная верёвка,military_equipment/camp_rope,A,1180–1260,out_of_scope,cordage (верёвка)
+master_material_culture,MIL0009,Деревянный кол для привязи коня,military_equipment/campaign_horse_tether,B,1180–1260,out_of_scope,horse_equipment (кол привязи)
+master_material_culture,MIL0010,Кожаная фляга — реконструкция,military_equipment/flask,C,1180–1260,out_of_scope,personal_items (фляга)
+master_material_culture,MIL0011,Точильный брусок воина,military_equipment/maintenance_tool,A,1180–1260,wp,wp_maintenance_kit
+master_material_culture,MIL0012,Кожаный ремонтный набор,military_equipment/repair_kit,B,1180–1260,wp,wp_maintenance_kit
+master_material_culture,MIL0013,Чехол для шлема/доспеха,military_equipment/storage_cover,C,1180–1260,wp,wp_equipment_cover
+master_material_culture,MIL0014,Палатка статусного военного лагеря,military_equipment/tent,C,1180–1260,out_of_scope,camp (палатка)
+master_material_culture,MIL0015,Деревянная миска походная,"military_equipment/поясное, походное и лагерное снаряжение",A,1180–1260,out_of_scope,household (миска)
+master_material_culture,MIL0016,Деревянная походная фляга/бутыль,"military_equipment/поясное, походное и лагерное снаряжение",B,1180–1260,out_of_scope,personal_items (фляга)
+master_material_culture,MIL0017,Кожаные ножны боевого/хозяйственного ножа,"military_equipment/поясное, походное и лагерное снаряжение",A,1180–1260,wp,wp_knife_sheath
+master_material_culture,MIL0018,Кольчужные ремонтные клещи,"military_equipment/поясное, походное и лагерное снаряжение",C,1180–1260,wp,wp_maintenance_kit
+master_material_culture,MIL0019,Маслёнка для ухода за оружием — реконструкция,"military_equipment/поясное, походное и лагерное снаряжение",C,1180–1260,wp,wp_maintenance_kit
+master_material_culture,MIL0020,Мечевой пояс с подвесом ножен,"military_equipment/поясное, походное и лагерное снаряжение",B,1180–1260,wp,wp_sword_belt
+master_material_culture,MIL0021,Поясная воинская сумка,"military_equipment/поясное, походное и лагерное снаряжение",A,1180–1260,out_of_scope,personal_items (поясная сумка)
+master_material_culture,MIL0022,Связка запасных древков,"military_equipment/поясное, походное и лагерное снаряжение",B,1180–1260,wp,wp_spear_shaft
+master_material_culture,MIL0023,Скатка постели/одеяла,"military_equipment/поясное, походное и лагерное снаряжение",C,1180–1260,out_of_scope,personal_items (скатка)
+master_material_culture,MIL0024,Чехол для щита — реконструкция,"military_equipment/поясное, походное и лагерное снаряжение",C,1180–1260,wp,wp_equipment_cover
+master_material_culture,MIL0025,Воинский дорожный мешок,"military_equipment/поясное, стрелковое и походное снаряжение",A,1180–1260,out_of_scope,personal_items (дорожный мешок)
+master_material_culture,MIL0026,Воинский кожаный пояс без поздней перегрузки декором,"military_equipment/поясное, стрелковое и походное снаряжение",A,1180–1260,out_of_scope,garments/adornment (воинский пояс)
+master_material_culture,MIL0027,Колчан для стрел,"military_equipment/поясное, стрелковое и походное снаряжение",B,1180–1260,wp,wp_quiver
+master_material_culture,MIL0028,Костровой треножник или подвес котла — осторожная реконструкция,"military_equipment/поясное, стрелковое и походное снаряжение",C,1180–1260,out_of_scope,camp (треножник)
+master_material_culture,MIL0029,Набор для ремонта кольчуги,"military_equipment/поясное, стрелковое и походное снаряжение",C,1180–1260,wp,wp_maintenance_kit
+master_material_culture,MIL0030,Налуч для лука,"military_equipment/поясное, стрелковое и походное снаряжение",C,1180–1260,wp,wp_bow_case
+master_material_culture,MIL0031,Походный топор и лопата группы,"military_equipment/поясное, стрелковое и походное снаряжение",B,1180–1260,out_of_scope,craft_tools (походный топор и лопата)
+master_material_culture,MIL0032,Простой походный навес,"military_equipment/поясное, стрелковое и походное снаряжение",C,1180–1260,out_of_scope,camp (навес)
+master_material_culture,MIL0033,Сигнальный рог,"military_equipment/поясное, стрелковое и походное снаряжение",B,1180–1260,wp,wp_signal_horn
+master_material_culture,HNT0001,Охотничья стрела с тупым наконечником,hunting/arrow_hunting,B,1180–1260,wp,wp_arrow
+master_material_culture,HNT0002,Охотничья стрела с широким наконечником,hunting/arrow_hunting,A,1180–1260,wp,wp_arrow
+master_material_culture,HNT0003,Охотничий лук простой,hunting/bow_hunting,B,1180–1260,wp,wp_bow_self
+master_material_culture,HNT0004,Манок деревянный/костяной,hunting/decoy_call,C,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0005,Охотничье копьё/рогатина,hunting/hunting_spear,B,1180–1260,wp,wp_rogatina
+master_material_culture,HNT0006,Рожок охотничий простой,hunting/signal_horn,B,1180–1260,wp,wp_signal_horn
+master_material_culture,HNT0007,Петля на зайца,hunting/snare,B,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0008,Силка из верёвки/волоса,hunting/snare,B,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0009,Пружок/самолов деревянный,hunting/trap,C,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0010,Бобровая шкура,"hunting/охотничьи снасти, промысел и дикие животные",A,1180–1260,out_of_scope,hunting/fur
+master_material_culture,HNT0011,Клетка для живой птицы/приманки,"hunting/охотничьи снасти, промысел и дикие животные",C,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0012,Кожаный поводок охотничьей собаки,"hunting/охотничьи снасти, промысел и дикие животные",B,1180–1260,out_of_scope,hunting/dogs
+master_material_culture,HNT0013,Ловчая птица на перчатке — элитная практика,"hunting/охотничьи снасти, промысел и дикие животные",C,1180–1260,out_of_scope,hunting/falconry
+master_material_culture,HNT0014,Нож для свежевания,"hunting/охотничьи снасти, промысел и дикие животные",A,1180–1260,wp,wp_knife
+master_material_culture,HNT0015,Охотничья сеть,"hunting/охотничьи снасти, промысел и дикие животные",B,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0016,Поперечина на охотничьем копье — осторожная реконструкция,"hunting/охотничьи снасти, промысел и дикие животные",C,1180–1260,wp,wp_rogatina
+master_material_culture,HNT0017,Промысловые ручные сани,"hunting/охотничьи снасти, промысел и дикие животные",B,1180–1260,out_of_scope,transport
+master_material_culture,HNT0018,Пружинная петля на согнутом деревце,"hunting/охотничьи снасти, промысел и дикие животные",C,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0019,Птичья сеть,"hunting/охотничьи снасти, промысел и дикие животные",C,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0020,Рама для растяжки шкуры,"hunting/охотничьи снасти, промысел и дикие животные",B,1180–1260,out_of_scope,hunting/fur
+master_material_culture,HNT0021,Связка пушных шкур,"hunting/охотничьи снасти, промысел и дикие животные",A,1180–1260,out_of_scope,hunting/fur
+master_material_culture,HNT0022,Современный стальной капкан с пружинами,"hunting/охотничьи снасти, промысел и дикие животные",D,1600–2000,denylist,deny_steel_trap
+master_material_culture,HNT0023,Давящий самолов/плашка,hunting/промысловое и охотничье снаряжение,C,1180–1260,out_of_scope,hunting
+master_material_culture,HNT0024,Железный капкан — спорная форма,hunting/промысловое и охотничье снаряжение,D,1180–1260,denylist,deny_steel_trap
+master_material_culture,HNT0025,Охотничий нож,hunting/промысловое и охотничье снаряжение,A,1180–1260,wp,wp_knife
+master_material_culture,HNT0026,Охотничья лыжа,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,transport (лыжа)
+master_material_culture,HNT0027,Скребок для мездрения шкуры,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,hunting/fur
+master_material_culture,HNT0028,Снегоступы — спорная региональная реконструкция,hunting/промысловое и охотничье снаряжение,D,1180–1260,out_of_scope,hunting
+costume_catalog,HW015,Стёганый или войлочный подшлемник,headwear/under_helmet,C,,wp,wp_helmet_liner
+costume_catalog,AC010,Мечевой пояс и подвес ножен,accessories/sword_suspension,B,,wp,wp_sword_belt
+costume_catalog,AR001,Льняная/шерстяная одежда под доспехом,armor_and_weapons/under_armor_basic,B,,wp,wp_padded
+costume_catalog,AR002,Умеренно стёганая поддоспешная одежда — реконструкция,armor_and_weapons/padded_under_armor,C,,wp,wp_padded
+costume_catalog,AR003,Кольчуга средней длины,armor_and_weapons/mail_armor,B,,wp,wp_mail_shirt
+costume_catalog,AR004,Длинная кольчуга профессионального воина,armor_and_weapons/long_mail_armor,B,,wp,wp_mail_long
+costume_catalog,AR005,Кольчужный капюшон/коиф,armor_and_weapons/mail_coif,B,,wp,wp_mail_coif
+costume_catalog,AR006,Кольчужная бармица,armor_and_weapons/mail_aventail,B,,wp,wp_barmitsa
+costume_catalog,AR007,Ламеллярный или пластинчатый корпусной доспех — редкий вариант,armor_and_weapons/lamellar_armor,C,,wp,wp_lamellar
+costume_catalog,AR008,Конический железный шлем,armor_and_weapons/helmet_conical,B,,wp,wp_helmet_conical
+costume_catalog,AR009,Сфероконический шлем,armor_and_weapons/helmet_spheroconical,B,,wp,wp_helmet_spheroconical
+costume_catalog,AR010,Шлем с наносником,armor_and_weapons/helmet_nasal,B,,wp,wp_helmet_nasal
+costume_catalog,AR011,Элитный шлем с полумаской типа IV,armor_and_weapons/helmet_elite_mask,C,,wp,wp_helmet_halfmask
+costume_catalog,AR012,Внутренняя подкладка и ремень шлема,armor_and_weapons/helmet_lining,B,,wp,wp_helmet_liner
+costume_catalog,AR013,Круглый щит,armor_and_weapons/shield_round,B,,wp,wp_shield_round
+costume_catalog,AR014,Миндалевидный/каплевидный щит,armor_and_weapons/shield_kite,B,,wp,wp_shield_almond
+costume_catalog,AR015,Укороченный треугольный/скруглённо-треугольный щит — переходный вариант,armor_and_weapons/shield_transitional,C,,wp,wp_shield_triangular
+costume_catalog,AR016,"Щитовое покрытие, окраска и ременная рукоять",armor_and_weapons/shield_components,B,,wp,wp_shield_facing
+costume_catalog,AR017,Копьё,armor_and_weapons/spear,A,,wp,wp_spear
+costume_catalog,AR018,Конное копьё/ланцеобразное оружие,armor_and_weapons/mounted_lance,B,,wp,wp_lance
+costume_catalog,AR019,Сулица/лёгкое метательное копьё,armor_and_weapons/javelin,A,,wp,wp_sulitsa
+costume_catalog,AR020,Меч,armor_and_weapons/sword,A,,wp,wp_sword
+costume_catalog,AR021,Ножны меча,armor_and_weapons/sword_scabbard,B,,wp,wp_sword_scabbard
+costume_catalog,AR022,"Универсальный топор, пригодный в бою",armor_and_weapons/axe_general,A,,wp,wp_utility_axe
+costume_catalog,AR023,Боевой топор,armor_and_weapons/war_axe,A,,wp,wp_battle_axe
+costume_catalog,AR024,Булава,armor_and_weapons/mace,A,,wp,wp_mace
+costume_catalog,AR025,Кистень,armor_and_weapons/flail,B,,wp,wp_flail
+costume_catalog,AR026,Боевой/универсальный нож,armor_and_weapons/combat_knife,A,,wp,wp_knife
+costume_catalog,AR027,Простой лук,armor_and_weapons/bow,B,,wp,wp_bow_self
+costume_catalog,AR028,Стрелы с железными наконечниками,armor_and_weapons/arrows,A,,wp,wp_arrow
+costume_catalog,AR029,Колчан,armor_and_weapons/quiver,B,,wp,wp_quiver
+costume_catalog,AR030,Чехол для лука — осторожная реконструкция,armor_and_weapons/bow_case,C,,wp,wp_bow_case
+costume_catalog,AR031,Праща — возможное простое метательное средство,armor_and_weapons/sling,C,,wp,wp_sling
+costume_catalog,AR032,Деревянное седло с кожаным покрытием,armor_and_weapons/horse_saddle,B,,out_of_scope,horse_equipment (седло)
+costume_catalog,AR033,Уздечка и железные удила,armor_and_weapons/horse_bridle,B,,out_of_scope,horse_equipment (узда)
+costume_catalog,AR034,Железные стремена,armor_and_weapons/stirrups,A,,out_of_scope,horse_equipment (стремена)
+costume_catalog,AR035,Конский потник/попона простого типа,armor_and_weapons/horse_cloth,B,,out_of_scope,horse_equipment (потник)
+costume_catalog,AR036,Воинский походный плащ,armor_and_weapons/military_cloak,B,,out_of_scope,garments (воинский плащ)
+costume_catalog,AR037,Зимний воинский комплект слоёв,armor_and_weapons/winter_military_layers,B,,out_of_scope,garments (зимний воинский комплект)
+costume_catalog,AR038,Кожаные/шерстяные воинские рукавицы — без латных пластин,armor_and_weapons/military_gloves,C,,wp,wp_military_gloves
+costume_catalog,AR039,Набор для ухода за кольчугой и оружием,armor_and_weapons/maintenance_kit,C,,wp,wp_maintenance_kit
+costume_catalog,AR040,Сигнальный рог,armor_and_weapons/signal_horn,C,,wp,wp_signal_horn

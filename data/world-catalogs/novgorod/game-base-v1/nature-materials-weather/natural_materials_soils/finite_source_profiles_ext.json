@@ -1,0 +1,2504 @@
+{
+ "schema": "game_base_v1.finite_source_profiles_ext.v1",
+ "status": "candidate",
+ "approved": false,
+ "note": "Authoring extension of pr98 m2c-finite-source capability (4 profiles). Not runtime authority.",
+ "base_portions": 25,
+ "profiles": [
+  {
+   "profile_id": "gb1_finite_clay_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "clay",
+   "operation": "dig_clay",
+   "public_name": "Глина",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (3000 g)",
+   "mass_grams_per_unit": 3000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:zastup_ironshod",
+     "tool:hands",
+     "tool:container_basket_or_box"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "rare",
+     "initial_quantity": 25,
+     "access_note": "restricted: burial ground — digging requires property/social-law check (no free extraction)"
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "contextual",
+     "initial_quantity": 50,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "wk:claim:pottery-handmade-local-clay",
+    "wk:claim:secondary-clay-forms-through-water-transport-deposition",
+    "wk:claim:population-material-clay-plasticity",
+    "wk:claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
+    "wk:claim:construction-construction-pottery-products",
+    "Dmitruk N.G., Druzhnova M.P. Soil areas of the Novgorod region in the context of their agricultural use // IOP Conf. Ser.: Earth Environ. Sci. 613 (2020) 012025. https://doi.org/10.1088/1755-1315/613/1/012025 (read in main:data/world-catalogs/novgorod/world-knowledge/research/population-terrain-sources.md TR-01..TR-06)",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_clay_extraction",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_sand_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "sand",
+   "operation": "dig_sand",
+   "public_name": "Песок",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (3000 g)",
+   "mass_grams_per_unit": 3000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:zastup_ironshod",
+     "tool:hands",
+     "tool:container_basket_or_box"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "annual_flood_on_bars"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    }
+   ],
+   "source_refs": [
+    "wk:claim:terrain-parent-material-assemblage",
+    "Dmitruk N.G., Druzhnova M.P. Soil areas of the Novgorod region in the context of their agricultural use // IOP Conf. Ser.: Earth Environ. Sci. 613 (2020) 012025. https://doi.org/10.1088/1755-1315/613/1/012025 (read in main:data/world-catalogs/novgorod/world-knowledge/research/population-terrain-sources.md TR-01..TR-06)",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_sand_gravel_extraction",
+    "wk:claim:pottery-handmade-temper",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_gravel_pebbles_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "gravel_pebbles",
+   "operation": "gather_gravel",
+   "public_name": "Гравий и галька",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (4000 g)",
+   "mass_grams_per_unit": 4000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:hands",
+     "tool:zastup_ironshod",
+     "tool:container_basket_or_box"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    }
+   ],
+   "source_refs": [
+    "wk:claim:terrain-parent-material-assemblage",
+    "Dmitruk N.G., Druzhnova M.P. Soil areas of the Novgorod region in the context of their agricultural use // IOP Conf. Ser.: Earth Environ. Sci. 613 (2020) 012025. https://doi.org/10.1088/1755-1315/613/1/012025 (read in main:data/world-catalogs/novgorod/world-knowledge/research/population-terrain-sources.md TR-01..TR-06)",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_sand_gravel_extraction"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_boulders_fieldstone_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "boulders_fieldstone",
+   "operation": "gather_stone",
+   "public_name": "Валуны и булыжный камень",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (15000 g)",
+   "mass_grams_per_unit": 15000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:hands",
+     "tool:lever_pole",
+     "tool:sledge_or_cart"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "limited",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    }
+   ],
+   "source_refs": [
+    "wk:claim:terrain-parent-material-assemblage",
+    "Dmitruk N.G., Druzhnova M.P. Soil areas of the Novgorod region in the context of their agricultural use // IOP Conf. Ser.: Earth Environ. Sci. 613 (2020) 012025. https://doi.org/10.1088/1755-1315/613/1/012025 (read in main:data/world-catalogs/novgorod/world-knowledge/research/population-terrain-sources.md TR-01..TR-06)",
+    "wk:claim:construction-rjaz-stone-fill",
+    "wk:claim:construction-rjaz-riverbed-foundation"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_limestone_slab_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "limestone_slab",
+   "operation": "quarry_limestone",
+   "public_name": "Известняковая плита (плитняк)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (12000 g)",
+   "mass_grams_per_unit": 12000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:wedges_and_hammer",
+     "tool:iron_pick_or_crowbar",
+     "tool:sledge_or_cart"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [],
+   "source_refs": [
+    "Путиловский известняк — Википедия (нижний ордовик, плитчатый; добыча на Волхове, Тосне, Ижоре; кладка крепостей Новгорода и Старой Ладоги). https://ru.wikipedia.org/wiki/Путиловский_известняк",
+    "Волховская плита: известняки волховского горизонта нижнего ордовика в верхней части Балтийско-Ладожского глинта; ammonit.ru «Палеонтология, Ленинградская область. Волхов, ордовикский период» https://www.ammonit.ru/place/22.htm",
+    "Новгородская кладка XII в.: плиты плотного светло-серого известняка, позднее (вторая пол. XII – нач. XIII в.) пористый ракушечник бурого, красноватого, зеленоватого цвета; плинфа для арок и сводов. Обзор: https://tehlib.com/arhitektura/stroitel-ny-e-materialy-kamen/",
+    "Булкин В.А., Антипов И.В. Об особенностях организации строительства … в Новгородской земле в домонгольское время // АПТИИ 7 (2017) 410–418. https://doi.org/10.18688/aa177-4-40 (via WK research population-terrain-resource-context.md TRC-01)",
+    "wk:claim:construction-quarry-procurement",
+    "wk:claim:static-nonhydraulic-lime-can-harden-by-carbonation"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_bog_iron_ore_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "bog_iron_ore",
+   "operation": "dig_bog_ore",
+   "public_name": "Болотная руда",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (5000 g)",
+   "mass_grams_per_unit": 5000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:zastup_ironshod",
+     "tool:hands",
+     "tool:container_basket_or_box"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "closed",
+     "summer": "open",
+     "autumn": "limited"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    }
+   ],
+   "source_refs": [
+    "Колчин Б.А. Черная металлургия и металлообработка в древней Руси (домонгольский период) // МИА 32. М., 1953. https://archaeolog.ru/el-bib/el-cat/el-series/mia/kolchin-1953",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_bog_iron_extraction"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_peat_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "peat",
+   "operation": "cut_peat",
+   "public_name": "Торф",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (4000 g)",
+   "mass_grams_per_unit": 4000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:zastup_ironshod",
+     "tool:knife",
+     "tool:container_basket_or_box"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "closed",
+     "summer": "open",
+     "autumn": "limited"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    }
+   ],
+   "source_refs": [
+    "wk:claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_peat_cutting",
+    "world_db.world_base.landscape_templates + region_landscape_templates region_novgorod_land (draft; exported to _shared/novgorod_landscape_templates.world_db.tsv)"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_river_silt_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "river_silt",
+   "operation": "dig_silt",
+   "public_name": "Речной ил и наилок",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (3000 g)",
+   "mass_grams_per_unit": 3000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:zastup_ironshod",
+     "tool:hands",
+     "tool:container_bucket_or_vessel"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "annual_flood"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200,
+     "access_note": "restricted: burial ground — digging requires property/social-law check (no free extraction)"
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "Dmitruk N.G., Druzhnova M.P. Soil areas of the Novgorod region in the context of their agricultural use // IOP Conf. Ser.: Earth Environ. Sci. 613 (2020) 012025. https://doi.org/10.1088/1755-1315/613/1/012025 (read in main:data/world-catalogs/novgorod/world-knowledge/research/population-terrain-sources.md TR-01..TR-06)",
+    "wk:claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+    "pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json (via _shared/g4_nature_index.json)"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_birch_bark_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "birch_bark",
+   "operation": "strip_birch_bark",
+   "public_name": "Береста",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (300 g)",
+   "mass_grams_per_unit": 300,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:knife",
+     "tool:axe"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "limited",
+     "spring": "open",
+     "summer": "open",
+     "autumn": "limited"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_decades"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "contextual",
+     "initial_quantity": 50,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "wk:claim:household-bark-tues",
+    "wk:claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+    "wk:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+    "wk:claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
+    "wk:claim:static-birch-bark-water-can-deform-layers",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"
+   ],
+   "confidence": "A"
+  },
+  {
+   "profile_id": "gb1_finite_lime_bast_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "lime_bast",
+   "operation": "strip_bast",
+   "public_name": "Липовое лыко (луб)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (500 g)",
+   "mass_grams_per_unit": 500,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:knife",
+     "tool:axe",
+     "tool:soaking_place"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "open",
+     "summer": "open",
+     "autumn": "limited"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_decades"
+   },
+   "applicability": [],
+   "source_refs": [
+    "wk:claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+    "wk:claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+    "wk:claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+    "wk:claim:construction-bast-vessel-fastening",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_bark_bast_collection"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_tree_bark_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "tree_bark",
+   "operation": "strip_bark",
+   "public_name": "Кора (ивовая, еловая, сосновая)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (500 g)",
+   "mass_grams_per_unit": 500,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:knife",
+     "tool:axe"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "limited",
+     "spring": "open",
+     "summer": "open",
+     "autumn": "limited"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_decades"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "common",
+     "initial_quantity": 100,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "wk:claim:population-bark-float",
+    "wk:claim:population-pine-float",
+    "wk:claim:population-bark-input",
+    "wk:claim:population-bark-cut",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_bark_bast_collection"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_pine_resin_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "pine_resin",
+   "operation": "collect_resin",
+   "public_name": "Сосновая живица (смола-сырец)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (100 g)",
+   "mass_grams_per_unit": 100,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:knife",
+     "tool:axe",
+     "tool:container_bucket_or_vessel"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "limited",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "limited"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "seasonal_regrowth"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    }
+   ],
+   "source_refs": [
+    "wk:claim:construction-pine-resin-surfaces",
+    "wk:claim:construction-pine-resin-bast",
+    "wk:claim:pine-pitch-woven-basket-coating",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_resin_tar_pitch_production",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_osmol_resinous_stumps_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "osmol_resinous_stumps",
+   "operation": "cut_osmol",
+   "public_name": "Осмол (смолистые сосновые пни и корни)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (3000 g)",
+   "mass_grams_per_unit": 3000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:axe",
+     "tool:hands"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "limited",
+     "spring": "open",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "none"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    }
+   ],
+   "source_refs": [
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_resin_tar_pitch_production",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv",
+    "wk:claim:residual-tree-pinus-sylvestris-dry-infertile-soils"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_deadwood_v1",
+   "extends_v17_profile": "m2c_finite_deadwood_v1",
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "deadwood",
+   "operation": "gather_deadwood",
+   "public_name": "Валежник",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "item (50 g, v17 unit)",
+   "mass_grams_per_unit": 50,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:hands",
+     "tool:axe"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "limited",
+     "spring": "open",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_natural_fall"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "common",
+     "initial_quantity": 100,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "pr98:data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json#finite_source_profiles",
+    "pr98:docs/work/M2C_NATURAL_RESOURCE_RIGHTS_RESEARCH.md (owner editorial free-gathering rule for reeds/deadwood/driftwood/standing wood)",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_fuelwood_gathering",
+    "wk:claim:residual-traces-deadwood-feeding-signs",
+    "wk:claim:fuel-pit-charcoal-burning-wood-input"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_dry_brushwood_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "dry_brushwood",
+   "operation": "gather_brushwood",
+   "public_name": "Сушняк и хворост",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (1500 g)",
+   "mass_grams_per_unit": 1500,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:hands",
+     "tool:axe",
+     "tool:knife"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "limited",
+     "spring": "open",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_natural_fall"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "common",
+     "initial_quantity": 100,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_fuelwood_gathering",
+    "pr98:docs/work/M2C_NATURAL_RESOURCE_RIGHTS_RESEARCH.md (owner editorial free-gathering rule for reeds/deadwood/driftwood/standing wood)",
+    "wk:claim:population-material-wood-moisture"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_driftwood_v1",
+   "extends_v17_profile": "m2c_finite_driftwood_v1",
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "driftwood",
+   "operation": "salvage_driftwood",
+   "public_name": "Плавник",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "item (50 g, v17 unit)",
+   "mass_grams_per_unit": 50,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:hands",
+     "tool:axe"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "limited",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "annual_flood"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "rare",
+     "initial_quantity": 25
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "rare",
+     "initial_quantity": 25,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "pr98:data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json#finite_source_profiles",
+    "pr98:docs/work/M2C_NATURAL_RESOURCE_RIGHTS_RESEARCH.md (owner editorial free-gathering rule for reeds/deadwood/driftwood/standing wood)",
+    "wk:claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_reeds_v1",
+   "extends_v17_profile": "m2c_finite_reeds_v1",
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "reeds",
+   "operation": "cut_reeds",
+   "public_name": "Тростник и камыш",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "item (50 g, v17 unit)",
+   "mass_grams_per_unit": 50,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:sickle",
+     "tool:knife"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "open",
+     "spring": "limited",
+     "summer": "limited",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "annual"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    }
+   ],
+   "source_refs": [
+    "pr98:data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json#finite_source_profiles",
+    "pr98:docs/work/M2C_NATURAL_RESOURCE_RIGHTS_RESEARCH.md (owner editorial free-gathering rule for reeds/deadwood/driftwood/standing wood)",
+    "wk:claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+    "wk:claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+    "wk:claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_reed_sedge_harvest"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_sedge_grass_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "sedge_grass",
+   "operation": "cut_sedge",
+   "public_name": "Осока и болотная трава",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (1000 g)",
+   "mass_grams_per_unit": 1000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:sickle",
+     "tool:scythe",
+     "tool:knife"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "annual"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+     "frequency_class": "ubiquitous",
+     "initial_quantity": 200
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "contextual",
+     "initial_quantity": 50,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "world_db.world_base.land_use_templates (draft seed; exported to _shared/land_use_templates.world_db.tsv)#lu_reed_sedge_harvest",
+    "wk:claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+    "pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json (via _shared/g4_nature_index.json)",
+    "world_db.world_base.landscape_templates + region_landscape_templates region_novgorod_land (draft; exported to _shared/novgorod_landscape_templates.world_db.tsv)"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_moss_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "moss",
+   "operation": "gather_moss",
+   "public_name": "Мох (сфагнум и лесные зелёные мхи)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (500 g)",
+   "mass_grams_per_unit": 500,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:hands",
+     "tool:container_basket_or_box"
+    ],
+    "tool_required": false,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_years"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    }
+   ],
+   "source_refs": [
+    "world_db.world_base.landscape_templates + region_landscape_templates region_novgorod_land (draft; exported to _shared/novgorod_landscape_templates.world_db.tsv)",
+    "pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json (via _shared/g4_nature_index.json)",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv",
+    "wk:claim:agriculture-fauna-tow-log-gaps"
+   ],
+   "confidence": "C"
+  },
+  {
+   "profile_id": "gb1_finite_willow_rods_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "willow_rods",
+   "operation": "cut_withies",
+   "public_name": "Ивовые прутья (лоза)",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (1000 g)",
+   "mass_grams_per_unit": 1000,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:knife",
+     "tool:sickle",
+     "tool:axe"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "open",
+     "spring": "open",
+     "summer": "limited",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "annual_regrowth"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+     "frequency_class": "common",
+     "initial_quantity": 100
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+     "frequency_class": "common",
+     "initial_quantity": 100,
+     "access_note": "settlement land: ownership check by property owner before extraction"
+    }
+   ],
+   "source_refs": [
+    "wk:claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv",
+    "world_db.world_base.landscape_templates + region_landscape_templates region_novgorod_land (draft; exported to _shared/novgorod_landscape_templates.world_db.tsv)",
+    "pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json (via _shared/g4_nature_index.json)"
+   ],
+   "confidence": "B"
+  },
+  {
+   "profile_id": "gb1_finite_spruce_roots_v1",
+   "extends_v17_profile": null,
+   "status": "candidate",
+   "approved": false,
+   "resource_class": "spruce_roots",
+   "operation": "dig_roots",
+   "public_name": "Еловые корни",
+   "item_kind": "natural_resource_portion",
+   "basis_kind": "finite_source",
+   "quantity_unit": "portion (300 g)",
+   "mass_grams_per_unit": 300,
+   "initial_quantity_rule": {
+    "formula": "FREQ_WEIGHT[class] * 25",
+    "weights": {
+     "ubiquitous": 8,
+     "common": 4,
+     "contextual": 2,
+     "rare": 1,
+     "absent": 0
+    }
+   },
+   "extraction": {
+    "tool_refs": [
+     "tool:knife",
+     "tool:zastup_ironshod",
+     "tool:hands"
+    ],
+    "tool_required": true,
+    "season_access": {
+     "winter": "closed",
+     "spring": "limited",
+     "summer": "open",
+     "autumn": "open"
+    },
+    "depleted": "persist zero; renewal owned by party_resource_nodes owner",
+    "renewal_class": "slow_years"
+   },
+   "applicability": [
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    },
+    {
+     "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+     "frequency_class": "contextual",
+     "initial_quantity": 50
+    }
+   ],
+   "source_refs": [
+    "master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"
+   ],
+   "confidence": "B"
+  }
+ ]
+}

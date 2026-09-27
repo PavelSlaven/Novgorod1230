@@ -1,0 +1,114 @@
+pl_id,rule_ref,template_type,species_ref,ownership,conditional,source_text,source_refs,confidence,status
+pl_rpgr_nov_isolated_farmstead__cattle__resident,rpgr_nov_isolated_farmstead,isolated_farmstead,fa_dom_cattle,resident,false,лошадь/вол,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_isolated_farmstead__horse__resident,rpgr_nov_isolated_farmstead,isolated_farmstead,fa_dom_horse,resident,false,лошадь/вол,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_isolated_farmstead__goat__resident,rpgr_nov_isolated_farmstead,isolated_farmstead,fa_dom_goat,resident,false,овцы/козы,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_isolated_farmstead__sheep__resident,rpgr_nov_isolated_farmstead,isolated_farmstead,fa_dom_sheep,resident,false,овцы/козы,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_isolated_farmstead__pig__resident,rpgr_nov_isolated_farmstead,isolated_farmstead,fa_dom_pig,resident,false,свиньи,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_isolated_farmstead__chicken__resident,rpgr_nov_isolated_farmstead,isolated_farmstead,fa_dom_chicken,resident,false,птица,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hamlet__horse__resident,rpgr_nov_hamlet,hamlet,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hamlet__cattle__resident,rpgr_nov_hamlet,hamlet,fa_dom_cattle,resident,false,коровы,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hamlet__goat__resident,rpgr_nov_hamlet,hamlet,fa_dom_goat,resident,false,мелкий скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hamlet__sheep__resident,rpgr_nov_hamlet,hamlet,fa_dom_sheep,resident,false,мелкий скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hamlet__pig__resident,rpgr_nov_hamlet,hamlet,fa_dom_pig,resident,false,свиньи,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hamlet__chicken__resident,rpgr_nov_hamlet,hamlet,fa_dom_chicken,resident,false,птица,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_village_arable_meadow__horse__resident,rpgr_nov_village_arable_meadow,village,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_village_arable_meadow__cattle__resident,rpgr_nov_village_arable_meadow,village,fa_dom_cattle,resident,false,коровы,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_village_arable_meadow__goat__resident,rpgr_nov_village_arable_meadow,village,fa_dom_goat,resident,false,овцы/козы,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_village_arable_meadow__sheep__resident,rpgr_nov_village_arable_meadow,village,fa_dom_sheep,resident,false,овцы/козы,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_village_arable_meadow__pig__resident,rpgr_nov_village_arable_meadow,village,fa_dom_pig,resident,false,свиньи,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_village_arable_meadow__chicken__resident,rpgr_nov_village_arable_meadow,village,fa_dom_chicken,resident,false,птица,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_dispersed_settlement_cluster__cattle__resident,rpgr_nov_dispersed_settlement_cluster,dispersed_settlement_cluster,fa_dom_cattle,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_dispersed_settlement_cluster__pig__resident,rpgr_nov_dispersed_settlement_cluster,dispersed_settlement_cluster,fa_dom_pig,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_dispersed_settlement_cluster__sheep__resident,rpgr_nov_dispersed_settlement_cluster,dispersed_settlement_cluster,fa_dom_sheep,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_dispersed_settlement_cluster__dog__resident,rpgr_nov_dispersed_settlement_cluster,dispersed_settlement_cluster,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_dispersed_settlement_cluster__horse__resident,rpgr_nov_dispersed_settlement_cluster,dispersed_settlement_cluster,fa_dom_horse,resident,true,лошади по достатку,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_rural_church_center__cattle__resident,rpgr_nov_rural_church_center,rural_church_center,fa_dom_cattle,resident,true,лошади/скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_rural_church_center__horse__resident,rpgr_nov_rural_church_center,rural_church_center,fa_dom_horse,resident,true,лошади/скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_rural_church_center__pig__resident,rpgr_nov_rural_church_center,rural_church_center,fa_dom_pig,resident,true,лошади/скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_rural_church_center__sheep__resident,rpgr_nov_rural_church_center,rural_church_center,fa_dom_sheep,resident,true,лошади/скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_pogost_center__horse__visiting,rpgr_nov_pogost_center,pogost,fa_dom_horse,visiting,false,лошади приезжих,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_pogost_center__cattle__resident,rpgr_nov_pogost_center,pogost,fa_dom_cattle,resident,true,скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_pogost_center__pig__resident,rpgr_nov_pogost_center,pogost,fa_dom_pig,resident,true,скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_pogost_center__sheep__resident,rpgr_nov_pogost_center,pogost,fa_dom_sheep,resident,true,скот при дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_estate_center__horse__resident,rpgr_nov_estate_center,estate_center,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_estate_center__cattle__resident,rpgr_nov_estate_center,estate_center,fa_dom_cattle,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_estate_center__pig__resident,rpgr_nov_estate_center,estate_center,fa_dom_pig,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_estate_center__sheep__resident,rpgr_nov_estate_center,estate_center,fa_dom_sheep,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_estate_center__dog__resident,rpgr_nov_estate_center,estate_center,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastic_grange__horse__resident,rpgr_nov_monastic_grange,monastic_grange,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastic_grange__cattle__resident,rpgr_nov_monastic_grange,monastic_grange,fa_dom_cattle,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastic_grange__pig__resident,rpgr_nov_monastic_grange,monastic_grange,fa_dom_pig,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastic_grange__sheep__resident,rpgr_nov_monastic_grange,monastic_grange,fa_dom_sheep,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastic_grange__chicken__resident,rpgr_nov_monastic_grange,monastic_grange,fa_dom_chicken,resident,false,птица,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastery__cattle__resident,rpgr_nov_monastery,monastery,fa_dom_cattle,resident,true,лошади/скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastery__horse__resident,rpgr_nov_monastery,monastery,fa_dom_horse,resident,true,лошади/скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastery__pig__resident,rpgr_nov_monastery,monastery,fa_dom_pig,resident,true,лошади/скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_monastery__sheep__resident,rpgr_nov_monastery,monastery,fa_dom_sheep,resident,true,лошади/скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hermitage_skete__cattle__resident,rpgr_nov_hermitage_skete,hermitage_skete,fa_dom_cattle,resident,true,нет или малый скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hermitage_skete__pig__resident,rpgr_nov_hermitage_skete,hermitage_skete,fa_dom_pig,resident,true,нет или малый скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hermitage_skete__sheep__resident,rpgr_nov_hermitage_skete,hermitage_skete,fa_dom_sheep,resident,true,нет или малый скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_pilgrimage_shrine__horse__visiting,rpgr_nov_pilgrimage_shrine,pilgrimage_shrine,fa_dom_horse,visiting,false,лошади приезжих,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_wintering_hut__dog__resident,rpgr_nov_wintering_hut,winter_hut,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_wintering_hut__horse__work_transport,rpgr_nov_wintering_hut,winter_hut,fa_dom_horse,work_transport,true,лошадь/сани по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_forest_work_camp__cattle__work_transport,rpgr_nov_forest_work_camp,forest_work_camp,fa_dom_cattle,work_transport,true,лошади/волы для вывоза по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_forest_work_camp__horse__work_transport,rpgr_nov_forest_work_camp,forest_work_camp,fa_dom_horse,work_transport,true,лошади/волы для вывоза по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hunting_camp__dog__resident,rpgr_nov_hunting_camp,hunting_camp,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hunting_camp__horse__work_transport,rpgr_nov_hunting_camp,hunting_camp,fa_dom_horse,work_transport,true,лошадь/сани по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fishing_station__dog__resident,rpgr_nov_fishing_station,fishing_station,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fishing_station__horse__work_transport,rpgr_nov_fishing_station,fishing_station,fa_dom_horse,work_transport,false,лошадь/сани по сезону,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fish_weir_site__none,rpgr_nov_fish_weir_site,fish_weir_site,none,none,false,[],src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_river_landing__cattle__work_transport,rpgr_nov_river_landing,river_landing,fa_dom_cattle,work_transport,false,лошади/волы для подвоза,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_river_landing__horse__work_transport,rpgr_nov_river_landing,river_landing,fa_dom_horse,work_transport,false,лошади/волы для подвоза,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_boat_landing__none,rpgr_nov_boat_landing,boat_landing,none,none,false,[],src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_market_place__cattle__visiting,rpgr_nov_market_place,market_site,fa_dom_cattle,visiting,false,лошади/скот приезжих,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_market_place__horse__visiting,rpgr_nov_market_place,market_site,fa_dom_horse,visiting,false,лошади/скот приезжих,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_market_place__pig__visiting,rpgr_nov_market_place,market_site,fa_dom_pig,visiting,false,лошади/скот приезжих,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_market_place__sheep__visiting,rpgr_nov_market_place,market_site,fa_dom_sheep,visiting,false,лошади/скот приезжих,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_periodic_fairground__horse__resident,rpgr_nov_periodic_fairground,periodic_fairground,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_periodic_fairground__cattle__for_sale,rpgr_nov_periodic_fairground,periodic_fairground,fa_dom_cattle,for_sale,true,скот на продажу по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_periodic_fairground__pig__for_sale,rpgr_nov_periodic_fairground,periodic_fairground,fa_dom_pig,for_sale,true,скот на продажу по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_periodic_fairground__sheep__for_sale,rpgr_nov_periodic_fairground,periodic_fairground,fa_dom_sheep,for_sale,true,скот на продажу по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_town__horse__resident,rpgr_nov_town,town,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_town__cattle__resident,rpgr_nov_town,town,fa_dom_cattle,resident,false,скот на дворах/торге,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_town__pig__resident,rpgr_nov_town,town,fa_dom_pig,resident,false,скот на дворах/торге,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_town__sheep__resident,rpgr_nov_town,town,fa_dom_sheep,resident,false,скот на дворах/торге,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_city_major_center__horse__resident,rpgr_nov_city_major_center,city_major_center,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_city_major_center__cattle__for_sale,rpgr_nov_city_major_center,city_major_center,fa_dom_cattle,for_sale,false,скот на торге/дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_city_major_center__pig__for_sale,rpgr_nov_city_major_center,city_major_center,fa_dom_pig,for_sale,false,скот на торге/дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_city_major_center__sheep__for_sale,rpgr_nov_city_major_center,city_major_center,fa_dom_sheep,for_sale,false,скот на торге/дворах,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fortified_town__horse__resident,rpgr_nov_fortified_town,fortified_town,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fortified_town__cattle__resident,rpgr_nov_fortified_town,fortified_town,fa_dom_cattle,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fortified_town__pig__resident,rpgr_nov_fortified_town,fortified_town,fa_dom_pig,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_fortified_town__sheep__resident,rpgr_nov_fortified_town,fortified_town,fa_dom_sheep,resident,false,скот,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_posad_suburb__cattle__resident,rpgr_nov_posad_suburb,posad_suburb,fa_dom_cattle,resident,true,лошади/скот по дворам,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_posad_suburb__horse__resident,rpgr_nov_posad_suburb,posad_suburb,fa_dom_horse,resident,true,лошади/скот по дворам,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_posad_suburb__pig__resident,rpgr_nov_posad_suburb,posad_suburb,fa_dom_pig,resident,true,лошади/скот по дворам,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_posad_suburb__sheep__resident,rpgr_nov_posad_suburb,posad_suburb,fa_dom_sheep,resident,true,лошади/скот по дворам,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_crossroads__horse__visiting,rpgr_nov_crossroads,crossroads,fa_dom_horse,visiting,false,лошади путников,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_ford_place__cattle__resident,rpgr_nov_ford_place,ford,fa_dom_cattle,resident,false,лошади/скот при переходе,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_ford_place__horse__resident,rpgr_nov_ford_place,ford,fa_dom_horse,resident,false,лошади/скот при переходе,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_ford_place__pig__resident,rpgr_nov_ford_place,ford,fa_dom_pig,resident,false,лошади/скот при переходе,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_ford_place__sheep__resident,rpgr_nov_ford_place,ford,fa_dom_sheep,resident,false,лошади/скот при переходе,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_ferry_place__horse__visiting,rpgr_nov_ferry_place,ferry,fa_dom_horse,visiting,false,лошади путников,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_bridge_place__none,rpgr_nov_bridge_place,bridge_site,none,none,false,[],src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_portage_place__cattle__work_transport,rpgr_nov_portage_place,portage,fa_dom_cattle,work_transport,true,лошади/волы для тяги по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_portage_place__horse__work_transport,rpgr_nov_portage_place,portage,fa_dom_horse,work_transport,true,лошади/волы для тяги по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_hillfort_gorodishche__none,rpgr_nov_hillfort_gorodishche,hillfort_gorodishche,none,none,false,[],src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_watchpost_guard_post__horse__resident,rpgr_nov_watchpost_guard_post,watch_post,fa_dom_horse,resident,true,лошадь по контексту,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_watchpost_guard_post__dog__resident,rpgr_nov_watchpost_guard_post,watch_post,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_administrative_court__horse__resident,rpgr_nov_administrative_court,administrative_court,fa_dom_horse,resident,false,лошади,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_administrative_court__dog__resident,rpgr_nov_administrative_court,administrative_court,fa_dom_dog,resident,false,собаки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_administrative_court__cattle__resident,rpgr_nov_administrative_court,administrative_court,fa_dom_cattle,resident,true,скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_administrative_court__pig__resident,rpgr_nov_administrative_court,administrative_court,fa_dom_pig,resident,true,скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_administrative_court__sheep__resident,rpgr_nov_administrative_court,administrative_court,fa_dom_sheep,resident,true,скот при хозяйстве,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_toll_customs_post__horse__visiting,rpgr_nov_toll_customs_post,toll_customs_post,fa_dom_horse,visiting,false,лошади путников,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_watermill_site__cattle__visiting,rpgr_nov_watermill_site,watermill_site,fa_dom_cattle,visiting,false,лошади/волы привозящих зерно,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_watermill_site__horse__visiting,rpgr_nov_watermill_site,watermill_site,fa_dom_horse,visiting,false,лошади/волы привозящих зерно,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_saltworks__cattle__work_transport,rpgr_nov_saltworks,saltworks,fa_dom_cattle,work_transport,false,лошади/волы для подвоза топлива,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_saltworks__horse__work_transport,rpgr_nov_saltworks,saltworks,fa_dom_horse,work_transport,false,лошади/волы для подвоза топлива,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_clay_pit_pottery_site__cattle__work_transport,rpgr_nov_clay_pit_pottery_site,clay_pit_pottery_site,fa_dom_cattle,work_transport,false,лошади/волы для подвоза,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_clay_pit_pottery_site__horse__work_transport,rpgr_nov_clay_pit_pottery_site,clay_pit_pottery_site,fa_dom_horse,work_transport,false,лошади/волы для подвоза,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_iron_smelting_site__cattle__work_transport,rpgr_nov_iron_smelting_site,iron_smelting_site,fa_dom_cattle,work_transport,false,лошади/волы для перевозки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_iron_smelting_site__horse__work_transport,rpgr_nov_iron_smelting_site,iron_smelting_site,fa_dom_horse,work_transport,false,лошади/волы для перевозки,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_shipyard_boatyard__cattle__work_transport,rpgr_nov_shipyard_boatyard,shipyard_boatyard,fa_dom_cattle,work_transport,false,лошади/волы для подвоза леса,src:rus13-place-rules-v2,C,candidate
+pl_rpgr_nov_shipyard_boatyard__horse__work_transport,rpgr_nov_shipyard_boatyard,shipyard_boatyard,fa_dom_horse,work_transport,false,лошади/волы для подвоза леса,src:rus13-place-rules-v2,C,candidate

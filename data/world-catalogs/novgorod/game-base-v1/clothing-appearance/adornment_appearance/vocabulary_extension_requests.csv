@@ -1,0 +1,6 @@
+facet,requested_value,ad_id,owner,reason,source_refs,confidence
+hair_style,single_braid_maiden,ap_hair_style_single_braid_maiden_female,@rus/actors,значения нет в словаре,web:WEB07|costume:CMB028,C
+hair_style,hair_covered_by_headwear,ap_hair_style_hair_covered_by_headwear_female,@rus/actors,значения нет в словаре; сейчас выражается только слотом head_under,claim:clothing-povoi-headcover|costume:HW006|costume:HW007,B
+build,emaciated,ap_build_emaciated_male_female,@rus/actors,значения нет в словаре,sqlite:S01|risovalka §1 Б,B
+age_category,child,outfits_by_role:of_child_*,@rus/actors,"детские комплекты CMB031–033 и детские вещи (GC*, HW016/017, FW010/011) нельзя выбрать в runtime",costume:CMB031|costume:CMB032|costume:CMB033,B
+marital_status (selector),married|unmarried|widowed,outfits_by_role:female *,,женский головной убор зависит от брачного статуса (HW006/HW007 vs HW010); approvedClothing не фильтрует по нему,claim:clothing-povoi-headcover|costume:CMB025|costume:CMB028,B

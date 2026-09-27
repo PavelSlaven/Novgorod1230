@@ -1,0 +1,11 @@
+[
+  { "id": "hair_short", "category": "hair", "name": "Короткие русые", "description": "Эталонная причёска.", "variant": "short", "weight": 12 },
+  { "id": "hair_medium", "category": "hair", "name": "До шеи", "description": "Волнистые волосы ниже ушей.", "variant": "medium", "weight": 8 },
+  { "id": "beard_short", "category": "beard", "name": "Короткая", "description": "Эталонная естественная борода.", "weight": 10 },
+  { "id": "beard_medium", "category": "beard", "name": "Средняя", "description": "Густая борода до верхней части шеи.", "weight": 6 },
+  { "id": "shirt_linen", "category": "shirt", "name": "Натуральный лён", "description": "Светлая рубаха из эталона.", "variant": "linen", "weight": 20 },
+  { "id": "shirt_brick", "category": "shirt", "name": "Кирпичный лён", "description": "Приглушённо-красная ткань.", "variant": "brick", "weight": 9 },
+  { "id": "shirt_green", "category": "shirt", "name": "Зелёное сукно", "description": "Мшисто-зелёная ткань.", "variant": "green", "weight": 5 },
+  { "id": "headwear_felt", "category": "headwear", "name": "Войлочный колпак", "description": "Совместим с выбранной причёской.", "variant": "felt", "weight": 12 },
+  { "id": "headwear_helmet", "category": "headwear", "name": "Железный шлем", "description": "Совместим с выбранной причёской.", "variant": "helmet", "weight": 3 }
+]

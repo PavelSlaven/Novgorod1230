@@ -1,0 +1,35 @@
+{
+ "checked_by": "scripts/validate.cjs",
+ "ok": true,
+ "counts": {
+  "mammals": 44,
+  "birds": 149,
+  "presence_rows": 4231,
+  "place_families_with_rows": 38,
+  "presence_by_class": {
+   "rare": 1445,
+   "contextual": 1374,
+   "common": 1125,
+   "ubiquitous": 287
+  },
+  "presence_confidence": {
+   "B": 3707,
+   "C": 524
+  },
+  "taxa_presence_1230_confidence": {
+   "A": 19,
+   "B": 147,
+   "C": 27
+  },
+  "birds_in_pantelev_2001": 149,
+  "birds_petrov_1885": 120
+ },
+ "acceptance": {
+  "mammal_signs_min_per_forest_riparian_pf_season": 7,
+  "audible_birds_min_per_open_pf_season": 3
+ },
+ "errors": [],
+ "warnings": [
+  "outdoor place families without any fauna rows: pf_reality_batch_01_open_conditions,pf_reality_first_practical_conditions"
+ ]
+}

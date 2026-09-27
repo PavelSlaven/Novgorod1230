@@ -1,0 +1,389 @@
+{
+  "schema": "places_binding_appearance_categories_v1",
+  "source": {
+    "commit": "745b9c874d73f1411c1fec2669c0e4e1b8e10e9a",
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-datasets/universal_categories.json",
+    "blob": "bab44418384a0be5270ce1922c32ae65a78af255",
+    "sha256": "539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc"
+  },
+  "categories": [
+    {
+      "id": "actor.sex_category.male",
+      "domain": "actor_appearance",
+      "facet": "sex_category",
+      "stable_code": "actor.sex_category.male",
+      "parent_category_id": null,
+      "preferred_label": "sex_category:male",
+      "status": "approved"
+    },
+    {
+      "id": "actor.sex_category.female",
+      "domain": "actor_appearance",
+      "facet": "sex_category",
+      "stable_code": "actor.sex_category.female",
+      "parent_category_id": null,
+      "preferred_label": "sex_category:female",
+      "status": "approved"
+    },
+    {
+      "id": "actor.age_category.young_adult",
+      "domain": "actor_appearance",
+      "facet": "age_category",
+      "stable_code": "actor.age_category.young_adult",
+      "parent_category_id": null,
+      "preferred_label": "age_category:young_adult",
+      "status": "approved"
+    },
+    {
+      "id": "actor.age_category.adult",
+      "domain": "actor_appearance",
+      "facet": "age_category",
+      "stable_code": "actor.age_category.adult",
+      "parent_category_id": null,
+      "preferred_label": "age_category:adult",
+      "status": "approved"
+    },
+    {
+      "id": "actor.age_category.middle_aged",
+      "domain": "actor_appearance",
+      "facet": "age_category",
+      "stable_code": "actor.age_category.middle_aged",
+      "parent_category_id": null,
+      "preferred_label": "age_category:middle_aged",
+      "status": "approved"
+    },
+    {
+      "id": "actor.age_category.old",
+      "domain": "actor_appearance",
+      "facet": "age_category",
+      "stable_code": "actor.age_category.old",
+      "parent_category_id": null,
+      "preferred_label": "age_category:old",
+      "status": "approved"
+    },
+    {
+      "id": "actor.build.slim",
+      "domain": "actor_appearance",
+      "facet": "build",
+      "stable_code": "actor.build.slim",
+      "parent_category_id": null,
+      "preferred_label": "build:slim",
+      "status": "approved"
+    },
+    {
+      "id": "actor.build.average",
+      "domain": "actor_appearance",
+      "facet": "build",
+      "stable_code": "actor.build.average",
+      "parent_category_id": null,
+      "preferred_label": "build:average",
+      "status": "approved"
+    },
+    {
+      "id": "actor.build.stocky",
+      "domain": "actor_appearance",
+      "facet": "build",
+      "stable_code": "actor.build.stocky",
+      "parent_category_id": null,
+      "preferred_label": "build:stocky",
+      "status": "approved"
+    },
+    {
+      "id": "actor.skin_tone.pale",
+      "domain": "actor_appearance",
+      "facet": "skin_tone",
+      "stable_code": "actor.skin_tone.pale",
+      "parent_category_id": null,
+      "preferred_label": "skin_tone:pale",
+      "status": "approved"
+    },
+    {
+      "id": "actor.skin_tone.light",
+      "domain": "actor_appearance",
+      "facet": "skin_tone",
+      "stable_code": "actor.skin_tone.light",
+      "parent_category_id": null,
+      "preferred_label": "skin_tone:light",
+      "status": "approved"
+    },
+    {
+      "id": "actor.skin_tone.warm",
+      "domain": "actor_appearance",
+      "facet": "skin_tone",
+      "stable_code": "actor.skin_tone.warm",
+      "parent_category_id": null,
+      "preferred_label": "skin_tone:warm",
+      "status": "approved"
+    },
+    {
+      "id": "actor.skin_tone.brown",
+      "domain": "actor_appearance",
+      "facet": "skin_tone",
+      "stable_code": "actor.skin_tone.brown",
+      "parent_category_id": null,
+      "preferred_label": "skin_tone:brown",
+      "status": "approved"
+    },
+    {
+      "id": "actor.face_shape.oval",
+      "domain": "actor_appearance",
+      "facet": "face_shape",
+      "stable_code": "actor.face_shape.oval",
+      "parent_category_id": null,
+      "preferred_label": "face_shape:oval",
+      "status": "approved"
+    },
+    {
+      "id": "actor.face_shape.round",
+      "domain": "actor_appearance",
+      "facet": "face_shape",
+      "stable_code": "actor.face_shape.round",
+      "parent_category_id": null,
+      "preferred_label": "face_shape:round",
+      "status": "approved"
+    },
+    {
+      "id": "actor.face_shape.broad",
+      "domain": "actor_appearance",
+      "facet": "face_shape",
+      "stable_code": "actor.face_shape.broad",
+      "parent_category_id": null,
+      "preferred_label": "face_shape:broad",
+      "status": "approved"
+    },
+    {
+      "id": "actor.face_shape.angular",
+      "domain": "actor_appearance",
+      "facet": "face_shape",
+      "stable_code": "actor.face_shape.angular",
+      "parent_category_id": null,
+      "preferred_label": "face_shape:angular",
+      "status": "approved"
+    },
+    {
+      "id": "actor.face_shape.long",
+      "domain": "actor_appearance",
+      "facet": "face_shape",
+      "stable_code": "actor.face_shape.long",
+      "parent_category_id": null,
+      "preferred_label": "face_shape:long",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.blond",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.blond",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:blond",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.light_brown",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.light_brown",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:light_brown",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.dark_brown",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.dark_brown",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:dark_brown",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.black",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.black",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:black",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.auburn",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.auburn",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:auburn",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.gray",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.gray",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:gray",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_color.white",
+      "domain": "actor_appearance",
+      "facet": "hair_color",
+      "stable_code": "actor.hair_color.white",
+      "parent_category_id": null,
+      "preferred_label": "hair_color:white",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_length.bald",
+      "domain": "actor_appearance",
+      "facet": "hair_length",
+      "stable_code": "actor.hair_length.bald",
+      "parent_category_id": null,
+      "preferred_label": "hair_length:bald",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_length.short",
+      "domain": "actor_appearance",
+      "facet": "hair_length",
+      "stable_code": "actor.hair_length.short",
+      "parent_category_id": null,
+      "preferred_label": "hair_length:short",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_length.medium",
+      "domain": "actor_appearance",
+      "facet": "hair_length",
+      "stable_code": "actor.hair_length.medium",
+      "parent_category_id": null,
+      "preferred_label": "hair_length:medium",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_length.long",
+      "domain": "actor_appearance",
+      "facet": "hair_length",
+      "stable_code": "actor.hair_length.long",
+      "parent_category_id": null,
+      "preferred_label": "hair_length:long",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_style.straight",
+      "domain": "actor_appearance",
+      "facet": "hair_style",
+      "stable_code": "actor.hair_style.straight",
+      "parent_category_id": null,
+      "preferred_label": "hair_style:straight",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_style.wavy",
+      "domain": "actor_appearance",
+      "facet": "hair_style",
+      "stable_code": "actor.hair_style.wavy",
+      "parent_category_id": null,
+      "preferred_label": "hair_style:wavy",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_style.loose",
+      "domain": "actor_appearance",
+      "facet": "hair_style",
+      "stable_code": "actor.hair_style.loose",
+      "parent_category_id": null,
+      "preferred_label": "hair_style:loose",
+      "status": "approved"
+    },
+    {
+      "id": "actor.hair_style.braided",
+      "domain": "actor_appearance",
+      "facet": "hair_style",
+      "stable_code": "actor.hair_style.braided",
+      "parent_category_id": null,
+      "preferred_label": "hair_style:braided",
+      "status": "approved"
+    },
+    {
+      "id": "actor.facial_hair.none",
+      "domain": "actor_appearance",
+      "facet": "facial_hair",
+      "stable_code": "actor.facial_hair.none",
+      "parent_category_id": null,
+      "preferred_label": "facial_hair:none",
+      "status": "approved"
+    },
+    {
+      "id": "actor.facial_hair.moustache",
+      "domain": "actor_appearance",
+      "facet": "facial_hair",
+      "stable_code": "actor.facial_hair.moustache",
+      "parent_category_id": null,
+      "preferred_label": "facial_hair:moustache",
+      "status": "approved"
+    },
+    {
+      "id": "actor.facial_hair.short_beard",
+      "domain": "actor_appearance",
+      "facet": "facial_hair",
+      "stable_code": "actor.facial_hair.short_beard",
+      "parent_category_id": null,
+      "preferred_label": "facial_hair:short_beard",
+      "status": "approved"
+    },
+    {
+      "id": "actor.facial_hair.full_beard",
+      "domain": "actor_appearance",
+      "facet": "facial_hair",
+      "stable_code": "actor.facial_hair.full_beard",
+      "parent_category_id": null,
+      "preferred_label": "facial_hair:full_beard",
+      "status": "approved"
+    },
+    {
+      "id": "actor.eye_color.blue",
+      "domain": "actor_appearance",
+      "facet": "eye_color",
+      "stable_code": "actor.eye_color.blue",
+      "parent_category_id": null,
+      "preferred_label": "eye_color:blue",
+      "status": "approved"
+    },
+    {
+      "id": "actor.eye_color.gray",
+      "domain": "actor_appearance",
+      "facet": "eye_color",
+      "stable_code": "actor.eye_color.gray",
+      "parent_category_id": null,
+      "preferred_label": "eye_color:gray",
+      "status": "approved"
+    },
+    {
+      "id": "actor.eye_color.green",
+      "domain": "actor_appearance",
+      "facet": "eye_color",
+      "stable_code": "actor.eye_color.green",
+      "parent_category_id": null,
+      "preferred_label": "eye_color:green",
+      "status": "approved"
+    },
+    {
+      "id": "actor.eye_color.brown",
+      "domain": "actor_appearance",
+      "facet": "eye_color",
+      "stable_code": "actor.eye_color.brown",
+      "parent_category_id": null,
+      "preferred_label": "eye_color:brown",
+      "status": "approved"
+    },
+    {
+      "id": "actor.eye_color.dark",
+      "domain": "actor_appearance",
+      "facet": "eye_color",
+      "stable_code": "actor.eye_color.dark",
+      "parent_category_id": null,
+      "preferred_label": "eye_color:dark",
+      "status": "approved"
+    }
+  ]
+}

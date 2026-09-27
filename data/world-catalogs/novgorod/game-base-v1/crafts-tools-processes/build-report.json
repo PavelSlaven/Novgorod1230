@@ -1,0 +1,16 @@
+{
+  "built_by": "scripts/build.cjs",
+  "counts": {
+    "craft_tools_gear/tools_gear.csv": 157,
+    "craft_tools_gear/occupation_tools.csv": 356,
+    "craft_processes/processes.csv": 48,
+    "craft_processes/process_steps.csv": 166,
+    "craft_processes/process_products.csv": 42,
+    "workshops/workshops.csv": 21,
+    "materials_registry/materials.csv": 103,
+    "materials_registry/late_materials_denylist.csv": 27,
+    "sources/sources.csv": 25
+  },
+  "matcult_checked": false,
+  "warnings": []
+}

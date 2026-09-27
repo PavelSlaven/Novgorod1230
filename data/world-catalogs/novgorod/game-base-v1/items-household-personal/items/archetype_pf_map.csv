@@ -1,0 +1,33 @@
+location_archetype,pf_ids,action,note
+bathhouse,bathhouse,map,
+byre,outbuildings,map,
+stable,outbuildings,map,
+cellar,cellar_granary,map,
+storehouse,cellar_granary;outbuildings,map,клеть/амбар: WK cellar_granary + outbuildings
+church,church_interior,map,
+monastery,monastery_yard,map,
+field,arable_field;orchard_garden;threshing_barn,map,"поле, огород или ток"
+fishing_site,fishing_camp,map,
+forest,mixed_woodland;conifer_woodland;broadleaf_woodland;forest_edge,map,лес: три типа леса WK + опушка
+forge,smithy,map,
+hearth,dwelling_interior,map,
+hunting_camp,hunting_ground,map,
+leather_workshop,ordinary_workshop,map,
+pottery_workshop,ordinary_workshop,map,
+workshop,ordinary_workshop,map,
+textile_work_area,dwelling_interior;ordinary_workshop,map,домашняя или мастерская текстильная зона
+pier,river_wharf;ferry_landing,map,причал/мостки: wharf + перевоз
+refuse_area,town_courtyard;peasant_homestead,map,"край двора, мусорная яма"
+riverbank,riverbank;lake_shore,map,
+road,road;village_lane,map,
+scribe_area,dwelling_interior;church_interior,map,письмо в доме или храме
+street,town_street,map,
+torg,market_square,map,
+urban_house,dwelling_interior,map,
+poor_house,dwelling_interior,map,
+wealthy_house,dwelling_interior,map,
+yard,town_courtyard;peasant_homestead,map,
+boat,,drop,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+cart_or_sledge,,drop,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+military_camp,,drop,no WK place family for military camp (gap for military_security / place_families)
+construction_site,,drop,activity overlay without WK place family (gap for place_families)

@@ -1,0 +1,31 @@
+# occupations-activities — кандидатные данные C001
+
+Четыре артефакта: 19 занятий, 20 наблюдаемых действий, 28 основ
+NPC-профилей (9 исходных M2c и 19 новых), 19 компетенций с 12
+родительскими навыками. Все имеют статус `candidate`; генераторы не меняют
+active runtime, pinned TSV, STATUS и вердикты.
+
+Запускать из корня репозитория:
+
+```text
+python data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/scripts/build_occupations_additions.py
+python data/world-catalogs/novgorod/game-base-v1/occupations-activities/activities_observable/scripts/build_activities_for_new_occupations.py
+python data/world-catalogs/novgorod/game-base-v1/occupations-activities/npc_runtime_profiles/build.py
+python data/world-catalogs/novgorod/game-base-v1/occupations-activities/skills_competences/build.py
+python data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/scripts/check_occupations_additions.py
+python data/world-catalogs/novgorod/game-base-v1/occupations-activities/validate.py
+```
+
+NPC-генератор читает закреплённый срез PR98 из
+`npc_runtime_profiles/pr98_extract.json`; он входит в этот checkout вместе с
+готовым JSON. `no_source` обозначает отсутствие основания для
+конкретного поля, не исторический факт. Факты NPC и владение вещами определяет
+код; LLM описывает только выбранное состояние.
+
+## Правки C002
+
+`npc_runtime_profiles` содержит кандидатные взвешенные наборы вариантов
+внешности, одежды и снаряжения для каждой пары роль/занятие × региональный
+контекст. Источники и пробелы указаны у вариантов; равные веса означают
+игровой выбор, не историческую частоту. Сборка не выбирает факты актёра и
+не активирует профили. Подробности — в `npc_runtime_profiles/README.md`.

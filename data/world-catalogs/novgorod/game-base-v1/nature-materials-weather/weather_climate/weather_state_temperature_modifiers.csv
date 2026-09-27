@@ -1,0 +1,10 @@
+wx_state_id,mod_00-06,mod_06-12,mod_12-18,mod_18-24,source_refs,confidence
+wx_clear,-2,0,1,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_partly_cloudy,-1,0,0,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_overcast,1,0,-1,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_fog,0,-1,-1,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_precip_light,1,0,-1,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_precip_steady,1,-1,-2,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_convective_storm,0,0,-4,-2,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_windy_dry,1,0,0,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C
+wx_windy_precip,1,-1,-2,0,wk:claim:foundations-earth2-10-cloud-radiative-two-way-effect,C

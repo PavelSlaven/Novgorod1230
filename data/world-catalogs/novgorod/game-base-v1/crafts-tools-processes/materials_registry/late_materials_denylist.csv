@@ -1,0 +1,28 @@
+dl_id,term_ru,match_stems,kind,verdict,reason_ru,source_refs,status
+dl_porcelain,фарфор,фарфор,material,deny,Фарфор местного производства — анахронизм.,src:master-technology-v1,candidate
+dl_faience,фаянс,фаянс,material,deny,Фаянс — поздний материал для Руси 1230 г.,src:master-technology-v1,candidate
+dl_cotton_local,хлопок как местное волокно,хлопок;хлопчат;ситец;бязь,material,deny_as_local,Хлопок не растёт в зоне; ткани из хлопка в Новгороде 1230 г. не засвидетельствованы в WK — только как спорный импорт.,src:master-technology-v1,candidate
+dl_paper,бумага,бумаг,material,deny,"Местная бумажная мельница — анахронизм; письмо на бересте, пергамене, воске.",src:master-technology-v1,candidate
+dl_cast_iron,"чугун (массовый, доменный)",чугун,material,deny,Доменная плавка и массовый чугун — анахронизм.,src:master-technology-v1,candidate
+dl_chrome_leather,хромовая кожа,хром,material,deny,Хромовое дубление — XIX в.,src:master-technology-v1,candidate
+dl_aniline,анилиновые красители,анилин,material,deny,Синтетические красители — XIX в.,src:master-technology-v1,candidate
+dl_portland,"портландцемент, бетон",цемент;бетон;железобетон,material,deny,Портландцемент — XIX в.,src:master-technology-v1,candidate
+dl_rubber,"резина, каучук",резин;каучук,material,deny,"Каучук — американский материал, в Европе после 1492 г.",src:ethno-analogy,candidate
+dl_plastic,"пластмасса, синтетика",пластик;пластмасс;синтет;капрон;нейлон,material,deny,Синтетика — XX в.,src:master-technology-v1,candidate
+dl_aluminium,алюминий,алюмин,material,deny,Промышленный алюминий — XIX в.,src:crc-handbook,candidate
+dl_zinc_metal,цинк как металл,цинк,material,restricted,Металлический цинк в Европе 1230 г. не производили; цинк есть только в составе латуни.,src:iaran-desyatinny,candidate
+dl_steel_modern,"легированная сталь, нержавейка",нержав;легирован,material,deny,Современные стали — анахронизм.,src:master-technology-v1,candidate
+dl_glass_window_common,оконное стекло как обычное,оконное стекло;оконн,material,restricted,Оконное стекло в Руси было редким и дорогим; в обычном доме — нет.,src:kyy1985-applied,candidate
+dl_glazed_mass,глазурованная посуда как массовая,поливн;глазур,material,restricted,Поливная посуда только в подтверждённом контексте (Макарова 1967); не массовая норма.,src:master-technology-v1,candidate
+dl_wire_nail,"проволочный гвоздь, шуруп, болт с гайкой",шуруп;гайк;болт;проволочный гвозд,tool,deny,"Машинный крепёж — анахронизм; гвозди кованые, нагели, скобы.",src:master-technology-v1,candidate
+dl_spinning_wheel,самопрялка с колесом,самопрялк;прялка с колес;прялочное колесо,tool,restricted,Колёсная прялка как повсеместная норма 1230 г. не подтверждена; прядут веретеном.,src:master-technology-v1,candidate
+dl_foot_wheel,ножной гончарный круг,ножной гончарн;ножной круг,tool,restricted,Ножной круг для Новгорода XIII в. спорен (matcult CRF0061 = D); норма — ручной круг.,src:matcult-catalog-v1,candidate
+dl_steel_trap,стальной пружинный капкан,капкан,tool,deny,"Железный капкан для Новгорода XIII в. не засвидетельствован (matcult HNT0022/HNT0024 = D; у Рыбиной 2015 ловушек-капканов нет). Разрешены петли, силки, давящие самоловы.",src:rybina2015-promysly,candidate
+dl_mouldboard_plough,отвальный плуг,отвальн;плуг,tool,restricted,Плуг с отвалом для Новгородской земли 1230 г. спорен (matcult AGR0022/0036 = D); норма — соха и рало.,src:matcult-catalog-v1,candidate
+dl_sawmill,"лесопилка, пилорама, ленточная пила",лесопил;пилорам;ленточн,tool,deny,Доски раскалывают и тешут; механической распиловки нет.,src:master-technology-v1,candidate
+dl_trip_hammer,водяной молот,водяной молот;кричный молот,technology,restricted,Требует прямого источника; ковка ручная.,src:master-technology-v1,candidate
+dl_thermometer,"термометр, точная температура",термометр;градус,technology,deny,Жар оценивают по цвету и поведению металла.,src:master-technology-v1,candidate
+dl_printing,печатный станок,печатный станок;типограф,technology,deny,Книгопечатание — XV в.,src:master-technology-v1,candidate
+dl_firearm,"огнестрельное оружие, порох",порох;пищал;ружь;пушк,technology,deny,Порох в Европе позже; на Руси огнестрел с конца XIV в.,src:ethno-analogy,candidate
+dl_steam_electric,"паровая машина, электромотор",паров машин;электро,technology,deny,"WK технологические границы: Ньюкомен ~1712, электромотор 1821.",wk:craft_technology:atmospheric-reciprocating-engine;wk:craft_technology:electromagnetic-motor,candidate
+dl_potato_etc,"картофель, кукуруза, подсолнечник, табак",картоф;кукуруз;подсолнеч;табак,material,deny,Американские культуры; WK r7-potato-anachronism-boundary.,wk:material_culture:r7-potato-anachronism-boundary,candidate

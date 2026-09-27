@@ -5,6 +5,53 @@
 // act: diurnal|nocturnal|crepuscular|cathemeral ; dorm: seasons when dormant (hibernation/torpor) -> signs only
 // Biology text is qualitative naturalist knowledge cross-checked with SRC_VOLOGDA_MAMM / SRC_WK_FAUNA (confidence B unless noted).
 const V = 'SRC_VOLOGDA_MAMM';
+// Authored seasonal hearing decisions; an empty value means no regular audible cue.
+const AUDIBLE_SEASONS = {
+  fa_m_elk: 'winter;spring;summer;autumn',
+  fa_m_wild_boar: 'winter;spring;summer;autumn',
+  fa_m_roe_deer: '',
+  fa_m_reindeer: 'winter;spring;summer;autumn',
+  fa_m_brown_bear: 'spring;summer;autumn',
+  fa_m_wolf: 'winter;spring;summer;autumn',
+  fa_m_red_fox: 'winter;spring;summer;autumn',
+  fa_m_lynx: 'winter;spring',
+  fa_m_wolverine: '',
+  fa_m_badger: 'spring;summer;autumn',
+  fa_m_pine_marten: '',
+  fa_m_sable: '',
+  fa_m_stoat: 'winter;spring;summer;autumn',
+  fa_m_weasel: 'winter;spring;summer;autumn',
+  fa_m_polecat: 'winter;spring;summer;autumn',
+  fa_m_european_mink: '',
+  fa_m_otter: 'winter;spring;summer;autumn',
+  fa_m_beaver: 'spring;summer;autumn',
+  fa_m_red_squirrel: 'winter;spring;summer;autumn',
+  fa_m_flying_squirrel: 'winter;spring;summer;autumn',
+  fa_m_mountain_hare: '',
+  fa_m_hedgehog: 'spring;summer;autumn',
+  fa_m_mole: '',
+  fa_m_common_shrew: 'winter;spring;summer;autumn',
+  fa_m_pygmy_shrew: 'winter;spring;summer;autumn',
+  fa_m_water_shrew: 'winter;spring;summer;autumn',
+  fa_m_bank_vole: 'winter;spring;summer;autumn',
+  fa_m_field_vole: 'winter;spring;summer;autumn',
+  fa_m_common_vole: 'winter;spring;summer;autumn',
+  fa_m_water_vole: 'spring;summer;autumn',
+  fa_m_yellow_necked_mouse: 'winter;spring;summer;autumn',
+  fa_m_wood_mouse: 'winter;spring;summer;autumn',
+  fa_m_striped_field_mouse: 'winter;spring;summer;autumn',
+  fa_m_harvest_mouse: '',
+  fa_m_house_mouse: 'winter;spring;summer;autumn',
+  fa_m_birch_mouse: '',
+  fa_m_wood_lemming: '',
+  fa_m_garden_dormouse: 'spring;summer;autumn',
+  fa_m_whiskered_bat: 'spring;summer;autumn',
+  fa_m_northern_bat: 'spring;summer;autumn',
+  fa_m_parti_coloured_bat: 'autumn',
+  fa_m_brown_long_eared_bat: '',
+  fa_m_daubentons_bat: 'spring;summer;autumn',
+  fa_m_ladoga_ringed_seal: '',
+};
 module.exports = [
   { id: 'fa_m_elk', ru: 'Лось', alt: 'лось, сохатый (народн.)', lat: 'Alces alces', en: 'Elk (moose)', order: 'Artiodactyla', grp: 'ungulate',
     base: 'C', baseBasis: 'Most frequent wild ungulate in Novgorod bone assemblages (one of three most frequent wild mammals); modern common game (SRC_VALDAY_NP)',
@@ -365,3 +412,7 @@ module.exports = [
     tracks: 'продухи во льду', drop: '', feed: '', den: 'снежные логовища на льду', sound: '', smell: '', human: 'пуглива', danger: 'none', products: 'fat;hide;meat', hunt: 'на льду, сети', huntRefs: 'n1230:material_item:hnt0015',
     wk: '', src: 'SRC_RYBINA2015', note: 'region_id=ladoga_lake only; not in Ильмень/Волхов start territory' },
 ];
+for (const taxon of module.exports) {
+  if (!Object.hasOwn(AUDIBLE_SEASONS, taxon.id)) throw new Error(`missing audible seasons: ${taxon.id}`);
+  taxon.audible = AUDIBLE_SEASONS[taxon.id];
+}

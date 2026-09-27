@@ -111,13 +111,13 @@ fpa_fa_m_red_fox_autumn_civil_dawn,fa_m_red_fox,autumn,civil_dawn,yes,yes,mammal
 fpa_fa_m_red_fox_autumn_daylight,fa_m_red_fox,autumn,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_red_fox_autumn_civil_dusk,fa_m_red_fox,autumn,civil_dusk,yes,yes,mammals.csv#fa_m_red_fox.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
 fpa_fa_m_red_fox_autumn_night,fa_m_red_fox,autumn,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_m_lynx_winter_civil_dawn,fa_m_lynx,winter,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
+fpa_fa_m_lynx_winter_civil_dawn,fa_m_lynx,winter,civil_dawn,yes,yes,mammals.csv#fa_m_lynx.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_m_lynx_winter_daylight,fa_m_lynx,winter,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_m_lynx_winter_civil_dusk,fa_m_lynx,winter,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
+fpa_fa_m_lynx_winter_civil_dusk,fa_m_lynx,winter,civil_dusk,yes,yes,mammals.csv#fa_m_lynx.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
 fpa_fa_m_lynx_winter_night,fa_m_lynx,winter,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_m_lynx_spring_civil_dawn,fa_m_lynx,spring,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
+fpa_fa_m_lynx_spring_civil_dawn,fa_m_lynx,spring,civil_dawn,yes,yes,mammals.csv#fa_m_lynx.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_m_lynx_spring_daylight,fa_m_lynx,spring,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_m_lynx_spring_civil_dusk,fa_m_lynx,spring,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
+fpa_fa_m_lynx_spring_civil_dusk,fa_m_lynx,spring,civil_dusk,yes,yes,mammals.csv#fa_m_lynx.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
 fpa_fa_m_lynx_spring_night,fa_m_lynx,spring,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_lynx_summer_civil_dawn,fa_m_lynx,summer,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_m_lynx_summer_daylight,fa_m_lynx,summer,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
@@ -274,7 +274,7 @@ fpa_fa_m_otter_autumn_night,fa_m_otter,autumn,night,yes,yes,mammals.csv#fa_m_ott
 fpa_fa_m_beaver_winter_civil_dawn,fa_m_beaver,winter,civil_dawn,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_beaver_winter_daylight,fa_m_beaver,winter,daylight,no_source,no,,,fauna/activity_phase_rules.json#activity-phase-v1.nocturnal.daylight,,C,candidate
 fpa_fa_m_beaver_winter_civil_dusk,fa_m_beaver,winter,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_m_beaver_winter_night,fa_m_beaver,winter,night,yes,yes,mammals.csv#fa_m_beaver.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.nocturnal.night,,C,candidate
+fpa_fa_m_beaver_winter_night,fa_m_beaver,winter,night,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.nocturnal.night,,C,candidate
 fpa_fa_m_beaver_spring_civil_dawn,fa_m_beaver,spring,civil_dawn,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_beaver_spring_daylight,fa_m_beaver,spring,daylight,no_source,no,,,fauna/activity_phase_rules.json#activity-phase-v1.nocturnal.daylight,,C,candidate
 fpa_fa_m_beaver_spring_civil_dusk,fa_m_beaver,spring,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
@@ -447,9 +447,9 @@ fpa_fa_m_field_vole_autumn_civil_dawn,fa_m_field_vole,autumn,civil_dawn,yes,yes,
 fpa_fa_m_field_vole_autumn_daylight,fa_m_field_vole,autumn,daylight,yes,yes,mammals.csv#fa_m_field_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
 fpa_fa_m_field_vole_autumn_civil_dusk,fa_m_field_vole,autumn,civil_dusk,yes,yes,mammals.csv#fa_m_field_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
 fpa_fa_m_field_vole_autumn_night,fa_m_field_vole,autumn,night,yes,yes,mammals.csv#fa_m_field_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
-fpa_fa_m_water_vole_winter_civil_dawn,fa_m_water_vole,winter,civil_dawn,yes,yes,mammals.csv#fa_m_water_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
+fpa_fa_m_water_vole_winter_civil_dawn,fa_m_water_vole,winter,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_m_water_vole_winter_daylight,fa_m_water_vole,winter,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_m_water_vole_winter_civil_dusk,fa_m_water_vole,winter,civil_dusk,yes,yes,mammals.csv#fa_m_water_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
+fpa_fa_m_water_vole_winter_civil_dusk,fa_m_water_vole,winter,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate
 fpa_fa_m_water_vole_winter_night,fa_m_water_vole,winter,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_water_vole_spring_civil_dawn,fa_m_water_vole,spring,civil_dawn,yes,yes,mammals.csv#fa_m_water_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_m_water_vole_spring_daylight,fa_m_water_vole,spring,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
@@ -2019,15 +2019,15 @@ fpa_fa_b_redwing_autumn_civil_dawn,fa_b_redwing,autumn,civil_dawn,no_source,no_s
 fpa_fa_b_redwing_autumn_daylight,fa_b_redwing,autumn,daylight,yes,yes,birds.csv#fa_b_redwing.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.diurnal.daylight,,C,candidate
 fpa_fa_b_redwing_autumn_civil_dusk,fa_b_redwing,autumn,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_b_redwing_autumn_night,fa_b_redwing,autumn,night,no,yes,birds.csv#fa_b_redwing.voice_description,birds.csv#fa_b_redwing.voice_description,,,C,candidate
-fpa_fa_b_song_thrush_spring_civil_dawn,fa_b_song_thrush,spring,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
+fpa_fa_b_song_thrush_spring_civil_dawn,fa_b_song_thrush,spring,civil_dawn,yes,yes,birds.csv#fa_b_song_thrush.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_b_song_thrush_spring_daylight,fa_b_song_thrush,spring,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_b_song_thrush_spring_civil_dusk,fa_b_song_thrush,spring,civil_dusk,yes,yes,birds.csv#fa_b_song_thrush.voice_description,birds.csv#fa_b_song_thrush.voice_description,,,C,candidate
 fpa_fa_b_song_thrush_spring_night,fa_b_song_thrush,spring,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_b_song_thrush_summer_civil_dawn,fa_b_song_thrush,summer,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
+fpa_fa_b_song_thrush_summer_civil_dawn,fa_b_song_thrush,summer,civil_dawn,yes,yes,birds.csv#fa_b_song_thrush.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_b_song_thrush_summer_daylight,fa_b_song_thrush,summer,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_b_song_thrush_summer_civil_dusk,fa_b_song_thrush,summer,civil_dusk,yes,yes,birds.csv#fa_b_song_thrush.voice_description,birds.csv#fa_b_song_thrush.voice_description,,,C,candidate
 fpa_fa_b_song_thrush_summer_night,fa_b_song_thrush,summer,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_b_song_thrush_autumn_civil_dawn,fa_b_song_thrush,autumn,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
+fpa_fa_b_song_thrush_autumn_civil_dawn,fa_b_song_thrush,autumn,civil_dawn,yes,yes,birds.csv#fa_b_song_thrush.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_b_song_thrush_autumn_daylight,fa_b_song_thrush,autumn,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_b_song_thrush_autumn_civil_dusk,fa_b_song_thrush,autumn,civil_dusk,yes,yes,birds.csv#fa_b_song_thrush.voice_description,birds.csv#fa_b_song_thrush.voice_description,,,C,candidate
 fpa_fa_b_song_thrush_autumn_night,fa_b_song_thrush,autumn,night,no_source,no_source,,,,visibility and voice phase unknown,C,candidate

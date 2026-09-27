@@ -9,7 +9,7 @@ The counts below come from `build-report.json` and `validation-report.json`, whi
 
 | File | Rows | What |
 |---|---:|---|
-| `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), activity time, signs for prose (tracks, droppings, feeding signs, dens/lodges/dams, sounds, smell), behaviour toward humans, danger, products, hunting methods with MASTER gear refs, WK refs |
+| `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), authored `audible_seasons`, activity time, signs for prose (tracks, droppings, feeding signs, dens/lodges/dams, sounds, smell), behaviour toward humans, danger, products, hunting methods with MASTER gear refs, WK refs |
 | `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, voice, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
 | `fauna/wild_habitat_presence.csv` | 4231 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
 | `fauna/fauna_categories.csv` | 220 | Category nodes in domain `fauna`: `fauna.mammal`, `fauna.bird`, 25 group nodes, 193 taxon nodes. Every taxon row and presence row has a `category_ref` |
@@ -111,6 +111,10 @@ Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. T
 
 ## C006b3: согласование слышимости
 
-Для млекопитающих `wild_habitat_presence.audible` выводится из `mammals.signs_sounds`: общий безусловный звук относится к фазам `activity_time`, явно ограниченный — только к указанному времени или сезону. Положительные строки ссылаются на поле владельца в `source_refs`. Редкий, почти неслышный и обусловленный поимкой или тревогой звук не даёт обычного `voice=yes`. Отдельного списка видов больше нет. Спячка всегда даёт `audible=false`, а её фазовые строки — уверенность C. Валидатор независимо сверяет таблицу присутствия с текстом владельца и отвергает `voice=yes` при `audible=false`. У птиц оговорки «у гнезда» и «особенно вечером» не скрывают предшествующий общий голос; «на лету» не означает летний сезон.
+Для млекопитающих `wild_habitat_presence.audible` определяется авторским полем `mammals.audible_seasons` и отсутствием сезона в `dormant_seasons`. Поле содержит список сезонов через `;` или пустое значение для каждого из 44 видов. Каждая строка млекопитающего ссылается на собственное `signs_sounds`. Фазы голоса выводит только сборщик по тексту; валидатор проверяет схему, ссылки и согласованность с сезонной слышимостью, но не повторяет разбор прозы. Фазы проверены выборочно.
 
 «Крик тревоги» косули не считается обычным голосом. Если за звуком при тревоге идёт самостоятельный звук после запятой, он оценивается отдельно: всплеск ныряния бобра остаётся слышимым признаком.
+
+## C006b4: сезонный звук владельца
+
+Для рыси в `audible_seasons` указаны зима и весна по гону февраля–марта. Для бобра и водяной полёвки зима исключена: водный всплеск подо льдом и в норах не слышен. Валидатор детерминированно сверяет `audible` с авторским полем и спячкой; содержательная оценка текста остаётся авторским решением.

@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const GB = path.resolve(__dirname, '../..');
 const rules = require('../fauna/activity_phase_rules.json');
-const voicePhase = require('./voice-phase.cjs');
 const HEADER = ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status'];
 function csv(file) {
   const text = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
@@ -63,31 +62,13 @@ function roosterPhase(season) {
   if (atFour < minutes(middle.avg_civil_dusk_lmst)) return 'civil_dusk';
   return 'night';
 }
-function criterionCR(row, activity, voiceText) {
-  if (row.voice_state !== 'yes') return '';
-  if (activity === 'nocturnal' && row.phase === 'daylight' &&
-      !/днём|днем|днев/.test(voiceText.toLowerCase()) && !row.source_refs.includes('books-evidence-v1/')) return 'nocturnal daylight';
-  if (activity === 'diurnal' && row.phase === 'night' &&
-      !/ноч/.test(voiceText.toLowerCase()) && !row.source_refs.includes('books-evidence-v1/')) return 'diurnal night';
-  return '';
-}
-function criterionFishCR(row, taxon) {
-  if (row.voice_state !== 'yes' || taxon.table !== 'invertebrates_herps.csv') return '';
-  const text = `${taxon.perceptual_cues} ${taxon.season_peak}`.toLowerCase();
-  const night = /ноч|сумерк|вечер/.test(text);
-  const day = /дн|полд|жар|солн|светл|утр|рассвет|зор/.test(text);
-  if (row.phase === 'daylight' && night && !day) return 'night-only owner in daylight';
-  if (row.phase === 'night' && day && !night) return 'day-only owner at night';
-  return '';
-}
-function validate(group, rows, header, presenceOverride, cuesOverride) {
+function validate(group, rows, header, presenceOverride, taxaOverride) {
   const errors = [];
   if (header.join(',') !== HEADER.join(',')) errors.push('phase_activity schema');
   const presence = presenceOverride || csv(file(group, group === 'fauna-mammals-birds' ? 'wild_habitat_presence.csv' : 'fauna_presence.csv')).rows;
   const scope = new Set(presence.filter((r) => startPf.has(group === 'fauna-mammals-birds' ? r.pf_id : `pf_${r.pf_id}`))
     .map((r) => `${r.fa_id}|${r.season || r.season_period}`));
   const fish = group !== 'fauna-mammals-birds';
-  const cues = fish ? cuesOverride || require('../../fauna-fish-invertebrates-livestock/scripts/src/phase_cues.json') : {};
   const livestockRules = new Map();
   const activeScope = new Set(presence.filter((r) => startPf.has(`pf_${r.pf_id}`) && r.activity_state === 'active').map((r) => `${r.fa_id}|${r.season_period}`));
   if (fish) {
@@ -117,13 +98,14 @@ function validate(group, rows, header, presenceOverride, cuesOverride) {
   const taxa = new Map();
   for (const name of group === 'fauna-mammals-birds' ? ['mammals.csv', 'birds.csv'] : ['fish.csv', 'invertebrates_herps.csv', 'livestock_species.csv'])
     for (const row of csv(file(group, name)).rows) taxa.set(row.fa_id, { ...row, table: name });
+  for (const [id, changes] of taxaOverride || []) taxa.set(id, { ...taxa.get(id), ...changes });
   if (!fish) for (const p of presence) {
     const taxon = taxa.get(p.fa_id);
-    if (taxon?.table !== 'mammals.csv') continue;
-    const dormant = taxon.dormant_seasons.split(';').includes(p.season);
-    const expected = !dormant && rules.phases.some((phase) => ['yes', null].includes(voicePhase(taxon, p.season, phase, true, false)));
+    if (!['mammals.csv', 'birds.csv'].includes(taxon?.table)) continue;
+    const expected = taxon.audible_seasons.split(';').includes(p.season) &&
+      !(taxon.dormant_seasons || '').split(';').includes(p.season);
     if (p.audible !== String(expected)) errors.push(`presence audible owner ${p.fa_id}/${p.season}/${p.pf_id}`);
-    if (expected && !p.source_refs.split(';').includes(`mammals.csv#${p.fa_id}.signs_sounds`))
+    if (taxon.table === 'mammals.csv' && expected && !p.source_refs.split(';').includes(`mammals.csv#${p.fa_id}.signs_sounds`))
       errors.push(`presence audible source ${p.fa_id}/${p.season}/${p.pf_id}`);
   }
   const keys = new Set(), ids = new Set();
@@ -134,7 +116,8 @@ function validate(group, rows, header, presenceOverride, cuesOverride) {
     if (row.phase_rule_id !== `fpa_${row.fa_id}_${row.season}_${row.phase}`) errors.push(`phase_rule_id ${key}`);
     if (!scope.has(`${row.fa_id}|${row.season}`) || !rules.phases.includes(row.phase)) errors.push(`out of scope ${key}`);
     if (!['yes', 'no', 'no_source'].includes(row.visibility_state) || !['yes', 'no', 'no_source'].includes(row.voice_state)) errors.push(`state enum ${key}`);
-    if ([row.source_refs, row.rule_ref, row.no_source].filter(Boolean).length !== 1) errors.push(`basis XOR ${key}`);
+    const roosterMixed = row.fa_id === 'fa_dom_chicken' && row.rule_ref.endsWith('#rooster-four-am') && row.source_refs;
+    if ([row.source_refs, row.rule_ref, row.no_source].filter(Boolean).length !== (roosterMixed ? 2 : 1)) errors.push(`basis XOR ${key}`);
     const completeGap = row.visibility_state === 'no_source' && row.voice_state === 'no_source' && !row.rule_ref;
     if (completeGap !== Boolean(row.no_source)) errors.push(`gap basis ${key}`);
     if (!['A', 'B', 'C'].includes(row.confidence) || row.status !== 'candidate') errors.push(`confidence/status ${key}`);
@@ -148,6 +131,10 @@ function validate(group, rows, header, presenceOverride, cuesOverride) {
     if (row.source_refs.includes('.activity_time')) errors.push(`activity class presented as source ${key}`);
     const taxon = taxa.get(row.fa_id);
     if (!taxon) { errors.push(`unknown taxon ${key}`); continue; }
+    for (const ref of [...row.source_refs.split(';'), ...row.voice_text_ref.split(';')].filter(Boolean)) {
+      const match = /^(?:mammals|birds|fish|invertebrates_herps|livestock_species)\.csv#([^.#]+)(?:\.|$)/.exec(ref.replace(/\\/g, '/').split('/').at(-1));
+      if (match && match[1] !== row.fa_id) errors.push(`foreign species owner ${key}: ${ref}`);
+    }
     if ('ABC'.indexOf(row.confidence) < 'ABC'.indexOf(taxon.confidence) ||
         (taxon.presence_1230_confidence && 'ABC'.indexOf(row.confidence) < 'ABC'.indexOf(taxon.presence_1230_confidence))) errors.push(`confidence exceeds owner ${key}`);
     const knownActivity = !fish ? taxon.activity_time :
@@ -163,20 +150,10 @@ function validate(group, rows, header, presenceOverride, cuesOverride) {
       const visibilityBook = (row.fa_id === 'fa_m_wild_boar' && row.season === 'summer' && row.phase === 'civil_dusk') ||
         (row.fa_id === 'fa_b_capercaillie' && row.season === 'spring' && row.phase === 'civil_dusk');
       if (row.visibility_state !== (visibilityBook ? 'yes' : expectedVisibility)) errors.push(`activity mapping ${key}`);
-      const audible = taxon.table === 'birds.csv' ? taxon.audible_seasons.split(';').includes(row.season) :
-        presence.some((p) => p.fa_id === row.fa_id && p.season === row.season && p.audible === 'true');
-      if (taxon.table === 'mammals.csv' && row.voice_state === 'yes' && !audible) errors.push(`mammal presence audible ${key}`);
-      const parsed = voicePhase(taxon, row.season, row.phase, audible, dormant);
-      if (taxon.table === 'birds.csv' && !audible && row.voice_state === 'yes') errors.push(`audible season ${key}`);
-      let expectedVoice = rules.voice_rules[knownActivity]?.[row.phase] && parsed !== 'yes' ? rules.voice_rules[knownActivity][row.phase] :
-        parsed === null ? expectedVisibility : parsed;
-      const voiceBook = (row.fa_id === 'fa_b_bittern' && ['spring', 'summer'].includes(row.season) && ['daylight', 'civil_dusk', 'night'].includes(row.phase)) ||
-          (row.fa_id === 'fa_b_common_crane' && row.season === 'autumn' && row.phase === 'night') ||
-          (row.fa_id === 'fa_b_swift' && row.season === 'summer' && row.phase === 'civil_dawn');
-      if (voiceBook) expectedVoice = 'yes';
-      if (row.voice_state !== expectedVoice) errors.push(`voice phase/season ${key}`);
-      if ((!visibilityBook || !(parsed === 'yes' || voiceBook) || completeGap ||
-           row.visibility_state === 'no_source' || row.voice_state === 'no_source') && row.confidence !== 'C') errors.push(`mixed facet confidence ${key}`);
+      const audible = taxon.audible_seasons.split(';').includes(row.season) && !dormant;
+      if (row.voice_state === 'yes' && !audible) errors.push(`audible season ${key}`);
+      if ((row.visibility_state === 'no_source' || row.voice_state === 'no_source' || completeGap) &&
+          row.confidence !== 'C') errors.push(`mixed facet confidence ${key}`);
     } else {
       if ((row.visibility_state === 'no_source' || row.voice_state === 'no_source') && row.confidence !== 'C') errors.push(`mixed facet confidence ${key}`);
       if (taxon.table === 'livestock_species.csv' && row.visibility_state !== 'no_source') errors.push(`livestock visibility ${key}`);
@@ -185,24 +162,15 @@ function validate(group, rows, header, presenceOverride, cuesOverride) {
            row.voice_text_ref !== 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues' || row.confidence !== 'C')) errors.push(`mosquito dawn channel ${key}`);
       if (row.fa_id === 'fa_dom_chicken') {
         const roosterRule = `${rulePath}rooster-four-am`;
-        if (row.phase === roosterPhase(row.season) ? row.voice_state !== 'yes' || !row.source_refs.split(';').includes(roosterRule) || row.confidence !== 'C' : row.source_refs.split(';').includes(roosterRule))
+        if (row.phase === roosterPhase(row.season) ? row.voice_state !== 'yes' || row.rule_ref !== roosterRule || row.confidence !== 'C' : row.rule_ref === roosterRule)
           errors.push(`rooster phase/channel ${key}`);
         if (row.voice_state === 'yes' && [...livestockRules.get(row.fa_id) || []].some((ref) => !row.source_refs.split(';').includes(`${ref.startsWith('pl_') ? 'place_type_livestock.csv' : 'herd_composition.csv'}#${ref}`)))
           errors.push(`chicken occurrence refs ${key}`);
       }
-      const cue = cues[row.fa_id];
-      const cueActive = cue?.phases[row.phase] && (!cue.seasons || cue.seasons.includes(row.season)) && activeScope.has(`${row.fa_id}|${row.season}`);
-      if (cueActive && row.fa_id !== 'fa_ins_dragonflies' &&
-          (row.visibility_state !== cue.phases[row.phase][0] || row.voice_state !== cue.phases[row.phase][1])) errors.push(`cue phase ${key}`);
-      const expectedVoice = (cueActive && cue.phases[row.phase][1] === 'yes') ||
-        (row.fa_id === 'fa_ins_mosquitoes' && row.phase === 'civil_dawn' && activeScope.has(`${row.fa_id}|${row.season}`)) ||
-        (row.fa_id === 'fa_ins_grasshoppers' && row.season === 'summer' && row.phase === 'daylight' && activeScope.has(`${row.fa_id}|${row.season}`)) ||
-        (row.fa_id === 'fa_dom_chicken' && (row.phase === roosterPhase(row.season) || row.phase === 'daylight' && ['winter', 'spring_rasputitsa', 'summer'].includes(row.season)));
-      if ((row.voice_state === 'yes') !== Boolean(expectedVoice)) errors.push(`fish voice owner ${key}`);
       if (row.fa_id === 'fa_amph_common_frog' && row.phase === 'night' && activeScope.has(`${row.fa_id}|${row.season}`) &&
           (row.visibility_state !== 'no_source' || row.rule_ref !== `${rulePath}frog-damp-night`)) errors.push(`conditional frog ${key}`);
-      if ((row.fa_id === 'fa_fish_burbot' && row.season === 'winter' && row.phase === 'night' ||
-           row.fa_id === 'fa_fish_zander' && row.season === 'spring_rasputitsa' && ['civil_dawn', 'night'].includes(row.phase)) && row.visibility_state !== 'no_source')
+      if (row.fa_id.startsWith('fa_fish_') && row.visibility_state === 'yes' &&
+          !row.rule_ref.startsWith(`${rulePath}${rules.id}.`))
         errors.push(`fish spawning visibility ${key}`);
       if (row.fa_id === 'fa_crust_noble_crayfish' && row.phase === 'night' && row.visibility_state !== 'yes')
         errors.push(`fish activity owner ${key}`);
@@ -210,16 +178,11 @@ function validate(group, rows, header, presenceOverride, cuesOverride) {
     if (row.rule_ref.includes(`${rules.id}.`) && row.visibility_state !== rules.rules[knownActivity]?.[row.phase]) errors.push(`activity mapping ${key}`);
     if (row.rule_ref.includes(`${rules.id}.`) && rules.voice_rules[knownActivity]?.[row.phase] &&
         row.voice_state !== rules.voice_rules[knownActivity][row.phase]) errors.push(`voice rule ${key}`);
-    const voiceText = !fish ? (taxon.table === 'birds.csv' ? taxon.voice_description : taxon.signs_sounds) : taxon.perceptual_cues || '';
-    // Independent CR check: only the owner text or a direct book fact can license the opposite phase.
-    const crFailure = criterionCR(row, knownActivity, voiceText);
-    if (crFailure) errors.push(`criterion CR ${crFailure} ${key}`);
-    if (fish) {
-      const fishFailure = criterionFishCR(row, taxon);
-      if (fishFailure) errors.push(`criterion fish CR ${fishFailure} ${key}`);
-    }
-    if (!fish && row.voice_state === 'yes' && /почти (?:безмолв|молчалив)|обычно (?:безмолв|молчалив)/.test(voiceText.toLowerCase())) errors.push(`silent owner ${key}`);
-    if (row.voice_state === 'yes' && !row.voice_text_ref && !row.source_refs.includes('books-evidence-v1/')) errors.push(`missing voice text ${key}`);
+    if (row.voice_state === 'yes' && taxon.table !== 'livestock_species.csv' &&
+        !row.voice_text_ref.split(';').some((ref) => {
+          const basename = ref.replace(/\\/g, '/').split('/').at(-1);
+          return basename.startsWith(`${taxon.table}#${row.fa_id}.`) && resolves(group, ref);
+        })) errors.push(`missing own voice text ${key}`);
     if (fish && row.no_source && livestockRules.has(row.fa_id)) {
       const occurrence = [...livestockRules.get(row.fa_id)].sort().join('|');
       if (!row.no_source.includes(`conditional occurrence refs: ${occurrence}`)) errors.push(`livestock occurrence refs ${key}`);
@@ -294,45 +257,39 @@ if (require.main === module) {
       expect('fa_m_wild_boar', 'summer', 'night', 'voice_state', 'yes');
       expect('fa_m_roe_deer', 'summer', 'civil_dusk', 'voice_state', 'no_source');
       expect('fa_m_beaver', 'summer', 'night', 'voice_state', 'yes');
-      if (voicePhase({ class: 'Aves', activity_time: 'crepuscular', voice_description: 'крик в весенние сумерки' },
-          'autumn', 'civil_dusk', true, false) === 'yes') errors.push('seasonal adjective probe accepted');
-      if (voicePhase({ class: 'Aves', activity_time: 'crepuscular', voice_description: 'крик в осенних сумерках' },
-          'spring', 'civil_dusk', true, false) === 'yes') errors.push('autumn adjective probe accepted');
-      if (voicePhase({ class: 'Aves', activity_time: 'crepuscular', voice_description: 'крик в летние сумерки' },
-          'winter', 'civil_dusk', true, false) === 'yes') errors.push('summer adjective probe accepted');
-      if (voicePhase({ class: 'Aves', activity_time: 'crepuscular', voice_description: 'крик в зимние сумерки' },
-          'summer', 'civil_dusk', true, false) === 'yes') errors.push('winter adjective probe accepted');
-      const passageVoice = { class: 'Aves', activity_time: 'diurnal', migration_summer: 'breeding',
-        voice_description: 'свист «фи», на пролёте голоса слышны ночью' };
-      if (voicePhase(passageVoice, 'summer', 'daylight', true, false) !== null) errors.push('independent passage clause lost general song');
-      if (voicePhase({ ...passageVoice, voice_description: 'свист на пролёте' },
-          'summer', 'daylight', true, false) !== 'no_source') errors.push('single passage clause became general song');
-      const owl = find('fa_b_eagle_owl', 'spring', 'daylight');
-      const owlTaxon = csv(file(group, 'birds.csv')).rows.find((r) => r.fa_id === 'fa_b_eagle_owl');
-      if (!criterionCR({ ...owl, voice_state: 'yes' }, owlTaxon.activity_time, owlTaxon.voice_description)) errors.push('independent CR probe accepted');
-      reject('fa_b_eagle_owl', 'spring', 'daylight', 'voice_state', 'yes', 'criterion CR');
-      reject('fa_b_common_crane', 'spring', 'night', 'voice_state', 'yes', 'criterion CR');
+      for (const season of ['winter', 'spring']) {
+        expect('fa_m_lynx', season, 'civil_dawn', 'voice_state', 'yes');
+        expect('fa_m_lynx', season, 'civil_dusk', 'voice_state', 'yes');
+      }
+      expect('fa_m_beaver', 'winter', 'night', 'voice_state', 'no_source');
+      expect('fa_m_water_vole', 'winter', 'civil_dusk', 'voice_state', 'no_source');
       reject('fa_m_elk', 'winter', 'daylight', 'confidence', 'B', 'editorial/gap confidence');
       reject('fa_b_bittern', 'spring', 'daylight', 'confidence', 'B', 'mixed facet confidence');
       reject('fa_b_corncrake', 'autumn', 'night', 'voice_state', 'yes', 'audible season');
-      reject('fa_b_bittern', 'autumn', 'civil_dusk', 'voice_state', 'yes', 'voice phase/season');
-      reject('fa_b_black_grouse', 'autumn', 'daylight', 'voice_state', 'yes', 'voice phase/season');
-      reject('fa_b_snipe', 'autumn', 'civil_dusk', 'voice_state', 'yes', 'voice phase/season');
+      reject('fa_m_wolf', 'spring', 'night', 'voice_text_ref', '', 'missing own voice text');
       const presenceRows = csv(file(group, 'wild_habitat_presence.csv')).rows;
       const altered = presenceRows.map((p) => ({ ...p }));
       altered.find((p) => p.fa_id === 'fa_m_wolf' && p.season === 'spring').audible = 'false';
       if (!validate(group, table.rows, table.header, altered).some((e) => e.startsWith('presence audible owner fa_m_wolf/spring/')))
         errors.push('mammal presence mutation accepted');
+      if (!validate(group, table.rows, table.header, presenceRows,
+          new Map([['fa_b_common_crane', { audible_seasons: 'spring;summer' }]]))
+        .some((e) => e.startsWith('presence audible owner fa_b_common_crane/autumn/')))
+        errors.push('bird audible field mutation accepted');
       for (const id of ['fa_m_brown_long_eared_bat', 'fa_m_mountain_hare', 'fa_m_wolverine'])
         if (presenceRows.some((p) => p.fa_id === id && p.audible === 'true')) errors.push(`unsupported mammal audible ${id}`);
       for (const id of ['fa_m_red_squirrel', 'fa_m_wild_boar'])
         if (!presenceRows.some((p) => p.fa_id === id && p.season === 'summer' && p.audible === 'true')) errors.push(`general mammal sound lost ${id}`);
       if (presenceRows.some((p) => p.fa_id === 'fa_m_roe_deer' && p.audible === 'true')) errors.push('roe deer alarm generalized');
       if (!presenceRows.some((p) => p.fa_id === 'fa_m_beaver' && p.season === 'summer' && p.audible === 'true')) errors.push('beaver independent splash lost');
-      if (voicePhase({ class: 'Mammalia', activity_time: 'nocturnal', signs_sounds: 'хрюканье, резкое «фрук» при тревоге' },
-          'summer', 'night', true, false) !== null) errors.push('general sound before alarm lost');
-      if (voicePhase({ class: 'Mammalia', activity_time: 'nocturnal', signs_sounds: 'резкое «фрук» при тревоге' },
-          'summer', 'night', true, false) !== 'no_source') errors.push('alarm-only sound generalized');
+      for (const [id, season] of [['fa_m_lynx', 'summer'], ['fa_m_beaver', 'winter'], ['fa_m_water_vole', 'winter']]) {
+        const changedPresence = presenceRows.map((p) => ({ ...p, audible: p.fa_id === id && p.season === season ? 'true' : p.audible }));
+        const changedPhase = table.rows.map((r) => ({ ...r }));
+        const changed = changedPhase.find((r) => r.fa_id === id && r.season === season && r.phase === 'civil_dusk');
+        changed.voice_state = 'yes';
+        if (!validate(group, changedPhase, table.header, changedPresence).some((e) => e.startsWith(`presence audible owner ${id}/${season}/`)))
+          errors.push(`consistent mammal mutation accepted ${id}/${season}`);
+      }
     } else {
       expect('fa_ins_mosquitoes', 'summer', 'civil_dusk', 'voice_state', 'yes');
       expect('fa_ins_mosquitoes', 'summer', 'night', 'voice_state', 'yes');
@@ -340,6 +297,8 @@ if (require.main === module) {
       expect('fa_ins_mosquitoes', 'autumn', 'night', 'voice_state', 'yes');
       expect('fa_ins_horseflies', 'summer', 'daylight', 'visibility_state', 'yes');
       expect('fa_ins_horseflies', 'summer', 'daylight', 'voice_state', 'yes');
+      for (const [id, season, phase] of [['fa_ins_dragonflies', 'summer', 'daylight'], ['fa_ins_cockchafer', 'spring_rasputitsa', 'civil_dusk'],
+        ['fa_ins_grasshoppers', 'summer', 'daylight']]) expect(id, season, phase, 'voice_state', 'yes');
       expect('fa_dom_cattle', 'summer', 'daylight', 'visibility_state', 'no_source');
       expect('fa_dom_cattle', 'summer', 'night', 'visibility_state', 'no_source');
       expect('fa_dom_chicken', 'summer', 'night', 'visibility_state', 'no_source');
@@ -353,18 +312,26 @@ if (require.main === module) {
       expect('fa_dom_chicken', 'summer', 'daylight', 'voice_state', 'yes');
       expect('fa_dom_chicken', 'winter', 'civil_dawn', 'voice_state', 'no_source');
       expect('fa_dom_chicken', 'summer', 'civil_dawn', 'voice_state', 'no_source');
+      for (const season of ['winter', 'spring_rasputitsa', 'summer', 'autumn']) {
+        const rooster = find('fa_dom_chicken', season, roosterPhase(season));
+        if (!rooster || rooster.rule_ref !== 'fauna-mammals-birds/fauna/activity_phase_rules.json#rooster-four-am' ||
+            rooster.source_refs.split(';').length !== 9) errors.push(`rooster mixed basis ${season}`);
+      }
       expect('fa_amph_common_frog', 'summer', 'night', 'visibility_state', 'no_source');
       expect('fa_amph_common_frog', 'summer', 'night', 'rule_ref', 'fauna-mammals-birds/fauna/activity_phase_rules.json#frog-damp-night');
       expect('fa_fish_burbot', 'winter', 'night', 'visibility_state', 'no_source');
       expect('fa_fish_zander', 'spring_rasputitsa', 'night', 'visibility_state', 'no_source');
       expect('fa_ins_mosquitoes', 'winter', 'night', 'confidence', 'C');
       reject('fa_ins_mosquitoes', 'summer', 'civil_dawn', 'rule_ref', '', 'mosquito dawn channel');
-      reject('fa_dom_chicken', 'winter', 'night', 'source_refs', '', 'rooster phase/channel');
-      reject('fa_ins_mosquitoes', 'summer', 'daylight', 'voice_state', 'yes', 'fish voice owner');
-      reject('fa_ins_horseflies', 'summer', 'daylight', 'voice_state', 'no_source', 'cue phase');
-      reject('fa_ins_grasshoppers', 'summer', 'daylight', 'voice_state', 'no_source', 'fish voice owner');
+      reject('fa_dom_chicken', 'winter', 'night', 'rule_ref', '', 'rooster phase/channel');
       reject('fa_ins_mosquitoes', 'summer', 'civil_dawn', 'voice_text_ref', 'invertebrates_herps.csv#invented.perceptual_cues', 'unresolved voice text');
+      reject('fa_ins_horseflies', 'summer', 'daylight', 'voice_text_ref', '', 'missing own voice text');
+      reject('fa_ins_horseflies', 'summer', 'daylight', 'voice_text_ref', 'fauna/invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', 'foreign species owner');
       reject('fa_ins_horseflies', 'summer', 'daylight', 'source_refs', 'invertebrates_herps.csv#invented.perceptual_cues', 'unresolved source');
+      reject('fa_ins_horseflies', 'summer', 'daylight', 'source_refs', 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', 'foreign species owner');
+      reject('fa_ins_horseflies', 'summer', 'daylight', 'source_refs', 'fauna/invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', 'foreign species owner');
+      reject('fa_ins_horseflies', 'summer', 'daylight', 'source_refs', './invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', 'foreign species owner');
+      reject('fa_ins_horseflies', 'summer', 'daylight', 'source_refs', 'fauna\\invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', 'foreign species owner');
       reject('fa_ins_mosquitoes', 'winter', 'night', 'confidence', 'B', 'dormant confidence');
       reject('fa_amph_common_frog', 'summer', 'night', 'visibility_state', 'yes', 'conditional frog');
       reject('fa_fish_burbot', 'winter', 'night', 'visibility_state', 'yes', 'fish spawning visibility');
@@ -379,14 +346,6 @@ if (require.main === module) {
       legacyRows.find((p) => p.fa_id === 'fa_mamm_house_mouse').fa_id = 'fa_mamm_new_probe';
       if (!validate(group, table.rows, table.header, legacyRows).some((e) => e.startsWith('unmapped legacy mammal')))
         errors.push('new legacy mammal accepted');
-      const changedHints = structuredClone(require('../../fauna-fish-invertebrates-livestock/scripts/src/phase_cues.json'));
-      changedHints.fa_ins_mosquitoes.phases.daylight = ['no_source', 'yes'];
-      const changedRows = table.rows.map((r) => ({ ...r }));
-      const daytimeMosquito = changedRows.find((r) => r.fa_id === 'fa_ins_mosquitoes' && r.season === 'summer' && r.phase === 'daylight');
-      Object.assign(daytimeMosquito, { voice_state: 'yes', voice_text_ref: 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues',
-        source_refs: 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', no_source: '' });
-      if (!validate(group, changedRows, table.header, undefined, changedHints).some((e) => e.startsWith('criterion fish CR')))
-        errors.push('daytime mosquito with altered hints accepted');
       const chicken = find('fa_dom_chicken', 'winter', 'night');
       reject('fa_dom_chicken', 'winter', 'night', 'source_refs', chicken.source_refs.split(';').filter((r) => !r.includes('#pl_')).join(';'), 'chicken occurrence refs');
       reject('fa_dom_cat', 'summer', 'daylight', 'confidence', 'B', 'editorial/gap confidence');

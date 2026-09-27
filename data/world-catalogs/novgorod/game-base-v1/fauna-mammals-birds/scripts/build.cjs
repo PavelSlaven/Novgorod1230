@@ -43,9 +43,7 @@ const HUNT_SRC = ['conif', 'mixed', 'broad', 'edge', 'flood', 'lake', 'bog', 'st
 const WATER = ['river', 'lake'];
 
 function mammalAudible(t, season) {
-  if ((t.dorm || []).includes(season)) return false;
-  const owner = { class: 'Mammalia', activity_time: t.act, signs_sounds: t.sound || '' };
-  return phaseRules.phases.some((phase) => ['yes', null].includes(voicePhase(owner, season, phase, true, false)));
+  return !(t.dorm || []).includes(season) && t.audible.split(';').includes(season);
 }
 // Bird seasons without regular vocal activity (song over, silent migrants) — in addition to quietW (winter).
 const BIRD_QUIET = {
@@ -108,12 +106,12 @@ const mRows = mammals.map((t) => ({
   fa_id: t.id, name_ru: t.ru, name_ru_alt: t.alt || '', name_lat: t.lat, name_en: t.en, class: 'Mammalia', order: t.order, group: t.grp,
   category_ref: cat('mammal', t.grp, t.id), scope: 'universal_taxon', region_scope: t.region || REGION_DEFAULT,
   base_frequency_class: LEVELS[BASE[t.base]], base_frequency_basis: t.baseBasis, presence_1230_confidence: t.pres, historical_evidence: t.evid || '',
-  activity_time: t.act, dormant_seasons: (t.dorm || []).join(';'),
+  activity_time: t.act, dormant_seasons: (t.dorm || []).join(';'), audible_seasons: t.audible,
   season_winter: t.seas.winter || '', season_spring: t.seas.spring || '', season_summer: t.seas.summer || '', season_autumn: t.seas.autumn || '',
   rut_period: t.rut || '', moult: t.moult || '', winter_coat: t.coat || '',
   signs_tracks: t.tracks || '', signs_droppings: t.drop || '', signs_feeding: t.feed || '', signs_dens_nests: t.den || '', signs_sounds: t.sound || '', signs_smell: t.smell || '',
   behaviour_to_humans: t.human, danger_level: t.danger, products: t.products || '', hunting_methods: t.hunt || '', hunting_method_refs: t.huntRefs || '',
-  wk_refs: t.wk || '', habitats: t.hab, source_refs: t.src, confidence: 'B', notes: t.note || '', status: 'candidate',
+  wk_refs: t.wk || '', habitats: t.hab, source_refs: `${t.src};mammals.csv#${t.id}.signs_sounds`, confidence: 'B', notes: t.note || '', status: 'candidate',
 }));
 
 // ---- birds

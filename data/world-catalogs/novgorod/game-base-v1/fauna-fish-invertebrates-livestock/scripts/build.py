@@ -575,8 +575,7 @@ for fid, season in phase_scope:
             source, rule = f'invertebrates_herps.csv#{fid}.dormant_seasons', ''
         if fid == 'fa_dom_chicken' and voice == 'yes':
             occurrence_refs = [f"{'place_type_livestock.csv' if ref.startswith('pl_') else 'herd_composition.csv'}#{ref}" for ref in sorted(livestock_rules.get(fid, []))]
-            source = ';'.join(filter(None, [source, rule, *occurrence_refs]))
-            rule = ''
+            source = ';'.join(filter(None, [source, *occurrence_refs]))
         complete_gap = state == 'no_source' and voice == 'no_source' and not rule
         if complete_gap:
             source, rule = '', ''

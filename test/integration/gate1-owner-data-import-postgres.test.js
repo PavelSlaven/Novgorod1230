@@ -10,6 +10,8 @@ import { applyRevisionPromotionPlan } from
   '../../tools/world-catalog-workflow/src/revision-promotion.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
+import { assertV17Gate1V2Attestation, checkV17BootstrapInputs } from
+  '../../scripts/bootstrap-live-world-v17.mjs';
 
 test('Gate1 local-play modes reject crossed expected databases before connect', () => {
   const crossed = [
@@ -26,6 +28,17 @@ test('Gate1 local-play modes reject crossed expected databases before connect', 
     assert.match(result.stderr,
       new RegExp(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${database}`, 'u'));
   }
+});
+
+test('Gate1 v2 attestation gate refuses missing and mismatched digest', async () => {
+  const request = { request_digest: 'a'.repeat(64) };
+  assert.throws(() => assertV17Gate1V2Attestation(request, null),
+    /V17_GATE1_ATTESTATION_V2_REQUIRED/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request, { request_digest: 'b'.repeat(64) }),
+    /V17_GATE1_ATTESTATION_DIGEST_MISMATCH/u);
+  assertV17Gate1V2Attestation(request, { request_digest: request.request_digest });
+  await assert.rejects(() => checkV17BootstrapInputs(),
+    /V17_GATE1_ATTESTATION_V2_REQUIRED/u);
 });
 
 test('Gate1 imports canonical owner closure and Stage3C without activation',

@@ -70,6 +70,23 @@ const catalogDdl = {
 
 function digest(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
 
+function canonicalize(value) {
+  if (value === null || typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(canonicalize);
+  return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalize(value[key])]));
+}
+
+function digestJson(value) {
+  return createHash('sha256').update(JSON.stringify(canonicalize(value))).digest('hex');
+}
+
+export function assertV17Gate1V2Attestation(request, attestation) {
+  if (!attestation) throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
+  if (attestation.request_digest !== request.request_digest)
+    throw new Error('V17_GATE1_ATTESTATION_DIGEST_MISMATCH');
+  return attestation;
+}
+
 async function exact(path, sha256, bytes) {
   const content = await readFile(resolve(root, path));
   if (digest(content) !== sha256 || (bytes !== undefined && content.length !== bytes))
@@ -89,7 +106,10 @@ export async function checkV17BootstrapInputs() {
   for (const [path, sha256] of [...catalogDdl.world, ...catalogDdl.party])
     await exact(path, sha256);
 
-  const gate = await json(`${gate1}/v17-bootstrap-import-request.json`);
+  const gate = await json(`${gate1}/v17-bootstrap-import-request-v2.json`);
+  const { request_digest: claimedGateDigest, ...gateBody } = gate;
+  if (digestJson(gateBody) !== claimedGateDigest)
+    throw new Error('V17_GATE1_REQUEST_DIGEST_MISMATCH');
   await exact(gate.runner.path, gate.runner.sha256);
   const expectedRunnerArgs = [
     '--mode', 'v17-local-play',
@@ -100,6 +120,14 @@ export async function checkV17BootstrapInputs() {
       || gate.runner.arguments.length !== expectedRunnerArgs.length
       || gate.runner.arguments.some((value, index) => value !== expectedRunnerArgs[index]))
     throw new Error('V17_GATE1_RUNNER_ARGS_MISMATCH');
+  let gateAttestation = null;
+  try {
+    gateAttestation = await json(`${gate1}/v17-bootstrap-import-approval-attestation-v2.json`);
+  } catch (error) {
+    if (error?.code === 'ENOENT') throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
+    throw error;
+  }
+  assertV17Gate1V2Attestation(gate, gateAttestation);
   for (const source of gate.approved_sources) await exact(source.path, source.sha256);
   const dryRun = JSON.parse(execFileSync(process.execPath,
     ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'dry-run'],

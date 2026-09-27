@@ -148,7 +148,7 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     }]);
   });
 
-test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
+test('Gate1 v17-local-play preserves the fresh v17 schema and its import on repeat',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-v17-'));
     const settings = { ...LOCAL_POSTGRES,
@@ -167,7 +167,7 @@ test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
     }
     const resultPath = join(dataRoot, 'v17-import-readback-result.json');
     const run = () => spawnSync(process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'v17-local-play',
         '--expected-database', 'novgorod_world_v17',
         '--write-result', resultPath], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
@@ -229,4 +229,32 @@ test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
     assert.equal(Number((await pool.query(`SELECT count(*) AS count
       FROM world_base.item_templates WHERE world_revision_id = $1`,
     [result.target_revision_id])).rows[0].count), 102);
+  });
+
+test('Gate1 v17-local-play rejects a non-v17 world_base table set',
+  async (t) => {
+    const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-v17-mismatch-'));
+    const settings = { ...LOCAL_POSTGRES,
+      worldDatabase: 'novgorod_world_v17',
+      partyDatabase: `pr17_gate1_party_mismatch_${process.pid}`,
+      worldUser: 'postgres', partyUser: 'postgres' };
+    const managed = await ensureLocalPostgres({ dataRoot, settings });
+    const pool = new pg.Pool({ connectionString: managed.worldUrl, max: 1 });
+    t.after(async () => {
+      await pool.end();
+      await managed.close();
+      await rm(dataRoot, { recursive: true, force: true });
+    });
+    // Parts 1-17 only = v16-shaped table set, not the approved v17 fingerprint.
+    for (let part = 1; part <= 17; part += 1) {
+      await pool.query(await readFile(new URL(`../../infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, import.meta.url), 'utf8'));
+    }
+    const rejected = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'v17-local-play',
+        '--expected-database', 'novgorod_world_v17'], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 120_000,
+        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+      });
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr, /PR17_LOCAL_PLAY_SCHEMA_MISMATCH/u);
   });

@@ -279,7 +279,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
 
     const gatePath = join(work, 'gate1.json');
     const gate = JSON.parse(execFileSync(process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'v17-local-play',
         '--expected-database', worldName, '--write-result', gatePath],
       { cwd: root, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024,
         timeout: 600_000,

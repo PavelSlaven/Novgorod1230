@@ -14,7 +14,7 @@
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 4 | 3 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 10 | 8 | 0 |
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
-| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 0 | 8 | 0 |
+| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | rework | 0 | 6 | 2 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 4 | 8 | 0 |
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
@@ -25,7 +25,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **54** | **206** | **0** |
+| **Итого** | | **54** | **204** | **2** |
 
 ## Вердикты по файлам
 
@@ -219,10 +219,10 @@
 | [`households_kinship/household_composition_profiles.csv`](households-psychology-speech/households_kinship/household_composition_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#households_kinshiphousehold_composition_profilescsv--approve_with_limits) |
 | [`households_kinship/kinship_terms.csv`](households-psychology-speech/households_kinship/kinship_terms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#kinship_termscsv--approve_with_limits) |
 | [`households_kinship/marriage_inheritance_rules.csv`](households-psychology-speech/households_kinship/marriage_inheritance_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#marriage_inheritance_rulescsv--approve_with_limits) |
-| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--approve_with_limits) |
+| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [rework](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--rework-3) |
 | [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--approve_with_limits) |
 | [`social_norms_honour_hospitality/norms.csv`](households-psychology-speech/social_norms_honour_hospitality/norms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#normscsv--approve_with_limits) |
-| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#speech_addressaddress_formscsv--approve_with_limits) |
+| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [rework](households-psychology-speech/VERIFICATION.md#speech_addressaddress_formscsv--rework-3) |
 | [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#speech_registerscsv--approve_with_limits) |
 
 ### items-household-personal
@@ -349,9 +349,9 @@
 | [`places/place_families.csv`](places-binding/places/place_families.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placesplace_familiescsv--approve_with_limits) |
 | [`places/place_family_facets.csv`](places-binding/places/place_family_facets.csv) | [approve](places-binding/VERIFICATION.md#placesplace_family_facetscsv--approve) |
 | [`presence/frequency_rule.json`](places-binding/presence/frequency_rule.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencefrequency_rulejson--approve_with_limits) |
-| [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson--approve_with_limits) |
+| [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson-checker--approve_with_limits) |
 | [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_presence_authoringcsv--approve_with_limits) |
-| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-варианты-предметов--approve_with_limits) |
+| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-идентификаторы-правил--approve_with_limits) |
 | [`reports/validation.json`](places-binding/reports/validation.json) | [approve_with_limits](places-binding/VERIFICATION.md#reportsvalidationjson--approve_with_limits) |
 | [`scripts/validate.mjs`](places-binding/scripts/validate.mjs) | [approve_with_limits](places-binding/VERIFICATION.md#scriptsvalidatemjs-слоты-c003b--approve_with_limits) |
 | [`slots/materialization_rules.json`](places-binding/slots/materialization_rules.json) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_rulesjson--approve_with_limits) |

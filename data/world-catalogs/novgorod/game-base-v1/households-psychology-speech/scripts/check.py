@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Deterministic checks for group households-psychology-speech (candidate).
 Run after build.py. Exits non-zero on any failed check."""
-import csv, json, os, sys, ast, re
+import csv, hashlib, json, os, sys, ast, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 errors = []
@@ -197,6 +197,52 @@ for i, r in enumerate(af_rows):
 # Builder and checker derive the same G5-node/season/phase pairs.
 from build import starting_pairs
 start_pairs, same_pf_pairs, _, _, intersections, colocated, dead_pairs = starting_pairs()
+
+
+def canonical_id(prefix, fields):
+    data = json.dumps(fields, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return prefix + hashlib.sha256(data).hexdigest()[:16]
+
+
+def check_generated(rows, id_field, prefix, fields, expected):
+    failures = []
+    generated = [row for row in rows if row[id_field].startswith(prefix)]
+    actual = []
+    for row in generated:
+        key = tuple(row[field] for field in fields)
+        actual.append(key)
+        id_prefix = "rel_start_joint_work_" if prefix == "rel_start_" and row["relationship_kind"] == "joint_work" else (
+            "rel_start_gap_" if prefix == "rel_start_" else prefix)
+        if row[id_field] != canonical_id(id_prefix, key):
+            failures.append(f"{row[id_field]}: noncanonical generated ID")
+    if len(actual) != len(set(actual)):
+        failures.append(f"{id_field}: duplicate generated semantic key")
+    if len({row[id_field] for row in rows}) != len(rows):
+        failures.append(f"{id_field}: duplicate ID")
+    if set(actual) != expected:
+        failures.append(f"{id_field}: generated semantic coverage differs from starting pairs")
+    return failures
+
+
+static_rel = [row for row in rel_rows if not row["rel_rule_id"].startswith("rel_start_")]
+explicit = {(row["subject_role_ref"], row["object_role_ref"]): row["relationship_kind"]
+            for row in static_rel if row["scope_kind"] == "role_pair" and row["subject_role_ref"] and row["object_role_ref"]}
+expected_rel = set()
+expected_forms = set()
+static_forms = {(row["speaker_role_ref"], row["addressee_role_ref"], row["relationship_kind"])
+                for row in af_rows if not row["sp_id"].startswith("form_start_gap_") and row["channel"] == "oral"}
+for a, b in start_pairs:
+    kind = explicit.get((a, b), explicit.get((b, a),
+           "joint_work" if (a, b) in same_pf_pairs else "unspecified"))
+    if (a, b) not in explicit and (b, a) not in explicit:
+        expected_rel.add((a, b, kind, "symmetric"))
+    for speaker, addressee in ((a, b), (b, a)):
+        if (speaker, addressee, kind) not in static_forms:
+            expected_forms.add((speaker, addressee, kind))
+rel_key_fields = ("subject_role_ref", "object_role_ref", "relationship_kind", "direction")
+form_key_fields = ("speaker_role_ref", "addressee_role_ref", "relationship_kind")
+errors.extend(check_generated(rel_rows, "rel_rule_id", "rel_start_", rel_key_fields, expected_rel))
+errors.extend(check_generated(af_rows, "sp_id", "form_start_gap_", form_key_fields, expected_forms))
 if not start_pairs:
     errors.append("starting pairs: empty set")
 if (colocated, intersections) != (1236, 10269):
@@ -205,6 +251,14 @@ with open(os.path.join(ROOT, "scripts", "build_report.json"), encoding="utf-8") 
     start_report = json.load(f)["households_kinship"]
 if (start_report["start_colocated_node_season_contexts"], start_report["start_phase_intersections"]) != (colocated, intersections):
     errors.append("starting reachable counts differ from build report")
+with open(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+    gap_rows = json.load(f)["never_created_gaps"]
+expected_dead = [{"pair": list(pair), "missing_subjects": [
+    {key: gap[key] for key in ("subject_kind", "subject_ref", "reason")}
+    for gap in sorted(gap_rows, key=lambda row: row["subject_ref"]) if gap["subject_ref"] in pair]}
+    for pair in sorted(dead_pairs)]
+if start_report["start_dead_pair_gap_count"] != len(expected_dead) or start_report["start_dead_pair_gaps"] != expected_dead:
+    errors.append("starting dead pair gap report differs from source gaps")
 for row in rel_rows:
     if row["rel_rule_id"].startswith("rel_start_") and (row["subject_role_ref"], row["object_role_ref"]) in dead_pairs:
         errors.append(f"{row['rel_rule_id']}: generated relation for never-created pair")
@@ -270,6 +324,25 @@ def missing_oral_kinds(forms):
 for kind in missing_oral_kinds(af_rows):
     errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
+    for rows, id_field, prefix, fields, expected in (
+        (rel_rows, "rel_rule_id", "rel_start_", rel_key_fields, expected_rel),
+        (af_rows, "sp_id", "form_start_gap_", form_key_fields, expected_forms),
+    ):
+        generated = next(row for row in rows if row[id_field].startswith(prefix))
+        tampered_id = generated[id_field][:-1] + ("0" if generated[id_field][-1] != "0" else "1")
+        altered = [{**row, id_field: tampered_id} if row is generated else row for row in rows]
+        if not check_generated(altered, id_field, prefix, fields, expected):
+            errors.append(f"negative ID probe failed for {id_field}")
+        else:
+            print(f"OK: negative ID probe detected tampered {id_field}")
+    keys = sorted(expected_forms)
+    stable = {key: canonical_id("form_start_gap_", key) for key in keys}
+    if ({key: canonical_id("form_start_gap_", key) for key in reversed(keys)} != stable or
+            {key: canonical_id("form_start_gap_", key) for key in keys[1:]} !=
+            {key: stable[key] for key in keys[1:]}):
+        errors.append("generated IDs depend on pair order or another pair")
+    else:
+        print("OK: generated IDs independent of pair order and other pairs")
     a, b = sorted(start_pairs)[0]
     reduced = [f for f in af_rows if not (f["channel"] == "oral" and f["speaker_role_ref"] == a and f["addressee_role_ref"] == b)]
     if not coverage_failures(rel_rows, reduced):

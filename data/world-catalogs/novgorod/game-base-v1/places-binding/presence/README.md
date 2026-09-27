@@ -11,6 +11,8 @@
 | `people_presence_authoring.csv` | 19 привязок людей к 16 PF; `creation_owner=composition` оставляет 5 строк для D-3, но не выпускает их в `presence_rules.csv`; `presence_rule` выпускает остальные 14. |
 | `people_composition_authoring.json` | Авторский candidate-состав постоянных жителей и работников при создании места; производные строки world_base и runtime принадлежат другому владельцу. |
 
+`pr_id` производной строки равен `pr_` + первые 16 шестнадцатеричных символов SHA256 от компактного UTF-8 JSON-массива `[scope_kind,scope_ref,region_id,subject_kind,subject_ref,canonical allowed_seasons]` (`ensure_ascii=False`, разделители `,` и `:`). Значения обрезаются по краям; `all` обозначает все четыре сезона. Если исходное `all` разделить на сезонные правила, они получают новые ID, прежний ID не переиспользуется. ID зависит от ключа, а не содержимого правила или других строк: изменение содержания сохраняет `pr_id` и `rule_version`, а ревизию мира ведёт world revision.
+
 `creation_owner` размечает только существующие строки `people_presence_authoring.csv`. Субъект composition не обязан иметь такую строку: страж переправы и хозяйка присутствуют в составе и расписаниях D-1, хотя их строк в presence authoring нет. Checker требует соответствующую группу для строки с `creation_owner=composition`, но не требует обратного. Общий расчёт D-3 получает этих субъектов через расписания.
 
 ## Состав людей D-2

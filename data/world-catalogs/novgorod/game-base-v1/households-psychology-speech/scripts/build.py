@@ -8,7 +8,7 @@ No individual temperament weights or mood are inferred from group labels.
 Run: python build.py
 Outputs under ../<domain>/*.csv and prints row counts (also to build_report.json).
 """
-import csv, json, os, re, sys
+import csv, hashlib, json, os, re, sys
 from itertools import combinations
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # .../game-base-v1/households-psychology-speech
@@ -24,6 +24,21 @@ OCC_TSV = os.path.join(REGION_TSV, "novgorod_occupations_v1_enriched.tsv")
 ROLE_TSV = os.path.join(REGION_TSV, "novgorod_social_roles_v1_enriched.tsv")
 
 report = {}
+
+
+def generated_id(prefix, fields):
+    payload = json.dumps(fields, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return prefix + hashlib.sha256(payload).hexdigest()[:16]
+
+
+def assert_generated_unique(rows, id_field, key_fields, prefix):
+    generated = [row for row in rows if row[id_field].startswith(prefix)]
+    if len({row[id_field] for row in generated}) != len(generated):
+        raise ValueError(f"duplicate generated {id_field}")
+    if len({tuple(row[field] for field in key_fields) for row in generated}) != len(generated):
+        raise ValueError(f"duplicate generated semantic key in {id_field}")
+    if len({row[id_field] for row in rows}) != len(rows):
+        raise ValueError(f"{id_field} collision with static row")
 
 
 def read_csv(path):
@@ -377,21 +392,25 @@ def build_households_kinship(occs, roles):
         ("rel_joint_work", "work_assignment", "", "", "", "joint_work", "symmetric", "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.", "", "editorial_joint_work_acquaintance_c", "", "C"),
     ]
     pairs, same_pf_pairs, start_pf_count, start_subjects, intersections, colocated_contexts, dead_pairs = starting_pairs()
+    with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+        gap_rows = json.load(f)["never_created_gaps"]
     explicit_pairs = {frozenset((row[3], row[4])) for row in relation_rows if row[1] == "role_pair" and row[3] and row[4]}
-    for index, pair in enumerate(sorted(pairs), 1):
+    for pair in sorted(pairs):
         if frozenset(pair) in explicit_pairs:
             continue
         if pair in same_pf_pairs:
-            relation_rows.append((f"rel_start_joint_work_{index:03}", "role_pair", "", *pair, "joint_work", "symmetric",
+            relation_rows.append((generated_id("rel_start_joint_work_", [*pair, "joint_work", "symmetric"]), "role_pair", "", *pair, "joint_work", "symmetric",
                                   "Only named workers with a shared assignment at this PF and time may be acquainted; co-presence alone creates no edge.",
                                   "", "editorial_joint_work_acquaintance_c", "", "C"))
         else:
-            relation_rows.append((f"rel_start_gap_{index:03}", "role_pair", "", *pair, "unspecified", "symmetric",
+            relation_rows.append((generated_id("rel_start_gap_", [*pair, "unspecified", "symmetric"]), "role_pair", "", *pair, "unspecified", "symmetric",
                                   "Only named actors actually present together; the scene and roles alone create no relationship.",
                                   "", "", "No sourced relation for this potential pair in the bound starting G5 scenes.", "C"))
-    n_rel = write_csv(os.path.join(out_dir, "relationship_rules.csv"), [dict(zip(
+    relation_dicts = [dict(zip(
         ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"],
-        (*row, "candidate"))) for row in relation_rows],
+        (*row, "candidate"))) for row in relation_rows]
+    assert_generated_unique(relation_dicts, "rel_rule_id", ("subject_role_ref", "object_role_ref", "relationship_kind", "direction"), "rel_start_")
+    n_rel = write_csv(os.path.join(out_dir, "relationship_rules.csv"), relation_dicts,
         ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"])
 
     report["households_kinship"] = {
@@ -404,7 +423,10 @@ def build_households_kinship(occs, roles):
         "start_subjects_in_pairs": len({subject for pair in pairs for subject in pair}),
         "start_role_pairs": len(pairs),
         "start_dead_pair_gap_count": len(dead_pairs),
-        "start_dead_pair_gaps": ["|".join(pair) for pair in sorted(dead_pairs)],
+        "start_dead_pair_gaps": [{"pair": list(pair), "missing_subjects": [
+            {key: gap[key] for key in ("subject_kind", "subject_ref", "reason")}
+            for gap in sorted(gap_rows, key=lambda row: row["subject_ref"]) if gap["subject_ref"] in pair]}
+            for pair in sorted(dead_pairs)],
         "start_pair_node_season_contexts": len({(pair, node, season) for pair, contexts in pairs.items()
                                                  for node, _, season in contexts}),
         "start_colocated_node_season_contexts": colocated_contexts,
@@ -601,16 +623,17 @@ def build_speech_address(roles):
     explicit_kinds = {(r["subject_role_ref"], r["object_role_ref"]): r["relationship_kind"]
                       for r in read_csv(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"))
                       if r["scope_kind"] == "role_pair"}
-    for index, (a, b) in enumerate(sorted(pairs), 1):
+    for a, b in sorted(pairs):
         kind = explicit_kinds.get((a, b), explicit_kinds.get((b, a),
                "joint_work" if (a, b) in same_pf_pairs else "unspecified"))
         for speaker, addressee in ((a, b), (b, a)):
             if any(row["channel"] == "oral" and row["relationship_kind"] == kind and
                    row["speaker_role_ref"] == speaker and row["addressee_role_ref"] == addressee for row in af_rows):
                 continue
-            af_rows.append(dict(zip(columns, (f"form_start_gap_{index:03}_{'a' if speaker == a else 'b'}", "oral", kind,
+            af_rows.append(dict(zip(columns, (generated_id("form_start_gap_", [speaker, addressee, kind]), "oral", kind,
                                               speaker, addressee, "", "", "co-present actors at a bound starting scene", "", "", "", "",
                                               "No sourced oral form for this directed role pair in the searched corpora.", "C", "candidate"))))
+    assert_generated_unique(af_rows, "sp_id", ("speaker_role_ref", "addressee_role_ref", "relationship_kind"), "form_start_gap_")
     n_af = write_csv(
         os.path.join(out_dir, "address_forms.csv"), af_rows,
         columns,

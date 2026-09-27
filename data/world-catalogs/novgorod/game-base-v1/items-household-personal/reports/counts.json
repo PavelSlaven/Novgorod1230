@@ -54,9 +54,7 @@
  },
  "placement_basis": {
   "master": 11180,
-  "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes": 1166,
-  "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16": 277,
-  "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles": 8
+  "no_source": 1451
  },
  "owner_kind": {
   "household": 673,

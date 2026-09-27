@@ -285,10 +285,7 @@ def main():
     rows += extra
     catalog_pairs = {(r["item_or_category_ref"], r["pf_id"]) for r in rows if r["ref_kind"] == "it"}
     rows = [r for r in rows if r["ref_kind"] != "master" or (r["superseded_by"], r["pf_id"]) not in catalog_pairs]
-    scenes = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv")
-    containers = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv")
-    scene_pfs = {pf for s in scenes if s["placement_rules"] for pf in s["pf_ids"].split("|") if pf}
-    container_pfs = {pf for c in containers for pf in c["pf_ids"].split("|") if pf}
+    stage_ref = "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
     for r in rows:
         if r["ref_kind"] == "it":
             source_ids = [canon2legacy[c] for c in split(it_by_ref[r["item_or_category_ref"]]["master_refs"])
@@ -304,15 +301,12 @@ def main():
             r["entry_exposed_weight"] = round(8 * (len(modes) - concealed) / len(modes))
             r["search_concealed_weight"] = 8 - r["entry_exposed_weight"]
             r["placement_basis_ref"] = ";".join(f"master:{master[lg]['canonical_id']}#placement_modes" for lg, _ in mode_sources)
+            r["placement_owner_ref"] = ""
         else:
             r["entry_exposed_weight"] = ""
             r["search_concealed_weight"] = ""
-            if r["pf_id"] in scene_pfs:
-                r["placement_basis_ref"] = f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:{r['pf_id']}"
-            elif r["pf_id"] in container_pfs:
-                r["placement_basis_ref"] = f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv#first_open_rule@pf:{r['pf_id']}"
-            else:
-                r["placement_basis_ref"] = "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+            r["placement_basis_ref"] = "no_source:placement_modes_absent"
+            r["placement_owner_ref"] = stage_ref
     fields = list(rows[0])
     n = write_csv(ITEMS / "item_place_frequency.csv", rows, fields)
     write_csv(REPORTS / "frequency_dropped.csv", dropped, ["link_id", "item_id", "location_archetype", "spawn_frequency", "reason"])

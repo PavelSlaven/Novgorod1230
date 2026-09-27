@@ -78,10 +78,6 @@ def main():
     non_whole = {lg for lg, m in master.items() if m["rec"].get("entity_kind") in {"salvage", "component", "blank", "semifinished"}
                  or m["rec"].get("manufacturing_state") == "broken" or re.search(r"\bобломок\b", m["name_ru"], re.I)}
     item_by_id = {r["it_id"]: r for r in items}
-    scenes = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv")
-    containers = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv")
-    scene_pfs = {pf for s in scenes if s["placement_rules"] for pf in s["pf_ids"].split("|") if pf}
-    container_pfs = {pf for c in containers for pf in c["pf_ids"].split("|") if pf}
     stage_ref = "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
     it_ids = {r["it_id"] for r in items}
     fail = []
@@ -148,13 +144,10 @@ def main():
             hidden = sum(bool(re.search(r"container|chest|pouch|sack|basket|box|bag|jar|vessel|storage|storehouse|pit|buried|wrapped|covered|under|refuse|scrap", mode)) for mode in modes)
             visible_weight = round(8 * (len(modes) - hidden) / len(modes))
             expected_ref = ";".join(f"master:{master[lg]['canonical_id']}#placement_modes" for lg, _ in mode_sources)
-            if r["entry_exposed_weight"] != str(visible_weight) or r["search_concealed_weight"] != str(8 - visible_weight) or r["placement_basis_ref"] != expected_ref:
+            if r["entry_exposed_weight"] != str(visible_weight) or r["search_concealed_weight"] != str(8 - visible_weight) or r["placement_basis_ref"] != expected_ref or r["placement_owner_ref"]:
                 fail.append(f"{r['ipf_id']}: placement weights or source do not match master modes")
         else:
-            expected_ref = (f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:{r['pf_id']}" if r["pf_id"] in scene_pfs else
-                            f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv#first_open_rule@pf:{r['pf_id']}" if r["pf_id"] in container_pfs else
-                            stage_ref)
-            if r["entry_exposed_weight"] or r["search_concealed_weight"] or r["placement_basis_ref"] != expected_ref:
+            if r["entry_exposed_weight"] or r["search_concealed_weight"] or r["placement_basis_ref"] != "no_source:placement_modes_absent" or r["placement_owner_ref"] != stage_ref:
                 fail.append(f"{r['ipf_id']}: placement owner unresolved")
         if r["wild_arrival_cause_required"] != ("prior_visitor_loss_or_discard" if r["pf_class"] == "wild" else ""):
             fail.append(f"{r['ipf_id']}: wild arrival cause missing or misplaced")
@@ -167,7 +160,7 @@ def main():
     thin = {p: len(per_pf[p]) for p in peopled if len(per_pf[p]) < 10}
     if thin:
         fail.append(f"peopled pf with <10 items: {thin}")
-    if any(r["placement_basis_ref"] == stage_ref for r in ipf):
+    if any(r["placement_owner_ref"] == stage_ref for r in ipf):
         stage_path = ROOT / stage_ref.split("#", 1)[0]
         if not stage_path.is_file() or not re.search(r"\bmaterialize\b", stage_path.read_text(encoding="utf-8")):
             fail.append("Stage 16 placement owner reference unresolved")

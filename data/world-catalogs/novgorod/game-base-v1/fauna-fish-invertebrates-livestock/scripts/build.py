@@ -487,7 +487,15 @@ for season in SEASONS:
                              'civil_dawn' if at_four < clock_minutes(middle['avg_sunrise_lmst']) else
                              'daylight' if at_four < clock_minutes(middle['avg_sunset_lmst']) else
                              'civil_dusk' if at_four < clock_minutes(middle['avg_civil_dusk_lmst']) else 'night')
-phase_scope = sorted({(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf and not r['fa_id'].startswith('fa_mamm_')})
+legacy_mammals = {'fa_mamm_house_mouse', 'fa_mamm_striped_field_mouse', 'fa_mamm_voles', 'fa_mamm_black_rat'}
+def unknown_legacy(ids):
+    return {fid for fid in ids if fid.startswith('fa_mamm_')} - legacy_mammals
+if '--self-test' in sys.argv:
+    assert unknown_legacy(['fa_mamm_house_mouse', 'fa_mamm_new_probe']) == {'fa_mamm_new_probe'}
+unmapped_legacy = unknown_legacy(r['fa_id'] for r in pres_rows)
+if unmapped_legacy:
+    raise ValueError(f'unmapped legacy mammal IDs: {sorted(unmapped_legacy)}')
+phase_scope = sorted({(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf and r['fa_id'] not in legacy_mammals})
 bound_rules = {r['rule_ref'] for r in rpgr_pf_rows if r['pf_id'].removeprefix('pf_') in start_pf and r['rule_ref']}
 livestock_rules = defaultdict(set)
 for row in pt_rows:
@@ -530,7 +538,7 @@ for fid, season in phase_scope:
         voice = 'no_source'
         voice_ref = ''
         source = ''
-        rule = f"fauna/activity_phase_rules.json#{phase_rules['id']}.{activity}.{phase}" if activity and state != 'no_source' else ''
+        rule = f"fauna-mammals-birds/fauna/activity_phase_rules.json#{phase_rules['id']}.{activity}.{phase}" if activity and state != 'no_source' else ''
         cue = cue_facts.get(fid, {})
         if phase in cue.get('phases', {}) and season in cue.get('seasons', SEASONS) and (fid, season) in active_scope:
             state, voice = cue['phases'][phase]
@@ -546,21 +554,17 @@ for fid, season in phase_scope:
             state, source, rule = 'no_source', '', ''
         if fid == 'fa_crust_noble_crayfish' and phase == 'night':
             state, source, rule = 'yes', 'fish.csv#fa_crust_noble_crayfish.look_ru;books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L160', ''
-        if fid == 'fa_fish_zander' and season == 'spring_rasputitsa' and phase in ('civil_dawn', 'night'):
-            state, source, rule = 'yes', 'fish.csv#fa_fish_zander.spawning_site', ''
-        if fid == 'fa_fish_burbot' and season == 'winter' and phase == 'night':
-            state, source, rule = 'yes', 'fish.csv#fa_fish_burbot.spawning_site', ''
         if fid == 'fa_amph_common_frog' and phase == 'night' and (fid, season) in active_scope:
-            state, source, rule = 'yes', '', 'fauna/activity_phase_rules.json#frog-damp-night'
+            state, source, rule = 'no_source', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#frog-damp-night'
         if fid == 'fa_ins_mosquitoes' and phase == 'civil_dawn' and (fid, season) in active_scope:
-            voice, voice_ref, source, rule = 'yes', 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', '', 'fauna/activity_phase_rules.json#mosquito-dawn-sound'
+            voice, voice_ref, source, rule = 'yes', 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#mosquito-dawn-sound'
         if fid == 'fa_ins_grasshoppers' and season == 'summer' and phase == 'daylight' and (fid, season) in active_scope:
-            voice, voice_ref, source, rule = 'yes', 'invertebrates_herps.csv#fa_ins_grasshoppers.perceptual_cues', '', 'fauna/activity_phase_rules.json#heat-daylight'
+            voice, voice_ref, source, rule = 'yes', 'invertebrates_herps.csv#fa_ins_grasshoppers.perceptual_cues', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#heat-daylight'
         if fid == 'fa_ins_dragonflies' and season == 'summer' and phase == 'daylight':
-            state, source, rule = 'yes', '', 'fauna/activity_phase_rules.json#sunny-daylight'
+            state, source, rule = 'yes', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#sunny-daylight'
         if fid == 'fa_dom_chicken':
             if phase == rooster_phase[season]:
-                voice, source, rule = 'yes', '', 'fauna/activity_phase_rules.json#rooster-four-am'
+                voice, source, rule = 'yes', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#rooster-four-am'
                 voice_ref = 'livestock_types.csv#ls_chicken_rooster.primary_uses'
             elif phase == 'daylight' and season in ('winter', 'spring_rasputitsa', 'summer'):
                 voice = 'yes'
@@ -569,7 +573,11 @@ for fid, season in phase_scope:
         if fid in {r['fa_id'] for r in inv_rows} and season in taxon.get('dormant_seasons', '').split(';'):
             state, voice, voice_ref = 'no', 'no', ''
             source, rule = f'invertebrates_herps.csv#{fid}.dormant_seasons', ''
-        complete_gap = state == 'no_source' and voice == 'no_source'
+        if fid == 'fa_dom_chicken' and voice == 'yes':
+            occurrence_refs = [f"{'place_type_livestock.csv' if ref.startswith('pl_') else 'herd_composition.csv'}#{ref}" for ref in sorted(livestock_rules.get(fid, []))]
+            source = ';'.join(filter(None, [source, rule, *occurrence_refs]))
+            rule = ''
+        complete_gap = state == 'no_source' and voice == 'no_source' and not rule
         if complete_gap:
             source, rule = '', ''
         occurrence = '|'.join(sorted(livestock_rules.get(fid, [])))
@@ -577,7 +585,7 @@ for fid, season in phase_scope:
                                visibility_state=state, voice_state=voice, voice_text_ref=voice_ref,
                                source_refs=source, rule_ref=rule,
                                no_source=('phase visibility and voice unknown' + (f'; conditional occurrence refs: {occurrence}' if occurrence else '')) if complete_gap else '',
-                               confidence=taxon['confidence'] if source and not rule and state != 'no_source' and voice != 'no_source' and not source.startswith('buildings-interiors-containers/') else 'C', status=STATUS))
+                               confidence=taxon['confidence'] if source and not rule and state != 'no_source' and voice != 'no_source' and not source.endswith('.dormant_seasons') and not source.startswith('buildings-interiors-containers/') else 'C', status=STATUS))
 phase_header = ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref',
                 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status']
 counts['phase_activity.csv'] = write_csv('phase_activity.csv', phase_header, phase_rows, '\n')

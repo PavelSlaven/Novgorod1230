@@ -149,3 +149,9 @@ node ../fauna-mammals-birds/scripts/validate-phase.cjs fauna-fish-invertebrates-
 ## Правки C002
 
 `fauna/rpgr_pf_crosswalk.csv` связывает `rpgr_*` из правил генерации с полными `pf_*` из `place_families.csv` по пересечению `allowed_place_template_ids` и `place_families.place_template_refs` (RPGR-PF-PT-1). Это совместимость типов места, а не утверждение о наличии скота в каждом PF. Для семейств без пересечения есть отдельная строка `no_source`; все строки остаются `candidate`. Сборка проверяет ID, уникальность пар, основание каждой связи и покрытие всего текущего реестра PF (44 семейства).
+
+## C006b3: фазовые основания
+
+Все `rule_ref` второй группы указывают на общее правило в `fauna-mammals-birds/fauna/activity_phase_rules.json`; валидатор проверяет существование каждого `source_refs` и `voice_text_ref`. У кур `source_refs` голосовых строк содержит условные `pl_*` и `hc_*` как ссылки на строки таблиц размещения и состава стада. Редакционное правило петуха около 04:00 цитируется в том же канале, поэтому XOR оснований сохраняется. Ночная активность лягушки в сырость остаётся условной (`visibility_state=no_source`, правило C), а не безусловным `yes`. Нерест налима зимой и судака весной не доказывает наблюдаемость в конкретной фазе суток: эти строки сохраняют `visibility_state=no_source`.
+
+Старые ID присутствия вредителей соответствуют ID владельца млекопитающих так: `fa_mamm_house_mouse` → `fa_m_house_mouse`, `fa_mamm_striped_field_mouse` → `fa_m_striped_field_mouse`, `fa_mamm_voles` → группа `fa_m_bank_vole`, `fa_m_field_vole`, `fa_m_common_vole`, `fa_m_water_vole`. `fa_mamm_black_rat` не имеет фазового аналога: чёрная крыса исключена владельцем млекопитающих. Фазовые строки этих старых ID здесь не создаются; таблица присутствия сохраняется для исходного домена.

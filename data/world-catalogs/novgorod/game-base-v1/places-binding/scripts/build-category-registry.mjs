@@ -7,12 +7,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO, GROUP, GAME_BASE, readJson, readCsv, writeCsv, writeJson, rel, arr } from './lib.mjs';
+import { readAppearanceExtract, SOURCE as APPEARANCE_SOURCE } from './export-appearance-categories.mjs';
 
 const EXISTING = [
   { path: 'data/knowledge-source/imports/item-container-120-v5/candidate/tables/universal_categories.json', origin: 'v17_item_container_v5', v17_status: 'approved_in_v17 (source file status draft)' },
   { path: 'data/world-catalogs/novgorod/spatial-v3/datasets/universal_categories.json', origin: 'v17_spatial_v3', v17_status: 'approved' },
 ];
-const PR98_APPEARANCE = 'data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-datasets/universal_categories.json';
+const PR98_APPEARANCE = APPEARANCE_SOURCE.path;
 const CONTENT_CATEGORIES = 'buildings-interiors-containers/containers/content_categories.csv';
 
 // Several source shapes put one human label in a single field (`preferred_label`,
@@ -68,6 +69,7 @@ function listCsv(dir) {
 }
 
 export function build() {
+  const appearance = readAppearanceExtract();
   const own = placeFamilyCategories();
   const reg = new Map(); // category_id -> row
   const problems = [];
@@ -86,13 +88,10 @@ export function build() {
     const names = namesFromLabel('', '', c.preferred_label);
     add({ category_id: c.id, domain: c.domain, facet: c.facet, stable_code: c.stable_code, parent_category_id: c.parent_category_id ?? '', ...names, status: c.status }, e.origin, e.path);
   }
-  const extract = path.join(GROUP, 'inputs/pr98-extract.json');
-  const appPath = path.join(REPO, '..', 'Novgorod-runtime', PR98_APPEARANCE);
-  if (fs.existsSync(appPath)) for (const c of arr(readJson(appPath))) {
+  for (const c of appearance) {
     const names = namesFromLabel('', '', c.preferred_label);
     add({ category_id: c.id, domain: c.domain, facet: c.facet, stable_code: c.stable_code, parent_category_id: c.parent_category_id ?? '', ...names, status: c.status }, 'v17_actor_appearance', 'pr98:' + PR98_APPEARANCE);
   }
-  else problems.push({ kind: 'source_missing', path: 'pr98:' + PR98_APPEARANCE });
   for (const r of own) add(r, 'game_base_v1:places-binding', rel(path.join(GROUP, 'categories/place_family_categories.csv')));
 
   // content_categories.csv (container fill-content vocabulary) uses its own shape
@@ -150,6 +149,7 @@ export function build() {
   const byDomain = out.reduce((a, r) => ((a[r.domain] = (a[r.domain] ?? 0) + 1), a), {});
   const unresolvedByFile = refProblems.reduce((a, p) => ((a[p.file] = (a[p.file] ?? 0) + 1), a), {});
   const report = {
+    appearance_source: APPEARANCE_SOURCE,
     registry_rows: n, own_place_family_rows: own.length, reused_v17_ids: reuses.length, reused_v17_with_different_stable_code: reuses.filter((x) => !x.same_stable_code).length, by_origin: byOrigin, by_domain: byDomain,
     definition_files: [...defFiles.map(rel), rel(contentPath)], reference_files: refFiles.map(rel), references_checked: refCount,
     unresolved_references: refProblems.length, unresolved_by_file: unresolvedByFile, unresolved_sample: refProblems.slice(0, 50),

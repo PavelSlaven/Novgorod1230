@@ -1,4 +1,10 @@
 {
+  "appearance_source": {
+    "commit": "745b9c874d73f1411c1fec2669c0e4e1b8e10e9a",
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-datasets/universal_categories.json",
+    "blob": "bab44418384a0be5270ce1922c32ae65a78af255",
+    "sha256": "539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc"
+  },
   "registry_rows": 982,
   "own_place_family_rows": 61,
   "reused_v17_ids": 66,

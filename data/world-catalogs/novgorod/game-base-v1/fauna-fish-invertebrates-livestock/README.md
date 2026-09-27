@@ -131,8 +131,13 @@
 
 ## Пересборка
 
+`fauna/phase_activity.csv` покрывает каждый `fa_id × season_period` из `fauna_presence.csv` на 16 стартовых PF. Множество PF читается из `places-binding/places/node_binding.csv` тем же способом, что в D1: непустые `pf_id` привязанных G4/G5; там 32 G4 и 195 G5, 16 различных PF. Для каждого сочетания есть `civil_dawn`, `daylight`, `civil_dusk`, `night`. Общая грубая развёртка находится только в `../fauna-mammals-birds/fauna/activity_phase_rules.json`. Для подтверждённых временных и звуковых наблюдений источник указан построчно; остальные пробелы явные. Перед `no_source` проверены `fauna/{fish,invertebrates_herps,livestock_species,livestock_types,fauna_presence}.csv`, `scripts/src/*.py`, `sources/books-evidence-v1/fauna-fish-invertebrates-livestock.csv`, WK `production-v1/fauna-ecology.json`, MASTER archive, соседняя группа млекопитающих и птиц и записанные C rules.
+
+Дополнительно охвачены `fa_dom_*`, доступные на тех же PF через пересечение `place_type_livestock.rule_ref` и `rpgr_pf_crosswalk.rule_ref`. У полностью неизвестных суточных строк `no_source` сохраняет точные `pl_id` условного появления; эти правила определяют scope, но не гарантируют видимость. Описания двора/хлева коровы и поздней ночной пастьбы лошади не превращаются в безусловное `visibility=yes`. Суточные факты из `invertebrates_herps.perceptual_cues` представлены в `scripts/src/phase_cues.json`; временная фраза нового вида без такой оценки останавливает сборку. Сезон пика не закрывает прочие сезоны присутствия: вечерний и ночной звон комаров применяется при активном присутствии весной, летом и осенью. Ровно одно из `source_refs`, `rule_ref`, `no_source` заполнено; отдельный неизвестный фасет имеет `*_state=no_source`. Голос не выводится из видимости и наоборот.
+
 ```
 python scripts/build.py
+node ../fauna-mammals-birds/scripts/validate-phase.cjs fauna-fish-invertebrates-livestock --self-test
 ```
 
 Скрипт читает `scripts/src/*.py` (авторские данные с источниками), WK production-v1, MASTER, шаблоны rus13, TSV g3 v6, rules v2 и `scripts/input_snapshots/`. В сеть не обращается. При провале любой проверки выходит с кодом 1.

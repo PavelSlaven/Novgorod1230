@@ -1,0 +1,13 @@
+{
+  "fa_amph_common_toad": {"phases": {"civil_dusk": ["yes", "no_source"]}},
+  "fa_rept_adder": {"phases": {"daylight": ["yes", "no_source"]}},
+  "fa_ins_mosquitoes": {"phases": {"civil_dusk": ["no_source", "yes"], "night": ["no_source", "yes"]}},
+  "fa_ins_blackflies": {"phases": {"daylight": ["yes", "no_source"]}},
+  "fa_ins_horseflies": {"phases": {"daylight": ["yes", "yes"]}},
+  "fa_ins_biting_midges": {"seasons": ["summer"], "phases": {"civil_dusk": ["no", "no_source"]}},
+  "fa_mamm_house_mouse": {"phases": {"night": ["no_source", "yes"]}},
+  "fa_ins_dragonflies": {"seasons": ["summer"], "phases": {"daylight": ["no_source", "yes"]}},
+  "fa_ins_mayflies": {"seasons": ["summer"], "phases": {"civil_dusk": ["yes", "no_source"]}},
+  "fa_ins_cockchafer": {"seasons": ["spring_rasputitsa"], "phases": {"civil_dusk": ["yes", "yes"]}},
+  "fa_ins_glowworm": {"seasons": ["summer"], "phases": {"night": ["yes", "no_source"]}}
+}

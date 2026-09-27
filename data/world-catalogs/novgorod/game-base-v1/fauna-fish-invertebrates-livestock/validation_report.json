@@ -7,6 +7,7 @@
   "water_body_pf_crosswalk.csv": 52,
   "invertebrates_herps.csv": 45,
   "fauna_presence.csv": 1779,
+  "phase_activity.csv": 1012,
   "livestock_species.csv": 11,
   "livestock_types.csv": 28,
   "livestock_care.csv": 29,
@@ -21,6 +22,8 @@
   "sources.csv": 68
  },
  "checks": {
+  "temporal_cues_mapped": true,
+  "phase_activity": true,
   "fish_resolve_water_body_template": true,
   "fish_spawning_period_set": true,
   "fish_species_per_river_lake_pf_ge_6": true,

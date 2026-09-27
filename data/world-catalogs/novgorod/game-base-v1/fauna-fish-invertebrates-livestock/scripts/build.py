@@ -5,7 +5,7 @@ Deterministic: reads authored data in scripts/src/*.py, repo sources (WK product
 rus13 templates, v6 g3 TSV, rules v2 TSV) and input snapshots; writes CSV tables under fauna/, sources.csv and
 validation_report.json. No network access. Run: python scripts/build.py  (exit 1 if a check fails).
 """
-import csv, json, os, re, sys, glob
+import csv, json, os, re, sys, glob, subprocess
 from collections import defaultdict, Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -466,6 +466,58 @@ counts["fishing_methods.csv"] = write_csv("fishing_methods.csv", list(fm_rows[0]
 counts["water_body_pf_crosswalk.csv"] = write_csv("water_body_pf_crosswalk.csv", list(cw_rows[0].keys()), cw_rows)
 counts["invertebrates_herps.csv"] = write_csv("invertebrates_herps.csv", list(inv_rows[0].keys()), inv_rows)
 counts["fauna_presence.csv"] = write_csv("fauna_presence.csv", list(pres_rows[0].keys()), pres_rows)
+with open(os.path.join(OUT, '..', 'places-binding', 'places', 'node_binding.csv'), encoding='utf-8') as f:
+    start_pf = {r['pf_id'].removeprefix('pf_') for r in csv.DictReader(f) if r['pf_id']}
+with open(os.path.join(OUT, '..', 'fauna-mammals-birds', 'fauna', 'activity_phase_rules.json'), encoding='utf-8') as f:
+    phase_rules = json.load(f)
+phase_scope = sorted({(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf})
+bound_rules = {r['rule_ref'] for r in rpgr_pf_rows if r['pf_id'].removeprefix('pf_') in start_pf and r['rule_ref']}
+livestock_rules = defaultdict(set)
+for row in pt_rows:
+    if row['rule_ref'] in bound_rules and row['species_ref'] in {r['fa_id'] for r in sp_rows}:
+        livestock_rules[row['species_ref']].add(row['pl_id'])
+phase_scope = sorted(set(phase_scope) | {(fid, season) for fid in livestock_rules for season in SEASONS})
+active_scope = {(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf and r['activity_state'] == 'active'}
+phase_rows = []
+taxa = {r['fa_id']: r for r in fish_rows + inv_rows + sp_rows}
+with open(os.path.join(HERE, 'src', 'phase_cues.json'), encoding='utf-8') as f:
+    cue_facts = json.load(f)
+for t in inv_rows:
+    if t['fa_id'] in {fid for fid, _ in phase_scope} and re.search(r'ноч|сумерк|вечер|полд|днём|днем|солнечн|утр|зар[еяю]', t['perceptual_cues'].lower()) \
+            and t['fa_id'] not in cue_facts and t['fa_id'] != 'fa_arach_cross_spider':
+        problems['unmapped_temporal_cue'].append(t['fa_id'])
+for fid, season in phase_scope:
+    taxon = taxa[fid]
+    for phase in phase_rules['phases']:
+        # Only a taxon-specific temporal claim licenses a phase assertion here.
+        activity = {'fa_ins_honeybee': 'diurnal', 'fa_amph_smooth_newt': 'nocturnal'}.get(fid)
+        state = phase_rules['rules'][activity][phase] if activity else 'no_source'
+        voice = 'no_source'
+        voice_ref = ''
+        source = {'fa_ins_honeybee': 'claim:fauna-bee-diurnal',
+                  'fa_amph_smooth_newt': 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L152'}.get(fid, '')
+        cue = cue_facts.get(fid, {})
+        if phase in cue.get('phases', {}) and season in cue.get('seasons', SEASONS) and (fid, season) in active_scope:
+            state, voice = cue['phases'][phase]
+            source = f'invertebrates_herps.csv#{fid}.perceptual_cues'
+            if cue.get('seasons'):
+                source += f';invertebrates_herps.csv#{fid}.season_peak'
+            if voice == 'yes':
+                voice_ref = f'invertebrates_herps.csv#{fid}.perceptual_cues'
+        if fid == 'fa_rept_adder' and season in ('spring_rasputitsa', 'autumn') and phase == 'night':
+            state, source = 'no', 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L139'
+        complete_gap = state == 'no_source' and voice == 'no_source'
+        if complete_gap:
+            source = ''
+        occurrence = '|'.join(sorted(livestock_rules.get(fid, [])))
+        phase_rows.append(dict(phase_rule_id=f'fpa_{fid}_{season}_{phase}', fa_id=fid, season=season, phase=phase,
+                               visibility_state=state, voice_state=voice, voice_text_ref=voice_ref,
+                               source_refs=source, rule_ref='',
+                               no_source=('phase visibility and voice unknown' + (f'; conditional occurrence refs: {occurrence}' if occurrence else '')) if complete_gap else '',
+                               confidence=taxon['confidence'] if source else 'C', status=STATUS))
+phase_header = ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref',
+                'source_refs', 'rule_ref', 'no_source', 'confidence', 'status']
+counts['phase_activity.csv'] = write_csv('phase_activity.csv', phase_header, phase_rows, '\n')
 counts["livestock_species.csv"] = write_csv("livestock_species.csv", list(sp_rows[0].keys()), sp_rows)
 counts["livestock_types.csv"] = write_csv("livestock_types.csv", list(lt_rows[0].keys()), lt_rows)
 counts["livestock_care.csv"] = write_csv("livestock_care.csv", list(care_rows[0].keys()), care_rows)
@@ -489,6 +541,12 @@ counts["sources.csv"] = write_csv(os.path.join(OUT, "sources.csv"), list(src_row
 
 # ---------------- acceptance checks ----------------
 checks = {}
+checks['temporal_cues_mapped'] = not problems.get('unmapped_temporal_cue')
+phase_check = subprocess.run(['node', os.path.join(OUT, '..', 'fauna-mammals-birds', 'scripts', 'validate-phase.cjs'),
+                              'fauna-fish-invertebrates-livestock'], capture_output=True, text=True)
+checks['phase_activity'] = phase_check.returncode == 0
+if phase_check.returncode:
+    problems['phase_activity'] = [phase_check.stdout.strip(), phase_check.stderr.strip()]
 # fish: >=1 water template; spawning in months
 checks["fish_resolve_water_body_template"] = all(any(t in wb for t in s["wb"]) for s in fish_data.FISH)
 checks["fish_spawning_period_set"] = not problems.get("missing_spawning_period")

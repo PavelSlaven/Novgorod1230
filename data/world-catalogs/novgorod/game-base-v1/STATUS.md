@@ -20,12 +20,12 @@
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 9 | 23 | 0 |
-| [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 11 | 0 |
+| [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 4 | 20 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **55** | **205** | **0** |
+| **Итого** | | **55** | **206** | **0** |
 
 ## Вердикты по файлам
 
@@ -321,6 +321,7 @@
 |---|---|
 | [`activities_observable/activities_new_occupations.csv`](occupations-activities/activities_observable/activities_new_occupations.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#activities_observableactivities_new_occupationscsv--approve_with_limits) |
 | [`carried_inventories/carried_inventories.csv`](occupations-activities/carried_inventories/carried_inventories.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#carried_inventoriescarried_inventoriescsv--approve_with_limits) |
+| [`npc_runtime_profiles/actor_appearance_authoring.json`](occupations-activities/npc_runtime_profiles/actor_appearance_authoring.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesactor_appearance_authoringjson--approve_with_limits) |
 | [`npc_runtime_profiles/build.py`](occupations-activities/npc_runtime_profiles/build.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
 | [`npc_runtime_profiles/export_pr98.py`](occupations-activities/npc_runtime_profiles/export_pr98.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
 | [`npc_runtime_profiles/npc_runtime_profiles.json`](occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesnpc_runtime_profilesjson--approve_with_limits) |

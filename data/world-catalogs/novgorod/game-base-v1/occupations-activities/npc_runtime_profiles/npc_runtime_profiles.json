@@ -13,7 +13,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json#novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_sex_category_male",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "мужчина"
         },
         {
           "value": "nov_1200_1250_sex_category_female",
@@ -21,7 +22,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json#novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_sex_category_female",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "женщина"
         }
       ],
       "age_category": [
@@ -31,7 +33,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json#novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_young_adult",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "молодой взрослый"
         },
         {
           "value": "nov_1200_1250_age_category_adult",
@@ -39,7 +42,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json#novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_adult",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "взрослый"
         },
         {
           "value": "nov_1200_1250_age_category_middle_aged",
@@ -47,7 +51,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json#novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_middle_aged",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "человек среднего возраста"
         },
         {
           "value": "nov_1200_1250_age_category_old",
@@ -55,7 +60,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json#novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_old",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "пожилой человек"
         }
       ],
       "build": [
@@ -65,7 +71,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_build_slim",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "худощавое телосложение"
         },
         {
           "value": "nov_1200_1250_build_average",
@@ -73,7 +80,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_build_average",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "среднее телосложение"
         },
         {
           "value": "nov_1200_1250_build_stocky",
@@ -81,7 +89,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_build_stocky",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "коренастое телосложение"
         }
       ],
       "skin_tone": [
@@ -91,7 +100,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_pale",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "бледная кожа"
         },
         {
           "value": "nov_1200_1250_skin_tone_light",
@@ -99,7 +109,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_light",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "светлая кожа"
         },
         {
           "value": "nov_1200_1250_skin_tone_warm",
@@ -107,7 +118,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_warm",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "кожа тёплого оттенка"
         },
         {
           "value": "nov_1200_1250_skin_tone_brown",
@@ -115,7 +127,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_brown",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "смуглая кожа"
         }
       ],
       "face_shape": [
@@ -125,7 +138,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_oval",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "овальное лицо"
         },
         {
           "value": "nov_1200_1250_face_shape_round",
@@ -133,7 +147,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_round",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "круглое лицо"
         },
         {
           "value": "nov_1200_1250_face_shape_broad",
@@ -141,7 +156,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_broad",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "широкое лицо"
         },
         {
           "value": "nov_1200_1250_face_shape_angular",
@@ -149,7 +165,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_angular",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "угловатое лицо"
         },
         {
           "value": "nov_1200_1250_face_shape_long",
@@ -157,7 +174,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_long",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "вытянутое лицо"
         }
       ],
       "hair_color": [
@@ -167,7 +185,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_blond",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "светлые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_light_brown",
@@ -175,7 +194,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_light_brown",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "русые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_dark_brown",
@@ -183,7 +203,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_dark_brown",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "тёмно-каштановые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_black",
@@ -191,7 +212,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_black",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "чёрные волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_auburn",
@@ -199,7 +221,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_auburn",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "рыжеватые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_gray",
@@ -207,7 +230,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_gray",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "седые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_white",
@@ -215,7 +239,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_white",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "белые волосы"
         }
       ],
       "hair_length": [
@@ -225,7 +250,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_bald",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "лысая голова"
         },
         {
           "value": "nov_1200_1250_hair_length_short",
@@ -233,7 +259,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_short",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "короткие волосы"
         },
         {
           "value": "nov_1200_1250_hair_length_medium",
@@ -241,7 +268,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_medium",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "волосы средней длины"
         },
         {
           "value": "nov_1200_1250_hair_length_long",
@@ -249,7 +277,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_long",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "длинные волосы"
         }
       ],
       "hair_style": [
@@ -259,7 +288,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_style_straight",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "прямые волосы"
         },
         {
           "value": "nov_1200_1250_hair_style_wavy",
@@ -273,7 +303,8 @@
               "medium",
               "long"
             ]
-          }
+          },
+          "name_ru": "волнистые волосы"
         },
         {
           "value": "nov_1200_1250_hair_style_loose",
@@ -286,7 +317,8 @@
               "medium",
               "long"
             ]
-          }
+          },
+          "name_ru": "распущенные волосы"
         },
         {
           "value": "nov_1200_1250_hair_style_braided",
@@ -298,7 +330,8 @@
             "appearance.hair.length": [
               "long"
             ]
-          }
+          },
+          "name_ru": "заплетённые волосы"
         }
       ],
       "facial_hair": [
@@ -308,7 +341,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_facial_hair_none",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "без растительности на лице"
         },
         {
           "value": "nov_1200_1250_facial_hair_moustache",
@@ -325,7 +359,8 @@
               "middle_aged",
               "old"
             ]
-          }
+          },
+          "name_ru": "усы"
         },
         {
           "value": "nov_1200_1250_facial_hair_short_beard",
@@ -342,7 +377,8 @@
               "middle_aged",
               "old"
             ]
-          }
+          },
+          "name_ru": "короткая борода"
         },
         {
           "value": "nov_1200_1250_facial_hair_full_beard",
@@ -359,7 +395,8 @@
               "middle_aged",
               "old"
             ]
-          }
+          },
+          "name_ru": "густая борода"
         }
       ],
       "eye_color": [
@@ -369,7 +406,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_blue",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "голубые глаза"
         },
         {
           "value": "nov_1200_1250_eye_color_gray",
@@ -377,7 +415,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_gray",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "серые глаза"
         },
         {
           "value": "nov_1200_1250_eye_color_green",
@@ -385,7 +424,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_green",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "зелёные глаза"
         },
         {
           "value": "nov_1200_1250_eye_color_brown",
@@ -393,7 +433,8 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_brown",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "карие глаза"
         },
         {
           "value": "nov_1200_1250_eye_color_dark",
@@ -401,11 +442,118 @@
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_dark",
           "rule": "filter source applicability against previously selected facets in code",
           "no_source": null,
-          "applicability": {}
+          "applicability": {},
+          "name_ru": "тёмные глаза"
         }
       ]
     }
   },
+  "appearance_incompatibility_rules": [
+    {
+      "id": "bald_has_no_hair_color",
+      "if": {
+        "hair_length": "nov_1200_1250_hair_length_bald"
+      },
+      "incompatible_with": {
+        "hair_color": "any"
+      },
+      "note": "При обязательной грани hair_color вариант bald не образует полного набора; цвет волос не придумывать."
+    },
+    {
+      "id": "young_adult_has_no_gray_or_white_hair",
+      "if": {
+        "age_category": "nov_1200_1250_age_category_young_adult"
+      },
+      "incompatible_with": {
+        "hair_color": [
+          "nov_1200_1250_hair_color_gray",
+          "nov_1200_1250_hair_color_white"
+        ]
+      }
+    }
+  ],
+  "subject_applicability": [
+    {
+      "subject_id": "nov_occ_ferryman",
+      "subject_kind": "occupation",
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male"
+        ],
+        "sex_basis": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman"
+        ],
+        "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+        "no_source": "individual_marital_status_not_derived_from_occupation"
+      }
+    },
+    {
+      "subject_id": "nov_occ_crossing_guard",
+      "subject_kind": "occupation",
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male"
+        ],
+        "sex_basis": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard"
+        ],
+        "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+        "no_source": "individual_marital_status_not_derived_from_occupation"
+      }
+    },
+    {
+      "subject_id": "nov_occ_fisher",
+      "subject_kind": "occupation",
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male"
+        ],
+        "sex_basis": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher"
+        ],
+        "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+        "no_source": "individual_marital_status_not_derived_from_occupation"
+      }
+    },
+    {
+      "subject_id": "nov_role_smerd_householder",
+      "subject_kind": "role",
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male"
+        ],
+        "sex_basis": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder"
+        ],
+        "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+        "no_source": "individual_marital_status_not_derived_from_role"
+      }
+    },
+    {
+      "subject_id": "nov_occ_household_servant",
+      "subject_kind": "occupation",
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male",
+          "nov_1200_1250_sex_category_female"
+        ],
+        "source_refs": [
+          "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+          "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"
+        ],
+        "rule": "Пол конкретной прислуги устанавливается источником персонажа или сцены; вероятностный выбор без такого источника недопустим.",
+        "no_source": "individual_sex_and_marital_status; female_headwear_requires_individual_marital_status"
+      }
+    }
+  ],
   "regional_context_profiles": [
     {
       "schema": "rus.npc_regional_context_profile.v1",
@@ -3342,6 +3490,18 @@
         "facial_hair",
         "eye_color"
       ],
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male"
+        ],
+        "sex_basis": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher"
+        ],
+        "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+        "no_source": "individual_marital_status_not_derived_from_occupation"
+      },
       "allowed_role_refs": [
         "nov_role_fisher"
       ],
@@ -3352,7 +3512,18 @@
           "occupation_ref": "nov_occ_fisher",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "actor_applicability": null,
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_male"
+            ],
+            "sex_basis": "editorial",
+            "confidence": "C",
+            "source_refs": [
+              "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher"
+            ],
+            "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+            "no_source": "individual_marital_status_not_derived_from_occupation"
+          },
           "clothing_profile_ref": "nov_clothing_water_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_fisher",
           "clothing_options": [
@@ -3422,74 +3593,6 @@
                   "winter"
                 ],
                 "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_water_female_warm_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_water_female_warm_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_water_female_cool_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_water_female_cool_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_water_female_cold_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_water_female_cold_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "married"
               }
             }
           ],
@@ -5297,6 +5400,18 @@
         "facial_hair",
         "eye_color"
       ],
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_male",
+          "nov_1200_1250_sex_category_female"
+        ],
+        "source_refs": [
+          "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+          "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"
+        ],
+        "rule": "Пол конкретной прислуги устанавливается источником персонажа или сцены; вероятностный выбор без такого источника недопустим.",
+        "no_source": "individual_sex_and_marital_status; female_headwear_requires_individual_marital_status"
+      },
       "allowed_role_refs": [
         "nov_role_servant"
       ],
@@ -5307,7 +5422,18 @@
           "occupation_ref": "nov_occ_household_servant",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "actor_applicability": null,
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_male",
+              "nov_1200_1250_sex_category_female"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+              "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"
+            ],
+            "rule": "Пол конкретной прислуги устанавливается источником персонажа или сцены; вероятностный выбор без такого источника недопустим.",
+            "no_source": "individual_sex_and_marital_status; female_headwear_requires_individual_marital_status"
+          },
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_servant",
           "clothing_options": [
@@ -5458,7 +5584,7 @@
               "applicability": {}
             }
           ],
-          "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
+          "selection_rule": "sex requires a concrete individual or scene source; no weighted sex selection; code then filters other options by applicability; LLM describes committed facts only",
           "no_source": "regional_frequency_weights_not_authored"
         }
       ]

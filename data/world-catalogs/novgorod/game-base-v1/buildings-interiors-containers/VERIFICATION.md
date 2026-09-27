@@ -225,3 +225,47 @@ build.py детерминирован для всех файлов, кроме `
 - **Прежние замечания.** Не было: артефакт новый. Ограничения `settlement_form.csv` (approve_with_limits C001) переходят сюда.
 - **Замечания (minor).** (1) `pf_rural_yard` помечен `no_source`, хотя его `place_template_refs` совпадают с `place_template_ids` у `sf_yard_peasant`, `sf_village_selo`, `sf_village_derevnya` и `sf_single_homestead`. Основание по общему шаблону есть, но SF-PF-1 смотрит только на `pf_ids`, и стартовый сельский двор остаётся без построек. (2) Уверенность формы (у 9 из 22 форм C) в crosswalk не переносится.
 - **Ограничения.** Таблица наследует спорные `pf_ids` формы (например, `sf_single_homestead → pf_village_lane`). Для природных стартовых PF построек нет, и это корректно.
+
+## Независимая проверка C003 (Claude Opus 5.5, коммит 9db968c2)
+
+Четвёртый проход, отдельный от автора правок. `rework` — возвращено исполнителю; `approve_with_limits` — годно для M2c с перечисленными ограничениями; статус данных `candidate` до утверждения набора.
+
+### ambience/settlement_ambience_texts.csv — approve_with_limits
+
+Проверено: Claude Opus 5.5 (независимая проверка C003, коммит 9db968c2).
+
+- **Что изменилось (свой скрипт по fb21aeaa → 9db968c2).** Было 168 строк, стало 184. Добавлено 16, изменено 0, удалено 0. Все новые строки у rural_yard (8) и outbuildings (8), слои traces 8 и smells 8, все C/candidate. Природным PF новых строк нет. Повторов `clear_text` нет. В `ambience.py` остальные изменения — только концы строк.
+- **Проверки.** `validate.py` запущен (без записи .pyc): PASS, 0 ошибок, 41 прежнее предупреждение. Новые проверки: канал, статус candidate, 4 сезона у 7 людских PF, у каждого есть G4-привязка.
+- **Выборка — все 16 новых строк против источников.**
+  - traces rural_yard (_169–_172): WK `place-outdoors-traffic-wet-ground-and-ruts` («приминает растительность, колеи в сыром грунте») и `reconstructed-dwelling-moisture…` (мокрые следы у порога). Обе approved/editorial. Текст правилу соответствует.
+  - smells (_173–_176, _181–_184): «навоз, прелая подстилка» есть в matcult ARC0002 («навоз и подстилка естественны») и в `bt_khlev.light_smoke_smell`. WK `practical-livestock-care` о запахе ничего не говорит.
+  - traces outbuildings (_177–_180): ARC0017/0018/0002 не упоминают ни свес кровли, ни порог. Это редакционная деталь, а у лёгкого навеса входа и порога может не быть.
+  - Все `bt_*` и WK-ссылки разрешаются.
+- **Условия присутствия.**
+  - У rural_yard жильё подтверждено обязательным слотом `msr_rural_yard_dwelling` (bt_izba_heated_single).
+  - bt_horomy в условии лишний: у него pf_ids только dwelling_interior|town_courtyard.
+  - Путь хлева в чистый rural_yard не найден (building_types, sf_pf_crosswalk no_source, слоты). Но все 9 G5 со rural_yard одновременно peasant_homestead или outbuildings.
+  - Там сработают почти одинаковые запахи хлева из rural_yard и outbuildings, а также запахи peasant_homestead.
+  - У outbuildings обязательная постройка — лёгкий сарай. Запах сарая и амбара из данных (`light_smoke_smell`: сено, дрова, смола; зерно, пыль) не использован, поэтому без хлева запаха нет.
+- **Прежние замечания первого раунда не исправлены:**
+  - smoke _001–_004 по-прежнему B;
+  - домыслы в голодных B-текстах _165, _167, _168;
+  - у _156 нет запрета голода;
+  - bt_horomy — теперь в 24 строках;
+  - у _029 гейт и атрибуция прежние.
+- **Выдуманных источников нет.** Новые тексты редакционные (C), основаны на approved WK и matcult.
+
+### ambience/g4_human_layer_binding.csv — approve_with_limits
+
+Проверено: Claude Opus 5.5 (независимая проверка C003, коммит 9db968c2).
+
+- **Что изменилось.** У 2 строк (vikhtuy_locality и zaostrovye_settlement_center) к `pf_ids` добавлены `rural_yard|outbuildings`. Остальные 5 строк не менялись, число строк 7. Генератор `build.py` правлен тем же образом.
+- **Сверка с node_binding (свой скрипт).**
+  - Оба новых PF действительно вторичные у этих двух G4. Это подтверждают и G5: household_cluster, meeting_area, work_storage, habitation_terrace, storage_zone, work_zone.
+  - Ни одного людского PF, которого нет в node_binding, не найдено.
+  - Природным G4 людской слой не добавлен: из 25 G4 без людской привязки ни один не получил новую строку.
+- **Неполнота.**
+  - У `zaostrovye_landing` в node_binding тоже есть вторичные rural_yard и outbuildings (G5 `boat_drawing`), но в людскую привязку их не добавили.
+  - Шире: привязка ручная. У каждого из 7 G4 в node_binding есть людские PF, которых здесь нет (у vikhtuy_locality — ferry_landing, river_wharf, riverbank).
+  - Прежнее ограничение «сверить с place_binding» не снято.
+- **Выдуманного нет.** Основание прежнее: pr98 m2c-natural (source_place_type), C/candidate.

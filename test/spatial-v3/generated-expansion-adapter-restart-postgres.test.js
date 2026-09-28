@@ -11,6 +11,9 @@ import { createSpatialV3PostgresCombinedAtomicCommitter } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { createSpatialV3ExpansionRuntime } from '../../apps/game-server/src/runtime/spatial-v3-expansion-runtime.js';
+import { readSpatialV3ExpansionContext } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-expansion-context.js';
 import { projectSpatialV3ProposedVisiblePackage } from
   '../../apps/game-server/src/runtime/spatial-v3-proposed-visible-context.js';
 import { approvedNaturalPerceptionFixture } from '../../apps/game-server/test/g4-natural-perception-fixture.js';
@@ -78,10 +81,12 @@ const sceneInput = { party_id: 'p', site_id: 'source', baseline_id: 'base:source
   materializer_version: 'm2c', materialization_trace_id: 'trace', generation_template: { id: 'generation', version: 1 },
   scene_closure: scene, acoustic_rows: [acoustic], dependency_pins };
 
-test('generated expansion adapter survives a process restart: same committed site, no duplicate materialization',
+for (const terminalOrdinal of [0, 1]) test(`generated expansion adapter survives a process restart (terminal_ordinal ${terminalOrdinal}): same committed site, no duplicate materialization`,
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
-    const name = `m2c-expansion-restart-${process.pid}`;
+    const name = `m2c-expansion-restart-${process.pid}-${terminalOrdinal}`;
+    const runClosure = structuredClone(closure);
+    runClosure.continuation_length_candidates[0].terminal_ordinal = terminalOrdinal;
     let pool;
     t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
     assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
@@ -127,7 +132,7 @@ test('generated expansion adapter survives a process restart: same committed sit
     partyId: 'p', actorId: 'test-actor', positionId: overlay.position.id,
     entityObservations: [], localEdges: [], directionalExits: [] });
     // Stateless across restarts: the same pure catalog reads and admission logic every time.
-    const worldBaseReader = { readPinnedG4ExpansionClosure: async () => ({ ok: true, value: closure }),
+    const worldBaseReader = { readPinnedG4ExpansionClosure: async () => ({ ok: true, value: runClosure }),
       readPinnedSceneTemplateClosure: async ({ id }) => ({ ok: true,
         value: id === 'terminal-scene' ? { ...scene, header: { ...scene.header, id } } : scene }),
       readPinnedCanonicalG5SceneBinding: async () => ({ ok: true, value: {
@@ -168,9 +173,53 @@ test('generated expansion adapter survives a process restart: same committed sit
     const before = await buildAdapter(pool).prepareExpansion(request);
     assert.equal(before.ok, true, JSON.stringify(before));
     const beforeState = await state(pool);
-    const targetBefore = beforeState.sites.find((row) => row.canonical_g5_ref?.entity_id === 'canonical-terminal');
-    assert.ok(targetBefore, 'terminal site must be committed before restart');
-    assert.equal(beforeState.chains[0].status, 'terminal_resolved');
+    if (terminalOrdinal === 0) {
+      const targetBefore = beforeState.sites.find((row) => row.canonical_g5_ref?.entity_id === 'canonical-terminal');
+      assert.ok(targetBefore, 'terminal site must be committed before restart');
+      assert.equal(beforeState.chains[0].status, 'terminal_resolved');
+    } else {
+      assert.equal(beforeState.sites.filter((row) => row.origin === 'generated').length, 1,
+        'a generated site (terminal_ordinal >= 1) is committed before restart');
+      assert.equal(beforeState.frontiers.length, 2);
+      assert.equal(beforeState.frontiers.filter((row) => row.status === 'open').length, 1);
+    }
+    const scenesOf = async (activePool) => Object.fromEntries(await Promise.all(
+      ['scene_position_nodes', 'scene_movement_edges', 'party_scene_baselines', 'party_g6_instances']
+        .map(async (table) => [table, (await activePool.query(
+          `SELECT * FROM party_runtime.${table} WHERE party_id='p' ORDER BY id`)).rows])));
+    const sceneBefore = await scenesOf(pool);
+    // What the actor may cross from every committed departure position, read the way the
+    // live runtime reads it (context reader + eligibility), before and after the restart.
+    const crossingsAt = async (activePool, adapterState) => {
+      const positions = adapterState.bindings.filter((row) => row.status === 'active').map((row) => row.position_id);
+      const result = {};
+      for (const positionId of [request.source_position_id, ...positions]) {
+        const client = await activePool.connect();
+        try {
+          await client.query('BEGIN');
+          await client.query(`INSERT INTO party_runtime.party_journey_locations
+            (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
+            VALUES ('probe-location','p','actor','probe-actor','scene',$1,1,'probe')`, [positionId]);
+          const worldBaseReader = { readG4ExpansionBinding: async () => ({ ok: true,
+            value: { g4: request.g4, profile: request.profile } }),
+            readPinnedG4ExpansionClosure: async () => ({ ok: true, value: runClosure }),
+            readPinnedSceneTemplateClosure: async () => ({ ok: true, value: scene }) };
+          const runtime = createSpatialV3ExpansionRuntime({
+            readContext: (input) => readSpatialV3ExpansionContext({ ...input, transaction: client,
+              worldBaseReader, release: { world_revision_id: 'world', world_catalog_digest: 'catalog' } }),
+            readExitDisclosure: async () => [{ directional_exit_id: 'exit', directional_exit_version: 1,
+              direction_context_id: runClosure.directional_exits[0].direction_context_id,
+              knowledge_state: 'known', display_label: 'Продолжить путь' }],
+            generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+          result[positionId] = await runtime.listExpansionOptions({ partyId: 'p', actorId: 'probe-actor' })
+            .catch((error) => ({ gap: error.details?.reason ?? error.code }));
+        } finally { await client.query('ROLLBACK'); client.release(); }
+      }
+      return result;
+    };
+    const crossingsBefore = await crossingsAt(pool, beforeState);
+    assert.ok(Object.values(crossingsBefore).every((rows) => Array.isArray(rows)),
+      `every probed position lists crossings without a data gap: ${JSON.stringify(crossingsBefore)}`);
 
     // Simulate a game-server process restart: close every pool, open new ones against the same database.
     await pool.end();
@@ -184,7 +233,19 @@ test('generated expansion adapter survives a process restart: same committed sit
     assert.equal(afterState.sites.length, beforeState.sites.length, 'no new site after restart');
     assert.equal(afterState.site_connections.length, beforeState.site_connections.length,
       'no new connection after restart');
-    const targetAfter = afterState.sites.find((row) => row.canonical_g5_ref?.entity_id === 'canonical-terminal');
-    assert.equal(targetAfter.id, targetBefore.id, 'same site identity across restart');
-    assert.equal(afterState.chains[0].status, 'terminal_resolved');
+    assert.deepEqual(afterState.sites, beforeState.sites, 'same sites (identity, origin, versions)');
+    assert.deepEqual(afterState.frontiers, beforeState.frontiers, 'same frontiers');
+    assert.deepEqual(afterState.bindings, beforeState.bindings, 'same frontier bindings');
+    assert.deepEqual(afterState.chains, beforeState.chains, 'same chain');
+    assert.deepEqual(await scenesOf(pool), sceneBefore, 'same scene: positions, edges, baselines, G6');
+    assert.deepEqual(await crossingsAt(pool, afterState), crossingsBefore,
+      'the list of crossings is identical after the restart');
+    if (terminalOrdinal === 0) {
+      assert.equal(afterState.chains[0].status, 'terminal_resolved');
+    } else {
+      assert.equal(afterState.frontiers.filter((row) => row.status === 'open').length, 1,
+        'the successor frontier is still open');
+      const openKey = Object.values(crossingsBefore).filter((rows) => Array.isArray(rows) && rows.length).length;
+      assert.ok(openKey >= 1, 'at least one departure position still lists a crossing');
+    }
   });

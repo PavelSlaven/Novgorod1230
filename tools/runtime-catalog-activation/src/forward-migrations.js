@@ -98,32 +98,32 @@ export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION = createForwardMigration({
 export const WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'world_runtime_catalog_activation_v17_bootstrap',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: '3308647b0545ac7696c592e3b73938deca089512f94a742931f6ae2ac52fe305',
-  targetSchemaFingerprint: '25af99bc6bbd8c7160069562dd75d9436a6464e8dd27c882876837f8f1c3a295',
+  sourceSchemaFingerprint: '675c75ac48866e109fe289dd181756a603654856daf5502faafd0b146e33b29a',
+  targetSchemaFingerprint: 'bee5744bd0ec1bfcae9f0f5a94cfcfb5a0515a2181da3779c5cceb880143e7f9',
   sql: WORLD_SQL
 });
 
 export const ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'world_actor_base_attributes_owner_v17_bootstrap',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: '25af99bc6bbd8c7160069562dd75d9436a6464e8dd27c882876837f8f1c3a295',
-  targetSchemaFingerprint: '1e927fceb809370a95329dc8a1d96bc045982c429ee1e4d35b64fb5ba1219af3',
+  sourceSchemaFingerprint: 'bee5744bd0ec1bfcae9f0f5a94cfcfb5a0515a2181da3779c5cceb880143e7f9',
+  targetSchemaFingerprint: '845017eaee06c95a5ee97b5d6205d35c5d9495d92a5c040fa913b3888cb6986e',
   sql: ACTOR_BASE_ATTRIBUTES_WORLD_SQL
 });
 
 export const PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'party_runtime_catalog_pins_v17_bootstrap',
   schemaName: 'party_runtime',
-  sourceSchemaFingerprint: '9354031c0e997aa0b224c14f8e41c93beff7c5d590471de99d61312d053b88c8',
-  targetSchemaFingerprint: 'b5b3f1941c020a72561bf20017c39b6064b70a1b24322b262458738170db173f',
+  sourceSchemaFingerprint: '6db02f06bea2a5ce9eee3633131c16a772525287135910e4043f6f66c7fcc6d6',
+  targetSchemaFingerprint: 'e6fe5db3a5455ee1e8380288c1c86d6c45ad4ec22d326ab6dc84eceb86b65551',
   sql: PARTY_SQL
 });
 
 export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'party_actor_base_attributes_pins_v17_bootstrap',
   schemaName: 'party_runtime',
-  sourceSchemaFingerprint: 'b5b3f1941c020a72561bf20017c39b6064b70a1b24322b262458738170db173f',
-  targetSchemaFingerprint: 'e44244b1d95cfcf64bb516be93c4d915fd009616ef5ded755d965729b1783ea4',
+  sourceSchemaFingerprint: 'e6fe5db3a5455ee1e8380288c1c86d6c45ad4ec22d326ab6dc84eceb86b65551',
+  targetSchemaFingerprint: '9f42590bbe590e0e8ae93098ae81bc3370cac1a9805110da59318722bce3e7e8',
   sql: ACTOR_BASE_ATTRIBUTES_PARTY_SQL
 });
 

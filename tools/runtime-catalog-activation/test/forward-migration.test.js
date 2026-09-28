@@ -11,13 +11,16 @@ import {
 import {
   ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION,
   ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP,
   ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
   PARTY_RUNTIME_CATALOG_MIGRATION,
+  PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
   buildWorldRuntimeCatalogMigrationPreflight,
   WORLD_LEGACY_SCHEMA_BRIDGE,
   WORLD_LEGACY_SCHEMA_BRIDGE_V2,
   WORLD_RUNTIME_CATALOG_MIGRATION,
-  WORLD_RUNTIME_CATALOG_MIGRATION_V3
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP
 } from '../src/forward-migrations.js';
 
 const migration = createForwardMigration({
@@ -154,6 +157,39 @@ test('v17 bootstrap owner migration rejects another schema fingerprint', () => {
     actualSchemaFingerprint: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION.target_schema_fingerprint,
     ledgerRow: null
   }), { code: 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN' });
+});
+
+test('v17 bootstrap forward migrations pin chain matches post-27 checkpoint (070d3)', () => {
+  const bootstrapFailureWorldPre =
+    '675c75ac48866e109fe289dd181756a603654856daf5502faafd0b146e33b29a';
+  assert.equal(
+    WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
+    bootstrapFailureWorldPre
+  );
+  assert.equal(
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
+    WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint
+  );
+  assert.equal(
+    PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
+    '6db02f06bea2a5ce9eee3633131c16a772525287135910e4043f6f66c7fcc6d6'
+  );
+  assert.equal(
+    ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
+    PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint
+  );
+  for (const entry of [
+    WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+    PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+    ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP
+  ]) {
+    assert.notEqual(
+      entry.source_schema_fingerprint,
+      entry.target_schema_fingerprint,
+      entry.migration_id
+    );
+  }
 });
 
 test('forward migration applies DDL and ledger row in one transaction with exact target readback', async () => {

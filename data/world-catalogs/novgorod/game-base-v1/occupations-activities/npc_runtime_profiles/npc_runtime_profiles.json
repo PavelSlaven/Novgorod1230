@@ -538,6 +538,22 @@
       }
     },
     {
+      "subject_id": "nov_role_household_mistress",
+      "subject_kind": "role",
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_female"
+        ],
+        "sex_basis": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"
+        ],
+        "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+        "no_source": "individual_marital_status_not_derived_from_role"
+      }
+    },
+    {
       "subject_id": "nov_occ_household_servant",
       "subject_kind": "occupation",
       "actor_applicability": {
@@ -7985,10 +8001,13 @@
             "sex_category": [
               "nov_1200_1250_sex_category_female"
             ],
+            "sex_basis": "editorial",
+            "confidence": "C",
             "source_refs": [
-              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+              "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"
             ],
-            "rule": "role definition specifies a woman"
+            "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+            "no_source": "individual_marital_status_not_derived_from_role"
           },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
@@ -8463,10 +8482,13 @@
             "sex_category": [
               "nov_1200_1250_sex_category_female"
             ],
+            "sex_basis": "editorial",
+            "confidence": "C",
             "source_refs": [
-              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+              "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"
             ],
-            "rule": "role definition specifies a woman"
+            "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+            "no_source": "individual_marital_status_not_derived_from_role"
           },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
@@ -8941,10 +8963,13 @@
             "sex_category": [
               "nov_1200_1250_sex_category_female"
             ],
+            "sex_basis": "editorial",
+            "confidence": "C",
             "source_refs": [
-              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+              "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"
             ],
-            "rule": "role definition specifies a woman"
+            "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+            "no_source": "individual_marital_status_not_derived_from_role"
           },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
@@ -13474,10 +13499,13 @@
             "sex_category": [
               "nov_1200_1250_sex_category_female"
             ],
+            "sex_basis": "editorial",
+            "confidence": "C",
             "source_refs": [
-              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+              "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"
             ],
-            "rule": "role definition specifies a woman"
+            "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+            "no_source": "individual_marital_status_not_derived_from_role"
           },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",

@@ -139,6 +139,34 @@ def deny_scan(rows, name, key):
 # ================= buildings_structures =================
 mats = rd("buildings/materials_vocab.csv"); mat_ids = {m["mat_id"] for m in mats}
 bts = rd("buildings/building_types.csv"); bt_ids = {b["bt_id"] for b in bts}
+condition_enum = {"under_construction", "sound", "worn", "needs_repair", "damaged", "burnt_ruin", "abandoned"}
+for b in bts:
+    if not sp(b["condition_states"]) or not set(sp(b["condition_states"])) <= condition_enum:
+        err("bt %s invalid condition_states" % b["bt_id"])
+try:
+    with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), encoding="utf-8") as f:
+        occupied_rule = json.load(f)
+except (OSError, json.JSONDecodeError) as e:
+    err("occupied condition rule unreadable: %s" % e)
+    occupied_rule = None
+if occupied_rule is not None:
+    expected_keys = {"rule_id", "status", "trigger", "condition_states_from", "forbidden_condition_states"}
+    expected_trigger = {"entity": "building_instance", "composition_source": "D-2", "group_kind": "residents", "min_groups": 1}
+    if not isinstance(occupied_rule, dict) or set(occupied_rule) != expected_keys:
+        err("occupied condition rule schema")
+    else:
+        if occupied_rule["rule_id"] != "occupied_condition_v1" or occupied_rule["status"] != "candidate":
+            err("occupied condition rule id/status")
+        if (occupied_rule["trigger"] != expected_trigger or type(occupied_rule["trigger"]) is not dict
+                or type(occupied_rule["trigger"].get("min_groups")) is not int):
+            err("occupied condition rule trigger")
+        if occupied_rule["condition_states_from"] != "building_types.condition_states":
+            err("occupied condition rule state source")
+        forbidden = occupied_rule["forbidden_condition_states"]
+        if (not isinstance(forbidden, list) or any(not isinstance(s, str) for s in forbidden)
+                or len(forbidden) != len(set(forbidden)) or not set(forbidden) <= condition_enum
+                or set(forbidden) != {"burnt_ruin", "abandoned"}):
+            err("occupied condition rule forbidden states")
 bps = rd("buildings/building_parts.csv"); bp_ids = {b["bp_id"] for b in bps}
 btp = rd("buildings/building_type_parts.csv")
 check_refs(mats, ["source_refs"], "materials", "mat_id")
@@ -266,6 +294,16 @@ cats = {c["content_category"]: c for c in rd("containers/content_categories.csv"
 cts = {c["ct_id"]: c for c in rd("containers/container_forms.csv")}
 cps = rd("containers/content_profiles.csv"); ces = rd("containers/content_profile_entries.csv")
 pcs = rd("containers/place_containers.csv"); xw = rd("containers/item_to_container_crosswalk.csv")
+pc_pairs = {(p["pf_id"], p["ct_id"]) for p in pcs}
+for ct in ("ct_basket_fish", "ct_barrel_cargo"):
+    if ("riverbank", ct) in pc_pairs:
+        err("K9 riverbank/%s must be absent" % ct)
+    if "--self-test" in sys.argv:
+        assert ("riverbank", ct) not in pc_pairs
+        print("probe K9 absent: riverbank/%s" % ct)
+if "--self-test" in sys.argv:
+    assert ("fishing_camp", "ct_basket_fish") in pc_pairs
+    assert ("river_wharf", "ct_barrel_cargo") in pc_pairs
 check_refs(list(cts.values()), ["source_refs"], "container_forms", "ct_id")
 check_refs(cps, ["source_refs"], "content_profiles", "cp_id"); check_refs(ces, ["basis_ref"], "content_entries", "cp_id")
 check_refs(pcs, ["basis_ref"], "place_containers", "ct_id")

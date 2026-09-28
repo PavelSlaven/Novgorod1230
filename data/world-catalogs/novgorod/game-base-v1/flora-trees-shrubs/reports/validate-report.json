@@ -62,6 +62,12 @@
       "failure_count": 0
     },
     {
+      "name": "phenology_by_month",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
       "name": "categories_consistent",
       "ok": true,
       "failures": [],

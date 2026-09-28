@@ -42,14 +42,10 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
   ].map((r) => r.occupation_id));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
   const profiles = new Map(profileCatalog.profiles.map((p) => [p.profile_id, p]));
-  const sexConstraints = (s) => [
-    ...profileCatalog.subject_applicability.filter((entry) => entry.subject_id === s.subject_ref &&
-      entry.subject_kind === (s.subject_kind === 'social_role' ? 'role' : s.subject_kind)).map((entry) => entry.actor_applicability),
-    ...profileCatalog.profiles.flatMap((profile) => (profile.regional_option_sets ?? [])
-      .filter((set) => set[s.subject_kind === 'social_role' ? 'role_ref' : 'occupation_ref'] === s.subject_ref)
-      .map((set) => set.actor_applicability)),
-    ...(s.profile_ref && profiles.get(s.profile_ref)?.actor_applicability ? [profiles.get(s.profile_ref).actor_applicability] : []),
-  ];
+  const sexConstraints = (s) => profileCatalog.subject_applicability
+    .filter((entry) => entry.subject_id === s.subject_ref &&
+      entry.subject_kind === (s.subject_kind === 'social_role' ? 'role' : s.subject_kind))
+    .map((entry) => entry.actor_applicability);
   const households = new Map(readCsv(HOUSEHOLDS).map((h) => [h.hh_id, h]));
   if (data?.schema !== 'people_composition_authoring.v1' || !Array.isArray(data.compositions) || !Array.isArray(data.never_created_gaps)) return ['schema/compositions/gaps'];
   if (bound.size !== 16) errors.push(`node_binding has ${bound.size} primary PF, expected 16`);
@@ -160,6 +156,9 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
         }
         const constraints = sexConstraints(s);
         if (!constraints.length && !hasSex) errors.push(`${id}: no sourced sex for ${s.subject_ref}`);
+        if (hasSex && profiles.get(s.profile_ref)?.actor_applicability?.sex_category &&
+            !profiles.get(s.profile_ref).actor_applicability.sex_category.includes(`nov_1200_1250_sex_category_${s.sex}`))
+          errors.push(`${id}: sex incompatible with NPC actor applicability`);
         const values = [];
         for (const applicability of constraints) {
           const options = applicability?.sex_category;
@@ -288,6 +287,13 @@ if (isMain) {
         .some((error) => error.includes('unsourced sex applicability nov_occ_ferryman')))
         errors.push('negative probe failed: tampered single-sex source');
     }
+    {
+      const badProfiles = structuredClone(readJson(PROFILES));
+      badProfiles.subject_applicability = badProfiles.subject_applicability.filter((entry) => entry.subject_id !== 'nov_role_household_mistress');
+      if (!checkPeopleComposition(original, bridge, readCsv(PEOPLE), readCsv(DERIVED), badProfiles)
+        .some((error) => error.includes('no sourced sex for nov_role_household_mistress')))
+        errors.push('negative probe failed: missing household mistress authoring');
+    }
     probe('unknown household', 'unknown household profile', (d) => { const g = d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0]; g.group_kind = 'household'; g.household_profile_ref = 'unknown'; });
     probe('invalid weights', 'count range/weights', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].count_weights = [0]; });
     probe('invalid range', 'count range/weights', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].max_count = 0; });
@@ -366,6 +372,6 @@ if (isMain) {
       [nodes[0].place_type, other.place_type] = [other.place_type, nodes[0].place_type];
     }
   }
-  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 41 : 40} negative probes` : ''}`);
+  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 42 : 41} negative probes` : ''}`);
   process.exitCode = errors.length ? 1 : 0;
 }

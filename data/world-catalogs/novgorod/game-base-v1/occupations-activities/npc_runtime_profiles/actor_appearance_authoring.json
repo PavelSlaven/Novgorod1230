@@ -98,6 +98,16 @@
       "no_source": "individual_marital_status_not_derived_from_role"
     },
     {
+      "subject_id": "nov_role_household_mistress",
+      "subject_kind": "role",
+      "sex_category": ["nov_1200_1250_sex_category_female"],
+      "sex_basis": "editorial",
+      "confidence": "C",
+      "source_refs": ["data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"],
+      "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+      "no_source": "individual_marital_status_not_derived_from_role"
+    },
+    {
       "subject_id": "nov_occ_household_servant",
       "subject_kind": "occupation",
       "sex_category": ["nov_1200_1250_sex_category_male", "nov_1200_1250_sex_category_female"],

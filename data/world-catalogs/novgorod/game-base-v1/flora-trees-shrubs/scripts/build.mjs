@@ -48,6 +48,18 @@ function phenology(t) {
   return out;
 }
 
+function phenologyByMonth(t) {
+  const flower = new Set(months(t.phen?.flower));
+  const fruit = new Set(months(t.phen?.fruit));
+  const out = {};
+  for (let m = 1; m <= 12; m++) {
+    out[m] = flower.has(m) && fruit.has(m) ? 'flowering_and_fruiting'
+      : fruit.has(m) ? 'fruiting' : flower.has(m) ? 'flowering'
+      : [12, 1, 2].includes(m) ? 'winter_form' : 'vegetative';
+  }
+  return out;
+}
+
 const refsOfUse = (u) => u.refs || [];
 const taxa = taxaSrc.taxa;
 const kolByFl = new Map();
@@ -126,6 +138,7 @@ const taxaRows = taxa.map((t) => {
     flowers_before_leaves: t.phen?.flower_before_leaves === true ? 'yes' : '',
     phenology_note: [t.phen?.flower_note, t.phen?.fruit_note, t.phen?.autumn_colour && `осень: ${t.phen.autumn_colour}`, t.phen?.winter_retains].filter(Boolean).join(' | '),
     phenology_by_season: ph,
+    phenology_by_month: phenologyByMonth(t),
     winter_look: t.winter_look,
     cue_bark: t.cues.bark, cue_leaf: t.cues.leaf, cue_smell: t.cues.smell, cue_sound: t.cues.sound, cue_other: t.cues.other,
     use_codes: t.uses.map((u) => u.use).join(';'),

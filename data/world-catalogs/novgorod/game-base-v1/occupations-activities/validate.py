@@ -158,11 +158,17 @@ def main():
     assert not conflicts(young, {"age_category": young["if"]["age_category"], "hair_color": blond})
     assert not conflicts(young, {"age_category": "nov_1200_1250_age_category_adult", "hair_color": gray})
     subjects = npc["subject_applicability"]
-    assert len(subjects) == len(AUTHORING["subject_applicability"]) == 5
-    assert {item["subject_id"] for item in subjects} == {
-        "nov_occ_ferryman", "nov_occ_crossing_guard", "nov_occ_fisher",
-        "nov_role_smerd_householder", "nov_occ_household_servant"}
-    assert len({item["subject_id"] for item in subjects}) == 5
+    expected_subjects = {
+        ("occupation", "nov_occ_ferryman"),
+        ("occupation", "nov_occ_crossing_guard"),
+        ("occupation", "nov_occ_fisher"),
+        ("role", "nov_role_smerd_householder"),
+        ("role", "nov_role_household_mistress"),
+        ("occupation", "nov_occ_household_servant"),
+    }
+    assert len(subjects) == len(AUTHORING["subject_applicability"]) == len(expected_subjects)
+    assert {(item["subject_kind"], item["subject_id"]) for item in subjects} == expected_subjects
+    assert len({(item["subject_kind"], item["subject_id"]) for item in subjects}) == len(subjects)
     assert all(set(item) == {"subject_id", "subject_kind", "actor_applicability"} for item in subjects)
     for item in subjects:
         subject = item["subject_id"]
@@ -191,7 +197,8 @@ def main():
             assert "individual" in eligibility["rule"] or "конкретн" in eligibility["rule"]
             assert "female_headwear" in eligibility["no_source"]
         else:
-            assert eligibility["sex_category"] == ["nov_1200_1250_sex_category_male"]
+            assert eligibility["sex_category"] == ["nov_1200_1250_sex_category_" +
+                                                    ("female" if subject == "nov_role_household_mistress" else "male")]
             assert eligibility["sex_basis"] == "editorial" and eligibility["confidence"] == "C"
         matching = [p for p in profiles if (p["occupation_ref"] if kind == "occupation" else p["role_ref"]) == subject]
         for profile in matching:
@@ -201,7 +208,8 @@ def main():
                 if subject == "nov_occ_household_servant":
                     assert "no weighted sex selection" in regional["selection_rule"]
                 if subject != "nov_occ_household_servant":
-                    assert all("male" in option["applicability"]["sex_categories"]
+                    assert all(("female" if subject == "nov_role_household_mistress" else "male")
+                               in option["applicability"]["sex_categories"]
                                for option in regional["clothing_options"] if option["value"] is not None)
                     assert all(option["applicability"]["marital_status"] == "any"
                                for option in regional["clothing_options"] if option["value"] is not None)

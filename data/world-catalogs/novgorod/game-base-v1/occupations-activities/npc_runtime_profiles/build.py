@@ -64,9 +64,6 @@ def actor_applicability(role, occupation):
                 "source_refs": ["occupations/occupations_additions.csv#occ_wetnurse"],
                 "rule": "female follows the occupation; age range is editorial for an individual nursing actor",
                 "age_basis": "editorial", "no_source": "individual_marital_status_not_derived_from_occupation"}
-    if role == "nov_role_household_mistress":
-        return {"sex_category": [female], "source_refs": [ROLES_REF + "#" + role],
-                "rule": "role definition specifies a woman"}
     if role == "nov_role_apprentice":
         return {"age_category": ["nov_1200_1250_age_category_young_adult"],
                 "source_refs": [ROLES_REF + "#" + role],

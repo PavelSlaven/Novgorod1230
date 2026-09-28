@@ -7,7 +7,7 @@
     "craft_processes/process_steps.csv": 171,
     "craft_processes/process_products.csv": 47,
     "craft_processes/butchery_profiles.csv": 7,
-    "craft_processes/fish_cleaning_products.csv": 27,
+    "craft_processes/fish_cleaning_products.csv": 37,
     "workshops/workshops.csv": 21,
     "materials_registry/materials.csv": 103,
     "materials_registry/late_materials_denylist.csv": 27,

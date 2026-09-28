@@ -113,6 +113,11 @@ node scripts/validate-phase.cjs fauna-mammals-birds --self-test
 ```
 Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. The snapshots are already committed, so `build.cjs` and `validate.cjs` run offline. `validate.cjs` reads WK from the main checkout; set `NOVGOROD_MAIN` to point elsewhere.
 
+## D40 exclusions reviewed in C016
+
+- `fchk_023` is not a blanket exclusion: magpie remains in rural place families; only town rows are forbidden by the cited late urban-colonisation evidence.
+- `fchk_026` remains `included_reduced`. All seven listed birds now have `base_frequency_class=rare|contextual` and `presence_1230_confidence=C`; redwing and common rosefinch were corrected from `common` to `contextual`.
+
 ## Known gaps and cautions
 
 - **Novgorod bird bone list not read.** Зиновьев 2011 (NNZ 25: 277–287) and Hamilton-Dyer et al. 2020 (Oxbow, 255–293) are bibliographic only. The PDF of Hamilton-Dyer, Brisbane & Maltby 2017 (Bournemouth eprints) was unreachable. Waders, most passerines and owls therefore rest on modern regional analogy (B) and not on 1230 bones.

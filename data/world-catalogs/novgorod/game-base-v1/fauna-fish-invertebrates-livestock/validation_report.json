@@ -26,6 +26,7 @@
   "phase_activity": true,
   "fish_resolve_water_body_template": true,
   "fish_spawning_period_set": true,
+  "all_fish_species_have_food_product": true,
   "fish_species_per_river_lake_pf_ge_6": true,
   "summer_wet_pf_have_bloodsucker": true,
   "no_active_flying_insects_outdoors_in_winter": true,

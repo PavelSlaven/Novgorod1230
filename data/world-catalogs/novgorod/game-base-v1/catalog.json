@@ -1974,10 +1974,11 @@
         "observable_activity рассказчика"
       ],
       "existing_sources": [
-        "master activities 2442 (1916 со связями prev/next) — кандидат",
+        "activities_observable/activities_new_occupations.csv — 20 candidate-действий на 19 занятиях; 3 строки имеют закрытые item flows, у 17 пробел указан явно",
+        "master activities 2442 (1916 со связями prev/next) — черновой перечень, не импортирован целиком",
         "temporal-v4 activity_categories_profiles 6 — approved"
       ],
-      "gaps_ru": "Деятельность в runtime описана 6 категориями.",
+      "gaps_ru": "20 кандидатных наблюдаемых действий не активированы в runtime; у 17 нет подтверждённой пары входов/выходов, полный граф 2442 строк не прошёл предметную проверку.",
       "fill_method": "mixed",
       "priority": "M3",
       "acceptance_ru": "Скрипт: граф prev/next без циклов внутри цепочки; входы/выходы резолвятся в items; каждая цепочка имеет observable_text_ru."
@@ -2227,10 +2228,11 @@
         "schedules"
       ],
       "existing_sources": [
+        "time-calendar-church/time/calendar_1230_1250.csv — 351 candidate-строка: пасхалия, праздники, посты, сезоны и событие 1230 г.",
         "main:data/world-catalogs/novgorod/temporal-v4/datasets — календарь 1230–1233 + правило голода, approved",
         "master religious_food_rules 12 — кандидат"
       ],
-      "gaps_ru": "Праздники и посты не табулированы; в v17 temporal_authoring_records = 0 при требовании календаря — проверить блокер.",
+      "gaps_ru": "Календарь табулирован в game-base, но не импортирован: в v17 temporal_authoring_records = 0; поздние уставные и аграрные аналогии остаются confidence C.",
       "fill_method": "rule",
       "priority": "M2c",
       "acceptance_ru": "Скрипт: даты Пасхи 1230–1250 пересчитываются алгоритмом юлианской пасхалии и совпадают с таблицей; посты не пересекаются противоречиво; каждый год 1230–1250 покрыт."
@@ -2258,11 +2260,12 @@
         "@rus/turn / party-store (открыто ли место)"
       ],
       "existing_sources": [
-        "occupations TSV daily_schedule_* (все сезоны)",
+        "time-calendar-church/time/schedules_routines.csv — 167 candidate-сезонных распорядков занятий и субъектов стартовой территории",
+        "occupations TSV daily_schedule_* — один шаблонный текст во всех 68 занятиях",
         "temporal-v4 place_access_schedules 1, npc_temporal_profiles 2 — approved",
         "rus13tpl weather_season_rules npc_schedule_effects 5 — draft"
       ],
-      "gaps_ru": "В runtime 2 профиля NPC-времени и 1 расписание места.",
+      "gaps_ru": "167 строк — профили-кандидаты, не факты индивидуального присутствия; точное время и конкретный NPC у всех оставлены no_source. В runtime остаются 2 профиля NPC и 1 расписание места.",
       "fill_method": "derive",
       "priority": "M3",
       "acceptance_ru": "Скрипт: блоки времени покрывают 24 ч без перекрытий; activity_ref и pf_id резолвятся; каждое одобренное занятие имеет расписание на каждый сезон."
@@ -2441,13 +2444,13 @@
         "WK"
       ],
       "existing_sources": [
+        "transport-health-recreation/transport_travel/transport_entities.csv — 63 candidate-сущности из 83 проверенных книжных фактов",
+        "transport-health-recreation/transport_travel/route_modes.csv — 16 candidate-видов пути из audit draft",
         "world_db route_templates 21 — draft",
         "v17 movement costs 9, transition env 8 — approved",
-        "rus13tpl route_season_modifiers 29 — draft",
-        "audit route_guidance 16",
-        "v16 traversal rows (risk 3, hazards 10, checks 2) — потеряны в v17"
+        "rus13tpl route_season_modifiers 29 — draft"
       ],
-      "gaps_ru": "Нет шаблонов транспорта; traversal-строки v16 потеряны; семейство hospitality-travel в WK partial.",
+      "gaps_ru": "Сущности транспорта возвращены, но capacity/speed/required_animals и построчные route_template_refs не структурированы; traversal-строки v16 потеряны, runtime transport_templates пуст, hospitality-travel partial.",
       "fill_method": "mixed",
       "priority": "M3",
       "acceptance_ru": "Скрипт: каждый вид транспорта резолвит route_template; сезонная недоступность согласована (лодка зимой нет, сани летом нет); тяжеловозов нет."

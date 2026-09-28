@@ -47,9 +47,11 @@ Evidence derivation is fail-closed:
   without a named role remain `ordinary`.
 - `c1230` is retained as-is. `medieval_general` admits XI–XIV-century evidence
   with an explicit temporal caveat; it does not assert an individual
-  1230–1250 attestation.
+  1230–1250 attestation. `late_medieval` marks XV-century evidence and keeps
+  it out of the XI–XIV bucket.
 - Only the personal first-name form enters this pool. Patronymics, demonyms
-  and nicknames are excluded for a future component pool. `source_form` in
+  and nicknames live in the separate candidate component pools described
+  below; they do not enter the first-name selector. `source_form` in
   the decision TSV retains the spelling/case found in evidence when
   `name_form` is normalized (for example `Офимию` → `Офимья`).
 
@@ -72,9 +74,88 @@ contribute 223 derived records before key merging, and 58 are excluded with
 a closed row-level reason. The resulting pool has 179 unique entries. Typed
 gaps include every people×sex ordinary pool below 10 rows, unresolved
 social-position selection, the `medieval_general` temporal caveat and the
-future patronymic/nickname component pool. No mention-count weights are used.
+component-pool runtime-import gap. No mention-count weights are used.
+
+## Component pools (C016)
+
+`name_component_pools.csv`, `name_component_entries.csv` and
+`name_component_rules.csv` keep patronymics, nicknames and demonyms separate
+from the first-name pool. `name-component-source.json` and the narrow reviewed
+delta `name-component-army-additions.json` are the authoring owners;
+`../scripts/build-name-components.mjs` produces the three CSVs and
+`name-component-report.json`. The original repo-local snapshot
+`../sources/book_evidence_m2c_name_components.csv` pins all 40 reviewed rows
+used by the first pass. The SHA-256-pinned army snapshot
+`../sources/book_evidence_name_components_army.csv` contains 1,059 candidate
+rows after scanning all 16,927 extract rows: all 769 exact `name_form` rows
+from `x-*`, plus the four reviewer-requested
+`x-people` domains. `name_component_candidate_decisions.csv` gives exactly one
+include/reject decision and closed reason for every snapshot row. The MASTER
+archive was also screened: 22,220 canonical entities yielded no personal-name
+component forms; its SRC048 is only a bibliographic lead.
+The ledger proves coverage of the checked-in 1,059-row candidate snapshot;
+the 16,927-row upstream total is preparation-process metadata. A semantic
+rescreen of the former 232 `screened_no_supported_component` and 228
+`reviewer_requested_people_domain_no_component` rows returned 16 new
+components from 10 source rows; the remaining reasons are recorded in the
+generated report. The 85-row
+`../sources/book_evidence_name_component_direct.csv` pins
+compact excerpts for every cited book paragraph so validation also works
+outside Servak.
+All 55 army rows retained as active entry provenance were reconciled against
+the later `evidence/v2` extract. The old `army_0377` row is broken there and
+no longer supports `корела`; it remains only as a rejected row in the pinned
+historical ledger. v2 period labels also move `емь`, `варяг` and `варяги` to
+`medieval_general`.
+The builder also matches every included component form against all 1,059
+candidate `value` and `quote` fields: secondary attestations are recorded as
+`duplicate_of_included_form`. The small explicit ignored-pair list documents
+homonyms such as `красный` mead, generic occupations and the quantifier
+`весь`, so they cannot silently pass as personal-name evidence.
+For every `source_attested_form` entry and rule the validator additionally
+requires its declared surface form in checked-in support after only the
+declared historical spelling normalizations: ё/е, final ъ/ь and ц/ч. It also
+checks the semantic-rescreen row and component arithmetic against the ledger.
+
+Every entry has grammatical `form_kind`, a shared lexeme id and a referent.
+`people_ref` is used only where the closed selector exists; otherwise
+`selector_status=gap` keeps the form without inventing a people id. Bearer
+class and `social_tendency` are evidence context, not eligibility: forms seen
+on boyars are not thereby reserved to boyars. The suffix row records that
+`-ич/-евич/-ович/-инич` is often attested on elite bearers, but sources do not
+prove exclusivity or a complete productive morphology. `Нездыловъ` in
+`book:639442 §262` supports a possessive `-ов` form: in «Дрочило Нездыловъ
+сынъ кожевника» the component names the father Нездыло, while the following
+words give the father's occupation. The order «personal name + сынъ + named
+father» is directly attested by «Всеволодъ сынъ Юрьевъ» and «Ярославъ сынъ
+Володимеров», so the rule is a `source_attested_form` candidate, not a gap.
+
+Component `selection_class` follows the form, not merely the bearer. The
+closed values are `ordinary`, `dynastic` and `significant`; the ordinary
+selector returns only `ordinary`. Patronymics from the closed princely-name
+set are `dynastic`. A unique historical epithet is `significant`. Full
+personal designations are not stored as nickname entries: their patronymic,
+occupation nickname and demonym components are separate rows.
+
+Attested nickname forms remain distinct from open rules by occupation, place,
+appearance and character. Красный and Щербатый are attested appearance
+examples and remain `significant` personal epithets; ordinary appearance
+variants come only from the open rule. Open rules use `logical_necessity` and
+confidence C; they do
+not authorize an anachronistic occupation, place or trait. `Нежек` is retained
+as the task-requested candidate with an explicit limit: the source attests the
+form but does not classify it as a nickname. Demonyms store singular, plural
+or collective forms separately under one lexeme. Collective names such as
+`корела`, `чудь`, `емь`, `водь` and `литва` are not silently modernized into
+invented plurals. Runtime/DDL
+composition with first names is an explicit integration gap, not active data.
 
 Build and check:
+
+```sh
+node names-peoples/scripts/build-name-components.mjs
+node names-peoples/scripts/validate-name-components.mjs --self-test
+```
 
 ```sh
 node names-peoples/scripts/build-b2-name-pool.mjs
@@ -138,11 +219,10 @@ and German forms listed in `name_pool_entries.csv`, but none reaches the
 ≥10/≥10 ordinary threshold. Closing those gaps still needs sourced per-people
 onomastic corpora; the report records the current count for every selector.
 
-Patronymic (`-ич`, `-ов`) and nickname (`name_kind`) patterns are NOT
-separately enumerated yet — the source candidate carries only baptismal /
-vernacular first names, no patronymic-formation rules or nickname corpus.
-`name_kind` in the CSV is a placeholder value
-(`baptismal_or_vernacular`) pending that split; treat it as a further gap.
+`personal_names.csv` still carries only baptismal / vernacular first names and
+keeps placeholder `name_kind=baptismal_or_vernacular`. Component forms and
+rules are now enumerated in the separate C016 tables; the remaining gap is
+runtime composition, not absence of candidate data.
 
 ## Sources
 

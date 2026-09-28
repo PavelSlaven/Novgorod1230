@@ -1,0 +1,4 @@
+pool_id,component_kind,region_id,valid_from,valid_to,status
+novgorod_1230_1250_demonyms_v1,demonym,region_novgorod_land,1230-01-01,1250-12-31,draft
+novgorod_1230_1250_nicknames_v1,nickname,region_novgorod_land,1230-01-01,1250-12-31,draft
+novgorod_1230_1250_patronymics_v1,patronymic,region_novgorod_land,1230-01-01,1250-12-31,draft

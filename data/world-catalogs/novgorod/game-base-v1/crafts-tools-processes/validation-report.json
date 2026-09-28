@@ -116,7 +116,7 @@
     {
       "id": "fish_cleaning_process_and_species_products",
       "result": "PASS",
-      "detail": "27 species products; knife required; generic output preserves fa_id"
+      "detail": "37 species products; knife required; generic output preserves fa_id"
     },
     {
       "id": "workshop_tools_stocks_processes_resolve",

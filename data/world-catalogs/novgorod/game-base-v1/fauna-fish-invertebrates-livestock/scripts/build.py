@@ -462,7 +462,7 @@ for (did, pats, reason, limit, src, conf, scope) in denylist_data.DENY:
 
 # ---------------- write ----------------
 counts = {}
-counts["fish.csv"] = write_csv("fish.csv", list(fish_rows[0].keys()), fish_rows)
+counts["fish.csv"] = write_csv("fish.csv", list(fish_rows[0].keys()), fish_rows, "\n")
 counts["fishing_methods.csv"] = write_csv("fishing_methods.csv", list(fm_rows[0].keys()), fm_rows)
 counts["water_body_pf_crosswalk.csv"] = write_csv("water_body_pf_crosswalk.csv", list(cw_rows[0].keys()), cw_rows)
 counts["invertebrates_herps.csv"] = write_csv("invertebrates_herps.csv", list(inv_rows[0].keys()), inv_rows, "\n")
@@ -634,6 +634,16 @@ if phase_check.returncode:
 # fish: >=1 water template; spawning in months
 checks["fish_resolve_water_body_template"] = all(any(t in wb for t in s["wb"]) for s in fish_data.FISH)
 checks["fish_spawning_period_set"] = not problems.get("missing_spawning_period")
+def missing_fish_products(species):
+    return [s["fa_id"] for s in species if s["fa_id"].startswith("fa_fish_") and not s["ing"]]
+missing_food_products = missing_fish_products(fish_data.FISH)
+checks["all_fish_species_have_food_product"] = not missing_food_products
+if missing_food_products:
+    problems["fish_without_food_product"] = missing_food_products
+if '--self-test' in sys.argv:
+    productless_probe = [dict(s) for s in fish_data.FISH]
+    productless_probe[0]["ing"] = ""
+    assert missing_fish_products(productless_probe) == [productless_probe[0]["fa_id"]]
 river_lake_pf = ["river_channel", "riverbank", "lake_shore", "fishing_camp", "river_wharf", "ferry_landing", "bridge_crossing", "winter_ice_crossing", "marshy_stream"]
 per_pf = {pf: len({r["fa_id"] for r in pres_rows if r["taxon_table"] == "fish" and r["pf_id"] == pf and r["subregion_scope"] == CORE_SUB}) for pf in river_lake_pf}
 checks["fish_species_per_river_lake_pf_ge_6"] = all(v >= 6 for v in per_pf.values())

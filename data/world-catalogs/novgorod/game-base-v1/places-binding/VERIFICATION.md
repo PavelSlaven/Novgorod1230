@@ -1052,3 +1052,12 @@
 - Для item/fauna `source_pool` и `variants[].source_pool` теперь используют стабильный `<path>#<row-id>`; `pr_id`, ключи и поведение не изменились.
 - `reports/category-registry-report.json` пересобран: `references_checked=7239`.
 - Полный `build-all.mjs` и `validate.mjs` с реальным bridge — PASS. Это проверка исправления; данные остаются `candidate`, независимый verdict автора C007d2 не утверждается.
+
+### presence/presence_rules.csv + reports — approve (C006f)
+
+Проверено: Claude Opus 5.5, повторной сборкой и скриптом (C006f, коммит a203925f против 6b03335e).
+
+- **Сборка.** `build-all.mjs` в отдельном worktree даёт те же байты. Полный `validate.mjs --start-territory <bridge> --self-test` — 0 FAIL.
+- **Стабильные ссылки.** `source_pool` и `variants[].source_pool` ссылаются на строку по стабильному id (`#ipf_*`, `#presence_*`). `pr_id`, ключи и поведенческие ячейки не изменились, 5717 строк.
+- `category-registry-report.json` — 7239, как при чистой сборке.
+- **Ограничение.** Provenance людей (`people_presence_authoring.csv`, 17 правил) остаётся позиционным `#rowN`, пока у строк нет своих id.

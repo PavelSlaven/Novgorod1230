@@ -8,6 +8,8 @@ import bundleSchema from '../../data/contracts/spatial-v3/world-base-authoring-b
 import { proveExpansionCapacity } from './p11-capacity-proof.mjs';
 import { validateP12SourceApproval } from './p12-source-approval.mjs';
 import { validateP12TargetMaterializationApprovalV11 } from './p12-target-materialization-approval-v1_1.mjs';
+import { validateM2cNpcWaveApproval } from './m2c-npc-wave-approval.mjs';
+import { isM2cNpcWaveManifest, validateM2cNpcWaveBundle } from './m2c-npc-wave-bundle-validation.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const REGISTRY = 'data/contracts/spatial-v3/world-base-import-registry.v1.json';
@@ -66,7 +68,18 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateSceneCandidateApplicability(datasets, errors);
   validateExternalDependencyClosure(datasets, errors);
   validateExpansionRuleClosure(datasets, errors);
+  validateM2cNpcWaveBundle(manifest, datasets, errors);
+  if (isM2cNpcWaveManifest(manifest) && manifest.status === 'approved') {
+    const waveApproval = await validateM2cNpcWaveApproval({ root: projectRoot });
+    for (const waveError of waveApproval.errors) errors.push(issue('M2C_WAVE_APPROVAL_INVALID', waveError.code));
+  }
   return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval, target_approval: targetApproval });
+}
+
+export async function buildImportWithReadbackSql(options = {}) {
+  const importSql = await buildTransactionalImportSql({ ...options, wrapTransaction: false });
+  const readbackSql = await buildBundleReadbackSql(options);
+  return `BEGIN;\n${importSql}${readbackSql}COMMIT;\n`;
 }
 
 export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST } = {}) {
@@ -92,7 +105,7 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
     sql.push(`CREATE TEMP TABLE ${candidateTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
     for (const row of rows) {
       const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
-      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type)]));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type, `${dataset.table}.${column.name}`)]));
       const keyPredicate = primaryKey.map((column) => `${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
       const actualKeyPredicate = primaryKey.map((column) => `actual.${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
       sql.push(
@@ -141,7 +154,7 @@ export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAU
     sql.push(`CREATE TEMP TABLE ${expectedTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
     for (const row of rows) {
       const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
-      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type)]));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type, `${dataset.table}.${column.name}`)]));
       sql.push(`INSERT INTO ${expectedTable} (${columns.map((column) => column.name).join(', ')}) VALUES (${columns.map((column) => values.get(column.name)).join(', ')});`);
     }
     sql.push(
@@ -175,8 +188,8 @@ export function resolveTablePrimaryKey(schema) {
   return primaryKey;
 }
 
-export function sqlLiteral(value, type = '') {
-  return literal(value, type);
+export function sqlLiteral(value, type = '', context = '') {
+  return literal(value, type, context);
 }
 
 function validateReferences(manifest, datasets, errors) {
@@ -365,7 +378,7 @@ function issue(code, subject_ref) { return Object.freeze({ code, subject_ref, de
 function text(value) { return typeof value === 'string' && value.trim().length > 0; }
 function descendant(file, parent) { const path = relative(parent, file); return !!path && !path.startsWith('..') && !isAbsolute(path); }
 function digest(value) { return createHash('sha256').update(value).digest('hex'); }
-function literal(value, type = '') {
+function literal(value, type = '', context = '') {
   if (value === null) return 'NULL';
   if (typeof value === 'number') return String(value);
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
@@ -373,6 +386,11 @@ function literal(value, type = '') {
   if (Array.isArray(value) && normalizedType.endsWith('[]')) {
     const pgType = normalizedType.replace(/\s+/g, '');
     if (!value.length) return `ARRAY[]::${pgType}`;
+    for (const item of value) {
+      if (item === null || item === undefined) {
+        throw new Error(`P12_ARRAY_NULL_ELEMENT:${context || type}`);
+      }
+    }
     const elements = value.map((item) => {
       const serialized = String(item).replaceAll("'", "''");
       return `'${serialized}'`;

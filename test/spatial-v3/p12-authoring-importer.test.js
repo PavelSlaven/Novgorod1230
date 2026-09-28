@@ -222,10 +222,17 @@ test('P12 readback SQL fails closed on aggregate mismatch code', async () => {
   assert.match(sql, /P12_READBACK_MISMATCH:spatial_v3_world_revisions/u);
 });
 
-test('m2c-npc-wave approval draft covers generator source paths on pin 4e958d9c', async () => {
+test('m2c-npc-wave approval draft covers generator source paths on pin 3ab1c890', async () => {
   const result = await validateM2cNpcWaveApproval({ root: process.cwd() });
   assert.equal(result.ok, true, result.errors.map((error) => error.code).join(', '));
-  assert.equal(result.approval.source_commit, '4e958d9cffc3980cc5667b567fc5a3b0a2f64561');
+  assert.equal(result.approval.source_commit, '3ab1c890c1caee2c1247ee144bf66bd35de705ec');
+});
+
+test('P12 sqlLiteral rejects null TEXT[] elements fail-closed', () => {
+  assert.throws(
+    () => sqlLiteral([null], 'TEXT[]', 'presence_rules.allowed_seasons'),
+    /P12_ARRAY_NULL_ELEMENT:presence_rules\.allowed_seasons/u,
+  );
 });
 
 test('P12 emits domain readiness failures for route endpoints without canonical G5 or directional-exit compatibility', async () => {

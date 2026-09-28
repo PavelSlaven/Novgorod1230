@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { readFile, rm } from 'node:fs/promises';
 import { mkdtemp } from 'node:fs/promises';
@@ -8,6 +9,8 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import {
   buildM2cNpcWaveDatasets,
+  starterPrimaryPlaceFamilies,
+  STARTER_G3_SUBSTR,
   mapPresenceRule,
   mapNpcRelationshipRule,
   mapSpeechAddressForm,
@@ -134,6 +137,28 @@ test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
     worldRevisionId: 'rev-fixture',
     provenanceRef: 'src-fixture',
     gitShow: fixtureGitShow,
+    spatialClosure: {
+      revisionRows: [{
+        id: 'rev-fixture',
+        catalog_digest: 'a'.repeat(64),
+        status: 'approved',
+        provenance_ref: 'src-fixture',
+      }],
+      closureNodes: [{
+        entity_kind: 'spatial_node',
+        id: 'node-1',
+        version: 1,
+        world_revision_id: 'rev-fixture',
+        spatial_level: 'G4',
+        stable_label_id: null,
+        primary_class_id: 'spatial.g4.test',
+        evidence_status: 'reviewed',
+        traversal_model: null,
+        status: 'approved',
+        provenance_ref: 'src-fixture',
+        canonical_digest: 'b'.repeat(64),
+      }],
+    },
   };
   const resultA = await buildM2cNpcWaveDatasets({ ...opts, outRoot: outA });
   const resultB = await buildM2cNpcWaveDatasets({ ...opts, outRoot: outB });
@@ -156,5 +181,29 @@ test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
   const slots = JSON.parse(await readFile(join(outA, 'datasets/slot_instance_variants.json'), 'utf8'));
   assert.deepEqual(slots.map((row) => row.weight), [1, 2]);
 
+  await rm(parent, { recursive: true, force: true });
+});
+
+test('starter territory place families each have a primary binding on pin 3ab1c890', async () => {
+  const commit = '3ab1c890c1caee2c1247ee144bf66bd35de705ec';
+  const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-starter-'));
+  const outRoot = join(parent, 'v1');
+  const result = await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  assert.equal(result.starterPlaceFamilies, 16, `starter PF count ${result.starterPlaceFamilies}`);
+  const bindings = JSON.parse(await readFile(join(outRoot, 'datasets/spatial_node_place_family_bindings.json'), 'utf8'));
+  const starterPf = starterPrimaryPlaceFamilies(bindings);
+  assert.ok(starterPf.size >= 16);
+  for (const pfId of starterPf) {
+    assert.ok(
+      bindings.some((row) => row.place_family_id === pfId && row.binding_role === 'primary'
+        && String(row.node_id).includes(STARTER_G3_SUBSTR)),
+      pfId,
+    );
+  }
+  const manifest = JSON.parse(await readFile(join(outRoot, 'manifest.json'), 'utf8'));
+  assert.equal(manifest.bundle_kind, 'dependency_closure');
+  assert.deepEqual(manifest.data_gaps, []);
+  assert.equal(manifest.source_commit, undefined);
   await rm(parent, { recursive: true, force: true });
 });

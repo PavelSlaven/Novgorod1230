@@ -2,16 +2,17 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const APPROVAL_PATH = 'data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json';
-const GENERATOR_SOURCE_PATHS = [
+export const GENERATOR_SOURCE_PATHS = [
   'data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv',
-  'data/world-catalogs/novgorod/game-base-v1/places-binding/places/spatial_node_place_family_bindings.csv',
-  'data/world-catalogs/novgorod/game-base-v1/presence/presence_rules.csv',
-  'data/world-catalogs/novgorod/game-base-v1/npc/npc_relationship_materialization_rules.csv',
-  'data/world-catalogs/novgorod/game-base-v1/npc/speech_address_forms.csv',
-  'data/world-catalogs/novgorod/game-base-v1/npc/household_composition_profiles.csv',
-  'data/world-catalogs/novgorod/game-base-v1/npc/slot_instance_variants.csv',
-  'data/world-catalogs/novgorod/game-base-v1/presence/water_body_presence_facets.csv',
-  'data/world-catalogs/novgorod/game-base-v1/presence/fauna_phase_activity_rules.csv',
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv',
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv',
+  'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/households_kinship/relationship_rules.csv',
+  'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/speech_address/address_forms.csv',
+  'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/households_kinship/household_composition_profiles.csv',
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/slots/slot_instance_variants.json',
+  'data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/weather_climate/water_profiles.csv',
+  'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/phase_activity.csv',
+  'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/phase_activity.csv',
 ];
 
 export async function validateM2cNpcWaveApproval({ root = process.cwd(), approvalPath = APPROVAL_PATH } = {}) {

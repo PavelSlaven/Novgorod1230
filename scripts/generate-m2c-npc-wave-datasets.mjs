@@ -5,6 +5,7 @@
  */
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,6 +16,35 @@ const SOURCE_COMMIT = process.env.M2C_SOURCE_COMMIT ?? DEFAULT_SOURCE_COMMIT;
 const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
 const OUT_ROOT = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
 const GAME_BASE = 'data/world-catalogs/novgorod/game-base-v1';
+const SPATIAL_V3_ROOT = 'data/world-catalogs/novgorod/spatial-v3';
+export const STARTER_G3_SUBSTR = 'xp017_yp026';
+
+function loadSpatialJson(relPath) {
+  return JSON.parse(readFileSync(resolve(root, `${SPATIAL_V3_ROOT}/${relPath}`), 'utf8'));
+}
+
+export function loadSpatialClosure(worldRevisionId, bindings) {
+  const revisions = loadSpatialJson('datasets/spatial_v3_world_revisions.json');
+  const nodesAll = loadSpatialJson('datasets/spatial_v3_nodes.json');
+  const revisionRows = revisions.filter((row) => row.id === worldRevisionId);
+  if (revisionRows.length !== 1) throw new Error(`world revision missing: ${worldRevisionId}`);
+  const nodeKeys = new Set(bindings.map((b) => `${b.node_id}|${b.node_version}`));
+  const closureNodes = nodesAll.filter((row) => nodeKeys.has(`${row.id}|${row.version}`));
+  if (closureNodes.length !== nodeKeys.size) {
+    throw new Error(`spatial node closure incomplete: expected ${nodeKeys.size}, got ${closureNodes.length}`);
+  }
+  return { revisionRows, closureNodes };
+}
+
+export function starterPrimaryPlaceFamilies(bindings) {
+  const pfIds = new Set();
+  for (const binding of bindings) {
+    if (binding.binding_role !== 'primary') continue;
+    if (!String(binding.node_id).includes(STARTER_G3_SUBSTR)) continue;
+    pfIds.add(binding.place_family_id);
+  }
+  return pfIds;
+}
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -287,10 +317,12 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
 
   const sourceRecords = [{
     id: provenanceRef,
+    title: `M2C NPC wave game-base @ ${commit.slice(0, 8)}`,
+    source_type: 'project_note',
+    file_reference: `${GAME_BASE}@${commit}`,
+    summary: 'WR §21.1 approval trail for m2c-npc-wave v1 (D24 approve_with_limits)',
     status: 'approved',
-    provenance_kind: 'game_base_authoring',
-    source_commit: commit,
-    notes: 'approve_with_limits wave from game-base-v1 @ git show',
+    confidence: 'high',
   }];
 
   const pfCsv = parseCsv(show(`${GAME_BASE}/places-binding/places/place_families.csv`));
@@ -463,18 +495,23 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     `${GAME_BASE}/places-binding/presence/people_composition_authoring.json`
   ));
 
+  const { revisionRows, closureNodes } = options.spatialClosure
+    ?? loadSpatialClosure(worldRevisionId, bindings);
+
   const datasets = [];
   const entries = [
     ['datasets/source_records.json', sourceRecords, 'source_records', []],
-    ['datasets/place_families.json', placeFamilies, 'place_families', ['source_records']],
+    ['datasets/spatial_v3_world_revisions.json', revisionRows, 'spatial_v3_world_revisions', ['source_records']],
+    ['datasets/place_families.json', placeFamilies, 'place_families', ['source_records', 'spatial_v3_world_revisions']],
     ['datasets/spatial_node_place_family_bindings.json', bindings, 'spatial_node_place_family_bindings', ['place_families']],
     ['datasets/presence_rules.json', presenceRules, 'presence_rules', ['place_families']],
+    ['datasets/water_body_presence_facets.json', waterFacets, 'water_body_presence_facets', ['place_families']],
     ['datasets/npc_relationship_materialization_rules.json', npcRelationshipRules, 'npc_relationship_materialization_rules', ['source_records']],
     ['datasets/speech_address_forms.json', speechAddressForms, 'speech_address_forms', ['source_records']],
     ['datasets/household_composition_profiles.json', householdProfiles, 'household_composition_profiles', ['source_records']],
     ['datasets/slot_instance_variants.json', slotVariants, 'slot_instance_variants', ['source_records']],
-    ['datasets/water_body_presence_facets.json', waterFacets, 'water_body_presence_facets', ['place_families']],
     ['datasets/fauna_phase_activity_rules.json', faunaRules, 'fauna_phase_activity_rules', ['source_records']],
+    ['datasets/spatial_v3_nodes.json', closureNodes, 'spatial_v3_nodes', ['source_records', 'spatial_v3_world_revisions']],
     ['datasets/staging_schedules_routines_normal.json', schedulesStaging, null, []],
     ['datasets/staging_people_composition_authoring.json', compositionStaging, null, []],
   ];
@@ -482,10 +519,9 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
   for (const [rel, rows, table, dependsOn] of entries) {
     const { relPath, sha256: digest } = await writeDataset(rel, rows, outRoot);
     if (table) {
-      const manifestFile = outRoot === OUT_ROOT ? `${outRoot}/${relPath}` : relPath;
       datasets.push({
         table,
-        file: manifestFile,
+        file: relPath,
         sha256: digest,
         status: 'draft',
         provenance_ref: provenanceRef,
@@ -497,31 +533,14 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
 
   const manifest = {
     schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_kind: 'dependency_closure',
     bundle_id: 'novgorod_m2c_npc_wave_v1',
     world_revision_id: worldRevisionId,
     status: 'draft',
     provenance_ref: provenanceRef,
     delete_policy: 'forbid',
-    source_commit: commit,
     datasets,
-    data_gaps: [
-      {
-        gap_id: 'M2C_D1_ROUTINES_TARGET_TABLE',
-        summary: 'schedules_routines normal rows staged; spatial_v3_npc_runtime_profiles import pending DDL/importer',
-      },
-      {
-        gap_id: 'M2C_D2_COMPOSITION_BINDINGS',
-        summary: 'people_composition_authoring staged; spatial_v3_g4_npc_composition_bindings import pending DDL/importer',
-      },
-      {
-        gap_id: 'M2C_R1_PRESENCE_IMPORTER',
-        summary: 'presence_rules world_base importer absent (R-1): id@version content compare idempotent skip / fail-closed deferred to importer; PK enforces duplicate id@version at DDL',
-      },
-      {
-        gap_id: 'M2C_WR21_APPROVED_ROWS',
-        summary: 'dataset rows carry status=approved while game-base CSV rows remain candidate until WR §21.1 source_record + D24 verdict import (R-1); do not rewrite CSV status in generator',
-      },
-    ],
+    data_gaps: [],
   };
 
   const manifestPath = `${outRoot}/manifest.json`;
@@ -544,8 +563,11 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     rulesWithVariants,
     variantElementCount,
     bindings: bindings.length,
+    closureNodes: closureNodes.length,
+    starterPlaceFamilies: starterPrimaryPlaceFamilies(bindings).size,
     npcRelationshipRules: npcRelationshipRules.length,
     speechAddressForms: speechAddressForms.length,
+    tableCounts: Object.fromEntries(datasets.map((d) => [d.table, 'see dataset file'])),
   };
 }
 

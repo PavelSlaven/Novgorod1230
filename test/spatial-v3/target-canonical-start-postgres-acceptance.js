@@ -139,6 +139,10 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   // only the external model response is deterministic in this isolated acceptance.
   const narrationRoles = [];
   const providerTimings = [];
+  const modelCalls = [];
+  const MATERIALIZATION_ROLES = Object.freeze(['ordinary_materialization',
+    'spatial_semantic_descriptor', 'npc_ordinary_semantic_remainder',
+    'npc_ordinary_semantic_remainder_auditor']);
   const previousFetch = globalThis.fetch;
   const realProvider = process.env.RUS_TARGET_HTTP_BROWSER_SMOKE_PROVIDER === 'real';
   const llmSettings = realProvider
@@ -153,11 +157,14 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
       let output;
       if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+        modelCalls.push({ role: 'world_knowledge_query_planner' });
         output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
           domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
       } else if (system.startsWith('Resolve the raw Russian player text')) {
+        modelCalls.push({ role: 'intent_router' });
         output = { status: 'unknown', reason_code: 'unknown_intent' };
       } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+        modelCalls.push({ role: 'turn_step_planner' });
         assert.equal((modelInput.request ?? modelInput).root_player_action, TARGET_SMOKE_INPUT);
         output = { operation_choice: null, interpretation: { adaptation: 'literal' },
           resolution: 'direct', goal_result: 'achieved',
@@ -167,10 +174,12 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
           reason: 'Обзор ограничен уже предоставленными видимыми сведениями.' };
       } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
         narrationRoles.push('gameplay_narrator');
+        modelCalls.push({ role: 'gameplay_narrator' });
         output = { prose: [...modelInput.required_current_beat.changes,
           ...modelInput.required_current_beat.uncertainties].map(({ text }) => text).join('\n\n') };
       } else if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
         narrationRoles.push('gameplay_narrator_auditor');
+        modelCalls.push({ role: 'gameplay_narrator_auditor' });
         const ids = modelInput.segments.map(({ segment_id }) => segment_id);
         output = { reviewed_segments: ids,
           source_reviews: [...modelInput.required_current_beat.changes,
@@ -178,6 +187,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
           unsupported: [], literary_failures: [], evidence: ['Deterministic source-copy.'] };
       } else if (system.startsWith('Return only {"prose"')) {
         narrationRoles.push('gameplay_narrator');
+        modelCalls.push({ role: 'gameplay_narrator' });
         const context = modelInput.visible_context_package;
         if (narrationRoles.length === 1) {
           assert.equal(context.known_context.some((entry) => /лодоч|рыбацкий стан/u.test(entry.text)), false);
@@ -187,10 +197,14 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
         const split = Math.ceil(facts.length / 2);
         output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
           .filter(Boolean).join('\n\n') };
-      } else {
-        assert.ok(system.startsWith('Return only {"pass"'), system);
+      } else if (system.startsWith('Return only {"pass"')) {
         narrationRoles.push('gameplay_narrator_auditor');
+        modelCalls.push({ role: 'gameplay_narrator_auditor' });
         output = { pass: true, failed_checks: [], concerns: [], evidence: ['Test response uses the supplied committed visible facts.'] };
+      } else {
+        throw new Error('M2c 0-LLM baseline: catalogued target start invoked a model role '
+          + 'this fixture does not recognize as narrator/audit/turn-processing — verify it is '
+          + `not a materialization role before adding a response branch. System prompt: ${system}`);
       }
       providerTimings.push({ duration_ms: performance.now() - providerStarted });
       return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
@@ -232,7 +246,9 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       external_provider_calls: providerTimings,
       generation_commit_projection: null,
       unavailable_timing_reason: 'Existing production facade exposes no separate stage timers.' },
-    generative_materialization_calls: 0, observed_model_roles: narrationRoles }, null, 2));
+    generative_materialization_calls: modelCalls.filter(({ role }) =>
+      MATERIALIZATION_ROLES.includes(role)).length,
+    observed_model_roles: narrationRoles }, null, 2));
   console.log(`Target official start playtest: ${playtestPath}`);
   assert.equal(opening.screen.schema, 'first_game_screen');
   assert.equal(opening.screen.scenario_id, profile.scenario_id);
@@ -304,6 +320,13 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     assert.equal(Number(observed.turn_number), 1);
     assert.equal(observed.screen.main_prose.trim().length > 0, true);
     opened.set(scenarioId, { partyId, digest: canonicalDigest(observed.screen) });
+  }
+  if (!realProvider) {
+    const materializationCalls = modelCalls.filter(({ role }) =>
+      MATERIALIZATION_ROLES.includes(role));
+    assert.equal(materializationCalls.length, 0,
+      'M2c 0-LLM baseline: catalogued target starts and their first look must not invoke '
+        + `a materialization role; observed: ${JSON.stringify(materializationCalls)}`);
   }
   const reloadedRuntime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   try {

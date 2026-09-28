@@ -18,6 +18,14 @@ export function isIsoDate(value) {
     && !Number.isNaN(Date.parse(`${value}T00:00:00Z`));
 }
 
+/** SQL read surface for M2c wave readers; separate from spatial-v3 typed `read({ kind, ref })`. */
+export function createRuntimeCatalogWorldBaseReader(query) {
+  if (typeof query !== 'function') {
+    throw new TypeError('query is required.');
+  }
+  return Object.freeze({ read: (sql, params) => query(sql, params) });
+}
+
 export function rowsFrom(result) {
   if (!result || !Array.isArray(result.rows)) {
     fail('RUNTIME_CATALOG_IMPORT_AUDIT_INVALID',

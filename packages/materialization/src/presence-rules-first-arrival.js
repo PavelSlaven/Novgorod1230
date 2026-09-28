@@ -1,9 +1,12 @@
 import { createRandomSource, deriveSeed, RNG_VERSION } from './core.js';
 import { applyOrdinaryAggregateTransition } from './ordinary-materialization-foundation.js';
+import { ruleAllowedInSeason } from './presence-rule-conflicts.js';
 import {
   isPresenceRuleRecord,
   presenceRuleReplayKey,
 } from './ordinary-materialization-foundation-internal.js';
+
+const WILDLIFE_PRESENCE_SUBJECT_KINDS = new Set(['category']);
 
 export function presenceRuleSubjectKey(rule) {
   return `${rule.subject_kind}:${rule.subject_ref}`;
@@ -26,10 +29,7 @@ export function pickRegionalPresenceRule(rules, regionId) {
     `${left.rule_id}@${left.rule_version}`.localeCompare(`${right.rule_id}@${right.rule_version}`))[0];
 }
 
-export function ruleAllowedInSeason(rule, season) {
-  const seasons = rule.allowed_seasons ?? [];
-  return seasons.length === 0 || seasons.includes(season);
-}
+export { ruleAllowedInSeason };
 
 export function mergePlaceFamilyPresenceRules({
   primaryRules = [],
@@ -65,6 +65,29 @@ export function mergePlaceFamilyPresenceRules({
     if (winner) merged.push(winner);
   }
   return merged.sort((left, right) => presenceRuleSubjectKey(left).localeCompare(presenceRuleSubjectKey(right)));
+}
+
+function categoryTopologyDepth(subjectRef, parentById) {
+  let depth = 0;
+  let current = parentById.get(subjectRef) ?? null;
+  const seen = new Set();
+  while (current && !seen.has(current)) {
+    seen.add(current);
+    depth += 1;
+    current = parentById.get(current) ?? null;
+  }
+  return depth;
+}
+
+export function sortPresenceRulesForFirstArrival(rules, parentById = new Map()) {
+  return [...rules].sort((left, right) => {
+    if (left.subject_kind === 'category' && right.subject_kind === 'category') {
+      const byDepth = categoryTopologyDepth(left.subject_ref, parentById)
+        - categoryTopologyDepth(right.subject_ref, parentById);
+      if (byDepth !== 0) return byDepth;
+    }
+    return presenceRuleSubjectKey(left).localeCompare(presenceRuleSubjectKey(right));
+  });
 }
 
 export function categoryAncestorIds(categoryId, parentById) {
@@ -142,8 +165,12 @@ export function applyPresenceRulesFirstArrival({
   requestIdentityPrefix = 'presence-first-arrival',
 }) {
   let current = aggregate;
-  for (const rule of rules) {
+  for (const rule of sortPresenceRulesForFirstArrival(rules, parentById)) {
+    if (!WILDLIFE_PRESENCE_SUBJECT_KINDS.has(rule.subject_kind)) continue;
     const period = rule.refresh_class === 'by_year_season' ? periodNumber : null;
+    if (rule.refresh_class === 'by_year_season' && periodNumber == null) {
+      throw new Error('PRESENCE_RULE_PERIOD_REQUIRED');
+    }
     const replayProbe = {
       scope_instance_ref: scopeInstanceRef,
       subject_kind: rule.subject_kind,

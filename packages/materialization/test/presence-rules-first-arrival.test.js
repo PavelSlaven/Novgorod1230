@@ -24,7 +24,7 @@ const rule = (overrides = {}) => ({
   subject_ref: 'cat_child',
   presence_probability_ppm: 1_000_000,
   count_limit: 2,
-  allowed_seasons: [],
+  allowed_seasons: ['all'],
   refresh_class: 'none',
   entry_exposed_weight: 1,
   search_concealed_weight: 0,
@@ -122,6 +122,23 @@ test('LW-071: resolved ancestor category skips descendant presence roll', () => 
     parentById,
   });
   assert.equal(after.presence_resolutions.length, 1);
+});
+
+test('LW-071: child rule after parent even when alphabet favors child first', () => {
+  const parentById = new Map([['cat_z_child', 'cat_a_parent']]);
+  let aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-z' }, resolution_record_cap: 8 });
+  aggregate = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-1',
+    scopeInstanceRef: 'g5:site-z',
+    rules: [
+      rule({ rule_id: 'pr_child', subject_ref: 'cat_z_child' }),
+      rule({ rule_id: 'pr_parent', subject_ref: 'cat_a_parent' }),
+    ],
+    parentById,
+  });
+  assert.equal(aggregate.presence_resolutions.length, 1);
+  assert.equal(aggregate.presence_resolutions[0].subject_ref, 'cat_a_parent');
 });
 
 test('unseen-equivalent category uses the same resolve_presence_rule path', () => {

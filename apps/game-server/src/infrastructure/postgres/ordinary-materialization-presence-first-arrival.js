@@ -4,11 +4,17 @@ import {
 } from '@rus/materialization';
 import {
   loadCategoryParentMap,
+  loadG0RegionIdForSpatialNode,
   loadPresenceRulesForPlaceFamilies,
 } from '@rus/runtime-catalog';
+import { serverError } from '../../errors.js';
 
 function scopeInstanceRefForSite(siteId) {
   return siteId.startsWith('g5:') ? siteId : `g5:${siteId}`;
+}
+
+function isWaveNotActivatedError(error) {
+  return error?.code === 'M2C_NPC_WAVE_ACTIVATION_MISSING';
 }
 
 export async function resolvePresenceRulesFirstArrivalForSite({
@@ -20,13 +26,49 @@ export async function resolvePresenceRulesFirstArrivalForSite({
   spatialNodeVersion,
   partyId,
   siteId,
-  regionId = null,
+  regionId,
   season,
   periodNumber = null,
 }) {
   if (!worldBaseReader?.read || !spatialNodeId || !Number.isInteger(spatialNodeVersion)) {
     return null;
   }
+  if (typeof regionId !== 'string' || !regionId.trim() || typeof season !== 'string' || !season.trim()) {
+    return null;
+  }
+  try {
+    return await resolvePresenceRulesFirstArrivalForSiteInner({
+      worldBaseReader,
+      spatialWorldPin,
+      worldPin,
+      runtimeCatalogPin,
+      spatialNodeId,
+      spatialNodeVersion,
+      partyId,
+      siteId,
+      regionId: regionId.trim(),
+      season: season.trim(),
+      periodNumber,
+    });
+  } catch (error) {
+    if (isWaveNotActivatedError(error)) return null;
+    throw error;
+  }
+}
+
+async function resolvePresenceRulesFirstArrivalForSiteInner({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+  spatialNodeId,
+  spatialNodeVersion,
+  partyId,
+  siteId,
+  regionId,
+  season,
+  periodNumber = null,
+}) {
   const revisionId = spatialWorldPin.world_revision_id;
   const bindings = await worldBaseReader.read(
     `SELECT place_family_id, binding_role
@@ -85,7 +127,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
   spatialWorldPin,
   worldPin,
   runtimeCatalogPin,
-  readPartySeason,
+  readPartyPresenceCalendar,
 } = {}) {
   return async function resolvePresenceRulesFirstArrival({
     transaction,
@@ -99,7 +141,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
     let g4 = request?.g4;
     if (!resolvedSite && transaction?.query && partyId && scope?.entity_id) {
       const hosted = await transaction.query(
-        `SELECT g6.host_id, g5.canonical_g5_ref, g5.parent_g4_id
+        `SELECT g6.host_id, g5.canonical_g5_ref, g5.parent_g4_id, g5.generated_template_ref
            FROM party_runtime.party_g6_instances g6
            JOIN party_runtime.party_g5_sites g5
              ON g5.party_id=g6.party_id AND g5.id=g6.host_id
@@ -108,29 +150,57 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       );
       const row = hosted.rows[0];
       if (!row?.host_id) return null;
-      resolvedSite = { id: row.host_id, canonical_g5_ref: row.canonical_g5_ref };
+      resolvedSite = {
+        id: row.host_id,
+        canonical_g5_ref: row.canonical_g5_ref,
+        parent_g4_id: row.parent_g4_id,
+        generated_template_ref: row.generated_template_ref,
+      };
       if (!g4 && row.parent_g4_id) {
-        g4 = { id: row.parent_g4_id, version: 1, world_revision_id: spatialWorldPin.world_revision_id };
+        g4 = {
+          id: row.parent_g4_id,
+          version: request?.g4?.version ?? 1,
+          world_revision_id: spatialWorldPin.world_revision_id,
+          canonical_digest: request?.g4?.canonical_digest,
+        };
       }
     }
-    if (!resolvedSite || !g4?.id) return null;
-    const season = await readPartySeason?.({ transaction, partyId, request }) ?? 'summer';
-    const nodeId = resolvedSite.canonical_g5_ref?.entity_id ?? g4.id;
-    const nodeVersion = resolvedSite.canonical_g5_ref
-      ? Number(resolvedSite.canonical_g5_ref.authoring_version)
-      : g4.version;
-    return resolvePresenceRulesFirstArrivalForSite({
+    if (!resolvedSite) return null;
+    if (!g4?.id && request?.g4?.id) g4 = request.g4;
+    if (!g4?.id && resolvedSite.parent_g4_id) {
+      g4 = {
+        id: resolvedSite.parent_g4_id,
+        version: request?.g4?.version ?? 1,
+        world_revision_id: spatialWorldPin.world_revision_id,
+        canonical_digest: request?.g4?.canonical_digest,
+      };
+    }
+    if (!g4?.id || !Number.isInteger(g4.version) || g4.version < 1) return null;
+    const calendar = await readPartyPresenceCalendar?.({ transaction, partyId, request });
+    if (!calendar?.season || calendar.periodNumber == null) {
+      throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
+        'Committed party calendar season and year are required for presence resolution.');
+    }
+    const readerInput = {
       worldBaseReader,
       spatialWorldPin,
       worldPin,
       runtimeCatalogPin,
-      spatialNodeId: nodeId,
-      spatialNodeVersion: nodeVersion,
+    };
+    const regionId = await loadG0RegionIdForSpatialNode({
+      ...readerInput,
+      nodeId: g4.id,
+      nodeVersion: g4.version,
+    });
+    return resolvePresenceRulesFirstArrivalForSite({
+      ...readerInput,
+      spatialNodeId: g4.id,
+      spatialNodeVersion: g4.version,
       partyId: partyId ?? request?.party_id,
       siteId: resolvedSite.id,
-      regionId: null,
-      season,
-      periodNumber: null,
+      regionId,
+      season: calendar.season,
+      periodNumber: calendar.periodNumber,
     });
   };
 }

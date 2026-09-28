@@ -20,11 +20,13 @@ import { loadApprovedActorProfileCatalog } from
   './actor-profile-catalog.js';
 import {
   loadCategoryParentMap,
+  loadG0RegionIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules
 } from './m2c-npc-wave-readers.js';
 import {
+  createRuntimeCatalogWorldBaseReader,
   deepFreeze,
   fail,
   isDigest,
@@ -35,7 +37,7 @@ import {
 
 export { canonicalStringify, computeCanonicalRecordDigest,
   computeImportAuditDigest, computeRecordsDigest, computeTablePayloadDigest,
-  computeTablesDigest, loadApprovedActorProfileCatalog,
+  computeTablesDigest, createRuntimeCatalogWorldBaseReader, loadApprovedActorProfileCatalog,
   projectCanonicalRecord, RuntimeCatalogError };
 export { loadApprovedProceduralActorTemporalBundle,
   loadApprovedProceduralCompiledCatalog,
@@ -43,6 +45,7 @@ export { loadApprovedProceduralActorTemporalBundle,
   './procedural-scene-records.js';
 export {
   loadCategoryParentMap,
+  loadG0RegionIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules,

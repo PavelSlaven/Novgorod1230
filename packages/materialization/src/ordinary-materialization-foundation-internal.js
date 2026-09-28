@@ -90,6 +90,33 @@ export function preparedGroupValid(group, expectedScope) {
   const requiresContext = group.allowed_admission_classes.some((entry) => entry !== 'common_mundane'); if ((!requiresContext && group.availability_class !== 'common') || (requiresContext && (group.availability_class !== 'context_bound' || group.permission_refs.length === 0))) throw error('ORDINARY_AGGREGATE_GROUP_INVALID', 'Prepared group availability is incompatible with its admission classes.');
   if (!sameOrdered(group.allowed_admission_classes, [...group.allowed_admission_classes].sort()) || !sameOrdered(group.causal_basis.basis_refs, [...group.causal_basis.basis_refs].sort()) || !sameOrdered(group.permission_refs, [...group.permission_refs].sort()) || !sameOrdered(group.policy.functional_buckets, [group.functional_bucket]) || !sameOrdered(group.policy.allowed_admission_classes, group.allowed_admission_classes) || !sameOrdered(group.policy.permission_refs, group.permission_refs)) throw error('ORDINARY_AGGREGATE_GROUP_INVALID', 'Prepared group is not normalized.'); const expectedRef = `ordinary_group_${canonicalDigest({ domain: 'ordinary_prepared_group_v1', scope_ref: group.scope_ref, group: groupKey(group) }).slice(0, 24)}`; if (group.group_ref !== expectedRef) throw error('ORDINARY_AGGREGATE_GROUP_INVALID', 'Prepared group ref is invalid.');
 }
+function validatePresenceOnlyUnseededAggregate(value) {
+  if (value.closed_observation_scopes.length !== 0 || value.background_groups.length !== 0) {
+    throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-only preamble cannot include seed or closure records.');
+  }
+  if (value.density_band !== null || value.identity_budget !== 0 || value.remaining_identity_budget !== 0) {
+    throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-only preamble cannot include seed budget fields.');
+  }
+  if (value.state_version !== value.presence_resolutions.length) {
+    throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate state version does not match committed records.');
+  }
+  id(value.last_committed_request_identity, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.last_committed_request_identity');
+  if (value.last_committed_transition_kind !== 'resolve_presence_rule') {
+    throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate last transition kind is invalid.');
+  }
+  const presenceRuleKeys = new Set();
+  for (const record of value.presence_resolutions) {
+    validatePresenceRecord(record);
+    if (!isPresenceRuleRecord(record)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-only preamble accepts presence-rule records only.');
+    const key = presenceRuleReplayKey(record);
+    if (presenceRuleKeys.has(key)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule resolution key is duplicated.');
+    presenceRuleKeys.add(key);
+  }
+  if (value.presence_resolutions.at(-1)?.request_identity !== value.last_committed_request_identity) {
+    throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last presence resolution.');
+  }
+}
+
 export function aggregateValid(value) {
   assertJsonData(value, 'ORDINARY_AGGREGATE_INVALID', 'aggregate');
   object(value, 'ORDINARY_AGGREGATE_INVALID', 'aggregate');
@@ -97,7 +124,14 @@ export function aggregateValid(value) {
   if (Object.keys(value).length !== keys.length || keys.some((key) => !Object.hasOwn(value, key))) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate must have exact persisted fields.');
   if (value.schema !== 'ordinary_materialization_aggregate_v1') throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate schema is invalid.'); exactScope(value.scope_ref); positive(value.resolution_record_cap, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.resolution_record_cap');
   for (const key of ['background_groups', 'presence_resolutions', 'closed_observation_scopes']) if (!Array.isArray(value[key])) throw error('ORDINARY_AGGREGATE_INVALID', `${key} must be an array.`);
-  if (!value.seeded) { if (value.state_version !== 0 || value.last_committed_request_identity !== null || value.last_committed_transition_kind !== null || value.density_band !== null || value.identity_budget !== 0 || value.remaining_identity_budget !== 0 || value.background_groups.length !== 0 || value.presence_resolutions.length !== 0 || value.closed_observation_scopes.length !== 0) throw error('ORDINARY_AGGREGATE_INVALID', 'Unseeded aggregate must be canonical initial state.'); return; }
+  if (!value.seeded) {
+    if (value.presence_resolutions.length > 0) {
+      validatePresenceOnlyUnseededAggregate(value);
+      return;
+    }
+    if (value.state_version !== 0 || value.last_committed_request_identity !== null || value.last_committed_transition_kind !== null || value.density_band !== null || value.identity_budget !== 0 || value.remaining_identity_budget !== 0 || value.background_groups.length !== 0 || value.closed_observation_scopes.length !== 0) throw error('ORDINARY_AGGREGATE_INVALID', 'Unseeded aggregate must be canonical initial state.');
+    return;
+  }
   positive(value.state_version, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.state_version'); id(value.last_committed_request_identity, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.last_committed_request_identity'); if (!TRANSITION_KINDS.includes(value.last_committed_transition_kind)) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate last transition kind is invalid.'); enumOf(value.density_band, DENSITY, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.density_band'); nonnegative(value.identity_budget, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.identity_budget'); nonnegative(value.remaining_identity_budget, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.remaining_identity_budget'); if (value.remaining_identity_budget > value.identity_budget) throw error('ORDINARY_AGGREGATE_INVALID', 'Remaining budget exceeds identity budget.');
   for (const group of value.background_groups) preparedGroupValid(group, value.scope_ref); if (new Set(value.background_groups.map((group) => group.group_ref)).size !== value.background_groups.length) throw error('ORDINARY_AGGREGATE_INVALID', 'Background groups must be unique.');
   const recordCount = value.presence_resolutions.length + value.closed_observation_scopes.length; if (value.state_version !== recordCount + 1) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate state version does not match committed records.'); if (recordCount === 0 && value.last_committed_transition_kind !== 'seed') throw error('ORDINARY_AGGREGATE_INVALID', 'Seed must be the only transition in an aggregate without resolution records.'); if ((value.last_committed_transition_kind === 'resolve_presence' || value.last_committed_transition_kind === 'resolve_presence_rule') && value.presence_resolutions.at(-1)?.request_identity !== value.last_committed_request_identity) throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last presence resolution.'); if (value.last_committed_transition_kind === 'close_coverage' && value.closed_observation_scopes.at(-1)?.request_identity !== value.last_committed_request_identity) throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last closed observation scope.');

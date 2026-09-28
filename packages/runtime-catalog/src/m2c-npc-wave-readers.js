@@ -98,6 +98,51 @@ export async function loadPlacePopulationComposition({
   });
 }
 
+/** G0 region node id for a pinned spatial node (walk parents to spatial_level = G0). */
+export async function loadG0RegionIdForSpatialNode({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+  nodeId,
+  nodeVersion,
+} = {}) {
+  await assertReadableContext({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+  });
+  if (typeof nodeId !== 'string' || !nodeId.trim()
+      || !Number.isInteger(nodeVersion) || nodeVersion < 1) {
+    throw new TypeError('nodeId and nodeVersion are required.');
+  }
+  const revisionId = spatialWorldPin.world_revision_id;
+  const result = await worldBaseReader.read(
+    `WITH RECURSIVE chain AS (
+       SELECT n.id, n.version, n.spatial_level, 0 AS depth
+         FROM world_base.spatial_v3_nodes n
+        WHERE n.id = $1 AND n.version = $2 AND n.world_revision_id = $3
+          AND n.status = 'approved'
+       UNION ALL
+       SELECT p.parent_id, p.parent_version, pn.spatial_level, chain.depth + 1
+         FROM chain
+         JOIN world_base.spatial_v3_node_parents p
+           ON p.child_id = chain.id AND p.child_version = chain.version
+          AND p.world_revision_id = $3
+         JOIN world_base.spatial_v3_nodes pn
+           ON pn.id = p.parent_id AND pn.version = p.parent_version
+          AND pn.world_revision_id = $3 AND pn.status = 'approved'
+        WHERE chain.depth < 24
+     )
+     SELECT id FROM chain WHERE spatial_level = 'G0' ORDER BY depth DESC LIMIT 2`,
+    [nodeId, nodeVersion, revisionId],
+  );
+  const rows = rowsFrom(result);
+  if (rows.length !== 1) {
+    fail('PRESENCE_G0_REGION_AMBIGUOUS',
+      'Pinned spatial node must have exactly one G0 region ancestor.');
+  }
+  return rows[0].id;
+}
+
 /** Read-only M2c presence rules for place families after spatial pin and activation checks. */
 export async function loadPresenceRulesForPlaceFamilies({
   worldBaseReader,
@@ -149,20 +194,19 @@ export async function loadCategoryParentMap({
   });
   const unique = [...new Set((categoryIds ?? []).filter((id) => typeof id === 'string' && id.length > 0))];
   if (unique.length === 0) return new Map();
-  const revisionId = spatialWorldPin.world_revision_id;
   const result = await worldBaseReader.read(
     `WITH RECURSIVE chain AS (
        SELECT id, parent_category_id
          FROM world_base.universal_categories
-        WHERE world_revision_id = $1 AND facet = 'object_type' AND id = ANY($2::text[])
+        WHERE facet = 'object_type' AND id = ANY($1::text[])
        UNION
        SELECT parent.id, parent.parent_category_id
          FROM world_base.universal_categories parent
          JOIN chain child ON child.parent_category_id = parent.id
-        WHERE parent.world_revision_id = $1 AND parent.facet = 'object_type'
+        WHERE parent.facet = 'object_type'
      )
      SELECT id, parent_category_id FROM chain`,
-    [revisionId, unique],
+    [unique],
   );
   const parentById = new Map();
   for (const row of rowsFrom(result)) {

@@ -18,6 +18,14 @@ export function seasonsOverlap(a, b) {
   return false;
 }
 
+/** Whether a presence rule applies in the committed calendar season (same semantics as import validator). */
+export function ruleAllowedInSeason(rule, season) {
+  if (typeof season !== 'string' || !season.trim()) return false;
+  const allowed = rule?.allowed_seasons;
+  if (!Array.isArray(allowed) || allowed.length === 0) return false;
+  return seasonsOverlap(allowed, [season.trim()]);
+}
+
 /** Same subject under same region with overlapping seasons → conflict. */
 export function presenceRuleSeasonConflict(a, b) {
   if (!a || !b) return false;

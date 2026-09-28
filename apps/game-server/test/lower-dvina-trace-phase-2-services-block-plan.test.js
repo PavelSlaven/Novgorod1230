@@ -14,9 +14,10 @@ import { buildLowerDvinaTracePhase2Services } from
 const operation = { op: 'request_movement', actor_ref: 'actor', target_ref: 'edge:one',
   movement_kind: 'local', description: 'Проход 1 (проход занят)' };
 
-async function turnStepBlockPlan() {
+async function turnStepBlockPlan(stateOverride = {}) {
   const scenarioBundle = await loadLowerDvinaTraceMaterializationBundle();
   const f = fixture({ scenarioBundle, materializationBundle: scenarioBundle });
+  Object.assign(f.state, stateOverride);
   const phase2Bundle = await loadLowerDvinaTracePhase2Bundle({
     scenarioDefinitionRevision: f.state.scenario_definition_revision
       ?? scenarioBundle.scenario_definition?.revision
@@ -83,15 +84,49 @@ test('destination_occupied is rejected for a different operation than the ground
     assert.equal(blockPlan({ plan, request }), false);
   });
 
-test('a genuinely occupied edge selected without the destination_occupied reason falls through to consequence()',
+test('the model reason_code never decides: an occupied grounded operation is blocked under any reason_code (F5)',
   async () => {
-    // Race: the model picked it as an ordinary movement (reason_code unrelated); blockPlan
-    // must not intercept - the existing 409 SPATIAL_V3_LOCAL_EDGE_OCCUPIED stays the safety net
-    // (covered end-to-end in spatial-v3-local-scene-movement.test.js).
     const blockPlan = await turnStepBlockPlan();
-    const plan = { resolution: 'domain_request', reason_code: 'visible_movement',
-      operations: [operation] };
     const request = requestWithGrounding([{ operation,
       semantic_scope: { destination_status: 'occupied' } }]);
+    for (const reason_code of ['visible_movement', 'destination_occupied', undefined, 'anything']) {
+      const plan = { resolution: 'domain_request', reason_code, operations: [operation] };
+      assert.equal(blockPlan({ plan, request }), true, String(reason_code));
+    }
+  });
+
+test('an open grounded operation is never blocked, even when the model says destination_occupied (F5)',
+  async () => {
+    const blockPlan = await turnStepBlockPlan();
+    const plan = { resolution: 'domain_request', reason_code: 'destination_occupied',
+      operations: [operation] };
+    const request = requestWithGrounding([{ operation,
+      semantic_scope: { destination_status: 'open' } }]);
     assert.equal(blockPlan({ plan, request }), false);
+  });
+
+test('an occupied grounded operation is blocked when it is one of several planned operations (F5)',
+  async () => {
+    const blockPlan = await turnStepBlockPlan();
+    const other = { ...operation, target_ref: 'edge:two' };
+    const plan = { resolution: 'domain_request', operations: [other, operation] };
+    const request = requestWithGrounding([{ operation,
+      semantic_scope: { destination_status: 'occupied' } }]);
+    assert.equal(blockPlan({ plan, request }), true);
+  });
+
+test('a structurally blocked actor gets the refusal for a not_achieved direct plan under any reason_code (F5)',
+  async () => {
+    const blockedState = { combat_sessions: [{ status: 'active', participant_states: [{
+      actor_ref: { entity_kind: 'player_character', entity_id: 'actor:blocked' },
+      combat_status: 'restrained' }] }], actor_id: 'actor:blocked' };
+    const blockPlan = await turnStepBlockPlan(blockedState);
+    const plan = { resolution: 'direct', goal_result: 'not_achieved', operations: [] };
+    for (const reason_code of ['actor_movement_blocked', 'model_wording', undefined]) {
+      assert.equal(blockPlan({ plan: { ...plan, reason_code }, request: { step_index: 1 } }), true,
+        String(reason_code));
+    }
+    assert.equal(blockPlan({ plan: { ...plan, goal_result: 'achieved' }, request: { step_index: 1 } }), false);
+    const free = await turnStepBlockPlan();
+    assert.equal(free({ plan, request: { step_index: 1 } }), false, 'movement is not blocked');
   });

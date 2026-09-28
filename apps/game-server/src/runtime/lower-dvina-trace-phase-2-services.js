@@ -139,20 +139,20 @@ export function buildLowerDvinaTracePhase2Services(context) {
         historical_events: partyHistoricalEventsOf(state)
       })
     } : {}),
-    turnStepBlockPlan: ({ plan, request }) => (request.step_index === 1
-      && actorMovementBlocked(state)
-      && plan.resolution === 'direct'
-      && plan.goal_result === 'not_achieved'
-      && plan.reason_code === 'actor_movement_blocked'
-      && plan.operations.length === 0)
-      || (request.step_index === 1
-        && plan.resolution === 'domain_request'
-        && plan.reason_code === 'destination_occupied'
-        && plan.operations?.length === 1
-        && (request.player_safe_state?.available_domain_operation_grounding ?? [])
-          .some(({ operation, semantic_scope }) =>
-            semantic_scope?.destination_status === 'occupied'
-            && isDeepStrictEqual(operation, plan.operations[0]))),
+    // The outcome comes from structure only - the committed body/combat state and the
+    // grounding of the chosen operation. The model's reason/reason_code is diagnostics
+    // (contract §15) and is never read here.
+    turnStepBlockPlan: ({ plan, request }) => request.step_index === 1
+      && ((actorMovementBlocked(state)
+        && plan.resolution === 'direct'
+        && plan.goal_result === 'not_achieved'
+        && plan.operations.length === 0)
+      || (plan.resolution === 'domain_request'
+        && (plan.operations ?? []).some((chosen) =>
+          (request.player_safe_state?.available_domain_operation_grounding ?? [])
+            .some(({ operation, semantic_scope }) =>
+              semantic_scope?.destination_status === 'occupied'
+              && isDeepStrictEqual(operation, chosen))))),
     ...(turnStepSemanticGroundingValidator ? {
       turnStepSemanticGroundingValidator
     } : {}),

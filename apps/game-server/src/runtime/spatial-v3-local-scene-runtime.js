@@ -47,6 +47,9 @@ export function createSpatialV3LocalSceneRuntime({ pool,
           || edge.journey_state_version !== Number(state.journey_location.state_version)) {
         gap('SPATIAL_V3_LOCAL_EDGE_UNAVAILABLE');
       }
+      if (edge.movement_admission.destination_status === 'occupied') {
+        gap('SPATIAL_V3_LOCAL_EDGE_OCCUPIED');
+      }
       const admission = edge.movement_admission;
       const planned = planApprovedActorDestinationTransition({
         state_version: state.party_state.state_version,

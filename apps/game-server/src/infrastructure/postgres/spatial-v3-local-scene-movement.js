@@ -100,6 +100,7 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
             destination_capacity: Number(row.destination_capacity),
             transition_footprint_units: 1,
             destination_occupancy: Number(row.destination_occupancy),
+            destination_status: destinationStatus(row),
             edge_state_version: Number(row.edge_state_version),
             reverse_edge_state_version: row.reverse_edge_id === null ? null : Number(row.reverse_edge_state_version),
             ...(row.eligibility ? {
@@ -135,8 +136,13 @@ function validRow(row) {
       || row.reverse_edge_id === null && row.edge_capacity === null && row.eligibility?.pin
         && Number.isSafeInteger(row.eligibility.max_root_owners_per_transition)
         && row.eligibility.max_root_owners_per_transition >= 1)
-    && Number(row.destination_capacity) > 0
-    && Number(row.destination_occupancy) + 1 <= Number(row.destination_capacity);
+    && Number(row.destination_capacity) > 0;
+}
+
+/** A structurally valid edge stays listed at capacity; occupancy only marks it occupied. */
+function destinationStatus(row) {
+  return Number(row.destination_occupancy) + 1 <= Number(row.destination_capacity)
+    ? 'open' : 'occupied';
 }
 
 const text = (value) => typeof value === 'string' && value.length > 0;

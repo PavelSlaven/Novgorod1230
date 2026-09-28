@@ -94,7 +94,11 @@ test('committed canonical scene edges move arrival→focus→departure with stal
         occupies_capacity_units,state_version,updated_change_set_id)
       VALUES ('party','npc','blocker','scene_position','focus',1,1,'block')`);
     assert.deepEqual((await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor',
-      state: source })), [], 'occupied destination is unavailable');
+      state: source })).map(({ edge_id: id }) => id), ['departure:focus'],
+    'occupied destination stays listed, not dropped');
+    await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
+      state: source, edgeId: 'departure:focus', playerInput: {}, inputDigest: 'blocked-attempt' }),
+    { code: 'SPATIAL_V3_LOCAL_EDGE_OCCUPIED' }, 'occupied destination is denied with a typed reason');
   });
 
 function state(position, journeyVersion) {

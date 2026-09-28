@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- docs(plan): находки восприятия 2026-09-28 — M2c: скрытое надетым (волосы под убором), частичная видимость; M4: подключение восприятия NPC; LW-074 added (#158)
 - fix(r1): REVIEW-070d2 — chain ledger через `runSpatialV3TargetMigrations` + composite `beforeCommit`; restart skip без дублирования цикла DDL; acceptance fresh pools per restart; encoder close on startup failure; phase-11 test1 limit 450s; PG chain-ledger tests; LW-070/073 (#158)
 - feat(r1): REVIEW-070 / PLAN-070b — variants objects in m2c generator @ `367a88c0`; D-3 npc/speech datasets; 27.sql UNIQUE+CHECK; corpus §3A.1/§3A.4/§8.1; fresh-schema request rebuild; generator fixture+tmpdir determinism; LW-073 (#158)
 - feat(r1): REVIEW-069b п.3 — prose §3.1 thresholds; presence_rules `item_ref`/`variants` + §8.1/C12 rule-cause; m2c-npc-wave dataset generator @ `b1f249de` (#158) LW-072 added

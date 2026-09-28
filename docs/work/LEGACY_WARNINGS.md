@@ -71,6 +71,7 @@
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -375,3 +376,9 @@
 - **Доказательство.** На базе `162a86b9` тест 1 phase-11 ~266 s при лимите 300 s (89%). После 070d/070d2 — свежие пулы на restart, skip DDL по chain ledger; лимит теста 1 поднят до 450 s с комментарием о базовом wall time, не как маска регресса CR.
 - **Как жить.** Таймаут test 1 — headroom от базового прогона; test 2 остаётся 600 s. «Pool after end» — следствие shared pools/encoder до 070d2, не фон root.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-074 — восприятие NPC в live world выключено
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`: `post_action_perception_profile: null`); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (`perceptionListeners` без профиля возвращает `[]`); профиль есть только в `apps/game-server/src/internal/lower-dvina-trace-revision-34-bundle.js`.
+- **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
+- **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
+- **Issue.** —

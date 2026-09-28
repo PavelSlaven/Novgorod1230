@@ -8,9 +8,9 @@ Reads (read-only):
     5 resolution rules + 5 status_and_law_effects.
   - data/novgorod-region/novgorod_social_roles_v1_enriched.tsv (pinned, 71 rows)
   - social_strata_legal_status/roles/new_role_candidates.tsv (this collector's
-    own domain 1 output, 11 rows)
+    own domain 1 output, 33 rows)
   - data/novgorod-region/novgorod_occupations_v1_enriched.tsv (69 rows)
-  - infra/world-base/schema/05.sql (world-base-runtime worktree) — only to
+  - ../ref-pr98/infra/world-base/schema/05.sql — only to
     confirm the conflict_type CHECK constraint's 14 allowed values, never
     written to.
 
@@ -34,12 +34,13 @@ GROUP_DIR = DOMAIN_DIR.parent
 OUT_DIR = DOMAIN_DIR / "conflicts"
 REPORT_DIR = DOMAIN_DIR / "reports"
 
-MAIN_CHECKOUT = Path("C:/Users/Slaven/Documents/Novgorod")
+MAIN_CHECKOUT = HERE.parents[6]
+RUNTIME_CHECKOUT = MAIN_CHECKOUT.parent / "ref-pr98"
 TEMPLATES_JSON = MAIN_CHECKOUT / "tools/rus13-novgorod-regional-templates/novgorod_local_conflict_templates_v1.json"
 PINNED_ROLES_TSV = MAIN_CHECKOUT / "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
 OCCUPATIONS_TSV = MAIN_CHECKOUT / "data/novgorod-region/novgorod_occupations_v1_enriched.tsv"
 CANDIDATE_ROLES_TSV = GROUP_DIR / "social_strata_legal_status/roles/new_role_candidates.tsv"
-DDL_SQL = Path("C:/Users/Slaven/Documents/Novgorod-runtime/infra/world-base/schema/05.sql")
+DDL_SQL = RUNTIME_CHECKOUT / "infra/world-base/schema/05.sql"
 
 sys.path.insert(0, str(HERE))
 from participant_and_type_map import CONFLICT_TYPE_MAP, WEAK_FIT_TYPES, PARTICIPANT_MAP  # noqa: E402

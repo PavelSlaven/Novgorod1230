@@ -18,7 +18,7 @@
 ## Метод
 
 - **Источник** (черновик, не утверждён): `tools/rus13-novgorod-regional-templates/novgorod_local_conflict_templates_v1.json`
-  (main checkout) — 40 `conflict_templates` + 5 `conflict_escalation_rules` + 5 `conflict_resolution_rules` +
+  (относительно текущего checkout) — 40 `conflict_templates` + 5 `conflict_escalation_rules` + 5 `conflict_resolution_rules` +
   5 `status_and_law_effects`, `status: draft`, `requires_human_audit: true`.
 - **conflict_type**: у 40 шаблонов сценарные типы (`boat_damage`, `closed_ferry`, `runaway_suspicion`, ...),
   а не 14 значений из CHECK-constraint `world_base.conflict_templates.conflict_type`
@@ -31,7 +31,7 @@
   из 14 и требуют решения владельца при утверждении (возможно, для них нужна отдельная категория вне
   `conflict_type`, а не подгонка).
 - **Участники**: 73 различных русских термина в `participants_by_role` резолвлены в `nov_role_*` (пинованный
-  файл или `social_strata_legal_status/roles/new_role_candidates.tsv`), в `nov_occ_*`
+  файл или `social_strata_legal_status/roles/new_role_candidates.tsv`, 33 кандидата), в `nov_occ_*`
   (`novgorod_occupations_v1_enriched.tsv`) или явно оставлены `generic:<label>`, когда термин — сюжетная функция,
   а не тип человека («две стороны», «обидчик», «обиженный», «случайные люди», «сосед» и т.п.). Скрипт проверяет,
   что каждый `role`/`occupation` реально существует; `generic` — осознанный, а не пропущенный случай.
@@ -48,8 +48,8 @@
 cd scripts
 python build_incidents.py
 ```
-Скрипт читает: черновик rus13tpl и `05.sql` (PR #98 worktree) — оба read-only; пинованный TSV ролей и
-occupations TSV (main checkout, read-only); собственный `new_role_candidates.tsv` из
+Скрипт читает: черновик rus13tpl, пинованный TSV ролей и occupations TSV из текущего checkout, а `05.sql`
+из соседнего `/srv/novgorod-work/worktrees/ref-pr98` — всё read-only; собственный `new_role_candidates.tsv` из
 `social_strata_legal_status/` (эта же коллекция, читается, не пишется). Пишет только в эту папку.
 
 ## Известные пробелы

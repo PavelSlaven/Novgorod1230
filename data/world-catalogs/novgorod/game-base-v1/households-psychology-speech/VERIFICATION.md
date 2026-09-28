@@ -614,3 +614,23 @@
 ### scripts/check.py — approve (C013a, закрывает rework)
 
 Проверено: Claude Opus 5.5, `check.py --probe` — PASS. Проверяет закрытую схему, границы 4–6 и 5–7, равный вес, ссылки на выписки, точный набор профилей; отрицательные пробы срабатывают.
+
+## Независимая проверка D46 imp-people (Claude Opus 5.5, 2026-09-29)
+
+История: круг 1 — approve_with_limits (380 вариантов психологии отложены, 11 исторических лиц — дубли, Михаил Степанич — D/candidate-conflict, 2 provenance-токена норм). Круг 2 — approve_with_limits; поручено положить бэклог в репозиторий. Круг 3 — итоговый.
+
+Проверено скриптами в круге 3:
+- reports/deferred_psychology_variants.csv побайтно совпадает с out/household-psychology-variants.csv задачи и со снимком круга 2 (sha256 5af8bdf5…): 380 строк, typed_status deferred_b2_161_no_consumer, 94 существующих profile_ref, имена не попали в профили.
+- Бэклог не вход build.py; psychology_profiles.csv и прочие данные = main; в norms.csv только 2 строки с provenance-токенами (как в круге 2).
+- README относительно круга 2 — только абзац о бэклоге; check.py — проверка схемы, статуса, profile_ref и дедупа бэклога плюс проверка 2 токенов норм. Скриптов круга 2 в снимке нет, поэтому build.py и check.py сверены по содержимому, а не побайтно.
+- denylist по 380 строкам — 0.
+
+Прогоны (копия): build.py ×2 — вывод = worktree, повтор побайтно; check.py и check.py --probe — OK; build-catalog, build-status + тест — PASS.
+
+Ограничения: 380 вариантов без потребителя до B2 #161; check.py не сверяет archive_refs с архивом; Михаил Степанич — D/candidate-conflict.
+
+Вердикт по файлам:
+- reports/deferred_psychology_variants.csv (новый) — approve_with_limits (бэклог без потребителя)
+- scripts/check.py, scripts/build.py, README.md — approve
+- social_norms_honour_hospitality/norms.csv — approve
+Группа: approve_with_limits.

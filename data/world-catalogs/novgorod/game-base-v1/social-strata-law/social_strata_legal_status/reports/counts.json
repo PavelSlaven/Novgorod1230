@@ -1,4 +1,6 @@
 {
-  "new_role_candidates.tsv": 11,
+  "new_role_candidates.tsv": 33,
+  "archive_role_candidates": 22,
+  "semantic_role_ids": 22,
   "pinned_enriched_tsv_rows_untouched": 71
 }

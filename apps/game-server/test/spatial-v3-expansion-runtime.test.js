@@ -57,6 +57,23 @@ test('an arrival position from which departure is reachable by a local edge offe
   assert.deepEqual(await runtime.listApproachOptions(identity),
     [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1', display_label: 'Продолжить путь' }]);
 });
+test('the disclosure owner receives the exit-to-slot mapping so pass-target text reaches both the crossing and the approach (live gap)', async () => {
+  const seen = [];
+  const spy = async (input) => { seen.push(input.slotByExit); return disclosure(); };
+  const atDeparture = context();
+  const crossing = createSpatialV3ExpansionRuntime({ readContext: async () => atDeparture, readExitDisclosure: spy,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  await crossing.listExpansionOptions(identity);
+  const away = context(); const departurePosition = away.position;
+  away.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  away.scene = { ...away.scene, positions: [away.position, departurePosition],
+    movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position', to_position_id: departurePosition.id, status: 'active' }] };
+  const approach = createSpatialV3ExpansionRuntime({ readContext: async () => away, readExitDisclosure: spy,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  await approach.listApproachOptions(identity);
+  assert.equal(seen.length, 2);
+  for (const slotByExit of seen) assert.deepEqual([...slotByExit], [['exit', { id: 'slot', version: 3 }]]);
+});
 test('at departure, no approach is offered (already there)', async () => {
   const current = context();
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,

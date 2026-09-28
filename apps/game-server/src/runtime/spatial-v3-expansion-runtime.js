@@ -45,6 +45,12 @@ export function findReachableDeparturePosition(context) {
   return null;
 }
 
+/** Exit -> approved slot, the key the disclosure owner needs to resolve the pass-target text. */
+function slotByExitOf(context) {
+  return new Map((context.closure?.slots ?? []).map((slot) => [slot.directional_exit_id,
+    { id: slot.id, version: slot.version }]));
+}
+
 /** Server command bridge. Read-only menus never seed frontiers. Selection is
  * repeated by the generated adapter under the existing party/G4 P16 lock. */
 export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansionAdapter,
@@ -59,7 +65,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     }
     if (typeof readExitDisclosure !== 'function') gap('current_exit_disclosure_owner_required');
     const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit) });
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context) });
     if (!Array.isArray(disclosed)) gap('current_exit_disclosure_required');
     const visible = options.flatMap((option) => {
       const matches = disclosed.filter((row) => row.directional_exit_id === option.exit.id
@@ -87,7 +93,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     const options = eligibleExpansions({ ...context, position: reachable.position }, now());
     if (!options.length || typeof readExitDisclosure !== 'function') return [];
     const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit) });
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context) });
     if (!Array.isArray(disclosed)) return [];
     return options.flatMap((option) => {
       const disclosure = disclosed.find((row) => row.directional_exit_id === option.exit.id

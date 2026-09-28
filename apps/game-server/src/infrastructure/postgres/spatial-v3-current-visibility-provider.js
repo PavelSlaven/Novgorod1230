@@ -134,12 +134,15 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           && row.scene_template_ref.version === Number(edge.source_scene_template_ref?.authoring_version)
           && row.edge_slot_key === edge.source_edge_slot_key);
         if (labels.length !== 1) gap('approved_local_edge_label_required');
+        // The admission owner answers only for the actor's committed position; an edge it
+        // has no row for (destination projection before commit, or an edge it does not
+        // admit) is disclosed without a status - never guessed and never a data gap.
         const destinationStatus = statusByEdge?.get(edge.id);
-        if (statusByEdge != null && !['open', 'occupied'].includes(destinationStatus)) {
+        if (destinationStatus !== undefined && !['open', 'occupied'].includes(destinationStatus)) {
           gap('current_local_edge_admission_required');
         }
         return [{ edge_id: edge.id, display_label: labels[0].display_label,
-          ...(statusByEdge != null ? { destination_status: destinationStatus } : {}) }];
+          ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
     }, transaction, observedPositionId);
   }

@@ -3,6 +3,8 @@ import test from 'node:test';
 import { createTurnAvailableActionSet, createTurnCommandRegistry } from '@rus/turn';
 import { createTraceExpansionCommands } from
   '../src/runtime/lower-dvina-trace-expansion-commands.js';
+import { createTraceLocalSceneCommands } from
+  '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { selectedTurnStepOperation, turnStepOperationChoices } from
   '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { fixture, loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
@@ -66,6 +68,23 @@ test('a reachable-but-not-yet-at-departure exit offers its approach through the 
     assert.equal(prepared.partyId, state.party_id);
     assert.equal(prepared.actorId, state.actor_id);
   });
+
+test('the approach and the plain local command for the same edge never both claim one operation', async () => {
+  const consequence = packageBase({ inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' });
+  const localScene = { async listLocalOptions() { return [{ edge_id: 'edge:1', display_label: 'Проход 1',
+    action_units: 1, destination_status: 'open' }]; }, prepareLocalMovement: async () => consequence };
+  const [approach] = await createTraceExpansionCommands({ state, requestId: 'r', inputDigest: 'd',
+    spatialExpansionRuntime: { listExpansionOptions: async () => [],
+      listApproachOptions: async () => [{ directional_exit_id: 'exit:channel', edge_id: 'edge:1', display_label: 'к руслу' }] },
+    spatialLocalSceneRuntime: localScene });
+  const [plain] = await createTraceLocalSceneCommands({ state, inputDigest: 'd', spatialLocalSceneRuntime: localScene });
+  const bindings = [approach, plain].map((command) => command.semantic_binding);
+  for (const own of bindings) {
+    const claiming = bindings.filter((binding) => binding.matches({ operation: own.operation_dto }));
+    assert.equal(claiming.length, 1, 'exactly one binding must claim each operation');
+    assert.equal(claiming[0], own);
+  }
+});
 
 test('a candidate crossing is not offered while only an approach is reachable', async () => {
   const approach = { directional_exit_id: 'exit:channel', edge_id: 'edge:1', display_label: 'к руслу' };

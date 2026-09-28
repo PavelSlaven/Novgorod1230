@@ -251,6 +251,15 @@ test('current approved local edge reaches the turn visible context', async () =>
   assert.deepEqual(changed.current_visible_context.visible_objects, []);
 });
 
+test('a visible edge the admission owner has no row for is disclosed without a status, not a data gap (destination projection before commit)', async () => {
+  // The admission reader answers only for the actor's COMMITTED position; a destination
+  // projection (crossing an exit) observes another position, so it legitimately has no rows.
+  const { provider } = fixture({ readLocalMovementAdmission: async () => [] });
+  const disclosed = await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
+    state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } });
+  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: localLabel.display_label }]);
+});
+
 test('occupied status comes from the movement admission owner, not a second guess', async () => {
   let occupied = true;
   const admissionCalls = [];

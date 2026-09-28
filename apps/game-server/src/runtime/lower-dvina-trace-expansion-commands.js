@@ -36,8 +36,11 @@ export async function createTraceExpansionCommands({ state, requestId,
     || typeof spatialLocalSceneRuntime?.prepareLocalMovement !== 'function' ? [] : approaches.map(
     ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel }) => {
       const label = `${exitLabel} — подход к переправе`;
+      // route_ref (the exit) keeps this structurally distinct from the plain local-scene
+      // operation for the same edge: bindings match structurally, so without it both commands
+      // would claim the same chosen operation (TURN_STEP_DOMAIN_BINDING_AMBIGUOUS).
       const operation = { op: 'request_movement', actor_ref: identity.actorId,
-        target_ref: edgeId, movement_kind: 'local', description: label };
+        target_ref: edgeId, movement_kind: 'local', route_ref: exitId, description: label };
       return {
         command_id: `live_world.approach_directional_exit:${exitId}`,
         option_id: `directional_exit_approach:${exitId}`,

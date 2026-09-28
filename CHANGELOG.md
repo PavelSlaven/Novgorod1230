@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(spatial): CR #160 B1 step 7c — a not-yet-at-departure actor is offered the first local hop toward a reachable exit ("к руслу — подход к переправе", same local-scene owner, structurally distinct via route_ref); crossing stays departure-only; destination projection no longer fails on edges the admission owner has no row for (was the real cause of the denied crossing); exit-to-slot map now reaches the disclosure owner so the pass-target text reaches planner options; live run closes B1 (approach → crossing → restart → re-entry) (#160)
 - fix(spatial): CR #160 B1 step 7 — pass-target exit description now shows at any visibility above `'none'` (was `'clear'`-only); ambient landscape `stable_cover` is `'partial'` for most of the map, so the old threshold made the description unreachable by player movement almost everywhere; found via live playtest (PLAN-OK-B1-step7)
 - docs(legacy): LW-076 added — narration-audit can reject prose twice after a committed turn, leaving the player without text (owner #158 R-3), found by the same B1 live playtest (#160)
 - fix(spatial): CR #160 B1 part 2 — occupied local edge status comes from the movement admission owner and reaches both the planner's visible option text and the route panel (same suffix, one source); LW-031 closed, LW-075 added (#160)

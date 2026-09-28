@@ -9,7 +9,7 @@
 Ключ зависит от состояния цели:
 
 - `expansion_slot_ref { id, version }` — цель, которую ещё предстоит создать. Каждая запись содержит полный текущий список `applicable_template_refs` из `spatial_v3_expansion_slot_templates.json`.
-- `place_family_id` — тип уже созданного или канонического места. Охват PF вычисляется по основным и вторичным PF 195 строк G5 в `ref-gamebase` `node_binding.csv`.
+- `place_family_id` — тип уже созданного или канонического места. Охват PF вычисляется по основным и вторичным PF строк G5 в `game-base-v1/places-binding/places/node_binding.csv` этого репозитория.
 
 При описании слота валидатор проверяет каждый возможный G5-шаблон. Метка допустима, только если все шаблоны имеют один `common_visible_class`, соответствующий метке. `--self-test` добавляет несовместимый шаблон к слоту и проверяет, что валидатор отклоняет описание. Сейчас у каждого из 86 слотов один назначенный шаблон.
 
@@ -20,33 +20,29 @@
 | Ключи | Всего | Описание | Явный пробел |
 |---|---:|---:|---:|
 | expansion slots | 86 | 47 | 39 |
-| PF стартовой территории | 20 | 8 | 12 |
-| Всего | 106 | 55 | 51 |
+| PF стартовой территории | 21 | 8 | 13 |
+| Всего | 107 | 55 | 52 |
 
 Описания слотов: `river_channel` — 32 («к руслу»), `forest` — 4 («в лес»), `island` — 6 («к острову»), `ridge` — 5 («к гряде»). Остальные 39 слотов перечислены в `candidate.json` с причиной пробела; среди них нет общего подтверждённого дальнего ориентира для `archaeological_area`, `backwater_wetland`, `estuary`, `floodplain`, `shoal` и `settlement_landscape`.
 
 Метка «к руслу» используется 33 раза — это ожидаемо для речной территории; B1 шага 3 будет различать соседние проходы с одинаковой меткой направлением или порядковым номером.
 
-Описания PF: `pf_river_channel` — «к руслу», `pf_riverbank` — «к берегу», `pf_floodplain_meadow` — «к лугу», `pf_conifer_woodland` — «в ельник», `pf_forest_edge` — «к опушке», `pf_mixed_woodland` — «в лес», `pf_peasant_homestead` — «к избам», `pf_road` — «к дороге». У остальных 12 PF указана причина, почему исходные данные не подтверждают короткий устойчивый дальний признак.
+Описания PF: `pf_river_channel` — «к руслу», `pf_riverbank` — «к берегу», `pf_floodplain_meadow` — «к лугу», `pf_conifer_woodland` — «в ельник», `pf_forest_edge` — «к опушке», `pf_mixed_woodland` — «в лес», `pf_peasant_homestead` — «к избам», `pf_road` — «к дороге». У остальных 13 PF (включая `pf_burial_ground`) указана причина, почему исходные данные не подтверждают короткий устойчивый дальний признак.
 
-Ещё 3 строки G5 `node_binding.csv` не имеют ни `pf_id`, ни `pf_secondary`. Их нельзя представить ключом `place_family_id`; они перечислены отдельно в `source_scope_gaps` со ссылкой на строку источника и причиной. Эти строки не входят в 106 ключей и в 51 пробел каталога.
+Все строки G5 `node_binding.csv` теперь имеют `pf_id` либо `pf_secondary` (`pf_burial_ground` добавлен в `game-base-v1`), поэтому `source_scope_gaps` пуст; `pf_burial_ground` записан явным пробелом с причиной.
 
 ## Проверка
 
 Из корня репозитория:
 
 ```sh
-node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs \
-  --gamebase-root /srv/novgorod-work/worktrees/ref-gamebase
-node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs \
-  --gamebase-root /srv/novgorod-work/worktrees/ref-gamebase --self-test
+node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs
+node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs --self-test
 ```
 
-Валидатор проверяет существование и уникальность ключей, полное покрытие слотов и PF стартовой территории, явные причины пробелов, точные исходные строки, шаблоны каждого слота, C confidence и форму текста. Допустимые слова ограничены словарём нейтральных обозначений; заглавные и незнакомые слова отклоняются как возможные имена собственные.
+Валидатор проверяет существование и уникальность ключей, полное покрытие слотов и PF стартовой территории, явные причины пробелов, точные исходные строки, шаблоны каждого слота, C confidence, форму текста и раздел `passage_phrases`. Допустимые слова меток ограничены словарём нейтральных обозначений; заглавные и незнакомые слова отклоняются как возможные имена собственные.
 
-`ref-gamebase` используется только для чтения. Его таблица PF сама имеет статус candidate; каталог не повышает её статус и не включает вторичные PF в активное runtime-поведение.
-
-Снимок `ref-gamebase` закреплён на `3ab1c890c1caee2c1247ee144bf66bd35de705ec`. Валидатор сверяет commit и SHA-256 исходных `place_families.csv` и `node_binding.csv`, поэтому не принимает другой снимок или изменённые исходные строки.
+Основание (провенанс) берётся из этого репозитория: `place_families.csv` и `node_binding.csv` читаются на месте из `data/world-catalogs/novgorod/game-base-v1/places-binding/places/`, ссылки `source_refs` — пути репозитория со строкой (`...csv#L46`) либо JSON-указатели наборов `spatial-v3/candidates/m2c-g4-expansion-v1/datasets`. Внешний worktree `ref-gamebase`, git-закрепления и хеши исходных CSV не используются: если исходная строка изменилась, валидатор покажет расхождение, и каталог проходит новое утверждение.
 
 ## Формулировки хода к выходу (`passage_phrases`)
 

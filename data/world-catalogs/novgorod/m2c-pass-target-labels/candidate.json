@@ -7,13 +7,6 @@
   "import_authorized": false,
   "activation_authorized": false,
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-  "source_pins": {
-    "ref_gamebase_commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
-    "ref_gamebase_files_sha256": {
-      "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv": "139713cd706db0fd3281f0a4c1ff25f69f4a240d68b00e9c7b2a90565ace2663",
-      "data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv": "15f4fa3413e6bccfd19f485e5178a6e8853c4e37343eda05b6f329c29fde99c5"
-    }
-  },
   "authoring_policy": "Короткая нейтральная метка описывает только видимый издали тип цели прохода. Ключ expansion_slot_ref охватывает каждый назначенный G5-шаблон слота; фраза даётся только при общем видимом классе всех вариантов. Для созданной или канонической цели ключ — place_family_id. Этот кандидат не подключён к runtime и не предоставляет видимость, знание или право движения.",
   "passage_phrases": {
     "policy": "Короткие нейтральные формулировки хода к выходу, которые раньше сочинял код. Подход называет только способ пути и не утверждает ни тропы, ни брода, ни расстояния, ни безопасности. Вид пути определяется общим видимым классом цели слота (common_visible_class); слот без класса получает нейтральную форму. Слово для занятого прохода — один текст для команды, панели маршрута и видимого контекста.",
@@ -51,7 +44,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/0",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/0",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -80,7 +73,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/1",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/0",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -109,7 +102,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/2",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/0",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -138,7 +131,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/3",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -167,7 +160,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/4",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -196,7 +189,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/5",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -225,7 +218,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/6",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -254,7 +247,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/7",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -283,7 +276,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/8",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -312,7 +305,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/9",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -341,7 +334,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/10",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -370,7 +363,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/11",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -399,7 +392,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/12",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -428,7 +421,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/13",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -457,7 +450,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/14",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -486,7 +479,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/15",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -515,7 +508,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/16",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -916,7 +909,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/31",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -945,7 +938,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/32",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -974,7 +967,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/33",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1003,7 +996,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/34",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1032,7 +1025,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/35",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1061,7 +1054,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/36",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1090,7 +1083,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/37",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1251,7 +1244,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/43",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/9",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1673,7 +1666,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/59",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1702,7 +1695,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/60",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1731,7 +1724,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/61",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -1760,7 +1753,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/62",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2023,7 +2016,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/72",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/20",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2052,7 +2045,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/73",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/20",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2081,7 +2074,7 @@
         "source_refs": [
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/74",
           "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/20",
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2387,7 +2380,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L20"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L20"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2403,7 +2396,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L25"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L25"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2419,7 +2412,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L17"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L17"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2435,7 +2428,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L42"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L42"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2451,7 +2444,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L34"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L34"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2467,7 +2460,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L41"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L41"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2483,7 +2476,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L12"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L12"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2499,7 +2492,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L19"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L19"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2515,7 +2508,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L35"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L35"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2531,7 +2524,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L36"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L36"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2547,7 +2540,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L21"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L21"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2563,7 +2556,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L18"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L18"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2579,7 +2572,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L24"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L24"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2595,7 +2588,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L23"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L23"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2611,7 +2604,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2627,7 +2620,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L10"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L10"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2643,7 +2636,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L32"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L32"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2659,7 +2652,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L4"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L4"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2675,7 +2668,7 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L22"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L22"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
@@ -2691,29 +2684,29 @@
         "directness": "editorial",
         "confidence": "C",
         "source_refs": [
-          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L39"
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L39"
         ],
         "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
         "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
       },
       "gap_reason": "Признак сезонный; текущие сезон и состояние льда не входят в ключ описания."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_burial_ground",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_burial_ground",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L46"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Могильник задан формами погребения (грунтовые могилы, жальники, курганы), которые не гарантируют заметный издалека ориентир; фраза о цели не должна подсказывать назначение места."
     }
   ],
-  "source_scope_gaps": [
-    {
-      "node_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
-      "gap_reason": "В node_binding.csv для узла нет pf_id и pf_secondary, поэтому ключ place_family_id отсутствует.",
-      "source_ref": "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#L210"
-    },
-    {
-      "node_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
-      "gap_reason": "В node_binding.csv для узла нет pf_id и pf_secondary, поэтому ключ place_family_id отсутствует.",
-      "source_ref": "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#L212"
-    },
-    {
-      "node_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1",
-      "gap_reason": "В node_binding.csv для узла нет pf_id и pf_secondary, поэтому ключ place_family_id отсутствует.",
-      "source_ref": "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#L214"
-    }
-  ]
+  "source_scope_gaps": []
 }

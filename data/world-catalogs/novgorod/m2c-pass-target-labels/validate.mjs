@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import fs from 'node:fs';
-import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -34,10 +33,9 @@ const words = new Set([
 ]);
 
 function args(argv) {
-  const options = { selfTest: false, gamebase: path.resolve(root, '../ref-gamebase') };
+  const options = { selfTest: false };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--self-test') options.selfTest = true;
-    else if (argv[i] === '--gamebase-root' && argv[i + 1]) options.gamebase = path.resolve(argv[++i]);
     else if (argv[i] === '--help') options.help = true;
     else throw new Error(`Неизвестный аргумент: ${argv[i]}`);
   }
@@ -76,78 +74,15 @@ function slotKey(id, version) { return `${id}@${version}`; }
 function templateKey(id, version) { return `${id}@${version}`; }
 function familyOf(id) { return id?.startsWith('m2c_g5_') ? id.slice(7).split('__')[0] : null; }
 function pointer(file, index) { return `${file}#/${index}`; }
-function pfRef(line) { return `ref-gamebase:${pfPath}#L${line}`; }
-function nodeRef(line) { return `ref-gamebase:${nodePath}#L${line}`; }
+function pfRef(line) { return `${pfPath}#L${line}`; }
+function nodeRef(line) { return `${nodePath}#L${line}`; }
 
-function gitDirFor(worktree) {
-  const marker = path.join(worktree, '.git');
-  const stat = fs.statSync(marker);
-  if (stat.isDirectory()) return marker;
-  const match = /^gitdir:\s*(.+)\s*$/.exec(fs.readFileSync(marker, 'utf8'));
-  if (!match) throw new Error('не удалось прочитать gitdir ref-gamebase');
-  return path.resolve(worktree, match[1]);
-}
-
-function resolveRef(ref, gitDirs, depth = 0) {
-  if (depth > 4 || !/^refs\/[A-Za-z0-9._/-]+$/.test(ref) || ref.includes('..')) {
-    throw new Error('некорректная ссылка HEAD ref-gamebase');
-  }
-  for (const gitDir of gitDirs) {
-    const refPath = path.join(gitDir, ref);
-    if (fs.existsSync(refPath)) {
-      const value = fs.readFileSync(refPath, 'utf8').trim();
-      if (/^[0-9a-f]{40}$/.test(value)) return value;
-      const symbolic = /^ref:\s*(.+)$/.exec(value);
-      if (symbolic) return resolveRef(symbolic[1], gitDirs, depth + 1);
-    }
-    const packedRefs = path.join(gitDir, 'packed-refs');
-    if (fs.existsSync(packedRefs)) {
-      for (const line of fs.readFileSync(packedRefs, 'utf8').split(/\r?\n/)) {
-        const packed = /^([0-9a-f]{40}) (.+)$/.exec(line);
-        if (packed?.[2] === ref) return packed[1];
-      }
-    }
-  }
-  throw new Error(`HEAD ref-gamebase не разрешается: ${ref}`);
-}
-
-function commitAtHead(worktree) {
-  const gitDir = gitDirFor(worktree);
-  const commonDirFile = path.join(gitDir, 'commondir');
-  const commonDir = fs.existsSync(commonDirFile)
-    ? path.resolve(gitDir, fs.readFileSync(commonDirFile, 'utf8').trim()) : gitDir;
-  const head = fs.readFileSync(path.join(gitDir, 'HEAD'), 'utf8').trim();
-  if (/^[0-9a-f]{40}$/.test(head)) return head;
-  const symbolic = /^ref:\s*(.+)$/.exec(head);
-  if (!symbolic) throw new Error('не удалось прочитать HEAD ref-gamebase');
-  return resolveRef(symbolic[1], [...new Set([gitDir, commonDir])]);
-}
-
-function verifySourcePin(gamebase, pins) {
-  const expectedCommit = pins?.ref_gamebase_commit;
-  if (!/^[0-9a-f]{40}$/.test(expectedCommit ?? '')) {
-    throw new Error('source_pins.ref_gamebase_commit должен содержать полный SHA');
-  }
-  const actualCommit = commitAtHead(gamebase);
-  if (actualCommit !== expectedCommit) {
-    throw new Error(`ref-gamebase commit не совпадает с pin: ожидался ${expectedCommit}, получен ${actualCommit}`);
-  }
-  const expectedFiles = pins?.ref_gamebase_files_sha256;
-  if (!expectedFiles || !/^[0-9a-f]{64}$/.test(expectedFiles[pfPath] ?? '')
-    || !/^[0-9a-f]{64}$/.test(expectedFiles[nodePath] ?? '')) {
-    throw new Error('source_pins.ref_gamebase_files_sha256 должен содержать SHA-256 двух исходных CSV');
-  }
-  for (const relativePath of [pfPath, nodePath]) {
-    const actualHash = createHash('sha256').update(fs.readFileSync(path.join(gamebase, relativePath))).digest('hex');
-    if (actualHash !== expectedFiles[relativePath]) throw new Error(`изменён исходный CSV ref-gamebase: ${relativePath}`);
-  }
-}
-
-function load(gamebase) {
+// Provenance comes from this repository: the place-family and node-binding CSVs of
+// game-base-v1 are read in place; nothing outside the checkout is needed.
+function load() {
   const candidate = json(path.join(catalogDir, 'candidate.json'));
-  verifySourcePin(gamebase, candidate.source_pins);
-  const placeFamilies = readCsv(path.join(gamebase, pfPath));
-  const nodeBindings = readCsv(path.join(gamebase, nodePath));
+  const placeFamilies = readCsv(path.join(root, pfPath));
+  const nodeBindings = readCsv(path.join(root, nodePath));
   return {
     candidate,
     slots: json(path.join(datasets, slotFile)),
@@ -304,32 +239,38 @@ function validate(candidate, input) {
   }
   for (const key of expectedScopeGaps.keys()) if (!seenScopeGaps.has(key)) errors.push(`не объяснён G5 узел без PF ${key}`);
   for (const key of seenScopeGaps) if (!expectedScopeGaps.has(key)) errors.push(`лишний G5 source gap ${key}`);
+  errors.push(...checkPassagePhrases(candidate));
   return errors;
 }
 
-function selfTest(input, gamebase) {
+/** `passage_phrases`: the wording the runtime used to compose in code. Short lowercase
+ * Russian phrases; every visible class of a described slot maps to a way of going. */
+function checkPassagePhrases(candidate) {
+  const phrases = candidate.passage_phrases;
+  const errors = [];
+  const phrase = (value, id) => {
+    if (typeof value !== 'string' || !/^[а-яё]+(?: [а-яё]+){0,3}$/.test(value)) {
+      errors.push(`passage_phrases.${id}: 1–4 слова в нижнем регистре`);
+    }
+  };
+  if (!phrases || typeof phrases !== 'object') return ['отсутствует passage_phrases'];
+  phrase(phrases.local_edge_occupied, 'local_edge_occupied');
+  for (const kind of ['water', 'land', 'neutral']) phrase(phrases.approach?.[kind], `approach.${kind}`);
+  const classes = new Set(candidate.labels.filter((row) => row.expansion_slot_ref && row.display_label)
+    .map((row) => row.common_visible_class));
+  const mapping = phrases.approach_kind_by_visible_class ?? {};
+  for (const cls of classes) if (!['water', 'land'].includes(mapping[cls])) {
+    errors.push(`passage_phrases: класс ${cls} без вида пути water/land`);
+  }
+  for (const cls of Object.keys(mapping)) if (!classes.has(cls)) {
+    errors.push(`passage_phrases: лишний класс ${cls}`);
+  }
+  return errors;
+}
+
+function selfTest(input) {
   if (validate(input.candidate, input).length) throw new Error('self-test: исходный каталог невалиден');
   console.log(`self-test: исходный каталог валиден (${input.candidate.labels.length} ключей)`);
-  try {
-    verifySourcePin(gamebase, { ...input.candidate.source_pins, ref_gamebase_commit: '0'.repeat(40) });
-    throw new Error('self-test FAIL: несовпадающий pin принят');
-  } catch (error) {
-    if (!error.message.includes('commit не совпадает с pin')) throw error;
-    console.log('self-test PASS: несовпадающий source pin отклонён');
-  }
-  try {
-    verifySourcePin(gamebase, {
-      ...input.candidate.source_pins,
-      ref_gamebase_files_sha256: {
-        ...input.candidate.source_pins.ref_gamebase_files_sha256,
-        [pfPath]: '0'.repeat(64)
-      }
-    });
-    throw new Error('self-test FAIL: изменённый source hash принят');
-  } catch (error) {
-    if (!error.message.includes('изменён исходный CSV')) throw error;
-    console.log('self-test PASS: несовпадающий source hash отклонён');
-  }
   const probe = (name, edit, expected) => {
     const candidate = JSON.parse(JSON.stringify(input.candidate));
     const fixture = { ...input, assignments: [...input.assignments], candidate };
@@ -353,9 +294,17 @@ function selfTest(input, gamebase) {
   probe('непокрытый PF', (candidate) => {
     candidate.labels.splice(candidate.labels.findIndex((row) => row.place_family_id), 1);
   }, 'не покрыт PF стартовой территории');
-  probe('необъяснённый G5 без PF', (candidate) => {
-    candidate.source_scope_gaps[0].gap_reason = '';
-  }, 'отсутствует причина source gap');
+  probe('класс слота без вида пути', (candidate) => {
+    delete candidate.passage_phrases.approach_kind_by_visible_class.forest;
+  }, 'без вида пути');
+  probe('фраза подхода с цифрой', (candidate) => {
+    candidate.passage_phrases.approach.land = 'подход 2';
+  }, 'passage_phrases.approach.land');
+  probe('лишний G5 source gap для узла с PF', (candidate, fixture) => {
+    const bound = fixture.nodeBindings.find((row) => row.pf_id);
+    candidate.source_scope_gaps.push({ node_ref: bound.node_ref, gap_reason: 'лишний',
+      source_ref: nodeRef(bound.line) });
+  }, 'неизвестный или повторный G5 source gap');
   probe('несовместимый второй шаблон слота', (candidate, fixture) => {
     const record = candidate.labels.find((row) => row.common_visible_class === 'river_channel');
     const template = fixture.templates.find((row) => familyOf(row.id) === 'forest');
@@ -373,9 +322,9 @@ function selfTest(input, gamebase) {
 
 try {
   const options = args(process.argv.slice(2));
-  if (options.help) console.log('node validate.mjs [--gamebase-root PATH] [--self-test]');
+  if (options.help) console.log('node validate.mjs [--self-test]');
   else {
-    const input = load(options.gamebase);
+    const input = load();
     const errors = validate(input.candidate, input);
     if (errors.length) {
       console.error(`Проверка не пройдена (${errors.length}):\n${errors.map((item) => `- ${item}`).join('\n')}`);
@@ -383,7 +332,7 @@ try {
     } else {
       const labels = input.candidate.labels;
       console.log(`OK: ${labels.length} ключей; описаний ${labels.filter((row) => row.display_label).length}; пробелов ${labels.filter((row) => row.gap_reason).length}; G5 без PF в источнике ${input.candidate.source_scope_gaps.length}.`);
-      if (options.selfTest) selfTest(input, options.gamebase);
+      if (options.selfTest) selfTest(input);
     }
   }
 } catch (error) {

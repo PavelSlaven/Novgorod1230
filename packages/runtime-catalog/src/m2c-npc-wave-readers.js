@@ -1,24 +1,36 @@
-const text = (value) => typeof value === 'string' && value.trim().length > 0;
+import { deepFreeze, rowsFrom } from './shared.js';
+import {
+  assertApprovedWorldCatalogActivation,
+  assertSpatialV3WorldRevisionPin,
+} from './world-catalog-gate.js';
 
-function rowsFrom(result) {
-  return Array.isArray(result?.rows) ? result.rows : [];
+async function assertReadableContext(input) {
+  await assertSpatialV3WorldRevisionPin({
+    worldBaseReader: input.worldBaseReader,
+    spatialWorldPin: input.spatialWorldPin,
+  });
+  await assertApprovedWorldCatalogActivation({
+    worldBaseReader: input.worldBaseReader,
+    worldPin: input.worldPin,
+    runtimeCatalogPin: input.runtimeCatalogPin,
+  });
 }
 
-/** Read-only D-1 schedule rows for a place family from world_base. */
+/** Read-only D-1 schedules after spatial pin and runtime-catalog activation checks. */
 export async function loadScheduleRoutineRules({
   worldBaseReader,
-  worldRevisionId,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
   placeFamilyId,
   season,
   month,
 } = {}) {
-  if (!worldBaseReader || typeof worldBaseReader.read !== 'function') {
-    throw new TypeError('worldBaseReader.read is required.');
-  }
-  if (![worldRevisionId, placeFamilyId, season].every(text)) {
-    throw new TypeError('worldRevisionId, placeFamilyId and season are required.');
-  }
-  const params = [worldRevisionId, placeFamilyId, season];
+  await assertReadableContext({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+  });
+  const revisionId = spatialWorldPin.world_revision_id;
+  const params = [revisionId, placeFamilyId, season];
   let monthClause = '';
   if (month !== undefined && month !== null) {
     if (!Number.isInteger(month) || month < 1 || month > 12) {
@@ -37,34 +49,35 @@ export async function loadScheduleRoutineRules({
      ORDER BY schedule_id, schedule_version`,
     params,
   );
-  return rowsFrom(result).map((row) => ({
+  return rowsFrom(result).map((row) => deepFreeze({
     ...row,
     routine_profile: structuredClone(row.routine_profile),
     authoring_payload: structuredClone(row.authoring_payload ?? {}),
   }));
 }
 
-/** Read-only D-2 composition for a place family from world_base. */
+/** Read-only D-2 composition for one place family (pinned bundle version). */
 export async function loadPlacePopulationComposition({
   worldBaseReader,
-  worldRevisionId,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
   placeFamilyId,
+  compositionVersion = 1,
 } = {}) {
-  if (!worldBaseReader || typeof worldBaseReader.read !== 'function') {
-    throw new TypeError('worldBaseReader.read is required.');
-  }
-  if (![worldRevisionId, placeFamilyId].every(text)) {
-    throw new TypeError('worldRevisionId and placeFamilyId are required.');
-  }
+  await assertReadableContext({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+  });
+  const revisionId = spatialWorldPin.world_revision_id;
   const result = await worldBaseReader.read(
     `SELECT composition_id, composition_version, world_revision_id, place_family_id,
       place_family_version, population_groups, scheduled_absences, empty_reason, status,
       confidence, provenance_ref, authoring_payload
      FROM world_base.place_population_composition_rules
-     WHERE world_revision_id = $1 AND place_family_id = $2 AND status = 'approved'
-     ORDER BY composition_version DESC, composition_id
+     WHERE world_revision_id = $1 AND place_family_id = $2
+       AND composition_version = $3 AND status = 'approved'
      LIMIT 2`,
-    [worldRevisionId, placeFamilyId],
+    [revisionId, placeFamilyId, compositionVersion],
   );
   const rows = rowsFrom(result);
   if (rows.length > 1) {
@@ -72,7 +85,7 @@ export async function loadPlacePopulationComposition({
   }
   if (!rows.length) return null;
   const row = rows[0];
-  return {
+  return deepFreeze({
     population_groups: structuredClone(row.population_groups ?? []),
     scheduled_absences: structuredClone(row.scheduled_absences ?? []),
     empty_reason: row.empty_reason ?? null,
@@ -82,5 +95,5 @@ export async function loadPlacePopulationComposition({
       version: row.composition_version,
       world_revision_id: row.world_revision_id,
     },
-  };
+  });
 }

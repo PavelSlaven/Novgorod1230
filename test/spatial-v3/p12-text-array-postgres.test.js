@@ -18,7 +18,9 @@ test('P12 TEXT[] sqlLiteral round-trips through PostgreSQL', async (t) => {
     if (docker(['exec', name, 'pg_isready', '-U', 'p12', '-d', 'p12']).status === 0) { ready = true; break; }
   }
   assert.equal(ready, true);
-  const ddlParts = await Promise.all(Array.from({ length: 27 }, (_, i) => readFile(`infra/world-base/schema/${String(i + 1).padStart(2, '0')}.sql`, 'utf8')));
+  const schema = await readFile('infra/world-base/schema.sql', 'utf8');
+  const ddlParts = await Promise.all([...schema.matchAll(/^\\ir\s+schema\/([^\s]+\.sql)\s*$/gmu)]
+    .map(([, part]) => readFile(`infra/world-base/schema/${part}`, 'utf8')));
   const psql = (sql) => docker(['exec', '-i', name, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'p12', '-d', 'p12'], sql);
   assert.equal(psql(`${ddlParts.join('\n')}\nINSERT INTO world_base.source_records (id,status) VALUES ('p12-source','approved');`).status, 0);
   const seasons = sqlLiteral(['spring', 'a,b', 'c"d'], 'TEXT[]', 'presence_rules.allowed_seasons');

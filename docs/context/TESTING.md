@@ -50,6 +50,10 @@ PostgreSQL-тесты: часть из них пропускается без п
 `test/integration/party-runtime-v2-postgres.test.js` — `skip: !process.env.PARTY_DATABASE_URL`). Зелёный прогон
 без базы не доказывает DB semantics — смотрите `skip` в выводе. Только local/test база (AGENTS §23).
 
+`spatial-v3:test-p12-postgres` запускается с `node --test --test-concurrency=1`, потому что при параллельном
+`node --test` несколько Docker-PG тестов (имена контейнеров, порты, массовый DDL) гоняются одновременно и
+`p12-text-array-postgres` стабильно падает; изолированно тот же файл зелёный.
+
 ## 3. Состав `npm test` и CI
 
 `npm test` = последовательно: `test:modules` → `test:domain` → `test:apps` → `test:tools` → `test:shadow` →

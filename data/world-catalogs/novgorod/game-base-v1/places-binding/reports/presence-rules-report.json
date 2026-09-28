@@ -81,11 +81,11 @@
       "has_category_column": false
     }
   ],
-  "pool_rows_accepted": 5883,
-  "rules_written": 5717,
-  "category_rules": 5700,
+  "pool_rows_accepted": 5873,
+  "rules_written": 5707,
+  "category_rules": 5690,
   "people_rules": 17,
-  "seasonal_candidate_rows": 10890,
+  "seasonal_candidate_rows": 10880,
   "resolutions": [
     {
       "key": "place_family|pf_bridge_crossing||category|cat_item_object_drawstring_pouch_v1",
@@ -7960,12 +7960,12 @@
     }
   ],
   "by_scope_kind": {
-    "place_family": 5717
+    "place_family": 5707
   },
   "by_class": {
-    "common": 1275,
+    "common": 1253,
     "contextual": 2020,
     "ubiquitous": 345,
-    "rare": 2077
+    "rare": 2089
   }
 }

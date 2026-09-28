@@ -1,0 +1,80 @@
+{
+ "rule_id": "resource_family_suitable_environment_v1",
+ "status": "candidate_owner_approval_required",
+ "family_ids": [
+  "F07",
+  "F08",
+  "F09",
+  "F18",
+  "F29"
+ ],
+ "scope": "suitable_environment_only",
+ "suitable_environment": {
+  "predicate": "at_least_one_bound_species_has_qualifying_habitat",
+  "bindings_ref": "species_resource_families.csv",
+  "node_scope_fields": [
+   "place_family_ref",
+   "water_body_template_ref"
+  ],
+  "scope_ref_normalization": "optional_pf_prefix",
+  "habitat_sources": [
+   {
+    "ref": "../flora-herbs-berries-mushrooms/flora/flora_habitat_presence.csv",
+    "species_field": "fl_id",
+    "scope_field": "pf_id",
+    "frequency_field": "frequency_class",
+    "season_field": "season"
+   },
+   {
+    "ref": "../flora-trees-shrubs/flora/tree_habitat_presence.csv",
+    "species_field": "fl_id",
+    "scope_field": "pf_id",
+    "frequency_field": "frequency_class",
+    "season_field": "season"
+   },
+   {
+    "ref": "../fauna-fish-invertebrates-livestock/fauna/fish.csv",
+    "species_field": "fa_id",
+    "scope_field": "wb_frequency",
+    "frequency_field": "embedded_scope_frequency_pairs",
+    "season_field": "season_presence"
+   },
+   {
+    "ref": "../fauna-mammals-birds/fauna/wild_habitat_presence.csv",
+    "species_field": "fa_id",
+    "scope_field": "pf_id",
+    "frequency_field": "frequency_class",
+    "season_field": "season"
+   }
+  ],
+  "qualifying_frequency_classes": [
+   "ubiquitous",
+   "common"
+  ],
+  "generation_season_field": "season",
+  "season_match": "habitat_season_contains_generation_season",
+  "season_aliases": {
+   "spring_rasputitsa": "spring"
+  },
+  "fallback_when": "no_qualifying_bound_species_for_node_scope",
+  "fallback_rule_ref": "../places-binding/presence/frequency_rule.json#presence_ppm_from_frequency_class@v1"
+ },
+ "probability_ppm": 960000,
+ "empty_probability_ppm": 40000,
+ "excluded_until_patch_profiles": [
+  "F10",
+  "F11",
+  "F32",
+  "F33"
+ ],
+ "deferred_rare_family_ppm": {
+  "F11": 125000,
+  "F32": 125000,
+  "F33": 125000
+ },
+ "family_semantics": {
+  "F29": "inhabits_or_observable_signs; encounter_roll_is_separate_by_place_day_day_phase"
+ },
+ "basis": "editorial",
+ "note": "Family-aware calibration for resource architecture #171; no change to global places-binding frequency classes."
+}

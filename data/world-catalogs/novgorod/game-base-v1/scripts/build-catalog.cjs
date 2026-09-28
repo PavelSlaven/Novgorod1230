@@ -18,6 +18,7 @@ const REQ_STR = ['id', 'name_ru', 'group', 'entities_ru', 'gaps_ru', 'fill_metho
 const REQ_ARR = ['key_fields', 'target_tables', 'consumers', 'existing_sources'];
 // Domain ids the task requires to exist (coverage check).
 const REQUIRED = [
+  'resource_catalog',
   'flora_trees_shrubs', 'flora_herbs_grasses_mosses', 'flora_berries_mushrooms', 'cultivated_plants',
   'fauna_mammals', 'fauna_birds', 'fauna_fish', 'fauna_invertebrates_herps', 'livestock_husbandry',
   'natural_materials_soils', 'weather_climate', 'place_families', 'place_binding', 'presence_rules',
@@ -38,7 +39,7 @@ for (const g of groups) {
   if (gids.has(g.id)) errors.push(`duplicate group ${g.id}`);
   gids.add(g.id);
 }
-if (groups.length < 16 || groups.length > 20) errors.push(`group count ${groups.length} not in 16..20`);
+if (groups.length < 16 || groups.length > 21) errors.push(`group count ${groups.length} not in 16..21`);
 const dids = new Set();
 for (const d of domains) {
   for (const k of REQ_STR) if (typeof d[k] !== 'string' || !d[k].trim()) errors.push(`${d.id}: missing ${k}`);

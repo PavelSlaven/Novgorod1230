@@ -1,30 +1,122 @@
 {
- "household.csv": 111,
+ "household.csv": 117,
  "personal.csv": 79,
- "item_categories.csv": 160,
- "item_categories_proposed_new": 121,
- "item_place_frequency.csv": 12629,
- "item_place_frequency_it": 1652,
+ "item_categories.csv": 166,
+ "item_categories_proposed_new": 127,
+ "item_place_frequency.csv": 12634,
+ "item_place_frequency_it": 1657,
  "item_place_frequency_master": 10977,
  "ownership_rules.csv": 1614,
  "recognizers.csv": 28,
  "mark_pools.csv": 86,
  "identifying_text_pools.csv": 18,
  "mass_policy.csv": 6,
- "condition_vocab.csv": 11,
+ "condition_vocab.csv": 12,
  "archetype_pf_map.csv": 32,
- "reports/frequency_dropped.csv": 4828,
+ "reports/frequency_dropped.csv": 0,
+ "household_inventory_profiles.csv": 979,
+ "household_inventory_profiles": 35,
+ "household_inventory_profiles_by_kind": {
+  "household": 7,
+  "place_set": 7,
+  "workshop": 21
+ },
+ "household_inventory_basis": {
+  "sourced": 501,
+  "logical_necessity": 400,
+  "analogy": 78
+ },
+ "household_inventory_need_category": {
+  "child": 21,
+  "cleaning": 44,
+  "clothing_repair": 46,
+  "cooking": 111,
+  "food_drink": 17,
+  "leisure": 22,
+  "light_heat": 83,
+  "livestock_harness": 28,
+  "occupation_tools": 296,
+  "personal_adornment": 12,
+  "ritual_church": 28,
+  "sleep": 39,
+  "storage": 89,
+  "textiles": 17,
+  "water": 54,
+  "import_luxury": 26,
+  "furniture": 9,
+  "stocks": 10,
+  "vessels": 13,
+  "waste_traces": 8,
+  "shrines": 6
+ },
+ "household_inventory_rejected_anachronisms": 7,
+ "item_place_trace_relations.csv": 3741,
+ "item_place_trace_source_items": 656,
+ "item_place_trace_by_kind": {
+  "byproduct": 25,
+  "deposit": 510,
+  "fragment": 1127,
+  "residue": 750,
+  "waste": 1329
+ },
+ "item_place_trace_by_resolution": {
+  "mapped_pf": 3457,
+  "owner_handoff": 171,
+  "transport_context": 113
+ },
+ "item_context_relations.csv": 1087,
+ "item_context_relations": {
+  "rows": 1087,
+  "by_context": {
+   "activity_overlay": 658,
+   "transport_context": 429
+  },
+  "by_archetype": {
+   "construction_site": 318,
+   "boat": 349,
+   "military_camp": 340,
+   "cart_or_sledge": 80
+  },
+  "confidence": {
+   "A": 367,
+   "B": 626,
+   "C": 94
+  },
+  "dropped": 0,
+  "dropped_by_reason": {}
+ },
+ "reports/item_exclusion_returns.csv": 18,
+ "item_exclusion_returns": {
+  "rows": 18,
+  "returned": 18,
+  "rejected_anachronism": 0
+ },
+ "reports/household_evidence_intake.json": {
+  "input_rows": 7331,
+  "ledger_rows": 7331,
+  "dispositions": {
+   "new_item_candidate": 43,
+   "owner_review_handoff": 5564,
+   "rejected": 1724
+  },
+  "reject_reasons": {
+   "anachronism_or_late_form": 21,
+   "outside_item_relation_scope": 538,
+   "outside_target_period": 1165
+  },
+  "new_item_ids_created": 6
+ },
  "confidence_items": {
   "A": 98,
-  "B": 70,
-  "C": 22
+  "B": 74,
+  "C": 24
  },
  "confidence_frequency": {
   "B": 2899,
-  "C": 9730
+  "C": 9735
  },
  "frequency_class_it": {
-  "contextual": 699,
+  "contextual": 704,
   "common": 189,
   "ubiquitous": 58,
   "rare": 706
@@ -33,7 +125,7 @@
   "R_MASTER_LINK": 265,
   "R_SPAWN_PROFILE": 111,
   "R_WHERE_USED_TEXT": 478,
-  "R_GROUP_DEFAULT": 13,
+  "R_GROUP_DEFAULT": 18,
   "R_WHERE_USED_TEXT+R_LOSS_DOWNGRADE": 14,
   "R_MASTER_LINK+R_LOSS_DOWNGRADE": 25,
   "R_GROUP_DEFAULT+R_RESIDUAL_RARE_DATING": 3,
@@ -46,7 +138,7 @@
  },
  "placement_weights": {
   "8:0": 1009,
-  ":": 1450,
+  ":": 1455,
   "3:5": 1892,
   "6:2": 3259,
   "5:3": 4858,
@@ -54,7 +146,7 @@
  },
  "placement_basis": {
   "master": 11179,
-  "no_source": 1450
+  "no_source": 1455
  },
  "owner_kind": {
   "household": 673,

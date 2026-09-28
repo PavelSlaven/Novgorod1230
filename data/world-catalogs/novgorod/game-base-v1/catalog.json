@@ -29,18 +29,18 @@
     "approval": "Автор не утверждает сам себя: каждый домен — отдельный проход утверждения (Opus high или владелец) по WR §21.1; механические переносы проверяются тестами.",
     "priority": "M2c — нужно для 32 G4 / 195 G5 стартовой территории v17 и богатства первого прибытия; M3 — свободная конкретизация; later — после M3."
   },
-  "summary_ru": "Каталог игровой базы game-base-v1: 60 доменов в 20 узких группах-сборщиках. Основа — три карты (схема world_base, потребители v17, дизайн владельца) и прежние обзоры (sweep-d4, archive-sweep, flora-fauna, documents-review). Главное: (1) одобренных фактов много (WK 1723 claims), но почти нет пулов «что есть в каком месте и как часто» — их собирают скриптами из WK, MASTER и кандидатов с весами 8/4/2/1; (2) для флоры, фауны, еды, ремёсел и здоровья в world_base нет таблиц вообще, а таблицы имён, экономики, законов, религии, погоды, расписаний, истории, одежды и материальной культуры пусты — новые таблицы требуют CR и Contract Auditor; (3) многие заполненные таблицы v17 не читает (имена, история, member_selection природы, approved_runtime_basis NPC, WK для narration) — данные таких доменов окупятся только после кодовой проводки, это отмечено в consumers; (4) сразу окупаются без кода: утверждённые WK claims (после пересборки бандла), профили NPC для 37 одобренных занятий, варианты одежды, тексты природных слоёв по G4×сезону, тексты observable_activity; (5) для предметов по решениям владельца D9/D14 введены домены правил владения и пулов примет/опознавательного текста. По приоритетам: M2c — 38, M3 — 19, later — 3.",
+  "summary_ru": "Каталог игровой базы game-base-v1: 63 доменов в 20 узких группах-сборщиках. Основа — три карты (схема world_base, потребители v17, дизайн владельца) и прежние обзоры (sweep-d4, archive-sweep, flora-fauna, documents-review). Главное: (1) одобренных фактов много (WK 1723 claims), но почти нет пулов «что есть в каком месте и как часто» — их собирают скриптами из WK, MASTER и кандидатов с весами 8/4/2/1; (2) для флоры, фауны, еды, ремёсел и здоровья в world_base нет таблиц вообще, а таблицы имён, экономики, законов, религии, погоды, расписаний, истории, одежды и материальной культуры пусты — новые таблицы требуют CR и Contract Auditor; (3) многие заполненные таблицы v17 не читает (имена, история, member_selection природы, approved_runtime_basis NPC, WK для narration) — данные таких доменов окупятся только после кодовой проводки, это отмечено в consumers; (4) сразу окупаются без кода: утверждённые WK claims (после пересборки бандла), профили NPC для 37 одобренных занятий, варианты одежды, тексты природных слоёв по G4×сезону, тексты observable_activity; (5) для предметов по решениям владельца D9/D14 введены домены правил владения и пулов примет/опознавательного текста. По приоритетам: M2c — 41, M3 — 19, later — 3.",
   "counts": {
-    "domains": 60,
+    "domains": 63,
     "groups": 20,
     "by_priority": {
-      "M2c": 38,
+      "M2c": 41,
       "M3": 19,
       "later": 3
     },
     "by_fill_method": {
-      "derive": 9,
-      "rule": 6,
+      "derive": 11,
+      "rule": 7,
       "mixed": 25,
       "research": 16,
       "import": 4
@@ -53,7 +53,7 @@
       "fauna-fish-invertebrates-livestock": 3,
       "nature-materials-weather": 3,
       "buildings-interiors-containers": 4,
-      "items-household-personal": 5,
+      "items-household-personal": 8,
       "crafts-tools-processes": 3,
       "items-weapons-armour": 2,
       "clothing-appearance": 3,
@@ -1026,7 +1026,7 @@
       "id": "household_items",
       "name_ru": "Вещи быта",
       "group": "items-household-personal",
-      "entities_ru": "Деревянная и керамическая посуда, ложки, ковши, ступы, жернова ручные, светец, лучина, кресало, кочерга, ухват (проверить), веники, лохани, полотенца, постель, мелкие хранилища, пряслица, веретёна.",
+      "entities_ru": "Деревянная и керамическая посуда, ложки, ковши, ступы, жернова ручные, светец, лучина, кресало, кочерга, чапельник, веники, лохани, полотенца, постель, мелкие хранилища, пряслица, веретёна.",
       "key_fields": [
         "it_id",
         "name_ru",
@@ -1143,6 +1143,126 @@
       "fill_method": "mixed",
       "priority": "M2c",
       "acceptance_ru": "Скрипт: 100% строк резолвят item и pf_id; класс ∈ 4 значения; каждое семейство мест с людьми имеет ≥10 вещей; отчёт о связях master, отброшенных при сверке, с причиной."
+    },
+    {
+      "id": "household_inventory_profiles",
+      "name_ru": "Обязательный набор двора, места и мастерской",
+      "group": "items-household-personal",
+      "entities_ru": "Relation-профили вещей по составу, занятию и достатку двора; наборы мастерских и общественных мест; формулы количества при первом открытии.",
+      "key_fields": [
+        "hip_id",
+        "profile_id",
+        "profile_kind",
+        "need_category",
+        "ref_kind",
+        "object_ref",
+        "requirement",
+        "quantity_norm",
+        "composition_factor",
+        "wealth_multiplier",
+        "quantity_mode",
+        "basis",
+        "derivation"
+      ],
+      "target_tables": [
+        "candidate: household_inventory_profiles",
+        "future ordinary-item materialization consumer"
+      ],
+      "consumers": [
+        "first-open materialization after separate approval",
+        "scene item selection"
+      ],
+      "existing_sources": [
+        "items/household.csv и personal.csv — candidate",
+        "household_composition_profiles и household_food_stock_profiles — candidate",
+        "CR #176 / D38"
+      ],
+      "gaps_ru": "Runtime consumer не включён; relation остаётся candidate до отдельного утверждения.",
+      "fill_method": "rule",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: все ссылки резолвятся; обязательные потребности покрыты; количество использует фактический состав и достаток; каждая строка имеет basis и derivation."
+    },
+    {
+      "id": "item_place_trace_relations",
+      "name_ru": "Следы и остатки вещей по местам",
+      "group": "items-household-personal",
+      "entities_ru": "Фрагменты, остатки, отложения, отходы и побочные продукты как конечные находки, не целые автоматически возобновляемые вещи.",
+      "key_fields": [
+        "trace_id",
+        "source_link_id",
+        "source_item_id",
+        "master_item_ref",
+        "trace_kind",
+        "source_location_archetype",
+        "pf_refs",
+        "place_resolution",
+        "place_owner_ref",
+        "frequency_class",
+        "pickup_mode",
+        "quantity_boundary",
+        "process_refs",
+        "basis",
+        "derivation",
+        "source_refs",
+        "anachronism_check",
+        "confidence",
+        "status"
+      ],
+      "target_tables": [
+        "candidate: item_place_trace_relations",
+        "future trace materialization owner"
+      ],
+      "consumers": [
+        "scene traces after separate approval",
+        "places owner handoff"
+      ],
+      "existing_sources": [
+        "master item_location_links и material_entities — candidate",
+        "late_materials_denylist"
+      ],
+      "gaps_ru": "Runtime consumer и часть place bindings переданы профильным владельцам.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая строка сохраняет source FK, trace kind и политику; confidence сам по себе не служит причиной исключения; denylist проверяется."
+    },
+    {
+      "id": "item_context_relations",
+      "name_ru": "Контекстные связи целых вещей",
+      "group": "items-household-personal",
+      "entities_ru": "Целые вещи транспорта, стройки и военного лагеря, переданные действующему owner или явному handoff без выдуманного семейства места.",
+      "key_fields": [
+        "icr_id",
+        "source_link_id",
+        "item_ref",
+        "name_ru",
+        "location_archetype",
+        "context_kind",
+        "spawn_frequency",
+        "target_owner",
+        "target_refs",
+        "materialization_rule",
+        "basis",
+        "derivation",
+        "anachronism_check",
+        "confidence",
+        "status"
+      ],
+      "target_tables": [
+        "candidate: item_context_relations",
+        "transport, activity и place owner bindings"
+      ],
+      "consumers": [
+        "transport/container materialization after approval",
+        "activity overlays"
+      ],
+      "existing_sources": [
+        "master whole-item location links — candidate",
+        "существующие transport и activity owners"
+      ],
+      "gaps_ru": "Стройка и военный лагерь требуют отдельного owner binding #176.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: каждая строка резолвит исходный link и ровно один owner/handoff; context relation не попадает в ambient PF."
     },
     {
       "id": "item_ownership_rules",

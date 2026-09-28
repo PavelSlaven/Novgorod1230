@@ -28,6 +28,14 @@ LOSS_DOWN = {"ubiquitous": "contextual", "common": "rare", "contextual": "rare",
 # The boat/pier source only permits these objects in a supported context; it
 # supplies no cause for an instance at the public ferry landing.
 UNSUPPORTED_ITEM_PFS = {("it_hh_basket", "ferry_landing"), ("it_ps_folding_balance", "ferry_landing")}
+ARCHIVE = "sources/master-archive-v1"
+CONTEXT_ARCHES = {
+    "boat": ("transport_context", "transport_travel", "trv_003;trv_004;trv_006;trv_014;ct_boat_hold;cp_boat_cargo"),
+    "cart_or_sledge": ("transport_context", "transport_travel", "trv_022;trv_023;trv_031;trv_032;ct_cart_body;cp_cart_load"),
+    "military_camp": ("activity_overlay", "place_families", "issue:#176:military_camp"),
+    "construction_site": ("activity_overlay", "place_families", "issue:#176:construction_site"),
+}
+DROP_REASONS = {"anachronism", "physical_impossibility", "duplicate"}
 ARCHAEOLOGICAL_KINDS = {"fragment", "residue", "deposit", "waste", "byproduct"}
 NON_WHOLE_KINDS = {"salvage", "component", "blank", "semifinished"}
 NON_WHOLE_NAME = re.compile(r"\bобломок\b", re.I)
@@ -69,6 +77,18 @@ def upd(acc, pf, cls, rule, basis):
     return a
 
 
+def allows_group_default(item):
+    """A source-less generic room is not evidence for costly/import/prestige ware."""
+    return (item.get("value_band") != "costly"
+            and not re.search(r"(?:^|_)(?:import|prestige)(?:_|$)", item.get("subcategory", ""), re.I))
+
+
+def closed_drop_reason(reason):
+    if reason not in DROP_REASONS:
+        raise ValueError(f"drop reason outside closed vocabulary: {reason}")
+    return reason
+
+
 def main():
     master, me = load_master(), load_me()
     pfs = load_place_families()
@@ -91,6 +111,7 @@ def main():
                 for a in arch:
                     spawn_cls[iid].append((a, cls, s["profile_id"]))
     dropped = []
+    context_rows = []
 
     def excluded(legacy):
         m = master.get(legacy)
@@ -98,13 +119,8 @@ def main():
             return "item not in master canonical material_items"
         if m["rec"].get("entity_kind") in ARCHAEOLOGICAL_KINDS:
             return f"archaeological trace, not a live-scene item ({m['rec']['entity_kind']})"
-        if m["conf"] not in ("A", "B", "C"):
-            return f"master historical_confidence {m['conf']} (D or missing)"
-        pol = me.get(legacy, {}).get("generation_policy") or m["rec"].get("generation_policy", "")
-        if "never" in str(pol):
-            return f"generation_policy {pol}"
         if DENY.search(m["name_ru"]):
-            return "anachronism denylist match"
+            return "anachronism"
         return None
 
     def whole_evidence(legacy):
@@ -135,6 +151,8 @@ def main():
                 for pf in R.ARCH_PF.get(arch, []):
                     a = upd(acc, pf, cls, "R_SPAWN_PROFILE", f"master_spawn:{prof}:{lg}")
                     a["fanout"] = a.get("fanout", False) or len(R.ARCH_PF[arch]) > 1
+        # Authored master where_used text is source evidence.  The guard below
+        # applies only to the source-less R_GROUP_DEFAULT fallback.
         if not acc:
             for lg in legacy:
                 if excluded(lg) or not whole_evidence(lg) or me.get(lg, {}).get("quantity_mode") in residue_units:
@@ -146,7 +164,7 @@ def main():
                             if it["item_group"] == "HH_TEXTILE_WORK" and pf in ("fishing_camp", "riverbank"):
                                 continue
                             upd(acc, pf, "contextual", "R_WHERE_USED_TEXT", f"master_where_used:{lg}")
-        if not acc:
+        if not acc and allows_group_default(it):
             for pf in GROUP_DEFAULT.get(it["item_group"], ["dwelling_interior"]):
                 acc[pf] = {"cls": "contextual", "basis": {f"group_default:{it['item_group']}"}, "rule": "R_GROUP_DEFAULT"}
         for pf, a in sorted(acc.items()):
@@ -188,13 +206,41 @@ def main():
     accB = {}
     for l in links:
         lg, arch = l["item_id"], l["location_archetype"]
+        if lg not in master:
+            raise ValueError(f"source link {l['link_id']} has no canonical item: {lg}")
+        # Archaeological states are preserved by item_place_trace_relations.csv.
+        # They are neither intact-item frequency evidence nor dropped links.
+        if master[lg]["rec"].get("entity_kind") in ARCHAEOLOGICAL_KINDS:
+            continue
         why = excluded(lg)
-        if why is None and arch in R.ARCH_DROP:
-            why = R.ARCH_DROP[arch]
+        if why is None and arch in CONTEXT_ARCHES:
+            context_kind, target_owner, target_refs = CONTEXT_ARCHES[arch]
+            m = master[lg]
+            context_rows.append({
+                "icr_id": f"icr_{l['link_id'].lower()}",
+                "source_link_id": l["link_id"],
+                "item_ref": m["canonical_id"],
+                "name_ru": m["name_ru"],
+                "location_archetype": arch,
+                "context_kind": context_kind,
+                "spawn_frequency": l["spawn_frequency"],
+                "target_owner": target_owner,
+                "target_refs": target_refs,
+                "materialization_rule": "owner resolves the concrete vehicle or activity scene; never ambient place-family placement",
+                "basis": "sourced",
+                "derivation": f"{ARCHIVE}/data/normalized_source_tables/material_entities/item_location_links.csv#{l['link_id']}; decision:D40",
+                "anachronism_check": "pass:master identity survives denylist; confidence alone is not exclusion",
+                "confidence": m["conf"] or "D",
+                "status": "candidate",
+            })
+            continue
         if why is None and arch not in R.ARCH_PF:
-            why = f"unmapped archetype {arch}"
+            raise ValueError(f"unmapped location archetype requires owner decision: {arch}")
         if why:
-            dropped.append({"link_id": l["link_id"], "item_id": lg, "location_archetype": arch, "spawn_frequency": l["spawn_frequency"], "reason": why})
+            reason_code = closed_drop_reason(why)
+            dropped.append({"link_id": l["link_id"], "item_id": lg, "location_archetype": arch,
+                            "spawn_frequency": l["spawn_frequency"], "reason_code": reason_code,
+                            "reason": why})
             continue
         m = master[lg]
         cat, sub = m["rec"].get("category"), m["rec"].get("subcategory")
@@ -315,9 +361,17 @@ def main():
             r["placement_owner_ref"] = stage_ref
     fields = list(rows[0])
     n = write_csv(ITEMS / "item_place_frequency.csv", rows, fields)
-    write_csv(REPORTS / "frequency_dropped.csv", dropped, ["link_id", "item_id", "location_archetype", "spawn_frequency", "reason"])
+    write_csv(REPORTS / "frequency_dropped.csv", dropped,
+              ["link_id", "item_id", "location_archetype", "spawn_frequency", "reason_code", "reason"])
+    write_csv(ITEMS / "item_context_relations.csv", sorted(context_rows, key=lambda r: r["icr_id"]), [
+        "icr_id", "source_link_id", "item_ref", "name_ru", "location_archetype", "context_kind",
+        "spawn_frequency", "target_owner", "target_refs", "materialization_rule", "basis",
+        "derivation", "anachronism_check", "confidence", "status",
+    ])
     amap = [{"location_archetype": a, "pf_ids": ";".join(p), "action": "map", "note": R.ARCH_NOTE.get(a, "")} for a, p in R.ARCH_PF.items()]
-    amap += [{"location_archetype": a, "pf_ids": "", "action": "drop", "note": why} for a, why in R.ARCH_DROP.items()]
+    amap += [{"location_archetype": a, "pf_ids": "", "action": "context",
+              "note": f"{CONTEXT_ARCHES[a][0]} -> {CONTEXT_ARCHES[a][1]}; {why}"}
+             for a, why in R.ARCH_DROP.items()]
     write_csv(ITEMS / "archetype_pf_map.csv", amap, ["location_archetype", "pf_ids", "action", "note"])
     # checks
     errs = []
@@ -330,7 +384,7 @@ def main():
             errs.append(f"{r['ipf_id']}: owner rule {r['owner_rule_ref']} missing")
     (REPORTS / "build_frequency_errors.txt").write_text("\n".join(errs[:500]) + ("\n" if errs else ""), encoding="utf-8")
     a_rows = sum(1 for r in rows if r["ref_kind"] == "it")
-    print(f"item_place_frequency={n} (it={a_rows}, master={n - a_rows}) dropped_links={len(dropped)} errors={len(errs)}")
+    print(f"item_place_frequency={n} (it={a_rows}, master={n - a_rows}) context_links={len(context_rows)} dropped_links={len(dropped)} errors={len(errs)}")
     for e in errs[:20]:
         print("  ERR", e)
 

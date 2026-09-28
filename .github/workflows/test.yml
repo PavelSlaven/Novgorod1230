@@ -158,6 +158,14 @@ jobs:
           status=$?
           cat "$RUNNER_TEMP/npm-test.log"
           exit "$status"
+      - name: Run spatial-v3 P12 postgres tests
+        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'integration'
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+        run: npm run spatial-v3:test-p12-postgres
       - name: Run integration tests
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'integration'
         env:

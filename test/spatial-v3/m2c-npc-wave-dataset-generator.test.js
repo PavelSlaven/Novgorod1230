@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { readFile, rm } from 'node:fs/promises';
@@ -72,6 +73,36 @@ test('mapPresenceRule maps item_ref and variant objects', () => {
   assert.equal(mapped.confidence, 'low');
   assert.equal(mapped.item_ref, 'it_one');
   assert.deepEqual(mapped.variants, [{ item_ref: 'it_two', source_row_id: 'row-1' }]);
+});
+
+test('mapPresenceRule clears allowed_times for people subject kinds', () => {
+  const row = {
+    pr_id: 'pr_people',
+    scope_kind: 'place_family',
+    scope_ref: 'pf_x',
+    region_id: '',
+    category_ref: '',
+    subject_kind: 'social_role',
+    subject_ref: 'nov_role_x',
+    item_ref: '',
+    variants: '[]',
+    probability_ppm: '1000',
+    count_limit: '1',
+    allowed_seasons: 'all',
+    allowed_times: '["day"]',
+    guards: '',
+    entry_visible_if: '',
+    search_only_if: '',
+    entry_exposed_weight: '',
+    search_concealed_weight: '',
+    wild_arrival_cause_required: '',
+    refresh_class: 'none',
+    confidence: 'C',
+    status: 'candidate',
+  };
+  const mapped = mapPresenceRule(row, 'rev-1', 'src-1');
+  assert.deepEqual(mapped.allowed_times, []);
+  assert.deepEqual(mapped.authoring_payload.allowed_times_source, ['day']);
 });
 
 test('parseSlotWeight empty to 1; zero and negative throw', () => {
@@ -206,4 +237,24 @@ test('starter territory place families each have a primary binding on pin 3ab1c8
   assert.deepEqual(manifest.data_gaps, []);
   assert.equal(manifest.source_commit, undefined);
   await rm(parent, { recursive: true, force: true });
+});
+
+test('committed m2c-npc-wave dataset files match generator output on approval pin', async (t) => {
+  const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
+  const commit = approval.source_commit;
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-byte-parity-'));
+  const outRoot = join(parent, 'v1');
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  const manifest = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json', 'utf8'));
+  for (const dataset of manifest.datasets) {
+    const committed = await readFile(join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1', dataset.file));
+    const generated = await readFile(join(outRoot, dataset.file));
+    assert.equal(
+      createHash('sha256').update(committed).digest('hex'),
+      createHash('sha256').update(generated).digest('hex'),
+      dataset.table,
+    );
+  }
 });

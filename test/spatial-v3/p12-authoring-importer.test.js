@@ -1,16 +1,18 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import {
   buildBundleReadbackSql,
+  buildImportWithReadbackSql,
   buildTransactionalImportSql,
   sqlLiteral,
   validateAuthoringBundle,
 } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { validateM2cNpcWaveApproval } from '../../tools/spatial-v3/m2c-npc-wave-approval.mjs';
+import { isM2cNpcWaveManifest, M2C_NPC_WAVE_TABLE_SET } from '../../tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs';
 
 const gap = (code) => ({ code, subject_ref: 'novgorod:test', dependency_pins: ['catalog'], blocking: true });
 const approvedTarget = async () => ({ ok: true, materialization_authorized: false, p28_activation: 'not_authorized', errors: [] });
@@ -213,18 +215,58 @@ test('P12 v17 bootstrap bundle SQL stays byte-stable after importer changes', as
   }
 });
 
-test('P12 readback SQL fails closed on aggregate mismatch code', async () => {
+test('P12 readback SQL includes mismatch guard for spatial bundle tables', async () => {
   const sql = await buildBundleReadbackSql({
     root: process.cwd(),
     manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
-  }).catch(() => null);
-  if (!sql) return;
+  });
   assert.match(sql, /P12_READBACK_MISMATCH:spatial_v3_world_revisions/u);
+  assert.match(sql, /readback_aggregate_sha256/u);
 });
 
-test('m2c-npc-wave approval draft covers generator source paths on pin 3ab1c890', async () => {
+test('P12 import and readback temp table prefixes do not collide', async () => {
+  const sql = await buildImportWithReadbackSql({
+    root: process.cwd(),
+    manifestPath: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
+    temporaryTablePrefix: 'p12_shared',
+    readbackTemporaryTablePrefix: 'p12_shared_rb',
+  });
+  assert.match(sql, /CREATE TEMP TABLE p12_shared_place_families/u);
+  assert.match(sql, /CREATE TEMP TABLE p12_shared_rb_place_families/u);
+  const importCreates = sql.match(/CREATE TEMP TABLE p12_shared_[a-z0-9_]+/gu) ?? [];
+  const readbackCreates = sql.match(/CREATE TEMP TABLE p12_shared_rb_[a-z0-9_]+/gu) ?? [];
+  assert.ok(importCreates.length > 0 && readbackCreates.length > 0);
+  assert.ok(!importCreates.some((name) => readbackCreates.includes(name.replace('_rb', ''))));
+});
+
+test('P12 approved m2c-npc-wave import without readback wrapper is refused', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-wave-guard-'));
+  const waveRoot = join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1');
+  await cp(waveRoot, dir, { recursive: true });
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const repoApproval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
+  repoApproval.checked_by = 'integration-test-reviewer';
+  await writeFile(join(dir, 'approval.json'), JSON.stringify(repoApproval));
+  const manifestFile = join(dir, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  manifest.status = 'approved';
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  await assert.rejects(
+    () => buildTransactionalImportSql({
+      root: process.cwd(),
+      manifestPath: manifestFile,
+      wrapTransaction: false,
+      allowTypedGaps: true,
+      m2cWaveApprovalPath: join(dir, 'approval.json'),
+    }),
+    /P12_WAVE_IMPORT_REQUIRES_READBACK/u,
+  );
+});
+
+test('m2c-npc-wave approval rejects draft checked_by until reviewer sign-off', async () => {
   const result = await validateM2cNpcWaveApproval({ root: process.cwd() });
-  assert.equal(result.ok, true, result.errors.map((error) => error.code).join(', '));
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_CHECKED_BY_PLACEHOLDER'));
   assert.equal(result.approval.source_commit, '3ab1c890c1caee2c1247ee144bf66bd35de705ec');
 });
 

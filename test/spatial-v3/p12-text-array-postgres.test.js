@@ -13,7 +13,7 @@ const name = `p12-text-array-${process.pid}`;
 const gap = (code) => ({ code, subject_ref: 'p12', dependency_pins: ['catalog'], blocking: true });
 
 test('P12 TEXT[] import round-trips through PostgreSQL with readback verification', async (t) => {
-  if (docker(['version']).status !== 0) t.skip('Docker required');
+  if (docker(['version']).status !== 0) return t.skip('Docker required');
   const dir = await mkdtemp(join(tmpdir(), 'p12-text-array-'));
   await mkdir(join(dir, 'datasets'));
   const revision = JSON.stringify([{ id: 'p12-revision', catalog_digest: 'a'.repeat(64), status: 'approved', provenance_ref: 'p12-source' }]);

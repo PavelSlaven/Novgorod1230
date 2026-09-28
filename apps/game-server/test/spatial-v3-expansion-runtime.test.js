@@ -57,6 +57,20 @@ test('an arrival position from which departure is reachable by a local edge offe
   assert.deepEqual(await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] }),
     [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1', display_label: 'Продолжить путь' }]);
 });
+test('the approach carries the approach phrase the disclosure owner supplied (F4)', async () => {
+  const current = context();
+  const departurePosition = current.position;
+  current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.scene = { ...current.scene, positions: [current.position, departurePosition],
+    movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position',
+      to_position_id: departurePosition.id, status: 'active' }] };
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readExitDisclosure: async () => (await disclosure()).map((row) => ({ ...row,
+      approach_phrase: 'подход по суше' })), materializerVersion: 'version',
+    generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  const [approach] = await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] });
+  assert.equal(approach.approach_phrase, 'подход по суше');
+});
 test('the first approach step is taken only from the edges the local-scene owner offered (F3)', async () => {
   const current = context();
   const departurePosition = current.position;

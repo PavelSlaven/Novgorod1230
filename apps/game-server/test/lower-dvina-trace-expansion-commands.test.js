@@ -68,6 +68,21 @@ test('the approach asks the expansion owner only about first steps the local-sce
     assert.match(approach.semantic_binding.operation_dto.description, /\(проход занят\)$/);
   });
 
+test('the approach wording is the approved phrase the disclosure owner supplied, water or land (F4)',
+  async () => {
+    const localScene = { listLocalOptions: async () => [localOption('edge:1')],
+      prepareLocalMovement: async () => null };
+    const labelWith = async (approach_phrase, display_label) => (await createTraceExpansionCommands({
+      state, requestId: 'r', inputDigest: 'd',
+      spatialExpansionRuntime: { listExpansionOptions: async () => [],
+        listApproachOptions: async () => [{ directional_exit_id: 'exit:x', edge_id: 'edge:1',
+          display_label, approach_phrase }] },
+      spatialLocalSceneRuntime: localScene }))[0].label;
+    assert.equal(await labelWith('подход к переправе', 'к руслу'), 'к руслу — подход к переправе');
+    assert.equal(await labelWith('подход по суше', 'в лес'), 'в лес — подход по суше');
+    assert.ok(!(await labelWith('подход по суше', 'в лес')).includes('переправ'));
+  });
+
 test('an approach whose first step the local-scene owner does not list is a typed gap, not a command (F3)',
   async () => {
     await assert.rejects(createTraceExpansionCommands({ state, requestId: 'r', inputDigest: 'd',
@@ -90,7 +105,7 @@ test('a reachable-but-not-yet-at-departure exit offers its approach through the 
         listApproachOptions: async () => [approach] },
       spatialLocalSceneRuntime: { listLocalOptions: async () => [localOption('edge:1')],
         async prepareLocalMovement(input) { prepared = input; return consequence; } } });
-    assert.equal(command.label, 'к руслу — подход к переправе');
+    assert.equal(command.label, 'к руслу — подход');
     assert.equal(command.target_id, 'edge:1');
     const operation = command.semantic_binding.operation_dto;
     assert.equal(operation.movement_kind, 'local');

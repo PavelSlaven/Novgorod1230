@@ -48,6 +48,16 @@ node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs \
 
 Снимок `ref-gamebase` закреплён на `3ab1c890c1caee2c1247ee144bf66bd35de705ec`. Валидатор сверяет commit и SHA-256 исходных `place_families.csv` и `node_binding.csv`, поэтому не принимает другой снимок или изменённые исходные строки.
 
+## Формулировки хода к выходу (`passage_phrases`)
+
+Раздел `passage_phrases` в `candidate.json` хранит короткие нейтральные тексты, которые раньше сочинял код (F4 CONTRACT AUDIT B1):
+
+- `approach` — окончание команды подхода к выходу: `water` («подход к переправе»), `land` («подход по суше»), `neutral` («подход», запасная форма). Команда показывает `«<метка выхода> — <окончание>»`;
+- `approach_kind_by_visible_class` — вид пути по `common_visible_class` слота: `river_channel`, `island` → `water`; `forest`, `ridge` → `land`. Слот без класса (39 явных пробелов) и неизвестный класс получают `neutral`;
+- `local_edge_occupied` («проход занят») — один текст для занятого прохода в подписи команды `« (проход занят)»`, в панели маршрута и в `visible_status` видимого контекста.
+
+Раздел ждёт отдельного прохода утверждения (изменение `candidate.json` меняет `candidate_sha256`; `approval-attestation.json` исполнитель не правит).
+
 ## Граница runtime
 
 В текущем runtime подпись видимого локального ребра ищется по `scene_template_ref` и `edge_slot_key`; подпись выхода — по точному directional-exit ref и контексту. В `spatial-v3-local-scene-movement.js` `destination_slot_key` относится к слоту позиции G6. Этот каталог не меняет эти пути и ими не потребляется.

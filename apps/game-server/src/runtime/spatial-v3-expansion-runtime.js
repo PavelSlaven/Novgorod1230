@@ -1,5 +1,6 @@
 import { selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { serverError } from '../errors.js';
+import { slotByExitOf } from './spatial-v3-pass-target-disclosure.js';
 
 const pin = (row) => ({ id: row.id, version: row.version });
 const sameRef = (ref, row) => ref?.entity_id === row?.id
@@ -50,12 +51,6 @@ export function findReachableDeparturePosition(context, firstStepEdgeIds = null)
   return null;
 }
 
-/** Exit -> approved slot, the key the disclosure owner needs to resolve the pass-target text. */
-function slotByExitOf(context) {
-  return new Map((context.closure?.slots ?? []).map((slot) => [slot.directional_exit_id,
-    { id: slot.id, version: slot.version }]));
-}
-
 /** Server command bridge. Read-only menus never seed frontiers. Selection is
  * repeated by the generated adapter under the existing party/G4 P16 lock. */
 export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansionAdapter,
@@ -70,7 +65,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     }
     if (typeof readExitDisclosure !== 'function') gap('current_exit_disclosure_owner_required');
     const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context) });
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
     if (!Array.isArray(disclosed)) gap('current_exit_disclosure_required');
     const visible = options.flatMap((option) => {
       const matches = disclosed.filter((row) => row.directional_exit_id === option.exit.id
@@ -100,7 +95,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     const options = eligibleExpansions({ ...context, position: reachable.position }, now());
     if (!options.length || typeof readExitDisclosure !== 'function') return [];
     const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context) });
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
     if (!Array.isArray(disclosed)) return [];
     return options.flatMap((option) => {
       const disclosure = disclosed.find((row) => row.directional_exit_id === option.exit.id
@@ -109,7 +104,8 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
         || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
       return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
-        display_label: disclosure.display_label }];
+        display_label: disclosure.display_label,
+        ...(typeof disclosure.approach_phrase === 'string' ? { approach_phrase: disclosure.approach_phrase } : {}) }];
     });
   }
   return Object.freeze({

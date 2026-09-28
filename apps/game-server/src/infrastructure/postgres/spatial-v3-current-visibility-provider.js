@@ -6,6 +6,8 @@ import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } f
 import { serverError } from '../../errors.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
+import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 
 const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
 const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
@@ -16,36 +18,6 @@ const approvedLabels = labelApproval.decision === 'APPROVE_DATA_ONLY'
   && labelApproval.candidate_ref === `${labelCatalog.candidate_id}@${labelCatalog.version}`
   && labelApproval.candidate_sha256 === createHash('sha256').update(labelBytes).digest('hex');
 const localLabels = loadApprovedLocalEdgeLabels();
-// LW-075: same direct-file, sha-checked pattern as m2c-exit-labels; the world_base transfer is out of CR #160.
-const passTargetPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/candidate.json', import.meta.url);
-const passTargetApprovalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approval-attestation.json', import.meta.url);
-const passTargetBytes = readFileSync(passTargetPath);
-const passTargetCatalog = JSON.parse(passTargetBytes);
-const passTargetApproval = JSON.parse(readFileSync(passTargetApprovalPath));
-const passTargetLabels = passTargetApproval.decision === 'APPROVE_DATA_ONLY'
-  && passTargetApproval.candidate_ref === `${passTargetCatalog.candidate_id}@${passTargetCatalog.version}`
-  && passTargetApproval.candidate_sha256 === createHash('sha256').update(passTargetBytes).digest('hex')
-  ? passTargetCatalog.labels : null;
-// The place_family_id half (already-materialized targets) has no reader yet - #158 R-2 dependency, not a
-// workaround; only expansion_slot_ref (not-yet-generated target) is consumed until that reader exists.
-function passTargetDescriptionForSlot(slotRef) {
-  if (!passTargetLabels || !slotRef) return null;
-  const row = passTargetLabels.find((label) => label.expansion_slot_ref?.id === slotRef.id
-    && label.expansion_slot_ref?.version === slotRef.version);
-  return row?.display_label ?? null;
-}
-/** Same description text at one disclosed position is ambiguous; disambiguate with the
- * already-approved editorial_choice_ordinal from m2c-exit-labels, never a new number. */
-function withPassTargetDisambiguation(rows) {
-  const counts = new Map();
-  for (const row of rows) if (row.pass_target_description) {
-    counts.set(row.pass_target_description, (counts.get(row.pass_target_description) ?? 0) + 1);
-  }
-  return rows.map(({ pass_target_description: description, editorial_choice_ordinal: ordinal,
-    ...row }) => ({ ...row, display_label: description
-      ? counts.get(description) > 1 ? `${description} (${ordinal})` : description
-      : row.display_label }));
-}
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
 
@@ -180,10 +152,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         // catalog read, safe to repeat, never recomputes occupancy or admission.
         const closure = typeof worldBaseReader.readPinnedG4ExpansionClosure === 'function'
           ? await worldBaseReader.readPinnedG4ExpansionClosure(binding.value) : null;
-        const slotByExit = closure?.ok
-          ? new Map(closure.value.slots.map((slot) => [slot.directional_exit_id,
-              { id: slot.id, version: slot.version }]))
-          : null;
+        if (closure != null && !closure.ok) gap('approved_g4_expansion_closure_required');
+        const slotByExit = closure == null ? null : slotByExitOf(closure.value.slots);
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
           site: current.scene.site, directional_exits: exits, slotByExit });
@@ -210,15 +180,13 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             && row.directional_exit_ref.canonical_digest === exit.canonical_digest
             && row.direction_context_ref.id === exit.direction_context_id);
           if (labels.length !== 1) gap('approved_exit_label_required');
-          const slotRef = context.slotByExit?.get(exit.id);
           // Any revealed exit shows its approved pass-target description; an exit the
           // observer cannot see at all is not in `revealed` and is not disclosed.
-          const description = passTargetDescriptionForSlot(slotRef);
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
             display_label: labels[0].display_label,
             editorial_choice_ordinal: labels[0].editorial_choice_ordinal,
-            pass_target_description: description }];
+            ...passTargetDisclosureForExit(context.slotByExit, exit.id) }];
         });
         return withPassTargetDisambiguation(disclosed);
       }, context.transaction, context.observedPositionId);

@@ -10,29 +10,11 @@ import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlaye
   './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
+import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 
 const labels = loadLabels('m2c-exit-labels');
 const localLabels = loadApprovedLocalEdgeLabels();
-const passTargetLabels = loadLabels('m2c-pass-target-labels');
-function passTargetDescriptionForSlot(slotByExit, exitId) {
-  const slotRef = slotByExit?.get(exitId);
-  if (!passTargetLabels || !slotRef) return null;
-  const row = passTargetLabels.find((label) => label.expansion_slot_ref?.id === slotRef.id
-    && label.expansion_slot_ref?.version === slotRef.version);
-  return row?.display_label ?? null;
-}
-/** Same description text at one disclosed position is ambiguous; disambiguate with the
- * already-approved editorial_choice_ordinal from m2c-exit-labels, never a new number. */
-function withPassTargetDisambiguation(rows) {
-  const counts = new Map();
-  for (const row of rows) if (row.pass_target_description) {
-    counts.set(row.pass_target_description, (counts.get(row.pass_target_description) ?? 0) + 1);
-  }
-  return rows.map(({ pass_target_description: description, editorial_choice_ordinal: ordinal,
-    ...row }) => ({ ...row, display_label: description
-      ? counts.get(description) > 1 ? `${description} (${ordinal})` : description
-      : row.display_label }));
-}
 const gap = () => { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
   'Complete proposed player-visible facts are required.',
   { status: 409, details: { reason: 'place_visible_context_source_required' } }); };
@@ -51,8 +33,7 @@ function loadLabels(name) {
 export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, worldBaseReader,
   actorId, sourceLocation, expansionClosure, readCurrentEnvironment, readTargetConditions,
   readEntityExterior = readCommittedEntityExterior, readKnowledge = readPlayerKnowledge } = {}) {
-  const slotByExit = new Map((expansionClosure?.slots ?? [])
-    .map((slot) => [slot.directional_exit_id, { id: slot.id, version: slot.version }]));
+  const slotByExit = slotByExitOf(expansionClosure?.slots);
   return async function readSources({ transaction, overlay } = {}) {
     const { site, baseline, position } = overlay ?? {};
     const partyId = site?.party_id;
@@ -205,7 +186,7 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
           knowledge_state: 'visible', display_label: matches[0].display_label,
           editorial_choice_ordinal: matches[0].editorial_choice_ordinal,
           // `admitted` holds only revealed targets: any revealed exit shows its description.
-          pass_target_description: passTargetDescriptionForSlot(slotByExit, exit.id) });
+          ...passTargetDisclosureForExit(slotByExit, exit.id) });
       }
     }
     return { naturalInput, partyId, actorId, positionId: position.id,

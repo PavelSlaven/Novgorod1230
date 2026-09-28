@@ -131,6 +131,30 @@ test('two visible exits with the same pass-target description disambiguate by th
     for (const row of disclosed) assert.match(row.display_label, /^к руслу \(\d+\)$/u);
   });
 
+test('the approach phrase is approved data chosen by the slot class: water, land, neutral; unknown slot is a typed gap (F4/F11)',
+  async () => {
+    const { provider } = fixture();
+    const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const phrase = async (slot) => (await provider.readExitDisclosure({ partyId: 'party',
+      actorId: 'actor', position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+      slotByExit: new Map([[exit.id, slot]]) }))[0];
+    const river = await phrase(passTargetSlot);
+    assert.equal(river.approach_phrase, 'подход к переправе');
+    // A forest pass target ("в лес") is walked to, not crossed.
+    const forest = await phrase({ id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_20', version: 1 });
+    assert.equal(forest.display_label, 'в лес');
+    assert.equal(forest.approach_phrase, 'подход по суше');
+    // A slot the catalog records only as an explicit gap has no class: neutral approved form,
+    // and the generic exit label.
+    const gapSlot = await phrase({ id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_12', version: 1 });
+    assert.equal(gapSlot.display_label, label.display_label);
+    assert.equal(gapSlot.approach_phrase, 'подход');
+    await assert.rejects(phrase({ id: 'no-such-slot', version: 1 }),
+      (error) => error.details?.reason === 'approved_pass_target_label_required');
+  });
+
 test('a partially visible exit still shows its pass-target description (partial cover does not block identification of a nearby passage)',
   async () => {
     const { natural, provider } = fixture();

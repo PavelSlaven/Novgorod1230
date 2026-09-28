@@ -4,6 +4,7 @@ import { serverError } from '../errors.js';
 import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
 import { localEdgeOccupiedLabel } from './local-edge-occupancy.js';
+import { NEUTRAL_APPROACH_PHRASE } from './spatial-v3-pass-target-disclosure.js';
 
 export async function createTraceExpansionCommands({ state, requestId,
   inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
@@ -43,10 +44,13 @@ export async function createTraceExpansionCommands({ state, requestId,
     && isDeepStrictEqual(current.position, sourcePosition);
   const approachCommands = approaches.length === 0
     || typeof spatialLocalSceneRuntime?.prepareLocalMovement !== 'function' ? [] : approaches.map(
-    ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel }) => {
+    ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel,
+      approach_phrase: phrase = NEUTRAL_APPROACH_PHRASE }) => {
       const { destination_status: status } = localByEdge.get(edgeId);
-      const label = status === 'occupied' ? localEdgeOccupiedLabel(
-        `${exitLabel} — подход к переправе`) : `${exitLabel} — подход к переправе`;
+      // The way-of-going phrase (water / land / neutral) is approved data resolved by the
+      // exit disclosure owner - never composed from the exit kind in code.
+      const approach = `${exitLabel} — ${phrase}`;
+      const label = status === 'occupied' ? localEdgeOccupiedLabel(approach) : approach;
       // route_ref (the exit) keeps this structurally distinct from the plain local-scene
       // operation for the same edge: bindings match structurally, so without it both commands
       // would claim the same chosen operation (TURN_STEP_DOMAIN_BINDING_AMBIGUOUS).

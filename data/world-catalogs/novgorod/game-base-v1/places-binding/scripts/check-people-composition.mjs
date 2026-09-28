@@ -11,6 +11,7 @@ const HOUSEHOLDS = path.join(BASE, 'households-psychology-speech/households_kins
 const AUTHORING = P('presence/people_composition_authoring.json');
 const PEOPLE = P('presence/people_presence_authoring.csv');
 const DERIVED = P('presence/presence_rules.csv');
+const LOCAL_PF_ADDITIONS = P('places/pf_local_additions.json');
 const exact = (object, keys) => object && typeof object === 'object' && !Array.isArray(object) &&
   Object.keys(object).sort().join('|') === keys.sort().join('|');
 const named = (value) => typeof value === 'string' && value.trim().length > 0;
@@ -42,6 +43,9 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
   const errors = [];
   const binding = readCsv(P('places/node_binding.csv'));
   const bound = new Set(binding.map((r) => r.pf_id).filter(Boolean));
+  const local = readJson(LOCAL_PF_ADDITIONS).additions;
+  const localPf = new Set(local.map((row) => `pf_${row.id}`));
+  const resolvedGapRefs = new Set(local.flatMap((row) => row.start_territory_gap_refs));
   const occupations = new Set([
     ...readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')),
     ...readCsv(path.join(BASE, 'occupations-activities/occupations/occupations_additions.csv')),
@@ -54,22 +58,23 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
     .map((entry) => entry.actor_applicability);
   const households = new Map(readCsv(HOUSEHOLDS).map((h) => [h.hh_id, h]));
   if (data?.schema !== 'people_composition_authoring.v1' || !Array.isArray(data.compositions) || !Array.isArray(data.never_created_gaps)) return ['schema/compositions/gaps'];
-  if (bound.size !== 16) errors.push(`node_binding has ${bound.size} primary PF, expected 16`);
+  if (bound.size !== 16 + localPf.size) errors.push(`node_binding has ${bound.size} primary PF, expected ${16 + localPf.size}`);
   if (startTerritory) {
     const fromBridge = new Set(startTerritory.place_types);
+    const preLocalBound = new Set([...bound].filter((pf) => !localPf.has(pf)));
     const bridgeNodes = [...(startTerritory.g4 ?? []), ...(startTerritory.g5 ?? [])];
     const bridgeRefs = new Map(bridgeNodes.map((r) => [r.ref, r]));
     if (!Array.isArray(startTerritory.place_types) || fromBridge.size !== 16 ||
-        [...bound].some((pf) => !fromBridge.has(pf)) || [...fromBridge].some((pf) => !bound.has(pf)))
-      errors.push('start-territory place_types differ from primary node_binding PF');
+        [...preLocalBound].some((pf) => !fromBridge.has(pf)) || [...fromBridge].some((pf) => !preLocalBound.has(pf)))
+      errors.push('start-territory place_types differ outside declared local additions');
     if (bridgeRefs.size !== binding.length || binding.some((r) => !bridgeRefs.has(r.node_ref)))
       errors.push('start-territory G4/G5 refs differ from node_binding');
     for (const row of binding) {
       const node = bridgeRefs.get(row.node_ref);
       if (!node) continue;
-      if (row.node_level === 'G4' ?
+      if (!resolvedGapRefs.has(row.node_ref) && (row.node_level === 'G4' ?
           (!Array.isArray(node.place_types) || (row.pf_id ? !node.place_types.includes(row.pf_id) : node.place_types.length !== 0)) :
-          (node.place_type ?? '') !== row.pf_id)
+          (node.place_type ?? '') !== row.pf_id))
         errors.push(`start-territory place_type mismatch ${row.node_ref}: ${row.pf_id}`);
     }
   }

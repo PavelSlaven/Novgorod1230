@@ -88,7 +88,7 @@ export function build() {
       spatial_v3_scene_template_refs: (byScene.get(f.id) ?? []).sort().map((s) => s + '@1'),
       master_location_archetypes: (byMaster.get(f.id) ?? []).sort(),
       region_id: '', universal: 'true',
-      source_refs: [`${wkRef}#environment_families[id=${f.id}]`, 'infra/world-base/*_templates.seed.json', 'pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json', `${rel(path.join(GROUP, 'scripts/pf-authoring.json'))}#families.${f.id}`],
+      source_refs: [`${wkRef}#environment_families[id=${f.id}]`, 'infra/world-base/*_templates.seed.json', 'pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json', `${rel(path.join(GROUP, 'scripts/pf-authoring.json'))}#families.${f.id}`, ...(a.template_ref_source_refs ?? [])],
       confidence: 'C', status: 'candidate', notes: a.note ?? '',
     });
   }

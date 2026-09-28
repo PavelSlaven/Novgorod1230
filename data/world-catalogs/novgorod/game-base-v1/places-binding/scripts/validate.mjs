@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
@@ -16,6 +17,116 @@ const P = (...p) => path.join(GROUP, ...p);
 const TIME_ORDER = ['morning', 'day', 'evening', 'night'];
 const ITEM_PATH = 'data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv';
 const FAUNA_PATH = 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv';
+const REGION_INPUT = 'inputs/m2c-nature-coverage-entries.json';
+const REGION_MANIFEST = 'places/region_type_pf_manifest.json';
+const REGION_AUTHORING = 'scripts/pf-authoring.json';
+const REGION_SOURCE = {
+  source_ref: 'codex/live-world-runtime@7cc0d341b9ac40ba30486f67a07f18ecf136e413',
+  repository: 'codex/live-world-runtime', commit: '7cc0d341b9ac40ba30486f67a07f18ecf136e413',
+  path: 'data/world-catalogs/novgorod/m2c-nature-coverage.json',
+  blob: 'c8968f65d7567d30b5073a991bbe3357eaf5249f',
+};
+const REGION_FIELDS = { landscape: 'landscape_template_refs', water_body: 'water_body_template_refs', land_use: 'land_use_template_refs', place: 'place_template_refs' };
+const REGION_AUTH_FIELDS = { landscape: 'landscape', water_body: 'water', land_use: 'land_use', place: 'place' };
+const GAP_FIELDS = ['required_capability', 'correct_owner', 'missing_authoring_data', 'existing_nearest_data', 'why_insufficient', 'minimum_data_delta', 'affected_acceptance_test'];
+function regionTypeFailures(source, manifest, families, authoring) {
+  const failures = [];
+  const same = isDeepStrictEqual;
+  const key = (r) => `${r.kind}:${r.template_id}`;
+  if (source.schema !== 'places_binding_m2c_nature_coverage_entries_v1' || !same(source.source, REGION_SOURCE) ||
+      crypto.createHash('sha256').update(JSON.stringify(source.entries ?? null)).digest('hex') !== 'e3feddc8b0e7f650e9bddefd47724a87a9a590d0d41766ffd02c006167eb6904')
+    failures.push('regional source snapshot differs from pinned 128-entry structure');
+  if (!Array.isArray(source.entries) || source.entries.length !== 128) failures.push('expected 128 regional entries');
+  const starts = source.start_only_water_entries;
+  if (!Array.isArray(starts) || starts.length !== 2 || !same(starts?.map(key).sort(), ['water_body:wb_estuary', 'water_body:wb_nearshore_sea']) ||
+      crypto.createHash('sha256').update(JSON.stringify(starts ?? null)).digest('hex') !== '4b1f6aa0f6e16098c75f19005a7be7130b72abf526f6d4a5a64bdc28d3476741')
+    failures.push('expected two distinct start-only water entries');
+  const rows = [...(source.entries ?? []), ...(starts ?? [])];
+  const familyById = new Map(families.map((pf) => [pf.pf_id, pf]));
+  const plannedGaps = authoring.region_type_gap_closures ?? {};
+  const expected = new Map();
+  for (const row of rows) {
+    const k = key(row);
+    if (!REGION_FIELDS[row.kind] || !row.template_id || expected.has(k)) failures.push(`source duplicate/invalid ${k}`);
+    expected.set(k, row);
+  }
+  if (expected.size !== 130 || !same([34, 24, 31, 39], ['landscape', 'water_body', 'land_use', 'place'].map((kind) =>
+      (source.entries ?? []).filter((row) => row.kind === kind).length))) failures.push('source kind counts differ from 34/24/31/39');
+  if (manifest.schema !== 'places_binding_region_type_pf_manifest_v1' || manifest.status !== 'candidate' ||
+      !same(manifest.source, source.source) || manifest.source_status_warning !== source.source_status_warning)
+    failures.push('manifest metadata differs from source');
+  const actual = new Map();
+  for (const row of manifest.entries ?? []) {
+    const k = key(row);
+    if (actual.has(k)) failures.push(`duplicate manifest key ${k}`);
+    actual.set(k, row);
+    if (!expected.has(k)) failures.push(`unexpected manifest key ${k}`);
+  }
+  for (const k of expected.keys()) if (!actual.has(k)) failures.push(`missing manifest key ${k}`);
+  const counts = { total: 0, covered: 0, gap: 0, by_kind: {} };
+  for (const [k, item] of expected) {
+    const row = actual.get(k);
+    if (!row) continue;
+    const refs = families.filter((pf) => split(pf[REGION_FIELDS[item.kind]]).includes(item.template_id)).map((pf) => pf.pf_id).sort();
+    if (!same(row.pf_refs, refs)) failures.push(`${k}: PF refs differ from current place_families.csv`);
+    if (row.coverage !== (refs.length ? 'covered' : 'gap')) failures.push(`${k}: wrong coverage`);
+    if (!same(row.regional_scales, item.regional_scales ?? []) || !same(row.exact_g4, item.exact_m2c_g4 ?? []))
+      failures.push(`${k}: source scopes differ`);
+    const expectedSources = [
+      `data/world-catalogs/novgorod/game-base-v1/places-binding/${REGION_INPUT}#${source.entries?.includes(item) ? 'entries' : 'start_only_water_entries'}[kind=${item.kind},template_id=${item.template_id}]`,
+      ...(item.reference_source ? [item.reference_source] : []),
+    ];
+    if (!same(row.source_refs, expectedSources) || !same(row.regional_source_refs, item.source_refs ?? []) || row.confidence !== 'C')
+      failures.push(`${k}: source provenance/confidence differs`);
+    const expectedMappings = refs.map((pfId) => {
+      const family = pfId.slice(3);
+      const approvedEvidence = {
+        'landscape:lt_wooded_floodplain': { pf_mixed_woodland: 'g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1' },
+        'water_body:wb_nearshore_sea': Object.fromEntries(['pf_floodplain_meadow', 'pf_river_channel', 'pf_riverbank', 'pf_winter_ice_crossing'].map((pf) => [pf, 'g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach@1'])),
+      }[k]?.[pfId];
+      const evidence_refs = approvedEvidence ? [`data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#${approvedEvidence}`] : [];
+      return {
+        pf_ref: `data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#pf_id=${pfId}`,
+        authoring_ref: `data/world-catalogs/novgorod/game-base-v1/places-binding/${REGION_AUTHORING}#families.${family}.${REGION_AUTH_FIELDS[item.kind]}[${item.template_id}]`,
+        evidence_refs,
+      };
+    });
+    if (!same(row.pf_mappings, expectedMappings) || refs.some((pfId) => !authoring.families[pfId.slice(3)]?.[REGION_AUTH_FIELDS[item.kind]]?.includes(item.template_id)) ||
+        refs.some((pfId) => !familyById.has(pfId))) failures.push(`${k}: PF mapping provenance differs`);
+    if (!refs.length) {
+      if (row.pf_refs?.length || row.regional_scales?.some((s) => s === 'G4' || s === 'G5') || row.exact_g4?.length)
+        failures.push(`${k}: gap claims PF or exact G4/G5`);
+      for (const field of GAP_FIELDS) if (typeof row[field] !== 'string' || !row[field].trim()) failures.push(`${k}: missing gap ${field}`);
+      for (const field of ['required_capability', 'missing_authoring_data', 'affected_acceptance_test'])
+        if (!row[field]?.includes(item.template_id)) failures.push(`${k}: generic gap ${field}`);
+      const closure = plannedGaps[k];
+      if (!closure || !same(Object.keys(closure).sort(), ['nearest_pf_refs', 'existing_nearest_data', 'why_insufficient', 'minimum_data_delta'].sort()) ||
+          !Array.isArray(closure.nearest_pf_refs) || closure.nearest_pf_refs.some((ref) => !familyById.has(ref)) ||
+          ['existing_nearest_data', 'why_insufficient', 'minimum_data_delta'].some((field) => typeof closure[field] !== 'string' || !closure[field].trim()) ||
+          !same(Object.fromEntries(Object.keys(closure).map((field) => [field, row[field]])), closure)) failures.push(`${k}: gap closure differs from authoring`);
+    } else if (GAP_FIELDS.some((field) => field in row) || 'nearest_pf_refs' in row) failures.push(`${k}: covered row has gap fields`);
+    counts.total++;
+    if (row.coverage === 'covered' || row.coverage === 'gap') {
+      counts[row.coverage]++;
+      const kind = counts.by_kind[row.kind] ??= { total: 0, covered: 0, gap: 0 };
+      kind.total++; kind[row.coverage]++;
+    }
+  }
+  const wanted = { total: 130, covered: 109, gap: 21, by_kind: {
+    landscape: { total: 34, covered: 29, gap: 5 }, water_body: { total: 26, covered: 23, gap: 3 },
+    land_use: { total: 31, covered: 24, gap: 7 }, place: { total: 39, covered: 33, gap: 6 },
+  } };
+  if (!same(counts, wanted) || !same(manifest.counts, wanted)) failures.push('manifest counts differ from 109 covered / 21 gap');
+  if (!same(Object.keys(plannedGaps).sort(), [...expected.values()].filter((item) => !families.some((pf) => split(pf[REGION_FIELDS[item.kind]]).includes(item.template_id))).map(key).sort()))
+    failures.push('gap closure keys differ from current gaps');
+  for (const [k, refs] of Object.entries({
+    'landscape:lt_wooded_floodplain': ['pf_mixed_woodland'],
+    'water_body:wb_nearshore_sea': ['pf_floodplain_meadow', 'pf_river_channel', 'pf_riverbank', 'pf_winter_ice_crossing'],
+  })) if (!same(actual.get(k)?.pf_refs, refs)) failures.push(`${k}: approved PF mapping differs`);
+  for (const k of ['water_body:wb_estuary', ...(source.entries ?? []).filter((row) => row.exact_m2c_g4?.length).map(key)])
+    if (actual.get(k)?.coverage !== 'covered') failures.push(`${k}: start matrix type must be covered`);
+  return failures;
+}
 function presenceIds(rows) {
   const keys = new Set(), ids = new Set(), failures = [];
   for (const row of rows) {
@@ -343,6 +454,26 @@ if (process.argv.includes('--self-test')) {
 
 const wk = readJson(WK_PLACE_FIRST);
 const fam = readCsv(P('places/place_families.csv'));
+const regionSource = readJson(P(REGION_INPUT));
+const regionManifest = readJson(P(REGION_MANIFEST));
+const regionAuthoring = readJson(P(REGION_AUTHORING));
+check('region_type_pf_manifest', 'pinned_source_exact_keys_current_pf_and_typed_gaps', regionTypeFailures(regionSource, regionManifest, fam, regionAuthoring), { rows: regionManifest.entries?.length ?? 0 });
+if (process.argv.includes('--self-test')) {
+  const copy = () => structuredClone(regionManifest);
+  const probes = {
+    missing_row: (m) => m.entries.pop(),
+    duplicate_key: (m) => m.entries.push(structuredClone(m.entries[0])),
+    unclassified_row: (m) => { const row = m.entries.find((r) => r.coverage === 'gap'); row.coverage = 'unclassified'; },
+    wrong_pf_ref: (m) => { const row = m.entries.find((r) => r.coverage === 'covered'); row.pf_refs = ['pf_wrong']; },
+    unrelated_node_ref: (m) => { const row = m.entries.find((r) => r.coverage === 'covered' && r.pf_mappings.length); row.pf_mappings[0].evidence_refs.push('data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#unrelated@1'); },
+    incomplete_nearest_plan: (m) => { const row = m.entries.find((r) => r.coverage === 'gap'); row.nearest_pf_refs = []; },
+  };
+  for (const [name, mutate] of Object.entries(probes)) {
+    const m = copy(); mutate(m);
+    if (!regionTypeFailures(regionSource, m, fam, regionAuthoring).length) throw new Error(`region manifest negative probe failed: ${name}`);
+  }
+  console.log('PASS region_type_pf_manifest / six_negative_probes');
+}
 const reg = loadTemplateRegistry();
 const routes = new Set(readJson(SEEDS.route).map((r) => r.id));
 const pfSet = new Set(fam.map((f) => f.pf_id));

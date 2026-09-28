@@ -7,6 +7,7 @@
 | Папка | Домен | Главный файл | Строк |
 |---|---|---|---|
 | `places/` | place_families, place_binding | `place_families.csv`, `node_binding.csv` | 44, 227 |
+| `places/` | region-type PF coverage (C012b) | `region_type_pf_manifest.json` | 130 типов: 109 covered, 21 gap |
 | `presence/` | presence_rules | `frequency_rule.json`, `presence_rules.csv` | правило; 5 717 производных строк (пересобирается из пулов, см. `presence/README.md`) |
 | `presence/` | people composition D-2 | `people_composition_authoring.json` | 16 PF, 5 постоянных групп, 16 глобальных пробелов; формат и проверки — `presence/README.md` |
 | `categories/` | category_registry | `category_registry.csv`, `place_family_categories.csv` | 982, 61 (на пересборку 2026-09-26, см. `categories/README.md`) |
@@ -20,6 +21,7 @@
 |---|---|
 | `extract-pr98-inputs.mjs` | Механический снимок файлов PR #98 с sha256. |
 | `build-place-families.mjs` | Семейства, фасеты и 3 crosswalk. |
+| `build-region-type-pf-manifest.mjs` | Сопоставляет 128 типов закреплённого регионального снимка и 2 стартовых водных типа с текущими PF. |
 | `build-node-binding.mjs` | Привязка 32 G4 и 195 G5. |
 | `build-category-registry.mjs` | Категории place_family, сбор реестра со всех групп, проверки. |
 | `build-presence-rules.mjs` | Сборщик правил наличия из пулов групп. |
@@ -27,6 +29,8 @@
 | `build-category-parameters.mjs` | Параметры категорий. |
 | `build-slot-variants.mjs` | Варианты для каждого кандидата слота; четыре фасета берутся из каталога владельца, книжного примера или имеют явный `no_source`. |
 | `validate.mjs` | Все критерии приёмки. Пишет `reports/validation.json`, код выхода 1 при провале собственной проверки. |
+
+Для C012b: `node scripts/build-all.mjs` и `node scripts/validate.mjs --start-territory C:\Users\Slaven\.novgorod-bridge\codex\inputs\start-territory.json --self-test`. Проверка закрепляет исходный снимок, сверяет каждый ключ, точные ссылки на источник и авторство PF, а также пересчитывает PF refs из CSV и 21 план закрытия пробелов из `scripts/pf-authoring.json`; self-test включает шесть отрицательных проб, в том числе постороннюю ссылку на узел и неполный план ближайших PF. Это закрывает учёт типов C012b. Основной PF для погребального G4 и шести его G5 по-прежнему отсутствует в `node_binding.csv`.
 
 Слоты C003 — candidate-условия идентичности места, а не частоты появления предметов из `presence_rules.csv`. Пять required-слотов задают перевоз как anchor, жилое здание и ограду конкретной крестьянской усадьбы, хозяйственную постройку и зимнюю ледовую дорогу как anchor. У остальных 12 привязанных PF, включая общий сельский двор, есть явная причина отсутствия обязательного слота в `slots/no_required_slots.csv`. Для жилья сельский `settlement_building_mix.csv#sf_yard_peasant` даёт только избу 1..1; жилая клеть в этот слот не входит. В ограде плетень из сельского mix имеет вес 2, частокол — вес 1 и редакционный статус C: `ARC0014` описывает городские дворы и не служит основанием сельской частоты. У хозяйственных построек веса 2/2/1. Все веса относительные и не задают историческую частоту. `spatial.g3.built_site` — общая категория застроенного места; конкретный тип здания задаёт `building:bt_*`. Правила и область применения заданы в `slots/materialization_rules.json`: один комплект слотов на G4-комплекс, подходящий G5 выбирает код, `pf_secondary` сам по себе обязательный слот не создаёт. Историческая обязательность ограды остаётся редакционным C, отдельно от свидетельств о кандидатах. Эти записи не получают статус approved автоматически.
 

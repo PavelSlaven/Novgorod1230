@@ -1,8 +1,17 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 30,
-  "own_checks_total": 30,
+  "own_checks_passed": 31,
+  "own_checks_total": 31,
   "checks": [
+    {
+      "domain": "region_type_pf_manifest",
+      "name": "pinned_source_exact_keys_current_pf_and_typed_gaps",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "rows": 130
+    },
     {
       "domain": "people_composition",
       "name": "schema_refs_pf_coverage_and_schedules",

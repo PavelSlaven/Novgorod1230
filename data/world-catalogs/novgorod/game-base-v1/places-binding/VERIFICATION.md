@@ -1,5 +1,11 @@
 # VERIFICATION — places-binding (семейства мест, привязка узлов, носитель наличия, реестр категорий)
 
+## C012b — учёт региональных типов (candidate)
+
+Вход `inputs/m2c-nature-coverage-entries.json` закрепляет точный blob `c8968f65d7567d30b5073a991bbe3357eaf5249f` из `codex/live-world-runtime@7cc0d341b9ac40ba30486f67a07f18ecf136e413`: 128 региональных типов (34/24/31/39 landscape/water_body/land_use/place) плюс два отдельных стартовых водных типа. Производный `places/region_type_pf_manifest.json` содержит ровно 130 ключей: 109 covered (29/23/24/33) и 21 gap (5/3/7/6). Покрытие требует точного PF template ref из текущего `place_families.csv`; `pf_mappings` связывает каждое покрытие с точным элементом `pf-authoring.json`, а `source_refs` содержит только точную строку снимка и её `reference_source`. Региональные ссылки находятся отдельно в `regional_source_refs`. Все 21 пробел имеют строки плана в `pf-authoring.json`, поля A.8 и не имеют exact G4.
+
+`lt_wooded_floodplain` сопоставлен с `pf_mixed_woodland`; `wb_estuary` покрыт; `wb_nearshore_sea` сопоставлен с четырьмя PF (`pf_floodplain_meadow`, `pf_river_channel`, `pf_riverbank`, `pf_winter_ice_crossing`). Только два новых сопоставления имеют относящиеся к ним узловые ссылки. Все строки снимка с точным G4 покрыты. Сверка: `node scripts/build-all.mjs`; полный проход: `node scripts/validate.mjs --start-territory C:\Users\Slaven\.novgorod-bridge\codex\inputs\start-territory.json --self-test`. Self-test включает шесть отрицательных проб манифеста. C012b закрывает учёт типов; погребальный G4 и шесть G5 остаются без основного PF. Запись кандидата, не независимое утверждение.
+
 - **Кто:** независимый агент-верификатор (старший проход, не автор), метка `verify-places-binding`.
 - **Когда:** 2026-09-26.
 - **Что проверено:** `data/world-catalogs/novgorod/game-base-v1/places-binding/` — все 13 CSV, `presence/frequency_rule.json`, `inputs/pr98-extract.json`, `reports/validation.json`, скрипты и ручные crosswalk (`scripts/pf-authoring.json`, `scripts/crosswalk-rules.json`).
@@ -1085,3 +1091,14 @@
 
 - Одна связь `pf_peasant_homestead.householder ↔ pf_peasant_homestead.mistress`, `spouse`, редакционное C с причиной и тремя ссылками. Брак не выводится из роли: пара ролей вне связанного слота остаётся без супружеских отношений.
 - `slots/slot_instance_variants.json`: у `siv_002`–`siv_007` один текст `no_source` о возрасте экземпляра.
+
+### places/region_type_pf_manifest.json — матрица типов мест — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера и полный `validate.mjs --start-territory … --self-test` на `aeb8e72a` — 0 FAIL.
+
+- `inputs/m2c-nature-coverage-entries.json`: 128 записей побайтно равны `entries` из `m2c-nature-coverage.json` ветки runtime @ `7cc0d341`. Плюс две записи стартовой территории (`wb_estuary`, `wb_nearshore_sea`), которых нет в списке региона.
+- Манифест: 130 уникальных `(kind, template_id)`. У каждого `covered` набор `pf_refs` равен пересчёту по `*_template_refs` в `place_families.csv`. У пробелов PF нет. 21 пробел — вне стартовой территории, у каждого план закрытия по A.8.
+- `place_families.csv`: изменены ровно 5 строк, 15 ячеек.
+  - `lt_wooded_floodplain → pf_mixed_woodland` (C, основание — вторичная привязка узла `zaostrovye_settlement_center`);
+  - `wb_nearshore_sea` → четыре PF, уже привязанные к узлам `outer_exposed_approach` (C).
+- Место погребения Заостровья (1 G4 + 6 G5) остаётся без PF: закрывается C012b.

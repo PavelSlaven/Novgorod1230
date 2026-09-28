@@ -15,6 +15,16 @@ export const GENERATOR_SOURCE_PATHS = [
   'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/phase_activity.csv',
 ];
 
+export const REQUIRED_VERIFICATION_REFS = Object.freeze({
+  places_binding: 'data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md',
+  households_psychology_speech: 'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/VERIFICATION.md',
+  nature_materials_weather: 'data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/VERIFICATION.md',
+  fauna_fish_invertebrates_livestock: 'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/VERIFICATION.md',
+  fauna_mammals_birds: 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md',
+});
+
+const PLACEHOLDER_CHECKED_BY = /\b(draft|executor|pending-reviewer|pending_reviewer)\b/iu;
+
 export async function validateM2cNpcWaveApproval({ root = process.cwd(), approvalPath = APPROVAL_PATH } = {}) {
   const projectRoot = resolve(root);
   const errors = [];
@@ -31,7 +41,20 @@ export async function validateM2cNpcWaveApproval({ root = process.cwd(), approva
   for (const path of GENERATOR_SOURCE_PATHS) {
     if (!paths.has(path)) errors.push({ code: 'M2C_WAVE_APPROVAL_SOURCE_PATH_MISSING', subject_ref: path });
   }
-  if (!String(approval.checked_by ?? '').trim()) errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_MISSING', subject_ref: approvalPath });
+  const checkedBy = String(approval.checked_by ?? '').trim();
+  if (!checkedBy) errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_MISSING', subject_ref: approvalPath });
+  else if (PLACEHOLDER_CHECKED_BY.test(checkedBy)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_PLACEHOLDER', subject_ref: checkedBy });
+  }
   if (!String(approval.checked_at ?? '').trim()) errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_MISSING', subject_ref: approvalPath });
+  const refs = approval.references ?? {};
+  if (String(refs.game_base_status ?? '') !== 'data/world-catalogs/novgorod/game-base-v1/STATUS.md') {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_STATUS_REF_INVALID', subject_ref: String(refs.game_base_status ?? '') });
+  }
+  for (const [key, expectedPath] of Object.entries(REQUIRED_VERIFICATION_REFS)) {
+    if (String(refs[key] ?? '') !== expectedPath) {
+      errors.push({ code: 'M2C_WAVE_APPROVAL_VERIFICATION_REF_MISSING', subject_ref: key });
+    }
+  }
   return Object.freeze({ ok: errors.length === 0, errors: Object.freeze(errors), approval });
 }

@@ -2,7 +2,7 @@
   "schema_version": "rus.m2c_npc_wave_approval.v1",
   "verdict": "approve_with_limits",
   "source_commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
-  "checked_by": "executor-draft-pending-reviewer",
+  "checked_by": "executor-draft-2026-09-28",
   "checked_at": "2026-09-28T12:45:00Z",
   "source_paths": [
     "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv",
@@ -17,9 +17,13 @@
     "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/phase_activity.csv"
   ],
   "references": {
-    "game_base_verification": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
-    "game_base_status": "data/world-catalogs/novgorod/game-base-v1/places-binding/STATUS.md",
+    "game_base_status": "data/world-catalogs/novgorod/game-base-v1/STATUS.md",
+    "places_binding": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+    "households_psychology_speech": "data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/VERIFICATION.md",
+    "nature_materials_weather": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/VERIFICATION.md",
+    "fauna_fish_invertebrates_livestock": "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/VERIFICATION.md",
+    "fauna_mammals_birds": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md",
     "issue": "https://github.com/PavelSlaven/Novgorod1230/issues/158"
   },
-  "limits_note": "Draft WR §21.1 on pin 3ab1c890 (C011/C011b); reviewer confirmation pending."
+  "limits_note": "Draft WR §21.1 on pin 3ab1c890 (C011/C011b); game-base groups approve_with_limits per game-base-v1/STATUS.md; reviewer checked_by after DONE."
 }

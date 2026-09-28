@@ -2,7 +2,7 @@
   "schema_version": "rus.m2c_npc_wave_approval.v1",
   "manifest_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json",
   "verdict": "approve_with_limits",
-  "source_commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
+  "source_commit": "337abf9ec2810921e324ff8f6f1e85a9324c4bb9",
   "authored_by": "cursor composer-2.5 (executor)",
   "checked_by": "claude-opus-5.5 (reviewer)",
   "checked_at": "2026-09-28",
@@ -16,7 +16,9 @@
     "data/world-catalogs/novgorod/game-base-v1/places-binding/slots/slot_instance_variants.json",
     "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/weather_climate/water_profiles.csv",
     "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/phase_activity.csv",
-    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/phase_activity.csv"
+    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/phase_activity.csv",
+    "data/world-catalogs/novgorod/game-base-v1/time-calendar-church/time/schedules_routines.csv",
+    "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json"
   ],
   "references": {
     "game_base_status": "data/world-catalogs/novgorod/game-base-v1/STATUS.md",
@@ -27,5 +29,5 @@
     "fauna_mammals_birds": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md",
     "issue": "https://github.com/PavelSlaven/Novgorod1230/issues/158"
   },
-  "limits_note": "Game-base groups approve_with_limits per game-base-v1/STATUS.md on pin 3ab1c890 (C011/C011b)."
+  "limits_note": "Game-base groups approve_with_limits per game-base-v1/STATUS.md on pin 337abf9e (post-merge main #159–#169)."
 }

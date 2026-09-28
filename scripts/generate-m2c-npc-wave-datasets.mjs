@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
  * Build m2c-npc-wave v1 datasets from approved game-base-v1 @ SOURCE_COMMIT (git show).
- * ponytail: single generator; schedules/composition stay as staging JSON until target DDL exists.
  */
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
@@ -269,6 +268,120 @@ export function mapSpeechAddressForm(row, worldRevisionId, provenanceRef) {
   };
 }
 
+function parseMonths(raw) {
+  const t = String(raw ?? '').trim();
+  if (!t) return null;
+  return t.split('|').map((part) => Number(part.trim())).filter((n) => Number.isInteger(n));
+}
+
+function extractPlaceFamilyFromScheduleRow(row) {
+  const blocks = JSON.parse(row.time_blocks);
+  const counts = new Map();
+  for (const phase of blocks) {
+    const ref = String(phase.location_ref ?? '').trim();
+    if (ref.startsWith('pf_')) counts.set(ref, (counts.get(ref) ?? 0) + 1);
+  }
+  if (counts.size) {
+    return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+  }
+  const fromRefs = String(row.source_refs ?? '').match(/#(pf_[a-z0-9_]+)/u);
+  return fromRefs ? fromRefs[1] : null;
+}
+
+function resolveScheduleSubject(row) {
+  const occupation = blank(row.occupation_ref);
+  const role = blank(row.role_ref);
+  if (occupation) return { subject_kind: 'occupation', subject_ref: occupation };
+  if (role) return { subject_kind: 'social_role', subject_ref: role };
+  if (String(row.sch_id).includes('household_child')) {
+    return { subject_kind: 'household_member', subject_ref: 'child' };
+  }
+  throw new Error(`schedule subject unresolved: ${row.sch_id}`);
+}
+
+function mapRoutinePhases(timeBlocksJson) {
+  const blocks = JSON.parse(timeBlocksJson);
+  if (!Array.isArray(blocks)) throw new Error('time_blocks must be array');
+  return blocks.map((phase) => ({
+    state_id: phase.state_id,
+    duration_minutes: phase.duration_minutes,
+    runtime_status: phase.runtime_status,
+    activity_ref: phase.activity_ref,
+    summary: phase.summary,
+    activity_status: phase.activity_status,
+    uses_current_activity: phase.uses_current_activity ?? false,
+    can_continue_automatically: phase.can_continue_automatically,
+    decision_required: phase.decision_required,
+    presence_state: phase.presence_state ?? '',
+    location_ref: blank(phase.location_ref),
+    absence_reason_ru: phase.absence_reason_ru ?? '',
+  }));
+}
+
+export function mapScheduleRoutineRule(row, worldRevisionId, provenanceRef) {
+  const { subject_kind, subject_ref } = resolveScheduleSubject(row);
+  const scopeRef = extractPlaceFamilyFromScheduleRow(row);
+  if (!scopeRef) throw new Error(`schedule scope unresolved: ${row.sch_id}`);
+  const revision = Number(row.revision) || 1;
+  const localStart = Number(row.local_start_minute);
+  const phases = mapRoutinePhases(row.time_blocks);
+  const routineProfile = {
+    schema: 'npc_routine_profile_v1',
+    profile_id: row.sch_id,
+    revision,
+    status: 'approved',
+    phases,
+    ...(Number.isFinite(localStart) ? { local_start_minute: localStart } : {}),
+  };
+  return {
+    schedule_id: row.sch_id,
+    schedule_version: revision,
+    world_revision_id: worldRevisionId,
+    scope_kind: 'place_family',
+    scope_ref: scopeRef,
+    subject_kind,
+    subject_ref,
+    season: row.season,
+    months: parseMonths(row.months),
+    day_type: row.day_type,
+    routine_profile: routineProfile,
+    status: 'approved',
+    confidence: mapConfidence(row.confidence),
+    provenance_ref: provenanceRef,
+    authoring_payload: {
+      place_access_ref: blank(row.place_access_ref),
+      source_refs: row.source_refs ?? '',
+      source_rule_ref: row.source_rule_ref ?? '',
+      no_source: row.no_source ?? '',
+      csv_status: row.status ?? '',
+    },
+  };
+}
+
+export function mapPlacePopulationComposition(entry, worldRevisionId, provenanceRef) {
+  const groups = entry.population_groups ?? [];
+  let confidence = 'unknown';
+  for (const group of groups) {
+    if (group.confidence) confidence = mapConfidence(group.confidence);
+  }
+  return {
+    composition_id: entry.pf_id,
+    composition_version: 1,
+    world_revision_id: worldRevisionId,
+    place_family_id: entry.pf_id,
+    place_family_version: 1,
+    population_groups: groups,
+    scheduled_absences: entry.scheduled_absences ?? [],
+    empty_reason: blank(entry.empty_reason),
+    status: 'approved',
+    confidence,
+    provenance_ref: provenanceRef,
+    authoring_payload: {
+      slot_relationships: entry.slot_relationships ?? [],
+    },
+  };
+}
+
 export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
   const variants = parseVariants(row.variants);
   const parsedTimes = parseTextArray(row.allowed_times);
@@ -377,6 +490,19 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
 
   const prCsv = parseCsv(show(`${GAME_BASE}/places-binding/presence/presence_rules.csv`));
   const presenceRules = prCsv.map((row) => mapPresenceRule(row, worldRevisionId, provenanceRef));
+  const peoplePresenceCsv = parseCsv(show(
+    `${GAME_BASE}/places-binding/presence/people_presence_authoring.csv`
+  ));
+  const creationOwnerByKey = new Map();
+  for (const row of peoplePresenceCsv) {
+    const owner = blank(row.creation_owner);
+    if (!owner) continue;
+    creationOwnerByKey.set(`${row.scope_ref}|${row.subject_kind}|${row.subject_ref}`, owner);
+  }
+  for (const rule of presenceRules) {
+    const owner = creationOwnerByKey.get(`${rule.scope_ref}|${rule.subject_kind}|${rule.subject_ref}`);
+    if (owner) rule.authoring_payload.creation_owner = owner;
+  }
   const ruleKeys = new Set();
   for (const rule of presenceRules) {
     const key = `${rule.rule_id}@${rule.rule_version}`;
@@ -478,19 +604,9 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
   }
 
   const schedulesCsv = parseCsv(show(`${GAME_BASE}/time-calendar-church/time/schedules_routines.csv`));
-  const schedulesStaging = schedulesCsv
-    .filter((row) => (row.day_type ?? '').trim() === 'normal')
-    .map((row) => ({
-      sch_id: row.sch_id,
-      revision: Number(row.revision) || 1,
-      role_ref: blank(row.role_ref),
-      occupation_ref: blank(row.occupation_ref),
-      season: row.season ?? '',
-      time_blocks: row.time_blocks ?? '',
-      place_access_ref: blank(row.place_access_ref),
-      confidence: row.confidence ?? '',
-      csv_status: row.status ?? '',
-    }));
+  const scheduleRoutineRules = schedulesCsv.map((row) => mapScheduleRoutineRule(
+    row, worldRevisionId, provenanceRef
+  ));
 
   const relCsv = parseCsv(show(
     `${GAME_BASE}/households-psychology-speech/households_kinship/relationship_rules.csv`
@@ -506,8 +622,11 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     row, worldRevisionId, provenanceRef
   ));
 
-  const compositionStaging = JSON.parse(show(
+  const compositionAuthoring = JSON.parse(show(
     `${GAME_BASE}/places-binding/presence/people_composition_authoring.json`
+  ));
+  const placePopulationCompositionRules = compositionAuthoring.compositions.map((entry) => (
+    mapPlacePopulationComposition(entry, worldRevisionId, provenanceRef)
   ));
 
   const { revisionRows, closureNodes } = options.spatialClosure
@@ -526,9 +645,9 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     ['datasets/household_composition_profiles.json', householdProfiles, 'household_composition_profiles', ['source_records']],
     ['datasets/slot_instance_variants.json', slotVariants, 'slot_instance_variants', ['source_records']],
     ['datasets/fauna_phase_activity_rules.json', faunaRules, 'fauna_phase_activity_rules', ['source_records']],
+    ['datasets/npc_schedule_routine_rules.json', scheduleRoutineRules, 'npc_schedule_routine_rules', ['place_families']],
+    ['datasets/place_population_composition_rules.json', placePopulationCompositionRules, 'place_population_composition_rules', ['place_families']],
     ['datasets/spatial_v3_nodes.json', closureNodes, 'spatial_v3_nodes', ['source_records', 'spatial_v3_world_revisions']],
-    ['datasets/staging_schedules_routines_normal.json', schedulesStaging, null, []],
-    ['datasets/staging_people_composition_authoring.json', compositionStaging, null, []],
   ];
 
   for (const [rel, rows, table, dependsOn] of entries) {

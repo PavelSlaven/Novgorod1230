@@ -1,0 +1,563 @@
+[
+  {
+    "composition_id": "pf_bog",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_bog",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_route_guide",
+        "reason": "Проводник проходит маршрут, а не живёт на болоте."
+      }
+    ],
+    "empty_reason": "Болото не создаёт постоянного населения; проводник приходит по маршруту.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_burial_ground",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_burial_ground",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [],
+    "empty_reason": "Нет источника для обычного присутствия, календаря или частоты посещения могильника около 1230 года.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_conifer_woodland",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_conifer_woodland",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_forest_worker",
+        "reason": "Сезонная работа в лесу не означает создание жителя вместе с лесным местом."
+      }
+    ],
+    "empty_reason": "Лесные работники приходят из поселения; постоянный лесной двор не задан.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_ferry_landing",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_ferry_landing",
+    "place_family_version": 1,
+    "population_groups": [
+      {
+        "group_id": "pf_ferry_landing.ferryman",
+        "group_kind": "workers",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ferryman",
+            "profile_ref": null,
+            "household_member_class": null,
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_work_role_v1",
+        "no_source": "",
+        "confidence": "C"
+      },
+      {
+        "group_id": "pf_ferry_landing.crossing_guard",
+        "group_kind": "workers",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_crossing_guard",
+            "profile_ref": null,
+            "household_member_class": null,
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_work_role_v1",
+        "no_source": "",
+        "confidence": "C"
+      }
+    ],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_ferryman",
+        "seasons": [
+          "winter"
+        ],
+        "reason": "Речной перевоз зимой не действует; перевозчик и сторож — на ледовой переправе."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_crossing_guard",
+        "seasons": [
+          "winter"
+        ],
+        "reason": "Речной перевоз зимой не действует; перевозчик и сторож — на ледовой переправе."
+      }
+    ],
+    "empty_reason": null,
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_floodplain_meadow",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_floodplain_meadow",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_herder",
+        "reason": "Выпас в расписании не является постоянным проживанием на лугу."
+      }
+    ],
+    "empty_reason": "Пастух приходит на луг, постоянный двор здесь не установлен.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_forest_edge",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_forest_edge",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_hunter_trapper",
+        "reason": "Место охоты не является местом создания постоянного работника."
+      }
+    ],
+    "empty_reason": "Охотник приходит на промысел; постоянное поселение на опушке не задано.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_forest_track",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_forest_track",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_route_guide",
+        "reason": "Проводник проходит тропу по маршруту."
+      }
+    ],
+    "empty_reason": "Лесная тропа транзитная.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_hunting_ground",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_hunting_ground",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_hunter_trapper",
+        "reason": "Охотник приходит на промысел."
+      }
+    ],
+    "empty_reason": "Охотничьи угодья не задают постоянного двора.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_marshy_stream",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_marshy_stream",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_route_guide",
+        "reason": "Проводник проходит маршрут вдоль ручья."
+      }
+    ],
+    "empty_reason": "Ручей транзитный, постоянное поселение не задано.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_outbuildings",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_outbuildings",
+    "place_family_version": 1,
+    "population_groups": [
+      {
+        "group_id": "pf_outbuildings.household_servant",
+        "group_kind": "workers",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_household_servant",
+            "profile_ref": "m2c_npc_household_servant_v1",
+            "household_member_class": null,
+            "weight": 1,
+            "sex": "male",
+            "sex_confidence": "C",
+            "sex_reason": "Для конкретного слота при хозяйственных постройках редакционно выбран мужчина (уверенность C): строка занятия включает перенос дров и работу в конюшне; PRO0421 описывает женский вариант той же прислуги и не подтверждает этот выбор пола.",
+            "sex_source_refs": [
+              "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+              "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"
+            ]
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_work_role_v1",
+        "no_source": "",
+        "confidence": "C"
+      }
+    ],
+    "scheduled_absences": [],
+    "empty_reason": null,
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_peasant_homestead",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_peasant_homestead",
+    "place_family_version": 1,
+    "population_groups": [
+      {
+        "group_id": "pf_peasant_homestead.householder",
+        "group_kind": "residents",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "social_role",
+            "subject_ref": "nov_role_smerd_householder",
+            "profile_ref": null,
+            "household_member_class": "adult",
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_resident_role_v1",
+        "no_source": "",
+        "confidence": "C"
+      },
+      {
+        "group_id": "pf_peasant_homestead.mistress",
+        "group_kind": "residents",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "social_role",
+            "subject_ref": "nov_role_household_mistress",
+            "profile_ref": null,
+            "household_member_class": "adult",
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "book:622242 §519;book:648161 §2639;book:641351 §2976",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "C"
+      }
+    ],
+    "scheduled_absences": [
+      {
+        "subject_kind": "household_member",
+        "subject_ref": "child",
+        "reason": "Детский распорядок не имеет каталожного subject_ref; численность детей не подтверждена профилем домохозяйства, на стартовой территории дети не создаются."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_ploughman",
+        "reason": "Работа в поле не обосновывает отдельного пахаря при каждой усадьбе; на стартовой территории он не создаётся."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_household_servant",
+        "reason": "Слуга создаётся при хозяйственных постройках, не повторно при усадьбе."
+      }
+    ],
+    "empty_reason": null,
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": [
+        {
+          "from_group_id": "pf_peasant_homestead.householder",
+          "to_group_id": "pf_peasant_homestead.mistress",
+          "relationship_kind": "spouse",
+          "confidence": "C",
+          "reason": "Крестьянский двор — семья; хозяйка при домохозяине — его жена.",
+          "source_refs": [
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder",
+            "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress",
+            "book:641351 §2976"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "composition_id": "pf_river_channel",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_river_channel",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_boatman",
+        "reason": "Лодочник в русле следует маршруту, а не привязан к месту."
+      }
+    ],
+    "empty_reason": "Русло не создаёт постоянное население; лодочник движется по нему.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_riverbank",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_riverbank",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_fish_weir_keeper",
+        "reason": "Работа у запруды не доказывает место создания работника; на стартовой территории он не создаётся."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_fisher",
+        "reason": "Рыбак приходит к месту промысла."
+      }
+    ],
+    "empty_reason": "Берег не задаёт постоянное жильё или рабочий двор.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_road",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_road",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_cart_driver",
+        "reason": "Возчик проходит дорогу по маршруту."
+      }
+    ],
+    "empty_reason": "Дорога транзитная.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_rural_yard",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_rural_yard",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_haymaker",
+        "reason": "На стартовой территории косец не создаётся: для работы не задано место создания."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_herder",
+        "reason": "Приходит на работу."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_household_servant",
+        "reason": "Работник привязан к хозяйственным постройкам или конкретной усадьбе, а не к общему типу двора."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "occ_market_baker",
+        "reason": "Рыночный день не задаёт место создания пекаря; на стартовой территории он не создаётся."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "occ_netmaker",
+        "reason": "Рабочий маршрут не задаёт место создания изготовителя сетей; на стартовой территории он не создаётся."
+      },
+      {
+        "subject_kind": "social_role",
+        "subject_ref": "nov_role_smerd_householder",
+        "reason": "Домохозяин привязан к конкретной усадьбе, не к общему типу двора."
+      }
+    ],
+    "empty_reason": "Общий сельский двор не задаёт конкретного домохозяйства; численность здесь не подтверждена.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_village_lane",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_village_lane",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "social_role",
+        "subject_ref": "nov_role_smerd_householder",
+        "reason": "Домохозяин выходит на улицу из усадьбы."
+      }
+    ],
+    "empty_reason": "Деревенская улица транзитная.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  },
+  {
+    "composition_id": "pf_winter_ice_crossing",
+    "composition_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "place_family_id": "pf_winter_ice_crossing",
+    "place_family_version": 1,
+    "population_groups": [],
+    "scheduled_absences": [
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_ferryman",
+        "reason": "Перевозчик закреплён за береговой пристанью; зимой выходит на лёд."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_crossing_guard",
+        "reason": "Сторож закреплён за береговой пристанью; зимой выходит на ледовую переправу."
+      },
+      {
+        "subject_kind": "occupation",
+        "subject_ref": "nov_occ_winter_road_worker",
+        "reason": "Сезонная дорожная работа не создаёт постоянного работника с ледовой переправой."
+      }
+    ],
+    "empty_reason": "Ледовая переправа сезонная, постоянного жителя или работника не создаёт.",
+    "status": "approved",
+    "confidence": "unknown",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "authoring_payload": {
+      "slot_relationships": []
+    }
+  }
+]

@@ -100,9 +100,17 @@
 Вердикт по файлам:
 - social_strata_legal_status/roles/new_role_candidates.tsv — approve_with_limits (архетипные расхождения)
 - social_strata_legal_status/scripts/archive_role_candidates.json (новый) — approve_with_limits (basis ROL0113 во входе)
-- social_strata_legal_status/scripts/build_roles.py, README.md, reports/counts.json, reports/validation.json — approve
+- social_strata_legal_status/scripts/build_roles.py — approve
+- social_strata_legal_status/README.md — approve
+- social_strata_legal_status/reports/counts.json — approve
+- social_strata_legal_status/reports/validation.json — approve
 - law_justice_governance/law/institutions.csv, offences_sanctions.csv, procedures.csv — approve_with_limits (темы без статей)
-- law_justice_governance/scripts/build_law.py, seed_law_rows.py, archive_rule_candidates.json (новый), README.md, reports/* — approve
+- law_justice_governance/scripts/build_law.py — approve
+- law_justice_governance/scripts/seed_law_rows.py — approve
+- law_justice_governance/scripts/archive_rule_candidates.json (новый) — approve
+- law_justice_governance/README.md — approve
+- law_justice_governance/reports/counts.json — approve
+- law_justice_governance/reports/validation.json — approve
 - incidents_conflicts/scripts/build_incidents.py, README.md — approve_with_limits (зависимость от ref-pr98)
 - incidents_conflicts/reports/* — approve
 - README.md — approve

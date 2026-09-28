@@ -503,6 +503,8 @@ F2: slot override в `actor_appearance_authoring.json` выбирает `nov_clo
 - activities_observable/activities_new_occupations.csv, scripts/build_activities_for_new_occupations.py — approve
 - npc_runtime_profiles/npc_runtime_profiles.json — approve_with_limits (оговорка OA-6 у fisher/hunter)
 - npc_runtime_profiles/build.py, README.md — approve
-- skills_competences/skills_competences.json, build.py, README.md — approve
+- skills_competences/skills_competences.json — approve
+- skills_competences/build.py — approve
+- skills_competences/README.md — approve
 - validate.py — approve
 Группа: approve_with_limits.

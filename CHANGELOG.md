@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(spatial): CR #160 B1 step 7 — pass-target exit description now shows at any visibility above `'none'` (was `'clear'`-only); ambient landscape `stable_cover` is `'partial'` for most of the map, so the old threshold made the description unreachable by player movement almost everywhere; found via live playtest (PLAN-OK-B1-step7)
+- docs(legacy): LW-076 added — narration-audit can reject prose twice after a committed turn, leaving the player without text (owner #158 R-3), found by the same B1 live playtest (#160)
 - fix(spatial): CR #160 B1 part 2 — occupied local edge status comes from the movement admission owner and reaches both the planner's visible option text and the route panel (same suffix, one source); LW-031 closed, LW-075 added (#160)
 - test(infra): opt-in NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1 runs throwaway PG test containers without AppArmor (servak: AppArmor 4.1 + Docker 26.1 block unix sockets)
 - docs(plan): находки восприятия 2026-09-28 — M2c: скрытое надетым (волосы под убором), частичная видимость; M4: подключение восприятия NPC; LW-074 added (#158)

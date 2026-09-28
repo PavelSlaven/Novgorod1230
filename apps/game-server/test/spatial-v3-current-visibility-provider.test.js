@@ -131,7 +131,7 @@ test('two visible exits with the same pass-target description disambiguate by th
     for (const row of disclosed) assert.match(row.display_label, /^к руслу \(\d+\)$/u);
   });
 
-test('a partially visible exit falls back to the approved ordinal label, no pass-target guess',
+test('a partially visible exit still shows its pass-target description (partial cover does not block identification of a nearby passage)',
   async () => {
     const { natural, provider } = fixture();
     natural.ambient_visibility.stable_cover = 'partial';
@@ -141,7 +141,20 @@ test('a partially visible exit falls back to the approved ordinal label, no pass
     const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
       position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
       slotByExit: new Map([[exit.id, passTargetSlot]]) });
-    assert.deepEqual(disclosed.map((row) => row.display_label), [label.display_label]);
+    assert.equal(disclosed[0].display_label, 'к руслу');
+  });
+
+test('an exit with no visibility at all is not disclosed, not even by its ordinal label',
+  async () => {
+    const { natural, provider } = fixture();
+    natural.observer.visual_capability = 'none';
+    const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+      slotByExit: new Map([[exit.id, passTargetSlot]]) });
+    assert.deepEqual(disclosed, []);
   });
 
 test('current snapshot discloses the mechanically repinned version 2 edge label', async () => {

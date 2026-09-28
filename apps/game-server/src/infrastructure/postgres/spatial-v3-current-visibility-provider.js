@@ -208,7 +208,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             && row.direction_context_ref.id === exit.direction_context_id);
           if (labels.length !== 1) gap('approved_exit_label_required');
           const slotRef = context.slotByExit?.get(exit.id);
-          const description = visibilityByExit.get(exit.id) === 'clear'
+          const description = visibilityByExit.get(exit.id) !== 'none'
             ? passTargetDescriptionForSlot(slotRef) : null;
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',

@@ -72,6 +72,7 @@
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
 | 075 | `spatial-v3-current-visibility-provider.js`, `spatial-v3-proposed-visible-sources.js` | runtime читает `m2c-local-edge-labels`/`m2c-exit-labels` файлами напрямую, мимо `world_base` | [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) |
+| 076 | narration-конвейер (`gameplay_narrator*`) | двойной отказ narration-аудита после committed-хода оставляет игрока без прозы (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -383,3 +384,9 @@
 - **Что.** Оба уже утверждённых (WR §21.1, `APPROVE_DATA_ONLY`) каталога editorial-ярлыков прохода (`data/world-catalogs/novgorod/m2c-local-edge-labels/`, `m2c-exit-labels/`) читаются рантаймом напрямую с диска и проверяются по `candidate_sha256`/`candidate_ref` в момент импорта модуля, а не через `world_base` importer/readback, как остальные approved-данные этой линии (LW-038 — похожий, но другой путь: tool в runtime, не файловое чтение label-каталога).
 - **Как жить.** Не считать это временным решением, которое можно тихо расширить новыми label-каталогами тем же паттерном. Перенос в `world_base` — отдельная задача (в CR #160 сознательно не входит, см. issue #160 «Решения владельца»); до переноса — sha256-проверка при загрузке модуля остаётся единственной защитой от рассинхрона с утверждённым кандидатом.
 - **Issue.** [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160)
+
+### LW-076 — narration-аудит может дважды отклонить прозу после committed-хода, игрок остаётся без текста
+- **Где.** Narration-конвейер ролей `gameplay_narrator` → `gameplay_narrator_auditor` → `gameplay_narrator_semantic_repair` → `gameplay_narrator_auditor` (не файлы этой CR). Трасса — `docs/playtests/2026-09-28_M2c-B1_2d2b3010_passages.md`, раздел «шаг 7»: `failure.code: TRACE_PHASE_2_NARRATION_REJECTED`, `phase: final_audit_failed`; попытка 1 — `failed_checks: [policy, artistic, technical]`; попытка 2 (после repair) — `failed_checks: [policy]`.
+- **Что.** Домен-слой при этом уже полностью зафиксирован (все 17 turn-step стадий `stage_approved`, `owner_commit_completed`, `owner_readback_completed` — состояние партии реально изменилось), но обе попытки рассказчика получить связную прозу отклонены аудитом. Игрок получает `HTTP 200`, ход зачтён, но `main_prose: undefined` — без объяснения, что произошло.
+- **Как жить.** Не считать это блокером spatial/movement кода (CR #160 к этому не относится, домен здесь работает штатно). Не чинить точечно под B1. Владелец — подача рассказчику, CR #158 R-3.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

@@ -1,38 +1,50 @@
 {
   "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_kind": "dependency_closure",
   "bundle_id": "novgorod_m2c_npc_wave_v1",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "status": "draft",
-  "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+  "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
   "delete_policy": "forbid",
-  "source_commit": "63d0ef943c4fa201ed36e8b3d06cd4c9433c4614",
   "datasets": [
     {
       "table": "source_records",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/source_records.json",
-      "sha256": "26e241d7b7d5fc99822c08bf3ed930e6a93ffacaf4a448903b46775a83507591",
+      "file": "datasets/source_records.json",
+      "sha256": "dcda2978eab1a2202f2a61f0e7904bcbd02f7070cf774594eecaee25de2e3eb7",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": []
     },
     {
-      "table": "place_families",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_families.json",
-      "sha256": "4ac3d8e4e65de3828863f54953378e850ad496568d29efcf4294c34b73f90e4c",
+      "table": "spatial_v3_world_revisions",
+      "file": "datasets/spatial_v3_world_revisions.json",
+      "sha256": "5792b6a25936e581f63fd61d022e4fcb4f5819c9743f27697adbdadc06c4aa05",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
       ]
     },
     {
-      "table": "spatial_node_place_family_bindings",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/spatial_node_place_family_bindings.json",
-      "sha256": "f85f3b45d50349769014bf9190b64ca5884b8a73c7f20378fdc457568981b64c",
+      "table": "place_families",
+      "file": "datasets/place_families.json",
+      "sha256": "44588ed4f8ceb1048a85a938fe47127ffa8eca888ea8208c8596f06f838a1fd6",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions"
+      ]
+    },
+    {
+      "table": "spatial_node_place_family_bindings",
+      "file": "datasets/spatial_node_place_family_bindings.json",
+      "sha256": "7047f9b20bad25974f591575eeba8e0df9f78b1eadbb59bbbadeaf71ca928fac",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -40,10 +52,21 @@
     },
     {
       "table": "presence_rules",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/presence_rules.json",
-      "sha256": "73743ce307871e38c95da1fd9c0e97a40bab64840f25017ed2c2412bee4a6708",
+      "file": "datasets/presence_rules.json",
+      "sha256": "3fde5f9d8d05bfd128f5c480c86d8c0b4a0d166819568c66f648cc6ebea4b27a",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "water_body_presence_facets",
+      "file": "datasets/water_body_presence_facets.json",
+      "sha256": "c9f47d9363244bca094a9d8dc7b20b633a0a1379397fcddf94c9260d7f25ca0e",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -51,10 +74,10 @@
     },
     {
       "table": "npc_relationship_materialization_rules",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_relationship_materialization_rules.json",
-      "sha256": "0983ce9d1ba60fa7010a8c922a6643f5850947f9790d58907bc6b5fddc960912",
+      "file": "datasets/npc_relationship_materialization_rules.json",
+      "sha256": "be6684055e007e3abbd7bb40af7e1e213791df78b9365cb43339cf9a84b66aac",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -62,10 +85,10 @@
     },
     {
       "table": "speech_address_forms",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/speech_address_forms.json",
-      "sha256": "d3d92856c5ef34ed0251b90c2a4284e5b9c138d3834e37c8ec3b21ab85b7f456",
+      "file": "datasets/speech_address_forms.json",
+      "sha256": "295551c4b132791e1609680a7149662991da39fdaaefa6eae4c0212482536149",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -73,10 +96,10 @@
     },
     {
       "table": "household_composition_profiles",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/household_composition_profiles.json",
-      "sha256": "8a128ec48158a2638d824cc05d369332e99d30ab060971a5d6a81e355b4bd964",
+      "file": "datasets/household_composition_profiles.json",
+      "sha256": "00e85cf0d622e4915dc9c4d6801311a000878ada0bd3b13e128038759864ecae",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -84,54 +107,38 @@
     },
     {
       "table": "slot_instance_variants",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/slot_instance_variants.json",
-      "sha256": "ca73b5f81eea1915fdb1c05140132797e348d8e2dd8e945f98afd300c4e427e4",
+      "file": "datasets/slot_instance_variants.json",
+      "sha256": "4b6b87da7c0a9c3c5aa8430f3d081407372e4666c2122c660663260eda8ae4af",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
-      ]
-    },
-    {
-      "table": "water_body_presence_facets",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/water_body_presence_facets.json",
-      "sha256": "78b805760175a4ce27c24cbb774e3ddf5041dc1065a5423066108637ca289661",
-      "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
-      "delete_policy": "forbid",
-      "depends_on": [
-        "place_families"
       ]
     },
     {
       "table": "fauna_phase_activity_rules",
-      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/fauna_phase_activity_rules.json",
-      "sha256": "2876f245e347712e98eaa65a4f0fc0364d2358ef9f6816221e09bd707c6441a3",
+      "file": "datasets/fauna_phase_activity_rules.json",
+      "sha256": "195d79fdd9fa422aeac22d65b6cab48db8046cc9e4183f2c36f3545a0cb5bdd0",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
       ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "datasets/spatial_v3_nodes.json",
+      "sha256": "90cf3ea4106c9d09c549b8d1a0c3cb49a406efc9aa19b655f4bcd6d32fd60b6f",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions"
+      ]
     }
   ],
-  "data_gaps": [
-    {
-      "gap_id": "M2C_D1_ROUTINES_TARGET_TABLE",
-      "summary": "schedules_routines normal rows staged; spatial_v3_npc_runtime_profiles import pending DDL/importer"
-    },
-    {
-      "gap_id": "M2C_D2_COMPOSITION_BINDINGS",
-      "summary": "people_composition_authoring staged; spatial_v3_g4_npc_composition_bindings import pending DDL/importer"
-    },
-    {
-      "gap_id": "M2C_R1_PRESENCE_IMPORTER",
-      "summary": "presence_rules world_base importer absent (R-1): id@version content compare idempotent skip / fail-closed deferred to importer; PK enforces duplicate id@version at DDL"
-    },
-    {
-      "gap_id": "M2C_WR21_APPROVED_ROWS",
-      "summary": "dataset rows carry status=approved while game-base CSV rows remain candidate until WR §21.1 source_record + D24 verdict import (R-1); do not rewrite CSV status in generator"
-    }
-  ]
+  "data_gaps": []
 }

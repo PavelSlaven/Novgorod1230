@@ -157,7 +157,24 @@
           "confidence": "C"
         }
       ],
-      "scheduled_absences": []
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_ferryman",
+          "seasons": [
+            "winter"
+          ],
+          "reason": "Речной перевоз зимой не действует; перевозчик и сторож — на ледовой переправе."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_crossing_guard",
+          "seasons": [
+            "winter"
+          ],
+          "reason": "Речной перевоз зимой не действует; перевозчик и сторож — на ледовой переправе."
+        }
+      ]
     },
     {
       "pf_id": "pf_floodplain_meadow",
@@ -305,6 +322,20 @@
           "confidence": "C"
         }
       ],
+      "slot_relationships": [
+        {
+          "from_group_id": "pf_peasant_homestead.householder",
+          "to_group_id": "pf_peasant_homestead.mistress",
+          "relationship_kind": "spouse",
+          "confidence": "C",
+          "reason": "Крестьянский двор — семья; хозяйка при домохозяине — его жена.",
+          "source_refs": [
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder",
+            "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress",
+            "book:641351 §2976"
+          ]
+        }
+      ],
       "scheduled_absences": [
         {
           "subject_kind": "household_member",
@@ -422,6 +453,11 @@
           "subject_kind": "occupation",
           "subject_ref": "nov_occ_ferryman",
           "reason": "Перевозчик закреплён за береговой пристанью; зимой выходит на лёд."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_crossing_guard",
+          "reason": "Сторож закреплён за береговой пристанью; зимой выходит на ледовую переправу."
         },
         {
           "subject_kind": "occupation",

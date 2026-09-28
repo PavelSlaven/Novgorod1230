@@ -12,7 +12,7 @@
     "materialization_guard": "Only for a named servant attached to a named boyar's household; the role pair alone creates no edge.",
     "status": "approved",
     "confidence": "medium",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:622242 §510",
       "rule_ref": "",
@@ -33,7 +33,7 @@
     "materialization_guard": "Require named actors and an independent service record before assigning a relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -54,7 +54,7 @@
     "materialization_guard": "Only for named actors placed in the same materialized household; residence does not imply kinship.",
     "status": "approved",
     "confidence": "medium",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:709382 §596",
       "rule_ref": "",
@@ -75,7 +75,7 @@
     "materialization_guard": "Require an explicit actor-level marriage or household record; titles do not establish marriage.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -96,7 +96,7 @@
     "materialization_guard": "Only named members of the same established verv; sharing a lane does not prove membership or kinship.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2754",
       "rule_ref": "",
@@ -117,7 +117,7 @@
     "materialization_guard": "Require named neighboring households; no direction or strength follows from proximity.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -138,7 +138,7 @@
     "materialization_guard": "Only named siblings with an actor-level kin record; a shared household is insufficient.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2988",
       "rule_ref": "",
@@ -159,7 +159,7 @@
     "materialization_guard": "Only named siblings with an actor-level kin record; a shared household is insufficient.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2988",
       "rule_ref": "",
@@ -180,7 +180,7 @@
     "materialization_guard": "Only a named parent and child with an actor-level kin record.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2943",
       "rule_ref": "",
@@ -201,7 +201,7 @@
     "materialization_guard": "Only a named parent and child with an actor-level kin record.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2943",
       "rule_ref": "",
@@ -222,7 +222,7 @@
     "materialization_guard": "Only named uncle and nephew with an actor-level kin record.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2988",
       "rule_ref": "",
@@ -243,7 +243,7 @@
     "materialization_guard": "Only named uncle and nephew with an actor-level kin record.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2988",
       "rule_ref": "",
@@ -264,7 +264,7 @@
     "materialization_guard": "Only named spouses with an actor-level marriage record; household titles do not establish marriage.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2976",
       "rule_ref": "",
@@ -285,7 +285,7 @@
     "materialization_guard": "Only named spouses with an actor-level marriage record; household titles do not establish marriage.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2976",
       "rule_ref": "",
@@ -306,7 +306,7 @@
     "materialization_guard": "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt.",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2811",
       "rule_ref": "",
@@ -327,7 +327,7 @@
     "materialization_guard": "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt. Transfer of the cited patron rule to a smerd household is conditional.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641351 §2811",
       "rule_ref": "",
@@ -348,7 +348,7 @@
     "materialization_guard": "Only a named household servant and their named employer in a materialized household.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "book:641352 §1814",
       "rule_ref": "",
@@ -369,10 +369,31 @@
     "materialization_guard": "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "editorial_joint_work_acquaintance_c",
+      "no_source": "",
+      "csv_status": "candidate"
+    }
+  },
+  {
+    "rule_id": "rel_composition_spouse_2dc90533f844af8e",
+    "rule_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "scope_kind": "role_pair",
+    "scope_ref": "",
+    "subject_role_ref": "nov_role_smerd_householder",
+    "object_role_ref": "nov_role_household_mistress",
+    "relationship_kind": "spouse",
+    "direction": "symmetric",
+    "materialization_guard": "Only the named actors materialized from pf_peasant_homestead.householder and pf_peasant_homestead.mistress at pf_peasant_homestead; other role holders are not spouses.",
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
+    "payload": {
+      "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress;book:641351 §2976",
+      "rule_ref": "",
       "no_source": "",
       "csv_status": "candidate"
     }
@@ -390,7 +411,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -411,7 +432,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -432,7 +453,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -453,7 +474,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -474,7 +495,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -495,7 +516,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -516,7 +537,7 @@
     "materialization_guard": "Only named workers with a shared assignment at this PF and time may be acquainted; co-presence alone creates no edge.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "editorial_joint_work_acquaintance_c",
@@ -537,7 +558,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -558,7 +579,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -579,7 +600,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -600,11 +621,32 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
       "no_source": "No sourced relation for this potential pair in the bound starting G5 scenes.",
+      "csv_status": "candidate"
+    }
+  },
+  {
+    "rule_id": "rel_start_joint_work_cfd99623f78d343d",
+    "rule_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "scope_kind": "role_pair",
+    "scope_ref": "",
+    "subject_role_ref": "nov_occ_crossing_guard",
+    "object_role_ref": "nov_occ_winter_road_worker",
+    "relationship_kind": "joint_work",
+    "direction": "symmetric",
+    "materialization_guard": "Only named workers with a shared assignment at this PF and time may be acquainted; co-presence alone creates no edge.",
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
+    "payload": {
+      "source_refs": "",
+      "rule_ref": "editorial_joint_work_acquaintance_c",
+      "no_source": "",
       "csv_status": "candidate"
     }
   },
@@ -621,7 +663,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -642,7 +684,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -663,7 +705,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -684,7 +726,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -705,7 +747,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -726,7 +768,7 @@
     "materialization_guard": "Only named workers with a shared assignment at this PF and time may be acquainted; co-presence alone creates no edge.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "editorial_joint_work_acquaintance_c",
@@ -747,7 +789,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -768,7 +810,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -789,7 +831,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -810,7 +852,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -831,7 +873,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -852,7 +894,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -873,7 +915,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -894,7 +936,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -915,7 +957,7 @@
     "materialization_guard": "Only named workers with a shared assignment at this PF and time may be acquainted; co-presence alone creates no edge.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "editorial_joint_work_acquaintance_c",
@@ -936,7 +978,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -957,7 +999,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -978,7 +1020,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -999,7 +1041,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -1020,7 +1062,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -1041,7 +1083,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",
@@ -1062,7 +1104,7 @@
     "materialization_guard": "Only named actors actually present together; the scene and roles alone create no relationship.",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
     "payload": {
       "source_refs": "",
       "rule_ref": "",

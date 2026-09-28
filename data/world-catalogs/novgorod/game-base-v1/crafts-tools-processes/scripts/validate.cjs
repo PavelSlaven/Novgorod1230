@@ -10,6 +10,9 @@ const occTools = readCsv(P('craft_tools_gear/occupation_tools.csv'));
 const procs = readCsv(P('craft_processes/processes.csv'));
 const steps = readCsv(P('craft_processes/process_steps.csv'));
 const prods = readCsv(P('craft_processes/process_products.csv'));
+const butchery = readCsv(P('craft_processes/butchery_profiles.csv'));
+const fishCleaning = readCsv(P('craft_processes/fish_cleaning_products.csv'));
+const fish = readCsv(path.join(GAME_BASE, 'fauna-fish-invertebrates-livestock/fauna/fish.csv'));
 const shops = readCsv(P('workshops/workshops.csv'));
 const mats = readCsv(P('materials_registry/materials.csv'));
 const deny = readCsv(P('materials_registry/late_materials_denylist.csv'));
@@ -71,6 +74,101 @@ add('steps_ordered_and_chained', !chainErr.length, chainErr.join(' | ') || `${pr
 add('process_inputs_resolve_to_materials_or_items', !inputErr.length, inputErr.join(',') || 'all inputs are mt_ ids or pr: products');
 add('process_tools_resolve', !toolErr.length, toolErr.join(',') || 'ok');
 add('process_has_wk_claim', !wkErr.length, wkErr.join(',') || `${procs.length}/${procs.length} have >=1 WK claim`);
+
+function butcheryIssues(rows, processRows) {
+  const issues = [];
+  const intervalSemantics = 'min_inclusive_max_exclusive;empty_max_unbounded';
+  const bp = processRows.find(p => p.pc_id === 'proc_butcher_carcass');
+  if (!bp) issues.push('missing proc_butcher_carcass');
+  else {
+    if (!split(bp.inputs).includes('pr:whole_carcass')) issues.push('process lacks whole carcass input');
+    if (!split(bp.tools).includes('tl_skinning_knife')) issues.push('process lacks required skinning knife');
+    for (const outRef of ['pr:raw_meat','mt_hide_raw','mt_bone','mt_tallow','mt_sinew_gut','mt_horn','pr:feathers_down']) if (!split(bp.outputs).includes(outRef)) issues.push('missing output ' + outRef);
+  }
+  const ids = new Set();
+  const fractionPairs = ['meat','raw_hide','bone','fat','sinew','horn','feathers_down'];
+  for (const r of rows) {
+    if (ids.has(r.carcass_class_id)) issues.push('duplicate class ' + r.carcass_class_id); ids.add(r.carcass_class_id);
+    if (!['bird','mammal'].includes(r.animal_class)) issues.push('bad animal class ' + r.carcass_class_id);
+    if (r.live_mass_interval !== intervalSemantics) issues.push('bad mass interval semantics ' + r.carcass_class_id);
+    if (r.yield_basis !== 'editorial' || r.yield_source_refs) issues.push('numeric yield not explicitly source-free editorial ' + r.carcass_class_id);
+    if (r.output_source_refs !== 'fauna-mammals-birds/fauna/mammals.csv#products;fauna-mammals-birds/fauna/birds.csv#products;fauna-fish-invertebrates-livestock/fauna/livestock_products.csv') issues.push('bad output source rule ' + r.carcass_class_id);
+    if (!(+r.duration_min_minutes > 0 && +r.duration_max_minutes >= +r.duration_min_minutes)) issues.push('bad duration ' + r.carcass_class_id);
+    let minSum = 0, maxSum = 0;
+    for (const k of fractionPairs) {
+      const lo = +r[`${k}_fraction_min`], hi = +r[`${k}_fraction_max`];
+      if (!(lo >= 0 && hi >= lo && hi <= 1)) issues.push(`bad ${k} fraction ${r.carcass_class_id}`);
+      minSum += lo; maxSum += hi;
+    }
+    if (minSum > 1 || maxSum > 1) issues.push('outputs exceed live mass ' + r.carcass_class_id);
+  }
+  for (const animalClass of ['bird','mammal']) {
+    const classRows = rows.filter(r => r.animal_class === animalClass).sort((a, b) => +a.live_mass_min_kg - +b.live_mass_min_kg);
+    for (let i = 1; i < classRows.length; i += 1) {
+      const previousMax = classRows[i - 1].live_mass_max_kg;
+      const currentMin = classRows[i].live_mass_min_kg;
+      if (!previousMax || +previousMax > +currentMin) issues.push('overlapping mass profiles ' + classRows[i - 1].carcass_class_id + '/' + classRows[i].carcass_class_id);
+      if (+previousMax < +currentMin) issues.push('gap between mass profiles ' + classRows[i - 1].carcass_class_id + '/' + classRows[i].carcass_class_id);
+    }
+  }
+  const matchesMass = (animalClass, mass) => rows.filter(r => r.animal_class === animalClass && mass >= +r.live_mass_min_kg && (!r.live_mass_max_kg || mass < +r.live_mass_max_kg));
+  for (const [animalClass, mass, expected] of [['bird', 0.099, 'bc_bird_very_small'], ['bird', 0.1, 'bc_bird_small'], ['bird', 2, 'bc_bird_large'], ['mammal', 0.099, 'bc_mammal_very_small'], ['mammal', 0.1, 'bc_mammal_small'], ['mammal', 5, 'bc_mammal_medium'], ['mammal', 50, 'bc_mammal_large']]) {
+    const matches = matchesMass(animalClass, mass);
+    if (matches.length !== 1 || matches[0].carcass_class_id !== expected) issues.push(`mass boundary ${animalClass}/${mass} does not select exactly ${expected}`);
+  }
+  for (const required of ['bc_bird_very_small','bc_bird_small','bc_bird_large','bc_mammal_very_small','bc_mammal_small','bc_mammal_medium','bc_mammal_large']) if (!ids.has(required)) issues.push('missing class ' + required);
+  return issues;
+}
+const butcheryErr = butcheryIssues(butchery, procs);
+add('butchery_process_and_profiles', !butcheryErr.length, butcheryErr.join(' | ') || `${butchery.length} size profiles; knife required; mass conserved`);
+
+function fishCleaningIssues(rows, processRows, fishRows) {
+  const issues = [];
+  const process = processRows.find(p => p.pc_id === 'proc_clean_fish');
+  if (!process) issues.push('missing proc_clean_fish');
+  else {
+    if (!split(process.inputs).includes('pr:whole_fish')) issues.push('fish process lacks whole fish input');
+    if (!split(process.outputs).includes('pr:gutted_fish')) issues.push('fish process lacks gutted fish output');
+    if (!split(process.tools).includes('tl_knife_utility')) issues.push('fish process lacks required knife');
+  }
+  const allFish = fishRows.filter(r => r.fa_id.startsWith('fa_fish_'));
+  const eligible = new Map(allFish.filter(r => r.food_ingredient_ref).map(r => [r.fa_id, r.food_ingredient_ref]));
+  for (const fish of allFish) if (!fish.food_ingredient_ref) issues.push('fish species lacks fresh product ' + fish.fa_id);
+  const seen = new Set();
+  for (const r of rows) {
+    if (seen.has(r.fa_id)) issues.push('duplicate fish cleaning species ' + r.fa_id); seen.add(r.fa_id);
+    if (!eligible.has(r.fa_id)) issues.push('fish cleaning species lacks product ' + r.fa_id);
+    if (eligible.get(r.fa_id) !== r.input_food_ingredient_ref) issues.push('fish input product mismatch ' + r.fa_id);
+    if (r.output_food_ingredient_ref !== 'master:food_system:ING0144') issues.push('bad gutted fish output ' + r.fa_id);
+    if (r.process_ref !== 'proc_clean_fish' || r.basis !== 'logical_necessity') issues.push('bad fish cleaning derivation class ' + r.fa_id);
+    if (!r.derivation.includes('recipes.csv#RCP0166') || !r.derivation.includes('material_items.csv#n1230:material_item:fod0012')) issues.push('missing fish archive derivation ' + r.fa_id);
+    if (!r.anachronism_check.startsWith('passed')) issues.push('missing fish anachronism check ' + r.fa_id);
+  }
+  for (const id of eligible.keys()) if (!seen.has(id)) issues.push('missing fish cleaning species ' + id);
+  return issues;
+}
+const fishCleaningErr = fishCleaningIssues(fishCleaning, procs, fish);
+add('fish_cleaning_process_and_species_products', !fishCleaningErr.length, fishCleaningErr.join(' | ') || `${fishCleaning.length} species products; knife required; generic output preserves fa_id`);
+if (process.argv.includes('--self-test')) {
+  const noKnife = procs.map(p => p.pc_id === 'proc_butcher_carcass' ? { ...p, tools: '' } : p);
+  if (!butcheryIssues(butchery, noKnife).some(x => x.includes('required skinning knife'))) throw new Error('butchery missing-knife negative probe passed');
+  const overYield = butchery.map((r, i) => i ? r : { ...r, meat_fraction_max: '0.95' });
+  if (!butcheryIssues(overYield, procs).some(x => x.includes('outputs exceed live mass'))) throw new Error('butchery over-yield negative probe passed');
+  const sourcedEditorial = butchery.map((r, i) => i ? r : { ...r, yield_source_refs: 'unsupported:number' });
+  if (!butcheryIssues(sourcedEditorial, procs).some(x => x.includes('source-free editorial'))) throw new Error('butchery unsupported-source negative probe passed');
+  const overlap = butchery.map(r => r.carcass_class_id === 'bc_bird_large' ? { ...r, live_mass_min_kg: '1.9' } : r);
+  if (!butcheryIssues(overlap, procs).some(x => x.includes('overlapping mass profiles'))) throw new Error('butchery mass-overlap negative probe passed');
+  const gap = butchery.map(r => r.carcass_class_id === 'bc_mammal_medium' ? { ...r, live_mass_min_kg: '5.1' } : r);
+  if (!butcheryIssues(gap, procs).some(x => x.includes('gap between mass profiles'))) throw new Error('butchery mass-gap negative probe passed');
+  const missingTiny = butchery.filter(r => r.carcass_class_id !== 'bc_mammal_very_small');
+  if (!butcheryIssues(missingTiny, procs).some(x => x.includes('missing class bc_mammal_very_small'))) throw new Error('butchery very-small negative probe passed');
+  const missingFish = fishCleaning.slice(1);
+  if (!fishCleaningIssues(missingFish, procs, fish).some(x => x.includes('missing fish cleaning species'))) throw new Error('fish cleaning missing-species negative probe passed');
+  const productlessFish = fish.map((r, i) => i ? r : { ...r, food_ingredient_ref: '' });
+  if (!fishCleaningIssues(fishCleaning, procs, productlessFish).some(x => x.includes('lacks fresh product'))) throw new Error('fish cleaning productless-species negative probe passed');
+  const modernOutput = fishCleaning.map((r, i) => i ? r : { ...r, output_food_ingredient_ref: 'pr:modern_fillet' });
+  if (!fishCleaningIssues(modernOutput, procs, fish).some(x => x.includes('bad gutted fish output'))) throw new Error('fish cleaning output negative probe passed');
+}
 
 // --- workshops ---
 const wsErr = [];

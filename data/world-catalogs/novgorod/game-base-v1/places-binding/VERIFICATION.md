@@ -1127,3 +1127,11 @@
   - `composes_with` и связь «пойма → могильник» в `region_type_pf_manifest` взяты из одного G4 (C), не из книг.
   - Водная кромка wet_boundary не отражена.
   - Bridge стартовой территории runtime ещё без `pf_burial_ground` — обновляется при импорте.
+
+### C016 — зависимые строки присутствия: независимая проверка D35
+
+Проверено: Claude Opus 5.5 — независимый проход WR §21.1 (D35), 2026-09-28. Незакоммиченный diff против `ec8cb72f`.
+
+- Производные строки пересобраны `build-presence-rules.mjs`, результат побайтно равен worktree. Изменены 26 строк, все — белобровик и чечевица (понижение класса вслед за `fauna/birds.csv`); прочих изменений 0.
+- Полный `validate.mjs --start-territory <bridge> --self-test` — exit 0; внешние проверки INFO 10977/118/788, как прежде.
+- presence/presence_rules.csv, reports/presence-rules-report.json — approve

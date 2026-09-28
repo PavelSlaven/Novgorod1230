@@ -9,12 +9,14 @@ The counts below come from `build-report.json` and `validation-report.json`, whi
 
 | File | Rows | What |
 |---|---:|---|
-| `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), authored `audible_seasons`, activity time, signs for prose (tracks, droppings, feeding signs, dens/lodges/dams, sounds, smell), behaviour toward humans, danger, products, hunting methods with MASTER gear refs, WK refs |
+| `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), sixteen editorial pelt calendars, authored `audible_seasons`, signs, products, hunting text and MASTER gear refs, WK refs |
 | `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, full `voice_description`, short narrator-ready `voice_sound_ru`, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
-| `fauna/wild_habitat_presence.csv` | 4231 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
+| `fauna/wild_habitat_presence.csv` | 4221 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
 | `fauna/fauna_categories.csv` | 220 | Category nodes in domain `fauna`: `fauna.mammal`, `fauna.bird`, 25 group nodes, 193 taxon nodes. Every taxon row and presence row has a `category_ref` |
 | `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 6 included as rare, 4 included reduced or rural-only, 7 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms |
 | `fauna/sources.csv` | 21 | Source register: level, read depth (full, extract, abstract, bibliographic) and URL |
+| `fauna/hunting_methods.csv` | 23 | Direct and set/check hunting, trapping, falconry, small-fauna capture and F10 egg collection; taxa/categories, sizes, seasons, basis, derivation and anachronism check are explicit |
+| `fauna/hunting_tenure_defaults.csv` | 3 | Candidate input for F29/F30 tenure: ловища, бобровые гоны and перевесища map to `pf_hunting_ground` with `rights_holder`; no holder or closed months are invented |
 
 Composition. Mammals: 4 ungulates, 2 large predators, 11 fur-bearing and small mustelids and other predators, 2 fur rodents, 1 hare, 18 small mammals (insectivores and rodents), 5 bats, 1 seal (Ladoga only).
 Birds: 15 waterfowl, 17 raptors, 8 owls, 6 gamebirds, 11 waders, 7 woodpeckers, 8 corvids, 57 passerines and others. Falconry: 6 falconry birds, 26 quarry species.
@@ -39,6 +41,14 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
    - Novgorod archaeozoology and birch-bark letters: Рыбина 2015; Hamilton-Dyer et al. 2017 and Maltby et al. 2020, abstracts only; Зиновьев 2012 (white-tailed eagle, full text); Зиновьев 2025 on synanthropes (abstract); Gorobets & Kovalchuk 2017 (abstract).
 3. **Authoring.** The text fields (signs, voices, seasonal states) are qualitative naturalist knowledge, checked against the sources above, and have row confidence B. Nothing is copied from sources at length.
 4. **Deterministic derivation.** `scripts/build.cjs` expands each taxon's habitat groups into pf_id × season rows by the rule below. `scripts/validate.cjs` checks the acceptance criteria and integrity.
+
+### Hunting methods, pelts and tenure
+
+`hunting_methods.csv` is a method catalog, not an encounter or action whitelist. The repo-local MASTER provides all `hnt0001–hnt0028`; `hnt0010` (beaver pelt) and `hnt0021` (fur bundle) were removed from mammal `hunting_method_refs` because they are products, not tools. D-rated `hnt0022`, `hnt0024` and `hnt0028` remain forbidden. Every method records `basis`, `derivation` and `anachronism_check`; a sourced row must have a source, while `logical_necessity|editorial` may instead preserve an explicit source gap. `set_and_check` creates no catch when set; a later activity must check it.
+
+Sixteen species have `pelt_prime_months` and twelve `month=quality` values (`winter|transitional|summer`): all 13 F30 fur species plus mole, water vole and flying squirrel. Exact month boundaries are `pelt_calendar_basis=editorial`, confidence C and deliberately have no numeric source ref. `pelt_qualitative_source_refs` preserve only available coat/moult evidence; water vole and the weakly grounded small species keep explicit gaps. Sable keeps its confidence-C range caveat.
+
+The tenure input preserves the target columns `place_family_ref,family_id,tenure,closed_months` and adds evidence fields plus `ground_kind`. Sources support protected hunting assets/grounds only with stated geographic and chronological limits; they do not identify a current site, holder or closed month.
 
 ### Frequency rule
 <a id="frequency-rule"></a>
@@ -79,6 +89,8 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
   - WK ids exist in WK production-v1.
   - MASTER hnt ids exist.
   - Excluded and anachronistic taxa are absent (raccoon dog, muskrat, American mink, brown rat, rabbit, pheasant, collared dove, sika deer).
+  - Twenty-three hunting methods use only repo-local non-D gear when a tool exists; every taxon/category, size, season, basis, derivation, F10 link and anachronism check is closed and validated; three rights rows resolve to `pf_hunting_ground`.
+  - Sixteen pelt calendars contain all 12 months, only the three quality classes, and explicitly editorial exact boundaries.
   - Magpie and starling have no town rows (Зиновьев 2025).
 - Warning: the overlays `pf_reality_*` get no fauna rows on purpose.
 - Мальчевский page numbers match the species headings. The only difference is the synonym nigra/niger.
@@ -100,6 +112,11 @@ node scripts/validate.cjs
 node scripts/validate-phase.cjs fauna-mammals-birds --self-test
 ```
 Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. The snapshots are already committed, so `build.cjs` and `validate.cjs` run offline. `validate.cjs` reads WK from the main checkout; set `NOVGOROD_MAIN` to point elsewhere.
+
+## D40 exclusions reviewed in C016
+
+- `fchk_023` is not a blanket exclusion: magpie remains in rural place families; only town rows are forbidden by the cited late urban-colonisation evidence.
+- `fchk_026` remains `included_reduced`. All seven listed birds now have `base_frequency_class=rare|contextual` and `presence_1230_confidence=C`; redwing and common rosefinch were corrected from `common` to `contextual`.
 
 ## Known gaps and cautions
 

@@ -56,6 +56,8 @@ import { createSpatialV3GenerationAdmission } from
   '../infrastructure/postgres/spatial-v3-generation-admission.js';
 import { createTargetGeneratedFirstEntry } from
   '../infrastructure/postgres/target-generated-first-entry.js';
+import { createTargetPresenceRulesFirstArrivalResolver } from
+  '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { projectSpatialV3CurrentVisibleContext,
   SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from
   '../runtime/spatial-v3-current-visible-context.js';
@@ -149,7 +151,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     }
     const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,
       calendar_profile: scenarioBundle.calendar_profile });
-    const targetFiniteFirstEntry = targetProfiles == null ? null
+    let targetFiniteFirstEntry = targetProfiles == null ? null
       : createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry);
     const authoredStartCatalog = targetContext == null ? null
       : createTargetAuthoredStartCatalog({ runtime: targetContext.runtime, release });
@@ -266,18 +268,77 @@ export async function createSpatialV3ProductionCompositionRoot({
           selectedModule,
           bindingContext
         );
+    if (targetProfiles != null && targetContext != null) {
+      const worldPin = Object.freeze({
+        world_revision_id: release.world_revision_id,
+        world_catalog_digest: release.world_catalog_digest,
+      });
+      const spatialWorldPin = Object.freeze({
+        world_revision_id: release.world_revision_id,
+        catalog_digest: release.world_catalog_digest,
+      });
+      targetFiniteFirstEntry = createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry, {
+        resolvePresenceRulesFirstArrival: createTargetPresenceRulesFirstArrivalResolver({
+          worldBaseReader: targetContext.runtime.worldBaseReader,
+          spatialWorldPin,
+          worldPin,
+          runtimeCatalogPin: bindings.runtimeCatalogPin,
+          readPartySeason: async ({ transaction, partyId }) => {
+            const row = await transaction.query(
+              `SELECT snapshot.state_payload#>>'{calendar,season}' AS season
+                 FROM party_runtime.parties party
+                 JOIN party_runtime.party_state_snapshots snapshot
+                   ON snapshot.party_id=party.party_id
+                  AND snapshot.state_version=party.state_version
+                WHERE party.party_id=$1`,
+              [partyId],
+            );
+            return row.rows[0]?.season ?? 'summer';
+          },
+        }),
+      });
+    }
     const ordinaryFirstEntryProvisioner = targetContext == null ? createOrdinaryMaterializationFirstEntryProvisioner({
       profile: profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
     }) : null;
-    const initialOrdinaryProvisioner =
-      targetContext == null ? createOrdinaryMaterializationFirstEntryProvisioner({
+    const targetPartyStartProfile = targetProfiles?.finite_first_entry?.profile ?? null;
+    const initialOrdinaryProvisioner = targetContext == null
+      ? createOrdinaryMaterializationFirstEntryProvisioner({
         profile: profiles.ordinaryMaterializationProfile,
         includeContextBoundCapabilities: false,
         initialSceneSeed: ordinaryBackgroundSeedForLocation({ scenePresentation,
           locationRef: profiles.ordinaryMaterializationProfile
             .o2a_ambient.scope_binding.position_ref })
-      }) : null;
+      })
+      : (targetPartyStartProfile == null ? null : createOrdinaryMaterializationFirstEntryProvisioner({
+        profile: targetPartyStartProfile,
+        includeContextBoundCapabilities: false,
+        resolvePresenceRulesFirstArrival: createTargetPresenceRulesFirstArrivalResolver({
+          worldBaseReader: targetContext.runtime.worldBaseReader,
+          spatialWorldPin: {
+            world_revision_id: release.world_revision_id,
+            catalog_digest: release.world_catalog_digest,
+          },
+          worldPin: {
+            world_revision_id: release.world_revision_id,
+            world_catalog_digest: release.world_catalog_digest,
+          },
+          runtimeCatalogPin: bindings.runtimeCatalogPin,
+          readPartySeason: async ({ transaction, partyId }) => {
+            const row = await transaction.query(
+              `SELECT snapshot.state_payload#>>'{calendar,season}' AS season
+                 FROM party_runtime.parties party
+                 JOIN party_runtime.party_state_snapshots snapshot
+                   ON snapshot.party_id=party.party_id
+                  AND snapshot.state_version=party.state_version
+                WHERE party.party_id=$1`,
+              [partyId],
+            );
+            return row.rows[0]?.season ?? 'summer';
+          },
+        }),
+      }));
     const spatialSemanticFirstEntryProvisioner = targetContext == null
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
     committer = createSpatialV3PostgresCombinedAtomicCommitter({

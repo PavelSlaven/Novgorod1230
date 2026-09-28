@@ -5,6 +5,8 @@ import {
   createOrdinaryAggregate,
   validateOrdinaryBackgroundGroup
 } from '@rus/materialization';
+import { applyResolvedPresenceRulesFirstArrival } from
+  './ordinary-materialization-presence-first-arrival.js';
 import {
   ordinaryWorldPropertyPlacementContextDigest
 } from '@rus/items-property';
@@ -21,7 +23,7 @@ import { buildFirstEntryNaturalCapabilities, readApprovedNaturalFirstEntryAuthor
   from './ordinary-materialization-first-entry-natural.js';
 import { createApprovedGeneratedNaturalPropertyReader } from './ordinary-materialization-natural-property.js';
 
-export function createTargetFiniteFirstEntryPorts(loaded) {
+export function createTargetFiniteFirstEntryPorts(loaded, { resolvePresenceRulesFirstArrival } = {}) {
   if (loaded?.schema !== 'rus.live_world_runtime.target_finite_first_entry_profile.v1'
     || loaded.catalog_pin?.schema !== 'rus.runtime_catalog_pin.v2'
     || loaded.catalog_pin.catalog_scope !== 'item_container_materialization_v2'
@@ -30,7 +32,8 @@ export function createTargetFiniteFirstEntryPorts(loaded) {
   }
   const readNaturalSourceProperty = createApprovedGeneratedNaturalPropertyReader(loaded.propertySourceAuthoring);
   const prepare = createOrdinaryGeneratedFirstEntryProposal({ profile: loaded.profile,
-    naturalSourceAuthoring: loaded.naturalSourceAuthoring, readNaturalSourceProperty });
+    naturalSourceAuthoring: loaded.naturalSourceAuthoring, readNaturalSourceProperty,
+    resolvePresenceRulesFirstArrival });
   return Object.freeze({ readNaturalSourceProperty,
     async prepareFirstEntry(input) {
       const pin = loaded.catalog_pin;
@@ -48,7 +51,8 @@ export function createTargetFiniteFirstEntryPorts(loaded) {
 
 /** The existing first-entry owner proposes rows; Spatial P16 remains the writer. */
 export function createOrdinaryGeneratedFirstEntryProposal({ profile,
-  naturalSourceAuthoring, readNaturalSourceProperty } = {}) {
+  naturalSourceAuthoring, readNaturalSourceProperty,
+  resolvePresenceRulesFirstArrival } = {}) {
   if (!profile) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
   const authoring = readApprovedNaturalFirstEntryAuthoring(naturalSourceAuthoring);
   return async function prepareFirstEntry({ transaction, request, proposal, change_set_id }) {
@@ -78,9 +82,19 @@ export function createOrdinaryGeneratedFirstEntryProposal({ profile,
       const naturalCapabilities = await buildFirstEntryNaturalCapabilities({ authoring,
         binding, readProperty: readNaturalSourceProperty, transaction: tx, partyId,
         scope, positionRef, profile, spatialProposal: proposal });
+      const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
+        ? await resolvePresenceRulesFirstArrival({
+          transaction: tx,
+          request,
+          site,
+          scope,
+          proposal,
+          changeSetId,
+        })
+        : null;
       return buildRows({ profile, partyId, scope, positionRef,
         includeContextBoundCapabilities: false, initialSceneSeed: null, naturalCapabilities,
-        itemKind: 'natural_resource_portion', capabilityOnly: true });
+        itemKind: 'natural_resource_portion', capabilityOnly: true, presenceContext });
     };
     const rows = await build(transaction);
     const scopeKey = `${partyId}:${scope.entity_kind}:${scope.entity_id}`;
@@ -126,7 +140,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
   profile,
   ordinaryContainerContentsProfile = null,
   includeContextBoundCapabilities = true,
-  initialSceneSeed = null
+  initialSceneSeed = null,
+  resolvePresenceRulesFirstArrival = null,
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
@@ -138,9 +153,17 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
       }
       const scope = { entity_kind: 'g6', entity_id: firstEntryBinding.g6_instance_id };
+      const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
+        ? await resolvePresenceRulesFirstArrival({
+          transaction,
+          partyId,
+          firstEntryBinding,
+          scope,
+        })
+        : null;
       const rows = buildRows({ profile, partyId, scope,
         positionRef: firstEntryBinding.position_id,
-        includeContextBoundCapabilities, initialSceneSeed });
+        includeContextBoundCapabilities, initialSceneSeed, presenceContext });
       const existing = await transaction.query(
         `SELECT e.objective_snapshot,e.objective_digest,e.enabled,
                 a.aggregate_payload,a.state_version,c.catalog_version,
@@ -202,7 +225,7 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
 
 function buildRows({ profile, partyId, scope, positionRef,
   includeContextBoundCapabilities, initialSceneSeed, naturalCapabilities = [], itemKind = 'man_made',
-  capabilityOnly = false }) {
+  capabilityOnly = false, presenceContext = null }) {
   const basisRef = `${profile.profile_id}:basis`;
   const propertyBasisRef = profile.context_refs?.property_context_ref;
   const placementContextRef = `${profile.profile_id}:placement`;
@@ -256,7 +279,12 @@ function buildRows({ profile, partyId, scope, positionRef,
     resolution_record_cap: profile.technical_limits.max_resolution_records });
   const seeded = seedInitialScene({ profile, request: seedRequest,
     initial, committedBasis: basis, committedBases, initialSceneSeed });
-  const bases = [...committedBases, ...seeded.committedSeedBases]
+  const aggregateWithPresence = applyResolvedPresenceRulesFirstArrival({
+    aggregate: seeded.aggregate,
+    context: presenceContext,
+  });
+  const seededWithPresence = { ...seeded, aggregate: aggregateWithPresence };
+  const bases = [...committedBases, ...seededWithPresence.committedSeedBases]
     .sort((left, right) => left.basis_ref.localeCompare(right.basis_ref));
   const policyRefs = { ...seedPolicyRefs,
     allowed_supporting_bases: bases.map(({ basis_ref }) => ({ basis_ref,
@@ -273,7 +301,7 @@ function buildRows({ profile, partyId, scope, positionRef,
         target_ref: scope.entity_id }, source_refs: [basisRef, propertyBasisRef,
         positionRef, placementContextRef,
         ...bases.map(({ basis_ref }) => basis_ref)].sort() } };
-  return { aggregate: seeded.aggregate,
+  return { aggregate: seededWithPresence.aggregate,
   bases, finite_sources: capabilities.map((entry) => entry.finite_source),
   basis_catalog_version: seeded.committedSeedBases.length === 0 ? 0 : 1,
   basis_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1',

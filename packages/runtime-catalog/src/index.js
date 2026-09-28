@@ -19,7 +19,9 @@ import {
 import { loadApprovedActorProfileCatalog } from
   './actor-profile-catalog.js';
 import {
+  loadCategoryParentMap,
   loadPlacePopulationComposition,
+  loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules
 } from './m2c-npc-wave-readers.js';
 import {
@@ -39,8 +41,12 @@ export { loadApprovedProceduralActorTemporalBundle,
   loadApprovedProceduralCompiledCatalog,
   loadApprovedProceduralSceneRecordBundle } from
   './procedural-scene-records.js';
-export { loadPlacePopulationComposition, loadScheduleRoutineRules } from
-  './m2c-npc-wave-readers.js';
+export {
+  loadCategoryParentMap,
+  loadPlacePopulationComposition,
+  loadPresenceRulesForPlaceFamilies,
+  loadScheduleRoutineRules,
+} from './m2c-npc-wave-readers.js';
 export { loadApprovedG4NaturalCatalog } from './g4-natural-catalog.js';
 export { loadApprovedG4NaturalPresentationCatalog } from './g4-natural-presentation-catalog.js';
 export { loadApprovedG4NaturalPlacementCatalog } from './g4-natural-placement-catalog.js';
@@ -159,6 +165,14 @@ export function createRuntimeCatalogLoader({
       worldBaseReader
     }),
     loadPlacePopulationComposition: (input) => loadPlacePopulationComposition({
+      ...input,
+      worldBaseReader
+    }),
+    loadPresenceRulesForPlaceFamilies: (input) => loadPresenceRulesForPlaceFamilies({
+      ...input,
+      worldBaseReader
+    }),
+    loadCategoryParentMap: (input) => loadCategoryParentMap({
       ...input,
       worldBaseReader
     })

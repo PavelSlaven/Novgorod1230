@@ -184,8 +184,10 @@ export async function createSpatialV3ProductionBindings(
         createSpatialSemanticFirstEntryProvisioner({
           loadedProfile: authoredStartCatalog.ordinary_profiles.s1
         });
-      const authoredInitialProvisioner = initialOrdinaryProvisioner == null
-        || authoredSpatialProvisioner == null ? null : { async provision(input) {
+      const authoredInitialProvisioner = initialOrdinaryProvisioner == null ? null
+        : authoredSpatialProvisioner == null ? { async provision(input) {
+          return Object.freeze({ ordinary: await initialOrdinaryProvisioner.provision(input) });
+        } } : { async provision(input) {
           const ordinary = await initialOrdinaryProvisioner.provision(input);
           const spatial = await authoredSpatialProvisioner.provision(input);
           return Object.freeze({ ordinary, spatial });

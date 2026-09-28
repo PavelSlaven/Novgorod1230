@@ -97,3 +97,76 @@ export async function loadPlacePopulationComposition({
     },
   });
 }
+
+/** Read-only M2c presence rules for place families after spatial pin and activation checks. */
+export async function loadPresenceRulesForPlaceFamilies({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+  placeFamilyIds,
+} = {}) {
+  await assertReadableContext({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+  });
+  if (!Array.isArray(placeFamilyIds) || placeFamilyIds.length === 0) {
+    return [];
+  }
+  const unique = [...new Set(placeFamilyIds.filter((id) => typeof id === 'string' && id.length > 0))];
+  if (unique.length === 0) return [];
+  const revisionId = spatialWorldPin.world_revision_id;
+  const result = await worldBaseReader.read(
+    `SELECT rule_id, rule_version, world_revision_id, scope_kind, scope_ref, region_id,
+      subject_kind, subject_ref, category_id, item_ref, variants,
+      presence_probability_ppm, count_limit, allowed_seasons, allowed_times, guards,
+      entry_visible_if, search_only_if, entry_exposed_weight, search_concealed_weight,
+      wild_arrival_cause, refresh_class, status, confidence, provenance_ref, authoring_payload
+     FROM world_base.presence_rules
+     WHERE world_revision_id = $1
+       AND scope_kind = 'place_family'
+       AND scope_ref = ANY($2::text[])
+       AND status = 'approved'
+     ORDER BY scope_ref, subject_kind, subject_ref, rule_id, rule_version`,
+    [revisionId, unique],
+  );
+  return rowsFrom(result).map((row) => deepFreeze({
+    ...row,
+    variants: structuredClone(row.variants ?? []),
+    authoring_payload: structuredClone(row.authoring_payload ?? {}),
+  }));
+}
+
+/** Parent map for object_type categories used by presence ancestor skip (LW-071). */
+export async function loadCategoryParentMap({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+  categoryIds = [],
+} = {}) {
+  await assertReadableContext({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+  });
+  const unique = [...new Set((categoryIds ?? []).filter((id) => typeof id === 'string' && id.length > 0))];
+  if (unique.length === 0) return new Map();
+  const revisionId = spatialWorldPin.world_revision_id;
+  const result = await worldBaseReader.read(
+    `WITH RECURSIVE chain AS (
+       SELECT id, parent_category_id
+         FROM world_base.universal_categories
+        WHERE world_revision_id = $1 AND facet = 'object_type' AND id = ANY($2::text[])
+       UNION
+       SELECT parent.id, parent.parent_category_id
+         FROM world_base.universal_categories parent
+         JOIN chain child ON child.parent_category_id = parent.id
+        WHERE parent.world_revision_id = $1 AND parent.facet = 'object_type'
+     )
+     SELECT id, parent_category_id FROM chain`,
+    [revisionId, unique],
+  );
+  const parentById = new Map();
+  for (const row of rowsFrom(result)) {
+    if (row.parent_category_id) parentById.set(row.id, row.parent_category_id);
+  }
+  return parentById;
+}

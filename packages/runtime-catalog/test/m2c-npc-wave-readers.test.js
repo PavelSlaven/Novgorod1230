@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  loadCategoryParentMap,
   loadPlacePopulationComposition,
+  loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules,
   RuntimeCatalogError,
 } from '../src/index.js';
@@ -54,6 +56,27 @@ function gateReader() {
           scheduled_absences: [{ subject_ref: 'nov_occ_ferryman', seasons: ['winter'] }],
           authoring_payload: { slot_relationships: [] },
         }] };
+      }
+      if (sql.includes('presence_rules')) {
+        return { rows: [{
+          rule_id: 'pr_a',
+          rule_version: 1,
+          world_revision_id: spatialWorldPin.world_revision_id,
+          scope_kind: 'place_family',
+          scope_ref: 'pf_x',
+          subject_kind: 'category',
+          subject_ref: 'cat_a',
+          presence_probability_ppm: 1000,
+          count_limit: 1,
+          allowed_seasons: [],
+          refresh_class: 'none',
+          status: 'approved',
+          variants: [],
+          authoring_payload: {},
+        }] };
+      }
+      if (sql.includes('universal_categories')) {
+        return { rows: [{ id: 'cat_a', parent_category_id: 'cat_root' }] };
       }
       return { rows: [] };
     },
@@ -122,4 +145,27 @@ test('loadPlacePopulationComposition returns structured composition or null', as
   });
   assert.deepEqual(composition.population_groups, [{ group_id: 'g1' }]);
   assert.equal(composition.scheduled_absences[0].seasons[0], 'winter');
+});
+
+test('loadPresenceRulesForPlaceFamilies returns frozen rows after gate', async () => {
+  const rows = await loadPresenceRulesForPlaceFamilies({
+    worldBaseReader: gateReader(),
+    spatialWorldPin,
+    worldPin,
+    runtimeCatalogPin,
+    placeFamilyIds: ['pf_x'],
+  });
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].rule_id, 'pr_a');
+});
+
+test('loadCategoryParentMap returns ancestor links for object_type facet', async () => {
+  const parentById = await loadCategoryParentMap({
+    worldBaseReader: gateReader(),
+    spatialWorldPin,
+    worldPin,
+    runtimeCatalogPin,
+    categoryIds: ['cat_a'],
+  });
+  assert.equal(parentById.get('cat_a'), 'cat_root');
 });

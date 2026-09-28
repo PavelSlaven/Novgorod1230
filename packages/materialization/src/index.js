@@ -44,6 +44,12 @@ import {
   validateOrdinaryBackgroundGroup,
   validateSupportingBasisAdmission
 } from './ordinary-materialization-foundation.js';
+import {
+  applyPresenceRulesFirstArrival,
+  derivePresenceRuleSeedContext,
+  mergePlaceFamilyPresenceRules,
+  presenceRuleSubjectKey,
+} from './presence-rules-first-arrival.js';
 import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
 import { compileGeneratedNpcBindings } from './generated-npc-bindings.js';
@@ -87,7 +93,11 @@ export {
   validateBoundedDecisionResult, validateProceduralSceneAuthoringCandidate,
   validateSupportingBasisAdmission, assertAndNormalizeOrdinaryAggregate,
   applyOrdinaryAggregateTransition, computeOrdinaryIdentityBudget,
-  validateOrdinaryBackgroundGroup
+  validateOrdinaryBackgroundGroup,
+  applyPresenceRulesFirstArrival,
+  derivePresenceRuleSeedContext,
+  mergePlaceFamilyPresenceRules,
+  presenceRuleSubjectKey
 };
 
 function materializeWorldInstances(input) {

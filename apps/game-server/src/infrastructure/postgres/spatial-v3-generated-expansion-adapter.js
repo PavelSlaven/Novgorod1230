@@ -212,8 +212,11 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
             departure_position_slot_key: departure[0].required_position_slot_key } });
         if (!prepared.ok) return prepared;
         const proposal = prepared.proposal;
-        if (selected && typeof prepareFirstEntry !== 'function') return reject('first_entry_owner_required');
-        const firstEntry = selected
+        const createdCanonicalSite = !selected && terminal_writes.some((row) =>
+          row.target_table === 'party_g5_sites');
+        const needsFirstEntry = Boolean(selected) || createdCanonicalSite;
+        if (needsFirstEntry && typeof prepareFirstEntry !== 'function') return reject('first_entry_owner_required');
+        const firstEntry = needsFirstEntry
           ? await prepareFirstEntry({ transaction, request, closure, snapshot, selection,
             proposal, change_set_id, dependency_pins })
           : { ok: true, approved_write_sets: [] };

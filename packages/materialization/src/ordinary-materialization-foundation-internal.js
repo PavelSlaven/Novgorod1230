@@ -58,7 +58,7 @@ function normalizePresenceRuleTransition(value) {
   if (!SUBJECT_KINDS.has(value.subject_kind)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'subject_kind is outside closed vocabulary.', { subject_kind: value.subject_kind });
   id(value.subject_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'subject_ref');
   if (value.subcategory_ref !== null) id(value.subcategory_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'subcategory_ref');
-  positive(value.count, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'count');
+  nonnegative(value.count, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'count');
   assertRuleRef(value.rule_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'rule_ref');
   if (!DISCOVERY_MODES.has(value.discovery_mode)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'discovery_mode is outside closed vocabulary.', { discovery_mode: value.discovery_mode });
   id(value.scope_instance_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'scope_instance_ref');
@@ -135,7 +135,7 @@ function validatePresenceRecord(record) {
     if (!SUBJECT_KINDS.has(record.subject_kind)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule subject_kind is invalid.');
     id(record.subject_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.subject_ref');
     if (record.subcategory_ref !== null) id(record.subcategory_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.subcategory_ref');
-    positive(record.count, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.count');
+    nonnegative(record.count, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.count');
     assertRuleRef(record.rule_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.rule_ref');
     if (!DISCOVERY_MODES.has(record.discovery_mode)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule discovery_mode is invalid.');
     id(record.scope_instance_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.scope_instance_ref');

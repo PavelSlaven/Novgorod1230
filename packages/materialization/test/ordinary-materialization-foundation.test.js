@@ -280,7 +280,8 @@ test('resolve_presence_rule rejects invalid subject/count/refs/discovery/period 
   };
   const bad = (extra) => transition('resolve_presence_rule', 'bad', { ...base, ...extra });
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ subject_kind: 'npc' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
-  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ count: 0 }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  const zeroCount = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ count: 0 }) });
+  assert.equal(zeroCount.presence_resolutions.at(-1).count, 0);
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ count: -1 }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ scope_instance_ref: '' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ subject_ref: '' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');

@@ -12,7 +12,9 @@ import {
   mapNpcRelationshipRule,
   mapSpeechAddressForm,
   parseCsv,
+  parseRequiredNonNegInt,
   parseSlotWeight,
+  parseTextArray,
   parseVariants,
 } from '../../scripts/generate-m2c-npc-wave-datasets.mjs';
 
@@ -105,6 +107,16 @@ test('mapNpcRelationshipRule and mapSpeechAddressForm confidence C6', () => {
 
 test('parseVariants empty array', () => {
   assert.deepEqual(parseVariants('[]'), []);
+});
+
+test('parseTextArray throws on malformed JSON', () => {
+  assert.throws(() => parseTextArray('[not-json'), /invalid text array JSON/u);
+});
+
+test('parseRequiredNonNegInt throws on empty or negative values', () => {
+  assert.throws(() => parseRequiredNonNegInt('', 'probability_ppm'), /missing required integer/u);
+  assert.throws(() => parseRequiredNonNegInt('-1', 'count_limit'), /invalid required integer/u);
+  assert.equal(parseRequiredNonNegInt('0', 'count_limit'), 0);
 });
 
 test('parseVariants fail-closed on malformed CSV JSON', () => {

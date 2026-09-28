@@ -1,0 +1,24 @@
+{
+  "schema_version": "rus.m2c_npc_wave_approval.v1",
+  "verdict": "approve_with_limits",
+  "source_commit": "4e958d9cffc3980cc5667b567fc5a3b0a2f64561",
+  "checked_by": "executor-draft-pending-reviewer",
+  "checked_at": "2026-09-28T00:00:00Z",
+  "source_paths": [
+    "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv",
+    "data/world-catalogs/novgorod/game-base-v1/places-binding/places/spatial_node_place_family_bindings.csv",
+    "data/world-catalogs/novgorod/game-base-v1/presence/presence_rules.csv",
+    "data/world-catalogs/novgorod/game-base-v1/npc/npc_relationship_materialization_rules.csv",
+    "data/world-catalogs/novgorod/game-base-v1/npc/speech_address_forms.csv",
+    "data/world-catalogs/novgorod/game-base-v1/npc/household_composition_profiles.csv",
+    "data/world-catalogs/novgorod/game-base-v1/npc/slot_instance_variants.csv",
+    "data/world-catalogs/novgorod/game-base-v1/presence/water_body_presence_facets.csv",
+    "data/world-catalogs/novgorod/game-base-v1/presence/fauna_phase_activity_rules.csv"
+  ],
+  "references": {
+    "game_base_verification": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+    "game_base_status": "data/world-catalogs/novgorod/game-base-v1/places-binding/STATUS.md",
+    "issue": "https://github.com/PavelSlaven/Novgorod1230/issues/158"
+  },
+  "limits_note": "Draft for WR §21.1; final pin and reviewer confirmation pending NOTE-pin."
+}

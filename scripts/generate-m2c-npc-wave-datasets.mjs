@@ -96,14 +96,24 @@ export function parseTextArray(raw) {
   const t = String(raw ?? '').trim();
   if (!t || t === 'all') return t === 'all' ? ['all'] : [];
   if (t.startsWith('[')) {
+    let parsed;
     try {
-      const parsed = JSON.parse(t);
-      return Array.isArray(parsed) ? parsed.map(String) : [];
+      parsed = JSON.parse(t);
     } catch {
-      return [];
+      throw new Error(`invalid text array JSON: ${t.slice(0, 80)}`);
     }
+    if (!Array.isArray(parsed)) throw new Error(`invalid text array: expected JSON array, got ${typeof parsed}`);
+    return parsed.map(String);
   }
   return t.split(/[|;]/u).map((s) => s.trim()).filter(Boolean);
+}
+
+export function parseRequiredNonNegInt(raw, field) {
+  const t = String(raw ?? '').trim();
+  if (!t) throw new Error(`missing required integer: ${field}`);
+  const n = Number(t);
+  if (!Number.isFinite(n) || n < 0) throw new Error(`invalid required integer: ${field}`);
+  return n;
 }
 
 export function parseVariants(raw) {
@@ -230,8 +240,8 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
     category_id: row.subject_kind === 'category' ? (row.category_ref || row.subject_ref) : null,
     item_ref: blank(row.item_ref),
     variants,
-    presence_probability_ppm: intOrZero(row.probability_ppm),
-    count_limit: intOrZero(row.count_limit),
+    presence_probability_ppm: parseRequiredNonNegInt(row.probability_ppm, 'probability_ppm'),
+    count_limit: parseRequiredNonNegInt(row.count_limit, 'count_limit'),
     allowed_seasons: parseTextArray(row.allowed_seasons),
     allowed_times: parseTextArray(row.allowed_times),
     guards: parseTextArray(row.guards),

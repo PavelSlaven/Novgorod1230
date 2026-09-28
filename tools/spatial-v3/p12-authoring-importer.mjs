@@ -47,10 +47,11 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
     const tableSchema = tableSchemas.get(dataset.table);
     if (!tableSchema) { errors.push(issue('UNKNOWN_OR_PARTY_TABLE', dataset.table)); continue; }
     const rowKeys = new Set();
+    const primaryKey = resolveTablePrimaryKey(tableSchema);
     for (const row of rows) {
       const subject = row?.id ?? dataset.table;
       validateStrictRow(row, tableSchema, dataset.table, errors);
-      const key = tableSchema.columns.filter((column) => column.primary_key).map((column) => row?.[column.name]).join('|');
+      const key = primaryKey.map((column) => row?.[column.name]).join('|');
       if (key && rowKeys.has(key)) errors.push(issue('DUPLICATE_RECORD_ID', `${dataset.table}:${key}`)); else rowKeys.add(key);
       if (row?.delete === true) errors.push(issue('DELETE_POLICY_FORBIDDEN', `${dataset.table}:${subject}`));
     }
@@ -80,12 +81,7 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
   const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = wrapTransaction ? ['BEGIN;'] : [];
   for (const dataset of manifest.datasets) {
     const rows = await json(resolve(dirname(manifestFile), dataset.file)); const schema = tables.get(dataset.table);
-    let primaryKey = schema.columns.filter((column) => column.primary_key);
-    if (!primaryKey.length) {
-      const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
-      const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
-      primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
-    }
+    const primaryKey = resolveTablePrimaryKey(schema);
     if (!primaryKey.length) throw new Error(`P12 import requires a primary key: ${dataset.table}`);
     if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid temporary table prefix: ${temporaryTablePrefix}`);
     const candidateTable = `${temporaryTablePrefix}_${dataset.table}`;
@@ -118,6 +114,69 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
   if (wrapTransaction) sql.push(rollback ? 'ROLLBACK;' : 'COMMIT;');
   else if (rollback) throw new Error('P12 rollback requires a transaction wrapper');
   return `${sql.join('\n')}\n`;
+}
+
+/** Post-import readback in the same transaction; not part of buildTransactionalImportSql output. */
+export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, temporaryTablePrefix = 'p12_readback_expected' } = {}) {
+  const projectRoot = resolve(root);
+  const manifestFile = resolve(projectRoot, manifestPath);
+  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
+  if (result.errors.length) throw new Error(`P12 readback refuses invalid bundle: ${result.errors.map((error) => error.code).join(', ')}`);
+  const manifest = await json(manifestFile);
+  const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
+  const tables = new Map(ddl.schema.tables.map((table) => [table.name, table]));
+  if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid readback temp prefix: ${temporaryTablePrefix}`);
+  const sql = [];
+  for (const dataset of manifest.datasets) {
+    const rows = await json(resolve(dirname(manifestFile), dataset.file));
+    const schema = tables.get(dataset.table);
+    const primaryKey = resolveTablePrimaryKey(schema);
+    if (!primaryKey.length) throw new Error(`P12 readback requires a primary key: ${dataset.table}`);
+    const expectedTable = `${temporaryTablePrefix}_${dataset.table}`;
+    const serverManaged = schema.columns.filter((column) => ['created_at', 'updated_at'].includes(column.name)).map((column) => column.name);
+    const canonicalJson = (alias) => serverManaged.length
+      ? `(to_jsonb(${alias}) - ARRAY[${serverManaged.map((column) => `'${column}'`).join(', ')}]::text[])`
+      : `to_jsonb(${alias})`;
+    const pkMatch = primaryKey.map((column) => `w.${column.name} IS NOT DISTINCT FROM e.${column.name}`).join(' AND ');
+    sql.push(`CREATE TEMP TABLE ${expectedTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
+    for (const row of rows) {
+      const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type)]));
+      sql.push(`INSERT INTO ${expectedTable} (${columns.map((column) => column.name).join(', ')}) VALUES (${columns.map((column) => values.get(column.name)).join(', ')});`);
+    }
+    sql.push(
+      `DO $p12_readback$ BEGIN`,
+      `  IF (SELECT count(*) FROM ${expectedTable}) <> ${rows.length} THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}:expected_rows';`,
+      `  END IF;`,
+      `  IF (SELECT count(*) FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) <> ${rows.length} THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}:count';`,
+      `  END IF;`,
+      `  IF (SELECT coalesce(jsonb_agg(${canonicalJson('e')} ORDER BY ${primaryKey.map((column) => `e.${column.name}`).join(', ')}), '[]'::jsonb) FROM ${expectedTable} e)`,
+      `     IS DISTINCT FROM`,
+      `     (SELECT coalesce(jsonb_agg(${canonicalJson('w')} ORDER BY ${primaryKey.map((column) => `w.${column.name}`).join(', ')}), '[]'::jsonb)`,
+      `      FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}';`,
+      `  END IF;`,
+      `END $p12_readback$;`,
+      `SELECT '${dataset.table}' AS readback_table, ${rows.length}::int AS readback_rows;`
+    );
+  }
+  return `${sql.join('\n')}\n`;
+}
+
+export function resolveTablePrimaryKey(schema) {
+  let primaryKey = schema.columns.filter((column) => column.primary_key);
+  if (!primaryKey.length) {
+    const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
+    const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
+    primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
+  }
+  return primaryKey;
+}
+
+export function sqlLiteral(value, type = '') {
+  return literal(value, type);
 }
 
 function validateReferences(manifest, datasets, errors) {
@@ -310,9 +369,19 @@ function literal(value, type = '') {
   if (value === null) return 'NULL';
   if (typeof value === 'number') return String(value);
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+  const normalizedType = String(type).trim().toLowerCase();
+  if (Array.isArray(value) && normalizedType.endsWith('[]')) {
+    const pgType = normalizedType.replace(/\s+/g, '');
+    if (!value.length) return `ARRAY[]::${pgType}`;
+    const elements = value.map((item) => {
+      const serialized = String(item).replaceAll("'", "''");
+      return `'${serialized}'`;
+    });
+    return `ARRAY[${elements.join(', ')}]::${pgType}`;
+  }
   const serialized = typeof value === 'object' ? JSON.stringify(value) : String(value);
   const quoted = `'${serialized.replaceAll("'", "''")}'`;
-  return /\bJSONB?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
+  return /\bjsonb?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
 }
 async function json(file) { return JSON.parse(await readFile(file, 'utf8')); }
 

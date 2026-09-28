@@ -57,6 +57,8 @@ const approvedTarget = async () => ({
   ok: true, materialization_authorized: false, p28_activation: 'not_authorized', errors: [],
 });
 
+let presencePgFixture = { nodeId: 'presence_pg_fixture_node', pfId: 'pf_presence_pg_fixture' };
+
 async function prepareApprovedWaveCopy(baseDir) {
   await cp(join(process.cwd(), waveRootRel), baseDir, { recursive: true });
   const manifestFile = join(baseDir, 'manifest.json');
@@ -137,23 +139,52 @@ async function insertCategory(pool, { id, parentId = null }) {
 }
 
 async function insertPresenceFixture(pool) {
-  const nodeId = 'presence_pg_fixture_node';
-  const pfId = 'pf_presence_pg_fixture';
-  await pool.query(`INSERT INTO world_base.spatial_v3_nodes(
-      id,version,world_revision_id,spatial_level,status,provenance_ref,canonical_digest)
-    VALUES ($1,1,$2,'G4','approved','p12-source',$3)
-    ON CONFLICT DO NOTHING`,
-  [nodeId, REV, 'b'.repeat(64)]);
-  await pool.query(`INSERT INTO world_base.spatial_v3_node_parents(
-      child_id,child_version,parent_id,parent_version,world_revision_id)
-    VALUES ($1,1,'region_novgorod_land',1,$2)
-    ON CONFLICT DO NOTHING`, [nodeId, REV]);
-  await pool.query(`INSERT INTO world_base.place_families(id,version,world_revision_id,status,confidence,payload)
-    VALUES ($1,1,$2,'approved','high','{}'::jsonb) ON CONFLICT DO NOTHING`, [pfId, REV]);
-  await pool.query(`INSERT INTO world_base.spatial_node_place_family_bindings(
-      world_revision_id,node_id,node_version,place_family_id,place_family_version,binding_role,status,confidence)
-    VALUES ($1,$2,1,$3,1,'primary','approved','high') ON CONFLICT DO NOTHING`,
-  [REV, nodeId, pfId]);
+  const imported = await pool.query(
+    `SELECT n.id AS node_id, b.place_family_id
+       FROM world_base.spatial_v3_nodes n
+       JOIN world_base.spatial_node_place_family_bindings b
+         ON b.node_id = n.id AND b.node_version = n.version
+        AND b.world_revision_id = n.world_revision_id
+        AND b.binding_role = 'primary' AND b.status = 'approved'
+      WHERE n.world_revision_id = $1 AND n.spatial_level = 'G4' AND n.status = 'approved'
+      LIMIT 1`,
+    [REV],
+  );
+  const nodeId = imported.rows[0]?.node_id ?? 'presence_pg_fixture_node';
+  const pfId = imported.rows[0]?.place_family_id ?? 'pf_presence_pg_fixture';
+  if (!imported.rows[0]) {
+    await pool.query(`INSERT INTO world_base.source_records(id,status)
+      VALUES ('p12-source','approved') ON CONFLICT DO NOTHING`);
+    await pool.query(`INSERT INTO world_base.universal_categories(
+        id,domain,stable_code,facet,preferred_label,definition,
+        scope_note,inclusion_rules,exclusion_rules,title,status)
+      VALUES ('cat_pg_g4_fixture','spatial','cat_pg_g4_fixture','class','G4','d','n','i','e','t','approved')
+      ON CONFLICT (id) DO NOTHING`);
+    await pool.query(`INSERT INTO world_base.spatial_v3_authoring_versions(
+        entity_kind,entity_id,version,world_revision_id,canonical_digest,status,provenance_ref)
+      VALUES ('spatial_node',$1,1,$2,$3,'approved','p12-source')
+      ON CONFLICT DO NOTHING`, [nodeId, REV, 'b'.repeat(64)]);
+    await pool.query(`INSERT INTO world_base.spatial_v3_nodes(
+        id,version,world_revision_id,spatial_level,primary_class_id,evidence_status,
+        traversal_model,status,provenance_ref,canonical_digest)
+      VALUES ($1,1,$2,'G4','cat_pg_g4_fixture','reviewed','through_area','approved','p12-source',$3)
+      ON CONFLICT DO NOTHING`,
+    [nodeId, REV, 'b'.repeat(64)]);
+    await pool.query(`INSERT INTO world_base.spatial_v3_node_classes(
+        node_id,node_version,category_id,class_ordinal)
+      VALUES ($1,1,'cat_pg_g4_fixture',0)
+      ON CONFLICT DO NOTHING`, [nodeId]);
+    await pool.query(`INSERT INTO world_base.spatial_v3_node_parents(
+        child_id,child_version,parent_id,parent_version,world_revision_id)
+      VALUES ($1,1,'region_novgorod_land',1,$2)
+      ON CONFLICT DO NOTHING`, [nodeId, REV]);
+    await pool.query(`INSERT INTO world_base.place_families(id,version,world_revision_id,status,confidence,payload)
+      VALUES ($1,1,$2,'approved','high','{}'::jsonb) ON CONFLICT DO NOTHING`, [pfId, REV]);
+    await pool.query(`INSERT INTO world_base.spatial_node_place_family_bindings(
+        world_revision_id,node_id,node_version,place_family_id,place_family_version,binding_role,status,confidence)
+      VALUES ($1,$2,1,$3,1,'primary','approved','high') ON CONFLICT DO NOTHING`,
+    [REV, nodeId, pfId]);
+  }
   await insertCategory(pool, { id: 'cat_pg_parent_fixture' });
   await insertCategory(pool, { id: 'cat_pg_child_fixture', parentId: 'cat_pg_parent_fixture' });
   await insertCategory(pool, { id: 'cat_pg_unseen_xyz_fixture' });
@@ -176,13 +207,14 @@ async function insertPresenceFixture(pool) {
       ON CONFLICT (rule_id,rule_version) DO NOTHING`,
     [ruleId, REV, pfId, subjectKind, subjectRef, ppm, limit, seasons, refresh]);
   }
+  presencePgFixture = { nodeId, pfId };
 }
 
 async function loadFixtureRules(pool, season = 'summer') {
   const reader = gatedWorldReader(pool);
   const primary = await loadPresenceRulesForPlaceFamilies({
     worldBaseReader: reader, spatialWorldPin, worldPin, runtimeCatalogPin,
-    placeFamilyIds: ['pf_presence_pg_fixture'],
+    placeFamilyIds: [presencePgFixture.pfId],
   });
   return mergePlaceFamilyPresenceRules({
     primaryRules: primary, secondaryRules: [], season, regionId: 'region_novgorod_land',
@@ -228,10 +260,10 @@ async function provisionPartyStart(pool, partyId) {
   const posId = `pos:${partyId}`;
   await pool.query(`INSERT INTO party_runtime.party_g5_sites
     (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES ($1,$2,'canonical','presence_pg_fixture_node',
-      '{"entity_id":"presence_pg_fixture_node","authoring_version":"1"}'::jsonb,
+    VALUES ($1,$2,'canonical',$4,
+      jsonb_build_object('entity_id', $4::text, 'authoring_version', '1'),
       'active',1,$3,$3) ON CONFLICT DO NOTHING`,
-  [siteId, partyId, `cs:${partyId}`]);
+  [siteId, partyId, `cs:${partyId}`, presencePgFixture.nodeId]);
   await pool.query(`INSERT INTO party_runtime.party_scene_baselines
     (id,party_id,host_kind,host_id,source_kind,scene_template_ref,materialization_trace_id,
      materializer_version,catalog_digest,status,state_version,created_change_set_id,updated_change_set_id)
@@ -333,9 +365,10 @@ test('PostgreSQL presence first arrival: wave import, activation, idempotent par
     regionId: 'region_novgorod_land',
     season: 'summer',
     periodNumber: 1230,
-    spatialNodeId: 'presence_pg_fixture_node', spatialNodeVersion: 1,
+    spatialNodeId: presencePgFixture.nodeId, spatialNodeVersion: 1,
     partyId: 'party-presence-a', siteId: 'g5:party-presence-a',
   });
+  assert.ok(context?.rules?.length, 'seasonal fixture rules must resolve for pinned G4 node');
   let seasonal = seedAggregate('g6-seasonal');
   seasonal = applyPresenceRulesFirstArrival({ aggregate: seasonal, ...context, periodNumber: 2 });
   const seasonalAgain = applyPresenceRulesFirstArrival({ aggregate: seasonal, ...context, periodNumber: 2 });

@@ -1,4 +1,4 @@
-import { deepFreeze, rowsFrom } from './shared.js';
+import { deepFreeze, fail, rowsFrom } from './shared.js';
 import {
   assertApprovedWorldCatalogActivation,
   assertSpatialV3WorldRevisionPin,

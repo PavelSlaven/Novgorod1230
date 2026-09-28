@@ -4,7 +4,8 @@ import { serverError } from '../errors.js';
 import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
 import { localEdgeOccupiedLabel } from './local-edge-occupancy.js';
-import { NEUTRAL_APPROACH_PHRASE } from './spatial-v3-pass-target-disclosure.js';
+import { passagePhrases } from
+  '../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 
 export async function createTraceExpansionCommands({ state, requestId,
   inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
@@ -44,12 +45,11 @@ export async function createTraceExpansionCommands({ state, requestId,
     && isDeepStrictEqual(current.position, sourcePosition);
   const approachCommands = approaches.length === 0
     || typeof spatialLocalSceneRuntime?.prepareLocalMovement !== 'function' ? [] : approaches.map(
-    ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel,
-      approach_phrase: phrase = NEUTRAL_APPROACH_PHRASE }) => {
+    ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel }) => {
       const { destination_status: status } = localByEdge.get(edgeId);
-      // The way-of-going phrase (water / land / neutral) is approved data resolved by the
-      // exit disclosure owner - never composed from the exit kind in code.
-      const approach = `${exitLabel} — ${phrase}`;
+      // One neutral approved phrase for every exit: the target class is already in the exit
+      // label, the way of going (foot, boat) is not the label's business.
+      const approach = `${exitLabel} — ${passagePhrases.approach}`;
       const label = status === 'occupied' ? localEdgeOccupiedLabel(approach) : approach;
       // route_ref (the exit) keeps this structurally distinct from the plain local-scene
       // operation for the same edge: bindings match structurally, so without it both commands

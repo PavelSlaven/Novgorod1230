@@ -14,6 +14,6 @@ test('m2c-pass-target-labels candidate.json is exactly the content the attestati
   const attestation = JSON.parse(readFileSync(new URL('approval-attestation.json', dir)));
   assert.equal(attestation.decision, 'APPROVE_DATA_ONLY');
   assert.equal(attestation.candidate_ref, `${candidate.candidate_id}@${candidate.version}`);
-  assert.equal(attestation.candidate_sha256, createHash('sha256').update(bytes).digest('hex'),
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), attestation.candidate_sha256,
     'candidate.json changed after approval: run the data approval pass and update the attestation');
 });

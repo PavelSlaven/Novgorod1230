@@ -14,13 +14,6 @@ export function passTargetRowForSlot(slotRef) {
   return rows.length === 1 ? rows[0] : null;
 }
 
-/** Approved way-of-going phrase for a slot row; a slot without a common visible class
- * (or an unknown class) gets the approved neutral form. */
-export function approachPhraseForRow(row) {
-  const kind = passagePhrases.approach_kind_by_visible_class[row?.common_visible_class];
-  return passagePhrases.approach[kind] ?? passagePhrases.approach.neutral;
-}
-
 /** Same description text at one disclosed position is ambiguous; disambiguate with the
  * already-approved editorial_choice_ordinal from m2c-exit-labels, never a new number. */
 export function withPassTargetDisambiguation(rows) {

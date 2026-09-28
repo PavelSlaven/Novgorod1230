@@ -243,28 +243,20 @@ function validate(candidate, input) {
   return errors;
 }
 
-/** `passage_phrases`: the wording the runtime used to compose in code. Short lowercase
- * Russian phrases; every visible class of a described slot maps to a way of going. */
+/** `passage_phrases`: the wording the runtime used to compose in code - short lowercase
+ * Russian phrases. The way of going (on foot, by boat) is never worded here. */
 function checkPassagePhrases(candidate) {
   const phrases = candidate.passage_phrases;
+  if (!phrases || typeof phrases !== 'object') return ['отсутствует passage_phrases'];
   const errors = [];
-  const phrase = (value, id) => {
+  for (const [id, value] of [['local_edge_occupied', phrases.local_edge_occupied],
+    ['approach', phrases.approach]]) {
     if (typeof value !== 'string' || !/^[а-яё]+(?: [а-яё]+){0,3}$/.test(value)) {
       errors.push(`passage_phrases.${id}: 1–4 слова в нижнем регистре`);
     }
-  };
-  if (!phrases || typeof phrases !== 'object') return ['отсутствует passage_phrases'];
-  phrase(phrases.local_edge_occupied, 'local_edge_occupied');
-  for (const kind of ['water', 'land', 'neutral']) phrase(phrases.approach?.[kind], `approach.${kind}`);
-  const classes = new Set(candidate.labels.filter((row) => row.expansion_slot_ref && row.display_label)
-    .map((row) => row.common_visible_class));
-  const mapping = phrases.approach_kind_by_visible_class ?? {};
-  for (const cls of classes) if (!['water', 'land'].includes(mapping[cls])) {
-    errors.push(`passage_phrases: класс ${cls} без вида пути water/land`);
   }
-  for (const cls of Object.keys(mapping)) if (!classes.has(cls)) {
-    errors.push(`passage_phrases: лишний класс ${cls}`);
-  }
+  const extra = Object.keys(phrases).filter((key) => !['policy', 'local_edge_occupied', 'approach'].includes(key));
+  if (extra.length) errors.push(`passage_phrases: лишние поля ${extra.join(', ')}`);
   return errors;
 }
 
@@ -294,12 +286,12 @@ function selfTest(input) {
   probe('непокрытый PF', (candidate) => {
     candidate.labels.splice(candidate.labels.findIndex((row) => row.place_family_id), 1);
   }, 'не покрыт PF стартовой территории');
-  probe('класс слота без вида пути', (candidate) => {
-    delete candidate.passage_phrases.approach_kind_by_visible_class.forest;
-  }, 'без вида пути');
+  probe('деление подхода по виду пути', (candidate) => {
+    candidate.passage_phrases.approach_kind_by_visible_class = { forest: 'land' };
+  }, 'лишние поля');
   probe('фраза подхода с цифрой', (candidate) => {
-    candidate.passage_phrases.approach.land = 'подход 2';
-  }, 'passage_phrases.approach.land');
+    candidate.passage_phrases.approach = 'подход 2';
+  }, 'passage_phrases.approach');
   probe('лишний G5 source gap для узла с PF', (candidate, fixture) => {
     const bound = fixture.nodeBindings.find((row) => row.pf_id);
     candidate.source_scope_gaps.push({ node_ref: bound.node_ref, gap_reason: 'лишний',

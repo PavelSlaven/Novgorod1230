@@ -104,8 +104,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
         || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
       return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
-        display_label: disclosure.display_label,
-        ...(typeof disclosure.approach_phrase === 'string' ? { approach_phrase: disclosure.approach_phrase } : {}) }];
+        display_label: disclosure.display_label }];
     });
   }
   return Object.freeze({

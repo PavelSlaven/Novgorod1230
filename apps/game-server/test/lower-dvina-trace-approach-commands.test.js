@@ -31,19 +31,18 @@ test('the approach asks the expansion owner only about first steps the local-sce
     assert.match(approach.semantic_binding.operation_dto.description, /\(проход занят\)$/);
   });
 
-test('the approach wording is the approved phrase the disclosure owner supplied, water or land (F4)',
+test('the approach wording is one neutral approved phrase for every exit, never a way of going (F4)',
   async () => {
     const localScene = { listLocalOptions: async () => [localOption('edge:1')],
       prepareLocalMovement: async () => null };
-    const labelWith = async (approach_phrase, display_label) => (await createTraceExpansionCommands({
+    const labelWith = async (display_label) => (await createTraceExpansionCommands({
       state, requestId: 'r', inputDigest: 'd',
       spatialExpansionRuntime: { listExpansionOptions: async () => [],
         listApproachOptions: async () => [{ directional_exit_id: 'exit:x', edge_id: 'edge:1',
-          display_label, approach_phrase }] },
+          display_label }] },
       spatialLocalSceneRuntime: localScene }))[0].label;
-    assert.equal(await labelWith('подход к переправе', 'к руслу'), 'к руслу — подход к переправе');
-    assert.equal(await labelWith('подход по суше', 'в лес'), 'в лес — подход по суше');
-    assert.ok(!(await labelWith('подход по суше', 'в лес')).includes('переправ'));
+    assert.equal(await labelWith('к руслу'), 'к руслу — подход');
+    assert.equal(await labelWith('в лес'), 'в лес — подход');
   });
 
 test('the approach refuses before executing when the movement owner finds its first step full (F6)',

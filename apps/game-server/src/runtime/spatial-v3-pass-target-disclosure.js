@@ -1,4 +1,4 @@
-import { approachPhraseForRow, passagePhrases, passTargetRowForSlot } from
+import { passTargetRowForSlot } from
   '../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { serverError } from '../errors.js';
 
@@ -15,7 +15,7 @@ export function slotByExitOf(slots = []) {
   return byExit;
 }
 
-/** The approved pass-target text and way-of-going phrase of one revealed exit. An exit that
+/** The approved pass-target text of one revealed exit. An exit that
  * has no expansion slot has neither; a slot the approved catalog does not know is a typed
  * gap, never a silent fallback to the generic exit label. */
 export function passTargetDisclosureForExit(slotByExit, exitId) {
@@ -27,8 +27,5 @@ export function passTargetDisclosureForExit(slotByExit, exitId) {
       'Complete current player-visible facts are required.',
       { status: 409, details: { reason: 'approved_pass_target_label_required' } });
   }
-  return { pass_target_description: row.display_label ?? null,
-    approach_phrase: approachPhraseForRow(row) };
+  return { pass_target_description: row.display_label ?? null };
 }
-
-export const NEUTRAL_APPROACH_PHRASE = passagePhrases.approach.neutral;

@@ -1091,3 +1091,14 @@
 
 - Одна связь `pf_peasant_homestead.householder ↔ pf_peasant_homestead.mistress`, `spouse`, редакционное C с причиной и тремя ссылками. Брак не выводится из роли: пара ролей вне связанного слота остаётся без супружеских отношений.
 - `slots/slot_instance_variants.json`: у `siv_002`–`siv_007` один текст `no_source` о возрасте экземпляра.
+
+### places/region_type_pf_manifest.json — матрица типов мест — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера и полный `validate.mjs --start-territory … --self-test` на `aeb8e72a` — 0 FAIL.
+
+- `inputs/m2c-nature-coverage-entries.json`: 128 записей побайтно равны `entries` из `m2c-nature-coverage.json` ветки runtime @ `7cc0d341`. Плюс две записи стартовой территории (`wb_estuary`, `wb_nearshore_sea`), которых нет в списке региона.
+- Манифест: 130 уникальных `(kind, template_id)`. У каждого `covered` набор `pf_refs` равен пересчёту по `*_template_refs` в `place_families.csv`. У пробелов PF нет. 21 пробел — вне стартовой территории, у каждого план закрытия по A.8.
+- `place_families.csv`: изменены ровно 5 строк, 15 ячеек.
+  - `lt_wooded_floodplain → pf_mixed_woodland` (C, основание — вторичная привязка узла `zaostrovye_settlement_center`);
+  - `wb_nearshore_sea` → четыре PF, уже привязанные к узлам `outer_exposed_approach` (C).
+- Место погребения Заостровья (1 G4 + 6 G5) остаётся без PF: закрывается C012b.

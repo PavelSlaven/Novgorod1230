@@ -1,0 +1,180 @@
+{
+ "status": "candidate",
+ "rows": [
+  {
+   "family_id": "F01",
+   "species_count": 0,
+   "action_count": 1
+  },
+  {
+   "family_id": "F02",
+   "species_count": 19,
+   "action_count": 1
+  },
+  {
+   "family_id": "F03",
+   "species_count": 15,
+   "action_count": 5
+  },
+  {
+   "family_id": "F04",
+   "species_count": 30,
+   "action_count": 1
+  },
+  {
+   "family_id": "F05",
+   "species_count": 29,
+   "action_count": 1
+  },
+  {
+   "family_id": "F06",
+   "species_count": 1,
+   "action_count": 2
+  },
+  {
+   "family_id": "F07",
+   "species_count": 18,
+   "action_count": 2
+  },
+  {
+   "family_id": "F08",
+   "species_count": 41,
+   "action_count": 3
+  },
+  {
+   "family_id": "F09",
+   "species_count": 97,
+   "action_count": 3
+  },
+  {
+   "family_id": "F10",
+   "species_count": 4,
+   "action_count": 2
+  },
+  {
+   "family_id": "F11",
+   "species_count": 1,
+   "action_count": 2
+  },
+  {
+   "family_id": "F12",
+   "species_count": 1,
+   "action_count": 2
+  },
+  {
+   "family_id": "F13",
+   "species_count": 44,
+   "action_count": 1
+  },
+  {
+   "family_id": "F14",
+   "species_count": 0,
+   "action_count": 2
+  },
+  {
+   "family_id": "F15",
+   "species_count": 0,
+   "action_count": 1
+  },
+  {
+   "family_id": "F16",
+   "species_count": 0,
+   "action_count": 1
+  },
+  {
+   "family_id": "F17",
+   "species_count": 0,
+   "action_count": 3
+  },
+  {
+   "family_id": "F18",
+   "species_count": 37,
+   "action_count": 3
+  },
+  {
+   "family_id": "F19",
+   "species_count": 5,
+   "action_count": 3
+  },
+  {
+   "family_id": "F20",
+   "species_count": 28,
+   "action_count": 1
+  },
+  {
+   "family_id": "F21",
+   "species_count": 17,
+   "action_count": 1
+  },
+  {
+   "family_id": "F22",
+   "species_count": 0,
+   "action_count": 3
+  },
+  {
+   "family_id": "F23",
+   "species_count": 0,
+   "action_count": 1
+  },
+  {
+   "family_id": "F24",
+   "species_count": 0,
+   "action_count": 0
+  },
+  {
+   "family_id": "F25",
+   "species_count": 0,
+   "action_count": 0
+  },
+  {
+   "family_id": "F26",
+   "species_count": 0,
+   "action_count": 4
+  },
+  {
+   "family_id": "F27",
+   "species_count": 0,
+   "action_count": 0
+  },
+  {
+   "family_id": "F28",
+   "species_count": 0,
+   "action_count": 2
+  },
+  {
+   "family_id": "F29",
+   "species_count": 188,
+   "action_count": 5
+  },
+  {
+   "family_id": "F30",
+   "species_count": 16,
+   "action_count": 0
+  },
+  {
+   "family_id": "F31",
+   "species_count": 3,
+   "action_count": 1
+  },
+  {
+   "family_id": "F32",
+   "species_count": 151,
+   "action_count": 0
+  },
+  {
+   "family_id": "F33",
+   "species_count": 0,
+   "action_count": 0
+  },
+  {
+   "family_id": "F34",
+   "species_count": 17,
+   "action_count": 0
+  },
+  {
+   "family_id": "F35",
+   "species_count": 0,
+   "action_count": 0
+  }
+ ]
+}

@@ -491,3 +491,11 @@
 - **Сборка.** Полный `run-all.mjs` без доступа к соседним worktree — exit 0, те же байты всех выходов. Сборка читает только закреплённые снимки `_shared/g4_nature_index.json` и `_shared/main_inputs.json`.
 - **Обновление снимков** — только явным `refresh-inputs.mjs`. Ошибка любого шага `run-all` даёт ненулевой выход, есть `--self-test`.
 - **Ограничение.** Явное обновление снимков по-прежнему требует доступных соседних источников.
+
+### natural_materials_soils — ресурсы, часть A (B3) — approve_with_limits
+
+Проверено: Claude Opus 5.5 (D35, WR §21.1), 2026-09-28, вместе с `resource-catalog` (три круга).
+- natural_materials_soils/natural_materials.csv, natural_materials_soils/material_landscape_presence.csv, natural_materials_soils/g4_ground_and_materials.csv, natural_materials_soils/access_tools.csv, natural_materials_soils/authoring/materials.mjs, natural_materials_soils/scripts/build.mjs, natural_materials_soils/scripts/check.mjs, natural_materials_soils/README.md, natural_materials_soils/sources/book_evidence_m2c_b3.csv, reports/counts.json — approve_with_limits
+- Что вошло: +7 строк класса A без счётчика и бюджета (лапник и жерди, опад, лёд, снег, наживка, трут и растопка, дёрн); material_landscape_presence 258→434, g4_ground_and_materials 360→544; новый снимок книжных источников для fish_season_rules.
+- Проверки: check OK, пересборка байт-в-байт; сезоны и инструменты новых строк по смыслу; finite_source_profiles_ext.json и бюджеты v17 не тронуты.
+- Ограничения: ссылка `resource-catalog-v3` в source_refs указывает на каталог из #171 (в репозитории его нет); полный run-all переписывает weather_climate/water_profiles.csv — так же и на HEAD, вне этой правки.

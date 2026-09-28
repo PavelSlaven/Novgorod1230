@@ -1,5 +1,19 @@
 [
   {
+    "id": "resource_catalog",
+    "name_ru": "Семьи природных и хозяйственных ресурсов",
+    "group": "resource-catalog",
+    "entities_ru": "Закрытые семейства F01–F35, many-to-many привязка существующих видов и природных материалов, действия добычи, временная карта текущих навыков, профили сезонных пятен F07–F09, правила владения и candidate-калибровка наличия.",
+    "key_fields": ["family_id", "class", "unit", "renewal", "category_ref", "species_ref", "action_id", "skill_ref", "place_family_ref", "source_ref", "basis", "status"],
+    "target_tables": ["candidate resource_families", "candidate species_resource_families", "candidate extraction_actions", "candidate patch_profiles", "candidate tenure_defaults"],
+    "consumers": ["@rus/materialization после отдельного cutover", "@rus/items-property для конечных узлов", "@rus/checks-rng для действий добычи"],
+    "existing_sources": ["resource-architecture-v2 и resource-catalog-v3 — утверждённые inputs задачи #171", "видовые и habitat-таблицы game-base-v1 — candidate/approve_with_limits по своим VERIFICATION", "natural_materials_soils и places-binding — candidate"],
+    "gaps_ru": "Нет active binding и runtime cutover; F10/F11/F32/F33 ждут patch-профилей, F27/F30 — процессов разделки и пушнины, нормы C и тяга F35 отложены.",
+    "fill_method": "derive",
+    "priority": "M2c",
+    "acceptance_ru": "Скрипт: ровно 35 семейств; все species/material/action/skill/place refs существуют; каждый исходный вид ровно в одной части bound|unbound; F07–F09 имеют reverse-complete patch profiles; закрытые enum и отрицательные пробы проходят; двойная сборка даёт одинаковые hash-list."
+  },
+  {
     "id": "place_families",
     "name_ru": "Семейства мест и слои",
     "group": "places-binding",

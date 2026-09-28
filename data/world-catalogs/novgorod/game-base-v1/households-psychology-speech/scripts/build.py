@@ -465,11 +465,16 @@ def build_households_kinship(occs, roles):
 # Domain 2: npc_psychology
 # ---------------------------------------------------------------------------
 
-CLOSED_TEMPERAMENT = ["calm", "wary", "hot_tempered", "timid", "assertive", "sociable", "withdrawn"]
-CLOSED_VALUES = ["honour", "piety", "kin_loyalty", "profit", "safety", "custom", "hospitality"]
+PSYCHOLOGY_SCALES_PATH = os.path.join(ROOT, "npc_psychology", "psychology_scales.json")
+
+
+def load_psychology_scales():
+    with open(PSYCHOLOGY_SCALES_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
 
 # Book evidence describes possible concerns and norms, not individual traits
-# or their frequencies. Keep weights empty until a seed scale is authorized.
+# or their frequencies. D29 supplies only an even game baseline.
 PSYCHOLOGY_EVIDENCE = {
     "general": {
         "motives": [],
@@ -513,6 +518,9 @@ def rule_risk_traits_occ(o):
 
 def build_npc_psychology(occs, roles):
     out_dir = os.path.join(ROOT, "npc_psychology")
+    scales = load_psychology_scales()
+    temperament_weights = {item["id"]: scales["default_weight"] for item in scales["traits"]}
+    values_weights = {item["id"]: scales["default_weight"] for item in scales["values"]}
     rows = []
     for o in occs:
         motives, fears, evidence_refs = psychology_context((o.get("occupation_group") or "").strip())
@@ -520,14 +528,14 @@ def build_npc_psychology(occs, roles):
             "ps_id": f"ps_occ_{o['occupation_id']}",
             "role_or_occupation_ref": o["occupation_id"],
             "ref_kind": "occupation",
-            "temperament_weights": {},
-            "values_weights": {},
+            "temperament_weights": temperament_weights,
+            "values_weights": values_weights,
             "motives": motives,
             "fears": fears,
             "risk_traits": rule_risk_traits_occ(o),
             "fears_motives_note": "Sourced general/group concerns are context only, not individual traits; TSV common_goals/common_fears are templates (distinct=1).",
             "initial_mood_rules": "no_source:individual_initial_mood; do not seed",
-            "derivation_rule": "no_source:temperament_and_values_weights; not approved for NPC seeding; WK uncertainty claim is general psychology, not a historical role weight; violence_risk is exposure, not temperament",
+            "derivation_rule": "game_assumption:psychology_scales.json#D29; even baseline; B2 runtime chooses seeded traits and values; violence_risk is exposure, not temperament",
             "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']};" + ";".join(evidence_refs + [PSYCHOLOGY_WK_REF]),
             "confidence": "C",
         })
@@ -537,14 +545,14 @@ def build_npc_psychology(occs, roles):
             "ps_id": f"ps_role_{r['role_id']}",
             "role_or_occupation_ref": r["role_id"],
             "ref_kind": "role",
-            "temperament_weights": {},
-            "values_weights": {},
+            "temperament_weights": temperament_weights,
+            "values_weights": values_weights,
             "motives": motives,
             "fears": fears,
             "risk_traits": {"theft": "unspecified", "violence": "unspecified", "witness": "unspecified"},
             "fears_motives_note": "Sourced general/group concerns are context only, not individual traits; typical_fears/attitude_to_* are TSV templates (distinct=1).",
             "initial_mood_rules": "no_source:individual_initial_mood; do not seed",
-            "derivation_rule": "no_source:temperament_and_values_weights; not approved for NPC seeding; WK uncertainty claim is general psychology, not a historical role weight",
+            "derivation_rule": "game_assumption:psychology_scales.json#D29; even baseline; B2 runtime chooses seeded traits and values",
             "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']};" + ";".join(evidence_refs + [PSYCHOLOGY_WK_REF]),
             "confidence": "C",
         })

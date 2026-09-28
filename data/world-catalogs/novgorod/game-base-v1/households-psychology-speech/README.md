@@ -29,7 +29,7 @@ WK production-v1 `family-social-context.json`) плюс курированный
 | Домен | Файлы | Строк | Приоритет брифа | Статус покрытия |
 |---|---|---|---|---|
 | households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | см. `scripts/build_report.json` | M2c | стартовые пары покрыты; конкретные отношения устанавливаются только при материализации |
-| npc_psychology | psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; контекстные мотивы и страхи привязаны только к применимым свидетельствам; шкала ценностей не утверждена владельцем |
+| npc_psychology | psychology_scales.json, psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; D29 задаёт ровный игровой baseline, не историческое распределение; контекстные мотивы и страхи не изменены |
 | speech_address | speech_registers.csv, address_forms.csv | см. `scripts/build_report.json` | M3 | направленные стартовые пары покрыты устной формой или явным пробелом |
 | social_norms_honour_hospitality | norms.csv | 19 | M3 | 4 из 5 ранее пустых norm_kind закрыты book evidence; gift всё ещё 0 строк |
 

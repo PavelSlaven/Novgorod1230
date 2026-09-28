@@ -580,3 +580,37 @@
 
 - +1 правило `rel_composition_spouse_2dc90533f844af8e`, применимое только при явной связи слотов; нейтральные `rel_start_gap_ce80a3efab995c86` и две формы `form_start_gap_*` для той же пары ролей без связи сохранены.
 - В `address_forms.csv` изменены только две ячейки `situation` у `form_spouse_smerd` и `form_spouse_smerd_reverse_gap`: обращения супругов применимы только при связи слотов.
+
+## C013a — psychology baseline (2026-09-28)
+
+Авторская самопроверка: добавлен кандидатный словарь по решению D29 — 6 traits, 7 values, ровный вес 1 (`basis_kind=game_assumption`). Все 139 профилей получают точный baseline. `context_refs` — только контекст выбора понятий, не доказательство весов, распределения или индивидуальных override. Независимый REVIEW: pending.
+
+### npc_psychology/psychology_scales.json — rework
+
+### npc_psychology/psychology_profiles.csv — rework
+
+### scripts/build.py — rework
+
+### scripts/check.py — rework
+
+### npc_psychology/psychology_scales.json — approve (C013a, закрывает rework)
+
+Проверено: Claude Opus 5.5, скрипт ревьюера и `check.py` / `check.py --probe` на `c7d8a3ba` — PASS.
+
+- Редакционная игровая шкала по решению D29 (#133, 5866721387): 6 черт темперамента (самообладание, осторожность, доверчивость, общительность, старательность, импульсивность) и 7 ценностей, включая благочестие. `basis_kind=game_assumption`, `status=candidate`, `default_weight=1`.
+- 17 ссылок `book:<id> §<para>` разрешаются в `sources/books-evidence-v1/households-psychology-speech.csv`, все с `usage=context_only_not_distribution_or_individual_override`: они обосновывают выбор понятий, но не веса.
+- Сдвигов по занятию и роли нет: источника на них не найдено. Сколько черт и ценностей получает NPC и как выбирает, решает код B2, данные этого не задают.
+
+### npc_psychology/psychology_profiles.csv — approve (C013a, закрывает rework)
+
+Проверено: Claude Opus 5.5, построчный diff ревьюера (`c7d8a3ba` против `aeb8e72a`).
+
+- 139 строк, 68 занятий и 71 роль. У каждой изменены только `temperament_weights`, `values_weights` и `derivation_rule`, все веса равны 1. Остальные колонки, в том числе цели, страхи и мотивы, не тронуты.
+
+### scripts/build.py — approve (C013a, закрывает rework)
+
+Проверено: Claude Opus 5.5. Строит равный baseline из единственного словаря `psychology_scales.json`, второго источника понятий нет.
+
+### scripts/check.py — approve (C013a, закрывает rework)
+
+Проверено: Claude Opus 5.5, `check.py --probe` — PASS. Проверяет закрытую схему, границы 4–6 и 5–7, равный вес, ссылки на выписки, точный набор профилей; отрицательные пробы срабатывают.

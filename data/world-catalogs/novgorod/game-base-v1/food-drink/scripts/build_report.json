@@ -1,19 +1,968 @@
 {
  "counts": {
   "food/ingredients.csv": 198,
+  "food/material_entities.csv": 94,
   "food/ingredient_months.csv": 2280,
   "food/taxon_refs.csv": 74,
   "food/household_food_stock_profiles.csv": 6528,
   "dishes/dishes_meals.csv": 270,
+  "dishes/recipe_months.csv": 3216,
   "dishes/recipe_steps.csv": 1164,
   "dishes/meal_profiles.csv": 21,
   "dishes/meal_slot_rules.csv": 10,
   "dishes/fasting_rules.csv": 18,
   "dishes/preservation_storage.csv": 9,
-  "dishes/spoilage_states.csv": 8,
+  "dishes/spoilage_states.csv": 9,
   "dishes/sensory_lexicon.csv": 23,
   "dishes/famine_1230.csv": 23,
-  "sources.csv": 111
+  "sources.csv": 113
  },
+ "archive_disposition_counts": {
+  "new_entities": 94,
+  "variants": 63,
+  "merged": 4
+ },
+ "material_source_relation_role": "category_form_material_process_or_context",
+ "original_material_source_relation_count": 914,
+ "independent_entities": [
+  {
+   "archive_id": "OMI01354",
+   "reason": "Масляное зерно до промывки и формования — физически отдельный полуфабрикат, не готовое сливочное масло."
+  },
+  {
+   "archive_id": "OMI01340",
+   "reason": "Мутный остаток кваса может включать хлебную взвесь; архив не подтверждает тождество дрожжевому осадку."
+  },
+  {
+   "archive_id": "OMI01343",
+   "reason": "Осадок медового напитка имеет неоднозначный состав; архив не подтверждает тождество дрожжевому осадку."
+  },
+  {
+   "archive_id": "OMI01402",
+   "reason": "Живая партия в воде или садке требует отдельного содержания, размещения и контроля гибели; это не просто состояние товарной рыбы."
+  },
+  {
+   "archive_id": "OMI01457",
+   "reason": "Раздавленные ягоды — физически иной полуфабрикат с выделившимся соком для следующего этапа, а не запас свежих ягод."
+  },
+  {
+   "archive_id": "OMI01320",
+   "reason": "Обгоревшая корка — бытовой отход неудачной выпечки; хранится отдельно от единичного археоботанического фрагмента OMI01324."
+  },
+  {
+   "archive_id": "OMI01324",
+   "reason": "Обломок из очага — отдельный charred fragment и археоботанический остаток, не партия пищевого отхода OMI01320."
+  },
+  {
+   "archive_id": "OMI01303",
+   "reason": "Мучная пыль — однородный осевший продукт помола; отличается составом и формой от смёта с каменной пылью OMI01307."
+  },
+  {
+   "archive_id": "OMI01307",
+   "reason": "Жерновой смёт — собранная смесь муки и каменной пыли, а не однородная мучная пыль OMI01303."
+  },
+  {
+   "archive_id": "OMI01268",
+   "reason": "Смешанная партия обмолоченного зерна различается по составу видов; это не зерно с мякиной до веяния OMI01269."
+  },
+  {
+   "archive_id": "OMI01269",
+   "reason": "Примесь мякины задаёт иной состав и обязательную стадию веяния, отличную от смешанной зерновой партии OMI01268."
+  }
+ ],
+ "archive_variants": [
+  {
+   "archive_id": "OMI01293",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_millet_groats"
+   ],
+   "action": "add_variant",
+   "reason": "Очищенная пшённая крупа — состояние существующего продукта.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01293"
+  },
+  {
+   "archive_id": "OMI01314",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_rye_dough",
+    "fd_mixed_dough",
+    "fd_wheat_dough"
+   ],
+   "action": "add_variant",
+   "reason": "Расстойка — состояние теста вообще, не только ржаного.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01314"
+  },
+  {
+   "archive_id": "OMI01315",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_rye_dough",
+    "fd_mixed_dough",
+    "fd_wheat_dough"
+   ],
+   "action": "add_variant",
+   "reason": "Порционирование — состояние теста вообще, не только ржаного.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01315"
+  },
+  {
+   "archive_id": "OMI01317",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_rye_dough",
+    "fd_mixed_dough",
+    "fd_wheat_dough"
+   ],
+   "action": "add_variant",
+   "reason": "Трещины относятся к формованной хлебной заготовке перед выпечкой, не к сырой лепёшке.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01317"
+  },
+  {
+   "archive_id": "OMI01323",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "moldy"
+   ],
+   "action": "add_variant",
+   "reason": "Плесневение хлеба выражается общим состоянием порчи moldy.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01323"
+  },
+  {
+   "archive_id": "OMI01337",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_spent_grain"
+   ],
+   "action": "add_variant",
+   "reason": "Подсушивание — состояние существующей дробины.",
+   "basis": "logical_necessity",
+   "derivation": "Функционально и технологически правдоподобная гипотеза; не использовать как автоматическое наполнение без явного контекста.",
+   "confidence": "C",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01337"
+  },
+  {
+   "archive_id": "OMI01349",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fresh_curd"
+   ],
+   "action": "add_variant",
+   "reason": "Сгусток в ткани — состояние существующего свежего творожного сгустка.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01349"
+  },
+  {
+   "archive_id": "STA0051",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_honey_drink"
+   ],
+   "action": "include_analogy",
+   "reason": "Брожение — аналоговый state-вариант существующего медового напитка.",
+   "basis": "analogy",
+   "derivation": "analogy: Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/state_variants.csv:STA0051"
+  },
+  {
+   "archive_id": "STA0053",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_dried_herbs"
+   ],
+   "action": "include_analogy",
+   "reason": "Растирание — аналоговый state-вариант существующих сушёных трав.",
+   "basis": "analogy",
+   "derivation": "analogy: Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/state_variants.csv:STA0053"
+  },
+  {
+   "archive_id": "STA0054",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_hemp_seed"
+   ],
+   "action": "include_analogy",
+   "reason": "Толчение — аналоговый state-вариант существующего конопляного семени.",
+   "basis": "analogy",
+   "derivation": "analogy: Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/state_variants.csv:STA0054"
+  },
+  {
+   "archive_id": "OMI01462",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_hazelnut_kernel"
+   ],
+   "action": "add_variant",
+   "reason": "Ядра лесных орехов совпадают с существующим продуктом.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01462"
+  },
+  {
+   "archive_id": "OMI01299",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_mixed_flour"
+   ],
+   "action": "add_variant",
+   "reason": "Смешанная мука разных злаков совпадает с существующим продуктом.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01299"
+  },
+  {
+   "archive_id": "OMI01480",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_honey_comb"
+   ],
+   "action": "add_variant",
+   "reason": "Свежий сот с мёдом совпадает с существующим продуктом.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01480"
+  },
+  {
+   "archive_id": "OMI01476",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_plant_oil"
+   ],
+   "action": "add_variant",
+   "reason": "Малая тара — форма существующего растительного масла.",
+   "basis": "logical_necessity",
+   "derivation": "Функционально и технологически правдоподобная гипотеза; не использовать как автоматическое наполнение без явного контекста.",
+   "confidence": "C",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01476"
+  },
+  {
+   "archive_id": "OMI01335",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_spent_grain"
+   ],
+   "action": "add_variant",
+   "reason": "Гуща после затора совпадает с существующей дробиной.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01335"
+  },
+  {
+   "archive_id": "OMI01389",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_salted_meat"
+   ],
+   "action": "add_variant",
+   "reason": "Солёный мясной кусок совпадает с существующим солёным мясом.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01389"
+  },
+  {
+   "archive_id": "OMI02068",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_bran"
+   ],
+   "action": "add_variant",
+   "reason": "Кормовое назначение не создаёт новый тип отрубей.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02068"
+  },
+  {
+   "archive_id": "OMI02067",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_oat_grain"
+   ],
+   "action": "add_variant",
+   "reason": "Кормовое назначение не создаёт новый тип овсяного зерна.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02067"
+  },
+  {
+   "archive_id": "OMI01441",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_onion_greens"
+   ],
+   "action": "add_variant",
+   "reason": "Связка — форма существующей луковой зелени.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01441"
+  },
+  {
+   "archive_id": "OMI01468",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_aromatic_herbs"
+   ],
+   "action": "add_variant",
+   "reason": "Пучок — форма существующих пахучих трав.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01468"
+  },
+  {
+   "archive_id": "OMI01355",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_butter_fresh"
+   ],
+   "action": "add_variant",
+   "reason": "Ком — форма существующего сливочного масла.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01355"
+  },
+  {
+   "archive_id": "OMI01391",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_dried_meat"
+   ],
+   "action": "add_variant",
+   "reason": "Высушенная полоса совпадает с существующим сушёным мясом.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01391"
+  },
+  {
+   "archive_id": "OMI01467",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_edible_wild_greens"
+   ],
+   "action": "add_variant",
+   "reason": "Пучок — форма существующей смешанной съедобной зелени.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01467"
+  },
+  {
+   "archive_id": "OMI01463",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_hazelnut_crushed"
+   ],
+   "action": "add_variant",
+   "reason": "Раздавленные орехи соответствуют существующему толчёному лесному ореху.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01463"
+  },
+  {
+   "archive_id": "OMI01436",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_turnip"
+   ],
+   "action": "add_variant",
+   "reason": "Ботва — состояние репы до очистки.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01436"
+  },
+  {
+   "archive_id": "OMI01437",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_turnip"
+   ],
+   "action": "add_variant",
+   "reason": "Очистка — состояние существующей репы.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01437"
+  },
+  {
+   "archive_id": "OMI01344",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_milk_cow"
+   ],
+   "action": "add_variant",
+   "reason": "Парное — состояние существующего коровьего молока.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01344"
+  },
+  {
+   "archive_id": "OMI01346",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_milk_cow"
+   ],
+   "action": "add_variant",
+   "reason": "Отстаивание — состояние существующего коровьего молока.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01346"
+  },
+  {
+   "archive_id": "OMI01347",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_sour_milk"
+   ],
+   "action": "add_variant",
+   "reason": "Отделение сыворотки — состояние существующего кислого молока.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01347"
+  },
+  {
+   "archive_id": "OMI01353",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_cream"
+   ],
+   "action": "add_variant",
+   "reason": "Сбивание — стадия существующих сливок.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01353"
+  },
+  {
+   "archive_id": "OMI01365",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_animal_fat"
+   ],
+   "action": "add_variant",
+   "reason": "Жир-сырец — состояние существующего животного жира.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01365"
+  },
+  {
+   "archive_id": "OMI01366",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_pork_lard"
+   ],
+   "action": "add_variant",
+   "reason": "Кожа на сале — состояние существующего свиного сала.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01366"
+  },
+  {
+   "archive_id": "OMI01357",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_butter_fresh"
+   ],
+   "action": "add_variant",
+   "reason": "Соление — состояние хранения существующего сливочного масла.",
+   "basis": "logical_necessity",
+   "derivation": "Функционально и технологически правдоподобная гипотеза; не использовать как автоматическое наполнение без явного контекста.",
+   "confidence": "C",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01357"
+  },
+  {
+   "archive_id": "OMI01407",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_gutted"
+   ],
+   "action": "add_variant",
+   "reason": "Распоротое брюхо — состояние существующей потрошёной рыбы.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01407"
+  },
+  {
+   "archive_id": "OMI01411",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_lightly_salted"
+   ],
+   "action": "add_variant",
+   "reason": "Свежий рассол — стадия существующей рыбы слабого посола.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01411"
+  },
+  {
+   "archive_id": "OMI01430",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_dried"
+   ],
+   "action": "add_variant",
+   "reason": "Связка — форма существующей сушёной рыбы.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01430"
+  },
+  {
+   "archive_id": "OMI01482",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_honey_comb"
+   ],
+   "action": "add_variant",
+   "reason": "Разламывание — состояние существующего медового сота.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01482"
+  },
+  {
+   "archive_id": "OMI01483",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_honey_liquid"
+   ],
+   "action": "add_variant",
+   "reason": "Частицы воска — состояние существующего жидкого мёда до очистки.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01483"
+  },
+  {
+   "archive_id": "OMI01361",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_pressed_fresh_cheese"
+   ],
+   "action": "add_variant",
+   "reason": "Прессование — стадия существующего свежего сырного круга.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01361"
+  },
+  {
+   "archive_id": "OMI01432",
+   "target_kind": "material",
+   "target_ids": [
+    "OMI01417"
+   ],
+   "action": "add_variant",
+   "reason": "Использование существующей рыбьей головы как приманки — назначение, не новый тип.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01432"
+  },
+  {
+   "archive_id": "OMI01433",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_split"
+   ],
+   "action": "add_variant",
+   "reason": "Использование существующего куска рыбы как наживки — назначение, не новый тип.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01433"
+  },
+  {
+   "archive_id": "OMI02121",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_meat_cut_small"
+   ],
+   "action": "add_variant",
+   "reason": "Использование существующего куска мяса как приманки — назначение, не новый тип.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02121"
+  },
+  {
+   "archive_id": "OMI02122",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Использование неуточнённой рыбы как приманки зверю — назначение существующей общей категории рыбы.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02122"
+  },
+  {
+   "archive_id": "OMI02123",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_grain_clean_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Использование существующего зерна как приманки птице — назначение, не новый тип.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02123"
+  },
+  {
+   "archive_id": "OMI02124",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_forest_berries_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Использование существующих ягод как приманки — назначение, не новый тип.",
+   "basis": "logical_necessity",
+   "derivation": "Функционально и технологически правдоподобная гипотеза; не использовать как автоматическое наполнение без явного контекста.",
+   "confidence": "C",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02124"
+  },
+  {
+   "archive_id": "OMI01274",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "moldy"
+   ],
+   "action": "add_variant",
+   "reason": "Плесень — состояние порчи зерна moldy, не новый материальный тип.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01274"
+  },
+  {
+   "archive_id": "OMI01460",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "moldy"
+   ],
+   "action": "add_variant",
+   "reason": "Плесень — состояние порчи ягод moldy, не новый материальный тип.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01460"
+  },
+  {
+   "archive_id": "OMI01275",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "damp"
+   ],
+   "action": "add_variant",
+   "reason": "Подмокание — состояние зерна damp, не новый материальный тип.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01275"
+  },
+  {
+   "archive_id": "OMI01305",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "gnawed"
+   ],
+   "action": "add_variant",
+   "reason": "Следы мышей выражаются состоянием порчи gnawed для муки.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01305"
+  },
+  {
+   "archive_id": "OMI01428",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "rotten"
+   ],
+   "action": "add_variant",
+   "reason": "Испорченная рыба выражается общим состоянием порчи rotten.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01428"
+  },
+  {
+   "archive_id": "OMI01395",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "rotten"
+   ],
+   "action": "add_variant",
+   "reason": "Испорченный мясной кусок выражается общим состоянием порчи rotten.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01395"
+  },
+  {
+   "archive_id": "OMI01338",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "soured"
+   ],
+   "action": "add_variant",
+   "reason": "Кислый остаток пива выражается состоянием soured, не новым видом напитка.",
+   "basis": "logical_necessity",
+   "derivation": "Функционально и технологически правдоподобная гипотеза; не использовать как автоматическое наполнение без явного контекста.",
+   "confidence": "C",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01338"
+  },
+  {
+   "archive_id": "OMI02107",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Живец — назначение мелкой живой рыбы; размер и использование не создают новый вид.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02107"
+  },
+  {
+   "archive_id": "OMI01370",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_animal_fat"
+   ],
+   "action": "add_variant",
+   "reason": "Смазка — непищевое назначение животного жира без обязательного вытапливания.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01370"
+  },
+  {
+   "archive_id": "OMI01371",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_rendered_fat"
+   ],
+   "action": "add_variant",
+   "reason": "Сальное свечное сырьё — назначение порции вытопленного животного жира.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01371"
+  },
+  {
+   "archive_id": "OMI01306",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_bran"
+   ],
+   "action": "add_variant",
+   "reason": "Пустые оболочки после помола входят в общую категорию отрубей, а не мучных высевок.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01306"
+  },
+  {
+   "archive_id": "OMI01403",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Мокрая только что выловленная рыба — состояние общего продукта до сортировки.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01403"
+  },
+  {
+   "archive_id": "OMI01404",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Сортировка по крупному размеру задаёт партию общей рыбы, не новый продукт.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01404"
+  },
+  {
+   "archive_id": "OMI01405",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_fish_generic"
+   ],
+   "action": "add_variant",
+   "reason": "Мелкий размер не доказывает вид снетка; это сортированная партия общей рыбы.",
+   "basis": "sourced",
+   "derivation": "category-level evidence (category_form_material_process_or_context): Прямые археологические, письменные или стратиграфически привязанные новгородские данные; запись допустима для обычной генерации в подходящем контексте.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01405"
+  },
+  {
+   "archive_id": "OMI01387",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_blood_animal"
+   ],
+   "action": "add_variant",
+   "reason": "Сгусток — состояние уже существующей категории крови после забоя.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01387"
+  },
+  {
+   "archive_id": "OMI01392",
+   "target_kind": "fd",
+   "target_ids": [
+    "fd_dried_meat"
+   ],
+   "action": "add_variant",
+   "reason": "Копчёная полоса — осторожно реконструируемая форма сохранённого сушёного мяса, как OMI01391.",
+   "basis": "logical_necessity",
+   "derivation": "Функционально и технологически правдоподобная гипотеза; не использовать как автоматическое наполнение без явного контекста.",
+   "confidence": "C",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01392"
+  },
+  {
+   "archive_id": "OMI01273",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "sprouted"
+   ],
+   "action": "add_variant",
+   "reason": "Нежелательное прорастание при сыром хранении — состояние порчи зерна sprouted.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01273"
+  },
+  {
+   "archive_id": "OMI01304",
+   "target_kind": "spoilage_state",
+   "target_ids": [
+    "damp"
+   ],
+   "action": "add_variant",
+   "reason": "Слежавшийся ком муки — проявление состояния damp, а не новый материал.",
+   "basis": "logical_necessity",
+   "derivation": "Хорошо подтверждаемая реконструкция по нескольким источникам; конкретная форма или сочетание не всегда найдено в одном закрытом комплексе около 1230 года.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01304"
+  }
+ ],
+ "archive_merges": [
+  {
+   "archive_id": "OMI02040",
+   "target_item_id": "n1230:material_item:omi01271",
+   "reason": "Мешочек задаёт тару и количество того же семенного зерна; identity остаётся OMI01271.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02040"
+  },
+  {
+   "archive_id": "OMI02041",
+   "target_item_id": "n1230:material_item:omi01271",
+   "reason": "Горсть задаёт количество того же семенного зерна; identity остаётся OMI01271.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02041"
+  },
+  {
+   "archive_id": "OMI02106",
+   "target_item_id": "n1230:material_item:omi01420",
+   "reason": "Применение рыбьих внутренностей как приманки — назначение OMI01420, не новый тип.",
+   "confidence": "A",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI02106"
+  },
+  {
+   "archive_id": "OMI01452",
+   "target_item_id": "n1230:material_item:omi01453",
+   "reason": "Мешочек задаёт тару для тех же смешанных огородных семян; identity семян остаётся OMI01453.",
+   "confidence": "B",
+   "archive_ref": "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01452"
+  }
+ ],
+ "seasonality_refinements": [
+  {
+   "ds_id": "ds_pottage_nettle_greens",
+   "month": 8,
+   "required_fd_id": "fd_nettle_greens",
+   "availability": "rare",
+   "reason": "ingredient_months refines August nettle availability to rare"
+  },
+  {
+   "ds_id": "ds_pottage_sorrel_greens",
+   "month": 8,
+   "required_fd_id": "fd_sorrel_greens",
+   "availability": "rare",
+   "reason": "ingredient_months refines August sorrel availability to rare"
+  },
+  {
+   "ds_id": "ds_pottage_goutweed_greens",
+   "month": 7,
+   "required_fd_id": "fd_goutweed_greens",
+   "availability": "rare",
+   "reason": "ingredient_months refines July goutweed availability to rare"
+  },
+  {
+   "ds_id": "ds_pottage_goutweed_greens",
+   "month": 8,
+   "required_fd_id": "fd_goutweed_greens",
+   "availability": "rare",
+   "reason": "ingredient_months refines August goutweed availability to rare"
+  },
+  {
+   "ds_id": "ds_pottage_orache_greens",
+   "month": 5,
+   "required_fd_id": "fd_orache_greens",
+   "availability": "rare",
+   "reason": "ingredient_months refines May orache availability to rare"
+  }
+ ],
  "unresolved_recipe_ingredients": []
 }

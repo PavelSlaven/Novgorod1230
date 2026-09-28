@@ -1,0 +1,2704 @@
+{
+  "artifact_type": "pass_target_description_authoring_candidate",
+  "candidate_id": "novgorod_m2c_pass_target_labels_v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "source_pins": {
+    "ref_gamebase_commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
+    "ref_gamebase_files_sha256": {
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv": "139713cd706db0fd3281f0a4c1ff25f69f4a240d68b00e9c7b2a90565ace2663",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv": "15f4fa3413e6bccfd19f485e5178a6e8853c4e37343eda05b6f329c29fde99c5"
+    }
+  },
+  "authoring_policy": "Короткая нейтральная метка описывает только видимый издали тип цели прохода. Ключ expansion_slot_ref охватывает каждый назначенный G5-шаблон слота; фраза даётся только при общем видимом классе всех вариантов. Для созданной или канонической цели ключ — place_family_id. Этот кандидат не подключён к runtime и не предоставляет видимость, знание или право движения.",
+  "labels": [
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_02",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_02",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__channel_split",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/0",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/0",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_06",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_06",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__channel_split",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/1",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/0",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__channel_split",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/2",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/0",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_01",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_01",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/3",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_12",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_12",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/4",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/5",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_03",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_03",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/6",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_24",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_24",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/7",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/8",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_02",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_02",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/9",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_13",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_13",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/10",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/11",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_01",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_01",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/12",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_04",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_04",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/13",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_05",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_05",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/14",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/15",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/16",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/1",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_09",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_09",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/17",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/2"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "island",
+      "display_label": "к острову"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/18",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/2"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "island",
+      "display_label": "к острову"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_06",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_06",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/19",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/2"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "island",
+      "display_label": "к острову"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_07",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_07",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/20",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/2"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "island",
+      "display_label": "к острову"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_08",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_08",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/21",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/2"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "island",
+      "display_label": "к острову"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/22",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/2"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "island",
+      "display_label": "к острову"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_12",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_12",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/23",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/3"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не указывают, когда отмель видна над водой; устойчивый дальний признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_13",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_13",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/24",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/3"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не указывают, когда отмель видна над водой; устойчивый дальний признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/25",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/3"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не указывают, когда отмель видна над водой; устойчивый дальний признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_09",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_09",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/26",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/4"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают общий видимый признак пойменной низины и островной гряды."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_23",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_23",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/27",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/4"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают общий видимый признак пойменной низины и островной гряды."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/28",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/4"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают общий видимый признак пойменной низины и островной гряды."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_20",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_20",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/29",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/5"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "forest",
+      "display_label": "в лес"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/30",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/5"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "forest",
+      "display_label": "в лес"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_08",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_08",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/31",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_23",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_23",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/32",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/33",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_05",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_05",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/34",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/35",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_04",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_04",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/36",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/37",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/6",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_10",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_10",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/38",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/7"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают общий видимый признак пойменной низины и островной гряды."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_11",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_11",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/39",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/7"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают общий видимый признак пойменной низины и островной гряды."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/40",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/7"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают общий видимый признак пойменной низины и островной гряды."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_11",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_11",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/41",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/8"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "ridge",
+      "display_label": "к гряде"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/42",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/8"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "ridge",
+      "display_label": "к гряде"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/43",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/9",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_03",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_03",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/44",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/10"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают устойчивый дальний ориентир для описания этой водной цели."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/45",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/10"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают устойчивый дальний ориентир для описания этой водной цели."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_14",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_14",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/46",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают один дальний видимый признак, общий для указанной водной формы."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/47",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают один дальний видимый признак, общий для указанной водной формы."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_21",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_21",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/48",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/12"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают устойчивый дальний ориентир для описания этой водной цели."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/49",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/12"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают устойчивый дальний ориентир для описания этой водной цели."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_10",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_10",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/50",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/13"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают один дальний видимый признак, общий для указанной водной формы."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_22",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_22",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/51",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/13"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают один дальний видимый признак, общий для указанной водной формы."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/52",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/13"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не подтверждают один дальний видимый признак, общий для указанной водной формы."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_15",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_15",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/53",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/14"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "ridge",
+      "display_label": "к гряде"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_16",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_16",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/54",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/14"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "ridge",
+      "display_label": "к гряде"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/55",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/14"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "ridge",
+      "display_label": "к гряде"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_21",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_21",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/56",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/15"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не указывают, когда отмель видна над водой; устойчивый дальний признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_24",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_24",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/57",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/15"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не указывают, когда отмель видна над водой; устойчивый дальний признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/58",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/15"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не указывают, когда отмель видна над водой; устойчивый дальний признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_14",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_14",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/59",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_18",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_18",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/60",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_20",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_20",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/61",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/62",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/16",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_15",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_15",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/63",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/17"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/64",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/17"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/65",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/17"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_17",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_17",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/66",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/18"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_18",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_18",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/67",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/18"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/68",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/18"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/69",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/18"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/70",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/19"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/71",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/19"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не задают один видимый ориентир для этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_07",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_07",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/72",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/20",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_22",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_22",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/73",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/20",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/74",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/20",
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "river_channel",
+      "display_label": "к руслу",
+      "target_place_family_id": "pf_river_channel"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_19",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_19",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/75",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/21"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "forest",
+      "display_label": "в лес"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/76",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/21"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "common_visible_class": "forest",
+      "display_label": "в лес"
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/77",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/22"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/78",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/22"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__cross_g4_19",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_19",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/79",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/23"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/80",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/23"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/81",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/23"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_16",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_16",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/82",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/24"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__cross_g4_17",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_17",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/83",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/24"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/84",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/24"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__slot__m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "expansion_slot_ref": {
+        "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+        "version": 1
+      },
+      "applicable_template_refs": [
+        {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        }
+      ],
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slot_templates.json#/85",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json#/24"
+        ],
+        "applicability": "Кандидатная фраза опирается на все варианты G5-шаблона, перечисленные для этого слота.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Данные шаблона не описывают устойчивый видимый ориентир этой цели издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_bog",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_bog",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L20"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание места говорит о грунте и медленной воде, но не выделяет устойчивый дальний ориентир."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_cellar_granary",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_cellar_granary",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L25"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Погреб и клеть являются закрытыми местами хранения и не видны как цель издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_conifer_woodland",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_conifer_woodland",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L17"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "в ельник"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_dwelling_interior",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_dwelling_interior",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L42"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Это внутреннее помещение; его нельзя различить снаружи как видимую цель."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_ferry_landing",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_ferry_landing",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L34"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание допускает неустроенную высадку и не гарантирует заметный издалека ориентир."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_fishing_camp",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_fishing_camp",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L41"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Временное рабочее место не гарантирует устойчивого видимого признака издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_floodplain_meadow",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_floodplain_meadow",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L12"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "к лугу"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_forest_edge",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_forest_edge",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L19"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "к опушке"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_forest_track",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_forest_track",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L35"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание указывает узкий поддерживаемый или импровизированный ход; его нельзя надёжно различить издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_hunting_ground",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_hunting_ground",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L36"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Это наложение землепользования, а не обязательно видимый объект местности."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_marshy_stream",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_marshy_stream",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L21"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание указывает узкий водный коридор; дальний видимый признак не подтверждён."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_mixed_woodland",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_mixed_woodland",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L18"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "в лес"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_outbuildings",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_outbuildings",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L24"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание задаёт хозяйственное использование построек, но не гарантирует заметный ориентир издалека."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_peasant_homestead",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_peasant_homestead",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L23"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "к избам"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_river_channel",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_river_channel",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L11"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "к руслу"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_riverbank",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_riverbank",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L10"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "к берегу"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_road",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_road",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L32"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "display_label": "к дороге"
+    },
+    {
+      "id": "m2c_pass_target_label__pf_rural_yard",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_rural_yard",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L4"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание задаёт открытый контекст двора, но не выделяет устойчивый дальний ориентир."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_village_lane",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_village_lane",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L22"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Описание задаёт деревенский проулок между дворами и полями; его видимость издалека не подтверждена."
+    },
+    {
+      "id": "m2c_pass_target_label__pf_winter_ice_crossing",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "place_family_id": "pf_winter_ice_crossing",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "C",
+        "source_refs": [
+          "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#L39"
+        ],
+        "applicability": "Описание относится к этому типу места в G5-привязке стартовой территории.",
+        "limits": "Не сообщает именованное место, точное расстояние, текущую видимость, безопасность или возможность движения."
+      },
+      "gap_reason": "Признак сезонный; текущие сезон и состояние льда не входят в ключ описания."
+    }
+  ],
+  "source_scope_gaps": [
+    {
+      "node_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
+      "gap_reason": "В node_binding.csv для узла нет pf_id и pf_secondary, поэтому ключ place_family_id отсутствует.",
+      "source_ref": "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#L210"
+    },
+    {
+      "node_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
+      "gap_reason": "В node_binding.csv для узла нет pf_id и pf_secondary, поэтому ключ place_family_id отсутствует.",
+      "source_ref": "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#L212"
+    },
+    {
+      "node_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1",
+      "gap_reason": "В node_binding.csv для узла нет pf_id и pf_secondary, поэтому ключ place_family_id отсутствует.",
+      "source_ref": "ref-gamebase:data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#L214"
+    }
+  ]
+}

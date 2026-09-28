@@ -1,0 +1,392 @@
+#!/usr/bin/env node
+
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const catalogDir = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(catalogDir, '../../../../');
+const datasets = path.join(root, 'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets');
+const slotFile = 'spatial_v3_expansion_slots.json';
+const assignmentFile = 'spatial_v3_expansion_slot_templates.json';
+const generationFile = 'spatial_v3_g5_generation_templates.json';
+const slotRef = `data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/${assignmentFile}`;
+const generationRef = `data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/${generationFile}`;
+const pfPath = 'data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv';
+const nodePath = 'data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv';
+
+const classLabels = {
+  river_channel: { label: 'к руслу', placeFamilyId: 'pf_river_channel' },
+  forest: { label: 'в лес' },
+  island: { label: 'к острову' },
+  ridge: { label: 'к гряде' }
+};
+const familyLabels = {
+  pf_river_channel: 'к руслу', pf_riverbank: 'к берегу',
+  pf_floodplain_meadow: 'к лугу', pf_conifer_woodland: 'в ельник',
+  pf_forest_edge: 'к опушке', pf_mixed_woodland: 'в лес',
+  pf_peasant_homestead: 'к избам', pf_road: 'к дороге'
+};
+const words = new Set([
+  'к', 'в', 'вдоль', 'руслу', 'лес', 'острову', 'гряде', 'берегу',
+  'лугу', 'ельник', 'опушке', 'дороге', 'избам'
+]);
+
+function args(argv) {
+  const options = { selfTest: false, gamebase: path.resolve(root, '../ref-gamebase') };
+  for (let i = 0; i < argv.length; i += 1) {
+    if (argv[i] === '--self-test') options.selfTest = true;
+    else if (argv[i] === '--gamebase-root' && argv[i + 1]) options.gamebase = path.resolve(argv[++i]);
+    else if (argv[i] === '--help') options.help = true;
+    else throw new Error(`Неизвестный аргумент: ${argv[i]}`);
+  }
+  return options;
+}
+
+function csvLine(line, number, file) {
+  const fields = [];
+  let value = '';
+  let quoted = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const c = line[i];
+    if (quoted && c === '"' && line[i + 1] === '"') { value += '"'; i += 1; }
+    else if (c === '"') quoted = !quoted;
+    else if (c === ',' && !quoted) { fields.push(value); value = ''; }
+    else value += c;
+  }
+  if (quoted) throw new Error(`${file}:${number}: незакрытая кавычка`);
+  fields.push(value);
+  return fields;
+}
+
+function readCsv(file) {
+  const lines = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/);
+  const header = csvLine(lines[0], 1, file);
+  return lines.slice(1).flatMap((line, i) => {
+    if (!line) return [];
+    const values = csvLine(line, i + 2, file);
+    if (values.length !== header.length) throw new Error(`${file}:${i + 2}: неверное число CSV полей`);
+    return [{ ...Object.fromEntries(header.map((key, j) => [key, values[j]])), line: i + 2 }];
+  });
+}
+
+function json(file) { return JSON.parse(fs.readFileSync(file, 'utf8')); }
+function slotKey(id, version) { return `${id}@${version}`; }
+function templateKey(id, version) { return `${id}@${version}`; }
+function familyOf(id) { return id?.startsWith('m2c_g5_') ? id.slice(7).split('__')[0] : null; }
+function pointer(file, index) { return `${file}#/${index}`; }
+function pfRef(line) { return `ref-gamebase:${pfPath}#L${line}`; }
+function nodeRef(line) { return `ref-gamebase:${nodePath}#L${line}`; }
+
+function gitDirFor(worktree) {
+  const marker = path.join(worktree, '.git');
+  const stat = fs.statSync(marker);
+  if (stat.isDirectory()) return marker;
+  const match = /^gitdir:\s*(.+)\s*$/.exec(fs.readFileSync(marker, 'utf8'));
+  if (!match) throw new Error('не удалось прочитать gitdir ref-gamebase');
+  return path.resolve(worktree, match[1]);
+}
+
+function resolveRef(ref, gitDirs, depth = 0) {
+  if (depth > 4 || !/^refs\/[A-Za-z0-9._/-]+$/.test(ref) || ref.includes('..')) {
+    throw new Error('некорректная ссылка HEAD ref-gamebase');
+  }
+  for (const gitDir of gitDirs) {
+    const refPath = path.join(gitDir, ref);
+    if (fs.existsSync(refPath)) {
+      const value = fs.readFileSync(refPath, 'utf8').trim();
+      if (/^[0-9a-f]{40}$/.test(value)) return value;
+      const symbolic = /^ref:\s*(.+)$/.exec(value);
+      if (symbolic) return resolveRef(symbolic[1], gitDirs, depth + 1);
+    }
+    const packedRefs = path.join(gitDir, 'packed-refs');
+    if (fs.existsSync(packedRefs)) {
+      for (const line of fs.readFileSync(packedRefs, 'utf8').split(/\r?\n/)) {
+        const packed = /^([0-9a-f]{40}) (.+)$/.exec(line);
+        if (packed?.[2] === ref) return packed[1];
+      }
+    }
+  }
+  throw new Error(`HEAD ref-gamebase не разрешается: ${ref}`);
+}
+
+function commitAtHead(worktree) {
+  const gitDir = gitDirFor(worktree);
+  const commonDirFile = path.join(gitDir, 'commondir');
+  const commonDir = fs.existsSync(commonDirFile)
+    ? path.resolve(gitDir, fs.readFileSync(commonDirFile, 'utf8').trim()) : gitDir;
+  const head = fs.readFileSync(path.join(gitDir, 'HEAD'), 'utf8').trim();
+  if (/^[0-9a-f]{40}$/.test(head)) return head;
+  const symbolic = /^ref:\s*(.+)$/.exec(head);
+  if (!symbolic) throw new Error('не удалось прочитать HEAD ref-gamebase');
+  return resolveRef(symbolic[1], [...new Set([gitDir, commonDir])]);
+}
+
+function verifySourcePin(gamebase, pins) {
+  const expectedCommit = pins?.ref_gamebase_commit;
+  if (!/^[0-9a-f]{40}$/.test(expectedCommit ?? '')) {
+    throw new Error('source_pins.ref_gamebase_commit должен содержать полный SHA');
+  }
+  const actualCommit = commitAtHead(gamebase);
+  if (actualCommit !== expectedCommit) {
+    throw new Error(`ref-gamebase commit не совпадает с pin: ожидался ${expectedCommit}, получен ${actualCommit}`);
+  }
+  const expectedFiles = pins?.ref_gamebase_files_sha256;
+  if (!expectedFiles || !/^[0-9a-f]{64}$/.test(expectedFiles[pfPath] ?? '')
+    || !/^[0-9a-f]{64}$/.test(expectedFiles[nodePath] ?? '')) {
+    throw new Error('source_pins.ref_gamebase_files_sha256 должен содержать SHA-256 двух исходных CSV');
+  }
+  for (const relativePath of [pfPath, nodePath]) {
+    const actualHash = createHash('sha256').update(fs.readFileSync(path.join(gamebase, relativePath))).digest('hex');
+    if (actualHash !== expectedFiles[relativePath]) throw new Error(`изменён исходный CSV ref-gamebase: ${relativePath}`);
+  }
+}
+
+function load(gamebase) {
+  const candidate = json(path.join(catalogDir, 'candidate.json'));
+  verifySourcePin(gamebase, candidate.source_pins);
+  const placeFamilies = readCsv(path.join(gamebase, pfPath));
+  const nodeBindings = readCsv(path.join(gamebase, nodePath));
+  return {
+    candidate,
+    slots: json(path.join(datasets, slotFile)),
+    assignments: json(path.join(datasets, assignmentFile)),
+    templates: json(path.join(datasets, generationFile)),
+    families: new Map(placeFamilies.map((row) => [row.pf_id, row])),
+    nodeBindings
+  };
+}
+
+function startFamilies(rows) {
+  const result = new Set();
+  for (const row of rows.filter((item) => item.node_level === 'G5')) {
+    if (row.pf_id) result.add(row.pf_id);
+    for (const id of (row.pf_secondary ?? '').split(';').map((value) => value.trim())) {
+      if (id) result.add(id);
+    }
+  }
+  return result;
+}
+
+function scopeGaps(rows) {
+  return new Map(rows.filter((row) => row.node_level === 'G5' && !row.pf_id
+    && !(row.pf_secondary ?? '').split(';').some((value) => value.trim()))
+  .map((row) => [row.node_ref, row]));
+}
+
+function checkText(label, id, errors) {
+  if (typeof label !== 'string' || /[A-ZА-ЯЁ]/.test(label)
+    || !/^[а-яё]+(?: [а-яё]+){0,3}$/.test(label)) {
+    errors.push(`${id}: текст должен содержать 1–4 слова в нижнем регистре`);
+    return;
+  }
+  const tokens = label.split(' ');
+  if (!['к', 'в', 'вдоль'].includes(tokens[0])) errors.push(`${id}: нет направительного предлога`);
+  if (tokens.some((token) => !words.has(token))) errors.push(`${id}: незнакомое слово или возможное имя собственное`);
+}
+
+function refsFor(record, input, assignmentsBySlot) {
+  const refs = new Set();
+  if (record.expansion_slot_ref) {
+    const key = slotKey(record.expansion_slot_ref.id, record.expansion_slot_ref.version);
+    for (const { row, index } of assignmentsBySlot.get(key) ?? []) {
+      refs.add(pointer(slotRef, index));
+      const templateIndex = input.templates.findIndex((template) => templateKey(template.id, template.version)
+        === templateKey(row.template_id, row.template_version));
+      if (templateIndex >= 0) refs.add(pointer(generationRef, templateIndex));
+    }
+    if (record.target_place_family_id) {
+      const family = input.families.get(record.target_place_family_id);
+      if (family) refs.add(pfRef(family.line));
+    }
+  } else if (record.place_family_id) {
+    const family = input.families.get(record.place_family_id);
+    if (family) refs.add(pfRef(family.line));
+  }
+  return [...refs].sort();
+}
+
+function validate(candidate, input) {
+  const errors = [];
+  if (candidate.artifact_type !== 'pass_target_description_authoring_candidate'
+    || candidate.candidate_id !== 'novgorod_m2c_pass_target_labels_v1'
+    || candidate.status !== 'candidate_approval_pending'
+    || candidate.approved !== false || candidate.import_authorized !== false
+    || candidate.activation_authorized !== false) errors.push('каталог должен быть неутверждённым кандидатом');
+  if (!Array.isArray(candidate.labels)) return ['labels должен быть массивом'];
+  if (!candidate.world_revision_id || [...input.slots, ...input.templates]
+    .some((row) => row.world_revision_id !== candidate.world_revision_id)) {
+    errors.push('world_revision_id должен совпадать с expansion и G5 template источниками');
+  }
+
+  const slots = new Set(input.slots.map((row) => slotKey(row.id, row.version)));
+  const assignmentsBySlot = new Map();
+  const templatesByKey = new Map(input.templates.map((row) => [templateKey(row.id, row.version), row]));
+  for (const [index, row] of input.assignments.entries()) {
+    const key = slotKey(row.slot_id, row.slot_version);
+    const list = assignmentsBySlot.get(key) ?? [];
+    list.push({ row, index });
+    assignmentsBySlot.set(key, list);
+    if (!templatesByKey.has(templateKey(row.template_id, row.template_version))) {
+      errors.push(`${key}: неизвестный G5 шаблон ${row.template_id}@${row.template_version}`);
+    }
+  }
+  for (const key of slots) if (!assignmentsBySlot.has(key)) errors.push(`${key}: нет шаблона`);
+
+  const expectedFamilies = startFamilies(input.nodeBindings);
+  const expectedScopeGaps = scopeGaps(input.nodeBindings);
+  const seenIds = new Set();
+  const seenSlots = new Set();
+  const seenFamilies = new Set();
+  for (const record of candidate.labels) {
+    const id = record?.id ?? 'запись без id';
+    if (!record || typeof record !== 'object' || seenIds.has(id)) errors.push(`${id}: запись отсутствует или id повторяется`);
+    else seenIds.add(id);
+    if (record.version !== 1 || record.status !== 'candidate_approval_pending'
+      || record.provenance?.confidence !== 'C') errors.push(`${id}: неверны version, status или confidence`);
+    const slot = record.expansion_slot_ref;
+    const familyId = record.place_family_id;
+    if (Boolean(slot) === Boolean(familyId)) { errors.push(`${id}: нужен ровно один целевой ключ`); continue; }
+    const hasLabel = typeof record.display_label === 'string';
+    const hasGap = typeof record.gap_reason === 'string' && record.gap_reason.trim().length > 0;
+    if (hasLabel === hasGap) errors.push(`${id}: укажите описание либо причину пробела`);
+
+    if (slot) {
+      const key = slotKey(slot.id, slot.version);
+      if (!slots.has(key)) errors.push(`${id}: неизвестный expansion_slot_ref ${key}`);
+      if (seenSlots.has(key)) errors.push(`${key}: повторный ключ`);
+      seenSlots.add(key);
+      const expected = (assignmentsBySlot.get(key) ?? []).map(({ row }) => templateKey(row.template_id, row.template_version)).sort();
+      const actual = (record.applicable_template_refs ?? []).map((row) => templateKey(row.id, row.version)).sort();
+      if (JSON.stringify(expected) !== JSON.stringify(actual)) errors.push(`${id}: applicable_template_refs не покрывает все варианты`);
+      if (hasLabel) {
+        checkText(record.display_label, id, errors);
+        const spec = classLabels[record.common_visible_class];
+        if (!spec || spec.label !== record.display_label) errors.push(`${id}: текст не соответствует common_visible_class`);
+        const classes = actual.map((key) => familyOf(templatesByKey.get(key)?.id));
+        if (classes.length === 0 || classes.some((value) => value !== record.common_visible_class)) {
+          errors.push(`${id}: описание не подтверждено всеми возможными шаблонами слота`);
+        }
+        if ((spec?.placeFamilyId ?? undefined) !== record.target_place_family_id) {
+          errors.push(`${id}: неверный target_place_family_id`);
+        }
+      } else if (record.common_visible_class || record.target_place_family_id) {
+        errors.push(`${id}: у пробела не должно быть целевого видимого класса`);
+      }
+    } else {
+      if (!input.families.has(familyId)) errors.push(`${id}: неизвестный place_family_id ${familyId}`);
+      if (!expectedFamilies.has(familyId)) errors.push(`${familyId}: PF не привязан к стартовой территории G5`);
+      if (seenFamilies.has(familyId)) errors.push(`${familyId}: повторный ключ`);
+      seenFamilies.add(familyId);
+      if (hasLabel) {
+        checkText(record.display_label, id, errors);
+        if (familyLabels[familyId] !== record.display_label) errors.push(`${id}: текст не соответствует PF`);
+      }
+    }
+    const actualRefs = record.provenance?.source_refs;
+    const expectedRefs = refsFor(record, input, assignmentsBySlot);
+    if (!Array.isArray(actualRefs) || JSON.stringify([...new Set(actualRefs)].sort()) !== JSON.stringify(expectedRefs)
+      || actualRefs.length !== new Set(actualRefs ?? []).size) errors.push(`${id}: source_refs должны точно указывать на строки основания`);
+  }
+
+  for (const key of slots) if (!seenSlots.has(key)) errors.push(`не покрыт слот ${key}`);
+  for (const id of expectedFamilies) if (!seenFamilies.has(id)) errors.push(`не покрыт PF стартовой территории ${id}`);
+
+  const seenScopeGaps = new Set();
+  if (!Array.isArray(candidate.source_scope_gaps)) errors.push('source_scope_gaps должен быть массивом');
+  else for (const gap of candidate.source_scope_gaps) {
+    const source = expectedScopeGaps.get(gap.node_ref);
+    if (!source || seenScopeGaps.has(gap.node_ref)) errors.push(`неизвестный или повторный G5 source gap ${gap.node_ref}`);
+    if (!gap.gap_reason?.trim()) errors.push(`${gap.node_ref}: отсутствует причина source gap`);
+    if (gap.source_ref !== (source ? nodeRef(source.line) : null)) errors.push(`${gap.node_ref}: неверный source_ref`);
+    seenScopeGaps.add(gap.node_ref);
+  }
+  for (const key of expectedScopeGaps.keys()) if (!seenScopeGaps.has(key)) errors.push(`не объяснён G5 узел без PF ${key}`);
+  for (const key of seenScopeGaps) if (!expectedScopeGaps.has(key)) errors.push(`лишний G5 source gap ${key}`);
+  return errors;
+}
+
+function selfTest(input, gamebase) {
+  if (validate(input.candidate, input).length) throw new Error('self-test: исходный каталог невалиден');
+  console.log(`self-test: исходный каталог валиден (${input.candidate.labels.length} ключей)`);
+  try {
+    verifySourcePin(gamebase, { ...input.candidate.source_pins, ref_gamebase_commit: '0'.repeat(40) });
+    throw new Error('self-test FAIL: несовпадающий pin принят');
+  } catch (error) {
+    if (!error.message.includes('commit не совпадает с pin')) throw error;
+    console.log('self-test PASS: несовпадающий source pin отклонён');
+  }
+  try {
+    verifySourcePin(gamebase, {
+      ...input.candidate.source_pins,
+      ref_gamebase_files_sha256: {
+        ...input.candidate.source_pins.ref_gamebase_files_sha256,
+        [pfPath]: '0'.repeat(64)
+      }
+    });
+    throw new Error('self-test FAIL: изменённый source hash принят');
+  } catch (error) {
+    if (!error.message.includes('изменён исходный CSV')) throw error;
+    console.log('self-test PASS: несовпадающий source hash отклонён');
+  }
+  const probe = (name, edit, expected) => {
+    const candidate = JSON.parse(JSON.stringify(input.candidate));
+    const fixture = { ...input, assignments: [...input.assignments], candidate };
+    edit(candidate, fixture);
+    const errors = validate(candidate, fixture);
+    if (!errors.some((message) => message.includes(expected))) throw new Error(`self-test FAIL: ${name}`);
+    console.log(`self-test PASS: ${name} отклонена`);
+  };
+  probe('неизвестный слот', (candidate) => {
+    candidate.labels.find((row) => row.expansion_slot_ref).expansion_slot_ref.id = 'unknown_slot';
+  }, 'неизвестный expansion_slot_ref');
+  probe('пять слов', (candidate) => {
+    candidate.labels.find((row) => row.display_label).display_label = 'к очень далёкому северному лесу';
+  }, '1–4 слова');
+  probe('имя собственное в нижнем регистре', (candidate) => {
+    candidate.labels.find((row) => row.display_label).display_label = 'к новгороду';
+  }, 'возможное имя собственное');
+  probe('пропущенная причина', (candidate) => {
+    delete candidate.labels.find((row) => row.gap_reason).gap_reason;
+  }, 'укажите описание либо причину пробела');
+  probe('непокрытый PF', (candidate) => {
+    candidate.labels.splice(candidate.labels.findIndex((row) => row.place_family_id), 1);
+  }, 'не покрыт PF стартовой территории');
+  probe('необъяснённый G5 без PF', (candidate) => {
+    candidate.source_scope_gaps[0].gap_reason = '';
+  }, 'отсутствует причина source gap');
+  probe('несовместимый второй шаблон слота', (candidate, fixture) => {
+    const record = candidate.labels.find((row) => row.common_visible_class === 'river_channel');
+    const template = fixture.templates.find((row) => familyOf(row.id) === 'forest');
+    const key = slotKey(record.expansion_slot_ref.id, record.expansion_slot_ref.version);
+    const index = fixture.assignments.length;
+    fixture.assignments.push({ slot_id: record.expansion_slot_ref.id,
+      slot_version: record.expansion_slot_ref.version, template_id: template.id,
+      template_version: template.version });
+    record.applicable_template_refs.push({ id: template.id, version: template.version });
+    record.provenance.source_refs.push(pointer(slotRef, index));
+    record.provenance.source_refs.push(pointer(generationRef,
+      fixture.templates.findIndex((row) => templateKey(row.id, row.version) === templateKey(template.id, template.version))));
+  }, 'описание не подтверждено всеми возможными шаблонами слота');
+}
+
+try {
+  const options = args(process.argv.slice(2));
+  if (options.help) console.log('node validate.mjs [--gamebase-root PATH] [--self-test]');
+  else {
+    const input = load(options.gamebase);
+    const errors = validate(input.candidate, input);
+    if (errors.length) {
+      console.error(`Проверка не пройдена (${errors.length}):\n${errors.map((item) => `- ${item}`).join('\n')}`);
+      process.exitCode = 1;
+    } else {
+      const labels = input.candidate.labels;
+      console.log(`OK: ${labels.length} ключей; описаний ${labels.filter((row) => row.display_label).length}; пробелов ${labels.filter((row) => row.gap_reason).length}; G5 без PF в источнике ${input.candidate.source_scope_gaps.length}.`);
+      if (options.selfTest) selfTest(input, options.gamebase);
+    }
+  }
+} catch (error) {
+  console.error(error.message);
+  process.exitCode = 1;
+}

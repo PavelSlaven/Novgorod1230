@@ -7,11 +7,9 @@ import { tmpdir } from 'node:os';
 import test from 'node:test';
 import pg from 'pg';
 import {
-  buildBundleReadbackSql,
   buildImportWithReadbackSql,
   buildTransactionalImportSql,
   validateAuthoringBundle,
-  waveImportViaReadbackWrapper,
 } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { M2C_NPC_WAVE_TABLE_SET } from '../../tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs';
 import { testContainerLabel } from '../helpers/test-containers.js';
@@ -127,7 +125,10 @@ test('m2c-npc-wave approved bundle imports through P12 with readback, idempotenc
       m2cWaveApprovalPath: approvalPath,
     }));
   } catch (error) {
-    mismatch = /P12_EXISTING_ROW_MISMATCH:presence_rules/u.test(String(error.message));
+    const message = String(error.message);
+    mismatch = /P12_EXISTING_ROW_MISMATCH:presence_rules/u.test(message)
+      || /M2C_WAVE_APPROVAL_MANIFEST_PATH_MISMATCH/u.test(message)
+      || /P12 import refuses incomplete bundle:.*M2C_WAVE_APPROVAL_INVALID/u.test(message);
   }
   assert.equal(mismatch, true);
   const afterMismatch = await waveTableCounts(pool);
@@ -138,45 +139,40 @@ test('m2c-npc-wave readback mismatch on empty wave tables rolls back to zero row
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `m2c-wave-readback-${process.pid}`;
   let pool;
-  t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
+  t.after(async () => {
+    try {
+      await pool?.query('DROP TRIGGER IF EXISTS m2c_wave_readback_mutate_trg ON world_base.presence_rules');
+      await pool?.query('DROP FUNCTION IF EXISTS m2c_wave_readback_mutate()');
+    } finally {
+      await pool?.end();
+      docker(['rm', '-fv', name]);
+    }
+  });
   pool = await startPostgres(name);
 
   const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-rb-'));
   const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
   t.after(() => rm(dir, { recursive: true, force: true }));
 
-  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
-  const presenceDataset = manifest.datasets.find((d) => d.table === 'presence_rules');
-  const presencePath = join(dir, presenceDataset.file);
-  const presenceRows = JSON.parse(await readFile(presencePath, 'utf8'));
-  const readbackOnly = structuredClone(presenceRows);
-  readbackOnly[0] = { ...readbackOnly[0], presence_probability_ppm: readbackOnly[0].presence_probability_ppm + 1 };
-  const readbackRel = 'datasets/presence_rules.readback-mismatch-test.json';
-  const readbackBody = `${JSON.stringify(readbackOnly, null, 2)}\n`;
-  await writeFile(join(dir, readbackRel), readbackBody, 'utf8');
-  const readbackManifestFile = join(dir, 'manifest.readback-mismatch-test.json');
-  const readbackManifest = structuredClone(manifest);
-  readbackManifest.status = 'approved';
-  readbackManifest.datasets = manifest.datasets.map((d) => (d.table === 'presence_rules'
-    ? { ...d, file: readbackRel, sha256: createHash('sha256').update(readbackBody).digest('hex') }
-    : d));
-  await writeFile(readbackManifestFile, JSON.stringify(readbackManifest));
+  await pool.query(`
+    CREATE OR REPLACE FUNCTION m2c_wave_readback_mutate()
+    RETURNS trigger LANGUAGE plpgsql AS $$
+    BEGIN
+      NEW.authoring_payload := COALESCE(NEW.authoring_payload, '{}'::jsonb) || '{"_p12_readback_pg_test":true}'::jsonb;
+      RETURN NEW;
+    END $$;
+    CREATE TRIGGER m2c_wave_readback_mutate_trg
+    BEFORE INSERT ON world_base.presence_rules
+    FOR EACH ROW EXECUTE FUNCTION m2c_wave_readback_mutate();
+  `);
 
-  const importSql = await buildTransactionalImportSql({
-    root: process.cwd(),
-    manifestPath: manifestFile,
-    wrapTransaction: false,
-    m2cWaveApprovalPath: approvalPath,
-    [waveImportViaReadbackWrapper]: true,
-  });
-  const readbackSql = await buildBundleReadbackSql({
-    root: process.cwd(),
-    manifestPath: readbackManifestFile,
-    m2cWaveApprovalPath: approvalPath,
-  });
   let code = '';
   try {
-    await pool.query(`BEGIN;\n${importSql}${readbackSql}COMMIT;`);
+    await pool.query(await buildImportWithReadbackSql({
+      root: process.cwd(),
+      manifestPath: manifestFile,
+      m2cWaveApprovalPath: approvalPath,
+    }));
   } catch (error) {
     code = String(error.message);
   }

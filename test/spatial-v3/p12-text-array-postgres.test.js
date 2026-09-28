@@ -36,11 +36,13 @@ INSERT INTO world_base.presence_rules (
   '[]'::jsonb, 1000, 1, ${seasons}, ARRAY[]::text[], ${guards},
   'none', 'low', 'approved', 'p12-source', '{}'::jsonb
 );
-SELECT allowed_seasons::text, guards::text FROM world_base.presence_rules WHERE rule_id = 'pr_text_array';
+SELECT
+  allowed_seasons = ARRAY['spring','a,b','c"d']::text[] AS seasons_eq,
+  guards = ARRAY['guard,one']::text[] AS guards_eq
+FROM world_base.presence_rules WHERE rule_id = 'pr_text_array';
 ROLLBACK;
 `;
   const result = psql(insert);
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /spring/u);
-  assert.match(result.stdout, /guard,one/u);
+  assert.match(result.stdout, /\n t\s+\|\s*t\n/u);
 });

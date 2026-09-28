@@ -15,7 +15,7 @@ const ROOT = resolve(import.meta.dirname, '../..');
 const REGISTRY = 'data/contracts/spatial-v3/world-base-import-registry.v1.json';
 const DEFAULT_MANIFEST = 'data/world-catalogs/novgorod/spatial-v3/manifest.json';
 /** @internal Only set by buildImportWithReadbackSql for approved wave import+readback in one transaction. */
-export const waveImportViaReadbackWrapper = Symbol('waveImportViaReadbackWrapper');
+const waveImportViaReadbackWrapper = Symbol('waveImportViaReadbackWrapper');
 
 export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11, m2cWaveApprovalPath } = {}) {
   const projectRoot = resolve(root);
@@ -72,7 +72,11 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateExpansionRuleClosure(datasets, errors);
   validateM2cNpcWaveBundle(manifest, datasets, errors);
   if (bundleIncludesWaveTables(manifest, datasets) && manifest.status === 'approved') {
-    const waveApproval = await validateM2cNpcWaveApproval({ root: projectRoot, approvalPath: m2cWaveApprovalPath });
+    const waveApproval = await validateM2cNpcWaveApproval({
+      root: projectRoot,
+      approvalPath: m2cWaveApprovalPath,
+      bundleManifestPath: manifestPath,
+    });
     for (const waveError of waveApproval.errors) errors.push(issue('M2C_WAVE_APPROVAL_INVALID', waveError.code));
   }
   return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval, target_approval: targetApproval });

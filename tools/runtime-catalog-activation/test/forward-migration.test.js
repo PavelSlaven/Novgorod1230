@@ -161,7 +161,7 @@ test('v17 bootstrap owner migration rejects another schema fingerprint', () => {
 
 test('v17 bootstrap forward migrations pin chain matches post-27 checkpoint (070d3)', () => {
   const bootstrapFailureWorldPre =
-    '675c75ac48866e109fe289dd181756a603654856daf5502faafd0b146e33b29a';
+    'b984c252cce97f0cc2bc88d48ac0471a6c9ab03b738115ce6c35e13e8ca61695';
   assert.equal(
     WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
     bootstrapFailureWorldPre

@@ -4,34 +4,34 @@
   "generated_by": "names-peoples/scripts/build-name-components.mjs",
   "counts": {
     "pools": 3,
-    "entries": 206,
+    "entries": 219,
     "rules": 9,
     "by_component_kind": {
-      "demonym": 92,
-      "nickname": 31,
-      "patronymic": 83
+      "demonym": 94,
+      "nickname": 41,
+      "patronymic": 84
     },
     "by_selection_class": {
-      "ordinary": 182,
+      "ordinary": 195,
       "significant": 12,
       "dynastic": 12
     },
     "by_component_kind_and_selection_class": {
       "demonym": {
-        "ordinary": 92
+        "ordinary": 94
       },
       "nickname": {
-        "ordinary": 19,
+        "ordinary": 29,
         "significant": 12
       },
       "patronymic": {
         "dynastic": 12,
-        "ordinary": 71
+        "ordinary": 72
       }
     },
     "by_basis": {
-      "logical_necessity": 38,
-      "source_attested_form": 177
+      "source_attested_form": 190,
+      "logical_necessity": 38
     }
   },
   "army_screening": {
@@ -90,6 +90,15 @@
       "note": "Смысловой перескрининг выполнен по checked-in candidate snapshot: суффиксы -ич/-ов/-ин, явное «прозвищем» и демонимы -ане/-яне/-цы; итоговые машинные причины всех строк формирует ledger."
     },
     "scope_note": "Ledger validates the checked-in 1,059-row candidate snapshot; upstream screening totals are preparation-process metadata."
+  },
+  "d46_archive_accounting": {
+    "included_component_entries": 13,
+    "existing_component_updates": 5,
+    "archive_variants": 15,
+    "reclassified_candidate_variants": 4,
+    "variants": 19,
+    "typed_name_gaps": 10,
+    "rejected": 0
   },
   "typed_gaps": [
     {

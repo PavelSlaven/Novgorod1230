@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,6 +11,7 @@ const NAMES_DIR = path.join(GROUP_DIR, "personal_names");
 const PEOPLE_PATH = path.join(GROUP_DIR, "peoples_origins", "peoples_origins.csv");
 const IMPORT_CONTRACT_PATH = path.join(NAMES_DIR, "b2-import-contract.json");
 const SOURCE_PATH = path.join(NAMES_DIR, "b2-name-pool-source.json");
+const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
 const REPORT_PATH = path.join(NAMES_DIR, "name-pool-report.json");
 const SOCIAL_PATH = path.resolve(GROUP_DIR, "..", "social-strata-law", "social_strata_legal_status", "roles", "new_role_candidates.tsv");
 const CLASSES = new Set(["ordinary", "monastic", "dynastic", "significant"]);
@@ -19,6 +21,15 @@ const DERIVATIONS = new Set(["compiled_candidate", "explicit_source_gender", "ca
 const PEOPLE_DERIVATIONS = new Set(["candidate_origin", "novgorod_land_document", "source_explicit_people"]);
 const EVIDENCE_PERIODS = new Set(["candidate_compiled", "c1230", "medieval_general"]);
 const CLASS_DERIVATIONS = new Set(["", "calendar_name_any_christian"]);
+const DEFAULT_BLOCKED_FORMS = new Set(["Василиса", "Дарья", "Матрёна", "Прасковья"]);
+const LOWER_WEIGHT_FORMS = new Set(["Елена", "Ольга"]);
+const TURKIC_GAP_FORMS = new Set(["Гюлопа", "Ильдята", "Кыяс", "Сандус"]);
+const TREATY_READINGS = new Map(Object.entries({
+  Adam: "Адам", Albrecht: "Альбрехт", Bernhard: "Бернхард", Dethard: "Детхард",
+  Ermbrecht: "Эрмбрехт", Friedrich: "Фридрих", Heinrich: "Генрих", Hildeger: "Хильдегер",
+  Johann: "Иоганн", Konrad: "Конрад", Meinbern: "Майнберн", Membern: "Мемберн",
+  Regenbode: "Регеньбоде", Rolf: "Рольф", Volker: "Фолькер", Walter: "Вальтер",
+}));
 
 function rows(file) { return parseCsv(fs.readFileSync(file, "utf8")); }
 
@@ -42,7 +53,13 @@ function socialPositionIds() {
 
 function selectionKey(row) { return [row.name_form, row.sex_category, row.people_ref].join("|"); }
 
-export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, peopleRows, socialIds, report, importContract, source, poolHeader, entryHeader }) {
+function normalizedName(value) { return value.normalize("NFC").toLocaleLowerCase("ru").replaceAll("ё", "е").trim(); }
+
+function normalizedAlias(value) { return normalizedName(value).replace(/[ьъ]/g, ""); }
+
+function sha256(value) { return crypto.createHash("sha256").update(value).digest("hex"); }
+
+export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, peopleRows, socialIds, report, importContract, source, d46, snapshotContents, poolHeader, entryHeader }) {
   const errors = [];
   const expectedPoolHeader = importContract.tables["world_base.region_name_pools"].csv_columns;
   const expectedEntryHeader = importContract.tables["world_base.region_name_pool_entries"].csv_columns;
@@ -65,6 +82,7 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
 
   const peopleIds = new Set(peopleRows.filter((row) => ["people", "guest_itinerant"].includes(row.entity_kind)).map((row) => row.pp_id));
   const sourceIds = new Set(sourceRows.map((row) => row.nm_id));
+  const d46Ids = new Set(d46.name_entries.map((row) => row.id));
   const evidenceLines = new Set(evidenceRows.map((row) => Number(row.source_line?.slice(1))));
   if (evidenceRows.some((row) => !/^L\d+$/.test(row.source_line)) || evidenceLines.size !== evidenceRows.length || evidenceRows.length !== source.evidence_snapshot.expected_rows) errors.push("invalid evidence snapshot source_line set");
   const includedDerivations = derivationRows.filter((row) => !row.exclude_reason);
@@ -100,8 +118,10 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     for (const provenance of row.provenance_ref.split(" | ").filter(Boolean)) {
       const candidateMatch = provenance.match(/^game-base:names-peoples\/personal_names\/personal_names\.csv#nm_id=(.+)$/);
       const evidenceMatch = provenance.match(/^game-base:names-peoples\/sources\/book_evidence_m2c_names_b2\.csv#source_line=L(\d+)$/);
+      const d46Match = provenance.match(/^game-base:names-peoples\/personal_names\/d46-name-additions\.json#name-entry=(.+)$/);
       if (candidateMatch && sourceIds.has(candidateMatch[1])) continue;
       if (evidenceMatch && evidenceLines.has(Number(evidenceMatch[1]))) continue;
+      if (d46Match && d46Ids.has(d46Match[1])) continue;
       errors.push(`${row.id}: unresolved provenance_ref ${provenance}`);
     }
     const key = selectionKey(row);
@@ -116,6 +136,64 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     const entry = entriesByKey.get(key);
     const ref = `${source.input.provenance_prefix}${sourceRow.nm_id}`;
     if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${sourceRow.nm_id}: compiled candidate missing from merged entry`);
+  }
+  const d46All = [...d46.name_entries, ...d46.name_variants, ...d46.name_gaps, ...d46.component_entries, ...d46.component_updates];
+  const d46Keys = d46All.map((row) => normalizedName(row.name_form ?? row.variant_form ?? row.component_form ?? row.archive_name));
+  if (d46.schema !== "novgorod.game_base.d46_name_additions.v1" || d46.source_scope.expected_unique_new_candidates !== 190 || d46.source_scope.expected_unique_variants !== 15 || d46All.length !== 205 || new Set(d46Keys).size !== d46Keys.length) errors.push("D46 authoring scope drift");
+  const archiveVariants = d46.name_variants.filter((row) => row.classification === "archive_variant");
+  const reclassifiedVariants = d46.name_variants.filter((row) => row.classification !== "archive_variant");
+  if (d46.name_entries.length + d46.name_gaps.length + d46.component_entries.length + d46.component_updates.length + reclassifiedVariants.length !== 190 || archiveVariants.length !== 15) errors.push("D46 accounting partition drift");
+  if (d46.rejected.length) errors.push("D46 rejected records must be empty; selector gaps belong in name_gaps");
+  const expectedSnapshots = new Map([
+    ["onomastic_catalog", "sources/d46-onomastic-catalog-1230-1250.md"],
+    ["regional_name_pools", "sources/d46-regional-name-pools.json"],
+  ]);
+  if (Object.keys(d46.snapshots ?? {}).length !== expectedSnapshots.size) errors.push("D46 snapshot registry drift");
+  for (const [key, expectedPath] of expectedSnapshots) {
+    const snapshot = d46.snapshots?.[key];
+    if (snapshot?.path !== expectedPath || !/^[0-9a-f]{64}$/.test(snapshot?.sha256 ?? "") || sha256(snapshotContents?.[expectedPath] ?? "") !== snapshot?.sha256) errors.push(`D46 snapshot mismatch: ${key}`);
+  }
+  const snapshotRefPrefixes = new Set([...expectedSnapshots.values()].map((snapshotPath) => `game-base:names-peoples/${snapshotPath}#`));
+  for (const row of d46All) {
+    for (const ref of row.archive_refs ?? []) if (![...snapshotRefPrefixes].some((prefix) => ref.startsWith(prefix))) errors.push(`${ref}: D46 archive_ref does not resolve to a pinned snapshot`);
+    for (const sourceRow of row.source_rows ?? []) if (sourceRow.archive_ref !== (row.archive_refs ?? []).find((ref) => ref === sourceRow.archive_ref) || sourceRow.crosswalk_ref?.startsWith("/")) errors.push(`${row.name_form ?? row.variant_form ?? row.component_form ?? row.archive_name}: invalid D46 source-row provenance`);
+  }
+  const existingNormalizedNames = new Set(entries.filter((row) => !d46Ids.has(row.id)).map((row) => normalizedAlias(row.name_form)));
+  for (const row of d46.name_entries) {
+    const entry = entriesByKey.get(selectionKey(row));
+    const ref = `game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=${row.id}`;
+    if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${row.id}: D46 name missing from merged entry`);
+    const foreignSourced = row.source_rows.some((sourceRow) => sourceRow.source_section?.includes("§9"));
+    if (foreignSourced && row.people_ref === "pp_novgorod_rus") errors.push(`${row.id}: foreign name uses Russian fallback`);
+    if (foreignSourced && row.basis !== "sourced") errors.push(`${row.id}: A/B foreign source must remain sourced`);
+    if (!row.archive_refs?.length || !["sourced", "analogy"].includes(row.basis) || !["A", "B", "C"].includes(row.confidence)) errors.push(`${row.id}: incomplete D46 evidence metadata`);
+    if (existingNormalizedNames.has(normalizedAlias(row.name_form))) errors.push(`${row.id}: normalized D46 name duplicates existing entry`);
+    if (DEFAULT_BLOCKED_FORMS.has(row.name_form) || LOWER_WEIGHT_FORMS.has(row.name_form) || TURKIC_GAP_FORMS.has(row.name_form)) errors.push(`${row.id}: typed-gap form leaked into selectable entries`);
+  }
+  const gapsByForm = new Map(d46.name_gaps.map((row) => [row.name_form, row]));
+  for (const form of DEFAULT_BLOCKED_FORMS) {
+    const gap = gapsByForm.get(form);
+    if (gap?.gap_type !== "default_1230_1250_requires_new_evidence" || gap.selection_status !== "gap" || !gap.gap_reason?.includes("§5.3")) errors.push(`${form}: invalid closed-list default gap`);
+  }
+  for (const form of LOWER_WEIGHT_FORMS) {
+    const gap = gapsByForm.get(form);
+    if (gap?.gap_type !== "lower_weight_required" || gap.selection_status !== "gap" || !gap.gap_reason?.includes("пониженным весом")) errors.push(`${form}: invalid lower-weight gap`);
+  }
+  for (const form of TURKIC_GAP_FORMS) {
+    const gap = gapsByForm.get(form);
+    if (gap?.gap_type !== "people_ref_unresolved" || gap.people_ref || gap.selection_status !== "gap" || !gap.gap_reason?.includes("Тюркского origin нет")) errors.push(`${form}: invalid Turkic selector gap`);
+  }
+  if (gapsByForm.size !== DEFAULT_BLOCKED_FORMS.size + LOWER_WEIGHT_FORMS.size + TURKIC_GAP_FORMS.size) errors.push("D46 typed-gap closed list drift");
+  for (const [latin, cyrillic] of TREATY_READINGS) {
+    const row = d46.name_entries.find((item) => item.source_forms?.includes(latin));
+    if (row?.name_form !== cyrillic || row.evidence_period !== "c1230" || row.basis !== "sourced") errors.push(`${latin}: invalid treaty reading or evidence metadata`);
+  }
+  for (const row of d46.name_variants) {
+    if (!row.target_refs?.length || !row.archive_refs?.length) errors.push(`${row.variant_form}: incomplete D46 variant`);
+    for (const target of row.target_refs ?? []) {
+      const [targetPath, targetId] = target.split("#");
+      if (!targetId || (targetPath.endsWith("personal_names.csv") ? !sourceIds.has(targetId) : targetPath.endsWith("name_pool_entries.csv") ? !ids.has(targetId) : targetPath.endsWith("d46-name-additions.json") ? !d46Ids.has(targetId.replace(/^name-entry=/, "")) : true)) errors.push(`${row.variant_form}: unresolved D46 variant target ${target}`);
+    }
   }
   const evidenceByLine = new Map(evidenceRows.map((row) => [Number(row.source_line.slice(1)), row]));
   for (const derived of includedDerivations) {
@@ -141,6 +219,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   }
   if (report.total_entries !== entries.length || JSON.stringify(report.counts_by_sex_people_selection_class_derivation) !== JSON.stringify(sortedObject(counts))) errors.push("generated report drift");
   if (!report.pool_provenance_ref) errors.push("missing pool provenance_ref");
+  const d46Accounting = report.d46_archive_accounting;
+  if (d46Accounting?.unique_new_candidates !== 190 || d46Accounting?.included_name_entries !== d46.name_entries.length || d46Accounting?.included_component_entries !== d46.component_entries.length || d46Accounting?.existing_component_updates !== d46.component_updates.length || d46Accounting?.archive_variants !== archiveVariants.length || d46Accounting?.reclassified_candidate_variants !== reclassifiedVariants.length || d46Accounting?.variants !== d46.name_variants.length || d46Accounting?.typed_name_gaps !== d46.name_gaps.length || d46Accounting?.rejected !== 0) errors.push("D46 report accounting drift");
 
   const accounting = report.evidence_accounting;
   const derivationsByLine = new Map();
@@ -183,6 +263,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   for (const peopleRef of peopleIds) for (const sex of SEXES) {
     if ((ordinaryCounts[`${sex}|${peopleRef}`] ?? 0) < 10 && !gapKeys.has(`${peopleRef}|${sex}|ordinary|ordinary_pool_below_10`)) errors.push(`missing typed coverage gap ${peopleRef}|${sex}`);
   }
+  const reportGapIds = new Set(report.typed_gaps.map((gap) => gap.gap_id));
+  for (const gap of d46.name_gaps) if (!reportGapIds.has(gap.gap_id)) errors.push(`${gap.name_form}: D46 typed gap missing from report`);
   return errors;
 }
 
@@ -228,6 +310,11 @@ function selfTest(base) {
     ["unknown exclusion reason", (copy) => { copy.derivationRows.find((row) => row.exclude_reason).exclude_reason = "guessed"; }, /unknown exclusion reason/],
     ["source form absent from snapshot", (copy) => { copy.derivationRows.find((row) => !row.exclude_reason).source_form = "not-in-snapshot"; }, /source_form absent from snapshot/],
     ["wrong unique key contract", (copy) => { copy.importContract.tables["world_base.region_name_pool_entries"].unique_key = ["name_pool_id", "name_form"]; }, /wrong entry unique key contract/],
+    ["closed default gap leaked", (copy) => { copy.d46.name_gaps.find((row) => row.name_form === "Василиса").gap_type = "lower_weight_required"; }, /invalid closed-list default gap/],
+    ["lower-weight gap leaked", (copy) => { copy.d46.name_gaps.find((row) => row.name_form === "Ольга").selection_status = "selectable"; }, /invalid lower-weight gap/],
+    ["Turkic selector gap leaked", (copy) => { copy.d46.name_gaps.find((row) => row.name_form === "Гюлопа").people_ref = "pp_novgorod_rus"; }, /invalid Turkic selector gap/],
+    ["snapshot hash drift", (copy) => { copy.d46.snapshots.onomastic_catalog.sha256 = "0".repeat(64); }, /D46 snapshot mismatch/],
+    ["treaty Latin reading leaked", (copy) => { copy.d46.name_entries.find((row) => row.source_forms?.includes("Adam")).name_form = "Adam"; }, /invalid treaty reading/],
   ];
   for (const [name, mutate, expected] of probes) {
     const copy = structuredClone(base);
@@ -257,10 +344,30 @@ function selfTest(base) {
   badPoolHeader.poolHeader[0] = "name_pool_id";
   assert.match(validate(badPoolHeader).join("\n"), /wrong pool header/);
   console.log("self-test PASS: wrong physical PK header");
+
+  // D46 deterministic probes: local classes, origin bounds, gaps and variant semantics.
+  const byId = new Map(base.entries.map((row) => [row.id, row]));
+  assert.deepEqual([byId.get("nov_name_d46_13_034_v1")?.name_form, byId.get("nov_name_d46_13_034_v1")?.people_ref], ["Борята", "pp_novgorod_rus"]);
+  assert.deepEqual([byId.get("nov_name_d46_13_018_v1")?.name_form, byId.get("nov_name_d46_13_018_v1")?.sex_category], ["Агафья", "female"]);
+  assert.equal(byId.get("nov_name_d46_13_262_v1")?.selection_class, "dynastic");
+  assert.equal(byId.get("nov_name_d46_13_029_v1")?.selection_class, "monastic");
+  assert.equal(byId.get("nov_name_d46_13_001_v1")?.people_ref, "pp_fg002");
+  assert.deepEqual([byId.get("nov_name_d46_13_250_v1")?.name_form, byId.get("nov_name_d46_13_250_v1")?.people_ref], ["Хейльватр", "pp_fg001"]);
+  assert.equal(byId.get("nov_name_d46_13_093_v1")?.people_ref, "pp_fg005");
+  assert.equal(base.d46.rejected.length, 0);
+  assert.deepEqual([...DEFAULT_BLOCKED_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "default_1230_1250_requires_new_evidence").map((row) => row.name_form).sort());
+  assert.deepEqual([...LOWER_WEIGHT_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "lower_weight_required").map((row) => row.name_form).sort());
+  assert.deepEqual([...TURKIC_GAP_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "people_ref_unresolved").map((row) => row.name_form).sort());
+  assert(base.d46.name_variants.some((row) => row.variant_form === "Никита" && row.target_refs.includes("names-peoples/personal_names/name_pool_entries.csv#nov_name_evidence_l24_01_v1")));
+  assert(base.d46.name_variants.some((row) => row.variant_form === "Hæil(h)vatr" && row.target_refs.includes("names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_250_v1")));
+  for (const form of ["Гюрьги", "Кузма", "Сёмюн"]) assert(base.d46.name_variants.some((row) => row.variant_form === form && row.classification === "normalized_variant"));
+  console.log("self-test PASS: D46 first-name probes");
 }
 
 const importContract = JSON.parse(fs.readFileSync(IMPORT_CONTRACT_PATH, "utf8"));
 const source = JSON.parse(fs.readFileSync(SOURCE_PATH, "utf8"));
+const d46 = JSON.parse(fs.readFileSync(D46_PATH, "utf8"));
+const snapshotContents = Object.fromEntries(Object.values(d46.snapshots).map((snapshot) => [snapshot.path, fs.readFileSync(path.join(GROUP_DIR, snapshot.path), "utf8")]));
 const base = {
   pools: rows(path.join(NAMES_DIR, "name_pools.csv")),
   entries: rows(path.join(NAMES_DIR, "name_pool_entries.csv")),
@@ -272,6 +379,8 @@ const base = {
   report: JSON.parse(fs.readFileSync(REPORT_PATH, "utf8")),
   importContract,
   source,
+  d46,
+  snapshotContents,
   poolHeader: header(path.join(NAMES_DIR, "name_pools.csv")),
   entryHeader: header(path.join(NAMES_DIR, "name_pool_entries.csv")),
 };

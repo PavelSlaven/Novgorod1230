@@ -23,13 +23,20 @@ def main():
     archetypes = {row["occupation_archetype_id"]: row for row in defaults}
     rows = []
     for occupation in occupations:
-        archetype = archetypes[occupation["occupation_archetype_id"]]
-        primary = json.loads(archetype["primary_skill_ids"])
-        secondary = json.loads(archetype["secondary_skill_ids"])
-        gate = json.loads(archetype["gate_skill_ids"])
-        forbidden = json.loads(archetype["forbidden_skill_ids"])
-        assert all(s in skills for s in primary + secondary + gate + forbidden)
-        assert archetype["default_level_logic"] == "primary +2 typical, secondary +1 if biography supports"
+        if occupation["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog":
+            primary = secondary = gate = forbidden = []
+            level_rule = "no_source:occupation_specific_skill_mapping"
+            skill_source = "no_source:domain_archetype_does_not_attest_occupation_skills"
+        else:
+            archetype = archetypes[occupation["occupation_archetype_id"]]
+            primary = json.loads(archetype["primary_skill_ids"])
+            secondary = json.loads(archetype["secondary_skill_ids"])
+            gate = json.loads(archetype["gate_skill_ids"])
+            forbidden = json.loads(archetype["forbidden_skill_ids"])
+            assert all(s in skills for s in primary + secondary + gate + forbidden)
+            assert archetype["default_level_logic"] == "primary +2 typical, secondary +1 if biography supports"
+            level_rule = archetype["default_level_logic"]
+            skill_source = "world-base-seeds/occupation_skill_defaults_v1.csv#" + archetype["occupation_archetype_id"]
         oid = occupation["occupation_id"]
         rows.append({
             "competence_id": "competence_" + oid,
@@ -39,14 +46,14 @@ def main():
             "secondary_skill_ids": secondary,
             "gate_skill_ids": gate,
             "forbidden_skill_ids": forbidden,
-            "default_level_rule": archetype["default_level_logic"],
+            "default_level_rule": level_rule,
             "age_modifier": "no_source",
             "sex_modifier": "no_source",
             "learning_modes": ["observation", "tasks_matching_capacity_and_risk",
                                "practice_with_feedback"],
             "learning_gates": ["time", "task", "material_access"],
             "source_refs": ["world-base-seeds/skill_catalog_v1.csv",
-                            "world-base-seeds/occupation_skill_defaults_v1.csv#" + archetype["occupation_archetype_id"],
+                            skill_source,
                             LEARNING, "occupations/occupations_additions.csv#" + oid],
             "status": "candidate",
         })

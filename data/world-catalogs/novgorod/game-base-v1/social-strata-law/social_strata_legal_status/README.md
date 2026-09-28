@@ -1,4 +1,4 @@
-# social_strata_legal_status — 11 новых ролей сверх пинованных 71
+# social_strata_legal_status — 33 кандидата ролей сверх пинованных 71
 
 Статус: **candidate**. Автор данных себя не утверждает (WR §21.1) — нужен отдельный проход утверждения (старшая модель на высоком reasoning, или владелец).
 Группа `game-base-v1`, домен `social_strata_legal_status`.
@@ -10,17 +10,18 @@
 (`reports/validation.json.pinned_tsv_sha256`, пересчитывается при каждом запуске).
 Из него отдельным файлом добавлены 11 недостающих ролей, названных в брифе коллектора:
 тиун, вирник, мечник, бирич, подвойский, закуп, рядович, скоморох, повитуха, кормилица, знахарка
-(холоп, изгой, смерд уже присутствуют в пинованном файле — проверено `rg`, добавления не требуют).
+(холоп, изгой, смерд уже присутствуют в пинованном файле — проверено `rg`, добавления не требуют),
+и 22 архивных кандидата D46 из `scripts/archive_role_candidates.json`.
 
 | Файл | Строк | Что внутри |
 |---|---|---|
-| `roles/new_role_candidates.tsv` | 11 | Те же 64 колонки, что в пинованном файле. `status=candidate`, `mapping_review_status=candidate`. |
+| `roles/new_role_candidates.tsv` | 33 | Те же 64 колонки, что в пинованном файле. `status=candidate`, `mapping_review_status=candidate`. |
 
 ## Метод
 
 - **Авторский вход** (суждение): `scripts/seed_new_roles.py` — по одной записи на роль: историческая функция, права,
   типичные конфликты, источники и все 6 archetype id.
-- **Механика** (скрипт): `scripts/build_roles.py` мержит авторский вход с общим шаблоном (`BOILERPLATE`,
+- **Механика** (скрипт): `scripts/build_roles.py` мержит авторский вход и архивные кандидаты с общим шаблоном (`BOILERPLATE`,
   списан построчно с пинованных ролей того же `role_group`), проверяет:
   1. `role_id` не пересекается с пинованным файлом;
   2. заполнены все 64 колонки;
@@ -28,6 +29,18 @@
      `legal_status_archetype_id`, `dependency_archetype_id`, `mobility_archetype_id`) резолвится в
      `data/world-base-seeds/*.csv` (main checkout) со `status=approved`;
   4. непусты `attitude_to_*`.
+- Девяти кандидатам D46 назначено `basis=logical_necessity`: общего описания роли недостаточно для точной аттестации.
+  Княгиня использует те же archetype ids, что и князь; участники суда/веча остаются ситуационными ролями, а не
+  должностными управляющими. Наёмный воин и посол отнесены к военной службе и власти, певчий и раздающий
+  милостыню — к мирянам, не к церковной элите.
+- Все 22 архивные роли получают ID по смыслу (например, `nov_role_claimant`, `nov_role_church_singer`), не по номеру строки.
+  `modern_explanation` сохраняет только роль-специфичное уточнение; общая рабочая цепочка и типовые места заменяются
+  на `no_source:typical_places`, если у самой роли нет основания. Пять редких ролей несут явную политику
+  `context_only_not_mass_default` в `llm_generation_rules`.
+- Архивные secondary profession refs записаны в `profession_refs` авторского JSON и попадают в `sources` как provenance;
+  ROL0113 имеет `basis:logical_necessity`. ROL0104 наследует все применимые archetype/status значения
+  `nov_role_ponomar`; builder сверяет их с пинованной строкой.
+  `reports/validation.json` содержит exact-проверки ID, refs, политики, archetypes и отсутствия шаблонных цепочек.
 - Пинованный файл открывается только на чтение; sha256 фиксируется в отчёте, чтобы ревьюер мог убедиться,
   что он не тронут.
 
@@ -50,10 +63,10 @@
 
 ```
 cd scripts
-python build_roles.py
+python3 build_roles.py
 ```
-Скрипт только читает: пинованный TSV и `data/world-base-seeds/*.csv` в main checkout
-(`C:/Users/Slaven/Documents/Novgorod`, read-only). Пишет только в эту папку
+Скрипт только читает: пинованный TSV, `scripts/archive_role_candidates.json` и
+`data/world-base-seeds/*.csv` текущего checkout. Пишет только в эту папку
 (`roles/new_role_candidates.tsv`, `reports/*.json`).
 
 ## Известные пробелы (не закрыты в этом проходе)

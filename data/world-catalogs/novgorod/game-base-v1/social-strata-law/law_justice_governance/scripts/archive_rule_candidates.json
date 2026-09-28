@@ -1,0 +1,614 @@
+[
+  {
+    "archive_ref": "n1230:law_rule:animal_damage",
+    "archive_id": "n1230:law_rule:animal_damage",
+    "title_ru": "Повреждение животного",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:boundary_dispute",
+    "archive_id": "n1230:law_rule:boundary_dispute",
+    "title_ru": "Спор о границе",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "attach_to": "lw_offence_boundary_and_marked_tree"
+  },
+  {
+    "archive_ref": "n1230:law_rule:child_liability",
+    "archive_id": "n1230:law_rule:child_liability",
+    "title_ru": "Ответственность ребёнка/опекуна",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:church_court_scope",
+    "archive_id": "n1230:law_rule:church_court_scope",
+    "title_ru": "Сфера церковного суда",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:church_inheritance_interest",
+    "archive_id": "n1230:law_rule:church_inheritance_interest",
+    "title_ru": "Церковные вклады и наследство",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:church_marriage_jurisdiction",
+    "archive_id": "n1230:law_rule:church_marriage_jurisdiction",
+    "title_ru": "Церковная юрисдикция брака",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:contract_breach",
+    "archive_id": "n1230:law_rule:contract_breach",
+    "title_ru": "Нарушение соглашения",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:court_authority_prince_posadnik",
+    "archive_id": "n1230:law_rule:court_authority_prince_posadnik",
+    "title_ru": "Совместная/разделённая судебная власть князя и посадника",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION",
+    "attach_to": "lw_inst_yanin_mixed_court_mid_xii"
+  },
+  {
+    "archive_ref": "n1230:law_rule:craft_defect",
+    "archive_id": "n1230:law_rule:craft_defect",
+    "title_ru": "Спор о качестве ремесленной работы",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:crop_damage",
+    "archive_id": "n1230:law_rule:crop_damage",
+    "title_ru": "Повреждение урожая",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:debt_claim",
+    "archive_id": "n1230:law_rule:debt_claim",
+    "title_ru": "Иск о долге",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "attach_to": "lw_proc_debt_denial_witness_oath"
+  },
+  {
+    "archive_ref": "n1230:law_rule:debt_default",
+    "archive_id": "n1230:law_rule:debt_default",
+    "title_ru": "Невозврат долга",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "attach_to": "lw_proc_creditor_priority_multiple_debts"
+  },
+  {
+    "archive_ref": "n1230:law_rule:dependent_property_capacity",
+    "archive_id": "n1230:law_rule:dependent_property_capacity",
+    "title_ru": "Имущественная дееспособность зависимого",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:divorce_context",
+    "archive_id": "n1230:law_rule:divorce_context",
+    "title_ru": "Развод и последствия",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:dowry_property",
+    "archive_id": "n1230:law_rule:dowry_property",
+    "title_ru": "Приданое",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:false_accusation",
+    "archive_id": "n1230:law_rule:false_accusation",
+    "title_ru": "Ложное обвинение",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:fire_damage",
+    "archive_id": "n1230:law_rule:fire_damage",
+    "title_ru": "Ущерб от пожара",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "attach_to": "lw_offence_arson_barn_or_yard"
+  },
+  {
+    "archive_ref": "n1230:law_rule:foreign_merchant_dispute",
+    "archive_id": "n1230:law_rule:foreign_merchant_dispute",
+    "title_ru": "Спор с иностранным купцом",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:guarantor_liability",
+    "archive_id": "n1230:law_rule:guarantor_liability",
+    "title_ru": "Ответственность поручителя",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:hire_dispute",
+    "archive_id": "n1230:law_rule:hire_dispute",
+    "title_ru": "Спор о найме",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:homicide_compensation",
+    "archive_id": "n1230:law_rule:homicide_compensation",
+    "title_ru": "Убийство и компенсация",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:horse_theft",
+    "archive_id": "n1230:law_rule:horse_theft",
+    "title_ru": "Кража лошади",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:household_debt_after_death",
+    "archive_id": "n1230:law_rule:household_debt_after_death",
+    "title_ru": "Долги после смерти",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:inheritance_sons",
+    "archive_id": "n1230:law_rule:inheritance_sons",
+    "title_ru": "Наследование сыновьями",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:insult_compensation",
+    "archive_id": "n1230:law_rule:insult_compensation",
+    "title_ru": "Оскорбление и компенсация",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:land_use_dispute",
+    "archive_id": "n1230:law_rule:land_use_dispute",
+    "title_ru": "Спор о пользовании землёй",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "merge_into": "n1230:property_rule:land_use_right"
+  },
+  {
+    "archive_ref": "n1230:law_rule:livestock_theft",
+    "archive_id": "n1230:law_rule:livestock_theft",
+    "title_ru": "Кража скота",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:marriage_property",
+    "archive_id": "n1230:law_rule:marriage_property",
+    "title_ru": "Имущество супругов",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:merchant_dispute",
+    "archive_id": "n1230:law_rule:merchant_dispute",
+    "title_ru": "Спор купцов",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:minor_guardianship",
+    "archive_id": "n1230:law_rule:minor_guardianship",
+    "title_ru": "Опека над несовершеннолетним",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:oath_evidence",
+    "archive_id": "n1230:law_rule:oath_evidence",
+    "title_ru": "Клятва",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "attach_to": "lw_proc_debt_denial_witness_oath"
+  },
+  {
+    "archive_ref": "n1230:law_rule:ordeal_context",
+    "archive_id": "n1230:law_rule:ordeal_context",
+    "title_ru": "Ордалия — контекст применения",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:pledge_enforcement",
+    "archive_id": "n1230:law_rule:pledge_enforcement",
+    "title_ru": "Взыскание залога",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "merge_into": "n1230:property_rule:pledged_property"
+  },
+  {
+    "archive_ref": "n1230:law_rule:price_dispute",
+    "archive_id": "n1230:law_rule:price_dispute",
+    "title_ru": "Спор о цене",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:property_damage",
+    "archive_id": "n1230:law_rule:property_damage",
+    "title_ru": "Повреждение имущества",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:purchase_of_dependent",
+    "archive_id": "n1230:law_rule:purchase_of_dependent",
+    "title_ru": "Сделка с зависимым человеком",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:restitution_before_fine",
+    "archive_id": "n1230:law_rule:restitution_before_fine",
+    "title_ru": "Возмещение и штраф как разные последствия",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION",
+    "attach_to": "lw_offence_bodily_injury_three_payments"
+  },
+  {
+    "archive_ref": "n1230:law_rule:robbery",
+    "archive_id": "n1230:law_rule:robbery",
+    "title_ru": "Грабёж",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:runaway_dependent",
+    "archive_id": "n1230:law_rule:runaway_dependent",
+    "title_ru": "Уход/бегство зависимого",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:slave_or_dependent_theft",
+    "archive_id": "n1230:law_rule:slave_or_dependent_theft",
+    "title_ru": "Похищение/увод зависимого человека",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:slave_status_exit",
+    "archive_id": "n1230:law_rule:slave_status_exit",
+    "title_ru": "Освобождение из зависимости",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:theft_general",
+    "archive_id": "n1230:law_rule:theft_general",
+    "title_ru": "Кража имущества",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:tysyatsky_trade_court",
+    "archive_id": "n1230:law_rule:tysyatsky_trade_court",
+    "title_ru": "Торгово-судебная роль тысяцкого",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:law_rule:weapon_theft",
+    "archive_id": "n1230:law_rule:weapon_theft",
+    "title_ru": "Кража оружия",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:law_rule:witness_requirement",
+    "archive_id": "n1230:law_rule:witness_requirement",
+    "title_ru": "Свидетели",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE",
+    "attach_to": "lw_proc_witness_status_exceptions"
+  },
+  {
+    "archive_ref": "n1230:law_rule:written_record_evidence",
+    "archive_id": "n1230:law_rule:written_record_evidence",
+    "title_ru": "Письменная запись как доказательство",
+    "confidence": "B",
+    "basis": "analogy",
+    "period": "ок. 1230; источник требует проверки применимости",
+    "region": "Новгородская земля",
+    "evidence_class": "RUS_GENERAL_EVIDENCE"
+  },
+  {
+    "archive_ref": "n1230:property_rule:abandoned_or_lost_property",
+    "archive_id": "n1230:property_rule:abandoned_or_lost_property",
+    "title_ru": "abandoned or lost property",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:boat_control",
+    "archive_id": "n1230:property_rule:boat_control",
+    "title_ru": "boat control",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:church_property",
+    "archive_id": "n1230:property_rule:church_property",
+    "title_ru": "church property",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:dowry_property",
+    "archive_id": "n1230:property_rule:dowry_property",
+    "title_ru": "dowry property",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION",
+    "merge_into": "n1230:law_rule:dowry_property"
+  },
+  {
+    "archive_ref": "n1230:property_rule:household_property",
+    "archive_id": "n1230:property_rule:household_property",
+    "title_ru": "household property",
+    "confidence": "B",
+    "basis": "logical_necessity",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:land_use_right",
+    "archive_id": "n1230:property_rule:land_use_right",
+    "title_ru": "land use right",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:landholding_rights",
+    "archive_id": "n1230:property_rule:landholding_rights",
+    "title_ru": "landholding rights",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION",
+    "merge_into": "n1230:property_rule:land_use_right"
+  },
+  {
+    "archive_ref": "n1230:property_rule:livestock_control",
+    "archive_id": "n1230:property_rule:livestock_control",
+    "title_ru": "livestock control",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:merchant_inventory",
+    "archive_id": "n1230:property_rule:merchant_inventory",
+    "title_ru": "merchant inventory",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:monastery_property",
+    "archive_id": "n1230:property_rule:monastery_property",
+    "title_ru": "monastery property",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:pledged_property",
+    "archive_id": "n1230:property_rule:pledged_property",
+    "title_ru": "pledged property",
+    "confidence": "B",
+    "basis": "logical_necessity",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:princely_rights",
+    "archive_id": "n1230:property_rule:princely_rights",
+    "title_ru": "princely rights",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:urban_yard_control",
+    "archive_id": "n1230:property_rule:urban_yard_control",
+    "title_ru": "urban yard control",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  },
+  {
+    "archive_ref": "n1230:property_rule:workshop_tools",
+    "archive_id": "n1230:property_rule:workshop_tools",
+    "title_ru": "workshop tools",
+    "confidence": "C",
+    "basis": "analogy",
+    "period": "ок. 1230–1250; датировка источников требует проверки",
+    "region": "Новгородская земля",
+    "evidence_class": "RECONSTRUCTION"
+  }
+]

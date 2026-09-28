@@ -276,6 +276,21 @@ Ordinary aggregate transition также детерминирован и CAS-bou
 materialization boundary; значимая география, люди и hidden facts требуют
 соответствующей authority. Narration не восполняет отсутствующий источник.
 
+## Presence rules (R-2a, G5/G6 scope)
+
+`applyPresenceRulesFirstArrival` и `resolve_presence_rule` пишут исходы в тот же
+party-scoped aggregate, что и O1, но записи различаются формой: O1 —
+`resolution_ref`/`candidate_key`; presence-only — `subject_kind`/`subject_ref` и
+`count` (включая явный `0`). Повторяемость — `presenceRuleReplayKey` /
+`derivePresenceRuleSeedContext` в `presence-rules-first-arrival.js` (партия,
+scope, subject, для `by_year_season` — год календаря и сезон). Регион для
+`pickRegionalPresenceRule` — строгое совпадение с G0-предком закреплённого G4,
+не эвристика по данным. `seed_scope` может идти после presence-only preamble;
+idempotent replay seed не требует `state_version === 1`. Проекции turn/O1
+(`ordinary_state`, enablement) должны фильтровать только O1-записи
+(`isO1PresenceRecord`). LW-071: пропуск потомков при решённом предке — в движке
+выбора правил, не в transition primitive.
+
 ## Ошибки
 
 `materializeAuthoredStartPartyInstance` также принимает отдельно загруженный

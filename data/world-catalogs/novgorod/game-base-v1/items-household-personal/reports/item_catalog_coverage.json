@@ -1,0 +1,12 @@
+{
+  "status": "candidate",
+  "items": 196,
+  "household_items": 117,
+  "personal_items": 79,
+  "coverage_kind": {
+    "ambient_frequency": 117,
+    "inventory": 79
+  },
+  "closed_reason": {},
+  "rule": "Every catalog item is present in a class-C inventory, ambient item-place frequency, or one closed reason."
+}

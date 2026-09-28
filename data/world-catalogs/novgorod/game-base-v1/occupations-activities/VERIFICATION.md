@@ -457,3 +457,10 @@ NPC-профилей и привязок присутствия нет. Четы
 Семейный статус `married` выводится в `composition_slot_facts` только из явного spouse link D-2; общая роль хозяйки не получает этот статус. `appearance_presentation_rules` сверяет текущую экипировку с `garments.csv#covers_hair`: три hair грани видны только когда все надетые вещи имеют `no`; `yes`, `unknown` и неразрешённое покрытие скрывают их, оставляя внутренние признаки. Снятие или потеря убора меняет видимость при следующей оценке экипировки. `python npc_runtime_profiles/build.py` и `python validate.py` проверяют проекцию и пробы HW006/HW007, отсутствия убора и неизвестного покрытия. Runtime renderer не входит в каталог.
 
 F2: slot override в `actor_appearance_authoring.json` выбирает `nov_clothing_rural_v1` только для `pf_peasant_homestead.mistress`. Её `composition_slot_facts.clothing_option_refs` содержат ровно `of_rural_female_warm_married`, `of_rural_female_cool_married`, `of_rural_female_cold_married`. Общая роль `nov_role_household_mistress` остаётся `nov_clothing_urban_middle_v1` и её региональные варианты не меняются; домохозяин остаётся сельским. Валидатор проверяет это вместе с правилом `covers_hair`.
+
+### npc_runtime_profiles — appearance_presentation_rules и composition_slot_facts — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера (C011 `1040ec2c`, C011b `969e3f77`).
+
+- Правило `hair_visible_only_when_head_uncovered` опирается на надетые вещи и `covers_hair`. Статичного `head_coverage_state` в данных нет. Черты волос у NPC хранятся всегда.
+- `composition_slot_facts`: ровно два связанных слота `pf_peasant_homestead` (домохозяин и хозяйка), `married` только у них. Хозяйке — `of_rural_female_{warm,cool,cold}_married` с головным убором, домохозяину — сельский мужской наряд. Общий профиль `nov_role_household_mistress` вне этого слота остаётся городским.

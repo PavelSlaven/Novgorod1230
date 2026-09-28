@@ -573,3 +573,10 @@
 ### C011 spouse link — candidate
 
 `pf_peasant_homestead.householder` и `.mistress` связаны в D-2 явным `spouse` confidence C. D-3 выпускает `rel_composition_spouse_2dc90533f844af8e` только для материализованных актёров этих слотов и сохраняет `rel_start_gap_ce80a3efab995c86` для прочих носителей тех же ролей. `form_spouse_smerd*` требуют этой конкретной связи; для пары без неё остаются нейтральные `form_start_gap_73a03cfc8444bd0b` и `form_start_gap_e94d6e153b4ad1b5`. Проверки: `python scripts/build.py`, `python scripts/check.py --probe`.
+
+### relationship_rules.csv и address_forms.csv — супруги двора — approve
+
+Проверено: Claude Opus 5.5, построчный diff ревьюера (C011 `1040ec2c` против `0fd10db6`).
+
+- +1 правило `rel_composition_spouse_2dc90533f844af8e`, применимое только при явной связи слотов; нейтральные `rel_start_gap_ce80a3efab995c86` и две формы `form_start_gap_*` для той же пары ролей без связи сохранены.
+- В `address_forms.csv` изменены только две ячейки `situation` у `form_spouse_smerd` и `form_spouse_smerd_reverse_gap`: обращения супругов применимы только при связи слотов.

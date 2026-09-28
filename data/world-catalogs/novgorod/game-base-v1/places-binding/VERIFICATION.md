@@ -1078,3 +1078,10 @@
 ### C011 spouse link — candidate
 
 В `pf_peasant_homestead` добавлена явная связь слотов `householder` ↔ `mistress`, `spouse`, confidence C. Checker проверяет существование обоих endpoint, provenance и отсутствие переноса связи на другой PF; `node scripts/check-people-composition.mjs --self-test` и `node scripts/validate.mjs` проходят.
+
+### presence/people_composition_authoring.json — slot_relationships — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера и полный `validate.mjs --start-territory … --self-test` на `1040ec2c` и `969e3f77` — 0 FAIL.
+
+- Одна связь `pf_peasant_homestead.householder ↔ pf_peasant_homestead.mistress`, `spouse`, редакционное C с причиной и тремя ссылками. Брак не выводится из роли: пара ролей вне связанного слота остаётся без супружеских отношений.
+- `slots/slot_instance_variants.json`: у `siv_002`–`siv_007` один текст `no_source` о возрасте экземпляра.

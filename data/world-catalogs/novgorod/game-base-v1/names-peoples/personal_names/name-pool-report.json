@@ -1,0 +1,2841 @@
+{
+  "schema": "novgorod.game_base.personal_name_pool_report.v2",
+  "status": "candidate",
+  "total_entries": 179,
+  "counts_by_sex_people_selection_class_derivation": {
+    "female|pp_novgorod_rus|monastic|explicit_source_gender": 3,
+    "female|pp_novgorod_rus|ordinary|calendar_name_gender": 12,
+    "female|pp_novgorod_rus|ordinary|compiled_candidate": 23,
+    "female|pp_novgorod_rus|ordinary|explicit_source_gender": 15,
+    "male|pp_chud_est|significant|explicit_source_gender": 1,
+    "male|pp_fg001|significant|explicit_source_gender": 1,
+    "male|pp_fg002|significant|explicit_source_gender": 3,
+    "male|pp_izhora|ordinary|explicit_source_gender": 1,
+    "male|pp_izhora|significant|explicit_source_gender": 2,
+    "male|pp_novgorod_rus|dynastic|compiled_candidate": 1,
+    "male|pp_novgorod_rus|monastic|calendar_name_gender": 3,
+    "male|pp_novgorod_rus|monastic|explicit_source_gender": 3,
+    "male|pp_novgorod_rus|ordinary|calendar_name_gender": 31,
+    "male|pp_novgorod_rus|ordinary|compiled_candidate": 8,
+    "male|pp_novgorod_rus|ordinary|explicit_source_gender": 52,
+    "male|pp_novgorod_rus|significant|compiled_candidate": 1,
+    "male|pp_novgorod_rus|significant|explicit_source_gender": 18,
+    "male|pp_smolyane|significant|explicit_source_gender": 1
+  },
+  "evidence_accounting": {
+    "total_rows": 207,
+    "included_rows": 149,
+    "included_derived_records": 223,
+    "included_rows_by_derivation": {
+      "calendar_name_gender": 39,
+      "explicit_source_gender": 104,
+      "explicit_source_gender+calendar_name_gender": 6
+    },
+    "included_records_by_derivation": {
+      "calendar_name_gender": 67,
+      "explicit_source_gender": 156
+    },
+    "excluded_rows": 58,
+    "excluded_rows_by_reason": {
+      "no_eligible_first_name": 9,
+      "people_ref_unresolved": 16,
+      "period_outside_supported_xi_xiv": 5,
+      "personal_name_form_ambiguous": 1,
+      "sex_category_unresolved": 26,
+      "source_requires_separate_temporal_verification": 1
+    },
+    "decisions": [
+      {
+        "evidence_line": 2,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Боян"
+        ],
+        "source_forms": [
+          "Боян"
+        ]
+      },
+      {
+        "evidence_line": 3,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Житобуд"
+        ],
+        "source_forms": [
+          "Житобуд"
+        ]
+      },
+      {
+        "evidence_line": 4,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Негорад"
+        ],
+        "source_forms": [
+          "Негорад"
+        ]
+      },
+      {
+        "evidence_line": 5,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Добровит"
+        ],
+        "source_forms": [
+          "Добровит"
+        ]
+      },
+      {
+        "evidence_line": 6,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Нежек"
+        ],
+        "source_forms": [
+          "Нежек"
+        ]
+      },
+      {
+        "evidence_line": 7,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Добромысл"
+        ],
+        "source_forms": [
+          "Добромысл"
+        ]
+      },
+      {
+        "evidence_line": 8,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Дрозд",
+          "Хомуня"
+        ],
+        "source_forms": [
+          "Дрозд",
+          "Хомуня"
+        ]
+      },
+      {
+        "evidence_line": 9,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Азогут",
+          "Животток",
+          "Сирома"
+        ],
+        "source_forms": [
+          "Азогут",
+          "Животток",
+          "Сирома"
+        ]
+      },
+      {
+        "evidence_line": 10,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Гаврила"
+        ],
+        "source_forms": [
+          "Гаврила"
+        ]
+      },
+      {
+        "evidence_line": 11,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Улита"
+        ],
+        "source_forms": [
+          "Улита"
+        ]
+      },
+      {
+        "evidence_line": 12,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Феврония"
+        ],
+        "source_forms": [
+          "Феврония"
+        ]
+      },
+      {
+        "evidence_line": 13,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Аврам"
+        ],
+        "source_forms": [
+          "Аврам"
+        ]
+      },
+      {
+        "evidence_line": 14,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Марина"
+        ],
+        "source_forms": [
+          "Марина"
+        ]
+      },
+      {
+        "evidence_line": 15,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Давыд"
+        ],
+        "source_forms": [
+          "Давыд"
+        ]
+      },
+      {
+        "evidence_line": 16,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Онфим"
+        ],
+        "source_forms": [
+          "Онфим"
+        ]
+      },
+      {
+        "evidence_line": 17,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Данила"
+        ],
+        "source_forms": [
+          "Данила"
+        ]
+      },
+      {
+        "evidence_line": 18,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Гюрги",
+          "Деметрий",
+          "Мирофа",
+          "Оводокия",
+          "Офимья",
+          "Павел",
+          "Пелагия",
+          "София",
+          "Улияна",
+          "Федосия"
+        ],
+        "source_forms": [
+          "Гюрги",
+          "Деметре",
+          "Мирофа",
+          "Оводокия",
+          "Офимию",
+          "Павело",
+          "Пелагия",
+          "София",
+          "Улияна",
+          "Федосия"
+        ]
+      },
+      {
+        "evidence_line": 19,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Мирослав"
+        ],
+        "source_forms": [
+          "Мирослав"
+        ]
+      },
+      {
+        "evidence_line": 20,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Олисей"
+        ],
+        "source_forms": [
+          "Олисей"
+        ]
+      },
+      {
+        "evidence_line": 21,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 22,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Савва"
+        ],
+        "source_forms": [
+          "Савва"
+        ]
+      },
+      {
+        "evidence_line": 23,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Моислав"
+        ],
+        "source_forms": [
+          "Моислав"
+        ]
+      },
+      {
+        "evidence_line": 24,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Микита",
+          "Олекса"
+        ],
+        "source_forms": [
+          "Микита",
+          "Олекса"
+        ]
+      },
+      {
+        "evidence_line": 25,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Иванко"
+        ],
+        "source_forms": [
+          "Иванко"
+        ]
+      },
+      {
+        "evidence_line": 26,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 27,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 28,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Анна",
+          "Мариамна",
+          "Петр"
+        ],
+        "source_forms": [
+          "Анна",
+          "Мариамна",
+          "Петр"
+        ]
+      },
+      {
+        "evidence_line": 29,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Внезд"
+        ],
+        "source_forms": [
+          "Внезд"
+        ]
+      },
+      {
+        "evidence_line": 30,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Степан"
+        ],
+        "source_forms": [
+          "Степан"
+        ]
+      },
+      {
+        "evidence_line": 31,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Семён"
+        ],
+        "source_forms": [
+          "Семен"
+        ]
+      },
+      {
+        "evidence_line": 32,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Иванко"
+        ],
+        "source_forms": [
+          "Иванко"
+        ]
+      },
+      {
+        "evidence_line": 33,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Волос"
+        ],
+        "source_forms": [
+          "Волос"
+        ]
+      },
+      {
+        "evidence_line": 34,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Борис"
+        ],
+        "source_forms": [
+          "Борис"
+        ]
+      },
+      {
+        "evidence_line": 35,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Андрейц",
+          "Богуслав",
+          "Вячеслав",
+          "Давыдко",
+          "Душилец"
+        ],
+        "source_forms": [
+          "Андрейц",
+          "Богуслав",
+          "Вячеслав",
+          "Давыдко",
+          "Душилец"
+        ]
+      },
+      {
+        "evidence_line": 36,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Вячко",
+          "Иванко",
+          "Иваць",
+          "Микифор",
+          "Рядко",
+          "Судила",
+          "Яким"
+        ],
+        "source_forms": [
+          "Вячко",
+          "Иванко",
+          "Иваць",
+          "Микифор",
+          "Рядко",
+          "Судила",
+          "Яким"
+        ]
+      },
+      {
+        "evidence_line": 37,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Судимир"
+        ],
+        "source_forms": [
+          "Судимир"
+        ]
+      },
+      {
+        "evidence_line": 38,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Глеб",
+          "Михаил",
+          "Миша",
+          "Петр"
+        ],
+        "source_forms": [
+          "Глеб",
+          "Михаил",
+          "Миша",
+          "Петр"
+        ]
+      },
+      {
+        "evidence_line": 39,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Иванко"
+        ],
+        "source_forms": [
+          "Иванко"
+        ]
+      },
+      {
+        "evidence_line": 40,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Твердислав"
+        ],
+        "source_forms": [
+          "Твердислав"
+        ]
+      },
+      {
+        "evidence_line": 41,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Пелгусий",
+          "Филипп"
+        ],
+        "source_forms": [
+          "Пелгусий",
+          "Филипп"
+        ]
+      },
+      {
+        "evidence_line": 42,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ларион"
+        ],
+        "source_forms": [
+          "Ларион"
+        ]
+      },
+      {
+        "evidence_line": 43,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Семён"
+        ],
+        "source_forms": [
+          "Семен"
+        ]
+      },
+      {
+        "evidence_line": 44,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гюрята"
+        ],
+        "source_forms": [
+          "Гюрята"
+        ]
+      },
+      {
+        "evidence_line": 45,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Жировит"
+        ],
+        "source_forms": [
+          "Жировит"
+        ]
+      },
+      {
+        "evidence_line": 46,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 47,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Жизнобуд"
+        ],
+        "source_forms": [
+          "Жизнобуд"
+        ]
+      },
+      {
+        "evidence_line": 48,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 49,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender",
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Жизномир",
+          "Микула"
+        ],
+        "source_forms": [
+          "Жизномир",
+          "Микула"
+        ]
+      },
+      {
+        "evidence_line": 50,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Асаф",
+          "Ефрем",
+          "Исухий"
+        ],
+        "source_forms": [
+          "Асаф",
+          "Ефрем",
+          "Исухий"
+        ]
+      },
+      {
+        "evidence_line": 51,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Гюргий"
+        ],
+        "source_forms": [
+          "Гюргий"
+        ]
+      },
+      {
+        "evidence_line": 52,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Нежка"
+        ],
+        "source_forms": [
+          "Нежка"
+        ]
+      },
+      {
+        "evidence_line": 53,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гургий",
+          "Лука"
+        ],
+        "source_forms": [
+          "Гургий",
+          "Лука"
+        ]
+      },
+      {
+        "evidence_line": 54,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Нежил"
+        ],
+        "source_forms": [
+          "Нежил"
+        ]
+      },
+      {
+        "evidence_line": 55,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 56,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 57,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Душила",
+          "Федка"
+        ],
+        "source_forms": [
+          "Душила",
+          "Федка"
+        ]
+      },
+      {
+        "evidence_line": 58,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Андрей",
+          "Захария",
+          "Савва",
+          "Тудор"
+        ],
+        "source_forms": [
+          "Андрей",
+          "Захарья",
+          "Савва",
+          "Тудор"
+        ]
+      },
+      {
+        "evidence_line": 59,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Семко"
+        ],
+        "source_forms": [
+          "Семко"
+        ]
+      },
+      {
+        "evidence_line": 60,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 61,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Якун"
+        ],
+        "source_forms": [
+          "Якун"
+        ]
+      },
+      {
+        "evidence_line": 62,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Дмитр",
+          "Семьюн",
+          "Яким"
+        ],
+        "source_forms": [
+          "Дмитр",
+          "Семьюн",
+          "Яким"
+        ]
+      },
+      {
+        "evidence_line": 63,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Кузьма"
+        ],
+        "source_forms": [
+          "Кузьма"
+        ]
+      },
+      {
+        "evidence_line": 64,
+        "status": "excluded",
+        "reason": "personal_name_form_ambiguous"
+      },
+      {
+        "evidence_line": 65,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Офросения"
+        ],
+        "source_forms": [
+          "Офросения"
+        ]
+      },
+      {
+        "evidence_line": 66,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender",
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Михаль",
+          "Софья",
+          "Хритания"
+        ],
+        "source_forms": [
+          "Михаль",
+          "Софья",
+          "Хритания"
+        ]
+      },
+      {
+        "evidence_line": 67,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Олфимья",
+          "Пелага"
+        ],
+        "source_forms": [
+          "Олфимья",
+          "Пелага"
+        ]
+      },
+      {
+        "evidence_line": 68,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Янка"
+        ],
+        "source_forms": [
+          "Янка"
+        ]
+      },
+      {
+        "evidence_line": 69,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гостята"
+        ],
+        "source_forms": [
+          "Гостята"
+        ]
+      },
+      {
+        "evidence_line": 70,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Смолиг"
+        ],
+        "source_forms": [
+          "Смолиг"
+        ]
+      },
+      {
+        "evidence_line": 71,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Мина"
+        ],
+        "source_forms": [
+          "Мина"
+        ]
+      },
+      {
+        "evidence_line": 72,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender",
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Анна",
+          "Климята",
+          "Коснятин",
+          "Федор"
+        ],
+        "source_forms": [
+          "Анна",
+          "Климята",
+          "Коснятин",
+          "Федор"
+        ]
+      },
+      {
+        "evidence_line": 73,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ремша"
+        ],
+        "source_forms": [
+          "Ремша"
+        ]
+      },
+      {
+        "evidence_line": 74,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Яков"
+        ],
+        "source_forms": [
+          "Яков"
+        ]
+      },
+      {
+        "evidence_line": 75,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Матей",
+          "Спирко"
+        ],
+        "source_forms": [
+          "Матей",
+          "Спирко"
+        ]
+      },
+      {
+        "evidence_line": 76,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 77,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender",
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Онания",
+          "Ярила"
+        ],
+        "source_forms": [
+          "Онания",
+          "Ярила"
+        ]
+      },
+      {
+        "evidence_line": 78,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Софья",
+          "Харитания"
+        ],
+        "source_forms": [
+          "Софья",
+          "Харитания"
+        ]
+      },
+      {
+        "evidence_line": 79,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гостята"
+        ],
+        "source_forms": [
+          "Гостята"
+        ]
+      },
+      {
+        "evidence_line": 80,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Захария"
+        ],
+        "source_forms": [
+          "Захария"
+        ]
+      },
+      {
+        "evidence_line": 81,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Пелугий"
+        ],
+        "source_forms": [
+          "Пелугий"
+        ]
+      },
+      {
+        "evidence_line": 82,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Гаврило"
+        ],
+        "source_forms": [
+          "Гаврило"
+        ]
+      },
+      {
+        "evidence_line": 83,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Сбыслав"
+        ],
+        "source_forms": [
+          "Сбыслав"
+        ]
+      },
+      {
+        "evidence_line": 84,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 85,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Меша"
+        ],
+        "source_forms": [
+          "Меша"
+        ]
+      },
+      {
+        "evidence_line": 86,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Сава"
+        ],
+        "source_forms": [
+          "Сава"
+        ]
+      },
+      {
+        "evidence_line": 87,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ратмир"
+        ],
+        "source_forms": [
+          "Ратмир"
+        ]
+      },
+      {
+        "evidence_line": 88,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Спиридон"
+        ],
+        "source_forms": [
+          "Спиридон"
+        ]
+      },
+      {
+        "evidence_line": 89,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Владислав",
+          "Гаврила",
+          "Гаврилец",
+          "Юрий"
+        ],
+        "source_forms": [
+          "Владислав",
+          "Гаврила",
+          "Гаврилец",
+          "Юрий"
+        ]
+      },
+      {
+        "evidence_line": 90,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ярун"
+        ],
+        "source_forms": [
+          "Ярун"
+        ]
+      },
+      {
+        "evidence_line": 91,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Антон",
+          "Иван"
+        ],
+        "source_forms": [
+          "Антон",
+          "Иван"
+        ]
+      },
+      {
+        "evidence_line": 92,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ивор"
+        ],
+        "source_forms": [
+          "Ивор"
+        ]
+      },
+      {
+        "evidence_line": 93,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender",
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Жирослав",
+          "Михаил",
+          "Ольстен",
+          "Тидрик",
+          "Шифорд"
+        ],
+        "source_forms": [
+          "Жирослав",
+          "Михаил",
+          "Ольстен",
+          "Тидрик",
+          "Шифорд"
+        ]
+      },
+      {
+        "evidence_line": 94,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 95,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 96,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 97,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 98,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Анастасия",
+          "Втора",
+          "Гостята",
+          "Ефимья",
+          "Мария",
+          "Нежка",
+          "Сторонька",
+          "Страхота",
+          "Христина"
+        ],
+        "source_forms": [
+          "Анастасия",
+          "Втора",
+          "Гостята",
+          "Ефимья",
+          "Мария",
+          "Нежка",
+          "Сторонька",
+          "Страхота",
+          "Христина"
+        ]
+      },
+      {
+        "evidence_line": 99,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 100,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 101,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 102,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 103,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 104,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 105,
+        "status": "excluded",
+        "reason": "period_outside_supported_xi_xiv"
+      },
+      {
+        "evidence_line": 106,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Иван",
+          "Кирьяк"
+        ],
+        "source_forms": [
+          "Иван",
+          "Кирьяк"
+        ]
+      },
+      {
+        "evidence_line": 107,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender",
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Никифор",
+          "Якун"
+        ],
+        "source_forms": [
+          "Никифор",
+          "Якун"
+        ]
+      },
+      {
+        "evidence_line": 108,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Алекса",
+          "Варлаам"
+        ],
+        "source_forms": [
+          "Алекса",
+          "Варлаам"
+        ]
+      },
+      {
+        "evidence_line": 109,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Антоний"
+        ],
+        "source_forms": [
+          "Антоний"
+        ]
+      },
+      {
+        "evidence_line": 110,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Внезд",
+          "Гюргя",
+          "Лука",
+          "Микита",
+          "Олекса",
+          "Рагуил",
+          "Ратмир",
+          "Страшко"
+        ],
+        "source_forms": [
+          "Внезд",
+          "Гюргя",
+          "Лука",
+          "Микита",
+          "Олекса",
+          "Рагуил",
+          "Ратмир",
+          "Страшко"
+        ]
+      },
+      {
+        "evidence_line": 111,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Яким"
+        ],
+        "source_forms": [
+          "Яким"
+        ]
+      },
+      {
+        "evidence_line": 112,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Микифор"
+        ],
+        "source_forms": [
+          "Микифор"
+        ]
+      },
+      {
+        "evidence_line": 113,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Иванко"
+        ],
+        "source_forms": [
+          "Иванко"
+        ]
+      },
+      {
+        "evidence_line": 114,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Судила"
+        ],
+        "source_forms": [
+          "Судила"
+        ]
+      },
+      {
+        "evidence_line": 115,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Вячко"
+        ],
+        "source_forms": [
+          "Вячко"
+        ]
+      },
+      {
+        "evidence_line": 116,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Иваць"
+        ],
+        "source_forms": [
+          "Иваць"
+        ]
+      },
+      {
+        "evidence_line": 117,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Рядко"
+        ],
+        "source_forms": [
+          "Рядко"
+        ]
+      },
+      {
+        "evidence_line": 118,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Вячеслав"
+        ],
+        "source_forms": [
+          "Вячеслав"
+        ]
+      },
+      {
+        "evidence_line": 119,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Богуслав"
+        ],
+        "source_forms": [
+          "Богуслав"
+        ]
+      },
+      {
+        "evidence_line": 120,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Андрейц"
+        ],
+        "source_forms": [
+          "Андрейц"
+        ]
+      },
+      {
+        "evidence_line": 121,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Давыдко"
+        ],
+        "source_forms": [
+          "Давыдко"
+        ]
+      },
+      {
+        "evidence_line": 122,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Душилец"
+        ],
+        "source_forms": [
+          "Душилец"
+        ]
+      },
+      {
+        "evidence_line": 123,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Петр"
+        ],
+        "source_forms": [
+          "Петр"
+        ]
+      },
+      {
+        "evidence_line": 124,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Глеб"
+        ],
+        "source_forms": [
+          "Глеб"
+        ]
+      },
+      {
+        "evidence_line": 125,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Михаил"
+        ],
+        "source_forms": [
+          "Михаил"
+        ]
+      },
+      {
+        "evidence_line": 126,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Миша"
+        ],
+        "source_forms": [
+          "Миша"
+        ]
+      },
+      {
+        "evidence_line": 127,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ефрем"
+        ],
+        "source_forms": [
+          "Ефрем"
+        ]
+      },
+      {
+        "evidence_line": 128,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Исухий"
+        ],
+        "source_forms": [
+          "Исухий"
+        ]
+      },
+      {
+        "evidence_line": 129,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Асаф"
+        ],
+        "source_forms": [
+          "Асаф"
+        ]
+      },
+      {
+        "evidence_line": 130,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Нежка"
+        ],
+        "source_forms": [
+          "Нежка"
+        ]
+      },
+      {
+        "evidence_line": 131,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 132,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 133,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 134,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 135,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 136,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Душила"
+        ],
+        "source_forms": [
+          "Душила"
+        ]
+      },
+      {
+        "evidence_line": 137,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Анастасия"
+        ],
+        "source_forms": [
+          "Нястя"
+        ]
+      },
+      {
+        "evidence_line": 138,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Федка"
+        ],
+        "source_forms": [
+          "Федка"
+        ]
+      },
+      {
+        "evidence_line": 139,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Семко"
+        ],
+        "source_forms": [
+          "Семко"
+        ]
+      },
+      {
+        "evidence_line": 140,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 141,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 142,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 143,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Хритания"
+        ],
+        "source_forms": [
+          "Хритания"
+        ]
+      },
+      {
+        "evidence_line": 144,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Софья"
+        ],
+        "source_forms": [
+          "Софья"
+        ]
+      },
+      {
+        "evidence_line": 145,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Михаль"
+        ],
+        "source_forms": [
+          "Михаль"
+        ]
+      },
+      {
+        "evidence_line": 146,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Пелага"
+        ],
+        "source_forms": [
+          "Пелага"
+        ]
+      },
+      {
+        "evidence_line": 147,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Олфимья"
+        ],
+        "source_forms": [
+          "Олфимья"
+        ]
+      },
+      {
+        "evidence_line": 148,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 149,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 150,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Янка"
+        ],
+        "source_forms": [
+          "Янка"
+        ]
+      },
+      {
+        "evidence_line": 151,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 152,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Ирина"
+        ],
+        "source_forms": [
+          "Ярина"
+        ]
+      },
+      {
+        "evidence_line": 153,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гостята"
+        ],
+        "source_forms": [
+          "Гостята"
+        ]
+      },
+      {
+        "evidence_line": 154,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Василь"
+        ],
+        "source_forms": [
+          "Василь"
+        ]
+      },
+      {
+        "evidence_line": 155,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Анна"
+        ],
+        "source_forms": [
+          "Анна"
+        ]
+      },
+      {
+        "evidence_line": 156,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Климята"
+        ],
+        "source_forms": [
+          "Климята"
+        ]
+      },
+      {
+        "evidence_line": 157,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Коснятин"
+        ],
+        "source_forms": [
+          "Коснятин"
+        ]
+      },
+      {
+        "evidence_line": 158,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 159,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Федор"
+        ],
+        "source_forms": [
+          "Федор"
+        ]
+      },
+      {
+        "evidence_line": 160,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Спирко"
+        ],
+        "source_forms": [
+          "Спирко"
+        ]
+      },
+      {
+        "evidence_line": 161,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Матей"
+        ],
+        "source_forms": [
+          "Матей"
+        ]
+      },
+      {
+        "evidence_line": 162,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 163,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 164,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 165,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 166,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ярила"
+        ],
+        "source_forms": [
+          "Ярила"
+        ]
+      },
+      {
+        "evidence_line": 167,
+        "status": "included",
+        "derivations": [
+          "calendar_name_gender"
+        ],
+        "name_forms": [
+          "Онания"
+        ],
+        "source_forms": [
+          "Онания"
+        ]
+      },
+      {
+        "evidence_line": 168,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Харитания"
+        ],
+        "source_forms": [
+          "Харитания"
+        ]
+      },
+      {
+        "evidence_line": 169,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Софья"
+        ],
+        "source_forms": [
+          "Софья"
+        ]
+      },
+      {
+        "evidence_line": 170,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Владислав"
+        ],
+        "source_forms": [
+          "Владислав"
+        ]
+      },
+      {
+        "evidence_line": 171,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гаврила"
+        ],
+        "source_forms": [
+          "Гаврила"
+        ]
+      },
+      {
+        "evidence_line": 172,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Юрий"
+        ],
+        "source_forms": [
+          "Юрий"
+        ]
+      },
+      {
+        "evidence_line": 173,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Гаврилец"
+        ],
+        "source_forms": [
+          "Гаврилец"
+        ]
+      },
+      {
+        "evidence_line": 174,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 175,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Антон"
+        ],
+        "source_forms": [
+          "Антон"
+        ]
+      },
+      {
+        "evidence_line": 176,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Иван"
+        ],
+        "source_forms": [
+          "Иван"
+        ]
+      },
+      {
+        "evidence_line": 177,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 178,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 179,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 180,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 181,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 182,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Артемей"
+        ],
+        "source_forms": [
+          "Артемей"
+        ]
+      },
+      {
+        "evidence_line": 183,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 184,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 185,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Василий"
+        ],
+        "source_forms": [
+          "Василий"
+        ]
+      },
+      {
+        "evidence_line": 186,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 187,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Игнатей"
+        ],
+        "source_forms": [
+          "Игнатей"
+        ]
+      },
+      {
+        "evidence_line": 188,
+        "status": "excluded",
+        "reason": "no_eligible_first_name"
+      },
+      {
+        "evidence_line": 189,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 190,
+        "status": "excluded",
+        "reason": "period_outside_supported_xi_xiv"
+      },
+      {
+        "evidence_line": 191,
+        "status": "excluded",
+        "reason": "period_outside_supported_xi_xiv"
+      },
+      {
+        "evidence_line": 192,
+        "status": "excluded",
+        "reason": "period_outside_supported_xi_xiv"
+      },
+      {
+        "evidence_line": 193,
+        "status": "excluded",
+        "reason": "period_outside_supported_xi_xiv"
+      },
+      {
+        "evidence_line": 194,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 195,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 196,
+        "status": "excluded",
+        "reason": "sex_category_unresolved"
+      },
+      {
+        "evidence_line": 197,
+        "status": "excluded",
+        "reason": "source_requires_separate_temporal_verification"
+      },
+      {
+        "evidence_line": 198,
+        "status": "excluded",
+        "reason": "people_ref_unresolved"
+      },
+      {
+        "evidence_line": 199,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Пелгусий"
+        ],
+        "source_forms": [
+          "Пелгусий"
+        ]
+      },
+      {
+        "evidence_line": 200,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Пелгусий"
+        ],
+        "source_forms": [
+          "Пелгусий"
+        ]
+      },
+      {
+        "evidence_line": 201,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Филипп"
+        ],
+        "source_forms": [
+          "Филипп"
+        ]
+      },
+      {
+        "evidence_line": 202,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Лембито"
+        ],
+        "source_forms": [
+          "Лембито"
+        ]
+      },
+      {
+        "evidence_line": 203,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Лембито"
+        ],
+        "source_forms": [
+          "Лембито"
+        ]
+      },
+      {
+        "evidence_line": 204,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Шиворд"
+        ],
+        "source_forms": [
+          "Шиворд"
+        ]
+      },
+      {
+        "evidence_line": 205,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Тидрик"
+        ],
+        "source_forms": [
+          "Тидрик"
+        ]
+      },
+      {
+        "evidence_line": 206,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ольстен"
+        ],
+        "source_forms": [
+          "Ольстен"
+        ]
+      },
+      {
+        "evidence_line": 207,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Тидрик"
+        ],
+        "source_forms": [
+          "Тидрик"
+        ]
+      },
+      {
+        "evidence_line": 208,
+        "status": "included",
+        "derivations": [
+          "explicit_source_gender"
+        ],
+        "name_forms": [
+          "Ольстен"
+        ],
+        "source_forms": [
+          "Ольстен"
+        ]
+      }
+    ]
+  },
+  "typed_gaps": [
+    {
+      "gap_id": "gap_personal_names_chud_est_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_chud_est",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_chud_est_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_chud_est",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg001_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg001",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg001_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg001",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg002_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg002",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg002_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg002",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg003_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg003",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg003_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg003",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg004_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg004",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg004_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg004",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg005_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg005",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg005_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg005",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg006_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg006",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg006_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg006",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg007_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg007",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg007_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg007",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg008_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg008",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg008_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg008",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg009_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg009",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg009_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg009",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg010_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg010",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_fg010_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_fg010",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_izhora_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_izhora",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_izhora_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_izhora",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 1,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_korela_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_korela",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_korela_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_korela",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_smolyane_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_smolyane",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_smolyane_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_smolyane",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_ves_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_ves",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_ves_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_ves",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_vod_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_vod",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_vod_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_vod",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_yem_sum_female",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_yem_sum",
+      "sex_category": "female",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_yem_sum_male",
+      "gap_type": "ordinary_pool_below_10",
+      "people_ref": "pp_yem_sum",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 10,
+      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+    },
+    {
+      "gap_id": "gap_personal_names_social_position",
+      "gap_type": "selector_coverage",
+      "people_ref": "*",
+      "sex_category": "*",
+      "selection_class": "ordinary",
+      "reason": "The sources do not establish name eligibility by social-position archetype; every current entry is explicitly unrestricted.",
+      "provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json#selection_policy"
+    },
+    {
+      "gap_id": "gap_personal_names_medieval_general_period_specificity",
+      "gap_type": "temporal_evidence",
+      "people_ref": "*",
+      "sex_category": "*",
+      "selection_class": "*",
+      "reason": "Rows marked medieval_general are attested within the XI–XIV-century envelope, not individually at 1230–1250; owner approval is required before activation.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/VERIFICATION.md#personal_namespersonal_namescsv--approve_with_limits"
+    },
+    {
+      "gap_id": "gap_personal_names_patronymics_nicknames",
+      "gap_type": "future_name_component_pool",
+      "people_ref": "*",
+      "sex_category": "*",
+      "selection_class": "*",
+      "reason": "Patronymics, demonyms and nicknames are excluded from this first-name pool and require a separately sourced future component pool.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv"
+    }
+  ],
+  "evidence_review": {
+    "accepted_rows": 207,
+    "summary_ref": "research:r-names/out/summary.md",
+    "decision": "Reviewed rows are admitted only when the declared sex, people and class rules close every selector. Evidence rows are merged with the compiled candidate by (name_form, sex_category, people_ref); every contributing line remains in provenance_ref."
+  },
+  "import_contract": "b2-import-contract.json",
+  "pool_provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json"
+}

@@ -1,0 +1,282 @@
+evidence_line	source_form	name_form	sex_category	people_ref	people_derivation	selection_class	derivation	evidence_period	exclude_reason
+2	Боян	Боян	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+3	Житобуд	Житобуд	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+4	Негорад	Негорад	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+5	Добровит	Добровит	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+6	Нежек	Нежек	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+7	Добромысл	Добромысл	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+8	Хомуня	Хомуня	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+8	Дрозд	Дрозд	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+9	Сирома	Сирома	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+9	Животток	Животток	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+9	Азогут	Азогут	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+10	Гаврила	Гаврила	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+11	Улита	Улита	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+12	Феврония	Феврония	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+13	Аврам	Аврам	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+14	Марина	Марина	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+15	Давыд	Давыд	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+16	Онфим	Онфим	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+17	Данила	Данила	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	София	София	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Федосия	Федосия	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Улияна	Улияна	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Пелагия	Пелагия	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Деметре	Деметрий	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Павело	Павел	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Оводокия	Оводокия	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Офимию	Офимья	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Гюрги	Гюрги	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+18	Мирофа	Мирофа	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+19	Мирослав	Мирослав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+20	Олисей	Олисей	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+21									people_ref_unresolved
+22	Савва	Савва	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+23	Моислав	Моислав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+24	Микита	Микита	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+24	Олекса	Олекса	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+25	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+26									sex_category_unresolved
+27									sex_category_unresolved
+28	Петр	Петр	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+28	Мариамна	Мариамна	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+28	Анна	Анна	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+29	Внезд	Внезд	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+30	Степан	Степан	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+31	Семен	Семён	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+32	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+33	Волос	Волос	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+34	Борис	Борис	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+35	Вячеслав	Вячеслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+35	Богуслав	Богуслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+35	Андрейц	Андрейц	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+35	Давыдко	Давыдко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+35	Душилец	Душилец	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+36	Яким	Яким	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+36	Микифор	Микифор	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+36	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+36	Судила	Судила	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+36	Вячко	Вячко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+36	Иваць	Иваць	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+36	Рядко	Рядко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+37	Судимир	Судимир	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+38	Петр	Петр	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+38	Глеб	Глеб	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+38	Михаил	Михаил	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+38	Миша	Миша	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+39	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+40	Твердислав	Твердислав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+41	Пелгусий	Пелгусий	male	pp_izhora	source_explicit_people	significant	explicit_source_gender	c1230	
+41	Филипп	Филипп	male	pp_izhora	source_explicit_people	ordinary	explicit_source_gender	c1230	
+42	Ларион	Ларион	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+43	Семен	Семён	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+44	Гюрята	Гюрята	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	medieval_general	
+45	Жировит	Жировит	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+46									sex_category_unresolved
+47	Жизнобуд	Жизнобуд	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+48									no_eligible_first_name
+49	Жизномир	Жизномир	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+49	Микула	Микула	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+50	Ефрем	Ефрем	male	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	medieval_general	
+50	Исухий	Исухий	male	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	medieval_general	
+50	Асаф	Асаф	male	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	medieval_general	
+51	Гюргий	Гюргий	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+52	Нежка	Нежка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+53	Гургий	Гургий	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+53	Лука	Лука	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+54	Нежил	Нежил	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+55									sex_category_unresolved
+56									people_ref_unresolved
+57	Душила	Душила	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+57	Федка	Федка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+58	Савва	Савва	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+58	Захарья	Захария	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+58	Тудор	Тудор	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+58	Андрей	Андрей	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+59	Семко	Семко	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+60									sex_category_unresolved
+61	Якун	Якун	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+62	Яким	Яким	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+62	Семьюн	Семьюн	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+62	Дмитр	Дмитр	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+63	Кузьма	Кузьма	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+64									personal_name_form_ambiguous
+65	Офросения	Офросения	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+66	Хритания	Хритания	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+66	Софья	Софья	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+66	Михаль	Михаль	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+67	Пелага	Пелага	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+67	Олфимья	Олфимья	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+68	Янка	Янка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+69	Гостята	Гостята	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+70	Смолиг	Смолиг	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+71	Мина	Мина	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+72	Анна	Анна	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+72	Климята	Климята	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+72	Коснятин	Коснятин	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+72	Федор	Федор	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+73	Ремша	Ремша	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+74	Яков	Яков	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+75	Спирко	Спирко	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+75	Матей	Матей	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+76									people_ref_unresolved
+77	Ярила	Ярила	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+77	Онания	Онания	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+78	Харитания	Харитания	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+78	Софья	Софья	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+79	Гостята	Гостята	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+80	Захария	Захария	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+81	Пелугий	Пелугий	male	pp_izhora	source_explicit_people	significant	explicit_source_gender	c1230	
+82	Гаврило	Гаврило	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+83	Сбыслав	Сбыслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+84									people_ref_unresolved
+85	Меша	Меша	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+86	Сава	Сава	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+87	Ратмир	Ратмир	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+88	Спиридон	Спиридон	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+89	Владислав	Владислав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+89	Гаврила	Гаврила	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+89	Юрий	Юрий	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+89	Гаврилец	Гаврилец	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+90	Ярун	Ярун	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+91	Антон	Антон	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+91	Иван	Иван	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+92	Ивор	Ивор	male	pp_smolyane	source_explicit_people	significant	explicit_source_gender	c1230	
+93	Шифорд	Шифорд	male	pp_fg002	source_explicit_people	significant	explicit_source_gender	medieval_general	
+93	Тидрик	Тидрик	male	pp_fg002	source_explicit_people	significant	explicit_source_gender	medieval_general	
+93	Ольстен	Ольстен	male	pp_fg001	source_explicit_people	significant	explicit_source_gender	medieval_general	
+93	Михаил	Михаил	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	medieval_general	
+93	Жирослав	Жирослав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	medieval_general	
+94									people_ref_unresolved
+95									no_eligible_first_name
+96									no_eligible_first_name
+97									no_eligible_first_name
+98	Христина	Христина	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Ефимья	Ефимья	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Анастасия	Анастасия	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Мария	Мария	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Сторонька	Сторонька	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Нежка	Нежка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Втора	Втора	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Страхота	Страхота	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+98	Гостята	Гостята	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+99									no_eligible_first_name
+100									people_ref_unresolved
+101									people_ref_unresolved
+102									people_ref_unresolved
+103									sex_category_unresolved
+104									no_eligible_first_name
+105									period_outside_supported_xi_xiv
+106	Кирьяк	Кирьяк	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+106	Иван	Иван	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+107	Якун	Якун	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+107	Никифор	Никифор	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+108	Алекса	Алекса	male	pp_novgorod_rus	source_explicit_people	monastic	calendar_name_gender	c1230	
+108	Варлаам	Варлаам	male	pp_novgorod_rus	source_explicit_people	monastic	calendar_name_gender	c1230	
+109	Антоний	Антоний	male	pp_novgorod_rus	source_explicit_people	monastic	calendar_name_gender	c1230	
+110	Рагуил	Рагуил	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+110	Олекса	Олекса	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+110	Гюргя	Гюргя	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+110	Ратмир	Ратмир	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+110	Страшко	Страшко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+110	Внезд	Внезд	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+110	Лука	Лука	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+110	Микита	Микита	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+111	Яким	Яким	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+112	Микифор	Микифор	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+113	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+114	Судила	Судила	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+115	Вячко	Вячко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+116	Иваць	Иваць	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+117	Рядко	Рядко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+118	Вячеслав	Вячеслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+119	Богуслав	Богуслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+120	Андрейц	Андрейц	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+121	Давыдко	Давыдко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+122	Душилец	Душилец	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+123	Петр	Петр	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+124	Глеб	Глеб	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+125	Михаил	Михаил	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+126	Миша	Миша	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+127	Ефрем	Ефрем	male	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+128	Исухий	Исухий	male	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+129	Асаф	Асаф	male	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+130	Нежка	Нежка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+131									sex_category_unresolved
+132									sex_category_unresolved
+133									sex_category_unresolved
+134									sex_category_unresolved
+135									sex_category_unresolved
+136	Душила	Душила	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+137	Нястя	Анастасия	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+138	Федка	Федка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+139	Семко	Семко	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+140									sex_category_unresolved
+141									sex_category_unresolved
+142									sex_category_unresolved
+143	Хритания	Хритания	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+144	Софья	Софья	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+145	Михаль	Михаль	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+146	Пелага	Пелага	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+147	Олфимья	Олфимья	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+148									sex_category_unresolved
+149									sex_category_unresolved
+150	Янка	Янка	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+151									sex_category_unresolved
+152	Ярина	Ирина	female	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+153	Гостята	Гостята	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+154	Василь	Василь	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+155	Анна	Анна	female	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+156	Климята	Климята	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+157	Коснятин	Коснятин	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+158									sex_category_unresolved
+159	Федор	Федор	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+160	Спирко	Спирко	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+161	Матей	Матей	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+162									sex_category_unresolved
+163									people_ref_unresolved
+164									people_ref_unresolved
+165									people_ref_unresolved
+166	Ярила	Ярила	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+167	Онания	Онания	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
+168	Харитания	Харитания	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+169	Софья	Софья	female	pp_novgorod_rus	novgorod_land_document	monastic	explicit_source_gender	c1230	
+170	Владислав	Владислав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
+171	Гаврила	Гаврила	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+172	Юрий	Юрий	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+173	Гаврилец	Гаврилец	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+174									people_ref_unresolved
+175	Антон	Антон	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+176	Иван	Иван	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+177									people_ref_unresolved
+178									sex_category_unresolved
+179									sex_category_unresolved
+180									sex_category_unresolved
+181									sex_category_unresolved
+182	Артемей	Артемей	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+183									no_eligible_first_name
+184									people_ref_unresolved
+185	Василий	Василий	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+186									no_eligible_first_name
+187	Игнатей	Игнатей	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	medieval_general	
+188									no_eligible_first_name
+189									people_ref_unresolved
+190									period_outside_supported_xi_xiv
+191									period_outside_supported_xi_xiv
+192									period_outside_supported_xi_xiv
+193									period_outside_supported_xi_xiv
+194									sex_category_unresolved
+195									sex_category_unresolved
+196									sex_category_unresolved
+197									source_requires_separate_temporal_verification
+198									people_ref_unresolved
+199	Пелгусий	Пелгусий	male	pp_izhora	source_explicit_people	significant	explicit_source_gender	c1230	
+200	Пелгусий	Пелгусий	male	pp_izhora	source_explicit_people	significant	explicit_source_gender	c1230	
+201	Филипп	Филипп	male	pp_izhora	source_explicit_people	ordinary	explicit_source_gender	c1230	
+202	Лембито	Лембито	male	pp_chud_est	source_explicit_people	significant	explicit_source_gender	c1230	
+203	Лембито	Лембито	male	pp_chud_est	source_explicit_people	significant	explicit_source_gender	c1230	
+204	Шиворд	Шиворд	male	pp_fg002	source_explicit_people	significant	explicit_source_gender	medieval_general	
+205	Тидрик	Тидрик	male	pp_fg002	source_explicit_people	significant	explicit_source_gender	medieval_general	
+206	Ольстен	Ольстен	male	pp_fg001	source_explicit_people	significant	explicit_source_gender	medieval_general	
+207	Тидрик	Тидрик	male	pp_fg002	source_explicit_people	significant	explicit_source_gender	medieval_general	
+208	Ольстен	Ольстен	male	pp_fg001	source_explicit_people	significant	explicit_source_gender	medieval_general	

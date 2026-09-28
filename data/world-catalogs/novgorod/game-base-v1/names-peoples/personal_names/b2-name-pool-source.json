@@ -1,0 +1,220 @@
+{
+  "schema": "novgorod.game_base.personal_name_pool_source.v1",
+  "status": "candidate",
+  "pool": {
+    "id": "novgorod_1230_1250_personal_names_v1",
+    "region_id": "region_novgorod_land",
+    "valid_from": "1230-01-01",
+    "valid_to": "1250-12-31",
+    "status": "draft",
+    "provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json"
+  },
+  "input": {
+    "path": "personal_names.csv",
+    "expected_rows": 54,
+    "provenance_prefix": "game-base:names-peoples/personal_names/personal_names.csv#nm_id="
+  },
+  "evidence_derivations": {
+    "path": "b2-evidence-derivations.tsv",
+    "expected_evidence_rows": 207,
+    "expected_first_line": 2,
+    "expected_last_line": 208
+  },
+  "evidence_snapshot": {
+    "path": "sources/book_evidence_m2c_names_b2.csv",
+    "expected_rows": 149,
+    "provenance_prefix": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L"
+  },
+  "defaults": {
+    "people_ref_prefix": "pp_",
+    "social_position_archetype_id": null,
+    "weight": 1,
+    "status": "draft"
+  },
+  "selection_rules": {
+    "common": "ordinary",
+    "dynastic": "dynastic",
+    "monastic": "monastic",
+    "class_scope": "name_form",
+    "calendar_name_class": "ordinary",
+    "unique_known_noncalendar_class": "significant",
+    "calendar_name_forms": [
+      "Аксинья",
+      "Акулина",
+      "Анастасия",
+      "Андрей",
+      "Андрейц",
+      "Анисья",
+      "Анна",
+      "Антон",
+      "Антонина",
+      "Артемей",
+      "Борис",
+      "Василий",
+      "Василь",
+      "Гаврила",
+      "Гаврилец",
+      "Гаврило",
+      "Глеб",
+      "Граврия",
+      "Гургий",
+      "Гюрги",
+      "Гюргий",
+      "Гюргя",
+      "Давыд",
+      "Давыдко",
+      "Данила",
+      "Деметрий",
+      "Дмитр",
+      "Домна",
+      "Евгения",
+      "Евдокия",
+      "Ефимья",
+      "Ефросинья",
+      "Захария",
+      "Иван",
+      "Иванко",
+      "Иваць",
+      "Игнатей",
+      "Ирина",
+      "Ириния",
+      "Катерина",
+      "Кирилл",
+      "Кирьяк",
+      "Климята",
+      "Коснятин",
+      "Кузьма",
+      "Ларион",
+      "Лука",
+      "Маремьяна",
+      "Мариамна",
+      "Марина",
+      "Мария",
+      "Марфа",
+      "Матей",
+      "Микита",
+      "Микифор",
+      "Микула",
+      "Мина",
+      "Мирофа",
+      "Михаил",
+      "Михаль",
+      "Миша",
+      "Никифор",
+      "Оводокия",
+      "Олекса",
+      "Олисава",
+      "Олисей",
+      "Олфимья",
+      "Онания",
+      "Онфим",
+      "Офимья",
+      "Офросения",
+      "Павел",
+      "Пелага",
+      "Пелагия",
+      "Петр",
+      "Сава",
+      "Савва",
+      "Семко",
+      "Семьюн",
+      "Семён",
+      "София",
+      "Спиридон",
+      "Спирко",
+      "Степан",
+      "Стефан",
+      "Тудор",
+      "Улита",
+      "Улияна",
+      "Ульяна",
+      "Феврония",
+      "Федка",
+      "Федор",
+      "Федора",
+      "Федосия",
+      "Федосья",
+      "Федот",
+      "Фетинья",
+      "Филипп",
+      "Фома",
+      "Фёкла",
+      "Харитония",
+      "Хомуня",
+      "Христина",
+      "Юрий",
+      "Яким",
+      "Яков",
+      "Якун",
+      "Яна",
+      "Янка"
+    ],
+    "ordinary_selector_allows": [
+      "ordinary"
+    ]
+  },
+  "selection_overrides": {
+    "nov_name_spiridon_v1": {
+      "selection_class": "ordinary",
+      "reason": "Spiridon is a Christian calendar name; the archbishop attestation does not reserve the name form to that historical person."
+    },
+    "nov_name_mikhail_v1": {
+      "selection_class": "ordinary",
+      "reason": "The candidate has independent common evidence in birch-bark letter 404; its princely attestation does not erase that ordinary admission."
+    },
+    "nov_name_rostislav_v1": {
+      "selection_class": "dynastic",
+      "reason": "The candidate has dynastic-only admission and identifies the attested bearer as a prince's son placed on the throne."
+    },
+    "nov_name_stefan_v1": {
+      "selection_class": "ordinary",
+      "reason": "Stefan is a Christian calendar name; the posadnik attestation does not reserve the name form to that historical person."
+    },
+    "nov_name_proksha_v1": {
+      "selection_class": "significant",
+      "reason": "The candidate source is the named chronicled actor Proksha Lashnev in the 1230 chronicle."
+    },
+    "nov_name_volos_v1": {
+      "selection_class": "significant",
+      "reason": "The candidate and evidence identify the named chronicled actor Volos Bludkinich."
+    },
+    "nov_name_semyon_v1": {
+      "selection_class": "ordinary",
+      "reason": "Semyon is a Christian calendar name; the posadnik attestation does not reserve the name form to that historical person."
+    }
+  },
+  "evidence_review": {
+    "accepted_rows": 207,
+    "summary_ref": "research:r-names/out/summary.md",
+    "decision": "Reviewed rows are admitted only when the declared sex, people and class rules close every selector. Evidence rows are merged with the compiled candidate by (name_form, sex_category, people_ref); every contributing line remains in provenance_ref."
+  },
+  "typed_gap_notes": [
+    {
+      "gap_id": "gap_personal_names_social_position",
+      "gap_type": "selector_coverage",
+      "people_ref": "*",
+      "sex_category": "*",
+      "selection_class": "ordinary",
+      "reason": "The sources do not establish name eligibility by social-position archetype; every current entry is explicitly unrestricted.",
+      "provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json#selection_policy"
+    },
+    {
+      "gap_id": "gap_personal_names_medieval_general_period_specificity",
+      "gap_type": "temporal_evidence",
+      "people_ref": "*",
+      "sex_category": "*",
+      "selection_class": "*",
+      "reason": "Rows marked medieval_general are attested within the XI–XIV-century envelope, not individually at 1230–1250; owner approval is required before activation.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/VERIFICATION.md#personal_namespersonal_namescsv--approve_with_limits"
+    },
+    {
+      "gap_id": "gap_personal_names_patronymics_nicknames",
+      "gap_type": "future_name_component_pool",
+      "people_ref": "*",
+      "sex_category": "*",
+      "selection_class": "*",
+      "reason": "Patronymics, demonyms and nicknames are excluded from this first-name pool and require a separately sourced future component pool.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv"
+    }
+  ]
+}

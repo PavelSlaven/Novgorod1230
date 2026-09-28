@@ -93,7 +93,10 @@ export function normalizeExecutionLimits(config) {
   config.maxTokens = requestedMaxTokens === null
     ? LLM_MAX_OUTPUT_TOKENS
     : Math.min(requestedMaxTokens, LLM_MAX_OUTPUT_TOKENS);
-  config.requestTimeoutMs = LLM_REQUEST_TIMEOUT_MS;
+  const requestedTimeoutMs = readPositiveInt(config.requestTimeoutMs);
+  config.requestTimeoutMs = requestedTimeoutMs === null
+    ? LLM_REQUEST_TIMEOUT_MS
+    : Math.min(requestedTimeoutMs, LLM_REQUEST_TIMEOUT_MS);
 }
 
 export function buildProviderRequestPayload(config, messages) {

@@ -14,7 +14,7 @@
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 5 | 2 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 10 | 8 | 0 |
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
-| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | rework | 3 | 4 | 4 |
+| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 7 | 4 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 5 | 7 | 0 |
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
@@ -25,7 +25,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **75** | **189** | **4** |
+| **Итого** | | **79** | **189** | **0** |
 
 ## Вердикты по файлам
 
@@ -222,10 +222,10 @@
 | [`households_kinship/kinship_terms.csv`](households-psychology-speech/households_kinship/kinship_terms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#kinship_termscsv--approve_with_limits) |
 | [`households_kinship/marriage_inheritance_rules.csv`](households-psychology-speech/households_kinship/marriage_inheritance_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#marriage_inheritance_rulescsv--approve_with_limits) |
 | [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [approve](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--speech_addressaddress_formscsv--approve) |
-| [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [rework](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--rework-1) |
-| [`npc_psychology/psychology_scales.json`](households-psychology-speech/npc_psychology/psychology_scales.json) | [rework](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_scalesjson--rework) |
-| [`scripts/build.py`](households-psychology-speech/scripts/build.py) | [rework](households-psychology-speech/VERIFICATION.md#scriptsbuildpy--rework) |
-| [`scripts/check.py`](households-psychology-speech/scripts/check.py) | [rework](households-psychology-speech/VERIFICATION.md#scriptscheckpy--rework) |
+| [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [approve](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--approve-c013a-закрывает-rework) |
+| [`npc_psychology/psychology_scales.json`](households-psychology-speech/npc_psychology/psychology_scales.json) | [approve](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_scalesjson--approve-c013a-закрывает-rework) |
+| [`scripts/build.py`](households-psychology-speech/scripts/build.py) | [approve](households-psychology-speech/VERIFICATION.md#scriptsbuildpy--approve-c013a-закрывает-rework) |
+| [`scripts/check.py`](households-psychology-speech/scripts/check.py) | [approve](households-psychology-speech/VERIFICATION.md#scriptscheckpy--approve-c013a-закрывает-rework) |
 | [`social_norms_honour_hospitality/norms.csv`](households-psychology-speech/social_norms_honour_hospitality/norms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#normscsv--approve_with_limits) |
 | [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--speech_addressaddress_formscsv--approve) |
 | [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve](households-psychology-speech/VERIFICATION.md#speech_addressspeech_registerscsv--approve-c007c2) |

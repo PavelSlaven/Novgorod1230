@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 27 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `90874ea773501f26a8a0234bd6d9915946849c5af18aa98750cd76f49f3ec7cf`.
-- Таблиц: 217.
+- Исполняемый источник: `infra/world-base/schema.sql` и 28 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `f25442ebaecce5d4122935f2d94318535b16732c2b34b47c155b0ae5c391eadc`.
+- Таблиц: 219.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -6004,3 +6004,56 @@ Digests, counts и dependency order таблиц одного импорта.
 - `FOREIGN KEY (entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED`
 - `FOREIGN KEY (scene_template_id,scene_template_version,edge_slot_key) REFERENCES world_base.spatial_v3_scene_movement_edge_templates(scene_template_id,scene_template_version,edge_slot_key) ON DELETE RESTRICT`
 - `FOREIGN KEY (scene_template_id,scene_template_version,opposing_edge_slot_key) REFERENCES world_base.spatial_v3_scene_movement_edge_templates(scene_template_id,scene_template_version,edge_slot_key) ON DELETE RESTRICT`
+
+### `world_base.npc_schedule_routine_rules`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `schedule_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(schedule_id)) > 0)` | Описание отсутствует. |
+| `schedule_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (schedule_version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `scope_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (scope_kind IN ('place_family'))` | Описание отсутствует. |
+| `scope_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (scope_ref ~ '^pf_')` | Описание отсутствует. |
+| `subject_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (subject_kind IN ('occupation', 'social_role', 'household_member'))` | Описание отсутствует. |
+| `subject_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(subject_ref)) > 0)` | Описание отсутствует. |
+| `season` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (season IN ('winter', 'spring', 'summer', 'autumn'))` | Описание отсутствует. |
+| `months` | `INTEGER[]` | да | — | — | `CHECK ( months IS NULL OR ( array_length(months, 1) >= 1 AND months <@ ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]::integer[] ) )` | Описание отсутствует. |
+| `day_type` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(day_type)) > 0)` | Описание отсутствует. |
+| `routine_profile` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(routine_profile) = 'object')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `authoring_payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(authoring_payload) = 'object')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (schedule_id, schedule_version)`
+- `UNIQUE (schedule_id, schedule_version, world_revision_id)`
+
+### `world_base.place_population_composition_rules`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `composition_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (composition_id ~ '^pf_')` | Описание отсутствует. |
+| `composition_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (composition_version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `place_family_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `place_family_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (place_family_version > 0)` | Описание отсутствует. |
+| `population_groups` | `JSONB` | нет | `'[]'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(population_groups) = 'array')` | Описание отсутствует. |
+| `scheduled_absences` | `JSONB` | нет | `'[]'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(scheduled_absences) = 'array')` | Описание отсутствует. |
+| `empty_reason` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
+| `authoring_payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(authoring_payload) = 'object')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (composition_id, composition_version)`
+- `UNIQUE (composition_id, composition_version, world_revision_id)`
+- `FOREIGN KEY (place_family_id, place_family_version, world_revision_id) REFERENCES world_base.place_families(id, version, world_revision_id) ON DELETE RESTRICT`
+- `UNIQUE INDEX place_population_composition_pf_uq (world_revision_id, place_family_id, composition_version)`

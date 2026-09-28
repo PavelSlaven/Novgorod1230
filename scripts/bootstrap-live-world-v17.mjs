@@ -692,7 +692,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       await rename(pendingPath, activationApprovalsPath);
     } finally { await rm(pendingPath, { force: true }); }
     return { database: worldName, party_database: partyName,
-      schema: { world_tables: 217, party_migrations: partyMigration.applied },
+      schema: { world_tables: 219, party_migrations: partyMigration.applied },
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },

@@ -385,6 +385,11 @@ MARK_SLOTS = {  # rule: visible surfaces where trim, embroidery, stamping or own
 }
 
 MARITAL = {'HW006': 'married', 'HW007': 'married', 'HW011': 'married', 'HW010': 'unmarried'}
+HEAD_SLOTS = {'headwear', 'head_under', 'headband'}
+HAIR_COVERAGE_EVIDENCE = {
+    'HW006': 'claim:clothing-povoi-headcover',
+    'HW007': 'claim:clothing-povoi-headcover',
+}
 
 
 def sexes(scope):
@@ -821,16 +826,28 @@ def main():
     for g in garments:  # hypotheses / burial / liturgy never runtime-daily
         if g['usage_context'] in ('hypothesis', 'burial', 'liturgy', 'disputed', 'ice', 'riding'):
             g['runtime_daily_eligible'] = 'false'
+    for g in garments:
+        source_id = g['source_item_id']
+        g['covers_hair'] = ('yes' if source_id in HAIR_COVERAGE_EVIDENCE else
+                            'unknown' if g['equipment_slot'] in HEAD_SLOTS else 'no')
+        if source_id in HAIR_COVERAGE_EVIDENCE:
+            assert g['equipment_slot'] in HEAD_SLOTS
+            assert HAIR_COVERAGE_EVIDENCE[source_id] in g['source_refs'].split('|')
+    assert {g['source_item_id'] for g in garments if g['covers_hair'] == 'yes'} == set(HAIR_COVERAGE_EVIDENCE)
+    assert all(g['covers_hair'] in {'yes', 'no', 'unknown'} and
+               (g['covers_hair'] == 'unknown') == (g['equipment_slot'] in HEAD_SLOTS and
+                                                  g['source_item_id'] not in HAIR_COVERAGE_EVIDENCE)
+               for g in garments)
 
     GF = ['gm_id', 'source_item_id', 'name_ru', 'alt_names_ru', 'name_en', 'garment_category', 'universal_category_layer',
-          'region_id', 'equipment_slot', 'usage_context', 'material', 'material_ids', 'material_class', 'dye_color',
+          'region_id', 'equipment_slot', 'covers_hair', 'usage_context', 'material', 'material_ids', 'material_class', 'dye_color',
           'color_ids', 'dye_evidence_refs', 'decoration', 'sex', 'age', 'marital_status', 'status_band', 'status_basis',
           'season', 'season_basis', 'wear_states', 'mark_slots', 'runtime_daily_eligible', 'existing_runtime_template',
           'visual_fabric', 'visual_main_color', 'visual_new_values', 'do_not_confuse_with', 'source_refs', 'confidence',
           'status', 'notes']
     gdir = ROOT / 'garments'
     write_csv(gdir / 'garments.csv', garments, GF)
-    write_csv(gdir / 'garment_components.csv', components, GF)
+    write_csv(gdir / 'garment_components.csv', components, [field for field in GF if field != 'covers_hair'])
     write_csv(gdir / 'costume_disposition.csv', disposition,
               ['source_item_id', 'name_ru', 'subcategory', 'disposition', 'target', 'reason'])
     write_csv(gdir / 'equipment_slots.csv',

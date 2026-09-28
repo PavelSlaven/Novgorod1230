@@ -1,6 +1,6 @@
 // Acceptance checks for the three flora domains (catalog game-base-v1). Exit 1 on any hard failure.
 // Reads built CSVs in ../flora, WK bundle and place-first-cartography from the main checkout (read-only).
-const { fs, path, ROOT, readTsv, readJson } = require('./lib.cjs');
+const { fs, path, ROOT, readTsv, readJson, months } = require('./lib.cjs');
 const MAIN = process.env.NOVGOROD_MAIN || 'C:/Users/Slaven/Documents/Novgorod';
 const WKDIR = path.join(MAIN, 'data/world-catalogs/novgorod/world-knowledge');
 const GB = path.resolve(ROOT, '..', '..'); // data/world-catalogs/novgorod
@@ -17,6 +17,105 @@ const herbs = parseCsv('flora/herbs_mosses_aquatic.csv'), bf = parseCsv('flora/b
 const pres = parseCsv('flora/flora_habitat_presence.csv'), deny = parseCsv('flora/anachronism_denylist_flora.csv'), cal = parseCsv('flora/field_state_calendar.csv');
 const all = [...herbs, ...bf, ...cu];
 const byId = Object.fromEntries(all.map(r => [r.fl_id, r]));
+const habitats = readJson(path.join(__dirname, 'src', 'habitats.json'));
+const sourceRows = [readTsv('herbs.tsv'), readTsv('berries_fungi.tsv'), readTsv('cultivated.tsv')];
+const woodyFoliage = readJson(path.join(__dirname, 'src', 'woody_foliage_state.json'));
+const monthKeys = Array.from({ length: 12 }, (_, i) => String(i + 1));
+const expectedFoliage = m => [12, 1, 2, 3].includes(m) ? 'leafless' : [4, 5].includes(m) ? 'leaf_out' : [6, 7, 8].includes(m) ? 'vegetative' : 'leaf_fall';
+function checkSceneLayers(rows, authored) {
+  const errors = [], ids = new Set(), output = Object.fromEntries(rows.map(r => [r.fl_id, r]));
+  const scope = new Set(authored.filter(r => ['moss', 'lichen'].includes(r.group) && r.habitats.split(' ').some(h => habitats.habitats[h.split(':')[0]]?.pf.includes('conifer_woodland'))).map(r => r.id));
+  for (const a of authored) {
+    if (ids.has(a.id)) errors.push(`scene layer duplicate ${a.id}`);
+    ids.add(a.id);
+    const out = output[a.id];
+    if (!out) { errors.push(`scene layer output missing ${a.id}`); continue; }
+    if (!scope.has(a.id)) {
+      if (a.scene_layer || out.scene_layer || out.scene_layer_refs || out.scene_layer_confidence) errors.push(`scene layer outside scope ${a.id}`);
+      continue;
+    }
+    if (!a.scene_layer) errors.push(`scene layer missing ${a.id}`);
+    const h = new Set(a.habitats.split(' ').map(t => t.split(':')[0]));
+    const allowed = new Set(['no_source']);
+    if (h.has('EPIPHYTE')) allowed.add('tree_bark');
+    if (h.has('DEADWOOD')) allowed.add('stump_or_deadwood');
+    if (h.has('PINEDRY') || h.has('CONIFER')) allowed.add('ground');
+    if (!allowed.has(a.scene_layer)) errors.push(`scene layer unsupported ${a.id}: ${a.scene_layer}`);
+    if (out.scene_layer !== a.scene_layer || out.scene_layer_refs !== out.source_refs || out.scene_layer_confidence !== a.conf) errors.push(`scene layer mismatch ${a.id}`);
+  }
+  if (output.fl_hb_hypogymnia_physodes?.scene_layer !== 'tree_bark' || !output.fl_hb_hypogymnia_physodes?.scene_layer_refs.includes('src:CHKHOBADZE2015')) errors.push('Hypogymnia physodes must be tree_bark with CHKHOBADZE2015');
+  return errors;
+}
+function checkMonthly(tables) {
+  const errors = [], gbif = readJson(path.join(__dirname, 'cache', 'gbif.json'));
+  for (let t = 0; t < tables.length; t++) if (tables[t].length !== sourceRows[t].length) errors.push(`monthly row count ${t}`);
+  for (let t = 0; t < tables.length; t++) for (let i = 0; i < sourceRows[t].length; i++) {
+    const a = sourceRows[t][i], r = tables[t][i];
+    if (!r || r.fl_id !== a.id) { errors.push(`monthly row mismatch ${a.id}`); continue; }
+    const visible = new Set(months(a.vis));
+    if (t === 1 && a.kind.startsWith('fungus') && a.vis !== '1-12') {
+      const facet = gbif[a.name_lat]?.month_facet || {}, total = Object.values(facet).reduce((sum, n) => sum + n, 0);
+      if (total >= 20) for (const [m, n] of Object.entries(facet)) if (n / total >= 0.1) visible.add(Number(m));
+    }
+    const flow = new Set(months(a.flow)), fruit = new Set(months(a[t === 0 ? 'fruit' : t === 1 ? 'ripe' : 'harvest']));
+    let actual;
+    try { actual = JSON.parse(r.phenology_by_month); } catch { errors.push(`monthly malformed ${a.id}`); continue; }
+    if (!actual || Array.isArray(actual) || Object.keys(actual).length !== 12) { errors.push(`monthly shape ${a.id}`); continue; }
+    for (let m = 1; m <= 12; m++) {
+      const expected = !visible.has(m) ? 'not_visible' : flow.has(m) && fruit.has(m) ? 'flowering_and_fruiting' : fruit.has(m) ? (t === 2 ? 'ripe_or_harvest' : 'fruiting') : flow.has(m) ? 'flowering' : habitats.seasons.winter.includes(m) ? 'winter_form' : 'vegetative';
+      if (actual[m] !== expected) errors.push(`monthly ${a.id} ${m}: ${actual[m]} != ${expected}`);
+    }
+  }
+  return errors;
+}
+function checkWoodyCalendar(rows) {
+  const errors = [];
+  if (Object.keys(woodyFoliage).length !== 12 || monthKeys.some(k => !Object.hasOwn(woodyFoliage, k) || woodyFoliage[k] !== expectedFoliage(Number(k)))) errors.push('canonical woody foliage must cover months 1–12 with the agreed states');
+  const trees = sourceRows[2].filter(r => r.life_form === 'tree' && r.allowed_1230 !== 'no');
+  for (const t of trees) {
+    const treeRows = rows.filter(r => r.fl_id === t.id);
+    if (treeRows.length !== 12 || monthKeys.some(k => treeRows.filter(r => r.month === k).length !== 1)) { errors.push(`${t.id}: calendar must cover months 1–12 once`); continue; }
+    const harvest = new Set(months(t.harvest)), flowers = new Set(months(t.flow));
+    for (const row of treeRows) {
+      const m = Number(row.month);
+      let expected = { leafless: 'покой, голые деревья', leaf_out: 'распускание листвы', vegetative: 'в листве', leaf_fall: 'листопад' }[woodyFoliage[m]];
+      if (harvest.has(m)) expected += ', сбор урожая';
+      else if (flowers.has(m)) expected += ', цветение';
+      else if (flowers.size && m < Math.min(...flowers) && woodyFoliage[m] === 'leaf_out') expected += ', бутоны';
+      else if (flowers.size && harvest.size && m > Math.max(...flowers) && m < Math.min(...harvest)) expected += ', рост, завязи';
+      else if (m > Math.max(...harvest) && woodyFoliage[m] === 'leaf_fall') expected = 'после сбора, ' + expected;
+      if (row.field_state !== expected) errors.push(`${t.id}/${m}: ${row.field_state} != ${expected}`);
+      if (woodyFoliage[m] === 'leaf_fall' && m > Math.max(...harvest) && !row.field_state.includes('после сбора')) errors.push(`${t.id}/${m}: post-harvest phase missing`);
+    }
+  }
+  return errors;
+}
+fails.push(...checkSceneLayers(herbs, sourceRows[0]), ...checkMonthly([herbs, bf, cu]));
+fails.push(...checkWoodyCalendar(cal));
+const treeCalendarRow = cal.find(r => r.fl_id === 'fl_cu_prunus_cerasus' && r.month === '3');
+if (!treeCalendarRow || !checkWoodyCalendar(cal.map(r => r === treeCalendarRow ? { ...r, field_state: 'распускание листвы' } : r)).some(e => e.includes('/3:'))) fail('woody March leafless probe failed');
+const postHarvestRow = cal.find(r => r.fl_id === 'fl_cu_prunus_cerasus' && r.month === '9');
+if (!postHarvestRow || !checkWoodyCalendar(cal.map(r => r === postHarvestRow ? { ...r, field_state: 'листопад' } : r)).some(e => e.includes('post-harvest phase missing'))) fail('woody post-harvest phase probe failed');
+// Negative probes exercise the checker without changing the published CSVs.
+const sceneSample = sourceRows[0].find(r => r.scene_layer);
+if (!sceneSample) fail('scene layer probe has no fixture');
+else {
+  if (!checkSceneLayers(herbs.filter(r => r.fl_id !== sceneSample.id), sourceRows[0]).length) fail('scene layer deletion probe failed');
+  if (!checkSceneLayers(herbs, sourceRows[0].map(r => r.id === sceneSample.id ? { ...r, scene_layer: '' } : r)).length) fail('scene layer authoring deletion probe failed');
+  if (!checkSceneLayers(herbs, sourceRows[0].map(r => r.id === sceneSample.id ? { ...r, scene_layer: 'invalid' } : r)).length) fail('scene layer authoring value probe failed');
+  if (!checkSceneLayers(herbs.map(r => r.fl_id === sceneSample.id ? { ...r, scene_layer: 'tree_bark' } : r), sourceRows[0]).length) fail('scene layer substitution probe failed');
+}
+if (!checkSceneLayers(herbs, sourceRows[0].map(r => r.id === 'fl_hb_dicranum_polysetum' ? { ...r, scene_layer: 'stump_or_deadwood' } : r)).some(e => e.includes('scene layer unsupported fl_hb_dicranum_polysetum'))) fail('scene layer CONIFER deadwood probe failed');
+const overlap = sourceRows.flatMap((rows, t) => rows.map((r, i) => ({ r, i, t }))).find(({ r, t }) => months(r.flow).some(m => months(r[t === 0 ? 'fruit' : t === 1 ? 'ripe' : 'harvest']).includes(m) && months(r.vis).includes(m)));
+if (!overlap) fail('monthly overlap probe has no fixture');
+else {
+  const m = months(overlap.r.flow).find(n => months(overlap.r[overlap.t === 0 ? 'fruit' : overlap.t === 1 ? 'ripe' : 'harvest']).includes(n) && months(overlap.r.vis).includes(n));
+  const tables = [[...herbs], [...bf], [...cu]], row = tables[overlap.t][overlap.i];
+  tables[overlap.t][overlap.i] = { ...row, phenology_by_month: JSON.stringify({ ...JSON.parse(row.phenology_by_month), [m]: 'flowering' }) };
+  if (!checkMonthly(tables).length) fail('monthly overlap probe failed');
+  tables[overlap.t][overlap.i] = { ...row, phenology_by_month: JSON.stringify({ ...JSON.parse(row.phenology_by_month), [m]: 'not_visible' }) };
+  if (!checkMonthly(tables).length) fail('monthly month probe failed');
+}
 
 // 1. ids unique, prefix, lat unique within table
 for (const [n, t] of [['herbs', herbs], ['bf', bf], ['cu', cu]]) {

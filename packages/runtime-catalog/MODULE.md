@@ -31,6 +31,8 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `loadActivePin({ catalogScope })`;
 - `loadApprovedItemCatalog({ pin })`;
 - `loadApprovedActorProfileCatalog({ worldPin, regionId, effectiveDate })`;
+- `loadScheduleRoutineRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, season, month? })` — D-1 routine rules из `world_base.npc_schedule_routine_rules` только после spatial pin и последнего runtime-catalog activation;
+- `loadPlacePopulationComposition({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, compositionVersion? })` — D-2 состав населения из `world_base.place_population_composition_rules` с тем же gate;
 - `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
   latest matching activation event and approved regional applicability before
   exporting compiler inputs; candidate/manifests alone are rejected;

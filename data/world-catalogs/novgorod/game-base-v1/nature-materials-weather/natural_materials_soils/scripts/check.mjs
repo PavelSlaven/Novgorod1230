@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readCsv, readJson, fail, FREQ_WEIGHT, SHARED, MAIN, denyRegex } from '../../_shared/scripts/lib.mjs';
+import { readCsv, readJson, fail, FREQ_WEIGHT, SHARED, denyRegex } from '../../_shared/scripts/lib.mjs';
 import { BASE_PORTIONS } from '../authoring/materials.mjs';
 
 const DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,11 +20,7 @@ const pres = readCsv(path.join(DIR, 'material_landscape_presence.csv'));
 const matById = Object.fromEntries(mats.map((m) => [m.nm_id, m]));
 
 // WK claim index
-const wkDir = path.join(MAIN, 'data/world-catalogs/novgorod/world-knowledge/production-v1');
-const wkClaims = new Set();
-for (const f of fs.readdirSync(wkDir).filter((f) => f.endsWith('.json') && !f.startsWith('verification'))) {
-  try { for (const c of JSON.parse(fs.readFileSync(path.join(wkDir, f), 'utf8')).claims || []) wkClaims.add(c.claim_ref); } catch { /* not a claim file */ }
-}
+const wkClaims = new Set(readJson(path.join(SHARED, 'main_inputs.json')).claim_refs);
 const deny = JSON.parse(fs.readFileSync(path.join(SHARED, 'anachronism_denylist.json'), 'utf8'));
 const denyRe = denyRegex(deny.terms_ru.concat(deny.terms_en));
 

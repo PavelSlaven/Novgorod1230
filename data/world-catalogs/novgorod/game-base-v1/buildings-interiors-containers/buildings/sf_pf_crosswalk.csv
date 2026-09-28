@@ -88,3 +88,4 @@ sf_single_homestead,pf_village_lane,v6tsv:g3_places:двор|matcult_scene:SCN00
 sf_village_derevnya,pf_village_lane,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
 sf_village_selo,pf_village_lane,v6tsv:g3_places:село|matcult_scene:SCN008|matcult_scene:SCN009,SF-PF-1,,candidate
 ,pf_winter_ice_crossing,,,no settlement_form source for this PF,candidate
+,pf_burial_ground,,,no settlement_form source for this PF,candidate

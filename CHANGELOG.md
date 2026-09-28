@@ -2,12 +2,18 @@
 
 ## Unreleased
 
+Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
+
 - fix(spatial): CR #160 B1 step 7c — a not-yet-at-departure actor is offered the first local hop toward a reachable exit ("к руслу — подход к переправе", same local-scene owner, structurally distinct via route_ref); crossing stays departure-only; destination projection no longer fails on edges the admission owner has no row for (was the real cause of the denied crossing); exit-to-slot map now reaches the disclosure owner so the pass-target text reaches planner options; live run closes B1 (approach → crossing → restart → re-entry) (#160)
 - fix(spatial): CR #160 B1 step 7 — pass-target exit description now shows at any visibility above `'none'` (was `'clear'`-only); ambient landscape `stable_cover` is `'partial'` for most of the map, so the old threshold made the description unreachable by player movement almost everywhere; found via live playtest (PLAN-OK-B1-step7)
-- docs(legacy): LW-076 added — narration-audit can reject prose twice after a committed turn, leaving the player without text (owner #158 R-3), found by the same B1 live playtest (#160)
+- docs(legacy): LW-077 added — narration-audit can reject prose twice after a committed turn, leaving the player without text (owner #158 R-3), found by the same B1 live playtest (#160)
 - fix(spatial): CR #160 B1 part 2 — occupied local edge status comes from the movement admission owner and reaches both the planner's visible option text and the route panel (same suffix, one source); LW-031 closed, LW-075 added (#160)
+- feat(r1b): world_base 28.sql D-1/D-2 datasets, wave 11 tables, composition-over-presence validator; pin 337abf9e (#158)
+- fix(r1): REVIEW-R1-fix-4 — approval identity, manifest_path, schema_version; internal readback symbol; LW-076 (#158)
+- fix(r1): REVIEW-R1-fix-2/3 — wave bundle by table set, fail-closed approval fields, nodes closure required, positive PG on approved copy; LW-076 (#158)
 - test(infra): opt-in NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1 runs throwaway PG test containers without AppArmor (servak: AppArmor 4.1 + Docker 26.1 block unix sockets)
 - docs(plan): находки восприятия 2026-09-28 — M2c: скрытое надетым (волосы под убором), частичная видимость; M4: подключение восприятия NPC; LW-074 added (#158)
+- fix(r1): REVIEW-R1 — wave PG readback/negatives, approval fail-closed, people allowed_times, CI P12 postgres, generator pin from approval; LW-076 (#158)
 - fix(r1): REVIEW-070d2 — chain ledger через `runSpatialV3TargetMigrations` + composite `beforeCommit`; restart skip без дублирования цикла DDL; acceptance fresh pools per restart; encoder close on startup failure; phase-11 test1 limit 450s; PG chain-ledger tests; LW-070/073 (#158)
 - feat(r1): REVIEW-070 / PLAN-070b — variants objects in m2c generator @ `367a88c0`; D-3 npc/speech datasets; 27.sql UNIQUE+CHECK; corpus §3A.1/§3A.4/§8.1; fresh-schema request rebuild; generator fixture+tmpdir determinism; LW-073 (#158)
 - feat(r1): REVIEW-069b п.3 — prose §3.1 thresholds; presence_rules `item_ref`/`variants` + §8.1/C12 rule-cause; m2c-npc-wave dataset generator @ `b1f249de` (#158) LW-072 added
@@ -16,6 +22,7 @@
 - fix(r1): REVIEW-066 — party-store SCOPE_KINDS from contracts (g5); presence-rule negative validation + tests; LW-071 (#158)
 - fix(r1): CR #158 REVIEW-065 — party weather log numeric timestamps; fresh-schema rebuild+test; presence primary/secondary+season overlap; `wild_arrival_cause` TEXT; corpus/LW/CHANGELOG sync; PG DDL test; attestation withdrawn (LW-069/070) (#158)
 - feat(r1): CR #158 DONE-065 — CORPUS_EDIT §3A.1/`place_family` + §8.1 + D25 prose; DDL `27.sql` + party `037`; fresh-schema 217/37; LW-066..068 (#158)
+- docs(process): HOW_WE_WORK — исполнители и их модели, режимы задач, обмен сообщениями, площадка servak и правила исполнителей на ней; CURRENT_SPRINT — задачи M2c B1–B6 по решениям D28–D32 (#168)
 - data(world-catalog): игровая база game-base-v1 (кандидаты, 21 группа, STATUS.md) и книжные факты books-evidence-v1 (#155)
 - fix(wk): #153 REVIEW-063 — WK loader selects pack by `packRevision` (v1|v2 closed list); composition passes `release.world_knowledge_pack_revision` so v16 keeps production-v1 (#153)
 - feat(wk): #153 step 7 — v17 pins World Knowledge `revision:production-v2` (loader bundle/vectors); v16 keeps `production-v1`; embedding profile unchanged; retrieval benchmark pass (#153)

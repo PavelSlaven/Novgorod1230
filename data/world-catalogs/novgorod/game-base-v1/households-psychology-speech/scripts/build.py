@@ -8,7 +8,8 @@ No individual temperament weights or mood are inferred from group labels.
 Run: python build.py
 Outputs under ../<domain>/*.csv and prints row counts (also to build_report.json).
 """
-import csv, json, os, re, sys
+import csv, hashlib, json, os, re, sys
+from itertools import combinations
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # .../game-base-v1/households-psychology-speech
 GAME_BASE_V1 = os.path.dirname(ROOT)                                # .../game-base-v1
@@ -23,6 +24,113 @@ OCC_TSV = os.path.join(REGION_TSV, "novgorod_occupations_v1_enriched.tsv")
 ROLE_TSV = os.path.join(REGION_TSV, "novgorod_social_roles_v1_enriched.tsv")
 
 report = {}
+
+
+def generated_id(prefix, fields):
+    payload = json.dumps(fields, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return prefix + hashlib.sha256(payload).hexdigest()[:16]
+
+
+def assert_generated_unique(rows, id_field, key_fields, prefix):
+    generated = [row for row in rows if row[id_field].startswith(prefix)]
+    if len({row[id_field] for row in generated}) != len(generated):
+        raise ValueError(f"duplicate generated {id_field}")
+    if len({tuple(row[field] for field in key_fields) for row in generated}) != len(generated):
+        raise ValueError(f"duplicate generated semantic key in {id_field}")
+    if len({row[id_field] for row in rows}) != len(rows):
+        raise ValueError(f"{id_field} collision with static row")
+
+
+def read_csv(path):
+    with open(path, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def composition_spouse_links(compositions=None):
+    if compositions is None:
+        with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+            compositions = json.load(f)["compositions"]
+    for composition in compositions:
+        groups = {group["group_id"]: group for group in composition["population_groups"]}
+        for link in composition.get("slot_relationships", []):
+            if link["relationship_kind"] != "spouse":
+                continue
+            subject = groups[link["from_group_id"]]["weighted_subjects"][0]["subject_ref"]
+            object_ = groups[link["to_group_id"]]["weighted_subjects"][0]["subject_ref"]
+            yield composition["pf_id"], subject, object_, link
+
+
+def include_composition_spouse_form(form, linked_pairs):
+    return not form[0].startswith("form_spouse_smerd") or frozenset((form[2], form[3])) in linked_pairs
+
+
+def starting_pairs(gaps=None):
+    """Potential co-presence across every PF of a bound G5 node."""
+    presence = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_presence_authoring.csv"))
+    bindings = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "places", "node_binding.csv"))
+    schedules = read_csv(os.path.join(GAME_BASE_V1, "time-calendar-church", "time", "schedules_routines.csv"))
+    seasons = ("winter", "spring", "summer", "autumn")
+    time_ranges = {"all": (0, 1440), "day": (360, 1080), "morning": (360, 720),
+                   "evening": (1080, 1440), "night": (0, 360)}
+    by_pf = {}
+    for row in presence:
+        if row["scope_kind"] == "place_family":
+            for season in row["allowed_seasons"].split(";"):
+                for time in row["allowed_times"].split(";"):
+                    if time in time_ranges:
+                        by_pf.setdefault((row["scope_ref"], season), []).append(
+                            (row["subject_ref"], *time_ranges[time]))
+    routine_by_pf = {}
+    for row in schedules:
+        subject = row["occupation_ref"] or row["role_ref"]
+        if not subject:
+            continue
+        minute = int(row["local_start_minute"])
+        for phase in json.loads(row["time_blocks"]):
+            end = minute + int(phase["duration_minutes"])
+            if phase["presence_state"] in {"on_site", "nearby"} and phase["location_ref"]:
+                pf = phase["location_ref"]
+                routine_by_pf.setdefault((pf, row["season"]), []).append((subject, minute, end))
+            minute = end
+    for key, phases in routine_by_pf.items():
+        by_pf.setdefault(key, []).extend(phases)
+    pairs = {}
+    same_pf_pairs = set()
+    intersections = set()
+    bound_pf = set()
+    occupations = {row["occupation_id"] for row in read_tsv(OCC_TSV)}
+    occupations.update(row["occupation_id"] for row in read_csv(os.path.join(
+        GAME_BASE_V1, "occupations-activities", "occupations", "occupations_additions.csv")))
+    for node in bindings:
+        if node["node_level"] != "G5":
+            continue
+        pf_refs = {node["pf_id"], *filter(None, node["pf_secondary"].split(";"))}
+        bound_pf.update(pf_refs)
+        for season in seasons:
+            people = [(subject, start, end, pf) for pf in pf_refs
+                      for subject, start, end in by_pf.get((pf, season), [])]
+            for a, b in combinations(people, 2):
+                if a[0] == b[0]:
+                    continue
+                key = tuple(sorted((a[0], b[0])))
+                if max(a[1], b[1]) >= min(a[2], b[2]):
+                    continue
+                pairs.setdefault(key, set()).add((node["node_ref"], node["pf_id"], season))
+                intersections.add((node["node_ref"], season, *sorted((a, b))))
+                if a[3] == b[3] and all(subject in occupations for subject in key):
+                    same_pf_pairs.add(key)
+    if gaps is None:
+        with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+            gaps = {row["subject_ref"] for row in json.load(f)["never_created_gaps"]}
+    dead_pairs = {pair: contexts for pair, contexts in pairs.items() if set(pair) & gaps}
+    pairs = {pair: contexts for pair, contexts in pairs.items() if pair not in dead_pairs}
+    same_pf_pairs.difference_update(dead_pairs)
+    colocated_contexts = {(node, season, pair) for pair, contexts in pairs.items()
+                           for node, _, season in contexts}
+    intersections = {context for context in intersections
+                     if tuple(sorted((context[2][0], context[3][0]))) not in dead_pairs}
+    return pairs, same_pf_pairs, len({pf for pf, _ in by_pf if pf in bound_pf}), {
+        person[0] for (pf, _), people in by_pf.items() if pf in bound_pf for person in people}, len(intersections), len(colocated_contexts), dead_pairs
 
 
 def read_tsv(path):
@@ -60,7 +168,7 @@ def write_csv(path, rows, fieldnames):
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames,
                            lineterminator="\n" if os.path.basename(path) in
-                           {"household_composition_profiles.csv", "psychology_profiles.csv"} else "\r\n")
+                           {"household_composition_profiles.csv", "psychology_profiles.csv", "relationship_rules.csv", "address_forms.csv", "speech_registers.csv"} else "\r\n")
         w.writeheader()
         for row in rows:
             out = {}
@@ -281,10 +389,75 @@ def build_households_kinship(occs, roles):
         ["term_id", "term_ru", "gloss_en", "category", "source_refs", "confidence", "note"],
     )
 
+    relation_rows = [
+        ("rel_boyar_servant", "role_pair", "", "nov_role_boyar", "nov_role_servant", "master_servant", "directed", "Only for a named servant attached to a named boyar's household; the role pair alone creates no edge.", "book:622242 §510", "", "", "B"),
+        ("rel_prince_druzhinnik", "role_pair", "", "nov_role_prince", "nov_role_princely_druzhinnik", "unspecified", "symmetric", "Require named actors and an independent service record before assigning a relationship.", "", "", "Book:641352 §423 records a warrior's oral report to a prince, not the warrior's role as a princely druzhinnik or a continuing service tie.", "C"),
+        ("rel_boyar_household", "household", "hh_role_nov_role_boyar", "", "", "co_resident", "symmetric", "Only for named actors placed in the same materialized household; residence does not imply kinship.", "book:709382 §596", "", "", "B"),
+        ("rel_householder_mistress_gap", "role_pair", "", "nov_role_householder", "nov_role_household_mistress", "unspecified", "symmetric", "Require an explicit actor-level marriage or household record; titles do not establish marriage.", "", "", "No evidence that arbitrary holders of these roles are spouses.", "C"),
+        ("rel_community", "neighborhood", "pf_village_lane", "", "", "community_member", "symmetric", "Only named members of the same established verv; sharing a lane does not prove membership or kinship.", "book:641351 §2754", "", "", "A"),
+        ("rel_rural_neighbor_gap", "neighborhood", "pf_village_lane", "", "", "unspecified", "symmetric", "Require named neighboring households; no direction or strength follows from proximity.", "", "", "No sourced direction or strength for arbitrary neighbors.", "C"),
+        ("rel_kin_siblings", "household", "hh_role_nov_role_householder", "", "", "kin_siblings", "symmetric", "Only named siblings with an actor-level kin record; a shared household is insufficient.", "book:641351 §2988", "", "", "A"),
+        ("rel_kin_siblings_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "kin_siblings", "symmetric", "Only named siblings with an actor-level kin record; a shared household is insufficient.", "book:641351 §2988", "", "", "A"),
+        ("rel_kin_parent_child", "household", "hh_role_nov_role_householder", "", "", "kin_parent_child", "directed", "Only a named parent and child with an actor-level kin record.", "book:641351 §2943", "", "", "A"),
+        ("rel_kin_parent_child_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "kin_parent_child", "directed", "Only a named parent and child with an actor-level kin record.", "book:641351 §2943", "", "", "A"),
+        ("rel_kin_uncle_nephew", "household", "hh_role_nov_role_householder", "", "", "kin_uncle_nephew", "directed", "Only named uncle and nephew with an actor-level kin record.", "book:641351 §2988", "", "", "A"),
+        ("rel_kin_uncle_nephew_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "kin_uncle_nephew", "directed", "Only named uncle and nephew with an actor-level kin record.", "book:641351 §2988", "", "", "A"),
+        ("rel_spouse", "household", "hh_role_nov_role_householder", "", "", "spouse", "symmetric", "Only named spouses with an actor-level marriage record; household titles do not establish marriage.", "book:641351 §2976", "", "", "A"),
+        ("rel_spouse_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "spouse", "symmetric", "Only named spouses with an actor-level marriage record; household titles do not establish marriage.", "book:641351 §2976", "", "", "A"),
+        ("rel_dependent_herder", "role_pair", "", "nov_role_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt.", "book:641351 §2811", "", "", "A"),
+        ("rel_dependent_herder_smerd", "role_pair", "", "nov_role_smerd_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt. Transfer of the cited patron rule to a smerd household is conditional.", "book:641351 §2811", "", "", "C"),
+        ("rel_dependent_servant", "role_pair", "", "nov_role_smerd_householder", "nov_occ_household_servant", "dependent_patron", "directed", "Only a named household servant and their named employer in a materialized household.", "book:641352 §1814", "", "", "C"),
+        ("rel_joint_work", "work_assignment", "", "", "", "joint_work", "symmetric", "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.", "", "editorial_joint_work_acquaintance_c", "", "C"),
+    ]
+    pairs, same_pf_pairs, start_pf_count, start_subjects, intersections, colocated_contexts, dead_pairs = starting_pairs()
+    for pf, subject, object_, link in composition_spouse_links():
+        relation_rows.append((generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]]),
+                              "role_pair", "", subject, object_, "spouse", "symmetric",
+                              f"Only the named actors materialized from {link['from_group_id']} and {link['to_group_id']} at {pf}; other role holders are not spouses.",
+                              ";".join(link["source_refs"]), "", "", link["confidence"]))
+    with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+        gap_rows = json.load(f)["never_created_gaps"]
+    explicit_pairs = {frozenset((row[3], row[4])) for row in relation_rows
+                      if row[1] == "role_pair" and row[3] and row[4] and not row[0].startswith("rel_composition_spouse_")}
+    for pair in sorted(pairs):
+        if frozenset(pair) in explicit_pairs:
+            continue
+        if pair in same_pf_pairs:
+            relation_rows.append((generated_id("rel_start_joint_work_", [*pair, "joint_work", "symmetric"]), "role_pair", "", *pair, "joint_work", "symmetric",
+                                  "Only named workers with a shared assignment at this PF and time may be acquainted; co-presence alone creates no edge.",
+                                  "", "editorial_joint_work_acquaintance_c", "", "C"))
+        else:
+            relation_rows.append((generated_id("rel_start_gap_", [*pair, "unspecified", "symmetric"]), "role_pair", "", *pair, "unspecified", "symmetric",
+                                  "Only named actors actually present together; the scene and roles alone create no relationship.",
+                                  "", "", "No sourced relation for this potential pair in the bound starting G5 scenes.", "C"))
+    relation_dicts = [dict(zip(
+        ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"],
+        (*row, "candidate"))) for row in relation_rows]
+    assert_generated_unique(relation_dicts, "rel_rule_id", ("subject_role_ref", "object_role_ref", "relationship_kind", "direction"), "rel_start_")
+    n_rel = write_csv(os.path.join(out_dir, "relationship_rules.csv"), relation_dicts,
+        ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"])
+
     report["households_kinship"] = {
         "household_composition_profiles.csv": n_comp,
         "marriage_inheritance_rules.csv": n_mi,
         "kinship_terms.csv": n_kt,
+        "relationship_rules.csv": n_rel,
+        "start_place_families": start_pf_count,
+        "start_subjects": len(start_subjects),
+        "start_subjects_in_pairs": len({subject for pair in pairs for subject in pair}),
+        "start_role_pairs": len(pairs),
+        "start_dead_pair_gap_count": len(dead_pairs),
+        "start_dead_pair_gaps": [{"pair": list(pair), "missing_subjects": [
+            {key: gap[key] for key in ("subject_kind", "subject_ref", "reason")}
+            for gap in sorted(gap_rows, key=lambda row: row["subject_ref"]) if gap["subject_ref"] in pair]}
+            for pair in sorted(dead_pairs)],
+        "start_pair_node_season_contexts": len({(pair, node, season) for pair, contexts in pairs.items()
+                                                 for node, _, season in contexts}),
+        "start_colocated_node_season_contexts": colocated_contexts,
+        "start_phase_intersections": intersections,
+        "no_source_rows": sum(bool(row[10]) for row in relation_rows),
+        "start_pair_scene_counts": {"|".join(pair): len({node for node, _, _ in contexts})
+                                    for pair, contexts in sorted(pairs.items())},
     }
 
 
@@ -292,11 +465,16 @@ def build_households_kinship(occs, roles):
 # Domain 2: npc_psychology
 # ---------------------------------------------------------------------------
 
-CLOSED_TEMPERAMENT = ["calm", "wary", "hot_tempered", "timid", "assertive", "sociable", "withdrawn"]
-CLOSED_VALUES = ["honour", "piety", "kin_loyalty", "profit", "safety", "custom", "hospitality"]
+PSYCHOLOGY_SCALES_PATH = os.path.join(ROOT, "npc_psychology", "psychology_scales.json")
+
+
+def load_psychology_scales():
+    with open(PSYCHOLOGY_SCALES_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
 
 # Book evidence describes possible concerns and norms, not individual traits
-# or their frequencies. Keep weights empty until a seed scale is authorized.
+# or their frequencies. D29 supplies only an even game baseline.
 PSYCHOLOGY_EVIDENCE = {
     "general": {
         "motives": [],
@@ -340,6 +518,9 @@ def rule_risk_traits_occ(o):
 
 def build_npc_psychology(occs, roles):
     out_dir = os.path.join(ROOT, "npc_psychology")
+    scales = load_psychology_scales()
+    temperament_weights = {item["id"]: scales["default_weight"] for item in scales["traits"]}
+    values_weights = {item["id"]: scales["default_weight"] for item in scales["values"]}
     rows = []
     for o in occs:
         motives, fears, evidence_refs = psychology_context((o.get("occupation_group") or "").strip())
@@ -347,14 +528,14 @@ def build_npc_psychology(occs, roles):
             "ps_id": f"ps_occ_{o['occupation_id']}",
             "role_or_occupation_ref": o["occupation_id"],
             "ref_kind": "occupation",
-            "temperament_weights": {},
-            "values_weights": {},
+            "temperament_weights": temperament_weights,
+            "values_weights": values_weights,
             "motives": motives,
             "fears": fears,
             "risk_traits": rule_risk_traits_occ(o),
             "fears_motives_note": "Sourced general/group concerns are context only, not individual traits; TSV common_goals/common_fears are templates (distinct=1).",
             "initial_mood_rules": "no_source:individual_initial_mood; do not seed",
-            "derivation_rule": "no_source:temperament_and_values_weights; not approved for NPC seeding; WK uncertainty claim is general psychology, not a historical role weight; violence_risk is exposure, not temperament",
+            "derivation_rule": "game_assumption:psychology_scales.json#D29; even baseline; B2 runtime chooses seeded traits and values; violence_risk is exposure, not temperament",
             "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']};" + ";".join(evidence_refs + [PSYCHOLOGY_WK_REF]),
             "confidence": "C",
         })
@@ -364,14 +545,14 @@ def build_npc_psychology(occs, roles):
             "ps_id": f"ps_role_{r['role_id']}",
             "role_or_occupation_ref": r["role_id"],
             "ref_kind": "role",
-            "temperament_weights": {},
-            "values_weights": {},
+            "temperament_weights": temperament_weights,
+            "values_weights": values_weights,
             "motives": motives,
             "fears": fears,
             "risk_traits": {"theft": "unspecified", "violence": "unspecified", "witness": "unspecified"},
             "fears_motives_note": "Sourced general/group concerns are context only, not individual traits; typical_fears/attitude_to_* are TSV templates (distinct=1).",
             "initial_mood_rules": "no_source:individual_initial_mood; do not seed",
-            "derivation_rule": "no_source:temperament_and_values_weights; not approved for NPC seeding; WK uncertainty claim is general psychology, not a historical role weight",
+            "derivation_rule": "game_assumption:psychology_scales.json#D29; even baseline; B2 runtime chooses seeded traits and values",
             "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']};" + ";".join(evidence_refs + [PSYCHOLOGY_WK_REF]),
             "confidence": "C",
         })
@@ -388,10 +569,34 @@ def build_npc_psychology(occs, roles):
 # Domain 3: speech_address
 # ---------------------------------------------------------------------------
 
-def build_speech_address(roles):
+OCCUPATION_EVERYDAY_IDS = {
+    "nov_occ_princely_service_agent", "nov_occ_druzhina_warrior", "nov_occ_tysyatsky_public_order",
+    "nov_occ_local_trader", "nov_occ_market_stall_seller",
+}
+LITERATE_TITLE_KEYWORDS = ["писец", "дьяк", "приказчик", "доверенн"]
+
+
+def literacy_register(r):
+    # An NPC's occupation is authoritative; role fields are only a fallback.
+    occupation = bool(r.get("occupation_id"))
+    rank = ((r.get("typical_status_range") if occupation else r.get("social_rank") or r.get("typical_status_range")) or "").strip().lower()
+    grp = ((r.get("occupation_group") if occupation else r.get("role_group") or r.get("occupation_group")) or "").strip()
+    title = (((r.get("occupation_title") if occupation else r.get("role_title") or r.get("occupation_title")) or "") + " " + (r.get("historical_term") or "")).lower()
+    if occupation and (r["occupation_id"] in OCCUPATION_EVERYDAY_IDS or grp == "ремесло"):
+        return "everyday_oral"
+    if occupation and rank in ("low", "low-variable"):
+        return "plain_oral"
+    if rank in ("elite", "high", "middle-high") or grp == "церковь" or any(k in title for k in LITERATE_TITLE_KEYWORDS):
+        return "formal_literate"
+    if rank in ("low", "low-middle", "low-dependent", "low-variable", "outcast-low", "dependent", "outcast"):
+        return "plain_oral"
+    return "everyday_oral"
+
+
+def build_speech_address(occs, roles):
     out_dir = os.path.join(ROOT, "speech_address")
 
-    # registers.csv — closed vocabulary of speech registers, one per role.
+    # registers.csv — one register per role or occupation.
     #
     # Fixed 2026-09-26 (rework). literacy_expectation is identical template
     # text on all 71 rows (distinct=1): "низкая по умолчанию; выше у элиты,
@@ -408,23 +613,12 @@ def build_speech_address(roles):
     # a broken substring search, which fixes посадник/тысяцкий, priest/
     # deacon/igumen/church_scribe, and merchant_clerk, and lets
     # everyday_oral actually occur for ordinary free middle-rank roles.
-    LITERATE_TITLE_KEYWORDS = ["писец", "дьяк", "приказчик", "доверенн"]
-
-    def literacy_register(r):
-        rank = (r.get("social_rank") or "").strip().lower()
-        grp = (r.get("role_group") or "").strip()
-        title = ((r.get("role_title") or "") + " " + (r.get("historical_term") or "")).lower()
-        if rank in ("elite", "high") or grp == "церковь" or any(k in title for k in LITERATE_TITLE_KEYWORDS):
-            return "formal_literate"
-        if rank in ("low", "dependent", "outcast"):
-            return "plain_oral"
-        return "everyday_oral"
-
     reg_rows = []
     for r in roles:
         register = literacy_register(r)
         reg_rows.append({
-            "role_id": r["role_id"],
+            "subject_kind": "role",
+            "subject_ref": r["role_id"],
             "register": register,
             "literacy_expectation_ru": r.get("literacy_expectation", ""),
             "speech_notes_ru": r.get("languages_or_speech_notes", ""),
@@ -432,45 +626,92 @@ def build_speech_address(roles):
             "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']}",
             "confidence": "C",
         })
+    for o in occs:
+        reg_rows.append({
+            "subject_kind": "occupation",
+            "subject_ref": o["occupation_id"],
+            "register": literacy_register(o),
+            "literacy_expectation_ru": "",
+            "speech_notes_ru": "",
+            "derivation_rule": ("Editorial C: occupation register takes precedence over role; named service/trade occupations and occupation_group=ремесло use everyday_oral."
+                                if o["occupation_id"] in OCCUPATION_EVERYDAY_IDS or o.get("occupation_group") == "ремесло" else
+                                "Editorial C: register from typical_status_range, occupation_group and occupation_title/historical_term using the role register rule; occupation TSV has no individual literacy or speech field."),
+            "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']}",
+            "confidence": "C",
+        })
     n_reg = write_csv(
         os.path.join(out_dir, "speech_registers.csv"), reg_rows,
-        ["role_id", "register", "literacy_expectation_ru", "speech_notes_ru", "derivation_rule", "source_refs", "confidence"],
+        ["subject_kind", "subject_ref", "register", "literacy_expectation_ru", "speech_notes_ru", "derivation_rule", "source_refs", "confidence"],
     )
 
-    # address_forms.csv — a seed closed set of period address formulas,
-    # attested in scholarship on birchbark letters (formula "поклон отъ ... къ ...")
-    # but NOT yet checked row-by-row against gramoty.ru texts (stated gap:
-    # fill_method=research in the brief; this pass only seeds the structure
-    # and the two best-known attested formula types).
-    SEED = [
-        ("form_poklon", "боярин/госпожа", "равный/родня", "поклон от {А} к {Б}",
-         "epistolary_opening", "письмо (берестяная грамота)",
-         "law_none", "formula type attested across many birchbark letters",
-         "A", "gramoty.ru corpus; Зализняк, Древненовгородский диалект — formula description (not verbatim quoted here)"),
-        ("form_gospodine", "просящий/младший", "боярин/начальник", "господине",
-         "respectful_address", "просьба, письмо",
-         "law_none", "vocative respectful address attested in letters",
-         "B", "Зализняк, Древненовгородский диалект — general description of address forms"),
-        ("form_bratie", "равный", "равный/сослуживец", "братие",
-         "collegial_address", "устная и письменная речь",
-         "law_none", "collective address term, standard Old East Slavic usage",
-         "C", "general historical-linguistic reconstruction, no row-level attestation yet"),
+    # A letter opening is a written formula, never a default oral address.
+    FORMS = [
+        ("form_poklon", "written_letter", "", "", "formal_literate", "Поклон от {отправитель} к {адресат}", "письмо, письменный зачин", "", "грамота № 717: игуменья к Офросении", "book:641351 §2966", "", "", "A"),
+        ("form_prince", "unspecified", "", "nov_role_prince", "", "Господин князь", "устный доклад воина князю; роль говорящего не установлена", "", "воин докладывает князю", "book:641352 §423", "", "", "A"),
+        ("form_bishop", "unspecified", "", "nov_role_archbishop", "", "Владыко", "устный вопрос епископу; роль говорящего не установлена", "", "вопрос тверскому епископу, перенос на новгородского владыку как кандидат", "book:641352 §2037", "", "", "C"),
+        ("form_master_servant", "master_servant", "nov_role_servant", "nov_role_boyar", "plain_oral", "Господин", "устный доклад слуги хозяину", "", "слуги обращаются к своему господину; перенос на боярский двор", "book:641352 §1814", "", "", "C"),
+        ("form_gospodine", "dependent_patron", "nov_occ_household_servant", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение зависимого к хозяину", "", "форма засвидетельствована к господину; перенос на названного хозяина условен", "book:641351 §1482", "", "", "C"),
+        ("form_herder_master", "dependent_patron", "nov_occ_herder", "nov_role_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к своему хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
+        ("form_herder_smerd", "dependent_patron", "nov_occ_herder", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к названному хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
+        ("form_brother", "kin_siblings", "", "", "", "Господин брат", "письмо сестры брату", "", "берестяная грамота, сестра просит брата вступиться", "book:641351 §2984", "", "", "A"),
+        ("form_spouse", "spouse", "nov_role_household_mistress", "nov_role_householder", "", "Господине мой", "жена к мужу; книжный топос, только вариант", "", "слово Даниила Заточника", "book:641351 §1673", "", "", "C"),
+        ("form_spouse_smerd", "spouse", "nov_role_household_mistress", "nov_role_smerd_householder", "", "Господине мой", "только для пары, связанной spouse в составе двора; книжный топос, только вариант", "", "слово Даниила Заточника; перенос на двор смерда условен", "book:641351 §1673", "", "", "C"),
+        ("form_son", "kin_parent_child", "", "", "", "Сын мой", "отец к сыну", "", "летописная речь, medieval_general", "book:641352 §1765", "", "", "C"),
+        ("form_father_in_law", "unspecified", "", "", "", "Господин и отец", "зять к тестю", "", "летописная речь, medieval_general; термин обращения не доказывает отцовство", "book:641352 §1722", "", "", "C"),
+        ("form_gospozha", "written_letter", "", "", "", "госпожа моя", "письменная вежливая просьба женщины к женщине", "", "берестяная грамота; устный перенос не установлен", "book:641351 §2968", "", "", "A"),
+        ("form_children", "unspecified", "", "", "", "Дети мои", "клирик к собранию людей", "", "речь клирика, не индивидуальная родственная форма", "book:641352 §1966", "", "", "A"),
+        ("form_bratie", "unspecified", "", "", "", "Братия", "коллективное обращение к собранию", "", "летописная коллективная речь", "book:641352 §278", "", "", "A"),
+        ("form_brothers_novgorod", "unspecified", "", "", "", "Братья новгородцы", "коллективное обращение к новгородцам", "", "речь Мстислава", "book:641352 §269", "", "", "A"),
+        ("form_knyazhe", "unspecified", "", "nov_role_prince", "", "княже", "новгородцы к князю", "", "1228 год; отдельный вариант", "book:556930 §158", "", "", "B"),
+        ("form_letter_from", "written_letter", "", "", "formal_literate", "От {отправитель} к {адресат}", "письмо", "", "письменный зачин", "book:641351 §2921", "", "", "C"),
+        ("form_letter_gramota", "written_letter", "", "", "formal_literate", "Грамота от {отправитель} к {адресат}", "письмо", "", "письменный зачин", "book:641351 §2937", "", "", "A"),
+        ("form_letter_greeting", "written_letter", "", "", "formal_literate", "Приветствую тебя", "письмо", "", "письменная формула", "book:641351 §2968", "", "", "A"),
+        ("form_household_gap", "co_resident", "", "", "everyday_oral", "", "разговор жильцов одного двора", "", "", "", "", "No universal address follows from shared residence.", "C"),
+        ("form_spouse_reverse_gap", "spouse", "nov_role_householder", "nov_role_household_mistress", "everyday_oral", "", "устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
+        ("form_neighbor_gap", "unspecified", "", "", "everyday_oral", "", "устное обращение соседей", "", "", "", "", "No universal oral form or tie strength for neighboring households.", "C"),
+        ("form_siblings_gap", "kin_siblings", "", "", "everyday_oral", "", "устное обращение родных братьев и сестёр", "", "", "", "", "No sourced general oral sibling address.", "C"),
+        ("form_uncle_nephew_gap", "kin_uncle_nephew", "", "", "everyday_oral", "", "устное обращение дяди и племянника", "", "", "", "", "No sourced general oral uncle-nephew address.", "C"),
+        ("form_joint_work_gap", "joint_work", "", "", "everyday_oral", "", "устное обращение коллег", "", "", "", "", "No universal oral address follows from joint work.", "C"),
+        ("form_community_gap", "community_member", "", "", "everyday_oral", "", "устное обращение членов верви", "", "", "", "", "No sourced general oral address for community members.", "C"),
+        ("form_spouse_smerd_reverse_gap", "spouse", "nov_role_smerd_householder", "nov_role_household_mistress", "everyday_oral", "", "только для пары, связанной spouse в составе двора; устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
     ]
-    af_rows = []
-    for sid, speaker, addressee, form, register, situation, legal, attest, conf, src in SEED:
-        af_rows.append({
-            "sp_id": sid, "speaker_role_ref": speaker, "addressee_role_ref": addressee,
-            "form_ru": form, "register": register, "situation": situation,
-            "legal_weight_ref": legal, "attestation": attest, "source_refs": src, "confidence": conf,
-        })
+    columns = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
+    linked_pairs = {}
+    for pf, subject, object_, link in composition_spouse_links():
+        linked_pairs.setdefault(frozenset((subject, object_)), []).append(
+            generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]]))
+    af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" or row[0] == "form_brother" else "oral", *row[1:], "candidate")))
+               for row in FORMS if include_composition_spouse_form(row, linked_pairs)]
+    for row in af_rows:
+        if row["sp_id"].startswith("form_spouse_smerd"):
+            row["situation"] += "; only for " + ";".join(linked_pairs[frozenset((row["speaker_role_ref"], row["addressee_role_ref"]))])
+    pairs, same_pf_pairs, _, _, _, _, _ = starting_pairs()
+    explicit_kinds = {(r["subject_role_ref"], r["object_role_ref"]): r["relationship_kind"]
+                      for r in read_csv(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"))
+                      if r["scope_kind"] == "role_pair" and not r["rel_rule_id"].startswith("rel_composition_spouse_")}
+    for a, b in sorted(pairs):
+        kind = explicit_kinds.get((a, b), explicit_kinds.get((b, a),
+               "joint_work" if (a, b) in same_pf_pairs else "unspecified"))
+        for speaker, addressee in ((a, b), (b, a)):
+            if any(row["channel"] == "oral" and row["relationship_kind"] == kind and
+                   row["speaker_role_ref"] == speaker and row["addressee_role_ref"] == addressee for row in af_rows):
+                continue
+            af_rows.append(dict(zip(columns, (generated_id("form_start_gap_", [speaker, addressee, kind]), "oral", kind,
+                                              speaker, addressee, "", "", "co-present actors at a bound starting scene", "", "", "", "",
+                                              "No sourced oral form for this directed role pair in the searched corpora.", "C", "candidate"))))
+    assert_generated_unique(af_rows, "sp_id", ("speaker_role_ref", "addressee_role_ref", "relationship_kind"), "form_start_gap_")
     n_af = write_csv(
         os.path.join(out_dir, "address_forms.csv"), af_rows,
-        ["sp_id", "speaker_role_ref", "addressee_role_ref", "form_ru", "register", "situation",
-         "legal_weight_ref", "attestation", "source_refs", "confidence"],
+        columns,
     )
     report["speech_address"] = {"speech_registers.csv": n_reg, "address_forms.csv": n_af,
-                                 "gap": "berestyanaya-grammota corpus not collected row-by-row in this pass; "
-                                        "brief fill_method=research not fulfilled beyond 3 seed formulas"}
+                                 "register_counts": {kind: {register: sum(row["subject_kind"] == kind and row["register"] == register for row in reg_rows)
+                                                            for register in ("formal_literate", "plain_oral", "everyday_oral")}
+                                                     for kind in ("role", "occupation")},
+                                 "no_source_rows": sum(bool(row["no_source"]) for row in af_rows),
+                                 "start_directed_pairs": 2 * len(pairs),
+                                 "start_directed_node_season_contexts": 2 * len({(pair, node, season)
+                                     for pair, contexts in pairs.items() for node, _, season in contexts})}
 
 
 # ---------------------------------------------------------------------------
@@ -597,9 +838,9 @@ def main():
     report["inputs"] = {"occupations_rows": len(occs), "roles_rows": len(roles)}
     build_households_kinship(occs, roles)
     build_npc_psychology(occs, roles)
-    build_speech_address(roles)
+    build_speech_address(occs, roles)
     build_social_norms()
-    with open(os.path.join(os.path.dirname(__file__), "build_report.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(os.path.dirname(__file__), "build_report.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
     print(json.dumps(report, ensure_ascii=False, indent=2))
 

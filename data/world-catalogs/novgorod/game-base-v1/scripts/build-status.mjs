@@ -45,9 +45,8 @@ export function targets(raw, available) {
   const normalized = original.replace(/\\/g, '/');
   const tokens = [...normalized.matchAll(targetPattern)].map(match => match[0]);
   if (groupReadme && !tokens.includes('README.md')) tokens.push('README.md');
-  if (!tokens.length) return [{ token: original, reason: 'нет пути к файлу или каталогу' }];
   const known = new Set(available);
-  return tokens.flatMap(token => {
+  const resolved = tokens.flatMap(token => {
     if (token.endsWith('/')) {
       const matches = available.filter(file => file.startsWith(token));
       return matches.length ? matches.map(file => ({ token, file })) : [{ token, reason: 'каталог пуст или не найден' }];
@@ -58,6 +57,17 @@ export function targets(raw, available) {
     if (matches.length === 1) return [{ token, file: matches[0] }];
     return [{ token, reason: matches.length ? 'неоднозначное имя' : 'файл не найден', candidates: matches }];
   });
+  if (resolved.some(target => target.file)) return resolved;
+  const basename = normalized.match(/^(.+?)\s+\([^()]+\)$/)?.[1];
+  if (basename) {
+    const directories = new Set(available.flatMap(file => {
+      const parts = file.split('/');
+      return parts.slice(0, -1).flatMap((part, index) =>
+        part === basename ? [`${parts.slice(0, index + 1).join('/')}/`] : []);
+    }));
+    if (directories.size === 1) return targets([...directories][0], available);
+  }
+  return resolved.length ? resolved : [{ token: original, reason: 'нет пути к файлу или каталогу' }];
 }
 
 export function parse(groupRoot) {

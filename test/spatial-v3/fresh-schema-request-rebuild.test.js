@@ -30,8 +30,8 @@ test('fresh-schema-request rebuild equals committed file and pins chain_digest',
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST
   );
   assert.equal(rebuilt.party_schema.ordered_migrations.length, 37);
-  assert.equal(rebuilt.world_schema.ordered_parts.length, 27);
-  assert.equal(rebuilt.world_schema.expected_world_base_tables, 217);
+  assert.equal(rebuilt.world_schema.ordered_parts.length, 28);
+  assert.equal(rebuilt.world_schema.expected_world_base_tables, 219);
   assert.equal(rebuilt.source_commit, parsed.source_commit);
   assert.equal(
     renderFreshSchemaRequest(rebuilt),

@@ -19,6 +19,10 @@ import {
 import { loadApprovedActorProfileCatalog } from
   './actor-profile-catalog.js';
 import {
+  loadPlacePopulationComposition,
+  loadScheduleRoutineRules
+} from './m2c-npc-wave-readers.js';
+import {
   deepFreeze,
   fail,
   isDigest,
@@ -35,6 +39,8 @@ export { loadApprovedProceduralActorTemporalBundle,
   loadApprovedProceduralCompiledCatalog,
   loadApprovedProceduralSceneRecordBundle } from
   './procedural-scene-records.js';
+export { loadPlacePopulationComposition, loadScheduleRoutineRules } from
+  './m2c-npc-wave-readers.js';
 export { loadApprovedG4NaturalCatalog } from './g4-natural-catalog.js';
 export { loadApprovedG4NaturalPresentationCatalog } from './g4-natural-presentation-catalog.js';
 export { loadApprovedG4NaturalPlacementCatalog } from './g4-natural-placement-catalog.js';
@@ -147,7 +153,15 @@ export function createRuntimeCatalogLoader({
       loadApprovedActorProfileCatalog({
         ...input,
         worldBaseReader
-      })
+      }),
+    loadScheduleRoutineRules: (input) => loadScheduleRoutineRules({
+      ...input,
+      worldBaseReader
+    }),
+    loadPlacePopulationComposition: (input) => loadPlacePopulationComposition({
+      ...input,
+      worldBaseReader
+    })
   });
 }
 

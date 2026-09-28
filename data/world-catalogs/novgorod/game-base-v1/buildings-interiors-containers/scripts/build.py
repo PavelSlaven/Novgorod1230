@@ -100,6 +100,26 @@ def main():
                "size_note", "materials", "condition_states", "age_states", "fire_risk", "occupants_roles", "light_smoke_smell", "anachronism_guard",
                "source_refs", "confidence", "status", "notes"]
     out("buildings/building_types.csv", [dict(b, status=STATUS) for b in buildings.BUILDING_TYPES], bt_cols)
+    occupied_rule = {
+        "rule_id": "occupied_condition_v1", "status": STATUS,
+        "trigger": {"entity": "building_instance", "building_class": "dwelling", "composition_source": "D-2", "composition_scope": "linked_pf", "group_kind": "residents", "min_groups": 1},
+        "condition_states_from": "building_types.condition_states",
+        "forbidden_condition_states": ["burnt_ruin", "abandoned"],
+    }
+    with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), "w", encoding="utf-8") as f:
+        json.dump(occupied_rule, f, ensure_ascii=False, indent=2)
+    COUNTS["buildings/occupied_condition_rule.json"] = 1
+    age_condition_rule = {
+        "rule_id": "age_condition_v1", "status": STATUS,
+        "age_states_from": "building_types.age_states",
+        "condition_states_from": "building_types.condition_states",
+        "incompatibilities": [{"age_state": "new", "condition_states": ["needs_repair", "damaged", "burnt_ruin", "abandoned"]}],
+        "confidence": "C",
+        "reason": "Редакторское правило: новая постройка ещё не могла прийти в негодность, получить повреждения, сгореть или быть заброшенной; исторических весов сочетаний нет.",
+    }
+    with open(os.path.join(GROUP, "buildings/age_condition_rule.json"), "w", encoding="utf-8") as f:
+        json.dump(age_condition_rule, f, ensure_ascii=False, indent=2)
+    COUNTS["buildings/age_condition_rule.json"] = 1
     out("buildings/building_parts.csv",
         [dict(bp_id=p[0], name_ru=p[1], name_en=p[2], part_class=p[3], default_material=p[4], restriction=p[5], source_refs=p[6], confidence=p[7], status=STATUS) for p in parts.PARTS],
         ["bp_id", "name_ru", "name_en", "part_class", "default_material", "restriction", "source_refs", "confidence", "status"])
@@ -301,6 +321,9 @@ def main():
         ref = "content_profile:" + p["cp_id"]
         for pf in pf_ids:
             add_pc(pf, p["ct_id"], fc, ref)
+    # K9: a generic riverbank is not a fishing camp or a cargo landing.
+    for ct in ("ct_basket_fish", "ct_barrel_cargo"):
+        pc.pop(("riverbank", ct), None)
     out("containers/place_containers.csv", sorted(pc.values(), key=lambda x: (x["pf_id"], -x["weight"], x["ct_id"])),
         ["pf_id", "ct_id", "frequency_class", "weight", "basis_ref", "status"])
     out("containers/item_to_container_crosswalk.csv", [dict(item_id=k, ct_id=v, name_ru=matcult.get(k, {}).get("name_ru", "")) for k, v in sorted(item2ct.items())],

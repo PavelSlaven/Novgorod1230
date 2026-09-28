@@ -7,6 +7,19 @@
     ["source_records"],
     ["universal_categories"],
     ["spatial_v3_world_revisions"],
+    ["place_families"],
+    [
+      "spatial_node_place_family_bindings",
+      "presence_rules",
+      "water_body_presence_facets",
+      "npc_relationship_materialization_rules",
+      "speech_address_forms",
+      "household_composition_profiles",
+      "slot_instance_variants",
+      "fauna_phase_activity_rules",
+      "npc_schedule_routine_rules",
+      "place_population_composition_rules"
+    ],
     [
       "spatial_v3_authoring_versions",
       "spatial_v3_controlled_vocabulary_bindings"
@@ -154,6 +167,17 @@
     "spatial_v3_canonical_g5_connection_bindings",
     "spatial_v3_g4_entry_endpoint_bindings",
     "spatial_v3_topological_direction_contexts",
-    "spatial_v3_g4_traversal_profiles"
+    "spatial_v3_g4_traversal_profiles",
+    "place_families",
+    "spatial_node_place_family_bindings",
+    "presence_rules",
+    "npc_relationship_materialization_rules",
+    "speech_address_forms",
+    "household_composition_profiles",
+    "slot_instance_variants",
+    "water_body_presence_facets",
+    "fauna_phase_activity_rules",
+    "npc_schedule_routine_rules",
+    "place_population_composition_rules"
   ]
 }

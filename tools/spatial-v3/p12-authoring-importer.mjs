@@ -8,12 +8,16 @@ import bundleSchema from '../../data/contracts/spatial-v3/world-base-authoring-b
 import { proveExpansionCapacity } from './p11-capacity-proof.mjs';
 import { validateP12SourceApproval } from './p12-source-approval.mjs';
 import { validateP12TargetMaterializationApprovalV11 } from './p12-target-materialization-approval-v1_1.mjs';
+import { validateM2cNpcWaveApproval } from './m2c-npc-wave-approval.mjs';
+import { bundleIncludesWaveTables, manifestIncludesWaveTables, validateM2cNpcWaveBundle } from './m2c-npc-wave-bundle-validation.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const REGISTRY = 'data/contracts/spatial-v3/world-base-import-registry.v1.json';
 const DEFAULT_MANIFEST = 'data/world-catalogs/novgorod/spatial-v3/manifest.json';
+/** @internal Only set by buildImportWithReadbackSql for approved wave import+readback in one transaction. */
+const waveImportViaReadbackWrapper = Symbol('waveImportViaReadbackWrapper');
 
-export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11 } = {}) {
+export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11, m2cWaveApprovalPath } = {}) {
   const projectRoot = resolve(root);
   const manifestFile = resolve(projectRoot, manifestPath);
   const manifest = await json(manifestFile);
@@ -47,10 +51,11 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
     const tableSchema = tableSchemas.get(dataset.table);
     if (!tableSchema) { errors.push(issue('UNKNOWN_OR_PARTY_TABLE', dataset.table)); continue; }
     const rowKeys = new Set();
+    const primaryKey = resolveTablePrimaryKey(tableSchema);
     for (const row of rows) {
       const subject = row?.id ?? dataset.table;
       validateStrictRow(row, tableSchema, dataset.table, errors);
-      const key = tableSchema.columns.filter((column) => column.primary_key).map((column) => row?.[column.name]).join('|');
+      const key = primaryKey.map((column) => row?.[column.name]).join('|');
       if (key && rowKeys.has(key)) errors.push(issue('DUPLICATE_RECORD_ID', `${dataset.table}:${key}`)); else rowKeys.add(key);
       if (row?.delete === true) errors.push(issue('DELETE_POLICY_FORBIDDEN', `${dataset.table}:${subject}`));
     }
@@ -65,27 +70,57 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateSceneCandidateApplicability(datasets, errors);
   validateExternalDependencyClosure(datasets, errors);
   validateExpansionRuleClosure(datasets, errors);
+  validateM2cNpcWaveBundle(manifest, datasets, errors);
+  if (bundleIncludesWaveTables(manifest, datasets) && manifest.status === 'approved') {
+    const waveApproval = await validateM2cNpcWaveApproval({
+      root: projectRoot,
+      approvalPath: m2cWaveApprovalPath,
+      bundleManifestPath: manifestPath,
+    });
+    for (const waveError of waveApproval.errors) errors.push(issue('M2C_WAVE_APPROVAL_INVALID', waveError.code));
+  }
   return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval, target_approval: targetApproval });
+}
+
+export async function buildImportWithReadbackSql(options = {}) {
+  const importPrefix = options.temporaryTablePrefix ?? 'p12_candidate';
+  const readbackPrefix = options.readbackTemporaryTablePrefix ?? 'p12_readback_expected';
+  if (importPrefix === readbackPrefix) {
+    throw new Error('P12_IMPORT_READBACK_PREFIX_COLLISION');
+  }
+  const importSql = await buildTransactionalImportSql({
+    ...options,
+    wrapTransaction: false,
+    temporaryTablePrefix: importPrefix,
+    [waveImportViaReadbackWrapper]: true,
+  });
+  const readbackSql = await buildBundleReadbackSql({ ...options, temporaryTablePrefix: readbackPrefix });
+  return `BEGIN;\n${importSql}${readbackSql}COMMIT;\n`;
 }
 
 export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST } = {}) {
   return buildTransactionalImportSql({ root, manifestPath, rollback: true, allowTypedGaps: true });
 }
 
-export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate' } = {}) {
+export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate', m2cWaveApprovalPath, [waveImportViaReadbackWrapper]: viaReadbackWrapper = false } = {}) {
   const projectRoot = resolve(root); const manifestFile = resolve(projectRoot, manifestPath);
-  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
+  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath, m2cWaveApprovalPath });
   if (result.errors.length || (!allowTypedGaps && result.data_gaps.length)) throw new Error(`P12 import refuses incomplete bundle: ${[...result.errors, ...result.data_gaps].map((error) => error.code).join(', ')}`);
-  const manifest = await json(manifestFile); const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
+  const manifest = await json(manifestFile);
+  const hasWaveTables = manifestIncludesWaveTables(manifest);
+  if (hasWaveTables && !rollback) {
+    if (manifest.status !== 'approved') {
+      throw new Error('P12_WAVE_IMPORT_REQUIRES_APPROVED');
+    }
+    if (!viaReadbackWrapper) {
+      throw new Error('P12_WAVE_IMPORT_REQUIRES_READBACK');
+    }
+  }
+  const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
   const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = wrapTransaction ? ['BEGIN;'] : [];
   for (const dataset of manifest.datasets) {
     const rows = await json(resolve(dirname(manifestFile), dataset.file)); const schema = tables.get(dataset.table);
-    let primaryKey = schema.columns.filter((column) => column.primary_key);
-    if (!primaryKey.length) {
-      const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
-      const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
-      primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
-    }
+    const primaryKey = resolveTablePrimaryKey(schema);
     if (!primaryKey.length) throw new Error(`P12 import requires a primary key: ${dataset.table}`);
     if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid temporary table prefix: ${temporaryTablePrefix}`);
     const candidateTable = `${temporaryTablePrefix}_${dataset.table}`;
@@ -96,7 +131,7 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
     sql.push(`CREATE TEMP TABLE ${candidateTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
     for (const row of rows) {
       const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
-      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type)]));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type, `${dataset.table}.${column.name}`)]));
       const keyPredicate = primaryKey.map((column) => `${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
       const actualKeyPredicate = primaryKey.map((column) => `actual.${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
       sql.push(
@@ -118,6 +153,68 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
   if (wrapTransaction) sql.push(rollback ? 'ROLLBACK;' : 'COMMIT;');
   else if (rollback) throw new Error('P12 rollback requires a transaction wrapper');
   return `${sql.join('\n')}\n`;
+}
+
+/** Post-import readback in the same transaction; not part of buildTransactionalImportSql output. */
+export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, temporaryTablePrefix = 'p12_readback_expected', m2cWaveApprovalPath } = {}) {
+  const projectRoot = resolve(root);
+  const manifestFile = resolve(projectRoot, manifestPath);
+  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath, m2cWaveApprovalPath });
+  if (result.errors.length) throw new Error(`P12 readback refuses invalid bundle: ${result.errors.map((error) => error.code).join(', ')}`);
+  const manifest = await json(manifestFile);
+  const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
+  const tables = new Map(ddl.schema.tables.map((table) => [table.name, table]));
+  if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid readback temp prefix: ${temporaryTablePrefix}`);
+  const sql = [];
+  for (const dataset of manifest.datasets) {
+    const rows = await json(resolve(dirname(manifestFile), dataset.file));
+    const schema = tables.get(dataset.table);
+    const primaryKey = resolveTablePrimaryKey(schema);
+    if (!primaryKey.length) throw new Error(`P12 readback requires a primary key: ${dataset.table}`);
+    const expectedTable = `${temporaryTablePrefix}_${dataset.table}`;
+    const serverManaged = schema.columns.filter((column) => ['created_at', 'updated_at'].includes(column.name)).map((column) => column.name);
+    const canonicalJson = (alias) => serverManaged.length
+      ? `(to_jsonb(${alias}) - ARRAY[${serverManaged.map((column) => `'${column}'`).join(', ')}]::text[])`
+      : `to_jsonb(${alias})`;
+    const pkMatch = primaryKey.map((column) => `w.${column.name} IS NOT DISTINCT FROM e.${column.name}`).join(' AND ');
+    sql.push(`CREATE TEMP TABLE ${expectedTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
+    for (const row of rows) {
+      const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type, `${dataset.table}.${column.name}`)]));
+      sql.push(`INSERT INTO ${expectedTable} (${columns.map((column) => column.name).join(', ')}) VALUES (${columns.map((column) => values.get(column.name)).join(', ')});`);
+    }
+    sql.push(
+      `DO $p12_readback$ BEGIN`,
+      `  IF (SELECT count(*) FROM ${expectedTable}) <> ${rows.length} THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}:expected_rows';`,
+      `  END IF;`,
+      `  IF (SELECT count(*) FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) <> ${rows.length} THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}:count';`,
+      `  END IF;`,
+      `  IF (SELECT coalesce(jsonb_agg(${canonicalJson('e')} ORDER BY ${primaryKey.map((column) => `e.${column.name}`).join(', ')}), '[]'::jsonb) FROM ${expectedTable} e)`,
+      `     IS DISTINCT FROM`,
+      `     (SELECT coalesce(jsonb_agg(${canonicalJson('w')} ORDER BY ${primaryKey.map((column) => `w.${column.name}`).join(', ')}), '[]'::jsonb)`,
+      `      FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}';`,
+      `  END IF;`,
+      `END $p12_readback$;`
+    );
+  }
+  return `${sql.join('\n')}\n`;
+}
+
+export function resolveTablePrimaryKey(schema) {
+  let primaryKey = schema.columns.filter((column) => column.primary_key);
+  if (!primaryKey.length) {
+    const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
+    const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
+    primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
+  }
+  return primaryKey;
+}
+
+export function sqlLiteral(value, type = '', context = '') {
+  return literal(value, type, context);
 }
 
 function validateReferences(manifest, datasets, errors) {
@@ -306,13 +403,28 @@ function issue(code, subject_ref) { return Object.freeze({ code, subject_ref, de
 function text(value) { return typeof value === 'string' && value.trim().length > 0; }
 function descendant(file, parent) { const path = relative(parent, file); return !!path && !path.startsWith('..') && !isAbsolute(path); }
 function digest(value) { return createHash('sha256').update(value).digest('hex'); }
-function literal(value, type = '') {
+function literal(value, type = '', context = '') {
   if (value === null) return 'NULL';
   if (typeof value === 'number') return String(value);
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+  const normalizedType = String(type).trim().toLowerCase();
+  if (Array.isArray(value) && normalizedType.endsWith('[]')) {
+    const pgType = normalizedType.replace(/\s+/g, '');
+    if (!value.length) return `ARRAY[]::${pgType}`;
+    for (const item of value) {
+      if (item === null || item === undefined) {
+        throw new Error(`P12_ARRAY_NULL_ELEMENT:${context || type}`);
+      }
+    }
+    const elements = value.map((item) => {
+      const serialized = String(item).replaceAll("'", "''");
+      return `'${serialized}'`;
+    });
+    return `ARRAY[${elements.join(', ')}]::${pgType}`;
+  }
   const serialized = typeof value === 'object' ? JSON.stringify(value) : String(value);
   const quoted = `'${serialized.replaceAll("'", "''")}'`;
-  return /\bJSONB?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
+  return /\bjsonb?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
 }
 async function json(file) { return JSON.parse(await readFile(file, 'utf8')); }
 

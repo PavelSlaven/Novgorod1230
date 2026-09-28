@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { readFile, rm } from 'node:fs/promises';
 import { mkdtemp } from 'node:fs/promises';
@@ -8,11 +10,15 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import {
   buildM2cNpcWaveDatasets,
+  starterPrimaryPlaceFamilies,
+  STARTER_G3_SUBSTR,
   mapPresenceRule,
   mapNpcRelationshipRule,
   mapSpeechAddressForm,
   parseCsv,
+  parseRequiredNonNegInt,
   parseSlotWeight,
+  parseTextArray,
   parseVariants,
 } from '../../scripts/generate-m2c-npc-wave-datasets.mjs';
 
@@ -69,6 +75,36 @@ test('mapPresenceRule maps item_ref and variant objects', () => {
   assert.deepEqual(mapped.variants, [{ item_ref: 'it_two', source_row_id: 'row-1' }]);
 });
 
+test('mapPresenceRule clears allowed_times for people subject kinds', () => {
+  const row = {
+    pr_id: 'pr_people',
+    scope_kind: 'place_family',
+    scope_ref: 'pf_x',
+    region_id: '',
+    category_ref: '',
+    subject_kind: 'social_role',
+    subject_ref: 'nov_role_x',
+    item_ref: '',
+    variants: '[]',
+    probability_ppm: '1000',
+    count_limit: '1',
+    allowed_seasons: 'all',
+    allowed_times: '["day"]',
+    guards: '',
+    entry_visible_if: '',
+    search_only_if: '',
+    entry_exposed_weight: '',
+    search_concealed_weight: '',
+    wild_arrival_cause_required: '',
+    refresh_class: 'none',
+    confidence: 'C',
+    status: 'candidate',
+  };
+  const mapped = mapPresenceRule(row, 'rev-1', 'src-1');
+  assert.deepEqual(mapped.allowed_times, []);
+  assert.equal('allowed_times_source' in mapped.authoring_payload, false);
+});
+
 test('parseSlotWeight empty to 1; zero and negative throw', () => {
   assert.equal(parseSlotWeight(''), 1);
   assert.equal(parseSlotWeight(undefined), 1);
@@ -107,6 +143,16 @@ test('parseVariants empty array', () => {
   assert.deepEqual(parseVariants('[]'), []);
 });
 
+test('parseTextArray throws on malformed JSON', () => {
+  assert.throws(() => parseTextArray('[not-json'), /invalid text array JSON/u);
+});
+
+test('parseRequiredNonNegInt throws on empty or negative values', () => {
+  assert.throws(() => parseRequiredNonNegInt('', 'probability_ppm'), /missing required integer/u);
+  assert.throws(() => parseRequiredNonNegInt('-1', 'count_limit'), /invalid required integer/u);
+  assert.equal(parseRequiredNonNegInt('0', 'count_limit'), 0);
+});
+
 test('parseVariants fail-closed on malformed CSV JSON', () => {
   assert.throws(() => parseVariants('{not-json'), /invalid variants JSON/u);
   assert.throws(() => parseVariants('{"x":1}'), /expected JSON array/u);
@@ -122,6 +168,28 @@ test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
     worldRevisionId: 'rev-fixture',
     provenanceRef: 'src-fixture',
     gitShow: fixtureGitShow,
+    spatialClosure: {
+      revisionRows: [{
+        id: 'rev-fixture',
+        catalog_digest: 'a'.repeat(64),
+        status: 'approved',
+        provenance_ref: 'src-fixture',
+      }],
+      closureNodes: [{
+        entity_kind: 'spatial_node',
+        id: 'node-1',
+        version: 1,
+        world_revision_id: 'rev-fixture',
+        spatial_level: 'G4',
+        stable_label_id: null,
+        primary_class_id: 'spatial.g4.test',
+        evidence_status: 'reviewed',
+        traversal_model: null,
+        status: 'approved',
+        provenance_ref: 'src-fixture',
+        canonical_digest: 'b'.repeat(64),
+      }],
+    },
   };
   const resultA = await buildM2cNpcWaveDatasets({ ...opts, outRoot: outA });
   const resultB = await buildM2cNpcWaveDatasets({ ...opts, outRoot: outB });
@@ -145,4 +213,62 @@ test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
   assert.deepEqual(slots.map((row) => row.weight), [1, 2]);
 
   await rm(parent, { recursive: true, force: true });
+});
+
+test('starter territory place families each have a primary binding on pin 3ab1c890', async () => {
+  const commit = '3ab1c890c1caee2c1247ee144bf66bd35de705ec';
+  const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-starter-'));
+  const outRoot = join(parent, 'v1');
+  const result = await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  assert.equal(result.starterPlaceFamilies, 16, `starter PF count ${result.starterPlaceFamilies}`);
+  const bindings = JSON.parse(await readFile(join(outRoot, 'datasets/spatial_node_place_family_bindings.json'), 'utf8'));
+  const starterPf = starterPrimaryPlaceFamilies(bindings);
+  assert.ok(starterPf.size >= 16);
+  for (const pfId of starterPf) {
+    assert.ok(
+      bindings.some((row) => row.place_family_id === pfId && row.binding_role === 'primary'
+        && String(row.node_id).includes(STARTER_G3_SUBSTR)),
+      pfId,
+    );
+  }
+  const manifest = JSON.parse(await readFile(join(outRoot, 'manifest.json'), 'utf8'));
+  assert.equal(manifest.bundle_kind, 'dependency_closure');
+  assert.deepEqual(manifest.data_gaps, []);
+  assert.equal(manifest.source_commit, undefined);
+  await rm(parent, { recursive: true, force: true });
+});
+
+test('schedule routine rules count matches schedules CSV rows on approval pin', async () => {
+  const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
+  const commit = approval.source_commit;
+  const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const csvRows = parseCsv(gitShow('data/world-catalogs/novgorod/game-base-v1/time-calendar-church/time/schedules_routines.csv'));
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-sched-count-'));
+  const outRoot = join(parent, 'v1');
+  await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  const rules = JSON.parse(await readFile(join(outRoot, 'datasets/npc_schedule_routine_rules.json'), 'utf8'));
+  assert.equal(rules.length, csvRows.length, 'one routine rule per schedules.csv row');
+  assert.equal(csvRows.length, 167);
+  await rm(parent, { recursive: true, force: true });
+});
+
+test('committed m2c-npc-wave dataset files match generator output on approval pin', async (t) => {
+  const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
+  const commit = approval.source_commit;
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-byte-parity-'));
+  const outRoot = join(parent, 'v1');
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  const manifest = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json', 'utf8'));
+  for (const dataset of manifest.datasets) {
+    const committed = await readFile(join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1', dataset.file));
+    const generated = await readFile(join(outRoot, dataset.file));
+    assert.equal(
+      createHash('sha256').update(committed).digest('hex'),
+      createHash('sha256').update(generated).digest('hex'),
+      dataset.table,
+    );
+  }
 });

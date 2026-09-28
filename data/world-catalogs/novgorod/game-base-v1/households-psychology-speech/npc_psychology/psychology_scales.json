@@ -1,0 +1,24 @@
+{
+  "schema_version": "psychology_scales_v1",
+  "status": "candidate",
+  "basis_kind": "game_assumption",
+  "decision_ref": "D29",
+  "default_weight": 1,
+  "traits": [
+    {"id": "calm", "label_ru": "самообладание", "context_refs": [{"ref": "book:641351 §2935", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "wary", "label_ru": "осторожность", "context_refs": [{"ref": "book:641351 §1522", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "trusting", "label_ru": "доверчивость", "context_refs": [{"ref": "book:641351 §1522", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "sociable", "label_ru": "общительность", "context_refs": [{"ref": "book:641342 §1786", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "diligent", "label_ru": "старательность", "context_refs": [{"ref": "book:641342 §1788", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "impulsive", "label_ru": "импульсивность", "context_refs": [{"ref": "book:513900 §294", "usage": "context_only_not_distribution_or_individual_override"}]}
+  ],
+  "values": [
+    {"id": "kin_loyalty", "label_ru": "забота о родне", "context_refs": [{"ref": "book:641351 §2860", "usage": "context_only_not_distribution_or_individual_override"}, {"ref": "book:641351 §2988", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "honour", "label_ru": "добрая слава", "context_refs": [{"ref": "book:641351 §2947", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "hospitality", "label_ru": "гостеприимство", "context_refs": [{"ref": "book:641342 §1786", "usage": "context_only_not_distribution_or_individual_override"}, {"ref": "book:641351 §1610", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "elder_respect", "label_ru": "почитание старших", "context_refs": [{"ref": "book:641342 §1786", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "responsibility", "label_ru": "ответственность", "context_refs": [{"ref": "book:641351 §2958", "usage": "context_only_not_distribution_or_individual_override"}, {"ref": "book:641351 §2839", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "safety", "label_ru": "безопасность", "context_refs": [{"ref": "book:641351 §1526", "usage": "context_only_not_distribution_or_individual_override"}, {"ref": "book:641351 §1528", "usage": "context_only_not_distribution_or_individual_override"}]},
+    {"id": "piety", "label_ru": "благочестие", "context_refs": [{"ref": "book:641342 §1788", "usage": "context_only_not_distribution_or_individual_override"}]}
+  ]
+}

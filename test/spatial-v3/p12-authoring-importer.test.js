@@ -1,10 +1,18 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
-import { validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import {
+  buildBundleReadbackSql,
+  buildImportWithReadbackSql,
+  buildTransactionalImportSql,
+  sqlLiteral,
+  validateAuthoringBundle,
+} from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { validateM2cNpcWaveApproval } from '../../tools/spatial-v3/m2c-npc-wave-approval.mjs';
+import { manifestIncludesWaveTables, M2C_NPC_WAVE_TABLE_SET } from '../../tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs';
 
 const gap = (code) => ({ code, subject_ref: 'novgorod:test', dependency_pins: ['catalog'], blocking: true });
 const approvedTarget = async () => ({ ok: true, materialization_authorized: false, p28_activation: 'not_authorized', errors: [] });
@@ -148,6 +156,159 @@ test('P12 rejects an external edge without its exact approved registry pin', asy
   const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
   assert.ok(result.errors.some((error) => error.code === 'EXTERNAL_DEPENDENCY_PIN_MISSING'));
 });
+test('P12 sqlLiteral encodes TEXT[] for postgres arrays', () => {
+  assert.equal(sqlLiteral([], 'TEXT[]'), 'ARRAY[]::text[]');
+  assert.equal(sqlLiteral(['all'], 'text[]'), "ARRAY['all']::text[]");
+  assert.match(sqlLiteral(['a,b', 'c"d'], 'TEXT[]'), /ARRAY\['a,b', 'c"d'\]::text\[\]/u);
+  assert.doesNotMatch(sqlLiteral(['x'], 'TEXT[]'), /\["/u);
+});
+
+test('P12 rejects duplicate table-level primary keys inside a dataset', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-dup-pk-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  await mkdir(join(dir, 'datasets'));
+  const rows = [
+    { rule_id: 'pr_dup', rule_version: 1, world_revision_id: 'r', scope_kind: 'place_family', scope_ref: 'pf_x', subject_kind: 'category', subject_ref: 'cat_a', variants: [], presence_probability_ppm: 1, count_limit: 0, allowed_seasons: ['all'], allowed_times: [], guards: [], refresh_class: 'none', confidence: 'low', status: 'approved', provenance_ref: 'src', authoring_payload: {} },
+    { rule_id: 'pr_dup', rule_version: 1, world_revision_id: 'r', scope_kind: 'place_family', scope_ref: 'pf_y', subject_kind: 'category', subject_ref: 'cat_b', variants: [], presence_probability_ppm: 2, count_limit: 0, allowed_seasons: ['all'], allowed_times: [], guards: [], refresh_class: 'none', confidence: 'low', status: 'approved', provenance_ref: 'src', authoring_payload: {} },
+  ];
+  const content = JSON.stringify(rows);
+  await writeFile(join(dir, 'datasets/presence_rules.json'), content);
+  const manifest = {
+    schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'dup-pk', world_revision_id: 'r', status: 'draft', provenance_ref: 'src',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [],
+    datasets: [{ table: 'presence_rules', file: 'datasets/presence_rules.json', sha256: createHash('sha256').update(content).digest('hex'), status: 'draft', provenance_ref: 'src', delete_policy: 'forbid', depends_on: [] }],
+  };
+  const file = join(dir, 'manifest.json');
+  await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(result.errors.some((error) => error.code === 'DUPLICATE_RECORD_ID' && error.subject_ref.includes('presence_rules:pr_dup|1')));
+});
+
+test('P12 import SQL is deterministic for the same manifest', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-det-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  await mkdir(join(dir, 'datasets'));
+  const rows = JSON.stringify([{ id: 'p12-revision', catalog_digest: 'a'.repeat(64), status: 'draft', provenance_ref: 'p12-source' }]);
+  await writeFile(join(dir, 'datasets/revisions.json'), rows);
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_id: 'p12-det', world_revision_id: 'p12-revision', status: 'draft', provenance_ref: 'p12-source', delete_policy: 'forbid', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP'), gap('DIRECTIONAL_EXIT_READINESS_DATA_GAP'), gap('ROUTE_BINDING_DATA_GAP'), gap('APPROVED_PROFILE_DATA_GAP')], datasets: [{ table: 'spatial_v3_world_revisions', file: 'datasets/revisions.json', sha256: createHash('sha256').update(rows).digest('hex'), status: 'draft', provenance_ref: 'p12-source', delete_policy: 'forbid', depends_on: [] }] };
+  const manifestFile = join(dir, 'manifest.json');
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  const a = await buildTransactionalImportSql({ root: process.cwd(), manifestPath: manifestFile, wrapTransaction: false, allowTypedGaps: true });
+  const b = await buildTransactionalImportSql({ root: process.cwd(), manifestPath: manifestFile, wrapTransaction: false, allowTypedGaps: true });
+  assert.equal(createHash('sha256').update(a).digest('hex'), createHash('sha256').update(b).digest('hex'));
+});
+
+test('P12 v17 bootstrap bundle SQL stays byte-stable after importer changes', async () => {
+  const request = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/request.json', 'utf8'));
+  for (const bundle of request.bundle_order) {
+    const part = await buildTransactionalImportSql({
+      root: process.cwd(),
+      manifestPath: bundle.manifest_path,
+      wrapTransaction: false,
+      allowTypedGaps: false,
+      temporaryTablePrefix: bundle.temporary_table_prefix,
+    });
+    const content = Buffer.from(part);
+    assert.equal(createHash('sha256').update(content).digest('hex'), bundle.sql_part_sha256, bundle.name);
+    assert.equal(content.length, bundle.sql_part_bytes, bundle.name);
+  }
+});
+
+test('P12 readback SQL includes mismatch guard for spatial bundle tables', async () => {
+  const sql = await buildBundleReadbackSql({
+    root: process.cwd(),
+    manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
+  });
+  assert.match(sql, /P12_READBACK_MISMATCH:spatial_v3_world_revisions/u);
+  assert.doesNotMatch(sql, /readback_aggregate_sha256/u);
+});
+
+test('P12 rejects equal import and readback temp table prefixes', async () => {
+  await assert.rejects(
+    () => buildImportWithReadbackSql({
+      root: process.cwd(),
+      manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
+      temporaryTablePrefix: 'p12_same',
+      readbackTemporaryTablePrefix: 'p12_same',
+    }),
+    /P12_IMPORT_READBACK_PREFIX_COLLISION/u,
+  );
+});
+
+test('P12 import and readback temp table prefixes do not collide', async () => {
+  const sql = await buildImportWithReadbackSql({
+    root: process.cwd(),
+    manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
+    temporaryTablePrefix: 'p12_shared',
+    readbackTemporaryTablePrefix: 'p12_shared_rb',
+  });
+  assert.match(sql, /CREATE TEMP TABLE p12_shared_spatial_v3_world_revisions/u);
+  assert.match(sql, /CREATE TEMP TABLE p12_shared_rb_spatial_v3_world_revisions/u);
+  const importCreates = new Set(sql.match(/CREATE TEMP TABLE p12_shared_(?!rb_)[a-z0-9_]+/gu) ?? []);
+  const readbackCreates = new Set(sql.match(/CREATE TEMP TABLE p12_shared_rb_[a-z0-9_]+/gu) ?? []);
+  assert.ok(importCreates.size > 0 && readbackCreates.size > 0);
+  for (const name of importCreates) assert.ok(!readbackCreates.has(name));
+});
+
+test('P12 draft m2c-npc-wave import is refused without approved manifest', async () => {
+  await assert.rejects(
+    () => buildImportWithReadbackSql({
+      root: process.cwd(),
+      manifestPath: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
+    }),
+    /P12_WAVE_IMPORT_REQUIRES_APPROVED/u,
+  );
+});
+
+test('P12 approved m2c-npc-wave import without readback wrapper is refused', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-wave-guard-'));
+  const waveRoot = join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1');
+  await cp(waveRoot, dir, { recursive: true });
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const manifestFile = join(dir, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  manifest.status = 'approved';
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  await assert.rejects(
+    () => buildTransactionalImportSql({
+      root: process.cwd(),
+      manifestPath: manifestFile,
+      wrapTransaction: false,
+      allowTypedGaps: true,
+      m2cWaveApprovalPath: join(dir, 'approval.json'),
+    }),
+    /P12_WAVE_IMPORT_REQUIRES_READBACK/u,
+  );
+});
+
+test('P12 wave table bundle with foreign bundle_id still runs wave validation', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-wave-id-'));
+  const waveRoot = join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1');
+  await cp(waveRoot, dir, { recursive: true });
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const manifestFile = join(dir, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  manifest.bundle_id = 'not_the_wave_bundle_id';
+  manifest.status = 'approved';
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({
+    root: process.cwd(),
+    manifestPath: manifestFile,
+    validateTargetApproval: approvedTarget,
+    m2cWaveApprovalPath: join(dir, 'approval.json'),
+  });
+  assert.equal(result.ok, true);
+  assert.ok(M2C_NPC_WAVE_TABLE_SET.every((table) => (result.dataset_counts[table] ?? 0) > 0));
+});
+
+test('P12 sqlLiteral rejects null TEXT[] elements fail-closed', () => {
+  assert.throws(
+    () => sqlLiteral([null], 'TEXT[]', 'presence_rules.allowed_seasons'),
+    /P12_ARRAY_NULL_ELEMENT:presence_rules\.allowed_seasons/u,
+  );
+});
+
 test('P12 emits domain readiness failures for route endpoints without canonical G5 or directional-exit compatibility', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'p12-domain-')); await mkdir(join(dir, 'datasets'));
   const rows = JSON.stringify([{ id: 'endpoint', version: 1, world_route_id: 'route', world_route_version: 1, endpoint_role: 'from', route_point_id: 'point', route_point_version: 1, canonical_g5_id: 'missing-g5', canonical_g5_version: 1, directional_exit_id: 'missing-exit', directional_exit_version: 1, scene_endpoint_slot_key: 'departure', world_revision_id: 'r', status: 'draft', provenance_ref: 'source', canonical_digest: 'a'.repeat(64), entity_kind: 'world_route_endpoint_binding' }]); await writeFile(join(dir, 'datasets/endpoints.json'), rows);

@@ -1,0 +1,17 @@
+{
+  "rule_id": "occupied_condition_v1",
+  "status": "candidate",
+  "trigger": {
+    "entity": "building_instance",
+    "building_class": "dwelling",
+    "composition_source": "D-2",
+    "composition_scope": "linked_pf",
+    "group_kind": "residents",
+    "min_groups": 1
+  },
+  "condition_states_from": "building_types.condition_states",
+  "forbidden_condition_states": [
+    "burnt_ruin",
+    "abandoned"
+  ]
+}

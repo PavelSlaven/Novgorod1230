@@ -14,7 +14,7 @@
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "trv_011: тип перевозного судна не указан",
+        "no_source": "trv_011: источник материала перевозного судна отсутствует",
         "confidence": "C"
       },
       "size": {
@@ -44,7 +44,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "transport:trv_011"
     }
@@ -76,25 +76,25 @@
         "confidence": "B"
       },
       "condition": {
-        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value": "",
         "value_ref": "",
-        "source_refs": "matcult:ARC0020",
+        "source_refs": "",
         "rule_ref": "",
-        "no_source": "",
-        "confidence": "B"
+        "no_source": "данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states",
+        "confidence": "C"
       },
       "age": {
         "value": "",
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "building:bt_izba_heated_single"
     }
@@ -138,13 +138,13 @@
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "building:bt_palisade_fence"
     }
@@ -176,25 +176,25 @@
         "confidence": "C"
       },
       "condition": {
-        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value": "",
         "value_ref": "",
-        "source_refs": "matcult:ARC0002",
+        "source_refs": "",
         "rule_ref": "",
-        "no_source": "",
-        "confidence": "B"
+        "no_source": "данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states",
+        "confidence": "C"
       },
       "age": {
         "value": "",
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "building:bt_wattle_fence"
     }
@@ -238,13 +238,13 @@
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "building:bt_khlev"
     }
@@ -288,13 +288,13 @@
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "building:bt_klet_ambar"
     }
@@ -338,13 +338,13 @@
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "building:bt_light_shed"
     }
@@ -394,7 +394,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
+    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
     "payload": {
       "candidate_record_ref": "route:rt_winter_road"
     }

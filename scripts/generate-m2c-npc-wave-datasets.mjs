@@ -1,20 +1,62 @@
 #!/usr/bin/env node
 /**
  * Build m2c-npc-wave v1 datasets from approved game-base-v1 @ SOURCE_COMMIT (git show).
- * ponytail: single generator; schedules/composition stay as staging JSON until target DDL exists.
  */
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = process.cwd();
-const DEFAULT_SOURCE_COMMIT = '63d0ef943c4fa201ed36e8b3d06cd4c9433c4614';
-const SOURCE_COMMIT = process.env.M2C_SOURCE_COMMIT ?? DEFAULT_SOURCE_COMMIT;
-const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
 const OUT_ROOT = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
+const APPROVAL_JSON = `${OUT_ROOT}/approval.json`;
+
+function resolveSourceCommit() {
+  if (process.env.M2C_SOURCE_COMMIT) return process.env.M2C_SOURCE_COMMIT;
+  try {
+    const approval = JSON.parse(readFileSync(resolve(root, APPROVAL_JSON), 'utf8'));
+    const commit = String(approval.source_commit ?? '');
+    if (/^[0-9a-f]{40}$/u.test(commit)) return commit;
+  } catch {
+    // fall through
+  }
+  throw new Error('M2C_SOURCE_COMMIT required or valid m2c-npc-wave/v1/approval.json source_commit');
+}
+
+const SOURCE_COMMIT = resolveSourceCommit();
+const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
 const GAME_BASE = 'data/world-catalogs/novgorod/game-base-v1';
+const SPATIAL_V3_ROOT = 'data/world-catalogs/novgorod/spatial-v3';
+export const STARTER_G3_SUBSTR = 'xp017_yp026';
+
+function loadSpatialJson(relPath) {
+  return JSON.parse(readFileSync(resolve(root, `${SPATIAL_V3_ROOT}/${relPath}`), 'utf8'));
+}
+
+export function loadSpatialClosure(worldRevisionId, bindings) {
+  const revisions = loadSpatialJson('datasets/spatial_v3_world_revisions.json');
+  const nodesAll = loadSpatialJson('datasets/spatial_v3_nodes.json');
+  const revisionRows = revisions.filter((row) => row.id === worldRevisionId);
+  if (revisionRows.length !== 1) throw new Error(`world revision missing: ${worldRevisionId}`);
+  const nodeKeys = new Set(bindings.map((b) => `${b.node_id}|${b.node_version}`));
+  const closureNodes = nodesAll.filter((row) => nodeKeys.has(`${row.id}|${row.version}`));
+  if (closureNodes.length !== nodeKeys.size) {
+    throw new Error(`spatial node closure incomplete: expected ${nodeKeys.size}, got ${closureNodes.length}`);
+  }
+  return { revisionRows, closureNodes };
+}
+
+export function starterPrimaryPlaceFamilies(bindings) {
+  const pfIds = new Set();
+  for (const binding of bindings) {
+    if (binding.binding_role !== 'primary') continue;
+    if (!String(binding.node_id).includes(STARTER_G3_SUBSTR)) continue;
+    pfIds.add(binding.place_family_id);
+  }
+  return pfIds;
+}
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -96,14 +138,24 @@ export function parseTextArray(raw) {
   const t = String(raw ?? '').trim();
   if (!t || t === 'all') return t === 'all' ? ['all'] : [];
   if (t.startsWith('[')) {
+    let parsed;
     try {
-      const parsed = JSON.parse(t);
-      return Array.isArray(parsed) ? parsed.map(String) : [];
+      parsed = JSON.parse(t);
     } catch {
-      return [];
+      throw new Error(`invalid text array JSON: ${t.slice(0, 80)}`);
     }
+    if (!Array.isArray(parsed)) throw new Error(`invalid text array: expected JSON array, got ${typeof parsed}`);
+    return parsed.map(String);
   }
   return t.split(/[|;]/u).map((s) => s.trim()).filter(Boolean);
+}
+
+export function parseRequiredNonNegInt(raw, field) {
+  const t = String(raw ?? '').trim();
+  if (!t) throw new Error(`missing required integer: ${field}`);
+  const n = Number(t);
+  if (!Number.isFinite(n) || n < 0) throw new Error(`invalid required integer: ${field}`);
+  return n;
 }
 
 export function parseVariants(raw) {
@@ -216,8 +268,158 @@ export function mapSpeechAddressForm(row, worldRevisionId, provenanceRef) {
   };
 }
 
+export const SCHEDULE_DAY_TYPES = Object.freeze([
+  'normal', 'night_watch', 'night_fishing', 'market_day', 'church_day',
+]);
+
+const CONFIDENCE_RANK = Object.freeze({
+  unknown: 0,
+  low: 1,
+  medium_low: 2,
+  medium: 3,
+  medium_high: 4,
+  high: 5,
+});
+
+function parseMonths(raw, schId) {
+  const t = String(raw ?? '').trim();
+  if (!t) throw new Error(`schedule months missing: ${schId}`);
+  const months = t.split('|').map((part) => Number(part.trim()));
+  if (!months.length || months.some((n) => !Number.isInteger(n) || n < 1 || n > 12)) {
+    throw new Error(`schedule months invalid: ${schId}`);
+  }
+  return months;
+}
+
+export function resolveScheduleScopeFromSchId(schId, pfIds) {
+  const sorted = [...pfIds].sort((a, b) => b.length - a.length);
+  for (const pf of sorted) {
+    if (schId.includes(`_${pf}_`)) return pf;
+  }
+  throw new Error(`schedule sch_id place family unresolved: ${schId}`);
+}
+
+export function resolveScheduleSubject(row) {
+  const occupation = blank(row.occupation_ref);
+  const role = blank(row.role_ref);
+  if (occupation) return { subject_kind: 'occupation', subject_ref: occupation };
+  if (role) return { subject_kind: 'social_role', subject_ref: role };
+  if (/^sch_household_child_/u.test(String(row.sch_id))) {
+    return { subject_kind: 'household_member', subject_ref: 'child' };
+  }
+  throw new Error(`schedule subject unresolved: ${row.sch_id}`);
+}
+
+export function assertScheduleRowSchId(row, pfIds) {
+  if (!SCHEDULE_DAY_TYPES.includes(row.day_type)) {
+    throw new Error(`schedule day_type invalid: ${row.sch_id}`);
+  }
+  if (!['winter', 'spring', 'summer', 'autumn'].includes(row.season)) {
+    throw new Error(`schedule season invalid: ${row.sch_id}`);
+  }
+  if (!row.sch_id.endsWith(`_${row.season}`)) {
+    throw new Error(`schedule sch_id season suffix mismatch: ${row.sch_id}`);
+  }
+  if (!row.sch_id.includes(`_${row.day_type}_`)) {
+    throw new Error(`schedule sch_id day_type marker mismatch: ${row.sch_id}`);
+  }
+  resolveScheduleSubject(row);
+  return resolveScheduleScopeFromSchId(row.sch_id, pfIds);
+}
+
+function lowestMappedConfidence(groups) {
+  let chosen = 'high';
+  for (const group of groups) {
+    if (!group?.confidence) continue;
+    const mapped = mapConfidence(group.confidence);
+    if (CONFIDENCE_RANK[mapped] < CONFIDENCE_RANK[chosen]) chosen = mapped;
+  }
+  return groups.length ? chosen : 'unknown';
+}
+
+function mapRoutinePhases(timeBlocksJson) {
+  const blocks = JSON.parse(timeBlocksJson);
+  if (!Array.isArray(blocks)) throw new Error('time_blocks must be array');
+  return blocks.map((phase) => ({
+    state_id: phase.state_id,
+    duration_minutes: phase.duration_minutes,
+    runtime_status: phase.runtime_status,
+    activity_ref: phase.activity_ref,
+    summary: phase.summary,
+    activity_status: phase.activity_status,
+    uses_current_activity: phase.uses_current_activity ?? false,
+    can_continue_automatically: phase.can_continue_automatically,
+    decision_required: phase.decision_required,
+    presence_state: phase.presence_state ?? '',
+    location_ref: blank(phase.location_ref),
+    absence_reason_ru: phase.absence_reason_ru ?? '',
+  }));
+}
+
+export function mapScheduleRoutineRule(row, worldRevisionId, provenanceRef, pfIds) {
+  const { subject_kind, subject_ref } = resolveScheduleSubject(row);
+  const scopeRef = assertScheduleRowSchId(row, pfIds);
+  const revision = Number(row.revision) || 1;
+  const localStart = Number(row.local_start_minute);
+  const phases = mapRoutinePhases(row.time_blocks);
+  const routineProfile = {
+    schema: 'npc_routine_profile_v1',
+    profile_id: row.sch_id,
+    revision,
+    status: 'approved',
+    phases,
+    ...(Number.isFinite(localStart) ? { local_start_minute: localStart } : {}),
+  };
+  return {
+    schedule_id: row.sch_id,
+    schedule_version: revision,
+    world_revision_id: worldRevisionId,
+    scope_kind: 'place_family',
+    scope_ref: scopeRef,
+    subject_kind,
+    subject_ref,
+    season: row.season,
+    months: parseMonths(row.months, row.sch_id),
+    day_type: row.day_type,
+    routine_profile: routineProfile,
+    status: 'approved',
+    confidence: mapConfidence(row.confidence),
+    provenance_ref: provenanceRef,
+    authoring_payload: {
+      place_access_ref: blank(row.place_access_ref),
+      source_refs: row.source_refs ?? '',
+      source_rule_ref: row.source_rule_ref ?? '',
+      no_source: row.no_source ?? '',
+      csv_status: row.status ?? '',
+    },
+  };
+}
+
+export function mapPlacePopulationComposition(entry, worldRevisionId, provenanceRef) {
+  const groups = entry.population_groups ?? [];
+  const confidence = lowestMappedConfidence(groups);
+  return {
+    composition_id: entry.pf_id,
+    composition_version: 1,
+    world_revision_id: worldRevisionId,
+    place_family_id: entry.pf_id,
+    place_family_version: 1,
+    population_groups: groups,
+    scheduled_absences: entry.scheduled_absences ?? [],
+    empty_reason: blank(entry.empty_reason),
+    status: 'approved',
+    confidence,
+    provenance_ref: provenanceRef,
+    authoring_payload: {
+      slot_relationships: entry.slot_relationships ?? [],
+    },
+  };
+}
+
 export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
   const variants = parseVariants(row.variants);
+  const parsedTimes = parseTextArray(row.allowed_times);
+  const peopleSubject = row.subject_kind === 'occupation' || row.subject_kind === 'social_role';
   return {
     rule_id: row.pr_id,
     rule_version: 1,
@@ -230,10 +432,10 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
     category_id: row.subject_kind === 'category' ? (row.category_ref || row.subject_ref) : null,
     item_ref: blank(row.item_ref),
     variants,
-    presence_probability_ppm: intOrZero(row.probability_ppm),
-    count_limit: intOrZero(row.count_limit),
+    presence_probability_ppm: parseRequiredNonNegInt(row.probability_ppm, 'probability_ppm'),
+    count_limit: parseRequiredNonNegInt(row.count_limit, 'count_limit'),
     allowed_seasons: parseTextArray(row.allowed_seasons),
-    allowed_times: parseTextArray(row.allowed_times),
+    allowed_times: peopleSubject ? [] : parsedTimes,
     guards: parseTextArray(row.guards),
     entry_visible_if: blank(row.entry_visible_if),
     search_only_if: blank(row.search_only_if),
@@ -277,10 +479,12 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
 
   const sourceRecords = [{
     id: provenanceRef,
+    title: `M2C NPC wave game-base @ ${commit.slice(0, 8)}`,
+    source_type: 'project_note',
+    file_reference: `${GAME_BASE}@${commit}`,
+    summary: 'WR §21.1 approval trail for m2c-npc-wave v1 (D24 approve_with_limits)',
     status: 'approved',
-    provenance_kind: 'game_base_authoring',
-    source_commit: commit,
-    notes: 'approve_with_limits wave from game-base-v1 @ git show',
+    confidence: 'high',
   }];
 
   const pfCsv = parseCsv(show(`${GAME_BASE}/places-binding/places/place_families.csv`));
@@ -320,6 +524,19 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
 
   const prCsv = parseCsv(show(`${GAME_BASE}/places-binding/presence/presence_rules.csv`));
   const presenceRules = prCsv.map((row) => mapPresenceRule(row, worldRevisionId, provenanceRef));
+  const peoplePresenceCsv = parseCsv(show(
+    `${GAME_BASE}/places-binding/presence/people_presence_authoring.csv`
+  ));
+  const creationOwnerByKey = new Map();
+  for (const row of peoplePresenceCsv) {
+    const owner = blank(row.creation_owner);
+    if (!owner) continue;
+    creationOwnerByKey.set(`${row.scope_ref}|${row.subject_kind}|${row.subject_ref}`, owner);
+  }
+  for (const rule of presenceRules) {
+    const owner = creationOwnerByKey.get(`${rule.scope_ref}|${rule.subject_kind}|${rule.subject_ref}`);
+    if (owner) rule.authoring_payload.creation_owner = owner;
+  }
   const ruleKeys = new Set();
   for (const rule of presenceRules) {
     const key = `${rule.rule_id}@${rule.rule_version}`;
@@ -421,19 +638,10 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
   }
 
   const schedulesCsv = parseCsv(show(`${GAME_BASE}/time-calendar-church/time/schedules_routines.csv`));
-  const schedulesStaging = schedulesCsv
-    .filter((row) => (row.day_type ?? '').trim() === 'normal')
-    .map((row) => ({
-      sch_id: row.sch_id,
-      revision: Number(row.revision) || 1,
-      role_ref: blank(row.role_ref),
-      occupation_ref: blank(row.occupation_ref),
-      season: row.season ?? '',
-      time_blocks: row.time_blocks ?? '',
-      place_access_ref: blank(row.place_access_ref),
-      confidence: row.confidence ?? '',
-      csv_status: row.status ?? '',
-    }));
+  const pfIds = new Set(placeFamilies.map((row) => row.id));
+  const scheduleRoutineRules = schedulesCsv.map((row) => mapScheduleRoutineRule(
+    row, worldRevisionId, provenanceRef, pfIds
+  ));
 
   const relCsv = parseCsv(show(
     `${GAME_BASE}/households-psychology-speech/households_kinship/relationship_rules.csv`
@@ -449,33 +657,40 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     row, worldRevisionId, provenanceRef
   ));
 
-  const compositionStaging = JSON.parse(show(
+  const compositionAuthoring = JSON.parse(show(
     `${GAME_BASE}/places-binding/presence/people_composition_authoring.json`
   ));
+  const placePopulationCompositionRules = compositionAuthoring.compositions.map((entry) => (
+    mapPlacePopulationComposition(entry, worldRevisionId, provenanceRef)
+  ));
+
+  const { revisionRows, closureNodes } = options.spatialClosure
+    ?? loadSpatialClosure(worldRevisionId, bindings);
 
   const datasets = [];
   const entries = [
     ['datasets/source_records.json', sourceRecords, 'source_records', []],
-    ['datasets/place_families.json', placeFamilies, 'place_families', ['source_records']],
+    ['datasets/spatial_v3_world_revisions.json', revisionRows, 'spatial_v3_world_revisions', ['source_records']],
+    ['datasets/place_families.json', placeFamilies, 'place_families', ['source_records', 'spatial_v3_world_revisions']],
     ['datasets/spatial_node_place_family_bindings.json', bindings, 'spatial_node_place_family_bindings', ['place_families']],
     ['datasets/presence_rules.json', presenceRules, 'presence_rules', ['place_families']],
+    ['datasets/water_body_presence_facets.json', waterFacets, 'water_body_presence_facets', ['place_families']],
     ['datasets/npc_relationship_materialization_rules.json', npcRelationshipRules, 'npc_relationship_materialization_rules', ['source_records']],
     ['datasets/speech_address_forms.json', speechAddressForms, 'speech_address_forms', ['source_records']],
     ['datasets/household_composition_profiles.json', householdProfiles, 'household_composition_profiles', ['source_records']],
     ['datasets/slot_instance_variants.json', slotVariants, 'slot_instance_variants', ['source_records']],
-    ['datasets/water_body_presence_facets.json', waterFacets, 'water_body_presence_facets', ['place_families']],
     ['datasets/fauna_phase_activity_rules.json', faunaRules, 'fauna_phase_activity_rules', ['source_records']],
-    ['datasets/staging_schedules_routines_normal.json', schedulesStaging, null, []],
-    ['datasets/staging_people_composition_authoring.json', compositionStaging, null, []],
+    ['datasets/npc_schedule_routine_rules.json', scheduleRoutineRules, 'npc_schedule_routine_rules', ['place_families']],
+    ['datasets/place_population_composition_rules.json', placePopulationCompositionRules, 'place_population_composition_rules', ['place_families']],
+    ['datasets/spatial_v3_nodes.json', closureNodes, 'spatial_v3_nodes', ['source_records', 'spatial_v3_world_revisions']],
   ];
 
   for (const [rel, rows, table, dependsOn] of entries) {
     const { relPath, sha256: digest } = await writeDataset(rel, rows, outRoot);
     if (table) {
-      const manifestFile = outRoot === OUT_ROOT ? `${outRoot}/${relPath}` : relPath;
       datasets.push({
         table,
-        file: manifestFile,
+        file: relPath,
         sha256: digest,
         status: 'draft',
         provenance_ref: provenanceRef,
@@ -487,31 +702,14 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
 
   const manifest = {
     schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_kind: 'dependency_closure',
     bundle_id: 'novgorod_m2c_npc_wave_v1',
     world_revision_id: worldRevisionId,
     status: 'draft',
     provenance_ref: provenanceRef,
     delete_policy: 'forbid',
-    source_commit: commit,
     datasets,
-    data_gaps: [
-      {
-        gap_id: 'M2C_D1_ROUTINES_TARGET_TABLE',
-        summary: 'schedules_routines normal rows staged; spatial_v3_npc_runtime_profiles import pending DDL/importer',
-      },
-      {
-        gap_id: 'M2C_D2_COMPOSITION_BINDINGS',
-        summary: 'people_composition_authoring staged; spatial_v3_g4_npc_composition_bindings import pending DDL/importer',
-      },
-      {
-        gap_id: 'M2C_R1_PRESENCE_IMPORTER',
-        summary: 'presence_rules world_base importer absent (R-1): id@version content compare idempotent skip / fail-closed deferred to importer; PK enforces duplicate id@version at DDL',
-      },
-      {
-        gap_id: 'M2C_WR21_APPROVED_ROWS',
-        summary: 'dataset rows carry status=approved while game-base CSV rows remain candidate until WR §21.1 source_record + D24 verdict import (R-1); do not rewrite CSV status in generator',
-      },
-    ],
+    data_gaps: [],
   };
 
   const manifestPath = `${outRoot}/manifest.json`;
@@ -534,8 +732,11 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     rulesWithVariants,
     variantElementCount,
     bindings: bindings.length,
+    closureNodes: closureNodes.length,
+    starterPlaceFamilies: starterPrimaryPlaceFamilies(bindings).size,
     npcRelationshipRules: npcRelationshipRules.length,
     speechAddressForms: speechAddressForms.length,
+    tableCounts: Object.fromEntries(datasets.map((d) => [d.table, 'see dataset file'])),
   };
 }
 

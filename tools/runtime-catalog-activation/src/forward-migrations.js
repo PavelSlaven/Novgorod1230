@@ -98,16 +98,16 @@ export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION = createForwardMigration({
 export const WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'world_runtime_catalog_activation_v17_bootstrap',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: '675c75ac48866e109fe289dd181756a603654856daf5502faafd0b146e33b29a',
-  targetSchemaFingerprint: 'bee5744bd0ec1bfcae9f0f5a94cfcfb5a0515a2181da3779c5cceb880143e7f9',
+  sourceSchemaFingerprint: 'b984c252cce97f0cc2bc88d48ac0471a6c9ab03b738115ce6c35e13e8ca61695',
+  targetSchemaFingerprint: 'e9f4bab9bdacd8671284e14b2cedf62e84082226044ac8470adf90b09a13c25f',
   sql: WORLD_SQL
 });
 
 export const ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'world_actor_base_attributes_owner_v17_bootstrap',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: 'bee5744bd0ec1bfcae9f0f5a94cfcfb5a0515a2181da3779c5cceb880143e7f9',
-  targetSchemaFingerprint: '845017eaee06c95a5ee97b5d6205d35c5d9495d92a5c040fa913b3888cb6986e',
+  sourceSchemaFingerprint: 'e9f4bab9bdacd8671284e14b2cedf62e84082226044ac8470adf90b09a13c25f',
+  targetSchemaFingerprint: '76cfca204330ae55ae4edb0abb706f2054c5cfcfc9cbaf700c7f907d0e03a671',
   sql: ACTOR_BASE_ATTRIBUTES_WORLD_SQL
 });
 

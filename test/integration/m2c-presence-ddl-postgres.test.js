@@ -66,7 +66,7 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
     `SELECT count(*)::int AS n FROM information_schema.tables
      WHERE table_schema='world_base'`
   );
-  assert.equal(tables.rows[0].n, 217);
+  assert.equal(tables.rows[0].n, 219);
   const primaryUq = await world.query(
     `SELECT indexdef FROM pg_indexes
      WHERE schemaname='world_base'

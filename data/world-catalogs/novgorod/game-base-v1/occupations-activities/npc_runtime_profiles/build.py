@@ -14,6 +14,8 @@ ROLE_CLOTHING = DATA / "game-base-v1/clothing-appearance/outfits_by_role/role_cl
 ROLES = DATA.parents[1] / "novgorod-region/novgorod_social_roles_v1_enriched.tsv"
 EQUIPMENT = DATA / "game-base-v1/items-weapons-armour/authoring/equipment_profiles.json"
 PIN = HERE / "pr98_extract.json"
+AUTHORING = json.loads((HERE / "actor_appearance_authoring.json").read_text(encoding="utf-8"))
+COMPOSITIONS = DATA / "game-base-v1/places-binding/presence/people_composition_authoring.json"
 PIN_SHA256 = "923ca588a34f8944792e5863daadc0ca6bac750edc4a8c469e43811553c0119e"
 OUT = HERE / "npc_runtime_profiles.json"
 BASE_REF = "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json"
@@ -50,6 +52,11 @@ def refs(value):
 
 def actor_applicability(role, occupation):
     female = "nov_1200_1250_sex_category_female"
+    authored = next((entry for entry in AUTHORING["subject_applicability"]
+                     if (entry["subject_kind"] == "occupation" and entry["subject_id"] == occupation)
+                     or (entry["subject_kind"] == "role" and entry["subject_id"] == role)), None)
+    if authored:
+        return {key: value for key, value in authored.items() if key not in ("subject_id", "subject_kind")}
     if occupation == "occ_wetnurse":
         return {"sex_category": [female],
                 "age_category": ["nov_1200_1250_age_category_young_adult",
@@ -58,9 +65,6 @@ def actor_applicability(role, occupation):
                 "source_refs": ["occupations/occupations_additions.csv#occ_wetnurse"],
                 "rule": "female follows the occupation; age range is editorial for an individual nursing actor",
                 "age_basis": "editorial", "no_source": "individual_marital_status_not_derived_from_occupation"}
-    if role == "nov_role_household_mistress":
-        return {"sex_category": [female], "source_refs": [ROLES_REF + "#" + role],
-                "rule": "role definition specifies a woman"}
     if role == "nov_role_apprentice":
         return {"age_category": ["nov_1200_1250_age_category_young_adult"],
                 "source_refs": [ROLES_REF + "#" + role],
@@ -69,9 +73,12 @@ def actor_applicability(role, occupation):
     return None
 
 
-def option(value, weight, source_ref=None, rule=None, no_source=None, **conditions):
-    return {"value": value, "weight": weight, "source_ref": source_ref,
-            "rule": rule, "no_source": no_source, "applicability": conditions}
+def option(value, weight, source_ref=None, rule=None, no_source=None, name_ru=None, **conditions):
+    result = {"value": value, "weight": weight, "source_ref": source_ref,
+              "rule": rule, "no_source": no_source, "applicability": conditions}
+    if name_ru is not None:
+        result["name_ru"] = name_ru
+    return result
 
 
 def regional_options(profile, role, regions, outfits, clothing_by_role, equipment):
@@ -87,7 +94,7 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
                 and row["runtime_selectable"] == "true"
                 and (not eligibility or all(
                     not eligibility.get(facet) or any(
-                        value.endswith("_" + category) for value in eligibility[facet]
+                        value == "nov_1200_1250_" + facet + "_" + category for value in eligibility[facet]
                         for category in row["sex_categories" if facet == "sex_category" else "age_categories"].split("|"))
                     for facet in ("sex_category", "age_category")))]
     if not clothing:
@@ -117,7 +124,10 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
              "clothing_profile_ref": clothing_profile,
              "clothing_profile_source_ref": ROLE_CLOTHING_REF + "#" + role if clothing_profile else None,
              "clothing_options": clothing, "equipment_options": equip_options,
-             "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
+             "selection_rule": ("sex requires a concrete individual or scene source; no weighted sex selection; "
+                                "code then filters other options by applicability; LLM describes committed facts only"
+                                if occupation == "nov_occ_household_servant" else
+                                "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only"),
              "no_source": "regional_frequency_weights_not_authored"}
             for region in regions]
 
@@ -161,7 +171,8 @@ def main():
     appearance_sets = {facet: [option(row["option_id"], row["weight"],
                                       source + "#" + row["id"],
                                       "filter source applicability against previously selected facets in code",
-                                      None, **row["applicability"])
+                                      None, name_ru=AUTHORING["option_names_ru"][row["option_id"]],
+                                      **row["applicability"])
                                 for source, rows_for_source in appearance for row in rows_for_source
                                 if row["facet"] == facet]
                        for facet in baseline["appearance_policy"]["required_facets"]}
@@ -187,6 +198,9 @@ def main():
             "typed_gaps": profile["typed_gaps"],
         })
         profiles[-1]["required_facets"] = baseline["appearance_policy"]["required_facets"]
+        eligibility = actor_applicability(profile["role_ref"], profile["occupation_ref"])
+        if eligibility:
+            profiles[-1]["actor_applicability"] = eligibility
         profiles[-1]["allowed_role_refs"] = [profile["role_ref"]]
         profiles[-1]["regional_option_sets"] = regional_options(
             profiles[-1], profile["role_ref"], [r["id"] for r in profile["regional_context_candidate_refs"]],
@@ -219,16 +233,48 @@ def main():
         })
         profiles[-1]["required_facets"] = baseline["appearance_policy"]["required_facets"]
         profiles[-1]["allowed_role_refs"] = [role.strip() for role in occupation["allowed_social_role_ids"].split(";")]
-        if oid == "occ_wetnurse":
-            profiles[-1]["actor_applicability"] = actor_applicability(profiles[-1]["role_ref"], oid)
+        eligibility = actor_applicability(profiles[-1]["role_ref"], oid)
+        if eligibility:
+            profiles[-1]["actor_applicability"] = eligibility
         profiles[-1]["regional_option_sets"] = [regional for role in profiles[-1]["allowed_role_refs"]
             for regional in regional_options(profiles[-1], role, [NEW_CONTEXT],
                                             outfit_rows, role_clothing, equipment)]
+    slot_facts = []
+    for composition in json.loads(COMPOSITIONS.read_text(encoding="utf-8"))["compositions"]:
+        groups = {group["group_id"]: group for group in composition["population_groups"]}
+        for link in composition.get("slot_relationships", []):
+            if link["relationship_kind"] != "spouse":
+                continue
+            for group_id, related_id in ((link["from_group_id"], link["to_group_id"]),
+                                         (link["to_group_id"], link["from_group_id"])):
+                role = groups[group_id]["weighted_subjects"][0]["subject_ref"]
+                clothing_profile = AUTHORING["composition_slot_clothing_profile_overrides"].get(group_id, role_clothing.get(role))
+                sexes = {value.removeprefix("nov_1200_1250_sex_category_") for value in actor_applicability(role, None)["sex_category"]}
+                slot_facts.append({
+                    "pf_id": composition["pf_id"], "group_id": group_id, "role_ref": role,
+                    "marital_status": "married", "relationship_kind": "spouse", "related_group_id": related_id,
+                    "clothing_option_refs": [row["of_id"] for row in outfit_rows
+                                             if row["clothing_profile_id"] == clothing_profile
+                                             and row["runtime_selectable"] == "true"
+                                             and row["marital_status"] in ("any", "married")
+                                             and sexes.intersection(row["sex_categories"].split("|"))],
+                    "source_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json#" + composition["pf_id"],
+                    "confidence": link["confidence"],
+                })
     result = {
         "artifact_type": "npc_runtime_profiles_candidate", "status": "candidate",
         "approved": False, "activation_authorized": False,
         "policy": "Code selects facts and checks actor/role/season/property; LLM describes selected facts only.",
         "appearance_option_sets": {"novgorod_shared_facets_v1": appearance_sets},
+        "appearance_incompatibility_rules": AUTHORING["incompatibility_rules"],
+        "appearance_presentation_rules": AUTHORING["presentation_rules"],
+        "composition_slot_facts": slot_facts,
+        "subject_applicability": [
+            {"subject_id": entry["subject_id"], "subject_kind": entry["subject_kind"],
+             "actor_applicability": actor_applicability(
+                 entry["subject_id"] if entry["subject_kind"] == "role" else None,
+                 entry["subject_id"] if entry["subject_kind"] == "occupation" else None)}
+            for entry in AUTHORING["subject_applicability"]],
         "regional_context_profiles": regional_contexts,
         "appearance_policy_source": baseline["appearance_policy"],
         "g4_composition_source": {"path": BASE_REF, "count": baseline["g4_compositions_count"],

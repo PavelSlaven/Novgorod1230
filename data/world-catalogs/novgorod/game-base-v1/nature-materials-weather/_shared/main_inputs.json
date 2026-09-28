@@ -1,0 +1,2400 @@
+{
+ "schema": "game_base_v1.nature_main_inputs.v1",
+ "sources": [
+  {
+   "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+   "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e",
+   "size_bytes": 339248
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/agriculture-fauna.json",
+   "sha256": "4acda751c74d2628206447002fbf8ff837b1b37301c548a87660e565f8cb4faf",
+   "size_bytes": 60288
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/approved-construction.json",
+   "sha256": "d54db2a2ab706e7b194f327879ed2af448f6fecbfa6224ca7ee52e3238649cf4",
+   "size_bytes": 66146
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/environment-biology.json",
+   "sha256": "c2edf6e4986def67f5fa2db2f9c3ea8072148454932433697d485bfceff412ac",
+   "size_bytes": 20786
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json",
+   "sha256": "fba325eec47fcf909eaf25f935367b65bb389955121c9c286fb979d40629f870",
+   "size_bytes": 45723
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-reed-mat-gap-repair-v1.json",
+   "sha256": "833c282821b4ebf38c2a7f7f2001956fc9d124927655783ffb9e4479f615cd40",
+   "size_bytes": 8639
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json",
+   "sha256": "bba31d677b48ed23927fe292beff47e70d36654c1a8c347b237752512b82efa6",
+   "size_bytes": 163318
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/fuel-processes.json",
+   "sha256": "6873d9c241e1b8359e71034afbbb33701a694b062fef3a458b4cae9afdb492cd",
+   "size_bytes": 27765
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-flora-ecology-v3.json",
+   "sha256": "a5d488fe9c782d77a454355e214305a13205a9e04b9fe99b30139dbc4954c5a3",
+   "size_bytes": 17505
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json",
+   "sha256": "40721c821aca82e133b9a8609588c7fddb3d746b700d56f10e7c9ba230633e66",
+   "size_bytes": 160066
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json",
+   "sha256": "2e41803a51b33659e88ff663fb9ed8b22add48e410ba047a64d40ac5f846d39c",
+   "size_bytes": 74486
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/macro-batch19-process-gap-closure-v1.json",
+   "sha256": "3e93d20aca0a91c086688f5e81c72462f112736cee692d09e99945a2aecd7c22",
+   "size_bytes": 25205
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json",
+   "sha256": "ff7bdadf9d27e58041eddcbb161c14799fb86ff40da2e372eeed76dc99314606",
+   "size_bytes": 72647
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-adhesive-bast-processes-v1.json",
+   "sha256": "f6a20585cd86667e197dfcc671453d7b4bde7c802950983ed4c5b9d32083c090",
+   "size_bytes": 13429
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-orchard-peat-processes-v1.json",
+   "sha256": "585dfc0b2c16b7b183fe02ee0178200485ed14e1353d02082c227646f3e79daa",
+   "size_bytes": 13865
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-thermal-processes-v1.json",
+   "sha256": "34ada8898376d43e5e5362a9323ac2d976b25a0fa7d532a5235f95c10e51944f",
+   "size_bytes": 12802
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json",
+   "sha256": "4aa3e0b5da003d87c7e446a0ea537a540c6a7baed0ad0e0cc1a8a3cc41a88411",
+   "size_bytes": 57558
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/residual-language-education-v1.json",
+   "sha256": "844bda6a6bd66d505aa477739efe92fc92b80cf9f1b6b008c59f17df007eda1d",
+   "size_bytes": 26459
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/residual-nature-v1.json",
+   "sha256": "bfba9ec37a956b694509ffa45db1605c573165b6b95f1dcd6dcddc68e5cf2d89",
+   "size_bytes": 41300
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json",
+   "sha256": "6cbac654e0eb55250e4d3b29abef0c9839caeeaa87caaa62ade3e6383e2e0486",
+   "size_bytes": 13092
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json",
+   "sha256": "a8b9364408726f0a794eacb06d2127ec06afda6ab62c4971640b5eeef09eba31",
+   "size_bytes": 26298
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json",
+   "sha256": "289c6ac3c688b3c9fe3c74666864f196387d508c37a8d25faedddc81701ea6b1",
+   "size_bytes": 14115105
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/static-ground-material-b05.json",
+   "sha256": "9433d43a4556e875f869abeccb684d28a6558fb51bfbcbda2b57d2f3b33f54bb",
+   "size_bytes": 15561
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-water-v1.json",
+   "sha256": "3eacb27549c0794a7bf33f86631e05830de8f49819f290736a433ddc8b2cfa65",
+   "size_bytes": 15121
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/static-plant-contact-b05.json",
+   "sha256": "4df0871b4002882a30950412060808a38c2ef1e9b2591a2ef110556d4fdc5362",
+   "size_bytes": 16938
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json",
+   "sha256": "96eb716f7edb9a5eec9d860c63582fd61a8ad94b774b07f6f36e1b40044aeb5a",
+   "size_bytes": 20296
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/static-process-gap-v1.json",
+   "sha256": "c27a66775687520db02351fedc2d002035a44684dde91b09bed53247034e65e4",
+   "size_bytes": 32842
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/terrain.json",
+   "sha256": "302354b4436fc9e3185cf25810a82f9368f2c426d9ca0dc6290f598de89bebd2",
+   "size_bytes": 8487
+  },
+  {
+   "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/woodwork-ceramics.json",
+   "sha256": "eaf01e6ad88f32f5d5922d0f130a471c909fc906955f0692bb3a1f77910eb5de",
+   "size_bytes": 47981
+  }
+ ],
+ "daylight_1230": {
+  "01-01": {
+   "civil_dawn_minute_of_day": "476",
+   "sunrise_minute_of_day": "527",
+   "sunset_minute_of_day": "930",
+   "civil_dusk_minute_of_day": "981"
+  },
+  "01-02": {
+   "civil_dawn_minute_of_day": "475",
+   "sunrise_minute_of_day": "526",
+   "sunset_minute_of_day": "932",
+   "civil_dusk_minute_of_day": "983"
+  },
+  "01-03": {
+   "civil_dawn_minute_of_day": "475",
+   "sunrise_minute_of_day": "525",
+   "sunset_minute_of_day": "934",
+   "civil_dusk_minute_of_day": "984"
+  },
+  "01-04": {
+   "civil_dawn_minute_of_day": "474",
+   "sunrise_minute_of_day": "524",
+   "sunset_minute_of_day": "936",
+   "civil_dusk_minute_of_day": "986"
+  },
+  "01-05": {
+   "civil_dawn_minute_of_day": "473",
+   "sunrise_minute_of_day": "523",
+   "sunset_minute_of_day": "938",
+   "civil_dusk_minute_of_day": "988"
+  },
+  "01-06": {
+   "civil_dawn_minute_of_day": "472",
+   "sunrise_minute_of_day": "522",
+   "sunset_minute_of_day": "940",
+   "civil_dusk_minute_of_day": "989"
+  },
+  "01-07": {
+   "civil_dawn_minute_of_day": "471",
+   "sunrise_minute_of_day": "520",
+   "sunset_minute_of_day": "942",
+   "civil_dusk_minute_of_day": "991"
+  },
+  "01-08": {
+   "civil_dawn_minute_of_day": "470",
+   "sunrise_minute_of_day": "519",
+   "sunset_minute_of_day": "944",
+   "civil_dusk_minute_of_day": "993"
+  },
+  "01-09": {
+   "civil_dawn_minute_of_day": "468",
+   "sunrise_minute_of_day": "518",
+   "sunset_minute_of_day": "946",
+   "civil_dusk_minute_of_day": "995"
+  },
+  "01-10": {
+   "civil_dawn_minute_of_day": "467",
+   "sunrise_minute_of_day": "516",
+   "sunset_minute_of_day": "948",
+   "civil_dusk_minute_of_day": "997"
+  },
+  "01-11": {
+   "civil_dawn_minute_of_day": "466",
+   "sunrise_minute_of_day": "515",
+   "sunset_minute_of_day": "950",
+   "civil_dusk_minute_of_day": "999"
+  },
+  "01-12": {
+   "civil_dawn_minute_of_day": "465",
+   "sunrise_minute_of_day": "513",
+   "sunset_minute_of_day": "952",
+   "civil_dusk_minute_of_day": "1001"
+  },
+  "01-13": {
+   "civil_dawn_minute_of_day": "463",
+   "sunrise_minute_of_day": "511",
+   "sunset_minute_of_day": "955",
+   "civil_dusk_minute_of_day": "1003"
+  },
+  "01-14": {
+   "civil_dawn_minute_of_day": "462",
+   "sunrise_minute_of_day": "510",
+   "sunset_minute_of_day": "957",
+   "civil_dusk_minute_of_day": "1005"
+  },
+  "01-15": {
+   "civil_dawn_minute_of_day": "460",
+   "sunrise_minute_of_day": "508",
+   "sunset_minute_of_day": "959",
+   "civil_dusk_minute_of_day": "1007"
+  },
+  "01-16": {
+   "civil_dawn_minute_of_day": "459",
+   "sunrise_minute_of_day": "506",
+   "sunset_minute_of_day": "961",
+   "civil_dusk_minute_of_day": "1009"
+  },
+  "01-17": {
+   "civil_dawn_minute_of_day": "457",
+   "sunrise_minute_of_day": "504",
+   "sunset_minute_of_day": "964",
+   "civil_dusk_minute_of_day": "1011"
+  },
+  "01-18": {
+   "civil_dawn_minute_of_day": "456",
+   "sunrise_minute_of_day": "502",
+   "sunset_minute_of_day": "966",
+   "civil_dusk_minute_of_day": "1013"
+  },
+  "01-19": {
+   "civil_dawn_minute_of_day": "454",
+   "sunrise_minute_of_day": "500",
+   "sunset_minute_of_day": "968",
+   "civil_dusk_minute_of_day": "1015"
+  },
+  "01-20": {
+   "civil_dawn_minute_of_day": "452",
+   "sunrise_minute_of_day": "498",
+   "sunset_minute_of_day": "971",
+   "civil_dusk_minute_of_day": "1017"
+  },
+  "01-21": {
+   "civil_dawn_minute_of_day": "450",
+   "sunrise_minute_of_day": "496",
+   "sunset_minute_of_day": "973",
+   "civil_dusk_minute_of_day": "1019"
+  },
+  "01-22": {
+   "civil_dawn_minute_of_day": "449",
+   "sunrise_minute_of_day": "494",
+   "sunset_minute_of_day": "976",
+   "civil_dusk_minute_of_day": "1021"
+  },
+  "01-23": {
+   "civil_dawn_minute_of_day": "447",
+   "sunrise_minute_of_day": "492",
+   "sunset_minute_of_day": "978",
+   "civil_dusk_minute_of_day": "1023"
+  },
+  "01-24": {
+   "civil_dawn_minute_of_day": "445",
+   "sunrise_minute_of_day": "490",
+   "sunset_minute_of_day": "980",
+   "civil_dusk_minute_of_day": "1025"
+  },
+  "01-25": {
+   "civil_dawn_minute_of_day": "443",
+   "sunrise_minute_of_day": "488",
+   "sunset_minute_of_day": "983",
+   "civil_dusk_minute_of_day": "1028"
+  },
+  "01-26": {
+   "civil_dawn_minute_of_day": "441",
+   "sunrise_minute_of_day": "485",
+   "sunset_minute_of_day": "985",
+   "civil_dusk_minute_of_day": "1030"
+  },
+  "01-27": {
+   "civil_dawn_minute_of_day": "439",
+   "sunrise_minute_of_day": "483",
+   "sunset_minute_of_day": "988",
+   "civil_dusk_minute_of_day": "1032"
+  },
+  "01-28": {
+   "civil_dawn_minute_of_day": "437",
+   "sunrise_minute_of_day": "481",
+   "sunset_minute_of_day": "990",
+   "civil_dusk_minute_of_day": "1034"
+  },
+  "01-29": {
+   "civil_dawn_minute_of_day": "435",
+   "sunrise_minute_of_day": "479",
+   "sunset_minute_of_day": "993",
+   "civil_dusk_minute_of_day": "1036"
+  },
+  "01-30": {
+   "civil_dawn_minute_of_day": "433",
+   "sunrise_minute_of_day": "476",
+   "sunset_minute_of_day": "995",
+   "civil_dusk_minute_of_day": "1039"
+  },
+  "01-31": {
+   "civil_dawn_minute_of_day": "431",
+   "sunrise_minute_of_day": "474",
+   "sunset_minute_of_day": "997",
+   "civil_dusk_minute_of_day": "1041"
+  },
+  "02-01": {
+   "civil_dawn_minute_of_day": "428",
+   "sunrise_minute_of_day": "472",
+   "sunset_minute_of_day": "1000",
+   "civil_dusk_minute_of_day": "1043"
+  },
+  "02-02": {
+   "civil_dawn_minute_of_day": "426",
+   "sunrise_minute_of_day": "469",
+   "sunset_minute_of_day": "1002",
+   "civil_dusk_minute_of_day": "1045"
+  },
+  "02-03": {
+   "civil_dawn_minute_of_day": "424",
+   "sunrise_minute_of_day": "467",
+   "sunset_minute_of_day": "1005",
+   "civil_dusk_minute_of_day": "1048"
+  },
+  "02-04": {
+   "civil_dawn_minute_of_day": "422",
+   "sunrise_minute_of_day": "464",
+   "sunset_minute_of_day": "1007",
+   "civil_dusk_minute_of_day": "1050"
+  },
+  "02-05": {
+   "civil_dawn_minute_of_day": "419",
+   "sunrise_minute_of_day": "462",
+   "sunset_minute_of_day": "1010",
+   "civil_dusk_minute_of_day": "1052"
+  },
+  "02-06": {
+   "civil_dawn_minute_of_day": "417",
+   "sunrise_minute_of_day": "459",
+   "sunset_minute_of_day": "1012",
+   "civil_dusk_minute_of_day": "1054"
+  },
+  "02-07": {
+   "civil_dawn_minute_of_day": "415",
+   "sunrise_minute_of_day": "457",
+   "sunset_minute_of_day": "1015",
+   "civil_dusk_minute_of_day": "1057"
+  },
+  "02-08": {
+   "civil_dawn_minute_of_day": "412",
+   "sunrise_minute_of_day": "454",
+   "sunset_minute_of_day": "1017",
+   "civil_dusk_minute_of_day": "1059"
+  },
+  "02-09": {
+   "civil_dawn_minute_of_day": "410",
+   "sunrise_minute_of_day": "451",
+   "sunset_minute_of_day": "1019",
+   "civil_dusk_minute_of_day": "1061"
+  },
+  "02-10": {
+   "civil_dawn_minute_of_day": "407",
+   "sunrise_minute_of_day": "449",
+   "sunset_minute_of_day": "1022",
+   "civil_dusk_minute_of_day": "1063"
+  },
+  "02-11": {
+   "civil_dawn_minute_of_day": "405",
+   "sunrise_minute_of_day": "446",
+   "sunset_minute_of_day": "1024",
+   "civil_dusk_minute_of_day": "1066"
+  },
+  "02-12": {
+   "civil_dawn_minute_of_day": "402",
+   "sunrise_minute_of_day": "444",
+   "sunset_minute_of_day": "1027",
+   "civil_dusk_minute_of_day": "1068"
+  },
+  "02-13": {
+   "civil_dawn_minute_of_day": "400",
+   "sunrise_minute_of_day": "441",
+   "sunset_minute_of_day": "1029",
+   "civil_dusk_minute_of_day": "1070"
+  },
+  "02-14": {
+   "civil_dawn_minute_of_day": "397",
+   "sunrise_minute_of_day": "438",
+   "sunset_minute_of_day": "1031",
+   "civil_dusk_minute_of_day": "1072"
+  },
+  "02-15": {
+   "civil_dawn_minute_of_day": "395",
+   "sunrise_minute_of_day": "436",
+   "sunset_minute_of_day": "1034",
+   "civil_dusk_minute_of_day": "1075"
+  },
+  "02-16": {
+   "civil_dawn_minute_of_day": "392",
+   "sunrise_minute_of_day": "433",
+   "sunset_minute_of_day": "1036",
+   "civil_dusk_minute_of_day": "1077"
+  },
+  "02-17": {
+   "civil_dawn_minute_of_day": "390",
+   "sunrise_minute_of_day": "430",
+   "sunset_minute_of_day": "1039",
+   "civil_dusk_minute_of_day": "1079"
+  },
+  "02-18": {
+   "civil_dawn_minute_of_day": "387",
+   "sunrise_minute_of_day": "427",
+   "sunset_minute_of_day": "1041",
+   "civil_dusk_minute_of_day": "1081"
+  },
+  "02-19": {
+   "civil_dawn_minute_of_day": "384",
+   "sunrise_minute_of_day": "425",
+   "sunset_minute_of_day": "1043",
+   "civil_dusk_minute_of_day": "1084"
+  },
+  "02-20": {
+   "civil_dawn_minute_of_day": "382",
+   "sunrise_minute_of_day": "422",
+   "sunset_minute_of_day": "1046",
+   "civil_dusk_minute_of_day": "1086"
+  },
+  "02-21": {
+   "civil_dawn_minute_of_day": "379",
+   "sunrise_minute_of_day": "419",
+   "sunset_minute_of_day": "1048",
+   "civil_dusk_minute_of_day": "1088"
+  },
+  "02-22": {
+   "civil_dawn_minute_of_day": "376",
+   "sunrise_minute_of_day": "416",
+   "sunset_minute_of_day": "1050",
+   "civil_dusk_minute_of_day": "1090"
+  },
+  "02-23": {
+   "civil_dawn_minute_of_day": "374",
+   "sunrise_minute_of_day": "414",
+   "sunset_minute_of_day": "1053",
+   "civil_dusk_minute_of_day": "1093"
+  },
+  "02-24": {
+   "civil_dawn_minute_of_day": "371",
+   "sunrise_minute_of_day": "411",
+   "sunset_minute_of_day": "1055",
+   "civil_dusk_minute_of_day": "1095"
+  },
+  "02-25": {
+   "civil_dawn_minute_of_day": "368",
+   "sunrise_minute_of_day": "408",
+   "sunset_minute_of_day": "1057",
+   "civil_dusk_minute_of_day": "1097"
+  },
+  "02-26": {
+   "civil_dawn_minute_of_day": "365",
+   "sunrise_minute_of_day": "405",
+   "sunset_minute_of_day": "1060",
+   "civil_dusk_minute_of_day": "1099"
+  },
+  "02-27": {
+   "civil_dawn_minute_of_day": "362",
+   "sunrise_minute_of_day": "402",
+   "sunset_minute_of_day": "1062",
+   "civil_dusk_minute_of_day": "1102"
+  },
+  "02-28": {
+   "civil_dawn_minute_of_day": "360",
+   "sunrise_minute_of_day": "399",
+   "sunset_minute_of_day": "1064",
+   "civil_dusk_minute_of_day": "1104"
+  },
+  "03-01": {
+   "civil_dawn_minute_of_day": "357",
+   "sunrise_minute_of_day": "397",
+   "sunset_minute_of_day": "1066",
+   "civil_dusk_minute_of_day": "1106"
+  },
+  "03-02": {
+   "civil_dawn_minute_of_day": "354",
+   "sunrise_minute_of_day": "394",
+   "sunset_minute_of_day": "1069",
+   "civil_dusk_minute_of_day": "1108"
+  },
+  "03-03": {
+   "civil_dawn_minute_of_day": "351",
+   "sunrise_minute_of_day": "391",
+   "sunset_minute_of_day": "1071",
+   "civil_dusk_minute_of_day": "1111"
+  },
+  "03-04": {
+   "civil_dawn_minute_of_day": "348",
+   "sunrise_minute_of_day": "388",
+   "sunset_minute_of_day": "1073",
+   "civil_dusk_minute_of_day": "1113"
+  },
+  "03-05": {
+   "civil_dawn_minute_of_day": "345",
+   "sunrise_minute_of_day": "385",
+   "sunset_minute_of_day": "1076",
+   "civil_dusk_minute_of_day": "1115"
+  },
+  "03-06": {
+   "civil_dawn_minute_of_day": "343",
+   "sunrise_minute_of_day": "382",
+   "sunset_minute_of_day": "1078",
+   "civil_dusk_minute_of_day": "1118"
+  },
+  "03-07": {
+   "civil_dawn_minute_of_day": "340",
+   "sunrise_minute_of_day": "379",
+   "sunset_minute_of_day": "1080",
+   "civil_dusk_minute_of_day": "1120"
+  },
+  "03-08": {
+   "civil_dawn_minute_of_day": "337",
+   "sunrise_minute_of_day": "376",
+   "sunset_minute_of_day": "1082",
+   "civil_dusk_minute_of_day": "1122"
+  },
+  "03-09": {
+   "civil_dawn_minute_of_day": "334",
+   "sunrise_minute_of_day": "374",
+   "sunset_minute_of_day": "1085",
+   "civil_dusk_minute_of_day": "1124"
+  },
+  "03-10": {
+   "civil_dawn_minute_of_day": "331",
+   "sunrise_minute_of_day": "371",
+   "sunset_minute_of_day": "1087",
+   "civil_dusk_minute_of_day": "1127"
+  },
+  "03-11": {
+   "civil_dawn_minute_of_day": "328",
+   "sunrise_minute_of_day": "368",
+   "sunset_minute_of_day": "1089",
+   "civil_dusk_minute_of_day": "1129"
+  },
+  "03-12": {
+   "civil_dawn_minute_of_day": "325",
+   "sunrise_minute_of_day": "365",
+   "sunset_minute_of_day": "1091",
+   "civil_dusk_minute_of_day": "1131"
+  },
+  "03-13": {
+   "civil_dawn_minute_of_day": "322",
+   "sunrise_minute_of_day": "362",
+   "sunset_minute_of_day": "1094",
+   "civil_dusk_minute_of_day": "1133"
+  },
+  "03-14": {
+   "civil_dawn_minute_of_day": "319",
+   "sunrise_minute_of_day": "359",
+   "sunset_minute_of_day": "1096",
+   "civil_dusk_minute_of_day": "1136"
+  },
+  "03-15": {
+   "civil_dawn_minute_of_day": "316",
+   "sunrise_minute_of_day": "356",
+   "sunset_minute_of_day": "1098",
+   "civil_dusk_minute_of_day": "1138"
+  },
+  "03-16": {
+   "civil_dawn_minute_of_day": "313",
+   "sunrise_minute_of_day": "353",
+   "sunset_minute_of_day": "1100",
+   "civil_dusk_minute_of_day": "1140"
+  },
+  "03-17": {
+   "civil_dawn_minute_of_day": "310",
+   "sunrise_minute_of_day": "350",
+   "sunset_minute_of_day": "1103",
+   "civil_dusk_minute_of_day": "1143"
+  },
+  "03-18": {
+   "civil_dawn_minute_of_day": "307",
+   "sunrise_minute_of_day": "347",
+   "sunset_minute_of_day": "1105",
+   "civil_dusk_minute_of_day": "1145"
+  },
+  "03-19": {
+   "civil_dawn_minute_of_day": "304",
+   "sunrise_minute_of_day": "345",
+   "sunset_minute_of_day": "1107",
+   "civil_dusk_minute_of_day": "1147"
+  },
+  "03-20": {
+   "civil_dawn_minute_of_day": "301",
+   "sunrise_minute_of_day": "342",
+   "sunset_minute_of_day": "1109",
+   "civil_dusk_minute_of_day": "1150"
+  },
+  "03-21": {
+   "civil_dawn_minute_of_day": "298",
+   "sunrise_minute_of_day": "339",
+   "sunset_minute_of_day": "1112",
+   "civil_dusk_minute_of_day": "1152"
+  },
+  "03-22": {
+   "civil_dawn_minute_of_day": "295",
+   "sunrise_minute_of_day": "336",
+   "sunset_minute_of_day": "1114",
+   "civil_dusk_minute_of_day": "1154"
+  },
+  "03-23": {
+   "civil_dawn_minute_of_day": "292",
+   "sunrise_minute_of_day": "333",
+   "sunset_minute_of_day": "1116",
+   "civil_dusk_minute_of_day": "1157"
+  },
+  "03-24": {
+   "civil_dawn_minute_of_day": "289",
+   "sunrise_minute_of_day": "330",
+   "sunset_minute_of_day": "1118",
+   "civil_dusk_minute_of_day": "1159"
+  },
+  "03-25": {
+   "civil_dawn_minute_of_day": "286",
+   "sunrise_minute_of_day": "327",
+   "sunset_minute_of_day": "1121",
+   "civil_dusk_minute_of_day": "1161"
+  },
+  "03-26": {
+   "civil_dawn_minute_of_day": "283",
+   "sunrise_minute_of_day": "324",
+   "sunset_minute_of_day": "1123",
+   "civil_dusk_minute_of_day": "1164"
+  },
+  "03-27": {
+   "civil_dawn_minute_of_day": "280",
+   "sunrise_minute_of_day": "321",
+   "sunset_minute_of_day": "1125",
+   "civil_dusk_minute_of_day": "1166"
+  },
+  "03-28": {
+   "civil_dawn_minute_of_day": "277",
+   "sunrise_minute_of_day": "319",
+   "sunset_minute_of_day": "1127",
+   "civil_dusk_minute_of_day": "1169"
+  },
+  "03-29": {
+   "civil_dawn_minute_of_day": "274",
+   "sunrise_minute_of_day": "316",
+   "sunset_minute_of_day": "1129",
+   "civil_dusk_minute_of_day": "1171"
+  },
+  "03-30": {
+   "civil_dawn_minute_of_day": "271",
+   "sunrise_minute_of_day": "313",
+   "sunset_minute_of_day": "1132",
+   "civil_dusk_minute_of_day": "1173"
+  },
+  "03-31": {
+   "civil_dawn_minute_of_day": "268",
+   "sunrise_minute_of_day": "310",
+   "sunset_minute_of_day": "1134",
+   "civil_dusk_minute_of_day": "1176"
+  },
+  "04-01": {
+   "civil_dawn_minute_of_day": "265",
+   "sunrise_minute_of_day": "307",
+   "sunset_minute_of_day": "1136",
+   "civil_dusk_minute_of_day": "1178"
+  },
+  "04-02": {
+   "civil_dawn_minute_of_day": "262",
+   "sunrise_minute_of_day": "304",
+   "sunset_minute_of_day": "1138",
+   "civil_dusk_minute_of_day": "1181"
+  },
+  "04-03": {
+   "civil_dawn_minute_of_day": "259",
+   "sunrise_minute_of_day": "301",
+   "sunset_minute_of_day": "1141",
+   "civil_dusk_minute_of_day": "1183"
+  },
+  "04-04": {
+   "civil_dawn_minute_of_day": "256",
+   "sunrise_minute_of_day": "299",
+   "sunset_minute_of_day": "1143",
+   "civil_dusk_minute_of_day": "1186"
+  },
+  "04-05": {
+   "civil_dawn_minute_of_day": "253",
+   "sunrise_minute_of_day": "296",
+   "sunset_minute_of_day": "1145",
+   "civil_dusk_minute_of_day": "1188"
+  },
+  "04-06": {
+   "civil_dawn_minute_of_day": "250",
+   "sunrise_minute_of_day": "293",
+   "sunset_minute_of_day": "1147",
+   "civil_dusk_minute_of_day": "1191"
+  },
+  "04-07": {
+   "civil_dawn_minute_of_day": "247",
+   "sunrise_minute_of_day": "290",
+   "sunset_minute_of_day": "1150",
+   "civil_dusk_minute_of_day": "1193"
+  },
+  "04-08": {
+   "civil_dawn_minute_of_day": "243",
+   "sunrise_minute_of_day": "287",
+   "sunset_minute_of_day": "1152",
+   "civil_dusk_minute_of_day": "1196"
+  },
+  "04-09": {
+   "civil_dawn_minute_of_day": "240",
+   "sunrise_minute_of_day": "284",
+   "sunset_minute_of_day": "1154",
+   "civil_dusk_minute_of_day": "1198"
+  },
+  "04-10": {
+   "civil_dawn_minute_of_day": "237",
+   "sunrise_minute_of_day": "282",
+   "sunset_minute_of_day": "1156",
+   "civil_dusk_minute_of_day": "1201"
+  },
+  "04-11": {
+   "civil_dawn_minute_of_day": "234",
+   "sunrise_minute_of_day": "279",
+   "sunset_minute_of_day": "1159",
+   "civil_dusk_minute_of_day": "1203"
+  },
+  "04-12": {
+   "civil_dawn_minute_of_day": "231",
+   "sunrise_minute_of_day": "276",
+   "sunset_minute_of_day": "1161",
+   "civil_dusk_minute_of_day": "1206"
+  },
+  "04-13": {
+   "civil_dawn_minute_of_day": "228",
+   "sunrise_minute_of_day": "273",
+   "sunset_minute_of_day": "1163",
+   "civil_dusk_minute_of_day": "1209"
+  },
+  "04-14": {
+   "civil_dawn_minute_of_day": "225",
+   "sunrise_minute_of_day": "271",
+   "sunset_minute_of_day": "1166",
+   "civil_dusk_minute_of_day": "1211"
+  },
+  "04-15": {
+   "civil_dawn_minute_of_day": "222",
+   "sunrise_minute_of_day": "268",
+   "sunset_minute_of_day": "1168",
+   "civil_dusk_minute_of_day": "1214"
+  },
+  "04-16": {
+   "civil_dawn_minute_of_day": "219",
+   "sunrise_minute_of_day": "265",
+   "sunset_minute_of_day": "1170",
+   "civil_dusk_minute_of_day": "1216"
+  },
+  "04-17": {
+   "civil_dawn_minute_of_day": "216",
+   "sunrise_minute_of_day": "263",
+   "sunset_minute_of_day": "1172",
+   "civil_dusk_minute_of_day": "1219"
+  },
+  "04-18": {
+   "civil_dawn_minute_of_day": "213",
+   "sunrise_minute_of_day": "260",
+   "sunset_minute_of_day": "1175",
+   "civil_dusk_minute_of_day": "1222"
+  },
+  "04-19": {
+   "civil_dawn_minute_of_day": "210",
+   "sunrise_minute_of_day": "257",
+   "sunset_minute_of_day": "1177",
+   "civil_dusk_minute_of_day": "1224"
+  },
+  "04-20": {
+   "civil_dawn_minute_of_day": "207",
+   "sunrise_minute_of_day": "255",
+   "sunset_minute_of_day": "1179",
+   "civil_dusk_minute_of_day": "1227"
+  },
+  "04-21": {
+   "civil_dawn_minute_of_day": "204",
+   "sunrise_minute_of_day": "252",
+   "sunset_minute_of_day": "1181",
+   "civil_dusk_minute_of_day": "1230"
+  },
+  "04-22": {
+   "civil_dawn_minute_of_day": "201",
+   "sunrise_minute_of_day": "249",
+   "sunset_minute_of_day": "1184",
+   "civil_dusk_minute_of_day": "1232"
+  },
+  "04-23": {
+   "civil_dawn_minute_of_day": "198",
+   "sunrise_minute_of_day": "247",
+   "sunset_minute_of_day": "1186",
+   "civil_dusk_minute_of_day": "1235"
+  },
+  "04-24": {
+   "civil_dawn_minute_of_day": "195",
+   "sunrise_minute_of_day": "244",
+   "sunset_minute_of_day": "1188",
+   "civil_dusk_minute_of_day": "1238"
+  },
+  "04-25": {
+   "civil_dawn_minute_of_day": "192",
+   "sunrise_minute_of_day": "242",
+   "sunset_minute_of_day": "1190",
+   "civil_dusk_minute_of_day": "1240"
+  },
+  "04-26": {
+   "civil_dawn_minute_of_day": "189",
+   "sunrise_minute_of_day": "239",
+   "sunset_minute_of_day": "1193",
+   "civil_dusk_minute_of_day": "1243"
+  },
+  "04-27": {
+   "civil_dawn_minute_of_day": "186",
+   "sunrise_minute_of_day": "237",
+   "sunset_minute_of_day": "1195",
+   "civil_dusk_minute_of_day": "1246"
+  },
+  "04-28": {
+   "civil_dawn_minute_of_day": "183",
+   "sunrise_minute_of_day": "234",
+   "sunset_minute_of_day": "1197",
+   "civil_dusk_minute_of_day": "1249"
+  },
+  "04-29": {
+   "civil_dawn_minute_of_day": "180",
+   "sunrise_minute_of_day": "232",
+   "sunset_minute_of_day": "1199",
+   "civil_dusk_minute_of_day": "1251"
+  },
+  "04-30": {
+   "civil_dawn_minute_of_day": "177",
+   "sunrise_minute_of_day": "229",
+   "sunset_minute_of_day": "1202",
+   "civil_dusk_minute_of_day": "1254"
+  },
+  "05-01": {
+   "civil_dawn_minute_of_day": "174",
+   "sunrise_minute_of_day": "227",
+   "sunset_minute_of_day": "1204",
+   "civil_dusk_minute_of_day": "1257"
+  },
+  "05-02": {
+   "civil_dawn_minute_of_day": "171",
+   "sunrise_minute_of_day": "224",
+   "sunset_minute_of_day": "1206",
+   "civil_dusk_minute_of_day": "1260"
+  },
+  "05-03": {
+   "civil_dawn_minute_of_day": "168",
+   "sunrise_minute_of_day": "222",
+   "sunset_minute_of_day": "1208",
+   "civil_dusk_minute_of_day": "1263"
+  },
+  "05-04": {
+   "civil_dawn_minute_of_day": "165",
+   "sunrise_minute_of_day": "220",
+   "sunset_minute_of_day": "1211",
+   "civil_dusk_minute_of_day": "1265"
+  },
+  "05-05": {
+   "civil_dawn_minute_of_day": "162",
+   "sunrise_minute_of_day": "217",
+   "sunset_minute_of_day": "1213",
+   "civil_dusk_minute_of_day": "1268"
+  },
+  "05-06": {
+   "civil_dawn_minute_of_day": "159",
+   "sunrise_minute_of_day": "215",
+   "sunset_minute_of_day": "1215",
+   "civil_dusk_minute_of_day": "1271"
+  },
+  "05-07": {
+   "civil_dawn_minute_of_day": "156",
+   "sunrise_minute_of_day": "213",
+   "sunset_minute_of_day": "1217",
+   "civil_dusk_minute_of_day": "1274"
+  },
+  "05-08": {
+   "civil_dawn_minute_of_day": "153",
+   "sunrise_minute_of_day": "211",
+   "sunset_minute_of_day": "1219",
+   "civil_dusk_minute_of_day": "1277"
+  },
+  "05-09": {
+   "civil_dawn_minute_of_day": "151",
+   "sunrise_minute_of_day": "209",
+   "sunset_minute_of_day": "1221",
+   "civil_dusk_minute_of_day": "1279"
+  },
+  "05-10": {
+   "civil_dawn_minute_of_day": "148",
+   "sunrise_minute_of_day": "207",
+   "sunset_minute_of_day": "1223",
+   "civil_dusk_minute_of_day": "1282"
+  },
+  "05-11": {
+   "civil_dawn_minute_of_day": "145",
+   "sunrise_minute_of_day": "205",
+   "sunset_minute_of_day": "1226",
+   "civil_dusk_minute_of_day": "1285"
+  },
+  "05-12": {
+   "civil_dawn_minute_of_day": "142",
+   "sunrise_minute_of_day": "202",
+   "sunset_minute_of_day": "1228",
+   "civil_dusk_minute_of_day": "1288"
+  },
+  "05-13": {
+   "civil_dawn_minute_of_day": "140",
+   "sunrise_minute_of_day": "200",
+   "sunset_minute_of_day": "1230",
+   "civil_dusk_minute_of_day": "1291"
+  },
+  "05-14": {
+   "civil_dawn_minute_of_day": "137",
+   "sunrise_minute_of_day": "199",
+   "sunset_minute_of_day": "1232",
+   "civil_dusk_minute_of_day": "1293"
+  },
+  "05-15": {
+   "civil_dawn_minute_of_day": "134",
+   "sunrise_minute_of_day": "197",
+   "sunset_minute_of_day": "1234",
+   "civil_dusk_minute_of_day": "1296"
+  },
+  "05-16": {
+   "civil_dawn_minute_of_day": "132",
+   "sunrise_minute_of_day": "195",
+   "sunset_minute_of_day": "1236",
+   "civil_dusk_minute_of_day": "1299"
+  },
+  "05-17": {
+   "civil_dawn_minute_of_day": "129",
+   "sunrise_minute_of_day": "193",
+   "sunset_minute_of_day": "1238",
+   "civil_dusk_minute_of_day": "1302"
+  },
+  "05-18": {
+   "civil_dawn_minute_of_day": "126",
+   "sunrise_minute_of_day": "191",
+   "sunset_minute_of_day": "1239",
+   "civil_dusk_minute_of_day": "1304"
+  },
+  "05-19": {
+   "civil_dawn_minute_of_day": "124",
+   "sunrise_minute_of_day": "190",
+   "sunset_minute_of_day": "1241",
+   "civil_dusk_minute_of_day": "1307"
+  },
+  "05-20": {
+   "civil_dawn_minute_of_day": "121",
+   "sunrise_minute_of_day": "188",
+   "sunset_minute_of_day": "1243",
+   "civil_dusk_minute_of_day": "1310"
+  },
+  "05-21": {
+   "civil_dawn_minute_of_day": "119",
+   "sunrise_minute_of_day": "186",
+   "sunset_minute_of_day": "1245",
+   "civil_dusk_minute_of_day": "1312"
+  },
+  "05-22": {
+   "civil_dawn_minute_of_day": "117",
+   "sunrise_minute_of_day": "185",
+   "sunset_minute_of_day": "1247",
+   "civil_dusk_minute_of_day": "1315"
+  },
+  "05-23": {
+   "civil_dawn_minute_of_day": "114",
+   "sunrise_minute_of_day": "183",
+   "sunset_minute_of_day": "1248",
+   "civil_dusk_minute_of_day": "1317"
+  },
+  "05-24": {
+   "civil_dawn_minute_of_day": "112",
+   "sunrise_minute_of_day": "182",
+   "sunset_minute_of_day": "1250",
+   "civil_dusk_minute_of_day": "1320"
+  },
+  "05-25": {
+   "civil_dawn_minute_of_day": "110",
+   "sunrise_minute_of_day": "181",
+   "sunset_minute_of_day": "1252",
+   "civil_dusk_minute_of_day": "1322"
+  },
+  "05-26": {
+   "civil_dawn_minute_of_day": "108",
+   "sunrise_minute_of_day": "179",
+   "sunset_minute_of_day": "1253",
+   "civil_dusk_minute_of_day": "1325"
+  },
+  "05-27": {
+   "civil_dawn_minute_of_day": "106",
+   "sunrise_minute_of_day": "178",
+   "sunset_minute_of_day": "1255",
+   "civil_dusk_minute_of_day": "1327"
+  },
+  "05-28": {
+   "civil_dawn_minute_of_day": "104",
+   "sunrise_minute_of_day": "177",
+   "sunset_minute_of_day": "1256",
+   "civil_dusk_minute_of_day": "1329"
+  },
+  "05-29": {
+   "civil_dawn_minute_of_day": "102",
+   "sunrise_minute_of_day": "176",
+   "sunset_minute_of_day": "1258",
+   "civil_dusk_minute_of_day": "1332"
+  },
+  "05-30": {
+   "civil_dawn_minute_of_day": "100",
+   "sunrise_minute_of_day": "175",
+   "sunset_minute_of_day": "1259",
+   "civil_dusk_minute_of_day": "1334"
+  },
+  "05-31": {
+   "civil_dawn_minute_of_day": "98",
+   "sunrise_minute_of_day": "174",
+   "sunset_minute_of_day": "1260",
+   "civil_dusk_minute_of_day": "1336"
+  },
+  "06-01": {
+   "civil_dawn_minute_of_day": "97",
+   "sunrise_minute_of_day": "173",
+   "sunset_minute_of_day": "1262",
+   "civil_dusk_minute_of_day": "1338"
+  },
+  "06-02": {
+   "civil_dawn_minute_of_day": "95",
+   "sunrise_minute_of_day": "172",
+   "sunset_minute_of_day": "1263",
+   "civil_dusk_minute_of_day": "1340"
+  },
+  "06-03": {
+   "civil_dawn_minute_of_day": "94",
+   "sunrise_minute_of_day": "171",
+   "sunset_minute_of_day": "1264",
+   "civil_dusk_minute_of_day": "1342"
+  },
+  "06-04": {
+   "civil_dawn_minute_of_day": "92",
+   "sunrise_minute_of_day": "171",
+   "sunset_minute_of_day": "1265",
+   "civil_dusk_minute_of_day": "1343"
+  },
+  "06-05": {
+   "civil_dawn_minute_of_day": "91",
+   "sunrise_minute_of_day": "170",
+   "sunset_minute_of_day": "1266",
+   "civil_dusk_minute_of_day": "1345"
+  },
+  "06-06": {
+   "civil_dawn_minute_of_day": "90",
+   "sunrise_minute_of_day": "170",
+   "sunset_minute_of_day": "1267",
+   "civil_dusk_minute_of_day": "1346"
+  },
+  "06-07": {
+   "civil_dawn_minute_of_day": "89",
+   "sunrise_minute_of_day": "169",
+   "sunset_minute_of_day": "1268",
+   "civil_dusk_minute_of_day": "1348"
+  },
+  "06-08": {
+   "civil_dawn_minute_of_day": "88",
+   "sunrise_minute_of_day": "169",
+   "sunset_minute_of_day": "1268",
+   "civil_dusk_minute_of_day": "1349"
+  },
+  "06-09": {
+   "civil_dawn_minute_of_day": "87",
+   "sunrise_minute_of_day": "168",
+   "sunset_minute_of_day": "1269",
+   "civil_dusk_minute_of_day": "1350"
+  },
+  "06-10": {
+   "civil_dawn_minute_of_day": "87",
+   "sunrise_minute_of_day": "168",
+   "sunset_minute_of_day": "1270",
+   "civil_dusk_minute_of_day": "1351"
+  },
+  "06-11": {
+   "civil_dawn_minute_of_day": "87",
+   "sunrise_minute_of_day": "168",
+   "sunset_minute_of_day": "1270",
+   "civil_dusk_minute_of_day": "1352"
+  },
+  "06-12": {
+   "civil_dawn_minute_of_day": "86",
+   "sunrise_minute_of_day": "168",
+   "sunset_minute_of_day": "1271",
+   "civil_dusk_minute_of_day": "1353"
+  },
+  "06-13": {
+   "civil_dawn_minute_of_day": "86",
+   "sunrise_minute_of_day": "168",
+   "sunset_minute_of_day": "1271",
+   "civil_dusk_minute_of_day": "1353"
+  },
+  "06-14": {
+   "civil_dawn_minute_of_day": "86",
+   "sunrise_minute_of_day": "168",
+   "sunset_minute_of_day": "1271",
+   "civil_dusk_minute_of_day": "1353"
+  },
+  "06-15": {
+   "civil_dawn_minute_of_day": "86",
+   "sunrise_minute_of_day": "169",
+   "sunset_minute_of_day": "1272",
+   "civil_dusk_minute_of_day": "1354"
+  },
+  "06-16": {
+   "civil_dawn_minute_of_day": "87",
+   "sunrise_minute_of_day": "169",
+   "sunset_minute_of_day": "1272",
+   "civil_dusk_minute_of_day": "1354"
+  },
+  "06-17": {
+   "civil_dawn_minute_of_day": "87",
+   "sunrise_minute_of_day": "169",
+   "sunset_minute_of_day": "1272",
+   "civil_dusk_minute_of_day": "1354"
+  },
+  "06-18": {
+   "civil_dawn_minute_of_day": "88",
+   "sunrise_minute_of_day": "170",
+   "sunset_minute_of_day": "1272",
+   "civil_dusk_minute_of_day": "1353"
+  },
+  "06-19": {
+   "civil_dawn_minute_of_day": "89",
+   "sunrise_minute_of_day": "170",
+   "sunset_minute_of_day": "1272",
+   "civil_dusk_minute_of_day": "1353"
+  },
+  "06-20": {
+   "civil_dawn_minute_of_day": "90",
+   "sunrise_minute_of_day": "171",
+   "sunset_minute_of_day": "1271",
+   "civil_dusk_minute_of_day": "1352"
+  },
+  "06-21": {
+   "civil_dawn_minute_of_day": "91",
+   "sunrise_minute_of_day": "171",
+   "sunset_minute_of_day": "1271",
+   "civil_dusk_minute_of_day": "1352"
+  },
+  "06-22": {
+   "civil_dawn_minute_of_day": "92",
+   "sunrise_minute_of_day": "172",
+   "sunset_minute_of_day": "1271",
+   "civil_dusk_minute_of_day": "1351"
+  },
+  "06-23": {
+   "civil_dawn_minute_of_day": "93",
+   "sunrise_minute_of_day": "173",
+   "sunset_minute_of_day": "1270",
+   "civil_dusk_minute_of_day": "1350"
+  },
+  "06-24": {
+   "civil_dawn_minute_of_day": "95",
+   "sunrise_minute_of_day": "174",
+   "sunset_minute_of_day": "1270",
+   "civil_dusk_minute_of_day": "1349"
+  },
+  "06-25": {
+   "civil_dawn_minute_of_day": "97",
+   "sunrise_minute_of_day": "175",
+   "sunset_minute_of_day": "1269",
+   "civil_dusk_minute_of_day": "1348"
+  },
+  "06-26": {
+   "civil_dawn_minute_of_day": "98",
+   "sunrise_minute_of_day": "176",
+   "sunset_minute_of_day": "1269",
+   "civil_dusk_minute_of_day": "1346"
+  },
+  "06-27": {
+   "civil_dawn_minute_of_day": "100",
+   "sunrise_minute_of_day": "177",
+   "sunset_minute_of_day": "1268",
+   "civil_dusk_minute_of_day": "1345"
+  },
+  "06-28": {
+   "civil_dawn_minute_of_day": "102",
+   "sunrise_minute_of_day": "178",
+   "sunset_minute_of_day": "1267",
+   "civil_dusk_minute_of_day": "1343"
+  },
+  "06-29": {
+   "civil_dawn_minute_of_day": "104",
+   "sunrise_minute_of_day": "180",
+   "sunset_minute_of_day": "1266",
+   "civil_dusk_minute_of_day": "1342"
+  },
+  "06-30": {
+   "civil_dawn_minute_of_day": "106",
+   "sunrise_minute_of_day": "181",
+   "sunset_minute_of_day": "1265",
+   "civil_dusk_minute_of_day": "1340"
+  },
+  "07-01": {
+   "civil_dawn_minute_of_day": "108",
+   "sunrise_minute_of_day": "182",
+   "sunset_minute_of_day": "1264",
+   "civil_dusk_minute_of_day": "1338"
+  },
+  "07-02": {
+   "civil_dawn_minute_of_day": "110",
+   "sunrise_minute_of_day": "184",
+   "sunset_minute_of_day": "1263",
+   "civil_dusk_minute_of_day": "1336"
+  },
+  "07-03": {
+   "civil_dawn_minute_of_day": "113",
+   "sunrise_minute_of_day": "185",
+   "sunset_minute_of_day": "1262",
+   "civil_dusk_minute_of_day": "1334"
+  },
+  "07-04": {
+   "civil_dawn_minute_of_day": "115",
+   "sunrise_minute_of_day": "187",
+   "sunset_minute_of_day": "1261",
+   "civil_dusk_minute_of_day": "1332"
+  },
+  "07-05": {
+   "civil_dawn_minute_of_day": "117",
+   "sunrise_minute_of_day": "188",
+   "sunset_minute_of_day": "1259",
+   "civil_dusk_minute_of_day": "1330"
+  },
+  "07-06": {
+   "civil_dawn_minute_of_day": "120",
+   "sunrise_minute_of_day": "190",
+   "sunset_minute_of_day": "1258",
+   "civil_dusk_minute_of_day": "1328"
+  },
+  "07-07": {
+   "civil_dawn_minute_of_day": "122",
+   "sunrise_minute_of_day": "191",
+   "sunset_minute_of_day": "1257",
+   "civil_dusk_minute_of_day": "1326"
+  },
+  "07-08": {
+   "civil_dawn_minute_of_day": "125",
+   "sunrise_minute_of_day": "193",
+   "sunset_minute_of_day": "1255",
+   "civil_dusk_minute_of_day": "1323"
+  },
+  "07-09": {
+   "civil_dawn_minute_of_day": "128",
+   "sunrise_minute_of_day": "195",
+   "sunset_minute_of_day": "1254",
+   "civil_dusk_minute_of_day": "1321"
+  },
+  "07-10": {
+   "civil_dawn_minute_of_day": "130",
+   "sunrise_minute_of_day": "197",
+   "sunset_minute_of_day": "1252",
+   "civil_dusk_minute_of_day": "1319"
+  },
+  "07-11": {
+   "civil_dawn_minute_of_day": "133",
+   "sunrise_minute_of_day": "199",
+   "sunset_minute_of_day": "1250",
+   "civil_dusk_minute_of_day": "1316"
+  },
+  "07-12": {
+   "civil_dawn_minute_of_day": "136",
+   "sunrise_minute_of_day": "200",
+   "sunset_minute_of_day": "1249",
+   "civil_dusk_minute_of_day": "1314"
+  },
+  "07-13": {
+   "civil_dawn_minute_of_day": "138",
+   "sunrise_minute_of_day": "202",
+   "sunset_minute_of_day": "1247",
+   "civil_dusk_minute_of_day": "1311"
+  },
+  "07-14": {
+   "civil_dawn_minute_of_day": "141",
+   "sunrise_minute_of_day": "204",
+   "sunset_minute_of_day": "1245",
+   "civil_dusk_minute_of_day": "1308"
+  },
+  "07-15": {
+   "civil_dawn_minute_of_day": "144",
+   "sunrise_minute_of_day": "206",
+   "sunset_minute_of_day": "1243",
+   "civil_dusk_minute_of_day": "1306"
+  },
+  "07-16": {
+   "civil_dawn_minute_of_day": "146",
+   "sunrise_minute_of_day": "208",
+   "sunset_minute_of_day": "1241",
+   "civil_dusk_minute_of_day": "1303"
+  },
+  "07-17": {
+   "civil_dawn_minute_of_day": "149",
+   "sunrise_minute_of_day": "210",
+   "sunset_minute_of_day": "1239",
+   "civil_dusk_minute_of_day": "1300"
+  },
+  "07-18": {
+   "civil_dawn_minute_of_day": "152",
+   "sunrise_minute_of_day": "212",
+   "sunset_minute_of_day": "1237",
+   "civil_dusk_minute_of_day": "1298"
+  },
+  "07-19": {
+   "civil_dawn_minute_of_day": "155",
+   "sunrise_minute_of_day": "214",
+   "sunset_minute_of_day": "1235",
+   "civil_dusk_minute_of_day": "1295"
+  },
+  "07-20": {
+   "civil_dawn_minute_of_day": "158",
+   "sunrise_minute_of_day": "216",
+   "sunset_minute_of_day": "1233",
+   "civil_dusk_minute_of_day": "1292"
+  },
+  "07-21": {
+   "civil_dawn_minute_of_day": "160",
+   "sunrise_minute_of_day": "219",
+   "sunset_minute_of_day": "1231",
+   "civil_dusk_minute_of_day": "1289"
+  },
+  "07-22": {
+   "civil_dawn_minute_of_day": "163",
+   "sunrise_minute_of_day": "221",
+   "sunset_minute_of_day": "1229",
+   "civil_dusk_minute_of_day": "1287"
+  },
+  "07-23": {
+   "civil_dawn_minute_of_day": "166",
+   "sunrise_minute_of_day": "223",
+   "sunset_minute_of_day": "1227",
+   "civil_dusk_minute_of_day": "1284"
+  },
+  "07-24": {
+   "civil_dawn_minute_of_day": "169",
+   "sunrise_minute_of_day": "225",
+   "sunset_minute_of_day": "1225",
+   "civil_dusk_minute_of_day": "1281"
+  },
+  "07-25": {
+   "civil_dawn_minute_of_day": "172",
+   "sunrise_minute_of_day": "227",
+   "sunset_minute_of_day": "1222",
+   "civil_dusk_minute_of_day": "1278"
+  },
+  "07-26": {
+   "civil_dawn_minute_of_day": "174",
+   "sunrise_minute_of_day": "229",
+   "sunset_minute_of_day": "1220",
+   "civil_dusk_minute_of_day": "1275"
+  },
+  "07-27": {
+   "civil_dawn_minute_of_day": "177",
+   "sunrise_minute_of_day": "232",
+   "sunset_minute_of_day": "1218",
+   "civil_dusk_minute_of_day": "1272"
+  },
+  "07-28": {
+   "civil_dawn_minute_of_day": "180",
+   "sunrise_minute_of_day": "234",
+   "sunset_minute_of_day": "1216",
+   "civil_dusk_minute_of_day": "1269"
+  },
+  "07-29": {
+   "civil_dawn_minute_of_day": "183",
+   "sunrise_minute_of_day": "236",
+   "sunset_minute_of_day": "1213",
+   "civil_dusk_minute_of_day": "1266"
+  },
+  "07-30": {
+   "civil_dawn_minute_of_day": "186",
+   "sunrise_minute_of_day": "238",
+   "sunset_minute_of_day": "1211",
+   "civil_dusk_minute_of_day": "1263"
+  },
+  "07-31": {
+   "civil_dawn_minute_of_day": "188",
+   "sunrise_minute_of_day": "240",
+   "sunset_minute_of_day": "1208",
+   "civil_dusk_minute_of_day": "1260"
+  },
+  "08-01": {
+   "civil_dawn_minute_of_day": "191",
+   "sunrise_minute_of_day": "243",
+   "sunset_minute_of_day": "1206",
+   "civil_dusk_minute_of_day": "1257"
+  },
+  "08-02": {
+   "civil_dawn_minute_of_day": "194",
+   "sunrise_minute_of_day": "245",
+   "sunset_minute_of_day": "1203",
+   "civil_dusk_minute_of_day": "1254"
+  },
+  "08-03": {
+   "civil_dawn_minute_of_day": "197",
+   "sunrise_minute_of_day": "247",
+   "sunset_minute_of_day": "1201",
+   "civil_dusk_minute_of_day": "1251"
+  },
+  "08-04": {
+   "civil_dawn_minute_of_day": "199",
+   "sunrise_minute_of_day": "249",
+   "sunset_minute_of_day": "1198",
+   "civil_dusk_minute_of_day": "1248"
+  },
+  "08-05": {
+   "civil_dawn_minute_of_day": "202",
+   "sunrise_minute_of_day": "252",
+   "sunset_minute_of_day": "1196",
+   "civil_dusk_minute_of_day": "1245"
+  },
+  "08-06": {
+   "civil_dawn_minute_of_day": "205",
+   "sunrise_minute_of_day": "254",
+   "sunset_minute_of_day": "1193",
+   "civil_dusk_minute_of_day": "1242"
+  },
+  "08-07": {
+   "civil_dawn_minute_of_day": "208",
+   "sunrise_minute_of_day": "256",
+   "sunset_minute_of_day": "1191",
+   "civil_dusk_minute_of_day": "1239"
+  },
+  "08-08": {
+   "civil_dawn_minute_of_day": "210",
+   "sunrise_minute_of_day": "259",
+   "sunset_minute_of_day": "1188",
+   "civil_dusk_minute_of_day": "1236"
+  },
+  "08-09": {
+   "civil_dawn_minute_of_day": "213",
+   "sunrise_minute_of_day": "261",
+   "sunset_minute_of_day": "1185",
+   "civil_dusk_minute_of_day": "1233"
+  },
+  "08-10": {
+   "civil_dawn_minute_of_day": "216",
+   "sunrise_minute_of_day": "263",
+   "sunset_minute_of_day": "1183",
+   "civil_dusk_minute_of_day": "1230"
+  },
+  "08-11": {
+   "civil_dawn_minute_of_day": "218",
+   "sunrise_minute_of_day": "265",
+   "sunset_minute_of_day": "1180",
+   "civil_dusk_minute_of_day": "1227"
+  },
+  "08-12": {
+   "civil_dawn_minute_of_day": "221",
+   "sunrise_minute_of_day": "268",
+   "sunset_minute_of_day": "1177",
+   "civil_dusk_minute_of_day": "1224"
+  },
+  "08-13": {
+   "civil_dawn_minute_of_day": "224",
+   "sunrise_minute_of_day": "270",
+   "sunset_minute_of_day": "1175",
+   "civil_dusk_minute_of_day": "1221"
+  },
+  "08-14": {
+   "civil_dawn_minute_of_day": "226",
+   "sunrise_minute_of_day": "272",
+   "sunset_minute_of_day": "1172",
+   "civil_dusk_minute_of_day": "1218"
+  },
+  "08-15": {
+   "civil_dawn_minute_of_day": "229",
+   "sunrise_minute_of_day": "274",
+   "sunset_minute_of_day": "1169",
+   "civil_dusk_minute_of_day": "1215"
+  },
+  "08-16": {
+   "civil_dawn_minute_of_day": "231",
+   "sunrise_minute_of_day": "277",
+   "sunset_minute_of_day": "1167",
+   "civil_dusk_minute_of_day": "1212"
+  },
+  "08-17": {
+   "civil_dawn_minute_of_day": "234",
+   "sunrise_minute_of_day": "279",
+   "sunset_minute_of_day": "1164",
+   "civil_dusk_minute_of_day": "1209"
+  },
+  "08-18": {
+   "civil_dawn_minute_of_day": "237",
+   "sunrise_minute_of_day": "281",
+   "sunset_minute_of_day": "1161",
+   "civil_dusk_minute_of_day": "1206"
+  },
+  "08-19": {
+   "civil_dawn_minute_of_day": "239",
+   "sunrise_minute_of_day": "283",
+   "sunset_minute_of_day": "1158",
+   "civil_dusk_minute_of_day": "1203"
+  },
+  "08-20": {
+   "civil_dawn_minute_of_day": "242",
+   "sunrise_minute_of_day": "286",
+   "sunset_minute_of_day": "1156",
+   "civil_dusk_minute_of_day": "1200"
+  },
+  "08-21": {
+   "civil_dawn_minute_of_day": "244",
+   "sunrise_minute_of_day": "288",
+   "sunset_minute_of_day": "1153",
+   "civil_dusk_minute_of_day": "1197"
+  },
+  "08-22": {
+   "civil_dawn_minute_of_day": "247",
+   "sunrise_minute_of_day": "290",
+   "sunset_minute_of_day": "1150",
+   "civil_dusk_minute_of_day": "1193"
+  },
+  "08-23": {
+   "civil_dawn_minute_of_day": "249",
+   "sunrise_minute_of_day": "293",
+   "sunset_minute_of_day": "1147",
+   "civil_dusk_minute_of_day": "1190"
+  },
+  "08-24": {
+   "civil_dawn_minute_of_day": "252",
+   "sunrise_minute_of_day": "295",
+   "sunset_minute_of_day": "1144",
+   "civil_dusk_minute_of_day": "1187"
+  },
+  "08-25": {
+   "civil_dawn_minute_of_day": "254",
+   "sunrise_minute_of_day": "297",
+   "sunset_minute_of_day": "1141",
+   "civil_dusk_minute_of_day": "1184"
+  },
+  "08-26": {
+   "civil_dawn_minute_of_day": "257",
+   "sunrise_minute_of_day": "299",
+   "sunset_minute_of_day": "1139",
+   "civil_dusk_minute_of_day": "1181"
+  },
+  "08-27": {
+   "civil_dawn_minute_of_day": "259",
+   "sunrise_minute_of_day": "302",
+   "sunset_minute_of_day": "1136",
+   "civil_dusk_minute_of_day": "1178"
+  },
+  "08-28": {
+   "civil_dawn_minute_of_day": "262",
+   "sunrise_minute_of_day": "304",
+   "sunset_minute_of_day": "1133",
+   "civil_dusk_minute_of_day": "1175"
+  },
+  "08-29": {
+   "civil_dawn_minute_of_day": "264",
+   "sunrise_minute_of_day": "306",
+   "sunset_minute_of_day": "1130",
+   "civil_dusk_minute_of_day": "1172"
+  },
+  "08-30": {
+   "civil_dawn_minute_of_day": "266",
+   "sunrise_minute_of_day": "308",
+   "sunset_minute_of_day": "1127",
+   "civil_dusk_minute_of_day": "1169"
+  },
+  "08-31": {
+   "civil_dawn_minute_of_day": "269",
+   "sunrise_minute_of_day": "310",
+   "sunset_minute_of_day": "1124",
+   "civil_dusk_minute_of_day": "1166"
+  },
+  "09-01": {
+   "civil_dawn_minute_of_day": "271",
+   "sunrise_minute_of_day": "313",
+   "sunset_minute_of_day": "1121",
+   "civil_dusk_minute_of_day": "1163"
+  },
+  "09-02": {
+   "civil_dawn_minute_of_day": "274",
+   "sunrise_minute_of_day": "315",
+   "sunset_minute_of_day": "1119",
+   "civil_dusk_minute_of_day": "1160"
+  },
+  "09-03": {
+   "civil_dawn_minute_of_day": "276",
+   "sunrise_minute_of_day": "317",
+   "sunset_minute_of_day": "1116",
+   "civil_dusk_minute_of_day": "1157"
+  },
+  "09-04": {
+   "civil_dawn_minute_of_day": "278",
+   "sunrise_minute_of_day": "319",
+   "sunset_minute_of_day": "1113",
+   "civil_dusk_minute_of_day": "1154"
+  },
+  "09-05": {
+   "civil_dawn_minute_of_day": "281",
+   "sunrise_minute_of_day": "322",
+   "sunset_minute_of_day": "1110",
+   "civil_dusk_minute_of_day": "1151"
+  },
+  "09-06": {
+   "civil_dawn_minute_of_day": "283",
+   "sunrise_minute_of_day": "324",
+   "sunset_minute_of_day": "1107",
+   "civil_dusk_minute_of_day": "1148"
+  },
+  "09-07": {
+   "civil_dawn_minute_of_day": "286",
+   "sunrise_minute_of_day": "326",
+   "sunset_minute_of_day": "1104",
+   "civil_dusk_minute_of_day": "1145"
+  },
+  "09-08": {
+   "civil_dawn_minute_of_day": "288",
+   "sunrise_minute_of_day": "328",
+   "sunset_minute_of_day": "1101",
+   "civil_dusk_minute_of_day": "1142"
+  },
+  "09-09": {
+   "civil_dawn_minute_of_day": "290",
+   "sunrise_minute_of_day": "331",
+   "sunset_minute_of_day": "1098",
+   "civil_dusk_minute_of_day": "1139"
+  },
+  "09-10": {
+   "civil_dawn_minute_of_day": "293",
+   "sunrise_minute_of_day": "333",
+   "sunset_minute_of_day": "1095",
+   "civil_dusk_minute_of_day": "1136"
+  },
+  "09-11": {
+   "civil_dawn_minute_of_day": "295",
+   "sunrise_minute_of_day": "335",
+   "sunset_minute_of_day": "1093",
+   "civil_dusk_minute_of_day": "1133"
+  },
+  "09-12": {
+   "civil_dawn_minute_of_day": "297",
+   "sunrise_minute_of_day": "337",
+   "sunset_minute_of_day": "1090",
+   "civil_dusk_minute_of_day": "1130"
+  },
+  "09-13": {
+   "civil_dawn_minute_of_day": "300",
+   "sunrise_minute_of_day": "340",
+   "sunset_minute_of_day": "1087",
+   "civil_dusk_minute_of_day": "1127"
+  },
+  "09-14": {
+   "civil_dawn_minute_of_day": "302",
+   "sunrise_minute_of_day": "342",
+   "sunset_minute_of_day": "1084",
+   "civil_dusk_minute_of_day": "1124"
+  },
+  "09-15": {
+   "civil_dawn_minute_of_day": "304",
+   "sunrise_minute_of_day": "344",
+   "sunset_minute_of_day": "1081",
+   "civil_dusk_minute_of_day": "1121"
+  },
+  "09-16": {
+   "civil_dawn_minute_of_day": "307",
+   "sunrise_minute_of_day": "346",
+   "sunset_minute_of_day": "1078",
+   "civil_dusk_minute_of_day": "1118"
+  },
+  "09-17": {
+   "civil_dawn_minute_of_day": "309",
+   "sunrise_minute_of_day": "349",
+   "sunset_minute_of_day": "1075",
+   "civil_dusk_minute_of_day": "1115"
+  },
+  "09-18": {
+   "civil_dawn_minute_of_day": "311",
+   "sunrise_minute_of_day": "351",
+   "sunset_minute_of_day": "1072",
+   "civil_dusk_minute_of_day": "1112"
+  },
+  "09-19": {
+   "civil_dawn_minute_of_day": "313",
+   "sunrise_minute_of_day": "353",
+   "sunset_minute_of_day": "1069",
+   "civil_dusk_minute_of_day": "1109"
+  },
+  "09-20": {
+   "civil_dawn_minute_of_day": "316",
+   "sunrise_minute_of_day": "355",
+   "sunset_minute_of_day": "1066",
+   "civil_dusk_minute_of_day": "1106"
+  },
+  "09-21": {
+   "civil_dawn_minute_of_day": "318",
+   "sunrise_minute_of_day": "358",
+   "sunset_minute_of_day": "1064",
+   "civil_dusk_minute_of_day": "1103"
+  },
+  "09-22": {
+   "civil_dawn_minute_of_day": "320",
+   "sunrise_minute_of_day": "360",
+   "sunset_minute_of_day": "1061",
+   "civil_dusk_minute_of_day": "1100"
+  },
+  "09-23": {
+   "civil_dawn_minute_of_day": "323",
+   "sunrise_minute_of_day": "362",
+   "sunset_minute_of_day": "1058",
+   "civil_dusk_minute_of_day": "1097"
+  },
+  "09-24": {
+   "civil_dawn_minute_of_day": "325",
+   "sunrise_minute_of_day": "364",
+   "sunset_minute_of_day": "1055",
+   "civil_dusk_minute_of_day": "1094"
+  },
+  "09-25": {
+   "civil_dawn_minute_of_day": "327",
+   "sunrise_minute_of_day": "367",
+   "sunset_minute_of_day": "1052",
+   "civil_dusk_minute_of_day": "1092"
+  },
+  "09-26": {
+   "civil_dawn_minute_of_day": "329",
+   "sunrise_minute_of_day": "369",
+   "sunset_minute_of_day": "1049",
+   "civil_dusk_minute_of_day": "1089"
+  },
+  "09-27": {
+   "civil_dawn_minute_of_day": "332",
+   "sunrise_minute_of_day": "371",
+   "sunset_minute_of_day": "1046",
+   "civil_dusk_minute_of_day": "1086"
+  },
+  "09-28": {
+   "civil_dawn_minute_of_day": "334",
+   "sunrise_minute_of_day": "374",
+   "sunset_minute_of_day": "1043",
+   "civil_dusk_minute_of_day": "1083"
+  },
+  "09-29": {
+   "civil_dawn_minute_of_day": "336",
+   "sunrise_minute_of_day": "376",
+   "sunset_minute_of_day": "1041",
+   "civil_dusk_minute_of_day": "1080"
+  },
+  "09-30": {
+   "civil_dawn_minute_of_day": "338",
+   "sunrise_minute_of_day": "378",
+   "sunset_minute_of_day": "1038",
+   "civil_dusk_minute_of_day": "1078"
+  },
+  "10-01": {
+   "civil_dawn_minute_of_day": "341",
+   "sunrise_minute_of_day": "380",
+   "sunset_minute_of_day": "1035",
+   "civil_dusk_minute_of_day": "1075"
+  },
+  "10-02": {
+   "civil_dawn_minute_of_day": "343",
+   "sunrise_minute_of_day": "383",
+   "sunset_minute_of_day": "1032",
+   "civil_dusk_minute_of_day": "1072"
+  },
+  "10-03": {
+   "civil_dawn_minute_of_day": "345",
+   "sunrise_minute_of_day": "385",
+   "sunset_minute_of_day": "1029",
+   "civil_dusk_minute_of_day": "1069"
+  },
+  "10-04": {
+   "civil_dawn_minute_of_day": "347",
+   "sunrise_minute_of_day": "387",
+   "sunset_minute_of_day": "1026",
+   "civil_dusk_minute_of_day": "1066"
+  },
+  "10-05": {
+   "civil_dawn_minute_of_day": "350",
+   "sunrise_minute_of_day": "390",
+   "sunset_minute_of_day": "1024",
+   "civil_dusk_minute_of_day": "1064"
+  },
+  "10-06": {
+   "civil_dawn_minute_of_day": "352",
+   "sunrise_minute_of_day": "392",
+   "sunset_minute_of_day": "1021",
+   "civil_dusk_minute_of_day": "1061"
+  },
+  "10-07": {
+   "civil_dawn_minute_of_day": "354",
+   "sunrise_minute_of_day": "394",
+   "sunset_minute_of_day": "1018",
+   "civil_dusk_minute_of_day": "1058"
+  },
+  "10-08": {
+   "civil_dawn_minute_of_day": "356",
+   "sunrise_minute_of_day": "397",
+   "sunset_minute_of_day": "1015",
+   "civil_dusk_minute_of_day": "1056"
+  },
+  "10-09": {
+   "civil_dawn_minute_of_day": "359",
+   "sunrise_minute_of_day": "399",
+   "sunset_minute_of_day": "1013",
+   "civil_dusk_minute_of_day": "1053"
+  },
+  "10-10": {
+   "civil_dawn_minute_of_day": "361",
+   "sunrise_minute_of_day": "402",
+   "sunset_minute_of_day": "1010",
+   "civil_dusk_minute_of_day": "1050"
+  },
+  "10-11": {
+   "civil_dawn_minute_of_day": "363",
+   "sunrise_minute_of_day": "404",
+   "sunset_minute_of_day": "1007",
+   "civil_dusk_minute_of_day": "1048"
+  },
+  "10-12": {
+   "civil_dawn_minute_of_day": "365",
+   "sunrise_minute_of_day": "406",
+   "sunset_minute_of_day": "1004",
+   "civil_dusk_minute_of_day": "1045"
+  },
+  "10-13": {
+   "civil_dawn_minute_of_day": "368",
+   "sunrise_minute_of_day": "409",
+   "sunset_minute_of_day": "1002",
+   "civil_dusk_minute_of_day": "1043"
+  },
+  "10-14": {
+   "civil_dawn_minute_of_day": "370",
+   "sunrise_minute_of_day": "411",
+   "sunset_minute_of_day": "999",
+   "civil_dusk_minute_of_day": "1040"
+  },
+  "10-15": {
+   "civil_dawn_minute_of_day": "372",
+   "sunrise_minute_of_day": "413",
+   "sunset_minute_of_day": "996",
+   "civil_dusk_minute_of_day": "1038"
+  },
+  "10-16": {
+   "civil_dawn_minute_of_day": "375",
+   "sunrise_minute_of_day": "416",
+   "sunset_minute_of_day": "994",
+   "civil_dusk_minute_of_day": "1035"
+  },
+  "10-17": {
+   "civil_dawn_minute_of_day": "377",
+   "sunrise_minute_of_day": "418",
+   "sunset_minute_of_day": "991",
+   "civil_dusk_minute_of_day": "1033"
+  },
+  "10-18": {
+   "civil_dawn_minute_of_day": "379",
+   "sunrise_minute_of_day": "421",
+   "sunset_minute_of_day": "989",
+   "civil_dusk_minute_of_day": "1030"
+  },
+  "10-19": {
+   "civil_dawn_minute_of_day": "381",
+   "sunrise_minute_of_day": "423",
+   "sunset_minute_of_day": "986",
+   "civil_dusk_minute_of_day": "1028"
+  },
+  "10-20": {
+   "civil_dawn_minute_of_day": "384",
+   "sunrise_minute_of_day": "426",
+   "sunset_minute_of_day": "983",
+   "civil_dusk_minute_of_day": "1025"
+  },
+  "10-21": {
+   "civil_dawn_minute_of_day": "386",
+   "sunrise_minute_of_day": "428",
+   "sunset_minute_of_day": "981",
+   "civil_dusk_minute_of_day": "1023"
+  },
+  "10-22": {
+   "civil_dawn_minute_of_day": "388",
+   "sunrise_minute_of_day": "430",
+   "sunset_minute_of_day": "978",
+   "civil_dusk_minute_of_day": "1021"
+  },
+  "10-23": {
+   "civil_dawn_minute_of_day": "390",
+   "sunrise_minute_of_day": "433",
+   "sunset_minute_of_day": "976",
+   "civil_dusk_minute_of_day": "1018"
+  },
+  "10-24": {
+   "civil_dawn_minute_of_day": "393",
+   "sunrise_minute_of_day": "435",
+   "sunset_minute_of_day": "973",
+   "civil_dusk_minute_of_day": "1016"
+  },
+  "10-25": {
+   "civil_dawn_minute_of_day": "395",
+   "sunrise_minute_of_day": "438",
+   "sunset_minute_of_day": "971",
+   "civil_dusk_minute_of_day": "1014"
+  },
+  "10-26": {
+   "civil_dawn_minute_of_day": "397",
+   "sunrise_minute_of_day": "440",
+   "sunset_minute_of_day": "969",
+   "civil_dusk_minute_of_day": "1012"
+  },
+  "10-27": {
+   "civil_dawn_minute_of_day": "399",
+   "sunrise_minute_of_day": "443",
+   "sunset_minute_of_day": "966",
+   "civil_dusk_minute_of_day": "1010"
+  },
+  "10-28": {
+   "civil_dawn_minute_of_day": "401",
+   "sunrise_minute_of_day": "445",
+   "sunset_minute_of_day": "964",
+   "civil_dusk_minute_of_day": "1007"
+  },
+  "10-29": {
+   "civil_dawn_minute_of_day": "404",
+   "sunrise_minute_of_day": "447",
+   "sunset_minute_of_day": "961",
+   "civil_dusk_minute_of_day": "1005"
+  },
+  "10-30": {
+   "civil_dawn_minute_of_day": "406",
+   "sunrise_minute_of_day": "450",
+   "sunset_minute_of_day": "959",
+   "civil_dusk_minute_of_day": "1003"
+  },
+  "10-31": {
+   "civil_dawn_minute_of_day": "408",
+   "sunrise_minute_of_day": "452",
+   "sunset_minute_of_day": "957",
+   "civil_dusk_minute_of_day": "1001"
+  },
+  "11-01": {
+   "civil_dawn_minute_of_day": "410",
+   "sunrise_minute_of_day": "455",
+   "sunset_minute_of_day": "955",
+   "civil_dusk_minute_of_day": "999"
+  },
+  "11-02": {
+   "civil_dawn_minute_of_day": "412",
+   "sunrise_minute_of_day": "457",
+   "sunset_minute_of_day": "952",
+   "civil_dusk_minute_of_day": "997"
+  },
+  "11-03": {
+   "civil_dawn_minute_of_day": "415",
+   "sunrise_minute_of_day": "460",
+   "sunset_minute_of_day": "950",
+   "civil_dusk_minute_of_day": "995"
+  },
+  "11-04": {
+   "civil_dawn_minute_of_day": "417",
+   "sunrise_minute_of_day": "462",
+   "sunset_minute_of_day": "948",
+   "civil_dusk_minute_of_day": "993"
+  },
+  "11-05": {
+   "civil_dawn_minute_of_day": "419",
+   "sunrise_minute_of_day": "464",
+   "sunset_minute_of_day": "946",
+   "civil_dusk_minute_of_day": "991"
+  },
+  "11-06": {
+   "civil_dawn_minute_of_day": "421",
+   "sunrise_minute_of_day": "467",
+   "sunset_minute_of_day": "944",
+   "civil_dusk_minute_of_day": "990"
+  },
+  "11-07": {
+   "civil_dawn_minute_of_day": "423",
+   "sunrise_minute_of_day": "469",
+   "sunset_minute_of_day": "942",
+   "civil_dusk_minute_of_day": "988"
+  },
+  "11-08": {
+   "civil_dawn_minute_of_day": "425",
+   "sunrise_minute_of_day": "472",
+   "sunset_minute_of_day": "940",
+   "civil_dusk_minute_of_day": "986"
+  },
+  "11-09": {
+   "civil_dawn_minute_of_day": "427",
+   "sunrise_minute_of_day": "474",
+   "sunset_minute_of_day": "938",
+   "civil_dusk_minute_of_day": "984"
+  },
+  "11-10": {
+   "civil_dawn_minute_of_day": "429",
+   "sunrise_minute_of_day": "476",
+   "sunset_minute_of_day": "936",
+   "civil_dusk_minute_of_day": "983"
+  },
+  "11-11": {
+   "civil_dawn_minute_of_day": "432",
+   "sunrise_minute_of_day": "479",
+   "sunset_minute_of_day": "934",
+   "civil_dusk_minute_of_day": "981"
+  },
+  "11-12": {
+   "civil_dawn_minute_of_day": "434",
+   "sunrise_minute_of_day": "481",
+   "sunset_minute_of_day": "932",
+   "civil_dusk_minute_of_day": "980"
+  },
+  "11-13": {
+   "civil_dawn_minute_of_day": "436",
+   "sunrise_minute_of_day": "483",
+   "sunset_minute_of_day": "931",
+   "civil_dusk_minute_of_day": "978"
+  },
+  "11-14": {
+   "civil_dawn_minute_of_day": "438",
+   "sunrise_minute_of_day": "486",
+   "sunset_minute_of_day": "929",
+   "civil_dusk_minute_of_day": "977"
+  },
+  "11-15": {
+   "civil_dawn_minute_of_day": "440",
+   "sunrise_minute_of_day": "488",
+   "sunset_minute_of_day": "927",
+   "civil_dusk_minute_of_day": "975"
+  },
+  "11-16": {
+   "civil_dawn_minute_of_day": "441",
+   "sunrise_minute_of_day": "490",
+   "sunset_minute_of_day": "926",
+   "civil_dusk_minute_of_day": "974"
+  },
+  "11-17": {
+   "civil_dawn_minute_of_day": "443",
+   "sunrise_minute_of_day": "492",
+   "sunset_minute_of_day": "924",
+   "civil_dusk_minute_of_day": "973"
+  },
+  "11-18": {
+   "civil_dawn_minute_of_day": "445",
+   "sunrise_minute_of_day": "494",
+   "sunset_minute_of_day": "922",
+   "civil_dusk_minute_of_day": "972"
+  },
+  "11-19": {
+   "civil_dawn_minute_of_day": "447",
+   "sunrise_minute_of_day": "496",
+   "sunset_minute_of_day": "921",
+   "civil_dusk_minute_of_day": "970"
+  },
+  "11-20": {
+   "civil_dawn_minute_of_day": "449",
+   "sunrise_minute_of_day": "499",
+   "sunset_minute_of_day": "920",
+   "civil_dusk_minute_of_day": "969"
+  },
+  "11-21": {
+   "civil_dawn_minute_of_day": "451",
+   "sunrise_minute_of_day": "501",
+   "sunset_minute_of_day": "918",
+   "civil_dusk_minute_of_day": "968"
+  },
+  "11-22": {
+   "civil_dawn_minute_of_day": "452",
+   "sunrise_minute_of_day": "503",
+   "sunset_minute_of_day": "917",
+   "civil_dusk_minute_of_day": "967"
+  },
+  "11-23": {
+   "civil_dawn_minute_of_day": "454",
+   "sunrise_minute_of_day": "505",
+   "sunset_minute_of_day": "916",
+   "civil_dusk_minute_of_day": "966"
+  },
+  "11-24": {
+   "civil_dawn_minute_of_day": "456",
+   "sunrise_minute_of_day": "506",
+   "sunset_minute_of_day": "915",
+   "civil_dusk_minute_of_day": "965"
+  },
+  "11-25": {
+   "civil_dawn_minute_of_day": "457",
+   "sunrise_minute_of_day": "508",
+   "sunset_minute_of_day": "914",
+   "civil_dusk_minute_of_day": "965"
+  },
+  "11-26": {
+   "civil_dawn_minute_of_day": "459",
+   "sunrise_minute_of_day": "510",
+   "sunset_minute_of_day": "913",
+   "civil_dusk_minute_of_day": "964"
+  },
+  "11-27": {
+   "civil_dawn_minute_of_day": "460",
+   "sunrise_minute_of_day": "512",
+   "sunset_minute_of_day": "912",
+   "civil_dusk_minute_of_day": "963"
+  },
+  "11-28": {
+   "civil_dawn_minute_of_day": "462",
+   "sunrise_minute_of_day": "514",
+   "sunset_minute_of_day": "911",
+   "civil_dusk_minute_of_day": "963"
+  },
+  "11-29": {
+   "civil_dawn_minute_of_day": "463",
+   "sunrise_minute_of_day": "515",
+   "sunset_minute_of_day": "910",
+   "civil_dusk_minute_of_day": "962"
+  },
+  "11-30": {
+   "civil_dawn_minute_of_day": "465",
+   "sunrise_minute_of_day": "517",
+   "sunset_minute_of_day": "910",
+   "civil_dusk_minute_of_day": "962"
+  },
+  "12-01": {
+   "civil_dawn_minute_of_day": "466",
+   "sunrise_minute_of_day": "518",
+   "sunset_minute_of_day": "909",
+   "civil_dusk_minute_of_day": "961"
+  },
+  "12-02": {
+   "civil_dawn_minute_of_day": "467",
+   "sunrise_minute_of_day": "520",
+   "sunset_minute_of_day": "908",
+   "civil_dusk_minute_of_day": "961"
+  },
+  "12-03": {
+   "civil_dawn_minute_of_day": "469",
+   "sunrise_minute_of_day": "521",
+   "sunset_minute_of_day": "908",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-04": {
+   "civil_dawn_minute_of_day": "470",
+   "sunrise_minute_of_day": "523",
+   "sunset_minute_of_day": "908",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-05": {
+   "civil_dawn_minute_of_day": "471",
+   "sunrise_minute_of_day": "524",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-06": {
+   "civil_dawn_minute_of_day": "472",
+   "sunrise_minute_of_day": "525",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-07": {
+   "civil_dawn_minute_of_day": "473",
+   "sunrise_minute_of_day": "526",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-08": {
+   "civil_dawn_minute_of_day": "474",
+   "sunrise_minute_of_day": "527",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-09": {
+   "civil_dawn_minute_of_day": "475",
+   "sunrise_minute_of_day": "528",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-10": {
+   "civil_dawn_minute_of_day": "476",
+   "sunrise_minute_of_day": "529",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "960"
+  },
+  "12-11": {
+   "civil_dawn_minute_of_day": "476",
+   "sunrise_minute_of_day": "530",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "961"
+  },
+  "12-12": {
+   "civil_dawn_minute_of_day": "477",
+   "sunrise_minute_of_day": "530",
+   "sunset_minute_of_day": "907",
+   "civil_dusk_minute_of_day": "961"
+  },
+  "12-13": {
+   "civil_dawn_minute_of_day": "478",
+   "sunrise_minute_of_day": "531",
+   "sunset_minute_of_day": "908",
+   "civil_dusk_minute_of_day": "961"
+  },
+  "12-14": {
+   "civil_dawn_minute_of_day": "478",
+   "sunrise_minute_of_day": "532",
+   "sunset_minute_of_day": "908",
+   "civil_dusk_minute_of_day": "962"
+  },
+  "12-15": {
+   "civil_dawn_minute_of_day": "479",
+   "sunrise_minute_of_day": "532",
+   "sunset_minute_of_day": "909",
+   "civil_dusk_minute_of_day": "962"
+  },
+  "12-16": {
+   "civil_dawn_minute_of_day": "479",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "909",
+   "civil_dusk_minute_of_day": "963"
+  },
+  "12-17": {
+   "civil_dawn_minute_of_day": "479",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "910",
+   "civil_dusk_minute_of_day": "964"
+  },
+  "12-18": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "911",
+   "civil_dusk_minute_of_day": "964"
+  },
+  "12-19": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "912",
+   "civil_dusk_minute_of_day": "965"
+  },
+  "12-20": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "913",
+   "civil_dusk_minute_of_day": "966"
+  },
+  "12-21": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "914",
+   "civil_dusk_minute_of_day": "967"
+  },
+  "12-22": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "915",
+   "civil_dusk_minute_of_day": "968"
+  },
+  "12-23": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "916",
+   "civil_dusk_minute_of_day": "969"
+  },
+  "12-24": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "533",
+   "sunset_minute_of_day": "917",
+   "civil_dusk_minute_of_day": "970"
+  },
+  "12-25": {
+   "civil_dawn_minute_of_day": "480",
+   "sunrise_minute_of_day": "532",
+   "sunset_minute_of_day": "919",
+   "civil_dusk_minute_of_day": "971"
+  },
+  "12-26": {
+   "civil_dawn_minute_of_day": "479",
+   "sunrise_minute_of_day": "532",
+   "sunset_minute_of_day": "920",
+   "civil_dusk_minute_of_day": "972"
+  },
+  "12-27": {
+   "civil_dawn_minute_of_day": "479",
+   "sunrise_minute_of_day": "531",
+   "sunset_minute_of_day": "921",
+   "civil_dusk_minute_of_day": "974"
+  },
+  "12-28": {
+   "civil_dawn_minute_of_day": "479",
+   "sunrise_minute_of_day": "531",
+   "sunset_minute_of_day": "923",
+   "civil_dusk_minute_of_day": "975"
+  },
+  "12-29": {
+   "civil_dawn_minute_of_day": "478",
+   "sunrise_minute_of_day": "530",
+   "sunset_minute_of_day": "924",
+   "civil_dusk_minute_of_day": "976"
+  },
+  "12-30": {
+   "civil_dawn_minute_of_day": "478",
+   "sunrise_minute_of_day": "529",
+   "sunset_minute_of_day": "926",
+   "civil_dusk_minute_of_day": "978"
+  },
+  "12-31": {
+   "civil_dawn_minute_of_day": "477",
+   "sunrise_minute_of_day": "528",
+   "sunset_minute_of_day": "928",
+   "civil_dusk_minute_of_day": "979"
+  }
+ },
+ "claim_refs": [
+  "claim:agriculture-fauna-tow-log-gaps",
+  "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+  "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+  "claim:construction-bast-vessel-fastening",
+  "claim:construction-construction-pottery-products",
+  "claim:construction-pine-resin-bast",
+  "claim:construction-pine-resin-surfaces",
+  "claim:construction-quarry-procurement",
+  "claim:construction-rjaz-riverbed-foundation",
+  "claim:construction-rjaz-stone-fill",
+  "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+  "claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+  "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+  "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+  "claim:foundations-earth-04-soil-thermal-buffer",
+  "claim:foundations-earth-20-groundwater-recharge-discharge",
+  "claim:foundations-earth-25-snowmelt-runoff",
+  "claim:foundations-earth-27-fog-visibility",
+  "claim:foundations-earth-28-radiation-fog",
+  "claim:foundations-earth-29-advection-fog",
+  "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+  "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+  "claim:foundations-haz-05-slope-water-triggers",
+  "claim:fuel-pit-charcoal-burning-wood-input",
+  "claim:harvest-sickle-crops-grasses",
+  "claim:household-bark-tues",
+  "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
+  "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
+  "claim:pine-pitch-woven-basket-coating",
+  "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+  "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+  "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+  "claim:population-bark-cut",
+  "claim:population-bark-float",
+  "claim:population-bark-input",
+  "claim:population-material-clay-plasticity",
+  "claim:population-material-wood-moisture",
+  "claim:population-pine-float",
+  "claim:population-wood-cart",
+  "claim:population-wood-sledge",
+  "claim:population-woodwork-axe",
+  "claim:pottery-handmade-local-clay",
+  "claim:pottery-handmade-temper",
+  "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+  "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+  "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+  "claim:residual-nature-ice-current-thin-areas",
+  "claim:residual-traces-deadwood-feeding-signs",
+  "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
+  "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+  "claim:secondary-clay-forms-through-water-transport-deposition",
+  "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+  "claim:static-birch-bark-water-can-deform-layers",
+  "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
+  "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+  "claim:terrain-parent-material-assemblage"
+ ]
+}

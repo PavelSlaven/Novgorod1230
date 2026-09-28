@@ -72,7 +72,7 @@
     {
       "id": "places-binding",
       "name_ru": "Места: семейства, привязка узлов, носитель наличия, реестр категорий",
-      "collector_brief_ru": "Сделать ключ, на который вешаются все остальные пулы. (1) places/place_families.csv: 44 семейства WK place-first-cartography.json (rural_yard … grain_drying_shed_ovin) с id pf_*, name_ru, применимыми слоями (9 слоёв M2c) и 4–5 фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk на landscape/land_use/place/water templates (world_db + regional-environment кандидат pr98), на 198 g4_location_type графа v6 (v6tsv g4_locations) и на 17 spatial_v3 scene templates. (2) places/node_binding.csv: 32 G4 и 195 G5 v17 → place_family, landscape, land_use, place_template, water_body; брать authoring_axes из pr98 m2c-natural/candidate.json, spatial-v3 datasets и regional-environment кандидата, ничего не угадывать; неясное — gap. (3) presence/presence_rules.csv: единый носитель наличия (#133 D4/D6): scope_kind, scope_ref, region_id, category_ref, frequency_class, probability_ppm (по заявленному правилу из класса), count_limit, allowed_seasons, refresh_class none|season, source_refs — строится скриптом из пулов других групп, сам группа пишет только правило перевода и сборщик. (4) categories/: сводный реестр universal_categories для новых доменов (flora, fauna, food, garment, behavior, motive, knowledge, activity) по контракту §4 — скрипт собирает из выходов групп и проверяет уникальность stable_code. (5) place_generation_limits: пересчитать лимиты дворов/NPC/предметов по правилу из v6 household_estimate/household_mix, черновик audit generation_limits только как сверка. Новое исследование не нужно; нужны скрипты-сборщики и crosswalk."
+      "collector_brief_ru": "Сделать ключ, на который вешаются все остальные пулы. (1) places/place_families.csv: 44 семейства WK place-first-cartography.json (rural_yard … grain_drying_shed_ovin) и ограниченное локальное source-backed дополнение C012b с id pf_*, name_ru, применимыми слоями (9 слоёв M2c) и 4–5 фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk на landscape/land_use/place/water templates (world_db + regional-environment кандидат pr98), на 198 g4_location_type графа v6 (v6tsv g4_locations) и на 17 spatial_v3 scene templates. (2) places/node_binding.csv: 32 G4 и 195 G5 v17 → place_family, landscape, land_use, place_template, water_body; брать authoring_axes из pr98 m2c-natural/candidate.json, spatial-v3 datasets и regional-environment кандидата, ничего не угадывать; неясное — gap. (3) presence/presence_rules.csv: единый носитель наличия (#133 D4/D6): scope_kind, scope_ref, region_id, category_ref, frequency_class, probability_ppm (по заявленному правилу из класса), count_limit, allowed_seasons, refresh_class none|season, source_refs — строится скриптом из пулов других групп, сам группа пишет только правило перевода и сборщик. (4) categories/: сводный реестр universal_categories для новых доменов (flora, fauna, food, garment, behavior, motive, knowledge, activity) по контракту §4 — скрипт собирает из выходов групп и проверяет уникальность stable_code. (5) place_generation_limits: пересчитать лимиты дворов/NPC/предметов по правилу из v6 household_estimate/household_mix, черновик audit generation_limits только как сверка. Новое исследование не нужно; нужны скрипты-сборщики и crosswalk."
     },
     {
       "id": "flora-trees-shrubs",
@@ -175,7 +175,7 @@
       "id": "place_families",
       "name_ru": "Семейства мест и слои",
       "group": "places-binding",
-      "entities_ru": "44 семейства мест WK place-first (двор, улица, торг, пристань, берег, пойменный луг, пашня, лес хвойный/смешанный/широколиственный, опушка, болото, баня, кузница, мельница, овин, погост, монастырский двор, дорога, мост, перевоз, лесная тропа, огород, пастбище, зимняя переправа, рыбацкий стан, интерьер жилья, церкви, мастерской и др.) с применимыми слоями M2c и фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk к шаблонам и типам узлов.",
+      "entities_ru": "44 семейства мест WK place-first и ограниченный локальный candidate pf_burial_ground с применимыми слоями M2c и фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk к шаблонам и типам узлов.",
       "key_fields": [
         "pf_id",
         "name_ru",
@@ -210,16 +210,17 @@
       ],
       "existing_sources": [
         "wk:place-first-cartography.json — 44 семейства, 634 WK refs, без статуса и весов",
+        "places/pf_local_additions.json — 1 source-backed candidate C012b",
         "wk:category-cartography.json — 304 семейства, 14 missing (partial)",
         "world_db landscape 70 / land_use 45 / place 64 / water 41 — draft",
         "pr98:regional-environment/candidates/novgorod-1230-1250-v1/candidate.json — 115 строк, pending_independent_approval",
         "v6tsv g4_locations — 198 g4_location_type, draft/usable_with_caution",
         "pr98:spatial-v3 datasets — 17 scene templates, approved"
       ],
-      "gaps_ru": "Нет единого реестра семейств, связанного и с шаблонами world_base, и с типами G4 v6, и со scene templates v17. Фасеты семейств в WK есть, но без статуса. Шаблоны world_db — draft.",
+      "gaps_ru": "Локальный PF места погребения должен быть перенесён в WK при следующей ревизии; обычное посещение и кладбище при церкви остаются no_source. Шаблоны world_db — draft.",
       "fill_method": "derive",
       "priority": "M2c",
-      "acceptance_ru": "Скрипт: 44 id из place-first-cartography присутствуют ровно один раз; каждый pf_id имеет ≥1 ссылку на landscape или place template и все ссылки резолвятся в seed/кандидате; каждый из 17 scene templates и 198 g4_location_type покрыт ≥1 pf_id или явно помечен not_applicable."
+      "acceptance_ru": "Скрипт: 44 id из place-first-cartography и каждый объявленный локальный id присутствуют ровно один раз; локальные id не пересекаются с WK и имеют источники; каждый pf_id имеет ≥1 ссылку на landscape или place template и все ссылки резолвятся; каждый из 17 scene templates и 198 g4_location_type покрыт ≥1 pf_id или явно помечен not_applicable."
     },
     {
       "id": "place_binding",
@@ -253,7 +254,7 @@
         "pr98:m2c-nature-coverage.json — 128 региональных связей (draft)",
         "v17 readback — 32 G4 / 195 G5 / 908 connection bindings"
       ],
-      "gaps_ru": "G5 не привязаны к семействам мест; G4 привязаны только осями authoring, не к place_family; региональные связи — draft.",
+      "gaps_ru": "Все 227 узлов привязаны; land_use/place template на уровне узла и наследование природных шаблонов G5 остаются typed gap; региональные связи — draft.",
       "fill_method": "derive",
       "priority": "M2c",
       "acceptance_ru": "Скрипт: все 32 G4 и 195 G5 из v17 readback/spatial-v3 datasets имеют ровно одну строку; pf_id существует в place_families; для каждой строки binding_basis ссылается на существующий файл+id."

@@ -2,6 +2,14 @@
 
 Все таблицы генерирует `../scripts/build.py`, проверяет `../scripts/check.py`. Руками не править.
 
+## relationship_rules.csv — кандидаты связей
+
+Родство, супруги, вервь, зависимость и совместная работа, а также точные пробелы для потенциальных пар стартовых G5-сцен. Пары выводятся из presence и пересекающихся фаз `on_site`/`nearby` распорядков на основном и вторичных PF одного узла в одном сезоне; `joint_work` требует общего PF. Актуальное число есть в `scripts/build_report.json`. `materialization_guard` запрещает выводить связь лишь из роли или общей сцены: нужны конкретные участники и соответствующая запись о семье, службе, членстве в верви или совместном задании. Правила родства и супругов действуют и для двора смерда. Guard зависимости слуги перенесён на точную пару слуга–смерд: требуется названный слуга и его названный хозяин в материализованном дворе. Соседство привязано к `pf_village_lane`, не к отдельному двору. Существование верви подтверждено `book:641351 §2754`; сила и направление отношений соседей остаются `no_source`.
+
+Редакционный реестр C: `editorial_joint_work_acquaintance_c` — только знакомство названных работников, назначенных в одно место и время. Это правило не утверждает родство, долг, вражду или силу отношения; код проверки допускает его только для `joint_work` с confidence C. Присутствие в одном PF/G5 само по себе не доказывает даже совместного задания.
+
+Пробелы по природным и дорожным парам: сверены `sources/books-evidence-v1/{households-psychology-speech,occupations-activities,transport-health-recreation,fauna-fish-invertebrates-livestock}.csv`, `world-knowledge/production-v1/{reconstructed-public-world-v1,residual-language-education-v1}.json` и `sources/master-archive-v1/data/normalized_source_tables/occupations/{professions,activities,economic_links}.csv`. Эти материалы описывают занятия, роли или общую вежливость, но не устанавливают индивидуальную связь каждой пары. Дополнительные формы и пробелы см. в `speech_address/README.md`.
+
 ## household_composition_profiles.csv — 139 строк (rework 2026-09-26)
 
 По одной строке на каждую запись `novgorod_occupations_v1_enriched.tsv` (68) и

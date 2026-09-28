@@ -14,6 +14,9 @@ const checks = require('./src/checks.cjs');
 const sources = require('./src/sources.cjs');
 const pant = require('./input_snapshots/panteleev2001_list.json').species;
 const malf = require('./input_snapshots/malchevsky1983_flags.json').species;
+const phaseRules = require('../fauna/activity_phase_rules.json');
+const voicePhase = require('./voice-phase.cjs');
+const startPf = new Set(fs.readFileSync(path.join(GB, 'places-binding/places/node_binding.csv'), 'utf8').trim().split(/\r?\n/).slice(1).map((line) => line.split(',')[4]).filter(Boolean));
 
 const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 const LEVELS = ['rare', 'contextual', 'common', 'ubiquitous'];
@@ -39,12 +42,9 @@ const WOOD = ['conif', 'mixed', 'broad'];
 const HUNT_SRC = ['conif', 'mixed', 'broad', 'edge', 'flood', 'lake', 'bog', 'stream'];
 const WATER = ['river', 'lake'];
 
-// Mammal seasons with regularly heard sounds (prose acoustics); sources: sign/sound fields of the taxon.
-const MAMMAL_AUDIBLE = {
-  fa_m_elk: ['autumn'], fa_m_wolf: ['winter', 'summer', 'autumn'], fa_m_red_fox: ['winter'], fa_m_beaver: ['spring', 'summer', 'autumn'],
-  fa_m_red_squirrel: ['winter', 'spring', 'summer', 'autumn'], fa_m_wild_boar: ['summer', 'autumn'], fa_m_hedgehog: ['summer'],
-  fa_m_lynx: ['winter'], fa_m_roe_deer: ['summer', 'autumn'], fa_m_otter: ['winter', 'spring'],
-};
+function mammalAudible(t, season) {
+  return !(t.dorm || []).includes(season) && t.audible.split(';').includes(season);
+}
 // Bird seasons without regular vocal activity (song over, silent migrants) — in addition to quietW (winter).
 const BIRD_QUIET = {
   fa_b_cuckoo: ['autumn'], fa_b_corncrake: ['autumn'], fa_b_quail: ['autumn'], fa_b_nightjar: ['autumn'], fa_b_thrush_nightingale: ['autumn'],
@@ -106,12 +106,12 @@ const mRows = mammals.map((t) => ({
   fa_id: t.id, name_ru: t.ru, name_ru_alt: t.alt || '', name_lat: t.lat, name_en: t.en, class: 'Mammalia', order: t.order, group: t.grp,
   category_ref: cat('mammal', t.grp, t.id), scope: 'universal_taxon', region_scope: t.region || REGION_DEFAULT,
   base_frequency_class: LEVELS[BASE[t.base]], base_frequency_basis: t.baseBasis, presence_1230_confidence: t.pres, historical_evidence: t.evid || '',
-  activity_time: t.act, dormant_seasons: (t.dorm || []).join(';'),
+  activity_time: t.act, dormant_seasons: (t.dorm || []).join(';'), audible_seasons: t.audible,
   season_winter: t.seas.winter || '', season_spring: t.seas.spring || '', season_summer: t.seas.summer || '', season_autumn: t.seas.autumn || '',
   rut_period: t.rut || '', moult: t.moult || '', winter_coat: t.coat || '',
   signs_tracks: t.tracks || '', signs_droppings: t.drop || '', signs_feeding: t.feed || '', signs_dens_nests: t.den || '', signs_sounds: t.sound || '', signs_smell: t.smell || '',
   behaviour_to_humans: t.human, danger_level: t.danger, products: t.products || '', hunting_methods: t.hunt || '', hunting_method_refs: t.huntRefs || '',
-  wk_refs: t.wk || '', habitats: t.hab, source_refs: t.src, confidence: 'B', notes: t.note || '', status: 'candidate',
+  wk_refs: t.wk || '', habitats: t.hab, source_refs: `${t.src};mammals.csv#${t.id}.signs_sounds`, confidence: 'B', notes: t.note || '', status: 'candidate',
 }));
 
 // ---- birds
@@ -127,7 +127,7 @@ const bRows = birds.map((b) => {
     base_frequency_class: LEVELS[BASE[b.base]], base_frequency_basis: `Malchevsky head abundance flags: ${(mf && mf.abundance_flags_head.join('|')) || 'n/a'}${b.note ? '; note: ' + b.note : ''}`,
     presence_1230_confidence: b.pres, historical_evidence: b.evid || '',
     migration_winter: MIG[b.mig[0]], migration_spring: MIG[b.mig[1]], migration_summer: MIG[b.mig[2]], migration_autumn: MIG[b.mig[3]], mass_passage: b.massP ? 'true' : 'false',
-    activity_time: b.act, voice_description: b.voice, audible_seasons: audible.join(';'), nesting: b.nest, game_value: b.game, falconry_relevance: b.falc, products: b.products || '',
+    activity_time: b.act, voice_description: b.voice, voice_sound_ru: b.sound, audible_seasons: audible.join(';'), nesting: b.nest, game_value: b.game, falconry_relevance: b.falc, products: b.products || '',
     habitats: b.hab, panteleev_2001_listed: pe ? 'true' : 'false', petrov_1885_priilmenye: pe && pe.petrov_1885 ? 'true' : 'false',
     malchevsky_page: malPage(b), malchevsky_status_flags: mf ? mf.status_flags.join('|') : '', malchevsky_heading_check: mf ? mf.latin_heading : '',
     wk_refs: b.wk || '', source_refs: src.join(';'), confidence: 'B', notes: b.note || '', status: 'candidate',
@@ -149,7 +149,7 @@ function presRowsFor(t, kind) {
     let state, sDelta = 0, audible = false;
     if (kind === 'mammal') {
       state = (t.dorm || []).includes(season) ? 'dormant' : 'active';
-      audible = state === 'active' && (MAMMAL_AUDIBLE[t.id] || []).includes(season);
+      audible = mammalAudible(t, season);
     } else {
       const c = t.mig[si]; if (c === '-') continue;
       state = MIG[c]; if (c === 'P' && !t.massP) sDelta = 1; if (c === 'I') sDelta = 1;
@@ -170,7 +170,7 @@ function presRowsFor(t, kind) {
         presence_id: `fhp_${t.id.replace(/^fa_/, '')}__${pf.replace(/^pf_/, '')}__${season}`, fa_id: t.id, category_ref: cat(kind, t.grp, t.id), pf_id: pf,
         region_id: t.region || REGION_DEFAULT, season, frequency_class: fc, weight: WEIGHT[fc], fit, state, activity_time: state === 'dormant' ? 'dormant' : t.act,
         audible: audible ? 'true' : 'false', observable_signs: sigSummary(t, kind, season, state), refresh_class: 'by_year_season',
-        rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4'].filter(Boolean))].join(';'),
+        rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4', kind === 'mammal' && audible ? `mammals.csv#${t.id}.signs_sounds` : ''].filter(Boolean))].join(';'),
         confidence: t.pres === 'C' ? 'C' : 'B', status: 'candidate',
       });
     }
@@ -191,5 +191,52 @@ counts.wild_habitat_presence = writeCsv(path.join(OUT, 'wild_habitat_presence.cs
 counts.fauna_categories = writeCsv(path.join(OUT, 'fauna_categories.csv'), Object.keys(catRows[0]), catRows);
 counts.taxa_checks = writeCsv(path.join(OUT, 'taxa_checks.csv'), Object.keys(chkRows[0]), chkRows);
 counts.sources = writeCsv(path.join(OUT, 'sources.csv'), Object.keys(srcRows[0]), srcRows);
+const phaseRows = [];
+const scoped = new Set(pres.filter((p) => startPf.has(p.pf_id)).map((p) => `${p.fa_id}|${p.season}`));
+for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {
+  if (!scoped.has(`${t.fa_id}|${season}`)) continue;
+  const dormant = t.dormant_seasons?.split(';').includes(season);
+  const audible = t.class === 'Aves' ? t.audible_seasons.split(';').includes(season) :
+    pres.some((p) => p.fa_id === t.fa_id && p.season === season && p.audible === 'true');
+  for (const phase of phaseRules.phases) {
+    const mapped = dormant ? 'no' : phaseRules.rules[t.activity_time][phase];
+    const voiceFact = voicePhase(t, season, phase, audible, dormant);
+    let visibility = mapped;
+    let voice = phaseRules.voice_rules[t.activity_time]?.[phase] && voiceFact !== 'yes' ? phaseRules.voice_rules[t.activity_time][phase] :
+      voiceFact === null ? mapped : voiceFact;
+    const owner = `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}`;
+    let source = dormant ? `${owner}.dormant_seasons` : voiceFact === 'yes' ?
+      `${owner}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` :
+      t.class === 'Aves' && !audible ? `${owner}.audible_seasons` : '';
+    let visibilityDirect = false;
+    let voiceDirect = voiceFact === 'yes';
+    const books = 'books-evidence-v1/fauna-mammals-birds.csv';
+    if (t.fa_id === 'fa_b_bittern' && ['spring', 'summer'].includes(season) && ['daylight', 'civil_dusk', 'night'].includes(phase)) {
+      voice = 'yes'; source = `${books}#L178`; voiceDirect = true;
+    }
+    if (t.fa_id === 'fa_b_common_crane' && season === 'autumn' && phase === 'night') {
+      voice = 'yes'; source = `${books}#L160`; voiceDirect = true;
+    }
+    if (t.fa_id === 'fa_m_wild_boar' && season === 'summer' && phase === 'civil_dusk') {
+      visibility = 'yes'; source = `${books}#L68`; visibilityDirect = true;
+    }
+    if (t.fa_id === 'fa_b_capercaillie' && season === 'spring' && phase === 'civil_dusk') {
+      visibility = 'yes'; source = `${books}#L147`; visibilityDirect = true;
+    }
+    if (t.fa_id === 'fa_b_swift' && season === 'summer' && phase === 'civil_dawn') {
+      voice = 'yes'; source = `${books}#L299`; voiceDirect = true;
+    }
+    const completeGap = visibility === 'no_source' && voice === 'no_source';
+    if (completeGap) source = '';
+    const ruleRef = !completeGap && !source ? `fauna/activity_phase_rules.json#${phaseRules.id}.${t.activity_time}.${phase}` : '';
+    phaseRows.push({ phase_rule_id: `fpa_${t.fa_id}_${season}_${phase}`, fa_id: t.fa_id, season, phase,
+      visibility_state: visibility, voice_state: voice, voice_text_ref: voice === 'yes' ?
+        `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` : '',
+      source_refs: source, rule_ref: ruleRef, no_source: completeGap ? 'visibility and voice phase unknown' : '',
+      confidence: visibilityDirect && voiceDirect && visibility !== 'no_source' && voice !== 'no_source' ?
+        (t.presence_1230_confidence === 'C' ? 'C' : t.confidence) : 'C', status: 'candidate' });
+  }
+}
+counts.phase_activity = writeCsv(path.join(OUT, 'phase_activity.csv'), ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status'], phaseRows);
 fs.writeFileSync(path.join(DOM, 'build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts }, null, 1) + '\n');
 console.log(counts);

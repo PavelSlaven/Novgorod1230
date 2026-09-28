@@ -7,6 +7,7 @@ import { validateM2cNpcWaveApproval } from '../../tools/spatial-v3/m2c-npc-wave-
 
 const VALID = {
   schema_version: 'rus.m2c_npc_wave_approval.v1',
+  manifest_path: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
   verdict: 'approve_with_limits',
   source_commit: '3ab1c890c1caee2c1247ee144bf66bd35de705ec',
   authored_by: 'cursor composer-2.5 (executor)',
@@ -73,8 +74,8 @@ test('M2C_WAVE_APPROVAL_CHECKED_BY_FORMAT_INVALID', async () => {
 
 test('M2C_WAVE_APPROVAL_CHECKED_BY_EQUALS_AUTHORED', async () => {
   await withApproval({
-    authored_by: 'same person (reviewer)',
-    checked_by: 'same person (reviewer)',
+    authored_by: 'cursor composer-2.5 (executor)',
+    checked_by: 'cursor composer-2.5 (reviewer)',
   }, async (path) => {
     const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });
     assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_CHECKED_BY_EQUALS_AUTHORED'));
@@ -85,5 +86,30 @@ test('M2C_WAVE_APPROVAL_CHECKED_AT_INVALID', async () => {
   await withApproval({ checked_at: 'not-a-date' }, async (path) => {
     const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });
     assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_CHECKED_AT_INVALID'));
+  });
+});
+
+test('M2C_WAVE_APPROVAL_CHECKED_AT_INVALID rejects partial date', async () => {
+  await withApproval({ checked_at: '1' }, async (path) => {
+    const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });
+    assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_CHECKED_AT_INVALID'));
+  });
+});
+
+test('M2C_WAVE_APPROVAL_SCHEMA_VERSION_INVALID', async () => {
+  await withApproval({ schema_version: 'rus.m2c_npc_wave_approval.v0' }, async (path) => {
+    const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });
+    assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_SCHEMA_VERSION_INVALID'));
+  });
+});
+
+test('M2C_WAVE_APPROVAL_MANIFEST_PATH_MISMATCH', async () => {
+  await withApproval({ manifest_path: 'data/world-catalogs/novgorod/spatial-v3/manifest.json' }, async (path) => {
+    const result = await validateM2cNpcWaveApproval({
+      root: process.cwd(),
+      approvalPath: path,
+      bundleManifestPath: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
+    });
+    assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_MANIFEST_PATH_MISMATCH'));
   });
 });

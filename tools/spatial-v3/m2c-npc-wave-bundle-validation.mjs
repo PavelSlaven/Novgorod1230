@@ -1,6 +1,5 @@
 import { findOverlappingPresenceRules } from '../../packages/materialization/src/presence-rule-conflicts.js';
 
-const WAVE_BUNDLE_ID = 'novgorod_m2c_npc_wave_v1';
 export const M2C_NPC_WAVE_TABLE_SET = Object.freeze([
   'place_families',
   'spatial_node_place_family_bindings',
@@ -13,10 +12,6 @@ export const M2C_NPC_WAVE_TABLE_SET = Object.freeze([
   'fauna_phase_activity_rules',
 ]);
 const WAVE_TABLES = new Set(M2C_NPC_WAVE_TABLE_SET);
-
-export function isM2cNpcWaveManifest(manifest) {
-  return manifest?.bundle_id === WAVE_BUNDLE_ID;
-}
 
 export function manifestIncludesWaveTables(manifest) {
   const tables = new Set((manifest?.datasets ?? []).map((dataset) => dataset.table));

@@ -1,5 +1,6 @@
 {
   "schema_version": "rus.m2c_npc_wave_approval.v1",
+  "manifest_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json",
   "verdict": "approve_with_limits",
   "source_commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
   "authored_by": "cursor composer-2.5 (executor)",

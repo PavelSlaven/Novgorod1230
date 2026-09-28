@@ -25,8 +25,27 @@ import { createProductionLlmRoleRunner } from
   '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 import { DEFAULT_GAMEPLAY_MODEL } from
   '../../apps/game-server/src/runtime/llm-settings.js';
+import { createGigaQueryEncoder } from
+  '../../apps/game-server/src/infrastructure/embedding/giga-query-encoder.js';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
+let sharedWorldKnowledgeEncoder = null;
+
+function sharedWorldKnowledgeEncoderFactory(options) {
+  if (sharedWorldKnowledgeEncoder == null) {
+    sharedWorldKnowledgeEncoder = createGigaQueryEncoder(options);
+  }
+  return sharedWorldKnowledgeEncoder;
+}
+
+function acceptancePools(worldPool, partyPool) {
+  return Object.freeze({
+    worldPool,
+    partyPool,
+    // ponytail: acceptance keeps DB pools open across in-process restarts.
+    close: async () => {}
+  });
+}
 
 export async function startLowerDvinaProductionAcceptanceEnv({
   llmRespond,
@@ -95,11 +114,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
         idFactory: identityFactory.next,
         llmSettings
       },
-      pools: {
-        worldPool,
-        partyPool,
-        close: async () => Promise.all([worldPool.end(), partyPool.end()])
-      }
+      worldKnowledgeEncoderFactory: sharedWorldKnowledgeEncoderFactory,
+      pools: acceptancePools(worldPool, partyPool)
     });
     server = createGameHttpServer({
       root: acceptanceHttpRoot(root, llm),
@@ -128,8 +144,6 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       async restartRoot() {
         await closeServer(server);
         await root.close();
-        worldPool = new pg.Pool({ connectionString: worldUrl, max: 4 });
-        partyPool = new pg.Pool({ connectionString: partyUrl, max: 8 });
         root = await createSpatialV3ProductionCompositionRoot({
           env,
           config: {
@@ -137,13 +151,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
             idFactory: identityFactory.next,
             llmSettings
           },
-          pools: {
-            worldPool,
-            partyPool,
-            close: async () => Promise.all([
-              worldPool.end(), partyPool.end()
-            ])
-          }
+          worldKnowledgeEncoderFactory: sharedWorldKnowledgeEncoderFactory,
+          pools: acceptancePools(worldPool, partyPool)
         });
         server = createGameHttpServer({
           root: acceptanceHttpRoot(root, llm),
@@ -163,6 +172,11 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       async close() {
         await closeServer(server);
         await root?.close().catch(() => {});
+        sharedWorldKnowledgeEncoder = null;
+        await Promise.all([
+          worldPool?.end().catch(() => {}),
+          partyPool?.end().catch(() => {})
+        ]);
         await llm.close().catch(() => {});
         docker(['rm', '-fv', postgresContainer]);
       }

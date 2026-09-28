@@ -19,6 +19,8 @@ import {
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   runSpatialV3TargetMigrations
 } from '../infrastructure/postgres/spatial-v3-target-migrations.js';
+import { runSpatialV3TargetMigrationsForProductionRestart } from
+  '../infrastructure/postgres/spatial-v3-target-migration-restart.js';
 import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
 import {
   assertPartyReleaseReadiness,
@@ -314,7 +316,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     }
     const migration = await withRuntimeCatalogActivationLock(
       pools.worldPool,
-      (worldClient) => runSpatialV3TargetMigrations(
+      (worldClient) => runSpatialV3TargetMigrationsForProductionRestart(
         pools.partyPool,
         {
           exactAppliedMigration: {

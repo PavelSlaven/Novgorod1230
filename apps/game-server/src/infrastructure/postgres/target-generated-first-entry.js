@@ -1,5 +1,10 @@
-import { compileGeneratedNpcBindings } from '@rus/materialization';
+import {
+  canonicalDigest,
+  createOrdinaryAggregate,
+  compileGeneratedNpcBindings,
+} from '@rus/materialization';
 import { createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
+import { applyResolvedPresenceRulesFirstArrival } from './ordinary-materialization-presence-first-arrival.js';
 import { prepareGeneratedNpcFirstEntry } from './generated-npc-first-entry.js';
 
 const pinKeys = ['catalog_scope', 'catalog_revision_id', 'catalog_digest', 'activation_event_id',
@@ -11,7 +16,7 @@ const text = (value) => typeof value === 'string' && value.trim().length > 0;
 /** Compose admitted natural and NPC proposals under the existing expansion transaction. */
 export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemCatalog,
   actorBaseAttributesBinding, approvedActorTemporalBundle, prepareNaturalFirstEntry,
-  readFactualContext } = {}) {
+  readFactualContext, resolvePresenceRulesFirstArrival, finiteFirstEntryProfile } = {}) {
   return async function prepareFirstEntry(context) {
     const { transaction, request, proposal, change_set_id: changeSetId, dependency_pins } = context;
     const gap = (reason) => ({ ok: false, error: createSpatialV3TypedError('authoring_dependency_pin_missing', {
@@ -49,6 +54,53 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
     const sites = proposal.inserts.filter((row) => row.target_table === 'party_g5_sites'
       && row.id === proposal.target_site_id);
     const site = sites[0]?.record;
+    const canonicalOnly = site?.origin === 'canonical'
+      || !text(site?.generated_template_ref?.entity_id);
+    if (canonicalOnly) {
+      const scenes = proposal.inserts.filter((row) => row.target_table === 'party_g6_instances'
+        && row.record.host_id === site?.id && row.record.scene_slot_key === 'main');
+      if (scenes.length !== 1 || typeof resolvePresenceRulesFirstArrival !== 'function') {
+        return { ok: true, approved_write_sets: [], expected_state_versions: [],
+          commit_rechecks: [], materialization_trace: { catalog_pins: [itemPin, actorPin],
+            selection: null, choices: [], attribute_traces: [],
+            validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
+          recheck: async () => ({ ok: true }) };
+      }
+      const scope = { entity_kind: 'g6', entity_id: scenes[0].id };
+      const presenceContext = await resolvePresenceRulesFirstArrival({
+        transaction, request, site, partyId: request.party_id, scope, proposal, change_set_id: changeSetId,
+      });
+      if (!presenceContext?.rules?.length) {
+        return { ok: true, approved_write_sets: [], expected_state_versions: [],
+          commit_rechecks: [], materialization_trace: { catalog_pins: [itemPin, actorPin],
+            selection: null, choices: [], attribute_traces: [],
+            validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
+          recheck: async () => ({ ok: true }) };
+      }
+      const cap = finiteFirstEntryProfile?.technical_limits?.max_resolution_records ?? 64;
+      const aggregate = applyResolvedPresenceRulesFirstArrival({
+        aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: cap }),
+        context: presenceContext,
+      });
+      const scopeKey = `${request.party_id}:${scope.entity_kind}:${scope.entity_id}`;
+      const writes = [{ target_table: 'party_ordinary_materialization_aggregates', id: scopeKey,
+        record: { party_id: request.party_id, scope_kind: scope.entity_kind, scope_id: scope.entity_id,
+          state_version: aggregate.state_version, aggregate_payload: aggregate } }];
+      const digest = canonicalDigest(aggregate);
+      return { ok: true, approved_write_sets: [{ inserts: writes, updates: [], appends: [] }],
+        expected_state_versions: [], commit_rechecks: [],
+        materialization_trace: { catalog_pins: [itemPin, actorPin], selection: null,
+          choices: [], attribute_traces: [],
+          validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
+        recheck: async ({ transaction: tx }) => {
+          const row = await tx.query(`SELECT aggregate_payload FROM party_runtime.party_ordinary_materialization_aggregates
+            WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3`, [request.party_id, scope.entity_kind, scope.entity_id]);
+          if (row.rowCount === 1 && canonicalDigest(row.rows[0].aggregate_payload) !== digest) {
+            return gap('target_first_entry_presence_conflict');
+          }
+          return { ok: true };
+        } };
+    }
     const selected = context.selection?.selected_template;
     const template = { id: site?.generated_template_ref?.entity_id,
       version: Number(site?.generated_template_ref?.authoring_version),

@@ -89,7 +89,7 @@ export function createOrdinaryGeneratedFirstEntryProposal({ profile,
           site,
           scope,
           proposal,
-          changeSetId,
+          change_set_id,
         })
         : null;
       return buildRows({ profile, partyId, scope, positionRef,
@@ -142,6 +142,7 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
   includeContextBoundCapabilities = true,
   initialSceneSeed = null,
   resolvePresenceRulesFirstArrival = null,
+  partyStartPresenceOnly = false,
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
@@ -161,6 +162,11 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
           scope,
         })
         : null;
+      if (partyStartPresenceOnly) {
+        return provisionPartyStartPresenceOnly({
+          transaction, partyId, scope, profile, presenceContext,
+        });
+      }
       const rows = buildRows({ profile, partyId, scope,
         positionRef: firstEntryBinding.position_id,
         includeContextBoundCapabilities, initialSceneSeed, presenceContext });
@@ -277,13 +283,13 @@ function buildRows({ profile, partyId, scope, positionRef,
   } catch { throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID'); }
   const initial = createOrdinaryAggregate({ scope_ref: scope,
     resolution_record_cap: profile.technical_limits.max_resolution_records });
-  const seeded = seedInitialScene({ profile, request: seedRequest,
-    initial, committedBasis: basis, committedBases, initialSceneSeed });
   const aggregateWithPresence = applyResolvedPresenceRulesFirstArrival({
-    aggregate: seeded.aggregate,
+    aggregate: initial,
     context: presenceContext,
   });
-  const seededWithPresence = { ...seeded, aggregate: aggregateWithPresence };
+  const seeded = seedInitialScene({ profile, request: seedRequest,
+    initial: aggregateWithPresence, committedBasis: basis, committedBases, initialSceneSeed });
+  const seededWithPresence = seeded;
   const bases = [...committedBases, ...seededWithPresence.committedSeedBases]
     .sort((left, right) => left.basis_ref.localeCompare(right.basis_ref));
   const policyRefs = { ...seedPolicyRefs,
@@ -327,6 +333,38 @@ function sameExisting(row, expected) {
       === canonicalDigest(expected.property_placement_context)
     && canonicalDigest(row.bases) === canonicalDigest(expected.bases);
 }
+async function provisionPartyStartPresenceOnly({ transaction, partyId, scope, profile, presenceContext }) {
+  if (!presenceContext?.rules?.length) {
+    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
+  }
+  const initial = createOrdinaryAggregate({
+    scope_ref: scope,
+    resolution_record_cap: profile.technical_limits.max_resolution_records,
+  });
+  const aggregate = applyResolvedPresenceRulesFirstArrival({
+    aggregate: initial,
+    context: presenceContext,
+  });
+  const existing = await transaction.query(
+    `SELECT aggregate_payload, state_version
+       FROM party_runtime.party_ordinary_materialization_aggregates
+      WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3
+      FOR UPDATE`,
+    [partyId, scope.entity_kind, scope.entity_id],
+  );
+  if (existing.rowCount === 1) {
+    if (canonicalDigest(existing.rows[0].aggregate_payload) !== canonicalDigest(aggregate)) {
+      throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
+    }
+    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
+  }
+  await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
+    (party_id,scope_kind,scope_id,state_version,aggregate_payload)
+    VALUES ($1,$2,$3,$4,$5::jsonb)`, [partyId, scope.entity_kind, scope.entity_id,
+    aggregate.state_version, JSON.stringify(aggregate)]);
+  return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
+}
+
 function seedInitialScene({ profile, request, initial, committedBasis,
   committedBases,
   initialSceneSeed }) {

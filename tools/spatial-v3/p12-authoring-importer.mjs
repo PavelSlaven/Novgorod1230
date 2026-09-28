@@ -9,11 +9,13 @@ import { proveExpansionCapacity } from './p11-capacity-proof.mjs';
 import { validateP12SourceApproval } from './p12-source-approval.mjs';
 import { validateP12TargetMaterializationApprovalV11 } from './p12-target-materialization-approval-v1_1.mjs';
 import { validateM2cNpcWaveApproval } from './m2c-npc-wave-approval.mjs';
-import { isM2cNpcWaveManifest, validateM2cNpcWaveBundle } from './m2c-npc-wave-bundle-validation.mjs';
+import { bundleIncludesWaveTables, manifestIncludesWaveTables, validateM2cNpcWaveBundle } from './m2c-npc-wave-bundle-validation.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const REGISTRY = 'data/contracts/spatial-v3/world-base-import-registry.v1.json';
 const DEFAULT_MANIFEST = 'data/world-catalogs/novgorod/spatial-v3/manifest.json';
+/** @internal Only set by buildImportWithReadbackSql for approved wave import+readback in one transaction. */
+export const waveImportViaReadbackWrapper = Symbol('waveImportViaReadbackWrapper');
 
 export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11, m2cWaveApprovalPath } = {}) {
   const projectRoot = resolve(root);
@@ -69,7 +71,7 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateExternalDependencyClosure(datasets, errors);
   validateExpansionRuleClosure(datasets, errors);
   validateM2cNpcWaveBundle(manifest, datasets, errors);
-  if (isM2cNpcWaveManifest(manifest) && manifest.status === 'approved') {
+  if (bundleIncludesWaveTables(manifest, datasets) && manifest.status === 'approved') {
     const waveApproval = await validateM2cNpcWaveApproval({ root: projectRoot, approvalPath: m2cWaveApprovalPath });
     for (const waveError of waveApproval.errors) errors.push(issue('M2C_WAVE_APPROVAL_INVALID', waveError.code));
   }
@@ -79,11 +81,14 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
 export async function buildImportWithReadbackSql(options = {}) {
   const importPrefix = options.temporaryTablePrefix ?? 'p12_candidate';
   const readbackPrefix = options.readbackTemporaryTablePrefix ?? 'p12_readback_expected';
+  if (importPrefix === readbackPrefix) {
+    throw new Error('P12_IMPORT_READBACK_PREFIX_COLLISION');
+  }
   const importSql = await buildTransactionalImportSql({
     ...options,
     wrapTransaction: false,
     temporaryTablePrefix: importPrefix,
-    approvedWaveImportAllowed: true,
+    [waveImportViaReadbackWrapper]: true,
   });
   const readbackSql = await buildBundleReadbackSql({ ...options, temporaryTablePrefix: readbackPrefix });
   return `BEGIN;\n${importSql}${readbackSql}COMMIT;\n`;
@@ -93,13 +98,19 @@ export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT
   return buildTransactionalImportSql({ root, manifestPath, rollback: true, allowTypedGaps: true });
 }
 
-export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate', approvedWaveImportAllowed = false, m2cWaveApprovalPath } = {}) {
+export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate', m2cWaveApprovalPath, [waveImportViaReadbackWrapper]: viaReadbackWrapper = false } = {}) {
   const projectRoot = resolve(root); const manifestFile = resolve(projectRoot, manifestPath);
   const result = await validateAuthoringBundle({ root: projectRoot, manifestPath, m2cWaveApprovalPath });
   if (result.errors.length || (!allowTypedGaps && result.data_gaps.length)) throw new Error(`P12 import refuses incomplete bundle: ${[...result.errors, ...result.data_gaps].map((error) => error.code).join(', ')}`);
   const manifest = await json(manifestFile);
-  if (isM2cNpcWaveManifest(manifest) && manifest.status === 'approved' && !approvedWaveImportAllowed) {
-    throw new Error('P12_WAVE_IMPORT_REQUIRES_READBACK');
+  const hasWaveTables = manifestIncludesWaveTables(manifest);
+  if (hasWaveTables && !rollback) {
+    if (manifest.status !== 'approved') {
+      throw new Error('P12_WAVE_IMPORT_REQUIRES_APPROVED');
+    }
+    if (!viaReadbackWrapper) {
+      throw new Error('P12_WAVE_IMPORT_REQUIRES_READBACK');
+    }
   }
   const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
   const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = wrapTransaction ? ['BEGIN;'] : [];
@@ -141,10 +152,10 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
 }
 
 /** Post-import readback in the same transaction; not part of buildTransactionalImportSql output. */
-export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, temporaryTablePrefix = 'p12_readback_expected' } = {}) {
+export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, temporaryTablePrefix = 'p12_readback_expected', m2cWaveApprovalPath } = {}) {
   const projectRoot = resolve(root);
   const manifestFile = resolve(projectRoot, manifestPath);
-  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
+  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath, m2cWaveApprovalPath });
   if (result.errors.length) throw new Error(`P12 readback refuses invalid bundle: ${result.errors.map((error) => error.code).join(', ')}`);
   const manifest = await json(manifestFile);
   const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
@@ -182,30 +193,10 @@ export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAU
       `      FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) THEN`,
       `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}';`,
       `  END IF;`,
-      `END $p12_readback$;`,
-      `SELECT '${dataset.table}' AS readback_table, ${rows.length}::int AS readback_rows, '${readbackAggregateSha256(rows, primaryKey)}'::text AS readback_aggregate_sha256;`
+      `END $p12_readback$;`
     );
   }
   return `${sql.join('\n')}\n`;
-}
-
-function readbackAggregateSha256(rows, primaryKey) {
-  const serverManaged = new Set(['created_at', 'updated_at']);
-  const sorted = [...rows].sort((left, right) => {
-    for (const column of primaryKey) {
-      const leftValue = left[column.name] ?? null;
-      const rightValue = right[column.name] ?? null;
-      if (leftValue < rightValue) return -1;
-      if (leftValue > rightValue) return 1;
-    }
-    return 0;
-  });
-  const canonical = sorted.map((row) => {
-    const copy = { ...row };
-    for (const key of serverManaged) delete copy[key];
-    return copy;
-  });
-  return createHash('sha256').update(JSON.stringify(canonical)).digest('hex');
 }
 
 export function resolveTablePrimaryKey(schema) {

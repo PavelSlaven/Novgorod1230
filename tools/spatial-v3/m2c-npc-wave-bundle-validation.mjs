@@ -18,8 +18,18 @@ export function isM2cNpcWaveManifest(manifest) {
   return manifest?.bundle_id === WAVE_BUNDLE_ID;
 }
 
+export function manifestIncludesWaveTables(manifest) {
+  const tables = new Set((manifest?.datasets ?? []).map((dataset) => dataset.table));
+  return M2C_NPC_WAVE_TABLE_SET.some((table) => tables.has(table));
+}
+
+export function bundleIncludesWaveTables(manifest, datasets) {
+  if (manifestIncludesWaveTables(manifest)) return true;
+  return M2C_NPC_WAVE_TABLE_SET.some((table) => datasets?.has(table));
+}
+
 export function validateM2cNpcWaveBundle(manifest, datasets, errors) {
-  if (!isM2cNpcWaveManifest(manifest)) return;
+  if (!bundleIncludesWaveTables(manifest, datasets)) return;
   if (manifest.bundle_kind !== 'dependency_closure') {
     errors.push(issue('M2C_WAVE_BUNDLE_KIND_INVALID', String(manifest.bundle_kind ?? '')));
   }
@@ -50,11 +60,15 @@ export function validateM2cNpcWaveBundle(manifest, datasets, errors) {
   const overlaps = findOverlappingPresenceRules(datasets.get('presence_rules') ?? []);
   for (const message of overlaps) errors.push(issue('M2C_WAVE_PRESENCE_C4_CONFLICT', message));
   const bindings = datasets.get('spatial_node_place_family_bindings') ?? [];
-  const nodeKeys = new Set((datasets.get('spatial_v3_nodes') ?? []).map((row) => `${row.id}|${row.version}`));
+  const nodeRows = datasets.get('spatial_v3_nodes');
+  if (bindings.length && (!nodeRows || nodeRows.length === 0)) {
+    errors.push(issue('M2C_WAVE_NODES_DATASET_REQUIRED', 'spatial_v3_nodes'));
+  }
+  const nodeKeys = new Set((nodeRows ?? []).map((row) => `${row.id}|${row.version}`));
   const primaryByNode = new Map();
   for (const binding of bindings) {
     const bindingNodeKey = `${binding.node_id}|${binding.node_version}`;
-    if (nodeKeys.size && !nodeKeys.has(bindingNodeKey)) {
+    if (!nodeKeys.has(bindingNodeKey)) {
       errors.push(issue('M2C_WAVE_BINDING_NODE_NOT_IN_CLOSURE', bindingNodeKey));
     }
     if (binding.binding_role !== 'primary') {

@@ -23,7 +23,44 @@ export const REQUIRED_VERIFICATION_REFS = Object.freeze({
   fauna_mammals_birds: 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md',
 });
 
-const PLACEHOLDER_CHECKED_BY = /\b(draft|executor|pending-reviewer|pending_reviewer)\b/iu;
+const REVIEWER_FIELD = /^.+ \((owner|reviewer)\)$/u;
+const EXECUTOR_FIELD = /^.+ \(executor\)$/u;
+
+function validateAuthoredBy(value, errors, approvalPath) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_AUTHORED_BY_MISSING', subject_ref: approvalPath });
+    return '';
+  }
+  if (!EXECUTOR_FIELD.test(trimmed)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_AUTHORED_BY_FORMAT_INVALID', subject_ref: trimmed });
+  }
+  return trimmed;
+}
+
+function validateCheckedBy(value, errors, approvalPath) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_MISSING', subject_ref: approvalPath });
+    return '';
+  }
+  if (!REVIEWER_FIELD.test(trimmed)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_FORMAT_INVALID', subject_ref: trimmed });
+  }
+  return trimmed;
+}
+
+function validateCheckedAt(value, errors, approvalPath) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_MISSING', subject_ref: approvalPath });
+    return;
+  }
+  const parsed = Date.parse(trimmed);
+  if (Number.isNaN(parsed)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_INVALID', subject_ref: trimmed });
+  }
+}
 
 export async function validateM2cNpcWaveApproval({ root = process.cwd(), approvalPath = APPROVAL_PATH } = {}) {
   const projectRoot = resolve(root);
@@ -41,12 +78,12 @@ export async function validateM2cNpcWaveApproval({ root = process.cwd(), approva
   for (const path of GENERATOR_SOURCE_PATHS) {
     if (!paths.has(path)) errors.push({ code: 'M2C_WAVE_APPROVAL_SOURCE_PATH_MISSING', subject_ref: path });
   }
-  const checkedBy = String(approval.checked_by ?? '').trim();
-  if (!checkedBy) errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_MISSING', subject_ref: approvalPath });
-  else if (PLACEHOLDER_CHECKED_BY.test(checkedBy)) {
-    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_PLACEHOLDER', subject_ref: checkedBy });
+  const authoredBy = validateAuthoredBy(approval.authored_by, errors, approvalPath);
+  const checkedBy = validateCheckedBy(approval.checked_by, errors, approvalPath);
+  if (authoredBy && checkedBy && authoredBy === checkedBy) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_EQUALS_AUTHORED', subject_ref: checkedBy });
   }
-  if (!String(approval.checked_at ?? '').trim()) errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_MISSING', subject_ref: approvalPath });
+  validateCheckedAt(approval.checked_at, errors, approvalPath);
   const refs = approval.references ?? {};
   if (String(refs.game_base_status ?? '') !== 'data/world-catalogs/novgorod/game-base-v1/STATUS.md') {
     errors.push({ code: 'M2C_WAVE_APPROVAL_STATUS_REF_INVALID', subject_ref: String(refs.game_base_status ?? '') });

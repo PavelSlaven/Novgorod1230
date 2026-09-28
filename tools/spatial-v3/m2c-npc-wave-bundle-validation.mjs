@@ -1,4 +1,5 @@
 import { findOverlappingPresenceRules } from '../../packages/materialization/src/presence-rule-conflicts.js';
+import { validateNpcRoutineProfile } from '@rus/npc-runtime';
 
 export const M2C_NPC_WAVE_TABLE_SET = Object.freeze([
   'place_families',
@@ -10,6 +11,8 @@ export const M2C_NPC_WAVE_TABLE_SET = Object.freeze([
   'slot_instance_variants',
   'water_body_presence_facets',
   'fauna_phase_activity_rules',
+  'npc_schedule_routine_rules',
+  'place_population_composition_rules',
 ]);
 const WAVE_TABLES = new Set(M2C_NPC_WAVE_TABLE_SET);
 
@@ -54,6 +57,9 @@ export function validateM2cNpcWaveBundle(manifest, datasets, errors) {
   }
   const overlaps = findOverlappingPresenceRules(datasets.get('presence_rules') ?? []);
   for (const message of overlaps) errors.push(issue('M2C_WAVE_PRESENCE_C4_CONFLICT', message));
+  validateCompositionPresencePriority(datasets, errors);
+  validateScheduleRoutineRules(datasets, placeFamilyIds, errors);
+  validatePlacePopulationCompositionRules(datasets, placeFamilyIds, errors);
   const bindings = datasets.get('spatial_node_place_family_bindings') ?? [];
   const nodeRows = datasets.get('spatial_v3_nodes');
   if (bindings.length && (!nodeRows || nodeRows.length === 0)) {
@@ -88,7 +94,9 @@ function issue(code, subject_ref) {
 function waveRowRef(table, row) {
   if (table === 'presence_rules') return row?.rule_id ?? 'unknown';
   if (table === 'spatial_node_place_family_bindings') return row?.node_id ?? 'unknown';
-  return row?.id ?? 'unknown';
+  if (table === 'npc_schedule_routine_rules') return row?.schedule_id ?? 'unknown';
+  if (table === 'place_population_composition_rules') return row?.composition_id ?? 'unknown';
+  return row?.id ?? row?.rule_id ?? 'unknown';
 }
 
 function validateWaveRowRevision(manifest, table, row, rowRef, errors) {
@@ -112,6 +120,74 @@ function validatePresenceRuleVariants(rule, errors) {
       errors.push(issue('M2C_WAVE_VARIANTS_NULL_ELEMENT', rule.rule_id));
     } else if (typeof entry === 'string') {
       errors.push(issue('M2C_WAVE_VARIANTS_STRING_FORBIDDEN', rule.rule_id));
+    }
+  }
+}
+
+function validateCompositionPresencePriority(datasets, errors) {
+  const compositionSubjects = new Set();
+  for (const row of datasets.get('place_population_composition_rules') ?? []) {
+    for (const group of row.population_groups ?? []) {
+      if (!Array.isArray(group?.weighted_subjects)) continue;
+      for (const subject of group.weighted_subjects) {
+        if (!subject?.subject_kind || !subject?.subject_ref) continue;
+        compositionSubjects.add(`${row.place_family_id}|${subject.subject_kind}|${subject.subject_ref}`);
+      }
+    }
+  }
+  for (const rule of datasets.get('presence_rules') ?? []) {
+    if (rule.scope_kind !== 'place_family') continue;
+    if (rule.subject_kind !== 'occupation' && rule.subject_kind !== 'social_role') continue;
+    if ((rule.presence_probability_ppm ?? 0) <= 0) continue;
+    const key = `${rule.scope_ref}|${rule.subject_kind}|${rule.subject_ref}`;
+    if (!compositionSubjects.has(key)) continue;
+    const owner = rule.authoring_payload?.creation_owner;
+    if (owner !== 'composition') {
+      errors.push(issue('M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT', `${rule.rule_id}:${key}`));
+    }
+  }
+}
+
+function validateScheduleRoutineRules(datasets, placeFamilyIds, errors) {
+  for (const row of datasets.get('npc_schedule_routine_rules') ?? []) {
+    if (row.scope_kind === 'place_family' && !placeFamilyIds.has(row.scope_ref)) {
+      errors.push(issue('M2C_WAVE_SCHEDULE_SCOPE_UNKNOWN', `${row.schedule_id}:${row.scope_ref}`));
+    }
+    if (!Array.isArray(row.months) && row.months != null) {
+      errors.push(issue('M2C_WAVE_SCHEDULE_MONTHS_INVALID', row.schedule_id));
+    }
+    if (Array.isArray(row.months)) {
+      for (const month of row.months) {
+        if (!Number.isInteger(month) || month < 1 || month > 12) {
+          errors.push(issue('M2C_WAVE_SCHEDULE_MONTHS_INVALID', row.schedule_id));
+          break;
+        }
+      }
+    }
+    try {
+      validateNpcRoutineProfile(row.routine_profile);
+    } catch {
+      errors.push(issue('M2C_WAVE_SCHEDULE_ROUTINE_PROFILE_INVALID', row.schedule_id));
+    }
+  }
+}
+
+function validatePlacePopulationCompositionRules(datasets, placeFamilyIds, errors) {
+  const seenPf = new Set();
+  for (const row of datasets.get('place_population_composition_rules') ?? []) {
+    if (!placeFamilyIds.has(row.place_family_id)) {
+      errors.push(issue('M2C_WAVE_COMPOSITION_PF_UNKNOWN', `${row.composition_id}:${row.place_family_id}`));
+    }
+    const pfKey = `${row.world_revision_id}|${row.place_family_id}|${row.composition_version}`;
+    if (seenPf.has(pfKey)) {
+      errors.push(issue('M2C_WAVE_COMPOSITION_PF_DUPLICATE', pfKey));
+    }
+    seenPf.add(pfKey);
+    for (const absence of row.scheduled_absences ?? []) {
+      if (absence.seasons === undefined) continue;
+      if (!Array.isArray(absence.seasons) || absence.seasons.length === 0) {
+        errors.push(issue('M2C_WAVE_COMPOSITION_ABSENCE_SEASONS_INVALID', `${row.composition_id}:${absence.subject_ref ?? 'unknown'}`));
+      }
     }
   }
 }

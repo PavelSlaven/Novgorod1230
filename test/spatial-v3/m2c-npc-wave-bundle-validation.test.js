@@ -211,3 +211,112 @@ test('M2C_WAVE_APPROVAL_MISSING', async () => {
   assert.equal(result.ok, false);
   assert.equal(result.errors[0].code, 'M2C_WAVE_APPROVAL_MISSING');
 });
+
+const validRoutineProfile = {
+  schema: 'npc_routine_profile_v1',
+  profile_id: 'sch_test',
+  revision: 1,
+  status: 'approved',
+  phases: [
+    { state_id: 'a', duration_minutes: 720, runtime_status: 'available', activity_ref: 'act_a',
+      summary: 'A', activity_status: 'active', can_continue_automatically: true, decision_required: false },
+    { state_id: 'b', duration_minutes: 720, runtime_status: 'sleeping', activity_ref: 'act_b',
+      summary: 'B', activity_status: 'active', can_continue_automatically: true, decision_required: false },
+  ],
+};
+
+function minimalScheduleRule(overrides = {}) {
+  return {
+    schedule_id: 'sch_test',
+    schedule_version: 1,
+    world_revision_id: REV,
+    scope_kind: 'place_family',
+    scope_ref: 'pf_ferry_landing',
+    subject_kind: 'occupation',
+    subject_ref: 'nov_occ_ferryman',
+    season: 'summer',
+    months: [6, 7, 8],
+    day_type: 'normal',
+    routine_profile: validRoutineProfile,
+    status: 'approved',
+    confidence: 'low',
+    provenance_ref: PROV,
+    authoring_payload: {},
+    ...overrides,
+  };
+}
+
+function minimalCompositionRule(overrides = {}) {
+  return {
+    composition_id: 'pf_ferry_landing',
+    composition_version: 1,
+    world_revision_id: REV,
+    place_family_id: 'pf_ferry_landing',
+    place_family_version: 1,
+    population_groups: [{
+      group_id: 'pf_ferry_landing.ferryman',
+      weighted_subjects: [{ subject_kind: 'occupation', subject_ref: 'nov_occ_ferryman', weight: 1 }],
+    }],
+    scheduled_absences: [],
+    empty_reason: null,
+    status: 'approved',
+    confidence: 'low',
+    provenance_ref: PROV,
+    authoring_payload: {},
+    ...overrides,
+  };
+}
+
+test('M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT on ferry without creation_owner', () => {
+  const pf = { ...minimalPlaceFamily('pf_ferry_landing'), id: 'pf_ferry_landing' };
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [pf],
+    place_population_composition_rules: [minimalCompositionRule()],
+    presence_rules: [minimalPresenceRule({
+      scope_ref: 'pf_ferry_landing',
+      subject_kind: 'occupation',
+      subject_ref: 'nov_occ_ferryman',
+      presence_probability_ppm: 250000,
+      authoring_payload: {},
+    })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT');
+});
+
+test('M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT absent when creation_owner composition', () => {
+  const pf = { ...minimalPlaceFamily('pf_peasant_homestead'), id: 'pf_peasant_homestead' };
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [pf],
+    place_population_composition_rules: [{
+      ...minimalCompositionRule({
+        composition_id: 'pf_peasant_homestead',
+        place_family_id: 'pf_peasant_homestead',
+        population_groups: [{
+          group_id: 'householder',
+          weighted_subjects: [{ subject_kind: 'social_role', subject_ref: 'nov_role_smerd_householder', weight: 1 }],
+        }],
+      }),
+    }],
+    presence_rules: [minimalPresenceRule({
+      scope_ref: 'pf_peasant_homestead',
+      subject_kind: 'social_role',
+      subject_ref: 'nov_role_smerd_householder',
+      presence_probability_ppm: 250000,
+      authoring_payload: { creation_owner: 'composition' },
+    })],
+  }));
+  assert.equal(errors.filter((e) => e.code === 'M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT').length, 0);
+});
+
+test('M2C_WAVE_SCHEDULE_ROUTINE_PROFILE_INVALID when routine profile has one phase', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily('pf_ferry_landing')],
+    npc_schedule_routine_rules: [minimalScheduleRule({
+      routine_profile: {
+        ...validRoutineProfile,
+        phases: [validRoutineProfile.phases[0]],
+      },
+    })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_SCHEDULE_ROUTINE_PROFILE_INVALID');
+});

@@ -47,6 +47,7 @@ import {
 import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
 import { compileGeneratedNpcBindings } from './generated-npc-bindings.js';
+import { loadPlacePopulationComposition, loadScheduleRoutineRules } from './world-base-m2c-npc-readers.js';
 import { resolveProceduralFunctionalAllocations } from
   './procedural-functional-allocation.js';
 import {
@@ -65,6 +66,7 @@ export {
   ACTOR_BASE_ATTRIBUTE_KEYS, AUTHORED_MATERIALIZER_VERSION, canonicalCandidateDigest,
   canonicalDigest, canonicalRequestDigest, completeAuthoredItemMechanics,
   compileApprovedNpcRuntimeBasis, compileGeneratedNpcBindings, compileProceduralScenePartyPackages,
+  loadPlacePopulationComposition, loadScheduleRoutineRules,
   compileProceduralSceneProfile, createOrdinaryAggregate, createOrdinaryCandidateKey,
   createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey,
   createOrdinaryResolutionRef, createPreparedGroupRef, createRandomSource, deriveSeed,

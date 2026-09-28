@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- feat(r1b): world_base 28.sql D-1/D-2 datasets, wave 11 tables, composition-over-presence validator; pin 337abf9e (#158)
 - fix(r1): REVIEW-R1-fix-4 — approval identity, manifest_path, schema_version; internal readback symbol; LW-076 (#158)
 - fix(r1): REVIEW-R1-fix-2/3 — wave bundle by table set, fail-closed approval fields, nodes closure required, positive PG on approved copy; LW-076 (#158)
 - test(infra): opt-in NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1 runs throwaway PG test containers without AppArmor (servak: AppArmor 4.1 + Docker 26.1 block unix sockets)

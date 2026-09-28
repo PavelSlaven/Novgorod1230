@@ -2,7 +2,7 @@
   "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
   "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
   "status": "pending_independent_high_review",
-  "source_commit": "c4dc8a76c87f44238afaec31fa852ff83d17ceb1",
+  "source_commit": "057cd7def78abb4399c997c9735f4c996e3cf881",
   "operation": "create_fresh_databases_and_apply_exact_schema",
   "target": {
     "cluster": "existing_managed_local_play_postgresql_16_14_0",
@@ -15,8 +15,8 @@
   "world_schema": {
     "entrypoint": {
       "path": "infra/world-base/schema.sql",
-      "bytes": 595,
-      "sha256": "121931bc5b3379ae8376d5dcae6f86a263cda8e826f0c3c8ee1262f9754f9d6a"
+      "bytes": 613,
+      "sha256": "fc8513eb372c8a71a87da9b2e94947894cf1674e768eeeb33740840c24c43814"
     },
     "ordered_parts": [
       {
@@ -153,9 +153,14 @@
         "path": "infra/world-base/schema/27.sql",
         "bytes": 10502,
         "sha256": "98029e48087a1131ef7680b0b0ab3c4152fe4c834211e7ae464707b43b95586b"
+      },
+      {
+        "path": "infra/world-base/schema/28.sql",
+        "bytes": 3436,
+        "sha256": "33a40ca4c1dd7932ba148763b9b80e6628008daeee3124fcd75eca3e2c849811"
       }
     ],
-    "expected_world_base_tables": 217
+    "expected_world_base_tables": 219
   },
   "party_schema": {
     "owner_migration_module": {
@@ -366,7 +371,7 @@
     "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-037 inside one transaction."
   ],
   "expected_readback": {
-    "world_base_table_count": 217,
+    "world_base_table_count": 219,
     "world_schema": "world_base",
     "party_schema": "party_runtime",
     "party_migrations_applied": 37,

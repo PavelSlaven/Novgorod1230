@@ -91,6 +91,59 @@ test('current snapshot admits committed identities, edges and approved exit labe
   assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 5);
 });
 
+const passTargetSlot = { id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_02', version: 1 };
+
+test('clearly visible exit shows its approved pass-target description, not just the ordinal', async () => {
+  const { provider } = fixture();
+  const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+    canonical_digest: label.directional_exit_ref.canonical_digest,
+    direction_context_id: label.direction_context_ref.id };
+  const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+    position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+    slotByExit: new Map([[exit.id, passTargetSlot]]) });
+  assert.equal(disclosed[0].display_label, 'к руслу');
+});
+
+const secondExitLabel = label2AtSameG4();
+function label2AtSameG4() {
+  const exitLabels = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels;
+  return exitLabels.find((row) => row.g4_ref.id === g4
+    && row.directional_exit_ref.id !== label.directional_exit_ref.id);
+}
+
+test('two visible exits with the same pass-target description disambiguate by the approved ordinal',
+  async () => {
+    const { provider } = fixture();
+    const exitOne = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const exitTwo = { id: secondExitLabel.directional_exit_ref.id, version: secondExitLabel.directional_exit_ref.version,
+      canonical_digest: secondExitLabel.directional_exit_ref.canonical_digest,
+      direction_context_id: secondExitLabel.direction_context_ref.id };
+    // Same pass-target slot forced on both exits: the collision is real regardless of their
+    // own distinct exit-ordinal labels ("По руслу — выход 1" vs "...2").
+    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exitOne, exitTwo],
+      slotByExit: new Map([[exitOne.id, passTargetSlot], [exitTwo.id, passTargetSlot]]) });
+    assert.equal(disclosed.length, 2);
+    assert.notEqual(disclosed[0].display_label, disclosed[1].display_label);
+    for (const row of disclosed) assert.match(row.display_label, /^к руслу \(\d+\)$/u);
+  });
+
+test('a partially visible exit falls back to the approved ordinal label, no pass-target guess',
+  async () => {
+    const { natural, provider } = fixture();
+    natural.ambient_visibility.stable_cover = 'partial';
+    const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+      slotByExit: new Map([[exit.id, passTargetSlot]]) });
+    assert.deepEqual(disclosed.map((row) => row.display_label), [label.display_label]);
+  });
+
 test('current snapshot discloses the mechanically repinned version 2 edge label', async () => {
   const { scene, provider } = fixture();
   scene.movement_edges[0].source_scene_template_ref.authoring_version = 2;

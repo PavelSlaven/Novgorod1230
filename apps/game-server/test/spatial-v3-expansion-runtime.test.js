@@ -49,6 +49,20 @@ test('exact approved entry and current disclosure select server-owned request on
   assert.equal(request.source_position_id, 'departure-position'); assert.equal(request.actor_id, 'actor');
   assert.deepEqual(current, before);
 });
+test('a resolved pass-target description reaches listExpansionOptions verbatim (step 3)', async () => {
+  // The disclosure owner (spatial-v3-current-visibility-provider.js) already resolved and, if
+  // needed, disambiguated the pass-target text ("к руслу", or "к руслу (1)" on a collision)
+  // before this runtime ever sees it; this runtime is a pure passthrough and must not touch it.
+  const current = context();
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readExitDisclosure: async () => [{ directional_exit_id: 'exit', directional_exit_version: 2,
+      direction_context_id: 'direction', knowledge_state: 'visible', display_label: 'к руслу' }],
+    materializerVersion: 'version',
+    generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  const options = await runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor' });
+  assert.deepEqual(options, [{ directional_exit_id: 'exit', display_label: 'к руслу' }]);
+});
+
 test('wrong exact entry version, hidden exit and changed disclosure version are unavailable', async () => {
   const current = context(); current.site.canonical_g5_ref.authoring_version = '999';
   assert.deepEqual(eligibleExpansions(current, 1), []);

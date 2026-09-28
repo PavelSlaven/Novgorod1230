@@ -1,6 +1,6 @@
 # M2c pass target labels
 
-Статус: `candidate_approval_pending`. Каталог не утверждён, не импортирован и не подключён к runtime. `approval-attestation.json` здесь нет: утверждение выполняется отдельным проходом ревьюера.
+Статус: `candidate_approval_pending` в `candidate.json` (поле кандидата не меняется решением). Реально каталог утверждён `APPROVE_DATA_ONLY` — см. `approval-attestation.json`. Не импортирован в `world_base` и не активирован (`import_authorized`/`activation_authorized: false`), как и `m2c-exit-labels`/`m2c-local-edge-labels`; runtime читает файлы каталога напрямую с проверкой sha256 (LW-075).
 
 ## Назначение и ключи
 
@@ -53,3 +53,9 @@ node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs \
 В текущем runtime подпись видимого локального ребра ищется по `scene_template_ref` и `edge_slot_key`; подпись выхода — по точному directional-exit ref и контексту. В `spatial-v3-local-scene-movement.js` `destination_slot_key` относится к слоту позиции G6. Этот каталог не меняет эти пути и ими не потребляется.
 
 Для будущего потребителя CR #160, шаг 3, должен отдельно определить, как получить целевой `expansion_slot_ref` или `place_family_id` для видимого прохода. Проверка текущей видимости, знания и права движения остаётся у действующих runtime-владельцев; текст кандидата сам по себе ничего из этого не открывает.
+
+## Подключение (CR #160, шаг 3)
+
+Путь по `expansion_slot_ref` подключён: `spatial-v3-current-visibility-provider.js` (`readCurrentExitDisclosure`/`readExitDisclosure`) и `spatial-v3-proposed-visible-sources.js` берут слот ребра из уже читаемого `readPinnedG4ExpansionClosure`'s `closure.slots` (`directional_exit_id` → `expansion_slot_ref`) и показывают описание только когда ребро видно ясно (`visibility === 'clear'`); иначе — только утверждённый порядковый ярлык из `m2c-exit-labels`. Одинаковый текст у двух проходов в одной точке различается суффиксом уже утверждённого `editorial_choice_ordinal`, не новым числом.
+
+Путь по `place_family_id` (уже созданные/канонические цели, 8 из 55 описаний) **не подключён** — это зависимость от чтения `world_base.spatial_node_place_family_bindings`, которого в runtime сейчас нет; появится вместе с CR #158 R-2 (`resolveNodePlaceFamilies`, primary-привязки, LW-066). Это ожидаемая зависимость следующего шага, не костыль этого каталога.

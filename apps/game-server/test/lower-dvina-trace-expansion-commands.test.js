@@ -25,6 +25,25 @@ async function commands(runtime, current = state) {
     spatialExpansionRuntime: runtime });
 }
 
+test('the free phrase "иду к руслу" resolves to the one exit disclosed with that pass-target text (step 3)',
+  async () => {
+    // spatial-v3-current-visibility-provider.js resolved and disclosed this text already;
+    // the command layer must carry it verbatim into the visible operation, unparsed.
+    const passTarget = { directional_exit_id: 'exit:channel', display_label: 'к руслу' };
+    const [command] = await commands({ listExpansionOptions: async () => [passTarget] });
+    assert.equal(command.reason_visible_to_actor, 'к руслу');
+    assert.equal(command.label, 'к руслу');
+    const operation = command.semantic_binding.operation_dto;
+    assert.equal(operation.description, 'к руслу');
+    // The planner reads this description text ("к руслу") to ground free text like
+    // "Иду к руслу" onto this exact operation - proven at the binding, not by re-parsing raw_text.
+    // matches() ignores whatever description the model echoes back (cosmetic, not compared);
+    // only the structural fields decide the binding.
+    assert.equal(command.semantic_binding.matches({ operation: { ...operation } }), true);
+    assert.equal(command.semantic_binding.matches({
+      operation: { ...operation, target_ref: 'exit:other' } }), false);
+  });
+
 test('approved exit is a selectable exact server operation; topology input is IDs only',
   async () => {
     const calls = [];

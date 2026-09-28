@@ -16,6 +16,36 @@ const approvedLabels = labelApproval.decision === 'APPROVE_DATA_ONLY'
   && labelApproval.candidate_ref === `${labelCatalog.candidate_id}@${labelCatalog.version}`
   && labelApproval.candidate_sha256 === createHash('sha256').update(labelBytes).digest('hex');
 const localLabels = loadApprovedLocalEdgeLabels();
+// LW-075: same direct-file, sha-checked pattern as m2c-exit-labels; the world_base transfer is out of CR #160.
+const passTargetPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/candidate.json', import.meta.url);
+const passTargetApprovalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approval-attestation.json', import.meta.url);
+const passTargetBytes = readFileSync(passTargetPath);
+const passTargetCatalog = JSON.parse(passTargetBytes);
+const passTargetApproval = JSON.parse(readFileSync(passTargetApprovalPath));
+const passTargetLabels = passTargetApproval.decision === 'APPROVE_DATA_ONLY'
+  && passTargetApproval.candidate_ref === `${passTargetCatalog.candidate_id}@${passTargetCatalog.version}`
+  && passTargetApproval.candidate_sha256 === createHash('sha256').update(passTargetBytes).digest('hex')
+  ? passTargetCatalog.labels : null;
+// The place_family_id half (already-materialized targets) has no reader yet - #158 R-2 dependency, not a
+// workaround; only expansion_slot_ref (not-yet-generated target) is consumed until that reader exists.
+function passTargetDescriptionForSlot(slotRef) {
+  if (!passTargetLabels || !slotRef) return null;
+  const row = passTargetLabels.find((label) => label.expansion_slot_ref?.id === slotRef.id
+    && label.expansion_slot_ref?.version === slotRef.version);
+  return row?.display_label ?? null;
+}
+/** Same description text at one disclosed position is ambiguous; disambiguate with the
+ * already-approved editorial_choice_ordinal from m2c-exit-labels, never a new number. */
+function withPassTargetDisambiguation(rows) {
+  const counts = new Map();
+  for (const row of rows) if (row.pass_target_description) {
+    counts.set(row.pass_target_description, (counts.get(row.pass_target_description) ?? 0) + 1);
+  }
+  return rows.map(({ pass_target_description: description, editorial_choice_ordinal: ordinal,
+    ...row }) => ({ ...row, display_label: description
+      ? counts.get(description) > 1 ? `${description} (${ordinal})` : description
+      : row.display_label }));
+}
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
 
@@ -143,9 +173,17 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         }
         const exits = approved.value.filter((row) =>
           row.exit_canonical_g5_id === current.scene.site.canonical_g5_ref?.entity_id);
+        // Slot lookup for the not-yet-generated pass-target description (step 3); stateless
+        // catalog read, safe to repeat, never recomputes occupancy or admission.
+        const closure = typeof worldBaseReader.readPinnedG4ExpansionClosure === 'function'
+          ? await worldBaseReader.readPinnedG4ExpansionClosure(binding.value) : null;
+        const slotByExit = closure?.ok
+          ? new Map(closure.value.slots.map((slot) => [slot.directional_exit_id,
+              { id: slot.id, version: slot.version }]))
+          : null;
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
-          site: current.scene.site, directional_exits: exits });
+          site: current.scene.site, directional_exits: exits, slotByExit });
       }, transaction);
     },
     async readExitDisclosure(context = {}) {
@@ -158,9 +196,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const exits = context.directional_exits;
         const admitted = await admit(current, exits.map((row) => ({ target_id: row.id,
           position_id: current.scene.location.scene_position_id, entity_kind: 'directional_exit' })));
-        const visible = new Set(admitted.map((row) => row.target_id));
-        return exits.flatMap((exit) => {
-          if (!visible.has(exit.id)) return [];
+        const visibilityByExit = new Map(admitted.map((row) => [row.target_id, row.visibility]));
+        const disclosed = exits.flatMap((exit) => {
+          if (!visibilityByExit.has(exit.id)) return [];
           const labels = labelCatalog.labels.filter((row) =>
             row.world_revision_id === current.scene.world_revision_id
             && row.g4_ref.id === current.scene.site.parent_g4_id
@@ -169,10 +207,16 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             && row.directional_exit_ref.canonical_digest === exit.canonical_digest
             && row.direction_context_ref.id === exit.direction_context_id);
           if (labels.length !== 1) gap('approved_exit_label_required');
+          const slotRef = context.slotByExit?.get(exit.id);
+          const description = visibilityByExit.get(exit.id) === 'clear'
+            ? passTargetDescriptionForSlot(slotRef) : null;
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
-            display_label: labels[0].display_label }];
+            display_label: labels[0].display_label,
+            editorial_choice_ordinal: labels[0].editorial_choice_ordinal,
+            pass_target_description: description }];
         });
+        return withPassTargetDisambiguation(disclosed);
       }, context.transaction, context.observedPositionId);
     },
     async readEntityObservations({ partyId, actorId, transaction,

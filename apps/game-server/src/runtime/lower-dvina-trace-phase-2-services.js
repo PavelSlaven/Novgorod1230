@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   './lower-dvina-trace-turn-step-runtime-ports.js';
@@ -138,12 +139,20 @@ export function buildLowerDvinaTracePhase2Services(context) {
         historical_events: partyHistoricalEventsOf(state)
       })
     } : {}),
-    turnStepBlockPlan: ({ plan, request }) => request.step_index === 1
+    turnStepBlockPlan: ({ plan, request }) => (request.step_index === 1
       && actorMovementBlocked(state)
       && plan.resolution === 'direct'
       && plan.goal_result === 'not_achieved'
       && plan.reason_code === 'actor_movement_blocked'
-      && plan.operations.length === 0,
+      && plan.operations.length === 0)
+      || (request.step_index === 1
+        && plan.resolution === 'domain_request'
+        && plan.reason_code === 'destination_occupied'
+        && plan.operations?.length === 1
+        && (request.player_safe_state?.available_domain_operation_grounding ?? [])
+          .some(({ operation, semantic_scope }) =>
+            semantic_scope?.destination_status === 'occupied'
+            && isDeepStrictEqual(operation, plan.operations[0]))),
     ...(turnStepSemanticGroundingValidator ? {
       turnStepSemanticGroundingValidator
     } : {}),

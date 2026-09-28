@@ -34,6 +34,9 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
       command_id: `live_world.follow_local_scene_edge:${edgeId}`,
       option_id: `local_scene_edge:${edgeId}`,
       label: visibleLabel, target_id: edgeId,
+      // Structural signal for turnStepBlockPlan (destination_occupied claim check) via
+      // available_domain_operation_grounding - never parsed from the visible text above.
+      semantic_grounding: { destination_status: status },
       approved_record: null, preconditions: [],
       expected_cost: { kind: 'action', units: actionUnits }, known_risks: [],
       reason_visible_to_actor: visibleLabel,

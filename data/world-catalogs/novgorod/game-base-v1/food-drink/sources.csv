@@ -46,6 +46,8 @@ sources/master-archive-v1/data/normalized_source_tables/food_system/food_seasona
 sources/master-archive-v1/data/normalized_source_tables/food_system/ingredients.csv,file,Repository file row,,see file
 sources/master-archive-v1/data/normalized_source_tables/food_system/recipes.csv,file,Repository file row,,see file
 sources/master-archive-v1/data/normalized_source_tables/food_system/religious_food_rules.csv,file,Repository file row,,see file
+sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv,file,Repository file row,,see file
+sources/master-archive-v1/data/normalized_source_tables/material_entities/state_variants.csv,file,Repository file row,,see file
 sqlite:novgorod_1230:economy:вино,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
 sqlite:novgorod_1230:economy:зерно: рожь,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
 sqlite:novgorod_1230:economy:мёд,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)

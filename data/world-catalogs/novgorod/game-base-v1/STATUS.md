@@ -12,7 +12,7 @@
 | [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 5 | 8 | 0 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 5 | 2 | 0 |
-| [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 10 | 8 | 0 |
+| [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 13 | 12 | 0 |
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
 | [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 7 | 4 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 23 | 23 | 0 |
@@ -26,7 +26,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 4 | 0 |
-| **Итого** | | **100** | **247** | **0** |
+| **Итого** | | **103** | **251** | **0** |
 
 ## Вердикты по файлам
 
@@ -193,24 +193,31 @@
 
 | Файл | Последний verdict |
 |---|---|
-| [`dishes/dishes_meals.csv`](food-drink/dishes/dishes_meals.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
+| [`dishes/dishes_meals.csv`](food-drink/dishes/dishes_meals.csv) | [approve_with_limits](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
 | [`dishes/famine_1230.csv`](food-drink/dishes/famine_1230.csv) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
 | [`dishes/fasting_rules.csv`](food-drink/dishes/fasting_rules.csv) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
 | [`dishes/meal_profiles.csv`](food-drink/dishes/meal_profiles.csv) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
 | [`dishes/meal_slot_rules.csv`](food-drink/dishes/meal_slot_rules.csv) | [approve](food-drink/VERIFICATION.md#повторная-проверка-2026-09-26) |
 | [`dishes/preservation_storage.csv`](food-drink/dishes/preservation_storage.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
-| [`dishes/README.md`](food-drink/dishes/README.md) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
+| [`dishes/README.md`](food-drink/dishes/README.md) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`dishes/recipe_months.csv`](food-drink/dishes/recipe_months.csv) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
 | [`dishes/recipe_steps.csv`](food-drink/dishes/recipe_steps.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
 | [`dishes/sensory_lexicon.csv`](food-drink/dishes/sensory_lexicon.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
-| [`dishes/spoilage_states.csv`](food-drink/dishes/spoilage_states.csv) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
+| [`dishes/spoilage_states.csv`](food-drink/dishes/spoilage_states.csv) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
 | [`food/household_food_stock_profiles.csv`](food-drink/food/household_food_stock_profiles.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
 | [`food/household_type_pf_crosswalk.csv`](food-drink/food/household_type_pf_crosswalk.csv) | [approve_with_limits](food-drink/VERIFICATION.md#foodhousehold_type_pf_crosswalkcsv--approve_with_limits) |
 | [`food/ingredient_months.csv`](food-drink/food/ingredient_months.csv) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
-| [`food/ingredients.csv`](food-drink/food/ingredients.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
-| [`food/README.md`](food-drink/food/README.md) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
+| [`food/ingredients.csv`](food-drink/food/ingredients.csv) | [approve_with_limits](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`food/material_entities.csv`](food-drink/food/material_entities.csv) | [approve_with_limits](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`food/README.md`](food-drink/food/README.md) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
 | [`food/taxon_refs.csv`](food-drink/food/taxon_refs.csv) | [approve_with_limits](food-drink/VERIFICATION.md#вердикты-по-файлам) |
-| [`README.md`](food-drink/README.md) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
-| [`sources.csv`](food-drink/sources.csv) | [approve](food-drink/VERIFICATION.md#вердикты-по-файлам) |
+| [`README.md`](food-drink/README.md) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`scripts/build_report.json`](food-drink/scripts/build_report.json) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`scripts/build.py`](food-drink/scripts/build.py) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`scripts/check.py`](food-drink/scripts/check.py) | [approve_with_limits](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`scripts/curated/archive_inclusions.json`](food-drink/scripts/curated/archive_inclusions.json) | [approve_with_limits](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`scripts/curated/curated_rules.json`](food-drink/scripts/curated/curated_rules.json) | [approve_with_limits](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
+| [`sources.csv`](food-drink/sources.csv) | [approve](food-drink/VERIFICATION.md#независимая-проверка-d46-imp-food-claude-opus-55-2026-09-29) |
 
 ### history-events-knowledge
 

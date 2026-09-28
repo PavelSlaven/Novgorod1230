@@ -127,6 +127,22 @@ test('M2C_WAVE_PRESENCE_C4_CONFLICT', () => {
   assertSingleCode(errors, 'M2C_WAVE_PRESENCE_C4_CONFLICT');
 });
 
+test('M2C_WAVE_NODES_DATASET_REQUIRED', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    spatial_node_place_family_bindings: [minimalPrimaryBinding()],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_NODES_DATASET_REQUIRED');
+});
+
+test('wave validation runs for non-canonical bundle_id when wave tables present', () => {
+  const errors = collectErrors(baseManifest({ bundle_id: 'not_the_wave_bundle_id' }), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    spatial_node_place_family_bindings: [minimalPrimaryBinding()],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_NODES_DATASET_REQUIRED');
+});
+
 test('M2C_WAVE_BINDING_NODE_NOT_IN_CLOSURE', () => {
   const errors = collectErrors(baseManifest(), emptyWaveDatasets({
     place_families: [minimalPlaceFamily()],

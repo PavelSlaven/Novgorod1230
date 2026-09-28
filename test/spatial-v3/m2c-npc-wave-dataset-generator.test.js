@@ -102,7 +102,7 @@ test('mapPresenceRule clears allowed_times for people subject kinds', () => {
   };
   const mapped = mapPresenceRule(row, 'rev-1', 'src-1');
   assert.deepEqual(mapped.allowed_times, []);
-  assert.deepEqual(mapped.authoring_payload.allowed_times_source, ['day']);
+  assert.equal('allowed_times_source' in mapped.authoring_payload, false);
 });
 
 test('parseSlotWeight empty to 1; zero and negative throw', () => {

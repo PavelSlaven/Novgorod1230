@@ -11,6 +11,7 @@ import {
   buildImportWithReadbackSql,
   buildTransactionalImportSql,
   validateAuthoringBundle,
+  waveImportViaReadbackWrapper,
 } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { M2C_NPC_WAVE_TABLE_SET } from '../../tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs';
 import { testContainerLabel } from '../helpers/test-containers.js';
@@ -26,6 +27,16 @@ const approvedTarget = async () => ({
   p28_activation: 'not_authorized',
   errors: [],
 });
+
+async function prepareApprovedWaveCopy(baseDir) {
+  await cp(join(process.cwd(), waveRootRel), baseDir, { recursive: true });
+  const manifestFile = join(baseDir, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  manifest.status = 'approved';
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  const approvalPath = join(baseDir, 'approval.json');
+  return { manifestFile, manifestRel: join(baseDir), approvalPath };
+}
 
 async function startPostgres(name) {
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
@@ -53,7 +64,7 @@ async function waveTableCounts(pool) {
   return counts;
 }
 
-test('m2c-npc-wave imports through P12 with readback, idempotency and rollback', async (t) => {
+test('m2c-npc-wave approved bundle imports through P12 with readback, idempotency and rollback', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const validation = await validateAuthoringBundle({
     root: process.cwd(),
@@ -67,22 +78,29 @@ test('m2c-npc-wave imports through P12 with readback, idempotency and rollback',
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
   pool = await startPostgres(name);
 
-  await pool.query(await buildImportWithReadbackSql({ root: process.cwd(), manifestPath: waveManifestRel }));
+  const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-approved-'));
+  const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
+  t.after(() => rm(dir, { recursive: true, force: true }));
+
+  await pool.query(await buildImportWithReadbackSql({
+    root: process.cwd(),
+    manifestPath: manifestFile,
+    m2cWaveApprovalPath: approvalPath,
+  }));
 
   const counts = await waveTableCounts(pool);
   for (const table of M2C_NPC_WAVE_TABLE_SET) assert.ok(counts[table] > 0, table);
 
-  const dupSql = await buildTransactionalImportSql({
+  await pool.query(await buildImportWithReadbackSql({
     root: process.cwd(),
-    manifestPath: waveManifestRel,
-    wrapTransaction: false,
-  });
-  await pool.query(`BEGIN;\n${dupSql}COMMIT;`);
+    manifestPath: manifestFile,
+    m2cWaveApprovalPath: approvalPath,
+  }));
   const afterDup = await waveTableCounts(pool);
   for (const table of M2C_NPC_WAVE_TABLE_SET) assert.equal(afterDup[table], counts[table], `double import changed ${table}`);
 
-  const manifest = JSON.parse(await readFile(waveManifestRel, 'utf8'));
-  const waveRoot = join(process.cwd(), dirname(waveManifestRel));
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  const waveRoot = dirname(manifestFile);
   const presenceDataset = manifest.datasets.find((d) => d.table === 'presence_rules');
   const presenceAbs = join(waveRoot, presenceDataset.file);
   const presenceRows = JSON.parse(await readFile(presenceAbs, 'utf8'));
@@ -105,7 +123,8 @@ test('m2c-npc-wave imports through P12 with readback, idempotency and rollback',
   try {
     await pool.query(await buildImportWithReadbackSql({
       root: process.cwd(),
-      manifestPath: join(waveRootRel, 'manifest.mutated-postgres-test.json'),
+      manifestPath: badManifestPath,
+      m2cWaveApprovalPath: approvalPath,
     }));
   } catch (error) {
     mismatch = /P12_EXISTING_ROW_MISMATCH:presence_rules/u.test(String(error.message));
@@ -123,10 +142,9 @@ test('m2c-npc-wave readback mismatch on empty wave tables rolls back to zero row
   pool = await startPostgres(name);
 
   const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-rb-'));
-  await cp(join(process.cwd(), waveRootRel), dir, { recursive: true });
+  const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
   t.after(() => rm(dir, { recursive: true, force: true }));
 
-  const manifestFile = join(dir, 'manifest.json');
   const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
   const presenceDataset = manifest.datasets.find((d) => d.table === 'presence_rules');
   const presencePath = join(dir, presenceDataset.file);
@@ -137,20 +155,24 @@ test('m2c-npc-wave readback mismatch on empty wave tables rolls back to zero row
   const readbackBody = `${JSON.stringify(readbackOnly, null, 2)}\n`;
   await writeFile(join(dir, readbackRel), readbackBody, 'utf8');
   const readbackManifestFile = join(dir, 'manifest.readback-mismatch-test.json');
-  manifest.datasets = manifest.datasets.map((d) => (d.table === 'presence_rules'
+  const readbackManifest = structuredClone(manifest);
+  readbackManifest.status = 'approved';
+  readbackManifest.datasets = manifest.datasets.map((d) => (d.table === 'presence_rules'
     ? { ...d, file: readbackRel, sha256: createHash('sha256').update(readbackBody).digest('hex') }
     : d));
-  await writeFile(readbackManifestFile, JSON.stringify(manifest));
+  await writeFile(readbackManifestFile, JSON.stringify(readbackManifest));
 
   const importSql = await buildTransactionalImportSql({
     root: process.cwd(),
     manifestPath: manifestFile,
     wrapTransaction: false,
-    approvedWaveImportAllowed: true,
+    m2cWaveApprovalPath: approvalPath,
+    [waveImportViaReadbackWrapper]: true,
   });
   const readbackSql = await buildBundleReadbackSql({
     root: process.cwd(),
     manifestPath: readbackManifestFile,
+    m2cWaveApprovalPath: approvalPath,
   });
   let code = '';
   try {

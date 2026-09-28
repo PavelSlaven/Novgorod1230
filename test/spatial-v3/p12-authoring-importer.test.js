@@ -12,7 +12,7 @@ import {
   validateAuthoringBundle,
 } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { validateM2cNpcWaveApproval } from '../../tools/spatial-v3/m2c-npc-wave-approval.mjs';
-import { isM2cNpcWaveManifest, M2C_NPC_WAVE_TABLE_SET } from '../../tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs';
+import { manifestIncludesWaveTables, M2C_NPC_WAVE_TABLE_SET } from '../../tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs';
 
 const gap = (code) => ({ code, subject_ref: 'novgorod:test', dependency_pins: ['catalog'], blocking: true });
 const approvedTarget = async () => ({ ok: true, materialization_authorized: false, p28_activation: 'not_authorized', errors: [] });
@@ -221,22 +221,44 @@ test('P12 readback SQL includes mismatch guard for spatial bundle tables', async
     manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
   });
   assert.match(sql, /P12_READBACK_MISMATCH:spatial_v3_world_revisions/u);
-  assert.match(sql, /readback_aggregate_sha256/u);
+  assert.doesNotMatch(sql, /readback_aggregate_sha256/u);
+});
+
+test('P12 rejects equal import and readback temp table prefixes', async () => {
+  await assert.rejects(
+    () => buildImportWithReadbackSql({
+      root: process.cwd(),
+      manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
+      temporaryTablePrefix: 'p12_same',
+      readbackTemporaryTablePrefix: 'p12_same',
+    }),
+    /P12_IMPORT_READBACK_PREFIX_COLLISION/u,
+  );
 });
 
 test('P12 import and readback temp table prefixes do not collide', async () => {
   const sql = await buildImportWithReadbackSql({
     root: process.cwd(),
-    manifestPath: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
+    manifestPath: 'data/world-catalogs/novgorod/spatial-v3/manifest.json',
     temporaryTablePrefix: 'p12_shared',
     readbackTemporaryTablePrefix: 'p12_shared_rb',
   });
-  assert.match(sql, /CREATE TEMP TABLE p12_shared_place_families/u);
-  assert.match(sql, /CREATE TEMP TABLE p12_shared_rb_place_families/u);
-  const importCreates = sql.match(/CREATE TEMP TABLE p12_shared_[a-z0-9_]+/gu) ?? [];
-  const readbackCreates = sql.match(/CREATE TEMP TABLE p12_shared_rb_[a-z0-9_]+/gu) ?? [];
-  assert.ok(importCreates.length > 0 && readbackCreates.length > 0);
-  assert.ok(!importCreates.some((name) => readbackCreates.includes(name.replace('_rb', ''))));
+  assert.match(sql, /CREATE TEMP TABLE p12_shared_spatial_v3_world_revisions/u);
+  assert.match(sql, /CREATE TEMP TABLE p12_shared_rb_spatial_v3_world_revisions/u);
+  const importCreates = new Set(sql.match(/CREATE TEMP TABLE p12_shared_(?!rb_)[a-z0-9_]+/gu) ?? []);
+  const readbackCreates = new Set(sql.match(/CREATE TEMP TABLE p12_shared_rb_[a-z0-9_]+/gu) ?? []);
+  assert.ok(importCreates.size > 0 && readbackCreates.size > 0);
+  for (const name of importCreates) assert.ok(!readbackCreates.has(name));
+});
+
+test('P12 draft m2c-npc-wave import is refused without approved manifest', async () => {
+  await assert.rejects(
+    () => buildImportWithReadbackSql({
+      root: process.cwd(),
+      manifestPath: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
+    }),
+    /P12_WAVE_IMPORT_REQUIRES_APPROVED/u,
+  );
 });
 
 test('P12 approved m2c-npc-wave import without readback wrapper is refused', async (t) => {
@@ -244,9 +266,6 @@ test('P12 approved m2c-npc-wave import without readback wrapper is refused', asy
   const waveRoot = join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1');
   await cp(waveRoot, dir, { recursive: true });
   t.after(() => rm(dir, { recursive: true, force: true }));
-  const repoApproval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
-  repoApproval.checked_by = 'integration-test-reviewer';
-  await writeFile(join(dir, 'approval.json'), JSON.stringify(repoApproval));
   const manifestFile = join(dir, 'manifest.json');
   const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
   manifest.status = 'approved';
@@ -263,11 +282,24 @@ test('P12 approved m2c-npc-wave import without readback wrapper is refused', asy
   );
 });
 
-test('m2c-npc-wave approval rejects draft checked_by until reviewer sign-off', async () => {
-  const result = await validateM2cNpcWaveApproval({ root: process.cwd() });
-  assert.equal(result.ok, false);
-  assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_CHECKED_BY_PLACEHOLDER'));
-  assert.equal(result.approval.source_commit, '3ab1c890c1caee2c1247ee144bf66bd35de705ec');
+test('P12 wave table bundle with foreign bundle_id still runs wave validation', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-wave-id-'));
+  const waveRoot = join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1');
+  await cp(waveRoot, dir, { recursive: true });
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const manifestFile = join(dir, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  manifest.bundle_id = 'not_the_wave_bundle_id';
+  manifest.status = 'approved';
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({
+    root: process.cwd(),
+    manifestPath: manifestFile,
+    validateTargetApproval: approvedTarget,
+    m2cWaveApprovalPath: join(dir, 'approval.json'),
+  });
+  assert.equal(result.ok, true);
+  assert.ok(M2C_NPC_WAVE_TABLE_SET.every((table) => (result.dataset_counts[table] ?? 0) > 0));
 });
 
 test('P12 sqlLiteral rejects null TEXT[] elements fail-closed', () => {

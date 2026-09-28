@@ -461,6 +461,18 @@
    "refs": [
     "wk:claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
    ]
+  },
+  {
+   "state_id": "sprouted",
+   "smell_ru": "сырой зерновой",
+   "look_ru": "ростки, раскрытая оболочка зерна",
+   "applies_to_categories": [
+    "grain"
+   ],
+   "body_effect": "none_known",
+   "refs": [
+    "sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI01273"
+   ]
   }
  ],
  "meal_slots": {

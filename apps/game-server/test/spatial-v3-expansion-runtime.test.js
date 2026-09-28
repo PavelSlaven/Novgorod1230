@@ -38,9 +38,10 @@ test('arrival with no local path to departure offers no expansion and neither mu
   current.scene = { ...current.scene, positions: [current.position], movement_edges: [] };
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current });
   assert.deepEqual(await runtime.listExpansionOptions(identity), []);
-  await assert.rejects(runtime.prepareExpansion(identity), (e) => e.code === 'SPATIAL_V3_EXPANSION_DEPARTURE_UNREACHABLE');
+  assert.deepEqual(await runtime.listApproachOptions(identity), []);
+  await assert.rejects(runtime.prepareExpansion(identity), (e) => e.details.reason === 'selected_exit_unavailable');
 });
-test('an arrival position from which departure is reachable by a local edge still offers the crossing (A-B1-05 step 7c)', async () => {
+test('an arrival position from which departure is reachable by a local edge offers the approach, not the crossing (A-B1-06)', async () => {
   const current = context();
   const departurePosition = current.position;
   current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
@@ -49,14 +50,24 @@ test('an arrival position from which departure is reachable by a local edge stil
       to_position_id: departurePosition.id, status: 'active' }] };
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
-  assert.deepEqual(await runtime.listExpansionOptions(identity),
-    [{ directional_exit_id: 'exit', display_label: 'Продолжить путь', local_departure_path: ['local-edge-1'] }]);
+  // No executable crossing from here - it would fail prepareTraversal's committed-position check.
+  assert.deepEqual(await runtime.listExpansionOptions(identity), []);
+  // Instead, the first local hop toward departure, labelled with the exit's own stable text -
+  // the same local-scene edge the local-scene movement owner would offer and execute.
+  assert.deepEqual(await runtime.listApproachOptions(identity),
+    [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1', display_label: 'Продолжить путь' }]);
+});
+test('at departure, no approach is offered (already there)', async () => {
+  const current = context();
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  assert.deepEqual(await runtime.listApproachOptions({ partyId: 'party', actorId: 'actor' }), []);
 });
 test('exact approved entry and current disclosure select server-owned request only', async () => {
   const current = context(); const before = structuredClone(current); let request;
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async (input) => { request = input; return { ok: true }; } } });
-  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ directional_exit_id: 'exit', display_label: 'Продолжить путь', local_departure_path: [] }]);
+  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ kind: 'crossing', directional_exit_id: 'exit', display_label: 'Продолжить путь' }]);
   await runtime.prepareExpansion({ ...identity, slot_ref: { id: 'client', version: 999 }, candidate_ordinal: 999 });
   assert.equal(request.candidate_ordinal, 0); assert.deepEqual(request.slot_ref, { id: 'slot', version: 3 });
   assert.equal(request.source_position_id, 'departure-position'); assert.equal(request.actor_id, 'actor');
@@ -73,7 +84,7 @@ test('a resolved pass-target description reaches listExpansionOptions verbatim (
     materializerVersion: 'version',
     generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
   const options = await runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor' });
-  assert.deepEqual(options, [{ directional_exit_id: 'exit', display_label: 'к руслу', local_departure_path: [] }]);
+  assert.deepEqual(options, [{ kind: 'crossing', directional_exit_id: 'exit', display_label: 'к руслу' }]);
 });
 
 test('wrong exact entry version, hidden exit and changed disclosure version are unavailable', async () => {

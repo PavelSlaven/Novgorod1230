@@ -22,7 +22,8 @@ const candidate = { directional_exit_id: 'exit:woods',
 async function commands(runtime, current = state) {
   return createTraceExpansionCommands({ state: current,
     requestId: 'request:walk', inputDigest: 'input:digest',
-    spatialExpansionRuntime: runtime });
+    spatialExpansionRuntime: runtime == null ? null
+      : { listApproachOptions: async () => [], ...runtime } });
 }
 
 test('the free phrase "иду к руслу" resolves to the one exit disclosed with that pass-target text (step 3)',
@@ -43,6 +44,40 @@ test('the free phrase "иду к руслу" resolves to the one exit disclosed 
     assert.equal(command.semantic_binding.matches({
       operation: { ...operation, target_ref: 'exit:other' } }), false);
   });
+
+test('a reachable-but-not-yet-at-departure exit offers its approach through the local-scene owner, not a second one (A-B1-06)',
+  async () => {
+    const approach = { directional_exit_id: 'exit:channel', edge_id: 'edge:1', display_label: 'к руслу' };
+    let prepared = null;
+    const consequence = packageBase({ inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' });
+    const [command] = await createTraceExpansionCommands({ state,
+      requestId: 'request:walk', inputDigest: 'input:digest',
+      spatialExpansionRuntime: { listExpansionOptions: async () => [],
+        listApproachOptions: async () => [approach] },
+      spatialLocalSceneRuntime: { async prepareLocalMovement(input) { prepared = input; return consequence; } } });
+    assert.equal(command.label, 'к руслу — подход к переправе');
+    assert.equal(command.target_id, 'edge:1');
+    const operation = command.semantic_binding.operation_dto;
+    assert.equal(operation.movement_kind, 'local');
+    assert.equal(operation.target_ref, 'edge:1');
+    const result = await command.consequence({ retrievedState: state, playerInput: 'иду к руслу' });
+    assert.equal(result, consequence);
+    assert.equal(prepared.edgeId, 'edge:1');
+    assert.equal(prepared.partyId, state.party_id);
+    assert.equal(prepared.actorId, state.actor_id);
+  });
+
+test('a candidate crossing is not offered while only an approach is reachable', async () => {
+  const approach = { directional_exit_id: 'exit:channel', edge_id: 'edge:1', display_label: 'к руслу' };
+  const commandList = await createTraceExpansionCommands({ state,
+    requestId: 'request:walk', inputDigest: 'input:digest',
+    spatialExpansionRuntime: { listExpansionOptions: async () => [],
+      listApproachOptions: async () => [approach] },
+    spatialLocalSceneRuntime: { prepareLocalMovement: async () => packageBase({
+      inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' }) } });
+  assert.equal(commandList.length, 1);
+  assert.equal(commandList[0].command_id, 'live_world.approach_directional_exit:exit:channel');
+});
 
 test('approved exit is a selectable exact server operation; topology input is IDs only',
   async () => {
@@ -203,7 +238,7 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
       revision: LIVE_WORLD_TURN_PROFILE.revision,
       digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
     } },
-    spatialExpansionRuntime: { listExpansionOptions: async () => [candidate] },
+    spatialExpansionRuntime: { listExpansionOptions: async () => [candidate], listApproachOptions: async () => [] },
     turnStepModel(request) {
       return { schema: 'turn_step_plan_v1', request_id: request.request_id,
         committed_state_version: request.committed_state_version,
@@ -244,6 +279,7 @@ test('official exit action reports known movement denial without moving or advan
         digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
       } },
       spatialExpansionRuntime: {
+        listApproachOptions: async () => [],
         listExpansionOptions: async () => [candidate],
         prepareExpansion: async () => ({ ok: true }),
         prepareTraversal: async () => { throw Object.assign(
@@ -300,6 +336,7 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
         digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
       } },
       spatialExpansionRuntime: {
+        listApproachOptions: async () => [],
         listExpansionOptions: async () => [candidate],
         prepareExpansion: async () => { prepared += 1; return { ok: true }; },
         ...(topologyCommitted ? { prepareTraversal: async () => {

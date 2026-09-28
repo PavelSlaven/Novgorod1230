@@ -15,10 +15,11 @@ function atDepartureSlot(scene, position) {
 
 /** Deterministic BFS over the scene's own local edges to the nearest position that
  * satisfies a departure/both endpoint slot - shortest path, ties broken by edge id.
- * Arrival/focus reaching departure only unlocks the SAME crossing command
- * (`eligibleExpansions` keeps deciding purely by slot rule); the walk itself is a
+ * `eligibleExpansions` keeps deciding purely by slot rule; the walk itself is a
  * separate, ordinary local movement, owned and applied by the local-scene movement
- * runtime, not duplicated here. */
+ * runtime, never duplicated here (A-B1-06: the crossing command only ever executes
+ * from `departure`; a not-yet-there actor is offered the first local hop toward it,
+ * labelled with the reachable exit's own stable identity, not a second owner). */
 export function findReachableDeparturePosition(context) {
   const { position, scene } = context;
   if (atDepartureSlot(scene, position)) return { position, path: [] };
@@ -51,18 +52,8 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
   async function selectedContext({ partyId, actorId, directionalExitId }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
     const context = await readContext({ partyId, actorId });
-    const reachable = findReachableDeparturePosition(context);
-    const options = reachable == null ? []
-      : eligibleExpansions({ ...context, position: reachable.position }, now())
-        .map((option) => ({ ...option, local_departure_path: reachable.path }));
+    const options = eligibleExpansions(context, now());
     if (!options.length) {
-      // A selection attempt (directionalExitId given) means this was offered by an earlier
-      // listExpansionOptions() call; if departure is unreachable now, the path vanished
-      // between listing and execution (occupied edges surface their own typed
-      // SPATIAL_V3_LOCAL_EDGE_OCCUPIED when the local walk actually runs).
-      if (directionalExitId != null && reachable == null) throw serverError(
-        'SPATIAL_V3_EXPANSION_DEPARTURE_UNREACHABLE',
-        'The path to the departure point is no longer available.', { status: 409 });
       if (directionalExitId != null) gap('selected_exit_unavailable');
       return { context, options: [], selected: null };
     }
@@ -80,37 +71,64 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) gap('approved_exit_disclosure_required');
       return [{ ...option, display_label: disclosure.display_label }];
     });
-    return { context, departurePosition: reachable.position, localDeparturePath: reachable.path,
-      options: visible, selected: directionalExitId == null ? null
+    return { context, options: visible, selected: directionalExitId == null ? null
       : one(visible.filter((row) => row.exit.id === directionalExitId), 'selected_exit_unavailable') };
+  }
+  /** A not-yet-at-departure actor never gets an executable crossing command (it would
+   * fail `prepareTraversal`'s committed-position check); instead, expose the first local
+   * hop of the deterministic path toward whichever departure position would make the
+   * crossing eligible, labelled with the reachable exit's own stable display text. The
+   * hop is executed by the local-scene movement owner, not duplicated here (A-B1-06). */
+  async function approachOptions({ partyId, actorId }) {
+    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    const context = await readContext({ partyId, actorId });
+    const reachable = findReachableDeparturePosition(context);
+    if (reachable == null || reachable.path.length === 0) return [];
+    const options = eligibleExpansions({ ...context, position: reachable.position }, now());
+    if (!options.length || typeof readExitDisclosure !== 'function') return [];
+    const disclosed = await readExitDisclosure({ ...context,
+      directional_exits: options.map((row) => row.exit) });
+    if (!Array.isArray(disclosed)) return [];
+    return options.flatMap((option) => {
+      const disclosure = disclosed.find((row) => row.directional_exit_id === option.exit.id
+        && row.directional_exit_version === option.exit.version
+        && row.direction_context_id === option.exit.direction_context_id);
+      if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
+        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
+      return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
+        display_label: disclosure.display_label }];
+    });
   }
   return Object.freeze({
     async listExpansionOptions(input) {
       const { options } = await selectedContext({ partyId: input.partyId, actorId: input.actorId });
-      return options.map(({ exit, display_label, local_departure_path }) =>
-        ({ directional_exit_id: exit.id, display_label, local_departure_path }));
+      return options.map(({ exit, display_label }) => ({ kind: 'crossing',
+        directional_exit_id: exit.id, display_label }));
+    },
+    async listApproachOptions(input) {
+      const approaches = await approachOptions({ partyId: input.partyId, actorId: input.actorId });
+      return approaches.map((row) => ({ kind: 'approach', ...row }));
     },
     async prepareExpansion(input) {
-      const { context, departurePosition, selected } = await selectedContext(input);
+      const { context, selected } = await selectedContext(input);
       if (selected.connection) return Object.freeze({ ok: true, replay: true,
         topology_status: 'committed', connection_id: selected.connection.id,
-        source_position_id: departurePosition.id, directional_exit: pin(selected.exit),
+        source_position_id: context.position.id, directional_exit: pin(selected.exit),
         moves_traveller: false, advances_time: false });
       if (typeof generatedExpansionAdapter?.prepareExpansion !== 'function') gap('p16_expansion_owner_required');
       return generatedExpansionAdapter.prepareExpansion({ party_id: input.partyId, actor_id: input.actorId,
         g4: context.g4, profile: context.profile, slot_ref: pin(selected.slot),
         directional_exit: pin(selected.exit), candidate_ordinal: selected.ordinal,
-        source_site_id: context.site.id, source_position_id: departurePosition.id,
+        source_site_id: context.site.id, source_position_id: context.position.id,
         ...(selected.entry ? { entry_binding: pin(selected.entry) } : {}),
         materializer_version: materializerVersion });
     },
     async prepareTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
-      const { context, departurePosition, localDeparturePath, selected } = await selectedContext(input);
+      const { context, selected } = await selectedContext(input);
       if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
-        || departurePosition.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
-      return prepareSiteTraversal({ ...input, context: { ...context, position: departurePosition },
-        localDeparturePath, connection: selected.connection });
+        || context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
+      return prepareSiteTraversal({ ...input, context, connection: selected.connection });
     }
   });
 }

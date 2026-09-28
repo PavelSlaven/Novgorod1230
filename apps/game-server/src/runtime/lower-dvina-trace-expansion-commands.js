@@ -5,9 +5,10 @@ import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
 
 export async function createTraceExpansionCommands({ state, requestId,
-  inputDigest, spatialExpansionRuntime }) {
+  inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
   if (spatialExpansionRuntime == null) return [];
-  if (typeof spatialExpansionRuntime.listExpansionOptions !== 'function') {
+  if (typeof spatialExpansionRuntime.listExpansionOptions !== 'function'
+      || typeof spatialExpansionRuntime.listApproachOptions !== 'function') {
     fail('LIVE_WORLD_EXPANSION_OPTIONS_UNAVAILABLE');
   }
   const identity = { partyId: state.party_id, actorId: state.actor_id };
@@ -19,13 +20,60 @@ export async function createTraceExpansionCommands({ state, requestId,
         !== candidates.length) {
     fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
   }
+  const approaches = await spatialExpansionRuntime.listApproachOptions(identity);
+  if (!Array.isArray(approaches)
+      || approaches.some((row) => !text(row?.directional_exit_id) || !text(row?.edge_id)
+        || !text(row?.display_label))) {
+    fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
+  }
   const sourcePosition = structuredClone(state.position);
   const sourceVersion = state.party_state?.state_version;
   const currentSource = (current) => current?.party_id === identity.partyId
     && current.actor_id === identity.actorId
     && current.party_state?.state_version === sourceVersion
     && isDeepStrictEqual(current.position, sourcePosition);
-  return candidates.map(({ directional_exit_id: exitId,
+  const approachCommands = approaches.length === 0
+    || typeof spatialLocalSceneRuntime?.prepareLocalMovement !== 'function' ? [] : approaches.map(
+    ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel }) => {
+      const label = `${exitLabel} — подход к переправе`;
+      const operation = { op: 'request_movement', actor_ref: identity.actorId,
+        target_ref: edgeId, movement_kind: 'local', description: label };
+      return {
+        command_id: `live_world.approach_directional_exit:${exitId}`,
+        option_id: `directional_exit_approach:${exitId}`,
+        label, target_id: edgeId,
+        approved_record: null, preconditions: [],
+        expected_cost: { kind: 'owner_resolved' }, known_risks: [],
+        reason_visible_to_actor: label,
+        mode: mode('movement_route', ['movement']),
+        matches: () => false,
+        semantic_binding: {
+          binding_id: `directional_exit_approach:${exitId}`,
+          operation: 'request_movement', operation_dto: operation,
+          matches: ({ operation: selected }) => selected != null
+            && isDeepStrictEqual({ ...selected, description: label }, operation)
+        },
+        availability({ committed_state: current, retrievedState }) {
+          const state = current ?? retrievedState;
+          const sourceReady = currentSource(state);
+          const blocked = sourceReady && actorMovementBlocked(state);
+          return available(sourceReady && !blocked, [], !sourceReady
+            ? ['directional_exit_stale'] : blocked ? ['actor_movement_blocked'] : []);
+        },
+        // Same local-scene movement owner and the same edge a plain local-scene command
+        // would offer for this edge (A-B1-06) - only the description differs, naming the
+        // reachable exit so a "переправлюсь"/"иду к руслу" intent can name the approach
+        // directly; the framework's own multi-step turn plans the crossing as step 2 once
+        // this hop commits and the actor is genuinely at departure.
+        async consequence({ retrievedState: current, playerInput }) {
+          if (!currentSource(current)) fail('LIVE_WORLD_EXPANSION_SOURCE_STALE');
+          return spatialLocalSceneRuntime.prepareLocalMovement({ ...identity,
+            state: current, edgeId, playerInput, inputDigest });
+        },
+        writeTargets: () => []
+      };
+    });
+  return [...approachCommands, ...candidates.map(({ directional_exit_id: exitId,
     display_label: label }) => {
     const operation = { op: 'request_movement', actor_ref: identity.actorId,
       target_ref: exitId, movement_kind: 'route', route_ref: exitId,
@@ -90,7 +138,7 @@ export async function createTraceExpansionCommands({ state, requestId,
       },
       writeTargets: () => []
     };
-  });
+  })];
 }
 
 function text(value) {

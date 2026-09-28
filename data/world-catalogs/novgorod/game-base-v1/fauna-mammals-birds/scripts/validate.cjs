@@ -30,6 +30,24 @@ const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 const LEVELS = { rare: 1, contextual: 2, common: 4, ubiquitous: 8 };
 const errors = [], warnings = [];
 const err = (m) => errors.push(m), warn = (m) => warnings.push(m);
+// A deliberately small editorial guard against context leaking into narrator sound text.
+const SOUND_CONTEXT = /(?:^|[^а-яё])(?:зим|весн|лет|осен|январ|феврал|март|апрел|ма[йяею]|июн|июл|август|сентябр|октябр|ноябр|декабр|лес|елов|ель|крон|гнезд|луг|болот|рек|озер|берег|вод[еуы]|пол[еяю]|неб|крыш|дерев|двор|трав|куст|трост|опуш|ноч|вечер|утр|сумерк|зар[еяю]|рассвет|дн[еёяю]|полет|полёт|взлет|взлёт|прилет|прилёт|ток|охот)[а-яё]*(?=$|[^а-яё])/i;
+function soundIssue(sound, description, audibleSeasons) {
+  if (!sound || !sound.trim()) return audibleSeasons && !/(?:молчалив|безмолвен|редко слышен)/i.test(description) ? 'empty' : '';
+  const match = sound.match(SOUND_CONTEXT);
+  return match ? `context word ${match[0].trim()}` : '';
+}
+if (process.argv.includes('--self-test')) {
+  for (const bad of ['весной «ки-ки»', 'в июне свист', 'над озером крик', 'ночью трель', 'на току щелчки']) if (!soundIssue(bad, 'крик', 'spring')) throw new Error('sound negative probe passed: ' + bad);
+  if (!soundIssue('', 'звонкая песня', 'spring')) throw new Error('ordinary voice without sound passed');
+  for (const good of ['громкое «ки-ки»', 'сухая трель и свист']) if (soundIssue(good, 'крик', 'spring')) throw new Error('sound positive probe failed: ' + good);
+  for (const [description, seasons] of [['почти молчалив', ''], ['редко слышен', 'winter'], ['почти безмолвен', 'spring;summer']]) if (soundIssue('', description, seasons)) throw new Error('silent voice without sound failed: ' + description);
+  console.log('voice_sound_ru self-test ok');
+  process.exit(0);
+}
+const phase = require('./validate-phase.cjs');
+const phaseTable = phase.csv(F('phase_activity.csv'));
+errors.push(...phase.validate('fauna-mammals-birds', phaseTable.rows, phaseTable.header));
 
 // ids
 const all = [...mammals, ...birds]; const ids = new Set();
@@ -75,7 +93,7 @@ for (const t of mammals.filter((m) => m.dormant_seasons.includes('winter'))) for
 
 // Acceptance fauna_birds
 if (birds.length < 40) err('fewer than 40 bird taxa: ' + birds.length);
-for (const b of birds) { if (!b.voice_description) err('bird without voice ' + b.fa_id); for (const s of SEASONS) if (!b['migration_' + s]) err('bird migration missing ' + b.fa_id + ' ' + s); if (!presBy(b.fa_id).length) err('bird without presence ' + b.fa_id); }
+for (const b of birds) { if (!b.voice_description) err('bird without voice ' + b.fa_id); if (b.voice_description && soundIssue(b.voice_sound_ru, b.voice_description, b.audible_seasons)) err('bird voice_sound_ru ' + soundIssue(b.voice_sound_ru, b.voice_description, b.audible_seasons) + ' ' + b.fa_id); for (const s of SEASONS) if (!b['migration_' + s]) err('bird migration missing ' + b.fa_id + ' ' + s); if (!presBy(b.fa_id).length) err('bird without presence ' + b.fa_id); }
 const INTERIOR = new Set(['pf_dwelling_interior', 'pf_cellar_granary', 'pf_mill', 'pf_grain_drying_shed_ovin', 'pf_outbuildings', 'pf_threshing_barn', 'pf_church_interior', 'pf_ordinary_workshop', 'pf_bathhouse', 'pf_smithy']);
 const bset = new Set(birds.map((b) => b.fa_id));
 const openPfs = [...new Set(pres.map((p) => p.pf_id))].filter((pf) => !INTERIOR.has(pf));
@@ -101,7 +119,7 @@ for (const p of pres) if (['fa_b_magpie', 'fa_b_starling'].includes(p.fa_id) && 
 
 const report = {
   checked_by: 'scripts/validate.cjs', ok: errors.length === 0,
-  counts: { mammals: mammals.length, birds: birds.length, presence_rows: pres.length, place_families_with_rows: new Set(pres.map((p) => p.pf_id)).size,
+  counts: { mammals: mammals.length, birds: birds.length, presence_rows: pres.length, phase_activity_rows: phaseTable.rows.length, place_families_with_rows: new Set(pres.map((p) => p.pf_id)).size,
     presence_by_class: Object.fromEntries(Object.keys(LEVELS).map((k) => [k, pres.filter((p) => p.frequency_class === k).length])),
     presence_confidence: { B: pres.filter((p) => p.confidence === 'B').length, C: pres.filter((p) => p.confidence === 'C').length },
     taxa_presence_1230_confidence: ['A', 'B', 'C'].reduce((a, k) => ((a[k] = all.filter((t) => t.presence_1230_confidence === k).length), a), {}),

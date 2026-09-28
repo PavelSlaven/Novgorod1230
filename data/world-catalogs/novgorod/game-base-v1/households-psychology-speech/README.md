@@ -8,13 +8,19 @@ WK production-v1 `family-social-context.json`) плюс курированный
 книжными `source_refs`. Проверено `scripts/check.py` (все проверки проходят
 на текущий момент, см. вывод ниже).
 
+**D-3 rework.** Связи и обращения покрывают достижимые пары на стартовых G5-узлах: общий расчёт читает `people_presence_authoring.csv`, `schedules_routines.csv`, `never_created_gaps` и привязки PF к G5, пересекает сезон и фазы `on_site`/`nearby` среди основного и вторичных PF узла. Пары с никогда не созданным субъектом перечислены в `scripts/build_report.json` как пробелы, без производных правил и форм. `joint_work` допустим только для работников на одном PF. Актуальные количества в `scripts/build_report.json`. Общая сцена даёт возможность встречи, но не создаёт отношение или знакомство конкретных NPC. Для пары есть точное правило или `no_source`, а для каждого направления — устная форма или `no_source` того же вида связи. Письменные формулы отделены полем `channel`; `scripts/check.py --probe` проверяет, что удаление покрытия обнаруживается.
+
+После обновления присутствия и расписаний общий расчёт даёт 727 совместных контекстов G5×сезон и 6617 пересечений фаз; числа сверяются `scripts/check.py` и `scripts/build_report.json`.
+
+`book:622242 §519` относится к городским усадьбам; сельский контекст подтверждает `book:648161 §2639`. Ни один из этих источников не устанавливает состав конкретного двора.
+
 **Rework 2026-09-26.** Независимый verifier (см. `VERIFICATION.md`) вернул
 5 из 7 таблиц группы на переработку: `household_composition_profiles.csv`,
 `kinship_terms.csv`, `psychology_profiles.csv`, `speech_registers.csv`,
 `norms.csv`. Все пять исправлены (см. секцию «Исправления 2026-09-26» в
 `VERIFICATION.md` и README каждого домена); `marriage_inheritance_rules.csv`
-и `address_forms.csv` (`approve_with_limits`) не входили в объём этой
-переработки и не менялись, кроме статистики в README households_kinship.
+и `address_forms.csv` (`approve_with_limits`) не входили в объём той
+переработки; `address_forms.csv` расширен отдельно в D-3.
 Статус всех таблиц остаётся `candidate` — переработка не является
 самоутверждением.
 
@@ -22,12 +28,14 @@ WK production-v1 `family-social-context.json`) плюс курированный
 
 | Домен | Файлы | Строк | Приоритет брифа | Статус покрытия |
 |---|---|---|---|---|
-| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv | 139 / 8 / 32 | M2c | частично: состав двора теперь оценён по book evidence (min/max по wealth_band), но не по relation/sex/age_band (гэп) |
+| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | см. `scripts/build_report.json` | M2c | стартовые пары покрыты; конкретные отношения устанавливаются только при материализации |
 | npc_psychology | psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; контекстные мотивы и страхи привязаны только к применимым свидетельствам; шкала ценностей не утверждена владельцем |
-| speech_address | speech_registers.csv, address_forms.csv | 71 / 3 | M3 | speech_registers.csv переработан (правило починено); address_forms.csv по-прежнему частичен: берестяно-грамотный корпус не собран |
+| speech_address | speech_registers.csv, address_forms.csv | см. `scripts/build_report.json` | M3 | направленные стартовые пары покрыты устной формой или явным пробелом |
 | social_norms_honour_hospitality | norms.csv | 19 | M3 | 4 из 5 ранее пустых norm_kind закрыты book evidence; gift всё ещё 0 строк |
 
 Подробности, правила вывода и гэпы — в README.md каждого домена.
+
+Для `pf_peasant_homestead` D-3 читает явную `slot_relationships` из D-2: два названных слота образуют `spouse`. Правило отношения требует материализованных актёров именно из этих слотов; совпадение ролей в другом дворе брака не устанавливает. `form_spouse_smerd*` выпускаются только при такой связи; без неё пара остаётся `unspecified` с нейтральными пробелами обращения.
 
 ## Запуск
 
@@ -35,6 +43,7 @@ WK production-v1 `family-social-context.json`) плюс курированный
 cd scripts
 python build.py   # генерирует все CSV, пишет build_report.json
 python check.py    # OK: all checks passed — на момент сдачи
+python check.py --probe  # удаляет покрытие только в памяти, включая оба направления новой зимней пары
 ```
 
 ## Что НЕ сделано (общие ограничения, оставшиеся после rework 2026-09-26)

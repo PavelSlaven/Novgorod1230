@@ -2,12 +2,13 @@
 import csv
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / "npc_runtime_profiles"))
-from build import read_pinned
+from build import AUTHORING, actor_applicability, read_pinned
 ROOT_DATA = HERE.parents[3]
 ORIGINAL_CONTEXT = "m2c_npc_regional_novgorod_land_v1"
 ORIGINAL_CONTEXT_SHA256 = "43399ce6523e58476339832b4bf8281838871f2ebc02c72c011e2968d2d87d72"
@@ -19,8 +20,17 @@ def refs(value):
 
 
 def csv_rows(path, delimiter=","):
-    with path.open(encoding="utf-8", newline="") as f:
+    with path.open(encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f, delimiter=delimiter))
+
+
+def conflicts(rule, selected):
+    condition = rule["if"]
+    excluded = rule["incompatible_with"]
+    return (all(selected.get(facet) == value for facet, value in condition.items())
+            and all(selected.get(facet) is not None and
+                    (values == "any" or selected[facet] in values)
+                    for facet, values in excluded.items()))
 
 
 def main():
@@ -113,6 +123,170 @@ def main():
                        for r in json.loads((HERE.parent.parent / f"spatial-v3/candidates/spatial-v3-production-v4/datasets/{name}.json").read_text(encoding="utf-8"))]
     assert all(r["status"] == "approved" for r in appearance_rows)
     appearance_ids = {r["id"] for r in appearance_rows}
+    option_sets = npc["appearance_option_sets"]["novgorod_shared_facets_v1"]
+    option_ids = {o["value"] for options in option_sets.values() for o in options}
+    names = AUTHORING["option_names_ru"]
+    assert len(option_ids) == len(names) == 42 and set(names) == option_ids
+    assert len(set(names.values())) == 42
+    assert all(isinstance(name, str) and name.strip() == name and re.search(r"[А-Яа-яЁё]", name)
+               for name in names.values())
+    assert all(option["name_ru"] == names[option["value"]]
+               for options in option_sets.values() for option in options)
+    rules = npc["appearance_incompatibility_rules"]
+    assert rules == AUTHORING["incompatibility_rules"]
+    presentation = npc["appearance_presentation_rules"]
+    assert presentation == AUTHORING["presentation_rules"]
+    assert presentation == [{"id": "hair_visible_only_when_head_uncovered", "scope": "player_facing_appearance",
+                             "facets": ["hair_color", "hair_length", "hair_style"],
+                             "visible_if": {"equipped_items": {"all_covers_hair": "no",
+                                                               "coverage_ref": "clothing-appearance/garments/garments.csv#covers_hair"}},
+                             "otherwise": "omit_from_player_facing_projection", "internal_traits": "preserve"}]
+    compositions = json.loads((HERE.parent / "places-binding/presence/people_composition_authoring.json").read_text(encoding="utf-8"))["compositions"]
+    expected_slot_facts = {(composition["pf_id"], group_id, related_id)
+                           for composition in compositions for link in composition.get("slot_relationships", [])
+                           if link["relationship_kind"] == "spouse"
+                           for group_id, related_id in ((link["from_group_id"], link["to_group_id"]),
+                                                        (link["to_group_id"], link["from_group_id"]))}
+    slot_facts = npc["composition_slot_facts"]
+    assert {(fact["pf_id"], fact["group_id"], fact["related_group_id"]) for fact in slot_facts} == expected_slot_facts
+    assert len(slot_facts) == len(expected_slot_facts)
+    assert all(fact["marital_status"] == "married" and fact["relationship_kind"] == "spouse" and
+               fact["confidence"] == "C" and fact["source_ref"].endswith("#" + fact["pf_id"])
+               for fact in slot_facts)
+    assert not any(fact["pf_id"] != "pf_peasant_homestead" for fact in slot_facts)
+    role_clothing = {row["role_ref"]: row["clothing_profile_id"] for row in csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/role_clothing_map.csv")}
+    outfits = {row["of_id"]: row for row in csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/outfits.csv")}
+    slot_overrides = AUTHORING["composition_slot_clothing_profile_overrides"]
+    assert set(slot_overrides) == {"pf_peasant_homestead.mistress"}
+    assert slot_overrides["pf_peasant_homestead.mistress"] == "nov_clothing_rural_v1"
+    for fact in slot_facts:
+        group = next(group for composition in compositions if composition["pf_id"] == fact["pf_id"]
+                     for group in composition["population_groups"] if group["group_id"] == fact["group_id"])
+        assert fact["role_ref"] == group["weighted_subjects"][0]["subject_ref"]
+        clothing_profile = slot_overrides.get(fact["group_id"], role_clothing[fact["role_ref"]])
+        assert fact["clothing_option_refs"] and all(outfits[option]["clothing_profile_id"] == clothing_profile
+               and outfits[option]["marital_status"] in ("any", "married") and outfits[option]["runtime_selectable"] == "true"
+               for option in fact["clothing_option_refs"])
+    mistress = next(fact for fact in slot_facts if fact["group_id"] == "pf_peasant_homestead.mistress")
+    assert mistress["clothing_option_refs"] == ["of_rural_female_warm_married", "of_rural_female_cool_married", "of_rural_female_cold_married"]
+    householder = next(fact for fact in slot_facts if fact["group_id"] == "pf_peasant_homestead.householder")
+    assert householder["clothing_option_refs"] == ["of_rural_male_warm_any", "of_rural_male_cool_any", "of_rural_male_cold_any"]
+    assert role_clothing[mistress["role_ref"]] == "nov_clothing_urban_middle_v1"
+    for profile in profiles:
+        for regional in profile["regional_option_sets"]:
+            if regional["role_ref"] == mistress["role_ref"]:
+                assert regional["clothing_profile_ref"] == "nov_clothing_urban_middle_v1"
+                assert {"of_urban_middle_female_warm_married", "of_urban_middle_female_cool_married",
+                        "of_urban_middle_female_cold_married"} <= {option["value"] for option in regional["clothing_options"]}
+    assert any(outfits[option]["marital_status"] == "married" and outfits[option]["slot_headwear"] and outfits[option]["slot_head_under"]
+               for option in mistress["clothing_option_refs"])
+    garments = {row["gm_id"]: row for row in csv_rows(HERE.parent / "clothing-appearance/garments/garments.csv")}
+    visible_value = presentation[0]["visible_if"]["equipped_items"]["all_covers_hair"]
+    assert visible_value == "no"
+    def hair_visible(equipped):
+        return all(garments.get(item, {}).get("covers_hair") == visible_value for item in equipped)
+    married_outfit = next(outfits[option] for option in mistress["clothing_option_refs"]
+                          if outfits[option]["marital_status"] == "married" and
+                          outfits[option]["slot_headwear"] == "gm_hw007" and
+                          outfits[option]["slot_head_under"] == "gm_hw006")
+    base_equipment = [value for slot, value in married_outfit.items()
+                      if slot.startswith("slot_") and value and slot not in ("slot_headwear", "slot_head_under")]
+    assert garments["gm_hw006"]["covers_hair"] == garments["gm_hw007"]["covers_hair"] == "yes"
+    assert hair_visible(base_equipment)
+    assert not hair_visible(base_equipment + ["gm_hw006"])
+    assert not hair_visible(base_equipment + ["gm_hw007"])
+    assert not hair_visible(base_equipment + ["gm_hw011"])
+    assert garments["gm_hw011"]["covers_hair"] == "unknown"
+    assert not hair_visible(base_equipment + ["unresolved_headwear"])
+    rule_by_id = {rule["id"]: rule for rule in rules}
+    assert set(rule_by_id) == {"bald_has_no_hair_color", "bald_has_no_hair_style",
+                               "young_adult_has_no_gray_or_white_hair"}
+    assert len(rules) == len(rule_by_id) == 3
+    for rule in rules:
+        for facet, value in rule["if"].items():
+            assert value in {option["value"] for option in option_sets[facet]}
+        for facet, values in rule["incompatible_with"].items():
+            assert values == "any" or (isinstance(values, list) and values and
+                                       set(values) <= {option["value"] for option in option_sets[facet]})
+    bald = rule_by_id["bald_has_no_hair_color"]
+    bald_style = rule_by_id["bald_has_no_hair_style"]
+    young = rule_by_id["young_adult_has_no_gray_or_white_hair"]
+    blond = "nov_1200_1250_hair_color_blond"
+    straight = "nov_1200_1250_hair_style_straight"
+    gray = "nov_1200_1250_hair_color_gray"
+    white = "nov_1200_1250_hair_color_white"
+    assert bald["if"] == {"hair_length": "nov_1200_1250_hair_length_bald"}
+    assert bald["incompatible_with"] == {"hair_color": "any"} and bald["note"]
+    assert conflicts(bald, {"hair_length": bald["if"]["hair_length"], "hair_color": blond})
+    assert not conflicts(bald, {"hair_length": "nov_1200_1250_hair_length_short", "hair_color": blond})
+    assert not conflicts(bald, {"hair_length": bald["if"]["hair_length"]})
+    assert bald_style["if"] == {"hair_length": "nov_1200_1250_hair_length_bald"}
+    assert bald_style["incompatible_with"] == {"hair_style": "any"}
+    assert conflicts(bald_style, {"hair_length": bald_style["if"]["hair_length"], "hair_style": straight})
+    assert not conflicts(bald_style, {"hair_length": "nov_1200_1250_hair_length_short", "hair_style": straight})
+    assert not conflicts(bald_style, {"hair_length": bald_style["if"]["hair_length"]})
+    assert young["if"] == {"age_category": "nov_1200_1250_age_category_young_adult"}
+    assert young["incompatible_with"] == {"hair_color": [gray, white]}
+    assert all(conflicts(young, {"age_category": young["if"]["age_category"], "hair_color": color})
+               for color in (gray, white))
+    assert not conflicts(young, {"age_category": young["if"]["age_category"], "hair_color": blond})
+    assert not conflicts(young, {"age_category": "nov_1200_1250_age_category_adult", "hair_color": gray})
+    subjects = npc["subject_applicability"]
+    expected_subjects = {
+        ("occupation", "nov_occ_ferryman"),
+        ("occupation", "nov_occ_crossing_guard"),
+        ("occupation", "nov_occ_fisher"),
+        ("role", "nov_role_smerd_householder"),
+        ("role", "nov_role_household_mistress"),
+        ("occupation", "nov_occ_household_servant"),
+    }
+    assert len(subjects) == len(AUTHORING["subject_applicability"]) == len(expected_subjects)
+    assert {(item["subject_kind"], item["subject_id"]) for item in subjects} == expected_subjects
+    assert len({(item["subject_kind"], item["subject_id"]) for item in subjects}) == len(subjects)
+    assert all(set(item) == {"subject_id", "subject_kind", "actor_applicability"} for item in subjects)
+    for item in subjects:
+        subject = item["subject_id"]
+        kind = item["subject_kind"]
+        eligibility = item["actor_applicability"]
+        assert kind in ("occupation", "role")
+        assert eligibility == actor_applicability(subject if kind == "role" else None,
+                                                 subject if kind == "occupation" else None)
+        assert set(eligibility["sex_category"]) <= {o["value"] for o in option_sets["sex_category"]}
+        assert not any("weight" in key or "probability" in key for key in eligibility)
+        assert eligibility["source_refs"] and eligibility["rule"] and eligibility["no_source"]
+        for ref in eligibility["source_refs"]:
+            path, row_id = ref.split("#", 1)
+            assert path.startswith("data/") and row_id
+            rows = csv_rows(ROOT_DATA.parent / path, "\t" if path.endswith(".tsv") else ",")
+            id_column = ("role_id" if kind == "role" else "occupation_id") if path.endswith(".tsv") else "profession_id"
+            assert row_id in {row[id_column] for row in rows}, ref
+            if row_id == "PRO0421":
+                source = next(row for row in rows if row[id_column] == row_id)
+                assert source["gender_scope"] == "female" and source["historical_confidence"] == "B"
+        if subject == "nov_occ_household_servant":
+            assert set(eligibility["sex_category"]) == {"nov_1200_1250_sex_category_male", "nov_1200_1250_sex_category_female"}
+            assert eligibility["source_refs"] == [
+                "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+                "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"]
+            assert "individual" in eligibility["rule"] or "конкретн" in eligibility["rule"]
+            assert "female_headwear" in eligibility["no_source"]
+        else:
+            assert eligibility["sex_category"] == ["nov_1200_1250_sex_category_" +
+                                                    ("female" if subject == "nov_role_household_mistress" else "male")]
+            assert eligibility["sex_basis"] == "editorial" and eligibility["confidence"] == "C"
+        matching = [p for p in profiles if (p["occupation_ref"] if kind == "occupation" else p["role_ref"]) == subject]
+        for profile in matching:
+            assert profile["actor_applicability"] == eligibility
+            for regional in profile["regional_option_sets"]:
+                assert regional["actor_applicability"] == eligibility
+                if subject == "nov_occ_household_servant":
+                    assert "no weighted sex selection" in regional["selection_rule"]
+                if subject != "nov_occ_household_servant":
+                    assert all(("female" if subject == "nov_role_household_mistress" else "male")
+                               in option["applicability"]["sex_categories"]
+                               for option in regional["clothing_options"] if option["value"] is not None)
+                    assert all(option["applicability"]["marital_status"] == "any"
+                               for option in regional["clothing_options"] if option["value"] is not None)
     outfit_rows = csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/outfits.csv")
     assert all(r["status"] == "candidate" for r in outfit_rows)
     outfit_ids = {r["of_id"] for r in outfit_rows if r["runtime_selectable"] == "true"}

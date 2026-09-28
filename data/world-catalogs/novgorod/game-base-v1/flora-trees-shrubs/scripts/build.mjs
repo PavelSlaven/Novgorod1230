@@ -9,6 +9,7 @@ const rolesSrc = src('habitat_roles.json');
 const sources = src('sources.json').sources;
 const deny = src('denylist.json').entries;
 const kol = src('kolchin_table1.json');
+const woodyFoliage = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/scripts/src/woody_foliage_state.json'));
 const freqRule = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/places-binding/presence/frequency_rule.json'));
 const pfRows = readCsv(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv'));
 const pfById = new Map(pfRows.map((r) => [r.pf_id, r]));
@@ -44,6 +45,21 @@ function phenology(t) {
     if (s === 'winter' && persistsWinter) ev.push('fruit_or_dry_leaves_persist');
     if (s === 'winter' && underSnow) ev.push('mostly_under_snow');
     out[s] = ev;
+  }
+  return out;
+}
+
+function phenologyByMonth(t) {
+  const flower = new Set(months(t.phen?.flower));
+  const fruit = new Set(months(t.phen?.fruit));
+  const out = {};
+  for (let m = 1; m <= 12; m++) {
+    out[m] = flower.has(m) && fruit.has(m) ? 'flowering_and_fruiting'
+      : fruit.has(m) ? 'fruiting'
+      : flower.has(m) ? (t.phen?.flower_before_leaves ? 'flowering_before_leaves' : 'flowering')
+      : t.leaf_habit === 'deciduous'
+        ? woodyFoliage[m]
+        : [12, 1, 2].includes(m) ? 'winter_form' : 'vegetative';
   }
   return out;
 }
@@ -124,8 +140,11 @@ const taxaRows = taxa.map((t) => {
     moisture: t.moisture.join(';'), soil: t.soil, light: t.light,
     flowering_months: t.phen?.flower || '', fruit_months: t.phen?.fruit || '', seed_release_months: t.phen?.seed_release || '',
     flowers_before_leaves: t.phen?.flower_before_leaves === true ? 'yes' : '',
+    flowering_month_precision: t.phen?.flower ? 'month' : t.phen?.flower_before_leaves ? 'season_only' : 'unknown',
     phenology_note: [t.phen?.flower_note, t.phen?.fruit_note, t.phen?.autumn_colour && `осень: ${t.phen.autumn_colour}`, t.phen?.winter_retains].filter(Boolean).join(' | '),
     phenology_by_season: ph,
+    phenology_by_month: phenologyByMonth(t),
+    foliage_by_month: JSON.stringify(Object.fromEntries(Array.from({ length: 12 }, (_, i) => [i + 1, t.leaf_habit === 'deciduous' ? woodyFoliage[i + 1] : 'evergreen']))),
     winter_look: t.winter_look,
     cue_bark: t.cues.bark, cue_leaf: t.cues.leaf, cue_smell: t.cues.smell, cue_sound: t.cues.sound, cue_other: t.cues.other,
     use_codes: t.uses.map((u) => u.use).join(';'),

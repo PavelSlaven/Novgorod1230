@@ -144,9 +144,7 @@ river_wharf,ct_basket_cargo,contextual,2,content_profile:cp_market_basket,candid
 river_wharf,ct_basket_woven,contextual,2,master:spawn:SPN023,candidate
 river_wharf,ct_box_plank_crate,contextual,2,content_profile:cp_warehouse_crate,candidate
 river_wharf,ct_sack_cloth,contextual,2,master:spawn:SPN023,candidate
-riverbank,ct_basket_fish,common,4,content_profile:cp_fishing_basket,candidate
 riverbank,ct_tar_pot,common,4,content_profile:cp_wharf_tar_pot,candidate
-riverbank,ct_barrel_cargo,contextual,2,master:spawn:SPN022|matcult_scene:SCN061,candidate
 riverbank,ct_bucket_dugout,contextual,2,matcult_scene:SCN016,candidate
 road,ct_knife_sheath,ubiquitous,8,matcult_scene:SCN045,candidate
 road,ct_quiver,ubiquitous,8,matcult_scene:SCN045,candidate

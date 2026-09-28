@@ -1,6 +1,7 @@
 """Acceptance checks for the five domains; writes reports/validation.json and reports/counts.json."""
 import json
 import re
+import sys
 from collections import Counter, defaultdict
 from common import ITEMS, REPORTS, ME, ROOT, read_csv, split, load_master, load_place_families
 import rules as R
@@ -14,6 +15,33 @@ MATFAM = [(r"^(wood|twigs|leafy_twigs|gesso)", "wood"), (r"^(birch_bark|bast|wil
           (r"^(beeswax|tallow|wax)", "wax"), (r"^(tinder|straw|grass|hay|feather|pigment)", "organic_soft")]
 DENY = re.compile(r"\b(картоф|кукуруз|томат|подсолнеч|табак|индейк|кролик|чай\b|кофе\b|сахар\b|огнестрел|пищал|бумаг|бумажн|ухват|чугун)", re.I)
 TEMPLATE_ALLOWED_CAPS = {"Святая", "Богородице", "ІС", "ХС"}
+
+
+def check_c007d(rows):
+    """Keep the reviewed item/place decisions independent of the generator."""
+    by_id = {r["ipf_id"]: r for r in rows}
+    failures = [f"{ipf_id}: unsupported item/place pair returned" for ipf_id in (
+        "ipf_it_hh_basket__ferry_landing", "ipf_it_ps_folding_balance__ferry_landing",
+        "ipf_m_omi01625__ferry_landing") if ipf_id in by_id]
+    cask_id = "ipf_it_hh_small_cask__riverbank"
+    cask = by_id.get(cask_id)
+    if not cask or cask["frequency_class"] != "rare" or cask["wild_arrival_cause_required"] != "prior_visitor_loss_or_discard":
+        failures.append(f"{cask_id}: rare row with prior-visitor loss/discard cause required")
+    return failures
+
+
+def self_test_c007d(rows):
+    assert not check_c007d(rows)
+    cask_id = "ipf_it_hh_small_cask__riverbank"
+    cask = next(r for r in rows if r["ipf_id"] == cask_id)
+    for field, value in (("wild_arrival_cause_required", ""), ("frequency_class", "contextual")):
+        changed = [dict(r) if r is not cask else {**r, field: value} for r in rows]
+        assert check_c007d(changed)
+    for ipf_id in ("ipf_it_hh_basket__ferry_landing", "ipf_it_ps_folding_balance__ferry_landing",
+                   "ipf_m_omi01625__ferry_landing"):
+        changed = rows + [{**cask, "ipf_id": ipf_id}]
+        assert check_c007d(changed)
+    print("c007d negative probes PASS")
 
 
 def fams(materials):
@@ -67,6 +95,8 @@ def main():
     # --- frequency
     pfs = load_place_families()
     ipf = read_csv(ITEMS / "item_place_frequency.csv")
+    if "--self-test" in sys.argv:
+        self_test_c007d(ipf)
     residues = {r["item_id"] for r in read_csv(ME / "material_entities.csv")
                 if r["entity_kind"] in {"fragment", "residue", "deposit", "waste", "byproduct"}}
     residue_links = {r["link_id"] for r in read_csv(ME / "item_location_links.csv") if r["item_id"] in residues}
@@ -85,6 +115,7 @@ def main():
     per_pf_it = defaultdict(set)
     seen_ipf = set()
     seen_pairs = set()
+    fail.extend(check_c007d(ipf))
     catalog_pairs = {(r["item_or_category_ref"], r["pf_id"]) for r in ipf if r["ref_kind"] == "it"}
     for r in ipf:
         pair = (r["item_or_category_ref"], r["pf_id"])

@@ -1,6 +1,6 @@
 # presence — единый носитель наличия (домен presence_rules)
 
-Статус: **candidate**. И правило перевода, и таблица требуют утверждения владельцем. Для DDL носителя нужен CR и Contract Auditor (норма `world_base_materialization_table_requirements.md` §8.1; DDL пока нет).
+Статус: **candidate**. И правило перевода, и таблица требуют утверждения владельцем. Схемы `presence_rules` пока нет ни в `world_base_materialization_table_requirements.md`, ни в runtime DDL; для их добавления нужен CR и Contract Auditor.
 
 ## Что здесь
 
@@ -8,9 +8,29 @@
 |---|---|
 | `frequency_rule.json` | Единственное правило перевода класса частоты в вероятность, плюс правила для `count_limit`, сезонов и `refresh_class`. |
 | `presence_rules.csv` | Таблица правил наличия. Её собирает `scripts/build-presence-rules.mjs` из пулов других групп; вручную её не правят. |
-| `people_presence_authoring.csv` | Авторские candidate-привязки людей к 16 PF, сезону и времени суток. Тот же сборщик разворачивает их в `presence_rules.csv`. |
+| `people_presence_authoring.csv` | 19 привязок людей к 16 PF; `creation_owner=composition` оставляет 5 строк для D-3, но не выпускает их в `presence_rules.csv`; `presence_rule` выпускает остальные 14. |
+| `people_composition_authoring.json` | Авторский candidate-состав постоянных жителей и работников при создании места; производные строки world_base и runtime принадлежат другому владельцу. |
 
-Актуальные счётчики находятся в `reports/presence-rules-report.json`. Текущая пересборка даёт 10 223 категориальных и 69 правил людей из двух пулов (`items-household-personal` и `fauna-mammals-birds`).
+`pr_id` производной строки равен `pr_` + первые 16 шестнадцатеричных символов SHA256 от компактного UTF-8 JSON-массива `[scope_kind,scope_ref,region_id,subject_kind,subject_ref,canonical allowed_seasons]` (`ensure_ascii=False`, разделители `,` и `:`). Значения обрезаются по краям; `all` обозначает все четыре сезона. Если исходное `all` разделить на сезонные правила, они получают новые ID, прежний ID не переиспользуется. ID зависит от ключа, а не содержимого правила или других строк: изменение содержания сохраняет `pr_id` и `rule_version`, а ревизию мира ведёт world revision.
+
+`creation_owner` размечает только существующие строки `people_presence_authoring.csv`. Субъект composition не обязан иметь такую строку: страж переправы и хозяйка присутствуют в составе и расписаниях D-1, хотя их строк в presence authoring нет. Checker требует соответствующую группу для строки с `creation_owner=composition`, но не требует обратного. Общий расчёт D-3 получает этих субъектов через расписания.
+
+## Состав людей D-2
+
+`people_composition_authoring.v1` содержит по одной `composition` на каждый из 16 primary PF в `places/node_binding.csv`. `population_groups` задают вид группы (`workers|household|residents`), целочисленный диапазон и относительные положительные `count_weights` по каждому числу диапазона. `weighted_subjects` задают допустимые занятия или социальные роли с относительными весами; `profile_ref` указывает только точный профиль из `occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json`, иначе `null`. `household_profile_ref` обязателен только для `household`; возрастной класс задаётся в `household_member_class` при необходимости. Группа имеет ровно один путь основания: `source_refs`, `rule_ref` или `no_source`, и `confidence` `A|B|C`.
+
+Состав при создании места заменяет вероятностный бросок presence для тех же PF и субъектов. Пять групп: перевозчик и страж у переправы, слуга при хозяйственных постройках, домохозяин и хозяйка на крестьянской усадьбе. Все диапазоны 1..1 и confidence C. Число для хозяйки — ограниченный вывод по `book:622242 §519`, `book:648161 §2639`, `book:641351 §2976`, не доказательство размера семьи. Число стража и слуги — редакционное правило без числового источника. Профили домохозяйств не подтверждают полного состава этих PF. Дети, молодёжь и старики не создаются; вдова рассмотрена, но взаимное исключение с супругой и распорядок не обоснованы. `never_created_gaps` перечисляет субъектов D-1, которых не создаёт ни состав, ни presence. Валидатор вычисляет этот набор из данных.
+
+`slot_relationships` связывает конкретные группы одного PF. Для `pf_peasant_homestead` связь `householder` ↔ `mistress` означает `spouse` с уверенностью C и ссылками на обе роли и семейный источник. Другие PF и носители тех же ролей брака не наследуют. D-3 строит отношение только для названных слотов; NPC-проекция выводит `marital_status=married` для этих двух слотов, чтобы разрешить существующий вариант женского головного убора.
+
+Только конкретный слот `pf_outbuildings.household_servant` получает `sex=male`, confidence C: редакционный выбор для работ при постройках, со скотом и дровами. Поля `sex`, `sex_confidence`, `sex_reason`, `sex_source_refs` задаются вместе; checker разрешает ссылку только на существующую запись и проверяет совместимость с `actor_applicability` профиля. Ссылка на `PRO0421` описывает женскую домашнюю прислугу и не служит свидетельством мужского пола данного слота. Общая роль слуги и профиль NPC допускают оба пола; их контракт не меняется.
+Остальные четыре заполненных слота получают единственный допустимый пол из структурированных `subject_applicability` или `regional_option_sets` каталога NPC-профилей; checker требует указанные в ограничении источник и правило, а при неоднозначности — конкретный `sex` слота. Текст названия роли для определения пола не используется.
+
+Пустые композиции имеют `empty_reason`. `scheduled_absences` объясняет, почему субъект распорядка D-1 с `location_ref` этого PF не создаётся вместе с местом. Необязательное `seasons` — непустой массив уникальных `winter|spring|summer|autumn`; без него отсутствие действует круглый год. Совпадение субъекта с `population_groups` допустимо только для сезонного отсутствия, когда распорядок выводит его в другой PF. Зимой перевозчик и сторож остаются группами береговой пристани, но работают на ледовой переправе; на `pf_ferry_landing` нет блоков `on_site`/`nearby` ни в одном зимнем варианте. Генератор Cursor staging D-2 обязан переносить `seasons` в производные данные. Все 19 авторских presence строк остаются входом D-3. Посетителей и прохожих в составе нет; время их появления определяется другими данными. Это авторский candidate-слой, не генератор производных привязок.
+
+Портативная проверка: `node scripts/check-people-composition.mjs --self-test`. Сверка с переданным извне снимком стартовой территории: `node scripts/check-people-composition.mjs --start-territory <путь-к-start-territory.json> --self-test`. Общий `node scripts/validate.mjs` также проверяет состав; ему можно передать тот же `--start-territory`. Снимок bridge в репозиторий не копируется.
+
+Актуальные счётчики находятся в `reports/presence-rules-report.json`. Правила собираются из двух пулов (`items-household-personal` и `fauna-mammals-birds`) и авторских привязок людей.
 
 ## Правило перевода (`presence_ppm_from_frequency_class@1`)
 
@@ -25,7 +45,7 @@
 
 Откуда правило (исправлено 2026-09-26, была неверная атрибуция — см. `VERIFICATION.md`):
 - Веса 8/4/2/1 — это метка словаря (dominant/common/occasional/rare), общая с pr98 m2c-natural nature-richness-candidate-v1 weight_policy. **Числовой ряд ppm из этого источника не взят**: он прямо пишет, что его веса — «относительное предпочтение выбора среди допустимых альтернатив ... не археологическая частота, биологическая обилие, вероятность встречи или выход». Значения 1 000 000/500 000/250 000/125 000 ppm и отношение 1:2:4:8 — собственная редакционная конвенция сборщика, confidence C, без источника, измеряющего реальную частоту находок. Это заглушка (`status_note` в `frequency_rule.json`) до калибровки владельцем.
-- Норма (`world_base_materialization_table_requirements.md` §8.1) задаёт только КАК кодируется обязательное наличие (правило с 1 000 000 ppm, отдельного поля нет) — она не утверждает, что верхний класс частоты обязателен. Это тоже открытое решение владельца, не факт из нормы.
+- Для будущего контракта предложено кодировать обязательное наличие правилом с 1 000 000 ppm без отдельного поля. Сейчас это candidate-решение, требующее утверждения владельцем.
 - Каждый следующий класс вдвое реже предыдущего — редакционный выбор читаемости отношения, а не измеренная частота.
 
 Синонимы классов: dominant → ubiquitous, occasional → contextual.
@@ -37,7 +57,7 @@
 Остальные поля:
 - **count_limit.** Берётся из `count_limit`/`max_count` или из распознанной записи `count_limit_rule` вида `piece:max 1 instance-group per first-arrival roll;...` (`pool_count_limit_rule`). Если лимит не задан, ставится 1 с пометкой `default_minimum_1`. Нераспознанный непустой `count_limit_rule` отклоняется.
 - **allowed_seasons.** Словарь `winter|spring|summer|autumn|all`, календарь temporal-v4 (Julian, 3 месяца на сезон). Синонимы: spring_rasputitsa → spring, early/late_winter → winter. Просто `rasputitsa` отклоняется: распутица бывает и весной, и осенью.
-- **refresh_class.** `none` (по умолчанию) или `by_year_season`, как в норме §8.1 и решении D6. Синоним: season → by_year_season. В задании было «none|season»; сохранено значение нормы.
+- **refresh_class.** `none` (по умолчанию) или `by_year_season` по candidate-решению D6. Синоним: season → by_year_season. В задании было «none|season»; выбранное значение требует закрепления в будущем контракте.
 
 ## Контракт входного пула (для других групп)
 
@@ -48,9 +68,11 @@
 
 Необязательные поля: `region_id` (пусто = общемировое), `count_limit` / `max_count` / `count_limit_rule`, `allowed_seasons` / `season_period` / `seasons` / `season`, `refresh_class`, `confidence`.
 
-Для `items-household-personal/items/item_place_frequency.csv` условия `entry_visible_if` и `search_only_if` обязательны. Вместе с ними переносятся `entry_exposed_weight`, `search_concealed_weight`, `placement_basis_ref` и `placement_owner_ref`: частота означает возможность присутствия, а способ обнаружения зависит от фактического размещения экземпляра либо от явно названного владельца этого решения. Для `pf_class=wild` также требуется `wild_arrival_cause_required=prior_visitor_loss_or_discard`; без установленной причины рукотворная вещь не появляется. У правил fauna и people эти семь колонок пусты. Слияние категориальных строк допускается только при совпадении всех условий размещения и обнаружения.
+Для `items-household-personal/items/item_place_frequency.csv` условия `entry_visible_if` и `search_only_if` обязательны. Вместе с ними переносятся `entry_exposed_weight`, `search_concealed_weight`, `placement_basis_ref` и `placement_owner_ref`: частота означает возможность присутствия, а способ обнаружения зависит от фактического размещения экземпляра либо от явно названного владельца этого решения. Для `pf_class=wild` также требуется `wild_arrival_cause_required=prior_visitor_loss_or_discard`; без установленной причины рукотворная вещь не появляется. У правил fauna и people эти семь колонок пусты. При совпадении поведения `placement_basis_ref`, `placement_owner_ref` и `source_*` объединяются как provenance.
 
 `source_refs` обязателен.
+
+Для пулов `items/item_place_frequency.csv` и `fauna/wild_habitat_presence.csv` `source_pool` указывает на стабильный ID строки: `<путь>#<ipf_id>` или `<путь>#<presence_id>`. `source_row_id` сохраняет тот же ID; `variants[].source_pool` использует тот же формат. При перестановке CSV-строк ссылки не меняются. У `people_presence_authoring.csv` явного ID нет, поэтому остаётся `#rowN`. Стандартная пересборка: `node scripts/build-all.mjs` без `--extract`; генератор Cursor должен переносить объекты `variants` целиком, включая `source_pool` и `source_row_id`.
 
 Сборщик проверяет каждую строку:
 - category и scope резолвятся;
@@ -60,23 +82,28 @@
 - `refresh_class` входит в словарь;
 - `source_refs` не пуст.
 
-Строки с ошибками не попадают в таблицу. Они перечислены в отчёте с причинами. Сезоны хранятся раздельно; дубли по (scope_kind, scope_ref, region_id, category_ref, сезон) сливаются с выбором большего ppm и лимита, конфликт пишется в отчёт.
+Строки с ошибками не попадают в таблицу. Они перечислены в отчёте с причинами. Для базового ключа `(scope_kind, scope_ref, region_id, subject_kind, subject_ref)` сборщик разворачивает `all` на четыре сезона и оставляет одно правило на сезон. Разные предметы одной категории сохраняются как `variants` с `item_ref`, `source_row_id` и `source_pool`; эквиваленты того же предмета объединяются с provenance. У людей одинаковое поведение с разными временами суток даёт каноническое объединение окон.
 
-`scope_kind` может быть `place_family`, `g4`, `g5`, `region`, `landscape_template`, `place_template`, `scene_template`, `container_template`. В норме §8.1 есть только последние четыре. Для `place_family`, `g4`, `g5` и `region` колонка `contract_scope_kind=no_needs_cr`: нужна поправка нормы через CR.
+Предметы сравниваются лексикографически: доступность по фактическим MASTER-связям (`common > context_bound > нет совпадающей ссылки`), основание вывода (`R_SPAWN_PROFILE`/`R_MASTER_LINK` выше `R_WHERE_USED_TEXT`/`R_GROUP_DEFAULT`), исходная уверенность пула (`A > B > C`), затем меньший ppm при равных свидетельствах и стабильные `source_row_id`/`source_pool`. Для нескольких ссылок одного архетипа берётся максимальная доступность. Сравниваются общие `location_archetype` процитированных ссылок; переход от архетипа к PF этим не доказывается. У нынешних 22 конфликтных ключей сравниваемые ссылки относятся к одному архетипу — факт текущих данных. Лимит, веса, условия обнаружения и время берутся вместе с победителем. Совпадающие четыре сезона вновь записываются как `all`. Отчёт группирует одинаковые решения по сезонам и хранит выбранный предмет, эквиваленты, варианты, измерения сравнения и причину. Это производный provenance, не владелец весов вариантов.
+
+**Открытый runtime gap §3A.4:** поставлены 149 ключей с вариантами и 183 различимые пары `(key, item_ref)` альтернатив. Ещё 508 прежних provenance cells переведены в `variants` (историческая метрика миграции, не счётчик текущей пересборки). Веса выбора между предметами отсутствуют, их владелец и контракт пока не назначены. При будущей активации без весов runtime обязан выбирать равномерно среди выбранного `item_ref` и его `variants` после единственного броска presence. Это требование к будущей реализации, а не заявление о существующем runtime или равной исторической частоте. Статус, требование к активации и пересчитанные числа находятся в `reports/presence-rules-report.json` → `item_variant_selection`.
+
+`item_ref` и `variants` должны быть добавлены будущим CR в контракт материализации (планируемый §8.1 `world_base_materialization_table_requirements.md`) и runtime DDL. Сейчас схемы `presence_rules` в них нет; candidate CSV сам по себе её не создаёт.
+
+`scope_kind` может быть `place_family`, `g4`, `g5`, `region`, `landscape_template`, `place_template`, `scene_template`, `container_template`. Все эти значения требуют согласования в будущем контракте и DDL через CR. `contract_scope_kind=no_needs_cr` отмечает четыре дополнительных scope (`place_family`, `g4`, `g5`, `region`) в candidate-таблице; `yes` не означает существования схемы `presence_rules`.
 
 Колонки вывода, добавленные 2026-09-26: `class_capped_from` (исходный `frequency_class` до понижения MASTER-проверкой; пусто, если не понижался) и `pool_confidence` (исходный `confidence` строки пула, до того как `confidence` в этой таблице стал всегда `C` — см. «Правило перевода» выше).
 
 ## Правки C002 — люди
 
-К категориальным правилам добавлены 69 candidate-правил людей для всех 16 PF, используемых 32 G4 и 195 G5 в `places/node_binding.csv`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject, сезон и время суток (`morning|day|evening|night`); для категорий `allowed_times=all`.
+К категориальным правилам добавлены candidate-правила людей для всех 16 PF, используемых 32 G4 и 195 G5 в `places/node_binding.csv`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject и сезон; `allowed_times` у людей — канонический список подтверждённых авторскими строками окон (`morning;day;evening;night`), для категорий `allowed_times=all`.
 
-Число `probability_ppm=250000` следует из существующего `frequency_rule.json` для `contextual`. Это редакционное candidate-правило без измеренного числового источника (`no_source` для вероятности), не историческая частота. `source_refs` указывает словарный профиль занятия/роли; он поддерживает тип человека, но не число. `count_limit=1` — редакционный candidate-лимит, не численность жителей. `guards` — условия применимости перед броском; их значения пока авторский текст, runtime evaluator здесь не заявлен. `refresh_class` задаётся явно. `place_family` и времена суток требуют отдельного согласования с DDL §8.1, где этих полей пока нет; все строки остаются `candidate`.
+Число `probability_ppm=250000` следует из существующего `frequency_rule.json` для `contextual`. Это редакционное candidate-правило без измеренного числового источника (`no_source` для вероятности), не историческая частота. `source_refs` указывает словарный профиль занятия/роли; он поддерживает тип человека, но не число. `count_limit=1` — редакционный candidate-лимит, не численность жителей. `allowed_times` сохраняет авторские окна как provenance, а не runtime-фильтр броска C5. `guards` пока авторский текст, runtime evaluator здесь не заявлен. `refresh_class` задаётся явно. `place_family` и времена суток требуют закрепления в будущем контракте материализации и runtime DDL; все строки остаются `candidate`.
 
 ## Известные пробелы
 
 - **Файлы, которые пока не подходят под контракт** (список — в `frequency_files_not_matching_pool_contract` отчёта, на пересборке 2026-09-26 — 15 файлов, включая новые группы fauna-fish-invertebrates-livestock, flora-herbs-berries-mushrooms и flora-trees-shrubs, появившиеся после прежней сборки): у большинства есть scope, но нет категории; у food-drink `ingredients.csv` наоборот; у части (adornment, personal_names, погодные, hazards) нет ни того, ни другого.
 - **У пула предметов не хватает категорий.** Актуальное число отклонённых строк см. в `reports/presence-rules-report.json`.
-- **MASTER-проверка не ловит рассогласование scope-архетипа.** Cобранная 2026-09-26 проверка (см. выше) сверяет заявленный класс с MASTER-связями, но не проверяет, что цитируемая связь MASTER относится к тому же `location_archetype`, что и заявленный `pf_id` пула. Пример: строки гребня `it_ps_comb_double` в `item_place_frequency.csv` заявляют присутствие в `church_interior`/`fishing_camp`, но все цитируемые `master_link` относятся к MASTER-архетипу `scribe_area`/`fishing_site` (близкие, но не тот же `pf_id`). Числовая проверка это пропускает, потому что среди цитат есть MASTER-связь другого материального компонента гребня с `spawn_frequency=ubiquitous`. Исправление принадлежит `items-household-personal` (их выбор, как схлопывать материальные компоненты составного предмета в pf_id), не этой группе.
+- **MASTER-проверка не доказывает PF по архетипу.** Цитаты гребня `it_ps_comb_double` используют `scribe_area`/`fishing_site`, а пул заявляет `church_interior`/`fishing_camp`. Сравнение вариантов опирается на архетипы цитат, но не подтверждает переход к PF. Исправление этого расхождения принадлежит владельцу `items-household-personal`. Ранг доступности `none` также охватывает кандидатов вообще без MASTER-link, а не только кандидатов с несовпадающей ссылкой.
 - **Реестр категорий неполон.** После пересборки 2026-09-26 остаются пустыми домены food, behavior, motive, knowledge, activity (flora и fauna уже подхватились — см. `categories/README.md`). Пулы этих доменов нельзя перевести в правила, пока группы не дадут категории.
-- **Слияние «максимум ppm» при дублях по (scope, category, сезон)** может выбрать значение от другого предмета той же категории, а не от того, чья MASTER-связь точнее. Правило заявлено (см. скрипт), но калибровка и сам принцип «максимум» требуют решения владельца.
 - **Правило не утверждено.** Правило перевода (включая сами значения ppm, помеченные как placeholder) и замена `none|season` на `none|by_year_season` ждут решения владельца.

@@ -1,8 +1,16 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 20,
-  "own_checks_total": 20,
+  "own_checks_passed": 30,
+  "own_checks_total": 30,
   "checks": [
+    {
+      "domain": "people_composition",
+      "name": "schema_refs_pf_coverage_and_schedules",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
     {
       "domain": "place_families",
       "name": "wk_44_families_exactly_once",
@@ -125,14 +133,59 @@
       "external": false
     },
     {
+      "domain": "node_binding",
+      "name": "secondary_access_exact_for_all_nodes",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "nodes_checked": 227
+    },
+    {
+      "domain": "node_binding",
+      "name": "g4_contains_all_child_primary_pf",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "node_binding",
+      "name": "secondary_primary_kind_compatibility",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "node_binding",
+      "name": "reached_seasonal_overlay_presence_own_season",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "reached_seasonal_pfs": [
+        "pf_winter_ice_crossing"
+      ],
+      "violations": []
+    },
+    {
       "domain": "presence_rules",
       "name": "matches_current_input_pools",
       "pass": true,
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10280,
-      "rebuilt_rows": 10280
+      "rows": 5717,
+      "rebuilt_rows": 5717
+    },
+    {
+      "domain": "presence_rules",
+      "name": "canonical_unique_identity",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
     },
     {
       "domain": "presence_rules",
@@ -141,7 +194,34 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10280
+      "rows": 5717
+    },
+    {
+      "domain": "presence_rules",
+      "name": "one_rule_per_base_key_and_season",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "presence_rules",
+      "name": "accepted_occurrences_exactly_once",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "accepted_occurrences": 10890
+    },
+    {
+      "domain": "presence_rules",
+      "name": "item_variant_selection_gap",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "variant_keys": 149,
+      "item_alternatives": 183
     },
     {
       "domain": "presence_rules",
@@ -150,7 +230,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "people_rules": 69,
+      "people_rules": 17,
       "place_families": 16,
       "g4": 32,
       "g5": 195
@@ -242,6 +322,16 @@
       "candidates": 8,
       "gaps": 12,
       "place_families": 16
+    },
+    {
+      "domain": "slot_instance_variants",
+      "name": "all_candidates_and_four_sourced_or_gap_facets",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "variants": 8,
+      "candidates": 8
     },
     {
       "domain": "category_registry",

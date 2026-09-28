@@ -239,27 +239,27 @@ fl_cu_humulus_lupulus,хмель,9,IX,autumn,сбор урожая,derived: sow=
 fl_cu_humulus_lupulus,хмель,10,X,autumn,"после сбора, листопад",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
 fl_cu_humulus_lupulus,хмель,11,XI,autumn,"после сбора, листопад",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
 fl_cu_humulus_lupulus,хмель,12,XII,winter,"покой, голые растения",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
-fl_cu_prunus_cerasus,вишня,1,I,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,2,II,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,3,III,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,4,IV,spring,"распускание, бутоны",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,5,V,spring,цветение,derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,6,VI,summer,"рост, завязи",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,7,VII,summer,сбор урожая,derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,8,VIII,summer,сбор урожая,derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,1,I,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,2,II,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,3,III,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,4,IV,spring,"распускание листвы, бутоны",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,5,V,spring,"распускание листвы, цветение",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,6,VI,summer,"в листве, рост, завязи",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,7,VII,summer,"в листве, сбор урожая",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,8,VIII,summer,"в листве, сбор урожая",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
 fl_cu_prunus_cerasus,вишня,9,IX,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
 fl_cu_prunus_cerasus,вишня,10,X,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
 fl_cu_prunus_cerasus,вишня,11,XI,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_prunus_cerasus,вишня,12,XII,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
-fl_cu_malus_domestica,яблоня садовая,1,I,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,2,II,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,3,III,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,4,IV,spring,"распускание, бутоны",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,5,V,spring,цветение,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,6,VI,summer,"рост, завязи",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,7,VII,summer,"рост, завязи",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,8,VIII,summer,сбор урожая,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,9,IX,autumn,сбор урожая,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,10,X,autumn,сбор урожая,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_prunus_cerasus,вишня,12,XII,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_malus_domestica,яблоня садовая,1,I,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,2,II,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,3,III,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,4,IV,spring,"распускание листвы, бутоны",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,5,V,spring,"распускание листвы, цветение",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,6,VI,summer,"в листве, рост, завязи",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,7,VII,summer,"в листве, рост, завязи",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,8,VIII,summer,"в листве, сбор урожая",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,9,IX,autumn,"листопад, сбор урожая",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,10,X,autumn,"листопад, сбор урожая",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
 fl_cu_malus_domestica,яблоня садовая,11,XI,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
-fl_cu_malus_domestica,яблоня садовая,12,XII,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,12,XII,winter,"покой, голые деревья",derived: sow=perennial flow=V harvest=VIII–X,C,candidate

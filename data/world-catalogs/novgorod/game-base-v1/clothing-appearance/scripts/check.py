@@ -11,6 +11,7 @@ adornment: every appearance value is in ACTOR_BASE_APPEARANCE_VOCABULARY, else n
 """
 import csv, json, re, sys
 from pathlib import Path
+from build import HAIR_COVERAGE_EVIDENCE, HEAD_SLOTS
 
 ROOT = Path(__file__).resolve().parents[1]
 NOV = ROOT.parents[1]
@@ -71,6 +72,15 @@ def main():
         if r['disposition'] == 'reject' and not r['reason']:
             fail(f'reject without reason: {r["source_item_id"]}')
     gm = {g['gm_id']: g for g in garments}
+    if {g['source_item_id'] for g in garments if g['covers_hair'] == 'yes'} != set(HAIR_COVERAGE_EVIDENCE):
+        fail('covers_hair=yes must match source-backed evidence exactly')
+    for g in garments:
+        expected_coverage = ('yes' if g['source_item_id'] in HAIR_COVERAGE_EVIDENCE else
+                             'unknown' if g['equipment_slot'] in HEAD_SLOTS else 'no')
+        if g['covers_hair'] not in ('yes', 'no', 'unknown') or g['covers_hair'] != expected_coverage:
+            fail(f'{g["gm_id"]}: invalid covers_hair={g["covers_hair"]!r}')
+        if g['covers_hair'] == 'yes' and HAIR_COVERAGE_EVIDENCE[g['source_item_id']] not in g['source_refs'].split('|'):
+            fail(f'{g["gm_id"]}: missing hair coverage source evidence')
     for g in garments + comps:
         if g['equipment_slot'] not in slots:
             fail(f'{g["gm_id"]}: slot {g["equipment_slot"]!r} not in equipment_slots.csv')

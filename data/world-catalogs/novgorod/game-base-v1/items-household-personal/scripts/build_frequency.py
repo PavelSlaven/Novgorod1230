@@ -25,6 +25,9 @@ WHERE_KW = [
 # R_LOSS_DOWNGRADE: a use-context frequency class (how often the item is in use/stored) does not
 # describe how often it turns up lost/dropped in a wild place; stated rule: drop two classes.
 LOSS_DOWN = {"ubiquitous": "contextual", "common": "rare", "contextual": "rare", "rare": "rare"}
+# The boat/pier source only permits these objects in a supported context; it
+# supplies no cause for an instance at the public ferry landing.
+UNSUPPORTED_ITEM_PFS = {("it_hh_basket", "ferry_landing"), ("it_ps_folding_balance", "ferry_landing")}
 ARCHAEOLOGICAL_KINDS = {"fragment", "residue", "deposit", "waste", "byproduct"}
 NON_WHOLE_KINDS = {"salvage", "component", "blank", "semifinished"}
 NON_WHOLE_NAME = re.compile(r"\bобломок\b", re.I)
@@ -147,6 +150,8 @@ def main():
             for pf in GROUP_DEFAULT.get(it["item_group"], ["dwelling_interior"]):
                 acc[pf] = {"cls": "contextual", "basis": {f"group_default:{it['item_group']}"}, "rule": "R_GROUP_DEFAULT"}
         for pf, a in sorted(acc.items()):
+            if (it["it_id"], pf) in UNSUPPORTED_ITEM_PFS:
+                continue
             cls_pf = R.PF_CLASS[pf]
             ctx_owner = R.own_id(pf, "in_use_or_stored", it["item_group"])
             ctx = "in_use_or_stored"
@@ -284,7 +289,8 @@ def main():
                 add(r, pf, "rare", "R_WK_COMPOSES", f"wk_composes:{r['pf_id']}->{pf};transferred_or_lost")
     rows += extra
     catalog_pairs = {(r["item_or_category_ref"], r["pf_id"]) for r in rows if r["ref_kind"] == "it"}
-    rows = [r for r in rows if r["ref_kind"] != "master" or (r["superseded_by"], r["pf_id"]) not in catalog_pairs]
+    rows = [r for r in rows if r["ref_kind"] != "master" or
+            (r["superseded_by"], r["pf_id"]) not in catalog_pairs | UNSUPPORTED_ITEM_PFS]
     stage_ref = "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
     for r in rows:
         if r["ref_kind"] == "it":

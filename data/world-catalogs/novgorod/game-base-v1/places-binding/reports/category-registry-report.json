@@ -63,7 +63,7 @@
     "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv",
     "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv"
   ],
-  "references_checked": 7241,
+  "references_checked": 7239,
   "unresolved_references": 788,
   "unresolved_by_file": {
     "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv": 32,

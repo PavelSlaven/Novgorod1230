@@ -21,6 +21,21 @@ test('target resolution keeps paths and reports ambiguity and missing files', ()
   assert.deepEqual(targets('README.md (×2)', files).map(row => row.file), ['README.md', 'a/README.md']);
 });
 
+test('parenthetical heading resolves only a unique existing directory', () => {
+  const files = ['npc_runtime_profiles/README.md', 'npc_runtime_profiles/build.py', 'other/README.md'];
+  assert.deepEqual(targets('npc_runtime_profiles (subject_applicability хозяйки)', files).map(row => row.file),
+    ['npc_runtime_profiles/README.md', 'npc_runtime_profiles/build.py']);
+  assert.deepEqual(targets('npc_runtime_profiles (missing.csv)', files).map(row => row.file),
+    ['npc_runtime_profiles/README.md', 'npc_runtime_profiles/build.py']);
+  assert.equal(targets('unknown_profiles (subject_applicability хозяйки)', files)[0].reason,
+    'нет пути к файлу или каталогу');
+  assert.equal(targets('unknown_profiles (missing.csv)', files)[0].reason, 'файл не найден');
+  assert.equal(targets('other (note)', ['a/other/README.md', 'b/other/README.md'])[0].reason,
+    'нет пути к файлу или каталогу');
+  assert.equal(targets('other (missing.csv)', ['a/other/README.md', 'b/other/README.md'])[0].reason,
+    'файл не найден');
+});
+
 test('generated catalog links point to real targets and verdict lines', () => {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   const first = buildStatus(root);

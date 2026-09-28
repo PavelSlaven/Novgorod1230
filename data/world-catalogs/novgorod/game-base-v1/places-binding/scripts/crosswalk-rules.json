@@ -868,6 +868,87 @@
   },
   "node_binding": {
     "source": "pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json natural_profiles[].authoring_axes (landscape, land_use, function)",
+    "pf_secondary": {
+      "meaning": "candidate part of the node scene subject to parent-axis rules",
+      "candidate_basis": "scene_templates.map",
+      "include_rule": {
+        "rule_id": "scene_candidate_access_v1",
+        "statement": "Scene-template mappings propose candidates; the conditional parent-axis rules below decide secondary membership. The primary family is omitted. This binding does not independently establish physical accessibility.",
+        "confidence": "C"
+      },
+      "overlay_rule": {
+        "pf_kind": "overlay",
+        "rule_ref": "exclude_composition_overlay_v1",
+        "confidence": "C",
+        "reason": "A composition overlay has no separate ground and is not a secondary place family."
+      },
+      "parent_closure_rule": {
+        "rule_ref": "g4_child_primary_closure_v1",
+        "confidence": "C",
+        "reason": "A G4 scene contains every primary place family of its G5 children."
+      },
+      "primary_kind_rule": {
+        "rule_ref": "primary_ground_compatibility_v1",
+        "confidence": "C",
+        "reason": "Open water and wetland ground cannot imply forest, route, natural edge or settlement ground merely from a scene template; forest resource use retains forest and route candidates. Child-primary closure is explicit.",
+        "restricted_primary_kinds": ["water", "natural_wetland"],
+        "restricted_water_edge_landscapes": ["river_channel", "estuary", "shoal", "backwater_wetland", "floodplain"],
+        "rejected_secondary_kinds": ["natural_forest", "route", "natural_edge", "settlement_space"],
+        "forest_resource_use_exception": { "land_use": "forest_resource_use", "allowed_secondary_kinds": ["natural_forest", "route", "natural_edge"] }
+      },
+      "ferry_bank_rule": {
+        "primary_pf": "ferry_landing",
+        "parent_land_use": "waterway_access",
+        "add_pf": "riverbank",
+        "rule_ref": "ferry_waterway_bank_v1",
+        "confidence": "C",
+        "reason": "A waterway ferry landing includes its bank in the same scene."
+      },
+      "axis_rules": [
+        {
+          "pf_id": "village_lane",
+          "rule_ref": "settlement_lane_axes_v1",
+          "confidence": "C",
+          "reason": "A village lane needs settlement or archaeological landscape, or recurrent settlement use.",
+          "require_any": { "landscape": ["settlement_landscape", "archaeological_area"], "land_use": ["recurrent_settlement_use"] }
+        },
+        {
+          "pf_id": "road",
+          "rule_ref": "terrestrial_road_axes_v1",
+          "confidence": "C",
+          "reason": "Secondary road needs settlement or archaeological ground, recurrent settlement use, or an explicit dry land route function.",
+          "require_any": { "landscape": ["settlement_landscape", "archaeological_area"], "land_use": ["recurrent_settlement_use"], "function": ["dry_ridge_route"] }
+        },
+        {
+          "pf_id": "town_wall_edge",
+          "rule_ref": "town_wall_settlement_axes_v1",
+          "confidence": "C",
+          "reason": "A town wall requires a town, major city center or posad place template on the node or primary family.",
+          "require_any": { "place_template_id": ["pt_town", "pt_city_major_center", "pt_posad_suburb"], "primary_place_template_refs": ["pt_town", "pt_city_major_center", "pt_posad_suburb"] }
+        },
+        {
+          "pf_id": "field_margin",
+          "rule_ref": "field_margin_agrarian_axes_v1",
+          "confidence": "C",
+          "reason": "A field margin requires an agrarian primary family.",
+          "require_any": { "primary_pf_kind": ["agrarian"] }
+        },
+        {
+          "pf_id": "river_wharf",
+          "rule_ref": "river_wharf_settlement_axes_v1",
+          "confidence": "C",
+          "reason": "A wharf requires a town, major city center or posad place template on the node or primary family.",
+          "require_any": { "place_template_id": ["pt_town", "pt_city_major_center", "pt_posad_suburb"], "primary_place_template_refs": ["pt_town", "pt_city_major_center", "pt_posad_suburb"] }
+        },
+        {
+          "pf_id": "churchyard",
+          "rule_ref": "churchyard_religious_axes_v1",
+          "confidence": "C",
+          "reason": "A churchyard requires a religious-space primary family.",
+          "require_any": { "primary_pf_kind": ["religious_space"] }
+        }
+      ]
+    },
     "g4_function_to_pf": {
       "rule": "Primary pf of a v17 G4 = map of its authoring_axes.function; the function axis is marked direct/high in the source. Unmapped or ambiguous functions stay a gap.",
       "map": {

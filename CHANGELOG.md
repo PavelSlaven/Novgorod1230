@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(r1): REVIEW-R1-fix-2/3 — wave bundle by table set, fail-closed approval fields, nodes closure required, positive PG on approved copy; LW-076 (#158)
 - test(infra): opt-in NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1 runs throwaway PG test containers without AppArmor (servak: AppArmor 4.1 + Docker 26.1 block unix sockets)
 - docs(plan): находки восприятия 2026-09-28 — M2c: скрытое надетым (волосы под убором), частичная видимость; M4: подключение восприятия NPC; LW-074 added (#158)
 - fix(r1): REVIEW-R1 — wave PG readback/negatives, approval fail-closed, people allowed_times, CI P12 postgres, generator pin from approval; LW-076 (#158)

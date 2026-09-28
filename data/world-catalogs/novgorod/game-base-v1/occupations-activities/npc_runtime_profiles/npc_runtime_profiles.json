@@ -181,65 +181,327 @@
       "hair_color": [
         {
           "value": "nov_1200_1250_hair_color_blond",
-          "weight": 1,
+          "weight": 2,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_blond",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "young_adult"
+            ]
+          },
           "name_ru": "светлые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_light_brown",
-          "weight": 1,
+          "weight": 4,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_light_brown",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "young_adult"
+            ]
+          },
           "name_ru": "русые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_dark_brown",
-          "weight": 1,
+          "weight": 3,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_dark_brown",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "young_adult"
+            ]
+          },
           "name_ru": "тёмно-каштановые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_black",
-          "weight": 1,
+          "weight": 2,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_black",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "young_adult"
+            ]
+          },
           "name_ru": "чёрные волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_auburn",
           "weight": 1,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_auburn",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "young_adult"
+            ]
+          },
+          "name_ru": "рыжеватые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_blond",
+          "weight": 2,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_blond",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "adult"
+            ]
+          },
+          "name_ru": "светлые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_light_brown",
+          "weight": 4,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_light_brown",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "adult"
+            ]
+          },
+          "name_ru": "русые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_dark_brown",
+          "weight": 3,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_dark_brown",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "adult"
+            ]
+          },
+          "name_ru": "тёмно-каштановые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_black",
+          "weight": 2,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_black",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "adult"
+            ]
+          },
+          "name_ru": "чёрные волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_auburn",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_auburn",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "adult"
+            ]
+          },
           "name_ru": "рыжеватые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_gray",
           "weight": 1,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_gray",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "adult"
+            ]
+          },
+          "name_ru": "седые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_blond",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_blond",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "светлые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_light_brown",
+          "weight": 3,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_light_brown",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "русые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_dark_brown",
+          "weight": 2,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_dark_brown",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "тёмно-каштановые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_black",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_black",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "чёрные волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_auburn",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_auburn",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "рыжеватые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_gray",
+          "weight": 4,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_gray",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
           "name_ru": "седые волосы"
         },
         {
           "value": "nov_1200_1250_hair_color_white",
           "weight": 1,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_white",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "белые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_blond",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_blond",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
+          "name_ru": "светлые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_light_brown",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_light_brown",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
+          "name_ru": "русые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_dark_brown",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_dark_brown",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
+          "name_ru": "тёмно-каштановые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_black",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_black",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
+          "name_ru": "чёрные волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_auburn",
+          "weight": 1,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_auburn",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
+          "name_ru": "рыжеватые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_gray",
+          "weight": 7,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_gray",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
+          "name_ru": "седые волосы"
+        },
+        {
+          "value": "nov_1200_1250_hair_color_white",
+          "weight": 4,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_white",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "age_category": [
+              "old"
+            ]
+          },
           "name_ru": "белые волосы"
         }
       ],
@@ -248,26 +510,65 @@
           "value": "nov_1200_1250_hair_length_bald",
           "weight": 1,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_bald",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
-          "applicability": {},
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "sex_category": [
+              "male"
+            ],
+            "age_category": [
+              "adult"
+            ]
+          },
+          "name_ru": "лысая голова"
+        },
+        {
+          "value": "nov_1200_1250_hair_length_bald",
+          "weight": 2,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_bald",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "sex_category": [
+              "male"
+            ],
+            "age_category": [
+              "middle_aged"
+            ]
+          },
+          "name_ru": "лысая голова"
+        },
+        {
+          "value": "nov_1200_1250_hair_length_bald",
+          "weight": 3,
+          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_bald",
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+          "applicability": {
+            "sex_category": [
+              "male"
+            ],
+            "age_category": [
+              "old"
+            ]
+          },
           "name_ru": "лысая голова"
         },
         {
           "value": "nov_1200_1250_hair_length_short",
-          "weight": 1,
+          "weight": 5,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_short",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
           "applicability": {},
           "name_ru": "короткие волосы"
         },
         {
           "value": "nov_1200_1250_hair_length_medium",
-          "weight": 1,
+          "weight": 3,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_medium",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
           "applicability": {},
           "name_ru": "волосы средней длины"
         },
@@ -275,8 +576,8 @@
           "value": "nov_1200_1250_hair_length_long",
           "weight": 1,
           "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json#novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_long",
-          "rule": "filter source applicability against previously selected facets in code",
-          "no_source": null,
+          "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+          "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
           "applicability": {},
           "name_ru": "длинные волосы"
         }

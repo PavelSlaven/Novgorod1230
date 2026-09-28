@@ -37,17 +37,36 @@ function soundIssue(sound, description, audibleSeasons) {
   const match = sound.match(SOUND_CONTEXT);
   return match ? `context word ${match[0].trim()}` : '';
 }
+function contextualFaunaIssues(mammalRows, birdRows, presenceRows) {
+  const issues = [];
+  const mole = mammalRows.find((row) => row.fa_id === 'fa_m_mole');
+  const moleFlood = presenceRows.filter((row) => row.fa_id === 'fa_m_mole' && row.season === 'spring' && row.pf_id === 'pf_floodplain_meadow');
+  if (!mole || !mole.source_refs.includes('book:498801 §406') || !mole.source_refs.includes('book:756203 §289')) issues.push('mole source refs');
+  if (moleFlood.length !== 1 || moleFlood[0].frequency_class !== 'rare' || moleFlood[0].weight !== '1' ||
+      !moleFlood[0].source_refs.includes('book:498801 §406') || !moleFlood[0].source_refs.includes('book:756203 §289')) issues.push('mole spring floodplain frequency');
+
+  const mallard = birdRows.find((row) => row.fa_id === 'fa_b_mallard');
+  if (!mallard || mallard.season_presence_conditions !== 'winter=open_water_only') issues.push('mallard winter condition');
+  if (presenceRows.some((row) => row.fa_id === 'fa_b_mallard' && row.season === 'winter')) issues.push('mallard winter place-family row');
+  return issues;
+}
 if (process.argv.includes('--self-test')) {
   for (const bad of ['весной «ки-ки»', 'в июне свист', 'над озером крик', 'ночью трель', 'на току щелчки']) if (!soundIssue(bad, 'крик', 'spring')) throw new Error('sound negative probe passed: ' + bad);
   if (!soundIssue('', 'звонкая песня', 'spring')) throw new Error('ordinary voice without sound passed');
   for (const good of ['громкое «ки-ки»', 'сухая трель и свист']) if (soundIssue(good, 'крик', 'spring')) throw new Error('sound positive probe failed: ' + good);
   for (const [description, seasons] of [['почти молчалив', ''], ['редко слышен', 'winter'], ['почти безмолвен', 'spring;summer']]) if (soundIssue('', description, seasons)) throw new Error('silent voice without sound failed: ' + description);
+  if (contextualFaunaIssues(mammals, birds, pres).length) throw new Error('contextual fauna positive probe failed');
+  const winterMallard = { ...pres.find((row) => row.fa_id === 'fa_b_mallard'), presence_id: 'negative_probe_mallard_winter', season: 'winter' };
+  if (!contextualFaunaIssues(mammals, birds, [...pres, winterMallard]).includes('mallard winter place-family row')) throw new Error('mallard winter negative probe passed');
+  const commonMole = pres.map((row) => row.fa_id === 'fa_m_mole' && row.season === 'spring' && row.pf_id === 'pf_floodplain_meadow' ? { ...row, frequency_class: 'common', weight: '4' } : row);
+  if (!contextualFaunaIssues(mammals, birds, commonMole).includes('mole spring floodplain frequency')) throw new Error('mole flood negative probe passed');
   console.log('voice_sound_ru self-test ok');
   process.exit(0);
 }
 const phase = require('./validate-phase.cjs');
 const phaseTable = phase.csv(F('phase_activity.csv'));
 errors.push(...phase.validate('fauna-mammals-birds', phaseTable.rows, phaseTable.header));
+errors.push(...contextualFaunaIssues(mammals, birds, pres));
 
 // ids
 const all = [...mammals, ...birds]; const ids = new Set();
@@ -101,7 +120,9 @@ const accB = {};
 for (const pf of openPfs) for (const s of SEASONS) {
   if (pf === 'pf_winter_ice_crossing' && s !== 'winter') continue; // seasonal overlay exists only in winter
   const n = new Set(pres.filter((p) => p.pf_id === pf && p.season === s && bset.has(p.fa_id) && p.audible === 'true').map((p) => p.fa_id)).size;
-  accB[pf + '/' + s] = n; if (n < 3) err(`fewer than 3 audible bird species in ${pf} ${s}: ${n}`);
+  accB[pf + '/' + s] = n;
+  if (pf === 'pf_ferry_landing' && s === 'winter' && n === 2) warn('explicit gap: pf_ferry_landing winter has 2 audible birds; mallard requires scene-level open water');
+  else if (n < 3) err(`fewer than 3 audible bird species in ${pf} ${s}: ${n}`);
 }
 const outdoorNotCovered = [...pfs].filter((pf) => !INTERIOR.has(pf) && !openPfs.includes(pf));
 if (outdoorNotCovered.length) warn('outdoor place families without any fauna rows: ' + outdoorNotCovered.join(','));

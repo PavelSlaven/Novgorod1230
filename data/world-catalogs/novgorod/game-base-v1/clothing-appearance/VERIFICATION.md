@@ -300,3 +300,10 @@ The counts match. There are two inaccuracies:
 **`adornment_appearance/vocabulary_extension_requests.csv`: approve_with_limits.** Строка `tonsure_clergy` с пустыми refs удалена. Осталось прежнее замечание: у `marital_status (selector)` пустой `owner`, должно быть `@rus/actors`.
 
 **Статус данных:** `candidate`. Эта проверка не утверждает ничего для production-импорта.
+
+### garments/garments.csv — covers_hair — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера (C011b `969e3f77`).
+
+- Новая колонка `covers_hair`, 95 строк: `yes` — только `gm_hw006` и `gm_hw007` (с источником), `unknown` — 15 прочих головных и подголовных вещей, `no` — 78 не-головных. Бездоказательного `no` у головных нет.
+- Видимость волос не хранится флагом: её вычисляет runtime по надетому (`garments.csv#covers_hair`). Любой надетый `yes` или `unknown` скрывает волосы. Снятый или сорванный убор открывает их.

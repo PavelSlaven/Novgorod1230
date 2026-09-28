@@ -67,7 +67,7 @@ evidence-строк нет структурированной привязки �
 проверяет, что ни одна другая строка не описывает колокольню как
 присутствующую вопреки этому.
 
-## lifecycle_rites_burial.csv — 19 строк
+## lifecycle_rites_burial.csv — 23 строки
 
 Поля: `lr_id, rite_kind (birth|baptism|wedding|death|burial|commemoration),
 name_ru, roles, pf_ids, calendar_refs, items_refs, visible_traces,
@@ -83,6 +83,8 @@ sensory_cues, attestation, source_refs, confidence, period, status, note`.
 места G4 Заостровья теперь есть непустой пул содержимого с source_refs
 (confidence C, археологическая аналогия).
 
+Ещё 4 строки строятся из `places-binding/places/pf_local_additions.json`: три региональные формы `pf_burial_ground` по `book:638081 §1457`, `book:638081 §1463`, `book:438387 §482`; скудельница 1230 г. по `book:818352 §311` оставлена отдельным исключительным событием без привязки к типичному облику PF.
+
 Свадьба (сватовство/ряд/приданое) как экономико-правовой институт уже
 собрана в `households-psychology-speech/households_kinship/
 marriage_inheritance_rules.csv` — здесь **не дублируется**; в этом файле
@@ -93,7 +95,7 @@ marriage_inheritance_rules.csv` — здесь **не дублируется**; 
 получили `confidence=C` и `note` с явной оговоркой — проверено
 `check_religion.py`. Проверен denylist на поздние надгробия
 с надписями («надпись», «плита с надписью», «памятник») — 0 совпадений
-среди 19 строк.
+среди 23 строк.
 
 ## Известные пробелы
 

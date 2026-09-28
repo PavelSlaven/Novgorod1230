@@ -15,7 +15,10 @@ const lightProfile = readCsv(path.join(GROUP_DIR, 'weather_climate', 'light_prof
 const groundRows = readCsv(path.join(GROUP_DIR, 'natural_materials_soils', 'ground_types.csv'));
 const groundTypes = new Set(groundRows.map((r) => r.soil_ground_type));
 const bindings = readCsv(path.resolve(DIR, '../../places-binding/places/node_binding.csv'));
-const scentGround = scentGroundForFamilies(readCsv(path.resolve(DIR, '../../places-binding/places/place_families.csv')), groundRows);
+const placeFamilies = readCsv(path.resolve(DIR, '../../places-binding/places/place_families.csv'));
+const scentGround = scentGroundForFamilies(placeFamilies, groundRows);
+const landscapeByG4 = new Map(bindings.filter((b) => b.node_level === 'G4').map((b) => [b.node_ref.replace(/@1$/, ''), b.landscape_template_id]));
+const landscapeByPF = new Map(placeFamilies.map((pf) => [pf.pf_id, new Set(pf.landscape_template_refs.split(';').filter(Boolean))]));
 const TARGET_PF = ['bog', 'conifer_woodland', 'ferry_landing', 'floodplain_meadow', 'forest_edge', 'forest_track', 'hunting_ground', 'marshy_stream', 'outbuildings', 'peasant_homestead', 'river_channel', 'riverbank', 'road', 'rural_yard', 'village_lane', 'winter_ice_crossing'];
 const ALL_MEMBERS = { ...MEMBERS, ...EXTRA_MEMBERS };
 const SRC_G4 = 'pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json';
@@ -182,10 +185,15 @@ for (const g of g4index.g4) {
 
 const sensoryCoverage = [];
 for (const pf of TARGET_PF) {
-  const refs = new Set(bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, '')));
+  const primary = new Set(bindings.filter((b) => b.node_level === 'G4' && b.pf_id === `pf_${pf}`).map((b) => b.node_ref.replace(/@1$/, '')));
+  const secondary = new Set(bindings.filter((b) => b.node_level === 'G4' && b.pf_id !== `pf_${pf}` && b.pf_secondary.split(';').includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, '')));
+  const preferred = (r) => landscapeByPF.get(`pf_${pf}`)?.has(landscapeByG4.get(r.g4_ref));
   for (const season of (pf === 'winter_ice_crossing' ? ['winter'] : SEASONS)) for (const [aspect, channel] of [['visual', 'visual'], ['acoustic', 'acoustic'], ['olfactory', 'olfactory']]) {
-    const evidence = rows.find((r) => refs.has(r.g4_ref) && r.season_period === season && r.channel === channel && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text);
-    sensoryCoverage.push({ pf_id: pf, season_period: season, aspect, coverage: evidence ? 'sourced' : 'no_source', basis_ref: evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`, status: 'candidate' });
+    const eligible = (r) => r.season_period === season && r.channel === channel && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text;
+    const pick = (refs) => rows.find((r) => refs.has(r.g4_ref) && eligible(r) && preferred(r)) || rows.find((r) => refs.has(r.g4_ref) && eligible(r));
+    const primaryEvidence = pick(primary);
+    const evidence = primaryEvidence || pick(secondary);
+    sensoryCoverage.push({ pf_id: pf, season_period: season, aspect, coverage: primaryEvidence ? 'sourced' : evidence ? 'partial' : 'no_source', basis_ref: evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`, status: 'candidate' });
   }
 }
 

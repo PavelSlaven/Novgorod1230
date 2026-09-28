@@ -192,3 +192,30 @@
 | `flora/sources.csv` | 63 | approve_with_limits (без изменений) |
 
 **Общий вердикт группы: approve_with_limits.** Rework закрыт.
+
+### flora/trees_shrubs.csv (phenology_by_month) — approve (C009)
+
+Проверено: Claude Opus 5.5, повторной сборкой (C009, коммит 449074cc против b6b0620f).
+
+- 37 × 12 месячных состояний выведены по правилу C007d из авторских месяцев цветения и плодов. Совпадение — `flowering_and_fruiting`, вилки нет.
+- Прежние поля не тронуты. Сборка побайтная, validator — PASS.
+
+### C011 — сезонная листва в месячной фенологии (candidate)
+
+- После авторских месяцев цветения и плодов листопадные таксоны получают в `phenology_by_month` сезонные `leafless` (XII–II), `leaf_out` (III–V), `leaf_fall` (IX–XI); летом остаётся `vegetative`. Это проекция общего сезона, а не точная видовая дата.
+- При известных месяцах `flowers_before_leaves=yes` даёт `flowering_before_leaves` вместо одиночного `flowering`; совпадение с плодами остаётся `flowering_and_fruiting`.
+- Betula pendula, B. pubescens, Populus tremula и Salix aurita не имеют авторских месяцев цветения. Их `flowering_month_precision=season_only`, `flowers_before_leaves=yes` и весеннее состояние в `phenology_by_season` сохраняют отношение без назначения месячной даты; в месячной весне стоит `leaf_out`.
+- Проверка: `node scripts/build.mjs` — 37 таксонов и 840 строк присутствия; `node scripts/validate.mjs` — 10/10 PASS, включая отрицательные пробы, 1423 ссылки проверены; `node --check` для обоих скриптов и scoped `git diff --check` — PASS. У 37 строк вне `phenology_by_month` прежние поля совпадают с HEAD; новый `flowering_month_precision`: `month` 30, `season_only` 4, `unknown` 3.
+
+### REVIEW-C011 F1 — единый календарь листвы (candidate)
+
+Месячная проекция C011 выше заменена каноническим `flora-herbs-berries-mushrooms/scripts/src/woody_foliage_state.json`: март теперь `leafless`, `leaf_out` только IV–V. Все 37 таксонов получили отдельное `foliage_by_month`; листопадные используют 12 значений канона даже при цветении и плодоношении, вечнозелёные имеют `evergreen` круглый год. `phenology_by_month` сохраняет репродуктивные фазы, `phenology_by_season` не менялся. Сборка: 37 таксонов, 840 строк присутствия; validator: 10/10 PASS, 1423 ссылки, включая пробы листвы и пересечения фаз.
+
+### flora/trees_shrubs.csv — foliage_by_month и phenology_by_month — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера (C011 `1040ec2c`, C011b `969e3f77` против `0fd10db6`).
+
+- Листва по месяцам берётся из единственного объявления `flora-herbs-berries-mushrooms/scripts/src/woody_foliage_state.json`: I–III и XII `leafless`, IV–V `leaf_out`, VI–VIII `vegetative`, IX–XI `leaf_fall`. Это уже утверждённое правило древесных многолетников из `field_state_calendar.csv` (III «покой», IV «распускание»). Второго календаря нет.
+- `foliage_by_month`: у 30 листопадных все 12 месяцев равны объявлению, у 7 вечнозелёных — `evergreen`. В `phenology_by_month` 25 мартовских `leaf_out` заменены на `leafless`; цветение и плодоношение сохранены.
+- У четырёх таксонов (`Betula pendula`, `Betula pubescens`, `Populus tremula`, `Salix aurita`) месяц цветения не выдуман: связь «цветение до листвы» и `flowering_month_precision=season_only`.
+- Ограничение: календарь юлианский (temporal-v4); месяц распускания — редакционное правило C на основе утверждённого правила игровой базы, не видовые даты.

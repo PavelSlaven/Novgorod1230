@@ -5,6 +5,7 @@ import path from 'node:path';
 import { REPO, GROUP, readJson, readTsv, readCsv, writeCsv, writeJson, sha256, rel } from './lib.mjs';
 
 export const WK_PLACE_FIRST = path.join(REPO, 'data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json');
+export const LOCAL_PF_ADDITIONS = path.join(GROUP, 'places/pf_local_additions.json');
 export const SEEDS = Object.fromEntries(['landscape', 'land_use', 'place', 'water_body', 'route'].map((k) => [k, path.join(REPO, `infra/world-base/${k}_templates.seed.json`)]));
 export const V6_G4 = path.join(REPO, 'DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv/novgorod_g2_g4_70_cells_v6_g4_locations.tsv');
 export const MASTER_ME = path.join(REPO, 'data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/material_entities');
@@ -29,13 +30,14 @@ export function loadFamilies() {
   const wk = readJson(WK_PLACE_FIRST);
   const auth = readJson(path.join(GROUP, 'scripts/pf-authoring.json'));
   const cw = readJson(path.join(GROUP, 'scripts/crosswalk-rules.json'));
-  return { wk, auth, cw };
+  const local = readJson(LOCAL_PF_ADDITIONS);
+  return { wk, auth, cw, local };
 }
 
 const pfid = (id) => 'pf_' + id;
 
 export function build() {
-  const { wk, auth, cw } = loadFamilies();
+  const { wk, auth, cw, local } = loadFamilies();
   const reg = loadTemplateRegistry();
   const ex = readJson(path.join(GROUP, 'inputs/pr98-extract.json'));
   const SLOTS = auth.facet_slots.slots;
@@ -93,6 +95,41 @@ export function build() {
     });
   }
 
+  const localRef = rel(LOCAL_PF_ADDITIONS);
+  for (const f of local.additions) {
+    const slot = Object.fromEntries(SLOTS.map((s) => [s, []]));
+    f.facets.forEach((x, i) => {
+      const label = `${x.id}[${x.claim_refs.length},${x.coverage}]`;
+      for (const s of x.slots) slot[s].push(label);
+      facets.push({
+        pff_id: `pff_${f.id}__${x.id}`, pf_id: pfid(f.id), facet_id: x.id, facet_order: i + 1, slots: x.slots,
+        coverage: x.coverage, claim_ref_count: x.claim_refs.length, needs: x.needs.join(' | '), limits: x.limits,
+        residual_needs: x.residual_needs.join(' | '), claim_refs: x.claim_refs,
+        source_refs: `${localRef}#additions[id=${f.id}].facets[id=${x.id}]`, confidence: f.confidence, status: f.status,
+      });
+    });
+    const allRefs = [...f.landscape, ...f.land_use, ...f.place, ...f.water];
+    const notNov = allRefs.filter((r) => reg.get(r) && reg.get(r).novgorod_candidate === false);
+    const cov = f.facets.map((x) => x.coverage);
+    families.push({
+      pf_id: pfid(f.id), wk_family_ref: '', name_ru: f.name_ru, name_en: f.name_en, pf_kind: f.kind,
+      description_en: f.description_en, composes_with: f.composes_with.map(pfid),
+      layers_applicable: f.layers, layers_not_applicable: auth.layer_vocabulary.layers.filter((l) => !f.layers.includes(l)),
+      layers_note: '',
+      facet_ground: slot.facet_ground, facet_use_people: slot.facet_use_people, facet_senses_traces: slot.facet_senses_traces, facet_risks_upkeep: slot.facet_risks_upkeep,
+      facet_count: f.facets.length, wk_claim_ref_count: f.facets.reduce((n, x) => n + x.claim_refs.length, 0),
+      wk_coverage: `supported ${cov.filter((c) => c === 'supported').length}; partial ${cov.filter((c) => c === 'partial').length}`,
+      landscape_template_refs: f.landscape, land_use_template_refs: f.land_use, place_template_refs: f.place, water_body_template_refs: f.water, route_template_refs: f.route,
+      template_refs_not_in_novgorod_candidate: notNov, templates_not_applicable: f.templates_not_applicable,
+      v6_g4_location_types: (byG4type.get(f.id) ?? []).sort(),
+      spatial_v3_scene_template_refs: (byScene.get(f.id) ?? []).sort().map((s) => s + '@1'),
+      master_location_archetypes: (byMaster.get(f.id) ?? []).sort(),
+      region_id: f.region_id, universal: String(f.universal),
+      source_refs: [`${localRef}#additions[id=${f.id}]`, ...f.source_refs, ...f.template_ref_source_refs],
+      confidence: f.confidence, status: f.status, notes: f.note,
+    });
+  }
+
   // v6 g4_location_type crosswalk (198 types).
   const g4rows = readTsv(V6_G4);
   const g4t = new Map();
@@ -147,7 +184,7 @@ export function build() {
     crosswalk_master_location_archetypes: writeCsv(P('crosswalk_master_location_archetypes.csv'), Object.keys(masterCross[0]), masterCross),
   };
   writeJson(path.join(GROUP, 'reports/build-place-families.json'), {
-    counts, source_pins: { [rel(WK_PLACE_FIRST)]: sha256(WK_PLACE_FIRST), [rel(V6_G4)]: sha256(V6_G4) },
+    counts, source_pins: { [rel(WK_PLACE_FIRST)]: sha256(WK_PLACE_FIRST), [rel(LOCAL_PF_ADDITIONS)]: sha256(LOCAL_PF_ADDITIONS), [rel(V6_G4)]: sha256(V6_G4) },
   });
   console.log('place families', counts);
   return counts;

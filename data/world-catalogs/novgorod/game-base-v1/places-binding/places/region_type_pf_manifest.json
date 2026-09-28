@@ -2166,6 +2166,7 @@
       "template_id": "lt_wooded_floodplain",
       "coverage": "covered",
       "pf_refs": [
+        "pf_burial_ground",
         "pf_mixed_woodland"
       ],
       "regional_scales": [
@@ -2183,6 +2184,13 @@
       ],
       "regional_source_refs": [],
       "pf_mappings": [
+        {
+          "pf_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#pf_id=pf_burial_ground",
+          "authoring_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/places/pf_local_additions.json#additions[id=burial_ground].landscape[lt_wooded_floodplain]",
+          "evidence_refs": [
+            "data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1"
+          ]
+        },
         {
           "pf_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#pf_id=pf_mixed_woodland",
           "authoring_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.mixed_woodland.landscape[lt_wooded_floodplain]",

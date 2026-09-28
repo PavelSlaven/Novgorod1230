@@ -1,13 +1,14 @@
 {
   "counts": {
-    "place_families": 44,
-    "place_family_facets": 171,
+    "place_families": 45,
+    "place_family_facets": 175,
     "crosswalk_v6_g4_location_types": 198,
     "crosswalk_scene_templates": 17,
     "crosswalk_master_location_archetypes": 32
   },
   "source_pins": {
     "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json": "2db745cdffb3e726a622dae7bd3cf26d84139b47a50795d795a4cf454bf1a890",
+    "data/world-catalogs/novgorod/game-base-v1/places-binding/places/pf_local_additions.json": "0993022118d1ec7b101bc574607c4bead9326b9f3aa06a25fd4956dd6ea3fa1c",
     "DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv/novgorod_g2_g4_70_cells_v6_g4_locations.tsv": "d06ade60b43e9316767bafd54ead30a59319ad6699d20268126b3636f8ae7ee3"
   }
 }

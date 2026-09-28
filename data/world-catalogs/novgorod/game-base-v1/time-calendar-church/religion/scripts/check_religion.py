@@ -61,6 +61,16 @@ for r in burial_area_rows:
     if not r["source_refs"]:
         errors.append(f"{r['lr_id']}: burial_area row missing source_refs")
 
+local_pf_rows = [r for r in lifecycle if "pf_burial_ground" in r["pf_ids"]]
+expected_local_sources = {"book:638081 §1457", "book:638081 §1463", "book:438387 §482"}
+if len(local_pf_rows) != 3 or {r["source_refs"] for r in local_pf_rows} != expected_local_sources:
+    errors.append("pf_burial_ground must have exactly three source-backed regional form rows")
+skudelnitsa = [r for r in lifecycle if r["source_refs"] == "book:818352 §311"]
+if len(skudelnitsa) != 1 or skudelnitsa[0]["pf_ids"] != "[]" or "Исключительное" not in skudelnitsa[0]["note"]:
+    errors.append("1230 skudelnitsa event must remain exceptional and outside typical pf_burial_ground appearance")
+if any("посещ" in (r["name_ru"] + " " + r["visible_traces"]).lower() for r in local_pf_rows):
+    errors.append("pf_burial_ground rows invent ordinary grave visitation")
+
 for r in lifecycle:
     if r["period"] in {"medieval_general", "ethnographic_late", "c1230_analogy"} and r["confidence"] != "C":
         errors.append(f"{r['lr_id']}: analogy must have confidence C")

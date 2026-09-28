@@ -1,0 +1,161 @@
+{
+  "schema": "places_binding_local_pf_additions_v1",
+  "status": "candidate",
+  "transfer_debt": "Перенести pf_burial_ground в WK place-first-cartography при следующей ревизии WK.",
+  "additions": [
+    {
+      "id": "burial_ground",
+      "name_ru": "Место погребения, могильник",
+      "name_en": "Burial ground",
+      "kind": "religious_space",
+      "description_en": "A burial area not tied to a churchyard; attested forms include ground graves, zhalniki and kurgans.",
+      "composes_with": [
+        "road",
+        "forest_track",
+        "forest_edge"
+      ],
+      "layers": [
+        "surface",
+        "relief",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "landscape": [
+        "lt_wooded_floodplain"
+      ],
+      "land_use": [],
+      "place": [],
+      "water": [],
+      "route": [],
+      "templates_not_applicable": "no_source: отдельный place_template могильника в текущем world-base отсутствует",
+      "template_ref_source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/places-binding/inputs/pr98-extract.json#g4[profile_id=m2c_natural_g4_zaostrovye_burial_area].template_refs.landscape_template_id"
+      ],
+      "exact_g4_refs": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1"
+      ],
+      "start_territory_gap_refs": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1"
+      ],
+      "facets": [
+        {
+          "id": "burial_forms",
+          "slots": ["facet_ground"],
+          "coverage": "supported",
+          "claim_refs": ["book:638081 §1457", "book:638081 §1463"],
+          "needs": [],
+          "limits": "Грунтовые могилы, жальники и курганы — допустимые формы; источник не требует всех форм на каждом участке.",
+          "residual_needs": []
+        },
+        {
+          "id": "burial_use_without_visitor_frequency",
+          "slots": ["facet_use_people"],
+          "coverage": "partial",
+          "claim_refs": ["book:638081 §1457"],
+          "needs": ["no_source: обычай, календарь и частота посещения могил около 1230 г."],
+          "limits": "Погребальная функция подтверждена; обычное присутствие людей не выводится.",
+          "residual_needs": ["no_source: кладбище при церкви как норма около 1230 г."]
+        },
+        {
+          "id": "stone_and_mound_traces",
+          "slots": ["facet_senses_traces"],
+          "coverage": "supported",
+          "claim_refs": ["book:638081 §1457", "book:438387 §482"],
+          "needs": [],
+          "limits": "Кольца, прямоугольники из валунов и небольшие насыпи — варианты, не обязательный единый облик.",
+          "residual_needs": []
+        },
+        {
+          "id": "setting_and_upkeep_gaps",
+          "slots": ["facet_risks_upkeep"],
+          "coverage": "partial",
+          "claim_refs": ["book:743870 §199", "book:743870 §345", "book:743870 §379"],
+          "needs": [
+            "no_source: типовая ограда, деревья и уход за могильником около 1230 г.",
+            "no_source: положение могильника относительно поселения и дороги около 1230 г."
+          ],
+          "limits": "Ссылки на деревни и дороги описывают положение недатированных памятников во время полевого обследования 1960-х; они не подтверждают размещение около 1230 г.",
+          "residual_needs": []
+        }
+      ],
+      "identity_presence": {
+        "category_ref": "burial_zone",
+        "relation": "required_identity_not_frequency",
+        "count_min": 1,
+        "source_refs": ["book:638081 §1457", "book:438387 §482"],
+        "confidence": "B"
+      },
+      "no_source": [
+        "обычай, календарь и частота посещения могил около 1230 г.",
+        "кладбище при церкви как норма около 1230 г.",
+        "типовая ограда, деревья и уход за могильником около 1230 г.",
+        "положение могильника относительно поселения и дороги около 1230 г."
+      ],
+      "lifecycle_rows": [
+        {
+          "rite_kind": "burial",
+          "name_ru": "Жальник: грунтовые могилы с каменной выкладкой",
+          "visible_traces": "Грунтовые могилы могут быть отмечены на поверхности валунами кольцом или прямоугольником.",
+          "attestation": "archaeological_description",
+          "source_refs": "book:638081 §1457",
+          "confidence": "B",
+          "period": "c1230",
+          "note": "Региональное описание новгородских словен; не задаёт единый план каждого могильника."
+        },
+        {
+          "rite_kind": "burial",
+          "name_ru": "Сосуществование жальников и курганов",
+          "visible_traces": "На одном историческом горизонте могли сосуществовать жальничные могилы и курганные захоронения.",
+          "attestation": "dating",
+          "source_refs": "book:638081 §1463",
+          "confidence": "B",
+          "period": "c1230",
+          "note": "Новгородская земля XII–XIII вв.; не означает одинакового состава каждого могильника."
+        },
+        {
+          "rite_kind": "burial",
+          "name_ru": "Жальник: небольшая насыпь и камни",
+          "visible_traces": "Над могилой могла быть небольшая земляная насыпь с камнями по окружности или прямоугольнику.",
+          "attestation": "archaeological_description",
+          "source_refs": "book:438387 §482",
+          "confidence": "B",
+          "period": "c1230",
+          "note": "Север Новгородской земли; датировка абзаца охватывает XI–XIV вв., форма не обязательна для каждого погребения."
+        },
+        {
+          "rite_kind": "burial",
+          "name_ru": "Скудельница на Прусской улице в 1230 году",
+          "visible_traces": "no_source: внешний облик или видимые следы скудельницы не описаны.",
+          "attestation": "event",
+          "source_refs": "book:818352 §311",
+          "confidence": "B",
+          "period": "c1230",
+          "note": "Исключительное городское событие; не типовой облик pf_burial_ground и не свидетельство для Заостровья."
+        }
+      ],
+      "source_refs": [
+        "book:638081 §1457",
+        "book:638081 §1463",
+        "book:438387 §482",
+        "book:743870 §199",
+        "book:743870 §345",
+        "book:743870 §379",
+        "book:818352 §311"
+      ],
+      "confidence": "C",
+      "status": "candidate",
+      "region_id": "region_novgorod_land",
+      "universal": false,
+      "note": "Применение новгородских аналогий к стартовому Заостровью имеет confidence C. composes_with взят из scene_template_refs одного G4 Заостровья, landscape lt_wooded_floodplain — из template_refs того же G4, не из книг. Региональная связь пойма → могильник в region_type_pf_manifest является допущением confidence C. Перенести в WK place-first-cartography при следующей ревизии WK."
+    }
+  ]
+}

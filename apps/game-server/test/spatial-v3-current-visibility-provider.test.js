@@ -276,7 +276,7 @@ test('occupied status comes from the movement admission owner, not a second gues
   const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
-    display_label: localLabel.display_label, recognition: 'known', status: 'occupied' }]);
+    display_label: localLabel.display_label, recognition: 'known', visible_status: 'проход занят' }]);
   assert.equal(admissionCalls[0].partyId, 'party');
   assert.equal(admissionCalls[0].positionId, 'a');
   occupied = false;

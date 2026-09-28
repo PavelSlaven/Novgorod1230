@@ -44,7 +44,7 @@ test('occupied local edge in visible context carries its status onto the route p
   const visibleContext = { ...current.current_visible_context,
     visible_objects: [...current.current_visible_context.visible_objects,
       { entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge:occupied' },
-        display_label: 'Проход 1', recognition: 'known', status: 'occupied' }] };
+        display_label: 'Проход 1', recognition: 'known', visible_status: 'проход занят' }] };
   const screen = projectLowerDvinaTraceScreenPanels({ payload: state,
     screen: { visible_context: visibleContext }, presentation: { scenePresentation } });
   const options = screen.panels.route.data.movement.options;

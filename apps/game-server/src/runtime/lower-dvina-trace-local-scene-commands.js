@@ -1,6 +1,7 @@
 import { isDeepStrictEqual } from 'node:util';
-import { actorMovementBlocked, available, LOCAL_EDGE_OCCUPIED_SUFFIX, mode } from
+import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
+import { localEdgeOccupiedLabel } from './local-edge-occupancy.js';
 import { serverError } from '../errors.js';
 
 export async function createTraceLocalSceneCommands({ state, inputDigest,
@@ -27,7 +28,7 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
     && isDeepStrictEqual(current.position, sourcePosition);
   return options.map(({ edge_id: edgeId, display_label: label,
     action_units: actionUnits, destination_status: status }) => {
-    const visibleLabel = status === 'occupied' ? `${label}${LOCAL_EDGE_OCCUPIED_SUFFIX}` : label;
+    const visibleLabel = status === 'occupied' ? localEdgeOccupiedLabel(label) : label;
     const operation = { op: 'request_movement', actor_ref: identity.actorId,
       target_ref: edgeId, movement_kind: 'local', description: visibleLabel };
     return {

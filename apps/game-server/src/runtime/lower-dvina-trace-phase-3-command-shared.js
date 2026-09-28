@@ -1,9 +1,5 @@
 import { serverError } from '../errors.js';
 
-// One suffix, shared by the command's visible text and the route panel: the
-// displayed label the player acts on must always equal what the panel shows.
-export const LOCAL_EDGE_OCCUPIED_SUFFIX = ' (проход занят)';
-
 const EXACT = Object.freeze({
   follow_path_to_fishing_camp: new Set([
     'пойти по тропе к рыбацкому стану.',

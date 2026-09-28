@@ -6,8 +6,8 @@ import { distinctNpcLabels } from
 
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
-import { LOCAL_EDGE_OCCUPIED_SUFFIX } from
-  '../../runtime/lower-dvina-trace-phase-3-command-shared.js';
+import { LOCAL_EDGE_OCCUPIED_STATUS, localEdgeOccupiedLabel } from
+  '../../runtime/local-edge-occupancy.js';
 
 export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
   const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
@@ -93,10 +93,10 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     panels.route = createRoutePanel({ current_place: place, movement: {
       options: [...routes.map(route => ({ label: route.label,
         knowledge_state: route.known === true ? 'known' : 'uncertain' })),
-      ...visibleExits.map(({ display_label: label, status }) => ({
-        label: status === 'occupied' ? `${label}${LOCAL_EDGE_OCCUPIED_SUFFIX}` : label,
+      ...visibleExits.map(({ display_label: label, visible_status: status }) => ({
+        label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
         knowledge_state: 'known',
-        ...(status === 'occupied' ? { status: 'occupied' } : {}) }))]
+        ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {}) }))]
     } });
   }
   const projected = { ...screen, presentation_context: visibleContext, panels };

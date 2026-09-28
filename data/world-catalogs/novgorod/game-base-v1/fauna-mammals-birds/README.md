@@ -22,7 +22,7 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 ## Universal layer vs regional layer
 
-- Taxa and their biology are **universal** (`scope=universal_taxon`), and the categories have `universal=true`. The region lives only in presence rows (`region_id=novgorod_land`; the Ladoga seal has `ladoga_lake`) and in `region_scope`. For another region, add presence rows. Do not copy the taxon rows.
+- Taxa and their biology are **universal** (`scope=universal_taxon`), and the categories have `universal=true`. The region lives only in presence rows (`region_id=region_novgorod_land`) and in `region_scope`. The Ladoga seal uses the same G0 region and `subregion_scope=lower_volkhov_ladoga`, matching the fish tables; it is not present in the Ilmen/upper Volkhov start territory. For another region, add the G0 node before presence rows. Do not copy the taxon rows.
 - `category_ref` has the form `fauna.<mammal|bird>.<group>.<slug>`. The collector `places-binding/scripts/build-category-registry.mjs` picks these up from `fauna_categories.csv`. No common root `fauna` is defined because a sibling fauna group may define one. The owner of category_registry decides the root.
 
 ## Method

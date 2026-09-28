@@ -8,7 +8,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry, WK_PLACE_FIRST, LOCAL_PF_ADDITIONS, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
-import { build as buildPresenceRules } from './build-presence-rules.mjs';
+import { build as buildPresenceRules, SUBREGIONS } from './build-presence-rules.mjs';
 import { checkPeopleComposition } from './check-people-composition.mjs';
 
 const checks = [];
@@ -186,7 +186,10 @@ function presenceIds(rows) {
     const seasons = String(row.allowed_seasons ?? '').trim();
     const ordered = SEASONS.filter((s) => split(seasons).includes(s)).join(';');
     const canonical = seasons === 'all' || ordered === SEASONS.join(';') ? 'all' : ordered;
-    const key = JSON.stringify([row.scope_kind, row.scope_ref, row.region_id, row.subject_kind, row.subject_ref, canonical].map((s) => String(s ?? '').trim()));
+    const identity = [row.scope_kind, row.scope_ref, row.region_id];
+    if (row.subregion_scope) identity.push(row.subregion_scope);
+    identity.push(row.subject_kind, row.subject_ref, canonical);
+    const key = JSON.stringify(identity.map((s) => String(s ?? '').trim()));
     const expected = `pr_${crypto.createHash('sha256').update(key).digest('hex').slice(0, 16)}`;
     if (seasons !== canonical) failures.push(`${row.pr_id}: noncanonical seasons`);
     if (row.pr_id !== expected) failures.push(`${row.pr_id}: expected ${expected}`);
@@ -199,7 +202,7 @@ function presenceIds(rows) {
 function seasonOverlaps(rows) {
   const seen = new Map(), failures = [];
   for (const r of rows) {
-    const key = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref].join('|');
+    const key = [r.scope_kind, r.scope_ref, r.region_id, r.subregion_scope || '', r.subject_kind, r.subject_ref].join('|');
     const tokens = String(r.allowed_seasons ?? '').split(';').map((s) => s.trim());
     if (tokens.some((s) => !s || (s !== 'all' && !SEASONS.includes(s))) || new Set(tokens).size !== tokens.length || (tokens.includes('all') && tokens.length !== 1)) {
       failures.push(`${r.pr_id}: malformed or overlapping seasons ${r.allowed_seasons}`);
@@ -236,7 +239,7 @@ function acceptedCoverage(expected, rules, resolutions, itemRows) {
     if (item && (entry.item_ref !== item.item_or_category_ref || entry.source_row_id !== item.ipf_id)) failures.push(`resolution item ref/id differs from source ${entry.source_pool}`);
   }
   for (const rule of rules) for (const season of rule.allowed_seasons === 'all' ? SEASONS : split(rule.allowed_seasons)) {
-    const scope = [rule.scope_kind, rule.scope_ref, rule.region_id, rule.subject_kind, rule.subject_ref].join('|');
+    const scope = [rule.scope_kind, rule.scope_ref, rule.region_id, rule.subregion_scope || '', rule.subject_kind, rule.subject_ref].join('|');
     const resolution = reported.get(`${scope}|${season}`);
     const sources = split(rule.source_pool);
     const reportSources = resolution ? [resolution.chosen, ...resolution.equivalent].map((x) => x.source_pool).sort() : sources.slice().sort();
@@ -267,6 +270,20 @@ function itemVariantSelection(resolutions, actual) {
   };
   return Object.keys(expected).filter((key) => JSON.stringify(actual?.[key]) !== JSON.stringify(expected[key])).map((key) => `${key}: expected ${JSON.stringify(expected[key])}, got ${JSON.stringify(actual?.[key])}`)
     .concat(Object.keys(actual || {}).filter((key) => !(key in expected)).map((key) => `unexpected field ${key}`));
+}
+function subregionPropagationFailures(rules, faunaSources) {
+  const failures = [];
+  const faunaByPool = new Map(faunaSources.map((row) => [`${FAUNA_PATH}#${row.presence_id}`, row]));
+  for (const rule of rules) {
+    if (rule.subregion_scope && !SUBREGIONS.includes(rule.subregion_scope)) failures.push(`${rule.pr_id}: unknown subregion_scope ${rule.subregion_scope}`);
+    if (rule.subregion_scope && rule.region_id !== 'region_novgorod_land') failures.push(`${rule.pr_id}: subregion_scope without region_novgorod_land`);
+    for (const pool of split(rule.source_pool).filter((source) => source.startsWith(`${FAUNA_PATH}#`))) {
+      const source = faunaByPool.get(pool);
+      if (!source) failures.push(`${rule.pr_id}: unresolved fauna source ${pool}`);
+      else if ((rule.subregion_scope || '') !== (source.subregion_scope || '')) failures.push(`${rule.pr_id}: subregion_scope differs from ${pool}`);
+    }
+  }
+  return failures;
 }
 function seasonalOverlayFailures(nodes, families, presence) {
   const seasonalPfs = new Map(families.filter((f) => f.pf_kind === 'seasonal_overlay').map((f) =>
@@ -393,7 +410,7 @@ function secondaryFailures(nodes, extract, crosswalk) {
   return failures;
 }
 if (process.argv.includes('--self-test')) {
-  const probe = { pr_id: 'probe_all', scope_kind: 'place_family', scope_ref: 'probe', region_id: '', subject_kind: 'category', subject_ref: 'probe', allowed_seasons: 'all' };
+  const probe = { pr_id: 'probe_all', scope_kind: 'place_family', scope_ref: 'probe', region_id: '', subregion_scope: '', subject_kind: 'category', subject_ref: 'probe', allowed_seasons: 'all' };
   if (seasonOverlaps([probe, { ...probe, pr_id: 'probe_winter', allowed_seasons: 'winter' }]).length !== 1) throw new Error('season overlap negative probe failed');
   for (const seasons of ['all;winter', 'winter;winter', 'monsoon']) if (!seasonOverlaps([{ ...probe, allowed_seasons: seasons }]).length) throw new Error(`season field negative probe failed: ${seasons}`);
   console.log('PASS presence_rules / season_overlap_negative_probes');
@@ -664,7 +681,8 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
 {
   const rule = readJson(P('presence/frequency_rule.json'));
   const pr = readCsv(P('presence/presence_rules.csv'));
-  const rebuilt = buildPresenceRules({ write: false }).rows;
+  const rebuiltResult = buildPresenceRules({ write: false });
+  const rebuilt = rebuiltResult.rows;
   const columns = Object.keys(pr[0]);
   const values = (row) => columns.map((column) => Array.isArray(row[column]) ? row[column].join(';') : String(row[column] ?? ''));
   check('presence_rules', 'matches_current_input_pools', [
@@ -722,28 +740,34 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
   check('presence_rules', 'one_rule_per_base_key_and_season', seasonOverlaps(pr));
   const rr = readJson(P('reports/presence-rules-report.json'));
+  check('presence_rules', 'subregion_scope_report_current', isDeepStrictEqual(rr.subregion_scope, rebuiltResult.report.subregion_scope) ? [] : ['report differs from current builder'], {
+    scoped_rules: rr.subregion_scope?.scoped_rules,
+  });
   const expected = [], itemRows = new Map();
   const add = (pool, scope, seasons, times = ['']) => { for (const season of seasons) for (const time of times) expected.push({ pool, scope, season, time, key: `${pool}|${scope}|${season}|${time}` }); };
   if (itemById.size !== itemSources.length || itemById.has('')) throw new Error('duplicate or empty item ipf_id');
   itemSources.forEach((row) => {
     if (!row.category_id || !cats.has(row.category_id)) return;
     const pool = `${ITEM_PATH}#${row.ipf_id}`;
-    const scope = `place_family|pf_${row.pf_id}||category|${row.category_id}`;
+    const scope = `place_family|pf_${row.pf_id}|||category|${row.category_id}`;
     itemRows.set(pool, row);
     add(pool, scope, split(row.allowed_seasons));
   });
   const faunaSources = readCsv(P('../fauna-mammals-birds/fauna/wild_habitat_presence.csv'));
   if (new Set(faunaSources.map((row) => row.presence_id)).size !== faunaSources.length || faunaSources.some((row) => !row.presence_id)) throw new Error('duplicate or empty fauna presence_id');
   faunaSources.forEach((row) => {
-    const scope = `place_family|${row.pf_id}|${row.region_id}|category|${row.category_ref}`;
+    const scope = `place_family|${row.pf_id}|${row.region_id}|${row.subregion_scope || ''}|category|${row.category_ref}`;
     add(`${FAUNA_PATH}#${row.presence_id}`, scope, row.season === 'all' ? SEASONS : [row.season]);
   });
   peopleSources.forEach((row, i) => {
     if (row.creation_owner !== 'presence_rule') return;
-    const scope = `${row.scope_kind}|${row.scope_ref}|region_novgorod_land|${row.subject_kind}|${row.subject_ref}`;
+    const scope = `${row.scope_kind}|${row.scope_ref}|region_novgorod_land||${row.subject_kind}|${row.subject_ref}`;
     add(`presence/people_presence_authoring.csv#row${i + 2}`, scope, split(row.allowed_seasons), split(row.allowed_times));
   });
   check('presence_rules', 'accepted_occurrences_exactly_once', acceptedCoverage(expected, pr, rr.resolutions, itemRows), { accepted_occurrences: expected.length });
+  check('presence_rules', 'subregion_scope_matches_source', subregionPropagationFailures(pr, faunaSources), {
+    dictionary: SUBREGIONS, scoped_rules: pr.filter((row) => row.subregion_scope).length,
+  });
   check('presence_rules', 'item_variant_selection_gap', itemVariantSelection(rr.resolutions, rr.item_variant_selection), {
     variant_keys: rr.item_variant_selection?.variant_keys, item_alternatives: rr.item_variant_selection?.item_alternatives,
   });
@@ -764,8 +788,13 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (acceptedCoverage(reorderedFauna, pr, rr.resolutions, itemRows).length) throw new Error('fauna source reorder probe failed');
     if (!acceptedCoverage(reorderedFauna.filter((source) => source.pool !== faunaPool), pr, rr.resolutions, itemRows).some((failure) => failure.startsWith('unexpected ') && failure.includes(faunaPool))) throw new Error('deleted fauna source probe failed');
     console.log('PASS presence_rules / stable_fauna_source_reorder_and_delete_probes');
+    const scopedRule = pr.find((rule) => rule.subregion_scope && split(rule.source_pool).some((pool) => pool.startsWith(`${FAUNA_PATH}#`)));
+    const blankRule = pr.find((rule) => !rule.subregion_scope && split(rule.source_pool).some((pool) => pool.startsWith(`${FAUNA_PATH}#`)));
+    if (!scopedRule || !subregionPropagationFailures([{ ...scopedRule, subregion_scope: '' }], faunaSources).some((failure) => failure.includes('subregion_scope differs'))) throw new Error('scoped fauna propagation mutation probe failed');
+    if (!blankRule || !subregionPropagationFailures([{ ...blankRule, subregion_scope: SUBREGIONS[0] }], faunaSources).some((failure) => failure.includes('subregion_scope differs'))) throw new Error('blank fauna propagation mutation probe failed');
+    console.log('PASS presence_rules / subregion_scope_propagation_negative_probes');
     const probe = acceptedCoverage(expected, pr.map((r) => {
-      if ([r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref].join('|') !== target.key) return r;
+      if ([r.scope_kind, r.scope_ref, r.region_id, r.subregion_scope || '', r.subject_kind, r.subject_ref].join('|') !== target.key) return r;
       return { ...r, variants: JSON.stringify(JSON.parse(r.variants || '[]').filter((v) => v.item_ref !== 'it_ps_leather_purse')) };
     }), altered, itemRows);
     if (!probe.some((f) => f.startsWith(`orphan ${targetPool}|`))) throw new Error('leather purse variant orphan diagnostic missing');

@@ -17,7 +17,7 @@
 - `source_taxon_ref` (`taxon:<латинское имя>`, см. `taxon_refs.csv`).
 - `food_category` (28 категорий, правило в `build.py:food_category`).
 - `fasting_class`: meat / animal_fat / dairy / eggs / fish / plant / plant_oil / honey / alcohol / water.
-- `category_id` = `content_food.<cat>.<slug>`, `universal_category=true`, `region_id=novgorod_land`.
+- `category_id` = `content_food.<cat>.<slug>`, `universal_category=true`, `region_id=region_novgorod_land`.
 - `origin`: local 190, local+import 3 (рожь, пшеница, просо), regional 2 (соль Старой Руссы, соляной рассол), import 1 (вино), uncertain 1 (уксус), local_uncertain 1 (гречиха).
 - `months_available` / `months_fresh` / `months_limited` — номера месяцев 1–12.
 - `access_by_class` — 8 классов: poor, common_urban, rural, fisher, merchant, boyar, clergy_monastery, military.

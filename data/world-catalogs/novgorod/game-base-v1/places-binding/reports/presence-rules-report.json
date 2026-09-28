@@ -88,7 +88,7 @@
   "seasonal_candidate_rows": 10880,
   "resolutions": [
     {
-      "key": "place_family|pf_bridge_crossing||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_bridge_crossing|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -134,7 +134,7 @@
       ]
     },
     {
-      "key": "place_family|pf_bridge_crossing||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_bridge_crossing|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -180,7 +180,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -226,7 +226,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -272,7 +272,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -318,7 +318,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_lock_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_lock_v1",
       "reason": "evidence_stronger:derivation",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": true,
@@ -378,7 +378,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -424,7 +424,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_weight_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_weight_v1",
       "reason": "equal_evidence_lower_ppm",
       "tie_break": "",
       "behavior_conflict": true,
@@ -470,7 +470,7 @@
       ]
     },
     {
-      "key": "place_family|pf_cellar_granary||category|cat_item_object_wooden_bowl_v1",
+      "key": "place_family|pf_cellar_granary|||category|cat_item_object_wooden_bowl_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -516,7 +516,7 @@
       ]
     },
     {
-      "key": "place_family|pf_church_interior||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_church_interior|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -562,7 +562,7 @@
       ]
     },
     {
-      "key": "place_family|pf_church_interior||category|cat_item_object_candlestick_v1",
+      "key": "place_family|pf_church_interior|||category|cat_item_object_candlestick_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -608,7 +608,7 @@
       ]
     },
     {
-      "key": "place_family|pf_church_interior||category|cat_item_object_inkwell_v1",
+      "key": "place_family|pf_church_interior|||category|cat_item_object_inkwell_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -654,7 +654,7 @@
       ]
     },
     {
-      "key": "place_family|pf_church_interior||category|cat_item_object_stylus_v1",
+      "key": "place_family|pf_church_interior|||category|cat_item_object_stylus_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -700,7 +700,7 @@
       ]
     },
     {
-      "key": "place_family|pf_church_interior||category|cat_item_object_wax_tablet_v1",
+      "key": "place_family|pf_church_interior|||category|cat_item_object_wax_tablet_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -746,7 +746,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -792,7 +792,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -838,7 +838,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -898,7 +898,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -944,7 +944,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -990,7 +990,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_inkwell_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_inkwell_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1036,7 +1036,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1082,7 +1082,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1142,7 +1142,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_stylus_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_stylus_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1188,7 +1188,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1248,7 +1248,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1294,7 +1294,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1340,7 +1340,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_vessel_lid_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_vessel_lid_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1386,7 +1386,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_wax_tablet_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_wax_tablet_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1432,7 +1432,7 @@
       ]
     },
     {
-      "key": "place_family|pf_churchyard||category|cat_item_object_weight_v1",
+      "key": "place_family|pf_churchyard|||category|cat_item_object_weight_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1478,7 +1478,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1524,7 +1524,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1570,7 +1570,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -1616,7 +1616,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_bucket_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_bucket_v1",
       "reason": "evidence_stronger:derivation",
       "tie_break": "",
       "behavior_conflict": true,
@@ -1662,7 +1662,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_candlestick_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_candlestick_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1708,7 +1708,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1768,7 +1768,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_comb_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_comb_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -1814,7 +1814,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -1860,7 +1860,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1906,7 +1906,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_inkwell_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_inkwell_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1952,7 +1952,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -1998,7 +1998,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2058,7 +2058,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_sewing_needle_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_sewing_needle_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2104,7 +2104,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_splinter_holder_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_splinter_holder_v1",
       "reason": "evidence_stronger:derivation",
       "tie_break": "",
       "behavior_conflict": true,
@@ -2150,7 +2150,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_stylus_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_stylus_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2196,7 +2196,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2256,7 +2256,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2302,7 +2302,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_wax_tablet_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_wax_tablet_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -2348,7 +2348,7 @@
       ]
     },
     {
-      "key": "place_family|pf_dwelling_interior||category|cat_item_object_wooden_bowl_v1",
+      "key": "place_family|pf_dwelling_interior|||category|cat_item_object_wooden_bowl_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -2394,7 +2394,7 @@
       ]
     },
     {
-      "key": "place_family|pf_field_margin||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_field_margin|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2440,7 +2440,7 @@
       ]
     },
     {
-      "key": "place_family|pf_field_margin||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_field_margin|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2486,7 +2486,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2532,7 +2532,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2578,7 +2578,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2624,7 +2624,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2684,7 +2684,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2730,7 +2730,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2776,7 +2776,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2822,7 +2822,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_lock_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_lock_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2882,7 +2882,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -2942,7 +2942,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3002,7 +3002,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3048,7 +3048,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3108,7 +3108,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_vessel_lid_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_vessel_lid_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3154,7 +3154,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_weight_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_weight_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3200,7 +3200,7 @@
       ]
     },
     {
-      "key": "place_family|pf_grain_drying_shed_ovin||category|cat_item_object_wooden_bowl_v1",
+      "key": "place_family|pf_grain_drying_shed_ovin|||category|cat_item_object_wooden_bowl_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3246,7 +3246,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3292,7 +3292,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3338,7 +3338,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3398,7 +3398,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3444,7 +3444,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3490,7 +3490,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3536,7 +3536,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3596,7 +3596,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3656,7 +3656,7 @@
       ]
     },
     {
-      "key": "place_family|pf_hay_meadow||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_hay_meadow|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3702,7 +3702,7 @@
       ]
     },
     {
-      "key": "place_family|pf_market_square||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_market_square|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -3748,7 +3748,7 @@
       ]
     },
     {
-      "key": "place_family|pf_market_square||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_market_square|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -3794,7 +3794,7 @@
       ]
     },
     {
-      "key": "place_family|pf_market_square||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_market_square|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3840,7 +3840,7 @@
       ]
     },
     {
-      "key": "place_family|pf_market_square||category|cat_item_object_wax_tablet_v1",
+      "key": "place_family|pf_market_square|||category|cat_item_object_wax_tablet_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -3886,7 +3886,7 @@
       ]
     },
     {
-      "key": "place_family|pf_market_square||category|cat_item_object_weight_v1",
+      "key": "place_family|pf_market_square|||category|cat_item_object_weight_v1",
       "reason": "equal_evidence_lower_ppm",
       "tie_break": "",
       "behavior_conflict": true,
@@ -3932,7 +3932,7 @@
       ]
     },
     {
-      "key": "place_family|pf_mill||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_mill|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -3978,7 +3978,7 @@
       ]
     },
     {
-      "key": "place_family|pf_monastery_yard||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_monastery_yard|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -4024,7 +4024,7 @@
       ]
     },
     {
-      "key": "place_family|pf_monastery_yard||category|cat_item_object_inkwell_v1",
+      "key": "place_family|pf_monastery_yard|||category|cat_item_object_inkwell_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4070,7 +4070,7 @@
       ]
     },
     {
-      "key": "place_family|pf_monastery_yard||category|cat_item_object_stylus_v1",
+      "key": "place_family|pf_monastery_yard|||category|cat_item_object_stylus_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4116,7 +4116,7 @@
       ]
     },
     {
-      "key": "place_family|pf_monastery_yard||category|cat_item_object_wax_tablet_v1",
+      "key": "place_family|pf_monastery_yard|||category|cat_item_object_wax_tablet_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -4162,7 +4162,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4208,7 +4208,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_candlestick_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_candlestick_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4254,7 +4254,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4314,7 +4314,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_comb_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_comb_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -4360,7 +4360,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -4406,7 +4406,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_sewing_needle_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_sewing_needle_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4452,7 +4452,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_spindle_whorl_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_spindle_whorl_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -4498,7 +4498,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4544,7 +4544,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_vessel_lid_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_vessel_lid_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -4590,7 +4590,7 @@
       ]
     },
     {
-      "key": "place_family|pf_ordinary_workshop||category|cat_item_object_wooden_bowl_v1",
+      "key": "place_family|pf_ordinary_workshop|||category|cat_item_object_wooden_bowl_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": false,
@@ -4636,7 +4636,7 @@
       ]
     },
     {
-      "key": "place_family|pf_outbuildings||category|cat_item_object_birch_bark_letter_v1",
+      "key": "place_family|pf_outbuildings|||category|cat_item_object_birch_bark_letter_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -4682,7 +4682,7 @@
       ]
     },
     {
-      "key": "place_family|pf_outbuildings||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_outbuildings|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -4728,7 +4728,7 @@
       ]
     },
     {
-      "key": "place_family|pf_outbuildings||category|cat_item_object_lock_v1",
+      "key": "place_family|pf_outbuildings|||category|cat_item_object_lock_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4774,7 +4774,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4820,7 +4820,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4866,7 +4866,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4926,7 +4926,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -4972,7 +4972,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5018,7 +5018,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5078,7 +5078,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5138,7 +5138,7 @@
       ]
     },
     {
-      "key": "place_family|pf_pasture||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_pasture|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5184,7 +5184,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5230,7 +5230,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5276,7 +5276,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5336,7 +5336,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5382,7 +5382,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5428,7 +5428,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5488,7 +5488,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5548,7 +5548,7 @@
       ]
     },
     {
-      "key": "place_family|pf_peasant_homestead||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_peasant_homestead|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5594,7 +5594,7 @@
       ]
     },
     {
-      "key": "place_family|pf_river_wharf||category|cat_item_object_weight_v1",
+      "key": "place_family|pf_river_wharf|||category|cat_item_object_weight_v1",
       "reason": "equal_evidence_lower_ppm",
       "tie_break": "",
       "behavior_conflict": true,
@@ -5640,7 +5640,7 @@
       ]
     },
     {
-      "key": "place_family|pf_road||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_road|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -5686,7 +5686,7 @@
       ]
     },
     {
-      "key": "place_family|pf_road||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_road|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5732,7 +5732,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5778,7 +5778,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5824,7 +5824,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5884,7 +5884,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5930,7 +5930,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -5976,7 +5976,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6036,7 +6036,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6096,7 +6096,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_rural_yard|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6142,7 +6142,7 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard|region_novgorod_land|social_role|nov_role_smerd_householder",
+      "key": "place_family|pf_rural_yard|region_novgorod_land||social_role|nov_role_smerd_householder",
       "reason": "time_union",
       "tie_break": "",
       "behavior_conflict": false,
@@ -6169,7 +6169,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6215,7 +6215,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_birch_bark_box_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_birch_bark_box_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6261,7 +6261,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6321,7 +6321,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6367,7 +6367,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6413,7 +6413,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6473,7 +6473,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6533,7 +6533,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_courtyard||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_town_courtyard|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6579,7 +6579,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6625,7 +6625,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6685,7 +6685,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6731,7 +6731,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6777,7 +6777,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6837,7 +6837,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6897,7 +6897,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_street||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_town_street|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6943,7 +6943,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_ball_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -6989,7 +6989,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_chess_piece_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_chess_piece_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7049,7 +7049,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7095,7 +7095,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_gusli_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_gusli_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7141,7 +7141,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_instrument_part_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_instrument_part_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7187,7 +7187,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_pipe_flute_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_pipe_flute_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7247,7 +7247,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_toy_figure_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_toy_figure_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7307,7 +7307,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_toy_weapon_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_toy_weapon_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7353,7 +7353,7 @@
       ]
     },
     {
-      "key": "place_family|pf_town_wall_edge||category|cat_item_object_utility_knife_v1",
+      "key": "place_family|pf_town_wall_edge|||category|cat_item_object_utility_knife_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
       "behavior_conflict": false,
@@ -7399,7 +7399,7 @@
       ]
     },
     {
-      "key": "place_family|pf_village_lane||category|cat_item_object_drawstring_pouch_v1",
+      "key": "place_family|pf_village_lane|||category|cat_item_object_drawstring_pouch_v1",
       "reason": "evidence_stronger:availability",
       "tie_break": "",
       "behavior_conflict": true,
@@ -7456,6 +7456,25 @@
     "weight_contract": null,
     "variant_keys": 149,
     "item_alternatives": 183
+  },
+  "subregion_scope": {
+    "status": "candidate",
+    "dictionary": [
+      "novgorod_ilmen_core",
+      "lower_volkhov_ladoga"
+    ],
+    "blank_means": "whole_region",
+    "scoped_rules": 9,
+    "runtime_gap": {
+      "issue": "#158 R-2a",
+      "implementation_present": false,
+      "note": "presence runtime currently compares region_id only; subregion handling belongs to the engine owner"
+    },
+    "excluded_pool": {
+      "file": "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv",
+      "rows": 1779,
+      "reason": "missing category_ref and cat:fauna.* category definitions in category_registry; connect in a separate data task"
+    }
   },
   "rejected_rows": 10977,
   "rejected_by_file": {

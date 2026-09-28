@@ -1,5 +1,14 @@
 import { findOverlappingPresenceRules } from '../../packages/materialization/src/presence-rule-conflicts.js';
 import { validateNpcRoutineProfile } from '@rus/npc-runtime';
+import { SCHEDULE_DAY_TYPES } from '../../scripts/generate-m2c-npc-wave-datasets.mjs';
+
+const SEASON_MONTHS = Object.freeze({
+  winter: [12, 1, 2],
+  spring: [3, 4, 5],
+  summer: [6, 7, 8],
+  autumn: [9, 10, 11],
+});
+const COMPOSITION_SUBJECT_KINDS = new Set(['occupation', 'social_role', 'household_member']);
 
 export const M2C_NPC_WAVE_TABLE_SET = Object.freeze([
   'place_families',
@@ -148,18 +157,34 @@ function validateCompositionPresencePriority(datasets, errors) {
   }
 }
 
+function scheduleMonthsOverlap(left, right) {
+  const a = left ?? null;
+  const b = right ?? null;
+  if (!Array.isArray(a) || !Array.isArray(b)) return true;
+  const setB = new Set(b);
+  return a.some((month) => setB.has(month));
+}
+
 function validateScheduleRoutineRules(datasets, placeFamilyIds, errors) {
+  const seen = [];
   for (const row of datasets.get('npc_schedule_routine_rules') ?? []) {
     if (row.scope_kind === 'place_family' && !placeFamilyIds.has(row.scope_ref)) {
       errors.push(issue('M2C_WAVE_SCHEDULE_SCOPE_UNKNOWN', `${row.schedule_id}:${row.scope_ref}`));
     }
-    if (!Array.isArray(row.months) && row.months != null) {
-      errors.push(issue('M2C_WAVE_SCHEDULE_MONTHS_INVALID', row.schedule_id));
+    if (!SCHEDULE_DAY_TYPES.includes(row.day_type)) {
+      errors.push(issue('M2C_WAVE_SCHEDULE_DAY_TYPE_INVALID', row.schedule_id));
     }
-    if (Array.isArray(row.months)) {
+    if (!Array.isArray(row.months) || row.months.length < 1) {
+      errors.push(issue('M2C_WAVE_SCHEDULE_MONTHS_INVALID', row.schedule_id));
+    } else {
+      const allowed = SEASON_MONTHS[row.season];
       for (const month of row.months) {
         if (!Number.isInteger(month) || month < 1 || month > 12) {
           errors.push(issue('M2C_WAVE_SCHEDULE_MONTHS_INVALID', row.schedule_id));
+          break;
+        }
+        if (allowed && !allowed.includes(month)) {
+          errors.push(issue('M2C_WAVE_SCHEDULE_SEASON_MONTHS_MISMATCH', row.schedule_id));
           break;
         }
       }
@@ -169,6 +194,15 @@ function validateScheduleRoutineRules(datasets, placeFamilyIds, errors) {
     } catch {
       errors.push(issue('M2C_WAVE_SCHEDULE_ROUTINE_PROFILE_INVALID', row.schedule_id));
     }
+    const identity = `${row.scope_kind}|${row.scope_ref}|${row.subject_kind}|${row.subject_ref}|${row.season}|${row.day_type}`;
+    for (const prior of seen) {
+      if (prior.identity !== identity) continue;
+      if (scheduleMonthsOverlap(prior.months, row.months)) {
+        errors.push(issue('M2C_WAVE_SCHEDULE_SUBJECT_SEASON_CONFLICT', row.schedule_id));
+        break;
+      }
+    }
+    seen.push({ identity, months: row.months });
   }
 }
 
@@ -183,6 +217,23 @@ function validatePlacePopulationCompositionRules(datasets, placeFamilyIds, error
       errors.push(issue('M2C_WAVE_COMPOSITION_PF_DUPLICATE', pfKey));
     }
     seenPf.add(pfKey);
+    for (const group of row.population_groups ?? []) {
+      const groupRef = group?.group_id ?? 'unknown';
+      if (!Array.isArray(group?.weighted_subjects) || group.weighted_subjects.length === 0) {
+        errors.push(issue('M2C_WAVE_COMPOSITION_GROUP_INVALID', `${row.composition_id}:${groupRef}`));
+        continue;
+      }
+      for (const subject of group.weighted_subjects) {
+        if (!COMPOSITION_SUBJECT_KINDS.has(subject?.subject_kind)) {
+          errors.push(issue('M2C_WAVE_COMPOSITION_GROUP_INVALID', `${row.composition_id}:${groupRef}`));
+          break;
+        }
+        if (!String(subject?.subject_ref ?? '').trim() || !(subject.weight > 0)) {
+          errors.push(issue('M2C_WAVE_COMPOSITION_GROUP_INVALID', `${row.composition_id}:${groupRef}`));
+          break;
+        }
+      }
+    }
     for (const absence of row.scheduled_absences ?? []) {
       if (absence.seasons === undefined) continue;
       if (!Array.isArray(absence.seasons) || absence.seasons.length === 0) {

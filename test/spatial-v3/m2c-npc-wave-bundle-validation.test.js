@@ -308,6 +308,46 @@ test('M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT absent when creation_owner composit
   assert.equal(errors.filter((e) => e.code === 'M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT').length, 0);
 });
 
+test('M2C_WAVE_COMPOSITION_GROUP_INVALID when weighted_subjects empty', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily('pf_ferry_landing')],
+    place_population_composition_rules: [minimalCompositionRule({
+      population_groups: [{ group_id: 'g1', weighted_subjects: [] }],
+    })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_COMPOSITION_GROUP_INVALID');
+});
+
+test('M2C_WAVE_COMPOSITION_GROUP_INVALID when weight is zero', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily('pf_ferry_landing')],
+    place_population_composition_rules: [minimalCompositionRule({
+      population_groups: [{
+        group_id: 'g1',
+        weighted_subjects: [{ subject_kind: 'occupation', subject_ref: 'nov_occ_ferryman', weight: 0 }],
+      }],
+    })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_COMPOSITION_GROUP_INVALID');
+});
+
+test('M2C_WAVE_SCHEDULE_SUBJECT_SEASON_CONFLICT when months overlap', () => {
+  const rule = minimalScheduleRule();
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily('pf_ferry_landing')],
+    npc_schedule_routine_rules: [rule, { ...rule, schedule_id: 'sch_dup' }],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_SCHEDULE_SUBJECT_SEASON_CONFLICT');
+});
+
+test('M2C_WAVE_SCHEDULE_SEASON_MONTHS_MISMATCH when month outside season', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily('pf_ferry_landing')],
+    npc_schedule_routine_rules: [minimalScheduleRule({ season: 'winter', months: [7] })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_SCHEDULE_SEASON_MONTHS_MISMATCH');
+});
+
 test('M2C_WAVE_SCHEDULE_ROUTINE_PROFILE_INVALID when routine profile has one phase', () => {
   const errors = collectErrors(baseManifest(), emptyWaveDatasets({
     place_families: [minimalPlaceFamily('pf_ferry_landing')],

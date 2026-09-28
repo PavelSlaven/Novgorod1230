@@ -13,7 +13,7 @@
 | calendar_feasts_fasts | `time/calendar_1230_1250.csv` | 351 | [time/README.md](time/README.md) |
 | schedules_routines | `time/schedules_routines.csv` | 16 | [time/README.md](time/README.md) |
 | religion_church | `religion/church_practice.csv` | 148 | [religion/README.md](religion/README.md) |
-| lifecycle_rites_burial | `religion/lifecycle_rites_burial.csv` | 19 | [religion/README.md](religion/README.md) |
+| lifecycle_rites_burial | `religion/lifecycle_rites_burial.csv` | 23 | [religion/README.md](religion/README.md) |
 
 Все четыре домена из брифа закрыты хотя бы одним candidate-датасетом со
 `source_refs` и `confidence` на каждой строке; детали, методы и известные
@@ -51,7 +51,7 @@ runtime и к БД `world_base` не запрашивал. Календарны�
   приоритет M3 в брифе, поскольку зависимость от `npc_runtime_profiles`
   (M2c) была явно указана как перевёрнутая.
 - **lifecycle_rites_burial отсутствовал как домен** (#8) — этот сборщик
-  первым закрывает его (19 строк, включая непустой пул для G4
+  первым закрывает его (23 строки, включая непустой пул для G4
   `zaostrovye_burial_area`).
 - Остальные critic_problems брифа (personal_items, historical_figures,
   historical_events, price_bands, speech_address, conflict_templates,

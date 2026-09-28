@@ -4,11 +4,11 @@
  "counts": {
   "natural_materials_soils": {
    "access_tools.csv": 13,
-   "g4_ground_and_materials.csv": 360,
+   "g4_ground_and_materials.csv": 544,
    "ground_types.csv": 34,
    "landscape_ground_binding.csv": 34,
-   "material_landscape_presence.csv": 258,
-   "natural_materials.csv": 22,
+   "material_landscape_presence.csv": 434,
+   "natural_materials.csv": 29,
    "finite_source_profiles_ext.json": "21 profiles"
   },
   "weather_climate": {

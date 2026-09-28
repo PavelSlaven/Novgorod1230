@@ -47,11 +47,14 @@ function placeFamilyCategories() {
   const famRows = fam.map((f) => ({
     category_id: `cat_${f.pf_id}`, domain: 'place_family', facet: 'place_family', stable_code: `place_family.${f.pf_id.slice(3)}`, parent_category_id: `cat_place_family_kind_${f.pf_kind}`,
     name_ru: f.name_ru, name_en: f.name_en, definition: f.description_en, scope_note: 'Key of presence pools; composes with: ' + (f.composes_with || '-'),
-    inclusion_rules: `WK place-first family ${f.pf_id.slice(3)}`, exclusion_rules: 'Not a concrete place; does not assert presence of anything.',
+    inclusion_rules: f.wk_family_ref ? `WK place-first family ${f.pf_id.slice(3)}` : `Declared local place family ${f.pf_id.slice(3)}`,
+    exclusion_rules: 'Not a concrete place; does not assert presence of anything.',
+    region_id: f.region_id, universal: f.universal,
+    source_refs: f.wk_family_ref ? undefined : f.source_refs,
   }));
   const rows = [root, ...kindRows, ...famRows].map((r) => ({
-    ...r, preferred_label: r.name_en, title: r.name_ru || r.name_en, region_id: '', universal: 'true', pf_ref: r.category_id.startsWith('cat_pf_') ? r.category_id.slice(4) : '',
-    source_domain_file: 'places-binding/places/place_families.csv', source_refs: 'data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json', status: 'candidate',
+    ...r, preferred_label: r.name_en, title: r.name_ru || r.name_en, region_id: r.region_id ?? '', universal: r.universal ?? 'true', pf_ref: r.category_id.startsWith('cat_pf_') ? r.category_id.slice(4) : '',
+    source_domain_file: 'places-binding/places/place_families.csv', source_refs: r.source_refs ?? 'data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json', status: 'candidate',
   }));
   const cols = ['category_id', 'domain', 'facet', 'stable_code', 'parent_category_id', 'name_ru', 'name_en', 'preferred_label', 'title', 'definition', 'scope_note', 'inclusion_rules', 'exclusion_rules', 'region_id', 'universal', 'pf_ref', 'source_domain_file', 'source_refs', 'status'];
   writeCsv(path.join(GROUP, 'categories/place_family_categories.csv'), cols, rows);

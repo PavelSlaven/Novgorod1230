@@ -18,6 +18,7 @@ const ground = readCsv(path.join(DIR, 'ground_types.csv'));
 const g4rows = readCsv(path.join(DIR, 'g4_ground_and_materials.csv'));
 const pres = readCsv(path.join(DIR, 'material_landscape_presence.csv'));
 const matById = Object.fromEntries(mats.map((m) => [m.nm_id, m]));
+const classAIds = new Set(['nm_spruce_boughs_poles', 'nm_forest_litter', 'nm_ice', 'nm_snow', 'nm_bait', 'nm_tinder_kindling', 'nm_turf']);
 
 // WK claim index
 const wkClaims = new Set(readJson(path.join(SHARED, 'main_inputs.json')).claim_refs);
@@ -38,10 +39,23 @@ for (const [name, rows, idk] of [['natural_materials', mats, 'nm_id'], ['ground_
 
 const expect = (cls) => FREQ_WEIGHT[cls] * BASE_PORTIONS;
 for (const r of [...g4rows.filter((x) => x.role === 'raw_material'), ...pres]) {
+  if (r.stock_portions === '') {
+    const m = matById[r.nm_id];
+    if (!m || m.stock_rule !== '' || !classAIds.has(r.nm_id)) errors.push(`${r.nm_id} empty stock_portions without class-A material`);
+    continue;
+  }
   if (r.stock_portions === 'unbounded') { if (!/water/.test(r.nm_id)) errors.push(`${r.nm_id} unbounded but not water`); continue; }
   if (Number(r.stock_portions) !== expect(r.frequency_class)) errors.push(`stock formula mismatch ${r.row_id || r.presence_id}: ${r.stock_portions} != ${expect(r.frequency_class)}`);
   if (Number(r.weight) !== FREQ_WEIGHT[r.frequency_class]) errors.push(`weight mismatch ${r.row_id || r.presence_id}`);
 }
+for (const id of classAIds) {
+  const m = matById[id];
+  if (!m) errors.push(`class-A material missing ${id}`);
+  else if (m.stock_rule || m.portion_mass_g || m.v17_profile_ref || m.renewal) errors.push(`class-A counter fields must be empty ${id}`);
+}
+if (!matById.nm_spruce_boughs_poles?.season_winter.startsWith('open:')) errors.push('nm_spruce_boughs_poles must remain available in winter');
+if (matById.nm_turf?.access_tool_refs !== 'tool:zastup_ironshod' || matById.nm_turf?.tool_required !== 'true') errors.push('nm_turf requires only tool:zastup_ironshod');
+if (!pres.some((row) => row.nm_id === 'nm_bait' && row.frequency_class === 'common')) errors.push('nm_bait must be common in suitable unfrozen-ground landscapes');
 
 const DIG_KINDS = ['mineral_ground', 'organic_ground', 'ore'];
 for (const m of mats) {

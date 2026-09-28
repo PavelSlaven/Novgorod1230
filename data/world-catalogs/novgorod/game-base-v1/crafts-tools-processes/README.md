@@ -43,7 +43,7 @@ node scripts/validate.cjs --self-test # проверки приёмки и от�
 | craft_processes/process_steps.csv | 171 |
 | craft_processes/process_products.csv | 47 |
 | craft_processes/butchery_profiles.csv | 7 |
-| craft_processes/fish_cleaning_products.csv | 27 |
+| craft_processes/fish_cleaning_products.csv | 37 |
 | workshops/workshops.csv | 21 |
 | materials_registry/materials.csv | 103 |
 | materials_registry/late_materials_denylist.csv | 27 |
@@ -51,7 +51,7 @@ node scripts/validate.cjs --self-test # проверки приёмки и от�
 | materials_registry/material_resolution.csv | 1498 |
 | sources/sources.csv | 25 |
 
-Проверки `validate.cjs`: 29 из 29 PASS, из них 5 информационных (они всегда PASS и только сообщают покрытие). `--self-test` дополнительно отклоняет процесс без ножа, выходы массой больше туши, число с ложной source-ссылкой, разрыв класса very-small и рыбный продукт без видовой строки.
+Проверки `validate.cjs`: 29 из 29 PASS, из них 5 информационных (они всегда PASS и только сообщают покрытие). `--self-test` дополнительно отклоняет процесс без ножа, выходы массой больше туши, число с ложной source-ссылкой, разрыв класса very-small и рыбу без свежего продукта или видовой строки чистки.
 
 ## Универсальное и региональное
 

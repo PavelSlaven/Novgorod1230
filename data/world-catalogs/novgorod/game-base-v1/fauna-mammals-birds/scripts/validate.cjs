@@ -52,6 +52,18 @@ function contextualFaunaIssues(mammalRows, birdRows, presenceRows) {
   if (presenceRows.some((row) => row.fa_id === 'fa_b_mallard' && row.season === 'winter')) issues.push('mallard winter place-family row');
   return issues;
 }
+function reducedTaxaIssues(checkRows, birdRows) {
+  const issues = [];
+  const row = checkRows.find((check) => check.check_id === 'fchk_026');
+  if (!row || row.verdict !== 'included_reduced') return ['missing fchk_026 included_reduced'];
+  const birdsById = new Map(birdRows.map((bird) => [bird.fa_id, bird]));
+  for (const id of row.fa_ids.split(';').filter(Boolean)) {
+    const bird = birdsById.get(id);
+    if (!bird) issues.push('fchk_026 unresolved bird ' + id);
+    else if (['common', 'ubiquitous'].includes(bird.base_frequency_class) || bird.presence_1230_confidence !== 'C') issues.push('fchk_026 bird not reduced ' + id);
+  }
+  return issues;
+}
 const MASTER_ITEMS = fs.readFileSync(path.join(REPO, 'data/world-catalogs/novgorod/sources/master-archive-v1/data/canonical/material_items.csv'), 'utf8');
 const EVIDENCE_ROOT = path.resolve(GB, '..', 'sources');
 function evidenceRefIssues(refs) {
@@ -127,6 +139,9 @@ if (process.argv.includes('--self-test')) {
   for (const good of ['громкое «ки-ки»', 'сухая трель и свист']) if (soundIssue(good, 'крик', 'spring')) throw new Error('sound positive probe failed: ' + good);
   for (const [description, seasons] of [['почти молчалив', ''], ['редко слышен', 'winter'], ['почти безмолвен', 'spring;summer']]) if (soundIssue('', description, seasons)) throw new Error('silent voice without sound failed: ' + description);
   if (contextualFaunaIssues(mammals, birds, pres).length) throw new Error('contextual fauna positive probe failed');
+  if (reducedTaxaIssues(checks, birds).length) throw new Error('reduced taxa positive probe failed: ' + reducedTaxaIssues(checks, birds).join(' | '));
+  const commonRedwing = birds.map((row) => row.fa_id === 'fa_b_redwing' ? { ...row, base_frequency_class: 'common' } : row);
+  if (!reducedTaxaIssues(checks, commonRedwing).some((issue) => issue.includes('fa_b_redwing'))) throw new Error('reduced taxa negative probe passed');
   const winterMallard = { ...pres.find((row) => row.fa_id === 'fa_b_mallard'), presence_id: 'negative_probe_mallard_winter', season: 'winter' };
   if (!contextualFaunaIssues(mammals, birds, [...pres, winterMallard]).includes('mallard winter place-family row')) throw new Error('mallard winter negative probe passed');
   const commonMole = pres.map((row) => row.fa_id === 'fa_m_mole' && row.season === 'spring' && row.pf_id === 'pf_floodplain_meadow' ? { ...row, frequency_class: 'common', weight: '4' } : row);
@@ -147,6 +162,7 @@ const phase = require('./validate-phase.cjs');
 const phaseTable = phase.csv(F('phase_activity.csv'));
 errors.push(...phase.validate('fauna-mammals-birds', phaseTable.rows, phaseTable.header));
 errors.push(...contextualFaunaIssues(mammals, birds, pres));
+errors.push(...reducedTaxaIssues(checks, birds));
 
 // ids
 const all = [...mammals, ...birds]; const ids = new Set();

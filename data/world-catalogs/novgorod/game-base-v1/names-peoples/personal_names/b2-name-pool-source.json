@@ -208,13 +208,13 @@
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/VERIFICATION.md#personal_namespersonal_namescsv--approve_with_limits"
     },
     {
-      "gap_id": "gap_personal_names_patronymics_nicknames",
-      "gap_type": "future_name_component_pool",
+      "gap_id": "gap_personal_names_component_runtime_import",
+      "gap_type": "integration_gap",
       "people_ref": "*",
       "sex_category": "*",
       "selection_class": "*",
-      "reason": "Patronymics, demonyms and nicknames are excluded from this first-name pool and require a separately sourced future component pool.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv"
+      "reason": "Patronymics, demonyms and nicknames now have separate candidate component pools; runtime/DDL composition with the first-name pool remains unapproved.",
+      "provenance_ref": "game-base:names-peoples/personal_names/name-component-source.json"
     }
   ]
 }

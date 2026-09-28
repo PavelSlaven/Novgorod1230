@@ -131,7 +131,9 @@ function fishCleaningIssues(rows, processRows, fishRows) {
     if (!split(process.outputs).includes('pr:gutted_fish')) issues.push('fish process lacks gutted fish output');
     if (!split(process.tools).includes('tl_knife_utility')) issues.push('fish process lacks required knife');
   }
-  const eligible = new Map(fishRows.filter(r => r.fa_id.startsWith('fa_fish_') && r.food_ingredient_ref).map(r => [r.fa_id, r.food_ingredient_ref]));
+  const allFish = fishRows.filter(r => r.fa_id.startsWith('fa_fish_'));
+  const eligible = new Map(allFish.filter(r => r.food_ingredient_ref).map(r => [r.fa_id, r.food_ingredient_ref]));
+  for (const fish of allFish) if (!fish.food_ingredient_ref) issues.push('fish species lacks fresh product ' + fish.fa_id);
   const seen = new Set();
   for (const r of rows) {
     if (seen.has(r.fa_id)) issues.push('duplicate fish cleaning species ' + r.fa_id); seen.add(r.fa_id);
@@ -162,8 +164,8 @@ if (process.argv.includes('--self-test')) {
   if (!butcheryIssues(missingTiny, procs).some(x => x.includes('missing class bc_mammal_very_small'))) throw new Error('butchery very-small negative probe passed');
   const missingFish = fishCleaning.slice(1);
   if (!fishCleaningIssues(missingFish, procs, fish).some(x => x.includes('missing fish cleaning species'))) throw new Error('fish cleaning missing-species negative probe passed');
-  const productlessFish = [{ ...fishCleaning[0], fa_id: 'fa_fish_vendace' }, ...fishCleaning.slice(1)];
-  if (!fishCleaningIssues(productlessFish, procs, fish).some(x => x.includes('lacks product'))) throw new Error('fish cleaning productless-species negative probe passed');
+  const productlessFish = fish.map((r, i) => i ? r : { ...r, food_ingredient_ref: '' });
+  if (!fishCleaningIssues(fishCleaning, procs, productlessFish).some(x => x.includes('lacks fresh product'))) throw new Error('fish cleaning productless-species negative probe passed');
   const modernOutput = fishCleaning.map((r, i) => i ? r : { ...r, output_food_ingredient_ref: 'pr:modern_fillet' });
   if (!fishCleaningIssues(modernOutput, procs, fish).some(x => x.includes('bad gutted fish output'))) throw new Error('fish cleaning output negative probe passed');
 }

@@ -11,9 +11,9 @@
   "phase_activity_rows": 2628,
   "place_families_with_rows": 38,
   "presence_by_class": {
-   "rare": 1446,
-   "contextual": 1370,
-   "common": 1118,
+   "rare": 1457,
+   "contextual": 1374,
+   "common": 1103,
    "ubiquitous": 287
   },
   "presence_confidence": {

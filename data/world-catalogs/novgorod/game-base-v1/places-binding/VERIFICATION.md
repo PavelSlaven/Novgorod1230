@@ -1091,3 +1091,11 @@
 
 - Одна связь `pf_peasant_homestead.householder ↔ pf_peasant_homestead.mistress`, `spouse`, редакционное C с причиной и тремя ссылками. Брак не выводится из роли: пара ролей вне связанного слота остаётся без супружеских отношений.
 - `slots/slot_instance_variants.json`: у `siv_002`–`siv_007` один текст `no_source` о возрасте экземпляра.
+
+### C016 — зависимые строки присутствия: независимая проверка D35
+
+Проверено: Claude Opus 5.5 — независимый проход WR §21.1 (D35), 2026-09-28. Незакоммиченный diff против `ec8cb72f`.
+
+- Производные строки пересобраны `build-presence-rules.mjs`, результат побайтно равен worktree. Изменены 26 строк, все — белобровик и чечевица (понижение класса вслед за `fauna/birds.csv`); прочих изменений 0.
+- Полный `validate.mjs --start-territory <bridge> --self-test` — exit 0; внешние проверки INFO 10977/118/788, как прежде.
+- presence/presence_rules.csv, reports/presence-rules-report.json — approve

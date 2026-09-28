@@ -1,0 +1,4 @@
+ground_kind,name_ru,place_family_ref,family_id,tenure,closed_months,source_refs,confidence,status,note
+lovishcha,Ловища,pf_hunting_ground,F29,rights_holder,,books-evidence-v1/fauna-mammals-birds.csv#L224,C,candidate,Список угодий по поздним актам Северо-Восточной Руси; для Новгородской земли около 1230 — аналогия. Конкретный участок и держатель не установлены.
+beaver_runs,Бобровые гоны,pf_hunting_ground,F30,rights_holder,,books-evidence-v1/fauna-mammals-birds.csv#L224;books-evidence-v1/social-strata-law.csv#L67,C,candidate,Правда защищает добычу бобра; границы конкретного гона и держатель не следуют.
+perevesishcha,Перевесища,pf_hunting_ground,F29,rights_holder,,books-evidence-v1/fauna-mammals-birds.csv#L220;books-evidence-v1/fauna-mammals-birds.csv#L221;books-evidence-v1/fauna-mammals-birds.csv#L223;books-evidence-v1/fauna-mammals-birds.csv#L224,C,candidate,Защищён чужой перевес и снасть; местная карта прав и конкретный держатель не установлены.

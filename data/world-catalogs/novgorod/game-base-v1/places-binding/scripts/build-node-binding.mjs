@@ -47,10 +47,10 @@ export function secondaryPfs(sceneRefs, primary, axes, cw, kinds, placeTemplates
 export function build() {
   const ex = readJson(path.join(GROUP, 'inputs/pr98-extract.json'));
   const cw = readJson(path.join(GROUP, 'scripts/crosswalk-rules.json'));
-  const wk = readJson(path.join(GROUP, '../../world-knowledge/production-v1/place-first-cartography.json'));
-  const composes = new Map(wk.environment_families.map((f) => [f.id, f.composes_with ?? []]));
-  const kinds = new Map(readCsv(path.join(GROUP, 'places/place_families.csv')).map((f) => [f.pf_id.slice(3), f.pf_kind]));
-  const placeTemplates = new Map(readCsv(path.join(GROUP, 'places/place_families.csv')).map((f) =>
+  const familyRows = readCsv(path.join(GROUP, 'places/place_families.csv'));
+  const composes = new Map(familyRows.map((f) => [f.pf_id.slice(3), f.composes_with.split(';').filter(Boolean).map((id) => id.replace(/^pf_/, ''))]));
+  const kinds = new Map(familyRows.map((f) => [f.pf_id.slice(3), f.pf_kind]));
+  const placeTemplates = new Map(familyRows.map((f) =>
     [f.pf_id.slice(3), f.place_template_refs.split(';').filter(Boolean)]));
   const fmap = cw.node_binding.g4_function_to_pf.map;
   const sceneMap = cw.scene_templates.map;

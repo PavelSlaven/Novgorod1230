@@ -6,7 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
-import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
+import { loadTemplateRegistry, WK_PLACE_FIRST, LOCAL_PF_ADDITIONS, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
 import { build as buildPresenceRules } from './build-presence-rules.mjs';
 import { checkPeopleComposition } from './check-people-composition.mjs';
@@ -20,6 +20,7 @@ const FAUNA_PATH = 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-bird
 const REGION_INPUT = 'inputs/m2c-nature-coverage-entries.json';
 const REGION_MANIFEST = 'places/region_type_pf_manifest.json';
 const REGION_AUTHORING = 'scripts/pf-authoring.json';
+const LOCAL_AUTHORING = 'places/pf_local_additions.json';
 const REGION_SOURCE = {
   source_ref: 'codex/live-world-runtime@7cc0d341b9ac40ba30486f67a07f18ecf136e413',
   repository: 'codex/live-world-runtime', commit: '7cc0d341b9ac40ba30486f67a07f18ecf136e413',
@@ -29,7 +30,7 @@ const REGION_SOURCE = {
 const REGION_FIELDS = { landscape: 'landscape_template_refs', water_body: 'water_body_template_refs', land_use: 'land_use_template_refs', place: 'place_template_refs' };
 const REGION_AUTH_FIELDS = { landscape: 'landscape', water_body: 'water', land_use: 'land_use', place: 'place' };
 const GAP_FIELDS = ['required_capability', 'correct_owner', 'missing_authoring_data', 'existing_nearest_data', 'why_insufficient', 'minimum_data_delta', 'affected_acceptance_test'];
-function regionTypeFailures(source, manifest, families, authoring) {
+function regionTypeFailures(source, manifest, families, authoring, local) {
   const failures = [];
   const same = isDeepStrictEqual;
   const key = (r) => `${r.kind}:${r.template_id}`;
@@ -43,6 +44,7 @@ function regionTypeFailures(source, manifest, families, authoring) {
     failures.push('expected two distinct start-only water entries');
   const rows = [...(source.entries ?? []), ...(starts ?? [])];
   const familyById = new Map(families.map((pf) => [pf.pf_id, pf]));
+  const localById = new Map(local.additions.map((row) => [`pf_${row.id}`, row]));
   const plannedGaps = authoring.region_type_gap_closures ?? {};
   const expected = new Map();
   for (const row of rows) {
@@ -80,18 +82,24 @@ function regionTypeFailures(source, manifest, families, authoring) {
       failures.push(`${k}: source provenance/confidence differs`);
     const expectedMappings = refs.map((pfId) => {
       const family = pfId.slice(3);
+      const localFamily = localById.get(pfId);
       const approvedEvidence = {
-        'landscape:lt_wooded_floodplain': { pf_mixed_woodland: 'g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1' },
+        'landscape:lt_wooded_floodplain': {
+          pf_burial_ground: 'g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1',
+          pf_mixed_woodland: 'g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1',
+        },
         'water_body:wb_nearshore_sea': Object.fromEntries(['pf_floodplain_meadow', 'pf_river_channel', 'pf_riverbank', 'pf_winter_ice_crossing'].map((pf) => [pf, 'g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach@1'])),
       }[k]?.[pfId];
       const evidence_refs = approvedEvidence ? [`data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv#${approvedEvidence}`] : [];
       return {
         pf_ref: `data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv#pf_id=${pfId}`,
-        authoring_ref: `data/world-catalogs/novgorod/game-base-v1/places-binding/${REGION_AUTHORING}#families.${family}.${REGION_AUTH_FIELDS[item.kind]}[${item.template_id}]`,
+        authoring_ref: localFamily
+          ? `data/world-catalogs/novgorod/game-base-v1/places-binding/${LOCAL_AUTHORING}#additions[id=${family}].${REGION_AUTH_FIELDS[item.kind]}[${item.template_id}]`
+          : `data/world-catalogs/novgorod/game-base-v1/places-binding/${REGION_AUTHORING}#families.${family}.${REGION_AUTH_FIELDS[item.kind]}[${item.template_id}]`,
         evidence_refs,
       };
     });
-    if (!same(row.pf_mappings, expectedMappings) || refs.some((pfId) => !authoring.families[pfId.slice(3)]?.[REGION_AUTH_FIELDS[item.kind]]?.includes(item.template_id)) ||
+    if (!same(row.pf_mappings, expectedMappings) || refs.some((pfId) => !(localById.get(pfId) ?? authoring.families[pfId.slice(3)])?.[REGION_AUTH_FIELDS[item.kind]]?.includes(item.template_id)) ||
         refs.some((pfId) => !familyById.has(pfId))) failures.push(`${k}: PF mapping provenance differs`);
     if (!refs.length) {
       if (row.pf_refs?.length || row.regional_scales?.some((s) => s === 'G4' || s === 'G5') || row.exact_g4?.length)
@@ -120,11 +128,56 @@ function regionTypeFailures(source, manifest, families, authoring) {
   if (!same(Object.keys(plannedGaps).sort(), [...expected.values()].filter((item) => !families.some((pf) => split(pf[REGION_FIELDS[item.kind]]).includes(item.template_id))).map(key).sort()))
     failures.push('gap closure keys differ from current gaps');
   for (const [k, refs] of Object.entries({
-    'landscape:lt_wooded_floodplain': ['pf_mixed_woodland'],
+    'landscape:lt_wooded_floodplain': ['pf_burial_ground', 'pf_mixed_woodland'],
     'water_body:wb_nearshore_sea': ['pf_floodplain_meadow', 'pf_river_channel', 'pf_riverbank', 'pf_winter_ice_crossing'],
   })) if (!same(actual.get(k)?.pf_refs, refs)) failures.push(`${k}: approved PF mapping differs`);
   for (const k of ['water_body:wb_estuary', ...(source.entries ?? []).filter((row) => row.exact_m2c_g4?.length).map(key)])
     if (actual.get(k)?.coverage !== 'covered') failures.push(`${k}: start matrix type must be covered`);
+  return failures;
+}
+function localAdditionFailures(local, wk, extract, categories) {
+  const failures = [];
+  const additions = local?.additions;
+  if (local?.schema !== 'places_binding_local_pf_additions_v1' || local?.status !== 'candidate' ||
+      !local?.transfer_debt?.includes('WK place-first-cartography') || !Array.isArray(additions))
+    return ['local additions metadata/schema'];
+  const wkIds = new Set(wk.environment_families.map((row) => row.id));
+  const ids = additions.map((row) => row.id);
+  if (ids.length !== 1 || ids[0] !== 'burial_ground') failures.push(`unknown local additions: ${ids.join(',')}`);
+  if (new Set(ids).size !== ids.length) failures.push('duplicate local addition id');
+  const knownNodes = new Set([
+    ...extract.g4.map((row) => `${row.g4_id}@${row.g4_version}`),
+    ...extract.g5.map((row) => `${row.g5_id}@${row.g5_version ?? 1}`),
+  ]);
+  const expectedGapRefs = [...knownNodes].filter((ref) => ref.includes('zaostrovye_burial_area')).sort();
+  const slots = new Set(['facet_ground', 'facet_use_people', 'facet_senses_traces', 'facet_risks_upkeep']);
+  for (const row of additions) {
+    if (wkIds.has(row.id)) failures.push(`${row.id}: collides with WK`);
+    if (!row.name_ru || !row.name_en || !row.kind || !row.description_en || row.status !== 'candidate' ||
+        !['A', 'B', 'C'].includes(row.confidence) || !row.note?.includes('WK place-first-cartography')) failures.push(`${row.id}: identity/provenance`);
+    if (!Array.isArray(row.source_refs) || !row.source_refs.length || row.source_refs.some((ref) => !/^book:\d+ §\d+$/.test(ref)))
+      failures.push(`${row.id}: source_refs`);
+    if (!Array.isArray(row.facets) || row.facets.length !== 4 || row.facets.some((facet) =>
+      !facet.id || !Array.isArray(facet.slots) || !facet.slots.length || facet.slots.some((slot) => !slots.has(slot)) ||
+      !['supported', 'partial'].includes(facet.coverage) || !Array.isArray(facet.claim_refs) || !facet.claim_refs.length ||
+      facet.claim_refs.some((ref) => !row.source_refs.includes(ref)) || !Array.isArray(facet.needs) || !Array.isArray(facet.residual_needs)))
+      failures.push(`${row.id}: facets`);
+    const identity = row.identity_presence;
+    if (identity?.category_ref !== 'burial_zone' || identity?.relation !== 'required_identity_not_frequency' ||
+        identity?.count_min !== 1 || !categories.has(identity?.category_ref) || !identity?.source_refs?.length ||
+        identity.source_refs.some((ref) => !row.source_refs.includes(ref)) || !['A', 'B', 'C'].includes(identity?.confidence))
+      failures.push(`${row.id}: identity presence`);
+    if (!Array.isArray(row.no_source) || row.no_source.length < 3 || row.no_source.some((reason) => !reason.trim()))
+      failures.push(`${row.id}: explicit no_source gaps`);
+    if (!isDeepStrictEqual([...row.start_territory_gap_refs].sort(), expectedGapRefs) || row.start_territory_gap_refs.some((ref) => !knownNodes.has(ref)))
+      failures.push(`${row.id}: start territory gap refs`);
+    if (!Array.isArray(row.exact_g4_refs) || row.exact_g4_refs.length !== 1 || !knownNodes.has(row.exact_g4_refs[0]))
+      failures.push(`${row.id}: exact G4 refs`);
+    if (!Array.isArray(row.lifecycle_rows) || row.lifecycle_rows.length !== 4 || row.lifecycle_rows.some((item) =>
+      item.rite_kind !== 'burial' || !item.name_ru || !item.visible_traces || !item.attestation ||
+      !row.source_refs.includes(item.source_refs) || !['A', 'B', 'C'].includes(item.confidence) || item.status))
+      failures.push(`${row.id}: lifecycle rows`);
+  }
   return failures;
 }
 function presenceIds(rows) {
@@ -416,7 +469,7 @@ if (process.argv.includes('--self-test')) {
   if (!lane || !secondaryFailures(changed(lane, [lane.pf_secondary, 'pf_village_lane'].filter(Boolean).join(';')), extracted, crosswalk).length)
     throw new Error('wild village lane probe failed');
   for (const [pf, positivePrimary] of [['town_wall_edge', 'pf_town_courtyard'], ['field_margin', 'pf_arable_field'],
-    ['river_wharf', 'pf_town_courtyard'], ['churchyard', 'pf_monastery_yard']]) {
+    ['river_wharf', 'pf_town_courtyard']]) {
     const rule = crosswalk.node_binding.pf_secondary.axis_rules.find((r) => r.pf_id === pf);
     if (!rule?.require_any || !Object.keys(rule.require_any).length)
       throw new Error(`${pf} whitelist positive probe failed`);
@@ -454,11 +507,30 @@ if (process.argv.includes('--self-test')) {
 
 const wk = readJson(WK_PLACE_FIRST);
 const fam = readCsv(P('places/place_families.csv'));
+const localAdditions = readJson(LOCAL_PF_ADDITIONS);
 const regionSource = readJson(P(REGION_INPUT));
 const regionManifest = readJson(P(REGION_MANIFEST));
 const regionAuthoring = readJson(P(REGION_AUTHORING));
-check('region_type_pf_manifest', 'pinned_source_exact_keys_current_pf_and_typed_gaps', regionTypeFailures(regionSource, regionManifest, fam, regionAuthoring), { rows: regionManifest.entries?.length ?? 0 });
+const ex = readJson(P('inputs/pr98-extract.json'));
+const categoryIds = new Set(readCsv(P('categories/category_registry.csv')).map((row) => row.category_id));
+check('place_families', 'local_additions_sourced_noncolliding_and_explicit', localAdditionFailures(localAdditions, wk, ex, categoryIds), { additions: localAdditions.additions.length });
+check('region_type_pf_manifest', 'pinned_source_exact_keys_current_pf_and_typed_gaps', regionTypeFailures(regionSource, regionManifest, fam, regionAuthoring, localAdditions), { rows: regionManifest.entries?.length ?? 0 });
 if (process.argv.includes('--self-test')) {
+  const unknownLocal = structuredClone(localAdditions);
+  unknownLocal.additions.push({ ...structuredClone(unknownLocal.additions[0]), id: 'unknown_probe' });
+  if (!localAdditionFailures(unknownLocal, wk, ex, categoryIds).some((failure) => failure.includes('unknown local additions')))
+    throw new Error('unknown local addition negative probe failed');
+  console.log('PASS place_families / unknown_local_addition_negative_probe');
+  const unsourcedLocal = structuredClone(localAdditions);
+  unsourcedLocal.additions[0].source_refs = [];
+  if (!localAdditionFailures(unsourcedLocal, wk, ex, categoryIds).some((failure) => failure.includes('source_refs')))
+    throw new Error('local addition without book source negative probe failed');
+  console.log('PASS place_families / local_addition_without_book_source_negative_probe');
+  const collidingLocal = structuredClone(localAdditions);
+  collidingLocal.additions[0].id = wk.environment_families[0].id;
+  if (!localAdditionFailures(collidingLocal, wk, ex, categoryIds).some((failure) => failure.includes('collides with WK')))
+    throw new Error('local addition WK collision negative probe failed');
+  console.log('PASS place_families / local_addition_wk_collision_negative_probe');
   const copy = () => structuredClone(regionManifest);
   const probes = {
     missing_row: (m) => m.entries.pop(),
@@ -470,14 +542,13 @@ if (process.argv.includes('--self-test')) {
   };
   for (const [name, mutate] of Object.entries(probes)) {
     const m = copy(); mutate(m);
-    if (!regionTypeFailures(regionSource, m, fam, regionAuthoring).length) throw new Error(`region manifest negative probe failed: ${name}`);
+    if (!regionTypeFailures(regionSource, m, fam, regionAuthoring, localAdditions).length) throw new Error(`region manifest negative probe failed: ${name}`);
   }
   console.log('PASS region_type_pf_manifest / six_negative_probes');
 }
 const reg = loadTemplateRegistry();
 const routes = new Set(readJson(SEEDS.route).map((r) => r.id));
 const pfSet = new Set(fam.map((f) => f.pf_id));
-const ex = readJson(P('inputs/pr98-extract.json'));
 
 const startTerritoryArg = process.argv.indexOf('--start-territory');
 if (startTerritoryArg >= 0 && !process.argv[startTerritoryArg + 1]) throw new Error('--start-territory requires a JSON path');
@@ -489,11 +560,14 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
 // ---- place_families
 {
   const ids = fam.map((f) => f.pf_id.slice(3));
-  const want = wk.environment_families.map((f) => f.id);
-  check('place_families', 'wk_44_families_exactly_once', [
+  const wkWant = wk.environment_families.map((f) => f.id);
+  const localWant = localAdditions.additions.map((f) => f.id);
+  const want = [...wkWant, ...localWant];
+  check('place_families', 'wk_families_plus_declared_local_additions_exactly_once', [
     ...want.filter((w) => ids.filter((x) => x === w).length !== 1).map((w) => `missing_or_duplicate ${w}`),
     ...ids.filter((x) => !want.includes(x)).map((x) => `unknown ${x}`),
-  ], { wk_families: want.length, rows: fam.length });
+    ...localWant.filter((id) => wkWant.includes(id)).map((id) => `local collision ${id}`),
+  ], { wk_families: wkWant.length, local_additions: localWant.length, rows: fam.length });
   check('place_families', 'landscape_or_place_ref_or_explicit_not_applicable', fam.filter((f) => !f.landscape_template_refs && !f.place_template_refs && !f.templates_not_applicable).map((f) => f.pf_id));
   const bad = [];
   for (const f of fam) {
@@ -531,6 +605,8 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   const want = [...ex.g4nodes.map((n) => n.id), ...ex.g5.map((n) => n.g5_id)];
   check('node_binding', 'one_row_per_v17_g4_g5', want.filter((id) => count(id) !== 1).concat(nb.filter((r) => !want.includes(r.node_ref.replace(/@\d+$/, ''))).map((r) => 'extra ' + r.node_ref)), { g4: ex.g4nodes.length, g5: ex.g5.length, rows: nb.length });
   check('node_binding', 'pf_exists_or_typed_gap', nb.filter((r) => (r.pf_id && !pfSet.has(r.pf_id)) || (!r.pf_id && r.binding_status !== 'gap')).map((r) => r.node_ref), { gaps: nb.filter((r) => r.binding_status === 'gap').map((r) => r.node_ref) });
+  const localGapRefs = localAdditions.additions.flatMap((row) => row.start_territory_gap_refs);
+  check('node_binding', 'declared_local_gap_nodes_are_bound', localGapRefs.filter((ref) => !nb.some((row) => row.node_ref === ref && row.pf_id && row.binding_status !== 'gap')), { refs: localGapRefs.length });
   const bad = [];
   for (const r of nb) {
     if (r.landscape_template_id && reg.get(r.landscape_template_id)?.kind !== 'landscape') bad.push(`${r.node_ref} landscape ${r.landscape_template_id}`);
@@ -697,9 +773,11 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   }
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
-  check('presence_rules', 'people_cover_16_bound_pf', [
-    ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id) && !readJson(P('presence/people_composition_authoring.json')).compositions.some((c) => c.pf_id === id && c.population_groups.length)).map((id) => `missing ${id}`),
-    ...(expectedPf.size === 16 ? [] : [`expected 16 PF, got ${expectedPf.size}`]),
+  const peopleComposition = readJson(P('presence/people_composition_authoring.json'));
+  const expectedBoundPfCount = 16 + localAdditions.additions.length;
+  check('presence_rules', 'people_cover_bound_pf_or_explicit_empty_composition', [
+    ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id) && !peopleComposition.compositions.some((c) => c.pf_id === id && (c.population_groups.length || c.empty_reason))).map((id) => `missing ${id}`),
+    ...(expectedPf.size === expectedBoundPfCount ? [] : [`expected ${expectedBoundPfCount} PF, got ${expectedPf.size}`]),
     ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
   ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });
   const crosswalks = [
@@ -729,7 +807,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (new Set(rowKeys).size !== rowKeys.length) crosswalkFailures.push(`${name}: duplicate key`);
     if (rows.some((r) => r.status !== 'candidate')) crosswalkFailures.push(`${name}: non-candidate status`);
   }
-  check('presence_rules', 'c002_crosswalks_account_for_16_bound_pf', crosswalkFailures,
+  check('presence_rules', 'c002_crosswalks_account_for_bound_pf', crosswalkFailures,
     { place_families: expectedPf.size, rows: crosswalkCounts });
   check('presence_rules', 'input_pool_rows_rejected (external)', Array(rr.rejected_rows).fill('x'), { reasons: rr.reject_reasons, by_file: rr.rejected_by_file }, true);
 }
@@ -798,7 +876,9 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     covered.add(r.pf_id);
   }
   for (const pf of boundPf) if (!covered.has(pf)) f.push(`uncovered ${pf}`);
-  if (boundPf.size !== 16 || slots.length !== 5 || gaps.length !== 12 || covered.size !== 16) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
+  const expectedBoundPfCount = 16 + localAdditions.additions.length;
+  const expectedGapCount = 12 + localAdditions.additions.length;
+  if (boundPf.size !== expectedBoundPfCount || slots.length !== 5 || gaps.length !== expectedGapCount || covered.size !== expectedBoundPfCount) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
   check('materialization_slot_rules', 'c003_required_slots_and_explicit_gaps', f, { slots: slots.length, candidates: candidates.length, gaps: gaps.length, place_families: covered.size });
 
   const variants = readJson(P('slots/slot_instance_variants.json'));

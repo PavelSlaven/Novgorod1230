@@ -27,7 +27,7 @@ const visibility = new Set(['clear', 'partial', 'none']);
  * readEntityObservations({partyId,actorId}) -> admitted exterior and known names. */
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
-  readEntityExterior, readPlayerKnowledge,
+  readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
@@ -88,6 +88,14 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       const admitted = await admit(current, edges.map((row) => ({
         target_id: row.id, position_id: row.to_position_id, entity_kind: 'local_edge' })));
       const visible = new Set(admitted.map((row) => row.target_id));
+      // Occupancy status comes from the movement admission owner (spatial-v3-local-scene-movement.js);
+      // it is never recomputed here.
+      const admission = typeof readLocalMovementAdmission === 'function'
+        ? await readLocalMovementAdmission({ transaction: current.transaction, partyId, actorId,
+            positionId: current.scene.location.scene_position_id })
+        : null;
+      const statusByEdge = admission == null ? null
+        : new Map(admission.map((row) => [row.edge_id, row.destination_status]));
       return edges.flatMap((edge) => {
         if (!visible.has(edge.id)) return [];
         const labels = localLabels.filter((row) =>
@@ -96,7 +104,12 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           && row.scene_template_ref.version === Number(edge.source_scene_template_ref?.authoring_version)
           && row.edge_slot_key === edge.source_edge_slot_key);
         if (labels.length !== 1) gap('approved_local_edge_label_required');
-        return [{ edge_id: edge.id, display_label: labels[0].display_label }];
+        const destinationStatus = statusByEdge?.get(edge.id);
+        if (statusByEdge != null && !['open', 'occupied'].includes(destinationStatus)) {
+          gap('current_local_edge_admission_required');
+        }
+        return [{ edge_id: edge.id, display_label: labels[0].display_label,
+          ...(statusByEdge != null ? { destination_status: destinationStatus } : {}) }];
       });
     }, transaction, observedPositionId);
   }

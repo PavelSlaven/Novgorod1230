@@ -37,6 +37,8 @@ import { deriveActivatedReleaseFromReadback } from './production-v2-activation-s
 import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
 import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
 import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
+import { createSpatialV3LocalSceneMovementReader } from
+  '../infrastructure/postgres/spatial-v3-local-scene-movement.js';
 import { createSpatialV3LocalMovementEligibilityReader,
   loadApprovedLocalMovementEligibilityPins } from
   '../infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
@@ -174,7 +176,13 @@ export async function createSpatialV3ProductionCompositionRoot({
           ...args, readCurrentEnvironment: factualContext.readCurrentEnvironment }),
         readTargetConditions: readCurrentTargetConditions,
         readEntityExterior: readCommittedEntityExterior,
-        readPlayerKnowledge
+        readPlayerKnowledge,
+        readLocalMovementAdmission: async ({ transaction, partyId, actorId, positionId }) => {
+          const rows = await createSpatialV3LocalSceneMovementReader({ pool: transaction })
+            .list({ partyId, actorId, positionId });
+          return rows.map(({ movement_admission: admission }) => ({
+            edge_id: admission.edge_id, destination_status: admission.destination_status }));
+        }
       });
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });

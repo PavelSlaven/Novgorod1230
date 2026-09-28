@@ -30,7 +30,8 @@ export function createSpatialV3LocalSceneRuntime({ pool,
       const edges = await current({ partyId, actorId, state });
       return edges.map((edge) => ({ edge_id: edge.movement_admission.edge_id,
         action_units: edge.movement_admission.action_units,
-        display_label: edge.display_label }));
+        display_label: edge.display_label,
+        destination_status: edge.movement_admission.destination_status }));
     },
     async prepareLocalMovement({ partyId, actorId, state, edgeId,
       playerInput, inputDigest }) {

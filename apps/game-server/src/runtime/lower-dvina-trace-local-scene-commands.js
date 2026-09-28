@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { actorMovementBlocked, available, mode } from
+import { actorMovementBlocked, available, LOCAL_EDGE_OCCUPIED_SUFFIX, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
 import { serverError } from '../errors.js';
 
@@ -13,8 +13,9 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
   const identity = { partyId: state.party_id, actorId: state.actor_id };
   const options = await spatialLocalSceneRuntime.listLocalOptions({ ...identity, state });
   if (!Array.isArray(options) || options.some(({ edge_id: id, display_label: label,
-    action_units: actionUnits } = {}) =>
-    !text(id) || !text(label) || !Number.isSafeInteger(actionUnits) || actionUnits < 1)
+    action_units: actionUnits, destination_status: status } = {}) =>
+    !text(id) || !text(label) || !Number.isSafeInteger(actionUnits) || actionUnits < 1
+    || !['open', 'occupied'].includes(status))
       || new Set(options.map(({ edge_id: id }) => id)).size !== options.length) {
     fail('SPATIAL_V3_LOCAL_OPTIONS_INVALID');
   }
@@ -25,22 +26,23 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
     && current.party_state?.state_version === sourceVersion
     && isDeepStrictEqual(current.position, sourcePosition);
   return options.map(({ edge_id: edgeId, display_label: label,
-    action_units: actionUnits }) => {
+    action_units: actionUnits, destination_status: status }) => {
+    const visibleLabel = status === 'occupied' ? `${label}${LOCAL_EDGE_OCCUPIED_SUFFIX}` : label;
     const operation = { op: 'request_movement', actor_ref: identity.actorId,
-      target_ref: edgeId, movement_kind: 'local', description: label };
+      target_ref: edgeId, movement_kind: 'local', description: visibleLabel };
     return {
       command_id: `live_world.follow_local_scene_edge:${edgeId}`,
       option_id: `local_scene_edge:${edgeId}`,
-      label, target_id: edgeId,
+      label: visibleLabel, target_id: edgeId,
       approved_record: null, preconditions: [],
       expected_cost: { kind: 'action', units: actionUnits }, known_risks: [],
-      reason_visible_to_actor: label,
+      reason_visible_to_actor: visibleLabel,
       mode: mode('movement_route', ['movement']),
       matches: () => false,
       semantic_binding: { binding_id: `local_scene_edge:${edgeId}`,
         operation: 'request_movement', operation_dto: operation,
         matches: ({ operation: selected }) => selected != null
-          && isDeepStrictEqual({ ...selected, description: label }, operation) },
+          && isDeepStrictEqual({ ...selected, description: visibleLabel }, operation) },
       availability({ committed_state: current, retrievedState }) {
         const state = current ?? retrievedState;
         const sourceReady = currentSource(state);

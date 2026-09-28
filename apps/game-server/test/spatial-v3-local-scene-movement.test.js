@@ -181,13 +181,15 @@ test('local movement does not consume route body effect', () => {
 test('local command binds exact current edge and rejects stale state', async () => {
   const committed = state('arrival');
   const runtime = { async listLocalOptions() { return [{ edge_id: 'arrival:focus',
-    display_label: 'Перейти к соседнему месту 1', action_units: 1 }]; },
+    display_label: 'Перейти к соседнему месту 1', action_units: 1,
+    destination_status: 'open' }]; },
   async prepareLocalMovement() { return { schema: 'turn_consequence_package',
     status: 'resolved', duration_minutes: 0, visible_seed: {}, hidden_update: {},
     state_changes: [], suggested_actions: [] }; } };
   const [command] = await createTraceLocalSceneCommands({ state: committed,
     inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
   assert.deepEqual(command.writeTargets(), []);
+  assert.equal(command.label, 'Перейти к соседнему месту 1');
   assert.equal(command.semantic_binding.operation_dto.target_ref, 'arrival:focus');
   const actionSet = await createTurnAvailableActionSet({
     registry: createTurnCommandRegistry([command]), committedState: committed,
@@ -243,6 +245,10 @@ test('occupied local edge stays a selectable plan operation; attempt fails typed
       readLocalEdgeDisclosure: async () => [{ edge_id: 'arrival:focus', display_label: 'Проход 1' }] });
     const [command] = await createTraceLocalSceneCommands({ state: committed,
       inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
+    // The status comes from the movement admission owner, not a second guess:
+    // the label the actor and planner see says the passage is occupied.
+    assert.equal(command.label, 'Проход 1 (проход занят)');
+    assert.equal(command.reason_visible_to_actor, 'Проход 1 (проход занят)');
     const actionSet = await createTurnAvailableActionSet({
       registry: createTurnCommandRegistry([command]), committedState: committed,
       actorId: committed.actor_id, policyPins: [] });
@@ -271,7 +277,8 @@ for (const status of ['restrained', 'incapacitated']) test(
     const [command] = await createTraceLocalSceneCommands({ state: committed,
       inputDigest: 'digest', spatialLocalSceneRuntime: {
         listLocalOptions: async () => [{ edge_id: 'arrival:focus',
-          display_label: 'Перейти к соседнему месту', action_units: 1 }],
+          display_label: 'Перейти к соседнему месту', action_units: 1,
+          destination_status: 'open' }],
         prepareLocalMovement: async () => { throw new Error('must not prepare'); }
       } });
     assert.deepEqual(command.availability({ committed_state: committed }), {

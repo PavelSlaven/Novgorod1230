@@ -35,7 +35,8 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
   assert.match(calls[0].sql, /nav\.status='approved' AND nav\.canonical_digest=n\.canonical_digest/);
   assert.match(calls[0].sql, /e\.status='approved'/);
 });
-function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader } = {}) {
+function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
+  readLocalMovementAdmission } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
@@ -60,7 +61,8 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader } = {
     readTargetConditions: readCurrentTargetConditions,
     readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
-      ? { display_name: 'Known person' } : null });
+      ? { display_name: 'Known person' } : null,
+    ...(readLocalMovementAdmission ? { readLocalMovementAdmission } : {}) });
   return { scene, natural, provider, queries };
 }
 
@@ -181,6 +183,32 @@ test('current approved local edge reaches the turn visible context', async () =>
   const changed = await withPhase2CurrentLocalEdges(current,
     provider.readLocalEdgeDisclosure);
   assert.deepEqual(changed.current_visible_context.visible_objects, []);
+});
+
+test('occupied status comes from the movement admission owner, not a second guess', async () => {
+  let occupied = true;
+  const admissionCalls = [];
+  const { provider } = fixture({ readLocalMovementAdmission: async (args) => {
+    admissionCalls.push(args);
+    return [{ edge_id: 'edge', destination_status: occupied ? 'occupied' : 'open' }];
+  } });
+  const state = { party_id: 'party', actor_id: 'actor',
+    journey_location: { scene_position_id: 'a' }, current_visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
+      visible_changes: [], sensory_details: [], visible_npc: [],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] } };
+  const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+    display_label: localLabel.display_label, recognition: 'known', status: 'occupied' }]);
+  assert.equal(admissionCalls[0].partyId, 'party');
+  assert.equal(admissionCalls[0].positionId, 'a');
+  occupied = false;
+  const open = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
+  assert.deepEqual(open.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+    display_label: localLabel.display_label, recognition: 'known' }]);
 });
 
 test('explicit geometry hides unlinked targets; modifiers and missing ambient fail closed', async () => {

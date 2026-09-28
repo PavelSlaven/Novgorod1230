@@ -18,7 +18,7 @@ const claimIds = new Set(bundle.claims.map((c) => c.claim_ref));
 const checks = [];
 const check = (name, failures) => checks.push({ name, ok: failures.length === 0, failures: failures.slice(0, 50), failure_count: failures.length });
 const WEIGHT = { ubiquitous: 8, common: 4, contextual: 2, rare: 1 };
-const MONTH_STATES = new Set(['not_visible', 'winter_form', 'vegetative', 'flowering', 'fruiting', 'ripe_or_harvest', 'flowering_and_fruiting']);
+const MONTH_STATES = new Set(['not_visible', 'winter_form', 'vegetative', 'flowering', 'flowering_before_leaves', 'fruiting', 'ripe_or_harvest', 'flowering_and_fruiting', 'leafless', 'leaf_out', 'leaf_fall']);
 
 function checkMonthly(rows) {
   const f = [];
@@ -28,6 +28,9 @@ function checkMonthly(rows) {
   for (const t of authored) {
     const row = byId.get(t.id);
     if (!row) { f.push(`${t.id}: monthly row missing`); continue; }
+    const precision = t.phen?.flower ? 'month' : t.phen?.flower_before_leaves ? 'season_only' : 'unknown';
+    if (row.flowering_month_precision !== precision) f.push(`${t.id}: flowering_month_precision ${row.flowering_month_precision} != ${precision}`);
+    if (row.flowers_before_leaves !== (t.phen?.flower_before_leaves ? 'yes' : '')) f.push(`${t.id}: flowers_before_leaves mismatch`);
     let actual;
     try { actual = JSON.parse(row.phenology_by_month); } catch { f.push(`${t.id}: monthly JSON malformed`); continue; }
     if (!actual || Array.isArray(actual) || typeof actual !== 'object' || Object.keys(actual).length !== 12 ||
@@ -38,8 +41,11 @@ function checkMonthly(rows) {
     const fruits = new Set(months(t.phen?.fruit));
     for (let m = 1; m <= 12; m++) {
       const expected = flowers.has(m) && fruits.has(m) ? 'flowering_and_fruiting'
-        : fruits.has(m) ? 'fruiting' : flowers.has(m) ? 'flowering'
-        : SEASON_MONTHS.winter.includes(m) ? 'winter_form' : 'vegetative';
+        : fruits.has(m) ? 'fruiting'
+        : flowers.has(m) ? t.phen?.flower_before_leaves ? 'flowering_before_leaves' : 'flowering'
+        : t.leaf_habit === 'deciduous'
+          ? SEASON_MONTHS.winter.includes(m) ? 'leafless' : SEASON_MONTHS.spring.includes(m) ? 'leaf_out' : SEASON_MONTHS.autumn.includes(m) ? 'leaf_fall' : 'vegetative'
+          : SEASON_MONTHS.winter.includes(m) ? 'winter_form' : 'vegetative';
       if (!MONTH_STATES.has(actual[m]) || actual[m] !== expected) f.push(`${t.id}/${m}: ${actual[m]} != ${expected}`);
     }
   }
@@ -135,7 +141,7 @@ function resolve(ref) {
   for (const p of pres) if (!['A', 'B', 'C'].includes(p.confidence) || p.status !== 'candidate') f.push(`${p.presence_id}: confidence/status`);
   check('phenology_confidence_status', f);
 }
-// 7a. monthly state is generated from authored flowering/fruit months for every taxon.
+// 7a. monthly reproductive state takes priority; otherwise deciduous seasonal foliage is projected.
 {
   const f = checkMonthly(taxa);
   const authored = src('taxa.json').taxa;
@@ -150,6 +156,28 @@ function resolve(ref) {
       if (!checkMonthly(taxa.map((t) => t === row ? changed : t)).some((e) => e.includes(`${overlap.id}/${m}:`))) f.push('monthly overlap probe failed');
       changed.phenology_by_month = JSON.stringify({ ...JSON.parse(row.phenology_by_month), 1: 'vegetative' });
       if (!checkMonthly(taxa.map((t) => t === row ? changed : t)).some((e) => e.includes(`${overlap.id}/1:`))) f.push('monthly month probe failed');
+    }
+  }
+  const before = authored.find((t) => t.phen?.flower_before_leaves && t.phen.flower);
+  if (!before) f.push('before-leaves probe has no authored fixture');
+  else {
+    const row = taxa.find((t) => t.fl_id === before.id);
+    const m = months(before.phen.flower).find((n) => !months(before.phen.fruit).includes(n));
+    if (!row || !m) f.push('before-leaves probe row/month missing');
+    else {
+      const changed = { ...row, phenology_by_month: JSON.stringify({ ...JSON.parse(row.phenology_by_month), [m]: 'flowering' }) };
+      if (!checkMonthly(taxa.map((t) => t === row ? changed : t)).some((e) => e.includes(`${before.id}/${m}:`))) f.push('before-leaves probe failed');
+    }
+  }
+  const noMonth = authored.find((t) => t.phen?.flower_before_leaves && !t.phen.flower);
+  if (!noMonth) f.push('season-only probe has no authored fixture');
+  else {
+    const row = taxa.find((t) => t.fl_id === noMonth.id);
+    if (!row) f.push('season-only probe row missing');
+    else {
+      const changed = { ...row, flowering_month_precision: 'month', phenology_by_month: JSON.stringify({ ...JSON.parse(row.phenology_by_month), 4: 'flowering_before_leaves' }) };
+      const errors = checkMonthly(taxa.map((t) => t === row ? changed : t));
+      if (!errors.some((e) => e.includes('flowering_month_precision')) || !errors.some((e) => e.includes(`${noMonth.id}/4:`))) f.push('season-only probe failed');
     }
   }
   check('phenology_by_month', f);

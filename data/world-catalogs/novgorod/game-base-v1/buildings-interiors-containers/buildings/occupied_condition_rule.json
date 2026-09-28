@@ -3,7 +3,9 @@
   "status": "candidate",
   "trigger": {
     "entity": "building_instance",
+    "building_class": "dwelling",
     "composition_source": "D-2",
+    "composition_scope": "linked_pf",
     "group_kind": "residents",
     "min_groups": 1
   },

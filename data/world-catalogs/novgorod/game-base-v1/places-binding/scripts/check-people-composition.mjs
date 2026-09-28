@@ -26,6 +26,12 @@ const sexSources = new Map([
   ['data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv',
     new Set(readCsv(path.join(REPO, 'data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv')).map((r) => r.profession_id))],
 ]);
+const relationshipRoleSources = new Map([
+  ...['novgorod_social_roles_v1.tsv', 'novgorod_social_roles_v1_enriched.tsv'].map((file) => [
+    `data/novgorod-region/${file}`,
+    new Set(readTsv(path.join(REPO, 'data/novgorod-region', file)).map((row) => row.role_id)),
+  ]),
+]);
 for (const file of fs.readdirSync(evidenceDir).filter((name) => name.endsWith('.csv'))) for (const row of readCsv(path.join(evidenceDir, file))) {
   const key = `${row.book_id}|${row.para_no}`;
   if (!bookEvidence.has(key)) bookEvidence.set(key, new Set());
@@ -93,11 +99,34 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
   if (scheduledBySeason.get('pf_ferry_landing')?.get('winter')?.size)
     errors.push('pf_ferry_landing: winter on_site/nearby schedule');
   for (const c of data.compositions) {
-    if (!exact(c, ['pf_id', 'population_groups', 'scheduled_absences', ...(c.empty_reason === undefined ? [] : ['empty_reason'])])) { errors.push(`${c?.pf_id}: composition fields`); continue; }
+    if (!exact(c, ['pf_id', 'population_groups', 'scheduled_absences', ...(c.empty_reason === undefined ? [] : ['empty_reason']), ...(c.slot_relationships === undefined ? [] : ['slot_relationships'])])) { errors.push(`${c?.pf_id}: composition fields`); continue; }
     if (!bound.has(c.pf_id) || seenPf.has(c.pf_id)) errors.push(`${c.pf_id}: unknown/duplicate PF`);
     seenPf.add(c.pf_id);
     if (!Array.isArray(c.population_groups) || !Array.isArray(c.scheduled_absences)) { errors.push(`${c.pf_id}: groups/absences arrays`); continue; }
     if ((c.population_groups.length === 0) !== reasoned(c.empty_reason)) errors.push(`${c.pf_id}: empty_reason must be substantive exactly for empty composition`);
+    if (c.slot_relationships !== undefined) {
+      if (!Array.isArray(c.slot_relationships)) errors.push(`${c.pf_id}: slot_relationships array`);
+      else {
+        const groups = new Map(c.population_groups.map((g) => [g.group_id, g]));
+        const seenLinks = new Set();
+        for (const link of c.slot_relationships) {
+          if (!exact(link, ['from_group_id', 'to_group_id', 'relationship_kind', 'confidence', 'reason', 'source_refs'])) { errors.push(`${c.pf_id}: slot relationship fields`); continue; }
+          const key = [link.from_group_id, link.to_group_id].sort().join('|');
+          if (seenLinks.has(key) || link.from_group_id === link.to_group_id) errors.push(`${c.pf_id}: duplicate/self slot relationship`);
+          seenLinks.add(key);
+          if (![link.from_group_id, link.to_group_id].every((id) => groups.get(id)?.min_count === 1 && groups.get(id)?.max_count === 1 && groups.get(id)?.weighted_subjects?.length === 1)) errors.push(`${c.pf_id}: unresolved slot relationship endpoint`);
+          if (link.relationship_kind !== 'spouse' || link.confidence !== 'C' || !reasoned(link.reason) || !Array.isArray(link.source_refs) || !link.source_refs.length) errors.push(`${c.pf_id}: slot relationship provenance`);
+          const endpointRoles = [link.from_group_id, link.to_group_id].map((id) => groups.get(id)?.weighted_subjects?.[0]?.subject_ref).filter(Boolean);
+          const citedRoles = new Set((link.source_refs || []).map((ref) => ref.split('#')[1]).filter(Boolean));
+          if (endpointRoles.length !== 2 || endpointRoles.some((role) => !citedRoles.has(role))) errors.push(`${c.pf_id}: slot relationship endpoint provenance`);
+          for (const ref of link.source_refs || []) {
+            const [file, role] = ref.split('#');
+            const book = /^book:(\d+) §(\d+)$/u.exec(ref);
+            if (!(relationshipRoleSources.get(file)?.has(role) || (book && bookEvidence.has(`${book[1]}|${book[2]}`)))) errors.push(`${c.pf_id}: unresolved slot relationship source_ref ${ref}`);
+          }
+        }
+      }
+    }
     const covered = new Set();
     const present = new Set();
     const absentSeasons = new Map();
@@ -265,6 +294,9 @@ if (isMain) {
       if (!checkPeopleComposition(data, bridge).some((error) => error.includes(diagnostic))) errors.push(`negative probe failed: ${name} (${diagnostic})`);
     };
     probe('missing PF', 'missing composition', (d) => d.compositions.pop());
+    probe('wrong spouse endpoint', 'unresolved slot relationship endpoint', (d) => { d.compositions.find((c) => c.slot_relationships).slot_relationships[0].to_group_id = 'pf_rural_yard.mistress'; });
+    probe('missing spouse provenance', 'slot relationship provenance', (d) => { d.compositions.find((c) => c.slot_relationships).slot_relationships[0].source_refs = []; });
+    probe('unlinked PF stays unlinked', 'unresolved slot relationship endpoint', (d) => { const c = d.compositions.find((x) => x.pf_id === 'pf_ferry_landing'); c.slot_relationships = [{ ...d.compositions.find((x) => x.slot_relationships).slot_relationships[0] }]; });
     probe('unknown PF', 'unknown/duplicate PF', (d) => { d.compositions[0].pf_id = 'pf_unknown'; });
     const group = () => original.compositions.find((c) => c.population_groups.length);
     probe('unknown subject', 'unknown subject', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].weighted_subjects[0].subject_ref = 'unknown'; });

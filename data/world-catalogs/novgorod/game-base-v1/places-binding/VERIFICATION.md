@@ -1068,3 +1068,13 @@
 
 - `build-all.mjs` — побайтно.
 - `validate.mjs --start-territory <bridge> --self-test` — 0 FAIL.
+
+### C011, пункт 4 — age gap building-вариантов
+
+`siv_002`–`siv_007` содержат один `facets.age.no_source`: «данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states». Validator требует точное совпадение для каждого building-кандидата; self-test подменяет текст у каждого из шести вариантов и проверяет отказ. Route и transport сохраняют прежнюю семантику. Это запись реализации, не независимый verdict.
+
+- `node scripts/validate.mjs --start-territory <реальный bridge> --self-test` — exit 0, все профильные проверки PASS, внешние проверки INFO.
+- Повторный `node scripts/build-slot-variants.mjs` сохранил SHA-256 `slot_instance_variants.json`: `2154b5fda3056eb7c3cb9c05c8fa01df656e84d08f6f8bdc420b982d9232efac`.
+### C011 spouse link — candidate
+
+В `pf_peasant_homestead` добавлена явная связь слотов `householder` ↔ `mistress`, `spouse`, confidence C. Checker проверяет существование обоих endpoint, provenance и отсутствие переноса связи на другой PF; `node scripts/check-people-composition.mjs --self-test` и `node scripts/validate.mjs` проходят.

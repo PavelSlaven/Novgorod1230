@@ -171,7 +171,9 @@ def check_evidence(r, prefix):
             ref = ref.strip()
             book = re.fullmatch(r"book:(\d+) §(\d+)", ref)
             wk = re.fullmatch(r"wk:([^#]+\.json)#(.+)", ref)
-            if not ((book and book.groups() in book_evidence) or (wk and wk.groups() in known_wk)):
+            role = re.fullmatch(r"data/novgorod-region/novgorod_social_roles_v1(?:_enriched)?\.tsv#(nov_role_\w+)", ref)
+            if not ((book and book.groups() in book_evidence) or (wk and wk.groups() in known_wk) or
+                    (role and role[1] in all_role)):
                 errors.append(f"{prefix}: unresolved source_ref {ref}")
             if book and book.groups() in book_evidence and r["confidence"] != "C":
                 if all(row["period"] in {"medieval_general", "ethnographic_late"} for row in book_evidence[book.groups()]):
@@ -218,8 +220,29 @@ for i, r in enumerate(af_rows):
         errors.append(f"{prefix}: epistolary opening used as oral address")
 
 # Builder and checker derive the same G5-node/season/phase pairs.
-from build import starting_pairs
+from build import starting_pairs, composition_spouse_links, include_composition_spouse_form, generated_id
 start_pairs, same_pf_pairs, _, _, intersections, colocated, dead_pairs = starting_pairs()
+spouse_links = list(composition_spouse_links())
+spouse_rows = [row for row in rel_rows if row["rel_rule_id"].startswith("rel_composition_spouse_")]
+if len(spouse_rows) != len(spouse_links):
+    errors.append("composition spouse relation count differs from explicit links")
+for pf, subject, object_, link in spouse_links:
+    link_id = generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]])
+    matches = [row for row in spouse_rows if row["rel_rule_id"] == link_id]
+    if len(matches) != 1 or (matches[0]["subject_role_ref"], matches[0]["object_role_ref"]) != (subject, object_) or not all(part in matches[0]["materialization_guard"] for part in (pf, link["from_group_id"], link["to_group_id"])) or matches[0]["source_refs"].split(";") != link["source_refs"]:
+        errors.append(f"{pf}: spouse relation does not carry both slot endpoints")
+    if not all(any(form["relationship_kind"] == "spouse" and form["speaker_role_ref"] == speaker and
+                   form["addressee_role_ref"] == addressee and link_id in form["situation"] for form in af_rows)
+               for speaker, addressee in ((subject, object_), (object_, subject))):
+        errors.append(f"{pf}: missing spouse address directions")
+    pair = sorted((subject, object_))
+    gap_id = generated_id("rel_start_gap_", [*pair, "unspecified", "symmetric"])
+    if not any(row["rel_rule_id"] == gap_id and row["relationship_kind"] == "unspecified" for row in rel_rows):
+        errors.append(f"{pf}: unlinked holders of the same roles need a neutral relation gap")
+    for speaker, addressee in ((subject, object_), (object_, subject)):
+        form_id = generated_id("form_start_gap_", [speaker, addressee, "unspecified"])
+        if not any(row["sp_id"] == form_id and row["relationship_kind"] == "unspecified" for row in af_rows):
+            errors.append(f"{pf}: unlinked {speaker}->{addressee} needs a neutral address gap")
 
 
 def canonical_id(prefix, fields):
@@ -249,7 +272,8 @@ def check_generated(rows, id_field, prefix, fields, expected):
 
 static_rel = [row for row in rel_rows if not row["rel_rule_id"].startswith("rel_start_")]
 explicit = {(row["subject_role_ref"], row["object_role_ref"]): row["relationship_kind"]
-            for row in static_rel if row["scope_kind"] == "role_pair" and row["subject_role_ref"] and row["object_role_ref"]}
+            for row in static_rel if row["scope_kind"] == "role_pair" and row["subject_role_ref"] and row["object_role_ref"]
+            and not row["rel_rule_id"].startswith("rel_composition_spouse_")}
 expected_rel = set()
 expected_forms = set()
 static_forms = {(row["speaker_role_ref"], row["addressee_role_ref"], row["relationship_kind"])
@@ -377,6 +401,16 @@ def missing_oral_kinds(forms):
 for kind in missing_oral_kinds(af_rows):
     errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
+    with open(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+        unlinked = json.load(f)["compositions"]
+    unlinked = [{**composition, "slot_relationships": []} for composition in unlinked]
+    if list(composition_spouse_links(unlinked)):
+        errors.append("unlinked composition incorrectly produces spouse relation")
+    else:
+        print("OK: unlinked composition has no spouse relation")
+    for row in af_rows:
+        if row["sp_id"].startswith("form_spouse_smerd") and include_composition_spouse_form((row["sp_id"], row["relationship_kind"], row["speaker_role_ref"], row["addressee_role_ref"]), set()):
+            errors.append("unlinked composition incorrectly retains spouse form")
     for altered in ({**start_report, "start_phase_intersections": intersections + 1},
                     {key: value for key, value in start_report.items() if key != "start_colocated_node_season_contexts"}):
         if not reachable_report_failures(altered):

@@ -102,7 +102,7 @@ def main():
     out("buildings/building_types.csv", [dict(b, status=STATUS) for b in buildings.BUILDING_TYPES], bt_cols)
     occupied_rule = {
         "rule_id": "occupied_condition_v1", "status": STATUS,
-        "trigger": {"entity": "building_instance", "composition_source": "D-2", "group_kind": "residents", "min_groups": 1},
+        "trigger": {"entity": "building_instance", "building_class": "dwelling", "composition_source": "D-2", "composition_scope": "linked_pf", "group_kind": "residents", "min_groups": 1},
         "condition_states_from": "building_types.condition_states",
         "forbidden_condition_states": ["burnt_ruin", "abandoned"],
     }

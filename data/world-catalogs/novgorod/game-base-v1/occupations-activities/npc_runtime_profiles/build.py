@@ -15,6 +15,7 @@ ROLES = DATA.parents[1] / "novgorod-region/novgorod_social_roles_v1_enriched.tsv
 EQUIPMENT = DATA / "game-base-v1/items-weapons-armour/authoring/equipment_profiles.json"
 PIN = HERE / "pr98_extract.json"
 AUTHORING = json.loads((HERE / "actor_appearance_authoring.json").read_text(encoding="utf-8"))
+COMPOSITIONS = DATA / "game-base-v1/places-binding/presence/people_composition_authoring.json"
 PIN_SHA256 = "923ca588a34f8944792e5863daadc0ca6bac750edc4a8c469e43811553c0119e"
 OUT = HERE / "npc_runtime_profiles.json"
 BASE_REF = "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json"
@@ -238,12 +239,35 @@ def main():
         profiles[-1]["regional_option_sets"] = [regional for role in profiles[-1]["allowed_role_refs"]
             for regional in regional_options(profiles[-1], role, [NEW_CONTEXT],
                                             outfit_rows, role_clothing, equipment)]
+    slot_facts = []
+    for composition in json.loads(COMPOSITIONS.read_text(encoding="utf-8"))["compositions"]:
+        groups = {group["group_id"]: group for group in composition["population_groups"]}
+        for link in composition.get("slot_relationships", []):
+            if link["relationship_kind"] != "spouse":
+                continue
+            for group_id, related_id in ((link["from_group_id"], link["to_group_id"]),
+                                         (link["to_group_id"], link["from_group_id"])):
+                role = groups[group_id]["weighted_subjects"][0]["subject_ref"]
+                sexes = {value.removeprefix("nov_1200_1250_sex_category_") for value in actor_applicability(role, None)["sex_category"]}
+                slot_facts.append({
+                    "pf_id": composition["pf_id"], "group_id": group_id, "role_ref": role,
+                    "marital_status": "married", "relationship_kind": "spouse", "related_group_id": related_id,
+                    "clothing_option_refs": [row["of_id"] for row in outfit_rows
+                                             if row["clothing_profile_id"] == role_clothing.get(role)
+                                             and row["runtime_selectable"] == "true"
+                                             and row["marital_status"] in ("any", "married")
+                                             and sexes.intersection(row["sex_categories"].split("|"))],
+                    "source_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json#" + composition["pf_id"],
+                    "confidence": link["confidence"],
+                })
     result = {
         "artifact_type": "npc_runtime_profiles_candidate", "status": "candidate",
         "approved": False, "activation_authorized": False,
         "policy": "Code selects facts and checks actor/role/season/property; LLM describes selected facts only.",
         "appearance_option_sets": {"novgorod_shared_facets_v1": appearance_sets},
         "appearance_incompatibility_rules": AUTHORING["incompatibility_rules"],
+        "appearance_presentation_rules": AUTHORING["presentation_rules"],
+        "composition_slot_facts": slot_facts,
         "subject_applicability": [
             {"subject_id": entry["subject_id"], "subject_kind": entry["subject_kind"],
              "actor_applicability": actor_applicability(

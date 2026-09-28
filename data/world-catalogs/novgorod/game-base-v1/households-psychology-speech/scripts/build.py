@@ -46,6 +46,24 @@ def read_csv(path):
         return list(csv.DictReader(f))
 
 
+def composition_spouse_links(compositions=None):
+    if compositions is None:
+        with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+            compositions = json.load(f)["compositions"]
+    for composition in compositions:
+        groups = {group["group_id"]: group for group in composition["population_groups"]}
+        for link in composition.get("slot_relationships", []):
+            if link["relationship_kind"] != "spouse":
+                continue
+            subject = groups[link["from_group_id"]]["weighted_subjects"][0]["subject_ref"]
+            object_ = groups[link["to_group_id"]]["weighted_subjects"][0]["subject_ref"]
+            yield composition["pf_id"], subject, object_, link
+
+
+def include_composition_spouse_form(form, linked_pairs):
+    return not form[0].startswith("form_spouse_smerd") or frozenset((form[2], form[3])) in linked_pairs
+
+
 def starting_pairs(gaps=None):
     """Potential co-presence across every PF of a bound G5 node."""
     presence = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_presence_authoring.csv"))
@@ -392,9 +410,15 @@ def build_households_kinship(occs, roles):
         ("rel_joint_work", "work_assignment", "", "", "", "joint_work", "symmetric", "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.", "", "editorial_joint_work_acquaintance_c", "", "C"),
     ]
     pairs, same_pf_pairs, start_pf_count, start_subjects, intersections, colocated_contexts, dead_pairs = starting_pairs()
+    for pf, subject, object_, link in composition_spouse_links():
+        relation_rows.append((generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]]),
+                              "role_pair", "", subject, object_, "spouse", "symmetric",
+                              f"Only the named actors materialized from {link['from_group_id']} and {link['to_group_id']} at {pf}; other role holders are not spouses.",
+                              ";".join(link["source_refs"]), "", "", link["confidence"]))
     with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
         gap_rows = json.load(f)["never_created_gaps"]
-    explicit_pairs = {frozenset((row[3], row[4])) for row in relation_rows if row[1] == "role_pair" and row[3] and row[4]}
+    explicit_pairs = {frozenset((row[3], row[4])) for row in relation_rows
+                      if row[1] == "role_pair" and row[3] and row[4] and not row[0].startswith("rel_composition_spouse_")}
     for pair in sorted(pairs):
         if frozenset(pair) in explicit_pairs:
             continue
@@ -623,7 +647,7 @@ def build_speech_address(occs, roles):
         ("form_herder_smerd", "dependent_patron", "nov_occ_herder", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к названному хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
         ("form_brother", "kin_siblings", "", "", "", "Господин брат", "письмо сестры брату", "", "берестяная грамота, сестра просит брата вступиться", "book:641351 §2984", "", "", "A"),
         ("form_spouse", "spouse", "nov_role_household_mistress", "nov_role_householder", "", "Господине мой", "жена к мужу; книжный топос, только вариант", "", "слово Даниила Заточника", "book:641351 §1673", "", "", "C"),
-        ("form_spouse_smerd", "spouse", "nov_role_household_mistress", "nov_role_smerd_householder", "", "Господине мой", "жена к мужу; книжный топос, только вариант", "", "слово Даниила Заточника; перенос на двор смерда условен", "book:641351 §1673", "", "", "C"),
+        ("form_spouse_smerd", "spouse", "nov_role_household_mistress", "nov_role_smerd_householder", "", "Господине мой", "только для пары, связанной spouse в составе двора; книжный топос, только вариант", "", "слово Даниила Заточника; перенос на двор смерда условен", "book:641351 §1673", "", "", "C"),
         ("form_son", "kin_parent_child", "", "", "", "Сын мой", "отец к сыну", "", "летописная речь, medieval_general", "book:641352 §1765", "", "", "C"),
         ("form_father_in_law", "unspecified", "", "", "", "Господин и отец", "зять к тестю", "", "летописная речь, medieval_general; термин обращения не доказывает отцовство", "book:641352 §1722", "", "", "C"),
         ("form_gospozha", "written_letter", "", "", "", "госпожа моя", "письменная вежливая просьба женщины к женщине", "", "берестяная грамота; устный перенос не установлен", "book:641351 §2968", "", "", "A"),
@@ -641,14 +665,22 @@ def build_speech_address(occs, roles):
         ("form_uncle_nephew_gap", "kin_uncle_nephew", "", "", "everyday_oral", "", "устное обращение дяди и племянника", "", "", "", "", "No sourced general oral uncle-nephew address.", "C"),
         ("form_joint_work_gap", "joint_work", "", "", "everyday_oral", "", "устное обращение коллег", "", "", "", "", "No universal oral address follows from joint work.", "C"),
         ("form_community_gap", "community_member", "", "", "everyday_oral", "", "устное обращение членов верви", "", "", "", "", "No sourced general oral address for community members.", "C"),
-        ("form_spouse_smerd_reverse_gap", "spouse", "nov_role_smerd_householder", "nov_role_household_mistress", "everyday_oral", "", "устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
+        ("form_spouse_smerd_reverse_gap", "spouse", "nov_role_smerd_householder", "nov_role_household_mistress", "everyday_oral", "", "только для пары, связанной spouse в составе двора; устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
     ]
     columns = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
-    af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" or row[0] == "form_brother" else "oral", *row[1:], "candidate"))) for row in FORMS]
+    linked_pairs = {}
+    for pf, subject, object_, link in composition_spouse_links():
+        linked_pairs.setdefault(frozenset((subject, object_)), []).append(
+            generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]]))
+    af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" or row[0] == "form_brother" else "oral", *row[1:], "candidate")))
+               for row in FORMS if include_composition_spouse_form(row, linked_pairs)]
+    for row in af_rows:
+        if row["sp_id"].startswith("form_spouse_smerd"):
+            row["situation"] += "; only for " + ";".join(linked_pairs[frozenset((row["speaker_role_ref"], row["addressee_role_ref"]))])
     pairs, same_pf_pairs, _, _, _, _, _ = starting_pairs()
     explicit_kinds = {(r["subject_role_ref"], r["object_role_ref"]): r["relationship_kind"]
                       for r in read_csv(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"))
-                      if r["scope_kind"] == "role_pair"}
+                      if r["scope_kind"] == "role_pair" and not r["rel_rule_id"].startswith("rel_composition_spouse_")}
     for a, b in sorted(pairs):
         kind = explicit_kinds.get((a, b), explicit_kinds.get((b, a),
                "joint_work" if (a, b) in same_pf_pairs else "unspecified"))

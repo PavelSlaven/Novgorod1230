@@ -193,7 +193,7 @@ except (OSError, json.JSONDecodeError) as e:
     occupied_rule = None
 if occupied_rule is not None:
     expected_keys = {"rule_id", "status", "trigger", "condition_states_from", "forbidden_condition_states"}
-    expected_trigger = {"entity": "building_instance", "composition_source": "D-2", "group_kind": "residents", "min_groups": 1}
+    expected_trigger = {"entity": "building_instance", "building_class": "dwelling", "composition_source": "D-2", "composition_scope": "linked_pf", "group_kind": "residents", "min_groups": 1}
     if not isinstance(occupied_rule, dict) or set(occupied_rule) != expected_keys:
         err("occupied condition rule schema")
     else:
@@ -209,6 +209,19 @@ if occupied_rule is not None:
                 or len(forbidden) != len(set(forbidden)) or not set(forbidden) <= condition_enum
                 or set(forbidden) != {"burnt_ruin", "abandoned"}):
             err("occupied condition rule forbidden states")
+        elif "--self-test" in sys.argv and occupied_rule["trigger"] == expected_trigger:
+            def occupied_condition_allowed(bt_class, linked_pf, resident_groups_by_pf, condition_state):
+                applies = (bt_class == expected_trigger["building_class"]
+                           and resident_groups_by_pf.get(linked_pf, 0) >= expected_trigger["min_groups"])
+                return not (applies and condition_state in forbidden)
+
+            for state in forbidden:
+                assert not occupied_condition_allowed("dwelling", "pf_home", {"pf_home": 1}, state)
+                assert occupied_condition_allowed("storage", "pf_home", {"pf_home": 1}, state)
+                assert occupied_condition_allowed("dwelling", "pf_other", {"pf_home": 1}, state)
+                assert occupied_condition_allowed("dwelling", "pf_home", {}, state)
+            assert occupied_condition_allowed("dwelling", "pf_home", {"pf_home": 1}, "sound")
+            print("probe occupied dwelling: linked resident PF only")
 bps = rd("buildings/building_parts.csv"); bp_ids = {b["bp_id"] for b in bps}
 btp = rd("buildings/building_type_parts.csv")
 check_refs(mats, ["source_refs"], "materials", "mat_id")

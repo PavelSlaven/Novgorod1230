@@ -481,6 +481,54 @@
       }
     }
   ],
+  "appearance_presentation_rules": [
+    {
+      "id": "hair_visible_only_when_head_uncovered",
+      "scope": "player_facing_appearance",
+      "facets": [
+        "hair_color",
+        "hair_length",
+        "hair_style"
+      ],
+      "visible_if": {
+        "head_coverage_state": "head_uncovered"
+      },
+      "otherwise": "omit_from_player_facing_projection",
+      "internal_traits": "preserve"
+    }
+  ],
+  "composition_slot_facts": [
+    {
+      "pf_id": "pf_peasant_homestead",
+      "group_id": "pf_peasant_homestead.householder",
+      "role_ref": "nov_role_smerd_householder",
+      "marital_status": "married",
+      "relationship_kind": "spouse",
+      "related_group_id": "pf_peasant_homestead.mistress",
+      "clothing_option_refs": [
+        "of_rural_male_warm_any",
+        "of_rural_male_cool_any",
+        "of_rural_male_cold_any"
+      ],
+      "source_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json#pf_peasant_homestead",
+      "confidence": "C"
+    },
+    {
+      "pf_id": "pf_peasant_homestead",
+      "group_id": "pf_peasant_homestead.mistress",
+      "role_ref": "nov_role_household_mistress",
+      "marital_status": "married",
+      "relationship_kind": "spouse",
+      "related_group_id": "pf_peasant_homestead.householder",
+      "clothing_option_refs": [
+        "of_urban_middle_female_warm_married",
+        "of_urban_middle_female_cool_married",
+        "of_urban_middle_female_cold_married"
+      ],
+      "source_ref": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json#pf_peasant_homestead",
+      "confidence": "C"
+    }
+  ],
   "subject_applicability": [
     {
       "subject_id": "nov_occ_ferryman",

@@ -12,7 +12,7 @@
 
 | Файл | Строк | Что |
 |---|---:|---|
-| `flora/trees_shrubs.csv` | 37 | Таксоны `fl_ts_*`: названия (рус., народные, лат., англ.), жизненная форма, влажность, почва, свет, месяцы фенофаз, `phenology_by_season` (JSON по 4 сезонам) и `phenology_by_month` (JSON по 12 месяцам), зимний облик, приметы (кора, лист, запах, звук), использование с качеством и ссылками (JSON), качество древесины, опасности (JSON), единицы добычи, счёт Колчина, `category_code`, source_refs, confidence |
+| `flora/trees_shrubs.csv` | 37 | Таксоны `fl_ts_*`: названия (рус., народные, лат., англ.), жизненная форма, влажность, почва, свет, месяцы фенофаз и `flowering_month_precision`, `phenology_by_season` (JSON по 4 сезонам) и `phenology_by_month` (JSON по 12 месяцам), зимний облик, приметы (кора, лист, запах, звук), использование с качеством и ссылками (JSON), качество древесины, опасности (JSON), единицы добычи, счёт Колчина, `category_code`, source_refs, confidence |
 | `flora/tree_habitat_presence.csv` | 840 | Таксон × `pf_id` × сезон (210 пар × 4 сезона): `frequency_class`, вес, `probability_ppm`, роль в местообитании, способ вывода (authored/overlay), сезонное состояние, видимость над снегом, основание, ссылки, confidence |
 | `flora/wood_use_kolchin1968.csv` | 27 | Табл. I Колчина 1968: определения пород у 909 изделий Неревского раскопа (19 местных пород, 8 привозных); сумма проверена скриптом = 909 |
 | `flora/woody_denylist.csv` | 20 | Древесные, которых не должно быть живыми в Новгородской земле 1230 г.: 11 поздних интродуцентов, 1 адвентивный вид, 8 вне ареала (все 8 известны как привозная древесина, `wood_import_allowed=yes`) |
@@ -47,7 +47,9 @@ node scripts/validate.mjs   # приёмка -> reports/validate-report.json, ex
 
 Скрипты читают `places-binding/places/place_families.csv`, `places-binding/presence/frequency_rule.json` и `world-knowledge/production-v1/runtime-bundle.json`.
 
-`phenology_by_month` генерируется из авторских `flowering_months` и `fruit_months`: каждый ключ `1`–`12` имеет одно состояние. Совпадение цветения и плодоношения — `flowering_and_fruiting`, только плоды — `fruiting`, только цветение — `flowering`, остальные месяцы XII–II — `winter_form`, III–XI — `vegetative`. Общий словарь состояний также содержит `not_visible` и `ripe_or_harvest`, но для этих древесных таксонов нет авторского основания назначать их. `seed_release_months` остаётся только в прежней сезонной фенологии; `phenology_by_season` сохраняется без изменения. Валидатор независимо сверяет все 12 месяцев каждого таксона с авторским источником и проверяет отрицательными пробами пересечение и неверный месяц.
+`phenology_by_month` имеет по одному состоянию для каждого месяца `1`–`12`. Авторские месяцы цветения и плодов имеют приоритет: совпадение — `flowering_and_fruiting`, плоды — `fruiting`, цветение — `flowering_before_leaves` при `flowers_before_leaves=yes`, иначе `flowering`. Если репродуктивная фаза не задана, для листопадных растений сезонная проекция даёт `leafless` в XII–II, `leaf_out` в III–V, `vegetative` в VI–VIII и `leaf_fall` в IX–XI. Это сезоны общего календаря, а не видовые даты фенофаз; цветение и плодоношение они не затирают. Для вечнозелёных остаются `winter_form` в XII–II и `vegetative` в III–XI вне репродуктивных фаз. `seed_release_months` остаётся только в сезонной фенологии; `phenology_by_season` не меняется.
+
+`flowering_month_precision` указывает точность цветения: `month` — есть авторские месяцы; `season_only` — известно весеннее цветение до листвы, но месяц неизвестен; `unknown` — месяцев и такого сезонного отношения нет. `season_only` сейчас у Betula pendula, B. pubescens, Populus tremula и Salix aurita: `flowers_before_leaves=yes` и весеннее `flowering_before_leaves` в `phenology_by_season` сохраняют отношение для рассказчика, а месячный календарь показывает `leaf_out` без придуманной даты цветения. Валидатор сверяет 12 состояний и точность с авторской таблицей, включая отрицательные пробы.
 
 ## Метод
 

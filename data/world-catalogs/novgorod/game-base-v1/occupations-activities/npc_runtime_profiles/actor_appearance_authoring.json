@@ -61,6 +61,16 @@
       "incompatible_with": {"hair_color": ["nov_1200_1250_hair_color_gray", "nov_1200_1250_hair_color_white"]}
     }
   ],
+  "presentation_rules": [
+    {
+      "id": "hair_visible_only_when_head_uncovered",
+      "scope": "player_facing_appearance",
+      "facets": ["hair_color", "hair_length", "hair_style"],
+      "visible_if": {"head_coverage_state": "head_uncovered"},
+      "otherwise": "omit_from_player_facing_projection",
+      "internal_traits": "preserve"
+    }
+  ],
   "subject_applicability": [
     {
       "subject_id": "nov_occ_ferryman",

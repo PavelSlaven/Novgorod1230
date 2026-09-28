@@ -452,3 +452,6 @@ NPC-профилей и привязок присутствия нет. Четы
 Проверено: Claude Opus 5.5, повторной сборкой (C010, коммит 6f4490a0 против 859a3ed9).
 
 - Добавлено отдельное правило `bald_has_no_hair_style` рядом с `bald_has_no_hair_color`. Сборка побайтная, `validate.py` — OK.
+### C011 spouse and hair presentation — candidate
+
+Семейный статус `married` выводится в `composition_slot_facts` только из явного spouse link D-2; общая роль хозяйки не получает этот статус. `appearance_presentation_rules` скрывает три hair грани при covered и unresolved head state, оставляя внутренние признаки. `python npc_runtime_profiles/build.py` и `python validate.py` проверяют проекцию и три состояния. Runtime renderer не входит в каталог.

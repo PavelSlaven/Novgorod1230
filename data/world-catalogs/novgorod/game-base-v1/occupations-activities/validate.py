@@ -134,6 +134,39 @@ def main():
                for options in option_sets.values() for option in options)
     rules = npc["appearance_incompatibility_rules"]
     assert rules == AUTHORING["incompatibility_rules"]
+    presentation = npc["appearance_presentation_rules"]
+    assert presentation == AUTHORING["presentation_rules"]
+    assert presentation == [{"id": "hair_visible_only_when_head_uncovered", "scope": "player_facing_appearance",
+                             "facets": ["hair_color", "hair_length", "hair_style"],
+                             "visible_if": {"head_coverage_state": "head_uncovered"},
+                             "otherwise": "omit_from_player_facing_projection", "internal_traits": "preserve"}]
+    for state, visible in (("head_uncovered", True), ("head_covered", False), (None, False)):
+        assert (state == presentation[0]["visible_if"]["head_coverage_state"]) is visible
+    compositions = json.loads((HERE.parent / "places-binding/presence/people_composition_authoring.json").read_text(encoding="utf-8"))["compositions"]
+    expected_slot_facts = {(composition["pf_id"], group_id, related_id)
+                           for composition in compositions for link in composition.get("slot_relationships", [])
+                           if link["relationship_kind"] == "spouse"
+                           for group_id, related_id in ((link["from_group_id"], link["to_group_id"]),
+                                                        (link["to_group_id"], link["from_group_id"]))}
+    slot_facts = npc["composition_slot_facts"]
+    assert {(fact["pf_id"], fact["group_id"], fact["related_group_id"]) for fact in slot_facts} == expected_slot_facts
+    assert len(slot_facts) == len(expected_slot_facts)
+    assert all(fact["marital_status"] == "married" and fact["relationship_kind"] == "spouse" and
+               fact["confidence"] == "C" and fact["source_ref"].endswith("#" + fact["pf_id"])
+               for fact in slot_facts)
+    assert not any(fact["pf_id"] != "pf_peasant_homestead" for fact in slot_facts)
+    role_clothing = {row["role_ref"]: row["clothing_profile_id"] for row in csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/role_clothing_map.csv")}
+    outfits = {row["of_id"]: row for row in csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/outfits.csv")}
+    for fact in slot_facts:
+        group = next(group for composition in compositions if composition["pf_id"] == fact["pf_id"]
+                     for group in composition["population_groups"] if group["group_id"] == fact["group_id"])
+        assert fact["role_ref"] == group["weighted_subjects"][0]["subject_ref"]
+        assert fact["clothing_option_refs"] and all(outfits[option]["clothing_profile_id"] == role_clothing[fact["role_ref"]]
+               and outfits[option]["marital_status"] in ("any", "married") and outfits[option]["runtime_selectable"] == "true"
+               for option in fact["clothing_option_refs"])
+    mistress = next(fact for fact in slot_facts if fact["group_id"] == "pf_peasant_homestead.mistress")
+    assert any(outfits[option]["marital_status"] == "married" and outfits[option]["slot_headwear"] and outfits[option]["slot_head_under"]
+               for option in mistress["clothing_option_refs"])
     rule_by_id = {rule["id"]: rule for rule in rules}
     assert set(rule_by_id) == {"bald_has_no_hair_color", "bald_has_no_hair_style",
                                "young_adult_has_no_gray_or_white_hair"}

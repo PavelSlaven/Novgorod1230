@@ -681,7 +681,8 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     'building:bt_izba_heated_single': ['condition', 'age'],
     'building:bt_wattle_fence': ['condition', 'age'],
   };
-  const targetFailures = (v, building) => (targetFacets[v.candidate_record_ref] || []).flatMap((name) => {
+  const buildingAgeGap = 'данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states';
+  const targetFailures = (v, building) => [...new Set([...(targetFacets[v.candidate_record_ref] || []), ...(building ? ['age'] : [])])].flatMap((name) => {
     const facet = v.facets?.[name];
     if (!facet) return [`${v.variant_id}/${name}: missing facet`];
     const evidence = ['source_refs', 'rule_ref'].filter((route) => Boolean(facet[route]));
@@ -698,6 +699,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
           (value && (!facet.value || !building[states].split('|').includes(facet.value))))
         failures.push(`${v.variant_id}/${name}: instance state or gap semantics`);
     }
+    if (building && name === 'age' && facet.no_source !== buildingAgeGap) failures.push(`${v.variant_id}/age: building age gap`);
     return failures;
   });
   if (process.argv.includes('--self-test')) {
@@ -709,6 +711,11 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
         const probe = { ...original, facets: { ...original.facets, [name]: { ...original.facets[name], value: '', value_ref: '', source_refs: '', rule_ref: '', no_source: '' } } };
         if (!targetFailures(probe, kind === 'building' ? buildings.get(id) : undefined).length) throw new Error(`slot variant missing value/gap probe failed: ${ref}/${name}`);
       }
+    }
+    for (const original of variants.filter((v) => v.candidate_record_ref.startsWith('building:'))) {
+      const id = original.candidate_record_ref.slice('building:'.length);
+      const probe = { ...original, facets: { ...original.facets, age: { ...original.facets.age, no_source: 'возраст конкретного экземпляра не установлен' } } };
+      if (!targetFailures(probe, buildings.get(id)).some((failure) => failure.includes('building age gap'))) throw new Error(`slot variant building age gap probe failed: ${original.variant_id}`);
     }
     console.log('PASS slot_instance_variants / missing_value_gap_negative_probes');
   }

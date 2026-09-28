@@ -569,3 +569,7 @@
 Проверено: Claude Opus 5.5 (C006f, коммит a203925f против 6b03335e).
 
 - Зашитые контрольные числа удалены. Пересчёт сверяется с закоммиченным `build_report.json`, отрицательные пробы на изменённый и отсутствующий ключ есть. Строки и отчёт D-3 не изменились.
+
+### C011 spouse link — candidate
+
+`pf_peasant_homestead.householder` и `.mistress` связаны в D-2 явным `spouse` confidence C. D-3 выпускает `rel_composition_spouse_2dc90533f844af8e` только для материализованных актёров этих слотов и сохраняет `rel_start_gap_ce80a3efab995c86` для прочих носителей тех же ролей. `form_spouse_smerd*` требуют этой конкретной связи; для пары без неё остаются нейтральные `form_start_gap_73a03cfc8444bd0b` и `form_start_gap_e94d6e153b4ad1b5`. Проверки: `python scripts/build.py`, `python scripts/check.py --probe`.

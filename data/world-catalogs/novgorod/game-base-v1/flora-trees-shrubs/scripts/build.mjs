@@ -54,8 +54,11 @@ function phenologyByMonth(t) {
   const out = {};
   for (let m = 1; m <= 12; m++) {
     out[m] = flower.has(m) && fruit.has(m) ? 'flowering_and_fruiting'
-      : fruit.has(m) ? 'fruiting' : flower.has(m) ? 'flowering'
-      : [12, 1, 2].includes(m) ? 'winter_form' : 'vegetative';
+      : fruit.has(m) ? 'fruiting'
+      : flower.has(m) ? (t.phen?.flower_before_leaves ? 'flowering_before_leaves' : 'flowering')
+      : t.leaf_habit === 'deciduous'
+        ? [12, 1, 2].includes(m) ? 'leafless' : [3, 4, 5].includes(m) ? 'leaf_out' : [9, 10, 11].includes(m) ? 'leaf_fall' : 'vegetative'
+        : [12, 1, 2].includes(m) ? 'winter_form' : 'vegetative';
   }
   return out;
 }
@@ -136,6 +139,7 @@ const taxaRows = taxa.map((t) => {
     moisture: t.moisture.join(';'), soil: t.soil, light: t.light,
     flowering_months: t.phen?.flower || '', fruit_months: t.phen?.fruit || '', seed_release_months: t.phen?.seed_release || '',
     flowers_before_leaves: t.phen?.flower_before_leaves === true ? 'yes' : '',
+    flowering_month_precision: t.phen?.flower ? 'month' : t.phen?.flower_before_leaves ? 'season_only' : 'unknown',
     phenology_note: [t.phen?.flower_note, t.phen?.fruit_note, t.phen?.autumn_colour && `осень: ${t.phen.autumn_colour}`, t.phen?.winter_retains].filter(Boolean).join(' | '),
     phenology_by_season: ph,
     phenology_by_month: phenologyByMonth(t),

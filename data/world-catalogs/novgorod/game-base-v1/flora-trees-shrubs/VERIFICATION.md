@@ -199,3 +199,10 @@
 
 - 37 × 12 месячных состояний выведены по правилу C007d из авторских месяцев цветения и плодов. Совпадение — `flowering_and_fruiting`, вилки нет.
 - Прежние поля не тронуты. Сборка побайтная, validator — PASS.
+
+### C011 — сезонная листва в месячной фенологии (candidate)
+
+- После авторских месяцев цветения и плодов листопадные таксоны получают в `phenology_by_month` сезонные `leafless` (XII–II), `leaf_out` (III–V), `leaf_fall` (IX–XI); летом остаётся `vegetative`. Это проекция общего сезона, а не точная видовая дата.
+- При известных месяцах `flowers_before_leaves=yes` даёт `flowering_before_leaves` вместо одиночного `flowering`; совпадение с плодами остаётся `flowering_and_fruiting`.
+- Betula pendula, B. pubescens, Populus tremula и Salix aurita не имеют авторских месяцев цветения. Их `flowering_month_precision=season_only`, `flowers_before_leaves=yes` и весеннее состояние в `phenology_by_season` сохраняют отношение без назначения месячной даты; в месячной весне стоит `leaf_out`.
+- Проверка: `node scripts/build.mjs` — 37 таксонов и 840 строк присутствия; `node scripts/validate.mjs` — 10/10 PASS, включая отрицательные пробы, 1423 ссылки проверены; `node --check` для обоих скриптов и scoped `git diff --check` — PASS. У 37 строк вне `phenology_by_month` прежние поля совпадают с HEAD; новый `flowering_month_precision`: `month` 30, `season_only` 4, `unknown` 3.

@@ -16,7 +16,9 @@
       "speech_address_forms",
       "household_composition_profiles",
       "slot_instance_variants",
-      "fauna_phase_activity_rules"
+      "fauna_phase_activity_rules",
+      "npc_schedule_routine_rules",
+      "place_population_composition_rules"
     ],
     [
       "spatial_v3_authoring_versions",
@@ -174,6 +176,8 @@
     "household_composition_profiles",
     "slot_instance_variants",
     "water_body_presence_facets",
-    "fauna_phase_activity_rules"
+    "fauna_phase_activity_rules",
+    "npc_schedule_routine_rules",
+    "place_population_composition_rules"
   ]
 }

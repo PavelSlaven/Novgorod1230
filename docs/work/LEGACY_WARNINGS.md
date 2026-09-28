@@ -72,6 +72,7 @@
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
+| 078 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -391,3 +392,9 @@
 - **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
 - **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
 - **Issue.** —
+
+### LW-078 — `combat_weapon_classification`: expectedSchema описывает старый формат
+- **Где.** `packages/llm-runtime/src/combat-role-defaults.js` (`expectedSchema: 'rus.combat.action_produced_weapon_classification.v1'`, `outputContractMode: json_object_with_schema`); `data/model-evals/llm-runtime-baselines/lower-dvina-trace-v13-role-defaults-v1.json`.
+- **Что.** С фиксом #188 модель возвращает только `qualitative_class`, а `schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`). Поле `expectedSchema` рантайм не проверяет: оно входит только в хэш конфига. Снимок baseline никем не импортируется.
+- **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
+- **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)

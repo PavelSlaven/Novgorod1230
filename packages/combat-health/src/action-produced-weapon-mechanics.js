@@ -16,6 +16,16 @@ const dangerByClass = new Map([
   ['improvised_two_hand_heavy', 2]
 ]);
 
+// The model chooses only qualitative_class; schema and request_id are code-owned.
+export function actionProducedWeaponClassificationFromModelOutput(output,
+  requestId) {
+  return {
+    schema: 'rus.combat.action_produced_weapon_classification.v1',
+    request_id: requestId,
+    qualitative_class: output?.qualitative_class
+  };
+}
+
 export function resolveActionProducedCombatWeaponClass(input) {
   const safe = snapshot(input);
   const classification = safe?.classification;

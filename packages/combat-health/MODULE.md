@@ -40,6 +40,7 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - `resolveOrdinaryArmamentMechanics`
 - `ordinaryArmamentWeaponDanger`
 - `ACTION_PRODUCED_WEAPON_CLASSES`
+- `actionProducedWeaponClassificationFromModelOutput`
 - `resolveActionProducedCombatWeaponClass`
 
 ## Контракты и инварианты

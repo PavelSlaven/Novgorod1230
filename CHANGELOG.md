@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(corpus): #171 шаг 0 — классы ресурсов A/B/C/constrained/без счётчика, словарь `renewal` finite-owner (`none`/`by_year_season`+`cycle_years`/`by_season_wave`/`by_household_cycle`/`by_event`), закрытая формула восстановления, объём узла кодом по seed, класс C через нормы двора; CONTRACT_INDEX (#171) LW-077 added
 - feat(r1b): world_base 28.sql D-1/D-2 datasets, wave 11 tables, composition-over-presence validator; pin 337abf9e (#158)
 - fix(r1): REVIEW-R1-fix-4 — approval identity, manifest_path, schema_version; internal readback symbol; LW-076 (#158)
 - fix(r1): REVIEW-R1-fix-2/3 — wave bundle by table set, fail-closed approval fields, nodes closure required, positive PG on approved copy; LW-076 (#158)

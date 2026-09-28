@@ -6,8 +6,8 @@
 
 | Файл | Строк | Что |
 |---|---|---|
-| `place_families.csv` | 44 | 44 семейства WK place-first-cartography, `pf_<wk id>`. Имена ru/en, вид, применимые 9 природных слоёв M2c, 4 фасета, ссылки на шаблоны landscape / land_use / place / water_body / route, типы G4 v6, scene templates v17, архетипы MASTER. `region_id` пуст: семейства универсальны. |
-| `place_family_facets.csv` | 171 | Все фасеты WK семейств: слот, coverage, число claims, needs, limits и полный список `claim_refs`. |
+| `place_families.csv` | 45 | 44 семейства WK place-first-cartography и локальный candidate `pf_burial_ground`. Имена ru/en, вид, слои M2c, фасеты, ссылки на шаблоны, типы G4 v6, scene templates v17 и архетипы MASTER. |
+| `place_family_facets.csv` | 175 | Все фасеты WK семейств и четыре source-backed фасета локального места погребения. |
 | `crosswalk_v6_g4_location_types.csv` | 198 | Каждый `g4_location_type` графа v6 (9332 строки) переведён в pf; 1 тип `not_applicable` (brine_source). |
 | `crosswalk_scene_templates.csv` | 17 | Каждый scene template spatial-v3 переведён в pf, с числом G5 v17. |
 | `crosswalk_master_location_archetypes.csv` | 32 | Архетипы мест MASTER (item_location_links 12 997 связей, spawn_profiles 46) переведены в pf; 1 `not_applicable` (military_camp). |
@@ -18,7 +18,7 @@
 
 ## Метод
 
-1. **Семейства.** Скрипт `build-place-families.mjs` читает id, описание, `composes_with` и фасеты из `world-knowledge/production-v1/place-first-cartography.json`. Ручная часть — `scripts/pf-authoring.json`: имена, вид, слои, ссылки на шаблоны. Это суждение, confidence C.
+1. **Семейства.** Скрипт `build-place-families.mjs` читает 44 WK-семейства и ровно одно ограниченное дополнение `places/pf_local_additions.json#burial_ground`. Validator запрещает совпадения с WK, неизвестные локальные id и дополнения без книжных источников. Ручная часть WK — `scripts/pf-authoring.json`; применение новгородских погребальных аналогий к Заостровью имеет confidence C.
 2. **9 слоёв M2c.** Это 13 ключей `layer_applicability` из pr98 `m2c-natural/candidate.json` без 4 фоновых слоёв (seasonal_state, light, weather, audible_context). Их живые значения принадлежат runtime-владельцам (`nonblocking_limits` кандидата). Для интерьеров слои не применяются, там указано `layers_note`.
 3. **Фасеты.** Правило позиции: у семейств с 4 фасетами порядок в WK всегда «грунт/материал, использование/люди, ощущения/следы, риски/уход». Для семейств с 1, 2 или 5 фасетами слоты заданы явно в `pf-authoring.json`.
 4. **Шаблоны.** Ссылки проверяются по `infra/world-base/*_templates.seed.json` и кандидату regional-environment. Колонка `template_refs_not_in_novgorod_candidate` показывает ссылки, которых нет в новгородском кандидате: они есть только в универсальном seed.
@@ -26,13 +26,14 @@
 5. **Crosswalk.** Ручные таблицы лежат в `scripts/crosswalk-rules.json`. Покрытие и разрешимость ссылок проверяет `validate.mjs`.
 6. **Привязка узлов (`build-node-binding.mjs`).**
    - G4: pf выводится из `authoring_axes.function`; в источнике эта ось помечена direct/high. Landscape и water_body копируются из `template_refs` кандидата m2c-natural.
-   - G5: pf выбирается по заявленному правилу из 4 шагов. Шаг 1: ключевое слово в id G5. Шаг 2: pf родителя, если он есть в crosswalk scene template. Шаг 3: pf scene template из `composes_with` родителя. Шаг 4: наследование от родителя. Использованный шаг записан в `binding_basis`. Итог на момент сборки: 125 строк по шагу 1, 6 по шагу 2, 26 по шагу 3, 32 по шагу 4 (`bound_inherited`), 6 gap. Точные числа — в `reports/build-node-binding.json`.
+   - G5: pf выбирается по заявленному правилу из 4 шагов. Шаг 1: ключевое слово в id G5. Шаг 2: pf родителя, если он есть в crosswalk scene template. Шаг 3: pf scene template из `composes_with` родителя. Шаг 4: наследование от родителя. Использованный шаг записан в `binding_basis`. Итог: 125 строк по шагу 1, 9 по шагу 2, 29 по шагу 3, 32 по шагу 4 (`bound_inherited`), 0 gap. У погребального комплекса основной G4 и три G5 имеют `pf_burial_ground`, подход — `pf_road`, две границы — `pf_forest_edge`.
    - `pf_secondary` — кандидат на часть той же сцены. `scene_templates.map` даёт кандидатов; `node_binding.pf_secondary` в `crosswalk-rules.json` применяет условия по осям родительского G4 (`landscape`, `land_use`, `function`). `village_lane` требует поселения, `road` — сухопутного основания; открытый речной канал без лесного использования не даёт `hunting_ground` и `mixed_woodland`. Четыре прежних исключения действуют лишь при указанных неподходящих осях. Семейство вида `overlay` не входит в `pf_secondary`; `use_overlay` и `seasonal_overlay` допускаются. Для G5 с основным `pf_ferry_landing` и родительским `waterway_access` добавляется `pf_riverbank`. В текущем снимке 429 вторичных назначений: относительно HEAD 367a88c0 удалено 120, добавлено 4; основные PF сохранены. Все условия имеют `rule_ref`, причину и confidence C. Это механическое связывание кандидатов, а не самостоятельное доказательство физической доступности. `validate.mjs` независимо пересчитывает все 227 строк и проверяет сезон правил наличия для достигнутого сезонного семейства.
    - Шаблоны G5 наследуются от родительского G4. Это отмечено в gaps.
 
 ## Источники
 
 - `data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json`: 44 семейства, WK approved claims. Confidence B для фасетов.
+- `places/pf_local_additions.json`: один локальный candidate `pf_burial_ground`; книжные основания — `book:638081 §1457`, `book:638081 §1463`, `book:438387 §482`, топографические примеры `book:743870 §199`, `§345`, `§379`; применение к Заостровью — C.
 - `infra/world-base/{landscape,land_use,place,water_body,route}_templates.seed.json`: 70/45/64/41/21 строк, draft. Идентичны seed в PR #98.
 - pr98 `regional-environment/candidates/novgorod-1230-1250-v1/candidate.json`: 33/21/24/37 строк + 1 pending, `pending_independent_approval`.
 - pr98 `m2c-natural/candidate.json`: 32 профиля G4, `candidate_approval_pending`.
@@ -43,7 +44,7 @@
 
 ## Известные пробелы
 
-- **Погребение.** Нет семейства места для могильника или кладбища вне церковного двора. G4 `zaostrovye_burial_area` и его 6 G5 записаны как gap. Нужен домен lifecycle_rites_burial и семейство в WK place-first.
+- **Погребение.** Локальный `pf_burial_ground` закрывает 1 G4 + 6 G5, но остаётся долг переноса в WK. Нет источника для обычая/частоты посещения, нормы кладбища при церкви, типовой ограды, деревьев и ухода; эти поля оставлены `no_source`.
 - **Два шаблона без источника на уровне узлов.** Ни для одного узла v17 нет источника `land_use_template_id` и `place_template_id`. Ось authoring `land_use` (waterway_access и т.п.) не является id шаблона `lu_*`. Во всех 227 строках эти поля — typed gap.
 - **Наследование G5.** Landscape и water_body у G5 наследуются от G4 и для самих G5 не засвидетельствованы.
 - **Нет семейства.** В WK place-first нет семейств для соляного промысла (brine_source), военного лагеря (MASTER military_camp) и устья или морского края. Внешние G4 `mixing_reach` и `outer_exposed_approach` отнесены к river_channel. Колодца как отдельного семейства тоже нет: well_* разнесены по village_lane, rural_yard и town_street.

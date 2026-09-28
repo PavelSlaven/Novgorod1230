@@ -1091,3 +1091,39 @@
 
 - Одна связь `pf_peasant_homestead.householder ↔ pf_peasant_homestead.mistress`, `spouse`, редакционное C с причиной и тремя ссылками. Брак не выводится из роли: пара ролей вне связанного слота остаётся без супружеских отношений.
 - `slots/slot_instance_variants.json`: у `siv_002`–`siv_007` один текст `no_source` о возрасте экземпляра.
+
+### places/region_type_pf_manifest.json — матрица типов мест — approve
+
+Проверено: Claude Opus 5.5, скрипт ревьюера и полный `validate.mjs --start-territory … --self-test` на `aeb8e72a` — 0 FAIL.
+
+- `inputs/m2c-nature-coverage-entries.json`: 128 записей побайтно равны `entries` из `m2c-nature-coverage.json` ветки runtime @ `7cc0d341`. Плюс две записи стартовой территории (`wb_estuary`, `wb_nearshore_sea`), которых нет в списке региона.
+- Манифест: 130 уникальных `(kind, template_id)`. У каждого `covered` набор `pf_refs` равен пересчёту по `*_template_refs` в `place_families.csv`. У пробелов PF нет. 21 пробел — вне стартовой территории, у каждого план закрытия по A.8.
+- `place_families.csv`: изменены ровно 5 строк, 15 ячеек.
+  - `lt_wooded_floodplain → pf_mixed_woodland` (C, основание — вторичная привязка узла `zaostrovye_settlement_center`);
+  - `wb_nearshore_sea` → четыре PF, уже привязанные к узлам `outer_exposed_approach` (C).
+- Место погребения Заостровья (1 G4 + 6 G5) остаётся без PF: закрывается C012b.
+
+### places/pf_local_additions.json — место погребения (C012b) — approve_with_limits
+
+Проверено: Claude Opus 5.5 (два прохода: независимый и повторный по исправлениям). Использованы:
+- diff рабочей копии против `6c66b027`;
+- сверка скриптом всех 7 ссылок `book:N §N` с выпиской `m2c-burial.csv` (111 строк) — цитаты найдены;
+- отчёт автора о полном `validate.mjs --start-territory … --self-test`: PASS, двойная сборка с одинаковым hash-list.
+
+- **Одна локальная PF.** `pf_burial_ground` добавлена в тот же `place_families.csv` (44 → 45): region_novgorod_land, universal=false, confidence C, долг переноса в WK place-first-cartography.
+  - Валидатор принимает сверх WK только id из `pf_local_additions.json`.
+  - Он отвергает коллизию с WK и дополнение без книжного источника.
+  - Есть три отрицательные пробы: неизвестный id, нет источника, коллизия с WK.
+- **`pf_churchyard`** изменён в одной ячейке: снят `stfv3__g5_burial_ritual_buffer_v1@1`.
+- **Узлы Заостровья**, 7 строк `node_binding.csv`:
+  - G4, burial_core, ritual_edge, woodland_buffer → `pf_burial_ground`;
+  - approach → `pf_road`;
+  - outer_edge, wet_boundary → `pf_forest_edge`.
+  Привязки согласуются с шаблонами сцен и прежними вторичными PF.
+- **lr_020–lr_022** (B) привязаны к PF: словене, XII–XIII вв., север XI–XIV вв.; формулировки «могли» и «не обязательна» не выходят за цитаты.
+- **lr_023** — скудельница 1230 г.: отдельное событие, `pf_ids=[]`, облик — `no_source`.
+- **`no_source`:** люди, частота посещения, ограда, уход, кладбище при церкви, положение могильника относительно поселения и дороги около 1230 г. Привязки book:743870 — это положение недатированных памятников на время обследования 1960-х, а не на 1230 г.
+- **Ограничения:**
+  - `composes_with` и связь «пойма → могильник» в `region_type_pf_manifest` взяты из одного G4 (C), не из книг.
+  - Водная кромка wet_boundary не отражена.
+  - Bridge стартовой территории runtime ещё без `pf_burial_ground` — обновляется при импорте.

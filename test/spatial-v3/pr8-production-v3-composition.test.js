@@ -543,6 +543,31 @@ test('production composition rejects every binding except builtin v6', async () 
   assert.equal(setup.closed(), 1);
 });
 
+test('production composition closes world-knowledge encoder when startup fails after encoder ready',
+  async () => {
+    let encoderClosed = false;
+    const setup = fixture();
+    await assert.rejects(
+      createSpatialV3ProductionCompositionRoot({
+        config: {
+          runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
+        },
+        pools: setup.pools,
+        worldKnowledgeEncoderFactory: () => Object.freeze({
+          ready: async () => {},
+          encode: async () => new Float32Array(1024),
+          close: async () => { encoderClosed = true; }
+        }),
+        targetRootFactory: () => {
+          throw new Error('startup fail after encoder');
+        }
+      }),
+      /startup fail after encoder/u
+    );
+    assert.equal(encoderClosed, true);
+    assert.equal(setup.closed(), 1);
+  });
+
 function readyWorldKnowledgeEncoder() {
   return Object.freeze({ ready: async () => {},
     encode: async () => new Float32Array(1024), close: async () => {} });

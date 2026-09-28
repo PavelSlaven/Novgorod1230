@@ -88,6 +88,7 @@ export async function createSpatialV3ProductionCompositionRoot({
   targetRootFactory = createSpatialV3ProductionComposition
 } = {}) {
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
+  let worldKnowledgeEncoder = null;
   try {
     const selectedModule = resolveSpatialV3ProductionBindingsModule(config, env);
     const targetContext = selectedModule === SPATIAL_V3_TARGET_BINDINGS_MODULE
@@ -134,12 +135,18 @@ export async function createSpatialV3ProductionCompositionRoot({
         requireEncoderReady: true,
         packRevision: release.world_knowledge_pack_revision,
         ...(worldKnowledgeEncoderFactory == null ? {}
-          : { encoderFactory: worldKnowledgeEncoderFactory }) }),
+          : { encoderFactory: (options) => {
+            worldKnowledgeEncoder = worldKnowledgeEncoderFactory(options);
+            return worldKnowledgeEncoder;
+          } }) }),
       targetContext == null ? loadLowerDvinaTraceMaterializationBundle({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
       }) : { calendar_profile: targetContext.runtime.materialization_inputs.calendar_profile }
     ]);
+    if (worldKnowledgeEncoder == null) {
+      worldKnowledgeEncoder = loadedWorldKnowledge.encoder;
+    }
     const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,
       calendar_profile: scenarioBundle.calendar_profile });
     const targetFiniteFirstEntry = targetProfiles == null ? null
@@ -412,7 +419,10 @@ export async function createSpatialV3ProductionCompositionRoot({
       close: () => Promise.all([pools.close(), worldKnowledge.encoder.close()])
     });
   } catch (error) {
-    await pools.close().catch(() => {});
+    await Promise.allSettled([
+      pools.close(),
+      worldKnowledgeEncoder?.close?.()
+    ]);
     throw error;
   }
 }

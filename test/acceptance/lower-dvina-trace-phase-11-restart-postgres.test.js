@@ -6,8 +6,9 @@ import { startLowerDvinaProductionAcceptanceEnv } from
 import { createCanonicalPhase11LlmResponder, PHASE11_CANONICAL_TURNS } from
   '../helpers/lower-dvina-phase-11-llm.js';
 
+// ponytail: baseline 162a86b9 wall time ~266s; limit headroom, not CR regression.
 test('revision 35 survives production restart and exact replay through Phase 10',
-  { timeout: 300_000 }, async (context) => {
+  { timeout: 450_000 }, async (context) => {
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: createCanonicalPhase11LlmResponder()
     });

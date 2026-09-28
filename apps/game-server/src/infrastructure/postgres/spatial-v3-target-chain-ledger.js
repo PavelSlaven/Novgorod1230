@@ -1,6 +1,7 @@
 import { readPostgresSchemaFingerprint } from
   '../../../../../tools/runtime-catalog-activation/src/forward-migration.js';
 import {
+  runSpatialV3TargetMigrations,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from './spatial-v3-target-migrations.js';
@@ -79,7 +80,7 @@ export async function readPartyRuntimeSchemaFingerprint(client) {
   return readPostgresSchemaFingerprint(client, 'party_runtime');
 }
 
-// ponytail: runner is hashed in fresh-schema request; ledger row is append-only.
+// ponytail: runner is hashed in fresh-schema request; exactAppliedMigration lives there.
 export async function hasExactAppliedMigration(client, expected) {
   if (!expected
       || ![
@@ -138,19 +139,15 @@ export async function evaluateSpatialV3TargetChainRestartSkip(
   return chainRow;
 }
 
-const CATALOG_MIGRATION_COVERED_TARGET_COUNT = 11;
-
 function buildMigrationResult({
   executionMode,
   chainRow,
-  readiness
+  readiness,
+  newlyApplied
 }) {
   return Object.freeze({
     applied: SPATIAL_V3_TARGET_MIGRATIONS.length,
-    newly_applied: executionMode === 'applied'
-      ? SPATIAL_V3_TARGET_MIGRATIONS.length
-      : SPATIAL_V3_TARGET_MIGRATIONS.length
-        - CATALOG_MIGRATION_COVERED_TARGET_COUNT,
+    newly_applied: newlyApplied,
     execution_mode: executionMode,
     chain_digest: chainRow.migration_digest,
     source_schema_fingerprint: chainRow.source_schema_fingerprint,
@@ -168,56 +165,37 @@ export async function runSpatialV3TargetMigrationsWithChainLedger(
     exactAppliedMigration = null
   } = {}
 ) {
-  const client = await pool.connect();
-  let readiness = null;
-  let executionMode = 'applied';
-  let chainRow = null;
+  const probeClient = await pool.connect();
+  let sourceSchemaFingerprint;
   try {
-    await client.query('BEGIN');
-    const sourceSchemaFingerprint = await readPartyRuntimeSchemaFingerprint(
-      client
+    sourceSchemaFingerprint = await readPartyRuntimeSchemaFingerprint(
+      probeClient
     );
-    const reuse = exactAppliedMigration == null
-      ? false
-      : await hasExactAppliedMigration(
-          client,
-          exactAppliedMigration
-        );
-    const migrations = reuse
-      ? SPATIAL_V3_TARGET_MIGRATIONS.slice(
-          CATALOG_MIGRATION_COVERED_TARGET_COUNT
-        )
-      : SPATIAL_V3_TARGET_MIGRATIONS;
-    executionMode = reuse ? 'extended_existing' : 'applied';
-    for (const sql of migrations) {
-      await client.query(sql);
+  } finally {
+    probeClient.release();
+  }
+  let chainRow = null;
+  const migration = await runSpatialV3TargetMigrations(pool, {
+    exactAppliedMigration,
+    beforeCommit: async (client) => {
+      const targetSchemaFingerprint = await readPartyRuntimeSchemaFingerprint(
+        client
+      );
+      chainRow = await ensureSpatialV3TargetChainLedgerRow(
+        client,
+        sourceSchemaFingerprint,
+        targetSchemaFingerprint
+      );
+      return beforeCommit ? beforeCommit(client) : null;
     }
-    const targetSchemaFingerprint = await readPartyRuntimeSchemaFingerprint(
-      client
-    );
-    chainRow = await ensureSpatialV3TargetChainLedgerRow(
-      client,
-      sourceSchemaFingerprint,
-      targetSchemaFingerprint
-    );
-    if (beforeCommit) readiness = await beforeCommit(client);
-    await client.query('COMMIT');
-  }
-  catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; }
-  finally { client.release(); }
+  });
   if (chainRow == null) {
-    return Object.freeze({
-      applied: SPATIAL_V3_TARGET_MIGRATIONS.length,
-      newly_applied: executionMode === 'applied'
-        ? SPATIAL_V3_TARGET_MIGRATIONS.length
-        : SPATIAL_V3_TARGET_MIGRATIONS.length
-          - CATALOG_MIGRATION_COVERED_TARGET_COUNT,
-      execution_mode: executionMode,
-      chain_digest: SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
-      schema: 'party_runtime',
-      schema_version: 'party_runtime_v3_target',
-      readiness
-    });
+    return migration;
   }
-  return buildMigrationResult({ executionMode, chainRow, readiness });
+  return buildMigrationResult({
+    executionMode: migration.execution_mode,
+    chainRow,
+    readiness: migration.readiness,
+    newlyApplied: migration.newly_applied
+  });
 }

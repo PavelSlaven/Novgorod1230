@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(r1): REVIEW-070d2 — chain ledger через `runSpatialV3TargetMigrations` + composite `beforeCommit`; restart skip без дублирования цикла DDL; acceptance fresh pools per restart; encoder close on startup failure; phase-11 test1 limit 450s; PG chain-ledger tests; LW-070/073 (#158)
 - feat(r1): REVIEW-070 / PLAN-070b — variants objects in m2c generator @ `367a88c0`; D-3 npc/speech datasets; 27.sql UNIQUE+CHECK; corpus §3A.1/§3A.4/§8.1; fresh-schema request rebuild; generator fixture+tmpdir determinism; LW-073 (#158)
 - feat(r1): REVIEW-069b п.3 — prose §3.1 thresholds; presence_rules `item_ref`/`variants` + §8.1/C12 rule-cause; m2c-npc-wave dataset generator @ `b1f249de` (#158) LW-072 added
 - fix(r1): REVIEW-069 — explicit schedule projection columns instead of `SELECT *` and first-row slice (party-store owner, `candidate_profile_refs='[]'` checked); same column list in phase-2 temporal state; behavioral PG immutability test (error text, positive control, 23505/23514, 012–037 через раннер); `source_commit`/review.md tests; primary/secondary subjects keyed without region (LW-066); narration MODULE repair-then-fail-closed order; game-base-v1 files reverted to Codex state; fullsuite schema pins 217/133 (#158)

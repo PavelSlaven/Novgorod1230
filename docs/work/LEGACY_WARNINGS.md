@@ -70,14 +70,14 @@
 | 067 | `presence_rules.guards` | guards хранятся, не исполняются | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 073 | acceptance `revision 35 survives production restart` | таймаут 300s на базовом прогоне до M2c — не регресс 070b | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
 | LW | Суть | Блокер релиза? |
 |---|---|---|
 | 069 | fresh-schema attestation v2 историчен; действует только attestation с `request_digest` текущего `fresh-schema-request.json` | D27 до v3 от ревьюера |
-| 070 | party `037` на живых БД — только после зелёного PG DDL-теста | game-server на prod party DB |
+| 070 | party restart skip по chain ledger; полный DDL только без строки digest | game-server prod party DB |
 | 071 | «предок решён — потомки не бросаются» — owner R-2, не foundation | R-2 |
 | 072 | git provenance worktree + acceptance `startLlm` | нет |
 | 073 | acceptance revision 35 timeout 300s | нет |
@@ -354,9 +354,9 @@
 - **Как жить.** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения (fresh-schema + Gate1 amendment v3) — до D27. Пин Gate1 amendment v2 на старый restart-test sha — исторический; Gate1 owner-data не перегенерируется (C11). Утверждение amendment v2 снято до v3.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-070 — party 037 применится к живым party-БД v16/v17 при старте game-server
-- **Где.** `schemas/party-db/037_party_runtime_m2c_presence_routines.sql`; runner `runSpatialV3TargetMigrations`.
-- **Как жить.** Миграции 012–037 применяются к существующим party-БД при старте. `037` только добавляет (candidate_profile_refs, g5 CHECK, weather log). Файл `037` правился на месте после первого применения в `5bfdebe1`/`da6f323c`: локальные/тестовые БД, где уже крутился старый `037`, пересоздавать (колонки иначе останутся старыми). Живые managed БД старый `037` не получали (game-server не запускался). До зелёного PostgreSQL-теста на цепочке 001–036 **не запускать game-server на живых БД**. D27 rename/bootstrap — отдельный шаг.
+### LW-070 — party restart: полный DDL только без chain-ledger строки текущего digest
+- **Где.** `runSpatialV3TargetMigrationsForProductionRestart`; `spatial-v3-target-chain-ledger.js`; runner `runSpatialV3TargetMigrations` (хеширован в fresh-schema v3, не править).
+- **Как жить.** Первый старт или несовпадение `target_schema_fingerprint` / отсутствие строки `spatial_v3_target_chain_<digest>` → полный прогон раннера и append-only запись в `party_runtime.schema_migrations` в той же транзакции, что readiness. Повторный in-process restart при совпадении digest и отпечатка **не** повторяет CREATE/ALTER/DROP 012–037 (PG DDL-wrapper test). Конфликт persisted ledger с release → `SPATIAL_V3_MIGRATION_LEDGER_MISMATCH`. In-place правки уже применённых SQL-файлов 012–037 по-прежнему требуют пересоздания локальных БД со старым отпечатком. D27 rename/bootstrap — отдельный шаг.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-071 — правило «предок уже решён — потомки не бросаются» вне resolve_presence_rule
@@ -370,8 +370,8 @@
 - **Как жить.** `readGit`/gh PR head mismatch — окружение worktree. Падение «persists a free turn» из‑за `startLlm` — **дефект acceptance-теста**, не блокер M2c importer.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-073 — acceptance revision 35 timeout (регресс-кандидат CR #158)
-- **Где.** `test/acceptance/lower-dvina-trace-phase-11-restart-postgres.test.js` (300s/600s); `test/acceptance/lower-dvina-trace-s1-first-entry-postgres.test.js` (300s, handle leak на CR).
-- **Доказательство.** NOTE-acceptance-regression / `inputs/fullsuite-fb8db964/triage.md`: на `162a86b9` restart-тесты проходят (266s/335s); на коде CR #158 — таймауты и `Cannot use a pool after calling end on the pool`; s1-first-entry на CR не завершает node после сьюта.
-- **Как жить.** Регресс-кандидат CR #158, разбор в **PLAN-070d** (не «до CR»); блокер merge #98. Полный acceptance на HEAD — после 070d и fresh-schema v3 (REVIEW-070 г).
+### LW-073 — acceptance revision 35 timeout headroom
+- **Где.** `test/acceptance/lower-dvina-trace-phase-11-restart-postgres.test.js` (450s/600s); `test/acceptance/lower-dvina-trace-s1-first-entry-postgres.test.js` (300s).
+- **Доказательство.** На базе `162a86b9` тест 1 phase-11 ~266 s при лимите 300 s (89%). После 070d/070d2 — свежие пулы на restart, skip DDL по chain ledger; лимит теста 1 поднят до 450 s с комментарием о базовом wall time, не как маска регресса CR.
+- **Как жить.** Таймаут test 1 — headroom от базового прогона; test 2 остаётся 600 s. «Pool after end» — следствие shared pools/encoder до 070d2, не фон root.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

@@ -140,9 +140,51 @@ def deny_scan(rows, name, key):
 mats = rd("buildings/materials_vocab.csv"); mat_ids = {m["mat_id"] for m in mats}
 bts = rd("buildings/building_types.csv"); bt_ids = {b["bt_id"] for b in bts}
 condition_enum = {"under_construction", "sound", "worn", "needs_repair", "damaged", "burnt_ruin", "abandoned"}
+age_enum = {"new", "seasoned", "old", "decrepit"}
 for b in bts:
     if not sp(b["condition_states"]) or not set(sp(b["condition_states"])) <= condition_enum:
         err("bt %s invalid condition_states" % b["bt_id"])
+    if not sp(b["age_states"]) or not set(sp(b["age_states"])) <= age_enum:
+        err("bt %s invalid age_states" % b["bt_id"])
+try:
+    with open(os.path.join(GROUP, "buildings/age_condition_rule.json"), encoding="utf-8") as f:
+        age_condition_rule = json.load(f)
+except (OSError, json.JSONDecodeError) as e:
+    err("age condition rule unreadable: %s" % e)
+    age_condition_rule = None
+if age_condition_rule is not None:
+    expected_keys = {"rule_id", "status", "age_states_from", "condition_states_from", "incompatibilities", "confidence", "reason"}
+    if not isinstance(age_condition_rule, dict) or set(age_condition_rule) != expected_keys:
+        err("age condition rule schema")
+    else:
+        if age_condition_rule["rule_id"] != "age_condition_v1" or age_condition_rule["status"] != "candidate":
+            err("age condition rule id/status")
+        if (age_condition_rule["age_states_from"] != "building_types.age_states"
+                or age_condition_rule["condition_states_from"] != "building_types.condition_states"):
+            err("age condition rule state sources")
+        if age_condition_rule["confidence"] != "C" or not isinstance(age_condition_rule["reason"], str) or not age_condition_rule["reason"].strip():
+            err("age condition rule confidence/reason")
+        incompatibilities = age_condition_rule["incompatibilities"]
+        if (not isinstance(incompatibilities, list) or len(incompatibilities) != 1
+                or not isinstance(incompatibilities[0], dict)
+                or set(incompatibilities[0]) != {"age_state", "condition_states"}):
+            err("age condition rule incompatibilities schema")
+        else:
+            item = incompatibilities[0]
+            forbidden = item["condition_states"]
+            if (item["age_state"] != "new" or item["age_state"] not in age_enum
+                    or not isinstance(forbidden, list) or any(not isinstance(s, str) for s in forbidden)
+                    or len(forbidden) != len(set(forbidden)) or not set(forbidden) <= condition_enum
+                    or set(forbidden) != {"needs_repair", "damaged", "burnt_ruin", "abandoned"}):
+                err("age condition rule incompatible states")
+            else:
+                def age_condition_allowed(age_state, condition_state):
+                    return not (age_state == item["age_state"] and condition_state in forbidden)
+
+                if "--self-test" in sys.argv:
+                    for state in forbidden:
+                        assert not age_condition_allowed("new", state)
+                    assert age_condition_allowed("new", "sound")
 try:
     with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), encoding="utf-8") as f:
         occupied_rule = json.load(f)

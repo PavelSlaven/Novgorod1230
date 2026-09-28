@@ -296,3 +296,10 @@ build.py детерминирован для всех файлов, кроме `
 - **Контейнеры:** сняты ровно `riverbank × ct_basket_fish` и `riverbank × ct_barrel_cargo` — без класса причины, по правилу К9.
 - `sat_ferry_landing_voices_summer_051` — «Перевозчик окликает людей у сходней, приглашая садиться в лодку.»: без ответа с несуществующего берега, `presence:people` сохранён.
 - `validate.py`: PASS, 0 ошибок, прежние 41 предупреждение.
+
+### buildings/age_condition_rule.json — approve
+
+Проверено: Claude Opus 5.5, `validate.py --self-test` (C010, коммит 6f4490a0 против 859a3ed9).
+
+- Одна редакционная несовместимость C с причиной: у `new` исключены `needs_repair`, `damaged`, `burnt_ruin` и `abandoned`. Матрица не выдумана, весов нет, списки типов не тронуты.
+- `validate.py` — PASS, 0 ошибок. Порядок фильтров для runtime «тип → возраст–состояние → занятость» записан в README.

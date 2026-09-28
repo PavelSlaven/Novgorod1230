@@ -4,7 +4,7 @@
 
 | Папка | Домен каталога | Главные файлы |
 |---|---|---|
-| [buildings/](buildings/README.md) | `buildings_structures`, `settlement_form` | building_types, occupied_condition_rule.json, building_parts, building_type_parts, materials_vocab, settlement_form, settlement_building_mix |
+| [buildings/](buildings/README.md) | `buildings_structures`, `settlement_form` | building_types, age_condition_rule.json, occupied_condition_rule.json, building_parts, building_type_parts, materials_vocab, settlement_form, settlement_building_mix |
 | [interiors/](interiors/README.md) | `interiors_scenes` | scenes, scene_items, furniture_fixtures_light, anti_patterns_ref, matcult_item_refs |
 | [containers/](containers/README.md) | `containers_contents` | container_forms, content_categories, content_profiles, content_profile_entries, place_containers, first_open_rule.json |
 | [landmarks/](landmarks/README.md) | `city_landmarks_institutions` | landmarks |
@@ -20,7 +20,7 @@ python scripts/validate.py   # приёмочные проверки 6 доме�
 
 Авторские данные лежат в `scripts/src/*.py` (правка только там). Внешние входы вне репозитория задаются переменными `MATCULT_DIR`, `MASTER_DIR`, `NOV1230_DB` (по умолчанию — распакованные архивы в scratchpad и `Downloads/novgorod_1230(1) (1).sqlite`). Для офлайн-проверки build пишет снимок всех упомянутых предметов matcult (`interiors/matcult_item_refs.csv`).
 
-Runtime handoff: `buildings/occupied_condition_rule.json` ограничивает выбор состояния экземпляра с группой D-2 `residents`; правило применяется после определения состава жителей и типа постройки. `containers/place_containers.csv` не включает рыбацкую корзину и грузовую бочку для общего `riverbank`; привязки специализированных мест сохраняются.
+Runtime handoff: тип постройки → `buildings/age_condition_rule.json` (возраст/состояние) → `buildings/occupied_condition_rule.json` (заселённость/состояние после определения групп D-2 `residents`). `containers/place_containers.csv` не включает рыбацкую корзину и грузовую бочку для общего `riverbank`; привязки специализированных мест сохраняются.
 
 Последний прогон: `validate.py` — PASS, 0 ошибок, 41 предупреждение (все — «имя объекта нет в v6 naming_register»: это новые, но источниковые имена).
 

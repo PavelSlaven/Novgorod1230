@@ -134,16 +134,21 @@ def main():
                for options in option_sets.values() for option in options)
     rules = npc["appearance_incompatibility_rules"]
     assert rules == AUTHORING["incompatibility_rules"]
-    assert {rule["id"] for rule in rules} == {"bald_has_no_hair_color", "young_adult_has_no_gray_or_white_hair"}
-    assert len(rules) == 2
+    rule_by_id = {rule["id"]: rule for rule in rules}
+    assert set(rule_by_id) == {"bald_has_no_hair_color", "bald_has_no_hair_style",
+                               "young_adult_has_no_gray_or_white_hair"}
+    assert len(rules) == len(rule_by_id) == 3
     for rule in rules:
         for facet, value in rule["if"].items():
             assert value in {option["value"] for option in option_sets[facet]}
         for facet, values in rule["incompatible_with"].items():
             assert values == "any" or (isinstance(values, list) and values and
                                        set(values) <= {option["value"] for option in option_sets[facet]})
-    bald, young = rules
+    bald = rule_by_id["bald_has_no_hair_color"]
+    bald_style = rule_by_id["bald_has_no_hair_style"]
+    young = rule_by_id["young_adult_has_no_gray_or_white_hair"]
     blond = "nov_1200_1250_hair_color_blond"
+    straight = "nov_1200_1250_hair_style_straight"
     gray = "nov_1200_1250_hair_color_gray"
     white = "nov_1200_1250_hair_color_white"
     assert bald["if"] == {"hair_length": "nov_1200_1250_hair_length_bald"}
@@ -151,6 +156,11 @@ def main():
     assert conflicts(bald, {"hair_length": bald["if"]["hair_length"], "hair_color": blond})
     assert not conflicts(bald, {"hair_length": "nov_1200_1250_hair_length_short", "hair_color": blond})
     assert not conflicts(bald, {"hair_length": bald["if"]["hair_length"]})
+    assert bald_style["if"] == {"hair_length": "nov_1200_1250_hair_length_bald"}
+    assert bald_style["incompatible_with"] == {"hair_style": "any"}
+    assert conflicts(bald_style, {"hair_length": bald_style["if"]["hair_length"], "hair_style": straight})
+    assert not conflicts(bald_style, {"hair_length": "nov_1200_1250_hair_length_short", "hair_style": straight})
+    assert not conflicts(bald_style, {"hair_length": bald_style["if"]["hair_length"]})
     assert young["if"] == {"age_category": "nov_1200_1250_age_category_young_adult"}
     assert young["incompatible_with"] == {"hair_color": [gray, white]}
     assert all(conflicts(young, {"age_category": young["if"]["age_category"], "hair_color": color})

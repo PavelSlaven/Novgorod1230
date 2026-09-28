@@ -4,7 +4,7 @@
 
 | Группа | Статус | approve | approve_with_limits | rework |
 |---|---|---:|---:|---:|
-| [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 8 | 17 | 0 |
+| [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 9 | 17 | 0 |
 | [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 5 | 13 | 0 |
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 1 | 8 | 0 |
@@ -25,7 +25,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **75** | **190** | **0** |
+| **Итого** | | **76** | **190** | **0** |
 
 ## Вердикты по файлам
 
@@ -36,6 +36,7 @@
 | [`ambience/g4_human_layer_binding.csv`](buildings-interiors-containers/ambience/g4_human_layer_binding.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#ambienceg4_human_layer_bindingcsv--approve_with_limits) |
 | [`ambience/presence_tokens.csv`](buildings-interiors-containers/ambience/presence_tokens.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#ambiencepresence_tokenscsv--approve_with_limits-9) |
 | [`ambience/settlement_ambience_texts.csv`](buildings-interiors-containers/ambience/settlement_ambience_texts.csv) | [approve](buildings-interiors-containers/VERIFICATION.md#ambiencesettlement_ambience_textscsv--approve-c007c2-закрывает-rework-c007c) |
+| [`buildings/age_condition_rule.json`](buildings-interiors-containers/buildings/age_condition_rule.json) | [approve](buildings-interiors-containers/VERIFICATION.md#buildingsage_condition_rulejson--approve) |
 | [`buildings/building_parts.csv`](buildings-interiors-containers/buildings/building_parts.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsbuilding_partscsv--approve_with_limits-73) |
 | [`buildings/building_type_parts.csv`](buildings-interiors-containers/buildings/building_type_parts.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsbuilding_type_partscsv--approve_with_limits-288) |
 | [`buildings/building_types.csv`](buildings-interiors-containers/buildings/building_types.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsbuilding_typescsv--approve_with_limits-51) |
@@ -325,7 +326,7 @@
 |---|---|
 | [`activities_observable/activities_new_occupations.csv`](occupations-activities/activities_observable/activities_new_occupations.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#activities_observableactivities_new_occupationscsv--approve_with_limits) |
 | [`carried_inventories/carried_inventories.csv`](occupations-activities/carried_inventories/carried_inventories.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#carried_inventoriescarried_inventoriescsv--approve_with_limits) |
-| [`npc_runtime_profiles/actor_appearance_authoring.json`](occupations-activities/npc_runtime_profiles/actor_appearance_authoring.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
+| [`npc_runtime_profiles/actor_appearance_authoring.json`](occupations-activities/npc_runtime_profiles/actor_appearance_authoring.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profilesactor_appearance_authoringjson--approve) |
 | [`npc_runtime_profiles/build.py`](occupations-activities/npc_runtime_profiles/build.py) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
 | [`npc_runtime_profiles/export_pr98.py`](occupations-activities/npc_runtime_profiles/export_pr98.py) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
 | [`npc_runtime_profiles/npc_runtime_profiles.json`](occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |

@@ -2,6 +2,7 @@
  "buildings/materials_vocab.csv": 41,
  "buildings/building_types.csv": 51,
  "buildings/occupied_condition_rule.json": 1,
+ "buildings/age_condition_rule.json": 1,
  "buildings/building_parts.csv": 73,
  "buildings/building_type_parts.csv": 288,
  "buildings/settlement_form.csv": 22,

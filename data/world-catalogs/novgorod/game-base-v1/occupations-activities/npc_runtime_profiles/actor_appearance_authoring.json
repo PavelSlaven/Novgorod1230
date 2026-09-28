@@ -51,6 +51,11 @@
       "note": "При обязательной грани hair_color вариант bald не образует полного набора; цвет волос не придумывать."
     },
     {
+      "id": "bald_has_no_hair_style",
+      "if": {"hair_length": "nov_1200_1250_hair_length_bald"},
+      "incompatible_with": {"hair_style": "any"}
+    },
+    {
       "id": "young_adult_has_no_gray_or_white_hair",
       "if": {"age_category": "nov_1200_1250_age_category_young_adult"},
       "incompatible_with": {"hair_color": ["nov_1200_1250_hair_color_gray", "nov_1200_1250_hair_color_white"]}

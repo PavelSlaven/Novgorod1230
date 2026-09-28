@@ -446,3 +446,9 @@ NPC-профилей и привязок присутствия нет. Четы
 - `nov_role_household_mistress` получил верхнеуровневую запись: female, C, по определению роли в `novgorod_social_roles_v1.tsv`. Специальный запасной путь в сборщике удалён.
 - Сборка побайтная, `validate.py` — OK.
 - D-2 checker больше не берёт пол из производных региональных наборов. Проба удаления записи хозяйки падает.
+
+### npc_runtime_profiles/actor_appearance_authoring.json — approve
+
+Проверено: Claude Opus 5.5, повторной сборкой (C010, коммит 6f4490a0 против 859a3ed9).
+
+- Добавлено отдельное правило `bald_has_no_hair_style` рядом с `bald_has_no_hair_color`. Сборка побайтная, `validate.py` — OK.

@@ -1,0 +1,19 @@
+{
+  "rule_id": "age_condition_v1",
+  "status": "candidate",
+  "age_states_from": "building_types.age_states",
+  "condition_states_from": "building_types.condition_states",
+  "incompatibilities": [
+    {
+      "age_state": "new",
+      "condition_states": [
+        "needs_repair",
+        "damaged",
+        "burnt_ruin",
+        "abandoned"
+      ]
+    }
+  ],
+  "confidence": "C",
+  "reason": "Редакторское правило: новая постройка ещё не могла прийти в негодность, получить повреждения, сгореть или быть заброшенной; исторических весов сочетаний нет."
+}

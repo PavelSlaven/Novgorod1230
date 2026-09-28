@@ -109,6 +109,17 @@ def main():
     with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), "w", encoding="utf-8") as f:
         json.dump(occupied_rule, f, ensure_ascii=False, indent=2)
     COUNTS["buildings/occupied_condition_rule.json"] = 1
+    age_condition_rule = {
+        "rule_id": "age_condition_v1", "status": STATUS,
+        "age_states_from": "building_types.age_states",
+        "condition_states_from": "building_types.condition_states",
+        "incompatibilities": [{"age_state": "new", "condition_states": ["needs_repair", "damaged", "burnt_ruin", "abandoned"]}],
+        "confidence": "C",
+        "reason": "Редакторское правило: новая постройка ещё не могла прийти в негодность, получить повреждения, сгореть или быть заброшенной; исторических весов сочетаний нет.",
+    }
+    with open(os.path.join(GROUP, "buildings/age_condition_rule.json"), "w", encoding="utf-8") as f:
+        json.dump(age_condition_rule, f, ensure_ascii=False, indent=2)
+    COUNTS["buildings/age_condition_rule.json"] = 1
     out("buildings/building_parts.csv",
         [dict(bp_id=p[0], name_ru=p[1], name_en=p[2], part_class=p[3], default_material=p[4], restriction=p[5], source_refs=p[6], confidence=p[7], status=STATUS) for p in parts.PARTS],
         ["bp_id", "name_ru", "name_en", "part_class", "default_material", "restriction", "source_refs", "confidence", "status"])

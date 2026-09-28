@@ -66,7 +66,9 @@ export async function createTraceExpansionCommands({ state, requestId,
         }
         const selected = { ...identity, directionalExitId: exitId, requestId };
         const expansion = await spatialExpansionRuntime.prepareExpansion(selected);
-        if (expansion?.ok !== true) fail('LIVE_WORLD_EXPANSION_PREPARATION_FAILED');
+        if (expansion?.ok !== true) {
+          fail('LIVE_WORLD_EXPANSION_PREPARATION_FAILED', expansion?.error ?? null);
+        }
         try {
           const consequence = await spatialExpansionRuntime.prepareTraversal({
             ...selected, state: current, playerInput, inputDigest, expansion });
@@ -95,7 +97,7 @@ function text(value) {
   return typeof value === 'string' && value.trim() === value && value.length > 0;
 }
 
-function fail(code) {
+function fail(code, details = null) {
   throw serverError(code, 'The approved directional exit cannot be traversed.',
-    { status: 409 });
+    { status: 409, ...(details ? { details } : {}) });
 }

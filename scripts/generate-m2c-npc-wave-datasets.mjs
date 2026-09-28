@@ -307,7 +307,6 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
       source_refs: row.source_refs ?? '',
       pool_confidence: row.pool_confidence ?? '',
       csv_status: row.status ?? '',
-      ...(peopleSubject && parsedTimes.length ? { allowed_times_source: parsedTimes } : {}),
     },
   };
 }

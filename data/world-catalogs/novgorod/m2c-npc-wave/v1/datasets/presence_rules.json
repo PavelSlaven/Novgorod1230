@@ -13916,10 +13916,7 @@
       "source_row_id": "15",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -43153,10 +43150,7 @@
       "source_row_id": "5",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_forest_worker",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -68577,10 +68571,7 @@
       "source_row_id": "4",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_herder",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -68620,10 +68611,7 @@
       "source_row_id": "4",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_herder",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -68663,10 +68651,7 @@
       "source_row_id": "4",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_herder",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -79786,10 +79771,7 @@
       "source_row_id": "12",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_hunter_trapper",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -91949,10 +91931,7 @@
       "source_row_id": "13",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -130656,10 +130635,7 @@
       "source_row_id": "20",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_hunter_trapper",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -146329,10 +146305,7 @@
       "source_row_id": "7",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -146372,10 +146345,7 @@
       "source_row_id": "7",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -146415,10 +146385,7 @@
       "source_row_id": "7",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -193817,10 +193784,7 @@
       "source_row_id": "2",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_boatman",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -200346,10 +200310,7 @@
       "source_row_id": "3",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_fisher",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -202281,10 +202242,7 @@
       "source_row_id": "6",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_cart_driver",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -210947,11 +210905,7 @@
       "source_row_id": "17;18",
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_smerd_householder",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day",
-        "evening"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -229066,10 +229020,7 @@
       "source_row_id": "16",
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_smerd_householder",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   },
   {
@@ -229789,10 +229740,7 @@
       "source_row_id": "14",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_winter_road_worker",
       "pool_confidence": "",
-      "csv_status": "candidate",
-      "allowed_times_source": [
-        "day"
-      ]
+      "csv_status": "candidate"
     }
   }
 ]

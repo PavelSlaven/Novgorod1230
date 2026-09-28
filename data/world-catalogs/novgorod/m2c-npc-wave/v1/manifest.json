@@ -53,7 +53,7 @@
     {
       "table": "presence_rules",
       "file": "datasets/presence_rules.json",
-      "sha256": "ac5e4a8cb8087c85b88048579cb3ed82b199b6a6873905ca61e2d04957015fc9",
+      "sha256": "c1e46168b1afe477916b39cc68959052de7ffe1dc1806eba164f5fe8da44c2a5",
       "status": "draft",
       "provenance_ref": "game_base_v1_m2c_people_3ab1c890",
       "delete_policy": "forbid",

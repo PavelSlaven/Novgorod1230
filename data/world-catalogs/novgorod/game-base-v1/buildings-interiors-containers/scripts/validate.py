@@ -327,6 +327,8 @@ for a in amb:
     if not a["requires_presence_ref"]: err("ambience %s no requires_presence_ref" % a["sat_id"])
     for r in sp(a["requires_presence_ref"]):
         if r not in bt_ids and r not in tokens: err("ambience %s presence ref %s unknown" % (a["sat_id"], r))
+    if a["layer"] == "voices" and a["requires_presence_ref"] not in ("presence:people", "presence:market_day", "presence:famine_1230"):
+        err("ambience %s human voices require people or a human event" % a["sat_id"])
     if not a["clear_text"] or not a["partial_text"]: err("ambience %s missing text" % a["sat_id"])
     if a["channel"] not in ("visual", "acoustic", "olfactory"): err("ambience %s unknown channel" % a["sat_id"])
     if a["status"] != "candidate": err("ambience %s not candidate" % a["sat_id"])

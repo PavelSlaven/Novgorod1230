@@ -21,11 +21,11 @@
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 9 | 24 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
-| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 4 | 20 | 0 |
+| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 5 | 19 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **57** | **205** | **0** |
+| **Итого** | | **58** | **204** | **0** |
 
 ## Вердикты по файлам
 
@@ -308,7 +308,7 @@
 | [`weather_climate/temperature_anomalies.csv`](nature-materials-weather/weather_climate/temperature_anomalies.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_anomaly_transitions.csv`](nature-materials-weather/weather_climate/temperature_anomaly_transitions.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_profile.csv`](nature-materials-weather/weather_climate/temperature_profile.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
-| [`weather_climate/water_profiles.csv`](nature-materials-weather/weather_climate/water_profiles.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textssensory_coveragecsv--weather_climatewater_profilescsv--approve_with_limits) |
+| [`weather_climate/water_profiles.csv`](nature-materials-weather/weather_climate/water_profiles.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climatewater_profilescsv--approve_with_limits-c007b-к3) |
 | [`weather_climate/weather_season_climatology.csv`](nature-materials-weather/weather_climate/weather_season_climatology.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_state_temperature_modifiers.csv`](nature-materials-weather/weather_climate/weather_state_temperature_modifiers.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_states.csv`](nature-materials-weather/weather_climate/weather_states.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
@@ -360,7 +360,7 @@
 | [`slots/materialization_slot_rules.csv`](places-binding/slots/materialization_slot_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_slot_rulescsv-и-slotsslot_candidatescsv--approve_with_limits) |
 | [`slots/no_required_slots.csv`](places-binding/slots/no_required_slots.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsno_required_slotscsv--approve_with_limits-1) |
 | [`slots/slot_candidates.csv`](places-binding/slots/slot_candidates.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_slot_rulescsv-и-slotsslot_candidatescsv--approve_with_limits) |
-| [`slots/slot_instance_variants.json`](places-binding/slots/slot_instance_variants.json) | [approve_with_limits](places-binding/VERIFICATION.md#places-bindingslotsslot_instance_variantsjson--approve_with_limits) |
+| [`slots/slot_instance_variants.json`](places-binding/slots/slot_instance_variants.json) | [approve](places-binding/VERIFICATION.md#slotsslot_instance_variantsjson--approve-c007b-к2) |
 
 ### social-strata-law
 

@@ -6,7 +6,7 @@
 
 | Файл | Строк | Что |
 |---|---|---|
-| `settlement_ambience_texts.csv` | 184 | тексты: семейство места × слой × сезон (× часть суток), канал, ясный и частичный текст, громкость, `requires_presence_ref` |
+| `settlement_ambience_texts.csv` | 185 | тексты: семейство места × слой × сезон (× часть суток), канал, ясный и частичный текст, громкость, `requires_presence_ref` |
 | `presence_tokens.csv` | 9 | токены наличия (`presence:people`, `presence:livestock`, `presence:dog`, `presence:poultry`, `presence:boats`, `presence:fishing_activity`, `presence:woodcutting`, `presence:market_day`, `presence:famine_1230`) |
 | `g4_human_layer_binding.csv` | 7 | 7 G4 стартовой территории с людским семейством → pf (Вихтуй: местность, промысловый край, речной подход; укрытая терраса-высадка; Заостровье: центр, высадка, погребальная зона). Дворы Вихтуя и Заостровья также связаны с `rural_yard` и `outbuildings` как вторичными PF. |
 
@@ -15,6 +15,7 @@
 ## Правила
 
 - Текст показывается только если наличие уже установлено (D3): `requires_presence_ref` — это `bt_*` (любой из списка) или токен `presence:*`; нет звука кузницы без кузницы, нет голоса торга без торгового дня.
+- Голоса людей требуют `presence:people` или людского события (`presence:market_day`, `presence:famine_1230`). Зимний дым у перевоза требует `presence:people`; запах лодок сам по себе дыма не даёт.
 - Сезоны: `winter | spring_rasputitsa | summer | autumn` (календарь time-events-history).
 - `partial_text` — для частичного восприятия (даль, туман, ночь, стена).
 - Тексты авторские (C), основания — claims WK о дыме, сырости, следах, работе на берегу, предметы matcult, nov1230db. B — где текст пересказывает прямой источник: жальники (ref:pravenc_zhalnik), мостовые (nov1230db B026), голод 1230–1231 (НПЛ через nov1230db S01).

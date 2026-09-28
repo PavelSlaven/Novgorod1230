@@ -127,7 +127,7 @@ const bRows = birds.map((b) => {
     base_frequency_class: LEVELS[BASE[b.base]], base_frequency_basis: `Malchevsky head abundance flags: ${(mf && mf.abundance_flags_head.join('|')) || 'n/a'}${b.note ? '; note: ' + b.note : ''}`,
     presence_1230_confidence: b.pres, historical_evidence: b.evid || '',
     migration_winter: MIG[b.mig[0]], migration_spring: MIG[b.mig[1]], migration_summer: MIG[b.mig[2]], migration_autumn: MIG[b.mig[3]], mass_passage: b.massP ? 'true' : 'false',
-    activity_time: b.act, voice_description: b.voice, audible_seasons: audible.join(';'), nesting: b.nest, game_value: b.game, falconry_relevance: b.falc, products: b.products || '',
+    activity_time: b.act, voice_description: b.voice, voice_sound_ru: b.sound, audible_seasons: audible.join(';'), nesting: b.nest, game_value: b.game, falconry_relevance: b.falc, products: b.products || '',
     habitats: b.hab, panteleev_2001_listed: pe ? 'true' : 'false', petrov_1885_priilmenye: pe && pe.petrov_1885 ? 'true' : 'false',
     malchevsky_page: malPage(b), malchevsky_status_flags: mf ? mf.status_flags.join('|') : '', malchevsky_heading_check: mf ? mf.latin_heading : '',
     wk_refs: b.wk || '', source_refs: src.join(';'), confidence: 'B', notes: b.note || '', status: 'candidate',

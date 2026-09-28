@@ -75,7 +75,35 @@ def tsv_ids(path, key):
 
 all_occ = tsv_ids(os.path.join(region_tsv, "novgorod_occupations_v1_enriched.tsv"), "occupation_id")
 all_role = tsv_ids(os.path.join(region_tsv, "novgorod_social_roles_v1_enriched.tsv"), "role_id")
+with open(os.path.join(region_tsv, "novgorod_occupations_v1_enriched.tsv"), encoding="utf-8") as f:
+    low_church_occ = {r["occupation_id"] for r in csv.DictReader(f, delimiter="\t")
+                      if r["occupation_group"] == "церковь" and r["typical_status_range"] in {"low", "low-variable"}}
 schedule_occ = {r["occupation_ref"] for r in read_csv(os.path.join(os.path.dirname(ROOT), "time-calendar-church", "time", "schedules_routines.csv")) if r["occupation_ref"]}
+presence = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_presence_authoring.csv"))
+reachable_occ = ({r["subject_ref"] for r in presence if r["subject_kind"] == "occupation"} | schedule_occ) & all_occ
+register_rows = read_csv(os.path.join(ROOT, "speech_address", "speech_registers.csv"))
+
+
+def register_failures(rows):
+    failures = []
+    keys = [(r["subject_kind"], r["subject_ref"]) for r in rows]
+    expected = {("role", ref) for ref in all_role} | {("occupation", ref) for ref in reachable_occ}
+    for key in expected:
+        if keys.count(key) != 1:
+            failures.append(f"speech_registers: expected one row for {key}, found {keys.count(key)}")
+    for i, r in enumerate(rows):
+        if keys[i] not in ({("role", ref) for ref in all_role} | {("occupation", ref) for ref in all_occ}):
+            failures.append(f"speech_registers row {i}: unknown subject")
+        if r["register"] not in {"formal_literate", "plain_oral", "everyday_oral"} or r["confidence"] != "C":
+            failures.append(f"speech_registers row {i}: invalid register/confidence")
+        if r["subject_kind"] == "occupation" and r["subject_ref"] in low_church_occ and r["register"] != "plain_oral":
+            failures.append(f"speech_registers row {i}: low-status church occupation must be plain_oral")
+    if len(keys) != len(set(keys)):
+        failures.append("speech_registers: duplicate subject")
+    return failures
+
+
+errors.extend(register_failures(register_rows))
 missing_occ = all_occ - occ_refs
 missing_role = all_role - role_refs
 if missing_occ:
@@ -115,7 +143,7 @@ def checked_rows(path, fields, key):
 rel_rows = checked_rows(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"), rel_fields, "rel_rule_id")
 af_rows = checked_rows(os.path.join(ROOT, "speech_address", "address_forms.csv"), form_fields, "sp_id")
 household_ids = {r["hh_id"] for r in read_csv(os.path.join(ROOT, "households_kinship", "household_composition_profiles.csv"))}
-registers = {r["register"] for r in read_csv(os.path.join(ROOT, "speech_address", "speech_registers.csv"))}
+registers = {r["register"] for r in register_rows}
 pf_ids = set()
 crosswalk = os.path.join(os.path.dirname(ROOT), "places-binding", "places", "crosswalk_scene_templates.csv")
 for row in read_csv(crosswalk):
@@ -245,8 +273,8 @@ errors.extend(check_generated(rel_rows, "rel_rule_id", "rel_start_", rel_key_fie
 errors.extend(check_generated(af_rows, "sp_id", "form_start_gap_", form_key_fields, expected_forms))
 if not start_pairs:
     errors.append("starting pairs: empty set")
-if (colocated, intersections) != (704, 6549):
-    errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (704, 6549)")
+if (colocated, intersections) != (727, 6617):
+    errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (727, 6617)")
 with open(os.path.join(ROOT, "scripts", "build_report.json"), encoding="utf-8") as f:
     start_report = json.load(f)["households_kinship"]
 if (start_report["start_colocated_node_season_contexts"], start_report["start_phase_intersections"]) != (colocated, intersections):
@@ -280,6 +308,24 @@ def missing_ferry_pairs(pairs):
 
 
 errors.extend(missing_ferry_pairs(start_pairs))
+
+
+def ferry_fisher_failures(relations, forms):
+    a, b = "nov_occ_ferryman", "nov_occ_fisher"
+    relation = [r for r in relations if r["scope_kind"] == "role_pair" and
+                {r["subject_role_ref"], r["object_role_ref"]} == {a, b} and
+                r["relationship_kind"] == "unspecified" and r["no_source"]]
+    failures = [] if len(relation) == 1 else ["ferryman/fisher: expected one neutral relationship gap"]
+    for speaker, addressee in ((a, b), (b, a)):
+        matches = [r for r in forms if r["channel"] == "oral" and
+                   r["speaker_role_ref"] == speaker and r["addressee_role_ref"] == addressee and
+                   r["relationship_kind"] == "unspecified" and r["no_source"] and not r["form_ru"]]
+        if len(matches) != 1:
+            failures.append(f"ferryman/fisher: expected one neutral oral gap {speaker}->{addressee}")
+    return failures
+
+
+errors.extend(ferry_fisher_failures(rel_rows, af_rows))
 
 homestead_pair = frozenset(("nov_role_smerd_householder", "nov_role_household_mistress"))
 
@@ -324,6 +370,37 @@ def missing_oral_kinds(forms):
 for kind in missing_oral_kinds(af_rows):
     errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
+    low_church = next(r for r in register_rows if r["subject_kind"] == "occupation" and r["subject_ref"] in low_church_occ)
+    wrong_register = [dict(r) for r in register_rows]
+    next(r for r in wrong_register if r["subject_ref"] == low_church["subject_ref"])["register"] = "formal_literate"
+    if not any("low-status church occupation" in failure for failure in register_failures(wrong_register)):
+        errors.append("negative low-status church register probe failed")
+    else:
+        print("OK: negative low-status church register probe detected formal_literate")
+    occupation = next(r for r in register_rows if r["subject_kind"] == "occupation" and r["subject_ref"] in reachable_occ)
+    if not register_failures([r for r in register_rows if r is not occupation]):
+        errors.append("negative register probe failed to detect removed occupation row")
+    else:
+        print("OK: negative register probe detected removed occupation row")
+    ferry_form = next(r for r in af_rows if r["speaker_role_ref"] == "nov_occ_fisher" and r["addressee_role_ref"] == "nov_occ_ferryman" and r["relationship_kind"] == "unspecified")
+    if not ferry_fisher_failures(rel_rows, [r for r in af_rows if r is not ferry_form]):
+        errors.append("negative ferry/fisher probe failed to detect removed directed row")
+    else:
+        print("OK: negative ferry/fisher probe detected removed directed row")
+    winter_pair = ("nov_occ_crossing_guard", "nov_occ_winter_road_worker")
+    for speaker, addressee in (winter_pair, winter_pair[::-1]):
+        reduced = [r for r in af_rows if not (r["speaker_role_ref"] == speaker and
+                   r["addressee_role_ref"] == addressee and r["relationship_kind"] == "joint_work")]
+        if not coverage_failures(rel_rows, reduced):
+            errors.append(f"negative winter crossing probe failed for {speaker}->{addressee}")
+        else:
+            print(f"OK: negative winter crossing probe detected missing {speaker}->{addressee}")
+    reduced_rel = [r for r in rel_rows if not (r["scope_kind"] == "role_pair" and
+                   {r["subject_role_ref"], r["object_role_ref"]} == set(winter_pair))]
+    if not coverage_failures(reduced_rel, af_rows):
+        errors.append("negative winter crossing probe failed to detect removed relationship")
+    else:
+        print("OK: negative winter crossing probe detected missing relationship")
     for rows, id_field, prefix, fields, expected in (
         (rel_rows, "rel_rule_id", "rel_start_", rel_key_fields, expected_rel),
         (af_rows, "sp_id", "form_start_gap_", form_key_fields, expected_forms),

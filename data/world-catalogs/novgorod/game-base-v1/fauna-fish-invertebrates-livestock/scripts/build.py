@@ -564,12 +564,22 @@ for fid, season in phase_scope:
             state, source, rule = 'yes', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#sunny-daylight'
         if fid == 'fa_dom_chicken':
             if phase == rooster_phase[season]:
-                voice, source, rule = 'yes', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#rooster-four-am'
-                voice_ref = 'livestock_types.csv#ls_chicken_rooster.primary_uses'
+                voice, rule = 'yes', 'fauna-mammals-birds/fauna/activity_phase_rules.json#rooster-four-am'
+                voice_ref = 'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_summer_035.partial_text'
+                source = voice_ref
             elif phase == 'daylight' and season in ('winter', 'spring_rasputitsa', 'summer'):
                 voice = 'yes'
-                voice_ref = f'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_{season}_{dict(winter="033", spring_rasputitsa="034", summer="035")[season]}'
+                voice_ref = f'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_{season}_{dict(winter="033", spring_rasputitsa="034", summer="035")[season]}.partial_text'
                 source, rule = voice_ref, ''
+        inferred_livestock_dusk = fid in ('fa_dom_cattle', 'fa_dom_pig', 'fa_dom_sheep') and season == 'summer' and phase == 'civil_dusk'
+        if inferred_livestock_dusk:
+            state = 'yes'  # C: summer pasture and bringing animals back to the yard at dusk.
+            source = f'livestock_care.csv#lc_{fid.removeprefix("fa_dom_")}__summer.care_tasks_daily'
+            if fid == 'fa_dom_cattle':
+                voice = 'yes'
+                voice_ref = 'buildings-interiors-containers/interiors/scenes.csv#sc_scn032.sound'
+                source += ';' + voice_ref
+            source += ';' + ';'.join(f"{'place_type_livestock.csv' if ref.startswith('pl_') else 'herd_composition.csv'}#{ref}" for ref in sorted(livestock_rules.get(fid, [])))
         if fid in {r['fa_id'] for r in inv_rows} and season in taxon.get('dormant_seasons', '').split(';'):
             state, voice, voice_ref = 'no', 'no', ''
             source, rule = f'invertebrates_herps.csv#{fid}.dormant_seasons', ''
@@ -584,7 +594,7 @@ for fid, season in phase_scope:
                                visibility_state=state, voice_state=voice, voice_text_ref=voice_ref,
                                source_refs=source, rule_ref=rule,
                                no_source=('phase visibility and voice unknown' + (f'; conditional occurrence refs: {occurrence}' if occurrence else '')) if complete_gap else '',
-                               confidence=taxon['confidence'] if source and not rule and state != 'no_source' and voice != 'no_source' and not source.endswith('.dormant_seasons') and not source.startswith('buildings-interiors-containers/') else 'C', status=STATUS))
+                               confidence=taxon['confidence'] if source and not rule and state != 'no_source' and voice != 'no_source' and not source.endswith('.dormant_seasons') and not source.startswith('buildings-interiors-containers/') and not inferred_livestock_dusk else 'C', status=STATUS))
 phase_header = ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref',
                 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status']
 counts['phase_activity.csv'] = write_csv('phase_activity.csv', phase_header, phase_rows, '\n')

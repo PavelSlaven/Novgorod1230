@@ -150,7 +150,7 @@ def write_csv(path, rows, fieldnames):
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames,
                            lineterminator="\n" if os.path.basename(path) in
-                           {"household_composition_profiles.csv", "psychology_profiles.csv", "relationship_rules.csv", "address_forms.csv"} else "\r\n")
+                           {"household_composition_profiles.csv", "psychology_profiles.csv", "relationship_rules.csv", "address_forms.csv", "speech_registers.csv"} else "\r\n")
         w.writeheader()
         for row in rows:
             out = {}
@@ -537,10 +537,10 @@ def build_npc_psychology(occs, roles):
 # Domain 3: speech_address
 # ---------------------------------------------------------------------------
 
-def build_speech_address(roles):
+def build_speech_address(occs, roles):
     out_dir = os.path.join(ROOT, "speech_address")
 
-    # registers.csv — closed vocabulary of speech registers, one per role.
+    # registers.csv — one register per role or occupation.
     #
     # Fixed 2026-09-26 (rework). literacy_expectation is identical template
     # text on all 71 rows (distinct=1): "низкая по умолчанию; выше у элиты,
@@ -560,12 +560,14 @@ def build_speech_address(roles):
     LITERATE_TITLE_KEYWORDS = ["писец", "дьяк", "приказчик", "доверенн"]
 
     def literacy_register(r):
-        rank = (r.get("social_rank") or "").strip().lower()
-        grp = (r.get("role_group") or "").strip()
-        title = ((r.get("role_title") or "") + " " + (r.get("historical_term") or "")).lower()
-        if rank in ("elite", "high") or grp == "церковь" or any(k in title for k in LITERATE_TITLE_KEYWORDS):
+        rank = (r.get("social_rank") or r.get("typical_status_range") or "").strip().lower()
+        grp = (r.get("role_group") or r.get("occupation_group") or "").strip()
+        title = ((r.get("role_title") or r.get("occupation_title") or "") + " " + (r.get("historical_term") or "")).lower()
+        if "occupation_id" in r and rank in ("low", "low-variable"):
+            return "plain_oral"
+        if rank in ("elite", "high", "middle-high") or grp == "церковь" or any(k in title for k in LITERATE_TITLE_KEYWORDS):
             return "formal_literate"
-        if rank in ("low", "dependent", "outcast"):
+        if rank in ("low", "low-middle", "low-dependent", "low-variable", "outcast-low", "dependent", "outcast"):
             return "plain_oral"
         return "everyday_oral"
 
@@ -573,7 +575,8 @@ def build_speech_address(roles):
     for r in roles:
         register = literacy_register(r)
         reg_rows.append({
-            "role_id": r["role_id"],
+            "subject_kind": "role",
+            "subject_ref": r["role_id"],
             "register": register,
             "literacy_expectation_ru": r.get("literacy_expectation", ""),
             "speech_notes_ru": r.get("languages_or_speech_notes", ""),
@@ -581,9 +584,20 @@ def build_speech_address(roles):
             "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']}",
             "confidence": "C",
         })
+    for o in occs:
+        reg_rows.append({
+            "subject_kind": "occupation",
+            "subject_ref": o["occupation_id"],
+            "register": literacy_register(o),
+            "literacy_expectation_ru": "",
+            "speech_notes_ru": "",
+            "derivation_rule": "Editorial C: register from typical_status_range, occupation_group and occupation_title/historical_term using the role register rule; occupation TSV has no individual literacy or speech field.",
+            "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']}",
+            "confidence": "C",
+        })
     n_reg = write_csv(
         os.path.join(out_dir, "speech_registers.csv"), reg_rows,
-        ["role_id", "register", "literacy_expectation_ru", "speech_notes_ru", "derivation_rule", "source_refs", "confidence"],
+        ["subject_kind", "subject_ref", "register", "literacy_expectation_ru", "speech_notes_ru", "derivation_rule", "source_refs", "confidence"],
     )
 
     # A letter opening is a written formula, never a default oral address.
@@ -769,7 +783,7 @@ def main():
     report["inputs"] = {"occupations_rows": len(occs), "roles_rows": len(roles)}
     build_households_kinship(occs, roles)
     build_npc_psychology(occs, roles)
-    build_speech_address(roles)
+    build_speech_address(occs, roles)
     build_social_norms()
     with open(os.path.join(os.path.dirname(__file__), "build_report.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)

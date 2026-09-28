@@ -17,6 +17,7 @@ const named = (value) => typeof value === 'string' && value.trim().length > 0;
 const reasoned = (value) => named(value) && value.trim().length >= 15 && value.trim().split(/\s+/u).length >= 2 &&
   !/^(?:x|n\/a|unknown|неизвестно|нет данных|нет сведений о причине)(?:$|[^\p{L}])/iu.test(value.trim());
 const subjectKey = (kind, ref) => `${kind}:${ref}`;
+const seasons = ['winter', 'spring', 'summer', 'autumn'];
 const evidenceDir = path.join(BASE, '../sources/books-evidence-v1');
 const bookEvidence = new Map();
 const sexSources = new Map([
@@ -31,7 +32,7 @@ for (const file of fs.readdirSync(evidenceDir).filter((name) => name.endsWith('.
   bookEvidence.get(key).add(row.section_path);
 }
 
-export function checkPeopleComposition(data, startTerritory = null, people = readCsv(PEOPLE), derived = readCsv(DERIVED), profileCatalog = readJson(PROFILES)) {
+export function checkPeopleComposition(data, startTerritory = null, people = readCsv(PEOPLE), derived = readCsv(DERIVED), profileCatalog = readJson(PROFILES), scheduleRows = readCsv(SCHEDULES)) {
   const errors = [];
   const binding = readCsv(P('places/node_binding.csv'));
   const bound = new Set(binding.map((r) => r.pf_id).filter(Boolean));
@@ -75,17 +76,26 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
   const compositionPairs = new Set();
   const compositionSubjects = new Set();
   const scheduled = new Map();
+  const scheduledBySeason = new Map();
+  const subjectSeasons = new Map();
   const allScheduledSubjects = new Set();
-  for (const row of readCsv(SCHEDULES)) {
+  for (const row of scheduleRows) {
     const kind = row.occupation_ref ? 'occupation' : row.role_ref ? 'social_role' : 'household_member';
     const ref = row.occupation_ref || row.role_ref || 'child';
     const key = subjectKey(kind, ref);
     allScheduledSubjects.add(key);
-    for (const block of JSON.parse(row.time_blocks)) if (block.location_ref) {
+    if (!subjectSeasons.has(key)) subjectSeasons.set(key, new Set());
+    subjectSeasons.get(key).add(row.season);
+    for (const block of JSON.parse(row.time_blocks)) if (block.location_ref && ['on_site', 'nearby'].includes(block.presence_state)) {
       if (!scheduled.has(block.location_ref)) scheduled.set(block.location_ref, new Set());
       scheduled.get(block.location_ref).add(key);
+      if (!scheduledBySeason.has(block.location_ref)) scheduledBySeason.set(block.location_ref, new Map());
+      if (!scheduledBySeason.get(block.location_ref).has(row.season)) scheduledBySeason.get(block.location_ref).set(row.season, new Set());
+      scheduledBySeason.get(block.location_ref).get(row.season).add(key);
     }
   }
+  if (scheduledBySeason.get('pf_ferry_landing')?.get('winter')?.size)
+    errors.push('pf_ferry_landing: winter on_site/nearby schedule');
   for (const c of data.compositions) {
     if (!exact(c, ['pf_id', 'population_groups', 'scheduled_absences', ...(c.empty_reason === undefined ? [] : ['empty_reason'])])) { errors.push(`${c?.pf_id}: composition fields`); continue; }
     if (!bound.has(c.pf_id) || seenPf.has(c.pf_id)) errors.push(`${c.pf_id}: unknown/duplicate PF`);
@@ -93,6 +103,8 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
     if (!Array.isArray(c.population_groups) || !Array.isArray(c.scheduled_absences)) { errors.push(`${c.pf_id}: groups/absences arrays`); continue; }
     if ((c.population_groups.length === 0) !== reasoned(c.empty_reason)) errors.push(`${c.pf_id}: empty_reason must be substantive exactly for empty composition`);
     const covered = new Set();
+    const present = new Set();
+    const absentSeasons = new Map();
     for (const g of c.population_groups) {
       const id = g?.group_id;
       if (!exact(g, ['group_id', 'group_kind', 'min_count', 'max_count', 'count_weights', 'weighted_subjects', 'household_profile_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence'])) { errors.push(`${id}: group fields`); continue; }
@@ -166,19 +178,35 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
         const key = subjectKey(s.subject_kind, s.subject_ref);
         if (covered.has(key)) errors.push(`${c.pf_id}: duplicate composition subject ${key}`);
         covered.add(key);
+        present.add(key);
         compositionSubjects.add(key);
         compositionPairs.add(`${c.pf_id}|${key}`);
         if (!scheduled.get(c.pf_id)?.has(key) && !named(g.source_refs)) errors.push(`${id}: subject lacks D1 schedule at PF or source_refs ${key}`);
       }
     }
     for (const absence of c.scheduled_absences) {
-      if (!exact(absence, ['subject_kind', 'subject_ref', 'reason']) || !reasoned(absence.reason)) { errors.push(`${c.pf_id}: absence fields/reason`); continue; }
+      if (!exact(absence, ['subject_kind', 'subject_ref', 'reason', ...(absence.seasons === undefined ? [] : ['seasons'])]) || !reasoned(absence.reason)) { errors.push(`${c.pf_id}: absence fields/reason`); continue; }
+      if (absence.seasons !== undefined && (!Array.isArray(absence.seasons) || !absence.seasons.length || new Set(absence.seasons).size !== absence.seasons.length || absence.seasons.some((season) => !seasons.includes(season)))) errors.push(`${c.pf_id}: invalid absence seasons`);
       if (absence.subject_kind !== 'household_member' && !({ occupation: occupations, social_role: roles })[absence.subject_kind]?.has(absence.subject_ref)) errors.push(`${c.pf_id}: unknown absent subject ${absence.subject_kind}:${absence.subject_ref}`);
       if (absence.subject_kind === 'household_member' && absence.subject_ref !== 'child') errors.push(`${c.pf_id}: unknown household member absence`);
       const key = subjectKey(absence.subject_kind, absence.subject_ref);
-      if (covered.has(key)) errors.push(`${c.pf_id}: subject both present and absent ${key}`);
+      if (covered.has(key) && absence.seasons === undefined) errors.push(`${c.pf_id}: subject both present and absent ${key}`);
       if (covered.has(`absence:${key}`)) errors.push(`${c.pf_id}: duplicate absence ${key}`);
       covered.add(`absence:${key}`);
+      const activeSeasons = Array.isArray(absence.seasons) ? absence.seasons : seasons;
+      absentSeasons.set(key, activeSeasons);
+      if (absence.seasons !== undefined) for (const season of activeSeasons) {
+        if (scheduledBySeason.get(c.pf_id)?.get(season)?.has(key)) errors.push(`${c.pf_id}: seasonal absence overlaps schedule ${key}:${season}`);
+        if (!subjectSeasons.get(key)?.has(season)) errors.push(`${c.pf_id}: seasonal absence lacks subject schedule ${key}:${season}`);
+        if (present.has(key) && ![...scheduledBySeason].some(([pf, bySeason]) => pf !== c.pf_id && bySeason.get(season)?.has(key)))
+          errors.push(`${c.pf_id}: seasonal absence lacks alternate PF schedule ${key}:${season}`);
+      }
+      if (present.has(key)) for (const season of activeSeasons) if (scheduledBySeason.get(c.pf_id)?.get(season)?.has(key))
+        errors.push(`${c.pf_id}: present subject absent during scheduled season ${key}:${season}`);
+    }
+    for (const key of present) for (const season of subjectSeasons.get(key) ?? []) {
+      if (!scheduledBySeason.get(c.pf_id)?.get(season)?.has(key) && !absentSeasons.get(key)?.includes(season))
+        errors.push(`${c.pf_id}: missing seasonal absence ${key}:${season}`);
     }
     for (const key of scheduled.get(c.pf_id) ?? []) {
       if (!covered.has(key) && !covered.has(`absence:${key}`)) errors.push(`${c.pf_id}: scheduled subject missing ${key}`);
@@ -308,6 +336,28 @@ if (isMain) {
         errors.push('negative probe failed: foreign household profile');
     }
     probe('missing scheduled subject', 'scheduled subject missing', (d) => { d.compositions.find((c) => c.pf_id === 'pf_bog').scheduled_absences = []; });
+    probe('missing winter ferryman absence', 'missing seasonal absence', (d) => { d.compositions.find((c) => c.pf_id === 'pf_ferry_landing').scheduled_absences.shift(); });
+    probe('unscoped winter absence', 'subject both present and absent', (d) => { delete d.compositions.find((c) => c.pf_id === 'pf_ferry_landing').scheduled_absences[0].seasons; });
+    probe('invalid absence season', 'invalid absence seasons', (d) => { d.compositions.find((c) => c.pf_id === 'pf_ferry_landing').scheduled_absences[0].seasons = ['winter', 'winter']; });
+    {
+      const schedules = readCsv(SCHEDULES);
+      const winter = schedules.find((row) => row.occupation_ref === 'nov_occ_ferryman' && row.season === 'winter');
+      winter.time_blocks = JSON.stringify(JSON.parse(winter.time_blocks).map((block) =>
+        block.location_ref === 'pf_winter_ice_crossing' ? { ...block, location_ref: '' } : block));
+      if (!checkPeopleComposition(original, bridge, readCsv(PEOPLE), readCsv(DERIVED), readJson(PROFILES), schedules)
+        .some((error) => error.includes('seasonal absence lacks alternate PF schedule')))
+        errors.push('negative probe failed: seasonal absence without alternate PF schedule');
+    }
+    {
+      const schedules = readCsv(SCHEDULES);
+      const winter = schedules.find((row) => row.occupation_ref === 'nov_occ_ferryman' && row.season === 'winter');
+      const blocks = JSON.parse(winter.time_blocks);
+      blocks.find((block) => block.presence_state === 'on_site').location_ref = 'pf_ferry_landing';
+      winter.time_blocks = JSON.stringify(blocks);
+      if (!checkPeopleComposition(original, bridge, readCsv(PEOPLE), readCsv(DERIVED), readJson(PROFILES), schedules)
+        .some((error) => error.includes('winter on_site/nearby schedule')))
+        errors.push('negative probe failed: winter subject at ferry landing');
+    }
     if (bridge) {
       const nodes = bridge.g5.filter((node) => node.place_type);
       const other = nodes.find((node) => node.place_type !== nodes[0].place_type);
@@ -316,6 +366,6 @@ if (isMain) {
       [nodes[0].place_type, other.place_type] = [other.place_type, nodes[0].place_type];
     }
   }
-  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 36 : 35} negative probes` : ''}`);
+  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 41 : 40} negative probes` : ''}`);
   process.exitCode = errors.length ? 1 : 0;
 }

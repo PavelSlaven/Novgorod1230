@@ -2,7 +2,12 @@
 
 Таблицы генерирует `../scripts/build.py`, проверяет `../scripts/check.py`.
 
-## speech_registers.csv — 71 строка (по одной на роль), confidence C (rework 2026-09-26)
+## speech_registers.csv — 139 строк (71 роль и 68 занятий), confidence C
+
+Ключ строки — `subject_kind` + `subject_ref` (`role` или `occupation`).
+Сборщик применяет одно правило к рангу, группе и названию роли или занятия;
+для занятий, у которых нет полей ожидания грамотности и речевых примечаний,
+эти поля пусты. Выбор регистра по занятию редакционный и имеет confidence C.
 
 `register` ∈ {`formal_literate`, `plain_oral`, `everyday_oral`}.
 
@@ -21,7 +26,8 @@
 `role_group = церковь`, или `role_title`/`historical_term` содержит
 писец/дьяк/приказчик/доверенный → `formal_literate`; `social_rank ∈
 {low,dependent,outcast}` → `plain_oral`; иначе → `everyday_oral`. Результат:
-22 formal_literate / 36 plain_oral / 13 everyday_oral (было: 4 / 67 / 0).
+Для 71 роли результат: 22 formal_literate / 36 plain_oral / 13 everyday_oral
+(было: 4 / 67 / 0).
 
 Это остаётся подстановкой за отсутствующее в TSV поле
 `typical_speech_register`, упомянутое в брифе, — его на самом деле нет ни в

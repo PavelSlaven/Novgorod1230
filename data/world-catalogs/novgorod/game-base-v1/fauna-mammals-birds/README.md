@@ -10,7 +10,7 @@ The counts below come from `build-report.json` and `validation-report.json`, whi
 | File | Rows | What |
 |---|---:|---|
 | `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), authored `audible_seasons`, activity time, signs for prose (tracks, droppings, feeding signs, dens/lodges/dams, sounds, smell), behaviour toward humans, danger, products, hunting methods with MASTER gear refs, WK refs |
-| `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, voice, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
+| `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, full `voice_description`, short narrator-ready `voice_sound_ru`, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
 | `fauna/wild_habitat_presence.csv` | 4231 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
 | `fauna/fauna_categories.csv` | 220 | Category nodes in domain `fauna`: `fauna.mammal`, `fauna.bird`, 25 group nodes, 193 taxon nodes. Every taxon row and presence row has a `category_ref` |
 | `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 6 included as rare, 4 included reduced or rural-only, 7 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms |
@@ -69,7 +69,7 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 - Every mammal has at least one kind of sign and at least one presence row. In each forest and riparian place family (conifer, mixed and broadleaf woodland, forest edge, riverbank, lake shore, marshy stream, river channel, floodplain meadow, bog) there are **at least 7** mammal taxa with signs in every season. The target is ≥6.
 - Hibernators (bear, badger, hedgehog, bats, birch mouse, dormouse) are dormant in every winter row.
-- There are 149 bird taxa (target ≥40). Each has `voice_description` and a migration status for all 4 seasons. Every open-air place family has **at least 3** audible bird species in each season (winter only for the winter ice crossing).
+- There are 149 bird taxa (target ≥40). Each has `voice_description`, a short sound-only `voice_sound_ru`, and a migration status for all 4 seasons. Every open-air place family has **at least 3** audible bird species in each season (winter only for the winter ice crossing).
 - Integrity checks:
   - pf_ids exist in `places-binding/places/place_families.csv`.
   - category_refs exist.
@@ -84,6 +84,8 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 ## Rebuild
 
 `fauna/phase_activity.csv` covers every `fa_id × season` appearing in `wild_habitat_presence.csv` on the 16 PF read from `places-binding/places/node_binding.csv` (`pf_id` of bound G4/G5 nodes), with four civil-light phases per pair. `fauna/activity_phase_rules.json` is the single editorial C mapping from coarse `activity_time` to phases; derived rows cite its stable rule id. A `no_source` phase is not a claim of absence and has confidence C. Direct phase claims cite their owner field or book evidence. `voice_text_ref` points to the owner voice/sign field without repeating its text. The builder and validator recompute the PF set from the binding. The searched evidence locations were `fauna/birds.csv` (`activity_time`, `audible_seasons`, `voice_description`), `fauna/mammals.csv` (`activity_time`, `signs_sounds`), `wild_habitat_presence.csv`, `sources/books-evidence-v1/fauna-mammals-birds.csv`, WK `production-v1/fauna-ecology.json`, MASTER archive, adjacent fish/invertebrate/livestock group, and recorded C rules.
+
+`voice_sound_ru` is authored in `scripts/src/birds.cjs` and generated into `fauna/birds.csv`. It gives the narrator the sound itself, without season, place, behaviour, or phase context. `voice_description` retains the full context and remains the input to voice phase derivation; adding the short field does not change phase rules. The validator rejects missing sound text and common context words; `node scripts/validate.cjs --self-test` runs positive and negative probes of that dictionary.
 
 Exactly one of `source_refs`, `rule_ref`, and `no_source` is set per row. An unknown individual facet is marked by its `*_state=no_source`; a fully unknown row uses `no_source`. A source pointer for one facet never changes the other facet's gap state. A call limited to dawn, night, a nest, migration, or a stated season is not promoted to an unconditional daily voice. The crane's dawn call is kept at dawn; the black stork's nest-only calls remain voice gaps.
 

@@ -131,6 +131,7 @@
 - Целевые таблицы: world_base.g4_materialization_bindings / spatial_v3_g4_expansion_profiles (через CR); new: node_place_family_bindings
 - Потребители: @rus/materialization (выбор пулов наличия); runtime-catalog g4-natural-catalog; spatial-v3-world-base-reader (узлы)
 - Источники и статус: pr98:m2c-natural/candidate.json — authoring_axes landscape/land_use/function для 32 G4, candidate_approval_pending; pr98:spatial-v3/candidates/m2c-g4-expansion-v1 — 25 G5 generation templates; pr98:m2c-nature-coverage.json — 128 региональных связей (draft); v17 readback — 32 G4 / 195 G5 / 908 connection bindings
+- C012b: `places-binding/places/region_type_pf_manifest.json` учитывает все 128 региональных связей и два стартовых водных типа: 109 точных PF-сопоставлений, 21 типизированный пробел. Это покрытие типов; основной PF погребального G4 и его шести G5 остаётся пробелом.
 - Пробел: G5 не привязаны к семействам мест; G4 привязаны только осями authoring, не к place_family; региональные связи — draft.
 - Способ: вывод скриптом; приоритет: M2c
 - Приёмка (детерминированный тест): Скрипт: все 32 G4 и 195 G5 из v17 readback/spatial-v3 datasets имеют ровно одну строку; pf_id существует в place_families; для каждой строки binding_basis ссылается на существующий файл+id.

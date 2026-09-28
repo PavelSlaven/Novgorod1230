@@ -12,6 +12,7 @@
 | `crosswalk_scene_templates.csv` | 17 | Каждый scene template spatial-v3 переведён в pf, с числом G5 v17. |
 | `crosswalk_master_location_archetypes.csv` | 32 | Архетипы мест MASTER (item_location_links 12 997 связей, spawn_profiles 46) переведены в pf; 1 `not_applicable` (military_camp). |
 | `node_binding.csv` | 227 | 32 G4 и 195 G5 стартовой территории v17: pf, вторичные pf, landscape, water_body, оси authoring, scene template, основание, gaps. |
+| `region_type_pf_manifest.json` | 130 | Сопоставление 128 региональных типов и двух стартовых водных типов с текущими PF: 109 covered, 21 typed gap. Кандидат; не назначает основной PF узлу. |
 
 Счёт строк — из `scripts/build-*.mjs` и `reports/validation.json`.
 
@@ -21,6 +22,7 @@
 2. **9 слоёв M2c.** Это 13 ключей `layer_applicability` из pr98 `m2c-natural/candidate.json` без 4 фоновых слоёв (seasonal_state, light, weather, audible_context). Их живые значения принадлежат runtime-владельцам (`nonblocking_limits` кандидата). Для интерьеров слои не применяются, там указано `layers_note`.
 3. **Фасеты.** Правило позиции: у семейств с 4 фасетами порядок в WK всегда «грунт/материал, использование/люди, ощущения/следы, риски/уход». Для семейств с 1, 2 или 5 фасетами слоты заданы явно в `pf-authoring.json`.
 4. **Шаблоны.** Ссылки проверяются по `infra/world-base/*_templates.seed.json` и кандидату regional-environment. Колонка `template_refs_not_in_novgorod_candidate` показывает ссылки, которых нет в новгородском кандидате: они есть только в универсальном seed.
+   `region_type_pf_manifest.json` отдельно пересчитывает точные ссылки на шаблоны из `place_families.csv` для каждого ключа `(kind, template_id)` в закреплённом снимке `inputs/m2c-nature-coverage-entries.json`. `source_refs` указывает только на точную строку снимка и её `reference_source`; `regional_source_refs` сохраняет исходные региональные ссылки отдельно. `pf_mappings` указывает для каждого PF точную строку CSV, существующий элемент массива в `scripts/pf-authoring.json` и узловое свидетельство только для двух новых сопоставлений. Покрытие означает хотя бы один точный PF ref; оно само по себе не доказывает присутствие типа на G4. Для 21 типа без PF `scripts/pf-authoring.json` задаёт ближайшие PF, различие и минимальный шаг, а манифест содержит типизированный пробел A.8. Пробелы не имеют G4/G5 scope.
 5. **Crosswalk.** Ручные таблицы лежат в `scripts/crosswalk-rules.json`. Покрытие и разрешимость ссылок проверяет `validate.mjs`.
 6. **Привязка узлов (`build-node-binding.mjs`).**
    - G4: pf выводится из `authoring_axes.function`; в источнике эта ось помечена direct/high. Landscape и water_body копируются из `template_refs` кандидата m2c-natural.

@@ -1,5 +1,11 @@
 # VERIFICATION — places-binding (семейства мест, привязка узлов, носитель наличия, реестр категорий)
 
+## C012b — учёт региональных типов (candidate)
+
+Вход `inputs/m2c-nature-coverage-entries.json` закрепляет точный blob `c8968f65d7567d30b5073a991bbe3357eaf5249f` из `codex/live-world-runtime@7cc0d341b9ac40ba30486f67a07f18ecf136e413`: 128 региональных типов (34/24/31/39 landscape/water_body/land_use/place) плюс два отдельных стартовых водных типа. Производный `places/region_type_pf_manifest.json` содержит ровно 130 ключей: 109 covered (29/23/24/33) и 21 gap (5/3/7/6). Покрытие требует точного PF template ref из текущего `place_families.csv`; `pf_mappings` связывает каждое покрытие с точным элементом `pf-authoring.json`, а `source_refs` содержит только точную строку снимка и её `reference_source`. Региональные ссылки находятся отдельно в `regional_source_refs`. Все 21 пробел имеют строки плана в `pf-authoring.json`, поля A.8 и не имеют exact G4.
+
+`lt_wooded_floodplain` сопоставлен с `pf_mixed_woodland`; `wb_estuary` покрыт; `wb_nearshore_sea` сопоставлен с четырьмя PF (`pf_floodplain_meadow`, `pf_river_channel`, `pf_riverbank`, `pf_winter_ice_crossing`). Только два новых сопоставления имеют относящиеся к ним узловые ссылки. Все строки снимка с точным G4 покрыты. Сверка: `node scripts/build-all.mjs`; полный проход: `node scripts/validate.mjs --start-territory C:\Users\Slaven\.novgorod-bridge\codex\inputs\start-territory.json --self-test`. Self-test включает шесть отрицательных проб манифеста. C012b закрывает учёт типов; погребальный G4 и шесть G5 остаются без основного PF. Запись кандидата, не независимое утверждение.
+
 - **Кто:** независимый агент-верификатор (старший проход, не автор), метка `verify-places-binding`.
 - **Когда:** 2026-09-26.
 - **Что проверено:** `data/world-catalogs/novgorod/game-base-v1/places-binding/` — все 13 CSV, `presence/frequency_rule.json`, `inputs/pr98-extract.json`, `reports/validation.json`, скрипты и ручные crosswalk (`scripts/pf-authoring.json`, `scripts/crosswalk-rules.json`).

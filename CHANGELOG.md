@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- docs(process): HOW_WE_WORK — исполнители и их модели, режимы задач, обмен сообщениями, площадка servak и правила исполнителей на ней; CURRENT_SPRINT — задачи M2c B1–B6 по решениям D28–D32
+- docs(process): HOW_WE_WORK — исполнители и их модели, режимы задач, обмен сообщениями, площадка servak и правила исполнителей на ней; CURRENT_SPRINT — задачи M2c B1–B6 по решениям D28–D32 (#168)
 - data(world-catalog): игровая база game-base-v1 (кандидаты, 21 группа, STATUS.md) и книжные факты books-evidence-v1 (#155)
 - feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX; `reference` + `reference_results`; independent norm/reference search; drop semantic CLI/readiness fields; CONTRACT_INDEX §5 label align to `ACTIVE SPECIALIZATION` (owner acceptance pending) (#144, PR #150) LW-008 updated
 - docs(governance): решения владельца 2026-09-26 — PC §9.1 (наличие решается при первом прибытии; typed gap только для вещей по authority-записи; опознавательный текст вещей не от LLM), WR §21.1 (утверждает старшая модель на высоком reasoning; путь и commit; правка снимает утверждение); HOW_WE_WORK и CURRENT_SPRINT по ним; LW-029 уточнён (#149) LW-042 added

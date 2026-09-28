@@ -7,6 +7,8 @@
   "fauna_categories": 220,
   "taxa_checks": 27,
   "sources": 21,
+  "hunting_methods": 23,
+  "hunting_tenure_defaults": 3,
   "phase_activity": 2628
  }
 }

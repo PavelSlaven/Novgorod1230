@@ -7,7 +7,7 @@
 | Папка | Домен | Главные файлы |
 |---|---|---|
 | `craft_tools_gear/` | craft_tools_gear | `tools_gear.csv`, `occupation_tools.csv` |
-| `craft_processes/` | craft_processes | `processes.csv`, `process_steps.csv`, `process_products.csv` |
+| `craft_processes/` | craft_processes | `processes.csv`, `process_steps.csv`, `process_products.csv`, `butchery_profiles.csv`, `fish_cleaning_products.csv` |
 | `workshops/` | workshops | `workshops.csv` |
 | `materials_registry/` | materials_registry | `materials.csv`, `late_materials_denylist.csv`, `material_crosswalk.csv`, `material_resolution.csv` |
 | `sources/` | общий реестр источников группы | `sources.csv` |
@@ -28,7 +28,7 @@ export MATCULT_CATALOG=<...>/Novgorod1230_material_culture_dataset_v1/data/catal
 export MASTER_TP_DIR=<...>/Novgorod1230_MASTER_ARCHIVE_v1/data/normalized_source_tables/technology_processes
 node scripts/build.cjs      # CSV из scripts/src; build-report.json
 node scripts/crosswalk.cjs  # materials_registry/material_crosswalk.csv
-node scripts/validate.cjs   # проверки приёмки; validation-report.json, materials_registry/material_resolution.csv
+node scripts/validate.cjs --self-test # проверки приёмки и отрицательные пробы; validation-report.json, materials_registry/material_resolution.csv
 ```
 
 Зависимостей нет (Node ≥ 18). Скрипты пишут только в эту папку. `material_resolution.csv` — снимок: другие сборщики ещё пишут свои CSV, поэтому после их завершения `validate.cjs` нужно перезапустить.
@@ -39,9 +39,11 @@ node scripts/validate.cjs   # проверки приёмки; validation-report
 |---|---|
 | craft_tools_gear/tools_gear.csv | 157 |
 | craft_tools_gear/occupation_tools.csv | 356 |
-| craft_processes/processes.csv | 48 |
-| craft_processes/process_steps.csv | 166 |
-| craft_processes/process_products.csv | 42 |
+| craft_processes/processes.csv | 50 |
+| craft_processes/process_steps.csv | 171 |
+| craft_processes/process_products.csv | 47 |
+| craft_processes/butchery_profiles.csv | 7 |
+| craft_processes/fish_cleaning_products.csv | 27 |
 | workshops/workshops.csv | 21 |
 | materials_registry/materials.csv | 103 |
 | materials_registry/late_materials_denylist.csv | 27 |
@@ -49,7 +51,7 @@ node scripts/validate.cjs   # проверки приёмки; validation-report
 | materials_registry/material_resolution.csv | 1498 |
 | sources/sources.csv | 25 |
 
-Проверки `validate.cjs`: 27 из 27 PASS, из них 5 информационных (они всегда PASS и только сообщают покрытие).
+Проверки `validate.cjs`: 29 из 29 PASS, из них 5 информационных (они всегда PASS и только сообщают покрытие). `--self-test` дополнительно отклоняет процесс без ножа, выходы массой больше туши, число с ложной source-ссылкой, разрыв класса very-small и рыбный продукт без видовой строки.
 
 ## Универсальное и региональное
 

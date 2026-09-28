@@ -115,6 +115,7 @@
    ],
    "HH_TOOLS_SMALL": [
     "damage",
+    "inscription",
     "repair",
     "wear"
    ],

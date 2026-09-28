@@ -402,6 +402,9 @@ export async function createSpatialV3ProductionCompositionRoot({
         party_schema_version: release.party_schema_version,
         migration_count: migration.applied,
         migration_chain_digest: migration.chain_digest,
+        ...(migration.target_schema_fingerprint == null ? {} : {
+          party_schema_fingerprint: migration.target_schema_fingerprint
+        }),
         world_readiness: cutoverReadiness.world,
         migration_readiness: Object.freeze(partyReadiness),
         dependencies: structuredClone(startup)

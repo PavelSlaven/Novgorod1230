@@ -4,8 +4,14 @@ import { spawnSync } from 'node:child_process';
 import pg from 'pg';
 import {
   runSpatialV3TargetMigrations,
+  SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import {
+  spatialV3TargetChainMigrationId
+} from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-chain-ledger.js';
+import { readPostgresSchemaFingerprint } from
+  '../../tools/runtime-catalog-activation/src/forward-migration.js';
 import { runSpatialV3TargetMigrationsForProductionRestart } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migration-restart.js';
 import { SPATIAL_V3_PRODUCTION_RELEASE } from
@@ -376,6 +382,27 @@ test('extended target chain skips re-applying DDL when the head is already curre
       SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint,
       'restart-skip-test'
     ]);
+    const ledgerClient = await pool.connect();
+    try {
+      const targetFingerprint = await readPostgresSchemaFingerprint(
+        ledgerClient,
+        'party_runtime'
+      );
+      await ledgerClient.query(`
+        INSERT INTO party_runtime.schema_migrations (
+          migration_id,migration_digest,source_schema_fingerprint,
+          target_schema_fingerprint,applied_by
+        ) VALUES ($1,$2,$3,$4,$5)
+      `, [
+        spatialV3TargetChainMigrationId(),
+        SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
+        targetFingerprint,
+        targetFingerprint,
+        'restart-skip-test'
+      ]);
+    } finally {
+      ledgerClient.release();
+    }
     const first = await runSpatialV3TargetMigrationsForProductionRestart(pool, {
       exactAppliedMigration: {
         migration_id:

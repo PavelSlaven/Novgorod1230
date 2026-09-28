@@ -33,17 +33,30 @@ function context() {
 const identity = { partyId: 'party', actorId: 'actor', directionalExitId: 'exit', requestId: 'request' };
 const disclosure = async () => [{ directional_exit_id: 'exit', directional_exit_version: 2,
   direction_context_id: 'direction', knowledge_state: 'visible', display_label: 'Продолжить путь' }];
-test('arrival offers no expansion and neither mutates nor asks disclosure owner', async () => {
-  const current = context(); current.position.template_slot_key = 'arrival';
+test('arrival with no local path to departure offers no expansion and neither mutates nor asks disclosure owner', async () => {
+  const current = context(); current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.scene = { ...current.scene, positions: [current.position], movement_edges: [] };
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current });
   assert.deepEqual(await runtime.listExpansionOptions(identity), []);
-  await assert.rejects(runtime.prepareExpansion(identity), (e) => e.details.reason === 'selected_exit_unavailable');
+  await assert.rejects(runtime.prepareExpansion(identity), (e) => e.code === 'SPATIAL_V3_EXPANSION_DEPARTURE_UNREACHABLE');
+});
+test('an arrival position from which departure is reachable by a local edge still offers the crossing (A-B1-05 step 7c)', async () => {
+  const current = context();
+  const departurePosition = current.position;
+  current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.scene = { ...current.scene, positions: [current.position, departurePosition],
+    movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position',
+      to_position_id: departurePosition.id, status: 'active' }] };
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  assert.deepEqual(await runtime.listExpansionOptions(identity),
+    [{ directional_exit_id: 'exit', display_label: 'Продолжить путь', local_departure_path: ['local-edge-1'] }]);
 });
 test('exact approved entry and current disclosure select server-owned request only', async () => {
   const current = context(); const before = structuredClone(current); let request;
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async (input) => { request = input; return { ok: true }; } } });
-  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ directional_exit_id: 'exit', display_label: 'Продолжить путь' }]);
+  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ directional_exit_id: 'exit', display_label: 'Продолжить путь', local_departure_path: [] }]);
   await runtime.prepareExpansion({ ...identity, slot_ref: { id: 'client', version: 999 }, candidate_ordinal: 999 });
   assert.equal(request.candidate_ordinal, 0); assert.deepEqual(request.slot_ref, { id: 'slot', version: 3 });
   assert.equal(request.source_position_id, 'departure-position'); assert.equal(request.actor_id, 'actor');
@@ -60,7 +73,7 @@ test('a resolved pass-target description reaches listExpansionOptions verbatim (
     materializerVersion: 'version',
     generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
   const options = await runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor' });
-  assert.deepEqual(options, [{ directional_exit_id: 'exit', display_label: 'к руслу' }]);
+  assert.deepEqual(options, [{ directional_exit_id: 'exit', display_label: 'к руслу', local_departure_path: [] }]);
 });
 
 test('wrong exact entry version, hidden exit and changed disclosure version are unavailable', async () => {

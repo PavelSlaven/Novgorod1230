@@ -1,5 +1,6 @@
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
 import { serverError } from '../../errors.js';
+import { findReachableDeparturePosition } from '../../runtime/spatial-v3-expansion-runtime.js';
 
 /** The public command supplies actor/party identities only. Authoring pins come
  * from the active revision and its unique approved G4 dependency edge. */
@@ -25,10 +26,20 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     id: current.baseline.scene_template_ref.entity_id,
     version: Number(current.baseline.scene_template_ref.authoring_version), world_revision_id: current.world_revision_id });
   if (!scene?.ok) gap('approved_source_scene_required', scene?.error);
-  if (!scene.value.endpoint_slots.some((row) => ['departure', 'both'].includes(row.endpoint_role)
-    && row.required_position_slot_key === current.position.template_slot_key
-    && row.required_position_instance_ordinal === current.position.template_instance_ordinal)) {
-    return { ...current, scene: scene.value, partyId, actorId };
+  const local = await transaction.query(`SELECT
+      (SELECT jsonb_agg(jsonb_build_object('id',p.id,'template_slot_key',p.template_slot_key,
+          'template_instance_ordinal',p.template_instance_ordinal))
+        FROM party_runtime.scene_position_nodes p
+        WHERE p.party_id=$1 AND p.g6_instance_id=$2 AND p.status='active') AS positions,
+      (SELECT jsonb_agg(jsonb_build_object('id',e.id,'from_position_id',e.from_position_id,
+          'to_position_id',e.to_position_id,'status',e.status))
+        FROM party_runtime.scene_movement_edges e
+        WHERE e.party_id=$1 AND e.scene_baseline_id=$3 AND e.status='active') AS movement_edges`,
+    [partyId, current.position.g6_instance_id, current.baseline.id]);
+  const sceneWithLocalTopology = { ...scene.value,
+    positions: local.rows[0]?.positions ?? [], movement_edges: local.rows[0]?.movement_edges ?? [] };
+  if (findReachableDeparturePosition({ position: current.position, scene: sceneWithLocalTopology }) == null) {
+    return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
   }
   const binding = await worldBaseReader.readG4ExpansionBinding({ g4_id: current.site.parent_g4_id,
     world_revision_id: current.world_revision_id });
@@ -39,7 +50,7 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     party_id: partyId, g4_id: current.site.parent_g4_id });
   if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
   return { ...current, ...binding.value, closure: closure.value, snapshot: loaded.snapshot,
-    scene: scene.value, partyId, actorId };
+    scene: sceneWithLocalTopology, partyId, actorId };
 }
 
 export function createSpatialV3ExpansionContextReader({ partyPool, worldBaseReader, release } = {}) {

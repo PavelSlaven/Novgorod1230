@@ -19,7 +19,7 @@
 
 ## Метод
 
-1. Скрипт `_shared/scripts/extract-g4-index.mjs` читает (read-only) `pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json` и пишет компактный индекс 32 G4 (`_shared/g4_nature_index.json`: шаблоны ландшафта и воды, классы слоёв, члены пула, применимость слоёв).
+1. Закреплённый `_shared/g4_nature_index.json` содержит компактный индекс 32 G4 из `pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json`: шаблоны ландшафта и воды, классы слоёв, члены пула, применимость слоёв. Его явное обновление выполняет `_shared/scripts/refresh-inputs.mjs`.
 2. Ландшафтные и хозяйственные шаблоны выгружены из `world_db` (`_shared/*.world_db.tsv`, draft).
 3. Авторские данные — в `authoring/` (`soils.mjs`, `materials.mjs`, `tools.mjs`, `sources.mjs`). У каждого материала есть явное правило `lt()` по атрибутам шаблона (группа, тип грунта, влажность, растительность), правила по функции G4 и повышение класса, если в G4 есть член пула (например, `Salix` → ивовые прутья «common»).
 4. `scripts/build.mjs` выводит все таблицы. `scripts/check.mjs` проверяет приёмку.
@@ -65,4 +65,4 @@
 
 ## Пересборка
 
-`node _shared/scripts/run-all.mjs` из папки группы. Если checkouts лежат в других местах, задайте `PR98_ROOT` и `MAIN_ROOT`.
+`node _shared/scripts/run-all.mjs` из папки группы. Соседние checkout нужны только для явного обновления входов через `_shared/scripts/refresh-inputs.mjs`.

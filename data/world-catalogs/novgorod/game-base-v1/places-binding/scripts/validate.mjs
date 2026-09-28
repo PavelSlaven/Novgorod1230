@@ -14,6 +14,8 @@ const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
 const P = (...p) => path.join(GROUP, ...p);
 const TIME_ORDER = ['morning', 'day', 'evening', 'night'];
+const ITEM_PATH = 'data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv';
+const FAUNA_PATH = 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv';
 function presenceIds(rows) {
   const keys = new Set(), ids = new Set(), failures = [];
   for (const row of rows) {
@@ -54,6 +56,7 @@ function acceptedCoverage(expected, rules, resolutions, itemRows) {
     const key = sourceKey(pool, scope, season, time);
     if (!counts.has(key)) { failures.push(`unexpected ${role}: ${key}`); return; }
     const source = itemRows.get(pool);
+    if (pool.startsWith(`${ITEM_PATH}#`) && !source) failures.push(`${role}: unresolved item source ${pool}`);
     if (source && (!itemRef || itemRef !== source.item_or_category_ref)) failures.push(`${role}: missing or mismatched item_ref ${pool}`);
     counts.set(key, counts.get(key) + 1);
   };
@@ -65,6 +68,7 @@ function acceptedCoverage(expected, rules, resolutions, itemRows) {
   }
   for (const r of resolutions) for (const entry of [r.chosen, ...r.equivalent, ...r.variants, ...r.dropped]) {
     const item = itemRows.get(entry.source_pool);
+    if (entry.source_pool.startsWith(`${ITEM_PATH}#`) && !item) failures.push(`resolution item source missing ${entry.source_pool}`);
     if (item && (entry.item_ref !== item.item_or_category_ref || entry.source_row_id !== item.ipf_id)) failures.push(`resolution item ref/id differs from source ${entry.source_pool}`);
   }
   for (const rule of rules) for (const season of rule.allowed_seasons === 'all' ? SEASONS : split(rule.allowed_seasons)) {
@@ -467,6 +471,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   const occupations = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')).map((r) => r.occupation_id));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
   const itemSources = readCsv(P('../items-household-personal/items/item_place_frequency.csv'));
+  const itemById = new Map(itemSources.map((row) => [row.ipf_id, row]));
   const peopleSources = readCsv(P('presence/people_presence_authoring.csv'));
   const itemConditions = ['entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required'];
   const f = [];
@@ -494,11 +499,11 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     }
     for (const col of itemConditions) if (!Object.hasOwn(r, col)) f.push(`${r.pr_id}: missing ${col} column`);
     const sources = split(r.source_pool);
-    const itemRows = sources.filter((s) => s.includes('/items-household-personal/items/item_place_frequency.csv#row'));
+    const itemRows = sources.filter((s) => s.startsWith(`${ITEM_PATH}#`));
     if (itemRows.length) {
       if (itemRows.length !== sources.length || r.subject_kind !== 'category') f.push(`${r.pr_id}: mixed item/category sources`);
       for (const source of itemRows) {
-        const row = itemSources[Number(source.match(/#row(\d+)$/)?.[1]) - 2];
+        const row = itemById.get(source.slice(ITEM_PATH.length + 1));
         if (!row) { f.push(`${r.pr_id}: unresolved item source ${source}`); continue; }
         for (const col of itemConditions) if (['placement_basis_ref', 'placement_owner_ref'].includes(col) ? !String(r[col]).split('|').map((v) => v.trim()).includes(row[col]) : r[col] !== row[col]) f.push(`${r.pr_id}: ${col} differs from ${source}`);
         if (!row.entry_visible_if || !row.search_only_if) f.push(`${r.pr_id}: item discovery conditions empty`);
@@ -512,18 +517,19 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   const rr = readJson(P('reports/presence-rules-report.json'));
   const expected = [], itemRows = new Map();
   const add = (pool, scope, seasons, times = ['']) => { for (const season of seasons) for (const time of times) expected.push({ pool, scope, season, time, key: `${pool}|${scope}|${season}|${time}` }); };
-  const itemPath = 'data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv';
-  itemSources.forEach((row, i) => {
+  if (itemById.size !== itemSources.length || itemById.has('')) throw new Error('duplicate or empty item ipf_id');
+  itemSources.forEach((row) => {
     if (!row.category_id || !cats.has(row.category_id)) return;
-    const pool = `${itemPath}#row${i + 2}`;
+    const pool = `${ITEM_PATH}#${row.ipf_id}`;
     const scope = `place_family|pf_${row.pf_id}||category|${row.category_id}`;
     itemRows.set(pool, row);
     add(pool, scope, split(row.allowed_seasons));
   });
-  const faunaPath = 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv';
-  readCsv(P('../fauna-mammals-birds/fauna/wild_habitat_presence.csv')).forEach((row, i) => {
+  const faunaSources = readCsv(P('../fauna-mammals-birds/fauna/wild_habitat_presence.csv'));
+  if (new Set(faunaSources.map((row) => row.presence_id)).size !== faunaSources.length || faunaSources.some((row) => !row.presence_id)) throw new Error('duplicate or empty fauna presence_id');
+  faunaSources.forEach((row) => {
     const scope = `place_family|${row.pf_id}|${row.region_id}|category|${row.category_ref}`;
-    add(`${faunaPath}#row${i + 2}`, scope, row.season === 'all' ? SEASONS : [row.season]);
+    add(`${FAUNA_PATH}#${row.presence_id}`, scope, row.season === 'all' ? SEASONS : [row.season]);
   });
   peopleSources.forEach((row, i) => {
     if (row.creation_owner !== 'presence_rule') return;
@@ -541,6 +547,16 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (!target) throw new Error('leather purse variant probe target missing');
     const altered = rr.resolutions.map((r) => r === target ? { ...r, variants: r.variants.filter((v) => v.item_ref !== 'it_ps_leather_purse') } : r);
     const targetPool = target.variants.find((v) => v.item_ref === 'it_ps_leather_purse').source_pool;
+    const reorderedItems = new Map([...itemSources].reverse().map((row) => [`${ITEM_PATH}#${row.ipf_id}`, row]));
+    if (acceptedCoverage(expected, pr, rr.resolutions, reorderedItems).length) throw new Error('item source reorder probe failed');
+    reorderedItems.delete(targetPool);
+    if (!acceptedCoverage(expected, pr, rr.resolutions, reorderedItems).some((failure) => failure.includes(`source ${targetPool}`))) throw new Error('deleted item source probe failed');
+    console.log('PASS presence_rules / stable_item_source_reorder_and_delete_probes');
+    const faunaPool = pr.flatMap((r) => split(r.source_pool)).find((pool) => pool.startsWith(`${FAUNA_PATH}#`));
+    const reorderedFauna = [...expected.filter((source) => !source.pool.startsWith(`${FAUNA_PATH}#`)), ...expected.filter((source) => source.pool.startsWith(`${FAUNA_PATH}#`)).reverse()];
+    if (acceptedCoverage(reorderedFauna, pr, rr.resolutions, itemRows).length) throw new Error('fauna source reorder probe failed');
+    if (!acceptedCoverage(reorderedFauna.filter((source) => source.pool !== faunaPool), pr, rr.resolutions, itemRows).some((failure) => failure.startsWith('unexpected ') && failure.includes(faunaPool))) throw new Error('deleted fauna source probe failed');
+    console.log('PASS presence_rules / stable_fauna_source_reorder_and_delete_probes');
     const probe = acceptedCoverage(expected, pr.map((r) => {
       if ([r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref].join('|') !== target.key) return r;
       return { ...r, variants: JSON.stringify(JSON.parse(r.variants || '[]').filter((v) => v.item_ref !== 'it_ps_leather_purse')) };

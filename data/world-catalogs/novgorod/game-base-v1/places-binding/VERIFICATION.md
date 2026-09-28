@@ -1036,3 +1036,19 @@
 - У `pf_winter_ice_crossing` добавлен crossing_guard с объяснением, почему он там не создаётся. Это согласовано с новыми расписаниями.
 - С расписаниями D-1 согласовано: скриптом зимой на пристани нет ни одного блока; в `people_presence_authoring.csv` перевозчик — только `spring;summer;autumn`.
 - Ограничение: пока Cursor staging D-2 не переносит `seasons`, runtime поймёт отсутствие как круглогодичное и опустошит летнюю пристань.
+
+### presence/presence_rules.csv — approve (C007d2, зависимая пересборка после C007d)
+
+Проверено: Claude Opus 5.5, повторной сборкой и построчным diff (C007d2, коммит 6b03335e против 8f0c1d91).
+
+- **Сборка.** `build-all.mjs` в отдельном worktree даёт те же `presence_rules.csv`. Полный `validate.mjs --start-territory <bridge> --self-test` — 0 FAIL, в том числе `matches_current_input_pools` и `rows_resolve_and_follow_rule`.
+- **Что изменилось.** 5719 → 5717: сняты ровно `pr_166a73373377cef2` (корзина на перевозе) и `pr_f6155eed068b4511` (весы). Новых id 0. У 1123 строк изменилась только позиционная provenance-ссылка на строку `item_place_frequency.csv`.
+- **Ограничения.**
+  - `reports/category-registry-report.json` устарел: чистая сборка даёт `references_checked` 7239, закоммичено 7241.
+  - `source_pool` и `variants` ссылаются на строки пула по позиции, поэтому снятие любой строки выше сдвигает сотни ссылок. Нужны стабильные id строк (задача C006f).
+
+### C006f — закрытие ограничений C007d2 (remediation/readback)
+
+- Для item/fauna `source_pool` и `variants[].source_pool` теперь используют стабильный `<path>#<row-id>`; `pr_id`, ключи и поведение не изменились.
+- `reports/category-registry-report.json` пересобран: `references_checked=7239`.
+- Полный `build-all.mjs` и `validate.mjs` с реальным bridge — PASS. Это проверка исправления; данные остаются `candidate`, независимый verdict автора C007d2 не утверждается.

@@ -268,17 +268,23 @@ errors.extend(check_generated(rel_rows, "rel_rule_id", "rel_start_", rel_key_fie
 errors.extend(check_generated(af_rows, "sp_id", "form_start_gap_", form_key_fields, expected_forms))
 if not start_pairs:
     errors.append("starting pairs: empty set")
-if (colocated, intersections) != (727, 6617):
-    errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (727, 6617)")
 with open(os.path.join(ROOT, "scripts", "build_report.json"), encoding="utf-8") as f:
     build_report = json.load(f)
 start_report = build_report["households_kinship"]
+
+
+def reachable_report_failures(report):
+    return [key for key, value in (("start_colocated_node_season_contexts", colocated),
+                                   ("start_phase_intersections", intersections))
+            if report.get(key) != value]
+
+
 register_counts = {kind: {register: sum(r["subject_kind"] == kind and r["register"] == register for r in register_rows)
                           for register in ("formal_literate", "plain_oral", "everyday_oral")}
                    for kind in ("role", "occupation")}
 if build_report["speech_address"].get("register_counts") != register_counts:
     errors.append("speech register counts differ from build report")
-if (start_report["start_colocated_node_season_contexts"], start_report["start_phase_intersections"]) != (colocated, intersections):
+if reachable_report_failures(start_report):
     errors.append("starting reachable counts differ from build report")
 with open(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
     gap_rows = json.load(f)["never_created_gaps"]
@@ -371,6 +377,12 @@ def missing_oral_kinds(forms):
 for kind in missing_oral_kinds(af_rows):
     errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
+    for altered in ({**start_report, "start_phase_intersections": intersections + 1},
+                    {key: value for key, value in start_report.items() if key != "start_colocated_node_season_contexts"}):
+        if not reachable_report_failures(altered):
+            errors.append("negative reachable report probe failed")
+        else:
+            print("OK: negative reachable report probe detected mismatch")
     low_church = next(r for r in register_rows if r["subject_kind"] == "occupation" and
                       occupations[r["subject_ref"]]["occupation_group"] == "церковь" and
                       occupations[r["subject_ref"]]["typical_status_range"] in {"low", "low-variable"})

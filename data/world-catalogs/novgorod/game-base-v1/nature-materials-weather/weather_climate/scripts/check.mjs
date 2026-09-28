@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readCsv, fail, SEASONS, MAIN, writeJson } from '../../_shared/scripts/lib.mjs';
+import { readCsv, readJson, fail, SEASONS, SHARED, writeJson } from '../../_shared/scripts/lib.mjs';
 import { PHASE, BANDS, STATES, STATE_TEMP_MOD } from '../authoring/states.mjs';
 
 const DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,9 +20,7 @@ const anomT = T('temperature_anomaly_transitions.csv');
 const realized = T('realized_weather_matrix.csv');
 const prof = T('temperature_profile.csv');
 
-const wk = new Set();
-const wkDir = path.join(MAIN, 'data/world-catalogs/novgorod/world-knowledge/production-v1');
-for (const f of fs.readdirSync(wkDir).filter((f) => f.endsWith('.json') && !f.startsWith('verification'))) { try { for (const c of JSON.parse(fs.readFileSync(path.join(wkDir, f), 'utf8')).claims || []) wk.add(c.claim_ref); } catch { /* skip */ } }
+const wk = new Set(readJson(path.join(SHARED, 'main_inputs.json')).claim_refs);
 for (const f of fs.readdirSync(DIR).filter((f) => f.endsWith('.csv'))) {
   if (['water_profiles.csv', 'wind_air_profiles.csv'].includes(f)) continue;
   for (const r of T(f)) {

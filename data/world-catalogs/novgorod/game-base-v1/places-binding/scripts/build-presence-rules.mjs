@@ -93,8 +93,12 @@ export function build({ write = true } = {}) {
     else if (head.includes('frequency_class')) poolLike.push({ file: rel(f), has_scope_column: hasScope, has_category_column: head.includes('category_ref') || head.includes('category_id') });
   }
   for (const f of poolFiles) {
-    readCsv(f).forEach((r, i) => {
-      const where = `${rel(f)}#row${i + 2}`;
+    const rows = readCsv(f);
+    const idColumn = path.basename(f) === 'item_place_frequency.csv' ? 'ipf_id' : path.basename(f) === 'wild_habitat_presence.csv' ? 'presence_id' : '';
+    const ids = rows.map((r) => r[idColumn]);
+    const stableIds = idColumn && ids.every(Boolean) && new Set(ids).size === ids.length;
+    rows.forEach((r, i) => {
+      const where = `${rel(f)}#${stableIds ? r[idColumn] : `row${i + 2}`}`;
       const rowId = Object.values(r)[0];
       const cat = r.category_ref || r.category_id;
       const rawFc = ppmFor((r.frequency_class || '').trim());

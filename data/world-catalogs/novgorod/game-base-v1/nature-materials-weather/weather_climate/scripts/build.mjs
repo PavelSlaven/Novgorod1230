@@ -2,7 +2,7 @@
 // node weather_climate/scripts/build.mjs
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readJson, readCsv, writeCsv, writeJson, FREQ_WEIGHT, SEASONS, MAIN } from '../../_shared/scripts/lib.mjs';
+import { readJson, readCsv, writeCsv, writeJson, FREQ_WEIGHT, SEASONS, SHARED } from '../../_shared/scripts/lib.mjs';
 import { SOURCES, MONTHLY, DAYCOUNTS, OCCUPANCY, SEASON_MONTHS, PHENOMENA, HISTORICAL } from '../authoring/climate_inputs.mjs';
 import { STATES, PHASE, BANDS, ANOMALIES, ANOMALY_ORDER, STATE_TEMP_MOD, INTERVALS, LOCAL_MODIFIERS, GROUND_RULES, WATER_RULES } from '../authoring/states.mjs';
 
@@ -158,7 +158,7 @@ const stateRows = STATES.map((st) => ({ wx_state_id: st.id, name_ru: st.name_ru,
 // 9. phenomena with Julian dates
 const toJulian = (g) => { if (!/^\d\d-\d\d$/.test(g)) return g; const d = new Date(Date.UTC(1231, Number(g.slice(0, 2)) - 1, Number(g.slice(3)))); d.setUTCDate(d.getUTCDate() - JULIAN_SHIFT_DAYS); return `${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`; };
 // light nights from daylight dataset
-const dl = readJson(path.join(MAIN, 'data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json'))[0].payload.daylight_boundary_rules.year_daily_boundaries['1230'];
+const dl = readJson(path.join(SHARED, 'main_inputs.json')).daylight_1230;
 const dlE = Array.isArray(dl) ? dl : Object.entries(dl);
 const light = [];
 for (let m = 1; m <= 12; m++) {

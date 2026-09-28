@@ -21,11 +21,11 @@
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 9 | 24 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
-| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 5 | 19 | 0 |
+| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 6 | 18 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **63** | **199** | **0** |
+| **Итого** | | **64** | **198** | **0** |
 
 ## Вердикты по файлам
 
@@ -353,7 +353,7 @@
 | [`presence/frequency_rule.json`](places-binding/presence/frequency_rule.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencefrequency_rulejson--approve_with_limits) |
 | [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson--approve_with_limits-2) |
 | [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_presence_authoringcsv--approve_with_limits) |
-| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-идентификаторы-правил--approve_with_limits) |
+| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve](places-binding/VERIFICATION.md#presencepresence_rulescsv--approve-c007d2-зависимая-пересборка-после-c007d) |
 | [`reports/validation.json`](places-binding/reports/validation.json) | [approve_with_limits](places-binding/VERIFICATION.md#reportsvalidationjson--approve_with_limits) |
 | [`scripts/validate.mjs`](places-binding/scripts/validate.mjs) | [approve_with_limits](places-binding/VERIFICATION.md#scriptsvalidatemjs-слоты-c003b--approve_with_limits) |
 | [`slots/materialization_rules.json`](places-binding/slots/materialization_rules.json) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_rulesjson--approve_with_limits) |

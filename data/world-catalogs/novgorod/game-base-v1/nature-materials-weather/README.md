@@ -13,7 +13,9 @@
 ## Общие элементы (`_shared/`)
 
 - `scripts/lib.mjs` — CSV/TSV/JSON-утилиты, веса 8/4/2/1, Cyrillic-aware denylist.
-- `scripts/extract-g4-index.mjs` → `g4_nature_index.json` — read-only индекс 32 G4 из PR #98 (с sha256 источника).
+- `g4_nature_index.json` — закреплённый индекс 32 G4 из PR #98 (с sha256 источника).
+- `main_inputs.json` — закреплённые 365 суточных границ света 1230 года и 56 используемых WK claim_ref; для каждого исходного файла сохранены путь, sha256 и размер в байтах.
+- `scripts/refresh-inputs.mjs` — явное обновление обоих снимков из соседних checkout.
 - `scripts/run-all.mjs` — пересборка, все проверки и подсчёт строк.
 - `anachronism_denylist.json` — denylist группы: общий список каталога и регионально отсутствующие таксоны (пихта, лиственница, тополь как глобальный шаблон и др.). Кандидат для домена `anachronism_denylist_lexicon`.
 - `*.world_db.tsv` — выгрузки draft-шаблонов из world_db (landscape для региона, land_use).
@@ -29,4 +31,6 @@
 ```
 node _shared/scripts/run-all.mjs
 ```
-Переменные `PR98_ROOT` и `MAIN_ROOT` (по умолчанию `C:/Users/Slaven/Documents/Novgorod-runtime` и `.../Novgorod`) — пути read-only источников.
+Обычная пересборка и проверки читают только локальные снимки и не требуют соседних checkout. Проверка обработки ошибки: `node _shared/scripts/run-all.mjs --self-test` должна завершиться с ненулевым кодом и вывести `{"checks_passed":false}`; файлы при этом не меняются.
+
+Для намеренного обновления входов: `node _shared/scripts/refresh-inputs.mjs`. Только эта команда читает `PR98_ROOT` и `MAIN_ROOT` (по умолчанию `C:/Users/Slaven/Documents/Novgorod-runtime` и `C:/Users/Slaven/Documents/Novgorod`). После обновления сверить исходные pin и сгенерированные данные перед принятием diff.

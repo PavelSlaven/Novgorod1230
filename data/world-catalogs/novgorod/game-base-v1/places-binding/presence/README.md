@@ -70,6 +70,8 @@
 
 `source_refs` обязателен.
 
+Для пулов `items/item_place_frequency.csv` и `fauna/wild_habitat_presence.csv` `source_pool` указывает на стабильный ID строки: `<путь>#<ipf_id>` или `<путь>#<presence_id>`. `source_row_id` сохраняет тот же ID; `variants[].source_pool` использует тот же формат. При перестановке CSV-строк ссылки не меняются. У `people_presence_authoring.csv` явного ID нет, поэтому остаётся `#rowN`. Стандартная пересборка: `node scripts/build-all.mjs` без `--extract`; генератор Cursor должен переносить объекты `variants` целиком, включая `source_pool` и `source_row_id`.
+
 Сборщик проверяет каждую строку:
 - category и scope резолвятся;
 - класс известен;

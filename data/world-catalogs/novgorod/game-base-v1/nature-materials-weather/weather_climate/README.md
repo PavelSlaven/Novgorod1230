@@ -49,7 +49,7 @@
 - trasa.ru: метели 5–10 дней в месяц зимой, распутица 20–30 дней, туман по сезонам, ветры.
 - Волхов: лёд 70–80 см, ледоход 10–20 дней, до 70% стока в половодье, полыньи у Новгорода (cruiseinform.ru, ru.wikipedia).
 - НПЛ старшего извода (litopys.org.ua, изд. Насонова), годы 6732–6739; 6684 — обратное течение (через ru.wikipedia).
-- Утверждённые temporal-v4: профиль погоды v2 (v1) и `calendar_daylight_light_profiles`.
+- Утверждённые temporal-v4: профиль погоды v2 (v1) и `calendar_daylight_light_profiles`. Суточные границы 1230 года для сборки закреплены в `../_shared/main_inputs.json`; обновляются только через `../_shared/scripts/refresh-inputs.mjs`.
 - Контракт `pr98:packages/contracts/src/weather-state.js`.
 - WK: `foundations-earth-27..31` (туман, изморозь), `foundations-earth2-10` (облака), `-11` (ледовый затор), `-25` (талый сток).
 - Черновой контекст rus13tpl `novgorod_weather_season_rules_v1.json` (12 сезонных профилей).

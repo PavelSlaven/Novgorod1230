@@ -7,7 +7,7 @@
 | Папка | Домен | Главный файл | Строк |
 |---|---|---|---|
 | `places/` | place_families, place_binding | `place_families.csv`, `node_binding.csv` | 44, 227 |
-| `presence/` | presence_rules | `frequency_rule.json`, `presence_rules.csv` | правило; 5 719 производных строк (пересобирается из пулов, см. `presence/README.md`) |
+| `presence/` | presence_rules | `frequency_rule.json`, `presence_rules.csv` | правило; 5 717 производных строк (пересобирается из пулов, см. `presence/README.md`) |
 | `presence/` | people composition D-2 | `people_composition_authoring.json` | 16 PF, 5 постоянных групп, 16 глобальных пробелов; формат и проверки — `presence/README.md` |
 | `categories/` | category_registry | `category_registry.csv`, `place_family_categories.csv` | 982, 61 (на пересборку 2026-09-26, см. `categories/README.md`) |
 | `limits/` | place_generation_limits | `place_generation_limits.csv` | 105 |

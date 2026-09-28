@@ -553,3 +553,13 @@
 - Спорно `low-middle → plain_oral` у городских ремёсел и торга: `nov_occ_local_trader`, `nov_occ_market_stall_seller`, кузнец, гончар, сапожник и другие. Роли `nov_role_craftsman_master` и `nov_role_local_merchant` — everyday_oral. Берестяные грамоты показывают бытовую грамотность именно у горожан. everyday_oral здесь естественнее.
 - Расхождение роли и занятия у одного человека: `nov_role_church_guard`, `nov_role_novice`, `nov_role_pilgrim`, `nov_role_monastery_worker` — formal_literate, а их занятия после аудита — plain_oral. Правила, какая строка главнее при конфликте, нет. README утверждает «одно правило», хотя у занятий есть отдельное исключение для низкого статуса.
 - Пара ferryman↔fisher: отношение и обе формы обращения — нейтральные `unspecified/no_source`, ID стабильны. Новых форм не выдумано.
+
+### speech_address/speech_registers.csv — approve (C007c2)
+
+Проверено: Claude Opus 5.5, построчным diff (C007c2, коммит 8f0c1d91 против 79c43d06).
+
+- Изменены ровно 14 строк занятий:
+  - дружинник, тысяцкий, княжий служилый — `everyday_oral`;
+  - городские ремёсла и торг — `everyday_oral`.
+- 71 строка ролей не тронута. D-3 не изменился.
+- Одно правило выбора для одного человека: регистр занятия главнее роли, роль — запасной вариант. Checker и README описывают одно и то же.

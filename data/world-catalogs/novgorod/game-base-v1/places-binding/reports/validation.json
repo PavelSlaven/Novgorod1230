@@ -176,8 +176,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5719,
-      "rebuilt_rows": 5719
+      "rows": 5717,
+      "rebuilt_rows": 5717
     },
     {
       "domain": "presence_rules",
@@ -194,7 +194,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5719
+      "rows": 5717
     },
     {
       "domain": "presence_rules",
@@ -211,7 +211,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "accepted_occurrences": 10898
+      "accepted_occurrences": 10890
     },
     {
       "domain": "presence_rules",

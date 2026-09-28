@@ -103,6 +103,7 @@
   ],
   "army_duplicate_scan_ignored_pairs": [
     {"source_key":"army_0061","target_ref":"nce_nick_kotelnik","reason":"occupation term, not a personal byname"},
+    {"source_key":"army_0094","target_ref":"nce_d46_13_264","reason":"occupation term, not a personal byname"},
     {"source_key":"army_0096","target_ref":"nce_nick_shchitnik","reason":"occupation term, not a personal byname"},
     {"source_key":"army_0126","target_ref":"nce_nick_krasnyj","reason":"adjective for mead, not a personal byname"},
     {"source_key":"army_0127","target_ref":"nce_nick_krasnyj","reason":"adjective for mead, not a personal byname"},
@@ -111,7 +112,9 @@
     {"source_key":"army_0324","target_ref":"nce_dem_ves","reason":"lexical prose occurrence, not an ethnonym"},
     {"source_key":"army_0492","target_ref":"nce_nick_shchitnik","reason":"occupation term, not a personal byname"},
     {"source_key":"army_0548","target_ref":"nce_nick_misha","reason":"personal first-name occurrence, not nickname evidence"},
-    {"source_key":"army_0558","target_ref":"nce_dem_ves","reason":"quantifier in «весь XIV век», not an ethnonym"}
+    {"source_key":"army_0558","target_ref":"nce_dem_ves","reason":"quantifier in «весь XIV век», not an ethnonym"},
+    {"source_key":"army_0954","target_ref":"nce_d46_13_272","reason":"holiday phrase «Малой Прачыстай», not a personal byname"},
+    {"source_key":"army_0955","target_ref":"nce_d46_13_272","reason":"holiday phrase «Малой Прачыстай», not a personal byname"}
   ],
   "entries": [
     {"entry_id":"nce_pat_domazhirovich","pool_id":"novgorod_1230_1250_patronymics_v1","component_form":"Домажирович","sex_category":"male","people_ref":"pp_novgorod_rus","selection_class":"ordinary","attested_bearer_class":"unresolved","social_tendency":"unresolved_attested_not_exclusive","basis":"source_attested_form","derivation":"attested_component_extraction","evidence_period":"medieval_general","army_source_keys":["army_0632"],"direct_source_refs":["book:641351 §2992"],"confidence":"A","note":"Форма Михал Домажирович."},

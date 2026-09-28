@@ -6,6 +6,7 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GROUP_DIR = path.resolve(SCRIPT_DIR, "..");
 const NAMES_DIR = path.join(GROUP_DIR, "personal_names");
 const SOURCE_PATH = path.join(NAMES_DIR, "b2-name-pool-source.json");
+const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
 const IMPORT_CONTRACT_PATH = path.join(NAMES_DIR, "b2-import-contract.json");
 const PEOPLE_PATH = path.join(GROUP_DIR, "peoples_origins", "peoples_origins.csv");
 const POOLS_OUT = path.join(NAMES_DIR, "name_pools.csv");
@@ -98,6 +99,7 @@ function orderedUnique(values, priority = []) {
 
 export function build() {
   const source = JSON.parse(fs.readFileSync(SOURCE_PATH, "utf8"));
+  const d46 = JSON.parse(fs.readFileSync(D46_PATH, "utf8"));
   const importContract = JSON.parse(fs.readFileSync(IMPORT_CONTRACT_PATH, "utf8"));
   const input = parseCsv(fs.readFileSync(path.join(NAMES_DIR, source.input.path), "utf8"));
   const decisionRows = parseTsv(fs.readFileSync(path.join(NAMES_DIR, source.evidence_derivations.path), "utf8"));
@@ -144,6 +146,20 @@ export function build() {
       line_index: null,
     };
     return { ...record, derivation_class: classDerivation(record, source) };
+  });
+  for (const row of d46.name_entries) records.push({
+    id: row.id,
+    name_form: row.name_form,
+    sex_category: row.sex_category,
+    people_ref: row.people_ref,
+    selection_class: row.selection_class,
+    derivation_class: row.derivation_class,
+    derivation: row.derivation,
+    people_derivation: row.people_derivation,
+    evidence_period: row.evidence_period,
+    provenance_ref: `game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=${row.id}`,
+    evidence_line: null,
+    line_index: null,
   });
 
   const perLineIndex = new Map();
@@ -224,6 +240,19 @@ export function build() {
     }
   }
   typedGaps.push(...source.typed_gap_notes);
+  typedGaps.push(...d46.name_gaps.map((row) => ({
+    gap_id: row.gap_id,
+    gap_type: row.gap_type,
+    name_id: row.id,
+    name_form: row.name_form,
+    people_ref: row.people_ref,
+    sex_category: row.sex_category,
+    selection_class: row.selection_class,
+    current_count: 0,
+    required_count: 1,
+    reason: row.gap_reason,
+    provenance_ref: `game-base:names-peoples/personal_names/d46-name-additions.json#name-gap=${row.id}`,
+  })));
 
   const includedByLine = new Map();
   for (const row of derivations) {
@@ -271,6 +300,18 @@ export function build() {
       excluded_rows: exclusions.length,
       excluded_rows_by_reason: Object.fromEntries(Object.entries(excludedRowsByReason).sort(([a], [b]) => a.localeCompare(b, "en"))),
       decisions,
+    },
+    d46_archive_accounting: {
+      unique_new_candidates: d46.source_scope.expected_unique_new_candidates,
+      included_name_entries: d46.name_entries.length,
+      included_component_entries: d46.component_entries.length,
+      existing_component_updates: d46.component_updates.length,
+      archive_variants: d46.name_variants.filter((row) => row.classification === "archive_variant").length,
+      reclassified_candidate_variants: d46.name_variants.filter((row) => row.classification !== "archive_variant").length,
+      variants: d46.name_variants.length,
+      typed_name_gaps: d46.name_gaps.length,
+      rejected: d46.rejected.length,
+      rejection_reasons: Object.fromEntries([...new Set(d46.rejected.map((row) => row.rejection_reason))].sort().map((reason) => [reason, d46.rejected.filter((row) => row.rejection_reason === reason).length])),
     },
     typed_gaps: typedGaps,
     evidence_review: source.evidence_review,

@@ -311,3 +311,20 @@ No row in the group is fabricated. The problems are overstated confidence, misla
 - Иванин: носитель из того же перечня «мужей во главе общины» 1176 г., что и Захаринич, но `attested_bearer_class=ordinary`, а не elite. Класс — тенденция, не фильтр.
 - 10 отказов с косвенными формами уже взятых компонентов (Матвеевичу, Всеволодовича, Ярославича и др.) помечены как отказы без компонента, а не `duplicate_of_included_form`.
 - Runtime/DDL-импорт частей имён не утверждён (`gap_name_components_runtime_import`).
+
+## Независимая проверка D46: архивные личные имена и части имён (Claude Opus 5.5, круги 1–2)
+
+Проверено: Claude Opus 5.5 — независимый проход WR §21.1 (D35), 2026-09-29, до коммита; рабочее дерево `imp-names` от main `44caf7b7`.
+
+- README.md, personal_names/README.md, personal_names/d46-name-additions.json, personal_names/name_pool_entries.csv, personal_names/name_component_entries.csv, personal_names/name-component-army-additions.json, personal_names/name-component-report.json, scripts/validate-b2-name-pool.mjs, scripts/build-name-components.mjs, scripts/validate-name-components.mjs — approve_with_limits
+- personal_names/name-pool-report.json, sources/d46-onomastic-catalog-1230-1250.md, sources/d46-regional-name-pools.json, scripts/build-b2-name-pool.mjs — approve
+
+**Ход проверки.** Круг 1: 221 строка архива учтена ровно по разу, формы в опоре, пол верен, княжеских основ в ordinary нет, иноземные формы привязаны к происхождению; возврат на шесть правок — Василиса, Дарья, Матрёна, Прасковья стояли ordinary вопреки каталогу §5.3 и §18 (Ольга и Елена — только пониженный вес); `Hæil(h)vatr` дублировал «Хейльватр»; 16 имён договора 1229 г. латиницей; четыре тюркские формы отклонены (по D40 это пробел селектора); `army_0094`, `army_0954`, `army_0955` ложно стали дублями; Гюрьги, Кузма, Сёмюн дублировали записи после нормализации. Круг 2: всё закрыто, проверено скриптом ревьюера по данным.
+
+**Что проверено во втором круге.** Шести форм (Василиса, Дарья, Матрёна, Прасковья, Ольга, Елена) нет в выбираемых записях; первые четыре — typed gap `default_1230_1250_requires_new_evidence`, Ольга и Елена — `lower_weight_required`; валидатор держит закрытый список 10 пробелов с пробами. `Hæil(h)vatr` — `source_form_variant` к «Хейльватр». 16 договорных имён — `name_form` кириллицей по каталогу §9.2, латиница в `source_forms`, `pp_fg002`, `c1230`, `sourced`, B. Гюлопа, Ильдята, Кыяс, Сандус — `people_ref_unresolved`, не выбираются (путь закрытия — #190). `army_0094`, `army_0954`, `army_0955` снова `non_personal_name_form`. Гюрьги, Кузма, Сёмюн — `normalized_variant` к прежним записям. Два снимка в `sources/` побайтно равны архивным файлам (sha256 закреплены), все 442 `archive_ref` ведут в них, абсолютных путей нет.
+
+**Итог.** 205 решений на 221 строку: 158 имён, 19 вариантов, 10 typed gaps, 13 новых частей имён, 5 связей с прежними; отказов нет. Пул B2 — 337 записей (179 прежних без изменений + 158 новых); классы: ordinary 285, significant 27, monastic 18, dynastic 7. Части имён — 219 записей и 9 правил.
+
+**Проверки.** `validate-b2-name-pool.mjs --self-test` PASS (337, 33 пробы); `validate-name-components.mjs --self-test` PASS (3/219/9/1059); двойная сборка побайтна; `build-status.test.mjs` 4/4; 11 мутационных проб ревьюера отклоняются.
+
+**Ограничения.** Ольга и Елена вернутся в выбор, когда в B2 появится вес; четыре формы §5.3 — только с новым свидетельством; тюркские формы — после #190. Общей проверки «`name_form` только кириллицей» нет (латиницу закрывают карта договорных чтений и проба на `Hæil(h)vatr`). `crosswalk_ref` — пути относительно архива. У 10 из 13 новых частей имён `support_texts` — сжатая выписка, формы в снимке дословно. Региональный пул 07 — черновик, кандидаты из него — `analogy`, C. Runtime- и DDL-импорт не утверждён.

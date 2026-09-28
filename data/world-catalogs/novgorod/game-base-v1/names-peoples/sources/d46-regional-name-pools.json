@@ -1,0 +1,681 @@
+{
+  "metadata": {
+    "file_name": "novgorod_npc_name_pools_v1.json",
+    "version": "1.0.0",
+    "project": "RUS13",
+    "region_id": "novgorod_land",
+    "region_id_aliases": [
+      "region_novgorod_land"
+    ],
+    "region_title": "Новгородская земля",
+    "period": "1230-1250",
+    "purpose": "Пулы имён, прозвищ, отчеств и обращений для NPC Новгородской земли",
+    "created_at_utc": "2026-07-05T12:30:00Z",
+    "status": "draft",
+    "confidence": "medium",
+    "requires_human_audit": true,
+    "list_expansion_policy": "Списки задания являются минимальным ядром, а не пределом. Новые контейнеры, слухи, события, предметные и социальные профили допустимы только при историко-бытовом, хозяйственном или социальном основании, со статусом, уверенностью и возможностью ручного аудита.",
+    "source_registry": [
+      "project_archive:novgorod_full_graph_g1_g4_v6_game_ready.zip",
+      "project_data:novgorod_region_generation_limits_v1.json",
+      "project_data:novgorod_region_profile_v1.json",
+      "project_data:novgorod_historical_timeline_1230_1250_v1.json",
+      "project_data:novgorod_neighbor_regions_v1.json",
+      "project_data:novgorod_social_roles_v1.tsv",
+      "project_data:novgorod_occupations_v1.tsv",
+      "project_data:novgorod_status_rules_v1.json",
+      "project_doc:items_and_property.txt",
+      "project_doc:npc_generation_profiles.txt",
+      "project_doc:movement_locations_regions.txt",
+      "project_doc:time_system.txt",
+      "project_doc:historical_events_and_figures.txt",
+      "project_doc:information_sources_llm_prompts.md"
+    ]
+  },
+  "male_name_pool": [
+    {
+      "name": "Александр",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Андрей",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Борис",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Василий",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Гаврила",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Глеб",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Григорий",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Данила",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Давыд",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Дмитр",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Иван",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Иванко",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Илья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Кирилл",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Константин",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Лазарь",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Лука",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Максим",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Микула",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Михаил",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Никита",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Онцифор",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Павел",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Пётр",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Прокопий",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Роман",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Савва",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Семён",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Степан",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Тимофей",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Фёдор",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Фома",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Юрий",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Яков",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Ярослав",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    }
+  ],
+  "female_name_pool": [
+    {
+      "name": "Агафья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Аксинья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Анастасия",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Анна",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Василиса",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Дарья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Евдокия",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Елена",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Ирина",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Мария",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Марфа",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Матрёна",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Настасья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Ольга",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Пелагея",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Прасковья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Софья",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Ульяна",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Феврония",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Фёкла",
+      "use_context": "common",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    }
+  ],
+  "monastic_name_pool": [
+    {
+      "name": "Антоний",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Арсений",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Варлаам",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Герман",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Григорий",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Евфимий",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Иоанн",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Кирилл",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Леонтий",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Макарий",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Никон",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Савва",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Сергий",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Феодосий",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    },
+    {
+      "name": "Фома",
+      "use_context": "monastic",
+      "status": "draft",
+      "confidence": "medium",
+      "source_note": "рабочий региональный пул; отдельные имена требуют ономастического аудита перед approved"
+    }
+  ],
+  "nickname_patterns": [
+    {
+      "pattern_id": "occupation_nickname",
+      "pattern": "по занятию: Кузнец, Рыбак, Лодочник, Плотник, Бортник",
+      "use_rule": "до известного имени или как устойчивое прозвище",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "pattern_id": "appearance_nickname",
+      "pattern": "по видимому признаку: Рыжий, Хромой, Кривой, Малой, Старый",
+      "use_rule": "осторожно, без карикатуры; видимый признак должен быть заметен",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "pattern_id": "origin_nickname",
+      "pattern": "по происхождению или месту: Псковитин, Ладожанин, Заволочанин, Торжокский",
+      "use_rule": "только если происхождение известно NPC/персонажу",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "pattern_id": "patron_or_house_nickname",
+      "pattern": "по двору/старшему: человек такого-то двора, боярский, владычный, монастырский",
+      "use_rule": "для социального статуса важнее современного фамильного имени",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "patronymic_patterns": [
+    {
+      "pattern_id": "son_of",
+      "pattern": "сын/дочь + имя отца или старшего: Иванов сын, Марфина дочь",
+      "use_rule": "не превращать в современную фамилию",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "pattern_id": "by_household",
+      "pattern": "из двора/от человека: Фёдоров человек, боярский слуга, владычный человек",
+      "use_rule": "уместно для зависимости и службы",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "status_based_address": [
+    {
+      "address_id": "elite_male",
+      "forms": [
+        "господине",
+        "боярине",
+        "княже при прямой уместности"
+      ],
+      "who_uses": "низший или проситель",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "address_id": "elder",
+      "forms": [
+        "старче",
+        "староста",
+        "хозяин"
+      ],
+      "who_uses": "чужие или младшие",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "address_id": "church",
+      "forms": [
+        "отче",
+        "владыко только к владыке",
+        "игумене"
+      ],
+      "who_uses": "миряне по церковному статусу",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "address_id": "worker",
+      "forms": [
+        "мастер",
+        "добрый человек",
+        "человек такого-то двора"
+      ],
+      "who_uses": "равный/ниже по ситуации",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "address_id": "unknown_low_status",
+      "forms": [
+        "эй, человек",
+        "пришелец",
+        "парень",
+        "женка по грубому контексту"
+      ],
+      "who_uses": "может быть грубо и создать конфликт",
+      "status": "draft",
+      "confidence": "medium"
+    }
+  ],
+  "foreign_or_neighbor_name_notes": [
+    {
+      "region": "Псковская земля",
+      "rule": "имена в основном близки новгородским; происхождение может звучать как прозвище",
+      "status": "draft",
+      "confidence": "medium"
+    },
+    {
+      "region": "Ладожско-Ижорская земля и Карелия",
+      "rule": "возможны местные имена/прозвища с осторожной пометкой needs_review; не использовать экзотику без причины",
+      "status": "usable_with_caution",
+      "confidence": "medium_low"
+    },
+    {
+      "region": "Немецкие/готские купцы",
+      "rule": "редкие иностранные имена допустимы только в торгово-городском контексте и не для массовых NPC",
+      "status": "usable_with_caution",
+      "confidence": "medium_low"
+    }
+  ],
+  "llm_name_rules": {
+    "do_not_name_every_background_npc": true,
+    "name_appears_when_character_learns_it": true,
+    "nickname_before_name_allowed": true,
+    "no_modern_surnames": true,
+    "patronymic_not_modern_family_name": true,
+    "avoid_caricature": true,
+    "requires_status_place_and_language_context": true
+  },
+  "validation": {
+    "file_is_valid_json": true,
+    "does_not_create_party_state": true,
+    "does_not_create_new_g1_g4_nodes": true,
+    "does_not_precreate_full_g5_map": true,
+    "uses_existing_map_as_context": true,
+    "respects_generation_limits": true,
+    "separates_visible_hidden_and_unmaterialized": true,
+    "distinguishes_fact_from_rumor": true,
+    "requires_human_historical_audit": true,
+    "blocking_issues": [],
+    "open_questions": [
+      "Пул имён требует отдельного ономастического аудита по новгородским берестяным и летописным данным."
+    ],
+    "name_entries_total": 70,
+    "does_not_instantiate_npcs": true
+  }
+}

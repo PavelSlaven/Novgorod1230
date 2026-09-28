@@ -1061,3 +1061,10 @@
 - **Стабильные ссылки.** `source_pool` и `variants[].source_pool` ссылаются на строку по стабильному id (`#ipf_*`, `#presence_*`). `pr_id`, ключи и поведенческие ячейки не изменились, 5717 строк.
 - `category-registry-report.json` — 7239, как при чистой сборке.
 - **Ограничение.** Provenance людей (`people_presence_authoring.csv`, 17 правил) остаётся позиционным `#rowN`, пока у строк нет своих id.
+
+### Полный validator после C009 — PASS
+
+Проверено: Claude Opus 5.5 (C009, коммит 449074cc).
+
+- `build-all.mjs` — побайтно.
+- `validate.mjs --start-territory <bridge> --self-test` — 0 FAIL.

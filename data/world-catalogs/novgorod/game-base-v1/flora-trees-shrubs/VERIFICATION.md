@@ -192,3 +192,10 @@
 | `flora/sources.csv` | 63 | approve_with_limits (без изменений) |
 
 **Общий вердикт группы: approve_with_limits.** Rework закрыт.
+
+### flora/trees_shrubs.csv (phenology_by_month) — approve (C009)
+
+Проверено: Claude Opus 5.5, повторной сборкой (C009, коммит 449074cc против b6b0620f).
+
+- 37 × 12 месячных состояний выведены по правилу C007d из авторских месяцев цветения и плодов. Совпадение — `flowering_and_fruiting`, вилки нет.
+- Прежние поля не тронуты. Сборка побайтная, validator — PASS.

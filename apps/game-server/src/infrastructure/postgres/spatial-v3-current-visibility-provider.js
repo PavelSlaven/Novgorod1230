@@ -199,9 +199,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const exits = context.directional_exits;
         const admitted = await admit(current, exits.map((row) => ({ target_id: row.id,
           position_id: current.scene.location.scene_position_id, entity_kind: 'directional_exit' })));
-        const visibilityByExit = new Map(admitted.map((row) => [row.target_id, row.visibility]));
+        const revealed = new Set(admitted.map((row) => row.target_id));
         const disclosed = exits.flatMap((exit) => {
-          if (!visibilityByExit.has(exit.id)) return [];
+          if (!revealed.has(exit.id)) return [];
           const labels = labelCatalog.labels.filter((row) =>
             row.world_revision_id === current.scene.world_revision_id
             && row.g4_ref.id === current.scene.site.parent_g4_id
@@ -211,8 +211,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             && row.direction_context_ref.id === exit.direction_context_id);
           if (labels.length !== 1) gap('approved_exit_label_required');
           const slotRef = context.slotByExit?.get(exit.id);
-          const description = visibilityByExit.get(exit.id) !== 'none'
-            ? passTargetDescriptionForSlot(slotRef) : null;
+          // Any revealed exit shows its approved pass-target description; an exit the
+          // observer cannot see at all is not in `revealed` and is not disclosed.
+          const description = passTargetDescriptionForSlot(slotRef);
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
             display_label: labels[0].display_label,

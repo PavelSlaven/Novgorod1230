@@ -204,8 +204,8 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
           directional_exit_version: exit.version, direction_context_id: exit.direction_context_id,
           knowledge_state: 'visible', display_label: matches[0].display_label,
           editorial_choice_ordinal: matches[0].editorial_choice_ordinal,
-          pass_target_description: row.visibility !== 'none'
-            ? passTargetDescriptionForSlot(slotByExit, exit.id) : null });
+          // `admitted` holds only revealed targets: any revealed exit shows its description.
+          pass_target_description: passTargetDescriptionForSlot(slotByExit, exit.id) });
       }
     }
     return { naturalInput, partyId, actorId, positionId: position.id,

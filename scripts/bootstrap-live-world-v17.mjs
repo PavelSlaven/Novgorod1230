@@ -35,6 +35,7 @@ import { WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
   '../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { buildAdditionalStartOwnerRows } from
   '../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
+import { ensureV17PartyProductionCatalogLedger } from './v17-party-production-catalog-ledger.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -503,6 +504,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP
     ],
       ['schema_migrations', 'party_catalog_pins', 'party_materialization_run_catalog_pins']);
+    await ensureV17PartyProductionCatalogLedger(party);
     const subjectCommit = execFileSync('git', ['rev-parse', 'HEAD'],
       { cwd: root, encoding: 'utf8' }).trim();
     const preparation = await prepareSpatialV3TargetItemCatalog({

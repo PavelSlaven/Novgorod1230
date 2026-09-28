@@ -8,6 +8,9 @@ import test from 'node:test';
 import pg from 'pg';
 
 import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
+import { readV17PartyProductionCatalogLedger } from '../../scripts/v17-party-production-catalog-ledger.mjs';
+import { SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
+  '../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
@@ -147,6 +150,23 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
       assert.deepEqual(rows.map(({ datname }) => datname),
         ['pr17_bootstrap_old_party', 'pr17_bootstrap_old_world']);
     } finally { await admin.end(); }
+    const partyPool = new pg.Pool({
+      connectionString: adminDatabaseUrl(postgresContainer).replace(/\/postgres$/, '/novgorod_party_v17'),
+      max: 1,
+    });
+    try {
+      const { row, fingerprint } = await readV17PartyProductionCatalogLedger(partyPool);
+      assert.equal(row.migration_id,
+        SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_migration_id);
+      assert.equal(row.migration_digest,
+        SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_migration_digest);
+      assert.equal(row.target_schema_fingerprint,
+        SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint);
+      assert.equal(fingerprint,
+        SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint);
+    } finally {
+      await partyPool.end();
+    }
   });
 
 function startPostgres(name) {

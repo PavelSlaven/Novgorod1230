@@ -1,5 +1,5 @@
 import { describeRoleLlmCall, executeRoleLlmCall } from '@rus/llm-runtime';
-import { isRepairRole } from '../runtime/llm-turn-budget.js';
+import { exhausted, isRepairRole } from '../runtime/llm-turn-budget.js';
 
 export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null, settings = null, turnBudget = null, execute = executeRoleLlmCall } = {}) {
   if (typeof execute !== 'function') throw new TypeError('execute must be a function.');
@@ -78,6 +78,10 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       });
       turnBudget?.assertWithinDeadline?.();
       if (result.status !== 'ok') {
+        if (result.error?.code === 'timeout' && requestTimeoutMs < 120_000) {
+          const available = turnBudget?.remaining?.() ?? { deadline_ms: 0 };
+          throw exhausted(available);
+        }
         const error = new Error(result.error?.message ?? `LLM role ${role_id ?? '<unnamed>'} failed.`);
         error.code = result.error?.code ?? 'LLM_ROLE_FAILED';
         error.retryable = result.error?.retryable === true;

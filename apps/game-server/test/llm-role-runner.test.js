@@ -27,3 +27,40 @@ test('turnBudget.clamp() flows through as a requestTimeoutMs ceiling, not overwr
   });
   assert.equal(resolution.config.requestTimeoutMs, 30_000);
 });
+
+test('a provider timeout under a budget-clamped requestTimeoutMs is reported as turn-budget exhaustion', async () => {
+  const runner = createLlmRoleRunnerAdapter({
+    turnBudget: { clamp: () => 30_000, claimRepair() {} },
+    execute: async () => ({
+      status: 'transport_error',
+      error: { code: 'timeout', message: 'Provider request timeout', retryable: true }
+    })
+  });
+
+  await assert.rejects(
+    runner.run({ scope: 'turn_runtime', role_id: roleId, messages: [] }),
+    (error) => {
+      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
+      return true;
+    }
+  );
+});
+
+test('a provider timeout at the full 120 s transport timeout still reports the provider failure', async () => {
+  const runner = createLlmRoleRunnerAdapter({
+    turnBudget: { clamp: () => 120_000, claimRepair() {} },
+    execute: async () => ({
+      status: 'transport_error',
+      error: { code: 'timeout', message: 'Provider request timeout', retryable: true }
+    })
+  });
+
+  await assert.rejects(
+    runner.run({ scope: 'turn_runtime', role_id: roleId, messages: [] }),
+    (error) => {
+      assert.equal(error.code, 'timeout');
+      assert.notEqual(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
+      return true;
+    }
+  );
+});

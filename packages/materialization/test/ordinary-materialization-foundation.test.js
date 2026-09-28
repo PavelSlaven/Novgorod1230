@@ -174,6 +174,45 @@ const presenceRule = (request_identity, extra = {}) => transition('resolve_prese
   period_number: Object.hasOwn(extra, 'period_number') ? extra.period_number : null
 });
 
+test('resolve_presence_rule may commit before seed_scope and seed preserves outcomes', () => {
+  const scope = { entity_kind: 'g6', entity_id: 'g6-presence-preamble' };
+  const initial = createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 8 });
+  const afterPresence = applyOrdinaryAggregateTransition({
+    aggregate: initial,
+    transition: presenceRule('rule-preseed', {
+      expected_state_version: 0,
+      subject_kind: 'category',
+      subject_ref: 'cat_a',
+      count: 0,
+      rule_ref: 'pr_empty@1',
+    }),
+  });
+  assert.equal(afterPresence.seeded, false);
+  assert.equal(afterPresence.state_version, 1);
+  const seeded = applyOrdinaryAggregateTransition({
+    aggregate: afterPresence,
+    transition: transition('seed', 'seed-after-presence', {
+      expected_state_version: 1,
+      density_band: 'sparse',
+      identity_budget: 0,
+      background_groups: [],
+    }),
+  });
+  assert.equal(seeded.seeded, true);
+  assert.equal(seeded.presence_resolutions.length, 1);
+  assert.equal(seeded.state_version, 2);
+  const replay = applyOrdinaryAggregateTransition({
+    aggregate: seeded,
+    transition: transition('seed', 'seed-after-presence', {
+      expected_state_version: 1,
+      density_band: 'sparse',
+      identity_budget: 0,
+      background_groups: [],
+    }),
+  });
+  assert.strictEqual(replay, seeded);
+});
+
 test('resolve_presence_rule stores §5.5 outcome, replays by §3A.1 key, and coexists with O1', () => {
   const g5Scope = { entity_kind: 'g5', entity_id: 'wharf-site-a' };
   const seeded = applyOrdinaryAggregateTransition({

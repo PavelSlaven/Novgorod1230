@@ -49,7 +49,9 @@ import {
   derivePresenceRuleSeedContext,
   mergePlaceFamilyPresenceRules,
   presenceRuleSubjectKey,
+  ruleAllowedInSeason,
 } from './presence-rules-first-arrival.js';
+import { isO1PresenceRecord, isPresenceRuleRecord } from './ordinary-materialization-foundation-internal.js';
 import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
 import { compileGeneratedNpcBindings } from './generated-npc-bindings.js';
@@ -97,7 +99,10 @@ export {
   applyPresenceRulesFirstArrival,
   derivePresenceRuleSeedContext,
   mergePlaceFamilyPresenceRules,
-  presenceRuleSubjectKey
+  presenceRuleSubjectKey,
+  ruleAllowedInSeason,
+  isO1PresenceRecord,
+  isPresenceRuleRecord,
 };
 
 function materializeWorldInstances(input) {

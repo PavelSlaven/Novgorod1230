@@ -91,7 +91,19 @@ export function applyOrdinaryAggregateTransition({ aggregate, transition }) {
   if (normalized.kind === 'resolve_presence_rule') return committed(aggregate, normalized, resolvePresenceRule(aggregate, normalized));
   return committed(aggregate, normalized, close(aggregate, normalized));
 }
-function seed(aggregate, t) { if (aggregate.seeded) throw error('ORDINARY_AGGREGATE_ALREADY_SEEDED', 'An ordinary aggregate may be seeded only once.'); const groupRefs = new Set(); for (const group of t.background_groups) { preparedGroupValid(group, aggregate.scope_ref); if (groupRefs.has(group.group_ref)) throw error('ORDINARY_AGGREGATE_GROUP_DUPLICATE', 'Seed groups must have distinct refs.', { group_ref: group.group_ref }); groupRefs.add(group.group_ref); } return { ...copy(aggregate), seeded: true, density_band: t.density_band, identity_budget: t.identity_budget, remaining_identity_budget: t.identity_budget, background_groups: copy(t.background_groups) }; }
+function seed(aggregate, t) {
+  if (aggregate.seeded) throw error('ORDINARY_AGGREGATE_ALREADY_SEEDED', 'An ordinary aggregate may be seeded only once.');
+  const groupRefs = new Set();
+  for (const group of t.background_groups) {
+    preparedGroupValid(group, aggregate.scope_ref);
+    if (groupRefs.has(group.group_ref)) throw error('ORDINARY_AGGREGATE_GROUP_DUPLICATE', 'Seed groups must have distinct refs.', { group_ref: group.group_ref });
+    groupRefs.add(group.group_ref);
+  }
+  return { ...copy(aggregate), seeded: true, density_band: t.density_band, identity_budget: t.identity_budget,
+    remaining_identity_budget: t.identity_budget, background_groups: copy(t.background_groups),
+    presence_resolutions: copy(aggregate.presence_resolutions),
+    closed_observation_scopes: copy(aggregate.closed_observation_scopes) };
+}
 function resolve(aggregate, t) {
   if (!aggregate.seeded) throw error('ORDINARY_AGGREGATE_UNSEEDED', 'Presence resolution requires a seeded aggregate.');
   resolutionInput(t);
@@ -110,7 +122,6 @@ function resolve(aggregate, t) {
   return { ...copy(aggregate), remaining_identity_budget: aggregate.identity_budget, presence_resolutions: [...copy(aggregate.presence_resolutions), record] };
 }
 function resolvePresenceRule(aggregate, t) {
-  if (!aggregate.seeded) throw error('ORDINARY_AGGREGATE_UNSEEDED', 'Presence-rule resolution requires a seeded aggregate.');
   const key = presenceRuleReplayKey(t);
   if (aggregate.presence_resolutions.some((record) => isPresenceRuleRecord(record) && presenceRuleReplayKey(record) === key)) {
     throw error('ORDINARY_RESOLUTION_REPLAY', 'Presence-rule subject already has a committed resolution for this scope instance.', {
@@ -156,7 +167,7 @@ function closureRecord(t) { return { request_identity: t.request_identity, cover
 function lastTransitionMatches(aggregate, transition) {
   if (aggregate.state_version !== transition.expected_state_version + 1 || aggregate.last_committed_transition_kind !== transition.kind) return false;
   if (transition.kind === 'seed') {
-    return aggregate.state_version === 1 && aggregate.seeded && aggregate.density_band === transition.density_band
+    return aggregate.seeded && aggregate.density_band === transition.density_band
       && aggregate.identity_budget === transition.identity_budget
       && aggregate.remaining_identity_budget === transition.identity_budget
       && sameData(aggregate.background_groups, transition.background_groups);

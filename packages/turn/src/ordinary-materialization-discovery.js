@@ -6,7 +6,8 @@ import {
   applyOrdinaryAggregateTransition,
   canonicalDigest,
   computeOrdinaryIdentityBudget,
-  createOrdinaryResolutionRef
+  createOrdinaryResolutionRef,
+  isO1PresenceRecord,
 } from '@rus/materialization';
 import {
   admitOrdinaryWorldMaterialization,
@@ -437,8 +438,9 @@ function ordinaryState(a, perResolutionLimit) { return { seeded: a.seeded,
   density_band: a.density_band,
   remaining_identity_budget: a.seeded ? perResolutionLimit : 0,
   background_groups: a.background_groups.map(({ group_ref }) => group_ref),
-  presence_resolutions: a.presence_resolutions.map(({ resolution_ref }) =>
-    resolution_ref),
+  presence_resolutions: a.presence_resolutions
+    .filter(isO1PresenceRecord)
+    .map(({ resolution_ref }) => resolution_ref),
   closed_observation_scopes: a.closed_observation_scopes.map(({ coverage_key }) =>
     coverage_key) }; }
 function preparedBasis(group) { return { basis_ref: group.group_ref,

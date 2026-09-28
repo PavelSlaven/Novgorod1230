@@ -3,7 +3,7 @@ import { assertOrdinaryMaterializationRequestV1,
   ordinaryWorldPropertyPlacementContextDigest,
   validateOrdinaryMaterializationPlanV1 } from
   '@rus/contracts/ordinary-materialization-v1';
-import { applyOrdinaryAggregateTransition, createOrdinaryCandidateKey, createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey, createOrdinaryResolutionRef, validateSupportingBasisAdmission } from '@rus/materialization';
+import { applyOrdinaryAggregateTransition, createOrdinaryCandidateKey, createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey, createOrdinaryResolutionRef, isO1PresenceRecord, validateSupportingBasisAdmission } from '@rus/materialization';
 import { turnFailure } from './errors.js';
 import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOrdinaryWorkingProjection } from './turn-step-ordinary-working-projection.js';
 const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
@@ -185,7 +185,7 @@ function propertyContextDigest(value) {
 }
 function projectionOf(request, value) { let p; try { p = assertAndNormalizeTurnOrdinaryWorkingProjection(value); } catch { fail('TURN_ORDINARY_PRESENCE_WORKING_PROJECTION_INVALID'); } if (!scope(p.ordinary_materialization_aggregate.scope_ref, request.scope_ref)) fail('TURN_ORDINARY_PRESENCE_SCOPE_MISMATCH'); return p; }
 function propertyOK(input) { return scope(input.property_placement_context.scope_ref, input.request.scope_ref) && ['man_made','natural_resource_portion'].includes(input.property_placement_context.item_kind); }
-function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
+function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.filter(isO1PresenceRecord).map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
 function sameRefs(a,b) { return Array.isArray(b) && a.length===b.length && a.every((v,i)=>v===b[i]); }
 function placementOK(v, s) { return v && v.state === 'committed' && scope(v.scope_ref, s); }
 function compatible(input, bases) { return selectOrdinaryMaterializationSupportingBasis({ request: input.request, identity: input.identity, basisCatalog: bases }) !== null; }

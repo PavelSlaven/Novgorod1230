@@ -139,6 +139,89 @@ def deny_scan(rows, name, key):
 # ================= buildings_structures =================
 mats = rd("buildings/materials_vocab.csv"); mat_ids = {m["mat_id"] for m in mats}
 bts = rd("buildings/building_types.csv"); bt_ids = {b["bt_id"] for b in bts}
+condition_enum = {"under_construction", "sound", "worn", "needs_repair", "damaged", "burnt_ruin", "abandoned"}
+age_enum = {"new", "seasoned", "old", "decrepit"}
+for b in bts:
+    if not sp(b["condition_states"]) or not set(sp(b["condition_states"])) <= condition_enum:
+        err("bt %s invalid condition_states" % b["bt_id"])
+    if not sp(b["age_states"]) or not set(sp(b["age_states"])) <= age_enum:
+        err("bt %s invalid age_states" % b["bt_id"])
+try:
+    with open(os.path.join(GROUP, "buildings/age_condition_rule.json"), encoding="utf-8") as f:
+        age_condition_rule = json.load(f)
+except (OSError, json.JSONDecodeError) as e:
+    err("age condition rule unreadable: %s" % e)
+    age_condition_rule = None
+if age_condition_rule is not None:
+    expected_keys = {"rule_id", "status", "age_states_from", "condition_states_from", "incompatibilities", "confidence", "reason"}
+    if not isinstance(age_condition_rule, dict) or set(age_condition_rule) != expected_keys:
+        err("age condition rule schema")
+    else:
+        if age_condition_rule["rule_id"] != "age_condition_v1" or age_condition_rule["status"] != "candidate":
+            err("age condition rule id/status")
+        if (age_condition_rule["age_states_from"] != "building_types.age_states"
+                or age_condition_rule["condition_states_from"] != "building_types.condition_states"):
+            err("age condition rule state sources")
+        if age_condition_rule["confidence"] != "C" or not isinstance(age_condition_rule["reason"], str) or not age_condition_rule["reason"].strip():
+            err("age condition rule confidence/reason")
+        incompatibilities = age_condition_rule["incompatibilities"]
+        if (not isinstance(incompatibilities, list) or len(incompatibilities) != 1
+                or not isinstance(incompatibilities[0], dict)
+                or set(incompatibilities[0]) != {"age_state", "condition_states"}):
+            err("age condition rule incompatibilities schema")
+        else:
+            item = incompatibilities[0]
+            forbidden = item["condition_states"]
+            if (item["age_state"] != "new" or item["age_state"] not in age_enum
+                    or not isinstance(forbidden, list) or any(not isinstance(s, str) for s in forbidden)
+                    or len(forbidden) != len(set(forbidden)) or not set(forbidden) <= condition_enum
+                    or set(forbidden) != {"needs_repair", "damaged", "burnt_ruin", "abandoned"}):
+                err("age condition rule incompatible states")
+            else:
+                def age_condition_allowed(age_state, condition_state):
+                    return not (age_state == item["age_state"] and condition_state in forbidden)
+
+                if "--self-test" in sys.argv:
+                    for state in forbidden:
+                        assert not age_condition_allowed("new", state)
+                    assert age_condition_allowed("new", "sound")
+try:
+    with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), encoding="utf-8") as f:
+        occupied_rule = json.load(f)
+except (OSError, json.JSONDecodeError) as e:
+    err("occupied condition rule unreadable: %s" % e)
+    occupied_rule = None
+if occupied_rule is not None:
+    expected_keys = {"rule_id", "status", "trigger", "condition_states_from", "forbidden_condition_states"}
+    expected_trigger = {"entity": "building_instance", "building_class": "dwelling", "composition_source": "D-2", "composition_scope": "linked_pf", "group_kind": "residents", "min_groups": 1}
+    if not isinstance(occupied_rule, dict) or set(occupied_rule) != expected_keys:
+        err("occupied condition rule schema")
+    else:
+        if occupied_rule["rule_id"] != "occupied_condition_v1" or occupied_rule["status"] != "candidate":
+            err("occupied condition rule id/status")
+        if (occupied_rule["trigger"] != expected_trigger or type(occupied_rule["trigger"]) is not dict
+                or type(occupied_rule["trigger"].get("min_groups")) is not int):
+            err("occupied condition rule trigger")
+        if occupied_rule["condition_states_from"] != "building_types.condition_states":
+            err("occupied condition rule state source")
+        forbidden = occupied_rule["forbidden_condition_states"]
+        if (not isinstance(forbidden, list) or any(not isinstance(s, str) for s in forbidden)
+                or len(forbidden) != len(set(forbidden)) or not set(forbidden) <= condition_enum
+                or set(forbidden) != {"burnt_ruin", "abandoned"}):
+            err("occupied condition rule forbidden states")
+        elif "--self-test" in sys.argv and occupied_rule["trigger"] == expected_trigger:
+            def occupied_condition_allowed(bt_class, linked_pf, resident_groups_by_pf, condition_state):
+                applies = (bt_class == expected_trigger["building_class"]
+                           and resident_groups_by_pf.get(linked_pf, 0) >= expected_trigger["min_groups"])
+                return not (applies and condition_state in forbidden)
+
+            for state in forbidden:
+                assert not occupied_condition_allowed("dwelling", "pf_home", {"pf_home": 1}, state)
+                assert occupied_condition_allowed("storage", "pf_home", {"pf_home": 1}, state)
+                assert occupied_condition_allowed("dwelling", "pf_other", {"pf_home": 1}, state)
+                assert occupied_condition_allowed("dwelling", "pf_home", {}, state)
+            assert occupied_condition_allowed("dwelling", "pf_home", {"pf_home": 1}, "sound")
+            print("probe occupied dwelling: linked resident PF only")
 bps = rd("buildings/building_parts.csv"); bp_ids = {b["bp_id"] for b in bps}
 btp = rd("buildings/building_type_parts.csv")
 check_refs(mats, ["source_refs"], "materials", "mat_id")
@@ -266,6 +349,16 @@ cats = {c["content_category"]: c for c in rd("containers/content_categories.csv"
 cts = {c["ct_id"]: c for c in rd("containers/container_forms.csv")}
 cps = rd("containers/content_profiles.csv"); ces = rd("containers/content_profile_entries.csv")
 pcs = rd("containers/place_containers.csv"); xw = rd("containers/item_to_container_crosswalk.csv")
+pc_pairs = {(p["pf_id"], p["ct_id"]) for p in pcs}
+for ct in ("ct_basket_fish", "ct_barrel_cargo"):
+    if ("riverbank", ct) in pc_pairs:
+        err("K9 riverbank/%s must be absent" % ct)
+    if "--self-test" in sys.argv:
+        assert ("riverbank", ct) not in pc_pairs
+        print("probe K9 absent: riverbank/%s" % ct)
+if "--self-test" in sys.argv:
+    assert ("fishing_camp", "ct_basket_fish") in pc_pairs
+    assert ("river_wharf", "ct_barrel_cargo") in pc_pairs
 check_refs(list(cts.values()), ["source_refs"], "container_forms", "ct_id")
 check_refs(cps, ["source_refs"], "content_profiles", "cp_id"); check_refs(ces, ["basis_ref"], "content_entries", "cp_id")
 check_refs(pcs, ["basis_ref"], "place_containers", "ct_id")
@@ -322,11 +415,24 @@ for l in lms:
 # ================= settlement_ambience_texts =================
 amb = rd("ambience/settlement_ambience_texts.csv"); tokens = {t["token"] for t in rd("ambience/presence_tokens.csv")}
 check_refs(amb, ["source_refs"], "ambience", "sat_id"); check_refs(rd("ambience/presence_tokens.csv"), ["source_refs"], "presence_tokens", "token")
+human_work_presence = {"presence:people", "presence:fishing_activity", "presence:woodcutting"}
+def has_human_work_presence(refs):
+    return bool(sp(refs)) and all(ref in human_work_presence for ref in sp(refs))
+if "--self-test" in sys.argv:
+    assert has_human_work_presence("presence:people")
+    assert has_human_work_presence("presence:fishing_activity")
+    assert has_human_work_presence("presence:woodcutting")
+    assert not has_human_work_presence("presence:boats|presence:people")
+    assert not has_human_work_presence("presence:boats|bt_wharf_vymol")
 for a in amb:
     if a["pf_id"] not in pf_ids: err("ambience %s unknown pf" % a["sat_id"])
     if not a["requires_presence_ref"]: err("ambience %s no requires_presence_ref" % a["sat_id"])
     for r in sp(a["requires_presence_ref"]):
         if r not in bt_ids and r not in tokens: err("ambience %s presence ref %s unknown" % (a["sat_id"], r))
+    if a["layer"] == "voices" and a["requires_presence_ref"] not in ("presence:people", "presence:market_day", "presence:famine_1230"):
+        err("ambience %s human voices require people or a human event" % a["sat_id"])
+    if a["layer"] == "work_sounds" and not has_human_work_presence(a["requires_presence_ref"]):
+        err("ambience %s work sounds require human actor presence" % a["sat_id"])
     if not a["clear_text"] or not a["partial_text"]: err("ambience %s missing text" % a["sat_id"])
     if a["channel"] not in ("visual", "acoustic", "olfactory"): err("ambience %s unknown channel" % a["sat_id"])
     if a["status"] != "candidate": err("ambience %s not candidate" % a["sat_id"])

@@ -2,6 +2,7 @@
 // Deterministic: inputs = src/*.tsv, src/habitats.json, cache/gbif.json, cache/wiki.json. No model judgement here.
 const { fs, path, ROOT, SRC, readTsv, months, writeCsv, wikiUrl, readJson } = require('./lib.cjs');
 const H = readJson(path.join(SRC, 'habitats.json'));
+const woodyFoliage = readJson(path.join(SRC, 'woody_foliage_state.json'));
 const gbif = readJson(path.join(__dirname, 'cache', 'gbif.json'));
 const SEASONS = Object.keys(H.seasons);
 const W2C = { 8: 'ubiquitous', 4: 'common', 2: 'contextual', 1: 'rare' };
@@ -56,6 +57,16 @@ function phenology(r, vis, flow, fruit, fruitWord) {
   }
   return o;
 }
+function phenologyByMonth(vis, flow, fruit, cultivated) {
+  const o = {};
+  for (let m = 1; m <= 12; m++) {
+    const winter = H.seasons.winter.includes(m), f = flow.includes(m), p = fruit.includes(m);
+    o[m] = !vis.includes(m) ? 'not_visible' : f && p ? 'flowering_and_fruiting' :
+      p ? (cultivated ? 'ripe_or_harvest' : 'fruiting') : f ? 'flowering' :
+      winter ? 'winter_form' : 'vegetative';
+  }
+  return o;
+}
 const lookIds = t => [...new Set((t || '').match(/fl_[a-z]{2}_[a-z0-9_]+/g) || [])];
 const EDIB = { fresh: 'edible_fresh', after_processing_only: 'edible_after_processing', famine_only: 'famine_food', none: 'not_food' };
 function edibility(r) {
@@ -87,6 +98,7 @@ function base(r, table, fruitCol, fruitWord) {
     habitat_presence: Object.entries(pf).sort().map(([p, w]) => `${p}:${W2C[w]}`).join('; ') + (seas.length ? ' | seasons: ' + seas.join(',') : ''),
     visible_months: vis.join(' '), flowering_months: flow.join(' '),
     phenology_by_season: JSON.stringify(phenology(r, vis, flow, fruit, fruitWord)),
+    phenology_by_month: JSON.stringify(phenologyByMonth(vis, flow, fruit, table === 'cultivated')),
     winter_look: r.winter_look, perceptual_cues: r.cues,
     uses: r.uses === '—' ? '' : r.uses,
     toxicity: r.tox === '—' ? '' : r.tox, lookalike_ids: lookIds(r.look).join(' '), lookalikes: r.look === '—' ? '' : r.look,
@@ -98,8 +110,8 @@ function base(r, table, fruitCol, fruitWord) {
 }
 
 // herbs, mosses, lichens, aquatic
-const herbs = readTsv('herbs.tsv').map(r => Object.assign(base(r, 'herbs', 'fruit', 'плодоносит/спороносит'), { group: r.group, fruiting_months: months(r.fruit).join(' '), medicinal_practice_epoch: /лечебн|народная практика/.test(r.uses) ? r.uses.split(';').filter(u => /лечебн|народная практика/.test(u)).join(';') : 'не засвидетельствовано для Новгорода XIII в.' }));
-const HCOLS = ['fl_id', 'name_ru', 'name_lat', 'name_en', 'group', 'life_form', 'region_id', 'universal_taxon', 'category_ref', 'habitat_classes', 'habitat_presence', 'visible_months', 'flowering_months', 'fruiting_months', 'phenology_by_season', 'winter_look', 'perceptual_cues', 'uses', 'medicinal_practice_epoch', 'toxicity', 'lookalike_ids', 'lookalikes', 'edibility', 'yield_unit', 'yield_note', 'evidence_1230', 'source_refs', 'confidence', 'gbif_usage_key', 'gbif_nw_count', 'status', 'notes'];
+const herbs = readTsv('herbs.tsv').map(r => Object.assign(base(r, 'herbs', 'fruit', 'плодоносит/спороносит'), { group: r.group, fruiting_months: months(r.fruit).join(' '), scene_layer: r.scene_layer || '', scene_layer_refs: r.scene_layer ? expandRefs(r.refs, r.name_lat) : '', scene_layer_confidence: r.scene_layer ? r.conf : '', medicinal_practice_epoch: /лечебн|народная практика/.test(r.uses) ? r.uses.split(';').filter(u => /лечебн|народная практика/.test(u)).join(';') : 'не засвидетельствовано для Новгорода XIII в.' }));
+const HCOLS = ['fl_id', 'name_ru', 'name_lat', 'name_en', 'group', 'life_form', 'region_id', 'universal_taxon', 'category_ref', 'habitat_classes', 'habitat_presence', 'visible_months', 'flowering_months', 'fruiting_months', 'phenology_by_season', 'phenology_by_month', 'scene_layer', 'scene_layer_refs', 'scene_layer_confidence', 'winter_look', 'perceptual_cues', 'uses', 'medicinal_practice_epoch', 'toxicity', 'lookalike_ids', 'lookalikes', 'edibility', 'yield_unit', 'yield_note', 'evidence_1230', 'source_refs', 'confidence', 'gbif_usage_key', 'gbif_nw_count', 'status', 'notes'];
 writeCsv('flora/herbs_mosses_aquatic.csv', herbs, HCOLS);
 
 // berries and fungi
@@ -110,7 +122,7 @@ const bf = readTsv('berries_fungi.tsv').map(r => {
   const ripe = months(r.ripe);
   return Object.assign(b, { kind: r.kind.startsWith('fungus') ? 'fungus' : 'berry', subkind: r.kind, ripening_months: ripe.join(' '), ripening_period: mRange(ripe), allowed_seasons: seasonsOf(ripe).join(' '), refresh_class: 'season', preparation_needed: r.prep === '—' ? '' : r.prep, food_ingredient_ref: r.food && r.food !== '—' ? 'master:' + MASTER + r.food.replace(/^master:/, '') : '', gbif_nw_obs_months: gbifMonths(r.name_lat), medicinal_practice_epoch: 'не засвидетельствовано для Новгорода XIII в.' });
 });
-const BCOLS = ['fl_id', 'name_ru', 'name_lat', 'name_en', 'kind', 'subkind', 'life_form', 'region_id', 'universal_taxon', 'category_ref', 'habitat_classes', 'habitat_presence', 'ripening_months', 'ripening_period', 'allowed_seasons', 'refresh_class', 'visible_months', 'flowering_months', 'phenology_by_season', 'winter_look', 'perceptual_cues', 'uses', 'medicinal_practice_epoch', 'edibility', 'toxicity', 'lookalike_ids', 'lookalikes', 'preparation_needed', 'yield_unit', 'yield_note', 'food_ingredient_ref', 'evidence_1230', 'source_refs', 'confidence', 'gbif_usage_key', 'gbif_nw_count', 'gbif_nw_obs_months', 'status', 'notes'];
+const BCOLS = ['fl_id', 'name_ru', 'name_lat', 'name_en', 'kind', 'subkind', 'life_form', 'region_id', 'universal_taxon', 'category_ref', 'habitat_classes', 'habitat_presence', 'ripening_months', 'ripening_period', 'allowed_seasons', 'refresh_class', 'visible_months', 'flowering_months', 'phenology_by_season', 'phenology_by_month', 'winter_look', 'perceptual_cues', 'uses', 'medicinal_practice_epoch', 'edibility', 'toxicity', 'lookalike_ids', 'lookalikes', 'preparation_needed', 'yield_unit', 'yield_note', 'food_ingredient_ref', 'evidence_1230', 'source_refs', 'confidence', 'gbif_usage_key', 'gbif_nw_count', 'gbif_nw_obs_months', 'status', 'notes'];
 writeCsv('flora/berries_mushrooms.csv', bf, BCOLS);
 
 // cultivated crops and arable weeds
@@ -125,7 +137,15 @@ const cu = readTsv('cultivated.tsv').map(r => {
   if (isCrop && r.allowed_1230 !== 'no' && harv.length) {
     for (let m = 1; m <= 12; m++) {
       let st;
-      if (harv.includes(m)) st = perennial ? 'сбор урожая' : 'созревание, жатва/уборка';
+      if (r.life_form === 'tree') {
+        st = { leafless: 'покой, голые деревья', leaf_out: 'распускание листвы', vegetative: 'в листве', leaf_fall: 'листопад' }[woodyFoliage[m]];
+        if (harv.includes(m)) st += ', сбор урожая';
+        else if (flow.includes(m)) st += ', цветение';
+        else if (flow.length && m < Math.min(...flow) && woodyFoliage[m] === 'leaf_out') st += ', бутоны';
+        else if (flow.length && harv.length && m > Math.max(...flow) && m < Math.min(...harv)) st += ', рост, завязи';
+        else if (m > Math.max(...harv) && woodyFoliage[m] === 'leaf_fall') st = 'после сбора, ' + st;
+      }
+      else if (harv.includes(m)) st = perennial ? 'сбор урожая' : 'созревание, жатва/уборка';
       else if (sow.includes(m)) st = winterCrop ? 'сев озимых, всходы' : 'сев, всходы';
       else if (flow.includes(m)) st = perennial ? 'цветение' : 'цветение/колошение';
       else if (perennial) {
@@ -149,7 +169,7 @@ const cu = readTsv('cultivated.tsv').map(r => {
   }
   return Object.assign(b, { crop_kind: r.crop_kind, allowed_1230: r.allowed_1230, sowing_months: perennial ? 'perennial' : sow.join(' '), sowing_period: perennial ? 'многолетник (не сеется ежегодно)' : mRange(sow), harvest_months: harv.join(' '), harvest_period: mRange(harv), field_look_by_season: Object.keys(look).length ? JSON.stringify(look) : '', archaeobotanical_attestation: r.archaeobot, place_family_refs: Object.keys(habitats(r.habitats)).sort().join(' '), food_ingredient_ref: r.food && r.food !== '—' ? 'master:' + MASTER + r.food.replace(/^master:/, '') : '', medicinal_practice_epoch: 'не засвидетельствовано для Новгорода XIII в.' });
 });
-const CCOLS = ['fl_id', 'name_ru', 'name_lat', 'name_en', 'crop_kind', 'life_form', 'allowed_1230', 'region_id', 'universal_taxon', 'category_ref', 'habitat_classes', 'habitat_presence', 'place_family_refs', 'sowing_months', 'sowing_period', 'harvest_months', 'harvest_period', 'flowering_months', 'visible_months', 'field_look_by_season', 'phenology_by_season', 'winter_look', 'perceptual_cues', 'uses', 'medicinal_practice_epoch', 'edibility', 'toxicity', 'lookalike_ids', 'lookalikes', 'yield_unit', 'yield_note', 'food_ingredient_ref', 'archaeobotanical_attestation', 'evidence_1230', 'source_refs', 'confidence', 'gbif_usage_key', 'gbif_nw_count', 'status', 'notes'];
+const CCOLS = ['fl_id', 'name_ru', 'name_lat', 'name_en', 'crop_kind', 'life_form', 'allowed_1230', 'region_id', 'universal_taxon', 'category_ref', 'habitat_classes', 'habitat_presence', 'place_family_refs', 'sowing_months', 'sowing_period', 'harvest_months', 'harvest_period', 'flowering_months', 'visible_months', 'field_look_by_season', 'phenology_by_season', 'phenology_by_month', 'winter_look', 'perceptual_cues', 'uses', 'medicinal_practice_epoch', 'edibility', 'toxicity', 'lookalike_ids', 'lookalikes', 'yield_unit', 'yield_note', 'food_ingredient_ref', 'archaeobotanical_attestation', 'evidence_1230', 'source_refs', 'confidence', 'gbif_usage_key', 'gbif_nw_count', 'status', 'notes'];
 writeCsv('flora/cultivated_plants.csv', cu, CCOLS);
 writeCsv('flora/field_state_calendar.csv', calendar, ['fl_id', 'name_ru', 'month', 'month_roman', 'season', 'field_state', 'rule', 'confidence', 'status']);
 

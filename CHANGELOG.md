@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
+
+- fix(r1): REVIEW-R1-fix-4 — approval identity, manifest_path, schema_version; internal readback symbol; LW-076 (#158)
 - fix(r1): REVIEW-R1-fix-2/3 — wave bundle by table set, fail-closed approval fields, nodes closure required, positive PG on approved copy; LW-076 (#158)
 - test(infra): opt-in NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1 runs throwaway PG test containers without AppArmor (servak: AppArmor 4.1 + Docker 26.1 block unix sockets)
 - docs(plan): находки восприятия 2026-09-28 — M2c: скрытое надетым (волосы под убором), частичная видимость; M4: подключение восприятия NPC; LW-074 added (#158)
@@ -14,6 +17,7 @@
 - fix(r1): REVIEW-066 — party-store SCOPE_KINDS from contracts (g5); presence-rule negative validation + tests; LW-071 (#158)
 - fix(r1): CR #158 REVIEW-065 — party weather log numeric timestamps; fresh-schema rebuild+test; presence primary/secondary+season overlap; `wild_arrival_cause` TEXT; corpus/LW/CHANGELOG sync; PG DDL test; attestation withdrawn (LW-069/070) (#158)
 - feat(r1): CR #158 DONE-065 — CORPUS_EDIT §3A.1/`place_family` + §8.1 + D25 prose; DDL `27.sql` + party `037`; fresh-schema 217/37; LW-066..068 (#158)
+- docs(process): HOW_WE_WORK — исполнители и их модели, режимы задач, обмен сообщениями, площадка servak и правила исполнителей на ней; CURRENT_SPRINT — задачи M2c B1–B6 по решениям D28–D32 (#168)
 - data(world-catalog): игровая база game-base-v1 (кандидаты, 21 группа, STATUS.md) и книжные факты books-evidence-v1 (#155)
 - fix(wk): #153 REVIEW-063 — WK loader selects pack by `packRevision` (v1|v2 closed list); composition passes `release.world_knowledge_pack_revision` so v16 keeps production-v1 (#153)
 - feat(wk): #153 step 7 — v17 pins World Knowledge `revision:production-v2` (loader bundle/vectors); v16 keeps `production-v1`; embedding profile unchanged; retrieval benchmark pass (#153)

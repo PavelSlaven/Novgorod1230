@@ -21,3 +21,5 @@ data/rus13-base-staging/
 # Personal Claude Code instructions: a committed CLAUDE*.md disables direct AGENTS.md reading.
 CLAUDE.local.md
 .claude/settings.local.json
+__pycache__/
+*.pyc

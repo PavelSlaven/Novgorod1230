@@ -1,80 +1,233 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Checks for schedules_routines.csv.
-
-The source data is qualitative (утро/день/вечер/ночь segments), not clock
-times, so the brief's literal "24h no-overlap" acceptance check cannot run
-on exact minutes. Instead this script checks what the data actually
-supports and states honestly:
-  1. Every day_type row for the generic template covers all four
-     qualitative segments (utro/den/vecher/noch) exactly once, i.e. the
-     day is accounted for without a missing or duplicated segment.
-  2. Every row has non-empty source_refs and confidence.
-  3. Every occupation_id in the underlying TSV is covered by the generic
-     template (asserted, not assumed) -- see build_schedules.py's own
-     uniformity assertion, re-checked here independently against the TSV.
-"""
+"""Validate candidate author schedules and their deterministic build."""
 import csv
 import json
-import os
-import sys
+import re
+from functools import lru_cache
+from pathlib import Path
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT_DIR = os.path.dirname(HERE)
-CSV_PATH = os.path.join(OUT_DIR, "schedules_routines.csv")
-OCC_TSV = "C:/Users/Slaven/Documents/Novgorod/data/novgorod-region/novgorod_occupations_v1_enriched.tsv"
+from build_schedules import ADDITIONS, BASE, FIELDS, MONTHS, OUT, PLACES, PRESENCE, REPO, ROLES, daylight, read_rows, render
 
-errors = []
+GAME_BASE = REPO / "data/world-catalogs/novgorod/game-base-v1"
+NOVGOROD = REPO / "data/world-catalogs/novgorod"
 
-with open(CSV_PATH, encoding="utf-8") as f:
-    rows = list(csv.DictReader(f))
 
-# The source text is not uniformly segmented into all 4 day-parts across
-# every day_type (verified against the raw TSV, not assumed): normal,
-# winter, summer, autumn and market_day give utro/den/vecher/noch;
-# church_day's text has no ночь clause and crisis has no segmentation at
-# all (it describes a disruption, not a day timetable). Both absences are
-# real content, not a parsing bug -- checked here, and called out in
-# README.md as a gap rather than silently passed over.
-FULL_DAY_TYPES = {"normal", "winter", "summer", "autumn", "market_day"}
-PARTIAL_DAY_TYPES = {"church_day", "crisis", "spring_rasputitsa"}
+@lru_cache(maxsize=1)
+def book_anchors():
+    found = set()
+    for path in (NOVGOROD / "sources/books-evidence-v1").glob("*.csv"):
+        with path.open(encoding="utf-8-sig", newline="") as stream:
+            for row in csv.DictReader(stream):
+                if row.get("book_id") and row.get("para_no"):
+                    found.add((row["book_id"], row["para_no"]))
+    return found
 
-for r in rows:
-    if not r["role_or_occupation_ref"].startswith("generic_occupation_template"):
-        continue
-    if r["sch_id"] == "sch_generic_night_behavior":
-        continue
-    blocks = json.loads(r["time_blocks"])
-    segments = [b["segment"] for b in blocks]
-    if not segments or all(s == "unspecified" for s in segments):
-        if r["day_type"] not in PARTIAL_DAY_TYPES:
-            errors.append(f"{r['sch_id']}: no recognizable day-segment at all")
-        continue
-    dup = [s for s in segments if s != "unspecified" and segments.count(s) > 1]
-    if dup:
-        errors.append(f"{r['sch_id']}: duplicated segments {set(dup)}")
-    if r["day_type"] in FULL_DAY_TYPES:
-        expected = ["утро", "день", "вечер", "ночь"]
-        missing = [s for s in expected if s not in segments]
-        if missing:
-            errors.append(f"{r['sch_id']}: missing segments {missing}")
 
-for r in rows:
-    if not r["source_refs"] or not r["confidence"]:
-        errors.append(f"{r['sch_id']}: missing source_refs or confidence")
+@lru_cache(maxsize=None)
+def anchor_values(path, column):
+    with path.open(encoding="utf-8-sig", newline="") as stream:
+        return {row[column] for row in csv.DictReader(stream, delimiter="\t" if path.suffix == ".tsv" else ",")}
 
-with open(OCC_TSV, encoding="utf-8") as f:
-    occ_rows = list(csv.DictReader(f, delimiter="\t"))
-occ_count = len(occ_rows)
-role_ref = next((r["role_or_occupation_ref"] for r in rows if r["sch_id"] == "sch_generic_normal"), "")
-if str(occ_count) not in role_ref:
-    errors.append(f"generic template role_or_occupation_ref does not mention the actual TSV occupation count ({occ_count})")
 
-print(f"checked {len(rows)} rows against {occ_count} occupation_id rows in the TSV")
-if errors:
-    print(f"FAIL: {len(errors)} problem(s)")
-    for e in errors:
-        print(" -", e)
-    sys.exit(1)
-print("OK: checks passed (qualitative day-segment coverage; see README.md for the literal 24h/pf_id-resolution gap)")
+def resolve_source_ref(ref, previous=None):
+    """Resolve file references; book and no_source markers have no file part."""
+    if ref.startswith("book:"):
+        match = re.fullmatch(r"book:(\d+) ¶(\d+)", ref)
+        assert match and match.groups() in book_anchors(), ref
+        return None
+    if ref.startswith("no_source:"):
+        return None
+    if ref.startswith("#"):
+        assert previous is not None, ref
+        path, anchor = previous, ref[1:]
+    else:
+        assert "#" in ref, ref
+        file_ref, anchor = ref.split("#", 1)
+        if file_ref.startswith("data/"):
+            path = REPO / file_ref
+        elif file_ref.startswith(("occupations-activities/", "places-binding/")):
+            path = GAME_BASE / file_ref
+        elif file_ref.startswith("gb:"):
+            path = NOVGOROD / file_ref[3:]
+        elif file_ref.startswith("wk:"):
+            path = NOVGOROD / "world-knowledge/production-v1" / file_ref[3:]
+        else:
+            raise AssertionError(f"unknown source path: {ref}")
+    path = path.resolve()
+    assert path.is_relative_to(REPO) and path.is_file(), ref
+    anchor_id, _, field = anchor.partition(":")
+    anchor_id = anchor_id.split("(", 1)[0]
+    if path == BASE or path == ADDITIONS:
+        assert anchor_id in anchor_values(path, "occupation_id"), ref
+        if field:
+            with path.open(encoding="utf-8", newline="") as stream:
+                assert field in csv.DictReader(stream, delimiter="\t" if path == BASE else ",").fieldnames, ref
+    elif path == PLACES:
+        assert anchor_id in anchor_values(path, "pf_id"), ref
+    elif path == ROLES:
+        assert anchor_id in anchor_values(path, "role_id"), ref
+    elif path == PRESENCE:
+        assert anchor_id in anchor_values(path, "subject_ref"), ref
+    elif path.name == "calendar_daylight_light_profiles.json":
+        assert anchor in {record["record_id"] for record in json.loads(path.read_text(encoding="utf-8"))}, ref
+    elif path.name == "professions.csv":
+        assert anchor_id in anchor_values(path, "profession_id"), ref
+    else:
+        assert anchor, ref
+    return path
+
+with OUT.open(encoding="utf-8", newline="") as stream:
+    reader = csv.DictReader(stream)
+    assert reader.fieldnames == list(FIELDS), "schedule header changed"
+    rows = list(reader)
+assert rows and OUT.read_bytes() == render(), "schedule CSV differs from builder"
+occupations = read_rows(BASE, "\t") | read_rows(ADDITIONS)
+roles = anchor_values(ROLES, "role_id")
+with PRESENCE.open(encoding="utf-8", newline="") as stream:
+    presence = list(csv.DictReader(stream))
+with PLACES.open(encoding="utf-8", newline="") as stream:
+    place_kinds = {row["pf_id"]: row["pf_kind"] for row in csv.DictReader(stream)}
+places = set(place_kinds)
+seen = set()
+for row in rows:
+    key = row["sch_id"]
+    assert key not in seen, key
+    seen.add(key)
+    assert row["revision"].isdigit() and int(row["revision"]) > 0, key
+    occupation = occupations.get(row["occupation_ref"])
+    assert (row["role_ref"] in {v.strip() for v in occupation["allowed_social_role_ids"].split(";")}
+            if occupation else row["role_ref"] in roles or key.startswith("sch_household_child_")), key
+    assert row["day_type"] in {"normal", "market_day", "church_day", "night_watch", "night_fishing"}, key
+    assert row["season"] in MONTHS, key
+    assert row["months"] == "|".join(str(v) for v in MONTHS[row["season"]]), key
+    assert 0 <= int(row["local_start_minute"]) < 1440, key
+    assert row["place_access_ref"] == "" or row["place_access_ref"].startswith("record:"), key
+    assert row["source_refs"] and row["source_rule_ref"].startswith("rule:"), key
+    previous = None
+    for ref in row["source_refs"].split(";"):
+        ref = ref.strip()
+        assert ref, key
+        previous = resolve_source_ref(ref, previous) or previous
+    assert row["no_source"].startswith("no_source:"), key
+    assert row["confidence"] in {"A", "B", "C"} and row["status"] == "candidate", key
+    blocks = json.loads(row["time_blocks"])
+    assert isinstance(blocks, list) and blocks, key
+    assert sum(block["duration_minutes"] for block in blocks) == 1440, key
+    assert len({block["state_id"] for block in blocks}) == len(blocks), key
+    if row["day_type"] in {"night_watch", "night_fishing"}:
+        assert not {"morning_work", "afternoon_work"} & {b["state_id"] for b in blocks}, key
+    for block in blocks:
+        assert set(block) == {"state_id", "duration_minutes", "runtime_status", "activity_ref",
+                              "summary", "activity_status", "uses_current_activity",
+                              "can_continue_automatically", "decision_required", "presence_state",
+                              "location_ref", "absence_reason_ru"}, key
+        assert isinstance(block["duration_minutes"], int) and block["duration_minutes"] > 0, key
+        assert block["runtime_status"] in {"available", "sleeping"}, key
+        assert block["activity_status"] in {"active", "paused"}, key
+        assert block["presence_state"] in {"on_site", "nearby", "away"}, key
+        assert block["location_ref"] == "" or block["location_ref"] in places, key
+        assert block["presence_state"] == "away" or block["location_ref"], key
+        assert block["presence_state"] != "away" or block["absence_reason_ru"], key
+        assert block["presence_state"] == "away" or not block["absence_reason_ru"], key
+        for field in ("uses_current_activity", "can_continue_automatically", "decision_required"):
+            assert isinstance(block[field], bool), key
+def block_at(row, minute):
+    elapsed = int(row["local_start_minute"])
+    for block in json.loads(row["time_blocks"]):
+        elapsed += block["duration_minutes"]
+        if minute < elapsed:
+            return block
+    raise AssertionError(row["sch_id"])
+
+
+def check_dark_onsite(rows):
+    for row in rows:
+        sunrise, sunset = daylight(row["season"])
+        elapsed = int(row["local_start_minute"])
+        for block in json.loads(row["time_blocks"]):
+            end = elapsed + block["duration_minutes"]
+            if (block["presence_state"] == "on_site" and block["runtime_status"] == "available"
+                    and place_kinds[block["location_ref"]] not in {"structure", "interior"}
+                    and block["location_ref"] not in {"pf_peasant_homestead", "pf_rural_yard", "pf_town_courtyard"}
+                    and (elapsed < sunrise or end > sunset)):
+                assert row["day_type"] == "night_fishing" or (
+                    row["day_type"] == "night_watch" and row["occupation_ref"] in {
+                        "nov_occ_crossing_guard", "nov_occ_church_guard", "nov_occ_market_guard"}), row["sch_id"]
+            elapsed = end
+
+
+def binding_scopes():
+    with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
+        nodes = list(csv.DictReader(stream))
+    primary = {node["pf_id"] for node in nodes if node["pf_id"] in places}
+    accessible = primary | {scope for node in nodes for scope in node["pf_secondary"].split(";") if scope in places}
+    return primary, accessible
+
+
+def scope_failures(presence_rows, primary, accessible):
+    scopes = {item["scope_ref"] for item in presence_rows}
+    return (primary - scopes, scopes - accessible)
+
+
+def check_coverage(rows, presence):
+    primary, accessible = binding_scopes()
+    missing, off_node = scope_failures(presence, primary, accessible)
+    assert not missing and not off_node, f"presence scopes: missing primary {sorted(missing)}, off node {sorted(off_node)}"
+    for item in presence:
+        for season in item["allowed_seasons"].split(";"):
+            sunrise, sunset = daylight(season)
+            minutes = {"morning": sunrise + 90, "day": 900, "evening": sunset + 30, "night": 1380}
+            for window in item["allowed_times"].split(";"):
+                minute = minutes[window]
+                assert any(r["season"] == season and
+                           r["occupation_ref" if item["subject_kind"] == "occupation" else "role_ref"] == item["subject_ref"] and
+                           (block := block_at(r, minute))["location_ref"] == item["scope_ref"] and
+                           block["presence_state"] in {"on_site", "nearby"} and
+                           (window != "evening" or block["runtime_status"] == "available") and
+                           (window != "night" or block["runtime_status"] == "available" or
+                            (item["guards"] == "inhabited_household" and
+                             block["presence_state"] == "on_site" and block["runtime_status"] == "sleeping"))
+                           for r in rows), f"missing awake presence: {item['subject_ref']} {item['scope_ref']} {season} {window}"
+
+
+check_dark_onsite(rows)
+market_probe = {
+    "sch_id": "probe_market_dark", "season": "winter", "local_start_minute": "0",
+    "day_type": "normal", "occupation_ref": "",
+    "time_blocks": json.dumps([{"duration_minutes": 1440, "presence_state": "on_site",
+                                "runtime_status": "available", "location_ref": "pf_market_square"}]),
+}
+try:
+    check_dark_onsite([market_probe])
+except AssertionError as error:
+    assert error.args == (market_probe["sch_id"],)
+else:
+    raise AssertionError("dark market probe was not rejected")
+check_coverage(rows, presence)
+primary, accessible = binding_scopes()
+assert scope_failures([*presence, {**presence[0], "scope_ref": "pf_off_node_probe"}], primary, accessible)[1] == {"pf_off_node_probe"}
+covered_primary = next(iter(primary))
+assert scope_failures([item for item in presence if item["scope_ref"] != covered_primary], primary, accessible)[0] == {covered_primary}
+
+
+for season, place in (("winter", "pf_winter_ice_crossing"), ("summer", "pf_ferry_landing")):
+    ferry = next(r for r in rows if r["occupation_ref"] == "nov_occ_ferryman" and r["season"] == season and r["day_type"] == "normal")
+    assert block_at(ferry, 900)["location_ref"] == place, season
+    assert block_at(ferry, 900)["presence_state"] == "on_site", season
+for role in ("nov_role_smerd_householder", "nov_role_household_mistress"):
+    assert any(r["role_ref"] == role and r["season"] == "summer" and
+               any(b["state_id"] == "sleep_after_dusk" and b["presence_state"] == "on_site" and
+                   b["location_ref"] == "pf_peasant_homestead" for b in json.loads(r["time_blocks"]))
+               for r in rows), role
+def check_church_rest(rows):
+    for occupation in ("nov_occ_ponomar", "nov_occ_parish_priest_service"):
+        for row in (r for r in rows if r["occupation_ref"] == occupation):
+            blocks = json.loads(row["time_blocks"])
+            assert all(b["presence_state"] == "away" and not b["location_ref"]
+                       for b in blocks if "sleep" in b["state_id"] or b["state_id"] == "post_meal_rest"), row["sch_id"]
+            assert all(b["presence_state"] == "on_site" and b["location_ref"] == "pf_church_interior"
+                       for b in blocks if b["state_id"] in {"early_service", "morning_work", "afternoon_work"}), row["sch_id"]
+
+
+check_church_rest(rows)
+print(f"OK: {len(rows)} schedules, {len({r['occupation_ref'] for r in rows if r['occupation_ref']})} occupations, all presence subjects covered")

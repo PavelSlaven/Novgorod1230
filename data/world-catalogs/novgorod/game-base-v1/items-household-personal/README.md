@@ -12,7 +12,7 @@
 | `item_categories.csv` | → category_registry | 160 | Категории `cat_item_object_<code>_v1`: 39 уже есть в v5 (draft), 121 предложены новыми. Категории универсальные (`category_scope=universal`), регион даёт только разрешение (`region_permission=region_novgorod_land`) |
 | `mass_policy.csv` | общий | 6 | Полосы массы tiny…bulky с границами и значением по умолчанию |
 | `condition_vocab.csv` | общий | 11 | Состояния по семейству материала со ссылками на WK claims о поведении материала |
-| `item_place_frequency.csv` | item_place_frequency | 12 631 | 1 654 строки для вещей каталога (`ref_kind=it`) и 10 977 строк для master (`ref_kind=master`) |
+| `item_place_frequency.csv` | item_place_frequency | 12 629 | 1 652 строки для вещей каталога (`ref_kind=it`) и 10 977 строк для master (`ref_kind=master`) |
 | `archetype_pf_map.csv` | item_place_frequency | 32 | Как типы мест master переводятся в семейства мест WK: 28 переводятся, 4 отброшены с причиной |
 | `ownership_rules.csv` | item_ownership_rules | 1 614 | Правило владельца для пары place_family × контекст находки × группа вещей, плюс одно правило для носимого |
 | `recognizers.csv` | item_ownership_rules | 28 | Кто может узнать вещь: по виду владельца и по различимости примет |

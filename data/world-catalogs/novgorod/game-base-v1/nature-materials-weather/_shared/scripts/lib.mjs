@@ -5,8 +5,6 @@ import { fileURLToPath } from 'node:url';
 
 export const GROUP_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const SHARED = path.join(GROUP_DIR, '_shared');
-export const PR98 = process.env.PR98_ROOT || 'C:/Users/Slaven/Documents/Novgorod-runtime';
-export const MAIN = process.env.MAIN_ROOT || 'C:/Users/Slaven/Documents/Novgorod';
 
 export const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, ''));
 export const writeJson = (p, v) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, JSON.stringify(v, null, 1) + '\n'); };

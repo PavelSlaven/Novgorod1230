@@ -1,0 +1,140 @@
+{
+  "option_names_ru": {
+    "nov_1200_1250_sex_category_male": "мужчина",
+    "nov_1200_1250_sex_category_female": "женщина",
+    "nov_1200_1250_age_category_young_adult": "молодой взрослый",
+    "nov_1200_1250_age_category_adult": "взрослый",
+    "nov_1200_1250_age_category_middle_aged": "человек среднего возраста",
+    "nov_1200_1250_age_category_old": "пожилой человек",
+    "nov_1200_1250_build_slim": "худощавое телосложение",
+    "nov_1200_1250_build_average": "среднее телосложение",
+    "nov_1200_1250_build_stocky": "коренастое телосложение",
+    "nov_1200_1250_skin_tone_pale": "бледная кожа",
+    "nov_1200_1250_skin_tone_light": "светлая кожа",
+    "nov_1200_1250_skin_tone_warm": "кожа тёплого оттенка",
+    "nov_1200_1250_skin_tone_brown": "смуглая кожа",
+    "nov_1200_1250_face_shape_oval": "овальное лицо",
+    "nov_1200_1250_face_shape_round": "круглое лицо",
+    "nov_1200_1250_face_shape_broad": "широкое лицо",
+    "nov_1200_1250_face_shape_angular": "угловатое лицо",
+    "nov_1200_1250_face_shape_long": "вытянутое лицо",
+    "nov_1200_1250_hair_color_blond": "светлые волосы",
+    "nov_1200_1250_hair_color_light_brown": "русые волосы",
+    "nov_1200_1250_hair_color_dark_brown": "тёмно-каштановые волосы",
+    "nov_1200_1250_hair_color_black": "чёрные волосы",
+    "nov_1200_1250_hair_color_auburn": "рыжеватые волосы",
+    "nov_1200_1250_hair_color_gray": "седые волосы",
+    "nov_1200_1250_hair_color_white": "белые волосы",
+    "nov_1200_1250_hair_length_bald": "лысая голова",
+    "nov_1200_1250_hair_length_short": "короткие волосы",
+    "nov_1200_1250_hair_length_medium": "волосы средней длины",
+    "nov_1200_1250_hair_length_long": "длинные волосы",
+    "nov_1200_1250_hair_style_straight": "прямые волосы",
+    "nov_1200_1250_hair_style_wavy": "волнистые волосы",
+    "nov_1200_1250_hair_style_loose": "распущенные волосы",
+    "nov_1200_1250_hair_style_braided": "заплетённые волосы",
+    "nov_1200_1250_facial_hair_none": "без растительности на лице",
+    "nov_1200_1250_facial_hair_moustache": "усы",
+    "nov_1200_1250_facial_hair_short_beard": "короткая борода",
+    "nov_1200_1250_facial_hair_full_beard": "густая борода",
+    "nov_1200_1250_eye_color_blue": "голубые глаза",
+    "nov_1200_1250_eye_color_gray": "серые глаза",
+    "nov_1200_1250_eye_color_green": "зелёные глаза",
+    "nov_1200_1250_eye_color_brown": "карие глаза",
+    "nov_1200_1250_eye_color_dark": "тёмные глаза"
+  },
+  "incompatibility_rules": [
+    {
+      "id": "bald_has_no_hair_color",
+      "if": {"hair_length": "nov_1200_1250_hair_length_bald"},
+      "incompatible_with": {"hair_color": "any"},
+      "note": "При обязательной грани hair_color вариант bald не образует полного набора; цвет волос не придумывать."
+    },
+    {
+      "id": "bald_has_no_hair_style",
+      "if": {"hair_length": "nov_1200_1250_hair_length_bald"},
+      "incompatible_with": {"hair_style": "any"}
+    },
+    {
+      "id": "young_adult_has_no_gray_or_white_hair",
+      "if": {"age_category": "nov_1200_1250_age_category_young_adult"},
+      "incompatible_with": {"hair_color": ["nov_1200_1250_hair_color_gray", "nov_1200_1250_hair_color_white"]}
+    }
+  ],
+  "presentation_rules": [
+    {
+      "id": "hair_visible_only_when_head_uncovered",
+      "scope": "player_facing_appearance",
+      "facets": ["hair_color", "hair_length", "hair_style"],
+      "visible_if": {"equipped_items": {"all_covers_hair": "no", "coverage_ref": "clothing-appearance/garments/garments.csv#covers_hair"}},
+      "otherwise": "omit_from_player_facing_projection",
+      "internal_traits": "preserve"
+    }
+  ],
+  "composition_slot_clothing_profile_overrides": {
+    "pf_peasant_homestead.mistress": "nov_clothing_rural_v1"
+  },
+  "subject_applicability": [
+    {
+      "subject_id": "nov_occ_ferryman",
+      "subject_kind": "occupation",
+      "sex_category": ["nov_1200_1250_sex_category_male"],
+      "sex_basis": "editorial",
+      "confidence": "C",
+      "source_refs": ["data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman"],
+      "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+      "no_source": "individual_marital_status_not_derived_from_occupation"
+    },
+    {
+      "subject_id": "nov_occ_crossing_guard",
+      "subject_kind": "occupation",
+      "sex_category": ["nov_1200_1250_sex_category_male"],
+      "sex_basis": "editorial",
+      "confidence": "C",
+      "source_refs": ["data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard"],
+      "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+      "no_source": "individual_marital_status_not_derived_from_occupation"
+    },
+    {
+      "subject_id": "nov_occ_fisher",
+      "subject_kind": "occupation",
+      "sex_category": ["nov_1200_1250_sex_category_male"],
+      "sex_basis": "editorial",
+      "confidence": "C",
+      "source_refs": ["data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher"],
+      "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+      "no_source": "individual_marital_status_not_derived_from_occupation"
+    },
+    {
+      "subject_id": "nov_role_smerd_householder",
+      "subject_kind": "role",
+      "sex_category": ["nov_1200_1250_sex_category_male"],
+      "sex_basis": "editorial",
+      "confidence": "C",
+      "source_refs": ["data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder"],
+      "rule": "Исторически однозначная мужская роль; ограничение не задаёт частоту пола.",
+      "no_source": "individual_marital_status_not_derived_from_role"
+    },
+    {
+      "subject_id": "nov_role_household_mistress",
+      "subject_kind": "role",
+      "sex_category": ["nov_1200_1250_sex_category_female"],
+      "sex_basis": "editorial",
+      "confidence": "C",
+      "source_refs": ["data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_household_mistress"],
+      "rule": "Определение роли прямо указывает на женщину; ограничение не задаёт частоту пола.",
+      "no_source": "individual_marital_status_not_derived_from_role"
+    },
+    {
+      "subject_id": "nov_occ_household_servant",
+      "subject_kind": "occupation",
+      "sex_category": ["nov_1200_1250_sex_category_male", "nov_1200_1250_sex_category_female"],
+      "source_refs": [
+        "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+        "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"
+      ],
+      "rule": "Пол конкретной прислуги устанавливается источником персонажа или сцены; вероятностный выбор без такого источника недопустим.",
+      "no_source": "individual_sex_and_marital_status; female_headwear_requires_individual_marital_status"
+    }
+  ]
+}

@@ -4,28 +4,28 @@
 
 | Группа | Статус | approve | approve_with_limits | rework |
 |---|---|---:|---:|---:|
-| [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 5 | 19 | 0 |
+| [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 9 | 17 | 0 |
 | [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 5 | 13 | 0 |
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 1 | 8 | 0 |
-| [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 5 | 14 | 0 |
-| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
+| [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 6 | 14 | 0 |
+| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 3 | 9 | 0 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
-| [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 4 | 3 | 0 |
+| [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 5 | 2 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 10 | 8 | 0 |
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
-| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
-| [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 4 | 8 | 0 |
+| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 7 | 4 | 0 |
+| [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 5 | 7 | 0 |
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
-| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 8 | 22 | 0 |
-| [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 11 | 0 |
-| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 4 | 18 | 0 |
+| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 10 | 24 | 0 |
+| [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 6 | 6 | 0 |
+| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 6 | 18 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **52** | **197** | **0** |
+| **Итого** | | **79** | **189** | **0** |
 
 ## Вердикты по файлам
 
@@ -35,11 +35,13 @@
 |---|---|
 | [`ambience/g4_human_layer_binding.csv`](buildings-interiors-containers/ambience/g4_human_layer_binding.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#ambienceg4_human_layer_bindingcsv--approve_with_limits) |
 | [`ambience/presence_tokens.csv`](buildings-interiors-containers/ambience/presence_tokens.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#ambiencepresence_tokenscsv--approve_with_limits-9) |
-| [`ambience/settlement_ambience_texts.csv`](buildings-interiors-containers/ambience/settlement_ambience_texts.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#ambiencesettlement_ambience_textscsv--approve_with_limits) |
+| [`ambience/settlement_ambience_texts.csv`](buildings-interiors-containers/ambience/settlement_ambience_texts.csv) | [approve](buildings-interiors-containers/VERIFICATION.md#ambiencesettlement_ambience_textscsv--approve-c007c2-закрывает-rework-c007c) |
+| [`buildings/age_condition_rule.json`](buildings-interiors-containers/buildings/age_condition_rule.json) | [approve](buildings-interiors-containers/VERIFICATION.md#buildingsage_condition_rulejson--approve) |
 | [`buildings/building_parts.csv`](buildings-interiors-containers/buildings/building_parts.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsbuilding_partscsv--approve_with_limits-73) |
 | [`buildings/building_type_parts.csv`](buildings-interiors-containers/buildings/building_type_parts.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsbuilding_type_partscsv--approve_with_limits-288) |
 | [`buildings/building_types.csv`](buildings-interiors-containers/buildings/building_types.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsbuilding_typescsv--approve_with_limits-51) |
 | [`buildings/materials_vocab.csv`](buildings-interiors-containers/buildings/materials_vocab.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingsmaterials_vocabcsv--approve_with_limits-41) |
+| [`buildings/occupied_condition_rule.json`](buildings-interiors-containers/buildings/occupied_condition_rule.json) | [approve](buildings-interiors-containers/VERIFICATION.md#buildingsoccupied_condition_rulejson-containersplace_containerscsv-ambience--approve-c009) |
 | [`buildings/settlement_building_mix.csv`](buildings-interiors-containers/buildings/settlement_building_mix.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingssettlement_building_mixcsv--approve_with_limits-112) |
 | [`buildings/settlement_form.csv`](buildings-interiors-containers/buildings/settlement_form.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingssettlement_formcsv--approve_with_limits-22) |
 | [`buildings/sf_pf_crosswalk.csv`](buildings-interiors-containers/buildings/sf_pf_crosswalk.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#buildingssf_pf_crosswalkcsv--approve_with_limits) |
@@ -49,7 +51,7 @@
 | [`containers/content_profiles.csv`](buildings-interiors-containers/containers/content_profiles.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#containerscontent_profilescsv--approve_with_limits-65) |
 | [`containers/first_open_rule.json`](buildings-interiors-containers/containers/first_open_rule.json) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#containersfirst_open_rulejson--approve_with_limits-1) |
 | [`containers/item_to_container_crosswalk.csv`](buildings-interiors-containers/containers/item_to_container_crosswalk.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#containersitem_to_container_crosswalkcsv--approve_with_limits-87) |
-| [`containers/place_containers.csv`](buildings-interiors-containers/containers/place_containers.csv) | [approve_with_limits](buildings-interiors-containers/VERIFICATION.md#containersplace_containerscsv--approve_with_limits-186) |
+| [`containers/place_containers.csv`](buildings-interiors-containers/containers/place_containers.csv) | [approve](buildings-interiors-containers/VERIFICATION.md#buildingsoccupied_condition_rulejson-containersplace_containerscsv-ambience--approve-c009) |
 | [`interiors/anti_patterns_ref.csv`](buildings-interiors-containers/interiors/anti_patterns_ref.csv) | [approve](buildings-interiors-containers/VERIFICATION.md#interiorsanti_patterns_refcsv--approve-53) |
 | [`interiors/furniture_fixtures_light.csv`](buildings-interiors-containers/interiors/furniture_fixtures_light.csv) | [approve](buildings-interiors-containers/VERIFICATION.md#interiorsfurniture_fixtures_lightcsv--approve-75) |
 | [`interiors/matcult_item_refs.csv`](buildings-interiors-containers/interiors/matcult_item_refs.csv) | [approve](buildings-interiors-containers/VERIFICATION.md#interiorsmatcult_item_refscsv--approve-458) |
@@ -129,6 +131,7 @@
 | [`fauna/livestock_products.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_products.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/livestock_species.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_species.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/livestock_types.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_types.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
+| [`fauna/phase_activity.csv`](fauna-fish-invertebrates-livestock/fauna/phase_activity.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#faunaphase_activitycsv--approve-c007c2) |
 | [`fauna/place_type_livestock.csv`](fauna-fish-invertebrates-livestock/fauna/place_type_livestock.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/rpgr_pf_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#faunarpgr_pf_crosswalkcsv--approve_with_limits) |
 | [`fauna/water_body_pf_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/water_body_pf_crosswalk.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
@@ -140,24 +143,29 @@
 
 | Файл | Последний verdict |
 |---|---|
-| [`fauna/birds.csv`](fauna-mammals-birds/fauna/birds.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunabirdscsv--approve_with_limits-149-rows-16-checked-in-full-against-sources-all-149-by-script) |
+| [`fauna/activity_phase_rules.json`](fauna-mammals-birds/fauna/activity_phase_rules.json) | [approve](fauna-mammals-birds/VERIFICATION.md#faunaactivity_phase_rulesjson--approve) |
+| [`fauna/birds.csv`](fauna-mammals-birds/fauna/birds.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#faunabirdscsv-voice_sound_ru--approve-c007c2-закрывает-rework-c007c) |
 | [`fauna/fauna_categories.csv`](fauna-mammals-birds/fauna/fauna_categories.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunafauna_categoriescsv--approve_with_limits-was-rework) |
 | [`fauna/mammals.csv`](fauna-mammals-birds/fauna/mammals.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunamammalscsv--approve_with_limits-44-rows-10-checked-in-full-against-sources-all-44-by-script) |
+| [`fauna/phase_activity.csv`](fauna-mammals-birds/fauna/phase_activity.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunaphase_activitycsv--approve_with_limits-c006b5-закрывает-rework-c006b4) |
 | [`fauna/sources.csv`](fauna-mammals-birds/fauna/sources.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunasourcescsv--approve_with_limits-21-rows-12-checked-against-the-url-or-file) |
 | [`fauna/taxa_checks.csv`](fauna-mammals-birds/fauna/taxa_checks.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunataxa_checkscsv--approve_with_limits-27-rows-13-checked-against-sources) |
-| [`fauna/wild_habitat_presence.csv`](fauna-mammals-birds/fauna/wild_habitat_presence.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunawild_habitat_presencecsv--approve_with_limits-was-rework) |
+| [`fauna/wild_habitat_presence.csv`](fauna-mammals-birds/fauna/wild_habitat_presence.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#faunawild_habitat_presencecsv--approve) |
 | [`README.md`](fauna-mammals-birds/README.md) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#readmemd--approve_with_limits) |
+| [`scripts/extract_regional_bird_sources.py`](fauna-mammals-birds/scripts/extract_regional_bird_sources.py) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |
+| [`scripts/input_snapshots/malchevsky1983_flags.json`](fauna-mammals-birds/scripts/input_snapshots/malchevsky1983_flags.json) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |
+| [`scripts/input_snapshots/panteleev2001_list.json`](fauna-mammals-birds/scripts/input_snapshots/panteleev2001_list.json) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |
 
 ### flora-herbs-berries-mushrooms
 
 | Файл | Последний verdict |
 |---|---|
 | [`flora/anachronism_denylist_flora.csv`](flora-herbs-berries-mushrooms/flora/anachronism_denylist_flora.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#floraanachronism_denylist_floracsv--approve_with_limits) |
-| [`flora/berries_mushrooms.csv`](flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#вердикты) |
-| [`flora/cultivated_plants.csv`](flora-herbs-berries-mushrooms/flora/cultivated_plants.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#итог) |
+| [`flora/berries_mushrooms.csv`](flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#floraherbs_mosses_aquaticcsv-berries_mushroomscsv-cultivated_plantscsv--approve_with_limits-c007d-к6-к7) |
+| [`flora/cultivated_plants.csv`](flora-herbs-berries-mushrooms/flora/cultivated_plants.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#floraherbs_mosses_aquaticcsv-berries_mushroomscsv-cultivated_plantscsv--approve_with_limits-c007d-к6-к7) |
 | [`flora/field_state_calendar.csv`](flora-herbs-berries-mushrooms/flora/field_state_calendar.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#вердикты) |
 | [`flora/flora_habitat_presence.csv`](flora-herbs-berries-mushrooms/flora/flora_habitat_presence.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#итог) |
-| [`flora/herbs_mosses_aquatic.csv`](flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#итог) |
+| [`flora/herbs_mosses_aquatic.csv`](flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#floraherbs_mosses_aquaticcsv-berries_mushroomscsv-cultivated_plantscsv--approve_with_limits-c007d-к6-к7) |
 | [`flora/sources.csv`](flora-herbs-berries-mushrooms/flora/sources.csv) | [approve_with_limits](flora-herbs-berries-mushrooms/VERIFICATION.md#итог) |
 
 ### flora-trees-shrubs
@@ -167,7 +175,7 @@
 | [`flora/landscape_template_woody_check.csv`](flora-trees-shrubs/flora/landscape_template_woody_check.csv) | [approve](flora-trees-shrubs/VERIFICATION.md#landscape_template_woody_checkcsv--approve) |
 | [`flora/sources.csv`](flora-trees-shrubs/flora/sources.csv) | [approve_with_limits](flora-trees-shrubs/VERIFICATION.md#вердикты) |
 | [`flora/tree_habitat_presence.csv`](flora-trees-shrubs/flora/tree_habitat_presence.csv) | [approve_with_limits](flora-trees-shrubs/VERIFICATION.md#вердикты) |
-| [`flora/trees_shrubs.csv`](flora-trees-shrubs/flora/trees_shrubs.csv) | [approve_with_limits](flora-trees-shrubs/VERIFICATION.md#вердикты) |
+| [`flora/trees_shrubs.csv`](flora-trees-shrubs/flora/trees_shrubs.csv) | [approve](flora-trees-shrubs/VERIFICATION.md#floratrees_shrubscsv-phenology_by_month--approve-c009) |
 | [`flora/wood_use_kolchin1968.csv`](flora-trees-shrubs/flora/wood_use_kolchin1968.csv) | [approve](flora-trees-shrubs/VERIFICATION.md#wood_use_kolchin1968csv--approve) |
 | [`flora/woody_categories.csv`](flora-trees-shrubs/flora/woody_categories.csv) | [approve](flora-trees-shrubs/VERIFICATION.md#woody_categoriescsv--approve) |
 | [`flora/woody_denylist.csv`](flora-trees-shrubs/flora/woody_denylist.csv) | [approve](flora-trees-shrubs/VERIFICATION.md#woody_denylistcsv--approve) |
@@ -213,10 +221,14 @@
 | [`households_kinship/household_composition_profiles.csv`](households-psychology-speech/households_kinship/household_composition_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#households_kinshiphousehold_composition_profilescsv--approve_with_limits) |
 | [`households_kinship/kinship_terms.csv`](households-psychology-speech/households_kinship/kinship_terms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#kinship_termscsv--approve_with_limits) |
 | [`households_kinship/marriage_inheritance_rules.csv`](households-psychology-speech/households_kinship/marriage_inheritance_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#marriage_inheritance_rulescsv--approve_with_limits) |
-| [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--approve_with_limits) |
+| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [approve](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--speech_addressaddress_formscsv--approve) |
+| [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [approve](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--approve-c013a-закрывает-rework) |
+| [`npc_psychology/psychology_scales.json`](households-psychology-speech/npc_psychology/psychology_scales.json) | [approve](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_scalesjson--approve-c013a-закрывает-rework) |
+| [`scripts/build.py`](households-psychology-speech/scripts/build.py) | [approve](households-psychology-speech/VERIFICATION.md#scriptsbuildpy--approve-c013a-закрывает-rework) |
+| [`scripts/check.py`](households-psychology-speech/scripts/check.py) | [approve](households-psychology-speech/VERIFICATION.md#scriptscheckpy--approve-c013a-закрывает-rework) |
 | [`social_norms_honour_hospitality/norms.csv`](households-psychology-speech/social_norms_honour_hospitality/norms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#normscsv--approve_with_limits) |
-| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#address_formscsv--approve_with_limits) |
-| [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#speech_registerscsv--approve_with_limits) |
+| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--speech_addressaddress_formscsv--approve) |
+| [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve](households-psychology-speech/VERIFICATION.md#speech_addressspeech_registerscsv--approve-c007c2) |
 
 ### items-household-personal
 
@@ -227,7 +239,7 @@
 | [`items/household.csv`](items-household-personal/items/household.csv) | [approve_with_limits](items-household-personal/VERIFICATION.md#itemshouseholdcsv--approve_with_limits) |
 | [`items/identifying_text_pools.csv`](items-household-personal/items/identifying_text_pools.csv) | [approve_with_limits](items-household-personal/VERIFICATION.md#itemsidentifying_text_poolscsv--approve_with_limits) |
 | [`items/item_categories.csv`](items-household-personal/items/item_categories.csv) | [approve_with_limits](items-household-personal/VERIFICATION.md#itemsitem_categoriescsv--approve_with_limits) |
-| [`items/item_place_frequency.csv`](items-household-personal/items/item_place_frequency.csv) | [approve_with_limits](items-household-personal/VERIFICATION.md#itemsitem_place_frequencycsv--approve_with_limits-3) |
+| [`items/item_place_frequency.csv`](items-household-personal/items/item_place_frequency.csv) | [approve](items-household-personal/VERIFICATION.md#itemsitem_place_frequencycsv--approve-c007d-к9) |
 | [`items/mark_pools.csv`](items-household-personal/items/mark_pools.csv) | [approve_with_limits](items-household-personal/VERIFICATION.md#itemsmark_poolscsv--approve_with_limits) |
 | [`items/mass_policy.csv`](items-household-personal/items/mass_policy.csv) | [approve](items-household-personal/VERIFICATION.md#itemsmass_policycsv--approve) |
 | [`items/ownership_rules.csv`](items-household-personal/items/ownership_rules.csv) | [approve_with_limits](items-household-personal/VERIFICATION.md#itemsownership_rulescsv--approve_with_limits) |
@@ -277,6 +289,7 @@
 |---|---|
 | [`_shared/anachronism_denylist.json`](nature-materials-weather/_shared/anachronism_denylist.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#_shared-reports) |
 | [`_shared/g4_nature_index.json`](nature-materials-weather/_shared/g4_nature_index.json) | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
+| [`_shared/main_inputs.json`](nature-materials-weather/_shared/main_inputs.json) | [approve](nature-materials-weather/VERIFICATION.md#_sharedmain_inputsjson--сборка-группы--approve-c006f) |
 | [`natural_materials_soils/access_tools.csv`](nature-materials-weather/natural_materials_soils/access_tools.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
 | [`natural_materials_soils/finite_source_profiles_ext.json`](nature-materials-weather/natural_materials_soils/finite_source_profiles_ext.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
 | [`natural_materials_soils/g4_ground_and_materials.csv`](nature-materials-weather/natural_materials_soils/g4_ground_and_materials.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
@@ -288,6 +301,7 @@
 | [`natural_presentation_texts/member_phrases.csv`](nature-materials-weather/natural_presentation_texts/member_phrases.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#member_phrasescsv--approve_with_limits) |
 | [`natural_presentation_texts/presentation_texts.csv`](nature-materials-weather/natural_presentation_texts/presentation_texts.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textspresentation_textscsv--approve_with_limits-2) |
 | [`natural_presentation_texts/reports/denied_landscape_words.csv`](nature-materials-weather/natural_presentation_texts/reports/denied_landscape_words.csv) | [approve](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
+| [`natural_presentation_texts/sensory_coverage.csv`](nature-materials-weather/natural_presentation_texts/sensory_coverage.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textssensory_coveragecsv--weather_climatewater_profilescsv--approve_with_limits) |
 | [`reports/counts.json`](nature-materials-weather/reports/counts.json) | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
 | [`weather_climate/climate_monthly_normals.csv`](nature-materials-weather/weather_climate/climate_monthly_normals.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/ground_water_condition_rules.csv`](nature-materials-weather/weather_climate/ground_water_condition_rules.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
@@ -300,11 +314,13 @@
 | [`weather_climate/temperature_anomalies.csv`](nature-materials-weather/weather_climate/temperature_anomalies.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_anomaly_transitions.csv`](nature-materials-weather/weather_climate/temperature_anomaly_transitions.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_profile.csv`](nature-materials-weather/weather_climate/temperature_profile.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
+| [`weather_climate/water_profiles.csv`](nature-materials-weather/weather_climate/water_profiles.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climatewater_profilescsv--approve_with_limits-c007b-к3) |
 | [`weather_climate/weather_season_climatology.csv`](nature-materials-weather/weather_climate/weather_season_climatology.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_state_temperature_modifiers.csv`](nature-materials-weather/weather_climate/weather_state_temperature_modifiers.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_states.csv`](nature-materials-weather/weather_climate/weather_states.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_transition_profile_v2.candidate.json`](nature-materials-weather/weather_climate/weather_transition_profile_v2.candidate.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_transitions.csv`](nature-materials-weather/weather_climate/weather_transitions.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
+| [`weather_climate/wind_air_profiles.csv`](nature-materials-weather/weather_climate/wind_air_profiles.csv) | [approve](nature-materials-weather/VERIFICATION.md#nature-materials-weatherweather_climatewind_air_profilescsv--approve) |
 
 ### occupations-activities
 
@@ -312,11 +328,12 @@
 |---|---|
 | [`activities_observable/activities_new_occupations.csv`](occupations-activities/activities_observable/activities_new_occupations.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#activities_observableactivities_new_occupationscsv--approve_with_limits) |
 | [`carried_inventories/carried_inventories.csv`](occupations-activities/carried_inventories/carried_inventories.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#carried_inventoriescarried_inventoriescsv--approve_with_limits) |
-| [`npc_runtime_profiles/build.py`](occupations-activities/npc_runtime_profiles/build.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
-| [`npc_runtime_profiles/export_pr98.py`](occupations-activities/npc_runtime_profiles/export_pr98.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
-| [`npc_runtime_profiles/npc_runtime_profiles.json`](occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesnpc_runtime_profilesjson--approve_with_limits) |
-| [`npc_runtime_profiles/pr98_extract.json`](occupations-activities/npc_runtime_profiles/pr98_extract.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
-| [`npc_runtime_profiles/README.md`](occupations-activities/npc_runtime_profiles/README.md) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
+| [`npc_runtime_profiles/actor_appearance_authoring.json`](occupations-activities/npc_runtime_profiles/actor_appearance_authoring.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profilesactor_appearance_authoringjson--approve) |
+| [`npc_runtime_profiles/build.py`](occupations-activities/npc_runtime_profiles/build.py) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
+| [`npc_runtime_profiles/export_pr98.py`](occupations-activities/npc_runtime_profiles/export_pr98.py) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
+| [`npc_runtime_profiles/npc_runtime_profiles.json`](occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
+| [`npc_runtime_profiles/pr98_extract.json`](occupations-activities/npc_runtime_profiles/pr98_extract.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
+| [`npc_runtime_profiles/README.md`](occupations-activities/npc_runtime_profiles/README.md) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
 | [`occupations/occupations_additions.csv`](occupations-activities/occupations/occupations_additions.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#occupationsoccupations_additionscsv--approve_with_limits) |
 | [`skills_competences/build.py`](occupations-activities/skills_competences/build.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#skills_competencesreadmemd-skills_competencesbuildpy--approve_with_limits) |
 | [`skills_competences/README.md`](occupations-activities/skills_competences/README.md) | [approve_with_limits](occupations-activities/VERIFICATION.md#skills_competencesreadmemd-skills_competencesbuildpy--approve_with_limits) |
@@ -336,18 +353,20 @@
 | [`places/crosswalk_master_location_archetypes.csv`](places-binding/places/crosswalk_master_location_archetypes.csv) | [approve](places-binding/VERIFICATION.md#placescrosswalk_master_location_archetypescsv--approve) |
 | [`places/crosswalk_scene_templates.csv`](places-binding/places/crosswalk_scene_templates.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placescrosswalk_scene_templatescsv--approve_with_limits) |
 | [`places/crosswalk_v6_g4_location_types.csv`](places-binding/places/crosswalk_v6_g4_location_types.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placescrosswalk_v6_g4_location_typescsv--approve_with_limits) |
-| [`places/node_binding.csv`](places-binding/places/node_binding.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placesnode_bindingcsv--approve_with_limits) |
+| [`places/node_binding.csv`](places-binding/places/node_binding.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placesnode_bindingcsv--approve_with_limits-c006e4-закрывает-rework-c006e2c006e3) |
 | [`places/place_families.csv`](places-binding/places/place_families.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placesplace_familiescsv--approve_with_limits) |
 | [`places/place_family_facets.csv`](places-binding/places/place_family_facets.csv) | [approve](places-binding/VERIFICATION.md#placesplace_family_facetscsv--approve) |
 | [`presence/frequency_rule.json`](places-binding/presence/frequency_rule.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencefrequency_rulejson--approve_with_limits) |
+| [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson--approve_with_limits-2) |
 | [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_presence_authoringcsv--approve_with_limits) |
-| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-перенос-placement_owner_ref--approve_with_limits) |
+| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve](places-binding/VERIFICATION.md#presencepresence_rulescsv--reports--approve-c006f) |
 | [`reports/validation.json`](places-binding/reports/validation.json) | [approve_with_limits](places-binding/VERIFICATION.md#reportsvalidationjson--approve_with_limits) |
 | [`scripts/validate.mjs`](places-binding/scripts/validate.mjs) | [approve_with_limits](places-binding/VERIFICATION.md#scriptsvalidatemjs-слоты-c003b--approve_with_limits) |
 | [`slots/materialization_rules.json`](places-binding/slots/materialization_rules.json) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_rulesjson--approve_with_limits) |
 | [`slots/materialization_slot_rules.csv`](places-binding/slots/materialization_slot_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_slot_rulescsv-и-slotsslot_candidatescsv--approve_with_limits) |
 | [`slots/no_required_slots.csv`](places-binding/slots/no_required_slots.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsno_required_slotscsv--approve_with_limits-1) |
 | [`slots/slot_candidates.csv`](places-binding/slots/slot_candidates.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_slot_rulescsv-и-slotsslot_candidatescsv--approve_with_limits) |
+| [`slots/slot_instance_variants.json`](places-binding/slots/slot_instance_variants.json) | [approve](places-binding/VERIFICATION.md#slotsslot_instance_variantsjson--approve-c007b-к2) |
 
 ### social-strata-law
 
@@ -371,7 +390,7 @@
 | [`religion/lifecycle_rites_burial.csv`](time-calendar-church/religion/lifecycle_rites_burial.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#religionlifecycle_rites_burialcsv--approve_with_limits) |
 | [`time/calendar_1230_1250.csv`](time-calendar-church/time/calendar_1230_1250.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timecalendar_1230_1250csv--approve_with_limits) |
 | [`time/paschalia_1230_1250.json`](time-calendar-church/time/paschalia_1230_1250.json) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timepaschalia_1230_1250json--approve_with_limits) |
-| [`time/schedules_routines.csv`](time-calendar-church/time/schedules_routines.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timeschedules_routinescsv--approve_with_limits) |
+| [`time/schedules_routines.csv`](time-calendar-church/time/schedules_routines.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timeschedules_routinescsv--approve_with_limits-2) |
 
 ### transport-health-recreation
 
@@ -387,5 +406,6 @@
 
 | Группа | Исходная цель | Вердикт | Причина / кандидаты |
 |---|---|---|---|
+| places-binding | [`Слот слуги. Причина пола переписана по строке занятия: дрова, конюшня`](places-binding/VERIFICATION.md#placesnode_bindingcsv--approve_with_limits-c006e4-закрывает-rework-c006e2c006e3) | approve | `Слот слуги. Причина пола переписана по строке занятия: дрова, конюшня`: нет пути к файлу или каталогу |
 | transport-health-recreation | [`README (группа и домены)`](transport-health-recreation/VERIFICATION.md#readme-группа-и-домены--approve_with_limits) | approve_with_limits | `README (группа и домены)`: нет пути к файлу или каталогу |
 | transport-health-recreation | [`scripts/`](transport-health-recreation/VERIFICATION.md#scripts--approve_with_limits) | approve_with_limits | `scripts/`: каталог пуст или не найден |

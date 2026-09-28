@@ -238,3 +238,4 @@ nov_occ_winter_road_worker,pf_winter_ice_crossing,seasonal_overlay,source,B,tsv:
 ,pf_rural_yard,settlement_space,no_source,,,,,candidate
 ,pf_town_wall_edge,settlement_space,no_source,,,,,candidate
 ,pf_village_lane,settlement_space,no_source,,,,,candidate
+,pf_burial_ground,religious_space,no_source,C,,,,candidate

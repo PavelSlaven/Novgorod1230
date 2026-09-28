@@ -63,7 +63,7 @@ Algorithms*, гл. 8, «Julian Easter»); скрипт падает с `Assertio
 cross-ref на `food-drink/dishes/famine_1230.csv#fam_frost_1230` (confidence A,
 НПЛ), а не повтор данных о ценах/голоде.
 
-## schedules_routines.csv — 16 строк
+## Предыдущий выпуск schedules_routines.csv — 16 строк (заменён в C006a)
 
 Поля: `sch_id, role_or_occupation_ref, day_type, season, time_blocks
 [{segment, activity_ref}], place_access_ref, source_refs, confidence, status, note`.
@@ -90,7 +90,7 @@ key_fields), а незаполненный шаблон. Взято как ед�
 
 ### schedule_adaptation_rules — 4 строки
 
-`Одним ПРОМТОМ/data/rus13-base-staging/nov_region_audit/novgorod_status_rules_v1.json#schedule_adaptation_rules`
+`gb:sources/nov-region-audit-v1/novgorod_status_rules_v1.json#schedule_adaptation_rules`
 — каждое правило помечено `status: approved` внутри файла с
 `metadata.status: draft` (это сохранено в `note`, а не скрыто).
 
@@ -111,3 +111,87 @@ key_fields), а незаполненный шаблон. Взято как ед�
 - `region_id`/universal-флаг (critic_problems #1) не добавлен в этот проход;
   весь календарь и распорядки считаются applicability=novgorod, как и
   approved temporal-v4 записи, на которые они ссылаются.
+
+## C006a D-1 — авторские распорядки-кандидаты
+
+Разделы выше описывают заменённый качественный выпуск из 16 строк. Текущий
+`schedules_routines.csv` содержит сезонные суточные распорядки занятий и
+субъектов стартовой территории. Исходник строк —
+`scripts/build_schedules.py`; `python scripts/build_schedules.py --check` и
+`python scripts/check_schedules.py` проверяют воспроизводимость и формат.
+
+Поля CSV: `sch_id,revision,role_ref,occupation_ref,day_type,season,months,`
+`local_start_minute,time_blocks,place_access_ref,source_refs,source_rule_ref,`
+`no_source,confidence,status,note`. Каждый JSON `time_blocks` покрывает
+1440 минут и содержит поля фазы `npc_routine_profile_v1` вместе с
+`presence_state`, `location_ref`, `absence_reason_ru`. `on_site` означает
+присутствие в `location_ref`, даже если это не исходный PF строки (например,
+зимний перевозчик на ледовой переправе); `away` означает отсутствие
+установленного `location_ref` и всегда снабжён причиной. Конкретного пути в
+источниках нет, поэтому `movement_handoff`
+не создаётся. `place_access_ref` пуст, пока нет точной привязки расписания
+доступа к этим контекстам.
+
+Основной TSV даёт одинаковый шаблон для 68 занятий; конкретные `daily_schedule_*`
+новых занятий берутся из `occupations_additions.csv`. Правило
+`editorial_daylight_phase_partition_v2`: месяцы определяют сезон (зима 12/1/2,
+весна 3/4/5, лето 6/7/8, осень 9/10/11); в утверждённом temporal-v4 для
+15-го числа среднего месяца сезона 1230 года берутся минуты восхода и заката;
+от них строятся фазы утра, дневной работы и вечера. Зимой подъём задан в
+04:30, осенью не позднее 05:30. Это редакционные значения C: 04:30
+ориентировано на третий крик петуха около 4 утра (поздняя аналогия
+book:375645 ¶959–960), об осеннем времени подъёма источник молчит;
+после заката остаётся час или больше вечерних дел при свете лучины
+(`occ_netmaker`). Отбой не раньше 21:00, летом 22:00 — редакционное правило C,
+а не засвидетельствованные часы. Утренние дела двора по ¶963 и торг до
+полудня по ¶967 также поздние аналогии C. Полуденный обед и отдых
+опираются на book:375645 ¶964–965 как сравнительную аналогию; их точная
+длительность редакционная. Для заутрени есть book:641342 ¶1788, для ночного
+лова book:622242 ¶1435. Сетка непрерывна на 1440 минут, confidence C; это
+не исторически засвидетельствованные часы. `normal` служит явным кандидатом
+для обычного дня при наличии `church_day`/`market_day`; другие особые дни
+обрабатывает внешнее `sch_adapt_market_or_church_day`, без утверждения точной
+24-часовой смены. Ночная смена задана редакционно (C): с max(закат, 18:00)
+до 02:00; это не засвидетельствованные часы. Ночная стража и лов заменяют дневную работу; между
+ночными сменами человек отдыхает вне установленного места службы. ¶684 для
+стражи — аналогия военного стана. Послеобеденный отдых вне двора также
+имеет неизвестное место, поэтому не помещает спящего на лёд или болото.
+Ночная стража и лов требуют назначения смены/условий сцены. Все строки
+остаются `candidate`.
+
+Checker выводит 16 стартовых PF из основных привязок `node_binding.csv`,
+сверяет их с `people_presence_authoring.csv` и проверяет окно `allowed_times`
+по `location_ref` фазы: вечером требуется бодрствование, ночью для
+`inhabited_household` засчитывается и сон дома. Бодрствование на открытом PF
+в темноте допускается только для ночной стражи и ночного лова.
+
+16 прежних строк заменены: 9 общих шаблонов перешли в сезонные строки и
+описанное правило; 4 `sch_adapt_*` остаются внешними правилами из
+`gb:sources/nov-region-audit-v1/novgorod_status_rules_v1.json#schedule_adaptation_rules`
+(файл draft, строки approved) и применяются владельцем адаптации, а не
+24-часовым CSV. 3 `sch_place_monastic_refectory`, `sch_npc_monastic_worker`,
+`sch_npc_reaction_signal_policy` остаются утверждёнными ссылками на
+`temporal-v4/datasets/place_access_schedules.json#record:place_access_schedules:monastic_refectory_v2`
+и `temporal-v4/datasets/npc_temporal_profiles_policies.json#record:npc_temporal_profiles_policies:monastic_worker_v2`
+или `reaction_signal_policy_v1`; они не являются суточными расписаниями и не
+копируются в этот CSV. У монастырской трапезной применимость 1 мая – 1 октября,
+не только церковный день.
+
+Перед меткой `no_source` проверены: свои `time/` и `religion/`, соседние
+`occupations-activities/` и `places-binding/`, `sources/books-evidence-v1/`,
+`sources/master-archive-v1/`, `world-knowledge/production-v1/` и temporal-v4.
+Пробел точных часов/длительности: эти каталоги дают качественный порядок и
+свет, но не часы конкретного NPC. Пробел индивидуального ночлега/смены:
+те же места дают тип двора и возможность стражи, но не назначение человека;
+для жителей собственного двора местом сна служит его семейство PF, а у прочих
+ночлег требует привязки сцены. Детская роль отсутствует в каталоге ролей;
+детская строка явно кандидатна и не создаёт нового нормативного role_ref.
+
+В `source_refs` файловые ссылки разрешаются относительно текущего checkout:
+`data/` — от корня, `occupations-activities/` и `places-binding/` — от
+`game-base-v1`, `gb:sources/` — от каталога Новгорода. Проверка сверяет
+существование файла и применимые CSV-якоря; `book:` — ссылка на книгу, а не
+путь к файлу. `source_refs` подтверждают занятие и семейство места,
+`source_rule_ref` отмечает редакционное разбиение суток, `no_source` —
+неустановленные часы и индивидуальное присутствие. Поэтому все три поля
+могут одновременно присутствовать в одной строке.

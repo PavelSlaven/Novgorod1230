@@ -6,7 +6,677 @@
   "households_kinship": {
     "household_composition_profiles.csv": 139,
     "marriage_inheritance_rules.csv": 8,
-    "kinship_terms.csv": 32
+    "kinship_terms.csv": 32,
+    "relationship_rules.csv": 53,
+    "start_place_families": 17,
+    "start_subjects": 18,
+    "start_subjects_in_pairs": 13,
+    "start_role_pairs": 36,
+    "start_dead_pair_gap_count": 45,
+    "start_dead_pair_gaps": [
+      {
+        "pair": [
+          "nov_occ_boatman",
+          "nov_occ_fish_weir_keeper"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_boatman",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_cart_driver",
+          "nov_occ_fish_weir_keeper"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_crossing_guard",
+          "nov_occ_fish_weir_keeper"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_crossing_guard",
+          "nov_occ_haymaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_crossing_guard",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_crossing_guard",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ferryman",
+          "nov_occ_fish_weir_keeper"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ferryman",
+          "nov_occ_haymaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ferryman",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ferryman",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "nov_occ_fisher"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "nov_occ_forest_worker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "nov_occ_household_servant"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "nov_occ_hunter_trapper"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "nov_occ_route_guide"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "nov_role_smerd_householder"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fish_weir_keeper",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fish_weir_keeper",
+            "reason": "На стартовой территории не задано место создания работника запруды."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fisher",
+          "nov_occ_haymaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fisher",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_fisher",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_forest_worker",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "nov_occ_herder"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "nov_occ_household_servant"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "nov_occ_ploughman"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "nov_role_household_mistress"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "nov_role_smerd_householder"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_haymaker",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_haymaker",
+            "reason": "На стартовой территории не задано место создания косца."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_herder",
+          "nov_occ_ploughman"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_herder",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_herder",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_household_servant",
+          "nov_occ_ploughman"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_household_servant",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_household_servant",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_hunter_trapper",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ploughman",
+          "nov_role_household_mistress"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ploughman",
+          "nov_role_smerd_householder"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ploughman",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_occ_ploughman",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_ploughman",
+            "reason": "На стартовой территории не задано место создания отдельного пахаря."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_role_household_mistress",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_role_household_mistress",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_role_smerd_householder",
+          "occ_market_baker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "nov_role_smerd_householder",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      },
+      {
+        "pair": [
+          "occ_market_baker",
+          "occ_netmaker"
+        ],
+        "missing_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_market_baker",
+            "reason": "На стартовой территории не задано место создания рыночного пекаря."
+          },
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "occ_netmaker",
+            "reason": "На стартовой территории не задано место создания изготовителя сетей."
+          }
+        ]
+      }
+    ],
+    "start_pair_node_season_contexts": 727,
+    "start_colocated_node_season_contexts": 727,
+    "start_phase_intersections": 6617,
+    "no_source_rows": 33,
+    "start_pair_scene_counts": {
+      "nov_occ_boatman|nov_occ_fisher": 15,
+      "nov_occ_boatman|nov_occ_hunter_trapper": 1,
+      "nov_occ_boatman|nov_occ_route_guide": 2,
+      "nov_occ_cart_driver|nov_occ_fisher": 8,
+      "nov_occ_cart_driver|nov_occ_route_guide": 17,
+      "nov_occ_cart_driver|nov_role_smerd_householder": 4,
+      "nov_occ_crossing_guard|nov_occ_ferryman": 25,
+      "nov_occ_crossing_guard|nov_occ_fisher": 12,
+      "nov_occ_crossing_guard|nov_occ_herder": 1,
+      "nov_occ_crossing_guard|nov_occ_household_servant": 1,
+      "nov_occ_crossing_guard|nov_occ_hunter_trapper": 3,
+      "nov_occ_crossing_guard|nov_occ_winter_road_worker": 13,
+      "nov_occ_crossing_guard|nov_role_smerd_householder": 1,
+      "nov_occ_ferryman|nov_occ_fisher": 12,
+      "nov_occ_ferryman|nov_occ_herder": 1,
+      "nov_occ_ferryman|nov_occ_household_servant": 1,
+      "nov_occ_ferryman|nov_occ_hunter_trapper": 3,
+      "nov_occ_ferryman|nov_occ_winter_road_worker": 13,
+      "nov_occ_ferryman|nov_role_smerd_householder": 1,
+      "nov_occ_fisher|nov_occ_forest_worker": 5,
+      "nov_occ_fisher|nov_occ_herder": 1,
+      "nov_occ_fisher|nov_occ_household_servant": 1,
+      "nov_occ_fisher|nov_occ_hunter_trapper": 41,
+      "nov_occ_fisher|nov_occ_route_guide": 21,
+      "nov_occ_fisher|nov_role_smerd_householder": 1,
+      "nov_occ_forest_worker|nov_occ_hunter_trapper": 5,
+      "nov_occ_herder|nov_occ_household_servant": 9,
+      "nov_occ_herder|nov_occ_hunter_trapper": 3,
+      "nov_occ_herder|nov_occ_route_guide": 3,
+      "nov_occ_herder|nov_role_household_mistress": 4,
+      "nov_occ_herder|nov_role_smerd_householder": 9,
+      "nov_occ_household_servant|nov_role_household_mistress": 4,
+      "nov_occ_household_servant|nov_role_smerd_householder": 9,
+      "nov_occ_hunter_trapper|nov_occ_route_guide": 7,
+      "nov_occ_route_guide|nov_role_smerd_householder": 4,
+      "nov_role_household_mistress|nov_role_smerd_householder": 4
+    }
   },
   "npc_psychology": {
     "psychology_profiles.csv": 139,
@@ -14,9 +684,23 @@
     "roles_covered": 71
   },
   "speech_address": {
-    "speech_registers.csv": 71,
-    "address_forms.csv": 3,
-    "gap": "berestyanaya-grammota corpus not collected row-by-row in this pass; brief fill_method=research not fulfilled beyond 3 seed formulas"
+    "speech_registers.csv": 139,
+    "address_forms.csv": 98,
+    "register_counts": {
+      "role": {
+        "formal_literate": 22,
+        "plain_oral": 36,
+        "everyday_oral": 13
+      },
+      "occupation": {
+        "formal_literate": 10,
+        "plain_oral": 38,
+        "everyday_oral": 20
+      }
+    },
+    "no_source_rows": 78,
+    "start_directed_pairs": 72,
+    "start_directed_node_season_contexts": 1454
   },
   "social_norms_honour_hospitality": {
     "norms.csv": 19,

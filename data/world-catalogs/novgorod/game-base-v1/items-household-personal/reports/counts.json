@@ -3,8 +3,8 @@
  "personal.csv": 79,
  "item_categories.csv": 160,
  "item_categories_proposed_new": 121,
- "item_place_frequency.csv": 12631,
- "item_place_frequency_it": 1654,
+ "item_place_frequency.csv": 12629,
+ "item_place_frequency_it": 1652,
  "item_place_frequency_master": 10977,
  "ownership_rules.csv": 1614,
  "recognizers.csv": 28,
@@ -21,17 +21,17 @@
  },
  "confidence_frequency": {
   "B": 2899,
-  "C": 9732
+  "C": 9730
  },
  "frequency_class_it": {
   "contextual": 699,
-  "common": 190,
+  "common": 189,
   "ubiquitous": 58,
-  "rare": 707
+  "rare": 706
  },
  "derivation_rule_it": {
-  "R_MASTER_LINK": 266,
-  "R_SPAWN_PROFILE": 112,
+  "R_MASTER_LINK": 265,
+  "R_SPAWN_PROFILE": 111,
   "R_WHERE_USED_TEXT": 478,
   "R_GROUP_DEFAULT": 13,
   "R_WHERE_USED_TEXT+R_LOSS_DOWNGRADE": 14,
@@ -45,16 +45,16 @@
   "R_WK_COMPOSES": 635
  },
  "placement_weights": {
-  "8:0": 1010,
-  ":": 1451,
+  "8:0": 1009,
+  ":": 1450,
   "3:5": 1892,
   "6:2": 3259,
   "5:3": 4858,
   "4:4": 161
  },
  "placement_basis": {
-  "master": 11180,
-  "no_source": 1451
+  "master": 11179,
+  "no_source": 1450
  },
  "owner_kind": {
   "household": 673,

@@ -8,7 +8,7 @@
 |---|---|
 | `frequency_rule.json` | Единственное правило перевода класса частоты в вероятность, плюс правила для `count_limit`, сезонов и `refresh_class`. |
 | `presence_rules.csv` | Таблица правил наличия. Её собирает `scripts/build-presence-rules.mjs` из пулов других групп; вручную её не правят. |
-| `people_presence_authoring.csv` | 19 привязок людей к 16 PF; `creation_owner=composition` оставляет 5 строк для D-3, но не выпускает их в `presence_rules.csv`; `presence_rule` выпускает остальные 14. |
+| `people_presence_authoring.csv` | 19 привязок людей к прежним 16 PF; `creation_owner=composition` оставляет 5 строк для D-3, но не выпускает их в `presence_rules.csv`; `presence_rule` выпускает остальные 14. Для `pf_burial_ground` обычное присутствие людей — явный `no_source` в пустой композиции. |
 | `people_composition_authoring.json` | Авторский candidate-состав постоянных жителей и работников при создании места; производные строки world_base и runtime принадлежат другому владельцу. |
 
 `pr_id` производной строки равен `pr_` + первые 16 шестнадцатеричных символов SHA256 от компактного UTF-8 JSON-массива `[scope_kind,scope_ref,region_id,subject_kind,subject_ref,canonical allowed_seasons]` (`ensure_ascii=False`, разделители `,` и `:`). Значения обрезаются по краям; `all` обозначает все четыре сезона. Если исходное `all` разделить на сезонные правила, они получают новые ID, прежний ID не переиспользуется. ID зависит от ключа, а не содержимого правила или других строк: изменение содержания сохраняет `pr_id` и `rule_version`, а ревизию мира ведёт world revision.
@@ -96,7 +96,7 @@
 
 ## Правки C002 — люди
 
-К категориальным правилам добавлены candidate-правила людей для всех 16 PF, используемых 32 G4 и 195 G5 в `places/node_binding.csv`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject и сезон; `allowed_times` у людей — канонический список подтверждённых авторскими строками окон (`morning;day;evening;night`), для категорий `allowed_times=all`.
+К категориальным правилам добавлены candidate-правила людей для прежних 16 PF; 17-й привязанный `pf_burial_ground` не получает выдуманного правила, а покрыт пустой композицией с `empty_reason=no_source`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject и сезон; `allowed_times` у людей — канонический список подтверждённых авторскими строками окон (`morning;day;evening;night`), для категорий `allowed_times=all`.
 
 Число `probability_ppm=250000` следует из существующего `frequency_rule.json` для `contextual`. Это редакционное candidate-правило без измеренного числового источника (`no_source` для вероятности), не историческая частота. `source_refs` указывает словарный профиль занятия/роли; он поддерживает тип человека, но не число. `count_limit=1` — редакционный candidate-лимит, не численность жителей. `allowed_times` сохраняет авторские окна как provenance, а не runtime-фильтр броска C5. `guards` пока авторский текст, runtime evaluator здесь не заявлен. `refresh_class` задаётся явно. `place_family` и времена суток требуют закрепления в будущем контракте материализации и runtime DDL; все строки остаются `candidate`.
 

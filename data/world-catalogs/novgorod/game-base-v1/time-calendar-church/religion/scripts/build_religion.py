@@ -38,12 +38,12 @@ EVIDENCE_CSV = os.path.abspath(os.path.join(
     HERE, "../../../../sources/books-evidence-v1/time-calendar-church.csv"
 ))
 
-WK_SOCIAL = (
-    "C:/Users/Slaven/Documents/Novgorod-game-base/data/world-catalogs/"
-    "novgorod/world-knowledge/production-v1/social-institutions.json"
-)
-
-SOCIAL_ROLES_TSV = "C:/Users/Slaven/Documents/Novgorod/data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+WK_SOCIAL = os.path.abspath(os.path.join(
+    HERE, "../../../../world-knowledge/production-v1/social-institutions.json"
+))
+LOCAL_PF_ADDITIONS = os.path.abspath(os.path.join(
+    HERE, "../../../places-binding/places/pf_local_additions.json"
+))
 
 CHURCH_FIELDS = [
     "rl_id", "kind", "name_ru", "roles", "pf_ids", "calendar_refs", "items_refs",
@@ -235,6 +235,32 @@ def main():
             "status": "candidate",
             "note": "WK claim approved, но confidence medium и directness inferred; находка Ильинского II предварительная. "
                      "Применение к G4 zaostrovye_burial_area — региональная аналогия, не находка в Заостровье.",
+        })
+
+    # Source-backed local PF rows. The exceptional 1230 skudelnitsa event is
+    # deliberately not attached to pf_burial_ground as its typical appearance.
+    with open(LOCAL_PF_ADDITIONS, encoding="utf-8") as f:
+        local_pf = json.load(f)
+    burial_ground = next(row for row in local_pf["additions"] if row["id"] == "burial_ground")
+    for local_row in burial_ground["lifecycle_rows"]:
+        lc_i += 1
+        is_exceptional_event = local_row["attestation"] == "event"
+        lifecycle_rows.append({
+            "lr_id": f"lr_{lc_i:03d}",
+            "rite_kind": local_row["rite_kind"],
+            "name_ru": local_row["name_ru"],
+            "roles": json.dumps([], ensure_ascii=False),
+            "pf_ids": json.dumps([] if is_exceptional_event else ["pf_burial_ground"], ensure_ascii=False),
+            "calendar_refs": json.dumps([], ensure_ascii=False),
+            "items_refs": json.dumps([], ensure_ascii=False),
+            "visible_traces": local_row["visible_traces"],
+            "sensory_cues": json.dumps([], ensure_ascii=False),
+            "attestation": local_row["attestation"],
+            "source_refs": local_row["source_refs"],
+            "confidence": local_row["confidence"],
+            "period": local_row["period"],
+            "status": "candidate",
+            "note": local_row["note"],
         })
 
     for path, fields, rows in (

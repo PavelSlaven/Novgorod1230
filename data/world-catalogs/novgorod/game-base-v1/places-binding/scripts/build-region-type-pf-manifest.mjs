@@ -1,6 +1,7 @@
 // Relate the pinned regional type list and two M2c start-only water types to current PF refs.
 import path from 'node:path';
 import { GROUP, readCsv, readJson, rel, split, writeJson } from './lib.mjs';
+import { LOCAL_PF_ADDITIONS } from './build-place-families.mjs';
 
 const INPUT = path.join(GROUP, 'inputs/m2c-nature-coverage-entries.json');
 const FAMILIES = path.join(GROUP, 'places/place_families.csv');
@@ -18,6 +19,8 @@ const AUTH_FIELD = { landscape: 'landscape', water_body: 'water', land_use: 'lan
 export function build() {
   const source = readJson(INPUT);
   const authoring = readJson(AUTHORING);
+  const local = readJson(LOCAL_PF_ADDITIONS);
+  const localById = new Map(local.additions.map((row) => [`pf_${row.id}`, row]));
   const families = readCsv(FAMILIES);
   const rows = [...source.entries, ...source.start_only_water_entries];
   const seen = new Set();
@@ -36,10 +39,16 @@ export function build() {
     ];
     const pf_mappings = matches.map((pf) => {
       const family = pf.pf_id.slice(3);
-      const evidence_refs = authoring.families[family].template_ref_source_refs ?? [];
+      const localFamily = localById.get(pf.pf_id);
+      const evidence_refs = localFamily
+        ? localFamily.exact_g4_refs.filter((ref) => (item.exact_m2c_g4 ?? []).includes(ref.replace(/@\d+$/, '')))
+            .map((ref) => `${rel(FAMILIES.replace('place_families.csv', 'node_binding.csv'))}#${ref}`)
+        : (authoring.families[family].template_ref_source_refs ?? []);
       return {
         pf_ref: `${rel(FAMILIES)}#pf_id=${pf.pf_id}`,
-        authoring_ref: `${rel(AUTHORING)}#families.${family}.${AUTH_FIELD[kind]}[${id}]`,
+        authoring_ref: localFamily
+          ? `${rel(LOCAL_PF_ADDITIONS)}#additions[id=${family}].${AUTH_FIELD[kind]}[${id}]`
+          : `${rel(AUTHORING)}#families.${family}.${AUTH_FIELD[kind]}[${id}]`,
         evidence_refs: (key === 'landscape:lt_wooded_floodplain' || key === 'water_body:wb_nearshore_sea') ? evidence_refs : [],
       };
     });

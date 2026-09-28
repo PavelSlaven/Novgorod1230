@@ -50,4 +50,5 @@ hh_rural_smerd,pf_dwelling_interior,interior,rule,food/household_food_stock_prof
 ,pf_church_interior,interior,no_source,,,candidate
 ,pf_ordinary_workshop,interior,no_source,,,candidate
 ,pf_grain_drying_shed_ovin,structure,no_source,,,candidate
+,pf_burial_ground,religious_space,no_source,,,candidate
 hh_fisher,,,no_source,,,candidate

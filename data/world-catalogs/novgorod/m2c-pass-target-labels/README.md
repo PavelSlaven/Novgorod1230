@@ -1,6 +1,6 @@
 # M2c pass target labels
 
-Статус: `candidate_approval_pending` в `candidate.json` (поле кандидата не меняется решением). Реально каталог утверждён `APPROVE_DATA_ONLY` — см. `approval-attestation.json`. Не импортирован в `world_base` и не активирован (`import_authorized`/`activation_authorized: false`), как и `m2c-exit-labels`/`m2c-local-edge-labels`; runtime читает файлы каталога напрямую с проверкой sha256 (LW-075).
+Статус: `candidate_approval_pending` в `candidate.json` (поле кандидата не меняется решением). Реально каталог утверждён `APPROVE_DATA_ONLY` — см. `approval-attestation.json`. Не импортирован в `world_base` и не активирован (`import_authorized`/`activation_authorized: false`), как и `m2c-exit-labels`/`m2c-local-edge-labels`; runtime читает `candidate.json` напрямую через `approved-labels.mjs` без проверки хеша (LW-075, AI §17); связь «файл = утверждённое содержимое» проверяет CI-тест `test/spatial-v3/m2c-pass-target-labels-attestation.test.js`.
 
 ## Назначение и ключи
 

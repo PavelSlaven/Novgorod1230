@@ -18,7 +18,7 @@
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 23 | 23 | 0 |
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
-| [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 3 | 19 | 0 |
+| [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 6 | 22 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 9 | 30 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 6 | 6 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 7 | 18 | 0 |
@@ -26,7 +26,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 4 | 0 |
-| **Итого** | | **100** | **247** | **0** |
+| **Итого** | | **103** | **250** | **0** |
 
 ## Вердикты по файлам
 
@@ -321,24 +321,30 @@
 | [`peoples_origins/README.md`](names-peoples/peoples_origins/README.md) | [approve_with_limits](names-peoples/VERIFICATION.md#peoples_originsreadmemd--approve_with_limits) |
 | [`personal_names/b2-name-pool-source.json`](names-peoples/personal_names/b2-name-pool-source.json) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`personal_names/coverage-report.json`](names-peoples/personal_names/coverage-report.json) | [approve](names-peoples/VERIFICATION.md#personal_namescoverage-reportjson--approve) |
+| [`personal_names/d46-name-additions.json`](names-peoples/personal_names/d46-name-additions.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`personal_names/name_component_candidate_decisions.csv`](names-peoples/personal_names/name_component_candidate_decisions.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
-| [`personal_names/name_component_entries.csv`](names-peoples/personal_names/name_component_entries.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`personal_names/name_component_entries.csv`](names-peoples/personal_names/name_component_entries.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`personal_names/name_component_pools.csv`](names-peoples/personal_names/name_component_pools.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`personal_names/name_component_rules.csv`](names-peoples/personal_names/name_component_rules.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
-| [`personal_names/name-component-army-additions.json`](names-peoples/personal_names/name-component-army-additions.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
-| [`personal_names/name-component-report.json`](names-peoples/personal_names/name-component-report.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`personal_names/name_pool_entries.csv`](names-peoples/personal_names/name_pool_entries.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`personal_names/name-component-army-additions.json`](names-peoples/personal_names/name-component-army-additions.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`personal_names/name-component-report.json`](names-peoples/personal_names/name-component-report.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`personal_names/name-component-source.json`](names-peoples/personal_names/name-component-source.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
-| [`personal_names/name-pool-report.json`](names-peoples/personal_names/name-pool-report.json) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`personal_names/name-pool-report.json`](names-peoples/personal_names/name-pool-report.json) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`personal_names/personal_names.csv`](names-peoples/personal_names/personal_names.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#personal_namespersonal_namescsv--approve_with_limits) |
-| [`personal_names/README.md`](names-peoples/personal_names/README.md) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`personal_names/README.md`](names-peoples/personal_names/README.md) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`place_names/place_names.csv`](names-peoples/place_names/place_names.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#place_namesplace_namescsv--approve_with_limits) |
-| [`README.md`](names-peoples/README.md) | [approve_with_limits](names-peoples/VERIFICATION.md#readmemd-группа--approve_with_limits) |
-| [`scripts/build-name-components.mjs`](names-peoples/scripts/build-name-components.mjs) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`README.md`](names-peoples/README.md) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`scripts/build-b2-name-pool.mjs`](names-peoples/scripts/build-b2-name-pool.mjs) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`scripts/build-name-components.mjs`](names-peoples/scripts/build-name-components.mjs) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`scripts/build-peoples-origins.mjs`](names-peoples/scripts/build-peoples-origins.mjs) | [approve_with_limits](names-peoples/VERIFICATION.md#scriptsbuild-peoples-originsmjs--approve_with_limits) |
-| [`scripts/validate-name-components.mjs`](names-peoples/scripts/validate-name-components.mjs) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`scripts/validate-b2-name-pool.mjs`](names-peoples/scripts/validate-b2-name-pool.mjs) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`scripts/validate-name-components.mjs`](names-peoples/scripts/validate-name-components.mjs) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`sources/book_evidence_m2c_name_components.csv`](names-peoples/sources/book_evidence_m2c_name_components.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`sources/book_evidence_name_component_direct.csv`](names-peoples/sources/book_evidence_name_component_direct.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`sources/book_evidence_name_components_army.csv`](names-peoples/sources/book_evidence_name_components_army.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
+| [`sources/d46-onomastic-catalog-1230-1250.md`](names-peoples/sources/d46-onomastic-catalog-1230-1250.md) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`sources/d46-regional-name-pools.json`](names-peoples/sources/d46-regional-name-pools.json) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 
 ### nature-materials-weather
 

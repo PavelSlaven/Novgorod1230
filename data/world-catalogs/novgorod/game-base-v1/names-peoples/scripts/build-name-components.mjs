@@ -7,6 +7,7 @@ const GROUP_DIR = path.resolve(SCRIPT_DIR, "..");
 const NAMES_DIR = path.join(GROUP_DIR, "personal_names");
 const SOURCE_PATH = path.join(NAMES_DIR, "name-component-source.json");
 const ADDITIONS_PATH = path.join(NAMES_DIR, "name-component-army-additions.json");
+const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
 
 const POOL_HEADER = ["pool_id", "component_kind", "region_id", "valid_from", "valid_to", "status"];
 const ENTRY_HEADER = ["entry_id", "pool_id", "component_lexeme_id", "component_form", "form_kind", "sex_category", "people_ref", "referent_key", "selector_status", "selection_class", "attested_bearer_class", "social_tendency", "basis", "derivation", "evidence_period", "provenance_ref", "confidence", "status", "note"];
@@ -68,9 +69,10 @@ function exactDuplicateTargets(row, entries, ignoredPairs = new Set()) {
 export function build() {
   const source = JSON.parse(fs.readFileSync(SOURCE_PATH, "utf8"));
   const additions = JSON.parse(fs.readFileSync(ADDITIONS_PATH, "utf8"));
+  const d46 = JSON.parse(fs.readFileSync(D46_PATH, "utf8"));
   const pools = [...source.pools].sort((a, b) => a.pool_id.localeCompare(b.pool_id, "en"));
   const excludedEntryIds = new Set(additions.excluded_entry_ids ?? []);
-  const authoredEntries = [...source.entries, ...additions.entries].filter((entry) => !excludedEntryIds.has(entry.entry_id));
+  const authoredEntries = [...source.entries, ...additions.entries, ...d46.component_entries.map((entry) => ({ ...entry, basis: "source_attested_form" }))].filter((entry) => !excludedEntryIds.has(entry.entry_id));
   const authoredRules = [...source.rules, ...additions.rules];
   const entries = authoredEntries.map((entry) => enrichEntry(entry, additions)).map((entry) => ({ ...entry, provenance_ref: provenance(entry, source, additions), status: "candidate" }))
     .sort((a, b) => a.entry_id.localeCompare(b.entry_id, "en"));
@@ -138,6 +140,15 @@ export function build() {
       master_archive_candidates: additions.master_archive_review.candidates,
       semantic_rescreen: additions.semantic_rescreen,
       scope_note: "Ledger validates the checked-in 1,059-row candidate snapshot; upstream screening totals are preparation-process metadata.",
+    },
+    d46_archive_accounting: {
+      included_component_entries: d46.component_entries.length,
+      existing_component_updates: d46.component_updates.length,
+      archive_variants: d46.name_variants.filter((row) => row.classification === "archive_variant").length,
+      reclassified_candidate_variants: d46.name_variants.filter((row) => row.classification !== "archive_variant").length,
+      variants: d46.name_variants.length,
+      typed_name_gaps: d46.name_gaps.length,
+      rejected: 0,
     },
     typed_gaps: source.typed_gaps,
   };

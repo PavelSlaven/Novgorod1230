@@ -19,13 +19,14 @@
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
-| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 10 | 24 | 0 |
+| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 9 | 30 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 6 | 6 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 6 | 18 | 0 |
+| [resource-catalog](resource-catalog/VERIFICATION.md) | approve_with_limits | 0 | 16 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **79** | **189** | **0** |
+| **Итого** | | **78** | **211** | **0** |
 
 ## Вердикты по файлам
 
@@ -290,19 +291,24 @@
 | [`_shared/anachronism_denylist.json`](nature-materials-weather/_shared/anachronism_denylist.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#_shared-reports) |
 | [`_shared/g4_nature_index.json`](nature-materials-weather/_shared/g4_nature_index.json) | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
 | [`_shared/main_inputs.json`](nature-materials-weather/_shared/main_inputs.json) | [approve](nature-materials-weather/VERIFICATION.md#_sharedmain_inputsjson--сборка-группы--approve-c006f) |
-| [`natural_materials_soils/access_tools.csv`](nature-materials-weather/natural_materials_soils/access_tools.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
+| [`natural_materials_soils/access_tools.csv`](nature-materials-weather/natural_materials_soils/access_tools.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`natural_materials_soils/authoring/materials.mjs`](nature-materials-weather/natural_materials_soils/authoring/materials.mjs) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
 | [`natural_materials_soils/finite_source_profiles_ext.json`](nature-materials-weather/natural_materials_soils/finite_source_profiles_ext.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
-| [`natural_materials_soils/g4_ground_and_materials.csv`](nature-materials-weather/natural_materials_soils/g4_ground_and_materials.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
+| [`natural_materials_soils/g4_ground_and_materials.csv`](nature-materials-weather/natural_materials_soils/g4_ground_and_materials.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
 | [`natural_materials_soils/ground_types.csv`](nature-materials-weather/natural_materials_soils/ground_types.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
 | [`natural_materials_soils/landscape_ground_binding.csv`](nature-materials-weather/natural_materials_soils/landscape_ground_binding.csv) | [approve](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
-| [`natural_materials_soils/material_landscape_presence.csv`](nature-materials-weather/natural_materials_soils/material_landscape_presence.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
-| [`natural_materials_soils/natural_materials.csv`](nature-materials-weather/natural_materials_soils/natural_materials.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils) |
+| [`natural_materials_soils/material_landscape_presence.csv`](nature-materials-weather/natural_materials_soils/material_landscape_presence.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`natural_materials_soils/natural_materials.csv`](nature-materials-weather/natural_materials_soils/natural_materials.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`natural_materials_soils/README.md`](nature-materials-weather/natural_materials_soils/README.md) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`natural_materials_soils/scripts/build.mjs`](nature-materials-weather/natural_materials_soils/scripts/build.mjs) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`natural_materials_soils/scripts/check.mjs`](nature-materials-weather/natural_materials_soils/scripts/check.mjs) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`natural_materials_soils/sources/book_evidence_m2c_b3.csv`](nature-materials-weather/natural_materials_soils/sources/book_evidence_m2c_b3.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
 | [`natural_presentation_texts/habitat_allowlist.csv`](nature-materials-weather/natural_presentation_texts/habitat_allowlist.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
 | [`natural_presentation_texts/member_phrases.csv`](nature-materials-weather/natural_presentation_texts/member_phrases.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#member_phrasescsv--approve_with_limits) |
 | [`natural_presentation_texts/presentation_texts.csv`](nature-materials-weather/natural_presentation_texts/presentation_texts.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textspresentation_textscsv--approve_with_limits-2) |
 | [`natural_presentation_texts/reports/denied_landscape_words.csv`](nature-materials-weather/natural_presentation_texts/reports/denied_landscape_words.csv) | [approve](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
 | [`natural_presentation_texts/sensory_coverage.csv`](nature-materials-weather/natural_presentation_texts/sensory_coverage.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textssensory_coveragecsv--weather_climatewater_profilescsv--approve_with_limits) |
-| [`reports/counts.json`](nature-materials-weather/reports/counts.json) | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
+| [`reports/counts.json`](nature-materials-weather/reports/counts.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
 | [`weather_climate/climate_monthly_normals.csv`](nature-materials-weather/weather_climate/climate_monthly_normals.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/ground_water_condition_rules.csv`](nature-materials-weather/weather_climate/ground_water_condition_rules.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/historical_weather_1224_1231.csv`](nature-materials-weather/weather_climate/historical_weather_1224_1231.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
@@ -367,6 +373,27 @@
 | [`slots/no_required_slots.csv`](places-binding/slots/no_required_slots.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsno_required_slotscsv--approve_with_limits-1) |
 | [`slots/slot_candidates.csv`](places-binding/slots/slot_candidates.csv) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_slot_rulescsv-и-slotsslot_candidatescsv--approve_with_limits) |
 | [`slots/slot_instance_variants.json`](places-binding/slots/slot_instance_variants.json) | [approve](places-binding/VERIFICATION.md#slotsslot_instance_variantsjson--approve-c007b-к2) |
+
+### resource-catalog
+
+| Файл | Последний verdict |
+|---|---|
+| [`action_skill_map.csv`](resource-catalog/action_skill_map.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`authoring/resource-data.mjs`](resource-catalog/authoring/resource-data.mjs) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`extraction_actions.csv`](resource-catalog/extraction_actions.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`fish_season_rules.csv`](resource-catalog/fish_season_rules.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`frequency_rule.json`](resource-catalog/frequency_rule.json) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`material_resource_families.csv`](resource-catalog/material_resource_families.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`patch_profiles.csv`](resource-catalog/patch_profiles.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`README.md`](resource-catalog/README.md) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`reports/counts.json`](resource-catalog/reports/counts.json) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`reports/family-summary.json`](resource-catalog/reports/family-summary.json) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`reports/species-unbound.json`](resource-catalog/reports/species-unbound.json) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`resource_families.csv`](resource-catalog/resource_families.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`scripts/build.mjs`](resource-catalog/scripts/build.mjs) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`scripts/check.mjs`](resource-catalog/scripts/check.mjs) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`species_resource_families.csv`](resource-catalog/species_resource_families.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
+| [`tenure_defaults.csv`](resource-catalog/tenure_defaults.csv) | [approve_with_limits](resource-catalog/VERIFICATION.md#resource-catalog--данные-ресурсов-часть-a-b3--approve_with_limits) |
 
 ### social-strata-law
 

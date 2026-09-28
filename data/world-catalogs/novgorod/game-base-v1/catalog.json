@@ -29,23 +29,24 @@
     "approval": "Автор не утверждает сам себя: каждый домен — отдельный проход утверждения (Opus high или владелец) по WR §21.1; механические переносы проверяются тестами.",
     "priority": "M2c — нужно для 32 G4 / 195 G5 стартовой территории v17 и богатства первого прибытия; M3 — свободная конкретизация; later — после M3."
   },
-  "summary_ru": "Каталог игровой базы game-base-v1: 60 доменов в 20 узких группах-сборщиках. Основа — три карты (схема world_base, потребители v17, дизайн владельца) и прежние обзоры (sweep-d4, archive-sweep, flora-fauna, documents-review). Главное: (1) одобренных фактов много (WK 1723 claims), но почти нет пулов «что есть в каком месте и как часто» — их собирают скриптами из WK, MASTER и кандидатов с весами 8/4/2/1; (2) для флоры, фауны, еды, ремёсел и здоровья в world_base нет таблиц вообще, а таблицы имён, экономики, законов, религии, погоды, расписаний, истории, одежды и материальной культуры пусты — новые таблицы требуют CR и Contract Auditor; (3) многие заполненные таблицы v17 не читает (имена, история, member_selection природы, approved_runtime_basis NPC, WK для narration) — данные таких доменов окупятся только после кодовой проводки, это отмечено в consumers; (4) сразу окупаются без кода: утверждённые WK claims (после пересборки бандла), профили NPC для 37 одобренных занятий, варианты одежды, тексты природных слоёв по G4×сезону, тексты observable_activity; (5) для предметов по решениям владельца D9/D14 введены домены правил владения и пулов примет/опознавательного текста. По приоритетам: M2c — 38, M3 — 19, later — 3.",
+  "summary_ru": "Каталог игровой базы game-base-v1: 61 доменов в 21 узких группах-сборщиках. Основа — три карты (схема world_base, потребители v17, дизайн владельца) и прежние обзоры (sweep-d4, archive-sweep, flora-fauna, documents-review). Главное: (1) одобренных фактов много (WK 1723 claims), но почти нет пулов «что есть в каком месте и как часто» — их собирают скриптами из WK, MASTER и кандидатов с весами 8/4/2/1; (2) для флоры, фауны, еды, ремёсел и здоровья в world_base нет таблиц вообще, а таблицы имён, экономики, законов, религии, погоды, расписаний, истории, одежды и материальной культуры пусты — новые таблицы требуют CR и Contract Auditor; (3) многие заполненные таблицы v17 не читает (имена, история, member_selection природы, approved_runtime_basis NPC, WK для narration) — данные таких доменов окупятся только после кодовой проводки, это отмечено в consumers; (4) сразу окупаются без кода: утверждённые WK claims (после пересборки бандла), профили NPC для 37 одобренных занятий, варианты одежды, тексты природных слоёв по G4×сезону, тексты observable_activity; (5) для предметов по решениям владельца D9/D14 введены домены правил владения и пулов примет/опознавательного текста. По приоритетам: M2c — 39, M3 — 19, later — 3.",
   "counts": {
-    "domains": 60,
-    "groups": 20,
+    "domains": 61,
+    "groups": 21,
     "by_priority": {
-      "M2c": 38,
+      "M2c": 39,
       "M3": 19,
       "later": 3
     },
     "by_fill_method": {
-      "derive": 9,
+      "derive": 10,
       "rule": 6,
       "mixed": 25,
       "research": 16,
       "import": 4
     },
     "by_group": {
+      "resource-catalog": 1,
       "places-binding": 5,
       "flora-trees-shrubs": 1,
       "flora-herbs-berries-mushrooms": 3,
@@ -69,6 +70,11 @@
     }
   },
   "groups": [
+    {
+      "id": "resource-catalog",
+      "name_ru": "Семьи ресурсов, добыча, сезонные пятна и права доступа",
+      "collector_brief_ru": "Candidate-слой архитектуры ресурсов #171: 35 закрытых семейств F01–F35; scripted many-to-many привязка существующих видов и природных материалов; действия добычи и сменяемая карта текущих 12 навыков; профили сезонных пятен F07–F09; tenure defaults; habitat-aware frequency calibration для профилированных B, рыбы и признаков дичи. F10/F11/F32/F33 исключены до профилей. Не активирует runtime, party catalog pins, нормы C, разделку F27, пушнину F30 или тягу F35. Источники: resource-architecture-v2, resource-catalog-v3 и утверждённые/кандидатные таблицы game-base-v1; все неподтверждённые числа basis=editorial."
+    },
     {
       "id": "places-binding",
       "name_ru": "Места: семейства, привязка узлов, носитель наличия, реестр категорий",
@@ -171,6 +177,47 @@
     }
   ],
   "domains": [
+    {
+      "id": "resource_catalog",
+      "name_ru": "Семьи природных и хозяйственных ресурсов",
+      "group": "resource-catalog",
+      "entities_ru": "Закрытые семейства F01–F35, many-to-many привязка существующих видов и природных материалов, действия добычи, временная карта текущих навыков, профили сезонных пятен F07–F09, правила владения и candidate-калибровка наличия.",
+      "key_fields": [
+        "family_id",
+        "class",
+        "unit",
+        "renewal",
+        "category_ref",
+        "species_ref",
+        "action_id",
+        "skill_ref",
+        "place_family_ref",
+        "source_ref",
+        "basis",
+        "status"
+      ],
+      "target_tables": [
+        "candidate resource_families",
+        "candidate species_resource_families",
+        "candidate extraction_actions",
+        "candidate patch_profiles",
+        "candidate tenure_defaults"
+      ],
+      "consumers": [
+        "@rus/materialization после отдельного cutover",
+        "@rus/items-property для конечных узлов",
+        "@rus/checks-rng для действий добычи"
+      ],
+      "existing_sources": [
+        "resource-architecture-v2 и resource-catalog-v3 — утверждённые inputs задачи #171",
+        "видовые и habitat-таблицы game-base-v1 — candidate/approve_with_limits по своим VERIFICATION",
+        "natural_materials_soils и places-binding — candidate"
+      ],
+      "gaps_ru": "Нет active binding и runtime cutover; F10/F11/F32/F33 ждут patch-профилей, F27/F30 — процессов разделки и пушнины, нормы C и тяга F35 отложены.",
+      "fill_method": "derive",
+      "priority": "M2c",
+      "acceptance_ru": "Скрипт: ровно 35 семейств; все species/material/action/skill/place refs существуют; каждый исходный вид ровно в одной части bound|unbound; F07–F09 имеют reverse-complete patch profiles; закрытые enum и отрицательные пробы проходят; двойная сборка даёт одинаковые hash-list."
+    },
     {
       "id": "place_families",
       "name_ru": "Семейства мест и слои",

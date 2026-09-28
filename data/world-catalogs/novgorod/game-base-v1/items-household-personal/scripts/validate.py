@@ -227,7 +227,8 @@ def main():
             continue
         f = fams(r["material"])
         app = [m for m in marks
-               if (m["applicable_groups"] == "*" or r["item_group"] in split(m["applicable_groups"]))
+               if m["status"] == "candidate"
+               and (m["applicable_groups"] == "*" or r["item_group"] in split(m["applicable_groups"]))
                and (m["applicable_materials"] == "*" or f & set(split(m["applicable_materials"])))]
         kinds_needed = set().union(*(KIND_OF_SLOT[s] for s in slots))
         app_in_slots = [m for m in app if m["mark_kind"] in kinds_needed]
@@ -246,6 +247,8 @@ def main():
         if m["distinctiveness"] == "unique" and m["mark_kind"] not in ("owner_sign", "inscription", "repair"):
             fail.append(f"{m['mk_id']}: unique distinctiveness for kind {m['mark_kind']}")
     for t in read_csv(ITEMS / "identifying_text_pools.csv"):
+        if t["llm_may_write_text"] != "no":
+            fail.append(f"{t['text_pool_id']}: llm_may_write_text must be no")
         caps = set(re.findall(r"\b[А-ЯЁІ][А-ЯЁа-яёі]*", re.sub(r"\{[^}]*\}", "", t["template_ru"])))
         bad = caps - TEMPLATE_ALLOWED_CAPS
         if bad:

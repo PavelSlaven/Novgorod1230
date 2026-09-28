@@ -3,6 +3,7 @@ import { validateConsequencePackage } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
+import { localEdgeOccupiedLabel } from './local-edge-occupancy.js';
 
 export async function createTraceExpansionCommands({ state, requestId,
   inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
@@ -20,10 +21,18 @@ export async function createTraceExpansionCommands({ state, requestId,
         !== candidates.length) {
     fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
   }
-  const approaches = await spatialExpansionRuntime.listApproachOptions(identity);
+  // F3: the first step of an approach is only ever an edge the local-scene owner itself
+  // lists now (visible, eligible, admitted); its status and grounding travel with it.
+  const localOptions = typeof spatialLocalSceneRuntime?.listLocalOptions === 'function'
+    ? await spatialLocalSceneRuntime.listLocalOptions({ ...identity, state }) : [];
+  if (!Array.isArray(localOptions)) fail('SPATIAL_V3_LOCAL_OPTIONS_INVALID');
+  const localByEdge = new Map(localOptions.map((row) => [row?.edge_id, row]));
+  const approaches = await spatialExpansionRuntime.listApproachOptions({ ...identity,
+    firstStepEdgeIds: [...localByEdge.keys()] });
   if (!Array.isArray(approaches)
       || approaches.some((row) => !text(row?.directional_exit_id) || !text(row?.edge_id)
-        || !text(row?.display_label))) {
+        || !text(row?.display_label) || !['open', 'occupied'].includes(
+          localByEdge.get(row.edge_id)?.destination_status))) {
     fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
   }
   const sourcePosition = structuredClone(state.position);
@@ -35,7 +44,9 @@ export async function createTraceExpansionCommands({ state, requestId,
   const approachCommands = approaches.length === 0
     || typeof spatialLocalSceneRuntime?.prepareLocalMovement !== 'function' ? [] : approaches.map(
     ({ directional_exit_id: exitId, edge_id: edgeId, display_label: exitLabel }) => {
-      const label = `${exitLabel} — подход к переправе`;
+      const { destination_status: status } = localByEdge.get(edgeId);
+      const label = status === 'occupied' ? localEdgeOccupiedLabel(
+        `${exitLabel} — подход к переправе`) : `${exitLabel} — подход к переправе`;
       // route_ref (the exit) keeps this structurally distinct from the plain local-scene
       // operation for the same edge: bindings match structurally, so without it both commands
       // would claim the same chosen operation (TURN_STEP_DOMAIN_BINDING_AMBIGUOUS).
@@ -45,6 +56,9 @@ export async function createTraceExpansionCommands({ state, requestId,
         command_id: `live_world.approach_directional_exit:${exitId}`,
         option_id: `directional_exit_approach:${exitId}`,
         label, target_id: edgeId,
+        // Same structural signal as the plain local edge: the first step's own admission
+        // status, read from the local-scene owner, never from the text above.
+        semantic_grounding: { destination_status: status },
         approved_record: null, preconditions: [],
         expected_cost: { kind: 'owner_resolved' }, known_risks: [],
         reason_visible_to_actor: label,

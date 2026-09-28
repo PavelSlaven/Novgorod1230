@@ -47,6 +47,38 @@ test('the free phrase "иду к руслу" resolves to the one exit disclosed 
       operation: { ...operation, target_ref: 'exit:other' } }), false);
   });
 
+const localOption = (edgeId, destination_status = 'open') => ({ edge_id: edgeId,
+  display_label: 'Проход 1', action_units: 1, destination_status });
+
+test('the approach asks the expansion owner only about first steps the local-scene owner lists, and carries the first step status (F3)',
+  async () => {
+    let asked = null;
+    const localScene = { listLocalOptions: async () => [localOption('edge:1', 'occupied'),
+      localOption('edge:2')], prepareLocalMovement: async () => null };
+    const commandList = await createTraceExpansionCommands({ state, requestId: 'r', inputDigest: 'd',
+      spatialExpansionRuntime: { listExpansionOptions: async () => [],
+        listApproachOptions: async (input) => {
+          asked = input;
+          return [{ directional_exit_id: 'exit:channel', edge_id: 'edge:1', display_label: 'к руслу' }]; } },
+      spatialLocalSceneRuntime: localScene });
+    assert.deepEqual(asked.firstStepEdgeIds, ['edge:1', 'edge:2']);
+    const [approach] = commandList;
+    assert.deepEqual(approach.semantic_grounding, { destination_status: 'occupied' });
+    assert.match(approach.label, /\(проход занят\)$/);
+    assert.match(approach.semantic_binding.operation_dto.description, /\(проход занят\)$/);
+  });
+
+test('an approach whose first step the local-scene owner does not list is a typed gap, not a command (F3)',
+  async () => {
+    await assert.rejects(createTraceExpansionCommands({ state, requestId: 'r', inputDigest: 'd',
+      spatialExpansionRuntime: { listExpansionOptions: async () => [],
+        listApproachOptions: async () => [{ directional_exit_id: 'exit:channel', edge_id: 'edge:ghost',
+          display_label: 'к руслу' }] },
+      spatialLocalSceneRuntime: { listLocalOptions: async () => [localOption('edge:1')],
+        prepareLocalMovement: async () => null } }),
+    { code: 'LIVE_WORLD_EXPANSION_OPTIONS_INVALID' });
+  });
+
 test('a reachable-but-not-yet-at-departure exit offers its approach through the local-scene owner, not a second one (A-B1-06)',
   async () => {
     const approach = { directional_exit_id: 'exit:channel', edge_id: 'edge:1', display_label: 'к руслу' };
@@ -56,7 +88,8 @@ test('a reachable-but-not-yet-at-departure exit offers its approach through the 
       requestId: 'request:walk', inputDigest: 'input:digest',
       spatialExpansionRuntime: { listExpansionOptions: async () => [],
         listApproachOptions: async () => [approach] },
-      spatialLocalSceneRuntime: { async prepareLocalMovement(input) { prepared = input; return consequence; } } });
+      spatialLocalSceneRuntime: { listLocalOptions: async () => [localOption('edge:1')],
+        async prepareLocalMovement(input) { prepared = input; return consequence; } } });
     assert.equal(command.label, 'к руслу — подход к переправе');
     assert.equal(command.target_id, 'edge:1');
     const operation = command.semantic_binding.operation_dto;
@@ -92,8 +125,9 @@ test('a candidate crossing is not offered while only an approach is reachable', 
     requestId: 'request:walk', inputDigest: 'input:digest',
     spatialExpansionRuntime: { listExpansionOptions: async () => [],
       listApproachOptions: async () => [approach] },
-    spatialLocalSceneRuntime: { prepareLocalMovement: async () => packageBase({
-      inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' }) } });
+    spatialLocalSceneRuntime: { listLocalOptions: async () => [localOption('edge:1')],
+      prepareLocalMovement: async () => packageBase({
+        inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' }) } });
   assert.equal(commandList.length, 1);
   assert.equal(commandList[0].command_id, 'live_world.approach_directional_exit:exit:channel');
 });

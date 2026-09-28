@@ -19,13 +19,17 @@ function atDepartureSlot(scene, position) {
  * separate, ordinary local movement, owned and applied by the local-scene movement
  * runtime, never duplicated here (A-B1-06: the crossing command only ever executes
  * from `departure`; a not-yet-there actor is offered the first local hop toward it,
- * labelled with the reachable exit's own stable identity, not a second owner). */
-export function findReachableDeparturePosition(context) {
+ * labelled with the reachable exit's own stable identity, not a second owner).
+ * `firstStepEdgeIds` (F3) restricts the first hop to the edges the local-scene owner
+ * itself offers from the current position - visible, eligible, admitted; the walk past
+ * the first hop is only path-finding over raw topology and never executes anything. */
+export function findReachableDeparturePosition(context, firstStepEdgeIds = null) {
   const { position, scene } = context;
   if (atDepartureSlot(scene, position)) return { position, path: [] };
   const positions = new Map((scene.positions ?? []).map((row) => [row.id, row]));
   const edges = [...(scene.movement_edges ?? [])].filter((row) => row.status === 'active')
     .sort((left, right) => left.id.localeCompare(right.id));
+  const offered = firstStepEdgeIds == null ? null : new Set(firstStepEdgeIds);
   const visited = new Set([position.id]);
   let frontier = [{ positionId: position.id, path: [] }];
   while (frontier.length) {
@@ -33,6 +37,7 @@ export function findReachableDeparturePosition(context) {
     for (const { positionId, path } of frontier) {
       for (const edge of edges) {
         if (edge.from_position_id !== positionId || visited.has(edge.to_position_id)) continue;
+        if (path.length === 0 && offered != null && !offered.has(edge.id)) continue;
         visited.add(edge.to_position_id);
         const toPosition = positions.get(edge.to_position_id);
         const nextPath = [...path, edge.id];
@@ -85,10 +90,12 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
    * hop of the deterministic path toward whichever departure position would make the
    * crossing eligible, labelled with the reachable exit's own stable display text. The
    * hop is executed by the local-scene movement owner, not duplicated here (A-B1-06). */
-  async function approachOptions({ partyId, actorId }) {
+  async function approachOptions({ partyId, actorId, firstStepEdgeIds }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    // No offered first step, no approach: the hop is the local-scene owner's, never a guess.
+    if (!Array.isArray(firstStepEdgeIds) || !firstStepEdgeIds.length) return [];
     const context = await readContext({ partyId, actorId });
-    const reachable = findReachableDeparturePosition(context);
+    const reachable = findReachableDeparturePosition(context, firstStepEdgeIds);
     if (reachable == null || reachable.path.length === 0) return [];
     const options = eligibleExpansions({ ...context, position: reachable.position }, now());
     if (!options.length || typeof readExitDisclosure !== 'function') return [];
@@ -112,7 +119,8 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         directional_exit_id: exit.id, display_label }));
     },
     async listApproachOptions(input) {
-      const approaches = await approachOptions({ partyId: input.partyId, actorId: input.actorId });
+      const approaches = await approachOptions({ partyId: input.partyId, actorId: input.actorId,
+        firstStepEdgeIds: input.firstStepEdgeIds });
       return approaches.map((row) => ({ kind: 'approach', ...row }));
     },
     async prepareExpansion(input) {

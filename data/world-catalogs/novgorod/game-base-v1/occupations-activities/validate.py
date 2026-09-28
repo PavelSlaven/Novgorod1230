@@ -138,10 +138,9 @@ def main():
     assert presentation == AUTHORING["presentation_rules"]
     assert presentation == [{"id": "hair_visible_only_when_head_uncovered", "scope": "player_facing_appearance",
                              "facets": ["hair_color", "hair_length", "hair_style"],
-                             "visible_if": {"head_coverage_state": "head_uncovered"},
+                             "visible_if": {"equipped_items": {"all_covers_hair": "no",
+                                                               "coverage_ref": "clothing-appearance/garments/garments.csv#covers_hair"}},
                              "otherwise": "omit_from_player_facing_projection", "internal_traits": "preserve"}]
-    for state, visible in (("head_uncovered", True), ("head_covered", False), (None, False)):
-        assert (state == presentation[0]["visible_if"]["head_coverage_state"]) is visible
     compositions = json.loads((HERE.parent / "places-binding/presence/people_composition_authoring.json").read_text(encoding="utf-8"))["compositions"]
     expected_slot_facts = {(composition["pf_id"], group_id, related_id)
                            for composition in compositions for link in composition.get("slot_relationships", [])
@@ -157,16 +156,48 @@ def main():
     assert not any(fact["pf_id"] != "pf_peasant_homestead" for fact in slot_facts)
     role_clothing = {row["role_ref"]: row["clothing_profile_id"] for row in csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/role_clothing_map.csv")}
     outfits = {row["of_id"]: row for row in csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/outfits.csv")}
+    slot_overrides = AUTHORING["composition_slot_clothing_profile_overrides"]
+    assert set(slot_overrides) == {"pf_peasant_homestead.mistress"}
+    assert slot_overrides["pf_peasant_homestead.mistress"] == "nov_clothing_rural_v1"
     for fact in slot_facts:
         group = next(group for composition in compositions if composition["pf_id"] == fact["pf_id"]
                      for group in composition["population_groups"] if group["group_id"] == fact["group_id"])
         assert fact["role_ref"] == group["weighted_subjects"][0]["subject_ref"]
-        assert fact["clothing_option_refs"] and all(outfits[option]["clothing_profile_id"] == role_clothing[fact["role_ref"]]
+        clothing_profile = slot_overrides.get(fact["group_id"], role_clothing[fact["role_ref"]])
+        assert fact["clothing_option_refs"] and all(outfits[option]["clothing_profile_id"] == clothing_profile
                and outfits[option]["marital_status"] in ("any", "married") and outfits[option]["runtime_selectable"] == "true"
                for option in fact["clothing_option_refs"])
     mistress = next(fact for fact in slot_facts if fact["group_id"] == "pf_peasant_homestead.mistress")
+    assert mistress["clothing_option_refs"] == ["of_rural_female_warm_married", "of_rural_female_cool_married", "of_rural_female_cold_married"]
+    householder = next(fact for fact in slot_facts if fact["group_id"] == "pf_peasant_homestead.householder")
+    assert householder["clothing_option_refs"] == ["of_rural_male_warm_any", "of_rural_male_cool_any", "of_rural_male_cold_any"]
+    assert role_clothing[mistress["role_ref"]] == "nov_clothing_urban_middle_v1"
+    for profile in profiles:
+        for regional in profile["regional_option_sets"]:
+            if regional["role_ref"] == mistress["role_ref"]:
+                assert regional["clothing_profile_ref"] == "nov_clothing_urban_middle_v1"
+                assert {"of_urban_middle_female_warm_married", "of_urban_middle_female_cool_married",
+                        "of_urban_middle_female_cold_married"} <= {option["value"] for option in regional["clothing_options"]}
     assert any(outfits[option]["marital_status"] == "married" and outfits[option]["slot_headwear"] and outfits[option]["slot_head_under"]
                for option in mistress["clothing_option_refs"])
+    garments = {row["gm_id"]: row for row in csv_rows(HERE.parent / "clothing-appearance/garments/garments.csv")}
+    visible_value = presentation[0]["visible_if"]["equipped_items"]["all_covers_hair"]
+    assert visible_value == "no"
+    def hair_visible(equipped):
+        return all(garments.get(item, {}).get("covers_hair") == visible_value for item in equipped)
+    married_outfit = next(outfits[option] for option in mistress["clothing_option_refs"]
+                          if outfits[option]["marital_status"] == "married" and
+                          outfits[option]["slot_headwear"] == "gm_hw007" and
+                          outfits[option]["slot_head_under"] == "gm_hw006")
+    base_equipment = [value for slot, value in married_outfit.items()
+                      if slot.startswith("slot_") and value and slot not in ("slot_headwear", "slot_head_under")]
+    assert garments["gm_hw006"]["covers_hair"] == garments["gm_hw007"]["covers_hair"] == "yes"
+    assert hair_visible(base_equipment)
+    assert not hair_visible(base_equipment + ["gm_hw006"])
+    assert not hair_visible(base_equipment + ["gm_hw007"])
+    assert not hair_visible(base_equipment + ["gm_hw011"])
+    assert garments["gm_hw011"]["covers_hair"] == "unknown"
+    assert not hair_visible(base_equipment + ["unresolved_headwear"])
     rule_by_id = {rule["id"]: rule for rule in rules}
     assert set(rule_by_id) == {"bald_has_no_hair_color", "bald_has_no_hair_style",
                                "young_adult_has_no_gray_or_white_hair"}

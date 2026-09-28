@@ -9,6 +9,7 @@ const rolesSrc = src('habitat_roles.json');
 const sources = src('sources.json').sources;
 const deny = src('denylist.json').entries;
 const kol = src('kolchin_table1.json');
+const woodyFoliage = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/scripts/src/woody_foliage_state.json'));
 const freqRule = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/places-binding/presence/frequency_rule.json'));
 const pfRows = readCsv(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv'));
 const pfById = new Map(pfRows.map((r) => [r.pf_id, r]));
@@ -57,7 +58,7 @@ function phenologyByMonth(t) {
       : fruit.has(m) ? 'fruiting'
       : flower.has(m) ? (t.phen?.flower_before_leaves ? 'flowering_before_leaves' : 'flowering')
       : t.leaf_habit === 'deciduous'
-        ? [12, 1, 2].includes(m) ? 'leafless' : [3, 4, 5].includes(m) ? 'leaf_out' : [9, 10, 11].includes(m) ? 'leaf_fall' : 'vegetative'
+        ? woodyFoliage[m]
         : [12, 1, 2].includes(m) ? 'winter_form' : 'vegetative';
   }
   return out;
@@ -143,6 +144,7 @@ const taxaRows = taxa.map((t) => {
     phenology_note: [t.phen?.flower_note, t.phen?.fruit_note, t.phen?.autumn_colour && `осень: ${t.phen.autumn_colour}`, t.phen?.winter_retains].filter(Boolean).join(' | '),
     phenology_by_season: ph,
     phenology_by_month: phenologyByMonth(t),
+    foliage_by_month: JSON.stringify(Object.fromEntries(Array.from({ length: 12 }, (_, i) => [i + 1, t.leaf_habit === 'deciduous' ? woodyFoliage[i + 1] : 'evergreen']))),
     winter_look: t.winter_look,
     cue_bark: t.cues.bark, cue_leaf: t.cues.leaf, cue_smell: t.cues.smell, cue_sound: t.cues.sound, cue_other: t.cues.other,
     use_codes: t.uses.map((u) => u.use).join(';'),

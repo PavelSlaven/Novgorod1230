@@ -73,9 +73,9 @@ G4, шаблон генерации, мировая ревизия и проис
 стоит `married`, поэтому без индивидуального основания их головной убор
 выбирать нельзя.
 
-Для слотов, соединённых `spouse` в `places-binding/presence/people_composition_authoring.json`, `composition_slot_facts` передаёт `marital_status=married` конкретному актёру и ссылки на подходящие варианты наряда. Это применимо к хозяйке `pf_peasant_homestead.mistress` и её супругу; сама роль хозяйки остаётся без семейного статуса. Хозяйка не имеет отдельного NPC-профиля: варианты берутся из существующей карты одежды роли и включают married headwear.
+Для слотов, соединённых `spouse` в `places-binding/presence/people_composition_authoring.json`, `composition_slot_facts` передаёт `marital_status=married` конкретному актёру и ссылки на подходящие варианты наряда. Это применимо к хозяйке `pf_peasant_homestead.mistress` и её супругу; сама роль хозяйки остаётся без семейного статуса. `actor_appearance_authoring.json#composition_slot_clothing_profile_overrides` задаёт сельский профиль одежды только этому слоту: три сезонных married-комплекта. Домохозяин получает сельские варианты по карте роли. Общая роль хозяйки и её NPC-профиль сохраняют городской профиль одежды.
 
-`appearance_presentation_rules` передаёт правило публикации: `hair_color`, `hair_length`, `hair_style` показываются игроку только при явном `head_coverage_state=head_uncovered`. При покрытой голове или неразрешённом состоянии эти грани исключаются из player-facing описания; внутренние признаки сохраняются. Runtime renderer здесь отсутствует, поэтому это детерминированный handoff для него.
+`appearance_presentation_rules` передаёт правило публикации по текущей экипировке. Renderer сверяет каждый надетый предмет с `clothing-appearance/garments/garments.csv#covers_hair`: `hair_color`, `hair_length`, `hair_style` видны игроку, только если у всех надетых вещей `covers_hair=no` (в том числе когда головного убора нет). `yes`, `unknown` или неразрешённая ссылка на вещь скрывают эти грани. При снятии или потере головного убора видимость пересчитывается по оставшейся экипировке; внутренние признаки сохраняются. Runtime renderer здесь отсутствует, поэтому это детерминированный handoff для него.
 
 Правила запрещают цвет и причёску при лысой голове и седой/белый цвет для
 `young_adult`. Все десять граней исходной policy обязательны, в том числе

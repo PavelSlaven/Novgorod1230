@@ -19,6 +19,9 @@ const all = [...herbs, ...bf, ...cu];
 const byId = Object.fromEntries(all.map(r => [r.fl_id, r]));
 const habitats = readJson(path.join(__dirname, 'src', 'habitats.json'));
 const sourceRows = [readTsv('herbs.tsv'), readTsv('berries_fungi.tsv'), readTsv('cultivated.tsv')];
+const woodyFoliage = readJson(path.join(__dirname, 'src', 'woody_foliage_state.json'));
+const monthKeys = Array.from({ length: 12 }, (_, i) => String(i + 1));
+const expectedFoliage = m => [12, 1, 2, 3].includes(m) ? 'leafless' : [4, 5].includes(m) ? 'leaf_out' : [6, 7, 8].includes(m) ? 'vegetative' : 'leaf_fall';
 function checkSceneLayers(rows, authored) {
   const errors = [], ids = new Set(), output = Object.fromEntries(rows.map(r => [r.fl_id, r]));
   const scope = new Set(authored.filter(r => ['moss', 'lichen'].includes(r.group) && r.habitats.split(' ').some(h => habitats.habitats[h.split(':')[0]]?.pf.includes('conifer_woodland'))).map(r => r.id));
@@ -65,7 +68,34 @@ function checkMonthly(tables) {
   }
   return errors;
 }
+function checkWoodyCalendar(rows) {
+  const errors = [];
+  if (Object.keys(woodyFoliage).length !== 12 || monthKeys.some(k => !Object.hasOwn(woodyFoliage, k) || woodyFoliage[k] !== expectedFoliage(Number(k)))) errors.push('canonical woody foliage must cover months 1–12 with the agreed states');
+  const trees = sourceRows[2].filter(r => r.life_form === 'tree' && r.allowed_1230 !== 'no');
+  for (const t of trees) {
+    const treeRows = rows.filter(r => r.fl_id === t.id);
+    if (treeRows.length !== 12 || monthKeys.some(k => treeRows.filter(r => r.month === k).length !== 1)) { errors.push(`${t.id}: calendar must cover months 1–12 once`); continue; }
+    const harvest = new Set(months(t.harvest)), flowers = new Set(months(t.flow));
+    for (const row of treeRows) {
+      const m = Number(row.month);
+      let expected = { leafless: 'покой, голые деревья', leaf_out: 'распускание листвы', vegetative: 'в листве', leaf_fall: 'листопад' }[woodyFoliage[m]];
+      if (harvest.has(m)) expected += ', сбор урожая';
+      else if (flowers.has(m)) expected += ', цветение';
+      else if (flowers.size && m < Math.min(...flowers) && woodyFoliage[m] === 'leaf_out') expected += ', бутоны';
+      else if (flowers.size && harvest.size && m > Math.max(...flowers) && m < Math.min(...harvest)) expected += ', рост, завязи';
+      else if (m > Math.max(...harvest) && woodyFoliage[m] === 'leaf_fall') expected = 'после сбора, ' + expected;
+      if (row.field_state !== expected) errors.push(`${t.id}/${m}: ${row.field_state} != ${expected}`);
+      if (woodyFoliage[m] === 'leaf_fall' && m > Math.max(...harvest) && !row.field_state.includes('после сбора')) errors.push(`${t.id}/${m}: post-harvest phase missing`);
+    }
+  }
+  return errors;
+}
 fails.push(...checkSceneLayers(herbs, sourceRows[0]), ...checkMonthly([herbs, bf, cu]));
+fails.push(...checkWoodyCalendar(cal));
+const treeCalendarRow = cal.find(r => r.fl_id === 'fl_cu_prunus_cerasus' && r.month === '3');
+if (!treeCalendarRow || !checkWoodyCalendar(cal.map(r => r === treeCalendarRow ? { ...r, field_state: 'распускание листвы' } : r)).some(e => e.includes('/3:'))) fail('woody March leafless probe failed');
+const postHarvestRow = cal.find(r => r.fl_id === 'fl_cu_prunus_cerasus' && r.month === '9');
+if (!postHarvestRow || !checkWoodyCalendar(cal.map(r => r === postHarvestRow ? { ...r, field_state: 'листопад' } : r)).some(e => e.includes('post-harvest phase missing'))) fail('woody post-harvest phase probe failed');
 // Negative probes exercise the checker without changing the published CSVs.
 const sceneSample = sourceRows[0].find(r => r.scene_layer);
 if (!sceneSample) fail('scene layer probe has no fixture');

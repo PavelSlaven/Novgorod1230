@@ -66,11 +66,14 @@
       "id": "hair_visible_only_when_head_uncovered",
       "scope": "player_facing_appearance",
       "facets": ["hair_color", "hair_length", "hair_style"],
-      "visible_if": {"head_coverage_state": "head_uncovered"},
+      "visible_if": {"equipped_items": {"all_covers_hair": "no", "coverage_ref": "clothing-appearance/garments/garments.csv#covers_hair"}},
       "otherwise": "omit_from_player_facing_projection",
       "internal_traits": "preserve"
     }
   ],
+  "composition_slot_clothing_profile_overrides": {
+    "pf_peasant_homestead.mistress": "nov_clothing_rural_v1"
+  },
   "subject_applicability": [
     {
       "subject_id": "nov_occ_ferryman",

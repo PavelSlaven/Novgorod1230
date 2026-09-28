@@ -2,6 +2,7 @@
 // Deterministic: inputs = src/*.tsv, src/habitats.json, cache/gbif.json, cache/wiki.json. No model judgement here.
 const { fs, path, ROOT, SRC, readTsv, months, writeCsv, wikiUrl, readJson } = require('./lib.cjs');
 const H = readJson(path.join(SRC, 'habitats.json'));
+const woodyFoliage = readJson(path.join(SRC, 'woody_foliage_state.json'));
 const gbif = readJson(path.join(__dirname, 'cache', 'gbif.json'));
 const SEASONS = Object.keys(H.seasons);
 const W2C = { 8: 'ubiquitous', 4: 'common', 2: 'contextual', 1: 'rare' };
@@ -136,7 +137,15 @@ const cu = readTsv('cultivated.tsv').map(r => {
   if (isCrop && r.allowed_1230 !== 'no' && harv.length) {
     for (let m = 1; m <= 12; m++) {
       let st;
-      if (harv.includes(m)) st = perennial ? 'сбор урожая' : 'созревание, жатва/уборка';
+      if (r.life_form === 'tree') {
+        st = { leafless: 'покой, голые деревья', leaf_out: 'распускание листвы', vegetative: 'в листве', leaf_fall: 'листопад' }[woodyFoliage[m]];
+        if (harv.includes(m)) st += ', сбор урожая';
+        else if (flow.includes(m)) st += ', цветение';
+        else if (flow.length && m < Math.min(...flow) && woodyFoliage[m] === 'leaf_out') st += ', бутоны';
+        else if (flow.length && harv.length && m > Math.max(...flow) && m < Math.min(...harv)) st += ', рост, завязи';
+        else if (m > Math.max(...harv) && woodyFoliage[m] === 'leaf_fall') st = 'после сбора, ' + st;
+      }
+      else if (harv.includes(m)) st = perennial ? 'сбор урожая' : 'созревание, жатва/уборка';
       else if (sow.includes(m)) st = winterCrop ? 'сев озимых, всходы' : 'сев, всходы';
       else if (flow.includes(m)) st = perennial ? 'цветение' : 'цветение/колошение';
       else if (perennial) {

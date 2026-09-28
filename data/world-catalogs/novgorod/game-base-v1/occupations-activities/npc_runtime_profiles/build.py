@@ -248,12 +248,13 @@ def main():
             for group_id, related_id in ((link["from_group_id"], link["to_group_id"]),
                                          (link["to_group_id"], link["from_group_id"])):
                 role = groups[group_id]["weighted_subjects"][0]["subject_ref"]
+                clothing_profile = AUTHORING["composition_slot_clothing_profile_overrides"].get(group_id, role_clothing.get(role))
                 sexes = {value.removeprefix("nov_1200_1250_sex_category_") for value in actor_applicability(role, None)["sex_category"]}
                 slot_facts.append({
                     "pf_id": composition["pf_id"], "group_id": group_id, "role_ref": role,
                     "marital_status": "married", "relationship_kind": "spouse", "related_group_id": related_id,
                     "clothing_option_refs": [row["of_id"] for row in outfit_rows
-                                             if row["clothing_profile_id"] == role_clothing.get(role)
+                                             if row["clothing_profile_id"] == clothing_profile
                                              and row["runtime_selectable"] == "true"
                                              and row["marital_status"] in ("any", "married")
                                              and sexes.intersection(row["sex_categories"].split("|"))],

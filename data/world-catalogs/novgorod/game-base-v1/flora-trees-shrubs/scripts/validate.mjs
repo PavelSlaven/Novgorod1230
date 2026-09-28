@@ -14,11 +14,14 @@ const pfIds = new Set(readCsv(path.join(REPO, 'data/world-catalogs/novgorod/game
 const freqRule = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/places-binding/presence/frequency_rule.json'));
 const bundle = readJson(path.join(REPO, 'data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json'));
 const claimIds = new Set(bundle.claims.map((c) => c.claim_ref));
+const woodyFoliage = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/scripts/src/woody_foliage_state.json'));
 
 const checks = [];
 const check = (name, failures) => checks.push({ name, ok: failures.length === 0, failures: failures.slice(0, 50), failure_count: failures.length });
 const WEIGHT = { ubiquitous: 8, common: 4, contextual: 2, rare: 1 };
 const MONTH_STATES = new Set(['not_visible', 'winter_form', 'vegetative', 'flowering', 'flowering_before_leaves', 'fruiting', 'ripe_or_harvest', 'flowering_and_fruiting', 'leafless', 'leaf_out', 'leaf_fall']);
+const monthKeys = Array.from({ length: 12 }, (_, i) => String(i + 1));
+const expectedFoliage = (m) => [12, 1, 2, 3].includes(m) ? 'leafless' : [4, 5].includes(m) ? 'leaf_out' : [6, 7, 8].includes(m) ? 'vegetative' : 'leaf_fall';
 
 function checkMonthly(rows) {
   const f = [];
@@ -39,12 +42,19 @@ function checkMonthly(rows) {
     }
     const flowers = new Set(months(t.phen?.flower));
     const fruits = new Set(months(t.phen?.fruit));
+    let foliage;
+    try { foliage = JSON.parse(row.foliage_by_month); } catch { f.push(`${t.id}: foliage JSON malformed`); continue; }
+    if (!foliage || Array.isArray(foliage) || typeof foliage !== 'object' || monthKeys.some((k) => !Object.hasOwn(foliage, k)) || Object.keys(foliage).length !== 12) {
+      f.push(`${t.id}: foliage keys must be 1–12`); continue;
+    }
     for (let m = 1; m <= 12; m++) {
+      const expectedLeaf = t.leaf_habit === 'deciduous' ? woodyFoliage[m] : 'evergreen';
+      if (foliage[m] !== expectedLeaf) f.push(`${t.id}/${m}: foliage ${foliage[m]} != ${expectedLeaf}`);
       const expected = flowers.has(m) && fruits.has(m) ? 'flowering_and_fruiting'
         : fruits.has(m) ? 'fruiting'
         : flowers.has(m) ? t.phen?.flower_before_leaves ? 'flowering_before_leaves' : 'flowering'
         : t.leaf_habit === 'deciduous'
-          ? SEASON_MONTHS.winter.includes(m) ? 'leafless' : SEASON_MONTHS.spring.includes(m) ? 'leaf_out' : SEASON_MONTHS.autumn.includes(m) ? 'leaf_fall' : 'vegetative'
+          ? woodyFoliage[m]
           : SEASON_MONTHS.winter.includes(m) ? 'winter_form' : 'vegetative';
       if (!MONTH_STATES.has(actual[m]) || actual[m] !== expected) f.push(`${t.id}/${m}: ${actual[m]} != ${expected}`);
     }
@@ -144,7 +154,16 @@ function resolve(ref) {
 // 7a. monthly reproductive state takes priority; otherwise deciduous seasonal foliage is projected.
 {
   const f = checkMonthly(taxa);
+  if (Object.keys(woodyFoliage).length !== 12 || monthKeys.some((k) => !Object.hasOwn(woodyFoliage, k) || woodyFoliage[k] !== expectedFoliage(Number(k)))) f.push('canonical woody foliage must cover months 1–12 with the agreed states');
   const authored = src('taxa.json').taxa;
+  const deciduous = authored.find((t) => t.leaf_habit === 'deciduous');
+  const evergreen = authored.find((t) => t.leaf_habit.startsWith('evergreen'));
+  for (const t of [deciduous, evergreen]) {
+    const row = taxa.find((r) => r.fl_id === t?.id);
+    if (!row) { f.push('foliage probe fixture missing'); continue; }
+    const changed = { ...row, foliage_by_month: JSON.stringify({ ...JSON.parse(row.foliage_by_month), 3: 'leaf_out' }) };
+    if (!checkMonthly(taxa.map((r) => r === row ? changed : r)).some((e) => e.includes(`${t.id}/3: foliage`))) f.push(`${t.id}: foliage probe failed`);
+  }
   const overlap = authored.find((t) => months(t.phen?.flower).some((m) => months(t.phen?.fruit).includes(m)));
   if (!overlap) f.push('monthly overlap probe has no authored fixture');
   else {
@@ -154,6 +173,10 @@ function resolve(ref) {
     else {
       const changed = { ...row, phenology_by_month: JSON.stringify({ ...JSON.parse(row.phenology_by_month), [m]: 'flowering' }) };
       if (!checkMonthly(taxa.map((t) => t === row ? changed : t)).some((e) => e.includes(`${overlap.id}/${m}:`))) f.push('monthly overlap probe failed');
+      changed.phenology_by_month = row.phenology_by_month;
+      changed.foliage_by_month = JSON.stringify({ ...JSON.parse(row.foliage_by_month), [m]: 'invalid' });
+      if (!checkMonthly(taxa.map((t) => t === row ? changed : t)).some((e) => e.includes(`${overlap.id}/${m}: foliage`))) f.push('monthly overlap foliage probe failed');
+      changed.foliage_by_month = row.foliage_by_month;
       changed.phenology_by_month = JSON.stringify({ ...JSON.parse(row.phenology_by_month), 1: 'vegetative' });
       if (!checkMonthly(taxa.map((t) => t === row ? changed : t)).some((e) => e.includes(`${overlap.id}/1:`))) f.push('monthly month probe failed');
     }

@@ -563,18 +563,22 @@ for fid, season in phase_scope:
         if fid == 'fa_ins_dragonflies' and season == 'summer' and phase == 'daylight':
             state, source, rule = 'yes', '', 'fauna-mammals-birds/fauna/activity_phase_rules.json#sunny-daylight'
         if fid == 'fa_dom_chicken':
+            chicken_voice_ref = f'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_{season}_{dict(winter="033", spring_rasputitsa="034", summer="035", autumn="186")[season]}.partial_text'
             if phase == rooster_phase[season]:
                 voice, rule = 'yes', 'fauna-mammals-birds/fauna/activity_phase_rules.json#rooster-four-am'
-                voice_ref = 'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_summer_035.partial_text'
+                voice_ref = chicken_voice_ref
                 source = voice_ref
             elif phase == 'daylight' and season in ('winter', 'spring_rasputitsa', 'summer'):
                 voice = 'yes'
-                voice_ref = f'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_{season}_{dict(winter="033", spring_rasputitsa="034", summer="035")[season]}.partial_text'
+                voice_ref = chicken_voice_ref
                 source, rule = voice_ref, ''
         inferred_livestock_dusk = fid in ('fa_dom_cattle', 'fa_dom_pig', 'fa_dom_sheep') and season == 'summer' and phase == 'civil_dusk'
         if inferred_livestock_dusk:
             state = 'yes'  # C: summer pasture and bringing animals back to the yard at dusk.
             source = f'livestock_care.csv#lc_{fid.removeprefix("fa_dom_")}__summer.care_tasks_daily'
+            if fid == 'fa_dom_sheep':
+                rule = 'fauna-mammals-birds/fauna/activity_phase_rules.json#sheep-summer-dusk-analogy'
+                source += ';livestock_care.csv#lc_cattle__summer.care_tasks_daily'
             if fid == 'fa_dom_cattle':
                 voice = 'yes'
                 voice_ref = 'buildings-interiors-containers/interiors/scenes.csv#sc_scn032.sound'

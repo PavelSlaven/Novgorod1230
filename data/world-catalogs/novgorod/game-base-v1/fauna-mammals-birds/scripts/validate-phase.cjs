@@ -118,8 +118,9 @@ function validate(group, rows, header, presenceOverride, taxaOverride) {
     if (row.phase_rule_id !== `fpa_${row.fa_id}_${row.season}_${row.phase}`) errors.push(`phase_rule_id ${key}`);
     if (!scope.has(`${row.fa_id}|${row.season}`) || !rules.phases.includes(row.phase)) errors.push(`out of scope ${key}`);
     if (!['yes', 'no', 'no_source'].includes(row.visibility_state) || !['yes', 'no', 'no_source'].includes(row.voice_state)) errors.push(`state enum ${key}`);
-    const roosterMixed = row.fa_id === 'fa_dom_chicken' && row.rule_ref.endsWith('#rooster-four-am') && row.source_refs;
-    if ([row.source_refs, row.rule_ref, row.no_source].filter(Boolean).length !== (roosterMixed ? 2 : 1)) errors.push(`basis XOR ${key}`);
+    const mixedBasis = row.source_refs && ((row.fa_id === 'fa_dom_chicken' && row.rule_ref.endsWith('#rooster-four-am')) ||
+      (key === 'fa_dom_sheep|summer|civil_dusk' && row.rule_ref.endsWith('#sheep-summer-dusk-analogy')));
+    if ([row.source_refs, row.rule_ref, row.no_source].filter(Boolean).length !== (mixedBasis ? 2 : 1)) errors.push(`basis XOR ${key}`);
     const completeGap = row.visibility_state === 'no_source' && row.voice_state === 'no_source' && !row.rule_ref;
     if (completeGap !== Boolean(row.no_source)) errors.push(`gap basis ${key}`);
     if (!['A', 'B', 'C'].includes(row.confidence) || row.status !== 'candidate') errors.push(`confidence/status ${key}`);
@@ -168,6 +169,11 @@ function validate(group, rows, header, presenceOverride, taxaOverride) {
             (!['fa_dom_cattle', 'fa_dom_pig', 'fa_dom_sheep'].includes(row.fa_id) || row.season !== 'summer' ||
              row.phase !== 'civil_dusk' || row.confidence !== 'C' || !careRefs.some((ref) => sourceRefs.has(ref)) ||
              occurrenceRefs.some((ref) => !sourceRefs.has(ref))))) errors.push(`livestock visibility ${key}`);
+        if (key === 'fa_dom_sheep|summer|civil_dusk' &&
+            (row.visibility_state !== 'yes' || row.rule_ref !== `${rulePath}sheep-summer-dusk-analogy` ||
+             !sourceRefs.has('livestock_care.csv#lc_sheep__summer.care_tasks_daily') ||
+             !sourceRefs.has('livestock_care.csv#lc_cattle__summer.care_tasks_daily')))
+          errors.push(`sheep dusk analogy ${key}`);
         if (row.voice_state === 'yes' && !row.voice_text_ref.split(';').some((ref) => ref && sourceRefs.has(ref) && resolves(group, ref)))
           errors.push(`livestock voice text ${key}`);
       }
@@ -176,8 +182,13 @@ function validate(group, rows, header, presenceOverride, taxaOverride) {
            row.voice_text_ref !== 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues' || row.confidence !== 'C')) errors.push(`mosquito dawn channel ${key}`);
       if (row.fa_id === 'fa_dom_chicken') {
         const roosterRule = `${rulePath}rooster-four-am`;
+        const voiceRef = `buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_${row.season}_${{ winter: '033', spring_rasputitsa: '034', summer: '035', autumn: '186' }[row.season]}.partial_text`;
         if (row.phase === roosterPhase(row.season) ? row.voice_state !== 'yes' || row.rule_ref !== roosterRule || row.confidence !== 'C' : row.rule_ref === roosterRule)
           errors.push(`rooster phase/channel ${key}`);
+        if (row.voice_state === 'yes' && (row.voice_text_ref !== voiceRef ||
+            row.source_refs.split(';').filter((ref) => ref.startsWith('buildings-interiors-containers/ambience/settlement_ambience_texts.csv#'))
+              .some((ref) => ref !== voiceRef) || !row.source_refs.split(';').includes(voiceRef)))
+          errors.push(`chicken seasonal voice ${key}`);
         if (row.voice_state === 'yes' && [...livestockRules.get(row.fa_id) || []].some((ref) => !row.source_refs.split(';').includes(`${ref.startsWith('pl_') ? 'place_type_livestock.csv' : 'herd_composition.csv'}#${ref}`)))
           errors.push(`chicken occurrence refs ${key}`);
       }
@@ -373,6 +384,7 @@ if (require.main === module) {
       expect('fa_dom_cattle', 'summer', 'civil_dusk', 'visibility_state', 'yes');
       expect('fa_dom_pig', 'summer', 'civil_dusk', 'visibility_state', 'yes');
       expect('fa_dom_sheep', 'summer', 'civil_dusk', 'visibility_state', 'yes');
+      expect('fa_dom_sheep', 'summer', 'civil_dusk', 'rule_ref', 'fauna-mammals-birds/fauna/activity_phase_rules.json#sheep-summer-dusk-analogy');
       reject('fa_dom_cattle', 'summer', 'daylight', 'visibility_state', 'yes', 'livestock visibility');
       reject('fa_dom_cattle', 'summer', 'night', 'visibility_state', 'yes', 'livestock visibility');
       reject('fa_dom_cattle', 'autumn', 'civil_dusk', 'visibility_state', 'yes', 'livestock visibility');
@@ -380,6 +392,12 @@ if (require.main === module) {
       const cattleDusk = find('fa_dom_cattle', 'summer', 'civil_dusk');
       reject('fa_dom_cattle', 'summer', 'civil_dusk', 'source_refs', cattleDusk.source_refs.split(';').filter((ref) => !ref.startsWith('livestock_care.csv#')).join(';'), 'livestock visibility');
       reject('fa_dom_cattle', 'summer', 'civil_dusk', 'voice_text_ref', '', 'livestock voice text');
+      const sheepDusk = find('fa_dom_sheep', 'summer', 'civil_dusk');
+      reject('fa_dom_sheep', 'summer', 'civil_dusk', 'rule_ref', '', 'sheep dusk analogy');
+      reject('fa_dom_sheep', 'summer', 'civil_dusk', 'source_refs', sheepDusk.source_refs.split(';').filter((ref) => ref !== 'livestock_care.csv#lc_cattle__summer.care_tasks_daily').join(';'), 'sheep dusk analogy');
+      reject('fa_dom_chicken', 'winter', 'night', 'voice_text_ref', 'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_summer_035.partial_text', 'chicken seasonal voice');
+      const winterChicken = find('fa_dom_chicken', 'winter', 'night');
+      reject('fa_dom_chicken', 'winter', 'night', 'source_refs', winterChicken.source_refs + ';buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_summer_035.partial_text', 'chicken seasonal voice');
       const copiedDusk = table.rows.map((r) => ({ ...r }));
       const cattleNight = copiedDusk.find((r) => r.fa_id === 'fa_dom_cattle' && r.season === 'summer' && r.phase === 'night');
       Object.assign(cattleNight, { visibility_state: 'yes', voice_state: 'yes', voice_text_ref: cattleDusk.voice_text_ref,

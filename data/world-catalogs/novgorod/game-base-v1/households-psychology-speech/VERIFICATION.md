@@ -544,3 +544,12 @@
 - Пары настоящие. У места вытаскивания лодок в Заостровье рядом с сараями и двором встреча рыбака на берегу со слугой или пастухом правдоподобна для XIII века. Доверие C, потому что двор на площадке выведен из шаблона.
 - Снятые пары были ложными. Лодочник–извозчик и лодочник–смерд встречались только на 5 G5 с основным `pf_river_channel` (`channel_split_islet_*_channel`, `large_island_head_*_channel`, `tributary_mouth_crossing`) через прежние вторичные `road` и `village_lane`. Их снятие правильно.
 - Число строк 51/96 сохранилось, `same_pf_pairs` не изменилось (3 пары). Новые строки — `unspecified`/`no_source` C без выдуманной связи. `build_report.json` и константы `check.py` (859/7661) согласованы со сборкой.
+
+### speech_address/speech_registers.csv — approve_with_limits
+Проверено: Claude Opus 5.5 (независимая проверка CR #158, C007c, коммит 11bf6ca7 против 1f1ed858).
+- Скриптом: 139 строк = 71 роль + 68 занятий; поля 71 строки ролей совпадают с 1f1ed858, 0 расхождений. Среди занятий 49 plain_oral, 13 formal_literate, 6 everyday_oral.
+- Основа правила разумна: духовенство, писцы, приказчик, келарь, владычные люди — formal_literate; работники, промысловики, слуги, нищий — plain_oral. Это соответствует Новгороду XIII века.
+- Спорно `middle-high → formal_literate` у военных: `nov_occ_druzhina_warrior`, `nov_occ_tysyatsky_public_order`, `nov_occ_princely_service_agent`. Соответствующие роли `nov_role_druzhina_companion`, `nov_role_junior_druzhinnik`, `nov_role_princely_man` и `nov_role_sotsky` — everyday_oral. Письменно-книжной речи у дружинника источник не даёт.
+- Спорно `low-middle → plain_oral` у городских ремёсел и торга: `nov_occ_local_trader`, `nov_occ_market_stall_seller`, кузнец, гончар, сапожник и другие. Роли `nov_role_craftsman_master` и `nov_role_local_merchant` — everyday_oral. Берестяные грамоты показывают бытовую грамотность именно у горожан. everyday_oral здесь естественнее.
+- Расхождение роли и занятия у одного человека: `nov_role_church_guard`, `nov_role_novice`, `nov_role_pilgrim`, `nov_role_monastery_worker` — formal_literate, а их занятия после аудита — plain_oral. Правила, какая строка главнее при конфликте, нет. README утверждает «одно правило», хотя у занятий есть отдельное исключение для низкого статуса.
+- Пара ferryman↔fisher: отношение и обе формы обращения — нейтральные `unspecified/no_source`, ID стабильны. Новых форм не выдумано.

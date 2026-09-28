@@ -322,6 +322,15 @@ for l in lms:
 # ================= settlement_ambience_texts =================
 amb = rd("ambience/settlement_ambience_texts.csv"); tokens = {t["token"] for t in rd("ambience/presence_tokens.csv")}
 check_refs(amb, ["source_refs"], "ambience", "sat_id"); check_refs(rd("ambience/presence_tokens.csv"), ["source_refs"], "presence_tokens", "token")
+human_work_presence = {"presence:people", "presence:fishing_activity", "presence:woodcutting"}
+def has_human_work_presence(refs):
+    return bool(sp(refs)) and all(ref in human_work_presence for ref in sp(refs))
+if "--self-test" in sys.argv:
+    assert has_human_work_presence("presence:people")
+    assert has_human_work_presence("presence:fishing_activity")
+    assert has_human_work_presence("presence:woodcutting")
+    assert not has_human_work_presence("presence:boats|presence:people")
+    assert not has_human_work_presence("presence:boats|bt_wharf_vymol")
 for a in amb:
     if a["pf_id"] not in pf_ids: err("ambience %s unknown pf" % a["sat_id"])
     if not a["requires_presence_ref"]: err("ambience %s no requires_presence_ref" % a["sat_id"])
@@ -329,6 +338,8 @@ for a in amb:
         if r not in bt_ids and r not in tokens: err("ambience %s presence ref %s unknown" % (a["sat_id"], r))
     if a["layer"] == "voices" and a["requires_presence_ref"] not in ("presence:people", "presence:market_day", "presence:famine_1230"):
         err("ambience %s human voices require people or a human event" % a["sat_id"])
+    if a["layer"] == "work_sounds" and not has_human_work_presence(a["requires_presence_ref"]):
+        err("ambience %s work sounds require human actor presence" % a["sat_id"])
     if not a["clear_text"] or not a["partial_text"]: err("ambience %s missing text" % a["sat_id"])
     if a["channel"] not in ("visual", "acoustic", "olfactory"): err("ambience %s unknown channel" % a["sat_id"])
     if a["status"] != "candidate": err("ambience %s not candidate" % a["sat_id"])

@@ -32,14 +32,16 @@ const errors = [], warnings = [];
 const err = (m) => errors.push(m), warn = (m) => warnings.push(m);
 // A deliberately small editorial guard against context leaking into narrator sound text.
 const SOUND_CONTEXT = /(?:^|[^а-яё])(?:зим|весн|лет|осен|январ|феврал|март|апрел|ма[йяею]|июн|июл|август|сентябр|октябр|ноябр|декабр|лес|елов|ель|крон|гнезд|луг|болот|рек|озер|берег|вод[еуы]|пол[еяю]|неб|крыш|дерев|двор|трав|куст|трост|опуш|ноч|вечер|утр|сумерк|зар[еяю]|рассвет|дн[еёяю]|полет|полёт|взлет|взлёт|прилет|прилёт|ток|охот)[а-яё]*(?=$|[^а-яё])/i;
-function soundIssue(sound) {
-  if (!sound || !sound.trim()) return 'empty';
+function soundIssue(sound, description, audibleSeasons) {
+  if (!sound || !sound.trim()) return audibleSeasons && !/(?:молчалив|безмолвен|редко слышен)/i.test(description) ? 'empty' : '';
   const match = sound.match(SOUND_CONTEXT);
   return match ? `context word ${match[0].trim()}` : '';
 }
 if (process.argv.includes('--self-test')) {
-  for (const bad of ['весной «ки-ки»', 'в июне свист', 'над озером крик', 'ночью трель', 'на току щелчки', '']) if (!soundIssue(bad)) throw new Error('sound negative probe passed: ' + bad);
-  for (const good of ['громкое «ки-ки»', 'сухая трель и свист']) if (soundIssue(good)) throw new Error('sound positive probe failed: ' + good);
+  for (const bad of ['весной «ки-ки»', 'в июне свист', 'над озером крик', 'ночью трель', 'на току щелчки']) if (!soundIssue(bad, 'крик', 'spring')) throw new Error('sound negative probe passed: ' + bad);
+  if (!soundIssue('', 'звонкая песня', 'spring')) throw new Error('ordinary voice without sound passed');
+  for (const good of ['громкое «ки-ки»', 'сухая трель и свист']) if (soundIssue(good, 'крик', 'spring')) throw new Error('sound positive probe failed: ' + good);
+  for (const [description, seasons] of [['почти молчалив', ''], ['редко слышен', 'winter'], ['почти безмолвен', 'spring;summer']]) if (soundIssue('', description, seasons)) throw new Error('silent voice without sound failed: ' + description);
   console.log('voice_sound_ru self-test ok');
   process.exit(0);
 }
@@ -91,7 +93,7 @@ for (const t of mammals.filter((m) => m.dormant_seasons.includes('winter'))) for
 
 // Acceptance fauna_birds
 if (birds.length < 40) err('fewer than 40 bird taxa: ' + birds.length);
-for (const b of birds) { if (!b.voice_description) err('bird without voice ' + b.fa_id); if (b.voice_description && soundIssue(b.voice_sound_ru)) err('bird voice_sound_ru ' + soundIssue(b.voice_sound_ru) + ' ' + b.fa_id); for (const s of SEASONS) if (!b['migration_' + s]) err('bird migration missing ' + b.fa_id + ' ' + s); if (!presBy(b.fa_id).length) err('bird without presence ' + b.fa_id); }
+for (const b of birds) { if (!b.voice_description) err('bird without voice ' + b.fa_id); if (b.voice_description && soundIssue(b.voice_sound_ru, b.voice_description, b.audible_seasons)) err('bird voice_sound_ru ' + soundIssue(b.voice_sound_ru, b.voice_description, b.audible_seasons) + ' ' + b.fa_id); for (const s of SEASONS) if (!b['migration_' + s]) err('bird migration missing ' + b.fa_id + ' ' + s); if (!presBy(b.fa_id).length) err('bird without presence ' + b.fa_id); }
 const INTERIOR = new Set(['pf_dwelling_interior', 'pf_cellar_granary', 'pf_mill', 'pf_grain_drying_shed_ovin', 'pf_outbuildings', 'pf_threshing_barn', 'pf_church_interior', 'pf_ordinary_workshop', 'pf_bathhouse', 'pf_smithy']);
 const bset = new Set(birds.map((b) => b.fa_id));
 const openPfs = [...new Set(pres.map((p) => p.pf_id))].filter((pf) => !INTERIOR.has(pf));

@@ -102,7 +102,7 @@ AMB = [
         "summer": ("Перевозчик кричит на тот берег, ему отвечают; вода далеко разносит голоса.", "Над водой разносятся голоса."),
         "autumn": ("Ждущие перевоза жмутся от ветра, перебраниваются о плате.", "Ветер доносит обрывки разговора."),
     }, "matcult_scene:SCN026|wk:claim:military-world-gate-and-passage-use-needs-actual-access", "C"),
-    ("ferry_landing", "work_sounds", "acoustic", "presence:boats", "moderate", "day", {
+    ("ferry_landing", "work_sounds", "acoustic", "presence:people", "moderate", "day", {
         "winter": ("Кто-то рубит прорубь, звон пешни о лёд отдаётся по реке.", "Над рекой разносится стук по льду."),
         "spring_rasputitsa": ("Смолят днище перевёрнутой лодки: треск костра, запах горячей смолы.", "Тянет горячей смолой."),
         "summer": ("Скрипят уключины, плещут вёсла, лодку с плеском подводят к мосткам.", "Слышен плеск вёсел."),
@@ -134,7 +134,7 @@ AMB = [
         "autumn": ("Дым костра стелется по воде в сыром воздухе.", "Над водой стелется дым."),
     }, "wk:claim:population-drying-workspace|matcult:FSH0003", "C"),
     # ---------------- river_wharf ----------------
-    ("river_wharf", "work_sounds", "acoustic", "presence:boats|bt_wharf_vymol", "loud", "day", {
+    ("river_wharf", "work_sounds", "acoustic", "presence:people", "loud", "day", {
         "winter": ("Пристань пуста, суда на берегу; у складов стучат — обтягивают бочки новыми обручами.", "Со стороны складов доносится стук."),
         "spring_rasputitsa": ("Вода подступила к сваям; люди спешно перетаскивают тюки выше, перекликаясь.", "Слышна спешная перекличка."),
         "summer": ("Скрипят сходни под грузчиками, катят бочки, кто-то считает вслух мешки.", "Гремят бочки, кто-то считает вслух."),
@@ -311,6 +311,9 @@ AMB = [
         "autumn": ("У хлева пахнет мокрой подстилкой и навозом.", "Тянет навозом."),
     }, "matcult:ARC0002|wk:claim:practical-livestock-care", "C"),
     ("ferry_landing", "smells", "olfactory", "presence:people", "quiet", "any", {
-        "winter": ("От костра у берега тянет дымом.", "Тянет дымом."),
+        "winter": ("С берега тянет дымом.", "Тянет дымом."),
     }, "wk:claim:place-outdoors-shore-working-edge-composition", "C"),
+    ("village_lane", "animals", "acoustic", "presence:poultry", "quiet", "any", {
+        "autumn": ("Из двора у дороги слышен крик петуха.", "Кричит петух."),
+    }, "matcult:LIV0005|wk:claim:fauna-chicken-foraging", "C"),
 ]

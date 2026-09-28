@@ -3,6 +3,7 @@
 """Deterministic checks for group households-psychology-speech (candidate).
 Run after build.py. Exits non-zero on any failed check."""
 import csv, hashlib, json, os, sys, ast, re
+from build import literacy_register
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 errors = []
@@ -65,19 +66,12 @@ for i, r in enumerate(pp_rows):
         role_refs.add(r["role_or_occupation_ref"])
 
 region_tsv = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(ROOT)))), "novgorod-region")
-import csv as _csv
-
-
-def tsv_ids(path, key):
-    with open(path, encoding="utf-8") as f:
-        return {row[key] for row in _csv.DictReader(f, delimiter="\t")}
-
-
-all_occ = tsv_ids(os.path.join(region_tsv, "novgorod_occupations_v1_enriched.tsv"), "occupation_id")
-all_role = tsv_ids(os.path.join(region_tsv, "novgorod_social_roles_v1_enriched.tsv"), "role_id")
 with open(os.path.join(region_tsv, "novgorod_occupations_v1_enriched.tsv"), encoding="utf-8") as f:
-    low_church_occ = {r["occupation_id"] for r in csv.DictReader(f, delimiter="\t")
-                      if r["occupation_group"] == "церковь" and r["typical_status_range"] in {"low", "low-variable"}}
+    occupations = {r["occupation_id"]: r for r in csv.DictReader(f, delimiter="\t")}
+with open(os.path.join(region_tsv, "novgorod_social_roles_v1_enriched.tsv"), encoding="utf-8") as f:
+    roles = {r["role_id"]: r for r in csv.DictReader(f, delimiter="\t")}
+all_occ = set(occupations)
+all_role = set(roles)
 schedule_occ = {r["occupation_ref"] for r in read_csv(os.path.join(os.path.dirname(ROOT), "time-calendar-church", "time", "schedules_routines.csv")) if r["occupation_ref"]}
 presence = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_presence_authoring.csv"))
 reachable_occ = ({r["subject_ref"] for r in presence if r["subject_kind"] == "occupation"} | schedule_occ) & all_occ
@@ -96,8 +90,9 @@ def register_failures(rows):
             failures.append(f"speech_registers row {i}: unknown subject")
         if r["register"] not in {"formal_literate", "plain_oral", "everyday_oral"} or r["confidence"] != "C":
             failures.append(f"speech_registers row {i}: invalid register/confidence")
-        if r["subject_kind"] == "occupation" and r["subject_ref"] in low_church_occ and r["register"] != "plain_oral":
-            failures.append(f"speech_registers row {i}: low-status church occupation must be plain_oral")
+        source = (occupations if r["subject_kind"] == "occupation" else roles).get(r["subject_ref"])
+        if source and r["register"] != literacy_register(source):
+            failures.append(f"speech_registers row {i}: register differs from source occupation/role precedence")
     if len(keys) != len(set(keys)):
         failures.append("speech_registers: duplicate subject")
     return failures
@@ -276,7 +271,13 @@ if not start_pairs:
 if (colocated, intersections) != (727, 6617):
     errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (727, 6617)")
 with open(os.path.join(ROOT, "scripts", "build_report.json"), encoding="utf-8") as f:
-    start_report = json.load(f)["households_kinship"]
+    build_report = json.load(f)
+start_report = build_report["households_kinship"]
+register_counts = {kind: {register: sum(r["subject_kind"] == kind and r["register"] == register for r in register_rows)
+                          for register in ("formal_literate", "plain_oral", "everyday_oral")}
+                   for kind in ("role", "occupation")}
+if build_report["speech_address"].get("register_counts") != register_counts:
+    errors.append("speech register counts differ from build report")
 if (start_report["start_colocated_node_season_contexts"], start_report["start_phase_intersections"]) != (colocated, intersections):
     errors.append("starting reachable counts differ from build report")
 with open(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
@@ -370,13 +371,29 @@ def missing_oral_kinds(forms):
 for kind in missing_oral_kinds(af_rows):
     errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
-    low_church = next(r for r in register_rows if r["subject_kind"] == "occupation" and r["subject_ref"] in low_church_occ)
+    low_church = next(r for r in register_rows if r["subject_kind"] == "occupation" and
+                      occupations[r["subject_ref"]]["occupation_group"] == "церковь" and
+                      occupations[r["subject_ref"]]["typical_status_range"] in {"low", "low-variable"})
     wrong_register = [dict(r) for r in register_rows]
     next(r for r in wrong_register if r["subject_ref"] == low_church["subject_ref"])["register"] = "formal_literate"
-    if not any("low-status church occupation" in failure for failure in register_failures(wrong_register)):
-        errors.append("negative low-status church register probe failed")
+    if not any("register differs from source" in failure for failure in register_failures(wrong_register)):
+        errors.append("negative occupation precedence register probe failed")
     else:
-        print("OK: negative low-status church register probe detected formal_literate")
+        print("OK: negative occupation precedence register probe detected formal_literate")
+    if literacy_register({**occupations[low_church["subject_ref"]], **{
+            "social_rank": "high", "role_group": "церковь", "role_title": "писец"}}) != "plain_oral":
+        errors.append("occupation must win over conflicting role fields")
+    else:
+        print("OK: occupation wins over conflicting role fields")
+    for occupation_id in ("nov_occ_princely_service_agent", "nov_occ_druzhina_warrior",
+                          "nov_occ_tysyatsky_public_order", "nov_occ_local_trader",
+                          "nov_occ_market_stall_seller"):
+        if literacy_register(occupations[occupation_id]) != "everyday_oral":
+            errors.append(f"expected everyday register for {occupation_id}")
+    if any(literacy_register(r) != "everyday_oral" for r in occupations.values() if r["occupation_group"] == "ремесло"):
+        errors.append("craft occupation register probe failed")
+    if literacy_register(occupations["nov_occ_pitch_tar_worker"]) != "plain_oral":
+        errors.append("pitch/tar worker register probe failed")
     occupation = next(r for r in register_rows if r["subject_kind"] == "occupation" and r["subject_ref"] in reachable_occ)
     if not register_failures([r for r in register_rows if r is not occupation]):
         errors.append("negative register probe failed to detect removed occupation row")

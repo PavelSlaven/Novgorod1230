@@ -537,6 +537,30 @@ def build_npc_psychology(occs, roles):
 # Domain 3: speech_address
 # ---------------------------------------------------------------------------
 
+OCCUPATION_EVERYDAY_IDS = {
+    "nov_occ_princely_service_agent", "nov_occ_druzhina_warrior", "nov_occ_tysyatsky_public_order",
+    "nov_occ_local_trader", "nov_occ_market_stall_seller",
+}
+LITERATE_TITLE_KEYWORDS = ["писец", "дьяк", "приказчик", "доверенн"]
+
+
+def literacy_register(r):
+    # An NPC's occupation is authoritative; role fields are only a fallback.
+    occupation = bool(r.get("occupation_id"))
+    rank = ((r.get("typical_status_range") if occupation else r.get("social_rank") or r.get("typical_status_range")) or "").strip().lower()
+    grp = ((r.get("occupation_group") if occupation else r.get("role_group") or r.get("occupation_group")) or "").strip()
+    title = (((r.get("occupation_title") if occupation else r.get("role_title") or r.get("occupation_title")) or "") + " " + (r.get("historical_term") or "")).lower()
+    if occupation and (r["occupation_id"] in OCCUPATION_EVERYDAY_IDS or grp == "ремесло"):
+        return "everyday_oral"
+    if occupation and rank in ("low", "low-variable"):
+        return "plain_oral"
+    if rank in ("elite", "high", "middle-high") or grp == "церковь" or any(k in title for k in LITERATE_TITLE_KEYWORDS):
+        return "formal_literate"
+    if rank in ("low", "low-middle", "low-dependent", "low-variable", "outcast-low", "dependent", "outcast"):
+        return "plain_oral"
+    return "everyday_oral"
+
+
 def build_speech_address(occs, roles):
     out_dir = os.path.join(ROOT, "speech_address")
 
@@ -557,20 +581,6 @@ def build_speech_address(occs, roles):
     # a broken substring search, which fixes посадник/тысяцкий, priest/
     # deacon/igumen/church_scribe, and merchant_clerk, and lets
     # everyday_oral actually occur for ordinary free middle-rank roles.
-    LITERATE_TITLE_KEYWORDS = ["писец", "дьяк", "приказчик", "доверенн"]
-
-    def literacy_register(r):
-        rank = (r.get("social_rank") or r.get("typical_status_range") or "").strip().lower()
-        grp = (r.get("role_group") or r.get("occupation_group") or "").strip()
-        title = ((r.get("role_title") or r.get("occupation_title") or "") + " " + (r.get("historical_term") or "")).lower()
-        if "occupation_id" in r and rank in ("low", "low-variable"):
-            return "plain_oral"
-        if rank in ("elite", "high", "middle-high") or grp == "церковь" or any(k in title for k in LITERATE_TITLE_KEYWORDS):
-            return "formal_literate"
-        if rank in ("low", "low-middle", "low-dependent", "low-variable", "outcast-low", "dependent", "outcast"):
-            return "plain_oral"
-        return "everyday_oral"
-
     reg_rows = []
     for r in roles:
         register = literacy_register(r)
@@ -591,7 +601,9 @@ def build_speech_address(occs, roles):
             "register": literacy_register(o),
             "literacy_expectation_ru": "",
             "speech_notes_ru": "",
-            "derivation_rule": "Editorial C: register from typical_status_range, occupation_group and occupation_title/historical_term using the role register rule; occupation TSV has no individual literacy or speech field.",
+            "derivation_rule": ("Editorial C: occupation register takes precedence over role; named service/trade occupations and occupation_group=ремесло use everyday_oral."
+                                if o["occupation_id"] in OCCUPATION_EVERYDAY_IDS or o.get("occupation_group") == "ремесло" else
+                                "Editorial C: register from typical_status_range, occupation_group and occupation_title/historical_term using the role register rule; occupation TSV has no individual literacy or speech field."),
             "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']}",
             "confidence": "C",
         })
@@ -653,6 +665,9 @@ def build_speech_address(occs, roles):
         columns,
     )
     report["speech_address"] = {"speech_registers.csv": n_reg, "address_forms.csv": n_af,
+                                 "register_counts": {kind: {register: sum(row["subject_kind"] == kind and row["register"] == register for row in reg_rows)
+                                                            for register in ("formal_literate", "plain_oral", "everyday_oral")}
+                                                     for kind in ("role", "occupation")},
                                  "no_source_rows": sum(bool(row["no_source"]) for row in af_rows),
                                  "start_directed_pairs": 2 * len(pairs),
                                  "start_directed_node_season_contexts": 2 * len({(pair, node, season)

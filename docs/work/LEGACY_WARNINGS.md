@@ -35,7 +35,6 @@
 | 028 | `ordinary-materialization-presence.js`, `context-bound-ordinary-policy.js` | классовый блок оружия, денег и документов | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 029 | `target-runtime-profiles.js` | ordinary-профили v17 выключены | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 030 | `lower-dvina-trace-turn-step-current-scene.js` | typed gap показывается как «ничего не нашли» | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
-| 031 | `lower-dvina-trace-expansion-commands.js`, `spatial-v3-local-scene-movement.js` | непрозрачные ошибки расширения, тихие фильтры | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 032 | `apps/game-server/src`, `bootstrap-live-world-v17.mjs` | digest-пины в runtime | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 033 | `load-spatial-v3-bindings.js`, `production-spatial-v3.js` | два пути composition: v16 и v17 | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 034 | `lower-dvina-trace-visible-scene-items.js`, `lower-dvina-trace-conversation-llm.js` | код пишет прозу и реплики NPC | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
@@ -72,6 +71,7 @@
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
+| 075 | `spatial-v3-current-visibility-provider.js`, `spatial-v3-proposed-visible-sources.js` | runtime читает `m2c-local-edge-labels`/`m2c-exit-labels` файлами напрямую, мимо `world_base` | [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -177,11 +177,6 @@
 ### LW-030 — typed gap показывается как «ничего не нашли» (ветка PR #98)
 - **Что.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js` выводит `authority_required` и отсутствие профиля так же, как законный пустой поиск. AI §10.1 запрещает выдавать дефект реализации как отсутствие вещи в мире.
 - **Как жить.** Не писать тесты, закрепляющие такой вывод; по тексту плейтеста дефект не отличить от исхода мира, смотреть диагностику хода.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
-
-### LW-031 — непрозрачные ошибки расширения и тихие фильтры (ветка PR #98)
-- **Что.** `apps/game-server/src/runtime/lower-dvina-trace-expansion-commands.js` сводит около 20 причин к одному `LIVE_WORLD_EXPANSION_PREPARATION_FAILED`; `apps/game-server/src/infrastructure/postgres/spatial-v3-local-scene-movement.js` молча отбрасывает локальное ребро при заполненной вместимости, и UI показывает выход, который планировщик не может выбрать.
-- **Как жить.** При отладке смотреть `diagnostics` в `spatial-v3-generated-expansion-adapter.js`. Исправление — типизированная причина и ребро со статусом «занято», а не новый частный обход.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-032 — digest-пины в runtime (ветка PR #98)
@@ -382,3 +377,9 @@
 - **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
 - **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
 - **Issue.** —
+
+### LW-075 — runtime читает editorial-label файлы мимо `world_base` (CR #160)
+- **Где.** `apps/game-server/src/infrastructure/postgres/spatial-v3-current-visibility-provider.js:8-18` (`loadApprovedLocalEdgeLabels` из `m2c-local-edge-labels/approved-labels.mjs`, `readFileSync` + `JSON.parse` `m2c-exit-labels/candidate.json`+`approval-attestation.json`); `apps/game-server/src/infrastructure/postgres/spatial-v3-proposed-visible-sources.js:8-27` (тот же паттерн, `loadLabels('m2c-exit-labels')`).
+- **Что.** Оба уже утверждённых (WR §21.1, `APPROVE_DATA_ONLY`) каталога editorial-ярлыков прохода (`data/world-catalogs/novgorod/m2c-local-edge-labels/`, `m2c-exit-labels/`) читаются рантаймом напрямую с диска и проверяются по `candidate_sha256`/`candidate_ref` в момент импорта модуля, а не через `world_base` importer/readback, как остальные approved-данные этой линии (LW-038 — похожий, но другой путь: tool в runtime, не файловое чтение label-каталога).
+- **Как жить.** Не считать это временным решением, которое можно тихо расширить новыми label-каталогами тем же паттерном. Перенос в `world_base` — отдельная задача (в CR #160 сознательно не входит, см. issue #160 «Решения владельца»); до переноса — sha256-проверка при загрузке модуля остаётся единственной защитой от рассинхрона с утверждённым кандидатом.
+- **Issue.** [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160)

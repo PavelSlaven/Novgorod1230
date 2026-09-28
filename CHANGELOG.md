@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(spatial): CR #160 B1 part 2 — occupied local edge status comes from the movement admission owner and reaches both the planner's visible option text and the route panel (same suffix, one source); LW-031 closed, LW-075 added (#160)
 - docs(plan): находки восприятия 2026-09-28 — M2c: скрытое надетым (волосы под убором), частичная видимость; M4: подключение восприятия NPC; LW-074 added (#158)
 - fix(r1): REVIEW-070d2 — chain ledger через `runSpatialV3TargetMigrations` + composite `beforeCommit`; restart skip без дублирования цикла DDL; acceptance fresh pools per restart; encoder close on startup failure; phase-11 test1 limit 450s; PG chain-ledger tests; LW-070/073 (#158)
 - feat(r1): REVIEW-070 / PLAN-070b — variants objects in m2c generator @ `367a88c0`; D-3 npc/speech datasets; 27.sql UNIQUE+CHECK; corpus §3A.1/§3A.4/§8.1; fresh-schema request rebuild; generator fixture+tmpdir determinism; LW-073 (#158)

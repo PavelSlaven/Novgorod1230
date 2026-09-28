@@ -24,6 +24,11 @@ function ownerAlive(pid) {
   }
 }
 
+// Opt-in for hosts whose AppArmor docker-default profile blocks PostgreSQL unix sockets
+// (Debian 13, AppArmor 4.1 + Docker 26.1): only throwaway test containers, never set in CI.
+const apparmorUnconfined = () => (process.env.NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED === '1'
+  ? ['--security-opt', 'apparmor=unconfined'] : []);
+
 let reaped = false;
 
 // Spread into `docker run` args: `docker(['run', ...testContainerLabel(), '-d', ...])`.
@@ -32,5 +37,5 @@ export function testContainerLabel() {
     reaped = true;
     reapOrphanTestContainers();
   }
-  return ['--label', `${TEST_OWNER_LABEL}=${process.pid}`];
+  return ['--label', `${TEST_OWNER_LABEL}=${process.pid}`, ...apparmorUnconfined()];
 }

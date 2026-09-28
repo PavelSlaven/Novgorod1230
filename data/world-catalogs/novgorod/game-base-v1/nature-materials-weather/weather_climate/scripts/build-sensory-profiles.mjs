@@ -9,12 +9,27 @@ const waterTemplates = new Map(readCsv(path.join(GAME, 'fauna-fish-invertebrates
 const nodes = readCsv(path.join(GAME, 'places-binding/places/node_binding.csv')).filter((row) => row.node_level === 'G4' && row.water_body_template_id);
 const families = readCsv(path.join(GAME, 'places-binding/places/place_families.csv'));
 const presentations = readCsv(path.join(GAME, 'nature-materials-weather/natural_presentation_texts/presentation_texts.csv'));
+const waterRules = readCsv(path.join(DIR, 'ground_water_condition_rules.csv')).filter((row) => row.target === 'water_condition');
+const phenomena = new Map(readCsv(path.join(DIR, 'seasonal_phenomena.csv')).map((row) => [row.phenomenon_id, row]));
+const monthSeason = (date) => ({ 12: 'winter', 1: 'winter', 2: 'winter', 3: 'spring', 4: 'spring', 5: 'spring', 6: 'summer', 7: 'summer', 8: 'summer', 9: 'autumn', 10: 'autumn', 11: 'autumn' })[Number(date.slice(0, 2))];
+const flood = phenomena.get('wxp_spring_flood');
+const freeze = phenomena.get('wxp_volkhov_freeze_up');
+const breakup = phenomena.get('wxp_volkhov_break_up');
+const conditionSeasons = new Map(waterRules.map((rule) => [rule.value, new Set(
+  rule.value === 'open' ? SEASONS :
+  rule.value === 'high_water' ? [monthSeason(flood.julian_avg), monthSeason(flood.julian_late)] :
+  rule.value === 'ice_breaking' ? [monthSeason(breakup.julian_early), monthSeason(breakup.julian_late)] :
+  rule.value === 'ice_forming' ? [monthSeason(freeze.julian_avg)] :
+  [monthSeason(freeze.julian_avg), 'winter', monthSeason(breakup.julian_late)]
+)]));
 const scopes = new Map();
+const reachableScopes = new Set();
 for (const node of nodes) {
   for (const pf of [node.pf_id, ...node.pf_secondary.split(';').filter(Boolean)]) {
     const family = families.find((row) => row.pf_id === pf);
     if (pf === node.pf_id || family?.water_body_template_refs.split(';').includes(node.water_body_template_id)) {
       const key = `${node.water_body_template_id}|${pf}`;
+      reachableScopes.add(key);
       if (!scopes.has(key)) scopes.set(key, []);
       scopes.get(key).push(node.node_ref.replace(/@\d+$/, ''));
     }
@@ -50,6 +65,17 @@ for (const [key, g4s] of scopes) {
     condition: `water_body_template=${templateId}; water_condition=${waterCondition}`,
     source_refs: '', rule_ref: '', no_source: `течение при ${waterCondition} для конкретного водоёма не установлено`, confidence: 'C', status: 'candidate',
   });
+  if (reachableScopes.has(key)) for (const season of SEASONS) for (const [condition, facet] of [['high_water', 'ice'], ['ice', 'current'], ['ice_forming', 'current'], ['open', 'ice'], ['ice_breaking', 'ice']]) {
+    if (!conditionSeasons.get(condition)?.has(season)) continue;
+    if (facet === 'ice' && condition !== 'high_water' && season !== 'winter') continue;
+    waterRows.push({
+      water_profile_id: `wp_${templateId}_${pf}_${season}_${facet}_gap_${condition}`, scope_kind: 'water_body_template', scope_ref: templateId,
+      pf_id: pf, season, facet, variant_id: `gap_${condition}`, weight: 1,
+      value_ru: '', value_num: '', unit: '', value_ref: '',
+      condition: `water_body_template=${templateId}; water_condition=${condition}`,
+      source_refs: '', rule_ref: '', no_source: `${facet === 'current' ? 'течение' : 'состояние льда'} при ${condition} для конкретного водоёма не установлено`, confidence: 'C', status: 'candidate',
+    });
+  }
   if (templateId === 'wb_river_channel') for (const claim of [
     ['winter', 'ice', 'ice', 'над течением лёд может быть тоньше', 'residual-nature-ice-current-thin-areas'],
     ['spring', 'ice_breaking', 'current', 'ледяной затор может препятствовать течению', 'foundations-earth2-11-river-ice-jam-flow-obstruction'],

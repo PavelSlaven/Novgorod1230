@@ -447,3 +447,18 @@
   - `riverbank`: `channel_split_islet` — подходит.
   - `forest_track` помечен `partial` честно. Однако основание — пойма острова, «ровная, без троп», то есть тот же дефект, что был у `village_lane`, хотя среди вторичных есть лесные `dry_pine_ridge` и `wet_conifer_tract`.
 - Рекомендация: среди кандидатов предпочитать G4, чей `landscape_template_id` входит в `landscape_template_refs` PF. Для запаха такой отбор уже работает через `scentGround`. После rework `node_binding` у `forest_stream_route` вернётся `forest_track`, и основания надо пересобрать.
+
+### natural_presentation_texts/sensory_coverage.csv + weather_climate/water_profiles.csv — approve_with_limits
+
+Проверено: Claude Opus 5.5, скриптом и повторной сборкой `run-all.mjs` (C006e4, коммит 63d0ef94 против 2e16b7b6).
+
+- **Повторная сборка.** Полная сборка группы побайтная, `checks_passed=true`.
+- **`sensory_coverage.csv`.** Изменены ровно 40 ячеек `basis_ref`. Основания теперь ландшафтно совместимы:
+  - пойма — `flooded_interior_basin`, весной «пойма залита водой»;
+  - тропа и охотничьи угодья — `dry_pine_ridge`;
+  - берег — `driftwood_bar`;
+  - перевоз — `vikhtuy_river_approach`.
+- **`water_profiles.csv`.** 1621 строка, совпадает с прежним содержанием. На `2e16b7b6` файл был устаревшим (+104 пристань, −76 лес ручья), C006e4 возвращает оба изменения.
+- **Ограничения.**
+  - `partial`-покрытие семи PF остаётся: у них нет G4, где они основные.
+  - Сборка группы читает живые соседние worktree (`PR98_ROOT`, `MAIN_ROOT`) и не падает при ошибке шага — это задача C006f.

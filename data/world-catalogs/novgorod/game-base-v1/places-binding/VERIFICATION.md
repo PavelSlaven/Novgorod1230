@@ -1001,3 +1001,21 @@
 - `tributary_mouth_crossing` и `dry_island_ridge_downstream_exit` по-прежнему не имеют пути.
 - `west_hidden_backwater_dry_patch` имеет ошибочный основной `pf_river_channel`.
 - Оба пункта отложены по REVIEW-C006e3.
+
+### places/node_binding.csv — approve_with_limits (C006e4, закрывает rework C006e2–C006e3)
+
+Проверено: Claude Opus 5.5, скриптом `check-c006e3.mjs` и повторной сборкой (C006e4, коммит 63d0ef94 против 2e16b7b6).
+
+- **Повторная сборка.** `build-all.mjs` в отдельном worktree даёт те же байты. Validator с реальным bridge — 0 FAIL. D-3 `check.py --probe` — OK. Presence — 5719 строк, изменений нет.
+- **Что изменилось.** Ровно 33 изменения secondary, как в DONE:
+  - `pf_forest_edge` снята с 24 узлов с основным `water`;
+  - `pf_river_wharf` снята с 5 узлов Вихтуя и Заостровья, городских пристаней теперь 0;
+  - лесному ручью возвращены `pf_forest_track` и `pf_mixed_woodland`, по 2 узла.
+- **Инварианты.** G4 ⊇ основные PF детей — без нарушений. Лес, путь и поселение на узлах с водным или болотным основным PF остались только по явным правилам:
+  - исключение `forest_resource_use` — 4 узла лесного ручья;
+  - замыкание — дорога `tributary_mouth`.
+- **Белые списки.** Городской признак — через place templates. Несуществующие значения осей удалены. `rule_refs` — только сработавшие.
+- **Ограничения** (записаны в VERIFICATION группы):
+  - `tributary_mouth_crossing` и `dry_island_ridge_downstream_exit` без пути;
+  - основной PF `west_hidden_backwater_dry_patch` = `pf_river_channel` — ошибка сопоставления, из-за неё узел потерял и опушку.
+- **Слот слуги.** Причина пола переписана по строке занятия: дрова, конюшня — approve.

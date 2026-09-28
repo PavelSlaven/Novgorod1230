@@ -660,6 +660,42 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   const variantIds = new Set();
   const variantKeys = new Set();
   const exact = (object, keys) => Object.keys(object).sort().join('|') === [...keys].sort().join('|');
+  const targetFacets = {
+    'transport:trv_011': ['material', 'size', 'condition'],
+    'building:bt_izba_heated_single': ['condition', 'age'],
+    'building:bt_wattle_fence': ['condition', 'age'],
+  };
+  const targetFailures = (v, building) => (targetFacets[v.candidate_record_ref] || []).flatMap((name) => {
+    const facet = v.facets?.[name];
+    if (!facet) return [`${v.variant_id}/${name}: missing facet`];
+    const evidence = ['source_refs', 'rule_ref'].filter((route) => Boolean(facet[route]));
+    const value = Boolean(facet.value || facet.value_ref);
+    const gap = Boolean(facet.no_source);
+    const failures = [];
+    if (value === gap || (value && evidence.length !== 1) || (gap && evidence.length)) failures.push(`${v.variant_id}/${name}: concrete value needs one evidence route, otherwise explicit no_source`);
+    if (gap && v.candidate_record_ref === 'transport:trv_011' &&
+        !(name === 'material' ? /материал.*источник|источник.*материал/.test(facet.no_source) : /конкретн/.test(facet.no_source)))
+      failures.push(`${v.variant_id}/${name}: gap reason`);
+    if (building && ['condition', 'age'].includes(name)) {
+      const states = name === 'condition' ? 'condition_states' : 'age_states';
+      if (!building[states] || (gap && (!facet.no_source.includes('этого конкретного экземпляра') || !facet.no_source.includes('runtime выбирает') || !facet.no_source.includes(`building_types.${states}`))) ||
+          (value && (!facet.value || !building[states].split('|').includes(facet.value))))
+        failures.push(`${v.variant_id}/${name}: instance state or gap semantics`);
+    }
+    return failures;
+  });
+  if (process.argv.includes('--self-test')) {
+    for (const ref of Object.keys(targetFacets)) {
+      const original = variants.find((v) => v.candidate_record_ref === ref);
+      if (!original) throw new Error(`missing target variant ${ref}`);
+      const [kind, id] = ref.split(':');
+      for (const name of targetFacets[ref]) {
+        const probe = { ...original, facets: { ...original.facets, [name]: { ...original.facets[name], value: '', value_ref: '', source_refs: '', rule_ref: '', no_source: '' } } };
+        if (!targetFailures(probe, kind === 'building' ? buildings.get(id) : undefined).length) throw new Error(`slot variant missing value/gap probe failed: ${ref}/${name}`);
+      }
+    }
+    console.log('PASS slot_instance_variants / missing_value_gap_negative_probes');
+  }
   for (const v of variants) {
     const key = `${v.slot_id}|${v.candidate_record_ref}`;
     if (!exact(v, ['variant_id', 'slot_id', 'candidate_record_ref', 'weight', 'applicability', 'facets', 'status']) || variantIds.has(v.variant_id) || !/^siv_\d{3}$/.test(v.variant_id)) variantFailures.push(`${key}: keys/id`);
@@ -671,6 +707,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (!v.facets || !exact(v.facets, ['material', 'size', 'condition', 'age'])) { variantFailures.push(`${key}: facets`); continue; }
     const [kind, id] = v.candidate_record_ref.split(':');
     const building = kind === 'building' ? buildings.get(id) : undefined;
+    variantFailures.push(...targetFailures(v, building));
     for (const [name, facet] of Object.entries(v.facets)) {
       if (!facet || !exact(facet, ['value', 'value_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence'])) { variantFailures.push(`${key}/${name}: keys`); continue; }
       const routes = ['source_refs', 'rule_ref', 'no_source'].filter((route) => Boolean(facet[route]));

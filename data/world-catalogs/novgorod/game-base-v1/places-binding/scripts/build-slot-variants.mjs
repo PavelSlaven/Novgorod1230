@@ -12,6 +12,7 @@ const facet = (value = '', value_ref = '', route = 'no_source', evidence = '', g
   rule_ref: route === 'rule_ref' ? evidence : '', no_source: route === 'no_source' ? gap : '',
   confidence: route === 'no_source' || route === 'rule_ref' || evidence.startsWith('book:') ? 'C' : 'B',
 });
+const instanceStateGaps = new Set(['bt_izba_heated_single', 'bt_wattle_fence']);
 
 const variants = candidates.map((candidate, index) => {
   const [kind, id] = candidate.candidate_record_ref.split(':');
@@ -34,10 +35,10 @@ const variants = candidates.map((candidate, index) => {
     weight: Number(candidate.weight),
     applicability: slots.get(candidate.slot_id)?.applicability || '',
     facets: {
-      material: material ? facet('', material, 'rule_ref', `building:${id}.materials`) : routeMaterial ? facet(routeMaterial, '', 'rule_ref', `route_modes.csv#${route.rm_id}.game_use_ru`) : facet('', '', 'no_source', '', crossing ? `${crossing.tr_id}: тип перевозного судна не указан` : 'тип перевозного судна не указан'),
+      material: material ? facet('', material, 'rule_ref', `building:${id}.materials`) : routeMaterial ? facet(routeMaterial, '', 'rule_ref', `route_modes.csv#${route.rm_id}.game_use_ru`) : facet('', '', 'no_source', '', crossing ? `${crossing.tr_id}: источник материала перевозного судна отсутствует` : 'источник материала не найден'),
       size: dimensions ? facet(dimensions[0], '', 'source_refs', dimensions[1]) : size && !size.startsWith('небольшой') ? facet(size, '', 'source_refs', building.source_refs.split('|').filter((ref) => /ARC0020|B028|S26|arhitekto/.test(ref)).join('|') || arc || '') : facet('', '', 'no_source', '', kind === 'building' ? 'размер для сельского экземпляра не установлен' : 'размер конкретного пути или судна не установлен'),
-      condition: building && arc ? facet('возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано', '', 'source_refs', arc) : route ? facet('на зимнике возможны снежные заносы и полыньи (пример пути по Ильменю)', '', 'source_refs', 'book:694952 ¶140') : facet('', '', 'no_source', '', 'состояние конкретного экземпляра не установлено'),
-      age: facet('', '', 'no_source', '', 'возраст конкретного экземпляра не установлен'),
+      condition: instanceStateGaps.has(id) ? facet('', '', 'no_source', '', 'данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states') : building && arc ? facet('возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано', '', 'source_refs', arc) : route ? facet('на зимнике возможны снежные заносы и полыньи (пример пути по Ильменю)', '', 'source_refs', 'book:694952 ¶140') : facet('', '', 'no_source', '', 'состояние конкретного экземпляра не установлено'),
+      age: facet('', '', 'no_source', '', instanceStateGaps.has(id) ? 'данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states' : 'возраст конкретного экземпляра не установлен'),
     },
     status: 'candidate',
   };

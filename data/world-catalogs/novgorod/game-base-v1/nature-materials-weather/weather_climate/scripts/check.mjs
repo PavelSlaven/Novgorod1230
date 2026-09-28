@@ -35,14 +35,32 @@ for (const f of fs.readdirSync(DIR).filter((f) => f.endsWith('.csv'))) {
 const waterProfiles = T('water_profiles.csv');
 const airProfiles = T('wind_air_profiles.csv');
 const waterFacets = ['current', 'color', 'sound', 'width', 'opposite_bank_visible', 'ice'];
+const waterRules = T('ground_water_condition_rules.csv').filter((row) => row.target === 'water_condition');
+const phenomena = new Map(T('seasonal_phenomena.csv').map((row) => [row.phenomenon_id, row]));
+const monthSeason = (date) => ({ 12: 'winter', 1: 'winter', 2: 'winter', 3: 'spring', 4: 'spring', 5: 'spring', 6: 'summer', 7: 'summer', 8: 'summer', 9: 'autumn', 10: 'autumn', 11: 'autumn' })[Number(date.slice(0, 2))];
+const flood = phenomena.get('wxp_spring_flood');
+const freeze = phenomena.get('wxp_volkhov_freeze_up');
+const breakup = phenomena.get('wxp_volkhov_break_up');
+const conditionSeasons = new Map(waterRules.map((rule) => [rule.value, new Set(
+  rule.value === 'open' ? SEASONS :
+  rule.value === 'high_water' ? [monthSeason(flood.julian_avg), monthSeason(flood.julian_late)] :
+  rule.value === 'ice_breaking' ? [monthSeason(breakup.julian_early), monthSeason(breakup.julian_late)] :
+  rule.value === 'ice_forming' ? [monthSeason(freeze.julian_avg)] :
+  [monthSeason(freeze.julian_avg), 'winter', monthSeason(breakup.julian_late)]
+)]));
 const states = T('weather_states.csv');
 const waterTemplates = readCsv(path.join(DIR, '../../fauna-fish-invertebrates-livestock/scripts/input_snapshots/world_db_water_body_templates.csv'));
 const families = readCsv(path.join(DIR, '../../places-binding/places/place_families.csv'));
 const nodes = readCsv(path.join(DIR, '../../places-binding/places/node_binding.csv')).filter((row) => row.node_level === 'G4' && row.water_body_template_id);
 const presentation = new Map(readCsv(path.join(DIR, '../natural_presentation_texts/presentation_texts.csv')).map((row) => [row.npt_id, row]));
 const waterScopes = new Set();
+const reachableScopes = new Set();
 for (const node of nodes) for (const pf of [node.pf_id, ...node.pf_secondary.split(';').filter(Boolean)]) {
-  if (pf === node.pf_id || families.find((row) => row.pf_id === pf)?.water_body_template_refs.split(';').includes(node.water_body_template_id)) waterScopes.add(`${node.water_body_template_id}|${pf}`);
+  if (pf === node.pf_id || families.find((row) => row.pf_id === pf)?.water_body_template_refs.split(';').includes(node.water_body_template_id)) {
+    const scope = `${node.water_body_template_id}|${pf}`;
+    waterScopes.add(scope);
+    reachableScopes.add(scope);
+  }
 }
 for (const family of families) for (const template of family.water_body_template_refs.split(';').filter((id) => nodes.some((node) => node.water_body_template_id === id))) waterScopes.add(`${template}|${family.pf_id}`);
 const keys = (row, expected) => Object.keys(row).sort().join('|') === [...expected].sort().join('|');
@@ -64,7 +82,9 @@ for (const row of waterProfiles) {
     if (row.facet === 'current' && !row.condition.includes('water_condition=open')) E.push(`${row.water_profile_id}: current requires open water`);
     if (row.facet === 'ice' && field && !row.condition.includes('water_condition=ice')) E.push(`${row.water_profile_id}: ice condition`);
   } else if (row.variant_id.startsWith('gap_')) {
-    if (row.facet !== 'current' || !['gap_high_water', 'gap_ice_breaking'].includes(row.variant_id) || !row.no_source || !row.condition.includes(`water_condition=${row.variant_id.slice(4)}`)) E.push(`${row.water_profile_id}: water regime gap`);
+    const condition = row.variant_id.slice(4);
+    const legacyGap = row.facet === 'current' && ['high_water', 'ice_breaking'].includes(condition);
+    if (!((row.facet === 'current' && ['high_water', 'ice_breaking', 'ice', 'ice_forming'].includes(condition)) || (row.facet === 'ice' && ['high_water', 'open', 'ice_breaking'].includes(condition))) || (!legacyGap && !reachableScopes.has(`${row.scope_ref}|${row.pf_id}`)) || !row.no_source || !row.condition.includes(`water_condition=${condition}`) || ((['ice', 'ice_forming'].includes(condition) || row.facet === 'ice') && !conditionSeasons.get(condition)?.has(row.season)) || (row.facet === 'ice' && condition !== 'high_water' && row.season !== 'winter')) E.push(`${row.water_profile_id}: water regime gap`);
   } else if (row.variant_id.startsWith('wk_')) {
     if (row.scope_ref !== 'wb_river_channel' || row.source_refs !== `wk:claim:${row.variant_id.slice(3)}` || !wk.has(`claim:${row.variant_id.slice(3)}`) || !row.condition.includes('water_condition=') || row.rule_ref) E.push(`${row.water_profile_id}: WK ice scope/evidence`);
   } else {
@@ -75,6 +95,16 @@ for (const row of waterProfiles) {
 }
 for (const scope of waterScopes) for (const season of SEASONS) for (const facet of waterFacets) if (waterProfiles.filter((r) => `${r.scope_ref}|${r.pf_id}` === scope && r.season === season && r.facet === facet && r.variant_id === 'base').length !== 1) E.push(`water coverage ${scope}/${season}/${facet}`);
 for (const scope of waterScopes) for (const season of SEASONS) for (const regime of ['high_water', 'ice_breaking']) if (waterProfiles.filter((r) => `${r.scope_ref}|${r.pf_id}` === scope && r.season === season && r.facet === 'current' && r.variant_id === `gap_${regime}`).length !== 1) E.push(`water regime coverage ${scope}/${season}/${regime}`);
+for (const scope of reachableScopes) for (const season of SEASONS) for (const [condition, seasons] of conditionSeasons) {
+  if (!seasons.has(season)) continue;
+  for (const facet of waterFacets) {
+    const rows = waterProfiles.filter((row) => `${row.scope_ref}|${row.pf_id}` === scope && row.season === season && row.facet === facet && !row.condition.includes('g4_ref=') && (!row.condition.includes('water_condition=') || row.condition.split(';').some((term) => term.trim() === `water_condition=${condition}`)));
+    if (!rows.some((row) => evidence(row) && (row.no_source || row.value_ru || row.value_num || row.value_ref))) E.push(`water condition coverage ${scope}/${season}/${condition}/${facet}`);
+    if ((condition === 'high_water' && facet === 'ice') || (condition === 'ice' && facet === 'current')) {
+      if (rows.filter((row) => row.variant_id === `gap_${condition}`).length !== 1) E.push(`water regime coverage ${scope}/${season}/${condition}/${facet}`);
+    }
+  }
+}
 const airIds = new Set();
 for (const row of airProfiles) {
   if (!keys(row, airColumns) || airIds.has(row.air_profile_id)) E.push(`${row.air_profile_id}: keys/id`);

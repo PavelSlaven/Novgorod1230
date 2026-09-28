@@ -11,7 +11,7 @@
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "trv_011: тип перевозного судна не указан",
+        "no_source": "trv_011: источник материала перевозного судна отсутствует",
         "confidence": "C"
       },
       "size": {
@@ -65,19 +65,19 @@
         "confidence": "B"
       },
       "condition": {
-        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value": "",
         "value_ref": "",
-        "source_refs": "matcult:ARC0020",
+        "source_refs": "",
         "rule_ref": "",
-        "no_source": "",
-        "confidence": "B"
+        "no_source": "данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states",
+        "confidence": "C"
       },
       "age": {
         "value": "",
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },
@@ -149,19 +149,19 @@
         "confidence": "C"
       },
       "condition": {
-        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value": "",
         "value_ref": "",
-        "source_refs": "matcult:ARC0002",
+        "source_refs": "",
         "rule_ref": "",
-        "no_source": "",
-        "confidence": "B"
+        "no_source": "данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states",
+        "confidence": "C"
       },
       "age": {
         "value": "",
         "value_ref": "",
         "source_refs": "",
         "rule_ref": "",
-        "no_source": "возраст конкретного экземпляра не установлен",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
         "confidence": "C"
       }
     },

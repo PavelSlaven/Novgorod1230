@@ -83,6 +83,19 @@ test('the approach wording is the approved phrase the disclosure owner supplied,
     assert.ok(!(await labelWith('подход по суше', 'в лес')).includes('переправ'));
   });
 
+test('the approach refuses before executing when the movement owner finds its first step full (F6)',
+  async () => {
+    const statusOf = (verdict) => createTraceExpansionCommands({ state, requestId: 'r', inputDigest: 'd',
+      spatialExpansionRuntime: { listExpansionOptions: async () => [],
+        listApproachOptions: async () => [{ directional_exit_id: 'exit:channel', edge_id: 'edge:1',
+          display_label: 'к руслу' }] },
+      spatialLocalSceneRuntime: { listLocalOptions: async () => [localOption('edge:1')],
+        localEdgeAttemptStatus: async () => verdict, prepareLocalMovement: async () => null } })
+      .then(([command]) => command.attemptRefusal({ committed_state: state }));
+    assert.equal(await statusOf('occupied'), 'destination_occupied');
+    assert.equal(await statusOf('open'), null);
+  });
+
 test('an approach whose first step the local-scene owner does not list is a typed gap, not a command (F3)',
   async () => {
     await assert.rejects(createTraceExpansionCommands({ state, requestId: 'r', inputDigest: 'd',

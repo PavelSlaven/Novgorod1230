@@ -732,6 +732,28 @@ remembered routes use existing route knowledge/history after traversal. It is a
 read projection, not a second route store. Inspection and reload retain the
 visible path; movement recomposes routes for the actual destination.
 
+Local passage occupancy. The status shown before an attempt (the ` (проход занят)`
+label, the edge's `visible_status` in the visible context, the Route panel) counts
+only occupants the actor perceives: `spatial-v3-current-visibility-provider.js`
+`localDisclosure` admits the destination's occupants through the same visibility
+owner as any other entity. The movement owner's full occupancy
+(`spatial-v3-local-scene-movement.js`) alone decides the attempt: `turnStepBlockPlan`
+asks the chosen command's server-only `attemptRefusal` (never projected to the
+planner) and, when the owner finds the destination full, refuses the step as a
+zero-duration narrated refusal; the typed `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` stays the
+last safety net. The model's `reason_code` never decides the outcome.
+
+Approach to an exit. When the actor is not yet at a departure position, the exit is
+offered as a plain local `request_movement` to the first step of a path to it. The
+first step is only an edge that `listLocalOptions` lists now (visible, eligible,
+admitted) and carries that edge's own status; the local-scene owner applies the hop.
+`route_ref` (the exit id) on this local operation is not read by the movement owner:
+it only keeps the approach structurally distinct from the plain local operation for
+the same edge, because binding `matches()` compares structure and ignores
+`description` (without it two commands claim one operation,
+`TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
+(`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
+
 Initial current-scene projection also exposes only persisted procedural NPC
 appearance, worn/held item refs, observable activity and the structured
 approved Temporal environment state. Private knowledge, goals and fears remain

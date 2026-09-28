@@ -74,6 +74,13 @@ export async function createTraceExpansionCommands({ state, requestId,
           matches: ({ operation: selected }) => selected != null
             && isDeepStrictEqual({ ...selected, description: label }, operation)
         },
+        // Structural refusal, checked by turnStepBlockPlan before the attempt runs: the movement
+        // owner's full-occupancy verdict, which may cover occupants the actor cannot perceive.
+        async attemptRefusal({ committed_state: current }) {
+          if (typeof spatialLocalSceneRuntime.localEdgeAttemptStatus !== 'function') return null;
+          return await spatialLocalSceneRuntime.localEdgeAttemptStatus({ ...identity,
+            state: current, edgeId }) === 'occupied' ? 'destination_occupied' : null;
+        },
         availability({ committed_state: current, retrievedState }) {
           const state = current ?? retrievedState;
           const sourceReady = currentSource(state);

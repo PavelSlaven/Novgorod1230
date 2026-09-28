@@ -7,6 +7,8 @@ import pg from 'pg';
 import { testContainerLabel } from '../../../test/helpers/test-containers.js';
 import { createSpatialV3LocalSceneRuntime } from
   '../src/runtime/spatial-v3-local-scene-runtime.js';
+import { createSpatialV3LocalSceneMovementReader } from
+  '../src/infrastructure/postgres/spatial-v3-local-scene-movement.js';
 import { recheckS1LocalMovement } from
   '../src/infrastructure/postgres/first-playable/recheck-s1-local-movement.js';
 
@@ -99,6 +101,14 @@ test('committed canonical scene edges move arrival→focus→departure with stal
     await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
       state: source, edgeId: 'departure:focus', playerInput: {}, inputDigest: 'blocked-attempt' }),
     { code: 'SPATIAL_V3_LOCAL_EDGE_OCCUPIED' }, 'occupied destination is denied with a typed reason');
+    // Server-side occupant list for the disclosure owner (F6): who fills the destination.
+    const [row] = await createSpatialV3LocalSceneMovementReader({ pool: db })
+      .list({ partyId: 'party', actorId: 'actor', positionId: 'departure' });
+    assert.deepEqual(row.destination_placements, [
+      { entity_kind: 'npc', entity_id: 'blocker', units: 1 },
+      { entity_kind: 'npc', entity_id: 'resident', units: 1 }]);
+    assert.equal(await runtime.localEdgeAttemptStatus({ partyId: 'party', actorId: 'actor',
+      state: source, edgeId: 'departure:focus' }), 'occupied');
   });
 
 function state(position, journeyVersion) {

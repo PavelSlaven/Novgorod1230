@@ -90,14 +90,35 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       const admitted = await admit(current, edges.map((row) => ({
         target_id: row.id, position_id: row.to_position_id, entity_kind: 'local_edge' })));
       const visible = new Set(admitted.map((row) => row.target_id));
-      // Occupancy status comes from the movement admission owner (spatial-v3-local-scene-movement.js);
-      // it is never recomputed here.
+      // The movement admission owner (spatial-v3-local-scene-movement.js) says who fills each
+      // destination and how many places it has. Before an attempt the actor may only learn of
+      // occupants they perceive (apps/game-server/MODULE.md: a visible path does not disclose
+      // unseen occupants), so the disclosed status counts just the occupants admitted here;
+      // the owner's own full-occupancy check still decides the attempt itself.
       const admission = typeof readLocalMovementAdmission === 'function'
         ? await readLocalMovementAdmission({ transaction: current.transaction, partyId, actorId,
             positionId: current.scene.location.scene_position_id })
         : null;
-      const statusByEdge = admission == null ? null
-        : new Map(admission.map((row) => [row.edge_id, row.destination_status]));
+      const occupants = new Map();
+      for (const row of admission ?? []) {
+        if (!Number.isSafeInteger(row?.destination_capacity) || row.destination_capacity < 1
+          || !Array.isArray(row.destination_placements)) gap('current_local_edge_admission_required');
+        for (const placement of row.destination_placements) {
+          if (['npc', 'item'].includes(placement.entity_kind)) {
+            occupants.set(`${placement.entity_kind}:${placement.entity_id}`, {
+              target_id: `${placement.entity_kind}:${placement.entity_id}`,
+              position_id: edges.find((edge) => edge.id === row.edge_id)?.to_position_id,
+              entity_kind: placement.entity_kind, entity_id: placement.entity_id });
+          }
+        }
+      }
+      const perceived = new Set((await admit(current, [...occupants.values()]))
+        .map((row) => row.target_id));
+      const statusByEdge = admission == null ? null : new Map(admission.map((row) => [row.edge_id,
+        row.destination_placements.filter((placement) => perceived.has(
+          `${placement.entity_kind}:${placement.entity_id}`))
+          .reduce((units, placement) => units + placement.units, 0) + 1 <= row.destination_capacity
+          ? 'open' : 'occupied']));
       return edges.flatMap((edge) => {
         if (!visible.has(edge.id)) return [];
         const labels = localLabels.filter((row) =>

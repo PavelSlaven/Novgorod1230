@@ -5,6 +5,8 @@ import { createSpatialV3LocalSceneRuntime } from
   '../src/runtime/spatial-v3-local-scene-runtime.js';
 import { loadApprovedLocalMovementEligibilityPins } from
   '../src/infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
+import { createLocalMovementDisclosureReader } from
+  '../src/infrastructure/postgres/spatial-v3-local-scene-movement.js';
 import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { projectLowerDvinaTraceTurnStepPlannerState } from
@@ -242,10 +244,11 @@ test('occupied local edge stays a selectable plan operation; attempt fails typed
     const pool = { async query() { return { rows: [{ ...edges.find((edge) =>
       edge.edge_id === 'arrival:focus'), destination_occupancy: 2 }] }; } };
     const runtime = createSpatialV3LocalSceneRuntime({ pool,
-      readLocalEdgeDisclosure: async () => [{ edge_id: 'arrival:focus', display_label: 'Проход 1' }] });
+      readLocalEdgeDisclosure: async () => [{ edge_id: 'arrival:focus', display_label: 'Проход 1',
+        destination_status: 'occupied' }] });
     const [command] = await createTraceLocalSceneCommands({ state: committed,
       inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
-    // The status comes from the movement admission owner, not a second guess:
+    // The status the actor may see comes from the disclosure owner (perceived occupants only):
     // the label the actor and planner see says the passage is occupied.
     assert.equal(command.label, 'Проход 1 (проход занят)');
     assert.equal(command.reason_visible_to_actor, 'Проход 1 (проход занят)');
@@ -264,6 +267,25 @@ test('occupied local edge stays a selectable plan operation; attempt fails typed
     const operation = command.semantic_binding.operation_dto;
     assert.equal(preflight.resolve({ operation, plan: { operations: [operation] },
       request: { available_domain_operations: [operation] } }).kind, 'binding');
+    await assert.rejects(command.consequence({ retrievedState: committed, playerInput: {} }),
+      { code: 'SPATIAL_V3_LOCAL_EDGE_OCCUPIED' });
+  });
+
+test('a full destination the actor cannot perceive is listed open, yet the attempt is refused (F6)',
+  async () => {
+    const committed = state('arrival');
+    const pool = { async query() { return { rows: [{ ...edges.find((edge) =>
+      edge.edge_id === 'arrival:focus'), destination_occupancy: 2 }] }; } };
+    const runtime = createSpatialV3LocalSceneRuntime({ pool,
+      readLocalEdgeDisclosure: async () => [{ edge_id: 'arrival:focus', display_label: 'Проход 1',
+        destination_status: 'open' }] });
+    const [command] = await createTraceLocalSceneCommands({ state: committed,
+      inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
+    assert.equal(command.label, 'Проход 1', 'nothing about the unseen occupants is shown');
+    assert.deepEqual(command.semantic_grounding, { destination_status: 'open' });
+    const ids = { partyId: 'party', actorId: 'actor', state: committed, edgeId: 'arrival:focus' };
+    assert.equal(await runtime.localEdgeAttemptStatus(ids), 'occupied');
+    assert.equal(await runtime.localEdgeAttemptStatus({ ...ids, edgeId: 'unknown' }), null);
     await assert.rejects(command.consequence({ retrievedState: committed, playerInput: {} }),
       { code: 'SPATIAL_V3_LOCAL_EDGE_OCCUPIED' });
   });
@@ -327,4 +349,26 @@ test('topology alone grants no player-facing local movement', async () => {
   await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
     state: state('arrival'), edgeId: 'arrival:focus', playerInput: {},
     inputDigest: 'digest' }), { code: 'SPATIAL_V3_LOCAL_VISIBILITY_DATA_GAP' });
+});
+
+test('the disclosure owner and the local-scene runtime read admission through the same eligibility reader (F7)', async () => {
+  const seenFlags = [];
+  const pool = { async query(_sql, params) {
+    seenFlags.push(params[3]);
+    return { rows: edges.filter(({ from_position_ref: from }) => from === 'arrival')
+      .map((row) => ({ ...row, destination_placements: [{ entity_kind: 'npc', entity_id: 'n', units: '1' }] })) };
+  } };
+  const readLocalMovementEligibility = async () => null;
+  const disclosed = await createLocalMovementDisclosureReader({ readLocalMovementEligibility })({
+    transaction: pool, partyId: 'party', actorId: 'actor', positionId: 'arrival' });
+  const runtime = createSpatialV3LocalSceneRuntime({ pool, readLocalMovementEligibility,
+    readLocalEdgeDisclosure: async () => [{ edge_id: 'arrival:focus', display_label: 'Проход' }] });
+  await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor', state: state('arrival') });
+  assert.deepEqual(seenFlags, [true, true], 'both admission reads pass the eligibility reader');
+  assert.deepEqual(disclosed, [{ edge_id: 'arrival:focus', destination_capacity: 2,
+    destination_placements: [{ entity_kind: 'npc', entity_id: 'n', units: 1 }] }]);
+  const without = [];
+  await createLocalMovementDisclosureReader()({ transaction: { async query(_sql, params) {
+    without.push(params[3]); return { rows: [] }; } }, partyId: 'party', actorId: 'actor', positionId: 'arrival' });
+  assert.deepEqual(without, [false]);
 });

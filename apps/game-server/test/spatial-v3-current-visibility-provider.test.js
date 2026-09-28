@@ -36,7 +36,7 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
   assert.match(calls[0].sql, /e\.status='approved'/);
 });
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
-  readLocalMovementAdmission } = {}) {
+  readLocalMovementAdmission, readTargetConditions = readCurrentTargetConditions } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
@@ -58,7 +58,7 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
     worldBaseReader,
     readScene: async () => scene, readNatural: async () => natural,
-    readTargetConditions: readCurrentTargetConditions,
+    readTargetConditions,
     readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
       ? { display_name: 'Known person' } : null,
@@ -284,30 +284,48 @@ test('a visible edge the admission owner has no row for is disclosed without a s
   assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: localLabel.display_label }]);
 });
 
-test('occupied status comes from the movement admission owner, not a second guess', async () => {
-  let occupied = true;
+const localState = { party_id: 'party', actor_id: 'actor',
+  journey_location: { scene_position_id: 'a' } };
+const occupant = (entity_id, units = 1) => ({ entity_kind: 'npc', entity_id, units });
+const concealedNpcs = async (args) => args.target.entity_kind === 'npc'
+  ? { stable_cover: 'clear', dynamic_occlusion: 'clear', concealment: 'none' }
+  : readCurrentTargetConditions(args);
+const statusOf = async (provider) => (await provider.readLocalEdgeDisclosure({
+  partyId: 'party', actorId: 'actor', state: localState }))[0].destination_status;
+
+test('before an attempt, occupied comes only from occupants the actor perceives (F6)', async () => {
   const admissionCalls = [];
-  const { provider } = fixture({ readLocalMovementAdmission: async (args) => {
-    admissionCalls.push(args);
-    return [{ edge_id: 'edge', destination_status: occupied ? 'occupied' : 'open' }];
-  } });
-  const state = { party_id: 'party', actor_id: 'actor',
-    journey_location: { scene_position_id: 'a' }, current_visible_context: {
-      version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
-      visible_changes: [], sensory_details: [], visible_npc: [],
-      visible_objects: [], known_context: [], uncertainties: [],
-      allowed_tensions: [], do_not_imply: [] } };
+  const admission = (rows) => async (args) => { admissionCalls.push(args); return rows; };
+  const perceived = fixture({ readLocalMovementAdmission: admission([{ edge_id: 'edge',
+    destination_capacity: 1, destination_placements: [occupant('one')] }]) });
+  assert.equal(await statusOf(perceived.provider), 'occupied');
+  assert.equal(admissionCalls[0].partyId, 'party');
+  assert.equal(admissionCalls[0].positionId, 'a');
+  // Same full destination, but its occupant is hidden from the actor: nothing is disclosed.
+  const hidden = fixture({ readTargetConditions: concealedNpcs, readLocalMovementAdmission: admission([{
+    edge_id: 'edge', destination_capacity: 1, destination_placements: [occupant('one')] }]) });
+  assert.equal(await statusOf(hidden.provider), 'open');
+  // Only the perceived units are counted: one seen + one unseen of two places is not occupied.
+  const twoPlaces = fixture({ readLocalMovementAdmission: admission([{ edge_id: 'edge',
+    destination_capacity: 2, destination_placements: [occupant('one')] }]) });
+  assert.equal(await statusOf(twoPlaces.provider), 'open');
+  const seenFills = fixture({ readLocalMovementAdmission: admission([{ edge_id: 'edge',
+    destination_capacity: 2, destination_placements: [occupant('one'), occupant('two')] }]) });
+  assert.equal(await statusOf(seenFills.provider), 'occupied');
+});
+
+test('the perceived occupied status reaches the visible context as visible_status (F1/F6)', async () => {
+  const { provider } = fixture({ readLocalMovementAdmission: async () => [{ edge_id: 'edge',
+    destination_capacity: 1, destination_placements: [occupant('one')] }] });
+  const state = { ...localState, current_visible_context: {
+    version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
+    visible_changes: [], sensory_details: [], visible_npc: [],
+    visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] } };
   const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
     display_label: localLabel.display_label, recognition: 'known', visible_status: 'проход занят' }]);
-  assert.equal(admissionCalls[0].partyId, 'party');
-  assert.equal(admissionCalls[0].positionId, 'a');
-  occupied = false;
-  const open = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
-  assert.deepEqual(open.current_visible_context.visible_objects, [{
-    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
-    display_label: localLabel.display_label, recognition: 'known' }]);
 });
 
 test('explicit geometry hides unlinked targets; modifiers and missing ambient fail closed', async () => {

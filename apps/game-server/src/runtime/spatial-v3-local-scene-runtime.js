@@ -21,9 +21,16 @@ export function createSpatialV3LocalSceneRuntime({ pool,
       gap('SPATIAL_V3_LOCAL_VISIBILITY_DATA_GAP');
     }
     const edges = await reader.list({ partyId, actorId, positionId });
-    const labels = new Map(visible.map((row) => [row.edge_id, row.display_label]));
-    return edges.filter(({ movement_admission: admission }) => labels.has(admission.edge_id))
-      .map((edge) => ({ ...edge, display_label: labels.get(edge.movement_admission.edge_id) }));
+    const disclosed = new Map(visible.map((row) => [row.edge_id, row]));
+    return edges.filter(({ movement_admission: admission }) => disclosed.has(admission.edge_id))
+      .map((edge) => {
+        const row = disclosed.get(edge.movement_admission.edge_id);
+        // What the actor may be told before an attempt: the disclosure owner's status, which
+        // counts only perceived occupants. `movement_admission.destination_status` is the full
+        // occupancy and only decides the attempt itself.
+        return { ...edge, display_label: row.display_label,
+          disclosed_status: row.destination_status ?? 'open' };
+      });
   }
   return Object.freeze({
     async listLocalOptions({ partyId, actorId, state }) {
@@ -31,7 +38,15 @@ export function createSpatialV3LocalSceneRuntime({ pool,
       return edges.map((edge) => ({ edge_id: edge.movement_admission.edge_id,
         action_units: edge.movement_admission.action_units,
         display_label: edge.display_label,
-        destination_status: edge.movement_admission.destination_status }));
+        destination_status: edge.disclosed_status }));
+    },
+    /** The full-occupancy verdict of the movement owner for one listed edge, the same one
+     * `prepareLocalMovement` enforces. Server-side only: it may name occupants the actor
+     * cannot perceive, so it is never shown - it only lets the turn refuse before executing. */
+    async localEdgeAttemptStatus({ partyId, actorId, state, edgeId }) {
+      const edges = await current({ partyId, actorId, state });
+      return edges.find(({ movement_admission: admission }) =>
+        admission.edge_id === edgeId)?.movement_admission.destination_status ?? null;
     },
     async prepareLocalMovement({ partyId, actorId, state, edgeId,
       playerInput, inputDigest }) {

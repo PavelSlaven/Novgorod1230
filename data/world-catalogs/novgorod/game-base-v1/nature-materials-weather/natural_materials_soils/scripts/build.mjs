@@ -43,7 +43,7 @@ const matRows = MATERIALS.map((m) => ({
   nm_id: m.id, name_ru: m.name_ru, name_en: m.name_en, material_kind: m.kind, category_code: m.category_code,
   scope: m.region_scope === 'site_specific' ? 'universal_category_site_specific_presence' : 'universal',
   stock_unit: 'portion', portion_mass_g: m.portion.mass_g, portion_desc_ru: m.portion.desc_ru,
-  stock_rule: m.renewal === 'unbounded_while_water_body' ? 'unbounded while the water body exists (no finite stock)' : `portions = FREQ_WEIGHT[class] x ${BASE_PORTIONS} (ubiquitous 200, common 100, contextual 50, rare 25)`,
+  stock_rule: m.counter_class === 'A' ? '' : m.renewal === 'unbounded_while_water_body' ? 'unbounded while the water body exists (no finite stock)' : `portions = FREQ_WEIGHT[class] x ${BASE_PORTIONS} (ubiquitous 200, common 100, contextual 50, rare 25)`,
   renewal: m.renewal, operation: m.operation,
   access_tool_refs: m.tools, tool_required: m.tool_required,
   season_winter: seasonCell(m, 'winter'), season_spring: seasonCell(m, 'spring'), season_summer: seasonCell(m, 'summer'), season_autumn: seasonCell(m, 'autumn'),
@@ -60,7 +60,7 @@ for (const m of MATERIALS) for (const l of landscapes) {
   const w = FREQ_WEIGHT[cls];
   presRows.push({
     presence_id: `nmp_${m.id.slice(3)}__${l.id.slice(3)}`, region_id: REGION, nm_id: m.id, landscape_template_id: l.id,
-    frequency_class: cls, weight: w, stock_portions: m.renewal === 'unbounded_while_water_body' ? 'unbounded' : w * BASE_PORTIONS,
+    frequency_class: cls, weight: w, stock_portions: m.counter_class === 'A' ? '' : m.renewal === 'unbounded_while_water_body' ? 'unbounded' : w * BASE_PORTIONS,
     rule: 'authoring/materials.mjs lt() over world_db landscape attributes (group, soil_ground_type, moisture, dominant_vegetation)',
     source_refs: [SOURCES.lt_templates.ref + '#' + l.id, ...expand(m.src).slice(0, 2)], confidence: 'C', status: 'candidate',
   });
@@ -99,7 +99,7 @@ for (const g of g4index.g4) {
     g4Rows.push({
       row_id: `nmg4_${g.g4_short}__${m.id.slice(3)}`, g4_ref: g.g4_id, g4_short: g.g4_short, place_function: g.place_function, landscape_template_id: lt.id,
       nm_id: m.id, role: 'raw_material', frequency_class: cls, weight: w,
-      stock_portions: m.renewal === 'unbounded_while_water_body' ? 'unbounded' : w * BASE_PORTIONS, derivation: why.join('; '),
+      stock_portions: m.counter_class === 'A' ? '' : m.renewal === 'unbounded_while_water_body' ? 'unbounded' : w * BASE_PORTIONS, derivation: why.join('; '),
       season_winter: m.season.winter[0], season_spring: m.season.spring[0], season_summer: m.season.summer[0], season_autumn: m.season.autumn[0],
       access_note: access, source_refs: [SOURCES.g4_index.ref + '#' + g.g4_id, ...expand(m.src).slice(0, 2)], confidence: 'C', status: 'candidate',
     });
@@ -110,7 +110,7 @@ for (const g of g4index.g4) {
 const toolRows = TOOLS.map((t) => ({ tool_ref: t.id, name_ru: t.name_ru, used_by: MATERIALS.filter((m) => m.tools.includes(t.id)).map((m) => m.id), source_refs: expand(t.src), confidence: t.conf, note: t.note, status: 'candidate_proposal_for_craft_tools_gear' }));
 
 // 7. v17-shaped finite source profile extension (authoring only; not runtime)
-const finite = MATERIALS.filter((m) => m.renewal !== 'unbounded_while_water_body').map((m) => ({
+const finite = MATERIALS.filter((m) => m.counter_class !== 'A' && m.renewal !== 'unbounded_while_water_body').map((m) => ({
   profile_id: `gb1_finite_${m.id.slice(3)}_v1`, extends_v17_profile: m.v17_profile || null, status: 'candidate', approved: false,
   resource_class: m.id.slice(3), operation: m.operation, public_name: m.name_ru, item_kind: 'natural_resource_portion', basis_kind: 'finite_source',
   quantity_unit: m.portion_unit_v17 ? 'item (50 g, v17 unit)' : `portion (${m.portion.mass_g} g)`, mass_grams_per_unit: m.portion.mass_g,

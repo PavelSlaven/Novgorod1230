@@ -20,6 +20,7 @@
   ],
   "compositions": [
     { "pf_id": "pf_bog", "population_groups": [], "empty_reason": "Болото не создаёт постоянного населения; проводник приходит по маршруту.", "scheduled_absences": [{ "subject_kind": "occupation", "subject_ref": "nov_occ_route_guide", "reason": "Проводник проходит маршрут, а не живёт на болоте." }] },
+    { "pf_id": "pf_burial_ground", "population_groups": [], "empty_reason": "Нет источника для обычного присутствия, календаря или частоты посещения могильника около 1230 года.", "scheduled_absences": [] },
     { "pf_id": "pf_conifer_woodland", "population_groups": [], "empty_reason": "Лесные работники приходят из поселения; постоянный лесной двор не задан.", "scheduled_absences": [{ "subject_kind": "occupation", "subject_ref": "nov_occ_forest_worker", "reason": "Сезонная работа в лесу не означает создание жителя вместе с лесным местом." }] },
     { "pf_id": "pf_ferry_landing", "population_groups": [
       { "group_id": "pf_ferry_landing.ferryman", "group_kind": "workers", "min_count": 1, "max_count": 1, "count_weights": [1], "weighted_subjects": [{ "subject_kind": "occupation", "subject_ref": "nov_occ_ferryman", "profile_ref": null, "household_member_class": null, "weight": 1 }], "household_profile_ref": null, "source_refs": "", "rule_ref": "rule:one_per_work_role_v1", "no_source": "", "confidence": "C" },

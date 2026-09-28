@@ -1,17 +1,31 @@
 [
   {
+    "id": "resource_catalog",
+    "name_ru": "Семьи природных и хозяйственных ресурсов",
+    "group": "resource-catalog",
+    "entities_ru": "Закрытые семейства F01–F35, many-to-many привязка существующих видов и природных материалов, действия добычи, временная карта текущих навыков, профили сезонных пятен F07–F09, правила владения и candidate-калибровка наличия.",
+    "key_fields": ["family_id", "class", "unit", "renewal", "category_ref", "species_ref", "action_id", "skill_ref", "place_family_ref", "source_ref", "basis", "status"],
+    "target_tables": ["candidate resource_families", "candidate species_resource_families", "candidate extraction_actions", "candidate patch_profiles", "candidate tenure_defaults"],
+    "consumers": ["@rus/materialization после отдельного cutover", "@rus/items-property для конечных узлов", "@rus/checks-rng для действий добычи"],
+    "existing_sources": ["resource-architecture-v2 и resource-catalog-v3 — утверждённые inputs задачи #171", "видовые и habitat-таблицы game-base-v1 — candidate/approve_with_limits по своим VERIFICATION", "natural_materials_soils и places-binding — candidate"],
+    "gaps_ru": "Нет active binding и runtime cutover; F10/F11/F32/F33 ждут patch-профилей, F27/F30 — процессов разделки и пушнины, нормы C и тяга F35 отложены.",
+    "fill_method": "derive",
+    "priority": "M2c",
+    "acceptance_ru": "Скрипт: ровно 35 семейств; все species/material/action/skill/place refs существуют; каждый исходный вид ровно в одной части bound|unbound; F07–F09 имеют reverse-complete patch profiles; закрытые enum и отрицательные пробы проходят; двойная сборка даёт одинаковые hash-list."
+  },
+  {
     "id": "place_families",
     "name_ru": "Семейства мест и слои",
     "group": "places-binding",
-    "entities_ru": "44 семейства мест WK place-first (двор, улица, торг, пристань, берег, пойменный луг, пашня, лес хвойный/смешанный/широколиственный, опушка, болото, баня, кузница, мельница, овин, погост, монастырский двор, дорога, мост, перевоз, лесная тропа, огород, пастбище, зимняя переправа, рыбацкий стан, интерьер жилья, церкви, мастерской и др.) с применимыми слоями M2c и фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk к шаблонам и типам узлов.",
+    "entities_ru": "44 семейства мест WK place-first и ограниченный локальный candidate pf_burial_ground с применимыми слоями M2c и фасетами (грунт, использование/люди, ощущения/следы, риски/уход); crosswalk к шаблонам и типам узлов.",
     "key_fields": ["pf_id", "name_ru", "name_en", "wk_family_ref", "layers_applicable[]", "facet_ground", "facet_use_people", "facet_senses_traces", "facet_risks_upkeep", "landscape_template_refs[]", "land_use_template_refs[]", "place_template_refs[]", "water_body_template_refs[]", "v6_g4_location_types[]", "spatial_v3_scene_template_refs[]", "source_refs", "confidence"],
     "target_tables": ["new: place_families (или universal_categories domain=place_family)", "world_base.place_templates", "world_base.land_use_templates", "world_base.landscape_templates", "world_base.water_body_templates", "WK place-first-cartography.environment_families"],
     "consumers": ["все пулы наличия (ключ place_family_id)", "@rus/materialization g4-natural-baseline (через профили G4)", "spatial_v3 scene_materialization_profiles"],
-    "existing_sources": ["wk:place-first-cartography.json — 44 семейства, 634 WK refs, без статуса и весов", "wk:category-cartography.json — 304 семейства, 14 missing (partial)", "world_db landscape 70 / land_use 45 / place 64 / water 41 — draft", "pr98:regional-environment/candidates/novgorod-1230-1250-v1/candidate.json — 115 строк, pending_independent_approval", "v6tsv g4_locations — 198 g4_location_type, draft/usable_with_caution", "pr98:spatial-v3 datasets — 17 scene templates, approved"],
-    "gaps_ru": "Нет единого реестра семейств, связанного и с шаблонами world_base, и с типами G4 v6, и со scene templates v17. Фасеты семейств в WK есть, но без статуса. Шаблоны world_db — draft.",
+    "existing_sources": ["wk:place-first-cartography.json — 44 семейства, 634 WK refs, без статуса и весов", "places/pf_local_additions.json — 1 source-backed candidate C012b", "wk:category-cartography.json — 304 семейства, 14 missing (partial)", "world_db landscape 70 / land_use 45 / place 64 / water 41 — draft", "pr98:regional-environment/candidates/novgorod-1230-1250-v1/candidate.json — 115 строк, pending_independent_approval", "v6tsv g4_locations — 198 g4_location_type, draft/usable_with_caution", "pr98:spatial-v3 datasets — 17 scene templates, approved"],
+    "gaps_ru": "Локальный PF места погребения должен быть перенесён в WK при следующей ревизии; обычное посещение и кладбище при церкви остаются no_source. Шаблоны world_db — draft.",
     "fill_method": "derive",
     "priority": "M2c",
-    "acceptance_ru": "Скрипт: 44 id из place-first-cartography присутствуют ровно один раз; каждый pf_id имеет ≥1 ссылку на landscape или place template и все ссылки резолвятся в seed/кандидате; каждый из 17 scene templates и 198 g4_location_type покрыт ≥1 pf_id или явно помечен not_applicable."
+    "acceptance_ru": "Скрипт: 44 id из place-first-cartography и каждый объявленный локальный id присутствуют ровно один раз; локальные id не пересекаются с WK и имеют источники; каждый pf_id имеет ≥1 ссылку на landscape или place template и все ссылки резолвятся; каждый из 17 scene templates и 198 g4_location_type покрыт ≥1 pf_id или явно помечен not_applicable."
   },
   {
     "id": "place_binding",
@@ -22,7 +36,7 @@
     "target_tables": ["world_base.g4_materialization_bindings / spatial_v3_g4_expansion_profiles (через CR)", "new: node_place_family_bindings"],
     "consumers": ["@rus/materialization (выбор пулов наличия)", "runtime-catalog g4-natural-catalog", "spatial-v3-world-base-reader (узлы)"],
     "existing_sources": ["pr98:m2c-natural/candidate.json — authoring_axes landscape/land_use/function для 32 G4, candidate_approval_pending", "pr98:spatial-v3/candidates/m2c-g4-expansion-v1 — 25 G5 generation templates", "pr98:m2c-nature-coverage.json — 128 региональных связей (draft)", "v17 readback — 32 G4 / 195 G5 / 908 connection bindings"],
-    "gaps_ru": "G5 не привязаны к семействам мест; G4 привязаны только осями authoring, не к place_family; региональные связи — draft.",
+    "gaps_ru": "Все 227 узлов привязаны; land_use/place template на уровне узла и наследование природных шаблонов G5 остаются typed gap; региональные связи — draft.",
     "fill_method": "derive",
     "priority": "M2c",
     "acceptance_ru": "Скрипт: все 32 G4 и 195 G5 из v17 readback/spatial-v3 datasets имеют ровно одну строку; pf_id существует в place_families; для каждой строки binding_basis ссылается на существующий файл+id."

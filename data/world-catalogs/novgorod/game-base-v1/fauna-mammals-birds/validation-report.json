@@ -4,6 +4,9 @@
  "counts": {
   "mammals": 44,
   "birds": 149,
+  "hunting_methods": 23,
+  "hunting_tenure_defaults": 3,
+  "pelt_calendars": 16,
   "presence_rows": 4221,
   "phase_activity_rows": 2628,
   "place_families_with_rows": 38,
@@ -31,6 +34,7 @@
  },
  "errors": [],
  "warnings": [
+  "WK dir not found: C:/Users/Slaven/Documents/Novgorod/data/world-catalogs/novgorod/world-knowledge/production-v1",
   "explicit gap: pf_ferry_landing winter has 2 audible birds; mallard requires scene-level open water",
   "outdoor place families without any fauna rows: pf_reality_batch_01_open_conditions,pf_reality_first_practical_conditions"
  ]

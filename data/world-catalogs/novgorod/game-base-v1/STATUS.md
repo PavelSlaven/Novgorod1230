@@ -433,6 +433,8 @@
 
 | Группа | Исходная цель | Вердикт | Причина / кандидаты |
 |---|---|---|---|
+| crafts-tools-processes | [`Разделка туши и чистка рыбы (C015, D37)`](crafts-tools-processes/VERIFICATION.md#разделка-туши-и-чистка-рыбы-c015-d37--approve_with_limits) | approve_with_limits | `Разделка туши и чистка рыбы (C015, D37)`: нет пути к файлу или каталогу |
+| fauna-mammals-birds | [`Способы охоты и лова, пушнина, права на угодья (C015, D37/D40)`](fauna-mammals-birds/VERIFICATION.md#способы-охоты-и-лова-пушнина-права-на-угодья-c015-d37d40--approve_with_limits) | approve_with_limits | `D37/`: каталог пуст или не найден |
 | places-binding | [`Слот слуги. Причина пола переписана по строке занятия: дрова, конюшня`](places-binding/VERIFICATION.md#placesnode_bindingcsv--approve_with_limits-c006e4-закрывает-rework-c006e2c006e3) | approve | `Слот слуги. Причина пола переписана по строке занятия: дрова, конюшня`: нет пути к файлу или каталогу |
 | transport-health-recreation | [`README (группа и домены)`](transport-health-recreation/VERIFICATION.md#readme-группа-и-домены--approve_with_limits) | approve_with_limits | `README (группа и домены)`: нет пути к файлу или каталогу |
 | transport-health-recreation | [`scripts/`](transport-health-recreation/VERIFICATION.md#scripts--approve_with_limits) | approve_with_limits | `scripts/`: каталог пуст или не найден |

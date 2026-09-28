@@ -12,6 +12,8 @@ const mammals = require('./src/mammals.cjs');
 const birds = require('./src/birds.cjs');
 const checks = require('./src/checks.cjs');
 const sources = require('./src/sources.cjs');
+const peltProfiles = require('./src/pelt-profiles.cjs');
+const hunting = require('./src/hunting.cjs');
 const pant = require('./input_snapshots/panteleev2001_list.json').species;
 const malf = require('./input_snapshots/malchevsky1983_flags.json').species;
 const phaseRules = require('../fauna/activity_phase_rules.json');
@@ -111,6 +113,9 @@ const mRows = mammals.map((t) => ({
   rut_period: t.rut || '', moult: t.moult || '', winter_coat: t.coat || '',
   signs_tracks: t.tracks || '', signs_droppings: t.drop || '', signs_feeding: t.feed || '', signs_dens_nests: t.den || '', signs_sounds: t.sound || '', signs_smell: t.smell || '',
   behaviour_to_humans: t.human, danger_level: t.danger, products: t.products || '', hunting_methods: t.hunt || '', hunting_method_refs: t.huntRefs || '',
+  pelt_prime_months: peltProfiles[t.id]?.pelt_prime_months || '', pelt_quality_by_month: peltProfiles[t.id]?.pelt_quality_by_month || '',
+  pelt_calendar_basis: peltProfiles[t.id]?.pelt_calendar_basis || '', pelt_calendar_source_refs: peltProfiles[t.id]?.pelt_calendar_source_refs || '',
+  pelt_qualitative_source_refs: peltProfiles[t.id]?.pelt_qualitative_source_refs || '', pelt_calendar_note: peltProfiles[t.id]?.pelt_calendar_note || '',
   wk_refs: t.wk || '', habitats: t.hab, source_refs: `${t.src}${t.taxonExtraSources ? ';' + t.taxonExtraSources : ''};mammals.csv#${t.id}.signs_sounds`, confidence: 'B', notes: t.note || '', status: 'candidate',
 }));
 
@@ -199,6 +204,8 @@ counts.wild_habitat_presence = writeCsv(path.join(OUT, 'wild_habitat_presence.cs
 counts.fauna_categories = writeCsv(path.join(OUT, 'fauna_categories.csv'), Object.keys(catRows[0]), catRows);
 counts.taxa_checks = writeCsv(path.join(OUT, 'taxa_checks.csv'), Object.keys(chkRows[0]), chkRows);
 counts.sources = writeCsv(path.join(OUT, 'sources.csv'), Object.keys(srcRows[0]), srcRows);
+counts.hunting_methods = writeCsv(path.join(OUT, 'hunting_methods.csv'), Object.keys(hunting.methods[0]), hunting.methods);
+counts.hunting_tenure_defaults = writeCsv(path.join(OUT, 'hunting_tenure_defaults.csv'), Object.keys(hunting.tenure[0]), hunting.tenure);
 const phaseRows = [];
 const scoped = new Set(pres.filter((p) => startPf.has(p.pf_id)).map((p) => `${p.fa_id}|${p.season}`));
 for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {

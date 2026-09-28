@@ -59,7 +59,7 @@ import { createTargetGeneratedFirstEntry } from
 import { createTargetPresenceRulesFirstArrivalResolver } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { createRuntimeCatalogWorldBaseReader } from '@rus/runtime-catalog';
-import { projectCalendar } from '@rus/time-events-history/calendar';
+import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { projectSpatialV3CurrentVisibleContext,
   SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from
   '../runtime/spatial-v3-current-visible-context.js';
@@ -155,11 +155,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       calendar_profile: scenarioBundle.calendar_profile });
     const targetNaturalFirstEntryPort = { prepareFirstEntry: null };
     const targetPresenceResolverPort = { resolve: null };
-    let targetFiniteFirstEntry = targetProfiles == null ? null
-      : createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry);
-    if (targetFiniteFirstEntry != null) {
-      targetNaturalFirstEntryPort.prepareFirstEntry = targetFiniteFirstEntry.prepareFirstEntry;
-    }
+    let targetFiniteFirstEntry = null;
     const runtimeCatalogWorldBaseReader = targetContext == null ? null
       : createRuntimeCatalogWorldBaseReader((sql, params) => pools.worldPool.query(sql, params));
     let readTargetPartyPresenceCalendar = null;
@@ -176,43 +172,30 @@ export async function createSpatialV3ProductionCompositionRoot({
       authoredRuntimeBindingResolver
     });
     if (factualContext != null && targetContext?.runtime?.materialization_inputs?.calendar_profile) {
-      const calendarProfile = targetContext.runtime.materialization_inputs.calendar_profile;
-      const gameplaySeasons = new Set(['winter', 'spring', 'summer', 'autumn']);
-      const seasonFromMonth = (month) => {
-        const m = Number(month);
-        if (m === 12 || m === 1 || m === 2) return 'winter';
-        if (m >= 3 && m <= 5) return 'spring';
-        if (m >= 6 && m <= 8) return 'summer';
-        if (m >= 9 && m <= 11) return 'autumn';
-        return null;
-      };
       readTargetPartyPresenceCalendar = async ({ transaction, partyId }) => {
-        const row = await transaction.query(
-          `SELECT snapshot.state_payload
-             FROM party_runtime.parties party
-             JOIN party_runtime.party_state_snapshots snapshot
-               ON snapshot.party_id=party.party_id
-              AND snapshot.state_version=party.state_version
-            WHERE party.party_id=$1`,
+        const lifecycle = await transaction.query(
+          `SELECT state_version FROM party_runtime.parties WHERE party_id=$1`,
           [partyId],
         );
-        const payload = row.rows[0]?.state_payload;
-        const clock = payload?.clock;
-        if (!clock) {
-          throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
-            'Committed party clock is required for presence resolution.');
+        const stateVersion = Number(lifecycle.rows[0]?.state_version);
+        let environment;
+        if (stateVersion === 0) {
+          const state = await createLowerDvinaTracePhase1ARepository({
+            query: transaction.query.bind(transaction),
+          }).loadInternal(partyId);
+          const actorId = state?.player?.instance_id;
+          if (!actorId) {
+            throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
+              'Committed party actor is required for initial presence resolution.');
+          }
+          environment = await factualContext.readInitialEnvironment({
+            transaction, partyId, actorId,
+          });
+        } else {
+          environment = await factualContext.readCurrentEnvironment({ transaction, partyId });
         }
-        const projected = projectCalendar(clock, calendarProfile);
-        const snapshotSeason = payload?.calendar?.season;
-        let season = typeof snapshotSeason === 'string' && gameplaySeasons.has(snapshotSeason.trim())
-          ? snapshotSeason.trim()
-          : null;
-        if (!season && typeof projected?.season_id === 'string'
-          && gameplaySeasons.has(projected.season_id.trim())) {
-          season = projected.season_id.trim();
-        }
-        if (!season) season = seasonFromMonth(projected?.month);
-        const year = Number(projected?.year);
+        const season = environment?.season;
+        const year = Number(environment?.calendar_date?.year);
         if (!season || !Number.isInteger(year) || year < 1) {
           throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
             'Committed party calendar season and year are required for presence resolution.');

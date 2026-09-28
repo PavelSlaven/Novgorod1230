@@ -1,4 +1,4 @@
-import { canonicalDigest, assertAndNormalizeOrdinaryAggregate, applyOrdinaryAggregateTransition } from '@rus/materialization';
+import { canonicalDigest, assertAndNormalizeOrdinaryAggregate, applyOrdinaryAggregateTransition, isO1PresenceRecord } from '@rus/materialization';
 import {
   OrdinaryMaterializationCommitError,
   basisCoversItem,
@@ -66,7 +66,7 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
     [aggregate.last_committed_transition_kind !== (seedOnly ? 'seed' : 'resolve_presence'), 'aggregate_kind'],
     [lastTransition == null || canonicalDigest(lastTransition) !== value.transition_digest, 'digest'],
     [seedOnly && value.resolution !== 'no_change', 'seed_resolution'],
-    [seedOnly && aggregate.presence_resolutions.length !== 0, 'seed_presence'],
+    [seedOnly && aggregate.presence_resolutions.some(isO1PresenceRecord), 'seed_presence'],
     [!seedOnly && (!resolution || resolution.request_identity !== value.request_identity), 'resolution_request'],
     [!seedOnly && resolution?.resolution !== value.resolution, 'resolution_kind']
   ].filter(([failed])=>failed).map(([,name])=>name);

@@ -132,7 +132,11 @@ export async function loadG0RegionIdForSpatialNode({
           AND pn.world_revision_id = $3 AND pn.status = 'approved'
         WHERE chain.depth < 24
      )
-     SELECT id FROM chain WHERE spatial_level = 'G0' ORDER BY depth DESC LIMIT 2`,
+     SELECT id FROM (
+       SELECT DISTINCT id, MAX(depth) AS depth
+         FROM chain WHERE spatial_level = 'G0'
+        GROUP BY id
+     ) g0 ORDER BY depth DESC LIMIT 2`,
     [nodeId, nodeVersion, revisionId],
   );
   const rows = rowsFrom(result);

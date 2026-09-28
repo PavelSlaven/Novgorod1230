@@ -187,15 +187,23 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       worldPin,
       runtimeCatalogPin,
     };
+    const canonicalRef = resolvedSite.canonical_g5_ref;
+    const canonicalNodeId = canonicalRef?.entity_id ?? canonicalRef?.id;
+    const useCanonicalG5Node = typeof canonicalNodeId === 'string' && canonicalNodeId.length > 0
+      && resolvedSite.origin !== 'generated';
+    const spatialNodeId = useCanonicalG5Node ? canonicalNodeId : g4.id;
+    const spatialNodeVersion = useCanonicalG5Node
+      ? Number(canonicalRef?.authoring_version ?? canonicalRef?.version ?? 1)
+      : g4.version;
     const regionId = await loadG0RegionIdForSpatialNode({
       ...readerInput,
-      nodeId: g4.id,
-      nodeVersion: g4.version,
+      nodeId: spatialNodeId,
+      nodeVersion: spatialNodeVersion,
     });
     return resolvePresenceRulesFirstArrivalForSite({
       ...readerInput,
-      spatialNodeId: g4.id,
-      spatialNodeVersion: g4.version,
+      spatialNodeId,
+      spatialNodeVersion,
       partyId: partyId ?? request?.party_id,
       siteId: resolvedSite.id,
       regionId,

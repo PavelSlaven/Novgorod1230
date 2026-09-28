@@ -1,0 +1,617 @@
+{
+  "status": "candidate",
+  "reviewed_at": "2026-09-29",
+  "snapshot_path": "sources/evidence-household-v2",
+  "input_rows_total": 7331,
+  "dispositions": {
+    "new_item_candidate": 43,
+    "owner_review_handoff": 5564,
+    "rejected": 1724
+  },
+  "reject_reasons": {
+    "anachronism_or_late_form": 21,
+    "outside_item_relation_scope": 538,
+    "outside_target_period": 1165
+  },
+  "files": {
+    "x-household.csv": {
+      "rows": 1898,
+      "sha256": "c5feebc1964cb2294241bae1ce20f0c826a2f8c0c1aaa88187212af2ebbb7782",
+      "dispositions": {
+        "new_item_candidate": 43,
+        "owner_review_handoff": 1352,
+        "rejected": 503
+      }
+    },
+    "x-household.web.csv": {
+      "rows": 10,
+      "sha256": "5678385841c60dab4928b28c711f37b9744b319d855b684d31253b42e13ad80a",
+      "dispositions": {
+        "owner_review_handoff": 9,
+        "rejected": 1
+      }
+    },
+    "x-food.csv": {
+      "rows": 1558,
+      "sha256": "88c04bfa961896a4b2a8feaf418985e5d67f406e28568cd72bb9c8b81776a284",
+      "dispositions": {
+        "owner_review_handoff": 1089,
+        "rejected": 469
+      }
+    },
+    "x-clothing.csv": {
+      "rows": 1804,
+      "sha256": "00521d00a35a0c46f9ac4ad79d2b6251dc0336fd860b41781ec31681d69dd15c",
+      "dispositions": {
+        "owner_review_handoff": 1449,
+        "rejected": 355
+      }
+    },
+    "x-crafts.csv": {
+      "rows": 2061,
+      "sha256": "8b9b22de947b5cd58a28e9e44cc4c18424f2d864862c2429635ea5e59e43d740",
+      "dispositions": {
+        "owner_review_handoff": 1665,
+        "rejected": 396
+      }
+    }
+  },
+  "ledger": {
+    "path": "reports/household_evidence_ledger.csv",
+    "rows": 7331,
+    "sha256": "33fa9dce356d7c629ee05cf5fd4e571a1993b34f2ca16ab880af0c5675a5e4e7"
+  },
+  "screening_rule": {
+    "basis": "editorial",
+    "confidence_is_not_rejection": true,
+    "derivation": "Every non-broken v2 row receives exactly one item target, owner-review domain target, or closed reject reason. Period comes only from v2 period; dated and region_scope are preserved for review; number_unverified forbids numeric transfer; note is never parsed for dates; confidence never rejects a row.",
+    "allowed_direct_periods": [
+      "c1230",
+      "medieval_general"
+    ],
+    "region_scopes": [
+      "novgorod_land",
+      "rus_other",
+      "neighbour",
+      "far"
+    ],
+    "numeric_transfer_requires_verified": true,
+    "physical_fact_types": [
+      "dating",
+      "description",
+      "dimensions",
+      "material",
+      "name_form",
+      "presence_in_region",
+      "price",
+      "quantity",
+      "technique",
+      "use"
+    ]
+  },
+  "new_item_ids_created": 6,
+  "new_items": [
+    {
+      "item_id": "it_hh_clay_baking_pan",
+      "basis": "analogy",
+      "derivation": "book:624953 §301; v2 region_scope=rus_other, форма перенесена как осторожная аналогия",
+      "quote": "глиняные сковородки (диаметром 30–35 см)"
+    },
+    {
+      "item_id": "it_hh_clay_latka",
+      "basis": "analogy",
+      "derivation": "book:624953 §301; book:624953 §312; v2 region_scope=rus_other, форма перенесена как осторожная аналогия",
+      "quote": "латки — открытые сосуды с тремя ножками-выступами"
+    },
+    {
+      "item_id": "it_hh_perforated_clay_vessel",
+      "basis": "analogy",
+      "derivation": "book:624953 §236; форма VIII–X вв. роменско-боршевского ареала перенесена как осторожная функциональная аналогия",
+      "quote": "сосудов усеченно-конической формы с отверстиями"
+    },
+    {
+      "item_id": "it_hh_rectangular_clay_tray",
+      "basis": "analogy",
+      "derivation": "book:624953 §236; форма VIII–X вв. роменско-боршевского ареала перенесена как осторожная функциональная аналогия",
+      "quote": "прямоугольных толстостенных больших сковородок"
+    },
+    {
+      "item_id": "it_hh_glass_drinking_vessel",
+      "basis": "analogy",
+      "derivation": "book:624953 §344; book:624953 §346; book:624953 §348; v2 region_scope=far, локальность не переносится",
+      "quote": "владелец усадьбы Б ... имел византийские чаши, бутылки"
+    },
+    {
+      "item_id": "it_hh_silver_feast_cup",
+      "basis": "analogy",
+      "derivation": "book:622242 §2450; book:301539 §1824; v2 mixed region_scope, пиршественная форма перенесена осторожно",
+      "quote": "серебряные чаши для пиров"
+    }
+  ],
+  "directly_used_source_rows": [
+    {
+      "source_file": "x-household.csv",
+      "source_row": 330,
+      "book_ref": "book:624953 §236",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_perforated_clay_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 331,
+      "book_ref": "book:624953 §236",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_rectangular_clay_tray"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 442,
+      "book_ref": "book:624953 §301",
+      "period_label_v2": "medieval_general",
+      "dated": "XI–XIII веков.; XI–XIII веков",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_latka"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 443,
+      "book_ref": "book:624953 §301",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_latka"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 444,
+      "book_ref": "book:624953 §301",
+      "period_label_v2": "medieval_general",
+      "dated": "XI–XIII веков.; XI–XIII веков",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_baking_pan"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 445,
+      "book_ref": "book:624953 §301",
+      "period_label_v2": "medieval_general",
+      "dated": "XI–XIII веков",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_baking_pan"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 446,
+      "book_ref": "book:624953 §301",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_baking_pan"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 467,
+      "book_ref": "book:624953 §312",
+      "period_label_v2": "medieval_general",
+      "dated": "XII–XIII века.; XII–XIII вв.; XII–XIII века",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_latka"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 468,
+      "book_ref": "book:624953 §312",
+      "period_label_v2": "medieval_general",
+      "dated": "XII–XIII века.; XII–XIII вв.; XII–XIII века",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_latka"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 469,
+      "book_ref": "book:624953 §312",
+      "period_label_v2": "medieval_general",
+      "dated": "XII–XIII века.; XII–XIII вв.; XII–XIII века",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_clay_latka"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 749,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XIII века; XII в.; XIII в.; XII–первых десятилетиях XIII века",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 750,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 751,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 752,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 753,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XIII веке.; XIII в.; XII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 754,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 755,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 756,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 757,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 758,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII века; XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 759,
+      "book_ref": "book:624953 §344",
+      "period_label_v2": "medieval_general",
+      "dated": "XII века; XII в.; XIII в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 765,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 766,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "XI–XII вв.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 767,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 768,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 769,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 770,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 771,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 772,
+      "book_ref": "book:624953 §346",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 773,
+      "book_ref": "book:624953 §348",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 774,
+      "book_ref": "book:624953 §348",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 775,
+      "book_ref": "book:624953 §348",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 776,
+      "book_ref": "book:624953 §348",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 777,
+      "book_ref": "book:624953 §348",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 778,
+      "book_ref": "book:624953 §348",
+      "period_label_v2": "medieval_general",
+      "dated": "",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_glass_drinking_vessel"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 803,
+      "book_ref": "book:622242 §2450",
+      "period_label_v2": "medieval_general",
+      "dated": "1060-х; XI в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 804,
+      "book_ref": "book:622242 §2450",
+      "period_label_v2": "medieval_general",
+      "dated": "1060-х; XI в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 805,
+      "book_ref": "book:622242 §2450",
+      "period_label_v2": "medieval_general",
+      "dated": "1060-х; XI в.",
+      "region_scope": "far",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 846,
+      "book_ref": "book:301539 §1824",
+      "period_label_v2": "medieval_general",
+      "dated": "1152; 1230; 1217",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 847,
+      "book_ref": "book:301539 §1824",
+      "period_label_v2": "medieval_general",
+      "dated": "1152; 1230; 1217",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 848,
+      "book_ref": "book:301539 §1824",
+      "period_label_v2": "medieval_general",
+      "dated": "1230; 1152; 1217",
+      "region_scope": "novgorod_land",
+      "number_unverified": "1",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 849,
+      "book_ref": "book:301539 §1824",
+      "period_label_v2": "medieval_general",
+      "dated": "1152; 1230; 1217",
+      "region_scope": "novgorod_land",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    },
+    {
+      "source_file": "x-household.csv",
+      "source_row": 850,
+      "book_ref": "book:301539 §1824",
+      "period_label_v2": "medieval_general",
+      "dated": "1152; 1230; 1217",
+      "region_scope": "rus_other",
+      "number_unverified": "0",
+      "target_id": "it_hh_silver_feast_cup"
+    }
+  ],
+  "accepted_anchors": [
+    {
+      "target": "FUR0002",
+      "basis": "sourced",
+      "derivation": "book:624953 §47; book:624953 §53",
+      "quote": "неподвижная мебель — лавки, полати, разнообразные поставцы"
+    },
+    {
+      "target": "it_hh_splinter_holder_wood",
+      "basis": "sourced",
+      "derivation": "book:624953 §100",
+      "quote": "с XIII в. дома на Руси освещались лучинами"
+    },
+    {
+      "target": "it_hh_bucket_stave",
+      "basis": "sourced",
+      "derivation": "book:624953 §463",
+      "quote": "ведра, известны на Руси с IX в."
+    },
+    {
+      "target": "it_hh_frying_pan",
+      "basis": "sourced",
+      "derivation": "book:624953 §118",
+      "quote": "широко использовались железные сковороды"
+    },
+    {
+      "target": "it_hh_spindle",
+      "basis": "sourced",
+      "derivation": "book:638081 §1922",
+      "quote": "Прядение и ткачество ... были в числе наиболее распространенных домашних занятий"
+    },
+    {
+      "target": "tl_smith_tongs",
+      "basis": "sourced",
+      "derivation": "book:622242 §1599",
+      "quote": "двое клещей, одни молот, один молоток, зубило"
+    },
+    {
+      "target": "mt_copper",
+      "basis": "sourced",
+      "derivation": "book:622242 §1742",
+      "quote": "более 100 обрезков листовой меди"
+    },
+    {
+      "target": "bt_bathhouse",
+      "basis": "analogy",
+      "derivation": "book:728823 §933; позднее описание подтверждает только бревенчатую форму",
+      "quote": "Строилась баня из бревен"
+    }
+  ],
+  "candidate_consolidation": {
+    "basis": "editorial",
+    "derivation": "Named variants and archaeological exemplars reuse existing domain owners instead of creating parallel identities."
+  }
+}

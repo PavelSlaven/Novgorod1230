@@ -28,7 +28,8 @@ const REQUIRED = [
   'social_strata_legal_status', 'occupations', 'activities_observable', 'households_kinship', 'npc_psychology',
   'personal_names', 'place_names', 'craft_processes', 'craft_tools_gear', 'workshops', 'calendar_feasts_fasts',
   'schedules_routines', 'historical_events', 'historical_figures', 'law_justice_governance', 'religion_church',
-  'transport_travel', 'health_body', 'item_ownership_rules', 'item_marks_text_pools'
+  'transport_travel', 'health_body', 'item_ownership_rules', 'item_marks_text_pools',
+  'household_inventory_profiles', 'item_place_trace_relations', 'item_context_relations'
 ];
 
 const errors = [];

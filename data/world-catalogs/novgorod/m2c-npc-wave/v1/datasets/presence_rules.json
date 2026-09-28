@@ -13896,9 +13896,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -13918,7 +13916,10 @@
       "source_row_id": "15",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -43132,9 +43133,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "work_route_accessible"
     ],
@@ -43154,7 +43153,10 @@
       "source_row_id": "5",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_forest_worker",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -68555,9 +68557,7 @@
     "allowed_seasons": [
       "autumn"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "ground_passable"
     ],
@@ -68577,7 +68577,10 @@
       "source_row_id": "4",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_herder",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -68597,9 +68600,7 @@
     "allowed_seasons": [
       "spring"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "ground_passable"
     ],
@@ -68619,7 +68620,10 @@
       "source_row_id": "4",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_herder",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -68639,9 +68643,7 @@
     "allowed_seasons": [
       "summer"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "ground_passable"
     ],
@@ -68661,7 +68663,10 @@
       "source_row_id": "4",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_herder",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -79761,9 +79766,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "work_route_accessible"
     ],
@@ -79783,7 +79786,10 @@
       "source_row_id": "12",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_hunter_trapper",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -91923,9 +91929,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -91945,7 +91949,10 @@
       "source_row_id": "13",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -130629,9 +130636,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "hunt_accessible"
     ],
@@ -130651,7 +130656,10 @@
       "source_row_id": "20",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_hunter_trapper",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -146301,9 +146309,7 @@
     "allowed_seasons": [
       "autumn"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -146323,7 +146329,10 @@
       "source_row_id": "7",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -146343,9 +146352,7 @@
     "allowed_seasons": [
       "spring"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -146365,7 +146372,10 @@
       "source_row_id": "7",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -146385,9 +146395,7 @@
     "allowed_seasons": [
       "summer"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -146407,7 +146415,10 @@
       "source_row_id": "7",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_route_guide",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -193786,9 +193797,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -193808,7 +193817,10 @@
       "source_row_id": "2",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_boatman",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -200314,9 +200326,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "shore_accessible"
     ],
@@ -200336,7 +200346,10 @@
       "source_row_id": "3",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_fisher",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -202248,9 +202261,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "route_passable"
     ],
@@ -202270,7 +202281,10 @@
       "source_row_id": "6",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_cart_driver",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -210913,10 +210927,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day",
-      "evening"
-    ],
+    "allowed_times": [],
     "guards": [
       "inhabited_household"
     ],
@@ -210936,7 +210947,11 @@
       "source_row_id": "17;18",
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_smerd_householder",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day",
+        "evening"
+      ]
     }
   },
   {
@@ -229031,9 +229046,7 @@
     "allowed_seasons": [
       "all"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "settlement_inhabited"
     ],
@@ -229053,7 +229066,10 @@
       "source_row_id": "16",
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1.tsv#nov_role_smerd_householder",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   },
   {
@@ -229753,9 +229769,7 @@
     "allowed_seasons": [
       "winter"
     ],
-    "allowed_times": [
-      "day"
-    ],
+    "allowed_times": [],
     "guards": [
       "ice_crossing_open"
     ],
@@ -229775,7 +229789,10 @@
       "source_row_id": "14",
       "source_refs": "data/novgorod-region/novgorod_occupations_v1.tsv#nov_occ_winter_road_worker",
       "pool_confidence": "",
-      "csv_status": "candidate"
+      "csv_status": "candidate",
+      "allowed_times_source": [
+        "day"
+      ]
     }
   }
 ]

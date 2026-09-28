@@ -1,7 +1,7 @@
 import { findOverlappingPresenceRules } from '../../packages/materialization/src/presence-rule-conflicts.js';
 
 const WAVE_BUNDLE_ID = 'novgorod_m2c_npc_wave_v1';
-const WAVE_TABLES = new Set([
+export const M2C_NPC_WAVE_TABLE_SET = Object.freeze([
   'place_families',
   'spatial_node_place_family_bindings',
   'presence_rules',
@@ -12,6 +12,7 @@ const WAVE_TABLES = new Set([
   'water_body_presence_facets',
   'fauna_phase_activity_rules',
 ]);
+const WAVE_TABLES = new Set(M2C_NPC_WAVE_TABLE_SET);
 
 export function isM2cNpcWaveManifest(manifest) {
   return manifest?.bundle_id === WAVE_BUNDLE_ID;
@@ -30,12 +31,21 @@ export function validateM2cNpcWaveBundle(manifest, datasets, errors) {
     if (rule.scope_kind === 'place_family' && !placeFamilyIds.has(rule.scope_ref)) {
       errors.push(issue('M2C_WAVE_PRESENCE_SCOPE_UNKNOWN', `${rule.rule_id}:${rule.scope_ref}`));
     }
+    if ((rule.subject_kind === 'occupation' || rule.subject_kind === 'social_role')
+      && Array.isArray(rule.allowed_times) && rule.allowed_times.length > 0) {
+      errors.push(issue('M2C_WAVE_PEOPLE_ALLOWED_TIMES_FORBIDDEN', `${rule.rule_id}:${rule.subject_kind}`));
+    }
   }
   const overlaps = findOverlappingPresenceRules(datasets.get('presence_rules') ?? []);
   for (const message of overlaps) errors.push(issue('M2C_WAVE_PRESENCE_C4_CONFLICT', message));
   const bindings = datasets.get('spatial_node_place_family_bindings') ?? [];
+  const nodeKeys = new Set((datasets.get('spatial_v3_nodes') ?? []).map((row) => `${row.id}|${row.version}`));
   const primaryByNode = new Map();
   for (const binding of bindings) {
+    const bindingNodeKey = `${binding.node_id}|${binding.node_version}`;
+    if (nodeKeys.size && !nodeKeys.has(bindingNodeKey)) {
+      errors.push(issue('M2C_WAVE_BINDING_NODE_NOT_IN_CLOSURE', bindingNodeKey));
+    }
     if (binding.binding_role !== 'primary') {
       errors.push(issue('M2C_WAVE_BINDING_ROLE_INVALID', `${binding.node_id}:${binding.binding_role}`));
       continue;

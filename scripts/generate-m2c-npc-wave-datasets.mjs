@@ -11,10 +11,23 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = process.cwd();
-const DEFAULT_SOURCE_COMMIT = '63d0ef943c4fa201ed36e8b3d06cd4c9433c4614';
-const SOURCE_COMMIT = process.env.M2C_SOURCE_COMMIT ?? DEFAULT_SOURCE_COMMIT;
-const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
 const OUT_ROOT = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
+const APPROVAL_JSON = `${OUT_ROOT}/approval.json`;
+
+function resolveSourceCommit() {
+  if (process.env.M2C_SOURCE_COMMIT) return process.env.M2C_SOURCE_COMMIT;
+  try {
+    const approval = JSON.parse(readFileSync(resolve(root, APPROVAL_JSON), 'utf8'));
+    const commit = String(approval.source_commit ?? '');
+    if (/^[0-9a-f]{40}$/u.test(commit)) return commit;
+  } catch {
+    // fall through
+  }
+  throw new Error('M2C_SOURCE_COMMIT required or valid m2c-npc-wave/v1/approval.json source_commit');
+}
+
+const SOURCE_COMMIT = resolveSourceCommit();
+const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
 const GAME_BASE = 'data/world-catalogs/novgorod/game-base-v1';
 const SPATIAL_V3_ROOT = 'data/world-catalogs/novgorod/spatial-v3';
 export const STARTER_G3_SUBSTR = 'xp017_yp026';
@@ -258,6 +271,8 @@ export function mapSpeechAddressForm(row, worldRevisionId, provenanceRef) {
 
 export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
   const variants = parseVariants(row.variants);
+  const parsedTimes = parseTextArray(row.allowed_times);
+  const peopleSubject = row.subject_kind === 'occupation' || row.subject_kind === 'social_role';
   return {
     rule_id: row.pr_id,
     rule_version: 1,
@@ -273,7 +288,7 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
     presence_probability_ppm: parseRequiredNonNegInt(row.probability_ppm, 'probability_ppm'),
     count_limit: parseRequiredNonNegInt(row.count_limit, 'count_limit'),
     allowed_seasons: parseTextArray(row.allowed_seasons),
-    allowed_times: parseTextArray(row.allowed_times),
+    allowed_times: peopleSubject ? [] : parsedTimes,
     guards: parseTextArray(row.guards),
     entry_visible_if: blank(row.entry_visible_if),
     search_only_if: blank(row.search_only_if),
@@ -292,6 +307,7 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
       source_refs: row.source_refs ?? '',
       pool_confidence: row.pool_confidence ?? '',
       csv_status: row.status ?? '',
+      ...(peopleSubject && parsedTimes.length ? { allowed_times_source: parsedTimes } : {}),
     },
   };
 }

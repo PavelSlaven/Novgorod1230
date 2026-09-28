@@ -380,6 +380,12 @@
 - **Как жить.** Таймаут test 1 — headroom от базового прогона; test 2 остаётся 600 s. «Pool after end» — следствие shared pools/encoder до 070d2, не фон root.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
+### LW-076 — m2c-npc-wave: readback обязателен; D-1/D-2 отложены в R-1b
+- **Где.** `tools/spatial-v3/p12-authoring-importer.mjs` (`P12_WAVE_IMPORT_REQUIRES_READBACK`, `buildImportWithReadbackSql`); `scripts/generate-m2c-npc-wave-datasets.mjs` (пин из `m2c-npc-wave/v1/approval.json`); `m2c-npc-wave/v1/approval.json` (WR §21.1, D24).
+- **Что.** Approved wave импортируется только через import+readback в одной транзакции; `allowed_times` для людей не импортируется (§8.1, LW-067). Bootstrap-подключение волны 27.sql (D-1) и wave CLI (D-2) — R-1b, не R-1 fix.
+- **Как жить.** Не вызывать `buildTransactionalImportSql` для approved wave без readback-обёртки. Не утверждать `approval.json` без ревьюера (placeholder `checked_by` отклоняется валидатором).
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
 ### LW-074 — восприятие NPC в live world выключено
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`: `post_action_perception_profile: null`); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (`perceptionListeners` без профиля возвращает `[]`); профиль есть только в `apps/game-server/src/internal/lower-dvina-trace-revision-34-bundle.js`.
 - **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.

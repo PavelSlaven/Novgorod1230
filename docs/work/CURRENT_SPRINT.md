@@ -26,20 +26,21 @@
 Задачи M2c по порядку (порядок — техническая зависимость; решения владельца 2026-09-28 — [D28–D32 в #133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5866721387)):
 
 1. [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) (карты v17 и план этапа) и [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) (нормы M2c) приняты в ветке PR #98 и закрываются merge PR #98.
-2. [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) — люди по распорядкам, отношения, описания мест и воды, импорт игровой базы, подача рассказчику; шаги R-1…R-5, исполнитель — Cursor. Данные — PR [#159](https://github.com/PavelSlaven/Novgorod1230/pull/159). Первыми идут R-1 и R-2.
+2. [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) — люди по распорядкам, отношения, описания мест и воды, импорт игровой базы, подача рассказчику; шаги R-1, R-1b, R-2…R-5, исполнитель — Cursor. Первыми идут R-1 (распорядки и состав населения — R-1b) и R-2.
 3. [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) B1 — проходы, «занято», причина провала расширения, перезапуск. Не зависит от других блоков.
-4. [#161](https://github.com/PavelSlaven/Novgorod1230/issues/161) B2 (NPC: имя, характер, манера речи, биография) и [#162](https://github.com/PavelSlaven/Novgorod1230/issues/162) B3 (конечные запасы, контейнеры, опознавательный текст вещей) — после #158 R-1/R-2. Данные к ним готовятся заранее: шкала характера — PR [#167](https://github.com/PavelSlaven/Novgorod1230/pull/167).
+4. [#161](https://github.com/PavelSlaven/Novgorod1230/issues/161) B2 (NPC: имя, характер, манера речи, биография) и [#162](https://github.com/PavelSlaven/Novgorod1230/issues/162) B3 (ресурсы, контейнеры, опознавательный текст вещей) — после #158 R-1/R-2. B3 и B4 строятся по архитектуре ресурсов [#171](https://github.com/PavelSlaven/Novgorod1230/issues/171) (решения владельца D33–D36): классы A/B/C, наличие при первом прибытии, восстановление закрытой формулой, запасы двора по нормам; каталог семей — дополнение к #171. Данные к B2 готовятся заранее: пул личных имён — PR [#172](https://github.com/PavelSlaven/Novgorod1230/pull/172).
 5. [#163](https://github.com/PavelSlaven/Novgorod1230/issues/163) B4 — открытая ordinary-материализация (O2a, F1, S1), человек по запросу игрока; после B2 и B3.
-6. [#164](https://github.com/PavelSlaven/Novgorod1230/issues/164) B5 — все типы мест: матрица по данным и typed gaps; после #158 R-1. Данные — PR [#166](https://github.com/PavelSlaven/Novgorod1230/pull/166).
+6. [#164](https://github.com/PavelSlaven/Novgorod1230/issues/164) B5 — все типы мест: матрица по данным и typed gaps; после #158 R-1.
 7. [#165](https://github.com/PavelSlaven/Novgorod1230/issues/165) B6 — приёмка M2c, последним.
 
-Правки DDL `world_base` — по одной, у каждой свой проход Contract Auditor: сначала #158 R-1, затем схема пула имён (B2), затем пулы надписей (B3). PR данных игровой базы: сначала #159, затем #166 и #167 — их ветки идут от ветки #159.
+Правки DDL `world_base` — по одной, у каждой свой проход Contract Auditor: сначала #158 R-1, затем схема пула имён (B2), затем пулы надписей (B3). PR данных игровой базы идут цепочкой веток и сливаются по порядку: #172, затем #173 (облик и фауна по итогам прозаического теста v5).
 
 ### Backlog — сначала
 
 Приоритетные долги (#111, #113, #115) закрыты. Перед и во время M2c:
 
 1. [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) — non-gate проверки (LW-012); разбор 2026-09-28 — [комментарий](https://github.com/PavelSlaven/Novgorod1230/issues/126#issuecomment-5869200579).
+2. [#170](https://github.com/PavelSlaven/Novgorod1230/issues/170) — переработка навыков (список, связь с действиями и занятиями, сложность мирных проверок); владелец вернётся к ней позже. До неё ресурсы опираются на текущие 12 навыков через заменяемую таблицу «действие → навык».
 
 Остальное (`P3`) — по мере работы с затронутыми путями; ссылки на issue стоят у записей [LEGACY_WARNINGS](LEGACY_WARNINGS.md). После merge #98 разблокируются [#117](https://github.com/PavelSlaven/Novgorod1230/issues/117) и [#118](https://github.com/PavelSlaven/Novgorod1230/issues/118).
 

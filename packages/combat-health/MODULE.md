@@ -71,7 +71,9 @@ Revision 21 A1 не пишет damage, combat class либо canonical weapon id
 mechanics combat owner получает current player-safe physical facts/form,
 bounded-классифицирует их в один из `ACTION_PRODUCED_WEAPON_CLASSES`, включая
 `not_weapon_capable`, и code-owned mapping переводит класс в `weapon_danger`
-только для этого resolution. Последний A1 `output_class` не является combat
+только для этого resolution. Модель отдаёт только `qualitative_class`;
+`schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`),
+лишние поля ответа отбрасываются. Последний A1 `output_class` не является combat
 gate. Класс не сохраняется и после физического изменения определяется заново.
 Ноль положительных valid classifications означает обычный unarmed/default
 profile; один positive выбирает его danger, несколько positive либо invalid/

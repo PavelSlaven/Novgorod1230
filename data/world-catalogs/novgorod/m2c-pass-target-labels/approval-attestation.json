@@ -1,0 +1,21 @@
+{
+  "schema": "rus.m2c_pass_target_labels_authoring_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "candidate_ref": "novgorod_m2c_pass_target_labels_v1@1",
+  "candidate_sha256": "32833d200ca752e196dd951ce9f898b4d91b9eafd61de444e5c590cb6e00ec28",
+  "reviewer": "claude-opus-5.5 — independent reviewer; not the candidate author (gpt-6-luna, fleet task b1-labels)",
+  "reviewed_on": "2026-09-28",
+  "source_issue": "PavelSlaven/Novgorod1230#160",
+  "scope": "106 target keys (86 expansion slots, 20 place families of the start territory): 55 short Russian pass-target descriptions and 51 explicit gaps with reasons; 3 G5 rows without PF listed as source scope gaps.",
+  "source_pins": {
+    "ref_gamebase_commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
+    "ref_gamebase_files_sha256": {
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv": "139713cd706db0fd3281f0a4c1ff25f69f4a240d68b00e9c7b2a90565ace2663",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv": "15f4fa3413e6bccfd19f485e5178a6e8853c4e37343eda05b6f329c29fde99c5"
+    }
+  },
+  "checks": "validate.mjs and --self-test pass at 9af4523e. Every key resolves to an existing slot or PF; every described slot has one description valid for all its applicable templates; texts are 1-4 words, directional, neutral, without proper names. Mapping reviewed by class: forest templates -> «в лес», island -> «к острову», ridge -> «к гряде», river channel -> «к руслу»; PF labels «в ельник», «к берегу», «к избам», «к лугу», «к опушке», «к дороге». Gaps are honest where templates give no common visible landmark.",
+  "limits": "A description may be shown to the player and the turn planner only when the edge is clearly visible from the actor position; otherwise the approved neutral ordinal label. It asserts no name, distance, bearing, safety or hidden topology. Several passages with the same description at one position must be disambiguated by code (bearing or ordinal). Secondary PF bindings remain subject to LW-066 before import.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

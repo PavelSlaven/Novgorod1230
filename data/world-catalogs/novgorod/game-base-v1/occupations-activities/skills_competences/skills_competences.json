@@ -692,6 +692,412 @@
         "occupations/occupations_additions.csv#occ_shield_maker"
       ],
       "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_enameler",
+      "occupation_ref": "occ_enameler",
+      "name_ru": "Мастер перегородчатой эмали: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_enameler"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_glass_bead_maker",
+      "occupation_ref": "occ_glass_bead_maker",
+      "name_ru": "Мастер стеклянных бус: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_glass_bead_maker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_charcoal_burner",
+      "occupation_ref": "occ_charcoal_burner",
+      "name_ru": "Углежог: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_charcoal_burner"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_plinth_maker",
+      "occupation_ref": "occ_plinth_maker",
+      "name_ru": "Изготовитель плинфы / кирпичник: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_plinth_maker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_dairy_worker",
+      "occupation_ref": "occ_dairy_worker",
+      "name_ru": "Переработчик молока: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_dairy_worker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_well_builder",
+      "occupation_ref": "occ_well_builder",
+      "name_ru": "Колодезник: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_well_builder"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_household_stove_maker",
+      "occupation_ref": "occ_household_stove_maker",
+      "name_ru": "Мастер устройства и ремонта бытовой печи: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_household_stove_maker"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_literacy_teacher",
+      "occupation_ref": "occ_literacy_teacher",
+      "name_ru": "Наставник по грамоте: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_literacy_teacher"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_gravedigger",
+      "occupation_ref": "occ_gravedigger",
+      "name_ru": "Могильщик: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_gravedigger"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_bath_keeper",
+      "occupation_ref": "occ_bath_keeper",
+      "name_ru": "Хозяин или обслуживающий баню: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_bath_keeper"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_gusli_player",
+      "occupation_ref": "occ_gusli_player",
+      "name_ru": "Гусляр: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_gusli_player"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_singer",
+      "occupation_ref": "occ_singer",
+      "name_ru": "Певец на празднике или в быту: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_singer"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_storyteller",
+      "occupation_ref": "occ_storyteller",
+      "name_ru": "Рассказчик: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_storyteller"
+      ],
+      "status": "candidate"
+    },
+    {
+      "competence_id": "competence_occ_inn_host_household",
+      "occupation_ref": "occ_inn_host_household",
+      "name_ru": "Хозяин, принимающий путников в дворовом хозяйстве: практика занятия",
+      "parent_skill_ids": [],
+      "secondary_skill_ids": [],
+      "gate_skill_ids": [],
+      "forbidden_skill_ids": [],
+      "default_level_rule": "no_source:occupation_specific_skill_mapping",
+      "age_modifier": "no_source",
+      "sex_modifier": "no_source",
+      "learning_modes": [
+        "observation",
+        "tasks_matching_capacity_and_risk",
+        "practice_with_feedback"
+      ],
+      "learning_gates": [
+        "time",
+        "task",
+        "material_access"
+      ],
+      "source_refs": [
+        "world-base-seeds/skill_catalog_v1.csv",
+        "no_source:domain_archetype_does_not_attest_occupation_skills",
+        "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
+        "occupations/occupations_additions.csv#occ_inn_host_household"
+      ],
+      "status": "candidate"
     }
   ],
   "rule": "Seed level modifiers are conditional; never assign an individual level without biography and code validation."

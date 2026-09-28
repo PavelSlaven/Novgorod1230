@@ -23,6 +23,10 @@ scanned print copy is listed as a gap for a later pass.
 law_type: "offence" | "procedure" | "institution"
 """
 
+import json
+import re
+from pathlib import Path
+
 RP = "src_russkaya_pravda"  # Пространная редакция; http://www.hist.msu.ru/ER/Etext/RP/
 YANIN = "src_yanin_novgorod_posadniki"  # https://www.klex.ru/1fg3
 NPL = "src_novgorod_first_chronicle"  # НПЛ, как использован в существующих region_social_roles
@@ -677,3 +681,273 @@ ROWS = [
         "status": "candidate",
     },
 ]
+
+
+PROPERTY_TITLES_RU = {
+    "abandoned_or_lost_property": "Брошенное или потерянное имущество",
+    "boat_control": "Владение и использование судна",
+    "church_property": "Имущество церкви",
+    "dowry_property": "Приданое",
+    "household_property": "Имущество двора",
+    "land_use_right": "Пользование и владение землёй",
+    "landholding_rights": "Пользование и владение землёй",
+    "land_use_dispute": "Пользование и владение землёй",
+    "livestock_control": "Владение и распоряжение скотом",
+    "merchant_inventory": "Товарный запас купца",
+    "monastery_property": "Имущество монастыря",
+    "pledged_property": "Заложенное имущество",
+    "princely_rights": "Княжеские права на имущество",
+    "urban_yard_control": "Владение городским двором",
+    "workshop_tools": "Инструменты мастерской",
+}
+
+
+def add_archive_candidates():
+    """Add archive topics as bounded candidates; do not invent rule mechanics."""
+    source = Path(__file__).with_name("archive_rule_candidates.json")
+    candidates = json.loads(source.read_text(encoding="utf-8"))
+    existing = {row["lw_id"]: row for row in ROWS}
+    candidates_by_ref = {item["archive_id"]: item for item in candidates}
+    errors = []
+    added = 0
+    attached = 0
+    merged = 0
+
+    def provenance(item):
+        archive_ref = item["archive_ref"]
+        return (
+            f"archive:{archive_ref}; basis:{item['basis']}; derivation:{archive_ref}; "
+            f"confidence:{item['confidence']}; period:{item['period']}; region:{item['region']}"
+        )
+
+    def attach(owner, item, *, merged_ref=False):
+        nonlocal attached, merged
+        archive_ref = item["archive_ref"]
+        token = f"archive:{archive_ref}"
+        if token not in owner["source_refs"]:
+            owner["source_refs"] += f"; {provenance(item)}"
+            owner["note_ru"] += (
+                f" Архивная тематическая связь: {archive_ref}; "
+                "не расширяет правило сверх описанного здесь."
+            )
+        if merged_ref:
+            merged += 1
+        else:
+            attached += 1
+
+    # Create only canonical archive topics; explicit mappings below merge or
+    # attach every other archive ref without relying on exact title matches.
+    for item in candidates:
+        archive_id = item["archive_id"]
+        if "attach_to" in item or "merge_into" in item:
+            continue
+        title = item["title_ru"]
+        if archive_id.startswith("n1230:property_rule:"):
+            slug = archive_id.rsplit(":", 1)[-1]
+            title = PROPERTY_TITLES_RU.get(slug, title)
+
+        is_offence = archive_id.rsplit(":", 1)[-1] in {
+            "animal_damage", "boundary_dispute", "crop_damage", "fire_damage",
+            "homicide_compensation", "horse_theft", "insult_compensation",
+            "livestock_theft", "property_damage", "robbery", "slave_or_dependent_theft",
+            "theft_general", "weapon_theft",
+        }
+        is_institution = archive_id.rsplit(":", 1)[-1] in {
+            "church_court_scope", "court_authority_prince_posadnik", "tysyatsky_trade_court",
+        }
+        law_type = "offence" if is_offence else "institution" if is_institution else "procedure"
+        archive_slug = archive_id.rsplit(":", 1)[-1]
+        row_id = "lw_archive_" + archive_slug
+        if row_id in existing:
+            archive_kind = archive_id.split(":", 2)[1]
+            row_id = f"lw_archive_{archive_kind}_{archive_slug}"
+        row = {
+            "lw_id": row_id,
+            "law_type": law_type,
+            "title_ru": title,
+            "offence": "",
+            "victim_status_ref": "",
+            "sanction_kind": "",
+            "amount_units_ref": "",
+            "procedure_refs": "",
+            "jurisdiction": f"кандидат для региона: {item['region']}; применимость требует проверки",
+            "who_reacts_rule": "",
+            "property_effect": "",
+            "note_ru": "Тематическая запись из мастер-архива; не задаёт санкцию, процедуру, полномочие или универсальную норму без отдельной проверки источника.",
+            "period_caveat": f"{item['period']}; region: {item['region']}",
+            "source_article_ref": "",
+            "source_refs": provenance(item),
+            "confidence": item["confidence"],
+            "status": "candidate",
+        }
+        if row["lw_id"] in existing:
+            errors.append(f"{archive_id}: generated id collision {row['lw_id']}")
+            continue
+        existing[row["lw_id"]] = row
+        ROWS.append(row)
+
+    for item in candidates:
+        archive_id = item["archive_id"]
+        if item.get("merge_into"):
+            target = candidates_by_ref.get(item["merge_into"])
+            if target is None or target.get("attach_to") or target.get("merge_into"):
+                errors.append(f"{archive_id}: invalid merge target {item['merge_into']!r}")
+                continue
+            target_slug = target["archive_id"].rsplit(":", 1)[-1]
+            owner_id = "lw_archive_" + target_slug
+            if owner_id not in existing:
+                target_kind = target["archive_id"].split(":", 2)[1]
+                owner_id = f"lw_archive_{target_kind}_{target_slug}"
+            owner = existing.get(owner_id)
+            if owner is None:
+                errors.append(f"{archive_id}: merge owner {owner_id} not found")
+                continue
+            attach(owner, item, merged_ref=True)
+        elif item.get("attach_to"):
+            owner = existing.get(item["attach_to"])
+            if owner is None:
+                errors.append(f"{archive_id}: concrete owner {item['attach_to']} not found")
+                continue
+            attach(owner, item)
+
+    for item in candidates:
+        archive_ref = item["archive_ref"]
+        archive_id = item["archive_id"]
+        if archive_ref != archive_id:
+            errors.append(f"{archive_id}: malformed archive provenance")
+            continue
+        if item["confidence"] not in {"A", "B", "C"}:
+            errors.append(f"{archive_id}: invalid confidence {item['confidence']!r}")
+            continue
+        if item.get("attach_to") and item.get("merge_into"):
+            errors.append(f"{archive_id}: multiple dedup actions")
+        if not item.get("attach_to") and not item.get("merge_into"):
+            added += 1
+
+    # Positive semantic/provenance probes: reviewer-requested merges must point
+    # at concrete source rows or one canonical archive topic.
+    expected_owners = {
+        "n1230:law_rule:dowry_property": "lw_archive_dowry_property",
+        "n1230:property_rule:dowry_property": "lw_archive_dowry_property",
+        "n1230:property_rule:land_use_right": "lw_archive_land_use_right",
+        "n1230:property_rule:landholding_rights": "lw_archive_land_use_right",
+        "n1230:law_rule:land_use_dispute": "lw_archive_land_use_right",
+        "n1230:property_rule:pledged_property": "lw_archive_pledged_property",
+        "n1230:law_rule:pledge_enforcement": "lw_archive_pledged_property",
+        "n1230:law_rule:court_authority_prince_posadnik": "lw_inst_yanin_mixed_court_mid_xii",
+        "n1230:law_rule:boundary_dispute": "lw_offence_boundary_and_marked_tree",
+        "n1230:law_rule:restitution_before_fine": "lw_offence_bodily_injury_three_payments",
+        "n1230:law_rule:fire_damage": "lw_offence_arson_barn_or_yard",
+        "n1230:law_rule:oath_evidence": "lw_proc_debt_denial_witness_oath",
+        "n1230:law_rule:witness_requirement": "lw_proc_witness_status_exceptions",
+        "n1230:law_rule:debt_claim": "lw_proc_debt_denial_witness_oath",
+        "n1230:law_rule:debt_default": "lw_proc_creditor_priority_multiple_debts",
+    }
+    for archive_id, owner_id in expected_owners.items():
+        item = candidates_by_ref.get(archive_id)
+        owner = existing.get(owner_id)
+        if item is None or owner is None or f"archive:{archive_id}" not in owner["source_refs"]:
+            errors.append(f"{archive_id}: missing expected semantic/provenance mapping to {owner_id}")
+
+    # Negative probes: related word families do not collapse distinct offences.
+    for left, right in (
+        ("n1230:law_rule:theft_general", "n1230:law_rule:livestock_theft"),
+        ("n1230:law_rule:horse_theft", "n1230:law_rule:weapon_theft"),
+    ):
+        left_row = next((r for r in ROWS if f"archive:{left}" in r["source_refs"]), None)
+        right_row = next((r for r in ROWS if f"archive:{right}" in r["source_refs"]), None)
+        if left_row is None or right_row is None or left_row["lw_id"] == right_row["lw_id"]:
+            errors.append(f"negative dedup probe collapsed distinct topics: {left} / {right}")
+
+    refs_in_rows = [
+        ref for row in ROWS for ref in re.findall(r"archive:(n1230:[^;]+)", row["source_refs"])
+    ]
+    for item in candidates:
+        if refs_in_rows.count(item["archive_ref"]) != 1:
+            errors.append(f"{item['archive_ref']}: expected exactly one provenance owner")
+
+    canonical_refs = {
+        "n1230:law_rule:dowry_property",
+        "n1230:property_rule:land_use_right",
+        "n1230:property_rule:pledged_property",
+    }
+    expected_action_refs = set(expected_owners) - canonical_refs
+    actual_action_refs = {
+        item["archive_id"] for item in candidates if item.get("attach_to") or item.get("merge_into")
+    }
+    if actual_action_refs != expected_action_refs:
+        errors.append(
+            "reviewer dedup coverage mismatch: "
+            f"missing={sorted(expected_action_refs - actual_action_refs)}; "
+            f"extra={sorted(actual_action_refs - expected_action_refs)}"
+        )
+
+    variants = [
+        ("n1230:property_rule:widow_possession", "lw_proc_widow_separate_property", "analogy"),
+    ]
+    for archive_id, owner_id, basis in variants:
+        owner = existing.get(owner_id)
+        if owner is None:
+            errors.append(f"{archive_id}: variant owner {owner_id} not found")
+            continue
+        archive_ref = f"archive:{archive_id}"
+        if archive_ref not in owner["source_refs"]:
+            owner["source_refs"] += f"; {archive_ref}; basis:{basis}; derivation:{archive_id}; confidence:C; period:ок. 1230–1250; region:Новгородская земля"
+            owner["note_ru"] += " Вариант владения вдовы привязан к этой процедуре как реконструируемое уточнение, а не отдельная норма."
+            owner["period_caveat"] += "; variant period: ок. 1230–1250; region: Новгородская земля; реконструкция требует проверки источника"
+        attached += 1
+
+    # Existing notes carry links between umbrella topics, their specific cases,
+    # and already authored insult norms. These remain references, not new rules.
+    relation_notes = {
+        "lw_archive_property_damage": "Общая тема; частные темы: lw_archive_animal_damage, lw_archive_crop_damage.",
+        "lw_archive_animal_damage": "Частная тема общей категории lw_archive_property_damage.",
+        "lw_archive_crop_damage": "Частная тема общей категории lw_archive_property_damage.",
+        "lw_archive_church_property": "Общая тема имущества церкви; частная тема: lw_archive_monastery_property.",
+        "lw_archive_monastery_property": "Частная тема общей категории lw_archive_church_property.",
+        "lw_archive_church_court_scope": "Общая тема церковной юрисдикции; частная тема: lw_archive_church_marriage_jurisdiction.",
+        "lw_archive_church_marriage_jurisdiction": "Частная тема общей категории lw_archive_church_court_scope.",
+        "lw_archive_merchant_dispute": "Общая тема торговых споров; частные темы: lw_archive_foreign_merchant_dispute, lw_archive_price_dispute.",
+        "lw_archive_foreign_merchant_dispute": "Частная тема общей категории lw_archive_merchant_dispute.",
+        "lw_archive_price_dispute": "Частная тема общей категории lw_archive_merchant_dispute.",
+        "lw_archive_marriage_property": "Общая тема имущества в браке; связанные конкретные темы: lw_archive_dowry_property, lw_proc_widow_separate_property.",
+        "lw_archive_dowry_property": "Частная тема общей категории lw_archive_marriage_property.",
+        "lw_proc_widow_separate_property": "Связано с общей темой lw_archive_marriage_property; отдельная процедура вдовьей доли сохранена.",
+        "lw_archive_theft_general": "Общая тематическая связь с конкретным правилом lw_offence_theft_caught_and_detained; это отдельные записи.",
+        "lw_offence_theft_caught_and_detained": "Связано с общим тематическим охватом lw_archive_theft_general; это отдельные записи.",
+        "lw_archive_insult_compensation": "Связанные нормы о конкретных действиях: sn_rp_beard, sn_rp_blunt_sword, sn_rp_bare_sword, sn_rp_push_slap, sn_rp_slave_insult; ссылки не создают дубликатов и не приравнивают их правовой вес.",
+        "lw_proc_witness_status_exceptions": "Общая тема witness_requirement прикреплена сюда; конкретные исключения для статуса свидетеля остаются различимыми.",
+    }
+    for lw_id, note in relation_notes.items():
+        row = existing.get(lw_id)
+        if row is None:
+            errors.append(f"missing relation-note owner {lw_id}")
+        elif note not in row["note_ru"]:
+            row["note_ru"] = (row["note_ru"] + " " + note).strip()
+
+    # Positive relation probes and negative non-merge probes.
+    for lw_id, required_refs in {
+        "lw_archive_property_damage": ("lw_archive_animal_damage", "lw_archive_crop_damage"),
+        "lw_archive_church_property": ("lw_archive_monastery_property",),
+        "lw_archive_church_court_scope": ("lw_archive_church_marriage_jurisdiction",),
+        "lw_archive_merchant_dispute": ("lw_archive_foreign_merchant_dispute", "lw_archive_price_dispute"),
+        "lw_archive_marriage_property": ("lw_archive_dowry_property", "lw_proc_widow_separate_property"),
+        "lw_archive_theft_general": ("lw_offence_theft_caught_and_detained",),
+        "lw_archive_insult_compensation": (
+            "sn_rp_beard", "sn_rp_blunt_sword", "sn_rp_bare_sword", "sn_rp_push_slap", "sn_rp_slave_insult",
+        ),
+    }.items():
+        row = existing.get(lw_id)
+        if row is None or any(ref not in row["note_ru"] for ref in required_refs):
+            errors.append(f"{lw_id}: reviewer relation-link probe failed")
+    theft_general = existing.get("lw_archive_theft_general")
+    theft_specific = existing.get("lw_offence_theft_caught_and_detained")
+    if not theft_general or not theft_specific or theft_general["lw_id"] == theft_specific["lw_id"]:
+        errors.append("theft umbrella and caught-thief rule were collapsed")
+
+    if errors:
+        raise ValueError("archive candidate errors: " + "; ".join(errors))
+    return {"archive_candidates": len(candidates), "new": added, "attached": attached, "merged": merged, "variants": len(variants)}
+
+
+ARCHIVE_CANDIDATE_COUNTS = add_archive_candidates()

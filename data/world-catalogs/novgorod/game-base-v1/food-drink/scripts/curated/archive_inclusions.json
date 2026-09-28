@@ -1,0 +1,806 @@
+{
+  "decision": "D46 (#133)",
+  "source_crosswalk": "01-material-entities.csv",
+  "material_source_role": "category_form_material_process_or_context",
+  "original_material_scope_count": 151,
+  "original_material_source_relation_count": 914,
+  "demoted_material_entity_ids": [
+    "OMI01462",
+    "OMI01299",
+    "OMI01480",
+    "OMI01476",
+    "OMI01335",
+    "OMI01389",
+    "OMI02068",
+    "OMI02067",
+    "OMI01441",
+    "OMI01468",
+    "OMI01355",
+    "OMI01391",
+    "OMI01467",
+    "OMI01463",
+    "OMI01436",
+    "OMI01437",
+    "OMI01344",
+    "OMI01346",
+    "OMI01347",
+    "OMI01353",
+    "OMI01365",
+    "OMI01366",
+    "OMI01357",
+    "OMI01407",
+    "OMI01411",
+    "OMI01430",
+    "OMI01482",
+    "OMI01483",
+    "OMI01361",
+    "OMI01432",
+    "OMI01433",
+    "OMI02121",
+    "OMI02122",
+    "OMI02123",
+    "OMI02124",
+    "OMI01273",
+    "OMI01274",
+    "OMI01275",
+    "OMI01304",
+    "OMI01305",
+    "OMI01306",
+    "OMI01338",
+    "OMI01370",
+    "OMI01371",
+    "OMI01387",
+    "OMI01392",
+    "OMI01395",
+    "OMI01403",
+    "OMI01404",
+    "OMI01405",
+    "OMI01428",
+    "OMI01460",
+    "OMI02107"
+  ],
+  "material_entity_ids": [
+    "OMI01262",
+    "OMI01263",
+    "OMI01264",
+    "OMI01265",
+    "OMI01266",
+    "OMI01267",
+    "OMI01268",
+    "OMI01269",
+    "OMI01271",
+    "OMI01276",
+    "OMI01277",
+    "OMI01278",
+    "OMI01283",
+    "OMI01286",
+    "OMI01287",
+    "OMI01288",
+    "OMI01302",
+    "OMI01303",
+    "OMI01307",
+    "OMI01318",
+    "OMI01319",
+    "OMI01320",
+    "OMI01324",
+    "OMI01330",
+    "OMI01333",
+    "OMI01339",
+    "OMI01340",
+    "OMI01343",
+    "OMI01351",
+    "OMI01352",
+    "OMI01354",
+    "OMI01359",
+    "OMI01362",
+    "OMI01363",
+    "OMI01367",
+    "OMI01368",
+    "OMI01375",
+    "OMI01376",
+    "OMI01377",
+    "OMI01378",
+    "OMI01383",
+    "OMI01385",
+    "OMI01388",
+    "OMI01394",
+    "OMI01396",
+    "OMI01397",
+    "OMI01398",
+    "OMI01399",
+    "OMI01401",
+    "OMI01402",
+    "OMI01413",
+    "OMI01417",
+    "OMI01418",
+    "OMI01419",
+    "OMI01420",
+    "OMI01421",
+    "OMI01422",
+    "OMI01423",
+    "OMI01424",
+    "OMI01425",
+    "OMI01426",
+    "OMI01427",
+    "OMI01429",
+    "OMI01431",
+    "OMI01434",
+    "OMI01435",
+    "OMI01438",
+    "OMI01439",
+    "OMI01440",
+    "OMI01442",
+    "OMI01443",
+    "OMI01447",
+    "OMI01451",
+    "OMI01453",
+    "OMI01454",
+    "OMI01455",
+    "OMI01457",
+    "OMI01458",
+    "OMI01461",
+    "OMI01464",
+    "OMI01465",
+    "OMI01466",
+    "OMI01471",
+    "OMI01475",
+    "OMI01477",
+    "OMI01478",
+    "OMI01479",
+    "OMI01481",
+    "OMI01486",
+    "OMI01487",
+    "OMI01488",
+    "OMI02043",
+    "OMI02044",
+    "OMI02066"
+  ],
+  "independent_entities": [
+    {
+      "archive_id": "OMI01354",
+      "reason": "Масляное зерно до промывки и формования — физически отдельный полуфабрикат, не готовое сливочное масло."
+    },
+    {
+      "archive_id": "OMI01340",
+      "reason": "Мутный остаток кваса может включать хлебную взвесь; архив не подтверждает тождество дрожжевому осадку."
+    },
+    {
+      "archive_id": "OMI01343",
+      "reason": "Осадок медового напитка имеет неоднозначный состав; архив не подтверждает тождество дрожжевому осадку."
+    },
+    {
+      "archive_id": "OMI01402",
+      "reason": "Живая партия в воде или садке требует отдельного содержания, размещения и контроля гибели; это не просто состояние товарной рыбы."
+    },
+    {
+      "archive_id": "OMI01457",
+      "reason": "Раздавленные ягоды — физически иной полуфабрикат с выделившимся соком для следующего этапа, а не запас свежих ягод."
+    },
+    {
+      "archive_id": "OMI01320",
+      "reason": "Обгоревшая корка — бытовой отход неудачной выпечки; хранится отдельно от единичного археоботанического фрагмента OMI01324."
+    },
+    {
+      "archive_id": "OMI01324",
+      "reason": "Обломок из очага — отдельный charred fragment и археоботанический остаток, не партия пищевого отхода OMI01320."
+    },
+    {
+      "archive_id": "OMI01303",
+      "reason": "Мучная пыль — однородный осевший продукт помола; отличается составом и формой от смёта с каменной пылью OMI01307."
+    },
+    {
+      "archive_id": "OMI01307",
+      "reason": "Жерновой смёт — собранная смесь муки и каменной пыли, а не однородная мучная пыль OMI01303."
+    },
+    {
+      "archive_id": "OMI01268",
+      "reason": "Смешанная партия обмолоченного зерна различается по составу видов; это не зерно с мякиной до веяния OMI01269."
+    },
+    {
+      "archive_id": "OMI01269",
+      "reason": "Примесь мякины задаёт иной состав и обязательную стадию веяния, отличную от смешанной зерновой партии OMI01268."
+    }
+  ],
+  "material_merges": [
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02040",
+      "target_item_id": "OMI01271",
+      "action": "merge",
+      "reason": "Мешочек задаёт тару и количество того же семенного зерна; identity остаётся OMI01271."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02041",
+      "target_item_id": "OMI01271",
+      "action": "merge",
+      "reason": "Горсть задаёт количество того же семенного зерна; identity остаётся OMI01271."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02106",
+      "target_item_id": "OMI01420",
+      "action": "merge",
+      "reason": "Применение рыбьих внутренностей как приманки — назначение OMI01420, не новый тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01452",
+      "target_item_id": "OMI01453",
+      "action": "merge",
+      "reason": "Мешочек задаёт тару для тех же смешанных огородных семян; identity семян остаётся OMI01453."
+    }
+  ],
+  "variants": [
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01293",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_millet_groats"
+      ],
+      "action": "add_variant",
+      "reason": "Очищенная пшённая крупа — состояние существующего продукта."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01314",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_rye_dough",
+        "fd_mixed_dough",
+        "fd_wheat_dough"
+      ],
+      "action": "add_variant",
+      "reason": "Расстойка — состояние теста вообще, не только ржаного."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01315",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_rye_dough",
+        "fd_mixed_dough",
+        "fd_wheat_dough"
+      ],
+      "action": "add_variant",
+      "reason": "Порционирование — состояние теста вообще, не только ржаного."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01317",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_rye_dough",
+        "fd_mixed_dough",
+        "fd_wheat_dough"
+      ],
+      "action": "add_variant",
+      "reason": "Трещины относятся к формованной хлебной заготовке перед выпечкой, не к сырой лепёшке."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01323",
+      "target_kind": "spoilage_state",
+      "target_ids": [
+        "moldy"
+      ],
+      "action": "add_variant",
+      "reason": "Плесневение хлеба выражается общим состоянием порчи moldy."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01337",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_spent_grain"
+      ],
+      "action": "add_variant",
+      "reason": "Подсушивание — состояние существующей дробины."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01349",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_fresh_curd"
+      ],
+      "action": "add_variant",
+      "reason": "Сгусток в ткани — состояние существующего свежего творожного сгустка."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/state_variants.csv:STA0051",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_honey_drink"
+      ],
+      "action": "include_analogy",
+      "reason": "Брожение — аналоговый state-вариант существующего медового напитка."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/state_variants.csv:STA0053",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_dried_herbs"
+      ],
+      "action": "include_analogy",
+      "reason": "Растирание — аналоговый state-вариант существующих сушёных трав."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/state_variants.csv:STA0054",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_hemp_seed"
+      ],
+      "action": "include_analogy",
+      "reason": "Толчение — аналоговый state-вариант существующего конопляного семени."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01462",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_hazelnut_kernel"
+      ],
+      "action": "add_variant",
+      "reason": "Ядра лесных орехов совпадают с существующим продуктом."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01299",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_mixed_flour"
+      ],
+      "action": "add_variant",
+      "reason": "Смешанная мука разных злаков совпадает с существующим продуктом."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01480",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_honey_comb"
+      ],
+      "action": "add_variant",
+      "reason": "Свежий сот с мёдом совпадает с существующим продуктом."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01476",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_plant_oil"
+      ],
+      "action": "add_variant",
+      "reason": "Малая тара — форма существующего растительного масла."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01335",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_spent_grain"
+      ],
+      "action": "add_variant",
+      "reason": "Гуща после затора совпадает с существующей дробиной."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01389",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_salted_meat"
+      ],
+      "action": "add_variant",
+      "reason": "Солёный мясной кусок совпадает с существующим солёным мясом."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02068",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_bran"
+      ],
+      "action": "add_variant",
+      "reason": "Кормовое назначение не создаёт новый тип отрубей."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02067",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_oat_grain"
+      ],
+      "action": "add_variant",
+      "reason": "Кормовое назначение не создаёт новый тип овсяного зерна."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01441",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_onion_greens"
+      ],
+      "action": "add_variant",
+      "reason": "Связка — форма существующей луковой зелени."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01468",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_aromatic_herbs"
+      ],
+      "action": "add_variant",
+      "reason": "Пучок — форма существующих пахучих трав."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01355",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_butter_fresh"
+      ],
+      "action": "add_variant",
+      "reason": "Ком — форма существующего сливочного масла."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01391",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_dried_meat"
+      ],
+      "action": "add_variant",
+      "reason": "Высушенная полоса совпадает с существующим сушёным мясом."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01467",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_edible_wild_greens"
+      ],
+      "action": "add_variant",
+      "reason": "Пучок — форма существующей смешанной съедобной зелени."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01463",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_hazelnut_crushed"
+      ],
+      "action": "add_variant",
+      "reason": "Раздавленные орехи соответствуют существующему толчёному лесному ореху."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01436",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_turnip"
+      ],
+      "action": "add_variant",
+      "reason": "Ботва — состояние репы до очистки."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01437",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_turnip"
+      ],
+      "action": "add_variant",
+      "reason": "Очистка — состояние существующей репы."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01344",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_milk_cow"
+      ],
+      "action": "add_variant",
+      "reason": "Парное — состояние существующего коровьего молока."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01346",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_milk_cow"
+      ],
+      "action": "add_variant",
+      "reason": "Отстаивание — состояние существующего коровьего молока."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01347",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_sour_milk"
+      ],
+      "action": "add_variant",
+      "reason": "Отделение сыворотки — состояние существующего кислого молока."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01353",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_cream"
+      ],
+      "action": "add_variant",
+      "reason": "Сбивание — стадия существующих сливок."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01365",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_animal_fat"
+      ],
+      "action": "add_variant",
+      "reason": "Жир-сырец — состояние существующего животного жира."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01366",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_pork_lard"
+      ],
+      "action": "add_variant",
+      "reason": "Кожа на сале — состояние существующего свиного сала."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01357",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_butter_fresh"
+      ],
+      "action": "add_variant",
+      "reason": "Соление — состояние хранения существующего сливочного масла."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01407",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_fish_gutted"
+      ],
+      "action": "add_variant",
+      "reason": "Распоротое брюхо — состояние существующей потрошёной рыбы."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01411",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_fish_lightly_salted"
+      ],
+      "action": "add_variant",
+      "reason": "Свежий рассол — стадия существующей рыбы слабого посола."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01430",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_fish_dried"
+      ],
+      "action": "add_variant",
+      "reason": "Связка — форма существующей сушёной рыбы."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01482",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_honey_comb"
+      ],
+      "action": "add_variant",
+      "reason": "Разламывание — состояние существующего медового сота."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01483",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_honey_liquid"
+      ],
+      "action": "add_variant",
+      "reason": "Частицы воска — состояние существующего жидкого мёда до очистки."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01361",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_pressed_fresh_cheese"
+      ],
+      "action": "add_variant",
+      "reason": "Прессование — стадия существующего свежего сырного круга."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01432",
+      "target_kind": "material",
+      "target_ids": [
+        "OMI01417"
+      ],
+      "action": "add_variant",
+      "reason": "Использование существующей рыбьей головы как приманки — назначение, не новый тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01433",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_fish_split"
+      ],
+      "action": "add_variant",
+      "reason": "Использование существующего куска рыбы как наживки — назначение, не новый тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02121",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_meat_cut_small"
+      ],
+      "action": "add_variant",
+      "reason": "Использование существующего куска мяса как приманки — назначение, не новый тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02122",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_fish_generic"
+      ],
+      "action": "add_variant",
+      "reason": "Использование неуточнённой рыбы как приманки зверю — назначение существующей общей категории рыбы."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02123",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_grain_clean_generic"
+      ],
+      "action": "add_variant",
+      "reason": "Использование существующего зерна как приманки птице — назначение, не новый тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02124",
+      "target_kind": "fd",
+      "target_ids": [
+        "fd_forest_berries_generic"
+      ],
+      "action": "add_variant",
+      "reason": "Использование существующих ягод как приманки — назначение, не новый тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01274",
+      "target_kind": "spoilage_state",
+      "target_ids": ["moldy"],
+      "action": "add_variant",
+      "reason": "Плесень — состояние порчи зерна moldy, не новый материальный тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01460",
+      "target_kind": "spoilage_state",
+      "target_ids": ["moldy"],
+      "action": "add_variant",
+      "reason": "Плесень — состояние порчи ягод moldy, не новый материальный тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01275",
+      "target_kind": "spoilage_state",
+      "target_ids": ["damp"],
+      "action": "add_variant",
+      "reason": "Подмокание — состояние зерна damp, не новый материальный тип."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01305",
+      "target_kind": "spoilage_state",
+      "target_ids": ["gnawed"],
+      "action": "add_variant",
+      "reason": "Следы мышей выражаются состоянием порчи gnawed для муки."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01428",
+      "target_kind": "spoilage_state",
+      "target_ids": ["rotten"],
+      "action": "add_variant",
+      "reason": "Испорченная рыба выражается общим состоянием порчи rotten."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01395",
+      "target_kind": "spoilage_state",
+      "target_ids": ["rotten"],
+      "action": "add_variant",
+      "reason": "Испорченный мясной кусок выражается общим состоянием порчи rotten."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01338",
+      "target_kind": "spoilage_state",
+      "target_ids": ["soured"],
+      "action": "add_variant",
+      "reason": "Кислый остаток пива выражается состоянием soured, не новым видом напитка."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI02107",
+      "target_kind": "fd",
+      "target_ids": ["fd_fish_generic"],
+      "action": "add_variant",
+      "reason": "Живец — назначение мелкой живой рыбы; размер и использование не создают новый вид."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01370",
+      "target_kind": "fd",
+      "target_ids": ["fd_animal_fat"],
+      "action": "add_variant",
+      "reason": "Смазка — непищевое назначение животного жира без обязательного вытапливания."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01371",
+      "target_kind": "fd",
+      "target_ids": ["fd_rendered_fat"],
+      "action": "add_variant",
+      "reason": "Сальное свечное сырьё — назначение порции вытопленного животного жира."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01306",
+      "target_kind": "fd",
+      "target_ids": ["fd_bran"],
+      "action": "add_variant",
+      "reason": "Пустые оболочки после помола входят в общую категорию отрубей, а не мучных высевок."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01403",
+      "target_kind": "fd",
+      "target_ids": ["fd_fish_generic"],
+      "action": "add_variant",
+      "reason": "Мокрая только что выловленная рыба — состояние общего продукта до сортировки."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01404",
+      "target_kind": "fd",
+      "target_ids": ["fd_fish_generic"],
+      "action": "add_variant",
+      "reason": "Сортировка по крупному размеру задаёт партию общей рыбы, не новый продукт."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01405",
+      "target_kind": "fd",
+      "target_ids": ["fd_fish_generic"],
+      "action": "add_variant",
+      "reason": "Мелкий размер не доказывает вид снетка; это сортированная партия общей рыбы."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01387",
+      "target_kind": "fd",
+      "target_ids": ["fd_blood_animal"],
+      "action": "add_variant",
+      "reason": "Сгусток — состояние уже существующей категории крови после забоя."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01392",
+      "target_kind": "fd",
+      "target_ids": ["fd_dried_meat"],
+      "action": "add_variant",
+      "reason": "Копчёная полоса — осторожно реконструируемая форма сохранённого сушёного мяса, как OMI01391."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01273",
+      "target_kind": "spoilage_state",
+      "target_ids": ["sprouted"],
+      "action": "add_variant",
+      "reason": "Нежелательное прорастание при сыром хранении — состояние порчи зерна sprouted."
+    },
+    {
+      "archive_ref": "data/normalized_source_tables/material_entities/material_entities.csv:OMI01304",
+      "target_kind": "spoilage_state",
+      "target_ids": ["damp"],
+      "action": "add_variant",
+      "reason": "Слежавшийся ком муки — проявление состояния damp, а не новый материал."
+    }
+  ],
+  "seasonality_refinements": [
+    {
+      "ds_id": "ds_pottage_nettle_greens",
+      "month": 8,
+      "required_fd_id": "fd_nettle_greens",
+      "availability": "rare",
+      "reason": "ingredient_months refines August nettle availability to rare"
+    },
+    {
+      "ds_id": "ds_pottage_sorrel_greens",
+      "month": 8,
+      "required_fd_id": "fd_sorrel_greens",
+      "availability": "rare",
+      "reason": "ingredient_months refines August sorrel availability to rare"
+    },
+    {
+      "ds_id": "ds_pottage_goutweed_greens",
+      "month": 7,
+      "required_fd_id": "fd_goutweed_greens",
+      "availability": "rare",
+      "reason": "ingredient_months refines July goutweed availability to rare"
+    },
+    {
+      "ds_id": "ds_pottage_goutweed_greens",
+      "month": 8,
+      "required_fd_id": "fd_goutweed_greens",
+      "availability": "rare",
+      "reason": "ingredient_months refines August goutweed availability to rare"
+    },
+    {
+      "ds_id": "ds_pottage_orache_greens",
+      "month": 5,
+      "required_fd_id": "fd_orache_greens",
+      "availability": "rare",
+      "reason": "ingredient_months refines May orache availability to rare"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Deterministic checks for group households-psychology-speech (candidate).
 Run after build.py. Exits non-zero on any failed check."""
-import csv, hashlib, json, os, sys, ast, re, copy
+import csv, hashlib, json, os, sys, ast, re, copy, unicodedata
 from collections import Counter
 from build import literacy_register, load_psychology_scales
 
@@ -49,6 +49,35 @@ with open(pp_path, encoding="utf-8", newline="") as f:
     if pp_reader.fieldnames != PSYCHOLOGY_PROFILE_FIELDS:
         errors.append(f"psychology_profiles.csv: schema mismatch: {pp_reader.fieldnames}")
     pp_rows = list(pp_reader)
+
+# Deferred B2 #161 backlog: report-only; no profile consumer or schema extension.
+deferred_path = os.path.join(ROOT, "reports", "deferred_psychology_variants.csv")
+deferred_fields = ["variant_name", "source_paths", "archive_refs", "target_path",
+                   "profile_ref", "typed_status", "note", "issues"]
+with open(deferred_path, encoding="utf-8", newline="") as f:
+    deferred_reader = csv.DictReader(f)
+    if deferred_reader.fieldnames != deferred_fields:
+        errors.append(f"deferred_psychology_variants.csv: schema mismatch: {deferred_reader.fieldnames}")
+    deferred_rows = list(deferred_reader)
+if len(deferred_rows) != 380:
+    errors.append(f"deferred_psychology_variants.csv: expected 380 rows, found {len(deferred_rows)}")
+profile_ids = {row.get("ps_id") for row in pp_rows}
+deferred_keys = set()
+for i, row in enumerate(deferred_rows):
+    if None in row or any(not isinstance(row.get(field), str) or not row[field].strip() for field in deferred_fields):
+        errors.append(f"deferred_psychology_variants.csv row {i}: missing or malformed typed field")
+        continue
+    if row["target_path"] != "households-psychology-speech/npc_psychology/psychology_profiles.csv":
+        errors.append(f"deferred_psychology_variants.csv row {i}: invalid target_path")
+    if row["typed_status"] != "deferred_b2_161_no_consumer":
+        errors.append(f"deferred_psychology_variants.csv row {i}: invalid typed_status")
+    if row["profile_ref"] not in profile_ids:
+        errors.append(f"deferred_psychology_variants.csv row {i}: unknown profile_ref {row['profile_ref']!r}")
+    key = (" ".join(unicodedata.normalize("NFKC", row["variant_name"]).casefold().split()), row["profile_ref"])
+    if key in deferred_keys:
+        errors.append(f"deferred_psychology_variants.csv row {i}: duplicate normalized variant_name+profile_ref")
+    deferred_keys.add(key)
+
 psychology_scales = load_psychology_scales()
 PSYCHOLOGY_EVIDENCE_PATH = os.path.join(os.path.dirname(os.path.dirname(ROOT)), "sources", "books-evidence-v1", "households-psychology-speech.csv")
 with open(PSYCHOLOGY_EVIDENCE_PATH, encoding="utf-8", newline="") as f:
@@ -615,6 +644,28 @@ sn_rows = read_csv(os.path.join(ROOT, "social_norms_honour_hospitality", "norms.
 for i, r in enumerate(sn_rows):
     if r.get("confidence") not in ("A", "B", "C"):
         errors.append(f"norms row {i}: confidence not in A/B/C: {r.get('confidence')!r}")
+
+archive_variant_refs = {
+    "sn_rp_slave_insult": {
+        "basis:logical_necessity",
+        "derivation:n1230:law_rule:master_liability",
+        "crosswalk_confidence:C", "crosswalk_period:ок. 1230", "crosswalk_region:Новгородская земля",
+    },
+    "sn_wk_rp-minor-children-conditional-care": {
+        "basis:analogy",
+        "derivation:n1230:property_rule:minor_property_guardianship",
+        "crosswalk_confidence:C", "crosswalk_period:ок. 1230–1250", "crosswalk_region:Новгородская земля",
+    },
+}
+for sn_id, expected_refs in archive_variant_refs.items():
+    matches = [r for r in sn_rows if r.get("sn_id") == sn_id]
+    actual_refs = set(matches[0].get("source_refs", "").split(";")) if len(matches) == 1 else set()
+    if len(matches) != 1 or not expected_refs.issubset(actual_refs):
+        errors.append(f"norms {sn_id}: missing or duplicate archive-variant provenance")
+    for ref in expected_refs:
+        expected_count = sum(ref in refs for refs in archive_variant_refs.values())
+        if sum(ref in r.get("source_refs", "").split(";") for r in sn_rows) != expected_count:
+            errors.append(f"norms {sn_id}: archive provenance must occur exactly once: {ref}")
 
 if errors:
     print(f"FAIL: {len(errors)} check(s) failed")

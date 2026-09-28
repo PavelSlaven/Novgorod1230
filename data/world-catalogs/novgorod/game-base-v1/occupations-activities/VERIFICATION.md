@@ -474,3 +474,37 @@ F2: slot override в `actor_appearance_authoring.json` выбирает `nov_clo
 - **Основание.** Это редакционное игровое допущение по реалистичности (D33), не историческая частота: `no_source` указан явно. Механизм прежний — `applicability` и `incompatible_with` этого файла, нового нет.
 - **Исправляет** дефект прозаического теста v5 (#158, комментарий 5869978527): бритые и лысые женщины, лысые молодые, «старик» с чёрными волосами.
 - **Не изменены:** 28 профилей остаются `candidate`; одобренные исходные строки spatial-v3 не тронуты.
+
+## Независимая проверка D46 imp-people (Claude Opus 5.5, 2026-09-29)
+
+История: круг 1 — rework (дубли и узкие специализации → варианты, B→logical_necessity, копирование ролей/мест/навыков аналога). Круг 2 — rework (шаблоны архивного семейства в сезонности, цепочках и связях; region; context policy; basis A по семейным источникам; PRO0210; непрозрачные id; forest profile; связь музыкантов со скоморохом). Круг 3 — итоговый.
+
+Проверено скриптами в круге 3:
+- 14 новых владельцев со смысловыми id (OA-8, OA-7 occ_household_stove_maker), 43 активных варианта сериализованы ровно один раз у целевого owner/profile, 15 typed deferred не попали в данные.
+- OA-1/2: частоты по всем 479 профессиям архива; сегменты, общие для ≥2 workflow_family, в новых строках есть только в `notes`. 17 поведенческих полей и routine 14 новых профилей — no_source; у изменённых старых строк меняется только provenance.
+- OA-3 архетипы, OA-4 region_novgorod_land 14/14, OA-5 context_only (8 владельцев, 13 variant-токенов = authoring), OA-6 basis (sourced ровно PRO0448/0107/0109/0111/0119; итог 5/4/63 из 72), OA-9 PRO0104/0071 → m2c_npc_forest_worker_v1, OA-10 related_role:nov_role_skomorokh + семья PRO0449–0452.
+- Дубли по основам против 19 старых и 68 pinned занятий — новых нет; коллизий id нет; denylist — 0.
+
+Прогоны (копия): все сборщики ×2 — вывод = worktree, повтор побайтно; check_occupations_additions, validate.py, validate.py --self-test — OK; build-catalog, build-status + тест, places-binding validate --start-territory — PASS; смежные build_schedules и check-people-composition без изменений.
+
+Ограничения:
+- `notes` 14 новых строк цитирует межсемейную «Рабочую цепочку» архива (могильщик — литургическая, хозяин постоя — купеческая). Поле не читает ни один потребитель; вырезать до переноса в approved/runtime.
+- OA-6: у 5 sourced-ссылок нет оговорки «свидетельство о предмете или практике».
+- 15 deferred вариантов поимённо только в authoring JSON; README даёт лишь счёт, фраза о «source patterns» в occupations/README.md устарела.
+- Музыканты без архетипа до решения владельца; двойная provenance PRO0115 (occ_netmaker) и PRO0204 (limeburner/mason).
+- Новые занятия — кандидаты с no_source-поведением; для runtime нужен отдельный authoring и утверждение.
+
+Вердикт по файлам:
+- occupations/occupations_additions.csv — approve_with_limits (notes, оговорка OA-6)
+- occupations/archive-professions.authoring.json (новый) — approve
+- occupations/scripts/archive_professions.py (новый), build_occupations_additions.py, check_occupations_additions.py — approve
+- occupations/README.md — approve_with_limits (устаревшая фраза, deferred не поимённо)
+- README.md — approve
+- activities_observable/activities_new_occupations.csv, scripts/build_activities_for_new_occupations.py — approve
+- npc_runtime_profiles/npc_runtime_profiles.json — approve_with_limits (оговорка OA-6 у fisher/hunter)
+- npc_runtime_profiles/build.py, README.md — approve
+- skills_competences/skills_competences.json — approve
+- skills_competences/build.py — approve
+- skills_competences/README.md — approve
+- validate.py — approve
+Группа: approve_with_limits.

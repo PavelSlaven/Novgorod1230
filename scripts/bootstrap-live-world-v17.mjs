@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -86,6 +86,55 @@ const gate1AttestationV2Path =
   `${gate1}/v17-bootstrap-import-approval-attestation-v2.json`;
 const gate1AttestationV2Schema = 'rus.gate1_v17_bootstrap_import_approval.v1';
 const gate1AttestationV2Verdicts = new Set(['APPROVE', 'APPROVE_CONDITIONAL']);
+const freshSchemaRequestPath = `${v17}/fresh-schema-request.json`;
+const freshSchemaAttestationSchema = 'rus.live_world_runtime_v17_fresh_schema_approval.v1';
+const freshSchemaAttestationVerdicts = new Set(['APPROVE', 'APPROVE_CONDITIONAL']);
+const freshSchemaAttestationPattern = /^fresh-schema-approval-attestation.*\.json$/u;
+
+export function computeFreshSchemaRequestDigest(requestBytes) {
+  return createHash('sha256').update(requestBytes).digest('hex');
+}
+
+export function assertV17FreshSchemaAttestation({
+  requestPath = freshSchemaRequestPath,
+  requestDigest,
+  attestation
+}) {
+  if (!attestation) throw new Error('V17_FRESH_SCHEMA_ATTESTATION_REQUIRED');
+  if (attestation.schema !== freshSchemaAttestationSchema) {
+    throw new Error('V17_FRESH_SCHEMA_ATTESTATION_SCHEMA_MISMATCH');
+  }
+  if (!freshSchemaAttestationVerdicts.has(attestation.verdict)) {
+    throw new Error('V17_FRESH_SCHEMA_ATTESTATION_VERDICT_REJECTED');
+  }
+  if (attestation.request_path !== requestPath) {
+    throw new Error('V17_FRESH_SCHEMA_ATTESTATION_REQUEST_PATH_MISMATCH');
+  }
+  if (attestation.request_digest !== requestDigest) {
+    throw new Error('V17_FRESH_SCHEMA_ATTESTATION_DIGEST_MISMATCH');
+  }
+  return attestation;
+}
+
+export async function loadFreshSchemaAttestationFromRepo({
+  requestPath = freshSchemaRequestPath,
+  requestDigest,
+  catalogDir = resolve(root, v17)
+} = {}) {
+  if (!requestDigest) throw new Error('V17_FRESH_SCHEMA_REQUEST_DIGEST_REQUIRED');
+  const names = await readdir(catalogDir);
+  const matches = [];
+  for (const name of names) {
+    if (!freshSchemaAttestationPattern.test(name)) continue;
+    const attestation = JSON.parse(await readFile(resolve(catalogDir, name), 'utf8'));
+    if (attestation.request_path !== requestPath
+        || attestation.request_digest !== requestDigest) continue;
+    matches.push(attestation);
+  }
+  if (matches.length === 0) throw new Error('V17_FRESH_SCHEMA_ATTESTATION_REQUIRED');
+  if (matches.length > 1) throw new Error('V17_FRESH_SCHEMA_ATTESTATION_AMBIGUOUS');
+  return matches[0];
+}
 
 export function assertV17Gate1V2Attestation(request, attestation) {
   if (!attestation) throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
@@ -112,9 +161,22 @@ async function exact(path, sha256, bytes) {
 async function json(path) { return JSON.parse(await readFile(resolve(root, path), 'utf8')); }
 
 export async function checkV17BootstrapInputs({
-  attestationV2Path = gate1AttestationV2Path
+  attestationV2Path = gate1AttestationV2Path,
+  freshSchemaCatalogDir = resolve(root, v17)
 } = {}) {
-  const schema = await json(`${v17}/fresh-schema-request.json`);
+  const schemaRequestBytes = await readFile(resolve(root, freshSchemaRequestPath));
+  const schema = JSON.parse(schemaRequestBytes.toString('utf8'));
+  const freshSchemaDigest = computeFreshSchemaRequestDigest(schemaRequestBytes);
+  const freshSchemaAttestation = await loadFreshSchemaAttestationFromRepo({
+    requestPath: freshSchemaRequestPath,
+    requestDigest: freshSchemaDigest,
+    catalogDir: freshSchemaCatalogDir
+  });
+  assertV17FreshSchemaAttestation({
+    requestPath: freshSchemaRequestPath,
+    requestDigest: freshSchemaDigest,
+    attestation: freshSchemaAttestation
+  });
   if (schema.party_schema?.chain_digest !== SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST) {
     throw new Error('V17_FRESH_SCHEMA_CHAIN_DIGEST_MISMATCH');
   }

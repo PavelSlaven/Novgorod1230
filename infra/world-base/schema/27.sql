@@ -84,7 +84,8 @@ CREATE TABLE IF NOT EXISTS world_base.presence_rules (
   CHECK (
     subject_kind = 'category'
     OR (item_ref IS NULL AND variants = '[]'::jsonb)
-  )
+  ),
+  CHECK (variants = '[]'::jsonb OR item_ref IS NOT NULL)
 );
 
 CREATE INDEX IF NOT EXISTS presence_rules_scope_idx

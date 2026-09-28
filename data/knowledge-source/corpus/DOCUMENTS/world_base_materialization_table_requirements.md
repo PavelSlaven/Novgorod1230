@@ -213,7 +213,7 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |
 | `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |
 | `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |
-| `item_ref` | при `subject_kind=category` — выбранная вещь правила; NULL, если authoring не задаёт конкретный item |
+| `item_ref` | при `subject_kind=category` — выбранная подкатегория или вещь правила; NULL только если `variants` пуст; иначе обязателен (DDL CHECK) |
 | `variants` | JSON-массив объектов с обязательным `item_ref` (optional provenance); альтернативные вещи той же категории; пул выбора и равномерный draw — §3A.4 |
 | `presence_probability_ppm` | целое 0…1_000_000 |
 | `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |

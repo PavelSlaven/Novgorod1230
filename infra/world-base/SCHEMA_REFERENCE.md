@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 27 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `236a7dbedb13ca0e57844a556e9264103a05800a240ae4f2550e4968e6cc7f28`.
+- SHA-256 развёрнутого DDL: `90874ea773501f26a8a0234bd6d9915946849c5af18aa98750cd76f49f3ec7cf`.
 - Таблиц: 217.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3707,6 +3707,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 - `UNIQUE (rule_id, rule_version, world_revision_id)`
 - `CHECK ( (subject_kind = 'category' AND category_id IS NOT NULL) OR (subject_kind IN ('social_role', 'occupation') AND category_id IS NULL) )`
 - `CHECK ( subject_kind = 'category' OR (item_ref IS NULL AND variants = '[]'::jsonb) )`
+- `CHECK (variants = '[]'::jsonb OR item_ref IS NOT NULL)`
 
 ### `world_base.npc_relationship_materialization_rules`
 

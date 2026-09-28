@@ -10,7 +10,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = process.cwd();
-const DEFAULT_SOURCE_COMMIT = '367a88c07d6f153433e3143a2de2fb82446d17ee';
+const DEFAULT_SOURCE_COMMIT = '63d0ef943c4fa201ed36e8b3d06cd4c9433c4614';
 const SOURCE_COMMIT = process.env.M2C_SOURCE_COMMIT ?? DEFAULT_SOURCE_COMMIT;
 const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
 const OUT_ROOT = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
@@ -109,23 +109,27 @@ export function parseTextArray(raw) {
 export function parseVariants(raw) {
   const t = String(raw ?? '').trim();
   if (!t || t === '[]') return [];
+  let parsed;
   try {
-    const parsed = JSON.parse(t);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map((entry) => {
-      if (typeof entry === 'string') return entry;
-      if (entry && typeof entry === 'object' && entry.item_ref != null) {
-        const variant = { item_ref: String(entry.item_ref) };
-        if (entry.source_pool) variant.source_pool = String(entry.source_pool);
-        if (entry.source_row_id) variant.source_row_id = String(entry.source_row_id);
-        return variant;
-      }
-      throw new Error(`invalid variants entry: ${JSON.stringify(entry)}`);
-    });
-  } catch (error) {
-    if (String(error.message).startsWith('invalid variants')) throw error;
-    return [];
+    parsed = JSON.parse(t);
+  } catch {
+    throw new Error(`invalid variants JSON: ${t.slice(0, 80)}`);
   }
+  if (!Array.isArray(parsed)) {
+    throw new Error(`invalid variants: expected JSON array, got ${typeof parsed}`);
+  }
+  return parsed.map((entry) => {
+    if (typeof entry === 'string') {
+      throw new Error(`invalid variants entry: string elements are forbidden: ${entry}`);
+    }
+    if (entry && typeof entry === 'object' && entry.item_ref != null) {
+      const variant = { item_ref: String(entry.item_ref) };
+      if (entry.source_pool) variant.source_pool = String(entry.source_pool);
+      if (entry.source_row_id) variant.source_row_id = String(entry.source_row_id);
+      return variant;
+    }
+    throw new Error(`invalid variants entry: ${JSON.stringify(entry)}`);
+  });
 }
 
 /** Slot variant weight: empty → 1; zero/negative → error (DDL requires weight > 0). */

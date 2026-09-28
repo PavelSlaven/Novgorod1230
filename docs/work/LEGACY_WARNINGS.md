@@ -365,13 +365,13 @@
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-072 — local-play git provenance в worktree
-- **Где.** `tools/local-play/local-play.js:140` (`readGit` → `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`); acceptance `test/acceptance/local-play-postgres.test.js:65-66` (`provisionRuntime` ожидает `startLlm === false`).
-- **Доказательство.** На `a8aa11c4` (и `162a86b9`): `npm run test:acceptance` — «local play persists a free turn» падает тем же образом; git provenance в detached worktree без gh PR — `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`, не регресс datasets CR #158.
-- **Как жить.** `readGit`/gh PR head mismatch — окружение worktree. Падение «persists a free turn» из‑за `startLlm` — **дефект acceptance-теста** (stub не передаёт `startLlm`), не блокер M2c importer.
+- **Где.** `tools/local-play/local-play.js:126` (`readGit` → `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`); `:140` — `provisionRuntime({ repositoryRoot, env, fetchImpl, log })` **без** `startLlm`; acceptance `test/acceptance/local-play-postgres.test.js:65-66` (stub `provisionRuntime` не передаёт `startLlm === false`).
+- **Доказательство.** На `162a86b9` и `a8aa11c4`: `node --test test/acceptance/local-play-postgres.test.js` — «local play persists a free turn» падает `startLlm` assertion; detached worktree без gh PR даёт `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` на `:126`, не регресс datasets CR #158.
+- **Как жить.** `readGit`/gh PR head mismatch — окружение worktree. Падение «persists a free turn» из‑за `startLlm` — **дефект acceptance-теста**, не блокер M2c importer.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-073 — acceptance revision 35 timeout
-- **Где.** `test/acceptance/*` кейс «revision 35 survives production restart» (300s budget).
-- **Доказательство.** REVIEW-069d / `fullsuite-logs/base_acceptance.log`: на коммите до M2c — 1 fail cancelled по таймауту 300s; совпадает с прогоном DONE-069d (3 pass / 1 fail / 1 cancelled).
-- **Как жить.** Не считать регрессом DONE-070b; полный acceptance — после fresh-schema attestation v3 (REVIEW-070 г).
+### LW-073 — acceptance revision 35 timeout (регресс-кандидат CR #158)
+- **Где.** `test/acceptance/lower-dvina-trace-phase-11-restart-postgres.test.js` (300s/600s); `test/acceptance/lower-dvina-trace-s1-first-entry-postgres.test.js` (300s, handle leak на CR).
+- **Доказательство.** NOTE-acceptance-regression / `inputs/fullsuite-fb8db964/triage.md`: на `162a86b9` restart-тесты проходят (266s/335s); на коде CR #158 — таймауты и `Cannot use a pool after calling end on the pool`; s1-first-entry на CR не завершает node после сьюта.
+- **Как жить.** Регресс-кандидат CR #158, разбор в **PLAN-070d** (не «до CR»); блокер merge #98. Полный acceptance на HEAD — после 070d и fresh-schema v3 (REVIEW-070 г).
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

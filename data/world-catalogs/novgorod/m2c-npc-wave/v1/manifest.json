@@ -3,25 +3,25 @@
   "bundle_id": "novgorod_m2c_npc_wave_v1",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "status": "draft",
-  "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+  "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
   "delete_policy": "forbid",
-  "source_commit": "367a88c07d6f153433e3143a2de2fb82446d17ee",
+  "source_commit": "63d0ef943c4fa201ed36e8b3d06cd4c9433c4614",
   "datasets": [
     {
       "table": "source_records",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/source_records.json",
-      "sha256": "01f959fe8bc27d91924ad878a294e457a7b9087f8e839649a104195c2d51bca5",
+      "sha256": "26e241d7b7d5fc99822c08bf3ed930e6a93ffacaf4a448903b46775a83507591",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": []
     },
     {
       "table": "place_families",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_families.json",
-      "sha256": "70c85ae21fc42184455011bf314f584684a7452d4327640409ee2c39f3bc1cfd",
+      "sha256": "4ac3d8e4e65de3828863f54953378e850ad496568d29efcf4294c34b73f90e4c",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -30,9 +30,9 @@
     {
       "table": "spatial_node_place_family_bindings",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/spatial_node_place_family_bindings.json",
-      "sha256": "4828875b2678c6ae9f2c234b324459ac9c4aa93fc526c0e1e057947b729267f4",
+      "sha256": "f85f3b45d50349769014bf9190b64ca5884b8a73c7f20378fdc457568981b64c",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -41,9 +41,9 @@
     {
       "table": "presence_rules",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/presence_rules.json",
-      "sha256": "5db650bf15f8ee5bed0076a6658d4117460ef178ccc5038e7b371496d811a836",
+      "sha256": "73743ce307871e38c95da1fd9c0e97a40bab64840f25017ed2c2412bee4a6708",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -52,9 +52,9 @@
     {
       "table": "npc_relationship_materialization_rules",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_relationship_materialization_rules.json",
-      "sha256": "eee96bca5362603d1df883c01bf73cf1c227a57cf673c00b78cff7b232755568",
+      "sha256": "0983ce9d1ba60fa7010a8c922a6643f5850947f9790d58907bc6b5fddc960912",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -63,9 +63,9 @@
     {
       "table": "speech_address_forms",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/speech_address_forms.json",
-      "sha256": "c4ca6538e3ca922249de8fd3d7b10f465081bbda6e66704a285d82a157d13730",
+      "sha256": "d3d92856c5ef34ed0251b90c2a4284e5b9c138d3834e37c8ec3b21ab85b7f456",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -74,9 +74,9 @@
     {
       "table": "household_composition_profiles",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/household_composition_profiles.json",
-      "sha256": "2c4f162dcfe45f630bcf3829ea0475dc86804d8295b65d04ab32691362c92e31",
+      "sha256": "8a128ec48158a2638d824cc05d369332e99d30ab060971a5d6a81e355b4bd964",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -85,9 +85,9 @@
     {
       "table": "slot_instance_variants",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/slot_instance_variants.json",
-      "sha256": "77a1d66117c8d33c4e6a695f32ce33152887c930142a47e85c4711361733b90d",
+      "sha256": "ca73b5f81eea1915fdb1c05140132797e348d8e2dd8e945f98afd300c4e427e4",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -96,9 +96,9 @@
     {
       "table": "water_body_presence_facets",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/water_body_presence_facets.json",
-      "sha256": "1721b06be76d1c6cd26dee3077488c1c17874e901324cb3b8c0659ce06e320c8",
+      "sha256": "78b805760175a4ce27c24cbb774e3ddf5041dc1065a5423066108637ca289661",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -107,9 +107,9 @@
     {
       "table": "fauna_phase_activity_rules",
       "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/fauna_phase_activity_rules.json",
-      "sha256": "fe2751a7db9a5d1c4e9975cfcb635530ccc22fd4310416ac7ad72c1f70cac93a",
+      "sha256": "2876f245e347712e98eaa65a4f0fc0364d2358ef9f6816221e09bd707c6441a3",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_367a88c0",
+      "provenance_ref": "game_base_v1_m2c_people_63d0ef94",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"

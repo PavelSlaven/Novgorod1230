@@ -107,6 +107,12 @@ test('parseVariants empty array', () => {
   assert.deepEqual(parseVariants('[]'), []);
 });
 
+test('parseVariants fail-closed on malformed CSV JSON', () => {
+  assert.throws(() => parseVariants('{not-json'), /invalid variants JSON/u);
+  assert.throws(() => parseVariants('{"x":1}'), /expected JSON array/u);
+  assert.throws(() => parseVariants('["it_str"]'), /string elements are forbidden/u);
+});
+
 test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
   const parent = await mkdtemp(join(tmpdir(), 'm2c-gen-'));
   const outA = join(parent, 'a');

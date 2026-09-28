@@ -236,7 +236,14 @@
               "subject_ref": "nov_occ_household_servant",
               "profile_ref": "m2c_npc_household_servant_v1",
               "household_member_class": null,
-              "weight": 1
+              "weight": 1,
+              "sex": "male",
+              "sex_confidence": "C",
+              "sex_reason": "Для конкретного слота при хозяйственных постройках редакционно выбран мужчина (уверенность C): строка занятия включает перенос дров и работу в конюшне; PRO0421 описывает женский вариант той же прислуги и не подтверждает этот выбор пола.",
+              "sex_source_refs": [
+                "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant",
+                "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421"
+              ]
             }
           ],
           "household_profile_ref": null,

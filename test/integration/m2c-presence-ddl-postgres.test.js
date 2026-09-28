@@ -164,6 +164,21 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
       subject_kind, subject_ref, category_id, item_ref, variants,
       presence_probability_ppm, count_limit, confidence, status
     ) VALUES (
+      'pr-var-no-item', 1, 'm2c-rev', 'place_family', 'pf_a',
+      'category', 'cat_v', 'cat_v', NULL,
+      '[{"item_ref":"it_orphan"}]'::jsonb,
+      0, 0, 'high', 'approved'
+    )
+  `), (error) => {
+    assert.equal(error.code, '23514', 'non-empty variants require item_ref');
+    return true;
+  });
+  await assert.rejects(() => world.query(`
+    INSERT INTO world_base.presence_rules(
+      rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_kind, subject_ref, category_id, item_ref, variants,
+      presence_probability_ppm, count_limit, confidence, status
+    ) VALUES (
       'pr-cat', 1, 'm2c-rev', 'place_family', 'pf_b',
       'category', 'cat_z', 'cat_z', 'it_other', '[]'::jsonb,
       0, 0, 'high', 'approved'

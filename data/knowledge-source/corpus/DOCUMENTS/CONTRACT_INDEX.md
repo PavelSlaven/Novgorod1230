@@ -87,7 +87,7 @@ Contract Auditor не копирует весь generated module index сюда 
 
 | Документ | Статус | Основной scope / примечание |
 |---|---|---|
-| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details; §3A.1 — `place_family` как единственный слой типов мест для presence/routines/water/slots (CR #158 / D26) |
+| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details; §3A.1 — `place_family`, ключ броска и rule-cause (C12); §3A.4 — подкатегория/число и пул `item_ref`/`variants` (CR #158 / D26) |
 | [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |
 | [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |
 | [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |

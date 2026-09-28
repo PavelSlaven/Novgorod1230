@@ -81,6 +81,27 @@ def option(value, weight, source_ref=None, rule=None, no_source=None, name_ru=No
     return result
 
 
+def appearance_options(facet, appearance):
+    source_rows = [(source, row) for source, rows_for_source in appearance
+                   for row in rows_for_source if row["facet"] == facet]
+    policy = AUTHORING["conditional_option_weight_policy"]
+    variants = [variant for variant in policy["variants"] if variant["facet"] == facet]
+    if not variants:
+        return [option(row["option_id"], row["weight"], source + "#" + row["id"],
+                       "filter source applicability against previously selected facets in code",
+                       None, name_ru=AUTHORING["option_names_ru"][row["option_id"]],
+                       **row["applicability"])
+                for source, row in source_rows]
+    sources = {row["option_id"]: (source, row) for source, row in source_rows}
+    assert set(variant["value"] for variant in variants) == set(sources)
+    return [option(variant["value"], variant["weight"],
+                   sources[variant["value"]][0] + "#" + sources[variant["value"]][1]["id"],
+                   policy["rule"], policy["no_source"],
+                   name_ru=AUTHORING["option_names_ru"][variant["value"]],
+                   **variant["applicability"])
+            for variant in variants]
+
+
 def regional_options(profile, role, regions, outfits, clothing_by_role, equipment):
     occupation = profile["occupation_ref"]
     eligibility = actor_applicability(role, occupation)
@@ -168,13 +189,7 @@ def main():
     equipment = json.loads(EQUIPMENT.read_text(encoding="utf-8"))["profiles"]
     appearance = [(DEMOGRAPHIC_REF, json.loads(DEMOGRAPHIC.read_text(encoding="utf-8"))),
                   (APPEARANCE_REF, json.loads(APPEARANCE.read_text(encoding="utf-8")))]
-    appearance_sets = {facet: [option(row["option_id"], row["weight"],
-                                      source + "#" + row["id"],
-                                      "filter source applicability against previously selected facets in code",
-                                      None, name_ru=AUTHORING["option_names_ru"][row["option_id"]],
-                                      **row["applicability"])
-                                for source, rows_for_source in appearance for row in rows_for_source
-                                if row["facet"] == facet]
+    appearance_sets = {facet: appearance_options(facet, appearance)
                        for facet in baseline["appearance_policy"]["required_facets"]}
     bound = {p["profile_id"]: p for p in bindings["profiles"]}
     profiles = []

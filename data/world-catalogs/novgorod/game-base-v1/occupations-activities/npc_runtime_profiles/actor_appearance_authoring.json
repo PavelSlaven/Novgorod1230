@@ -43,6 +43,47 @@
     "nov_1200_1250_eye_color_brown": "карие глаза",
     "nov_1200_1250_eye_color_dark": "тёмные глаза"
   },
+  "conditional_option_weight_policy": {
+    "rule": "D33 editorial game assumption: apply age and sex compatibility before weighted selection; weights are relative gameplay weights, not historical frequencies.",
+    "no_source": "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced",
+    "variants": [
+      {"facet": "hair_length", "value": "nov_1200_1250_hair_length_bald", "weight": 1, "applicability": {"sex_category": ["male"], "age_category": ["adult"]}},
+      {"facet": "hair_length", "value": "nov_1200_1250_hair_length_bald", "weight": 2, "applicability": {"sex_category": ["male"], "age_category": ["middle_aged"]}},
+      {"facet": "hair_length", "value": "nov_1200_1250_hair_length_bald", "weight": 3, "applicability": {"sex_category": ["male"], "age_category": ["old"]}},
+      {"facet": "hair_length", "value": "nov_1200_1250_hair_length_short", "weight": 5, "applicability": {}},
+      {"facet": "hair_length", "value": "nov_1200_1250_hair_length_medium", "weight": 3, "applicability": {}},
+      {"facet": "hair_length", "value": "nov_1200_1250_hair_length_long", "weight": 1, "applicability": {}},
+
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_blond", "weight": 2, "applicability": {"age_category": ["young_adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_light_brown", "weight": 4, "applicability": {"age_category": ["young_adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_dark_brown", "weight": 3, "applicability": {"age_category": ["young_adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_black", "weight": 2, "applicability": {"age_category": ["young_adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_auburn", "weight": 1, "applicability": {"age_category": ["young_adult"]}},
+
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_blond", "weight": 2, "applicability": {"age_category": ["adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_light_brown", "weight": 4, "applicability": {"age_category": ["adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_dark_brown", "weight": 3, "applicability": {"age_category": ["adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_black", "weight": 2, "applicability": {"age_category": ["adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_auburn", "weight": 1, "applicability": {"age_category": ["adult"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_gray", "weight": 1, "applicability": {"age_category": ["adult"]}},
+
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_blond", "weight": 1, "applicability": {"age_category": ["middle_aged"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_light_brown", "weight": 3, "applicability": {"age_category": ["middle_aged"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_dark_brown", "weight": 2, "applicability": {"age_category": ["middle_aged"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_black", "weight": 1, "applicability": {"age_category": ["middle_aged"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_auburn", "weight": 1, "applicability": {"age_category": ["middle_aged"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_gray", "weight": 4, "applicability": {"age_category": ["middle_aged"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_white", "weight": 1, "applicability": {"age_category": ["middle_aged"]}},
+
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_blond", "weight": 1, "applicability": {"age_category": ["old"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_light_brown", "weight": 1, "applicability": {"age_category": ["old"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_dark_brown", "weight": 1, "applicability": {"age_category": ["old"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_black", "weight": 1, "applicability": {"age_category": ["old"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_auburn", "weight": 1, "applicability": {"age_category": ["old"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_gray", "weight": 7, "applicability": {"age_category": ["old"]}},
+      {"facet": "hair_color", "value": "nov_1200_1250_hair_color_white", "weight": 4, "applicability": {"age_category": ["old"]}}
+    ]
+  },
   "incompatibility_rules": [
     {
       "id": "bald_has_no_hair_color",

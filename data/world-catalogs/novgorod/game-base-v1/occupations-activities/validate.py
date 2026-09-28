@@ -1,5 +1,6 @@
 """Check candidate occupation artifacts and their source catalog references."""
 import csv
+import copy
 import hashlib
 import json
 import re
@@ -30,7 +31,50 @@ def conflicts(rule, selected):
     return (all(selected.get(facet) == value for facet, value in condition.items())
             and all(selected.get(facet) is not None and
                     (values == "any" or selected[facet] in values)
-                    for facet, values in excluded.items()))
+            for facet, values in excluded.items()))
+
+
+def option_applies(option, selected):
+    return all(not allowed or selected.get(key) in allowed
+               for key, allowed in option["applicability"].items())
+
+
+def validate_conditional_appearance(option_sets):
+    policy = AUTHORING["conditional_option_weight_policy"]
+    assert policy["rule"].startswith("D33 editorial game assumption:")
+    assert policy["no_source"] == "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced"
+    conditional = option_sets["hair_length"] + option_sets["hair_color"]
+    assert all(option["rule"] == policy["rule"] and option["no_source"] == policy["no_source"]
+               for option in conditional)
+    assert all(set(option["applicability"]) <= {"sex_category", "age_category"}
+               and all(isinstance(values, list) and values for values in option["applicability"].values())
+               for option in conditional)
+    bald = "nov_1200_1250_hair_length_bald"
+    gray = "nov_1200_1250_hair_color_gray"
+    white = "nov_1200_1250_hair_color_white"
+    sexes = ("male", "female")
+    ages = ("young_adult", "adult", "middle_aged", "old")
+    gray_shares = {}
+    bald_shares = {}
+    for sex in sexes:
+        for age in ages:
+            selected = {"sex_category": sex, "age_category": age}
+            lengths = [option for option in option_sets["hair_length"] if option_applies(option, selected)]
+            colors = [option for option in option_sets["hair_color"] if option_applies(option, selected)]
+            assert len({option["value"] for option in lengths}) == len(lengths)
+            assert len({option["value"] for option in colors}) == len(colors)
+            assert all(isinstance(option["weight"], int) and option["weight"] > 0 for option in lengths + colors)
+            has_bald = any(option["value"] == bald for option in lengths)
+            assert has_bald == (sex == "male" and age != "young_adult")
+            total_length = sum(option["weight"] for option in lengths)
+            bald_shares[sex, age] = sum(option["weight"] for option in lengths if option["value"] == bald) / total_length
+            total_color = sum(option["weight"] for option in colors)
+            gray_shares[age] = sum(option["weight"] for option in colors if option["value"] in (gray, white)) / total_color
+    assert bald_shares["male", "young_adult"] == 0
+    assert 0 < bald_shares["male", "adult"] < bald_shares["male", "middle_aged"] < bald_shares["male", "old"]
+    assert all(bald_shares["female", age] == 0 for age in ages)
+    assert gray_shares["young_adult"] == 0 < gray_shares["adult"] < gray_shares["middle_aged"] < gray_shares["old"]
+    assert gray_shares["old"] > 0.5
 
 
 def main():
@@ -124,6 +168,7 @@ def main():
     assert all(r["status"] == "approved" for r in appearance_rows)
     appearance_ids = {r["id"] for r in appearance_rows}
     option_sets = npc["appearance_option_sets"]["novgorod_shared_facets_v1"]
+    validate_conditional_appearance(option_sets)
     option_ids = {o["value"] for options in option_sets.values() for o in options}
     names = AUTHORING["option_names_ru"]
     assert len(option_ids) == len(names) == 42 and set(names) == option_ids
@@ -231,6 +276,25 @@ def main():
                for color in (gray, white))
     assert not conflicts(young, {"age_category": young["if"]["age_category"], "hair_color": blond})
     assert not conflicts(young, {"age_category": "nov_1200_1250_age_category_adult", "hair_color": gray})
+    if "--self-test" in sys.argv:
+        bad = copy.deepcopy(option_sets)
+        next(option for option in bad["hair_length"] if option["value"] == "nov_1200_1250_hair_length_bald")["applicability"].pop("sex_category")
+        try:
+            validate_conditional_appearance(bad)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError("baldness sex-applicability negative probe passed")
+        bad = copy.deepcopy(option_sets)
+        for option in bad["hair_color"]:
+            if option["value"] in (gray, white) and option["applicability"].get("age_category") == ["old"]:
+                option["weight"] = 1
+        try:
+            validate_conditional_appearance(bad)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError("elderly-gray-weight negative probe passed")
     subjects = npc["subject_applicability"]
     expected_subjects = {
         ("occupation", "nov_occ_ferryman"),

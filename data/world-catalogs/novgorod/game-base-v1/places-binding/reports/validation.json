@@ -1,8 +1,17 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 31,
-  "own_checks_total": 31,
+  "own_checks_passed": 33,
+  "own_checks_total": 33,
   "checks": [
+    {
+      "domain": "place_families",
+      "name": "local_additions_sourced_noncolliding_and_explicit",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "additions": 1
+    },
     {
       "domain": "region_type_pf_manifest",
       "name": "pinned_source_exact_keys_current_pf_and_typed_gaps",
@@ -22,13 +31,14 @@
     },
     {
       "domain": "place_families",
-      "name": "wk_44_families_exactly_once",
+      "name": "wk_families_plus_declared_local_additions_exactly_once",
       "pass": true,
       "failures": 0,
       "sample": [],
       "external": false,
       "wk_families": 44,
-      "rows": 44
+      "local_additions": 1,
+      "rows": 45
     },
     {
       "domain": "place_families",
@@ -115,15 +125,16 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "gaps": [
-        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1",
-        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach@1",
-        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
-        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge@1",
-        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
-        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary@1",
-        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1"
-      ]
+      "gaps": []
+    },
+    {
+      "domain": "node_binding",
+      "name": "declared_local_gap_nodes_are_bound",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "refs": 7
     },
     {
       "domain": "node_binding",
@@ -185,8 +196,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5717,
-      "rebuilt_rows": 5717
+      "rows": 5707,
+      "rebuilt_rows": 5707
     },
     {
       "domain": "presence_rules",
@@ -203,7 +214,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5717
+      "rows": 5707
     },
     {
       "domain": "presence_rules",
@@ -220,7 +231,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "accepted_occurrences": 10890
+      "accepted_occurrences": 10880
     },
     {
       "domain": "presence_rules",
@@ -234,59 +245,59 @@
     },
     {
       "domain": "presence_rules",
-      "name": "people_cover_16_bound_pf",
+      "name": "people_cover_bound_pf_or_explicit_empty_composition",
       "pass": true,
       "failures": 0,
       "sample": [],
       "external": false,
       "people_rules": 17,
-      "place_families": 16,
+      "place_families": 17,
       "g4": 32,
       "g5": 195
     },
     {
       "domain": "presence_rules",
-      "name": "c002_crosswalks_account_for_16_bound_pf",
+      "name": "c002_crosswalks_account_for_bound_pf",
       "pass": true,
       "failures": 0,
       "sample": [],
       "external": false,
-      "place_families": 16,
+      "place_families": 17,
       "rows": {
         "livestock": {
-          "rows": 144,
+          "rows": 145,
           "linked_rows": 130,
-          "no_source_rows": 14,
+          "no_source_rows": 15,
           "linked_place_families": 30,
-          "no_source_place_families": 14
+          "no_source_place_families": 15
         },
         "buildings": {
-          "rows": 89,
+          "rows": 90,
           "linked_rows": 73,
-          "no_source_rows": 16,
+          "no_source_rows": 17,
           "linked_place_families": 28,
-          "no_source_place_families": 16
+          "no_source_place_families": 17
         },
         "food": {
-          "rows": 52,
+          "rows": 53,
           "linked_rows": 12,
-          "no_source_rows": 40,
+          "no_source_rows": 41,
           "linked_place_families": 5,
-          "no_source_place_families": 39
+          "no_source_place_families": 40
         },
         "tools": {
-          "rows": 239,
+          "rows": 240,
           "linked_rows": 221,
-          "no_source_rows": 18,
+          "no_source_rows": 19,
           "linked_place_families": 26,
-          "no_source_place_families": 18
+          "no_source_place_families": 19
         },
         "weapons": {
-          "rows": 628,
+          "rows": 629,
           "linked_rows": 507,
-          "no_source_rows": 121,
+          "no_source_rows": 122,
           "linked_place_families": 19,
-          "no_source_place_families": 25
+          "no_source_place_families": 26
         }
       }
     },
@@ -329,8 +340,8 @@
       "external": false,
       "slots": 5,
       "candidates": 8,
-      "gaps": 12,
-      "place_families": 16
+      "gaps": 13,
+      "place_families": 17
     },
     {
       "domain": "slot_instance_variants",
@@ -349,7 +360,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 61
+      "rows": 62
     },
     {
       "domain": "category_registry",
@@ -378,7 +389,7 @@
         "stable_code_missing": 59,
         "parent_missing": 59
       },
-      "registry_rows": 982
+      "registry_rows": 983
     },
     {
       "domain": "category_registry",
@@ -414,8 +425,8 @@
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv": 42,
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
         "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
-        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49,
-        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31
+        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31,
+        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49
       }
     },
     {
@@ -425,7 +436,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 105
+      "rows": 106
     },
     {
       "domain": "category_parameters",

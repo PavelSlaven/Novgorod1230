@@ -351,22 +351,22 @@ fpa_fa_m_hedgehog_autumn_civil_dawn,fa_m_hedgehog,autumn,civil_dawn,no_source,no
 fpa_fa_m_hedgehog_autumn_daylight,fa_m_hedgehog,autumn,daylight,no_source,no,,,fauna/activity_phase_rules.json#activity-phase-v1.nocturnal.daylight,,C,candidate
 fpa_fa_m_hedgehog_autumn_civil_dusk,fa_m_hedgehog,autumn,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_hedgehog_autumn_night,fa_m_hedgehog,autumn,night,yes,yes,mammals.csv#fa_m_hedgehog.signs_sounds,mammals.csv#fa_m_hedgehog.signs_sounds,,,C,candidate
-fpa_fa_m_mole_winter_civil_dawn,fa_m_mole,winter,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
-fpa_fa_m_mole_winter_daylight,fa_m_mole,winter,daylight,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
-fpa_fa_m_mole_winter_civil_dusk,fa_m_mole,winter,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
-fpa_fa_m_mole_winter_night,fa_m_mole,winter,night,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
-fpa_fa_m_mole_spring_civil_dawn,fa_m_mole,spring,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
-fpa_fa_m_mole_spring_daylight,fa_m_mole,spring,daylight,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
-fpa_fa_m_mole_spring_civil_dusk,fa_m_mole,spring,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
-fpa_fa_m_mole_spring_night,fa_m_mole,spring,night,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
-fpa_fa_m_mole_summer_civil_dawn,fa_m_mole,summer,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
-fpa_fa_m_mole_summer_daylight,fa_m_mole,summer,daylight,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
-fpa_fa_m_mole_summer_civil_dusk,fa_m_mole,summer,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
-fpa_fa_m_mole_summer_night,fa_m_mole,summer,night,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
-fpa_fa_m_mole_autumn_civil_dawn,fa_m_mole,autumn,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
-fpa_fa_m_mole_autumn_daylight,fa_m_mole,autumn,daylight,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
-fpa_fa_m_mole_autumn_civil_dusk,fa_m_mole,autumn,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
-fpa_fa_m_mole_autumn_night,fa_m_mole,autumn,night,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
+fpa_fa_m_mole_winter_civil_dawn,fa_m_mole,winter,civil_dawn,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_winter_daylight,fa_m_mole,winter,daylight,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_winter_civil_dusk,fa_m_mole,winter,civil_dusk,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_winter_night,fa_m_mole,winter,night,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_spring_civil_dawn,fa_m_mole,spring,civil_dawn,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_spring_daylight,fa_m_mole,spring,daylight,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_spring_civil_dusk,fa_m_mole,spring,civil_dusk,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_spring_night,fa_m_mole,spring,night,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_summer_civil_dawn,fa_m_mole,summer,civil_dawn,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_summer_daylight,fa_m_mole,summer,daylight,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_summer_civil_dusk,fa_m_mole,summer,civil_dusk,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_summer_night,fa_m_mole,summer,night,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_autumn_civil_dawn,fa_m_mole,autumn,civil_dawn,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_autumn_daylight,fa_m_mole,autumn,daylight,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_autumn_civil_dusk,fa_m_mole,autumn,civil_dusk,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
+fpa_fa_m_mole_autumn_night,fa_m_mole,autumn,night,no_source,no_source,,,fauna/activity_phase_rules.json#subterranean-surface-sighting-gap,,C,candidate
 fpa_fa_m_common_shrew_winter_civil_dawn,fa_m_common_shrew,winter,civil_dawn,yes,yes,mammals.csv#fa_m_common_shrew.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
 fpa_fa_m_common_shrew_winter_daylight,fa_m_common_shrew,winter,daylight,yes,yes,mammals.csv#fa_m_common_shrew.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
 fpa_fa_m_common_shrew_winter_civil_dusk,fa_m_common_shrew,winter,civil_dusk,yes,yes,mammals.csv#fa_m_common_shrew.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
@@ -839,10 +839,6 @@ fpa_fa_b_bean_goose_autumn_civil_dawn,fa_b_bean_goose,autumn,civil_dawn,no_sourc
 fpa_fa_b_bean_goose_autumn_daylight,fa_b_bean_goose,autumn,daylight,yes,yes,birds.csv#fa_b_bean_goose.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.diurnal.daylight,,C,candidate
 fpa_fa_b_bean_goose_autumn_civil_dusk,fa_b_bean_goose,autumn,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_b_bean_goose_autumn_night,fa_b_bean_goose,autumn,night,no,no,,,fauna/activity_phase_rules.json#activity-phase-v1.diurnal.night,,C,candidate
-fpa_fa_b_mallard_winter_civil_dawn,fa_b_mallard,winter,civil_dawn,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_b_mallard_winter_daylight,fa_b_mallard,winter,daylight,yes,yes,birds.csv#fa_b_mallard.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.diurnal.daylight,,C,candidate
-fpa_fa_b_mallard_winter_civil_dusk,fa_b_mallard,winter,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
-fpa_fa_b_mallard_winter_night,fa_b_mallard,winter,night,no,no,,,fauna/activity_phase_rules.json#activity-phase-v1.diurnal.night,,C,candidate
 fpa_fa_b_mallard_spring_civil_dawn,fa_b_mallard,spring,civil_dawn,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_b_mallard_spring_daylight,fa_b_mallard,spring,daylight,yes,yes,birds.csv#fa_b_mallard.voice_description,,fauna/activity_phase_rules.json#activity-phase-v1.diurnal.daylight,,C,candidate
 fpa_fa_b_mallard_spring_civil_dusk,fa_b_mallard,spring,civil_dusk,no_source,no_source,,,,visibility and voice phase unknown,C,candidate

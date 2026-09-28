@@ -50,12 +50,14 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
   - An `irregular` bird (irruptive visitor or rare winterer) loses one step.
   - An absent season produces no row.
   - A mammal in hibernation gets `state=dormant`, `activity_time=dormant`, `audible=false` and class `rare`. Only its den can be observed.
+  - A taxon-level seasonal condition that cannot be proved by a place family suppresses that season's presence rows. The mallard keeps its irregular winter status, but `winter=open_water_only` produces no winter row: none of the current place families proves unfrozen water.
 - Derived overlays:
   - `pf_hunting_ground`: the best fit of the taxon among forest, edge, meadow, lake, bog and stream.
   - `pf_forest_track`: woodland core becomes marginal.
   - `pf_winter_ice_crossing`: winter only, marginal, for taxa that use rivers, lakes or roads.
 - Class to weight is 8/4/2/1 and the ppm come from `places-binding/presence/frequency_rule.json`. This is an **editorial game preference**. It is not a measured biological abundance or an encounter probability.
 - Presence-row confidence is B, or C when the taxon's presence in 1230 is C. Archaeology does not place an animal in a specific place family, so no presence row gets A.
+- The mole is a sourced exception to the ordinary frequency derivation: its spring floodplain-meadow row is `rare`, because it is ordinarily subterranean and floods destroy burrows. Its cathemeral activity does not establish a visible animal on the surface; phase visibility is therefore an explicit source-limited gap, while authored signs remain available.
 
 ### Confidence columns
 
@@ -69,7 +71,7 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 - Every mammal has at least one kind of sign and at least one presence row. In each forest and riparian place family (conifer, mixed and broadleaf woodland, forest edge, riverbank, lake shore, marshy stream, river channel, floodplain meadow, bog) there are **at least 7** mammal taxa with signs in every season. The target is ≥6.
 - Hibernators (bear, badger, hedgehog, bats, birch mouse, dormouse) are dormant in every winter row.
-- There are 149 bird taxa (target ≥40). Each has `voice_description` and a migration status for all 4 seasons. `voice_sound_ru` is short sound-only text when a species voice is authored; it may be empty when `audible_seasons` is empty or `voice_description` explicitly says the bird is silent. Every open-air place family has **at least 3** audible bird species in each season (winter only for the winter ice crossing).
+- There are 149 bird taxa (target ≥40). Each has `voice_description` and a migration status for all 4 seasons. `voice_sound_ru` is short sound-only text when a species voice is authored; it may be empty when `audible_seasons` is empty or `voice_description` explicitly says the bird is silent. Every open-air place family has **at least 3** audible bird species in each season (winter only for the winter ice crossing), except the explicit `pf_ferry_landing` winter gap: 2 species remain after the mallard's unsupported frozen-water row is removed.
 - Integrity checks:
   - pf_ids exist in `places-binding/places/place_families.csv`.
   - category_refs exist.
@@ -88,6 +90,8 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 `voice_sound_ru` is authored in `scripts/src/birds.cjs` and generated into `fauna/birds.csv`. It gives the narrator the sound itself, without season, place, behaviour, or phase context. `voice_description` retains the full context and remains the input to voice phase derivation; adding the short field does not change phase rules. The validator rejects missing sound text for an ordinary voice and common context words. Empty sound is accepted only when `audible_seasons` is empty or the authored description explicitly says the bird is silent; `node scripts/validate.cjs --self-test` probes both allowed and rejected cases.
 
 Exactly one of `source_refs`, `rule_ref`, and `no_source` is set per row. An unknown individual facet is marked by its `*_state=no_source`; a fully unknown row uses `no_source`. A source pointer for one facet never changes the other facet's gap state. A call limited to dawn, night, a nest, migration, or a stated season is not promoted to an unconditional daily voice. The crane's dawn call is kept at dawn; the black stork's nest-only calls remain voice gaps.
+
+The mole's surface visibility uses `activity_phase_rules.json#subterranean-surface-sighting-gap`, based on `book:498801 §406` and `book:756203 §289`; this rule deliberately does not turn coarse daily activity into a sighting. The mallard's `season_presence_conditions` records `winter=open_water_only`; until scene state can prove open water, the builder emits no winter place-family rows.
 
 ```
 python scripts/extract_regional_bird_sources.py <panteleev_cyberleninka.html> <dir with malchevski_*.html> scripts/input_snapshots

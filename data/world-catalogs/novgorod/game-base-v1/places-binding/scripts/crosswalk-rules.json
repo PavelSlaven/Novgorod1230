@@ -682,7 +682,7 @@
         "forest_edge"
       ],
       "stfv3__g5_burial_ritual_buffer_v1": [
-        "churchyard"
+        "burial_ground"
       ],
       "stfv3__g5_dry_route_v1": [
         "road",
@@ -939,13 +939,6 @@
           "confidence": "C",
           "reason": "A wharf requires a town, major city center or posad place template on the node or primary family.",
           "require_any": { "place_template_id": ["pt_town", "pt_city_major_center", "pt_posad_suburb"], "primary_place_template_refs": ["pt_town", "pt_city_major_center", "pt_posad_suburb"] }
-        },
-        {
-          "pf_id": "churchyard",
-          "rule_ref": "churchyard_religious_axes_v1",
-          "confidence": "C",
-          "reason": "A churchyard requires a religious-space primary family.",
-          "require_any": { "primary_pf_kind": ["religious_space"] }
         }
       ]
     },
@@ -979,7 +972,7 @@
         "local_landing": "ferry_landing",
         "vikhtuy_locality": "peasant_homestead",
         "archaeological_settlement": "peasant_homestead",
-        "burial_area": "gap: no place-first family for a burial ground / cemetery outside a churchyard (lifecycle rites and burial domain missing)"
+        "burial_area": "burial_ground"
       }
     },
     "g5_suffix_rules": {

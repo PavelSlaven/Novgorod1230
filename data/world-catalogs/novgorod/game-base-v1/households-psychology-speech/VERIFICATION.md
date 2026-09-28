@@ -580,3 +580,15 @@
 
 - +1 правило `rel_composition_spouse_2dc90533f844af8e`, применимое только при явной связи слотов; нейтральные `rel_start_gap_ce80a3efab995c86` и две формы `form_start_gap_*` для той же пары ролей без связи сохранены.
 - В `address_forms.csv` изменены только две ячейки `situation` у `form_spouse_smerd` и `form_spouse_smerd_reverse_gap`: обращения супругов применимы только при связи слотов.
+
+## C013a — psychology baseline (2026-09-28)
+
+Авторская самопроверка: добавлен кандидатный словарь по решению D29 — 6 traits, 7 values, ровный вес 1 (`basis_kind=game_assumption`). Все 139 профилей получают точный baseline. `context_refs` — только контекст выбора понятий, не доказательство весов, распределения или индивидуальных override. Независимый REVIEW: pending.
+
+### npc_psychology/psychology_scales.json — rework
+
+### npc_psychology/psychology_profiles.csv — rework
+
+### scripts/build.py — rework
+
+### scripts/check.py — rework

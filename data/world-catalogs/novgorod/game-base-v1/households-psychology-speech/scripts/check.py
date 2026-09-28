@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 """Deterministic checks for group households-psychology-speech (candidate).
 Run after build.py. Exits non-zero on any failed check."""
-import csv, hashlib, json, os, sys, ast, re
-from build import literacy_register
+import csv, hashlib, json, os, sys, ast, re, copy
+from collections import Counter
+from build import literacy_register, load_psychology_scales
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 errors = []
@@ -38,32 +39,20 @@ for fname in ["household_composition_profiles.csv", "marriage_inheritance_rules.
         if r.get("confidence") not in ("A", "B", "C"):
             errors.append(f"{fname} row {i}: confidence not in A/B/C: {r.get('confidence')!r}")
 
-# npc_psychology: values in closed dict; weights positive ints; every occ/role covered
-CLOSED_TEMPERAMENT = {"calm", "wary", "hot_tempered", "timid", "assertive", "sociable", "withdrawn"}
-CLOSED_VALUES = {"honour", "piety", "kin_loyalty", "profit", "safety", "custom", "hospitality"}
+# npc_psychology: one authored dictionary and one exact even baseline
+PSYCHOLOGY_PROFILE_FIELDS = ["ps_id", "role_or_occupation_ref", "ref_kind", "temperament_weights", "values_weights",
+                             "motives", "fears", "risk_traits", "fears_motives_note", "initial_mood_rules",
+                             "derivation_rule", "source_refs", "confidence"]
 pp_path = os.path.join(ROOT, "npc_psychology", "psychology_profiles.csv")
-pp_rows = read_csv(pp_path)
-occ_refs = set()
-role_refs = set()
-for i, r in enumerate(pp_rows):
-    temp = parse_literal(r["temperament_weights"]) or {}
-    vals = parse_literal(r["values_weights"]) or {}
-    for k, w in temp.items():
-        if k not in CLOSED_TEMPERAMENT:
-            errors.append(f"psychology_profiles row {i}: temperament label not in closed dict: {k}")
-        if not isinstance(w, int) or w <= 0:
-            errors.append(f"psychology_profiles row {i}: temperament weight not positive int: {k}={w}")
-    for k, w in vals.items():
-        if k not in CLOSED_VALUES:
-            errors.append(f"psychology_profiles row {i}: value label not in closed dict: {k}")
-        if not isinstance(w, int) or w <= 0:
-            errors.append(f"psychology_profiles row {i}: value weight not positive int: {k}={w}")
-    if not r.get("derivation_rule"):
-        errors.append(f"psychology_profiles row {i}: missing derivation_rule")
-    if r["ref_kind"] == "occupation":
-        occ_refs.add(r["role_or_occupation_ref"])
-    else:
-        role_refs.add(r["role_or_occupation_ref"])
+with open(pp_path, encoding="utf-8", newline="") as f:
+    pp_reader = csv.DictReader(f)
+    if pp_reader.fieldnames != PSYCHOLOGY_PROFILE_FIELDS:
+        errors.append(f"psychology_profiles.csv: schema mismatch: {pp_reader.fieldnames}")
+    pp_rows = list(pp_reader)
+psychology_scales = load_psychology_scales()
+PSYCHOLOGY_EVIDENCE_PATH = os.path.join(os.path.dirname(os.path.dirname(ROOT)), "sources", "books-evidence-v1", "households-psychology-speech.csv")
+with open(PSYCHOLOGY_EVIDENCE_PATH, encoding="utf-8", newline="") as f:
+    psychology_evidence_refs = {(r["book_id"], r["para_no"]) for r in csv.DictReader(f)}
 
 region_tsv = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(ROOT)))), "novgorod-region")
 with open(os.path.join(region_tsv, "novgorod_occupations_v1_enriched.tsv"), encoding="utf-8") as f:
@@ -72,6 +61,87 @@ with open(os.path.join(region_tsv, "novgorod_social_roles_v1_enriched.tsv"), enc
     roles = {r["role_id"]: r for r in csv.DictReader(f, delimiter="\t")}
 all_occ = set(occupations)
 all_role = set(roles)
+
+
+def psychology_failures(scales, rows):
+    failures = []
+    expected_schema = {"schema_version", "status", "basis_kind", "decision_ref", "default_weight", "traits", "values"}
+    if set(scales) != expected_schema:
+        failures.append("psychology_scales.json: schema mismatch")
+    for field, expected in (("schema_version", "psychology_scales_v1"), ("status", "candidate"),
+                            ("basis_kind", "game_assumption"), ("decision_ref", "D29")):
+        if scales.get(field) != expected:
+            failures.append(f"psychology_scales.json: {field} must be {expected!r}")
+    weight = scales.get("default_weight")
+    if type(weight) is not int or weight != 1:
+        failures.append("psychology_scales.json: default_weight must be integer 1")
+    expected_profiles = []
+    for field, minimum, maximum in (("traits", 4, 6), ("values", 5, 7)):
+        items = scales.get(field)
+        if not isinstance(items, list) or not minimum <= len(items) <= maximum:
+            failures.append(f"psychology_scales.json: {field} must contain {minimum}-{maximum} items")
+            items = items if isinstance(items, list) else []
+        ids = [item.get("id") for item in items if isinstance(item, dict)]
+        labels = [item.get("label_ru") for item in items if isinstance(item, dict)]
+        if len(ids) != len(items) or any(set(item) != {"id", "label_ru", "context_refs"} for item in items if isinstance(item, dict)):
+            failures.append(f"psychology_scales.json: {field} item schema mismatch")
+        valid_ids = len(ids) == len(items) and all(isinstance(value, str) and value for value in ids)
+        if not valid_ids or len(ids) != len(set(ids)):
+            failures.append(f"psychology_scales.json: {field} ids must be non-empty and unique")
+        valid_labels = len(labels) == len(items) and all(isinstance(value, str) and value for value in labels)
+        if not valid_labels or len(labels) != len(set(labels)):
+            failures.append(f"psychology_scales.json: {field} label_ru values must be non-empty and unique")
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            refs = item.get("context_refs")
+            if not isinstance(refs, list) or not refs:
+                failures.append(f"psychology_scales.json: {field}.{item.get('id')}: context_refs must be non-empty")
+                continue
+            values = []
+            for context in refs:
+                if not isinstance(context, dict) or set(context) != {"ref", "usage"}:
+                    failures.append(f"psychology_scales.json: {field}.{item.get('id')}: context ref schema mismatch")
+                    continue
+                ref = context.get("ref")
+                match = re.fullmatch(r"book:([0-9]+) §([0-9]+)", ref) if isinstance(ref, str) else None
+                if not match:
+                    failures.append(f"psychology_scales.json: {field}.{item.get('id')}: invalid context ref {ref!r}")
+                elif match.groups() not in psychology_evidence_refs:
+                    failures.append(f"psychology_scales.json: {field}.{item.get('id')}: unknown context ref {ref}")
+                if context.get("usage") != "context_only_not_distribution_or_individual_override":
+                    failures.append(f"psychology_scales.json: {field}.{item.get('id')}: invalid context usage")
+                if isinstance(ref, str):
+                    values.append(ref)
+            if len(values) != len(set(values)):
+                failures.append(f"psychology_scales.json: {field}.{item.get('id')}: duplicate context ref")
+        expected_profiles.append({item_id: weight for item_id in ids if isinstance(item_id, str)})
+    expected_rows = Counter(
+        [("occupation", ref, f"ps_occ_{ref}") for ref in all_occ]
+        + [("role", ref, f"ps_role_{ref}") for ref in all_role]
+    )
+    actual_rows = Counter((row.get("ref_kind"), row.get("role_or_occupation_ref"), row.get("ps_id")) for row in rows)
+    if actual_rows != expected_rows:
+        failures.append("psychology_profiles.csv: profile key multiset differs from exact occupation/role coverage")
+    for i, row in enumerate(rows):
+        for field, expected in zip(("temperament_weights", "values_weights"), expected_profiles):
+            actual = parse_literal(row.get(field, ""))
+            if actual != expected:
+                failures.append(f"psychology_profiles row {i}: {field} differs from exact baseline")
+    return failures
+
+
+errors.extend(psychology_failures(psychology_scales, pp_rows))
+occ_refs = set()
+role_refs = set()
+for i, r in enumerate(pp_rows):
+    if not r.get("derivation_rule"):
+        errors.append(f"psychology_profiles row {i}: missing derivation_rule")
+    if r["ref_kind"] == "occupation":
+        occ_refs.add(r["role_or_occupation_ref"])
+    else:
+        role_refs.add(r["role_or_occupation_ref"])
+
 schedule_occ = {r["occupation_ref"] for r in read_csv(os.path.join(os.path.dirname(ROOT), "time-calendar-church", "time", "schedules_routines.csv")) if r["occupation_ref"]}
 presence = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_presence_authoring.csv"))
 reachable_occ = ({r["subject_ref"] for r in presence if r["subject_kind"] == "occupation"} | schedule_occ) & all_occ
@@ -401,6 +471,32 @@ def missing_oral_kinds(forms):
 for kind in missing_oral_kinds(af_rows):
     errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
+    probe_row = dict(pp_rows[0])
+    for name, altered in (
+        ("unknown trait ID", {**parse_literal(probe_row["temperament_weights"]), "unknown": 1}),
+        ("missing trait ID", dict(list(parse_literal(probe_row["temperament_weights"]).items())[1:])),
+        ("unequal trait weight", {**parse_literal(probe_row["temperament_weights"]), "calm": 2}),
+    ):
+        changed = [{**probe_row, "temperament_weights": altered}, *pp_rows[1:]]
+        if not psychology_failures(psychology_scales, changed):
+            errors.append(f"negative psychology probe failed: {name}")
+        else:
+            print(f"OK: negative psychology probe detected {name}")
+    unknown_evidence = copy.deepcopy(psychology_scales)
+    unknown_evidence["traits"][0]["context_refs"][0]["ref"] = "book:999999 §999999"
+    if not psychology_failures(unknown_evidence, pp_rows):
+        errors.append("negative psychology probe failed: unknown evidence ref")
+    else:
+        print("OK: negative psychology probe detected unknown evidence ref")
+    if not psychology_failures(psychology_scales, [*pp_rows, dict(pp_rows[0])]):
+        errors.append("negative psychology probe failed: duplicate profile row")
+    else:
+        print("OK: negative psychology probe detected duplicate profile row")
+    invalid_kind = [{**pp_rows[0], "ref_kind": "invalid"}, *pp_rows[1:]]
+    if not psychology_failures(psychology_scales, invalid_kind):
+        errors.append("negative psychology probe failed: invalid profile kind")
+    else:
+        print("OK: negative psychology probe detected invalid profile kind")
     with open(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
         unlinked = json.load(f)["compositions"]
     unlinked = [{**composition, "slot_relationships": []} for composition in unlinked]

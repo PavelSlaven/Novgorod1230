@@ -268,35 +268,73 @@ export function mapSpeechAddressForm(row, worldRevisionId, provenanceRef) {
   };
 }
 
-function parseMonths(raw) {
+export const SCHEDULE_DAY_TYPES = Object.freeze([
+  'normal', 'night_watch', 'night_fishing', 'market_day', 'church_day',
+]);
+
+const CONFIDENCE_RANK = Object.freeze({
+  unknown: 0,
+  low: 1,
+  medium_low: 2,
+  medium: 3,
+  medium_high: 4,
+  high: 5,
+});
+
+function parseMonths(raw, schId) {
   const t = String(raw ?? '').trim();
-  if (!t) return null;
-  return t.split('|').map((part) => Number(part.trim())).filter((n) => Number.isInteger(n));
+  if (!t) throw new Error(`schedule months missing: ${schId}`);
+  const months = t.split('|').map((part) => Number(part.trim()));
+  if (!months.length || months.some((n) => !Number.isInteger(n) || n < 1 || n > 12)) {
+    throw new Error(`schedule months invalid: ${schId}`);
+  }
+  return months;
 }
 
-function extractPlaceFamilyFromScheduleRow(row) {
-  const blocks = JSON.parse(row.time_blocks);
-  const counts = new Map();
-  for (const phase of blocks) {
-    const ref = String(phase.location_ref ?? '').trim();
-    if (ref.startsWith('pf_')) counts.set(ref, (counts.get(ref) ?? 0) + 1);
+export function resolveScheduleScopeFromSchId(schId, pfIds) {
+  const sorted = [...pfIds].sort((a, b) => b.length - a.length);
+  for (const pf of sorted) {
+    if (schId.includes(`_${pf}_`)) return pf;
   }
-  if (counts.size) {
-    return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
-  }
-  const fromRefs = String(row.source_refs ?? '').match(/#(pf_[a-z0-9_]+)/u);
-  return fromRefs ? fromRefs[1] : null;
+  throw new Error(`schedule sch_id place family unresolved: ${schId}`);
 }
 
-function resolveScheduleSubject(row) {
+export function resolveScheduleSubject(row) {
   const occupation = blank(row.occupation_ref);
   const role = blank(row.role_ref);
   if (occupation) return { subject_kind: 'occupation', subject_ref: occupation };
   if (role) return { subject_kind: 'social_role', subject_ref: role };
-  if (String(row.sch_id).includes('household_child')) {
+  if (/^sch_household_child_/u.test(String(row.sch_id))) {
     return { subject_kind: 'household_member', subject_ref: 'child' };
   }
   throw new Error(`schedule subject unresolved: ${row.sch_id}`);
+}
+
+export function assertScheduleRowSchId(row, pfIds) {
+  if (!SCHEDULE_DAY_TYPES.includes(row.day_type)) {
+    throw new Error(`schedule day_type invalid: ${row.sch_id}`);
+  }
+  if (!['winter', 'spring', 'summer', 'autumn'].includes(row.season)) {
+    throw new Error(`schedule season invalid: ${row.sch_id}`);
+  }
+  if (!row.sch_id.endsWith(`_${row.season}`)) {
+    throw new Error(`schedule sch_id season suffix mismatch: ${row.sch_id}`);
+  }
+  if (!row.sch_id.includes(`_${row.day_type}_`)) {
+    throw new Error(`schedule sch_id day_type marker mismatch: ${row.sch_id}`);
+  }
+  resolveScheduleSubject(row);
+  return resolveScheduleScopeFromSchId(row.sch_id, pfIds);
+}
+
+function lowestMappedConfidence(groups) {
+  let chosen = 'high';
+  for (const group of groups) {
+    if (!group?.confidence) continue;
+    const mapped = mapConfidence(group.confidence);
+    if (CONFIDENCE_RANK[mapped] < CONFIDENCE_RANK[chosen]) chosen = mapped;
+  }
+  return groups.length ? chosen : 'unknown';
 }
 
 function mapRoutinePhases(timeBlocksJson) {
@@ -318,10 +356,9 @@ function mapRoutinePhases(timeBlocksJson) {
   }));
 }
 
-export function mapScheduleRoutineRule(row, worldRevisionId, provenanceRef) {
+export function mapScheduleRoutineRule(row, worldRevisionId, provenanceRef, pfIds) {
   const { subject_kind, subject_ref } = resolveScheduleSubject(row);
-  const scopeRef = extractPlaceFamilyFromScheduleRow(row);
-  if (!scopeRef) throw new Error(`schedule scope unresolved: ${row.sch_id}`);
+  const scopeRef = assertScheduleRowSchId(row, pfIds);
   const revision = Number(row.revision) || 1;
   const localStart = Number(row.local_start_minute);
   const phases = mapRoutinePhases(row.time_blocks);
@@ -342,7 +379,7 @@ export function mapScheduleRoutineRule(row, worldRevisionId, provenanceRef) {
     subject_kind,
     subject_ref,
     season: row.season,
-    months: parseMonths(row.months),
+    months: parseMonths(row.months, row.sch_id),
     day_type: row.day_type,
     routine_profile: routineProfile,
     status: 'approved',
@@ -360,10 +397,7 @@ export function mapScheduleRoutineRule(row, worldRevisionId, provenanceRef) {
 
 export function mapPlacePopulationComposition(entry, worldRevisionId, provenanceRef) {
   const groups = entry.population_groups ?? [];
-  let confidence = 'unknown';
-  for (const group of groups) {
-    if (group.confidence) confidence = mapConfidence(group.confidence);
-  }
+  const confidence = lowestMappedConfidence(groups);
   return {
     composition_id: entry.pf_id,
     composition_version: 1,
@@ -604,8 +638,9 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
   }
 
   const schedulesCsv = parseCsv(show(`${GAME_BASE}/time-calendar-church/time/schedules_routines.csv`));
+  const pfIds = new Set(placeFamilies.map((row) => row.id));
   const scheduleRoutineRules = schedulesCsv.map((row) => mapScheduleRoutineRule(
-    row, worldRevisionId, provenanceRef
+    row, worldRevisionId, provenanceRef, pfIds
   ));
 
   const relCsv = parseCsv(show(

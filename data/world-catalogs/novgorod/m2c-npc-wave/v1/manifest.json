@@ -130,7 +130,7 @@
     {
       "table": "npc_schedule_routine_rules",
       "file": "datasets/npc_schedule_routine_rules.json",
-      "sha256": "a7ac1f1d55b6313e94883acdb3b5682ecfa27e747af4a75be55da854aecaee7e",
+      "sha256": "c7300cf040e221d1ca02dfaca6265f7edb4ed93adcc4b7bd5d93349a6b589e61",
       "status": "draft",
       "provenance_ref": "game_base_v1_m2c_people_337abf9e",
       "delete_policy": "forbid",

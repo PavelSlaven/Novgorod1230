@@ -239,6 +239,20 @@ test('starter territory place families each have a primary binding on pin 3ab1c8
   await rm(parent, { recursive: true, force: true });
 });
 
+test('schedule routine rules count matches schedules CSV rows on approval pin', async () => {
+  const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
+  const commit = approval.source_commit;
+  const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const csvRows = parseCsv(gitShow('data/world-catalogs/novgorod/game-base-v1/time-calendar-church/time/schedules_routines.csv'));
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-sched-count-'));
+  const outRoot = join(parent, 'v1');
+  await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  const rules = JSON.parse(await readFile(join(outRoot, 'datasets/npc_schedule_routine_rules.json'), 'utf8'));
+  assert.equal(rules.length, csvRows.length, 'one routine rule per schedules.csv row');
+  assert.equal(csvRows.length, 167);
+  await rm(parent, { recursive: true, force: true });
+});
+
 test('committed m2c-npc-wave dataset files match generator output on approval pin', async (t) => {
   const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
   const commit = approval.source_commit;

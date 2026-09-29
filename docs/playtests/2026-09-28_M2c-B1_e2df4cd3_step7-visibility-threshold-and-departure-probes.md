@@ -83,8 +83,8 @@ continue the path via exit 1, which matches the available local movement operati
 Прямой путь без LLM подтверждён отсутствующим: `suggested_actions` пуст и до, и после
 попытки во всех прогонах.
 
-Сырые отчёты (бридж, не репозиторий): `/srv/novgorod-work/fleet/tasks/b1/out/step7-report.json`,
-`step7b-5attempts-report.json`.
+Сырые отчёты (рабочий мост исполнителя, вне репозитория):
+`step7-report.json`, `step7b-5attempts-report.json`.
 
 ### Шаг 7б — целевой прогон по `A-B1-03`
 

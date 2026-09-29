@@ -741,7 +741,17 @@ owner as any other entity. The movement owner's full occupancy
 asks the chosen command's server-only `attemptRefusal` (never projected to the
 planner) and, when the owner finds the destination full, refuses the step as a
 zero-duration narrated refusal; the typed `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` stays the
-last safety net. The model's `reason_code` never decides the outcome.
+last safety net. The model's `reason_code` never decides the outcome. The refusal is only
+made at step 1 of a turn; at step 2+ an occupied edge still ends in the typed 409 (LW-078).
+
+A movement-restrained actor (`restrained`/`incapacitated` combat status): `turnStepBlockPlan`
+refuses any step-1 `direct` plan with `goal_result: not_achieved` and no operations. With
+`reason_code` off the table the plan carries no structural marker of "this was about
+movement" (`operation_family` is a planner mapping field, dropped when the plan is
+assembled), so a non-movement `not_achieved` intent (for example `reality_limited`) of a
+restrained actor is refused the same way and its continuation is dropped. This is accepted
+while restraint blocks the actor's actions in practice; the test
+`a restrained actor's non-movement not_achieved plan is refused too` pins it.
 
 Approach to an exit. When the actor is not yet at a departure position, the exit is
 offered as a plain local `request_movement` to the first step of a path to it. The
@@ -753,6 +763,11 @@ the same edge, because binding `matches()` compares structure and ignores
 `description` (without it two commands claim one operation,
 `TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
 (`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
+Limit: after that first step the path search (`findReachableDeparturePosition`, raw SQL
+of `spatial-v3-expansion-context.js`) walks raw active scene edges without visibility or
+eligibility (admission exists only for the current position). Safe while every scene
+template is `default_clear`; once edges get explicit visibility the search must use only
+admitted edges (LW-078).
 
 Initial current-scene projection also exposes only persisted procedural NPC
 appearance, worn/held item refs, observable activity and the structured

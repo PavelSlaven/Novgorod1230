@@ -134,6 +134,18 @@ test('a structurally blocked actor gets the refusal for a not_achieved direct pl
     assert.equal(await free({ plan, request: { step_index: 1 } }), false, 'movement is not blocked');
   });
 
+test("a restrained actor's non-movement not_achieved plan is refused too (pinned: no structural movement marker, see MODULE.md)",
+  async () => {
+    const blockedState = { combat_sessions: [{ status: 'active', participant_states: [{
+      actor_ref: { entity_kind: 'player_character', entity_id: 'actor:blocked' },
+      combat_status: 'restrained' }] }], actor_id: 'actor:blocked' };
+    const blockPlan = await turnStepBlockPlan(blockedState);
+    const plan = { resolution: 'direct', goal_result: 'not_achieved', operations: [],
+      interpretation: { adaptation: 'reality_limited' } };
+    assert.equal(await blockPlan({ plan, request: { step_index: 1 } }), true);
+    assert.equal(await blockPlan({ plan, request: { step_index: 2 } }), false, 'later steps are not refused');
+  });
+
 async function localRegistry(attemptStatus) {
   const asked = [];
   const commandState = { party_id: 'party', actor_id: 'actor', party_state: { state_version: 1 },

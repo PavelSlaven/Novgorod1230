@@ -9,9 +9,9 @@ outfits:   same rule as approved-procedural-npc.js approvedClothing(): for each 
 adornment: every appearance value is in ACTOR_BASE_APPEARANCE_VOCABULARY, else needs_vocabulary_extension=true;
            weights are positive integers given by the frequency-class rule.
 """
-import csv, json, re, sys
+import csv, json, re, shutil, subprocess, sys
 from pathlib import Path
-from build import HAIR_COVERAGE_EVIDENCE, HEAD_SLOTS
+from build import HAIR_COVERAGE_EVIDENCE, HEAD_SLOTS, build_archive_inclusion_ledger, build_material_entities, normalized_name
 
 ROOT = Path(__file__).resolve().parents[1]
 NOV = ROOT.parents[1]
@@ -29,6 +29,122 @@ def rd(p, d=','):
 
 def fail(msg):
     fails.append(msg)
+
+
+def expected_basis(evidence, confidence, combination=False):
+    if combination:
+        return 'analogy'
+    if confidence == 'A' and any(term in evidence for term in (
+            'Прямые археологические', 'Прямые музейные', 'археологической обуви и музейных',
+            'Берестяная грамота №438 прямо')):
+        return 'sourced'
+    if 'Исходная детализация уверенности' in evidence or ('форма' in evidence and 'Берестяная грамота' in evidence):
+        return 'analogy'
+    if any(term in evidence for term in ('Хорошо подтверждаемая реконструкция',
+                                         'Общая древнерусская материальная культура',
+                                         'Подтверждённые зимние материалы')):
+        return 'logical_necessity'
+    if any(term in evidence for term in ('гипотеза', 'правдоподобность контактов',
+                                         'конкретные отличия требуют источника')):
+        return 'analogy'
+    return ''
+
+
+def period_includes_1230(period):
+    if re.search(r'(?:около|around)\s*1230', period, re.I) or '1230' in period:
+        return True
+    match = re.search(r'(\d{4})\s*[–—-]\s*(\d{4})', period)
+    return bool(match and int(match.group(1)) <= 1230 <= int(match.group(2)))
+
+
+def resolve_target(group, ref):
+    if not ref:
+        return False
+    if ref.startswith('n1230:material_item:'):
+        target_id = ref
+        base = NOV / 'game-base-v1' / group
+        return any(target_id in row.values() for path in base.rglob('*.csv') for row in rd(path))
+    if '#' not in ref:
+        return False
+    path, target_id = ref.split('#', 1)
+    prefix = f'{group}/'
+    if path.startswith(prefix):
+        path = path[len(prefix):]
+    base = ROOT if group == 'clothing-appearance' else NOV / 'game-base-v1' / group
+    source = base / path
+    if not source.is_file():
+        return False
+    if source.suffix == '.json':
+        data = json.loads(source.read_text(encoding='utf-8'))
+        def contains_id(value):
+            if isinstance(value, dict):
+                return value.get('id') == target_id or any(contains_id(v) for v in value.values())
+            if isinstance(value, list):
+                return any(contains_id(v) for v in value)
+            return False
+        return contains_id(data)
+    return any(target_id in row.values() for row in rd(source))
+
+
+def archive_id(record):
+    return record['archive_ref'].rsplit(':', 1)[-1].upper()
+
+
+def group_has_decision(group, archive_ref):
+    group_root = NOV / 'game-base-v1' / group
+    wanted = archive_ref.rsplit(':', 1)[-1].upper()
+    ledger_path = group_root / 'archive_inclusion_ledger.csv'
+    if ledger_path.is_file() and any(
+            archive_id(row) == wanted and row.get('inclusion_result') not in ('', 'routed', 'needs_check')
+            for row in rd(ledger_path)):
+        return True
+    manifest_path = group_root / 'authoring/archive_inclusion_manifest.json'
+    if manifest_path.is_file():
+        records = json.loads(manifest_path.read_text(encoding='utf-8')).get('records', [])
+        return any(archive_id(row) == wanted and row.get('expected_result') not in ('', 'routed', 'needs_check')
+                   for row in records)
+    return False
+
+
+def validate_archive_decisions(manifest, ledger):
+    ledger_fields = list(ledger[0]) if ledger else []
+    expected_ledger = [{key: str(row.get(key, '')) for key in ledger_fields}
+                       for row in build_archive_inclusion_ledger()]
+    if len(ledger) != len(manifest) or ledger != expected_ledger:
+        fail('archive ledger does not match manifest projection')
+    seen = set()
+    for row in manifest:
+        archive_ref = row.get('archive_ref', '')
+        if not archive_ref or archive_ref in seen:
+            fail(f'archive manifest has missing/duplicate archive_ref: {archive_ref or "<empty>"}')
+        seen.add(archive_ref)
+        if row.get('expected_result') != 'routed':
+            continue
+        group = row.get('target_group', '')
+        ref = row.get('target_ref', '')
+        token = f'awaits_owner:{group}'
+        if not group:
+            fail(f'{archive_id(row)}: routed row has no target_group')
+        elif ref:
+            if not resolve_target(group, ref):
+                fail(f'{archive_id(row)}: routed target does not resolve: {ref}')
+            if token in row.get('reason', ''):
+                fail(f'{archive_id(row)}: resolved routed target must not await owner')
+        else:
+            if token not in row.get('reason', ''):
+                fail(f'{archive_id(row)}: routed row without target_ref needs {token}')
+            if group_has_decision(group, archive_ref):
+                fail(f'{archive_id(row)}: receiving group already has a decision; cannot await owner')
+
+    projected, fields = build_material_entities()
+    entity_path = ROOT / 'garments/material_entities.csv'
+    actual = rd(entity_path)
+    with open(entity_path, encoding='utf-8-sig', newline='') as stream:
+        actual_fields = csv.DictReader(stream).fieldnames or []
+    if fields != actual_fields:
+        fail('material entity projection has unexpected columns or missing rows')
+    elif actual != projected:
+        fail('material_entities.csv does not match entity decisions in manifest')
 
 
 def vocab():
@@ -62,6 +178,106 @@ def main():
     prof = json.loads((ROOT / 'outfits_by_role/runtime_clothing_profiles.json').read_text(encoding='utf-8'))['clothing_profiles']
     adorn = rd(ROOT / 'adornment_appearance/adornment.csv')
     roles = rd(REPO / 'data/novgorod-region/novgorod_social_roles_v1_enriched.tsv', '\t')
+
+    # ---- archive ownership ledger
+    manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
+    ledger = rd(ROOT / 'reports/archive_inclusion_ledger.csv')
+    master_items = {r['item_id']: r for r in rd(NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv')}
+    costume_items = {r['item_id']: r for r in costume}
+    costume_combinations = {r['combo_id']: r for r in rd(NOV / 'sources/costume-dataset-v1/data/combinations.csv')}
+    validate_archive_decisions(manifest, ledger)
+
+    # Common game-base checker: pass a resolved root and argv (no shell); surface concise diagnostics.
+    checker = NOV / 'game-base-v1/scripts/check-archive-ownership.mjs'
+    node = shutil.which('node')
+    if not node:
+        fail('common archive ownership checker: node executable not found')
+    elif checker.is_file():
+        result = subprocess.run([node, str(checker), str(NOV / 'game-base-v1')],
+                                cwd=REPO, capture_output=True, text=True, check=False)
+        if result.returncode:
+            common_errors = [line for line in result.stderr.splitlines() if line.strip()]
+            fail(f'common archive ownership checker failed ({result.returncode}; {len(common_errors)} diagnostics): '
+                 + '; '.join(common_errors[:5]))
+        else:
+            info.append('common archive ownership checker: ' + result.stdout.strip())
+    else:
+        info.append('common archive ownership checker: unavailable in source checkout; clothing checks run locally')
+    allowed = {'entity', 'variant', 'ref', 'rejected', 'routed'}
+    required = ('archive_ref', 'archive_name', 'type', 'expected_result', 'basis', 'derivation',
+                'confidence', 'period', 'region', 'reason', 'target_group', 'target_ref')
+    if len({r.get('archive_ref', '') for r in manifest}) != len(manifest):
+        fail('archive manifest has duplicate archive_ref')
+    for r in manifest:
+        if any(not str(r.get(k, '')).strip() for k in required if k not in ('target_group', 'target_ref')):
+            fail(f'{r.get("archive_ref", "<missing>")}: incomplete archive decision')
+        if r['expected_result'] not in allowed or r['type'] not in ('new', 'variant'):
+            fail(f'{r["archive_ref"]}: invalid decision/type')
+        if r['basis'] not in ('sourced', 'analogy', 'logical_necessity') or r['confidence'] not in ('A', 'B', 'C'):
+            fail(f'{r["archive_ref"]}: invalid basis/confidence')
+        if r['expected_result'] == 'routed' and not r['target_group']:
+            fail(f'{r["archive_ref"]}: routed row needs target_group')
+        if r['expected_result'] == 'ref' and (not r['target_group'] or not r['target_ref']):
+            fail(f'{r["archive_ref"]}: ref row needs a stable target group and ref')
+        if r['expected_result'] == 'ref' and r.get('game_base_ref'):
+            fail(f'{r["archive_ref"]}: ref row cannot also be a variant target')
+        if r['expected_result'] in ('entity', 'variant') and not r['target_group']:
+            fail(f'{r["archive_ref"]}: entity/variant needs an explicit owner')
+        if r['expected_result'] == 'rejected' and (r['target_group'] or r['target_ref']):
+            fail(f'{r["archive_ref"]}: rejected row cannot claim a target')
+        if r['expected_result'] == 'variant' and not r['target_ref']:
+            fail(f'{r["archive_ref"]}: variant needs a stable target ref')
+        if r['expected_result'] == 'variant' and r['target_ref'] != r.get('game_base_ref', ''):
+            fail(f'{r["archive_ref"]}: variant target_ref and game_base_ref must identify the same stable target')
+        if r['target_ref'] and not resolve_target(r['target_group'], r['target_ref']):
+            fail(f'{r["archive_ref"]}: target does not resolve: {r["target_group"]} {r["target_ref"]}')
+        archive_id = r['archive_ref'].rsplit(':', 1)[-1]
+        if '/material_entities.csv:' in r['archive_ref']:
+            canonical = master_items.get(archive_id)
+            derivation = f'data/normalized_source_tables/material_entities/material_entities.csv#{archive_id}'
+            period = f"{canonical['period_from']}–{canonical['period_to']}" if canonical else ''
+            region = canonical['region_scope'] if canonical else ''
+            confidence = canonical['historical_confidence'] if canonical else ''
+            evidence = canonical['evidence_basis'] if canonical else ''
+        elif '/catalog_items.csv:' in r['archive_ref']:
+            canonical = costume_items.get(archive_id)
+            derivation = archive_id
+            period = canonical.get('period_scope', '') if canonical else ''
+            region = canonical.get('region_scope', '') if canonical else ''
+            confidence = canonical.get('historical_confidence', '') if canonical else ''
+            evidence = canonical.get('evidence_basis', '') if canonical else ''
+        elif '/combinations.csv:' in r['archive_ref']:
+            canonical = costume_combinations.get(archive_id)
+            derivation = archive_id
+            period = '1180–1260'
+            region = 'Великий Новгород и Новгородская земля; центр модели — около 1230 года'
+            confidence = canonical.get('confidence', '') if canonical else ''
+            evidence = canonical.get('description_ru', '') if canonical else ''
+        else:
+            canonical = None; derivation = period = region = confidence = evidence = ''
+        if not canonical:
+            fail(f'{r["archive_ref"]}: archive ID does not resolve in canonical source')
+        else:
+            for field, value in (('archive_name', canonical['name_ru']), ('derivation', derivation),
+                                 ('confidence', confidence), ('period', period), ('region', region)):
+                if normalized_name(r[field]) != normalized_name(value):
+                    fail(f'{r["archive_ref"]}: {field} differs from canonical source')
+            basis = expected_basis(evidence, confidence, '/combinations.csv:' in r['archive_ref'])
+            if r['basis'] != basis:
+                fail(f'{r["archive_ref"]}: basis {r["basis"]} mismatches canonical evidence ({basis})')
+            if r['basis'] == 'sourced' and 'category-level evidence (category_form_material_process_or_context)' not in r.get('basis_note', '').lower():
+                fail(f'{r["archive_ref"]}: A-source basis must say category-level evidence')
+        if not period_includes_1230(r['period']):
+            fail(f'{r["archive_ref"]}: 1230 is outside/absent from period')
+        hit = next((d['deny_id'] for d in deny if re.search(d['pattern'], r['archive_name'], re.I)), '')
+        if r['expected_result'] == 'entity' and hit:
+            fail(f'{r["archive_ref"]}: denylisted entity candidate ({hit})')
+    if any(r['inclusion_result'] not in allowed for r in ledger):
+        fail('ledger contains unknown disposition')
+    if any(r['inclusion_result'] != next(m['expected_result'] for m in manifest if m['archive_ref'] == r['archive_ref']) for r in ledger):
+        fail('ledger disposition differs from authored expected_result')
+    counts = {kind: sum(r['inclusion_result'] == kind for r in ledger) for kind in sorted(allowed)}
+    info.append(f'archive ownership: {len(manifest)} reviewed; ' + ', '.join(f'{k}={v}' for k, v in counts.items()))
 
     # ---- garments
     ids = [r['item_id'] for r in costume]

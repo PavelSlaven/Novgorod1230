@@ -467,7 +467,7 @@
     "group": "items-weapons-armour",
     "entities_ru": "Мечи, боевые топоры, копья, сулицы, луки и стрелы, кистени, булавы, ножи, щиты, шлемы, кольчуги, бармицы, пластинчатые доспехи — по статусу, праву ношения, состоянию, приметам.",
     "key_fields": ["wp_id", "name_ru", "category_id", "material", "mass_rule", "status_access[]", "legal_right_ref", "condition_states", "mark_slots", "attestation", "source_refs", "confidence"],
-    "target_tables": ["world_base.item_templates", "universal_categories (weapon/protection)", "region_equipment_profiles/entries"],
+    "target_tables": ["world_base.item_templates", "universal_categories (weapon/protection)", "region_equipment_profiles/entries", "items-weapons-armour/items/weapons_armour.csv"],
     "consumers": ["NPC equipment (охрана, дружинник)", "@rus/social-law (право ношения)", "combat"],
     "existing_sources": ["wk:reconstructed-military-world-v1, military-first-cartography — approved", "costume/risovalka — оружие и доспех по 8+1 ролям (кандидат)", "v5 объектные типы оружия — pending", "mia65 Медведев — нужен OCR"],
     "gaps_ru": "Нет таблицы оружия по статусу; семейство warfare-organization в WK missing (partial).",

@@ -35,6 +35,7 @@
  },
  "errors": [],
  "warnings": [
+  "WK dir not found: C:/Users/Slaven/Documents/Novgorod/data/world-catalogs/novgorod/world-knowledge/production-v1",
   "explicit gap: pf_ferry_landing winter has 2 audible birds; mallard requires scene-level open water",
   "outdoor place families without any fauna rows: pf_reality_batch_01_open_conditions,pf_reality_first_practical_conditions,pf_burial_ground"
  ]

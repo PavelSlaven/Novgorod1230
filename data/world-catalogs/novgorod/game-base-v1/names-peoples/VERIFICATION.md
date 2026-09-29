@@ -328,3 +328,21 @@ No row in the group is fabricated. The problems are overstated confidence, misla
 **Проверки.** `validate-b2-name-pool.mjs --self-test` PASS (337, 33 пробы); `validate-name-components.mjs --self-test` PASS (3/219/9/1059); двойная сборка побайтна; `build-status.test.mjs` 4/4; 11 мутационных проб ревьюера отклоняются.
 
 **Ограничения.** Ольга и Елена вернутся в выбор, когда в B2 появится вес; четыре формы §5.3 — только с новым свидетельством; тюркские формы — после #190. Общей проверки «`name_form` только кириллицей» нет (латиницу закрывают карта договорных чтений и проба на `Hæil(h)vatr`). `crosswalk_ref` — пути относительно архива. У 10 из 13 новых частей имён `support_texts` — сжатая выписка, формы в снимке дословно. Региональный пул 07 — черновик, кандидаты из него — `analogy`, C. Runtime- и DDL-импорт не утверждён.
+
+## Независимая проверка обновления #189 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор. Пересборку после слияния main сделал Codex (задача `region-ids`, #189); коммит ревьюера 88555d24 поверх merge 2674ac2e. Прогоны шли на копии `git archive`.
+- **Что изменено в группе:**
+  - снимок `sources/d46-regional-name-pools.json` — только `metadata.region_id` (`novgorod_land` → `region_novgorod_land`) и `region_id_aliases` (`[region_novgorod_land]` → `[novgorod_land]`). Остальное при сравнении JSON равно архиву `tools/rus13-novgorod-regional-templates/novgorod_npc_name_pools_v1.json`;
+  - в `personal_names/d46-name-additions.json` обновлён только pin `regional_name_pools.sha256`.
+- **Отклонение от круга 2.** Снимок больше не побайтно равен архиву: у архива sha256 3d3adc…, у снимка ffcda1…. Фраза выше «два снимка в `sources/` побайтно равны архивным файлам» относится к состоянию до #189. Группа history решила ту же задачу иначе: там байт-копия сохранена, а alias перенесён в сборщик.
+- **Проверено скриптами:**
+  - пересборка частей имён (3 пула, 219 записей) и пула B2 (337 записей) побайтно равна коммиту;
+  - `validate-b2-name-pool.mjs --self-test` — PASS, 33 пробы; `validate-name-components.mjs --self-test` — PASS;
+  - `novgorod_land_document` не переименован: 606 вхождений до и после;
+  - ссылки `archive_ref` не затронуты.
+
+### Вердикты по файлам обновления #189
+
+- sources/d46-regional-name-pools.json — approve_with_limits: снимок отличается от архива двумя полями региона (см. выше).
+- personal_names/d46-name-additions.json — approve_with_limits

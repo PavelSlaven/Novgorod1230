@@ -544,7 +544,7 @@
 
 - Сущности: Мечи, боевые топоры, копья, сулицы, луки и стрелы, кистени, булавы, ножи, щиты, шлемы, кольчуги, бармицы, пластинчатые доспехи — по статусу, праву ношения, состоянию, приметам.
 - Ключевые поля: `wp_id`, `name_ru`, `category_id`, `material`, `mass_rule`, `status_access[]`, `legal_right_ref`, `condition_states`, `mark_slots`, `attestation`, `source_refs`, `confidence`
-- Целевые таблицы: world_base.item_templates; universal_categories (weapon/protection); region_equipment_profiles/entries
+- Целевые таблицы: world_base.item_templates; universal_categories (weapon/protection); region_equipment_profiles/entries; items-weapons-armour/items/weapons_armour.csv
 - Потребители: NPC equipment (охрана, дружинник); @rus/social-law (право ношения); combat
 - Источники и статус: wk:reconstructed-military-world-v1, military-first-cartography — approved; costume/risovalka — оружие и доспех по 8+1 ролям (кандидат); v5 объектные типы оружия — pending; mia65 Медведев — нужен OCR
 - Пробел: Нет таблицы оружия по статусу; семейство warfare-organization в WK missing (partial).
@@ -572,7 +572,7 @@
 
 - Сущности: Рубахи, порты, свиты, плащи/корзно, шубы и кожухи, пояса, онучи, обувь (поршни, башмаки, сапоги, лапти — проверить датировку), головные уборы мужские и женские, женская нижняя/поясная одежда; материалы, цвета и красители, декор, состояния износа.
 - Ключевые поля: `gm_id`, `name_ru`, `garment_category`, `equipment_slot`, `material`, `dye_color`, `decoration`, `sex`, `age`, `marital_status`, `status_band`, `season`, `wear_states`, `mark_slots`, `source_refs`, `confidence`
-- Целевые таблицы: world_base.item_templates (одежда); universal_categories domain=garment (нет); world_base.region_clothing_profiles (пусто)
+- Целевые таблицы: world_base.item_templates (одежда); universal_categories domain=garment (нет); world_base.region_clothing_profiles (пусто); clothing-appearance/garments/material_entities.csv
 - Потребители: approvedClothing (exactly one equipment_template на слот); observable_cues.equipment → рассказчик
 - Источники и статус: costume data/catalog_items.csv 180, materials_palette.csv, anti_patterns.csv 20, sources.csv 50 — кандидат, проверка PASS; risovalka — F01–F05, H01–H05, пояс, A/B/C, 15 ссылок; wk:clothing.json 13/27 — approved; v17: 4 шаблона (рубаха, порты, башмаки, верхняя шерстяная)
 - Пробел: В runtime 4 вещи; нет женской нижней одежды, головных уборов и поясов; нет домена garment в категориях.

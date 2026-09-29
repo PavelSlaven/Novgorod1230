@@ -5,7 +5,7 @@ Deterministic: reads costume-dataset-v1 (candidate, PASS), social roles and
 occupations TSV, and encodes the authoring rules below as data tables.
 Stdlib only.  Run:  python scripts/build.py   then   python scripts/check.py
 """
-import csv, json, re
+import csv, json, re, unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -34,6 +34,55 @@ def write_csv(p, rows, fields):
         w.writeheader()
         for r in rows:
             w.writerow({k: r.get(k, '') for k in fields})
+
+
+def normalized_name(value):
+    value = unicodedata.normalize('NFKC', value or '').casefold().replace('ё', 'е')
+    return ' '.join(re.sub(r'[^\w]+', ' ', value).split())
+
+
+def build_archive_inclusion_ledger():
+    manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
+    deny = read_csv(ROOT / 'garments/denylist.csv')
+    ledger = []
+    for source in manifest:
+        name = source['archive_name']
+        denied = next((d['deny_id'] for d in deny if re.search(d['pattern'], name, re.I)), '')
+        guard = f'denylist:{denied}' if denied else 'passed'
+        dedup = source.get('dedup_result', '')
+        if not dedup:
+            dedup = ('variant_target' if source['expected_result'] == 'variant' else
+                     'reference_target' if source['expected_result'] == 'ref' else
+                     'routed_target_ref' if source['expected_result'] == 'routed' and source.get('target_ref') else
+                     'not_applicable_routed' if source['expected_result'] == 'routed' else
+                     'not_applicable_rejected' if source['expected_result'] == 'rejected' else 'unique')
+        ledger.append({**source, 'guard_result': guard, 'dedup_result': dedup,
+                       'inclusion_result': source['expected_result'],
+                       'target_group': source.get('target_group', ''),
+                       'target_ref': source.get('target_ref', ''),
+                       'reason': source['reason'], 'status': STATUS})
+    return ledger
+
+
+def build_material_entities():
+    """Project only explicitly owned new clothing entities; routed rows stay in the ledger."""
+    source_path = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'
+    source_rows = {r['item_id']: r for r in read_csv(source_path)}
+    manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
+    source_fields = list(next(iter(source_rows.values())).keys())
+    fields = source_fields + ['basis', 'derivation', 'source_refs', 'confidence', 'status']
+    rows = []
+    for decision in manifest:
+        if decision['expected_result'] != 'entity':
+            continue
+        archive_id = decision['archive_ref'].rsplit(':', 1)[-1]
+        row = dict(source_rows[archive_id])
+        row['item_id'] = decision.get('game_base_ref') or f'n1230:material_item:{archive_id.lower()}'
+        row.update(basis=decision['basis'], derivation=decision['basis_note'],
+                   source_refs=json.dumps([decision['archive_ref']], ensure_ascii=False),
+                   confidence=decision['confidence'], status=STATUS)
+        rows.append(row)
+    return rows, fields
 
 
 def split(s):
@@ -1040,10 +1089,11 @@ def main():
          ['provenance', 'source_refs', 'confidence', 'status']
     write_csv(odir / 'outfits.csv', outfit_rows, OF)
     write_csv(odir / 'outfit_compatibility_exceptions.csv', exceptions, ['of_id', 'slot', 'gm_id', 'issue'])
-    (odir / 'runtime_clothing_profiles.json').write_text(json.dumps(dict(
-        schema='novgorod_game_base_clothing_profiles_candidate_v1', status=STATUS,
-        note='Shape follows approved-procedural-npc.js approvedClothing(); world_revision_id, item_template_ref and status must be set by import/approval. Female headwear omitted (R8).',
-        clothing_profiles=runtime_profiles), ensure_ascii=False, indent=1), encoding='utf-8')
+    with (odir / 'runtime_clothing_profiles.json').open('w', encoding='utf-8', newline='\r\n') as f:
+        f.write(json.dumps(dict(
+            schema='novgorod_game_base_clothing_profiles_candidate_v1', status=STATUS,
+            note='Shape follows approved-procedural-npc.js approvedClothing(); world_revision_id, item_template_ref and status must be set by import/approval. Female headwear omitted (R8).',
+            clothing_profiles=runtime_profiles), ensure_ascii=False, indent=1))
 
     # foreign / other-origin outfits kept as descriptive profiles (no runtime selector for origin)
     fp = read_csv(COSTUME / 'foreigner_profiles.csv')
@@ -1265,12 +1315,21 @@ def main():
               dict(ref='source:clothing-rabinovich-1986', title='Рабинович М. Г. Древнерусская одежда IX–XIII вв.', url='https://www.booksite.ru/ancient/reader/human_3_02.htm', kind='scholarly (WK)', confidence_hint='B'),
               dict(ref='v17:*', title='Novgorod-runtime (PR #98): m2c-npc/runtime-bindings.json, appearance-transfer-v3, packages/actors, approved-procedural-npc.js', url='', kind='runtime contract', confidence_hint='')]
     write_csv(ROOT / 'sources.csv', srows, ['ref', 'title', 'url', 'kind', 'confidence_hint'])
+    inclusion_ledger = build_archive_inclusion_ledger()
+    write_csv(ROOT / 'reports/archive_inclusion_ledger.csv', inclusion_ledger,
+              ['archive_ref', 'archive_name', 'type', 'inclusion_result', 'game_base_ref', 'target_group', 'target_ref',
+               'basis', 'derivation', 'confidence', 'period', 'region', 'guard_result', 'dedup_result', 'reason', 'status'])
+    entity_rows, entity_fields = build_material_entities()
+    write_csv(gdir / 'material_entities.csv', entity_rows, entity_fields)
     print(json.dumps(dict(garments=len(garments), components=len(components), disposition=len(disposition),
                           categories=len(catrows), region_clothing_profiles=len(rcp), denylist=len(den),
                           outfits=len(outfit_rows), runtime_profiles=len(runtime_profiles),
                           runtime_variants=sum(len(p['variants']) for p in runtime_profiles),
                           exceptions=len(exceptions), adornment_items=len(ad), appearance_rows=len(ap),
-                          sources=len(srows)), ensure_ascii=False))
+                          sources=len(srows), archive_inclusion_ledger=len(inclusion_ledger),
+                          archive_inclusion_results={k: sum(r['inclusion_result'] == k for r in inclusion_ledger)
+                                                     for k in ('entity', 'variant', 'ref', 'rejected', 'routed')},
+                          material_entities=len(entity_rows)), ensure_ascii=False))
 
 
 if __name__ == '__main__':

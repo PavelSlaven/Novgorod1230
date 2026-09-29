@@ -19,16 +19,16 @@
     "runtime_activation": false,
     "status": "candidate",
     "action_counts": {
-      "needs_check": 498,
-      "include_d39": 548,
-      "add_variant": 222
+      "needs_check": 488,
+      "include_d39": 559,
+      "add_variant": 221
     },
     "ledger_rows": 1268,
     "included_new": 205,
-    "included_variants": 454,
+    "included_variants": 461,
     "rejected": 6,
-    "routed": 105,
-    "needs_check": 498
+    "routed": 108,
+    "needs_check": 488
   },
   "matcult_checked": false,
   "warnings": []

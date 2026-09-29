@@ -11,6 +11,7 @@ import { storedPendingTurn } from './pending-turn.js';
 import { clearNewGameRequest, newGameRequest } from './pending-new-game.js';
 import { recoverPendingPresentation, submitRecoverableTurn } from './turn-submission.js';
 import { trapOverlayFocus } from './overlay-focus.js';
+import { fillDraftFromMovementButton } from './movement-draft.js';
 export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
   './turn-submission.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
@@ -140,22 +141,13 @@ export function bootstrapGameWeb({
       await startParty({ scenario_id: scenarioButton.dataset.scenarioId });
       return;
     }
+    if (fillDraftFromMovementButton({ target, root, store, isBlocked: flowNavigationBlocked })) return;
     const actionButton = target.closest?.('[data-action-id]');
     if (actionButton && !actionButton.disabled
       && !flowNavigationBlocked(store.getState())) {
       await submitTurn({
         selected_action_option_id: actionButton.dataset.actionId
       });
-      return;
-    }
-    const movementButton = target.closest?.('[data-movement-label]');
-    if (movementButton && !movementButton.disabled
-      && !flowNavigationBlocked(store.getState())) {
-      const label = movementButton.dataset.movementLabel ?? '';
-      store.setDraft('turn', label);
-      const textarea = root.querySelector('#turn-intent');
-      if (textarea) textarea.value = label;
-      textarea?.focus();
     }
   });
 

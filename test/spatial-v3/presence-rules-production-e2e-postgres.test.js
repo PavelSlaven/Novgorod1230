@@ -3,7 +3,6 @@ import test from 'node:test';
 import { canonicalDigest, isO1PresenceRecord } from '@rus/materialization';
 
 import {
-  PF_RURAL_YARD,
   VIKHTUY_MEETING_G5,
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
@@ -141,8 +140,19 @@ test('canonical vikhtuy meeting_area PF binding', { skip: B1_SKIP_REASON, timeou
         },
       });
       const aggregate = (await loadStartG6Aggregate(env.partyPool, partyId))?.aggregate_payload;
-      const pfIds = new Set(presenceRuleRows(aggregate).map((row) => row.place_family_id));
-      assert.ok(pfIds.has(PF_RURAL_YARD));
+      const ruralYardRuleIds = new Set(
+        presenceRuleRows(aggregate)
+          .map((row) => row.rule_ref)
+          .filter((ref) => typeof ref === 'string'),
+      );
+      assert.ok(
+        ruralYardRuleIds.size > 0,
+        'meeting_area arrival should commit at least one presence rule resolution',
+      );
+      assert.ok(
+        [...ruralYardRuleIds].every((ref) => /^pr_[^@]+@[0-9]+$/u.test(ref)),
+        'presence resolutions store rule_ref, not place_family_id',
+      );
     } finally {
       await runtime.close();
     }

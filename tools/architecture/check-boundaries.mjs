@@ -49,6 +49,7 @@ const stage26FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/
 const stage26Facade = await readFile(stage26FacadePath, 'utf8');
 if (!stage26Facade.includes("@rus/new-game/stages/stage-26/compat")) violations.push('legacy Stage 26 must delegate to the modular compatibility entry point');
 if (stage26Facade.includes('function ')) violations.push('legacy Stage 26 facade must not contain implementation functions');
+if (!isPureReexportFacade(stage26Facade)) violations.push(`${relative(root, stage26FacadePath).replaceAll('\\', '/')}: facade must only re-export`);
 for (const forbidden of ['stage22-narrator-prose.js', 'stage23-narrator-prose-audit.js', 'stage25-party-commit.js']) {
   if (stage26Facade.includes(forbidden)) violations.push(`legacy Stage 26 may not import sibling stage ${forbidden}`);
 }
@@ -87,6 +88,7 @@ const stage25FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/
 const stage25Facade = await readFile(stage25FacadePath, 'utf8');
 if (!stage25Facade.includes("@rus/new-game/stages/stage-25/compat")) violations.push('legacy Stage 25 must delegate to the modular compatibility entry point');
 if (stage25Facade.includes('function ')) violations.push('legacy Stage 25 facade must not contain implementation functions');
+if (!isPureReexportFacade(stage25Facade)) violations.push(`${relative(root, stage25FacadePath).replaceAll('\\', '/')}: facade must only re-export`);
 for (const forbidden of ['stage24-party-db-write-plan.js', 'stage26-first-game-screen.js']) {
   if (stage25Facade.includes(forbidden)) violations.push(`legacy Stage 25 may not import sibling stage ${forbidden}`);
 }
@@ -127,6 +129,7 @@ const stage24FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/
 const stage24Facade = await readFile(stage24FacadePath, 'utf8');
 if (!stage24Facade.includes("@rus/new-game/stages/stage-24/compat")) violations.push('legacy Stage 24 must delegate to the modular compatibility entry point');
 if (stage24Facade.includes('function ')) violations.push('legacy Stage 24 facade must not contain implementation functions');
+if (!isPureReexportFacade(stage24Facade)) violations.push(`${relative(root, stage24FacadePath).replaceAll('\\', '/')}: facade must only re-export`);
 for (const forbidden of ['stage23-narrator-prose-audit.js', 'stage25-party-commit.js']) {
   if (stage24Facade.includes(forbidden)) violations.push(`legacy Stage 24 may not import sibling stage ${forbidden}`);
 }
@@ -247,6 +250,7 @@ for (const stage of [
   const facade = await readFile(facadePath, 'utf8');
   if (!facade.includes(stage.compat)) violations.push(`legacy Stage ${stage.id} must delegate to ${stage.compat}`);
   if (facade.includes('function ')) violations.push(`legacy Stage ${stage.id} facade must not contain implementation functions`);
+  if (!isPureReexportFacade(facade)) violations.push(`${relative(root, facadePath).replaceAll('\\', '/')}: facade must only re-export`);
 
   const stageRoot = join(root, 'packages/new-game/src/stages', stage.slug);
   const stageFiles = (await walk(stageRoot)).filter((file) => ['.js', '.mjs'].includes(extname(file)));
@@ -295,6 +299,7 @@ for (const stage of [
   const facade = await readFile(join(root, 'legacy/src/world/new-game-pipeline/stages', facadeName), 'utf8');
   if (!facade.includes(`@rus/new-game/stages/stage-${id}/compat`)) violations.push(`legacy Stage ${id} must delegate to modular compatibility entry point`);
   if (facade.includes('function ')) violations.push(`legacy Stage ${id} facade must not contain implementation functions`);
+  if (!isPureReexportFacade(facade)) violations.push(`legacy/src/world/new-game-pipeline/stages/${facadeName}: facade must only re-export`);
   const files = (await walk(join(root, 'packages/new-game/src/stages', slug))).filter((file) => ['.js', '.mjs'].includes(extname(file)));
   for (const file of files) {
     const rel = relative(root, file).replaceAll('\\', '/');
@@ -323,6 +328,7 @@ for (const stage of [
     }
     if (!facade.includes(`@rus/new-game/stages/stage-${id}/compat`)) violations.push(`${legacyRoot}/${facadeName}: must delegate to modular compatibility entry point`);
     if (facade.includes('function ')) violations.push(`${legacyRoot}/${facadeName}: facade must not contain implementation functions`);
+    if (!isPureReexportFacade(facade)) violations.push(`${legacyRoot}/${facadeName}: facade must only re-export`);
   }
 
   const stageRoot = join(root, 'packages/new-game/src/stages', slug);
@@ -980,6 +986,15 @@ async function childDirs(dir) {
 }
 function importsOf(text) {
   return [...text.matchAll(/(?:from\s+|import\s*\()(['"])([^'"]+)\1/g)].map((match) => match[2]);
+}
+
+// A facade holds only `export ... from '...'` / `import ... from '...'` statements (comments and blank lines allowed).
+function isPureReexportFacade(source) {
+  const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  const name = String.raw`[\w$]+(?:\s+as\s+[\w$]+)?`;
+  const clause = String.raw`\*(?:\s+as\s+[\w$]+)?|[\w$]+|\{\s*(?:${name}(?:\s*,\s*${name})*\s*,?\s*)?\}`;
+  const statement = new RegExp(String.raw`(?:export|import)\s+(?:${clause})(?:\s*,\s*(?:${clause}))?\s+from\s+(['"])[^'"\n]+\1\s*;?`, 'g');
+  return code.replace(statement, '').trim() === '';
 }
 
 function findCycles(graph) {

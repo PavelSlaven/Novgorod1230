@@ -122,7 +122,7 @@ boundary применяется release `spatial-v3-production-v1`.
 
 Внутренний цикл считается завершённым с нулём замечаний только если одновременно:
 
-- отсутствуют неразрешённые противоречия между разделами 0–17 и приложениями A–C;
+- отсутствуют неразрешённые противоречия между разделами 0–17 и приложениями A–C и F;
 - каждый `contract_name` имеет ровно одно действующее объявление (в приложении B либо заменяющий его блок приложения F), а каждый contract type разрешается в primitive, canonical contract или явно зарегистрированный controlled vocabulary;
 - отсутствуют рабочие placeholders, незакрытые schema branches и альтернативные трактовки одного state transition;
 - historical target-правила не смешиваются с действующим v3 runtime и не
@@ -168,7 +168,9 @@ Amendment вводит:
 - реестр контролируемых словарей версии 5 (B.0.1);
 - Приложение F: machine contracts и typed errors amendment. Блоки Приложения F заменяют одноимённые блоки Приложения B и добавляют новые; при конфликте приоритет у Приложения F (по образцу §0.8). Yaml-блоки Приложения B и таблица Приложения C остаются неизменными.
 
-**Применимость к v17.** Machine contracts этой редакции — `4.7.0-target.1`. Production runtime v17 до код-этапа расходится с нормой: переход между местами исполняется как action-cost без времени (`spatial-v3-site-traversal-runtime.js:33,155`); слой раскрытия видимости прячет ходы при `none` (`spatial-v3-current-visibility.js:31`); адаптер проекции канонической связи пишет trigger `frontier_resolution`; подписи переходов порядковые («Проход N», «— выход N»). Эти расхождения — долг реализации (LW-094), они не делают норму proposed и не допускают частичной активации (§0.4).
+**Применимость к v17.** Machine contracts этой редакции — `4.7.0-target.1`. Production runtime v17 до код-этапа расходится с нормой: переход между местами исполняется как action-cost без времени (`spatial-v3-site-traversal-runtime.js:33,155`); слой раскрытия видимости прячет ходы при `none` (`spatial-v3-current-visibility.js:31`); подготовка канонической связи в rt-walk (`prepareCanonicalConnection`, `b77663a3`, fleet/rt-walk) — отдельный P16-коммит `resolve_frontier:canconn:<party>:<binding>` без члена `preparation_snapshot` и с trigger `frontier_resolution`, тогда как по норме проекция — член `PrepareTargetSnapshot` с trigger `canonical_connection`; подписи переходов порядковые («Проход N», «— выход N»). Эти расхождения — долг реализации (LW-097), они не делают норму proposed и не допускают частичной активации (§0.4).
+
+Единственное пересечение Приложения F с temporal-приложениями — `preparation_snapshot_member`: F = Temporal World v4 A.7 + член `canonical_connection`; правка A.7 требует одновременной правки F (проверяет `check-p01.mjs`).
 
 Ссылки на action-cost `site_connection` в `action_step_static_snapshot` и `party_route_plan_step` (Приложение B) после этой редакции неприменимы: `site_connection` имеет только `cost_kind=time` (§1.4), а action-cost `relation_ref` допустим только для `scene_movement_edge`.
 
@@ -657,7 +659,7 @@ point[n] = endpoint_to
 
 Развилка — canonical G5, в котором начинаются или сходятся не менее двух lines: world routes и/или canonical connections. Это производное свойство: отдельной записи оно не имеет.
 
-Любая точка, где можно свернуть вперёд на другую линию или где остановка — место со сценой и действиями (перекрёсток, пристань, брод с отходящей тропой), является canonical G5 и endpoint своих routes. G5 вводится только при реальной примете или реальном выборе. Ожидание на внутренней точке маршрута (`waiting_at_anchor`, §4.10) G5 не требует. Internal route point (`waypoint`, `boundary`, `checkpoint`) выбора вперёд не даёт: `ordinary_waypoint` pin-ит ровно одно authored forward continuation, а единственная альтернатива на нём — разворот (§4.10). Один `g4_directional_exit` может обслуживать несколько routes (§4.4).
+Любая точка, где можно свернуть вперёд на другую линию или где остановка — место со сценой и действиями (перекрёсток, пристань, брод с отходящей тропой), является canonical G5 и endpoint своих routes. G5 вводится только при реальной примете или реальном выборе. Ожидание на внутренней точке маршрута (`waiting_at_anchor`, §4.10) G5 не требует. Internal route point (`waypoint`, `boundary`, `checkpoint`) выбора вперёд не даёт: `ordinary_waypoint` pin-ит ровно одно authored forward continuation, а единственная альтернатива на нём — разворот (§4.10), кроме утверждённых checkpoint departures на `shared_checkpoint` (`checkpoint_departure_template`): это route-anchor scene существующего механизма, а не развилка; новые развилки авторятся как canonical G5 junction. Один `g4_directional_exit` может обслуживать несколько routes (§4.4).
 
 ### 4.5.2. Предел сегмента
 
@@ -771,10 +773,10 @@ Transit anchor:
 - хранит arrival/departure side contexts and one authored switch phase;
 - хранит active side для любого internal point; при равных side contexts переключение является no-op;
 - может иметь checkpoint departures только из approved templates;
-- имеет два хода: «дальше» (единственное authored forward continuation) и «назад» (разворот). Разворот доступен на каждой внутренней точке маршрута любого вида (`ordinary_waypoint`, `boundary_wait`, `shared_checkpoint`), но не посреди segment;
-- ход «назад» — departure зеркальной точки `(R′, n−k)` обратного маршрута: anchor точки k route R и anchor зеркальной точки обратного route R′ обозначают одно физическое место. При исполнении такого departure anchor перепривязывается к R′ без отдельного шага и без времени (технический endpoint rebinding, §1.4, последний абзац); новый вид шага не вводится, следующий шаг — обычный `timed_traversal` reverse segment (A.9);
+- имеет ход «дальше» (единственное authored forward continuation) и, если у маршрута есть обратный (`reverse_route_ref`), ход «назад» (разворот). Разворот доступен на каждой внутренней точке такого маршрута любого вида (`ordinary_waypoint`, `boundary_wait`, `shared_checkpoint`), но не посреди segment; на одностороннем маршруте (без reverse route) хода «назад» нет. Физически односторонний участок авторы моделируют обратным маршрутом с недоступным зеркальным сегментом (§4.13), а не отсутствием обратного маршрута;
+- ход «назад» — departure зеркальной точки `(R′, n−k)` обратного маршрута: anchor точки k route R и anchor зеркальной точки обратного route R′ обозначают одно физическое место. При исполнении такого departure anchor перепривязывается к R′ без отдельного шага и без времени (технический endpoint rebinding, §1.4, последний абзац); новый вид шага не вводится, следующий шаг — обычный `timed_traversal` reverse segment с учётом его доступности (A.9);
 - для `boundary_wait` ход «назад» не пересекает границу: стороны границы для обратного маршрута инвертированы; для `shared_checkpoint` действует то же правило;
-- ветвление вперёд на anchor невозможно: оно только в canonical G5 (§4.5.1).
+- ветвление вперёд на anchor невозможно: оно только в canonical G5 (§4.5.1); исключение — утверждённые checkpoint departures на `shared_checkpoint` (`checkpoint_departure_template`): это route-anchor scene существующего механизма, а не развилка; новые развилки авторятся как canonical G5 junction.
 
 Scene-level checkpoint/interruption использует отдельный route-anchor aggregate.
 
@@ -959,7 +961,7 @@ load frontier/profile and normalized capacity state under global locks
 → for connection terminal resolution, resolve the exact target party site
 → if world_route_exit lacks its canonical party projection, create that projection from the pinned canonical G5
 → materialize any missing mandatory target endpoint scene/position from the one approved pinned profile
-→ create the site connection pair (forward and reverse, paired-slot rule §6.6) and their exact role-aware endpoint bindings
+→ create the site connection pair (forward and reverse, paired-slot rule §6.5) and their exact role-aware endpoint bindings
 → consume source frontier
 → for generation, apply exactly one g5_successor_frontier_rule:
      through site = exactly one through_successor;
@@ -1139,7 +1141,7 @@ Path query, которому нужна авторская связь G5–G5, �
 
 - создаёт или переиспользует party-проекцию обоих canonical G5 (`party_g5_site`, origin `canonical`);
 - для отсутствующего active baseline материализует только обязательные endpoint scene/position из approved profile; существующий baseline не дополняется и обязан разрешать endpoint slot ровно один раз;
-- создаёт `g5_site_connection` (прямую и обратную) и `party_site_connection_endpoint_binding` обеих связей по paired-slot rule (§6.6);
+- создаёт `g5_site_connection` (прямую и обратную) и `party_site_connection_endpoint_binding` обеих связей по paired-slot rule (§6.5);
 - записывает результат в член `canonical_connection` snapshot (`preparation_snapshot_member`, Приложение F).
 
 Ноль или несколько slot matches блокируют всю transaction, включая `preparation_snapshot`. Проекция не создаёт generated content, не потребляет frontier, не двигает traveller и не продвигает time. Записывать эту проекцию под trigger `frontier_resolution` запрещено.
@@ -7200,7 +7202,7 @@ invariants:
   - boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving; a turn-back does not cross the boundary and uses the mirror departure with inverted boundary sides.
   - shared_checkpoint pins the default authored continuation; every additional forward departure is represented only by party_checkpoint_route_departure.
   - Every allowed departure originates at source_route_point_ref or at its mirror point on the reciprocal route (the same physical point, §4.10) and is compatible with context_snapshot.departure_side_context (for a mirror departure, with the inverted side context).
-  - A turn-back (mirror departure) is available at an anchor of every role; executing it rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).
+  - A turn-back exists only when the route has a reverse route (reverse_route_ref); it is the mirror departure followed by an ordinary timed_traversal of the reverse segment, subject to that segment's availability. On a one-way route the anchor exposes no turn-back. Executing a mirror departure rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).
   - If switch_phase=outbound_dispatch, dispatch atomically changes active_side from arrival to departure before leaving; inbound_completion anchors are already on departure side. No role changes active_side by any other rule.
   - active forbids terminal_change_set_id; superseded and retired require it.
 ```
@@ -7396,7 +7398,7 @@ relations:
   resolved_endpoint_binding_ids: relation_set[stable_id]
 invariants:
   - endpoint requires resolved_endpoint_snapshot and forbids every scene field and every connection field.
-  - canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.6), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).
+  - canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.5), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).
   - transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization, and forbids every connection field.
   - A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.
   - Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.

@@ -12,7 +12,7 @@
     "situation": "письмо, письменный зачин",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "грамота № 717: игуменья к Офросении",
@@ -35,7 +35,7 @@
     "situation": "устный доклад воина князю; роль говорящего не установлена",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "воин докладывает князю",
@@ -58,7 +58,7 @@
     "situation": "устный вопрос епископу; роль говорящего не установлена",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "вопрос тверскому епископу, перенос на новгородского владыку как кандидат",
@@ -81,7 +81,7 @@
     "situation": "устный доклад слуги хозяину",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "слуги обращаются к своему господину; перенос на боярский двор",
@@ -104,7 +104,7 @@
     "situation": "устное обращение зависимого к хозяину",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "форма засвидетельствована к господину; перенос на названного хозяина условен",
@@ -127,7 +127,7 @@
     "situation": "устное обращение закупа-пастуха к своему хозяину",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "форма засвидетельствована к господину; перенос на закупа условен",
@@ -150,7 +150,7 @@
     "situation": "устное обращение закупа-пастуха к названному хозяину",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "форма засвидетельствована к господину; перенос на закупа условен",
@@ -173,7 +173,7 @@
     "situation": "письмо сестры брату",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "берестяная грамота, сестра просит брата вступиться",
@@ -196,7 +196,7 @@
     "situation": "жена к мужу; книжный топос, только вариант",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "слово Даниила Заточника",
@@ -219,7 +219,7 @@
     "situation": "только для пары, связанной spouse в составе двора; книжный топос, только вариант; only for rel_composition_spouse_2dc90533f844af8e",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "слово Даниила Заточника; перенос на двор смерда условен",
@@ -242,7 +242,7 @@
     "situation": "отец к сыну",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "летописная речь, medieval_general",
@@ -265,7 +265,7 @@
     "situation": "зять к тестю",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "летописная речь, medieval_general; термин обращения не доказывает отцовство",
@@ -288,7 +288,7 @@
     "situation": "письменная вежливая просьба женщины к женщине",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "берестяная грамота; устный перенос не установлен",
@@ -311,7 +311,7 @@
     "situation": "клирик к собранию людей",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "речь клирика, не индивидуальная родственная форма",
@@ -334,7 +334,7 @@
     "situation": "коллективное обращение к собранию",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "летописная коллективная речь",
@@ -357,7 +357,7 @@
     "situation": "коллективное обращение к новгородцам",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "речь Мстислава",
@@ -380,7 +380,7 @@
     "situation": "новгородцы к князю",
     "status": "approved",
     "confidence": "medium",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "1228 год; отдельный вариант",
@@ -403,7 +403,7 @@
     "situation": "письмо",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "письменный зачин",
@@ -426,7 +426,7 @@
     "situation": "письмо",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "письменный зачин",
@@ -449,7 +449,7 @@
     "situation": "письмо",
     "status": "approved",
     "confidence": "high",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "письменная формула",
@@ -472,7 +472,7 @@
     "situation": "разговор жильцов одного двора",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -495,7 +495,7 @@
     "situation": "устное обращение мужа к жене",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -518,7 +518,7 @@
     "situation": "устное обращение соседей",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -541,7 +541,7 @@
     "situation": "устное обращение родных братьев и сестёр",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -564,7 +564,7 @@
     "situation": "устное обращение дяди и племянника",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -587,7 +587,7 @@
     "situation": "устное обращение коллег",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -610,7 +610,7 @@
     "situation": "устное обращение членов верви",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -633,7 +633,7 @@
     "situation": "только для пары, связанной spouse в составе двора; устное обращение мужа к жене; only for rel_composition_spouse_2dc90533f844af8e",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -656,7 +656,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -679,7 +679,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -702,7 +702,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -725,7 +725,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -748,7 +748,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -771,7 +771,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -794,7 +794,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -817,7 +817,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -840,7 +840,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -863,7 +863,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -886,7 +886,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -909,7 +909,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -932,7 +932,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -955,7 +955,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -978,7 +978,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1001,7 +1001,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1024,7 +1024,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1047,7 +1047,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1070,7 +1070,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1093,7 +1093,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1116,7 +1116,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1139,7 +1139,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1162,7 +1162,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1185,7 +1185,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1208,7 +1208,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1231,7 +1231,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1254,7 +1254,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1277,7 +1277,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1300,7 +1300,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1323,7 +1323,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1346,7 +1346,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1369,7 +1369,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1392,7 +1392,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1415,7 +1415,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1438,7 +1438,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1461,7 +1461,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1484,7 +1484,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1507,7 +1507,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1530,7 +1530,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1553,7 +1553,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1576,7 +1576,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1599,7 +1599,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1622,7 +1622,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1645,7 +1645,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1668,7 +1668,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1691,7 +1691,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1714,7 +1714,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1737,7 +1737,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1760,7 +1760,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1783,7 +1783,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1806,7 +1806,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1829,7 +1829,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1852,7 +1852,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1875,7 +1875,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1898,7 +1898,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1921,7 +1921,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1944,7 +1944,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1967,7 +1967,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -1990,7 +1990,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2013,7 +2013,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2036,7 +2036,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2059,7 +2059,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2082,7 +2082,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2105,7 +2105,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2128,7 +2128,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2151,7 +2151,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2174,7 +2174,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2197,7 +2197,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2220,7 +2220,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",
@@ -2243,7 +2243,7 @@
     "situation": "co-present actors at a bound starting scene",
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
     "payload": {
       "legal_weight_ref": "",
       "attestation": "",

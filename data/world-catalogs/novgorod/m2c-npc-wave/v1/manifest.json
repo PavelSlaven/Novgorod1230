@@ -4,15 +4,15 @@
   "bundle_id": "novgorod_m2c_npc_wave_v1",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "status": "draft",
-  "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+  "provenance_ref": "game_base_v1_m2c_people_27bd6134",
   "delete_policy": "forbid",
   "datasets": [
     {
       "table": "source_records",
       "file": "datasets/source_records.json",
-      "sha256": "503d6857aaa0ee32ca0b5f5f86318fb8a9d79ce39bb1ef72546c32b7a07a7d55",
+      "sha256": "f2f8fc2a1614c052f3af703877cf87cf17ffd06b5b5a387391c17dae6d7595d0",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": []
     },
@@ -21,7 +21,7 @@
       "file": "datasets/spatial_v3_world_revisions.json",
       "sha256": "5792b6a25936e581f63fd61d022e4fcb4f5819c9743f27697adbdadc06c4aa05",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -30,9 +30,9 @@
     {
       "table": "place_families",
       "file": "datasets/place_families.json",
-      "sha256": "d910e155050322974e181a5907c5f2cc9d54a53600394b7a4ad4f3c3e8367456",
+      "sha256": "8dec588729df5ccacc0acec5405ede66ba55ad9d269b4471b0b82a3082771e3b",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records",
@@ -42,9 +42,9 @@
     {
       "table": "spatial_node_place_family_bindings",
       "file": "datasets/spatial_node_place_family_bindings.json",
-      "sha256": "f8ed458ff9d589232397098d603ba14fbc20d0cbe34189eb3565ec235e14568a",
+      "sha256": "a8f375040584d5b7b42a27831059d075d362c32d12451bd684a039d71e707e43",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -53,9 +53,9 @@
     {
       "table": "presence_rules",
       "file": "datasets/presence_rules.json",
-      "sha256": "3f52e3123223396c759c45f4e27668d76a28c7617bf5470bd27a757640220bdf",
+      "sha256": "5a7309449a3f8bc0d729198e743cf7631da5d8ec14a9042ff733c288b2a34b07",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -64,9 +64,9 @@
     {
       "table": "water_body_presence_facets",
       "file": "datasets/water_body_presence_facets.json",
-      "sha256": "63b5e64117b9bff424ef73cd4abf3071ed2e9eee122af681da488c9870b36d50",
+      "sha256": "3ab7833644acfbc49199cc5d3731aeeac41e6f0657ce3d4ebe9d1db99e5c3d86",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -75,9 +75,9 @@
     {
       "table": "npc_relationship_materialization_rules",
       "file": "datasets/npc_relationship_materialization_rules.json",
-      "sha256": "456d114ebb160b6f5d3b348ea6aca449e24441295059a2c82cb82d8674e1e704",
+      "sha256": "6a63a4a4d99508b6e698790617c637156498c0f5c94816a79d5f739710a6c5d1",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -86,9 +86,9 @@
     {
       "table": "speech_address_forms",
       "file": "datasets/speech_address_forms.json",
-      "sha256": "6c6a0e3993f53f7709543df50082a6850f2b1faa558a974deed9fda331f9fe44",
+      "sha256": "66ee6d5f5ba16c3d095918b0a3fdd25b6e950db4ee0b26f0ca26264c4d5e5b3f",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -97,9 +97,9 @@
     {
       "table": "household_composition_profiles",
       "file": "datasets/household_composition_profiles.json",
-      "sha256": "2deaba2ab8752ddd0ff13a1c55b53b5999424b5f848817258eb97348068bdc4a",
+      "sha256": "99f2be49087372f6d94d4cb84010ab967b714e75fd5e3968cec889ed2e031d07",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -108,9 +108,9 @@
     {
       "table": "slot_instance_variants",
       "file": "datasets/slot_instance_variants.json",
-      "sha256": "c1516ed5b076d62ecf7420acdac581890a805ca72f13ea0c97d6608fde560e01",
+      "sha256": "ce0cb00a23be99ced1ea2d55dd1d55c4d06b20e8b1c9c16fc7b84be7d49ea019",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -119,9 +119,9 @@
     {
       "table": "fauna_phase_activity_rules",
       "file": "datasets/fauna_phase_activity_rules.json",
-      "sha256": "8f7b96d13e217a8297233369e66e86a62df1e95738bf2b99f506347754ca2506",
+      "sha256": "76216ede875f590b6efe3dcbe62e8d2edac55674948b8f98367faa3579d88cd7",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records"
@@ -130,9 +130,9 @@
     {
       "table": "npc_schedule_routine_rules",
       "file": "datasets/npc_schedule_routine_rules.json",
-      "sha256": "c7300cf040e221d1ca02dfaca6265f7edb4ed93adcc4b7bd5d93349a6b589e61",
+      "sha256": "a3b0748ff10e33c506fe2df70af8106c7a2fd441ad37de6abcf7d413db1dcfd7",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -141,9 +141,9 @@
     {
       "table": "place_population_composition_rules",
       "file": "datasets/place_population_composition_rules.json",
-      "sha256": "aff21c0400fb43574c2553094d8a1ac7cfef55910f1fa9ab988011b54a06e666",
+      "sha256": "cbbfc5af02ceaa1962f6d540e2dd5cab15e24b30340e0ac8e0a75fc425e34186",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "place_families"
@@ -154,7 +154,7 @@
       "file": "datasets/spatial_v3_nodes.json",
       "sha256": "9af09819a491f4c56af19a2d79c30c9021056c091209a264039503f56c789e5b",
       "status": "draft",
-      "provenance_ref": "game_base_v1_m2c_people_337abf9e",
+      "provenance_ref": "game_base_v1_m2c_people_27bd6134",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records",

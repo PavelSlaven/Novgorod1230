@@ -2,7 +2,7 @@
   "schema_version": "rus.m2c_npc_wave_approval.v1",
   "manifest_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json",
   "verdict": "approve_with_limits",
-  "source_commit": "337abf9ec2810921e324ff8f6f1e85a9324c4bb9",
+  "source_commit": "27bd6134cf61200b8da5ffe76ef8ab777ad5a5fd",
   "authored_by": "cursor composer-2.5 (executor)",
   "checked_by": "claude-opus-5.5 (reviewer)",
   "checked_at": "2026-09-28",
@@ -29,5 +29,11 @@
     "fauna_mammals_birds": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md",
     "issue": "https://github.com/PavelSlaven/Novgorod1230/issues/158"
   },
-  "limits_note": "Game-base groups approve_with_limits per game-base-v1/STATUS.md on pin 337abf9e (post-merge main #159–#169)."
+  "limits_note": "Game-base groups approve_with_limits per game-base-v1/STATUS.md on pin 337abf9e (post-merge main #159–#169); data regenerated on pin 27bd6134 (#209) awaits re-signature, see resign_required.",
+  "resign_required": {
+    "reason": "source_commit moved from 337abf9ec2810921e324ff8f6f1e85a9324c4bb9 (337abf9e) to 27bd6134 (origin/main after #209); checked_by/checked_at below are the signature for the OLD pin only and are NOT valid for this data until the reviewer re-signs",
+    "signed_source_commit": "337abf9ec2810921e324ff8f6f1e85a9324c4bb9",
+    "new_source_commit": "27bd6134cf61200b8da5ffe76ef8ab777ad5a5fd",
+    "review_request": "data/world-catalogs/novgorod/m2c-npc-wave/v1/repin-review-request.md"
+  }
 }

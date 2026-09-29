@@ -22,3 +22,16 @@ test('Stage B plan for a finite-source candidate carries a finite_source causal 
   const ordinary = bindOrdinaryMaterializationPlan(base, output);
   assert.equal(ordinary.entities[0].causal_basis.basis_kind, 'ordinary_presence');
 });
+
+test('physical keys of an ordinary plan lock the finite resource node it decrements', async () => {
+  const { ordinaryPhysicalKeys } = await import(
+    '../src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js');
+  const plan = { schema: 'ordinary_materialization_atomic_write_plan_v1', party_id: 'party-1',
+    scope_ref: { entity_kind: 'g6', entity_id: 'g6-1' }, request_identity: 'req-1',
+    item: { item_id: 'ordinary_item_1' },
+    finite_resource_transition: { source_resource_node_id: 'm2c_finite_deadwood_v1:abc' } };
+  assert.ok(ordinaryPhysicalKeys(plan).includes(
+    'party_runtime.party_resource_nodes:party-1:m2c_finite_deadwood_v1:abc'));
+  assert.equal(ordinaryPhysicalKeys({ ...plan, finite_resource_transition: null })
+    .some((key) => key.includes('party_resource_nodes')), false);
+});

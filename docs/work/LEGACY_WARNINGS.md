@@ -387,11 +387,12 @@
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-077 — R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных
-- **Где.** `packages/materialization/src/presence-rules-first-arrival.js` (`pickDiscoveryMode`, `resolve_presence_rule` → `subcategory_ref: null`); `pickRegionalPresenceRule` / `loadG0RegionIdForSpatialNode` (`packages/runtime-catalog/src/m2c-npc-wave-readers.js`); PG wave slice: `test/spatial-v3/presence-rules-first-arrival-postgres.test.js` (`setupWorldPool`, UPDATE после import), `test/spatial-v3/presence-rules-composition-postgres.test.js` (`setupWorldPool`, тот же UPDATE); счётчик `tools/spatial-v3/count-presence-rules-roll-sites.mjs` (регион `region_novgorod_land`).
+- **Где.** `packages/materialization/src/presence-rules-first-arrival.js` (`choosePresenceDiscoveryMode`, `resolve_presence_rule` → `subcategory_ref: null`); `pickRegionalPresenceRule` / `loadG0RegionIdForSpatialNode` (`packages/runtime-catalog/src/m2c-npc-wave-readers.js`); PG wave slice: `test/spatial-v3/presence-rules-first-arrival-postgres.test.js` (`setupWorldPool`, UPDATE после import), `test/spatial-v3/presence-rules-composition-postgres.test.js` (`setupWorldPool`, тот же UPDATE); счётчик `tools/spatial-v3/count-presence-rules-roll-sites.mjs` (регион `region_novgorod_land`).
 - **N8 / discovery.** Пустые `entry_exposed_weight` / `search_concealed_weight` при обоих режимах трактуются как **exposed** (null → 1 в draw, см. LW-068). Отдельный committed шаг «скрытое наличие» / concealed discovery не реализован в R-2a path — только явный `discovery_mode` в записи броска.
 - **§3A.4 `subcategory_ref`.** В `applyPresenceRulesFirstArrival` в aggregate всегда пишется `subcategory_ref: null`; сужение по подкатегории из правила не матчится.
 - **Подрегион.** Движок сравнивает только **G0 `region_id`** места со `presence_rules.region_id`. Колонка/поле `subregion_scope` в данных (планируется задачей `region-ids`) в R-2a не читается.
 - **Данные волны.** До подъёма пина game-base и задачи `region-ids` тысячи правил несут legacy `novgorod_land` вместо G0 `region_novgorod_land`. Движок старый id не нормализует; PG-тесты на срезе волны делают `UPDATE … novgorod_land → region_novgorod_land` с комментарием `region-ids` (см. пути выше).
+- **§3A.2/3A.3 сезонное обновление.** Повторное прибытие в **новом сезоне** в уже созданное G5-место (пересчёт `by_year_season` без нового scope) в R-2a **не** подключено; отложено отдельным шагом CR #158 (решение ревьюера REVIEW-R2a-6 F6). Unit на `encodePresenceRulePeriodNumber` остаётся.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-074 — восприятие NPC в live world выключено

@@ -12,6 +12,7 @@
   },
   "voice_rules": {"nocturnal": {"daylight": "no"}},
   "derived_rules": [
+    {"id": "subterranean-surface-sighting-gap", "basis": "source_limited", "confidence": "C", "source": "book:498801 §406;book:756203 §289", "reason": "A mole is ordinarily subterranean and only rarely comes to the surface; flooding often destroys burrows. Cathemeral activity therefore does not establish a visible surface animal."},
     {"id": "frog-damp-night", "basis": "editorial", "confidence": "C", "source": "claim:fauna-frog-damp-foraging", "reason": "Night foraging is conditional on damp or rainy habitat."},
     {"id": "heat-daylight", "basis": "editorial", "confidence": "C", "source": "invertebrates_herps.csv#fa_ins_grasshoppers.perceptual_cues", "reason": "Heat cue is placed in daylight."},
     {"id": "sunny-daylight", "basis": "editorial", "confidence": "C", "source": "invertebrates_herps.csv#fa_ins_dragonflies.season_peak", "reason": "Sunny summer is placed in daylight."},

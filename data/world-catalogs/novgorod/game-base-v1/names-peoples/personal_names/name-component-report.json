@@ -1,0 +1,130 @@
+{
+  "schema": "novgorod.game_base.name_component_source.v1",
+  "status": "candidate",
+  "generated_by": "names-peoples/scripts/build-name-components.mjs",
+  "counts": {
+    "pools": 3,
+    "entries": 219,
+    "rules": 9,
+    "by_component_kind": {
+      "demonym": 94,
+      "nickname": 41,
+      "patronymic": 84
+    },
+    "by_selection_class": {
+      "ordinary": 195,
+      "significant": 12,
+      "dynastic": 12
+    },
+    "by_component_kind_and_selection_class": {
+      "demonym": {
+        "ordinary": 94
+      },
+      "nickname": {
+        "ordinary": 29,
+        "significant": 12
+      },
+      "patronymic": {
+        "dynastic": 12,
+        "ordinary": 72
+      }
+    },
+    "by_basis": {
+      "source_attested_form": 190,
+      "logical_necessity": 38
+    }
+  },
+  "army_screening": {
+    "all_extract_rows_scanned": 16927,
+    "exact_name_form_rows": 769,
+    "reviewer_requested_people_domain_rows": 410,
+    "snapshot_rows": 1059,
+    "included_rows": 55,
+    "rejected_rows": 1004,
+    "rejection_reasons": {
+      "duplicate_of_included_form": 104,
+      "non_personal_name_form": 463,
+      "reviewer_requested_people_domain_no_component": 224,
+      "screened_no_supported_component": 213
+    },
+    "master_archive_candidates": 0,
+    "semantic_rescreen": {
+      "prior_rejection_rows": 460,
+      "reviewed_ranges": [
+        {
+          "range": "army_0266..army_0530",
+          "rows": 122
+        },
+        {
+          "range": "army_0531..army_0795",
+          "rows": 200
+        },
+        {
+          "range": "army_0796..army_1059",
+          "rows": 138
+        }
+      ],
+      "returned_source_rows": [
+        "army_0361",
+        "army_0454",
+        "army_0460",
+        "army_0516",
+        "army_0530",
+        "army_0604",
+        "army_0658",
+        "army_0683",
+        "army_0730",
+        "army_0901"
+      ],
+      "returned_components": 16,
+      "remaining_reviewed_rows": 450,
+      "remaining_no_component_rows": 437,
+      "reclassified_duplicate_rows": 13,
+      "remaining_reason_categories": [
+        "personal first name or already covered component",
+        "context, metadata, occupation or social term without a naming component",
+        "foreign, modern, late or geographically out-of-scope evidence",
+        "speculative etymology or ambiguous possessive relation",
+        "broken or unlinked citation"
+      ],
+      "note": "Смысловой перескрининг выполнен по checked-in candidate snapshot: суффиксы -ич/-ов/-ин, явное «прозвищем» и демонимы -ане/-яне/-цы; итоговые машинные причины всех строк формирует ledger."
+    },
+    "scope_note": "Ledger validates the checked-in 1,059-row candidate snapshot; upstream screening totals are preparation-process metadata."
+  },
+  "d46_archive_accounting": {
+    "included_component_entries": 13,
+    "existing_component_updates": 5,
+    "archive_variants": 15,
+    "reclassified_candidate_variants": 4,
+    "variants": 19,
+    "typed_name_gaps": 10,
+    "rejected": 0
+  },
+  "typed_gaps": [
+    {
+      "gap_id": "gap_name_components_female_forms",
+      "gap_type": "selector_coverage",
+      "reason": "Проверенная выписка не даёт достаточно форм женских отчеств, прозвищ и демонимов; мужские правила не переносятся автоматически."
+    },
+    {
+      "gap_id": "gap_name_components_polochanin_people_ref",
+      "gap_type": "selector_gap",
+      "reason": "Полочанин засвидетельствован как прозвище-демоним, но закрытого people_ref Полоцка в peoples_origins нет; форма остаётся источником place-rule, не selectable entry."
+    },
+    {
+      "gap_id": "gap_name_components_demonym_people_refs",
+      "gap_type": "selector_gap",
+      "reason": "Нет точных people_ref для Полоцка, Киева, Суздаля, Ростова, Торопца, Торжка, Ладоги, Пскова, литвы, ляхов, угров, половцев и болгар; формы сохранены с referent_key и selector_status=gap, neighbor_land и coarse guest id не подставляются."
+    },
+    {
+      "gap_id": "gap_name_components_patronymic_productive_morphology",
+      "gap_type": "generation_gap",
+      "reason": "Засвидетельствованные -ич/-евич/-ович/-инич не задают полного алгоритма чередований основ и не доказывают сословную исключительность."
+    },
+    {
+      "gap_id": "gap_name_components_runtime_import",
+      "gap_type": "integration_gap",
+      "reason": "Компонентные пулы — candidate authoring; runtime/DDL/import contract для их сочетания с первым именем не утверждены."
+    }
+  ]
+}

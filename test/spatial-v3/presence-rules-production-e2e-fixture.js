@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import pg from 'pg';
+import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 
 import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
@@ -247,31 +248,41 @@ export async function bootstrapV17PresenceE2e(t, {
   };
 }
 
-function pickMovementChoice(request, { preferDirectionalExit = false, exactMovement = false } = {}) {
+/**
+ * Movement choice from the planner's own operation data, never from text: the transition
+ * (`movement_kind: 'route'`) once the actor stands at departure, otherwise the approach
+ * (a local hop that carries `route_ref` of the exit it leads to), otherwise the local hop
+ * whose edge was taken least often so far (so a site with several local edges is explored
+ * instead of ping-ponging over the first one).
+ * exactMovement (rt-walk): the player names one option by its label; anything else is no movement.
+ */
+function pickMovementChoice(request, localHopVisits, { exactMovement = false } = {}) {
   const movementChoices = turnStepOperationChoices(request).filter(({ operation }) =>
     operation.op === 'request_movement'
     && ['local', 'route'].includes(operation.movement_kind));
-  if (preferDirectionalExit) {
-    const exits = movementChoices.filter(({ operation }) =>
-      operation.movement_kind === 'route'
-      || String(operation.target_ref ?? '').includes('directional_exit'));
-    if (exits.length > 0) return exits[0];
+  if (exactMovement) {
+    return movementChoices.find(({ operation }) => operation.description === request.root_player_action);
   }
-  const preferred = movementChoices.find(({ operation }) =>
-    operation.description === request.root_player_action);
-  // exactMovement: the player names one option by its label; anything else is no movement at all.
-  return preferred ?? (exactMovement ? undefined : movementChoices[0]);
+  const decisive = movementChoices.find(({ operation }) => operation.movement_kind === 'route')
+    ?? movementChoices.find(({ operation }) => operation.route_ref != null);
+  if (decisive) return decisive;
+  const visits = ({ operation }) => localHopVisits.get(operation.target_ref) ?? 0;
+  const pick = movementChoices.reduce((best, choice) =>
+    (best == null || visits(choice) < visits(best) ? choice : best), null);
+  if (pick) localHopVisits.set(pick.operation.target_ref, visits(pick) + 1);
+  return pick;
 }
 
 export function installPresenceProductionE2eFetch({
   observeText = TARGET_SMOKE_INPUT,
-  movementPrefs = { preferDirectionalExit: false },
+  movementPrefs = { exactMovement: false },
   narrationLog = null,
 } = {}) {
   const MATERIALIZATION_ROLES = Object.freeze([
     'ordinary_materialization', 'spatial_semantic_descriptor',
     'npc_ordinary_semantic_remainder', 'npc_ordinary_semantic_remainder_auditor',
   ]);
+  const localHopVisits = new Map();
   const previousFetch = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
     assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
@@ -299,7 +310,7 @@ export function installPresenceProductionE2eFetch({
           reason: 'Обзор ограничен уже предоставленными видимыми сведениями.',
         };
       } else {
-        const pick = pickMovementChoice(request, movementPrefs);
+        const pick = pickMovementChoice(request, localHopVisits, movementPrefs);
         if (!pick && movementPrefs.exactMovement) {
           return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
             interpretation: { adaptation: 'literal' }, resolution: 'direct', goal_result: 'not_achieved',
@@ -328,7 +339,12 @@ export function installPresenceProductionE2eFetch({
       const sources = [...modelInput.required_current_beat.changes,
         ...modelInput.required_current_beat.uncertainties];
       narrationLog?.push({ changes: modelInput.required_current_beat.changes.map(({ text }) => text) });
-      output = { prose: sources.map(({ text }) => text).join('\n\n') };
+      // Temporary: a turn without required beats (arrival on a new site) still needs non-empty prose,
+      // so fall back to the visible scene the request itself supplies. Remove once the empty beat
+      // at a transition is fixed (tasks rt-narr / rt-walk, NOTE-02).
+      const support = modelInput.optional_support;
+      const fallback = [support?.visible_scene, ...(support?.sensory_details ?? [])].filter(Boolean);
+      output = { prose: (sources.length > 0 ? sources.map(({ text }) => text) : fallback).join('\n\n') };
     } else if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
       const ids = modelInput.segments.map(({ segment_id }) => segment_id);
       const sources = [...modelInput.required_current_beat.changes,
@@ -405,6 +421,21 @@ export async function createPresenceProductionRoot({
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   return { runtime, rootOptions };
+}
+
+/**
+ * Walking subtests need visible movement options at the start; dense fog (weather visibility
+ * `poor`) leaves the planner none (open problem D47.9, task rt-walk). Start seed is fixed by the
+ * request id in publicStartScenario, so a foggy start is a fixture problem: change the request id.
+ */
+export async function assertStartVisibilityAllowsMovement(partyPool, partyId) {
+  const state = await createLowerDvinaTracePhase1ARepository({
+    query: partyPool.query.bind(partyPool) }).loadInternal(partyId);
+  const weather = state?.environment_snapshot?.weather_state;
+  assert.ok(weather?.visibility, `start weather of ${partyId} is unreadable`);
+  assert.notEqual(weather.visibility, 'poor',
+    `start weather ${weather.weather_state_id} (visibility poor) offers no movement operation; `
+    + 'pick another start request id for this walking subtest');
 }
 
 export function routeMovementLabels(screen) {

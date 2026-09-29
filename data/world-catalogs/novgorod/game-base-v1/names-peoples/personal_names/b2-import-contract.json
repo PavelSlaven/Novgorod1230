@@ -1,0 +1,57 @@
+{
+  "schema": "novgorod.game_base.personal_name_pool_import.v1",
+  "status": "candidate",
+  "target": "world_base after #158 R-1 and the B2 name-pool DDL delta",
+  "required_parameters": {
+    "world_revision_id": {
+      "required": true,
+      "closed_reference": "world_base.world_revisions.id",
+      "description": "Supplied by the B2 importer for the target revision; game-base data must not invent it."
+    }
+  },
+  "null_encoding": "empty CSV cell maps to SQL NULL",
+  "tables": {
+    "world_base.region_name_pools": {
+      "path": "name_pools.csv",
+      "csv_columns": [
+        "id",
+        "region_id",
+        "valid_from",
+        "valid_to",
+        "status"
+      ],
+      "injected_columns": {
+        "world_revision_id": "parameter:world_revision_id"
+      }
+    },
+    "world_base.region_name_pool_entries": {
+      "path": "name_pool_entries.csv",
+      "unique_key": [
+        "name_pool_id",
+        "name_form",
+        "sex_category",
+        "people_ref"
+      ],
+      "csv_columns": [
+        "id",
+        "name_pool_id",
+        "name_form",
+        "name_category_id",
+        "weight",
+        "sex_category",
+        "people_ref",
+        "social_position_archetype_id",
+        "selection_class",
+        "derivation_class",
+        "derivation",
+        "people_derivation",
+        "evidence_period",
+        "status",
+        "provenance_ref"
+      ]
+    }
+  },
+  "selection_rule": "Procedural ordinary-name selection admits only status=approved and selection_class=ordinary; monastic, dynastic and significant rows are excluded.",
+  "required_ddl_delta": "Replace current UNIQUE(name_pool_id, name_form) with UNIQUE(name_pool_id, name_form, sex_category, people_ref), and add nullable derivation_class text; the same form may validly belong to different peoples or sex categories, while calendar_name_any_christian records why a form remains ordinary.",
+  "activation_rule": "Only approved pools and approved entries are runtime-selectable; draft rows are authoring data."
+}

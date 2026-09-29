@@ -2,9 +2,12 @@
 import csv
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / "occupations" / "scripts"))
+from archive_professions import provenance_token, read_archive, read_authoring
 OCC = HERE.parent / "occupations" / "occupations_additions.csv"
 DATA = HERE.parents[2]
 APPEARANCE = DATA / "spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json"
@@ -79,6 +82,27 @@ def option(value, weight, source_ref=None, rule=None, no_source=None, name_ru=No
     if name_ru is not None:
         result["name_ru"] = name_ru
     return result
+
+
+def appearance_options(facet, appearance):
+    source_rows = [(source, row) for source, rows_for_source in appearance
+                   for row in rows_for_source if row["facet"] == facet]
+    policy = AUTHORING["conditional_option_weight_policy"]
+    variants = [variant for variant in policy["variants"] if variant["facet"] == facet]
+    if not variants:
+        return [option(row["option_id"], row["weight"], source + "#" + row["id"],
+                       "filter source applicability against previously selected facets in code",
+                       None, name_ru=AUTHORING["option_names_ru"][row["option_id"]],
+                       **row["applicability"])
+                for source, row in source_rows]
+    sources = {row["option_id"]: (source, row) for source, row in source_rows}
+    assert set(variant["value"] for variant in variants) == set(sources)
+    return [option(variant["value"], variant["weight"],
+                   sources[variant["value"]][0] + "#" + sources[variant["value"]][1]["id"],
+                   policy["rule"], policy["no_source"],
+                   name_ru=AUTHORING["option_names_ru"][variant["value"]],
+                   **variant["applicability"])
+            for variant in variants]
 
 
 def regional_options(profile, role, regions, outfits, clothing_by_role, equipment):
@@ -168,15 +192,17 @@ def main():
     equipment = json.loads(EQUIPMENT.read_text(encoding="utf-8"))["profiles"]
     appearance = [(DEMOGRAPHIC_REF, json.loads(DEMOGRAPHIC.read_text(encoding="utf-8"))),
                   (APPEARANCE_REF, json.loads(APPEARANCE.read_text(encoding="utf-8")))]
-    appearance_sets = {facet: [option(row["option_id"], row["weight"],
-                                      source + "#" + row["id"],
-                                      "filter source applicability against previously selected facets in code",
-                                      None, name_ru=AUTHORING["option_names_ru"][row["option_id"]],
-                                      **row["applicability"])
-                                for source, rows_for_source in appearance for row in rows_for_source
-                                if row["facet"] == facet]
+    appearance_sets = {facet: appearance_options(facet, appearance)
                        for facet in baseline["appearance_policy"]["required_facets"]}
     bound = {p["profile_id"]: p for p in bindings["profiles"]}
+    archive = read_archive()
+    authoring = read_authoring()
+    variants_by_profile = {}
+    for variant in authoring["variants"]:
+        if variant["target"].startswith("profile:"):
+            profile_id = variant["target"].split(":", 1)[1]
+            variants_by_profile.setdefault(profile_id, []).append(
+                provenance_token(archive[variant["profession_id"]]))
     profiles = []
     for profile in baseline["profiles"]:
         pid = profile["profile_id"]
@@ -194,7 +220,8 @@ def main():
                           "binding": binding.get("property_binding") or {"no_source": "individual_equipment_binding"}},
             "routine": binding.get("routine_binding") or {"no_source": "individual_routine_binding"},
             "source_refs": [BASE_REF + "#profiles." + pid,
-                            BINDING_REF + "#profiles." + pid], "executable": False,
+                            BINDING_REF + "#profiles." + pid]
+                           + variants_by_profile.get(pid, []), "executable": False,
             "typed_gaps": profile["typed_gaps"],
         })
         profiles[-1]["required_facets"] = baseline["appearance_policy"]["required_facets"]
@@ -207,10 +234,14 @@ def main():
             outfit_rows, role_clothing, equipment)
     for occupation in occupations:
         oid = occupation["occupation_id"]
+        archive_owner = occupation["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog"
+        allowed_roles = refs(occupation["allowed_social_role_ids"])
+        default_role = allowed_roles[0] if allowed_roles else None
         profiles.append({
             "profile_id": "profile_" + oid, "occupation_ref": oid,
-            "role_ref": occupation["allowed_social_role_ids"].split(";")[0].strip(),
-            "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
+            "role_ref": default_role,
+            "role_selection_rule": ("first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence"
+                                    if default_role else "no_source:occupation_role_not_established"),
             "status": "candidate",
             "appearance": {"profile_ref": baseline["appearance_policy"]["source_appearance_profile_ref"],
                            "binding": None, "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"},
@@ -220,11 +251,13 @@ def main():
             "equipment": {"occupation_source_field": "typical_tools",
                           "value": occupation["typical_tools"],
                           "no_source": "individual_owned_item_binding"},
-            "routine": {season: occupation[field] for season, field in (
-                ("winter", "daily_schedule_winter"),
-                ("spring", "daily_schedule_spring_rasputitsa"),
-                ("summer", "daily_schedule_summer"),
-                ("autumn", "daily_schedule_autumn"))},
+            "routine": ({season: "no_source:occupation_specific_seasonal_schedule"
+                         for season in ("winter", "spring", "summer", "autumn")}
+                        if archive_owner else {season: occupation[field] for season, field in (
+                            ("winter", "daily_schedule_winter"),
+                            ("spring", "daily_schedule_spring_rasputitsa"),
+                            ("summer", "daily_schedule_summer"),
+                            ("autumn", "daily_schedule_autumn"))}),
             "source_refs": ["occupations/occupations_additions.csv#" + oid,
                             BASE_REF + "#appearance_policy"],
             "executable": False,
@@ -232,11 +265,11 @@ def main():
                            "individual_equipment_property_binding", "candidate_occupation_not_approved"],
         })
         profiles[-1]["required_facets"] = baseline["appearance_policy"]["required_facets"]
-        profiles[-1]["allowed_role_refs"] = [role.strip() for role in occupation["allowed_social_role_ids"].split(";")]
+        profiles[-1]["allowed_role_refs"] = allowed_roles
         eligibility = actor_applicability(profiles[-1]["role_ref"], oid)
         if eligibility:
             profiles[-1]["actor_applicability"] = eligibility
-        profiles[-1]["regional_option_sets"] = [regional for role in profiles[-1]["allowed_role_refs"]
+        profiles[-1]["regional_option_sets"] = [regional for role in allowed_roles
             for regional in regional_options(profiles[-1], role, [NEW_CONTEXT],
                                             outfit_rows, role_clothing, equipment)]
     slot_facts = []

@@ -143,8 +143,7 @@ test('factual presentation migration preserves predecessor checks and accepts on
 async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
-    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1',
-      '-U', 'factual_migration', '-d', 'factual_migration']).status === 0) return;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'factual_migration', '-d', 'factual_migration']).status === 0) return;
   }
   throw new Error('PostgreSQL did not become ready');
 }

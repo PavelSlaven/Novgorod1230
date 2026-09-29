@@ -58,4 +58,4 @@ Infrastructure adapters реализуют публичные ports пакето
 
 ## Проверка
 
-`npm run architecture:check` проверяет направление импортов, запрещённые SDK/SQL/runtime связи, размеры файлов, обязательные entrypoints и документационные границы.
+`npm run architecture:check` проверяет направление импортов, запрещённые SDK/SQL/runtime связи, обязательные entrypoints и документационные границы.

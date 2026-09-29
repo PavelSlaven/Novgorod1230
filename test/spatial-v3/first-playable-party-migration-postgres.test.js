@@ -55,7 +55,7 @@ test('016 enforces one semantic trace per NPC and same-time batch',
     for (let attempt = 0; attempt < 40; attempt += 1) {
       await new Promise((resolve) => setTimeout(resolve, 350));
       if (docker([
-        'exec', conflictContainerName, 'pg_isready',
+        'exec', conflictContainerName, 'pg_isready', '-h', '127.0.0.1',
         '-U', 'conflict', '-d', 'conflict'
       ]).status === 0) {
         ready = true;
@@ -158,7 +158,7 @@ test('017 is rolled back when the in-transaction readiness gate fails',
     for (let attempt = 0; attempt < 40; attempt += 1) {
       await new Promise((resolve) => setTimeout(resolve, 350));
       if (docker([
-        'exec', rollbackContainerName, 'pg_isready',
+        'exec', rollbackContainerName, 'pg_isready', '-h', '127.0.0.1',
         '-U', 'rollback', '-d', 'rollback'
       ]).status === 0) {
         ready = true;
@@ -207,7 +207,7 @@ test('011 applies to isolated PostgreSQL and permits transport departure without
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 350));
     if (docker([
-      'exec', containerName, 'pg_isready',
+      'exec', containerName, 'pg_isready', '-h', '127.0.0.1',
       '-U', 'first_playable', '-d', 'first_playable'
     ]).status === 0) {
       ready = true;

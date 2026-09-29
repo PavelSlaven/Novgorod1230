@@ -544,7 +544,7 @@ async function waitForP16Postgres(name) {
       'PostgreSQL init process complete; ready for start up.');
     if (initializedAt >= 0
       && output.slice(initializedAt).includes('database system is ready to accept connections')
-      && docker(['exec', name, 'pg_isready', '-U', 's1', '-d', 's1']).status === 0) return;
+      && docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 's1', '-d', 's1']).status === 0) return;
   }
   assert.fail('PostgreSQL not ready');
 }

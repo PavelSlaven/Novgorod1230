@@ -317,7 +317,7 @@ export function createLowerDvinaTracePhase2Runtime({
             phase7Contracts, turn10Contracts, phase8, phase9Contracts
           }),
           services, issuedAt, requestId, llmDiagnostics, repository, partyId,
-          inputDigest, turnBudget,
+          inputDigest, idempotencyKey, turnBudget,
         });
       };
       return executeRequest({ partyId, idempotencyKey, inputDigest }, () =>

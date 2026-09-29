@@ -1,0 +1,18 @@
+{
+  "status": "candidate",
+  "rows": 3741,
+  "source_items": 656,
+  "by_trace_kind": {
+    "byproduct": 25,
+    "deposit": 510,
+    "fragment": 1127,
+    "residue": 750,
+    "waste": 1329
+  },
+  "by_place_resolution": {
+    "mapped_pf": 3457,
+    "owner_handoff": 171,
+    "transport_context": 113
+  },
+  "contract": "typed finite traces; not intact items, ambient inventory, ownership, or renewable loot"
+}

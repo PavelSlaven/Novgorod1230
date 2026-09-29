@@ -9,9 +9,11 @@ const SOURCES = require('./src/sources.cjs');
 const MATERIALS = require('./src/materials.cjs');
 const DENY = require('./src/denylist.cjs');
 const TOOLS = require('./src/tools.cjs');
-const PROCESSES = [...require('./src/processes-a.cjs'), ...require('./src/processes-b.cjs'), ...require('./src/processes-c.cjs'), ...require('./src/processes-d.cjs')];
+const PROCESSES = [...require('./src/processes-a.cjs'), ...require('./src/processes-b.cjs'), ...require('./src/processes-c.cjs'), ...require('./src/processes-d.cjs'), ...require('./src/processes-e.cjs')];
+const BUTCHERY_PROFILES = require('./src/butchery-profiles.cjs');
 const WORKSHOPS = require('./src/workshops.cjs');
 const OCC = require('./src/occupation-tools.cjs');
+const ARCHIVE_INCLUSIONS = require('./archive-inclusions.cjs');
 
 const STATUS = 'candidate';
 const out = rel => path.join(DOMAIN_ROOT, rel);
@@ -56,6 +58,8 @@ const PRODUCT_LABELS = {
   'pr:fishing_net': 'рыболовная сеть', 'pr:net_float': 'сетевой поплавок', 'pr:fish_trap': 'верша', 'pr:hunting_bow': 'охотничий лук со стрелами', 'pr:birchbark_letter': 'берестяная грамота',
   'pr:unmarked_object': 'вещь без знака', 'pr:marked_object': 'вещь со знаком собственности или надписью', 'pr:lime_mortar': 'известковый раствор', 'pr:honeycomb': 'соты с воском',
   'pr:wax_candle': 'восковая свеча', 'pr:log': 'бревно', 'pr:street_pavement': 'деревянная мостовая', 'pr:sledge': 'сани', 'pr:garment': 'одежда (шитая вещь)', 'pr:leather_small_goods': 'ножны, кошель, ремень',
+  'pr:whole_carcass': 'целая туша животного или птицы', 'pr:raw_meat': 'сырое мясо после разделки', 'pr:feathers_down': 'перо и пух после ощипывания',
+  'pr:whole_fish': 'свежая целая рыба с видовым продуктом', 'pr:gutted_fish': 'потрошёная рыба с сохранённым видом',
 };
 
 // ---------- external refs ----------
@@ -207,14 +211,31 @@ const matRows = MATERIALS.map(m => {
 // ---------- products (bridge to items domains) ----------
 const prodRows = uniq([...prodBy.keys(), ...prodIn.keys()]).sort().map(k => ({ product_ref: k, name_ru: PRODUCT_LABELS[k] || '', produced_by: [...(prodBy.get(k) || [])].join(';'), consumed_by: [...(prodIn.get(k) || [])].join(';'), items_domain_ref: '', status: STATUS }));
 prodRows.filter(r => !r.name_ru).forEach(r => warnings.push(`product without label ${r.product_ref}`));
+const fishRows = L.readCsv(path.join(L.GAME_BASE, 'fauna-fish-invertebrates-livestock/fauna/fish.csv'));
+const fishCleaningRows = fishRows.filter(r => r.fa_id.startsWith('fa_fish_') && r.food_ingredient_ref).map(r => ({
+  fa_id:r.fa_id, input_food_ingredient_ref:r.food_ingredient_ref, output_food_ingredient_ref:'master:food_system:ING0144',
+  process_ref:'proc_clean_fish', output_rule:'retain fa_id and species identity; emit only from this existing input food_ingredient_ref',
+  basis:'logical_necessity', derivation:'master-archive-v1/data/normalized_source_tables/food_system/recipes.csv#RCP0166;master-archive-v1/data/canonical/material_items.csv#n1230:material_item:fod0012',
+  anachronism_check:'passed_with_limits: ordinary iron knife and wooden board; no modern fillet, packaging, or standardized cut', confidence:'C', status:STATUS,
+  note:'MASTER is a D39 draft list, not a historical source; exact minutes and waste are reconstruction.',
+}));
 
 // ---------- write ----------
 const counts = {};
+const archiveInclusions = ARCHIVE_INCLUSIONS.buildLedger({ tools: toolRows, materials: matRows, workshops: wsRows, processes: procRows, products: prodRows }, DENY);
+if (archiveInclusions.errors.length) {
+  warnings.push(...archiveInclusions.errors.map(error => `archive inclusion: ${error}`));
+}
+const archiveEntities = ARCHIVE_INCLUSIONS.buildMaterialEntities(archiveInclusions.ledger);
+counts['archive_inclusion_ledger.csv'] = writeCsv(out('archive_inclusion_ledger.csv'), ARCHIVE_INCLUSIONS.LEDGER_HEADER, archiveInclusions.ledger);
+counts['materials_registry/material_entities.csv'] = writeCsv(out('materials_registry/material_entities.csv'), archiveEntities.header, archiveEntities.entities);
 counts['craft_tools_gear/tools_gear.csv'] = writeCsv(out('craft_tools_gear/tools_gear.csv'), Object.keys(toolRows[0]), toolRows);
 counts['craft_tools_gear/occupation_tools.csv'] = writeCsv(out('craft_tools_gear/occupation_tools.csv'), Object.keys(occToolRows[0]), occToolRows);
 counts['craft_processes/processes.csv'] = writeCsv(out('craft_processes/processes.csv'), Object.keys(procRows[0]), procRows);
 counts['craft_processes/process_steps.csv'] = writeCsv(out('craft_processes/process_steps.csv'), Object.keys(stepRows[0]), stepRows);
 counts['craft_processes/process_products.csv'] = writeCsv(out('craft_processes/process_products.csv'), Object.keys(prodRows[0]), prodRows);
+counts['craft_processes/butchery_profiles.csv'] = writeCsv(out('craft_processes/butchery_profiles.csv'), Object.keys(BUTCHERY_PROFILES[0]), BUTCHERY_PROFILES);
+counts['craft_processes/fish_cleaning_products.csv'] = writeCsv(out('craft_processes/fish_cleaning_products.csv'), Object.keys(fishCleaningRows[0]), fishCleaningRows);
 counts['workshops/workshops.csv'] = writeCsv(out('workshops/workshops.csv'), Object.keys(wsRows[0]), wsRows);
 counts['materials_registry/materials.csv'] = writeCsv(out('materials_registry/materials.csv'), Object.keys(matRows[0]), matRows);
 const denyRows = DENY.map(d => ({ dl_id: d[0], term_ru: d[1], match_stems: d[2], kind: d[3], verdict: d[4], reason_ru: d[5], source_refs: d[6], status: STATUS }));
@@ -222,6 +243,6 @@ counts['materials_registry/late_materials_denylist.csv'] = writeCsv(out('materia
 const srcRows = SOURCES.map(s => ({ src_id: s[0], citation: s[1], url_or_path: s[2], kind: s[3], base_confidence: s[4], used_for_ru: s[5] }));
 counts['sources/sources.csv'] = writeCsv(out('sources/sources.csv'), Object.keys(srcRows[0]), srcRows);
 
-L.fs.writeFileSync(out('build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts, matcult_checked: !!matcultIds, warnings }, null, 2) + '\n');
-console.log(JSON.stringify({ counts, warnings: warnings.length, matcult_checked: !!matcultIds }, null, 2));
+L.fs.writeFileSync(out('build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts, archive_inclusions: archiveInclusions.summary, matcult_checked: !!matcultIds, warnings }, null, 2) + '\n');
+console.log(JSON.stringify({ counts, archive_inclusions: archiveInclusions.summary, warnings: warnings.length, matcult_checked: !!matcultIds }, null, 2));
 if (warnings.length) { console.log(warnings.join('\n')); process.exitCode = 1; }

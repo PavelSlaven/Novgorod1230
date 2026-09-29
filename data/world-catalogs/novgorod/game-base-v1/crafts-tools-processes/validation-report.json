@@ -1,8 +1,23 @@
 {
   "checked_by": "scripts/validate.cjs",
-  "pass": 27,
+  "pass": 32,
   "fail": 0,
   "results": [
+    {
+      "id": "archive_inclusion_ledger_candidate_provenance",
+      "result": "PASS",
+      "detail": "1268 rows; 205 new + 425 variants; 4 rejected; 529 queued; runtime activation=false"
+    },
+    {
+      "id": "archive_needs_check_partition",
+      "result": "PASS",
+      "detail": "1268 archive IDs partitioned exactly once; 529 queue rows have record_type/disposition/status=needs_check; no queued entity source refs"
+    },
+    {
+      "id": "archive_material_entity_table",
+      "result": "PASS",
+      "detail": "205 entity rows; expected 205; generated from included new crafts owners"
+    },
     {
       "id": "unique_ids_tools",
       "result": "PASS",
@@ -11,12 +26,12 @@
     {
       "id": "unique_ids_processes",
       "result": "PASS",
-      "detail": "48 unique"
+      "detail": "50 unique"
     },
     {
       "id": "unique_ids_steps",
       "result": "PASS",
-      "detail": "166 unique"
+      "detail": "171 unique"
     },
     {
       "id": "unique_ids_workshops",
@@ -91,7 +106,7 @@
     {
       "id": "steps_ordered_and_chained",
       "result": "PASS",
-      "detail": "48 chains, 166 steps"
+      "detail": "50 chains, 171 steps"
     },
     {
       "id": "process_inputs_resolve_to_materials_or_items",
@@ -106,7 +121,17 @@
     {
       "id": "process_has_wk_claim",
       "result": "PASS",
-      "detail": "48/48 have >=1 WK claim"
+      "detail": "50/50 have >=1 WK claim"
+    },
+    {
+      "id": "butchery_process_and_profiles",
+      "result": "PASS",
+      "detail": "7 size profiles; knife required; mass conserved"
+    },
+    {
+      "id": "fish_cleaning_process_and_species_products",
+      "result": "PASS",
+      "detail": "37 species products; knife required; generic output preserves fa_id"
     },
     {
       "id": "workshop_tools_stocks_processes_resolve",
@@ -131,7 +156,7 @@
     {
       "id": "info_other_domains_material_resolution_snapshot",
       "result": "PASS",
-      "detail": "14 files, 1231/1341 values fully resolved, 75 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
+      "detail": "19 files, 1749/2116 values fully resolved, 76 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
     },
     {
       "id": "info_mass_band_vs_v5_policy",
@@ -147,16 +172,16 @@
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
-    "buildings-interiors-containers/buildings/building_types.csv": {
-      "values": 51,
-      "fully_resolved": 51,
+    "buildings-interiors-containers/buildings/building_type_parts.csv": {
+      "values": 288,
+      "fully_resolved": 288,
       "with_unresolved_tokens": 0,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
-    "buildings-interiors-containers/buildings/building_type_parts.csv": {
-      "values": 288,
-      "fully_resolved": 288,
+    "buildings-interiors-containers/buildings/building_types.csv": {
+      "values": 51,
+      "fully_resolved": 51,
       "with_unresolved_tokens": 0,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
@@ -165,6 +190,13 @@
       "values": 75,
       "fully_resolved": 62,
       "with_unresolved_tokens": 13,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "buildings-interiors-containers/interiors/material_entities.csv": {
+      "values": 102,
+      "fully_resolved": 40,
+      "with_unresolved_tokens": 62,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
@@ -182,6 +214,13 @@
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
+    "clothing-appearance/garments/garment_components.csv": {
+      "values": 14,
+      "fully_resolved": 14,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
     "clothing-appearance/garments/garments.csv": {
       "values": 189,
       "fully_resolved": 172,
@@ -189,10 +228,10 @@
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
-    "clothing-appearance/garments/garment_components.csv": {
-      "values": 14,
-      "fully_resolved": 14,
-      "with_unresolved_tokens": 0,
+    "clothing-appearance/garments/material_entities.csv": {
+      "values": 2,
+      "fully_resolved": 1,
+      "with_unresolved_tokens": 1,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
@@ -203,9 +242,16 @@
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
+    "food-drink/food/material_entities.csv": {
+      "values": 188,
+      "fully_resolved": 0,
+      "with_unresolved_tokens": 188,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
     "items-household-personal/items/household.csv": {
-      "values": 111,
-      "fully_resolved": 111,
+      "values": 117,
+      "fully_resolved": 117,
       "with_unresolved_tokens": 0,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
@@ -225,9 +271,9 @@
       "deny_hits": 0
     },
     "items-weapons-armour/items/weapons_armour.csv": {
-      "values": 71,
-      "fully_resolved": 55,
-      "with_unresolved_tokens": 16,
+      "values": 75,
+      "fully_resolved": 58,
+      "with_unresolved_tokens": 17,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
@@ -239,10 +285,24 @@
       "deny_hits": 0
     },
     "nature-materials-weather/natural_materials_soils/natural_materials.csv": {
-      "values": 22,
-      "fully_resolved": 22,
+      "values": 29,
+      "fully_resolved": 24,
+      "with_unresolved_tokens": 5,
+      "out_of_scope_tokens": 8,
+      "deny_hits": 0
+    },
+    "places-binding/presence/environment_presence_authoring.csv": {
+      "values": 233,
+      "fully_resolved": 233,
       "with_unresolved_tokens": 0,
-      "out_of_scope_tokens": 7,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "places-binding/presence/presence_rules.csv": {
+      "values": 233,
+      "fully_resolved": 233,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
       "deny_hits": 0
     }
   }

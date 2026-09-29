@@ -13,6 +13,8 @@ escalation → impact → aftermath) несёт видимые признаки,
 разрешённое и запрещённое игроку знание, а с 2026-09-26 также `summary`/`historical_context` черновика и
 маркер флага ручного аудита `needs_review`.
 
+Региональные ссылки `regions_affected[].region_id` используют id узла G0: `region_novgorod_land`.
+
 ## Метод
 
 Скрипт `scripts/build_events.cjs` (переименован из `.js` 2026-09-26: корневой `package.json` задаёт

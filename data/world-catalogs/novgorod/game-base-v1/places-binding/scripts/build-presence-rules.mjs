@@ -7,7 +7,7 @@
 //   category_ref | category_id              required (must resolve in categories/category_registry.csv)
 //   scope: place_family_id | pf_id | pf_ids (';' list)  -> scope_kind place_family
 //          or scope_kind + scope_ref (place_family|g4|g5|region|landscape_template|place_template|scene_template|container_template)
-//   optional: region_id, count_limit|max_count, allowed_seasons|season_period|seasons|season, refresh_class, source_refs, confidence
+//   optional: region_id, subregion_scope, count_limit|max_count, allowed_seasons|season_period|seasons|season, refresh_class, source_refs, confidence
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -17,6 +17,10 @@ import { loadTemplateRegistry } from './build-place-families.mjs';
 const RULE = readJson(path.join(GROUP, 'presence/frequency_rule.json'));
 const SCOPES = ['place_family', 'g4', 'g5', 'region', 'landscape_template', 'place_template', 'scene_template', 'container_template'];
 const CONTRACT_SCOPES = ['landscape_template', 'place_template', 'scene_template', 'container_template'];
+export const SUBREGIONS = Object.freeze(['novgorod_ilmen_core', 'lower_volkhov_ladoga']);
+const EXCLUDED_FAUNA_POOL = 'fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv';
+const ENVIRONMENT_AUTHORING = path.join(GROUP, 'presence/environment_presence_authoring.csv');
+const TIME_ORDER = ['morning', 'day', 'evening', 'night'];
 
 // MASTER cross-check: item_location_links.csv (read-only game-base source, not a group's authored
 // output) states, per link_id, the class MASTER itself attests (spawn_frequency) and whether that
@@ -67,6 +71,72 @@ function seasons(raw) {
     out.add(m);
   }
   return { ok: out.has('all') ? ['all'] : RULE.season_rule.dictionary.filter((s) => out.has(s)) };
+}
+
+function canonicalSeasons(raw) {
+  const parsed = seasons(raw);
+  if (parsed.error) throw new Error(parsed.error);
+  if (parsed.ok.includes('all') || parsed.ok.length === SEASONS.length) return 'all';
+  return SEASONS.filter((season) => parsed.ok.includes(season)).join(';');
+}
+
+function presenceIdentity(row, seasonValue) {
+  const parts = [row.scope_kind, row.scope_ref, row.region_id];
+  if (row.subregion_scope) parts.push(row.subregion_scope);
+  parts.push(row.subject_kind, row.subject_ref);
+  if (row.subject_kind === 'environment') parts.push(row.condition_key);
+  parts.push(seasonValue);
+  return JSON.stringify(parts.map((value) => String(value ?? '').trim()));
+}
+
+function environmentRows() {
+  const source = readCsv(ENVIRONMENT_AUTHORING);
+  const seasonalScopeSeasons = new Map(readCsv(path.join(GROUP, 'places/place_families.csv'))
+    .filter((family) => family.pf_kind === 'seasonal_overlay')
+    .map((family) => [family.pf_id, SEASONS.find((season) => family.pf_id.startsWith(`pf_${season}_`))]));
+  const ids = new Set();
+  return source.flatMap((row, index) => {
+    const where = `presence/environment_presence_authoring.csv#${row.env_rule_id || `row${index + 2}`}`;
+    if (!row.env_rule_id || ids.has(row.env_rule_id)) throw new Error(`${where}: empty or duplicate env_rule_id`);
+    ids.add(row.env_rule_id);
+    const frequency = ppmFor(row.frequency_class);
+    if (!frequency) throw new Error(`${where}: unknown frequency class ${row.frequency_class}`);
+    const allowedSeasons = canonicalSeasons(row.allowed_seasons);
+    const times = TIME_ORDER.filter((time) => split(row.allowed_times).includes(time));
+    if (!times.length || times.length !== new Set(split(row.allowed_times)).size) throw new Error(`${where}: invalid allowed_times`);
+    const scopes = split(row.pf_scope).length ? split(row.pf_scope) : [row.pf_id].filter(Boolean);
+    if (!scopes.length || new Set(scopes).size !== scopes.length) throw new Error(`${where}: empty or duplicate pf_scope/pf_id`);
+    return scopes.map((scopeRef) => {
+      const ownSeason = seasonalScopeSeasons.get(scopeRef);
+      const projectedSeasons = ownSeason
+        ? ((allowedSeasons === 'all' || split(allowedSeasons).includes(ownSeason)) ? ownSeason : '')
+        : allowedSeasons;
+      if (!projectedSeasons) throw new Error(`${where}: scope ${scopeRef} has no season overlap`);
+      const keyRow = {
+        scope_kind: 'place_family', scope_ref: scopeRef, region_id: 'region_novgorod_land',
+        subject_kind: 'environment', subject_ref: row.companion_ref, condition_key: row.env_rule_id,
+      };
+      const identity = presenceIdentity(keyRow, projectedSeasons);
+      return {
+        pr_id: `pr_${crypto.createHash('sha256').update(identity).digest('hex').slice(0, 16)}`,
+        ...keyRow,
+        category_ref: '', item_ref: '', variants: '[]',
+        frequency_class: frequency.cls, class_capped_from: '', probability_ppm: frequency.ppm,
+        probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`,
+        count_limit: 1, count_limit_basis: 'environment_authoring',
+        allowed_seasons: projectedSeasons, allowed_times: times.join(';'), guards: row.condition_refs || 'none',
+        entry_visible_if: '', search_only_if: '', entry_exposed_weight: '', search_concealed_weight: '',
+        placement_basis_ref: '', placement_owner_ref: '', wild_arrival_cause_required: '',
+        refresh_class: split(row.reevaluate_on).includes('season_change') ? 'by_year_season' : 'none',
+        contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: row.env_rule_id,
+        source_refs: row.source_refs, confidence: 'C', pool_confidence: row.confidence, status: row.status,
+        name_ru: row.name_ru, lens: row.lens, environment_kind: row.environment_kind, senses: row.senses,
+        condition_refs: row.condition_refs, reevaluate_on: row.reevaluate_on,
+        material_refs: row.material_refs, process_refs: row.process_refs, item_refs: row.item_refs,
+        reuse_refs: row.reuse_refs, basis: row.basis, derivation: row.derivation,
+      };
+    });
+  });
 }
 
 export function build({ write = true } = {}) {
@@ -122,6 +192,8 @@ export function build({ write = true } = {}) {
       if (!scopes.length) errs.push('no scope');
       for (const [k, ref] of scopes) { if (!SCOPES.includes(k)) errs.push(`scope_kind '${k}' unknown`); else if (!scopeOk(k, ref)) errs.push(`scope_ref '${ref}' (${k}) does not resolve`); }
       if (s.error) errs.push(s.error);
+      if (r.subregion_scope && !SUBREGIONS.includes(r.subregion_scope)) errs.push(`subregion_scope '${r.subregion_scope}' not in dictionary`);
+      if (r.subregion_scope && r.region_id !== 'region_novgorod_land') errs.push(`subregion_scope requires region_id 'region_novgorod_land'`);
       if (!refresh) errs.push(`refresh_class '${refreshRaw}' unknown`);
       if (cl && !(Number.isInteger(+cl) && +cl >= 1)) errs.push(`count_limit '${cl}' not an integer >= 1`);
       if (r.count_limit_rule && !ruleLimit && !statedLimit) errs.push('count_limit_rule unrecognised');
@@ -131,7 +203,7 @@ export function build({ write = true } = {}) {
       if (itemPool && r.pf_class === 'wild' && r.wild_arrival_cause_required !== 'prior_visitor_loss_or_discard') errs.push('wild item arrival cause missing');
       if (errs.length) { rejects.push({ where, row_id: rowId, errors: errs }); return; }
       for (const [k, ref] of scopes) pools.push({
-        scope_kind: k, scope_ref: ref, region_id: r.region_id || '', category_ref: cat, frequency_class: fc.cls, probability_ppm: fc.ppm,
+        scope_kind: k, scope_ref: ref, region_id: r.region_id || '', subregion_scope: r.subregion_scope || '', category_ref: cat, frequency_class: fc.cls, probability_ppm: fc.ppm,
         probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: cl ? +cl : 1, count_limit_basis: statedLimit ? 'pool_row' : ruleLimit ? 'pool_count_limit_rule' : 'default_minimum_1',
         allowed_seasons: s.ok, refresh_class: refresh, source_pool: where, source_row_id: rowId, source_refs: r.source_refs,
         entry_visible_if: itemPool ? r.entry_visible_if : '', search_only_if: itemPool ? r.search_only_if : '',
@@ -169,13 +241,14 @@ export function build({ write = true } = {}) {
     if (!seasonList.length || seasonList.some((s) => !RULE.season_rule.dictionary.includes(s)) || !times.length || times.some((t) => !['morning', 'day', 'evening', 'night'].includes(t))) throw new Error(`${where}: invalid season or time`);
     if (p.creation_owner === 'composition') continue;
     for (const season of seasonList) for (const time of times) {
-      candidates.push({ scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
+      candidates.push({ scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', subregion_scope: '', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
         frequency_class: fc.cls, class_capped_from: '', probability_ppm: fc.ppm, probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: +p.count_limit, count_limit_basis: 'people_authoring',
         allowed_seasons: season, allowed_times: time, guards: p.guards, entry_visible_if: '', search_only_if: '', entry_exposed_weight: '', search_concealed_weight: '', placement_basis_ref: '', placement_owner_ref: '', wild_arrival_cause_required: '', item_ref: '', derivation_rule: '', availability: 0, refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
         confidence: p.confidence, pool_confidence: '', status: p.status });
     }
   }
-  const baseKey = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.subject_kind, p.subject_ref].join('|');
+  const baseKey = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.subregion_scope || '', p.subject_kind, p.subject_ref,
+    ...(p.subject_kind === 'environment' ? [p.condition_key] : [])].join('|');
   const provenance = ['source_pool', 'source_row_id', 'source_refs', 'placement_basis_ref', 'placement_owner_ref', 'pool_confidence', 'class_capped_from', 'derivation_rule', 'availability'];
   const behavior = (p, includeTime = true) => JSON.stringify(Object.entries(p).filter(([k]) => !provenance.includes(k) && !['allowed_seasons', 'item_ref', 'variants'].includes(k) && (includeTime || k !== 'allowed_times')).sort(([a], [b]) => a.localeCompare(b)));
   const union = (values, separator) => [...new Set(values.flatMap((v) => String(v || '').split(separator).map((s) => s.trim()).filter(Boolean)))].sort().join(separator === ';' ? ';' : ' | ');
@@ -233,16 +306,23 @@ export function build({ write = true } = {}) {
   const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`)).map((p) => {
     const ordered = SEASONS.filter((s) => split(p.allowed_seasons).includes(s)).join(';');
     const seasons = p.allowed_seasons === 'all' || ordered === SEASONS.join(';') ? 'all' : ordered;
-    const key = JSON.stringify([p.scope_kind, p.scope_ref, p.region_id, p.subject_kind, p.subject_ref, seasons].map((s) => String(s ?? '').trim()));
+    const key = presenceIdentity(p, seasons);
     const pr_id = `pr_${crypto.createHash('sha256').update(key).digest('hex').slice(0, 16)}`;
     if (keys.has(key)) throw new Error(`duplicate presence key ${key}`);
     if (ids.has(pr_id)) throw new Error(`presence ID collision ${pr_id}`);
     keys.add(key); ids.add(pr_id);
     return { pr_id, ...p, allowed_seasons: seasons };
   });
-  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'item_ref', 'variants', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
-  const n = write ? writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows) : rows.length;
-  const cappedRows = rows.filter((r) => r.class_capped_from);
+  const environment = environmentRows().sort((a, b) => `${a.scope_kind}|${a.scope_ref}|${a.subject_kind}|${a.subject_ref}|${a.condition_key || ''}|${a.allowed_seasons}`.localeCompare(`${b.scope_kind}|${b.scope_ref}|${b.subject_kind}|${b.subject_ref}|${b.condition_key || ''}|${b.allowed_seasons}`));
+  const allIds = new Set(rows.map((row) => row.pr_id));
+  for (const row of environment) {
+    if (allIds.has(row.pr_id)) throw new Error(`presence ID collision ${row.pr_id}`);
+    allIds.add(row.pr_id);
+  }
+  const allRows = [...rows, ...environment];
+  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'subregion_scope', 'category_ref', 'subject_kind', 'subject_ref', 'condition_key', 'name_ru', 'lens', 'environment_kind', 'senses', 'item_ref', 'variants', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'condition_refs', 'reevaluate_on', 'material_refs', 'process_refs', 'item_refs', 'reuse_refs', 'basis', 'derivation', 'entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
+  const n = write ? writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, allRows) : allRows.length;
+  const cappedRows = allRows.filter((r) => r.class_capped_from);
   const resolutions = [];
   for (const r of resolutionSeasons) {
     const signature = JSON.stringify({ ...r, season: undefined });
@@ -253,7 +333,7 @@ export function build({ write = true } = {}) {
   for (const r of resolutions) { delete r.season; delete r._signature; }
   const variantResolutions = resolutions.filter((r) => r.variants.length);
   const report = {
-    rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: rows.filter((r) => r.subject_kind === 'category').length, people_rules: rows.filter((r) => r.subject_kind !== 'category').length,
+    rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, environment_authoring_rows: readCsv(ENVIRONMENT_AUTHORING).length, environment_projection_rows: environment.length, rules_written: n, category_rules: allRows.filter((r) => r.subject_kind === 'category').length, people_rules: allRows.filter((r) => ['occupation', 'social_role'].includes(r.subject_kind)).length, environment_rules: environment.length,
     seasonal_candidate_rows: [...groups.values()].reduce((n, g) => n + g.length, 0), resolutions,
     item_variant_selection: {
       status: 'data_gap', weights_status: 'absent',
@@ -262,18 +342,26 @@ export function build({ write = true } = {}) {
       variant_keys: new Set(variantResolutions.map((r) => r.key)).size,
       item_alternatives: new Set(variantResolutions.flatMap((r) => r.variants.map((v) => `${r.key}|${v.item_ref}`))).size,
     },
+    subregion_scope: {
+      status: 'candidate', dictionary: SUBREGIONS, blank_means: 'whole_region', scoped_rules: rows.filter((r) => r.subregion_scope).length,
+      runtime_gap: { issue: '#158 R-2a', implementation_present: false, note: 'presence runtime currently compares region_id only; subregion handling belongs to the engine owner' },
+      excluded_pool: { file: `data/world-catalogs/novgorod/game-base-v1/${EXCLUDED_FAUNA_POOL}`, rows: readCsv(path.join(GAME_BASE, EXCLUDED_FAUNA_POOL)).length, reason: 'missing category_ref and cat:fauna.* category definitions in category_registry; connect in a separate data task' },
+    },
     rejected_rows: rejects.length, rejected_by_file: rejects.reduce((a, r) => { const f = r.where.split('#')[0]; a[f] = (a[f] ?? 0) + 1; return a; }, {}),
     reject_reasons: rejects.flatMap((r) => r.errors.map((e) => e.replace(/'[^']*'/g, "'…'"))).reduce((a, e) => ((a[e] = (a[e] ?? 0) + 1), a), {}),
     rejected_sample: rejects.slice(0, 50),
     class_capped_by_master_link: cappedRows.length,
     class_capped_sample: cappedRows.slice(0, 20).map((r) => ({ pr_id: r.pr_id, scope_ref: r.scope_ref, category_ref: r.category_ref, from: r.class_capped_from, to: r.frequency_class })),
-    by_scope_kind: rows.reduce((a, r) => ((a[r.scope_kind] = (a[r.scope_kind] ?? 0) + 1), a), {}),
-    by_class: rows.reduce((a, r) => ((a[r.frequency_class] = (a[r.frequency_class] ?? 0) + 1), a), {}),
+    environment_by_kind: environment.reduce((a, r) => ((a[r.environment_kind] = (a[r.environment_kind] ?? 0) + 1), a), {}),
+    environment_by_lens: environment.reduce((a, r) => ((a[r.lens] = (a[r.lens] ?? 0) + 1), a), {}),
+    environment_by_basis: environment.reduce((a, r) => ((a[r.basis] = (a[r.basis] ?? 0) + 1), a), {}),
+    by_scope_kind: allRows.reduce((a, r) => ((a[r.scope_kind] = (a[r.scope_kind] ?? 0) + 1), a), {}),
+    by_class: allRows.reduce((a, r) => ((a[r.frequency_class] = (a[r.frequency_class] ?? 0) + 1), a), {}),
   };
   if (write) {
     writeJson(path.join(GROUP, 'reports/presence-rules-report.json'), report);
     console.log('presence rules', { pool_files: poolFiles.length, accepted: pools.length, written: n, rejected: rejects.length, reasons: report.reject_reasons });
   }
-  return { rows, report };
+  return { rows: allRows, report };
 }
 if (process.argv[1]?.endsWith('build-presence-rules.mjs')) build();

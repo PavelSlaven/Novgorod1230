@@ -1,5 +1,6 @@
 """Check candidate occupation artifacts and their source catalog references."""
 import csv
+import copy
 import hashlib
 import json
 import re
@@ -30,7 +31,50 @@ def conflicts(rule, selected):
     return (all(selected.get(facet) == value for facet, value in condition.items())
             and all(selected.get(facet) is not None and
                     (values == "any" or selected[facet] in values)
-                    for facet, values in excluded.items()))
+            for facet, values in excluded.items()))
+
+
+def option_applies(option, selected):
+    return all(not allowed or selected.get(key) in allowed
+               for key, allowed in option["applicability"].items())
+
+
+def validate_conditional_appearance(option_sets):
+    policy = AUTHORING["conditional_option_weight_policy"]
+    assert policy["rule"].startswith("D33 editorial game assumption:")
+    assert policy["no_source"] == "historical_distribution_of_baldness_and_hair_graying_by_sex_and_age_not_sourced"
+    conditional = option_sets["hair_length"] + option_sets["hair_color"]
+    assert all(option["rule"] == policy["rule"] and option["no_source"] == policy["no_source"]
+               for option in conditional)
+    assert all(set(option["applicability"]) <= {"sex_category", "age_category"}
+               and all(isinstance(values, list) and values for values in option["applicability"].values())
+               for option in conditional)
+    bald = "nov_1200_1250_hair_length_bald"
+    gray = "nov_1200_1250_hair_color_gray"
+    white = "nov_1200_1250_hair_color_white"
+    sexes = ("male", "female")
+    ages = ("young_adult", "adult", "middle_aged", "old")
+    gray_shares = {}
+    bald_shares = {}
+    for sex in sexes:
+        for age in ages:
+            selected = {"sex_category": sex, "age_category": age}
+            lengths = [option for option in option_sets["hair_length"] if option_applies(option, selected)]
+            colors = [option for option in option_sets["hair_color"] if option_applies(option, selected)]
+            assert len({option["value"] for option in lengths}) == len(lengths)
+            assert len({option["value"] for option in colors}) == len(colors)
+            assert all(isinstance(option["weight"], int) and option["weight"] > 0 for option in lengths + colors)
+            has_bald = any(option["value"] == bald for option in lengths)
+            assert has_bald == (sex == "male" and age != "young_adult")
+            total_length = sum(option["weight"] for option in lengths)
+            bald_shares[sex, age] = sum(option["weight"] for option in lengths if option["value"] == bald) / total_length
+            total_color = sum(option["weight"] for option in colors)
+            gray_shares[age] = sum(option["weight"] for option in colors if option["value"] in (gray, white)) / total_color
+    assert bald_shares["male", "young_adult"] == 0
+    assert 0 < bald_shares["male", "adult"] < bald_shares["male", "middle_aged"] < bald_shares["male", "old"]
+    assert all(bald_shares["female", age] == 0 for age in ages)
+    assert gray_shares["young_adult"] == 0 < gray_shares["adult"] < gray_shares["middle_aged"] < gray_shares["old"]
+    assert gray_shares["old"] > 0.5
 
 
 def main():
@@ -43,14 +87,25 @@ def main():
     skill = json.loads((HERE / "skills_competences/skills_competences.json").read_text(encoding="utf-8"))
     fields = set(pinned[0])
     occ_ids = {r["occupation_id"] for r in occupations}
-    assert len(occ_ids) == len(occupations) == 19
+    assert len(occ_ids) == len(occupations) == 33
     for row in occupations:
         assert fields <= row.keys()
-        assert row["status"] == "candidate" and row["region_id"] == "region_novgorod_land"
+        assert row["status"] == "candidate"
+        is_archive = row["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog"
+        if is_archive:
+            assert row["region_id"] == "region_novgorod_land"
+            assert row["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog"
+        else:
+            assert row["region_id"] == "region_novgorod_land"
+            assert row["runtime_basis_analog_ref"] in {p["occupation_id"] for p in pinned}
         assert row["occupation_title"] == row["occupation_title_ru"]
-        assert row["allowed_social_role_ids"]
-        assert {v.strip() for v in row["allowed_social_role_ids"].split(";")} <= roles, (row["occupation_id"], row["allowed_social_role_ids"])
-        assert row["runtime_basis_analog_ref"] in {p["occupation_id"] for p in pinned}
+        if is_archive:
+            assert row["allowed_social_role_ids"] == "no_source"
+            assert row["typical_g3_place_types"] == "no_source"
+            assert row["typical_g4_location_types"] == "no_source"
+        else:
+            assert row["allowed_social_role_ids"]
+            assert {v.strip() for v in row["allowed_social_role_ids"].split(";")} <= roles, (row["occupation_id"], row["allowed_social_role_ids"])
         for field in ("daily_schedule_winter", "daily_schedule_spring_rasputitsa",
                       "daily_schedule_summer", "daily_schedule_autumn",
                       "how_to_materialize_as_background_npc", "how_to_materialize_as_scene_npc",
@@ -59,13 +114,18 @@ def main():
                       "typical_route_knowledge", "common_relationships", "common_fears",
                       "common_goals", "llm_adaptation_rules", "llm_forbidden_uses"):
             assert row[field] and row[field] != "no_source", (row["occupation_id"], field)
-        assert any(s in row["source_refs"] for s in ("book:", "wk:", "no_source:direct_book_or_wk_occupation_attestation"))
+        assert any(s in row["source_refs"] for s in (
+            "book:", "wk:", "gb:sources/master-archive-v1/",
+            "no_source:direct_book_or_wk_occupation_attestation"))
     families = {r["pf_id"] for r in csv_rows(HERE.parent / "places-binding/places/place_families.csv")}
     items = {r["it_id"] for kind in ("household", "personal") for r in csv_rows(HERE.parent / f"items-household-personal/items/{kind}.csv")}
     materials = {r["mt_id"] for r in csv_rows(HERE.parent / "crafts-tools-processes/materials_registry/materials.csv")}
     ac = {r["ac_id"]: r for r in activities}
     assert len(ac) == len(activities) == 20
-    assert {r["occupation_ref"] for r in activities} == occ_ids
+    assert {r["occupation_ref"] for r in activities} == {
+        row["occupation_id"] for row in occupations
+        if row["runtime_basis_analog_ref"] != "no_source:no_domain_occupation_analog"
+    }
     for row in activities:
         assert row["status"] == "candidate" and row["pf_id"] in families
         assert row["observable_text_ru"] and row["source_refs"]
@@ -116,7 +176,7 @@ def main():
                                             "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#" + role]
             assert entry["rule"]
             assert entry["no_source"] == "concrete_g4_and_generation_template_binding"
-    assert len({p["profile_id"] for p in profiles}) == len(profiles) == 28
+    assert len({p["profile_id"] for p in profiles}) == len(profiles) == 42
     assert occ_ids <= {p["occupation_ref"] for p in profiles}
     assert all(not p["executable"] and p["appearance"] and p["clothing"] and p["equipment"] for p in profiles)
     appearance_rows = [r for name in ("region_demographic_profile_entries", "region_appearance_profile_entries")
@@ -124,6 +184,7 @@ def main():
     assert all(r["status"] == "approved" for r in appearance_rows)
     appearance_ids = {r["id"] for r in appearance_rows}
     option_sets = npc["appearance_option_sets"]["novgorod_shared_facets_v1"]
+    validate_conditional_appearance(option_sets)
     option_ids = {o["value"] for options in option_sets.values() for o in options}
     names = AUTHORING["option_names_ru"]
     assert len(option_ids) == len(names) == 42 and set(names) == option_ids
@@ -173,6 +234,10 @@ def main():
     assert householder["clothing_option_refs"] == ["of_rural_male_warm_any", "of_rural_male_cool_any", "of_rural_male_cold_any"]
     assert role_clothing[mistress["role_ref"]] == "nov_clothing_urban_middle_v1"
     for profile in profiles:
+        if not profile["allowed_role_refs"]:
+            assert profile["occupation_ref"] in {row["occupation_id"] for row in occupations if row["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog"}
+            assert profile["role_ref"] is None and not profile["regional_option_sets"]
+            continue
         for regional in profile["regional_option_sets"]:
             if regional["role_ref"] == mistress["role_ref"]:
                 assert regional["clothing_profile_ref"] == "nov_clothing_urban_middle_v1"
@@ -231,6 +296,25 @@ def main():
                for color in (gray, white))
     assert not conflicts(young, {"age_category": young["if"]["age_category"], "hair_color": blond})
     assert not conflicts(young, {"age_category": "nov_1200_1250_age_category_adult", "hair_color": gray})
+    if "--self-test" in sys.argv:
+        bad = copy.deepcopy(option_sets)
+        next(option for option in bad["hair_length"] if option["value"] == "nov_1200_1250_hair_length_bald")["applicability"].pop("sex_category")
+        try:
+            validate_conditional_appearance(bad)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError("baldness sex-applicability negative probe passed")
+        bad = copy.deepcopy(option_sets)
+        for option in bad["hair_color"]:
+            if option["value"] in (gray, white) and option["applicability"].get("age_category") == ["old"]:
+                option["weight"] = 1
+        try:
+            validate_conditional_appearance(bad)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError("elderly-gray-weight negative probe passed")
     subjects = npc["subject_applicability"]
     expected_subjects = {
         ("occupation", "nov_occ_ferryman"),
@@ -293,7 +377,11 @@ def main():
     equipment_ids = {r["id"] for r in json.loads((HERE.parent / "items-weapons-armour/authoring/equipment_profiles.json").read_text(encoding="utf-8"))["profiles"]}
     assert npc["approved"] is False and npc["activation_authorized"] is False
     for profile in profiles:
-        assert profile["status"] == "candidate" and profile["regional_option_sets"]
+        assert profile["status"] == "candidate"
+        if not profile["allowed_role_refs"]:
+            assert profile["occupation_ref"] in {row["occupation_id"] for row in occupations if row["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog"} and not profile["regional_option_sets"]
+            continue
+        assert profile["regional_option_sets"]
         assert {s["role_ref"] for s in profile["regional_option_sets"]} == set(profile["allowed_role_refs"])
         assert len({(s["role_ref"], s["region_ref"]) for s in profile["regional_option_sets"]}) == len(profile["regional_option_sets"])
         for regional in profile["regional_option_sets"]:
@@ -355,10 +443,16 @@ def main():
     for competence in skill["competences"]:
         assert competence["status"] == "candidate"
         assert set(competence["parent_skill_ids"] + competence["secondary_skill_ids"] + competence["gate_skill_ids"] + competence["forbidden_skill_ids"]) <= seed_skills
-        archetype = next(o["occupation_archetype_id"] for o in occupations if o["occupation_id"] == competence["occupation_ref"])
-        assert competence["parent_skill_ids"] == json.loads(defaults[archetype]["primary_skill_ids"])
-        assert competence["default_level_rule"] == defaults[archetype]["default_level_logic"]
-    print("OK: 19 occupations, 20 activities, 28 NPC profiles, 19 competences / 12 parent skills")
+        if competence["occupation_ref"] in {row["occupation_id"] for row in occupations if row["runtime_basis_analog_ref"] == "no_source:no_domain_occupation_analog"}:
+            assert not any(competence[k] for k in ("parent_skill_ids", "secondary_skill_ids", "gate_skill_ids", "forbidden_skill_ids"))
+            assert competence["default_level_rule"] == "no_source:occupation_specific_skill_mapping"
+        else:
+            archetype = next(o["occupation_archetype_id"] for o in occupations if o["occupation_id"] == competence["occupation_ref"])
+            assert competence["parent_skill_ids"] == json.loads(defaults[archetype]["primary_skill_ids"])
+            assert competence["default_level_rule"] == defaults[archetype]["default_level_logic"]
+    print(f"OK: {len(occupations)} occupations, {len(activities)} activities, "
+          f"{len(profiles)} NPC profiles, {len(skill['competences'])} competences / "
+          f"{len(skill['parent_skills'])} parent skills")
 
 
 if __name__ == "__main__":

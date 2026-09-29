@@ -614,3 +614,53 @@
 ### scripts/check.py — approve (C013a, закрывает rework)
 
 Проверено: Claude Opus 5.5, `check.py --probe` — PASS. Проверяет закрытую схему, границы 4–6 и 5–7, равный вес, ссылки на выписки, точный набор профилей; отрицательные пробы срабатывают.
+
+## Независимая проверка D46 imp-people (Claude Opus 5.5, 2026-09-29)
+
+История: круг 1 — approve_with_limits (380 вариантов психологии отложены, 11 исторических лиц — дубли, Михаил Степанич — D/candidate-conflict, 2 provenance-токена норм). Круг 2 — approve_with_limits; поручено положить бэклог в репозиторий. Круг 3 — итоговый.
+
+Проверено скриптами в круге 3:
+- reports/deferred_psychology_variants.csv побайтно совпадает с out/household-psychology-variants.csv задачи и со снимком круга 2 (sha256 5af8bdf5…): 380 строк, typed_status deferred_b2_161_no_consumer, 94 существующих profile_ref, имена не попали в профили.
+- Бэклог не вход build.py; psychology_profiles.csv и прочие данные = main; в norms.csv только 2 строки с provenance-токенами (как в круге 2).
+- README относительно круга 2 — только абзац о бэклоге; check.py — проверка схемы, статуса, profile_ref и дедупа бэклога плюс проверка 2 токенов норм. Скриптов круга 2 в снимке нет, поэтому build.py и check.py сверены по содержимому, а не побайтно.
+- denylist по 380 строкам — 0.
+
+Прогоны (копия): build.py ×2 — вывод = worktree, повтор побайтно; check.py и check.py --probe — OK; build-catalog, build-status + тест — PASS.
+
+Ограничения: 380 вариантов без потребителя до B2 #161; check.py не сверяет archive_refs с архивом; Михаил Степанич — D/candidate-conflict.
+
+Вердикт по файлам:
+- reports/deferred_psychology_variants.csv (новый) — approve_with_limits (бэклог без потребителя)
+- scripts/check.py, scripts/build.py, README.md — approve
+- social_norms_honour_hospitality/norms.csv — approve
+Группа: approve_with_limits.
+
+## Независимая проверка npc-goals (Claude Opus 5.5, 2026-09-29)
+
+Цели и страхи NPC по занятиям. Это пулы для выбора по seed: код задаёт характер (D1, D49), у NPC 1–2 цели и 1 страх.
+
+Проверка шла в три круга:
+- Круг 1 (ревьюер): rework. 300 из 505 строк были шаблонными рамками.
+- Круг 2 (Opus): восемь занятий среза приняты. Узкий rework:
+  - 22 рамки в дополнениях #195;
+  - разорванная фраза у лукодела;
+  - 10 завышенных `sourced`;
+  - движковые и поздние слова;
+  - пять заполнимых пробелов;
+  - 159 ссылок на архив вне репозитория;
+  - пробелы в проверке `check.py`.
+- Круг 3 (ревьюер, скриптом): рамок и запрещённых слов — 0. Заполнены кузнец, плотник, лодочный мастер, кухонник, сторож переправы. `check.py --probe` проходит: рамки, префиксы, копирование названия, правило покрытия и пробела.
+
+Файлы:
+- npc_psychology/occupation_goals_fears_authoring.csv, occupation_goals.csv, occupation_fears.csv — approve_with_limits: 265 целей, 158 страхов, 101 занятие. Цели ≥3 у 80 занятий, страхи ≥2 у 74, остальное — 48 явных пробелов.
+- npc_psychology/README.md, scripts/build.py, scripts/check.py — approve.
+
+Ограничения:
+- у части занятий все строки ссылаются на один общий набор refs, а не на отдельный пункт;
+- `sourced` в дополнениях #195 унаследован от #195 и ссылок архива, по первичным источникам заново не проверялся;
+- у item_id несколько стилей имён;
+- checker не разрешает ссылки и не прогоняет денилист анахронизмов (срабатываний нет);
+- saltworker и portage_worker — честные пробелы: солеварения и волока нет ни в WK, ни в архиве, ни в TSV;
+- все строки candidate, confidence не выше C для `logical_necessity`.
+
+Вердикт группы: **approve_with_limits**.

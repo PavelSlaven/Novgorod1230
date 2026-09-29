@@ -509,8 +509,8 @@ nov_role_tysyatsky,tool_weapon,pf_village_lane,settlement_space,permitted,rule,m
 ,,pf_arable_field,agrarian,,no_source,,,,candidate
 ,,pf_bathhouse,structure,,no_source,,,,candidate
 ,,pf_bog,natural_wetland,,no_source,,,,candidate
-,,pf_burial_ground,religious_space,,no_source,,,,candidate
 ,,pf_broadleaf_woodland,natural_forest,,no_source,,,,candidate
+,,pf_burial_ground,religious_space,,no_source,,,,candidate
 ,,pf_conifer_woodland,natural_forest,,no_source,,,,candidate
 ,,pf_dwelling_interior,interior,,no_source,,,,candidate
 ,,pf_field_margin,agrarian,,no_source,,,,candidate

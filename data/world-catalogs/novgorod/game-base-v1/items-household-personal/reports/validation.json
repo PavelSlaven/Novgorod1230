@@ -14,8 +14,8 @@
    "town_courtyard": 953,
    "peasant_homestead": 953,
    "rural_yard": 953,
-   "dwelling_interior": 1060,
-   "outbuildings": 1282,
+   "dwelling_interior": 1064,
+   "outbuildings": 1283,
    "cellar_granary": 1312,
    "bathhouse": 65,
    "orchard_garden": 164,
@@ -45,8 +45,8 @@
    "town_courtyard": 93,
    "peasant_homestead": 93,
    "rural_yard": 93,
-   "dwelling_interior": 166,
-   "outbuildings": 37,
+   "dwelling_interior": 170,
+   "outbuildings": 38,
    "cellar_granary": 90,
    "bathhouse": 24,
    "orchard_garden": 4,
@@ -72,17 +72,8 @@
    "field_margin": 31,
    "fishing_camp": 18
   },
-  "dropped_master_links": 4828,
-  "dropped_by_reason": {
-   "activity overlay without WK place family (gap for place_families)": 318,
-   "archaeological trace, not a live-scene item (fragment)": 1127,
-   "archaeological trace, not a live-scene item (waste)": 1329,
-   "vehicle/container context, not a place family (belongs to containers_contents / transport_travel)": 429,
-   "no WK place family for military camp (gap for military_security / place_families)": 340,
-   "archaeological trace, not a live-scene item (residue)": 750,
-   "archaeological trace, not a live-scene item (deposit)": 510,
-   "archaeological trace, not a live-scene item (byproduct)": 25
-  }
+  "dropped_master_links": 0,
+  "dropped_by_reason": {}
  },
  "item_ownership_rules": {
   "pass": true,
@@ -115,6 +106,7 @@
    ],
    "HH_TOOLS_SMALL": [
     "damage",
+    "inscription",
     "repair",
     "wear"
    ],
@@ -123,5 +115,115 @@
     "wear"
    ]
   }
+ },
+ "household_inventory_profiles": {
+  "pass": true,
+  "failures": [],
+  "rows": 979,
+  "profiles": 35,
+  "profiles_by_kind": {
+   "household": 7,
+   "place_set": 7,
+   "workshop": 21
+  },
+  "basis": {
+   "sourced": 501,
+   "logical_necessity": 400,
+   "analogy": 78
+  },
+  "requirement": {
+   "conditional": 263,
+   "required": 661,
+   "wealth_extra": 49,
+   "contextual": 6
+  },
+  "need_category": {
+   "child": 21,
+   "cleaning": 44,
+   "clothing_repair": 46,
+   "cooking": 111,
+   "food_drink": 17,
+   "leisure": 22,
+   "light_heat": 83,
+   "livestock_harness": 28,
+   "occupation_tools": 296,
+   "personal_adornment": 12,
+   "ritual_church": 28,
+   "sleep": 39,
+   "storage": 89,
+   "textiles": 17,
+   "water": 54,
+   "import_luxury": 26,
+   "furniture": 9,
+   "stocks": 10,
+   "vessels": 13,
+   "waste_traces": 8,
+   "shrines": 6
+  },
+  "rejected_anachronisms": 7
+ },
+ "item_place_trace_relations": {
+  "pass": true,
+  "failures": [],
+  "rows": 3741,
+  "source_items": 656,
+  "by_trace_kind": {
+   "byproduct": 25,
+   "deposit": 510,
+   "fragment": 1127,
+   "residue": 750,
+   "waste": 1329
+  },
+  "by_place_resolution": {
+   "mapped_pf": 3457,
+   "owner_handoff": 171,
+   "transport_context": 113
+  }
+ },
+ "item_context_relations": {
+  "pass": true,
+  "failures": [],
+  "rows": 1087,
+  "by_context": {
+   "activity_overlay": 658,
+   "transport_context": 429
+  },
+  "by_archetype": {
+   "construction_site": 318,
+   "boat": 349,
+   "military_camp": 340,
+   "cart_or_sledge": 80
+  },
+  "confidence": {
+   "A": 367,
+   "B": 626,
+   "C": 94
+  },
+  "dropped": 0,
+  "dropped_by_reason": {}
+ },
+ "item_exclusion_returns": {
+  "pass": true,
+  "failures": [],
+  "rows": 18,
+  "returned": 18,
+  "rejected_anachronism": 0
+ },
+ "household_evidence_intake": {
+  "pass": true,
+  "failures": [],
+  "input_rows": 7331,
+  "ledger_rows": 7331,
+  "dispositions": {
+   "new_item_candidate": 43,
+   "owner_review_handoff": 5564,
+   "rejected": 1724
+  },
+  "reject_reasons": {
+   "anachronism_or_late_form": 21,
+   "outside_item_relation_scope": 538,
+   "outside_target_period": 1165
+  },
+  "new_item_ids_created": 6
  }
 }

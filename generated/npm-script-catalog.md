@@ -145,7 +145,7 @@
 
 - `shadow:run`
 
-## spatial-v3 (72)
+## spatial-v3 (73)
 
 - `spatial-v3:check-p01`
 - `spatial-v3:check-p02`
@@ -186,6 +186,7 @@
 - `spatial-v3:p28-github-release-proof`
 - `spatial-v3:p28-local-evidence`
 - `spatial-v3:red`
+- `spatial-v3:test-all-starts-postgres`
 - `spatial-v3:test-p04`
 - `spatial-v3:test-p05`
 - `spatial-v3:test-p09-postgres`
@@ -239,7 +240,7 @@
 - `temporal-v4:vocabularies`
 - `temporal-v4:vocabularies-check`
 
-## test (40)
+## test (41)
 
 - `test`
 - `test:acceptance`
@@ -250,6 +251,7 @@
 - `test:domain`
 - `test:finalization`
 - `test:g5-placement`
+- `test:game-base`
 - `test:hidden-boundary`
 - `test:integration`
 - `test:knowledge-source`

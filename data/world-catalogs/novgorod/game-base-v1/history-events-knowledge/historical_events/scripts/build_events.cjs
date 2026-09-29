@@ -12,6 +12,18 @@ const OUT_DIR = process.argv[3] || path.resolve(__dirname, '..');
 
 const d = JSON.parse(fs.readFileSync(TIMELINE, 'utf8'));
 
+function canonicalRegionId(regionId) {
+  return regionId === 'novgorod_land' ? 'region_novgorod_land' : regionId;
+}
+
+function canonicalRegionsAffected(regions) {
+  return (regions || []).map(region => (
+    region && typeof region === 'object' && !Array.isArray(region)
+      ? { ...region, region_id: canonicalRegionId(region.region_id) }
+      : region
+  ));
+}
+
 function csvEsc(v) {
   if (v === null || v === undefined) return '';
   const s = String(v).replace(/\r?\n/g, ' ').trim();
@@ -148,7 +160,7 @@ for (const p of d.timeline) {
     effect_roads: roads,
     effect_market: market,
     market_goods_affected: (p.market_effects && p.market_effects.goods_affected || []).join('|'),
-    regions_affected: JSON.stringify(p.regions_affected || []),
+    regions_affected: JSON.stringify(canonicalRegionsAffected(p.regions_affected)),
     effect_power: power,
     effect_npc: npc,
     effect_items: items,

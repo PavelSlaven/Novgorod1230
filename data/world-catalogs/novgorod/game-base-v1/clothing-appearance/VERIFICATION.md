@@ -307,3 +307,52 @@ The counts match. There are two inaccuracies:
 
 - Новая колонка `covers_hair`, 95 строк: `yes` — только `gm_hw006` и `gm_hw007` (с источником), `unknown` — 15 прочих головных и подголовных вещей, `no` — 78 не-головных. Бездоказательного `no` у головных нет.
 - Видимость волос не хранится флагом: её вычисляет runtime по надетому (`garments.csv#covers_hair`). Любой надетый `yes` или `unknown` скрывает волосы. Снятый или сорванный убор открывает их.
+
+## Независимая проверка imp-crafts PR-A (Claude Opus 5.5, 2026-09-29)
+
+- **Кто.** Проверял Claude Opus 5.5, независимо от автора. Автор — Codex (задача imp-crafts, PR-A), ветка `fleet/imp-crafts-a`, коммит `a68c7533` поверх main `19c4bd3c`. Данные автора проверяющий не правил. Статус данных — `candidate`.
+- **Что.** 116 архивных решений D46: entity 2 (OMI00311, OMI00375), variant 6, ref 4, routed 101, rejected 3 (FR010, GF011, GF012). Исправления круга 3: OMI00422 и OMI00423 направлены в crafts `mt_fur`; маршрут без цели оформлен как `awaits_owner:<группа>`; закреплённые по id цели убраны из `scripts/check.py`.
+- **Проверено скриптами** (копия `git archive a68c7533`; crafts и BIC — как в main):
+  - `scripts/check.py` — PASS до и после двух сборок; две `scripts/build.py` дали hash-list группы, равный коммиту и между прогонами; общий checker, вызываемый из `check.py`, — 0 ошибок;
+  - полнота: все 114 строк сверки, назначенных группе, есть в журнале, каждая по одной. Ещё две строки: AR037 (ответ на маршрут weapons) и OMI01228 (решение принято здесь, второго решения нет). Всего 116, дублей нет; числа равны кругу 3;
+  - OMI00422 и OMI00423 → `crafts-tools-processes/materials_registry/materials.csv#mt_fur`, цель есть в main. Все непустые `target_ref` разрешаются в группе-получателе. В `check.py` нет карт «id → цель»;
+  - `awaits_owner`: crafts 36, IHP 5. У пяти строк IHP в main нет сущности с этими архивными id.
+- **Ограничения.**
+  1. У 32 из 36 строк `awaits_owner:crafts` решение самого crafts (черновик PR-B) — вариант материала, уже существующего в main: `mt_flax` 10, `mt_wool` 10, `mt_hemp` 3, `mt_fur` 3, `mt_textile_generic` 2, `mt_cordage` 2, `pr:fishing_net` 2. Цель можно было поставить сразу. Кластер пушнины разорван: OMI00422/00423 ведут на `mt_fur`, а OMI00424/00425/00428 ждут crafts. Когда решения crafts попадут в main, общий checker потребует заполнить `target_ref`.
+  2. OMI00318 «Тканевый фильтр» ждёт IHP с причиной «нет стабильной цели», но в main есть `it_hh_strainer_cloth` «Тканевая цедилка» с той же функцией.
+  3. OMI00375 «Поясной подвесной шнур» — отдельная сущность, хотя по функции совпадает с `gm_ac007` «Поясные подвесные ремешки». По общему правилу это вариант материала или формы, либо нужна причина для этой пары. Общий checker не сканирует `garments.csv`, `garment_components.csv` и `adornment.csv`, поэтому такие совпадения не ловит.
+  4. Мелочи: у OMI00291 в причине сказано «владелец crafts», а цель — IHP `it_hh_thread_skein`. FR010 отклонён как «уже учтён профилями приезжих» — по D40 это ref, а не отказ. OMI00321 может быть компонентом `it_hh_cloth_sack`. `expected_basis` в `check.py` подбирает basis по конкретным фразам текста evidence.
+
+### Вердикты по файлам imp-crafts PR-A
+
+- README.md — approve
+- authoring/archive_inclusion_manifest.json — approve_with_limits: 32 маршрута ждут crafts при цели в main; OMI00318 должен вести на `it_hh_strainer_cloth`; OMI00375, вероятно, вариант `gm_ac007`
+- garments/material_entities.csv — approve_with_limits: OMI00375, вероятно, вариант `gm_ac007`
+- reports/archive_inclusion_ledger.csv — approve_with_limits: как у манифеста
+- scripts/build.py — approve
+- scripts/check.py — approve_with_limits: basis подбирается по фразам текста evidence
+
+## Независимая проверка imp-crafts A1 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто.** Проверял Claude Opus 5.5, независимо от автора. Автор — Codex (задача imp-crafts, круг A1). Ветка `fleet/imp-crafts-a1`, коммит `dc41845d` (`47ee2c54` + main `a30dd8ca`). Данные автора проверяющий не правил. Статус данных — `candidate`.
+- **Что.** Правки после PR-A:
+  - 32 маршрута в crafts получили цель, которая есть в main: `mt_flax` 10, `mt_wool` 10, `mt_hemp` 3, `mt_fur` 3, `mt_textile_generic` 2, `mt_cordage` 2, `pr:fishing_net` 2;
+  - OMI00318 → IHP `it_hh_strainer_cloth`;
+  - OMI00375 из отдельной сущности стал вариантом `garment_components.csv#gm_ac007`;
+  - FR010 → ref `foreign_origin_profiles.csv#orig_fg006`;
+  - у OMI00291 исправлена причина.
+- **Проверено скриптами** (копия `git archive dc41845d`):
+  - `scripts/check.py` — PASS до и после двух сборок; две `scripts/build.py` дали hash-list группы, равный коммиту и между прогонами; общий checker — 0 ошибок;
+  - полнота: 116 строк, как в PR-A; ни одна не потеряна, дублей нет. Все 114 строк сверки, назначенных группе, в журнале, плюс AR037 и OMI01228. Решения: entity 1, variant 7, ref 5, rejected 2, routed 101;
+  - сверка с решениями черновика crafts (PR-B): из 87 маршрутов в crafts совпадают 80, в том числе все 32 новых и весь кластер пушнины OMI00422–00425/00428 → `mt_fur`. Ещё 4 верно ждут crafts: OMI00263, OMI00295, OMI00340, FW022 — их целей в main нет;
+  - ссылки на OMI00375 в IHP и occupations — D39-ссылки на архивный id (`ref_kind=master`), а не на удалённую сущность; общий checker их принимает.
+- **Ограничения.**
+  1. OMI00349 «Шерстяной шнур» ведёт на `tl_rope_coil`, а решение crafts в черновике PR-B — `mt_cordage`. Строка существовала до A1. Когда решение crafts попадёт в main, общий checker выдаст ошибку, и её нужно будет согласовать.
+  2. Для OMI00422 и OMI00423 черновик PR-B ставит маршрут на не-сущность BIC `matcult_item_refs.csv`. Здесь цель — `mt_fur`; исправлять нужно на стороне PR-B.
+
+### Вердикты по файлам imp-crafts A1
+
+- README.md — approve
+- authoring/archive_inclusion_manifest.json — approve_with_limits: OMI00349 → tl_rope_coil расходится с решением crafts (mt_cordage) в черновике PR-B, согласовать при PR-B
+- garments/material_entities.csv — approve
+- reports/archive_inclusion_ledger.csv — approve_with_limits: как у манифеста (OMI00349)

@@ -9,20 +9,22 @@ The counts below come from `build-report.json` and `validation-report.json`, whi
 
 | File | Rows | What |
 |---|---:|---|
-| `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), authored `audible_seasons`, activity time, signs for prose (tracks, droppings, feeding signs, dens/lodges/dams, sounds, smell), behaviour toward humans, danger, products, hunting methods with MASTER gear refs, WK refs |
+| `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), sixteen editorial pelt calendars, authored `audible_seasons`, signs, products, hunting text and MASTER gear refs, WK refs |
 | `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, full `voice_description`, short narrator-ready `voice_sound_ru`, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
-| `fauna/wild_habitat_presence.csv` | 4231 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
+| `fauna/wild_habitat_presence.csv` | 4249 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
 | `fauna/fauna_categories.csv` | 220 | Category nodes in domain `fauna`: `fauna.mammal`, `fauna.bird`, 25 group nodes, 193 taxon nodes. Every taxon row and presence row has a `category_ref` |
-| `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 6 included as rare, 4 included reduced or rural-only, 7 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms |
+| `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 7 included as rare, 4 included reduced or rural-only, 6 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms; `basis` and `derivation` record explicit analogies |
 | `fauna/sources.csv` | 21 | Source register: level, read depth (full, extract, abstract, bibliographic) and URL |
+| `fauna/hunting_methods.csv` | 25 | Direct and set/check hunting, trapping, falconry, small-fauna capture and F10 egg collection; taxa/categories, sizes, seasons, basis, derivation and anachronism check are explicit |
+| `fauna/hunting_tenure_defaults.csv` | 3 | Candidate input for F29/F30 tenure: ловища, бобровые гоны and перевесища map to `pf_hunting_ground` with `rights_holder`; no holder or closed months are invented |
 
 Composition. Mammals: 4 ungulates, 2 large predators, 11 fur-bearing and small mustelids and other predators, 2 fur rodents, 1 hare, 18 small mammals (insectivores and rodents), 5 bats, 1 seal (Ladoga only).
 Birds: 15 waterfowl, 17 raptors, 8 owls, 6 gamebirds, 11 waders, 7 woodpeckers, 8 corvids, 57 passerines and others. Falconry: 6 falconry birds, 26 quarry species.
-Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By class: ubiquitous 287, common 1125, contextual 1374, rare 1445. By kind: mammals 1388, birds 2843. The rows cover 38 place families.
+Presence rows by season: winter 765, spring 1182, summer 1139, autumn 1163. By class: ubiquitous 287, common 1107, contextual 1390, rare 1465. By kind: mammals 1416, birds 2833. The rows cover 38 place families.
 
 ## Universal layer vs regional layer
 
-- Taxa and their biology are **universal** (`scope=universal_taxon`), and the categories have `universal=true`. The region lives only in presence rows (`region_id=novgorod_land`; the Ladoga seal has `ladoga_lake`) and in `region_scope`. For another region, add presence rows. Do not copy the taxon rows.
+- Taxa and their biology are **universal** (`scope=universal_taxon`), and the categories have `universal=true`. The region lives only in presence rows (`region_id=region_novgorod_land`) and in `region_scope`. The Ladoga seal uses the same G0 region and `subregion_scope=lower_volkhov_ladoga`, matching the fish tables; it is not present in the Ilmen/upper Volkhov start territory. For another region, add the G0 node before presence rows. Do not copy the taxon rows.
 - `category_ref` has the form `fauna.<mammal|bird>.<group>.<slug>`. The collector `places-binding/scripts/build-category-registry.mjs` picks these up from `fauna_categories.csv`. No common root `fauna` is defined because a sibling fauna group may define one. The owner of category_registry decides the root.
 
 ## Method
@@ -40,6 +42,14 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 3. **Authoring.** The text fields (signs, voices, seasonal states) are qualitative naturalist knowledge, checked against the sources above, and have row confidence B. Nothing is copied from sources at length.
 4. **Deterministic derivation.** `scripts/build.cjs` expands each taxon's habitat groups into pf_id × season rows by the rule below. `scripts/validate.cjs` checks the acceptance criteria and integrity.
 
+### Hunting methods, pelts and tenure
+
+`hunting_methods.csv` is a method catalog, not an encounter or action whitelist. The repo-local MASTER provides all `hnt0001–hnt0028`; `hnt0010` (beaver pelt) and `hnt0021` (fur bundle) were removed from mammal `hunting_method_refs` because they are products, not tools. D-rated `hnt0022`, `hnt0024` and `hnt0028` remain forbidden. Every method records `basis`, `derivation` and `anachronism_check`; a sourced row must have a source, while `logical_necessity|editorial` may instead preserve an explicit source gap. `set_and_check` creates no catch when set; a later activity must check it.
+
+Sixteen species have `pelt_prime_months` and twelve `month=quality` values (`winter|transitional|summer`). This calendar subset is independent from the 44 F30 relations now derived from mammalian hair-bearing skin: F30 does not assert commercial fur value or invent prime months. Exact month boundaries are `pelt_calendar_basis=editorial`, confidence C and deliberately have no numeric source ref. Weasel and the remaining mammals keep an explicit calendar gap; `pelt_qualitative_source_refs` preserve only available coat/moult evidence. Sable keeps its confidence-C range caveat.
+
+The tenure input preserves the target columns `place_family_ref,family_id,tenure,closed_months` and adds evidence fields plus `ground_kind`. Sources support protected hunting assets/grounds only with stated geographic and chronological limits; they do not identify a current site, holder or closed month.
+
 ### Frequency rule
 <a id="frequency-rule"></a>
 
@@ -50,12 +60,14 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
   - An `irregular` bird (irruptive visitor or rare winterer) loses one step.
   - An absent season produces no row.
   - A mammal in hibernation gets `state=dormant`, `activity_time=dormant`, `audible=false` and class `rare`. Only its den can be observed.
+  - A taxon-level seasonal condition that cannot be proved by a place family suppresses that season's presence rows. The mallard keeps its irregular winter status, but `winter=open_water_only` produces no winter row: none of the current place families proves unfrozen water.
 - Derived overlays:
   - `pf_hunting_ground`: the best fit of the taxon among forest, edge, meadow, lake, bog and stream.
   - `pf_forest_track`: woodland core becomes marginal.
   - `pf_winter_ice_crossing`: winter only, marginal, for taxa that use rivers, lakes or roads.
 - Class to weight is 8/4/2/1 and the ppm come from `places-binding/presence/frequency_rule.json`. This is an **editorial game preference**. It is not a measured biological abundance or an encounter probability.
 - Presence-row confidence is B, or C when the taxon's presence in 1230 is C. Archaeology does not place an animal in a specific place family, so no presence row gets A.
+- The mole is a sourced exception to the ordinary frequency derivation: its spring floodplain-meadow row is `rare`, because it is ordinarily subterranean and floods destroy burrows. Its cathemeral activity does not establish a visible animal on the surface; phase visibility is therefore an explicit source-limited gap, while authored signs remain available.
 
 ### Confidence columns
 
@@ -69,7 +81,7 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 - Every mammal has at least one kind of sign and at least one presence row. In each forest and riparian place family (conifer, mixed and broadleaf woodland, forest edge, riverbank, lake shore, marshy stream, river channel, floodplain meadow, bog) there are **at least 7** mammal taxa with signs in every season. The target is ≥6.
 - Hibernators (bear, badger, hedgehog, bats, birch mouse, dormouse) are dormant in every winter row.
-- There are 149 bird taxa (target ≥40). Each has `voice_description` and a migration status for all 4 seasons. `voice_sound_ru` is short sound-only text when a species voice is authored; it may be empty when `audible_seasons` is empty or `voice_description` explicitly says the bird is silent. Every open-air place family has **at least 3** audible bird species in each season (winter only for the winter ice crossing).
+- There are 149 bird taxa (target ≥40). Each has `voice_description` and a migration status for all 4 seasons. `voice_sound_ru` is short sound-only text when a species voice is authored; it may be empty when `audible_seasons` is empty or `voice_description` explicitly says the bird is silent. Every open-air place family has **at least 3** audible bird species in each season (winter only for the winter ice crossing), except the explicit `pf_ferry_landing` winter gap: 2 species remain after the mallard's unsupported frozen-water row is removed.
 - Integrity checks:
   - pf_ids exist in `places-binding/places/place_families.csv`.
   - category_refs exist.
@@ -77,6 +89,8 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
   - WK ids exist in WK production-v1.
   - MASTER hnt ids exist.
   - Excluded and anachronistic taxa are absent (raccoon dog, muskrat, American mink, brown rat, rabbit, pheasant, collared dove, sika deer).
+  - Twenty-five hunting methods use only repo-local non-D gear when a tool exists; every taxon/category, size, season, basis, derivation, F10 link and anachronism check is closed and validated. The three F10 methods partition 137 locally nesting taxa into 53 tree/trunk/hollow/reused-tree-nest, 83 other accessible, and 1 explicitly winter-nesting species. Three rights rows resolve to `pf_hunting_ground`.
+  - Sixteen pelt calendars contain all 12 months, only the three quality classes, and explicitly editorial exact boundaries.
   - Magpie and starling have no town rows (Зиновьев 2025).
 - Warning: the overlays `pf_reality_*` get no fauna rows on purpose.
 - Мальчевский page numbers match the species headings. The only difference is the synonym nigra/niger.
@@ -89,6 +103,8 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 Exactly one of `source_refs`, `rule_ref`, and `no_source` is set per row. An unknown individual facet is marked by its `*_state=no_source`; a fully unknown row uses `no_source`. A source pointer for one facet never changes the other facet's gap state. A call limited to dawn, night, a nest, migration, or a stated season is not promoted to an unconditional daily voice. The crane's dawn call is kept at dawn; the black stork's nest-only calls remain voice gaps.
 
+The mole's surface visibility uses `activity_phase_rules.json#subterranean-surface-sighting-gap`, based on `book:498801 §406` and `book:756203 §289`; this rule deliberately does not turn coarse daily activity into a sighting. The mallard's `season_presence_conditions` records `winter=open_water_only`; until scene state can prove open water, the builder emits no winter place-family rows.
+
 ```
 python scripts/extract_regional_bird_sources.py <panteleev_cyberleninka.html> <dir with malchevski_*.html> scripts/input_snapshots
 node scripts/build.cjs
@@ -97,15 +113,20 @@ node scripts/validate-phase.cjs fauna-mammals-birds --self-test
 ```
 Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. The snapshots are already committed, so `build.cjs` and `validate.cjs` run offline. `validate.cjs` reads WK from the main checkout; set `NOVGOROD_MAIN` to point elsewhere.
 
+## D40 exclusions reviewed in C016
+
+- `fchk_023` is not a blanket exclusion: magpie remains in rural place families; only town rows are forbidden by the cited late urban-colonisation evidence.
+- `fchk_026` remains `included_reduced`. All seven listed birds now have `base_frequency_class=rare|contextual` and `presence_1230_confidence=C`; redwing and common rosefinch were corrected from `common` to `contextual`.
+
 ## Known gaps and cautions
 
 - **Novgorod bird bone list not read.** Зиновьев 2011 (NNZ 25: 277–287) and Hamilton-Dyer et al. 2020 (Oxbow, 255–293) are bibliographic only. The PDF of Hamilton-Dyer, Brisbane & Maltby 2017 (Bournemouth eprints) was unreachable. Waders, most passerines and owls therefore rest on modern regional analogy (B) and not on 1230 bones.
 - **Falconry.** Goshawk is the most popular raptor among the East Slavs (abstract) and falconry is attested in the Novgorod territory (WK research FAU-04). Species-level Novgorod evidence (gyrfalcon or peregrine as tribute or trade) was **not** found in the sources read. `falconry_relevance` for falcons is general European practice, flagged in `notes`.
 - **Range doubts for 1230**, kept rare with confidence C:
-  - wild boar, roe deer, wild forest reindeer, wolverine, sable (probably a trade fur);
+  - wild boar, roe deer, wild forest reindeer, wolverine, sable (probably a trade fur), black rat (rare imported synanthrope by analogy with Northern European ports: Viking-Age Hedeby, ninth to eleventh centuries, and medieval York; no Novgorod find in the sources read);
   - redwing, common rosefinch, black-headed gull, coot, lapwing, great crested grebe, black tern, blackbird, blackcap, nightingale, grey partridge, linnet, house martin, swift in town.
   - The starling date conflicts between sources: the 2025 abstract says later-medieval, the 53news article says XIII c.
-- **Excluded for lack of a source:** brown hare, red deer, aurochs/wisent, desman, black rat, white stork, mute swan, great reed warbler, hawfinch (see `taxa_checks.csv`).
+- **Excluded for lack of a source:** brown hare, red deer, aurochs/wisent, desman, white stork, mute swan, great reed warbler, hawfinch (see `taxa_checks.csv`).
 - `brown_long_eared_bat` has presence C: no regional list for this species was read.
 - **Collector compatibility.** `build-presence-rules.mjs` deduplicates pool rows on (scope, region, category) and ignores season, so the four seasonal rows of one taxon × pf collapse to the highest class. The per-season detail stays here. The places-binding owner has to decide whether presence rules should carry a season key.
 - **Bat winter roosts.** Bat winter rows are dormant in forest and outbuilding families. Specific hibernation sites (cellars, caves) are covered only by `pf_cellar_granary`-type families that have no bat rows. Add them if needed.

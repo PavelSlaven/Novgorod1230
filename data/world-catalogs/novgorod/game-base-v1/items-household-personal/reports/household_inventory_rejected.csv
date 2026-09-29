@@ -1,0 +1,8 @@
+term,verdict,reason,safe_replacement
+ухват,deny,"items README: для 1230 подтверждена печная лопата/чапельник, а не поздний ухват",it_hh_oven_peel
+чугунная печь,deny,anti-pattern AP011: современная чугунная печь с трубой,INT0007
+бумажная книга,deny,items denylist и датировка материала,parchment_or_birch_bark
+массовая поливная посуда,deny,late-materials rule restricted: допустима только единичная импортная чаша,it_hh_glazed_bowl_import
+местный шёлк,deny,mt_silk origin=import; местного шелководства нет,gm_gm017
+обычная ходячая иноземная монета,deny,currency note: импорт серебряной монеты прекратился к 1229,cu_foreign_silver_coin:context_only
+generic D&D tavern,deny,"anti-pattern AP014: набор корчмы не создаёт выдуманные PF, scene или owner",place_korchma_with_explicit_issue_176_gap

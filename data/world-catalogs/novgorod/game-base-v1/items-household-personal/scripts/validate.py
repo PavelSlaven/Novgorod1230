@@ -5,6 +5,12 @@ import sys
 from collections import Counter, defaultdict
 from common import ITEMS, REPORTS, ME, ROOT, read_csv, split, load_master, load_place_families
 import rules as R
+from validate_household_inventory import self_test as self_test_household_inventory, validate_rows as validate_household_inventory
+from validate_trace_relations import self_test as self_test_trace_relations, validate_rows as validate_trace_relations
+from validate_exclusion_returns import self_test as self_test_exclusion_returns, validate_rows as validate_exclusion_returns
+from validate_context_relations import self_test as self_test_context_relations, validate_rows as validate_context_relations
+from validate_evidence_intake import load_report as load_evidence_report, self_test as self_test_evidence_intake, validate_report as validate_evidence_intake
+from build_frequency import allows_group_default, closed_drop_reason
 
 KIND_OF_SLOT = {"own": {"owner_sign", "inscription"}, "mk": {"maker_mark", "inscription"}, "orn": {"ornament"},
                 "rep": {"repair"}, "wear": {"wear"}, "dmg": {"damage"}, "ins": {"inscription"}}
@@ -30,6 +36,28 @@ def check_c007d(rows):
     return failures
 
 
+def check_costly_generic_ambient(rows):
+    forbidden = {"it_hh_glass_drinking_vessel", "it_hh_silver_feast_cup"}
+    return [f"{r['ipf_id']}: costly vessel must be conditional inventory, not generic dwelling ambient"
+            for r in rows if r.get("item_or_category_ref") in forbidden
+            and (r.get("pf_id") == "dwelling_interior" or "R_GROUP_DEFAULT" in r.get("derivation_rule", ""))]
+
+
+def check_valued_where_used(rows):
+    """Known valued identities retain authored master where_used placements."""
+    by_id = {r["ipf_id"]: r for r in rows}
+    required = {
+        "ipf_it_ps_encolpion__church_interior",
+        "ipf_it_ps_gusli_lyre__dwelling_interior",
+    }
+    failures = []
+    for ipf_id in sorted(required):
+        row = by_id.get(ipf_id)
+        if not row or "R_WHERE_USED_TEXT" not in row.get("derivation_rule", "") or "master_where_used:" not in row.get("source_refs", ""):
+            failures.append(f"{ipf_id}: authored master where_used placement missing")
+    return failures
+
+
 def self_test_c007d(rows):
     assert not check_c007d(rows)
     cask_id = "ipf_it_hh_small_cask__riverbank"
@@ -41,7 +69,23 @@ def self_test_c007d(rows):
                    "ipf_m_omi01625__ferry_landing"):
         changed = rows + [{**cask, "ipf_id": ipf_id}]
         assert check_c007d(changed)
-    print("c007d negative probes PASS")
+    try:
+        closed_drop_reason("unreviewed_gap")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("unknown drop reason must fail")
+    costly_probe = {**cask, "ipf_id": "ipf_costly_generic_probe",
+                    "item_or_category_ref": "it_hh_glass_drinking_vessel",
+                    "pf_id": "dwelling_interior", "derivation_rule": "R_GROUP_DEFAULT"}
+    assert check_costly_generic_ambient(rows + [costly_probe])
+    silver_probe = {**costly_probe, "ipf_id": "ipf_silver_generic_probe",
+                    "item_or_category_ref": "it_hh_silver_feast_cup"}
+    assert check_costly_generic_ambient(rows + [silver_probe])
+    assert not check_valued_where_used(rows)
+    removed = [r for r in rows if r["ipf_id"] != "ipf_it_ps_encolpion__church_interior"]
+    assert check_valued_where_used(removed)
+    print("c007d negative probes PASS (including costly ambient and valued master where_used)")
 
 
 def fams(materials):
@@ -133,6 +177,8 @@ def main():
             fail.append(f"{r['ipf_id']}: status must remain candidate")
         if r["ref_kind"] == "it" and r["item_or_category_ref"] not in it_ids:
             fail.append(f"{r['ipf_id']}: item unresolved")
+        if r["ref_kind"] == "it" and "R_GROUP_DEFAULT" in r["derivation_rule"] and not allows_group_default(item_by_id[r["item_or_category_ref"]]):
+            fail.append(f"{r['ipf_id']}: costly/import/status item received R_GROUP_DEFAULT")
         if r["ref_kind"] == "master" and not r["item_or_category_ref"].startswith("n1230:material_item:"):
             fail.append(f"{r['ipf_id']}: master ref malformed")
         if r["derivation_rule"] == "R_WK_COMPOSES" and (r["frequency_class"] != "rare" or r["confidence"] != "C"):
@@ -187,6 +233,8 @@ def main():
         per_pf[r["pf_id"]].add(r["item_or_category_ref"])
         if r["ref_kind"] == "it":
             per_pf_it[r["pf_id"]].add(r["item_or_category_ref"])
+    fail.extend(check_costly_generic_ambient(ipf))
+    fail.extend(check_valued_where_used(ipf))
     peopled = [p for p, c in R.PF_CLASS.items() if c != "wild"]
     thin = {p: len(per_pf[p]) for p in peopled if len(per_pf[p]) < 10}
     if thin:
@@ -227,7 +275,8 @@ def main():
             continue
         f = fams(r["material"])
         app = [m for m in marks
-               if (m["applicable_groups"] == "*" or r["item_group"] in split(m["applicable_groups"]))
+               if m["status"] == "candidate"
+               and (m["applicable_groups"] == "*" or r["item_group"] in split(m["applicable_groups"]))
                and (m["applicable_materials"] == "*" or f & set(split(m["applicable_materials"])))]
         kinds_needed = set().union(*(KIND_OF_SLOT[s] for s in slots))
         app_in_slots = [m for m in app if m["mark_kind"] in kinds_needed]
@@ -246,6 +295,8 @@ def main():
         if m["distinctiveness"] == "unique" and m["mark_kind"] not in ("owner_sign", "inscription", "repair"):
             fail.append(f"{m['mk_id']}: unique distinctiveness for kind {m['mark_kind']}")
     for t in read_csv(ITEMS / "identifying_text_pools.csv"):
+        if t["llm_may_write_text"] != "no":
+            fail.append(f"{t['text_pool_id']}: llm_may_write_text must be no")
         caps = set(re.findall(r"\b[А-ЯЁІ][А-ЯЁа-яёі]*", re.sub(r"\{[^}]*\}", "", t["template_ru"])))
         bad = caps - TEMPLATE_ALLOWED_CAPS
         if bad:
@@ -253,6 +304,36 @@ def main():
     groups_lt5 = {g: sorted(k) for g, k in per_group.items() if len(k) < 5}
     res["item_marks_text_pools"] = {"pass": not fail, "failures": fail[:300],
                                     "groups_with_lt5_mark_kinds(info)": groups_lt5}
+    # --- class-C household/workshop inventory relation
+    inventory = read_csv(ITEMS / "household_inventory_profiles.csv")
+    fail, inventory_metrics = validate_household_inventory(inventory)
+    if "--self-test" in sys.argv and not fail:
+        self_test_household_inventory(inventory)
+    res["household_inventory_profiles"] = {"pass": not fail, "failures": fail[:300], **inventory_metrics}
+    # --- typed trace states returned from utility exclusions
+    trace_rows = read_csv(ITEMS / "item_place_trace_relations.csv")
+    fail, trace_metrics = validate_trace_relations(trace_rows)
+    if "--self-test" in sys.argv and not fail:
+        self_test_trace_relations(trace_rows)
+    res["item_place_trace_relations"] = {"pass": not fail, "failures": fail[:300], **trace_metrics}
+    # --- whole items returned to transport/activity owners instead of false PF placement
+    context_rows = read_csv(ITEMS / "item_context_relations.csv")
+    fail, context_metrics = validate_context_relations(context_rows, dropped)
+    if "--self-test" in sys.argv and not fail:
+        self_test_context_relations(context_rows)
+    res["item_context_relations"] = {"pass": not fail, "failures": fail[:300], **context_metrics}
+    # --- point exclusions handed back to their authoritative owners
+    return_rows = read_csv(REPORTS / "item_exclusion_returns.csv")
+    fail, return_metrics = validate_exclusion_returns(return_rows)
+    if "--self-test" in sys.argv and not fail:
+        self_test_exclusion_returns(return_rows)
+    res["item_exclusion_returns"] = {"pass": not fail, "failures": fail[:300], **return_metrics}
+    # --- reviewer-provided evidence army: complete traversal and exact source pins
+    evidence_report = load_evidence_report()
+    fail, evidence_metrics = validate_evidence_intake(evidence_report)
+    if "--self-test" in sys.argv and not fail:
+        self_test_evidence_intake(evidence_report)
+    res["household_evidence_intake"] = {"pass": not fail, "failures": fail[:300], **evidence_metrics}
     counts = {
         "household.csv": len(H), "personal.csv": len(P),
         "item_categories.csv": len(cats), "item_categories_proposed_new": sum(1 for r in read_csv(ITEMS / "item_categories.csv") if r["status"] == "proposed_new"),
@@ -263,6 +344,21 @@ def main():
         "mass_policy.csv": len(bands), "condition_vocab.csv": len(read_csv(ITEMS / "condition_vocab.csv")),
         "archetype_pf_map.csv": len(read_csv(ITEMS / "archetype_pf_map.csv")),
         "reports/frequency_dropped.csv": len(dropped),
+        "household_inventory_profiles.csv": len(inventory),
+        "household_inventory_profiles": inventory_metrics["profiles"],
+        "household_inventory_profiles_by_kind": inventory_metrics["profiles_by_kind"],
+        "household_inventory_basis": inventory_metrics["basis"],
+        "household_inventory_need_category": inventory_metrics["need_category"],
+        "household_inventory_rejected_anachronisms": inventory_metrics["rejected_anachronisms"],
+        "item_place_trace_relations.csv": len(trace_rows),
+        "item_place_trace_source_items": trace_metrics["source_items"],
+        "item_place_trace_by_kind": trace_metrics["by_trace_kind"],
+        "item_place_trace_by_resolution": trace_metrics["by_place_resolution"],
+        "item_context_relations.csv": len(context_rows),
+        "item_context_relations": context_metrics,
+        "reports/item_exclusion_returns.csv": len(return_rows),
+        "item_exclusion_returns": return_metrics,
+        "reports/household_evidence_intake.json": evidence_metrics,
         "confidence_items": dict(Counter(r["confidence"] for r in items)),
         "confidence_frequency": dict(Counter(r["confidence"] for r in ipf)),
         "frequency_class_it": dict(Counter(r["frequency_class"] for r in ipf if r["ref_kind"] == "it")),

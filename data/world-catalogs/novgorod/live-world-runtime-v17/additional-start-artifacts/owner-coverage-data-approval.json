@@ -11,7 +11,7 @@
   "candidate_sha256": "16f9f3479c2fddb2d8af6dfbf18fbb6bb00603ad36afa8146c97e4a0310078f2",
   "reviewed_source_sha256": {
     "m2c_npc_g4_compositions": "8fc54aa348c9132b75fe65e742c9c6129cb5254e4c27ab05ba0fc321e8801013",
-    "m2c_acoustic_approved_baselines": "9d7f7a482fd4709813f1930e0abdd3fb029735c16e401566fb323a40f865be01"
+    "m2c_acoustic_approved_baselines": "8056b3816f512ce1e8c516fea7026942cce60e9e81fb148b14ade67c6e89d91d"
   },
   "semantic_npc_approval": [
     {

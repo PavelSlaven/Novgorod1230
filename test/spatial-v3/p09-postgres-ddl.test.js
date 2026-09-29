@@ -13,9 +13,9 @@ test('P09 applies fresh, reapplies part 12, and rejects invalid deferred spatial
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p09_local_only', '-e', 'POSTGRES_USER=p09', '-e', 'POSTGRES_DB=p09', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 30; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'p09', '-d', 'p09']).status === 0) {
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p09', '-d', 'p09']).status === 0) {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      if (docker(['exec', name, 'pg_isready', '-U', 'p09', '-d', 'p09']).status === 0) { ready = true; break; }
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p09', '-d', 'p09']).status === 0) { ready = true; break; }
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }

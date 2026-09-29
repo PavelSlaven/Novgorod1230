@@ -55,6 +55,10 @@ PostgreSQL-тесты: часть из них пропускается без п
 `node --test` несколько Docker-PG тестов (имена контейнеров, порты, массовый DDL) гоняются одновременно и
 `p12-text-array-postgres` стабильно падает; изолированно тот же файл зелёный.
 
+`spatial-v3:test-all-starts-postgres` — один голый bootstrap v17 и публичный старт каждого из 7 стартов манифеста
+(`binding_revision` 1..7): старт сам решает присутствие своего canonical G5 (перехват запросов bindings), у партии нет
+агрегата и enablement. Отдельно от p12-скрипта (~6 мин bootstrap + старты); запуск только через `pg-slot`.
+
 ## 3. Состав `npm test` и CI
 
 `npm test` = последовательно: `test:modules` → `test:domain` → `test:apps` → `test:tools` → `test:shadow` →

@@ -1,15 +1,34 @@
 {
   "built_by": "scripts/build.cjs",
   "counts": {
+    "archive_inclusion_ledger.csv": 1268,
+    "materials_registry/material_entities.csv": 205,
     "craft_tools_gear/tools_gear.csv": 157,
     "craft_tools_gear/occupation_tools.csv": 356,
-    "craft_processes/processes.csv": 48,
-    "craft_processes/process_steps.csv": 166,
-    "craft_processes/process_products.csv": 42,
+    "craft_processes/processes.csv": 50,
+    "craft_processes/process_steps.csv": 171,
+    "craft_processes/process_products.csv": 47,
+    "craft_processes/butchery_profiles.csv": 7,
+    "craft_processes/fish_cleaning_products.csv": 37,
     "workshops/workshops.csv": 21,
     "materials_registry/materials.csv": 103,
     "materials_registry/late_materials_denylist.csv": 27,
     "sources/sources.csv": 25
+  },
+  "archive_inclusions": {
+    "runtime_activation": false,
+    "status": "candidate",
+    "action_counts": {
+      "needs_check": 529,
+      "include_d39": 540,
+      "add_variant": 199
+    },
+    "ledger_rows": 1268,
+    "included_new": 205,
+    "included_variants": 425,
+    "rejected": 4,
+    "routed": 105,
+    "needs_check": 529
   },
   "matcult_checked": false,
   "warnings": []

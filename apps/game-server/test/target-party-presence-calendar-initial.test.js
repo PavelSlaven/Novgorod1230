@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { encodePresenceRulePeriodNumber } from '@rus/materialization';
-import { readTargetPartyPresenceCalendar } from '../src/composition/target-party-presence-calendar.js';
+import { readTargetPartyPresenceCalendar } from '../src/infrastructure/postgres/target-party-presence-calendar.js';
 
 function startTransaction({ actorRows }) {
   return {

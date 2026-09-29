@@ -108,7 +108,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     assert.equal(started.status,0,started.stderr);
     for (let attempt=0; attempt<50; attempt+=1) {
       await new Promise((done)=>setTimeout(done,250));
-      if (docker(['exec',container,'pg_isready','-U','fire','-d','fire'])
+      if (docker(['exec',container,'pg_isready','-h','127.0.0.1','-U','fire','-d','fire'])
         .status===0) break;
       if (attempt===49) assert.fail('PostgreSQL not ready');
     }

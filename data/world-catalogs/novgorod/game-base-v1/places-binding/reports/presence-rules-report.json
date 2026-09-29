@@ -87,9 +87,12 @@
     }
   ],
   "pool_rows_accepted": 5906,
-  "rules_written": 5740,
+  "environment_authoring_rows": 855,
+  "environment_projection_rows": 1236,
+  "rules_written": 6976,
   "category_rules": 5723,
   "people_rules": 17,
+  "environment_rules": 1236,
   "seasonal_candidate_rows": 10928,
   "resolutions": [
     {
@@ -7964,13 +7967,46 @@
       "to": "rare"
     }
   ],
+  "environment_by_kind": {
+    "sound": 132,
+    "animal_sign": 228,
+    "surface_state": 265,
+    "vegetation": 79,
+    "waste": 14,
+    "odor": 63,
+    "light_smoke": 147,
+    "weather_effect": 183,
+    "water_state": 8,
+    "object_arrangement": 66,
+    "work_trace": 46,
+    "domestic_trace": 5
+  },
+  "environment_by_lens": {
+    "sound": 124,
+    "wild_animal": 134,
+    "seasonal_surface": 275,
+    "ruderal_plant": 76,
+    "work_waste": 61,
+    "domestic_animal": 53,
+    "odor": 64,
+    "daypart_marker": 117,
+    "weather": 179,
+    "light_smoke": 34,
+    "loose_object": 68,
+    "human_companion": 51
+  },
+  "environment_by_basis": {
+    "logical_necessity": 650,
+    "sourced": 575,
+    "analogy": 11
+  },
   "by_scope_kind": {
-    "place_family": 5740
+    "place_family": 6976
   },
   "by_class": {
-    "common": 1257,
-    "contextual": 2041,
-    "ubiquitous": 345,
-    "rare": 2097
+    "common": 1347,
+    "contextual": 2954,
+    "ubiquitous": 443,
+    "rare": 2232
   }
 }

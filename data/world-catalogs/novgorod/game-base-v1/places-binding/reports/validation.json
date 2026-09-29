@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 33,
-  "own_checks_total": 33,
+  "own_checks_passed": 36,
+  "own_checks_total": 36,
   "checks": [
     {
       "domain": "place_families",
@@ -196,8 +196,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5740,
-      "rebuilt_rows": 5740
+      "rows": 6976,
+      "rebuilt_rows": 6976
     },
     {
       "domain": "presence_rules",
@@ -214,7 +214,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5740
+      "rows": 6976
     },
     {
       "domain": "presence_rules",
@@ -223,6 +223,5979 @@
       "failures": 0,
       "sample": [],
       "external": false
+    },
+    {
+      "domain": "presence_rules",
+      "name": "environment_authoring_closed_vocab_refs_anachronisms_coverage",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "authoring_rows": 855,
+      "place_families": 45
+    },
+    {
+      "domain": "presence_rules",
+      "name": "environment_pf_lens_coverage_and_entity_links",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "lens_counts_by_pf": {
+        "pf_arable_field": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 2,
+          "human_companion": 0,
+          "wild_animal": 6,
+          "ruderal_plant": 2,
+          "work_waste": 2,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_bathhouse": {
+          "sound": 2,
+          "odor": 3,
+          "seasonal_surface": 2,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 1,
+          "loose_object": 5,
+          "light_smoke": 4,
+          "weather": 0,
+          "daypart_marker": 0
+        },
+        "pf_bog": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 6,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 8,
+          "ruderal_plant": 5,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_bridge_crossing": {
+          "sound": 4,
+          "odor": 1,
+          "seasonal_surface": 10,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 2,
+          "ruderal_plant": 0,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_broadleaf_woodland": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 6,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 4,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 6
+        },
+        "pf_burial_ground": {
+          "sound": 1,
+          "odor": 0,
+          "seasonal_surface": 9,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 1,
+          "ruderal_plant": 1,
+          "work_waste": 0,
+          "loose_object": 2,
+          "light_smoke": 0,
+          "weather": 7,
+          "daypart_marker": 4
+        },
+        "pf_cellar_granary": {
+          "sound": 6,
+          "odor": 1,
+          "seasonal_surface": 2,
+          "domestic_animal": 1,
+          "human_companion": 2,
+          "wild_animal": 3,
+          "ruderal_plant": 0,
+          "work_waste": 2,
+          "loose_object": 1,
+          "light_smoke": 1,
+          "weather": 1,
+          "daypart_marker": 0
+        },
+        "pf_church_interior": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 1,
+          "domestic_animal": 0,
+          "human_companion": 2,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 1,
+          "loose_object": 1,
+          "light_smoke": 1,
+          "weather": 1,
+          "daypart_marker": 2
+        },
+        "pf_churchyard": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 7,
+          "domestic_animal": 0,
+          "human_companion": 1,
+          "wild_animal": 2,
+          "ruderal_plant": 1,
+          "work_waste": 1,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_conifer_woodland": {
+          "sound": 4,
+          "odor": 2,
+          "seasonal_surface": 7,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 3,
+          "ruderal_plant": 3,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 5
+        },
+        "pf_dwelling_interior": {
+          "sound": 2,
+          "odor": 2,
+          "seasonal_surface": 2,
+          "domestic_animal": 2,
+          "human_companion": 6,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 2,
+          "loose_object": 4,
+          "light_smoke": 2,
+          "weather": 2,
+          "daypart_marker": 1
+        },
+        "pf_ferry_landing": {
+          "sound": 3,
+          "odor": 1,
+          "seasonal_surface": 9,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 0,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 1,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_field_margin": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 7,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 6,
+          "ruderal_plant": 4,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_fishing_camp": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 2,
+          "ruderal_plant": 0,
+          "work_waste": 2,
+          "loose_object": 2,
+          "light_smoke": 1,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_floodplain_meadow": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 5,
+          "ruderal_plant": 6,
+          "work_waste": 1,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_forest_edge": {
+          "sound": 3,
+          "odor": 1,
+          "seasonal_surface": 6,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 4,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 4
+        },
+        "pf_forest_track": {
+          "sound": 4,
+          "odor": 0,
+          "seasonal_surface": 12,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 7,
+          "ruderal_plant": 0,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_grain_drying_shed_ovin": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 0,
+          "domestic_animal": 0,
+          "human_companion": 1,
+          "wild_animal": 1,
+          "ruderal_plant": 0,
+          "work_waste": 2,
+          "loose_object": 3,
+          "light_smoke": 1,
+          "weather": 1,
+          "daypart_marker": 2
+        },
+        "pf_hay_meadow": {
+          "sound": 1,
+          "odor": 2,
+          "seasonal_surface": 6,
+          "domestic_animal": 2,
+          "human_companion": 0,
+          "wild_animal": 5,
+          "ruderal_plant": 3,
+          "work_waste": 3,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_hunting_ground": {
+          "sound": 4,
+          "odor": 2,
+          "seasonal_surface": 2,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 0,
+          "work_waste": 1,
+          "loose_object": 2,
+          "light_smoke": 2,
+          "weather": 2,
+          "daypart_marker": 0
+        },
+        "pf_lake_shore": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 6,
+          "domestic_animal": 2,
+          "human_companion": 0,
+          "wild_animal": 6,
+          "ruderal_plant": 3,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_market_square": {
+          "sound": 5,
+          "odor": 3,
+          "seasonal_surface": 7,
+          "domestic_animal": 2,
+          "human_companion": 3,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 4,
+          "loose_object": 3,
+          "light_smoke": 1,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_marshy_stream": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 7,
+          "ruderal_plant": 4,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_mill": {
+          "sound": 2,
+          "odor": 3,
+          "seasonal_surface": 3,
+          "domestic_animal": 0,
+          "human_companion": 2,
+          "wild_animal": 1,
+          "ruderal_plant": 0,
+          "work_waste": 2,
+          "loose_object": 2,
+          "light_smoke": 0,
+          "weather": 2,
+          "daypart_marker": 2
+        },
+        "pf_mixed_woodland": {
+          "sound": 3,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 6,
+          "ruderal_plant": 4,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 5,
+          "daypart_marker": 4
+        },
+        "pf_monastery_yard": {
+          "sound": 5,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 1,
+          "human_companion": 3,
+          "wild_animal": 1,
+          "ruderal_plant": 1,
+          "work_waste": 2,
+          "loose_object": 2,
+          "light_smoke": 1,
+          "weather": 5,
+          "daypart_marker": 4
+        },
+        "pf_orchard_garden": {
+          "sound": 1,
+          "odor": 2,
+          "seasonal_surface": 9,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 2,
+          "ruderal_plant": 4,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_ordinary_workshop": {
+          "sound": 6,
+          "odor": 4,
+          "seasonal_surface": 2,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 5,
+          "loose_object": 1,
+          "light_smoke": 1,
+          "weather": 3,
+          "daypart_marker": 1
+        },
+        "pf_outbuildings": {
+          "sound": 2,
+          "odor": 2,
+          "seasonal_surface": 3,
+          "domestic_animal": 3,
+          "human_companion": 10,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 1,
+          "loose_object": 1,
+          "light_smoke": 1,
+          "weather": 1,
+          "daypart_marker": 1
+        },
+        "pf_pasture": {
+          "sound": 3,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 2,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 2,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_peasant_homestead": {
+          "sound": 8,
+          "odor": 3,
+          "seasonal_surface": 7,
+          "domestic_animal": 3,
+          "human_companion": 4,
+          "wild_animal": 2,
+          "ruderal_plant": 3,
+          "work_waste": 5,
+          "loose_object": 3,
+          "light_smoke": 1,
+          "weather": 7,
+          "daypart_marker": 3
+        },
+        "pf_reality_batch_01_open_conditions": {
+          "sound": 2,
+          "odor": 2,
+          "seasonal_surface": 2,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 2,
+          "daypart_marker": 2
+        },
+        "pf_reality_first_practical_conditions": {
+          "sound": 1,
+          "odor": 2,
+          "seasonal_surface": 0,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 0,
+          "loose_object": 0,
+          "light_smoke": 0,
+          "weather": 0,
+          "daypart_marker": 0
+        },
+        "pf_river_channel": {
+          "sound": 1,
+          "odor": 0,
+          "seasonal_surface": 4,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 2,
+          "work_waste": 2,
+          "loose_object": 2,
+          "light_smoke": 0,
+          "weather": 3,
+          "daypart_marker": 3
+        },
+        "pf_river_wharf": {
+          "sound": 2,
+          "odor": 2,
+          "seasonal_surface": 7,
+          "domestic_animal": 0,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 0,
+          "work_waste": 3,
+          "loose_object": 4,
+          "light_smoke": 0,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_riverbank": {
+          "sound": 1,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 2,
+          "human_companion": 0,
+          "wild_animal": 6,
+          "ruderal_plant": 5,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 4,
+          "daypart_marker": 3
+        },
+        "pf_road": {
+          "sound": 3,
+          "odor": 2,
+          "seasonal_surface": 9,
+          "domestic_animal": 2,
+          "human_companion": 0,
+          "wild_animal": 5,
+          "ruderal_plant": 2,
+          "work_waste": 0,
+          "loose_object": 2,
+          "light_smoke": 2,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_rural_yard": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 7,
+          "human_companion": 8,
+          "wild_animal": 2,
+          "ruderal_plant": 4,
+          "work_waste": 2,
+          "loose_object": 2,
+          "light_smoke": 2,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_smithy": {
+          "sound": 3,
+          "odor": 2,
+          "seasonal_surface": 2,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 0,
+          "ruderal_plant": 0,
+          "work_waste": 4,
+          "loose_object": 4,
+          "light_smoke": 4,
+          "weather": 1,
+          "daypart_marker": 1
+        },
+        "pf_threshing_barn": {
+          "sound": 3,
+          "odor": 1,
+          "seasonal_surface": 2,
+          "domestic_animal": 0,
+          "human_companion": 3,
+          "wild_animal": 1,
+          "ruderal_plant": 0,
+          "work_waste": 5,
+          "loose_object": 1,
+          "light_smoke": 1,
+          "weather": 1,
+          "daypart_marker": 0
+        },
+        "pf_town_courtyard": {
+          "sound": 6,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 5,
+          "human_companion": 2,
+          "wild_animal": 2,
+          "ruderal_plant": 3,
+          "work_waste": 2,
+          "loose_object": 4,
+          "light_smoke": 3,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_town_street": {
+          "sound": 6,
+          "odor": 1,
+          "seasonal_surface": 10,
+          "domestic_animal": 5,
+          "human_companion": 2,
+          "wild_animal": 3,
+          "ruderal_plant": 1,
+          "work_waste": 3,
+          "loose_object": 2,
+          "light_smoke": 2,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_town_wall_edge": {
+          "sound": 4,
+          "odor": 1,
+          "seasonal_surface": 10,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 2,
+          "work_waste": 2,
+          "loose_object": 2,
+          "light_smoke": 0,
+          "weather": 6,
+          "daypart_marker": 3
+        },
+        "pf_village_lane": {
+          "sound": 3,
+          "odor": 1,
+          "seasonal_surface": 10,
+          "domestic_animal": 4,
+          "human_companion": 2,
+          "wild_animal": 3,
+          "ruderal_plant": 3,
+          "work_waste": 1,
+          "loose_object": 2,
+          "light_smoke": 2,
+          "weather": 5,
+          "daypart_marker": 3
+        },
+        "pf_winter_ice_crossing": {
+          "sound": 2,
+          "odor": 1,
+          "seasonal_surface": 8,
+          "domestic_animal": 1,
+          "human_companion": 0,
+          "wild_animal": 4,
+          "ruderal_plant": 0,
+          "work_waste": 0,
+          "loose_object": 1,
+          "light_smoke": 0,
+          "weather": 5,
+          "daypart_marker": 3
+        }
+      },
+      "lens_coverage_by_pf": [
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "wild_animal",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "ruderal_plant",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "odor",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "loose_object",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "light_smoke",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "weather",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "daypart_marker",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "seasonal_surface",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "wild_animal",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "ruderal_plant",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "sound",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "seasonal_surface",
+          "rule_count": 10,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "seasonal_surface",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "daypart_marker",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "odor",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "seasonal_surface",
+          "rule_count": 9,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "wild_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "ruderal_plant",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "weather",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "daypart_marker",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "sound",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "human_companion",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "wild_animal",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "weather",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "daypart_marker",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "seasonal_surface",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "human_companion",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "weather",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "daypart_marker",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "seasonal_surface",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "human_companion",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "ruderal_plant",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "sound",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "seasonal_surface",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "wild_animal",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "ruderal_plant",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "daypart_marker",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "human_companion",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "loose_object",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "light_smoke",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "weather",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "daypart_marker",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "seasonal_surface",
+          "rule_count": 9,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "seasonal_surface",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "wild_animal",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "wild_animal",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "ruderal_plant",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "seasonal_surface",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "daypart_marker",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "sound",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "odor",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "seasonal_surface",
+          "rule_count": 12,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "wild_animal",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "seasonal_surface",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "human_companion",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "wild_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "loose_object",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "weather",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "daypart_marker",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "seasonal_surface",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "wild_animal",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "ruderal_plant",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "work_waste",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "sound",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "light_smoke",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "weather",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "daypart_marker",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "seasonal_surface",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "wild_animal",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "ruderal_plant",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "sound",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "odor",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "seasonal_surface",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "human_companion",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "work_waste",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "loose_object",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "wild_animal",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "odor",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "seasonal_surface",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "human_companion",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "wild_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "weather",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "daypart_marker",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "wild_animal",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "daypart_marker",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "sound",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "human_companion",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "wild_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "ruderal_plant",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "lens": "daypart_marker",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "seasonal_surface",
+          "rule_count": 9,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "sound",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "odor",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "work_waste",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "weather",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "daypart_marker",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "seasonal_surface",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "domestic_animal",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "human_companion",
+          "rule_count": 10,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "weather",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "daypart_marker",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "ruderal_plant",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "sound",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "odor",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "seasonal_surface",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "domestic_animal",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "human_companion",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "ruderal_plant",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "work_waste",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "loose_object",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "weather",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "weather",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "daypart_marker",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "seasonal_surface",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "loose_object",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "weather",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "daypart_marker",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "odor",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "seasonal_surface",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "ruderal_plant",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "weather",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "seasonal_surface",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "work_waste",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "loose_object",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "sound",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "wild_animal",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "ruderal_plant",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "weather",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "seasonal_surface",
+          "rule_count": 9,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "domestic_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "wild_animal",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "ruderal_plant",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "light_smoke",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "domestic_animal",
+          "rule_count": 7,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "human_companion",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "ruderal_plant",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "light_smoke",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_rural_yard",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "odor",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "wild_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "work_waste",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "loose_object",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "light_smoke",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "weather",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "daypart_marker",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "seasonal_surface",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "domestic_animal",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "human_companion",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "wild_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "work_waste",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "light_smoke",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "weather",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "daypart_marker",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "sound",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "domestic_animal",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "human_companion",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "wild_animal",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "ruderal_plant",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "loose_object",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "light_smoke",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "sound",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "seasonal_surface",
+          "rule_count": 10,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "domestic_animal",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "human_companion",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "wild_animal",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "ruderal_plant",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "work_waste",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "light_smoke",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_street",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "sound",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "seasonal_surface",
+          "rule_count": 10,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "ruderal_plant",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "work_waste",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "weather",
+          "rule_count": 6,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "sound",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "seasonal_surface",
+          "rule_count": 10,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "domestic_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "human_companion",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "wild_animal",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "ruderal_plant",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "work_waste",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "loose_object",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "light_smoke",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "sound",
+          "rule_count": 2,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "odor",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "seasonal_surface",
+          "rule_count": 8,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "domestic_animal",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "human_companion",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "wild_animal",
+          "rule_count": 4,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "ruderal_plant",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "work_waste",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "loose_object",
+          "rule_count": 1,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "light_smoke",
+          "rule_count": 0,
+          "state": "skipped",
+          "skip_reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "weather",
+          "rule_count": 5,
+          "state": "covered",
+          "skip_reason": ""
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "daypart_marker",
+          "rule_count": 3,
+          "state": "covered",
+          "skip_reason": ""
+        }
+      ],
+      "lens_exclusions": [
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_arable_field",
+          "lens": "loose_object",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "daypart_marker",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "weather",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "lens": "wild_animal",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bog",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_broadleaf_woodland",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "odor",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "daypart_marker",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_cellar_granary",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "lens": "wild_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "loose_object",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "lens": "wild_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "lens": "light_smoke",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "odor",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "lens": "seasonal_surface",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "daypart_marker",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_hunting_ground",
+          "lens": "ruderal_plant",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_market_square",
+          "lens": "wild_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mill",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_mixed_woodland",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "lens": "wild_animal",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_outbuildings",
+          "lens": "wild_animal",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_pasture",
+          "lens": "work_waste",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "wild_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "daypart_marker",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "loose_object",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "ruderal_plant",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "seasonal_surface",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "weather",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "wild_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "domestic_animal",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "light_smoke",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "lens": "odor",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_road",
+          "lens": "work_waste",
+          "reason": "duplicate_of_other_lens"
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_smithy",
+          "lens": "wild_animal",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "daypart_marker",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "domestic_animal",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "human_companion",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "human_companion",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "light_smoke",
+          "reason": "functionally_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "ruderal_plant",
+          "reason": "physically_inapplicable"
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "lens": "work_waste",
+          "reason": "functionally_inapplicable"
+        }
+      ],
+      "entity_link_ratio_by_pf": {
+        "pf_arable_field": {
+          "linked": 17,
+          "total": 31,
+          "ratio": 0.548
+        },
+        "pf_bathhouse": {
+          "linked": 17,
+          "total": 17,
+          "ratio": 1
+        },
+        "pf_bog": {
+          "linked": 14,
+          "total": 28,
+          "ratio": 0.5
+        },
+        "pf_bridge_crossing": {
+          "linked": 9,
+          "total": 26,
+          "ratio": 0.346
+        },
+        "pf_broadleaf_woodland": {
+          "linked": 16,
+          "total": 28,
+          "ratio": 0.571
+        },
+        "pf_burial_ground": {
+          "linked": 7,
+          "total": 25,
+          "ratio": 0.28
+        },
+        "pf_cellar_granary": {
+          "linked": 20,
+          "total": 20,
+          "ratio": 1
+        },
+        "pf_church_interior": {
+          "linked": 6,
+          "total": 12,
+          "ratio": 0.5
+        },
+        "pf_churchyard": {
+          "linked": 8,
+          "total": 23,
+          "ratio": 0.348
+        },
+        "pf_conifer_woodland": {
+          "linked": 13,
+          "total": 30,
+          "ratio": 0.433
+        },
+        "pf_dwelling_interior": {
+          "linked": 24,
+          "total": 25,
+          "ratio": 0.96
+        },
+        "pf_ferry_landing": {
+          "linked": 10,
+          "total": 27,
+          "ratio": 0.37
+        },
+        "pf_field_margin": {
+          "linked": 16,
+          "total": 29,
+          "ratio": 0.552
+        },
+        "pf_fishing_camp": {
+          "linked": 11,
+          "total": 24,
+          "ratio": 0.458
+        },
+        "pf_floodplain_meadow": {
+          "linked": 17,
+          "total": 32,
+          "ratio": 0.531
+        },
+        "pf_forest_edge": {
+          "linked": 12,
+          "total": 28,
+          "ratio": 0.429
+        },
+        "pf_forest_track": {
+          "linked": 15,
+          "total": 33,
+          "ratio": 0.455
+        },
+        "pf_grain_drying_shed_ovin": {
+          "linked": 14,
+          "total": 14,
+          "ratio": 1
+        },
+        "pf_hay_meadow": {
+          "linked": 19,
+          "total": 32,
+          "ratio": 0.594
+        },
+        "pf_hunting_ground": {
+          "linked": 17,
+          "total": 20,
+          "ratio": 0.85
+        },
+        "pf_lake_shore": {
+          "linked": 13,
+          "total": 27,
+          "ratio": 0.481
+        },
+        "pf_market_square": {
+          "linked": 15,
+          "total": 36,
+          "ratio": 0.417
+        },
+        "pf_marshy_stream": {
+          "linked": 12,
+          "total": 28,
+          "ratio": 0.429
+        },
+        "pf_mill": {
+          "linked": 12,
+          "total": 19,
+          "ratio": 0.632
+        },
+        "pf_mixed_woodland": {
+          "linked": 17,
+          "total": 31,
+          "ratio": 0.548
+        },
+        "pf_monastery_yard": {
+          "linked": 13,
+          "total": 34,
+          "ratio": 0.382
+        },
+        "pf_orchard_garden": {
+          "linked": 15,
+          "total": 27,
+          "ratio": 0.556
+        },
+        "pf_ordinary_workshop": {
+          "linked": 22,
+          "total": 23,
+          "ratio": 0.957
+        },
+        "pf_outbuildings": {
+          "linked": 22,
+          "total": 25,
+          "ratio": 0.88
+        },
+        "pf_pasture": {
+          "linked": 16,
+          "total": 29,
+          "ratio": 0.552
+        },
+        "pf_peasant_homestead": {
+          "linked": 36,
+          "total": 49,
+          "ratio": 0.735
+        },
+        "pf_reality_batch_01_open_conditions": {
+          "linked": 1,
+          "total": 10,
+          "ratio": 0.1
+        },
+        "pf_reality_first_practical_conditions": {
+          "linked": 0,
+          "total": 3,
+          "ratio": 0
+        },
+        "pf_river_channel": {
+          "linked": 10,
+          "total": 21,
+          "ratio": 0.476
+        },
+        "pf_river_wharf": {
+          "linked": 14,
+          "total": 30,
+          "ratio": 0.467
+        },
+        "pf_riverbank": {
+          "linked": 14,
+          "total": 31,
+          "ratio": 0.452
+        },
+        "pf_road": {
+          "linked": 20,
+          "total": 36,
+          "ratio": 0.556
+        },
+        "pf_rural_yard": {
+          "linked": 34,
+          "total": 46,
+          "ratio": 0.739
+        },
+        "pf_smithy": {
+          "linked": 20,
+          "total": 22,
+          "ratio": 0.909
+        },
+        "pf_threshing_barn": {
+          "linked": 16,
+          "total": 18,
+          "ratio": 0.889
+        },
+        "pf_town_courtyard": {
+          "linked": 27,
+          "total": 44,
+          "ratio": 0.614
+        },
+        "pf_town_street": {
+          "linked": 22,
+          "total": 44,
+          "ratio": 0.5
+        },
+        "pf_town_wall_edge": {
+          "linked": 14,
+          "total": 35,
+          "ratio": 0.4
+        },
+        "pf_village_lane": {
+          "linked": 18,
+          "total": 39,
+          "ratio": 0.462
+        },
+        "pf_winter_ice_crossing": {
+          "linked": 8,
+          "total": 25,
+          "ratio": 0.32
+        }
+      },
+      "entity_link_ratio_below_50_percent": [
+        {
+          "pf_id": "pf_bridge_crossing",
+          "linked": 9,
+          "total": 26,
+          "ratio": 0.346
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "linked": 7,
+          "total": 25,
+          "ratio": 0.28
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "linked": 8,
+          "total": 23,
+          "ratio": 0.348
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "linked": 13,
+          "total": 30,
+          "ratio": 0.433
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "linked": 10,
+          "total": 27,
+          "ratio": 0.37
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "linked": 11,
+          "total": 24,
+          "ratio": 0.458
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "linked": 12,
+          "total": 28,
+          "ratio": 0.429
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "linked": 15,
+          "total": 33,
+          "ratio": 0.455
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "linked": 13,
+          "total": 27,
+          "ratio": 0.481
+        },
+        {
+          "pf_id": "pf_market_square",
+          "linked": 15,
+          "total": 36,
+          "ratio": 0.417
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "linked": 12,
+          "total": 28,
+          "ratio": 0.429
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "linked": 13,
+          "total": 34,
+          "ratio": 0.382
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "linked": 1,
+          "total": 10,
+          "ratio": 0.1
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "linked": 0,
+          "total": 3,
+          "ratio": 0
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "linked": 10,
+          "total": 21,
+          "ratio": 0.476
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "linked": 14,
+          "total": 30,
+          "ratio": 0.467
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "linked": 14,
+          "total": 31,
+          "ratio": 0.452
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "linked": 14,
+          "total": 35,
+          "ratio": 0.4
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "linked": 18,
+          "total": 39,
+          "ratio": 0.462
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "linked": 8,
+          "total": 25,
+          "ratio": 0.32
+        }
+      ],
+      "regional_taxon_link_ratio_by_pf": {
+        "pf_arable_field": {
+          "linked": 12,
+          "total": 31,
+          "ratio": 0.387
+        },
+        "pf_bathhouse": {
+          "linked": 0,
+          "total": 17,
+          "ratio": 0
+        },
+        "pf_bog": {
+          "linked": 14,
+          "total": 28,
+          "ratio": 0.5
+        },
+        "pf_bridge_crossing": {
+          "linked": 3,
+          "total": 26,
+          "ratio": 0.115
+        },
+        "pf_broadleaf_woodland": {
+          "linked": 16,
+          "total": 28,
+          "ratio": 0.571
+        },
+        "pf_burial_ground": {
+          "linked": 3,
+          "total": 25,
+          "ratio": 0.12
+        },
+        "pf_cellar_granary": {
+          "linked": 11,
+          "total": 20,
+          "ratio": 0.55
+        },
+        "pf_church_interior": {
+          "linked": 2,
+          "total": 12,
+          "ratio": 0.167
+        },
+        "pf_churchyard": {
+          "linked": 4,
+          "total": 23,
+          "ratio": 0.174
+        },
+        "pf_conifer_woodland": {
+          "linked": 13,
+          "total": 30,
+          "ratio": 0.433
+        },
+        "pf_dwelling_interior": {
+          "linked": 8,
+          "total": 25,
+          "ratio": 0.32
+        },
+        "pf_ferry_landing": {
+          "linked": 5,
+          "total": 27,
+          "ratio": 0.185
+        },
+        "pf_field_margin": {
+          "linked": 11,
+          "total": 29,
+          "ratio": 0.379
+        },
+        "pf_fishing_camp": {
+          "linked": 2,
+          "total": 24,
+          "ratio": 0.083
+        },
+        "pf_floodplain_meadow": {
+          "linked": 14,
+          "total": 32,
+          "ratio": 0.438
+        },
+        "pf_forest_edge": {
+          "linked": 11,
+          "total": 28,
+          "ratio": 0.393
+        },
+        "pf_forest_track": {
+          "linked": 10,
+          "total": 33,
+          "ratio": 0.303
+        },
+        "pf_grain_drying_shed_ovin": {
+          "linked": 2,
+          "total": 14,
+          "ratio": 0.143
+        },
+        "pf_hay_meadow": {
+          "linked": 11,
+          "total": 32,
+          "ratio": 0.344
+        },
+        "pf_hunting_ground": {
+          "linked": 11,
+          "total": 20,
+          "ratio": 0.55
+        },
+        "pf_lake_shore": {
+          "linked": 11,
+          "total": 27,
+          "ratio": 0.407
+        },
+        "pf_market_square": {
+          "linked": 4,
+          "total": 36,
+          "ratio": 0.111
+        },
+        "pf_marshy_stream": {
+          "linked": 12,
+          "total": 28,
+          "ratio": 0.429
+        },
+        "pf_mill": {
+          "linked": 3,
+          "total": 19,
+          "ratio": 0.158
+        },
+        "pf_mixed_woodland": {
+          "linked": 17,
+          "total": 31,
+          "ratio": 0.548
+        },
+        "pf_monastery_yard": {
+          "linked": 6,
+          "total": 34,
+          "ratio": 0.176
+        },
+        "pf_orchard_garden": {
+          "linked": 11,
+          "total": 27,
+          "ratio": 0.407
+        },
+        "pf_ordinary_workshop": {
+          "linked": 0,
+          "total": 23,
+          "ratio": 0
+        },
+        "pf_outbuildings": {
+          "linked": 17,
+          "total": 25,
+          "ratio": 0.68
+        },
+        "pf_pasture": {
+          "linked": 15,
+          "total": 29,
+          "ratio": 0.517
+        },
+        "pf_peasant_homestead": {
+          "linked": 20,
+          "total": 49,
+          "ratio": 0.408
+        },
+        "pf_reality_batch_01_open_conditions": {
+          "linked": 0,
+          "total": 10,
+          "ratio": 0
+        },
+        "pf_reality_first_practical_conditions": {
+          "linked": 0,
+          "total": 3,
+          "ratio": 0
+        },
+        "pf_river_channel": {
+          "linked": 6,
+          "total": 21,
+          "ratio": 0.286
+        },
+        "pf_river_wharf": {
+          "linked": 4,
+          "total": 30,
+          "ratio": 0.133
+        },
+        "pf_riverbank": {
+          "linked": 13,
+          "total": 31,
+          "ratio": 0.419
+        },
+        "pf_road": {
+          "linked": 13,
+          "total": 36,
+          "ratio": 0.361
+        },
+        "pf_rural_yard": {
+          "linked": 24,
+          "total": 46,
+          "ratio": 0.522
+        },
+        "pf_smithy": {
+          "linked": 1,
+          "total": 22,
+          "ratio": 0.045
+        },
+        "pf_threshing_barn": {
+          "linked": 4,
+          "total": 18,
+          "ratio": 0.222
+        },
+        "pf_town_courtyard": {
+          "linked": 16,
+          "total": 44,
+          "ratio": 0.364
+        },
+        "pf_town_street": {
+          "linked": 14,
+          "total": 44,
+          "ratio": 0.318
+        },
+        "pf_town_wall_edge": {
+          "linked": 8,
+          "total": 35,
+          "ratio": 0.229
+        },
+        "pf_village_lane": {
+          "linked": 13,
+          "total": 39,
+          "ratio": 0.333
+        },
+        "pf_winter_ice_crossing": {
+          "linked": 6,
+          "total": 25,
+          "ratio": 0.24
+        }
+      },
+      "regional_taxon_link_ratio_below_50_percent": [
+        {
+          "pf_id": "pf_arable_field",
+          "linked": 12,
+          "total": 31,
+          "ratio": 0.387
+        },
+        {
+          "pf_id": "pf_bathhouse",
+          "linked": 0,
+          "total": 17,
+          "ratio": 0
+        },
+        {
+          "pf_id": "pf_bridge_crossing",
+          "linked": 3,
+          "total": 26,
+          "ratio": 0.115
+        },
+        {
+          "pf_id": "pf_burial_ground",
+          "linked": 3,
+          "total": 25,
+          "ratio": 0.12
+        },
+        {
+          "pf_id": "pf_church_interior",
+          "linked": 2,
+          "total": 12,
+          "ratio": 0.167
+        },
+        {
+          "pf_id": "pf_churchyard",
+          "linked": 4,
+          "total": 23,
+          "ratio": 0.174
+        },
+        {
+          "pf_id": "pf_conifer_woodland",
+          "linked": 13,
+          "total": 30,
+          "ratio": 0.433
+        },
+        {
+          "pf_id": "pf_dwelling_interior",
+          "linked": 8,
+          "total": 25,
+          "ratio": 0.32
+        },
+        {
+          "pf_id": "pf_ferry_landing",
+          "linked": 5,
+          "total": 27,
+          "ratio": 0.185
+        },
+        {
+          "pf_id": "pf_field_margin",
+          "linked": 11,
+          "total": 29,
+          "ratio": 0.379
+        },
+        {
+          "pf_id": "pf_fishing_camp",
+          "linked": 2,
+          "total": 24,
+          "ratio": 0.083
+        },
+        {
+          "pf_id": "pf_floodplain_meadow",
+          "linked": 14,
+          "total": 32,
+          "ratio": 0.438
+        },
+        {
+          "pf_id": "pf_forest_edge",
+          "linked": 11,
+          "total": 28,
+          "ratio": 0.393
+        },
+        {
+          "pf_id": "pf_forest_track",
+          "linked": 10,
+          "total": 33,
+          "ratio": 0.303
+        },
+        {
+          "pf_id": "pf_grain_drying_shed_ovin",
+          "linked": 2,
+          "total": 14,
+          "ratio": 0.143
+        },
+        {
+          "pf_id": "pf_hay_meadow",
+          "linked": 11,
+          "total": 32,
+          "ratio": 0.344
+        },
+        {
+          "pf_id": "pf_lake_shore",
+          "linked": 11,
+          "total": 27,
+          "ratio": 0.407
+        },
+        {
+          "pf_id": "pf_market_square",
+          "linked": 4,
+          "total": 36,
+          "ratio": 0.111
+        },
+        {
+          "pf_id": "pf_marshy_stream",
+          "linked": 12,
+          "total": 28,
+          "ratio": 0.429
+        },
+        {
+          "pf_id": "pf_mill",
+          "linked": 3,
+          "total": 19,
+          "ratio": 0.158
+        },
+        {
+          "pf_id": "pf_monastery_yard",
+          "linked": 6,
+          "total": 34,
+          "ratio": 0.176
+        },
+        {
+          "pf_id": "pf_orchard_garden",
+          "linked": 11,
+          "total": 27,
+          "ratio": 0.407
+        },
+        {
+          "pf_id": "pf_ordinary_workshop",
+          "linked": 0,
+          "total": 23,
+          "ratio": 0
+        },
+        {
+          "pf_id": "pf_peasant_homestead",
+          "linked": 20,
+          "total": 49,
+          "ratio": 0.408
+        },
+        {
+          "pf_id": "pf_reality_batch_01_open_conditions",
+          "linked": 0,
+          "total": 10,
+          "ratio": 0
+        },
+        {
+          "pf_id": "pf_reality_first_practical_conditions",
+          "linked": 0,
+          "total": 3,
+          "ratio": 0
+        },
+        {
+          "pf_id": "pf_river_channel",
+          "linked": 6,
+          "total": 21,
+          "ratio": 0.286
+        },
+        {
+          "pf_id": "pf_river_wharf",
+          "linked": 4,
+          "total": 30,
+          "ratio": 0.133
+        },
+        {
+          "pf_id": "pf_riverbank",
+          "linked": 13,
+          "total": 31,
+          "ratio": 0.419
+        },
+        {
+          "pf_id": "pf_road",
+          "linked": 13,
+          "total": 36,
+          "ratio": 0.361
+        },
+        {
+          "pf_id": "pf_smithy",
+          "linked": 1,
+          "total": 22,
+          "ratio": 0.045
+        },
+        {
+          "pf_id": "pf_threshing_barn",
+          "linked": 4,
+          "total": 18,
+          "ratio": 0.222
+        },
+        {
+          "pf_id": "pf_town_courtyard",
+          "linked": 16,
+          "total": 44,
+          "ratio": 0.364
+        },
+        {
+          "pf_id": "pf_town_street",
+          "linked": 14,
+          "total": 44,
+          "ratio": 0.318
+        },
+        {
+          "pf_id": "pf_town_wall_edge",
+          "linked": 8,
+          "total": 35,
+          "ratio": 0.229
+        },
+        {
+          "pf_id": "pf_village_lane",
+          "linked": 13,
+          "total": 39,
+          "ratio": 0.333
+        },
+        {
+          "pf_id": "pf_winter_ice_crossing",
+          "linked": 6,
+          "total": 25,
+          "ratio": 0.24
+        }
+      ]
+    },
+    {
+      "domain": "presence_rules",
+      "name": "environment_authoring_projects_exactly_once",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "output_rows": 1236
     },
     {
       "domain": "presence_rules",
@@ -250,7 +6223,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "people_rules": 17,
+      "people_rules": 1253,
       "place_families": 17,
       "g4": 32,
       "g5": 195
@@ -307,6 +6280,991 @@
       "pass": false,
       "failures": 10977,
       "sample": [
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
         "x",
         "x",
         "x",
@@ -382,7 +7340,110 @@
         "stable_code_missing",
         "stable_code_missing",
         "stable_code_missing",
-        "stable_code_missing"
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing",
+        "parent_missing"
       ],
       "external": true,
       "problems_by_kind": {
@@ -397,6 +7458,991 @@
       "pass": false,
       "failures": 1767,
       "sample": [
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
         "x",
         "x",
         "x",

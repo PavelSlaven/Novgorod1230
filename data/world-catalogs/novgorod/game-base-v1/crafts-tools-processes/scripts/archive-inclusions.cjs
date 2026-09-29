@@ -554,6 +554,7 @@ function buildLedger(domain, deny, needsCheckRows = NEEDS_CHECK_ROWS) {
     errors.push(...sourceRowIssues(entry));
     if (period && !/^\d{4}–\d{4}$/.test(period)) errors.push(`${archive_ref}: invalid period ${period}`);
     if (expectedDisposition === 'include' && (!period || Number(period.slice(0, 4)) > 1230 || Number(period.slice(-4)) < 1230)) errors.push(`${archive_ref}: included entity period ${period || '(missing)'} does not include 1230`);
+    if (expectedDisposition === 'include' && (generationPolicy === 'research_only' || (confidence === 'D' && /critical/i.test(anachronismRisk)))) errors.push(`${archive_ref}: research_only or critical-risk entry must stand in authoring/needs_check.csv (D38: risk is not a rejection basis)`);
     if (record_type === 'variant' && !targetExists) errors.push(`${archive_ref}: unresolved variant target ${game_base_ref}`);
     if (record_type === 'variant' && expectedDisposition === 'include' && targetExists) {
       const reason = entry[11] || manualVariant?.[1] || '';
@@ -632,7 +633,8 @@ function buildLedger(domain, deny, needsCheckRows = NEEDS_CHECK_ROWS) {
 function selfTest(domain, deny) {
   if (normalizeName('Ёжик—Костяной!') !== 'ежик костяной') throw new Error('archive name normalization probe failed');
   if (denylistMatches('Узкая меховая опушка', deny).length) throw new Error('archive denylist matched opushka as firearm');
-  if (!denylistMatches('Железный капкан', deny).some(hit => hit.dlId === 'dl_steel_trap')) throw new Error('archive denylist missed steel trap');
+  if (!denylistMatches('Фабричный капкан', deny).some(hit => hit.dlId === 'dl_steel_trap')) throw new Error('archive denylist missed steel trap');
+  if (denylistMatches('Железный капкан', deny).some(hit => hit.dlId === 'dl_steel_trap')) throw new Error('archive denylist matched early iron trap as factory steel trap');
   const entities = makeExistingEntities(domain);
   if (!entities.some(e => e.normalized === normalizeName('Костяной конёк'))) throw new Error('archive dedup probe target missing');
   if (variantTargetExists('crafts-tools-processes/materials_registry/materials.csv#missing', domain)) throw new Error('archive variant probe resolved missing target');

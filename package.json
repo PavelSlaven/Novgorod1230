@@ -133,6 +133,7 @@
     "spatial-v3:generate-p12-approved-target": "node tools/spatial-v3/materialize-p12-approved-target.mjs",
     "spatial-v3:generate-p12-target-materialization-v1_1": "node tools/spatial-v3/generate-p12-v1_1-bundle.mjs && node tools/spatial-v3/p12-v1_1-equivalence.mjs",
     "spatial-v3:test-p12-postgres": "node --test --test-concurrency=1 test/spatial-v3/p12-importer-postgres.test.js test/spatial-v3/p12-text-array-postgres.test.js test/spatial-v3/m2c-npc-wave-import-postgres.test.js test/spatial-v3/m2c-npc-import-postgres.test.js test/spatial-v3/presence-rules-first-arrival-postgres.test.js test/spatial-v3/presence-rules-composition-postgres.test.js test/spatial-v3/presence-rules-vikhtuy-resolver-v17-postgres.test.js test/spatial-v3/presence-rules-bare-bootstrap-v17-postgres.test.js",
+    "spatial-v3:test-all-starts-postgres": "node --test test/spatial-v3/presence-rules-all-starts-bare-bootstrap-v17-postgres.test.js",
     "spatial-v3:test-p13-postgres": "node --test test/spatial-v3/p13-party-runtime-postgres.test.js",
     "spatial-v3:check-p14": "node tools/spatial-v3/check-p14.mjs",
     "spatial-v3:test-p14-postgres": "node --test test/spatial-v3/p14-party-planning-postgres.test.js",

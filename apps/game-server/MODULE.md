@@ -76,8 +76,12 @@ the destination's own scene text as `visible_changes` (turn-step visible project
 for every site connection). Entering a never-visited place needs its approved G6
 ambient baseline (the walk-acoustics data covers every connection target).
 
-Availability of a connection is evaluated by one owner, `assessAvailability` of the current
-movement capability (traversal admission and its commit recheck share it). A null condition
+Availability of a traversed connection is evaluated by `assessAvailability` of the current
+movement capability (traversal admission and its commit recheck share it and both require
+`status: 'open'`). Other gates still treat a non-empty condition-set ref as unusable without
+asking it (`spatial-v3-world-base-reader.js` connection reader, `spatial-v3-generated-scene.js`,
+`spatial-v3-local-scene-movement.js`, `spatial-v3-local-movement-eligibility.js`); they are
+unreachable today because the refs are NULL in the used data (LW-096). A null condition
 set is open as before. The five condition sets the approved data names carry no predicate and
 the party holds no snow, flood or ice state, so the approved policy
 `live-world-runtime-v17/movement-availability-policy.v1.json` evaluates each as `open` with

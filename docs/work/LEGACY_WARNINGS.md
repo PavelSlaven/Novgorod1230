@@ -82,6 +82,9 @@
 | 083 | `lower-dvina-trace-phase-2-presentation-replay.js`, `packages/turn/src/stages/narration.js` (`spatialResult`) | replay-подача рассказчику без исходов проверок и оценки: `check_outcomes`/`qualitative_assessment` есть на первом проходе, нет на повторе (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 092 | `test/spatial-v3/generated-expansion-adapter.test.js` (`terminal=1`), `test/spatial-v3/m2c-expansion-import-postgres.test.js` | два теста красные и на базе d9bb04e9: устаревшие ожидания (first_entry терминала; capacity-one после open-capacity v2) | — |
 | 093 | `data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json`, `m2c-canonical-connection-labels/candidate.json` | подписи проходов «Проход N» не несут направления: «назад/дальше» планировщик путает | — |
+| 094 | `apps/game-server/src/infrastructure/postgres/spatial-v3-movement-availability-policy.js`, `live-world-runtime-v17/movement-availability-policy.v1.json` | политика доступности читается файлом мимо `world_base.spatial_v3_traversal_availability_policies` | — |
+| 095 | `movement-routes/src/spatial-v3.js`, `spatial-v3-current-movement-capability.js`, `data/contracts/spatial-v3/controlled-vocabularies.v1.json` | три формата метода движения: `movement.foot@1`, `movement.foot`, `movement_method.walk` | — |
+| 096 | `spatial-v3-world-base-reader.js`, `spatial-v3-generated-scene.js`, `spatial-v3-local-scene-movement.js`, `spatial-v3-local-movement-eligibility.js` | гейты «непустой ref условий доступности = непригодно» вне вычислителя | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -461,4 +464,23 @@
 - **Где.** `data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json`, `m2c-canonical-connection-labels/candidate.json`; стенд `/srv/novgorod-work/benches/rt-walk-planner/` (baseline: «назад/дальше» инвертированы уже на утверждённых локальных «Проход 1/2»).
 - **Что.** Планировщик выбирает проход по названному порядковому номеру верно, но «вернусь назад» / «иду дальше» — вслепую: номера направления не несут.
 - **Как жить.** Не лечить текстом из кода. Структурный признак «откуда пришёл» у ребра/связи в видимом контексте и подписи по классу цели — отдельные задачи; кнопки движения снимают проблему для клика.
+- **Issue.** —
+
+### LW-094 — политика доступности читается файлом мимо `world_base`
+- **Где.** `apps/game-server/src/infrastructure/postgres/spatial-v3-movement-availability-policy.js`; `data/world-catalogs/novgorod/live-world-runtime-v17/movement-availability-policy.v1.json` (+ attestation); таблица `world_base.spatial_v3_traversal_availability_policies` (`infra/world-base/schema/20.sql`).
+- **Что.** Решение владельца «пять наборов условий открыты, свет и видимость линию не закрывают» лежит файлом. Таблица `spatial_v3_traversal_availability_policies` его не выражает: у неё `daylight_required`, `season_mode`, `unsupported_state_behavior = hard_block`, `fallback_behavior = forbidden` (гейт Lower Dvina), то есть противоположный смысл. Это не паттерн LW-075 (те файлы — редакторские подписи).
+- **Ответы AI §17.** (1) Attacker: нет. (2) Trust boundary: нет, файл и код в одном репозитории. (3) Ущерб без проверки: правка файла без утверждения незаметно меняет доступность линий; ловит тест `movement-availability-policy.test.js` (sha256 файла против attestation, покрытие всех наборов из данных). (4) Constraints/version не годятся: таблицы под это решение нет.
+- **Как жить.** Не добавлять runtime-хеш и не читать таблицу Lower Dvina для этого. Перенос в `world_base` с DDL, читающим `availability_state_not_evaluable` — этап 3 (сезоны), когда политика получит вычислимое состояние.
+- **Issue.** —
+
+### LW-095 — три формата метода движения
+- **Где.** `packages/movement-routes/src/spatial-v3.js` (сравнение `allowed_movement_methods.includes(selected_movement_method_id)`); `apps/game-server/src/infrastructure/postgres/spatial-v3-current-movement-capability.js` (`movement.foot@1`); сегменты маршрутов в данных (`baseline_movement_method_id` = `movement.foot`); закрытый словарь v1 (`movement_method.walk`).
+- **Что.** Планировщик сравнивает строки как есть; в возможностях игрока `movement.foot@1`, в сегментах `movement.foot`, в словаре `movement_method.*`. Сегодня timed-топологии v17 никто не строит; когда появится загрузчик маршрутов, все пешие опции станут blocked.
+- **Как жить.** Не подгонять строку в планировщике. До загрузчика маршрутов со временем привести все три к `controlled_movement_method`.
+- **Issue.** —
+
+### LW-096 — гейты доступности вне вычислителя
+- **Где.** `apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js` (`readApprovedCanonicalG5Connections`, ~:889-890), `packages/materialization/src/spatial-v3-generated-scene.js` (~:187 и :58), `apps/game-server/src/infrastructure/postgres/spatial-v3-local-scene-movement.js` (~:76, :86), `spatial-v3-local-movement-eligibility.js` (~:94).
+- **Что.** Пять мест считают непустой `availability_condition_set_ref` непригодным без обращения к `evaluateConditionSet`. Сегодня недостижимо: во всех используемых профилях и рёбрах ref = NULL.
+- **Как жить.** Единственный вычислитель — `assessAvailability` (`evaluateConditionSet`). Когда в данных, которыми пользуется рантайм, появится непустой ref, эти гейты нужно провести через него, а не добавлять ещё один.
 - **Issue.** —

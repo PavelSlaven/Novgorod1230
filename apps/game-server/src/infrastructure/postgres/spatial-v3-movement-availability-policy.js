@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 
-// Read directly (LW-075): no runtime digest gate; movement-availability-policy.test.js checks the
-// file against its attestation and against the condition sets the approved data names.
+// Read directly, without a runtime digest gate; movement-availability-policy.test.js checks the file
+// against its attestation and against the condition sets the approved data names. This is not the
+// LW-075 label pattern: the file sits beside world_base.spatial_v3_traversal_availability_policies
+// (LW-094).
 const policy = JSON.parse(readFileSync(new URL(
   '../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/movement-availability-policy.v1.json',
   import.meta.url)));

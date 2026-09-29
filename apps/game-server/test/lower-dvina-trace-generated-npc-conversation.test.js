@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { commandsFor, conversationRun, generatedState, ELSEWHERE } from
+import { commandsFor, conversationRun, generatedState, ELSEWHERE, HERE } from
   './lower-dvina-trace-generated-npc-fixture.js';
 
 const targets = (commands) => commands.map(({ command_id: id }) =>
@@ -29,6 +29,17 @@ test('null anchor and null position never match each other', () => {
     next.position.position_id = null;
   });
   assert.deepEqual(commandsFor(state), []);
+});
+
+test('the anchor stays authoritative: equal anchors with a stale node still talk', () => {
+  const state = generatedState((next) => {
+    next.position.g5_anchor_id = 'anchor:a';
+    next.npcs[0].anchor_id = 'anchor:a';
+    next.npcs[0].position_id = ELSEWHERE;
+    next.npcs[1].anchor_id = 'anchor:b';
+    next.npcs[1].position_id = HERE;
+  });
+  assert.deepEqual(targets(commandsFor(state)), [state.npcs[0].instance_id]);
 });
 
 test('routine that moved the NPC away removes it from the scene', () => {

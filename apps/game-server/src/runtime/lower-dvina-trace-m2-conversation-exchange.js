@@ -138,10 +138,10 @@ export function createM2ConversationContext(input) {
 }
 function npcAtPlayerPosition(state, npc) {
   if (typeof npc?.instance_id !== 'string') return false;
-  const together = compareSceneLocus(sceneLocus(state, npc),
-    sceneLocus(state, state.position));
-  return together ?? (typeof npc.location_profile_ref === 'string'
-    && npc.location_profile_ref === state.position?.location_ref);
+  return compareSceneLocus(sceneLocus(state, npc),
+    sceneLocus(state, state.position)) === true
+    || (typeof npc.location_profile_ref === 'string'
+      && npc.location_profile_ref === state.position?.location_ref);
 }
 /** Player conversation model with committed-state WK ports (A1). */
 export function m2PlayerConversationModel(context) {

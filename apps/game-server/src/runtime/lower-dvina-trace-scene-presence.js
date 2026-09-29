@@ -15,13 +15,18 @@ export function sceneLocus(state, entity) {
   };
 }
 
-/** true / false when both sides expose the same kind of place, null otherwise. */
+/**
+ * true / false when both sides expose the same kind of place, null otherwise.
+ * The g5 anchor stays authoritative wherever both sides have one (authored and
+ * canonical scenes, and a carried NPC whose node id went stale); the scene
+ * position decides only where an anchor is missing (generated scenes).
+ */
 export function compareSceneLocus(left, right) {
-  if (known(left.position_id) && known(right.position_id)) {
-    return left.position_id === right.position_id;
-  }
   if (known(left.anchor_id) && known(right.anchor_id)) {
     return left.anchor_id === right.anchor_id;
+  }
+  if (known(left.position_id) && known(right.position_id)) {
+    return left.position_id === right.position_id;
   }
   return null;
 }

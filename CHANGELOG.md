@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- chore(architecture): file-size limits removed; split code by responsibility (AI §16), MODULE_RULES item 7 reworded (#208)
 - data(game-base): archive import PR-B for crafts and buildings-interiors — unambiguous decisions only, typed needs_check queue, directed material kinship in the ownership checker (imp-crafts) (#207)
 - data(game-base): occupation goals and fears for the seeded NPC character (D49), 265 goals / 158 fears, explicit gaps (#206)
 - data(game-base): checker владения архивными id — реестр таблиц, сведение словарей материалов, сверка маршрутов с решением получателя, период вариантов; хвосты одежды и оружия после PR-A (imp-crafts A1) (#204)

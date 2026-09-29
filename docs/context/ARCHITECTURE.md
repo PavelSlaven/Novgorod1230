@@ -58,8 +58,7 @@
 
 | Правило | Нормативный источник | Машинная проверка |
 |---|---|---|
-| Целевой размер файла 100–300 строк | [MODULE_RULES](../architecture/MODULE_RULES.md) п.7 | `apps/*/src/**/*.js` — 300 строк; в пакетах и tools, перечисленных в скрипте, — 500 (domain modules, temporal owners, narration/presentation, g5-scene/time-light/visible-context, стадии new-game, отдельные tools), turn — 300/500, оркестратор new-game — 350; остальные пакеты по строкам не проверяются |
-| Жёсткий предел 25 КБ | MODULE_RULES п.7 («нового исходника») | `hardBytes = 25 * 1024` для всех `.js`/`.mjs` в `apps/` и `packages/` |
+| Файл делится по ответственности, а не по размеру | [MODULE_RULES](../architecture/MODULE_RULES.md) п.7; [ARCHITECTURE_INVARIANTS](../governance/ARCHITECTURE_INVARIANTS.md) §16 | нет: порога размера нет, большой файл — повод на ревью проверить, не смешаны ли в нём ответственности |
 | Публичный API пакета ≤15 экспортов | MODULE_RULES п.8 | считает вхождения слова `export` в `packages/*/src/index.js` (> 15 — violation); строже: turn ≤12, оркестратор new-game ≤5, стадии new-game ≤8 |
 | `packages` ↛ `apps` | MODULE_RULES п.2, DEPENDENCY_RULES | импорт с `/apps/` из `packages/` — violation |
 | `game-web` ↛ `game-server` | DEPENDENCY_RULES | импорт с `game-server` из `apps/game-web/` — violation; кроме того в `apps/game-web/src` запрещена строка `@rus/` |
@@ -68,10 +67,6 @@
 | Корневые `.md` — только allowlist: `AGENTS.md`, `README.md`, `CHANGELOG.md`, `MIGRATION_PHASES_SHORT.md`, `MIGRATION_STATUS.md`, `MODULE_INDEX.md` | нормативного текста нет; реестр путей — [CANONICAL_PATHS.json](../migration/CANONICAL_PATHS.json) (category `root`, без `AGENTS.md` и — после DOC-01 — без `CHANGELOG.md`) | один список `ROOT_MARKDOWN_ALLOWLIST` в [documentation.js](../../tools/docs-tools/src/documentation.js); его проверяют `docs:check` и [check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs) |
 | `generated/` не редактируется вручную | [CONTRACT_POLICY](../architecture/CONTRACT_POLICY.md), DEPENDENCY_RULES | `docs:check` сравнивает с повторной генерацией |
 | Новый пакет: `MODULE.md`, `package.json`, `src/index.js` | DEPENDENCY_RULES (публичные entrypoints) | check-boundaries требует набор файлов для перечисленных в нём пакетов/apps/tools |
-
-⚠ PR #98 меняет: в `check-boundaries.mjs` все лимиты размера (25 КБ и все строковые лимиты выше, включая
-оркестраторы и legacy-фасады) переводятся из violations в warnings; лимит 15 экспортов,
-запреты импортов и allowlist корневых `.md` остаются violations.
 
 Куда класть новое:
 - доменная логика — в пакет-владелец по [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md), наружу только через `src/index.js`

@@ -50,7 +50,7 @@ ls docs/setup; rg -n "default|provider|model" packages/llm-runtime/MODULE.md
 ```bash
 ls -d */; ls apps packages tools
 ls docs/architecture docs/domain docs/pipelines
-rg -n "hardBytes|25|export" tools/architecture/check-boundaries.mjs
+rg -n "export" tools/architecture/check-boundaries.mjs
 ```
 
 Сверить: назначение каждой корневой папки, ссылки на MODULE_RULES / DEPENDENCY_RULES / CONTRACT_POLICY /

@@ -9,15 +9,13 @@ import {
   VIKHTUY_MEETING_G5,
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
+  assertStartVisibilityAllowsMovement,
   installPresenceProductionE2eFetch,
   publicStartScenario,
   submitObserveTurn,
   walkRouteUntil,
 } from './presence-rules-production-e2e-fixture.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
-
-const B1_SKIP_REASON = 'CR #160 / m2c/b1-passages: departure from arrival/focus positions '
-  + 'requires approach operation; merge origin/m2c/b1-passages before enabling cross-site e2e.';
 
 async function loadStartG6Aggregate(partyPool, partyId) {
   return (await partyPool.query(
@@ -140,7 +138,7 @@ test('start site: presence at new game, reload and re-look without reroll',
     }
   });
 
-test('generated G5: cross-site movement and reload', { skip: B1_SKIP_REASON, timeout: 1_800_000 },
+test('generated G5: cross-site movement and reload', { timeout: 1_800_000 },
   async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
     const restoreFetch = installPresenceProductionE2eFetch();
@@ -148,6 +146,7 @@ test('generated G5: cross-site movement and reload', { skip: B1_SKIP_REASON, tim
     const { runtime } = await createPresenceProductionRoot(env);
     try {
       const partyId = await publicStartScenario(runtime, 'novgorod_riverbank_approach_v1');
+      await assertStartVisibilityAllowsMovement(env.partyPool, partyId);
       await walkRouteUntil({
         runtime,
         partyPool: env.partyPool,
@@ -156,7 +155,7 @@ test('generated G5: cross-site movement and reload', { skip: B1_SKIP_REASON, tim
         maxSteps: 32,
         sitePredicate: async ({ partyPool, partyId: id }) => {
           const site = (await partyPool.query(
-            `SELECT origin FROM party_runtime.party_g5_sites WHERE party_id=$1 LIMIT 1`,
+            `SELECT origin FROM party_runtime.party_g5_sites WHERE party_id=$1 AND origin='generated' LIMIT 1`,
             [id],
           )).rows[0];
           return site?.origin === 'generated';
@@ -176,7 +175,13 @@ test('generated G5: cross-site movement and reload', { skip: B1_SKIP_REASON, tim
     }
   });
 
-test('canonical vikhtuy meeting_area PF binding', { skip: B1_SKIP_REASON, timeout: 1_800_000 },
+// Starts 6/7 have no directional exit and canonical G5 connections inside a G4 are not read by the
+// runtime, so meeting_area cannot be reached on foot: task rt-walk (D49). PF logic of the meeting_area
+// rules is covered by presence-rules-vikhtuy-resolver-v17-postgres.test.js.
+const MEETING_AREA_SKIP_REASON = 'no directional exit at starts 6/7; transitions between canonical places inside a G4 '
+  + 'are not implemented - task rt-walk (D49)';
+
+test('canonical vikhtuy meeting_area PF binding', { skip: MEETING_AREA_SKIP_REASON, timeout: 1_800_000 },
   async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
     const restoreFetch = installPresenceProductionE2eFetch();
@@ -184,6 +189,7 @@ test('canonical vikhtuy meeting_area PF binding', { skip: B1_SKIP_REASON, timeou
     const { runtime } = await createPresenceProductionRoot(env);
     try {
       const partyId = await publicStartScenario(runtime, 'novgorod_vikhtuy_work_storage_v1');
+      await assertStartVisibilityAllowsMovement(env.partyPool, partyId);
       await walkRouteUntil({
         runtime,
         partyPool: env.partyPool,

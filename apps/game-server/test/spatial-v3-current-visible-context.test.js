@@ -41,6 +41,23 @@ test('canonical and generated current scenes compose admitted natural, entities 
   }
 });
 
+test('occupied local edge status passes through; directional exits carry none', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const args = { naturalInput: prepareG4NaturalScenePerceptionInput(input),
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside',
+    entityObservations: [],
+    localEdges: [{ edge_id: 'edge:1', display_label: 'проход', destination_status: 'occupied' },
+      { edge_id: 'edge:2', display_label: 'другой проход', destination_status: 'open' }],
+    directionalExits: [{ directional_exit_id: 'exit:1', display_label: 'тропа к реке' }] };
+  const result = projectSpatialV3CurrentVisibleContext(args);
+  assert.deepEqual(result.visible_objects.map(({ entity_ref: { entity_id: id }, visible_status: status,
+    ...row }) => [id, status, 'status' in row]), [['edge:1', 'проход занят', false],
+    ['edge:2', undefined, false], ['exit:1', undefined, false]]);
+  assert.throws(() => projectSpatialV3CurrentVisibleContext({ ...args,
+    localEdges: [{ edge_id: 'edge:1', display_label: 'проход', destination_status: 'blocked' }] }),
+  (error) => error.details?.reason === 'complete_current_exit_disclosure_required');
+});
+
 test('incomplete or duplicated current observations fail closed', async () => {
   const { input } = await approvedNaturalPerceptionFixture();
   const args = { naturalInput: prepareG4NaturalScenePerceptionInput(input),

@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   './lower-dvina-trace-turn-step-runtime-ports.js';
@@ -138,12 +139,31 @@ export function buildLowerDvinaTracePhase2Services(context) {
         historical_events: partyHistoricalEventsOf(state)
       })
     } : {}),
-    turnStepBlockPlan: ({ plan, request }) => request.step_index === 1
-      && actorMovementBlocked(state)
-      && plan.resolution === 'direct'
-      && plan.goal_result === 'not_achieved'
-      && plan.reason_code === 'actor_movement_blocked'
-      && plan.operations.length === 0,
+    // The outcome comes from structure only - the committed body/combat state and the
+    // grounding of the chosen operation. The model's reason/reason_code is diagnostics
+    // (contract §15) and is never read here.
+    turnStepBlockPlan: async ({ plan, request }) => {
+      if (request.step_index !== 1) return false;
+      if (actorMovementBlocked(state) && plan.resolution === 'direct'
+        && plan.goal_result === 'not_achieved' && plan.operations.length === 0) return true;
+      if (plan.resolution !== 'domain_request') return false;
+      const chosen = plan.operations ?? [];
+      if (chosen.some((operation) => (request.player_safe_state
+        ?.available_domain_operation_grounding ?? []).some((entry) =>
+        entry.semantic_scope?.destination_status === 'occupied'
+        && isDeepStrictEqual(entry.operation, operation)))) return true;
+      // The chosen command's own structural refusal (the movement owner's full-occupancy
+      // verdict, which may name occupants the actor cannot perceive and is never shown).
+      const commands = typeof registry?.registered === 'function' ? registry.registered() : [];
+      for (const operation of chosen) {
+        for (const command of commands) {
+          if (typeof command.attemptRefusal === 'function'
+            && command.semantic_binding?.matches?.({ operation }) === true
+            && await command.attemptRefusal({ committed_state: state }) != null) return true;
+        }
+      }
+      return false;
+    },
     ...(turnStepSemanticGroundingValidator ? {
       turnStepSemanticGroundingValidator
     } : {}),

@@ -10,6 +10,8 @@ import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlaye
   './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
+import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 
 const labels = loadLabels('m2c-exit-labels');
 const localLabels = loadApprovedLocalEdgeLabels();
@@ -31,6 +33,7 @@ function loadLabels(name) {
 export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, worldBaseReader,
   actorId, sourceLocation, expansionClosure, readCurrentEnvironment, readTargetConditions,
   readEntityExterior = readCommittedEntityExterior, readKnowledge = readPlayerKnowledge } = {}) {
+  const slotByExit = slotByExitOf(expansionClosure?.slots);
   return async function readSources({ transaction, overlay } = {}) {
     const { site, baseline, position } = overlay ?? {};
     const partyId = site?.party_id;
@@ -180,10 +183,14 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
         if (matches.length !== 1) gap();
         visibleExits.push({ directional_exit_id: exit.id,
           directional_exit_version: exit.version, direction_context_id: exit.direction_context_id,
-          knowledge_state: 'visible', display_label: matches[0].display_label });
+          knowledge_state: 'visible', display_label: matches[0].display_label,
+          editorial_choice_ordinal: matches[0].editorial_choice_ordinal,
+          // `admitted` holds only revealed targets: any revealed exit shows its description.
+          ...passTargetDisclosureForExit(slotByExit, exit.id) });
       }
     }
     return { naturalInput, partyId, actorId, positionId: position.id,
-      entityObservations, localEdges, directionalExits: visibleExits };
+      entityObservations, localEdges,
+      directionalExits: withPassTargetDisambiguation(visibleExits) };
   };
 }

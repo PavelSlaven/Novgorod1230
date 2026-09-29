@@ -42,7 +42,13 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
               AND occupancy.scene_position_id=e.to_position_id)
           + COALESCE((SELECT SUM(occupies_capacity_units) FROM party_runtime.entity_placements occupancy
             WHERE occupancy.party_id=e.party_id AND occupancy.position_node_id=e.to_position_id),0)::int
-            AS destination_occupancy
+            AS destination_occupancy,
+          (SELECT COALESCE(json_agg(json_build_object('entity_kind',occupant.entity_kind,
+              'entity_id',occupant.entity_id,'units',occupant.occupies_capacity_units)
+              ORDER BY occupant.entity_kind,occupant.entity_id),'[]'::json)
+            FROM party_runtime.entity_placements occupant
+            WHERE occupant.party_id=e.party_id AND occupant.position_node_id=e.to_position_id
+              AND occupant.occupies_capacity_units>0) AS destination_placements
         FROM party_runtime.party_journey_locations l
         JOIN party_runtime.parties party ON party.party_id=l.party_id
         JOIN party_runtime.scene_position_nodes source
@@ -91,6 +97,11 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
           journey_state_version: Number(row.journey_state_version),
           scene_baseline_id: row.scene_baseline_id, site_id: row.site_id,
           destination_slot_key: row.destination_slot_key,
+          // Server-side only: who fills the destination, so that the disclosure owner can
+          // count just the occupants the actor perceives (never shown to the player).
+          destination_placements: Object.freeze((row.destination_placements ?? []).map(
+            (occupant) => Object.freeze({ entity_kind: occupant.entity_kind,
+              entity_id: occupant.entity_id, units: Number(occupant.units) }))),
           movement_admission: Object.freeze({
             edge_id: row.edge_id, reverse_edge_id: row.reverse_edge_id,
             from_position_ref: row.from_position_ref,
@@ -100,6 +111,7 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
             destination_capacity: Number(row.destination_capacity),
             transition_footprint_units: 1,
             destination_occupancy: Number(row.destination_occupancy),
+            destination_status: destinationStatus(row),
             edge_state_version: Number(row.edge_state_version),
             reverse_edge_state_version: row.reverse_edge_id === null ? null : Number(row.reverse_edge_state_version),
             ...(row.eligibility ? {
@@ -120,6 +132,19 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
   });
 }
 
+/** The disclosure owner's view of the same admission rows the local-scene runtime lists:
+ * built from the same reader with the same eligibility reader (F7), so both see the same
+ * admitted edges. Answers per edge with the destination's places and its occupants. */
+export function createLocalMovementDisclosureReader({ readLocalMovementEligibility = null } = {}) {
+  return async ({ transaction, partyId, actorId, positionId }) => {
+    const rows = await createSpatialV3LocalSceneMovementReader({ pool: transaction,
+      readLocalMovementEligibility }).list({ partyId, actorId, positionId });
+    return rows.map(({ movement_admission: admission, destination_placements }) => ({
+      edge_id: admission.edge_id, destination_capacity: admission.destination_capacity,
+      destination_placements }));
+  };
+}
+
 function validRow(row) {
   const edge = row && { ...row, transition_footprint_units: 1 };
   return [row?.journey_location_id, row?.scene_baseline_id, row?.site_id,
@@ -135,8 +160,13 @@ function validRow(row) {
       || row.reverse_edge_id === null && row.edge_capacity === null && row.eligibility?.pin
         && Number.isSafeInteger(row.eligibility.max_root_owners_per_transition)
         && row.eligibility.max_root_owners_per_transition >= 1)
-    && Number(row.destination_capacity) > 0
-    && Number(row.destination_occupancy) + 1 <= Number(row.destination_capacity);
+    && Number(row.destination_capacity) > 0;
+}
+
+/** A structurally valid edge stays listed at capacity; occupancy only marks it occupied. */
+function destinationStatus(row) {
+  return Number(row.destination_occupancy) + 1 <= Number(row.destination_capacity)
+    ? 'open' : 'occupied';
 }
 
 const text = (value) => typeof value === 'string' && value.length > 0;

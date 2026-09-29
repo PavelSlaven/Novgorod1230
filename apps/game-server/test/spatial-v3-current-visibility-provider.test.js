@@ -35,7 +35,8 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
   assert.match(calls[0].sql, /nav\.status='approved' AND nav\.canonical_digest=n\.canonical_digest/);
   assert.match(calls[0].sql, /e\.status='approved'/);
 });
-function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader } = {}) {
+function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
+  readLocalMovementAdmission, readTargetConditions = readCurrentTargetConditions } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
@@ -57,10 +58,11 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader } = {
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
     worldBaseReader,
     readScene: async () => scene, readNatural: async () => natural,
-    readTargetConditions: readCurrentTargetConditions,
+    readTargetConditions,
     readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
-      ? { display_name: 'Known person' } : null });
+      ? { display_name: 'Known person' } : null,
+    ...(readLocalMovementAdmission ? { readLocalMovementAdmission } : {}) });
   return { scene, natural, provider, queries };
 }
 
@@ -88,6 +90,91 @@ test('current snapshot admits committed identities, edges and approved exit labe
   (error) => error.details?.reason === 'approved_exit_label_required');
   assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 5);
 });
+
+const passTargetSlot = { id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_02', version: 1 };
+
+test('clearly visible exit shows its approved pass-target description, not just the ordinal', async () => {
+  const { provider } = fixture();
+  const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+    canonical_digest: label.directional_exit_ref.canonical_digest,
+    direction_context_id: label.direction_context_ref.id };
+  const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+    position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+    slotByExit: new Map([[exit.id, passTargetSlot]]) });
+  assert.equal(disclosed[0].display_label, 'к руслу');
+});
+
+const secondExitLabel = label2AtSameG4();
+function label2AtSameG4() {
+  const exitLabels = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels;
+  return exitLabels.find((row) => row.g4_ref.id === g4
+    && row.directional_exit_ref.id !== label.directional_exit_ref.id);
+}
+
+test('two visible exits with the same pass-target description disambiguate by the approved ordinal',
+  async () => {
+    const { provider } = fixture();
+    const exitOne = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const exitTwo = { id: secondExitLabel.directional_exit_ref.id, version: secondExitLabel.directional_exit_ref.version,
+      canonical_digest: secondExitLabel.directional_exit_ref.canonical_digest,
+      direction_context_id: secondExitLabel.direction_context_ref.id };
+    // Same pass-target slot forced on both exits: the collision is real regardless of their
+    // own distinct exit-ordinal labels ("По руслу — выход 1" vs "...2").
+    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exitOne, exitTwo],
+      slotByExit: new Map([[exitOne.id, passTargetSlot], [exitTwo.id, passTargetSlot]]) });
+    assert.equal(disclosed.length, 2);
+    assert.notEqual(disclosed[0].display_label, disclosed[1].display_label);
+    for (const row of disclosed) assert.match(row.display_label, /^к руслу \(\d+\)$/u);
+  });
+
+test('an exit discloses its slot pass-target text; a slot the catalog only records as a gap keeps the exit label; an unknown slot is a typed gap (F4/F11)',
+  async () => {
+    const { provider } = fixture();
+    const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const disclose = async (slot) => (await provider.readExitDisclosure({ partyId: 'party',
+      actorId: 'actor', position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+      slotByExit: new Map([[exit.id, slot]]) }))[0];
+    assert.equal((await disclose(passTargetSlot)).display_label, 'к руслу');
+    const forest = await disclose({ id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_20', version: 1 });
+    assert.equal(forest.display_label, 'в лес');
+    assert.ok(!('approach_phrase' in forest), 'no way-of-going wording is disclosed');
+    const gapSlot = await disclose({ id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_12', version: 1 });
+    assert.equal(gapSlot.display_label, label.display_label);
+    await assert.rejects(disclose({ id: 'no-such-slot', version: 1 }),
+      (error) => error.details?.reason === 'approved_pass_target_label_required');
+  });
+
+test('a partially visible exit still shows its pass-target description (partial cover does not block identification of a nearby passage)',
+  async () => {
+    const { natural, provider } = fixture();
+    natural.ambient_visibility.stable_cover = 'partial';
+    const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+      slotByExit: new Map([[exit.id, passTargetSlot]]) });
+    assert.equal(disclosed[0].display_label, 'к руслу');
+  });
+
+test('an exit with no visibility at all is not disclosed, not even by its ordinal label',
+  async () => {
+    const { natural, provider } = fixture();
+    natural.observer.visual_capability = 'none';
+    const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
+      canonical_digest: label.directional_exit_ref.canonical_digest,
+      direction_context_id: label.direction_context_ref.id };
+    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+      slotByExit: new Map([[exit.id, passTargetSlot]]) });
+    assert.deepEqual(disclosed, []);
+  });
 
 test('current snapshot discloses the mechanically repinned version 2 edge label', async () => {
   const { scene, provider } = fixture();
@@ -181,6 +268,59 @@ test('current approved local edge reaches the turn visible context', async () =>
   const changed = await withPhase2CurrentLocalEdges(current,
     provider.readLocalEdgeDisclosure);
   assert.deepEqual(changed.current_visible_context.visible_objects, []);
+});
+
+test('a visible edge the admission owner has no row for is disclosed without a status, not a data gap (destination projection before commit)', async () => {
+  // The admission reader answers only for the actor's COMMITTED position; a destination
+  // projection (crossing an exit) observes another position, so it legitimately has no rows.
+  const { provider } = fixture({ readLocalMovementAdmission: async () => [] });
+  const disclosed = await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
+    state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } });
+  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: localLabel.display_label }]);
+});
+
+const localState = { party_id: 'party', actor_id: 'actor',
+  journey_location: { scene_position_id: 'a' } };
+const occupant = (entity_id, units = 1) => ({ entity_kind: 'npc', entity_id, units });
+const concealedNpcs = async (args) => args.target.entity_kind === 'npc'
+  ? { stable_cover: 'clear', dynamic_occlusion: 'clear', concealment: 'none' }
+  : readCurrentTargetConditions(args);
+const statusOf = async (provider) => (await provider.readLocalEdgeDisclosure({
+  partyId: 'party', actorId: 'actor', state: localState }))[0].destination_status;
+
+test('before an attempt, occupied comes only from occupants the actor perceives (F6)', async () => {
+  const admissionCalls = [];
+  const admission = (rows) => async (args) => { admissionCalls.push(args); return rows; };
+  const perceived = fixture({ readLocalMovementAdmission: admission([{ edge_id: 'edge',
+    destination_capacity: 1, destination_placements: [occupant('one')] }]) });
+  assert.equal(await statusOf(perceived.provider), 'occupied');
+  assert.equal(admissionCalls[0].partyId, 'party');
+  assert.equal(admissionCalls[0].positionId, 'a');
+  // Same full destination, but its occupant is hidden from the actor: nothing is disclosed.
+  const hidden = fixture({ readTargetConditions: concealedNpcs, readLocalMovementAdmission: admission([{
+    edge_id: 'edge', destination_capacity: 1, destination_placements: [occupant('one')] }]) });
+  assert.equal(await statusOf(hidden.provider), 'open');
+  // Only the perceived units are counted: one seen + one unseen of two places is not occupied.
+  const twoPlaces = fixture({ readLocalMovementAdmission: admission([{ edge_id: 'edge',
+    destination_capacity: 2, destination_placements: [occupant('one')] }]) });
+  assert.equal(await statusOf(twoPlaces.provider), 'open');
+  const seenFills = fixture({ readLocalMovementAdmission: admission([{ edge_id: 'edge',
+    destination_capacity: 2, destination_placements: [occupant('one'), occupant('two')] }]) });
+  assert.equal(await statusOf(seenFills.provider), 'occupied');
+});
+
+test('the perceived occupied status reaches the visible context as visible_status (F1/F6)', async () => {
+  const { provider } = fixture({ readLocalMovementAdmission: async () => [{ edge_id: 'edge',
+    destination_capacity: 1, destination_placements: [occupant('one')] }] });
+  const state = { ...localState, current_visible_context: {
+    version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
+    visible_changes: [], sensory_details: [], visible_npc: [],
+    visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] } };
+  const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+    display_label: localLabel.display_label, recognition: 'known', visible_status: 'проход занят' }]);
 });
 
 test('explicit geometry hides unlinked targets; modifiers and missing ambient fail closed', async () => {

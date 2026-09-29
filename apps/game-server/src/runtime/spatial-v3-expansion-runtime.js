@@ -1,10 +1,55 @@
 import { selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { serverError } from '../errors.js';
+import { slotByExitOf } from './spatial-v3-pass-target-disclosure.js';
 
 const pin = (row) => ({ id: row.id, version: row.version });
 const sameRef = (ref, row) => ref?.entity_id === row?.id
   && Number(ref?.authoring_version) === row?.version;
 const one = (rows, reason) => { if (rows.length !== 1) gap(reason); return rows[0]; };
+
+/** Is this position exactly at a departure/both endpoint slot? */
+function atDepartureSlot(scene, position) {
+  return scene.endpoint_slots.some((row) => ['departure', 'both'].includes(row.endpoint_role)
+    && row.required_position_slot_key === position.template_slot_key
+    && row.required_position_instance_ordinal === position.template_instance_ordinal);
+}
+
+/** Deterministic BFS over the scene's own local edges to the nearest position that
+ * satisfies a departure/both endpoint slot - shortest path, ties broken by edge id.
+ * `eligibleExpansions` keeps deciding purely by slot rule; the walk itself is a
+ * separate, ordinary local movement, owned and applied by the local-scene movement
+ * runtime, never duplicated here (A-B1-06: the crossing command only ever executes
+ * from `departure`; a not-yet-there actor is offered the first local hop toward it,
+ * labelled with the reachable exit's own stable identity, not a second owner).
+ * `firstStepEdgeIds` (F3) restricts the first hop to the edges the local-scene owner
+ * itself offers from the current position - visible, eligible, admitted; the walk past
+ * the first hop is only path-finding over raw topology and never executes anything. */
+export function findReachableDeparturePosition(context, firstStepEdgeIds = null) {
+  const { position, scene } = context;
+  if (atDepartureSlot(scene, position)) return { position, path: [] };
+  const positions = new Map((scene.positions ?? []).map((row) => [row.id, row]));
+  const edges = [...(scene.movement_edges ?? [])].filter((row) => row.status === 'active')
+    .sort((left, right) => left.id.localeCompare(right.id));
+  const offered = firstStepEdgeIds == null ? null : new Set(firstStepEdgeIds);
+  const visited = new Set([position.id]);
+  let frontier = [{ positionId: position.id, path: [] }];
+  while (frontier.length) {
+    const next = [];
+    for (const { positionId, path } of frontier) {
+      for (const edge of edges) {
+        if (edge.from_position_id !== positionId || visited.has(edge.to_position_id)) continue;
+        if (path.length === 0 && offered != null && !offered.has(edge.id)) continue;
+        visited.add(edge.to_position_id);
+        const toPosition = positions.get(edge.to_position_id);
+        const nextPath = [...path, edge.id];
+        if (toPosition && atDepartureSlot(scene, toPosition)) return { position: toPosition, path: nextPath };
+        if (toPosition) next.push({ positionId: edge.to_position_id, path: nextPath });
+      }
+    }
+    frontier = next;
+  }
+  return null;
+}
 
 /** Server command bridge. Read-only menus never seed frontiers. Selection is
  * repeated by the generated adapter under the existing party/G4 P16 lock. */
@@ -20,7 +65,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     }
     if (typeof readExitDisclosure !== 'function') gap('current_exit_disclosure_owner_required');
     const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit) });
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
     if (!Array.isArray(disclosed)) gap('current_exit_disclosure_required');
     const visible = options.flatMap((option) => {
       const matches = disclosed.filter((row) => row.directional_exit_id === option.exit.id
@@ -35,10 +80,43 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     return { context, options: visible, selected: directionalExitId == null ? null
       : one(visible.filter((row) => row.exit.id === directionalExitId), 'selected_exit_unavailable') };
   }
+  /** A not-yet-at-departure actor never gets an executable crossing command (it would
+   * fail `prepareTraversal`'s committed-position check); instead, expose the first local
+   * hop of the deterministic path toward whichever departure position would make the
+   * crossing eligible, labelled with the reachable exit's own stable display text. The
+   * hop is executed by the local-scene movement owner, not duplicated here (A-B1-06). */
+  async function approachOptions({ partyId, actorId, firstStepEdgeIds }) {
+    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    // No offered first step, no approach: the hop is the local-scene owner's, never a guess.
+    if (!Array.isArray(firstStepEdgeIds) || !firstStepEdgeIds.length) return [];
+    const context = await readContext({ partyId, actorId });
+    const reachable = findReachableDeparturePosition(context, firstStepEdgeIds);
+    if (reachable == null || reachable.path.length === 0) return [];
+    const options = eligibleExpansions({ ...context, position: reachable.position }, now());
+    if (!options.length || typeof readExitDisclosure !== 'function') return [];
+    const disclosed = await readExitDisclosure({ ...context,
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
+    if (!Array.isArray(disclosed)) return [];
+    return options.flatMap((option) => {
+      const disclosure = disclosed.find((row) => row.directional_exit_id === option.exit.id
+        && row.directional_exit_version === option.exit.version
+        && row.direction_context_id === option.exit.direction_context_id);
+      if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
+        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
+      return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
+        display_label: disclosure.display_label }];
+    });
+  }
   return Object.freeze({
     async listExpansionOptions(input) {
       const { options } = await selectedContext({ partyId: input.partyId, actorId: input.actorId });
-      return options.map(({ exit, display_label }) => ({ directional_exit_id: exit.id, display_label }));
+      return options.map(({ exit, display_label }) => ({ kind: 'crossing',
+        directional_exit_id: exit.id, display_label }));
+    },
+    async listApproachOptions(input) {
+      const approaches = await approachOptions({ partyId: input.partyId, actorId: input.actorId,
+        firstStepEdgeIds: input.firstStepEdgeIds });
+      return approaches.map((row) => ({ kind: 'approach', ...row }));
     },
     async prepareExpansion(input) {
       const { context, selected } = await selectedContext(input);

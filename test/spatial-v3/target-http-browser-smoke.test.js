@@ -138,6 +138,21 @@ test('two committed local passages may return null movement before a completed d
     /directional exit must return a movement result/);
 });
 
+test('occupied local edge stays offered by its exact suffixed label; the free destination is what gets entered',
+  () => {
+    const observation = { result: { screen: emptyScreen() } };
+    const local = movement(observation, 'local_scene_edge:two', 'Проход 2');
+    // A decoy occupied option alongside the real one: it must never satisfy
+    // "the exact currently displayed approved movement label" for a different raw_text.
+    observation.result.screen.panels.route.data.movement.options.unshift(
+      { label: 'Проход 1 (проход занят)', knowledge_state: 'known', status: 'occupied' });
+    observation.result.screen.visible_context.visible_objects.unshift(
+      { display_label: 'Проход 1 (проход занят)', entity_ref: { entity_kind: 'scene_movement_edge',
+        entity_id: 'local_scene_edge:one' } });
+    const exit = movement(local, 'directional_exit:current', 'Иду дальше', 'generated');
+    assert.deepEqual(assertDisplayedMovementRoute([observation, local, exit]), { generated: true });
+  });
+
 test('exit rejects wrong connection even when destination origin and count look valid', () => {
   const observation = { result: { screen: emptyScreen() } };
   const exit = movement(observation, 'directional_exit:current', 'Иду дальше', 'generated');

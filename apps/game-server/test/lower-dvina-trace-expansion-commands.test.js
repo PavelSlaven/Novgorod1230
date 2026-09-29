@@ -3,6 +3,8 @@ import test from 'node:test';
 import { createTurnAvailableActionSet, createTurnCommandRegistry } from '@rus/turn';
 import { createTraceExpansionCommands } from
   '../src/runtime/lower-dvina-trace-expansion-commands.js';
+import { createTraceLocalSceneCommands } from
+  '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { selectedTurnStepOperation, turnStepOperationChoices } from
   '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { fixture, loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
@@ -22,8 +24,28 @@ const candidate = { directional_exit_id: 'exit:woods',
 async function commands(runtime, current = state) {
   return createTraceExpansionCommands({ state: current,
     requestId: 'request:walk', inputDigest: 'input:digest',
-    spatialExpansionRuntime: runtime });
+    spatialExpansionRuntime: runtime == null ? null
+      : { listApproachOptions: async () => [], ...runtime } });
 }
+
+test('the free phrase "иду к руслу" resolves to the one exit disclosed with that pass-target text (step 3)',
+  async () => {
+    // spatial-v3-current-visibility-provider.js resolved and disclosed this text already;
+    // the command layer must carry it verbatim into the visible operation, unparsed.
+    const passTarget = { directional_exit_id: 'exit:channel', display_label: 'к руслу' };
+    const [command] = await commands({ listExpansionOptions: async () => [passTarget] });
+    assert.equal(command.reason_visible_to_actor, 'к руслу');
+    assert.equal(command.label, 'к руслу');
+    const operation = command.semantic_binding.operation_dto;
+    assert.equal(operation.description, 'к руслу');
+    // The planner reads this description text ("к руслу") to ground free text like
+    // "Иду к руслу" onto this exact operation - proven at the binding, not by re-parsing raw_text.
+    // matches() ignores whatever description the model echoes back (cosmetic, not compared);
+    // only the structural fields decide the binding.
+    assert.equal(command.semantic_binding.matches({ operation: { ...operation } }), true);
+    assert.equal(command.semantic_binding.matches({
+      operation: { ...operation, target_ref: 'exit:other' } }), false);
+  });
 
 test('approved exit is a selectable exact server operation; topology input is IDs only',
   async () => {
@@ -108,6 +130,42 @@ test('stale source and rejected expansion never reach traversal', async () => {
   assert.equal(traversed, 0);
 });
 
+test('rejected expansion keeps its public code but carries the adapter reason server-side',
+  async () => {
+    const [command] = await commands({ listExpansionOptions: async () => [candidate],
+      prepareExpansion: async () => ({ ok: false, error: {
+        code: 'authoring_dependency_pin_missing',
+        subject_ref: { entity_kind: 'world_revision', entity_id: 'secret-world-revision' },
+        dependency_pins: { pins: [{ entity_ref: {
+          entity_kind: 'expansion_slot', entity_id: 'secret-slot-42' } }] },
+        diagnostics: { reason: 'exact_expansion_request_required' } } }),
+      prepareTraversal: async () => { throw new Error('must not reach traversal'); } });
+    await assert.rejects(command.consequence({ retrievedState: state }), (error) => {
+      assert.equal(error.code, 'LIVE_WORLD_EXPANSION_PREPARATION_FAILED');
+      assert.equal(error.details.diagnostics.reason, 'exact_expansion_request_required');
+      const publicError = errorEnvelope(error);
+      assert.equal(publicError.status, 409);
+      assert.deepEqual(Object.keys(publicError.body.error), ['code', 'message']);
+      assert.equal(JSON.stringify(publicError.body).includes('secret-'), false);
+      return true;
+    });
+  });
+
+test('different adapter reasons surface as distinct server-side diagnostics under the same public code',
+  async () => {
+    for (const reason of ['exact_expansion_request_required', 'committed_source_baseline_required']) {
+      const [command] = await commands({ listExpansionOptions: async () => [candidate],
+        prepareExpansion: async () => ({ ok: false, error: {
+          code: 'spatial_candidate_gap', diagnostics: { reason } } }),
+        prepareTraversal: async () => { throw new Error('must not reach traversal'); } });
+      await assert.rejects(command.consequence({ retrievedState: state }), (error) => {
+        assert.equal(error.code, 'LIVE_WORLD_EXPANSION_PREPARATION_FAILED');
+        assert.equal(error.details.diagnostics.reason, reason);
+        return true;
+      });
+    }
+  });
+
 test('missing or ambiguous approved exit identity is a typed data gap', async () => {
   for (const options of [null, [{}], [{ ...candidate, display_label: '' }],
     [candidate, candidate]]) {
@@ -148,7 +206,7 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
       revision: LIVE_WORLD_TURN_PROFILE.revision,
       digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
     } },
-    spatialExpansionRuntime: { listExpansionOptions: async () => [candidate] },
+    spatialExpansionRuntime: { listExpansionOptions: async () => [candidate], listApproachOptions: async () => [] },
     turnStepModel(request) {
       return { schema: 'turn_step_plan_v1', request_id: request.request_id,
         committed_state_version: request.committed_state_version,
@@ -189,6 +247,7 @@ test('official exit action reports known movement denial without moving or advan
         digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
       } },
       spatialExpansionRuntime: {
+        listApproachOptions: async () => [],
         listExpansionOptions: async () => [candidate],
         prepareExpansion: async () => ({ ok: true }),
         prepareTraversal: async () => { throw Object.assign(
@@ -245,6 +304,7 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
         digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
       } },
       spatialExpansionRuntime: {
+        listApproachOptions: async () => [],
         listExpansionOptions: async () => [candidate],
         prepareExpansion: async () => { prepared += 1; return { ok: true }; },
         ...(topologyCommitted ? { prepareTraversal: async () => {

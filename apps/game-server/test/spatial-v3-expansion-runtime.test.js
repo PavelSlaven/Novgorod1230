@@ -33,22 +33,97 @@ function context() {
 const identity = { partyId: 'party', actorId: 'actor', directionalExitId: 'exit', requestId: 'request' };
 const disclosure = async () => [{ directional_exit_id: 'exit', directional_exit_version: 2,
   direction_context_id: 'direction', knowledge_state: 'visible', display_label: 'Продолжить путь' }];
-test('arrival offers no expansion and neither mutates nor asks disclosure owner', async () => {
-  const current = context(); current.position.template_slot_key = 'arrival';
+test('arrival with no local path to departure offers no expansion and neither mutates nor asks disclosure owner', async () => {
+  const current = context(); current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.scene = { ...current.scene, positions: [current.position], movement_edges: [] };
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current });
   assert.deepEqual(await runtime.listExpansionOptions(identity), []);
+  assert.deepEqual(await runtime.listApproachOptions(identity), []);
   await assert.rejects(runtime.prepareExpansion(identity), (e) => e.details.reason === 'selected_exit_unavailable');
+});
+test('an arrival position from which departure is reachable by a local edge offers the approach, not the crossing (A-B1-06)', async () => {
+  const current = context();
+  const departurePosition = current.position;
+  current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.scene = { ...current.scene, positions: [current.position, departurePosition],
+    movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position',
+      to_position_id: departurePosition.id, status: 'active' }] };
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  // No executable crossing from here - it would fail prepareTraversal's committed-position check.
+  assert.deepEqual(await runtime.listExpansionOptions(identity), []);
+  // Instead, the first local hop toward departure, labelled with the exit's own stable text -
+  // the same local-scene edge the local-scene movement owner would offer and execute.
+  assert.deepEqual(await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] }),
+    [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1', display_label: 'Продолжить путь' }]);
+});
+test('the first approach step is taken only from the edges the local-scene owner offered (F3)', async () => {
+  const current = context();
+  const departurePosition = current.position;
+  current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  const middle = { id: 'middle-position', template_slot_key: 'middle', template_instance_ordinal: 0 };
+  // The one-hop edge exists in raw topology but is not offered (not visible / not eligible).
+  current.scene = { ...current.scene, positions: [current.position, middle, departurePosition],
+    movement_edges: [
+      { id: 'a-direct', from_position_id: 'arrival-position', to_position_id: departurePosition.id, status: 'active' },
+      { id: 'b-via', from_position_id: 'arrival-position', to_position_id: 'middle-position', status: 'active' },
+      { id: 'c-onward', from_position_id: 'middle-position', to_position_id: departurePosition.id, status: 'active' }] };
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  assert.deepEqual(await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: [] }), []);
+  assert.deepEqual(await runtime.listApproachOptions(identity), []);
+  const viaOffered = await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['b-via'] });
+  assert.deepEqual(viaOffered.map((row) => row.edge_id), ['b-via']);
+  const both = await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['b-via', 'a-direct'] });
+  assert.deepEqual(both.map((row) => row.edge_id), ['a-direct'], 'shortest path among offered first steps');
+});
+test('the disclosure owner receives the exit-to-slot mapping so pass-target text reaches both the crossing and the approach (live gap)', async () => {
+  const seen = [];
+  const spy = async (input) => { seen.push(input.slotByExit); return disclosure(); };
+  const atDeparture = context();
+  const crossing = createSpatialV3ExpansionRuntime({ readContext: async () => atDeparture, readExitDisclosure: spy,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  await crossing.listExpansionOptions(identity);
+  const away = context(); const departurePosition = away.position;
+  away.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  away.scene = { ...away.scene, positions: [away.position, departurePosition],
+    movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position', to_position_id: departurePosition.id, status: 'active' }] };
+  const approach = createSpatialV3ExpansionRuntime({ readContext: async () => away, readExitDisclosure: spy,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  await approach.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] });
+  assert.equal(seen.length, 2);
+  for (const slotByExit of seen) assert.deepEqual([...slotByExit], [['exit', { id: 'slot', version: 3 }]]);
+});
+test('at departure, no approach is offered (already there)', async () => {
+  const current = context();
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
+    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  assert.deepEqual(await runtime.listApproachOptions({ partyId: 'party', actorId: 'actor' }), []);
 });
 test('exact approved entry and current disclosure select server-owned request only', async () => {
   const current = context(); const before = structuredClone(current); let request;
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async (input) => { request = input; return { ok: true }; } } });
-  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ directional_exit_id: 'exit', display_label: 'Продолжить путь' }]);
+  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ kind: 'crossing', directional_exit_id: 'exit', display_label: 'Продолжить путь' }]);
   await runtime.prepareExpansion({ ...identity, slot_ref: { id: 'client', version: 999 }, candidate_ordinal: 999 });
   assert.equal(request.candidate_ordinal, 0); assert.deepEqual(request.slot_ref, { id: 'slot', version: 3 });
   assert.equal(request.source_position_id, 'departure-position'); assert.equal(request.actor_id, 'actor');
   assert.deepEqual(current, before);
 });
+test('a resolved pass-target description reaches listExpansionOptions verbatim (step 3)', async () => {
+  // The disclosure owner (spatial-v3-current-visibility-provider.js) already resolved and, if
+  // needed, disambiguated the pass-target text ("к руслу", or "к руслу (1)" on a collision)
+  // before this runtime ever sees it; this runtime is a pure passthrough and must not touch it.
+  const current = context();
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readExitDisclosure: async () => [{ directional_exit_id: 'exit', directional_exit_version: 2,
+      direction_context_id: 'direction', knowledge_state: 'visible', display_label: 'к руслу' }],
+    materializerVersion: 'version',
+    generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
+  const options = await runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor' });
+  assert.deepEqual(options, [{ kind: 'crossing', directional_exit_id: 'exit', display_label: 'к руслу' }]);
+});
+
 test('wrong exact entry version, hidden exit and changed disclosure version are unavailable', async () => {
   const current = context(); current.site.canonical_g5_ref.authoring_version = '999';
   assert.deepEqual(eligibleExpansions(current, 1), []);

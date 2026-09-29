@@ -37,6 +37,8 @@ import { deriveActivatedReleaseFromReadback } from './production-v2-activation-s
 import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
 import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
 import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
+import { createLocalMovementDisclosureReader } from
+  '../infrastructure/postgres/spatial-v3-local-scene-movement.js';
 import { createSpatialV3LocalMovementEligibilityReader,
   loadApprovedLocalMovementEligibilityPins } from
   '../infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
@@ -179,6 +181,11 @@ export async function createSpatialV3ProductionCompositionRoot({
         factualContext,
       });
     }
+    // One eligibility reader for every local-movement admission read (F7): the disclosure
+    // owner and the local-scene runtime must see the same admitted edges.
+    const readLocalMovementEligibility = targetContext == null ? null
+      : createSpatialV3LocalMovementEligibilityReader({ worldPool: pools.worldPool,
+        pins: loadApprovedLocalMovementEligibilityPins(release.world_revision_id) });
     const currentVisibility = targetContext == null ? null
       : createSpatialV3CurrentVisibilityProvider({
         pool: pools.partyPool,
@@ -190,13 +197,12 @@ export async function createSpatialV3ProductionCompositionRoot({
           ...args, readCurrentEnvironment: factualContext.readCurrentEnvironment }),
         readTargetConditions: readCurrentTargetConditions,
         readEntityExterior: readCommittedEntityExterior,
-        readPlayerKnowledge
+        readPlayerKnowledge,
+        readLocalMovementAdmission: createLocalMovementDisclosureReader({
+          readLocalMovementEligibility })
       });
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
-    const readLocalMovementEligibility = targetContext == null ? null
-      : createSpatialV3LocalMovementEligibilityReader({ worldPool: pools.worldPool,
-        pins: loadApprovedLocalMovementEligibilityPins(release.world_revision_id) });
     const projectDestination = targetContext == null ? null : async ({ transaction,
       partyId, actorId, context, destinationPosition, destinationSite,
       destinationPositionId, destinationSiteId, current } = {}) => {

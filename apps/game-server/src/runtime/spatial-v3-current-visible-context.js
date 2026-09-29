@@ -1,6 +1,7 @@
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { projectG4NaturalPerception } from './g4-natural-perception.js';
 import { serverError } from '../errors.js';
+import { LOCAL_EDGE_OCCUPIED_STATUS } from './local-edge-occupancy.js';
 
 const text = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
 export const SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF = Object.freeze({
@@ -59,12 +60,16 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
   ]) {
     for (const row of rows) {
       const key = `${kind}:${row?.[idKey]}`;
-      if (!text(row?.[idKey]) || !text(row.display_label) || seen.has(key)) {
+      if (!text(row?.[idKey]) || !text(row.display_label) || seen.has(key)
+        || (row.destination_status !== undefined
+          && !['open', 'occupied'].includes(row.destination_status))) {
         gap('complete_current_exit_disclosure_required');
       }
       seen.add(key);
       visible_objects.push({ entity_ref: { entity_kind: kind, entity_id: row[idKey] },
-        display_label: row.display_label, recognition: 'known' });
+        display_label: row.display_label, recognition: 'known',
+        ...(row.destination_status === 'occupied'
+          ? { visible_status: LOCAL_EDGE_OCCUPIED_STATUS } : {}) });
     }
   }
   const visible_context = { ...natural.visible_context, visible_npc, visible_objects };

@@ -6,6 +6,8 @@ import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } f
 import { serverError } from '../../errors.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
+import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 
 const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
 const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
@@ -27,7 +29,7 @@ const visibility = new Set(['clear', 'partial', 'none']);
  * readEntityObservations({partyId,actorId}) -> admitted exterior and known names. */
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
-  readEntityExterior, readPlayerKnowledge,
+  readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
@@ -88,6 +90,35 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       const admitted = await admit(current, edges.map((row) => ({
         target_id: row.id, position_id: row.to_position_id, entity_kind: 'local_edge' })));
       const visible = new Set(admitted.map((row) => row.target_id));
+      // The movement admission owner (spatial-v3-local-scene-movement.js) says who fills each
+      // destination and how many places it has. Before an attempt the actor may only learn of
+      // occupants they perceive (apps/game-server/MODULE.md: a visible path does not disclose
+      // unseen occupants), so the disclosed status counts just the occupants admitted here;
+      // the owner's own full-occupancy check still decides the attempt itself.
+      const admission = typeof readLocalMovementAdmission === 'function'
+        ? await readLocalMovementAdmission({ transaction: current.transaction, partyId, actorId,
+            positionId: current.scene.location.scene_position_id })
+        : null;
+      const occupants = new Map();
+      for (const row of admission ?? []) {
+        if (!Number.isSafeInteger(row?.destination_capacity) || row.destination_capacity < 1
+          || !Array.isArray(row.destination_placements)) gap('current_local_edge_admission_required');
+        for (const placement of row.destination_placements) {
+          if (['npc', 'item'].includes(placement.entity_kind)) {
+            occupants.set(`${placement.entity_kind}:${placement.entity_id}`, {
+              target_id: `${placement.entity_kind}:${placement.entity_id}`,
+              position_id: edges.find((edge) => edge.id === row.edge_id)?.to_position_id,
+              entity_kind: placement.entity_kind, entity_id: placement.entity_id });
+          }
+        }
+      }
+      const perceived = new Set((await admit(current, [...occupants.values()]))
+        .map((row) => row.target_id));
+      const statusByEdge = admission == null ? null : new Map(admission.map((row) => [row.edge_id,
+        row.destination_placements.filter((placement) => perceived.has(
+          `${placement.entity_kind}:${placement.entity_id}`))
+          .reduce((units, placement) => units + placement.units, 0) + 1 <= row.destination_capacity
+          ? 'open' : 'occupied']));
       return edges.flatMap((edge) => {
         if (!visible.has(edge.id)) return [];
         const labels = localLabels.filter((row) =>
@@ -96,7 +127,15 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           && row.scene_template_ref.version === Number(edge.source_scene_template_ref?.authoring_version)
           && row.edge_slot_key === edge.source_edge_slot_key);
         if (labels.length !== 1) gap('approved_local_edge_label_required');
-        return [{ edge_id: edge.id, display_label: labels[0].display_label }];
+        // The admission owner answers only for the actor's committed position; an edge it
+        // has no row for (destination projection before commit, or an edge it does not
+        // admit) is disclosed without a status - never guessed and never a data gap.
+        const destinationStatus = statusByEdge?.get(edge.id);
+        if (destinationStatus !== undefined && !['open', 'occupied'].includes(destinationStatus)) {
+          gap('current_local_edge_admission_required');
+        }
+        return [{ edge_id: edge.id, display_label: labels[0].display_label,
+          ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
     }, transaction, observedPositionId);
   }
@@ -130,9 +169,15 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         }
         const exits = approved.value.filter((row) =>
           row.exit_canonical_g5_id === current.scene.site.canonical_g5_ref?.entity_id);
+        // Slot lookup for the not-yet-generated pass-target description (step 3); stateless
+        // catalog read, safe to repeat, never recomputes occupancy or admission.
+        const closure = typeof worldBaseReader.readPinnedG4ExpansionClosure === 'function'
+          ? await worldBaseReader.readPinnedG4ExpansionClosure(binding.value) : null;
+        if (closure != null && !closure.ok) gap('approved_g4_expansion_closure_required');
+        const slotByExit = closure == null ? null : slotByExitOf(closure.value.slots);
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
-          site: current.scene.site, directional_exits: exits });
+          site: current.scene.site, directional_exits: exits, slotByExit });
       }, transaction);
     },
     async readExitDisclosure(context = {}) {
@@ -145,9 +190,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const exits = context.directional_exits;
         const admitted = await admit(current, exits.map((row) => ({ target_id: row.id,
           position_id: current.scene.location.scene_position_id, entity_kind: 'directional_exit' })));
-        const visible = new Set(admitted.map((row) => row.target_id));
-        return exits.flatMap((exit) => {
-          if (!visible.has(exit.id)) return [];
+        const revealed = new Set(admitted.map((row) => row.target_id));
+        const disclosed = exits.flatMap((exit) => {
+          if (!revealed.has(exit.id)) return [];
           const labels = labelCatalog.labels.filter((row) =>
             row.world_revision_id === current.scene.world_revision_id
             && row.g4_ref.id === current.scene.site.parent_g4_id
@@ -156,10 +201,15 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             && row.directional_exit_ref.canonical_digest === exit.canonical_digest
             && row.direction_context_ref.id === exit.direction_context_id);
           if (labels.length !== 1) gap('approved_exit_label_required');
+          // Any revealed exit shows its approved pass-target description; an exit the
+          // observer cannot see at all is not in `revealed` and is not disclosed.
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
-            display_label: labels[0].display_label }];
+            display_label: labels[0].display_label,
+            editorial_choice_ordinal: labels[0].editorial_choice_ordinal,
+            ...passTargetDisclosureForExit(context.slotByExit, exit.id) }];
         });
+        return withPassTargetDisambiguation(disclosed);
       }, context.transaction, context.observedPositionId);
     },
     async readEntityObservations({ partyId, actorId, transaction,

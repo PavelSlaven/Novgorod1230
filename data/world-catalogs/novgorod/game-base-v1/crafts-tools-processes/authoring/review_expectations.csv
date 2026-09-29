@@ -309,7 +309,7 @@ OMI01737,variant,mt_animal_glue,,round2-crafts.md:14,round2,
 OMI00207,routed,trv_022,transport-health-recreation,round2-crafts.md:24,round2,
 OMI00209,routed,trv_032,transport-health-recreation,round2-crafts.md:24,round2,
 OMI00856,variant,,,crafts.md:10,round1,
-OMI00293,variant,fd_animal_fat,,crafts.md:10,round1,non-explicit:review/crafts.md:10; source is textile thread/winding, not animal fat
+OMI00293,variant,fd_animal_fat,,crafts.md:10,round1,"non-explicit:review/crafts.md:10; source is textile thread/winding, not animal fat"
 FSH0012,variant,fd_animal_fat,,crafts.md:10,round1,
 WTR0023,routed,it_hh_repair_clamp,items-household-personal,answers.md:A-02 source-owner clarification,round2,
 STA0046,variant,,,round2-crafts.md:16,round2,
@@ -437,7 +437,7 @@ HLM0012,reject,,,round2-bicw.md:33,round2,
 FSH0021,routed,trv_026,transport-health-recreation,round2-crafts.md:6,round2,
 HNT0017,routed,trv_026,transport-health-recreation,round2-crafts.md:6,round2,
 OMI00413,variant,mt_hide_raw,,round2-crafts.md:7,round2,
-OMI00415,variant,mt_sheepskin,,round2-crafts.md:7,round2,
+OMI00415,variant,mt_sheepskin,,round2-crafts.md:7,round2,REVIEW-imp-variant-mat-1
 OMI00418,variant,mt_hide_raw,,round2-crafts.md:7,round2,
 CRF0105,variant,n1230:material_item:crf0025,crafts-tools-processes,round2-crafts.md:8,round2,
 OMI02110,variant,tl_snare,,round2-crafts.md:8,round2,
@@ -567,11 +567,11 @@ OMI01014,variant,,,round2-crafts.md:37,round2,
 OMI01022,variant,,,round2-crafts.md:37,round2,
 OMI01057,variant,,,round2-crafts.md:37,round2,
 OMI01058,variant,,,round2-crafts.md:37,round2,
-OMI01024,variant,tl_loom_weight,,round2-crafts.md:37,round2,
-OMI01025,variant,tl_loom_weight,,round2-crafts.md:37,round2,
-OMI01026,variant,tl_loom_weight,,round2-crafts.md:37,round2,
-OMI01027,variant,tl_loom_weight,,round2-crafts.md:37,round2,
-OMI01028,variant,tl_loom_weight,,round2-crafts.md:37,round2,
+OMI01024,variant,tl_loom_weight,,round2-crafts.md:37,round2,REVIEW-imp-variant-mat-1
+OMI01025,variant,tl_loom_weight,,round2-crafts.md:37,round2,REVIEW-imp-variant-mat-1
+OMI01026,variant,tl_loom_weight,,round2-crafts.md:37,round2,REVIEW-imp-variant-mat-1
+OMI01027,variant,tl_loom_weight,,round2-crafts.md:37,round2,REVIEW-imp-variant-mat-1
+OMI01028,variant,tl_loom_weight,,round2-crafts.md:37,round2,REVIEW-imp-variant-mat-1
 OMI01031,variant,tl_loom_weight,,round2-crafts.md:37,round2,
 OMI01043,entity,,,answers.md:A-02 OMI01043 canonical-anchor correction,round2,
 OMI01044,variant,pr:ceramic_pot,,round2-crafts.md:37,round2,
@@ -607,7 +607,7 @@ OMI01601,variant,n1230:material_item:omi01196,,bic.md:4,round1,
 OMI02182,variant,n1230:material_item:omi01196,,bic.md:4,round1,
 OMI02252,variant,n1230:material_item:omi00732,,crafts.md:12,round1,
 OMI02189,variant,n1230:material_item:omi01041,,bic.md:4,round1,
-OMI02265,variant,n1230:material_item:omi01041,,bic.md:5,round1,non-explicit:review/bic.md:5; no determinate action/target, retain source-derived terminal decision
+OMI02265,variant,n1230:material_item:omi01041,,bic.md:5,round1,"non-explicit:review/bic.md:5; no determinate action/target, retain source-derived terminal decision"
 OMI02262,variant,omi00983,,round2-crafts.md:19,round2,
 OMI02199,variant,n1230:material_item:omi01257,,bic.md:4,round1,
 OMI02268,variant,mt_flax,crafts-tools-processes,round2-crafts.md:19,round2,
@@ -643,3 +643,9 @@ OMI01563,routed,mt_textile_generic,crafts-tools-processes,answers.md:A-imp-craft
 OMI01598,routed,mt_straw,crafts-tools-processes,answers.md:A-imp-crafts-03,amend,
 OMI01568,routed,mt_cordage,crafts-tools-processes,answers.md:A-imp-crafts-03,amend,
 OMI01554,routed,mt_textile_generic,crafts-tools-processes,answers.md:A-imp-crafts-03,amend,
+OMI00415,variant,mt_hide_raw,crafts-tools-processes,REVIEW-imp-variant-mat-1,amend,
+OMI01024,variant,mt_clay,crafts-tools-processes,REVIEW-imp-variant-mat-1,amend,
+OMI01025,variant,mt_clay,crafts-tools-processes,REVIEW-imp-variant-mat-1,amend,
+OMI01026,variant,mt_clay,crafts-tools-processes,REVIEW-imp-variant-mat-1,amend,
+OMI01027,variant,mt_clay,crafts-tools-processes,REVIEW-imp-variant-mat-1,amend,
+OMI01028,variant,mt_clay,crafts-tools-processes,REVIEW-imp-variant-mat-1,amend,

@@ -6,12 +6,12 @@
     {
       "id": "archive_inclusion_ledger_candidate_provenance",
       "result": "PASS",
-      "detail": "1268 rows; 205 new + 461 variants; 6 rejected; 488 queued; runtime activation=false"
+      "detail": "1268 rows; 205 new + 532 variants; 6 rejected; 417 queued; runtime activation=false"
     },
     {
       "id": "archive_needs_check_partition",
       "result": "PASS",
-      "detail": "1268 archive IDs partitioned exactly once; 488 queue rows have record_type/disposition/status=needs_check; no queued entity source refs"
+      "detail": "1268 archive IDs partitioned exactly once; 417 queue rows have record_type/disposition/status=needs_check; no queued entity source refs"
     },
     {
       "id": "archive_material_entity_table",

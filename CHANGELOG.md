@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(game-base): needs_check batch 2, variant material mismatches — point pair decisions with per-item reasons, 37 queued with concrete doubts (imp-variant-mat) (#210)
 - data(game-base): needs_check batch 1, hunting/fishing cluster — exact gear/material variants, per-item queue reasons, scoped pair waivers in the ownership checker (imp-needs-hunt) (#209)
 - chore(architecture): file-size limits removed; split code by responsibility (AI §16), MODULE_RULES item 7 reworded (#208)
 - data(game-base): archive import PR-B for crafts and buildings-interiors — unambiguous decisions only, typed needs_check queue, directed material kinship in the ownership checker (imp-crafts) (#207)

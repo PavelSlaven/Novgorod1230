@@ -478,12 +478,13 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     raw_text:
       'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
   };
-  const pendingNarration = await retryRuntime.submitTurn(
+  const afterInRequestRetry = await retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
   );
-  assert.equal(pendingNarration.screen.screen_status,
-    'committed_presentation_pending');
+  assert.equal(afterInRequestRetry.screen.screen_status, 'ready');
+  assert.equal(afterInRequestRetry.option_id, 'inspect_wreck_in_detail');
+  assert.equal(narrationCalls, 2);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
@@ -563,7 +564,58 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   });
   await t.test('restrained movement returns HTTP 200 with committed blocked consequence',
     () => assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }));
+  await t.test('exhausted same-request presentation stays pending then restart recovers',
+    () => assertPresentationExhaustedThenRestartRecovers({ pool, release, runtimeCatalogPin }));
 });
+
+async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
+  runtimeCatalogPin }) {
+  let narrationCalls = 0;
+  let narrationFails = true;
+  const narrationService = {
+    async run(request) {
+      narrationCalls += 1;
+      if (narrationFails) {
+        const error = new Error('Narration did not produce an approved presentation.');
+        error.code = 'TURN_NARRATION_REJECTED';
+        throw error;
+      }
+      return approvedNarration(request);
+    }
+  };
+  let semanticCalls = 0;
+  let rolls = 0;
+  const observers = { semanticObserver() { semanticCalls += 1; },
+    randomDrawObserver() { rolls += 1; } };
+  const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin,
+    narrationService, ...observers });
+  const opened = await setupRuntime.startNewGame({ scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'presentation-exhaust-party' });
+  await setupRuntime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'presentation-exhaust-ack' });
+  const input = {
+    request_id: 'presentation-exhaust-turn',
+    idempotency_key: 'presentation-exhaust-turn',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  };
+  const pending = await setupRuntime.submitTurn(opened.party_id, input);
+  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
+  const afterExhaust = narrationCalls;
+  assert.equal(afterExhaust, 2, 'workflow pass + one replay');
+  const semanticBeforeRestart = semanticCalls;
+  assert.equal(rolls, 1);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions', opened.party_id), 1);
+  narrationFails = false;
+  const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService,
+    ...observers });
+  const recovered = await restart.submitTurn(opened.party_id, input);
+  assert.equal(recovered.screen.screen_status, 'ready');
+  assert.equal(narrationCalls, afterExhaust + 1, 'recovery makes one successful pass');
+  // The restart replays the committed turn: no second planner call, roll or check row.
+  assert.equal(semanticCalls, semanticBeforeRestart);
+  assert.equal(rolls, 1);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions', opened.party_id), 1);
+}
 
 async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {
   const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin });
@@ -581,7 +633,10 @@ async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalog
       reason: 'Персонаж удерживается и не может идти.'
     }),
     narrationService: { async run(request) {
-      assert.deepEqual(request.context.outcome, { movement_blocked: true });
+      assert.deepEqual(request.context.outcome, {
+        movement_blocked: true,
+        movement_blocked_reason_code: 'actor_movement_blocked'
+      });
       const narration = approvedNarration(request);
       narration.approved_output.prose = 'Вы удерживаетесь на месте и не можете идти.';
       return narration;
@@ -1746,10 +1801,12 @@ async function assertPreparedSemanticBodyRecovery({ pool, release, runtimeCatalo
   await runtime.acknowledgeOpening(opened.party_id, { client_ack_id: 'prepared-body-recovery-ack' });
   const input = { request_id: 'prepared-body-recovery', idempotency_key: 'prepared-body-recovery',
     raw_text: 'Предупреждаю спутников. Проверяю устойчивость опоры.' };
-  const pending = await runtime.submitTurn(opened.party_id, input);
-  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
-  assert.equal(pending.time_update.exact_elapsed.exact_minutes.numerator, '2');
-  assert.deepEqual(pending.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  const ready = await runtime.submitTurn(opened.party_id, input);
+  assert.equal(ready.screen.screen_status, 'ready');
+  assert.equal(ready.time_update.exact_elapsed.exact_minutes.numerator, '2');
+  assert.deepEqual(ready.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  assert.equal(narrations, 2);
+  assert.equal(planners, 2);
   const restarted = buildRuntime(options);
   const recovered = await restarted.submitTurn(opened.party_id, input);
   assert.equal(recovered.screen.screen_status, 'ready');

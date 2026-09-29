@@ -1,6 +1,7 @@
 import {
   labelOf, listItem, renderEmpty, renderItems, renderRows, scalar, stateLabel
 } from '../panel-helpers.js';
+import { escapeHtml } from '../../shared/escape-html.js';
 
 const KNOWLEDGE_LABELS = Object.freeze({
   known: 'известно', uncertain: 'сведения неточны'
@@ -12,6 +13,27 @@ const READINESS_LABELS = Object.freeze({
   temporarily_blocked: 'временно недоступно',
   data_gap: 'недостаточно сведений'
 });
+
+export function collectMovementLabels(screen) {
+  const options = screen.panels?.route?.data?.movement?.options;
+  if (!Array.isArray(options)) return [];
+  const labels = [];
+  const seen = new Set();
+  for (const option of options) {
+    const label = typeof option?.label === 'string' ? option.label.trim() : '';
+    if (!label || seen.has(label)) continue;
+    seen.add(label);
+    labels.push(label);
+  }
+  return labels;
+}
+
+export function renderMovementShortcuts(screen, { disabled = false } = {}) {
+  const labels = collectMovementLabels(screen);
+  if (labels.length === 0) return '';
+  const buttons = labels.map((label) => `<button class="action-chip movement-shortcut" type="button" data-movement-label="${escapeHtml(label)}"${disabled ? ' disabled' : ''}>${escapeHtml(label)}</button>`).join('');
+  return `<div class="movement-shortcuts" aria-label="Подписи ходов">${buttons}</div>`;
+}
 
 export function renderRoutesPanel(screen) {
   const panel = screen.panels?.route;

@@ -27,6 +27,7 @@ Browser-клиент, который получает только versioned pub
   input, не показывает `main_prose`/`prose`, narrator output, digest,
   audit/provider/retry diagnostics или новую causal фразу;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- кнопками подписей ходов из `panels.route.data.movement.options`: клик подставляет точную подпись в черновик и поле ввода (`app/movement-draft.js`), ничего не отправляет и контракт сервера не меняет;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
   виден сразу, полная формула и signed modifiers доступны через `<details>`;
 - Character отображает уже безопасные предысторию, память и известные сведения;

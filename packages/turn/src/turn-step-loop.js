@@ -63,6 +63,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   let preparedFollowup = null;
   let pendingDiscovery = null;
   let blockedPlan = false;
+  let blockedPlanReasonCode = null;
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
@@ -136,10 +137,14 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         plan
       });
     }
-    if (typeof ports.blockPlan === 'function' && await ports.blockPlan(deepFreeze({
-      plan: structuredClone(plan), request: structuredClone(request)
-    })) === true) {
+    const blockReason = typeof ports.blockPlan === 'function'
+      ? await ports.blockPlan(deepFreeze({
+        plan: structuredClone(plan), request: structuredClone(request)
+      }))
+      : false;
+    if (blockReason) {
       blockedPlan = true;
+      blockedPlanReasonCode = typeof blockReason === 'string' ? blockReason : null;
       stopReason = 'terminal';
       remainingIntent = '';
       stepTraces.push(traceFor({ plan, request, repaired, applied: false }));
@@ -334,7 +339,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     background_npc_semantic_atomic_write_plan:
       backgroundNpcSemanticPlans[0] ?? null,
     clarification,
-    blocked_plan: blockedPlan
+    blocked_plan: blockedPlan,
+    blocked_plan_reason_code: blockedPlanReasonCode
   });
 }
 

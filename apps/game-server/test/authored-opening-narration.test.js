@@ -10,6 +10,7 @@ import { createAuthoredOpeningNarrationService } from
   '../src/runtime/authored-opening-narration.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { startLowerDvinaTrace } from '../src/runtime/lower-dvina-trace-public-start.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
@@ -492,4 +493,81 @@ test('opening accepts source-bound Temporal environment without aggregate profil
   }
   input.visible.environment = { ...environment, facts: ['wet', 'unapproved prose'] };
   assert.deepEqual(buildLowerDvinaTraceOpeningScreen(input).visible_context.environment, { facts: ['wet'] });
+});
+
+// P2-4: outer retries of the first screen under one shared turn budget, real role runner.
+// A STAGE23_HANDOFF_* refusal happens when the audit still fails after the one semantic repair
+// (STAGE23_HANDOFF_NOT_APPROVED); only then does the first screen retry, once.
+const GOOD_PROSE = 'Любава, рыбачка, с рассвета готовит стан вместе с братом.\n\nПеред ней берег, навес и работа до вечера.';
+const REPAIRABLE = { pass: false, failed_checks: ['must_include_check'], concerns: [{
+  code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+  message: 'Missing opening sources.' }], evidence: ['Sources omitted.'] };
+const HARD_BLOCK = { ...REPAIRABLE, concerns: [{ ...REPAIRABLE.concerns[0],
+  severity: 'hard_block' }] };
+const GROUNDED = { pass: true, failed_checks: [], concerns: [], evidence: ['Grounded.'] };
+
+function openingHarness(audit, { step = 0 } = {}) {
+  let now = 0;
+  const turnBudget = createLlmTurnBudget({ now: () => now });
+  const llmDiagnostics = createLlmDiagnostics({ turnBudget, now: () => now });
+  const calls = [];
+  const execute = async ({ roleId }) => {
+    const ordinal = calls.filter((role) => role === roleId).length;
+    calls.push(roleId);
+    now += step;
+    const output = roleId === 'gameplay_narrator_auditor' ? audit(ordinal)
+      : { prose: GOOD_PROSE };
+    return { status: 'ok', parsed_json: output, provider: 'test', model: 'test',
+      scope: 'turn_runtime', role_id: roleId, tier_id: null, durationMs: 1, config_hash: 'x' };
+  };
+  const roleRunner = createLlmRoleRunnerAdapter({ turnBudget, execute });
+  const service = createAuthoredOpeningNarrationService({ roleRunner, llmDiagnostics });
+  const pkg = openingPackage(), approval = openingApproval(pkg);
+  const run = () => service.run({ partyId: 'party:1', requestId: 'opening:1',
+    visibleContextPackage: pkg, visibleContextApproval: approval });
+  return { calls, run, count: (role) => calls.filter((item) => item === role).length };
+}
+
+test('opening retries a STAGE23_HANDOFF refusal once, without a second repair, and delivers',
+  async () => {
+    const h = openingHarness((ordinal) => ordinal < 2 ? REPAIRABLE : GROUNDED);
+    const result = await h.run();
+    assert.equal(result.flow.status, 'approved');
+    assert.deepEqual(h.calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor',
+      'gameplay_narrator', 'gameplay_narrator_auditor']);
+  });
+
+test('opening makes at most two attempts and the second fails with the standard audit rejection',
+  async () => {
+    const h = openingHarness(() => REPAIRABLE);
+    await assert.rejects(h.run(), (error) => {
+      assert.equal(error.code, 'AUTHORED_OPENING_AUDIT_REJECTED');
+      assert.deepEqual(error.details.codes, ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
+      return true;
+    });
+    assert.equal(h.count('gameplay_narrator'), 2);
+    assert.equal(h.count('gameplay_narrator_semantic_repair'), 1, 'one repair per request');
+  });
+
+test('opening does not retry a hard_block audit (the first screen fails closed)', async () => {
+  const h = openingHarness(() => HARD_BLOCK);
+  await assert.rejects(h.run(), { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+  assert.equal(h.count('gameplay_narrator'), 1);
+  assert.equal(h.count('gameplay_narrator_semantic_repair'), 0);
+});
+
+test('opening does not start a retry when the deadline holds no more than one call',
+  async () => {
+    // Four calls of 60 s leave exactly 120 s of the 360 s deadline: not more than one call.
+    const h = openingHarness(() => REPAIRABLE, { step: 60_000 });
+    await assert.rejects(h.run(), { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+    assert.equal(h.count('gameplay_narrator'), 1);
+  });
+
+test('opening retries when the deadline holds more than one call', async () => {
+  const h = openingHarness((ordinal) => ordinal < 2 ? REPAIRABLE : GROUNDED, { step: 59_000 });
+  const result = await h.run();
+  assert.equal(result.flow.status, 'approved');
+  assert.equal(h.count('gameplay_narrator'), 2);
 });

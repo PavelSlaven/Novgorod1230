@@ -229,7 +229,10 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
   assert.equal(consequence.duration_minutes, 0);
   assert.deepEqual(consequence.state_changes, []);
   assert.equal(f.state.last_turn.consequence.status, 'blocked');
-  assert.deepEqual(f.narratorInput().context.outcome, { movement_blocked: true });
+  assert.deepEqual(f.narratorInput().context.outcome, {
+    movement_blocked: true,
+    movement_blocked_reason_code: 'actor_movement_blocked'
+  });
   assert.deepEqual(f.state.clock, beforeClock);
   assert.deepEqual(f.state.position, beforePosition);
 });

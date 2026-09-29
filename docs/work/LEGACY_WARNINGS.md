@@ -78,6 +78,7 @@
 | 079 | narration-конвейер (`gameplay_narrator*`) | двойной отказ narration-аудита после committed-хода оставляет игрока без прозы (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 080 | `lower-dvina-trace-phase-2-services.js` (`turnStepBlockPlan`), `spatial-v3-expansion-runtime.js` | отказ по занятости только на шаге 1; путь подхода после первого шага — по сырым рёбрам без видимости | [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185) |
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
+| 082 | `lower-dvina-trace-phase-9-conversation.js`, `lower-dvina-trace-m2-conversation-player.js` (phase 4), `lower-dvina-trace-m2-conversation-phase4.js` | авторские разговоры фаз 4 и 9 присутствие NPC сравнивают только по `anchor_id`, без правила сцены `scene-presence` | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -434,3 +435,9 @@
 - **Что.** С фиксом #188 модель возвращает только `qualitative_class`, а `schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`). Поле `expectedSchema` рантайм не проверяет: оно входит только в хэш конфига. Снимок baseline никем не импортируется.
 - **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
 - **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)
+
+### LW-082 — авторские фазы 4 и 9: присутствие NPC только по anchor
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-9-conversation.js` (фильтр `npc.anchor_id === state.position.g5_anchor_id`), `lower-dvina-trace-m2-conversation-player.js` (`prepareTracePhase4PlayerConversationPlan`, фильтр по `anchor_id`), `lower-dvina-trace-m2-conversation-phase4.js` (`contracts.anchors.shed`).
+- **Что.** Общий и нейтральный разговор (`liveWorldConversationCommands`, допуск фазы 3, слух и зрение слушателя, `exchange`) решает «тот же ли NPC в сцене» через `lower-dvina-trace-scene-presence.js` (`position_id`, иначе anchor, никогда null=null). Три авторских места фаз 4 и 9 остались на голом `anchor_id`: у их NPC якоря есть, а сгенерированных сцен в этих фазах нет.
+- **Как жить.** Не переносить авторские фазы 4/9 на сгенерированные сцены без перевода этих трёх мест на `npcSharesPlayerScene`.
+- **Issue.** —

@@ -1,0 +1,16 @@
+{
+  "schema": "rus.m2c_authoring_approval.v1",
+  "status": "approved",
+  "decision": "APPROVE_M2C_CANONICAL_WALK_ACOUSTIC_AUTHORING_V1",
+  "reviewer_role": "independent_data_approval",
+  "reviewer_agent": "claude-code reviewer (Novgorod1230 lead) with independent Opus pass",
+  "reviewer_model": "claude-opus-5.5",
+  "reasoning_effort": "high",
+  "reviewed_at": "2026-09-29",
+  "candidate_sha256": "07b57eaa3fa5e82838aee683ff97c512c882ef118e176e4b17d6adf49afaf3cd",
+  "authoring_rows_sha256": "a1a36a8ccd7f650b06b40e564695990087c2e21b5fa1e11db3ac6e10f002172a",
+  "scope": "147 canonical G5/scene/G6 rows for the destination places of canonical G5 connections without an acoustic baseline (D49 slice, Vikhtuy first); with 46 canonical-terminal rows and 2 additional-start owner rows this covers 195/195 target x slot. Independent data approval only.",
+  "review": "Round 1 (independent Opus): parent-G4 family default accepted; 13 rows contradicted their own G5 text and were sent to rework (moving water -> 1: vikhtuy_locality_water_access, shifting_shoal_field_cross_current, shifting_shoal_field_deep_thread; sheltered or quiet water -> 0: three quiet_reach, five lee_bank, outer_exposed_approach_sheltered_inlet, mixing_reach_lee_margin). Round 2 (reviewer, by script): the 13 values and per-row rationales with exact G5 quotes and approved analogue ids verified; 94 x 0, 53 x 1, 0 x 2; unique ids; schema equal to canonical-terminal rows; union coverage 195/195.",
+  "limitations": "Analogical low-confidence persistent masking penalties; rationale for the 134 default rows is the parent-G4 family analogue only. No historical measurement claims or production activation. Merging into the approved acoustic dataset changes the input sha pinned by the v17 additional-start owner coverage approval; that pin must be renewed mechanically (start rows unchanged). Separate Contract Audit and import/readback required.",
+  "activation": false
+}

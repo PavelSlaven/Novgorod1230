@@ -1,6 +1,6 @@
 # Current sprint
 
-> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98. Статусов, HEAD и CI здесь нет: «сделано» = issue закрыт. Проверено: 2026-09-28, commit 3fd78c1f.
+> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98. Статусов, HEAD и CI здесь нет: «сделано» = issue закрыт. Проверено: 2026-09-29, commit c9c72bbd.
 
 ## Цели
 
@@ -9,6 +9,7 @@
 | Runtime | переход к общему рантайму живого мира: сначала M2c «Процедурная материализация мест», затем M3–M8 | [PR #98](https://github.com/PavelSlaven/Novgorod1230/pull/98), milestone [Runtime M3–M8](https://github.com/PavelSlaven/Novgorod1230/milestone/2); текущий этап подтверждает владелец |
 | Backlog | снять временные оговорки роутера и индекса, затем техдолг по LW | issues без milestone, label `P2` раньше `P3` |
 | World Knowledge | исправить цепочку WK по аудиту [#151](https://github.com/PavelSlaven/Novgorod1230/issues/151) | CR [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152), [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153); очерёдность относительно M2c назначает владелец |
+| Экономика | базовая условная единица (БУЕ = 1 мг чистого серебра), курсы по регионам и эпохам, якорные цены и ценовые полосы c1230; модуль экономики — отдельным CR после данных (D44) | [#184](https://github.com/PavelSlaven/Novgorod1230/issues/184) |
 
 Трек Docs (DOC-01…03, #99–#101) завершён: milestone «Docs & agent context 2026-09» закрыт.
 
@@ -33,7 +34,11 @@
 6. [#164](https://github.com/PavelSlaven/Novgorod1230/issues/164) B5 — все типы мест: матрица по данным и typed gaps; после #158 R-1.
 7. [#165](https://github.com/PavelSlaven/Novgorod1230/issues/165) B6 — приёмка M2c, последним.
 
-Правки DDL `world_base` — по одной, у каждой свой проход Contract Auditor: сначала #158 R-1, затем схема пула имён (B2), затем пулы надписей (B3). PR данных игровой базы идут цепочкой веток и сливаются по порядку: #172, затем #173 (облик и фауна по итогам прозаического теста v5).
+Данные игровой базы — параллельно блокам. Импорт находок из архивов (D46 в [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)): сначала вещи и следы, одежда и быт, сезонность блюд, затем занятия, сословия и право, психология и речь, имена; шаги ремёсел — как аналогия вместе с [#170](https://github.com/PavelSlaven/Novgorod1230/issues/170); каркас карты и путей — отдельный CR [#187](https://github.com/PavelSlaven/Novgorod1230/issues/187). Нормы и обычаи как сущности мира — [#183](https://github.com/PavelSlaven/Novgorod1230/issues/183). Одноходовая переправа — [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185), после B1.
+
+Гипотезы, зависящие от поведения нейросети, до плана проверяются на стенде вне игры ([HOW_WE_WORK](../process/HOW_WE_WORK.md) §11, каталог стендов [#181](https://github.com/PavelSlaven/Novgorod1230/issues/181)).
+
+Правки DDL `world_base` — по одной, у каждой свой проход Contract Auditor: сначала #158 R-1, затем схема пула имён (B2), затем пулы надписей (B3). PR данных игровой базы сливаются по одному после независимой проверки Opus и зелёного CI (решение владельца D45).
 
 ### Backlog — сначала
 

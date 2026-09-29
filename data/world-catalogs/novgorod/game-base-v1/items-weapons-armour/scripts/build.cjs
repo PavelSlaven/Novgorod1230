@@ -10,6 +10,7 @@ const access = readJson(P.authoring('access.json'));
 const eqDoc = readJson(P.authoring('equipment_profiles.json'));
 const mil = readJson(P.authoring('military.json'));
 const deny = readJson(P.authoring('denylist.json'));
+const archiveManifest = readJson(P.authoring('archive_inclusion_manifest.json'));
 const master = readCsv(P.authoring('master_military_snapshot.csv'));
 const masterById = Object.fromEntries(master.map(r => [r.item_id, r]));
 const costume = readCsv(path.join(P.costume, 'catalog_items.csv'));
@@ -59,6 +60,9 @@ for (const r of roles) for (const tier of ['tool_weapon', 'common_war', 'elite_w
 
 // --- items/weapons_armour.csv
 const kinds = kindsDoc.kinds; const kindById = Object.fromEntries(kinds.map(k => [k.id, k]));
+const archiveByWeaponId = Object.fromEntries(archiveManifest.records
+  .filter(r => r.decision === 'entity')
+  .map(r => [r.game_base_ref.match(/#([^#]+)$/)?.[1], r]));
 const effTier = k => k.tier === 'component' ? effTier(kindById[k.parent]) : k.tier;
 const listed = new Set(access.status_access_levels_listed);
 const wpRows = kinds.map(k => {
@@ -78,7 +82,17 @@ const wpRows = kinds.map(k => {
     status_access: statusAccess, expected_for_roles: expected, legal_right_ref: legal,
     condition_family: k.condition_family, condition_states: CONDITION[k.condition_family], source_wear_notes: wear,
     mark_slots: k.mark_slots.map(s => s + ':' + MARK_SLOT_RU[s]), attestation: k.attestation,
-    source_refs: refs, confidence: k.confidence, priority: k.priority, status: 'candidate', note: k.note || ''
+    source_refs: refs, confidence: k.confidence, priority: k.priority, status: 'candidate', note: k.note || '',
+    archive_ref: archiveByWeaponId[k.id]?.archive_ref || '',
+    archive_refs: archiveByWeaponId[k.id]?.archive_ref || '',
+    archive_basis: archiveByWeaponId[k.id]?.basis || '',
+    archive_derivation: archiveByWeaponId[k.id]?.derivation || '',
+    archive_confidence: archiveByWeaponId[k.id]?.confidence || '',
+    archive_period: archiveByWeaponId[k.id]?.period || '',
+    archive_region: archiveByWeaponId[k.id]?.region || '',
+    generation_policy: archiveByWeaponId[k.id]?.generation_policy || k.generation_policy || '',
+    generation_guard_id: archiveByWeaponId[k.id]?.guard_id || '',
+    anachronism_risk: archiveByWeaponId[k.id]?.anachronism_risk || k.anachronism_risk || ''
   };
 });
 
@@ -100,6 +114,36 @@ for (const r of costume.filter(r => r.category === 'armor_and_weapons' || ['AC01
 
 // --- items/weapon_denylist.csv
 const denyRows = deny.entries.map(d => ({ deny_id: d.id, term_ru: d.term_ru, match_terms: d.match, kind: d.kind, reason: d.reason, source_refs: d.source_refs, confidence: d.confidence, status: 'candidate' }));
+
+// --- items/archive_inclusion_ledger.csv (D39 existence candidates; never weapon kinds)
+const normName = value => value.normalize('NFKC').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
+const exactWeaponNames = new Map();
+for (const k of kinds) for (const name of [k.name_ru, k.name_en, ...(k.aliases || [])]) exactWeaponNames.set(normName(name), k.id);
+const seenArchiveNames = new Map();
+const archiveInclusionRows = archiveManifest.records.map(r => {
+  const guard = r.guard_id ? deny.entries.find(d => d.id === r.guard_id) : null;
+  const ownerMismatch = r.decision === 'rejected' && !guard && /^Owner mismatch:/i.test(r.reason || '');
+  if (r.decision === 'rejected' && !guard && !ownerMismatch) throw new Error(`archive inclusion ${r.derivation}: rejection lacks denylist guard or owner-mismatch reason`);
+  if (r.decision === 'candidate' && r.guard_id) throw new Error(`archive inclusion ${r.derivation}: candidate has guard ${r.guard_id}`);
+  if (r.decision === 'variant' && (!r.game_base_ref || r.match_type !== 'variant')) throw new Error(`archive inclusion ${r.derivation}: variant must resolve through game_base_ref`);
+  const normalizedName = normName(r.archive_name);
+  const duplicateKind = exactWeaponNames.get(normalizedName);
+  const duplicateArchive = seenArchiveNames.get(normalizedName);
+  if (r.decision === 'candidate') {
+    seenArchiveNames.set(normalizedName, r.derivation);
+  }
+  const targetId = r.game_base_ref.match(/#([^#]+)$/)?.[1] || '';
+  const dedupResult = r.decision === 'variant' ? `variant:${targetId}` : r.decision === 'entity' ? `entity:${targetId}` : r.decision === 'routed' ? `routed:${r.target_group}` : duplicateKind ? `duplicate:${duplicateKind}` : duplicateArchive ? `duplicate:archive:${duplicateArchive}` : 'unique';
+  return {
+    archive_ref: r.archive_ref, archive_name: r.archive_name, selected_action: archiveManifest.selected_action,
+    match_type: r.match_type, game_base_ref: r.game_base_ref,
+    target_group: r.target_group || '', target_ref: r.target_ref || '',
+    basis: r.basis, basis_note: r.basis_note || '', derivation: r.derivation, confidence: r.confidence, period: r.period, region: r.region,
+    generation_policy: r.generation_policy || '', generation_guard_id: r.guard_id || '', anachronism_risk: r.anachronism_risk || '',
+    guard_result: guard ? `${r.decision === 'entity' ? 'restricted' : 'rejected'}:denylist:${guard.id}` : ownerMismatch ? 'rejected:owner_mismatch' : 'passed', dedup_result: dedupResult,
+    reason: guard && r.decision !== 'entity' ? `${guard.term_ru}: ${guard.reason}` : r.reason, decision: r.decision
+  };
+});
 
 // --- items/weapon_equipment_profiles.csv
 const eqRows = [];
@@ -143,12 +187,14 @@ W('items/weapon_status_access.csv', Object.keys(accRows[0]), accRows);
 W('items/weapon_equipment_profiles.csv', Object.keys(eqRows[0]), eqRows);
 W('items/weapon_source_crosswalk.csv', Object.keys(cw[0]), cw);
 W('items/weapon_denylist.csv', Object.keys(denyRows[0]), denyRows);
+W('items/archive_inclusion_ledger.csv', Object.keys(archiveInclusionRows[0]), archiveInclusionRows);
 W('military/security.csv', Object.keys(secRows[0]), secRows);
 W('military/military_events.csv', Object.keys(evRows[0]), evRows);
 W('military/combat_likelihood_by_role.csv', Object.keys(clRows[0]), clRows);
 const tally = (rows, f) => rows.reduce((a, r) => (a[r[f]] = (a[r[f]] || 0) + 1, a), {});
 const summary = { files: counts,
   weapons_armour: { by_kind: tally(wpRows, 'kind'), by_tier: tally(wpRows, 'effective_tier'), by_confidence: tally(wpRows, 'confidence'), by_priority: tally(wpRows, 'priority'), by_category_status: tally(wpRows, 'category_status') },
+  archive_inclusion: { total: archiveInclusionRows.length, by_decision: tally(archiveInclusionRows, 'decision'), by_match_type: tally(archiveInclusionRows, 'match_type') },
   crosswalk: tally(cw, 'mapping'), access_levels: tally(accRows, 'access_level'),
   security: { by_kind: tally(secRows, 'unit_or_post_kind'), by_confidence: tally(secRows, 'confidence') }, events: { by_kind: tally(evRows, 'kind'), by_confidence: tally(evRows, 'confidence') },
   combat_likelihood: tally(clRows, 'combat_likelihood') };

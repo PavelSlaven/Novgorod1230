@@ -33,7 +33,7 @@
 ## Универсальный слой и регион
 
 - Таксоны (`fa_*`, `ls_*`) универсальны: `taxon_scope=universal`, `region_id` пуст.
-- Регион задаётся только в присутствии: `fauna_presence.region_id=novgorod_land`, а `subregion_scope` различает `novgorod_ilmen_core` (Ильмень, Волхов у Новгорода, притоки) и `lower_volkhov_ladoga`. Осётр, ряпушка, лосось и минога живут только в `lower_volkhov_ladoga`: у Новгорода они бывают лишь как привозной продукт.
+- Регион задаётся только в присутствии: `fauna_presence.region_id=region_novgorod_land`, а `subregion_scope` различает `novgorod_ilmen_core` (Ильмень, Волхов у Новгорода, притоки) и `lower_volkhov_ladoga`. Осётр, ряпушка, лосось и минога живут только в `lower_volkhov_ladoga`: у Новгорода они бывают лишь как привозной продукт.
 - `category_ref` (`cat:fauna.fish.predator`, `cat:fauna.insect`, `cat:fauna.domestic.cattle` и т. п.) — **предложение**. Таких категорий в `category_registry` пока нет, их надо завести там.
 
 ## Метод

@@ -22,7 +22,7 @@ SEASONS = ["winter", "spring_rasputitsa", "summer", "autumn"]
 MONTH_SEASON = {12: "winter", 1: "winter", 2: "winter", 3: "spring_rasputitsa", 4: "spring_rasputitsa", 5: "spring_rasputitsa",
                 6: "summer", 7: "summer", 8: "summer", 9: "autumn", 10: "autumn", 11: "autumn"}
 STATUS = "candidate"
-REGION = "novgorod_land"
+REGION = "region_novgorod_land"
 CORE_SUB = "novgorod_ilmen_core"
 
 

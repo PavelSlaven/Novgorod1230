@@ -56,7 +56,7 @@
 
 ## Универсальный слой и регион
 
-Каждая строка продукта — это разрешение для региона на универсальную категорию: `universal_category=true`, `category_id=content_food.<food_category>.<slug>` (предложение для `category_registry`), `region_id=novgorod_land`, `origin` (local / regional / local+import / import). Таксон задаётся через `source_taxon_ref = taxon:<латинское имя>`. Сверка с `fl_id`/`fa_id` доменов флоры и фауны выполняется по `name_lat`. Сейчас сверено 46 из 74; для 28 ссылок соответствие в соседних файлах ещё не найдено.
+Каждая строка продукта — это разрешение для региона на универсальную категорию: `universal_category=true`, `category_id=content_food.<food_category>.<slug>` (предложение для `category_registry`), `region_id=region_novgorod_land`, `origin` (local / regional / local+import / import). Таксон задаётся через `source_taxon_ref = taxon:<латинское имя>`. Сверка с `fl_id`/`fa_id` доменов флоры и фауны выполняется по `name_lat`. Сейчас сверено 46 из 74; для 28 ссылок соответствие в соседних файлах ещё не найдено.
 
 ## Известные пробелы (общие)
 

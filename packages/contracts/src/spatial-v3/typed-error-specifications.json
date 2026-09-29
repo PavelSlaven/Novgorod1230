@@ -1,7 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "source_version": "4.5.0-target.1",
+  "source_version": "4.7.0-target.1",
   "errors": [
     {
       "error_code": "normative_contract_conflict",
@@ -436,6 +436,32 @@
       "meaning": "Hidden-safe visible package cannot be built or committed with facts",
       "required_reaction": "Abort factual commit",
       "retryability": "fresh_state"
+    },
+    {
+      "error_code": "line_label_duplicate",
+      "meaning": "Two active outgoing lines of one place share (`line_name`, `line_discriminator`, `line_direction_id`)",
+      "required_reaction": "Hard block authoring/materialization; no ordinal is added"
+    },
+    {
+      "error_code": "line_label_invalid",
+      "meaning": "`line_name` or `line_discriminator` is empty, contains a decimal digit, an ordinal stop-list word or the stem of the target place name",
+      "required_reaction": "Reject authoring"
+    },
+    {
+      "error_code": "route_segment_too_long",
+      "meaning": "Segment `base_minutes` exceeds `max_segment_minutes` of its line kind profile",
+      "required_reaction": "Hard block authoring; split by waypoint"
+    },
+    {
+      "error_code": "canonical_connection_projection_gap",
+      "meaning": "Authored connection cannot be projected: endpoint slot missing/ambiguous, broken reverse pair or foreign G4",
+      "required_reaction": "Roll back the whole projection transaction"
+    }
+  ],
+  "additional_amendment_sources": [
+    {
+      "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "scope": "Appendix F"
     }
   ]
 }

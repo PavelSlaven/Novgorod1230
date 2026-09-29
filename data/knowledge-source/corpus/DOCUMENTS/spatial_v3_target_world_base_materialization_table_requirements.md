@@ -24,6 +24,7 @@ Cross-database relation хранит exact versioned ref, revision and digest; b
 - canonical containment G0–G5 с unique class/parent compatibility;
 - G4 directional exits, route topology, route segments/points, endpoint and physical-segment ownership;
 - canonical G5 inventory, site connections и exact route bindings;
+- canonical G5 connection bindings (`canonical_g5_connection_binding`), line kind profiles (`line_kind_profile`, `line_kind_alternative_method`) и поля линии сегментов маршрутов (`line_kind_id`, `line_name`, `line_discriminator`, `line_direction_id`, `line_toponym`) — Spatial standard amendment 4.7.0, Приложение F; DDL остаётся физической истиной;
 - G4 expansion profile, frontier, finite capacities, candidate/template slots и terminal resolution;
 - scene templates, G6 slots, scene-position slots, directed scene edges, portal/state policies, visibility/acoustic relations;
 - controlled versioned vocabularies; каждый `controlled_*` contract type имеет ровно один finite registry mapping.

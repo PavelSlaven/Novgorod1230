@@ -60,37 +60,46 @@ const mergeByName = (base, amendment) => [...new Map([...base, ...amendment].map
 export async function loadHistoricalTarget() {
   const [standard, matrixText] = await Promise.all([readFile(standardPath, 'utf8'), readFile(matrixPath, 'utf8')]);
   const matrix = JSON.parse(matrixText);
-  const contracts = parseContracts(standard).sort();
-  const errors = parseTypedErrors(standard, '# Приложение C.', '# Приложение D.').sort();
+  // Historical P05 baseline = the standard before Appendix F (amendment 4.7.0 is an amendment, not baseline).
+  const historicalText = standard.includes('# Приложение F.') ? standard.slice(0, standard.indexOf('# Приложение F.')) : standard;
+  const contracts = parseContracts(historicalText).sort();
+  const errors = parseTypedErrors(historicalText, '# Приложение C.', '# Приложение D.').sort();
   if (contracts.length !== 160 || errors.length !== 58) throw new Error('Canonical P05 totals changed; rerun the normative freeze before P06');
   return { contracts, errors, stateMachines: parseAppendixA(standard) };
 }
 
 export async function loadCanonicalTarget() {
-  const [historical, temporalAmendment, ...npcAmendments] = await Promise.all([
+  const [historical, standardText, temporalAmendment, ...npcAmendments] = await Promise.all([
     loadHistoricalTarget(),
+    readFile(standardPath, 'utf8'),
     readFile(temporalAmendmentPath, 'utf8'),
     ...npcAmendmentPaths.map((path) => readFile(path, 'utf8'))
   ]);
   const amendmentContracts = parseContracts(temporalAmendment);
   const npcAmendmentContracts = npcAmendments.map(parseContracts);
   const amendmentErrors = parseTypedErrors(temporalAmendment, '# Приложение B. Temporal typed-error amendment', '# Приложение C.');
+  // Spatial 4.7.0 amendment: Appendix F of the standard itself (contracts and typed errors).
+  const spatialAmendmentText = standardText.slice(standardText.indexOf('# Приложение F.'));
+  const spatialAmendmentContracts = parseContracts(spatialAmendmentText);
+  const spatialAmendmentErrors = parseTypedErrors(spatialAmendmentText, '## F.2.');
   const contracts = mergeByName(historical.contracts, [
     ...amendmentContracts,
-    ...npcAmendmentContracts.flat()
+    ...npcAmendmentContracts.flat(),
+    ...spatialAmendmentContracts
   ]);
-  const errors = mergeByName(historical.errors, amendmentErrors);
+  const errors = mergeByName(mergeByName(historical.errors, amendmentErrors), spatialAmendmentErrors);
+  if (spatialAmendmentContracts.length !== 14 || spatialAmendmentErrors.length !== 4) throw new Error('Spatial 4.7 Appendix F totals changed; refresh the target contract evidence');
   if (amendmentContracts.length !== 64 || amendmentErrors.length !== 24) throw new Error('Temporal/PR8 amendment totals changed; refresh the target contract evidence');
   if (npcAmendmentContracts.map((contracts) => contracts.length).join(',') !== '2,3,7') throw new Error('M2 NPC contract amendment totals changed; refresh the target contract evidence');
-  if (contracts.length !== 225 || errors.length !== 82) throw new Error('Current 4.5 target union no longer matches the canonical amendments');
+  if (contracts.length !== 228 || errors.length !== 86) throw new Error('Current 4.7 target union no longer matches the canonical amendments');
   return {
     contracts,
     errors,
     stateMachines: historical.stateMachines,
     historical,
     amendment: {
-      contracts: [...amendmentContracts, ...npcAmendmentContracts.flat()].sort(),
-      errors: amendmentErrors.sort()
+      contracts: [...amendmentContracts, ...npcAmendmentContracts.flat(), ...spatialAmendmentContracts].sort(),
+      errors: [...amendmentErrors, ...spatialAmendmentErrors].sort()
     }
   };
 }

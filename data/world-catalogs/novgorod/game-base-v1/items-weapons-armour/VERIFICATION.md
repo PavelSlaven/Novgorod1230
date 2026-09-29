@@ -255,3 +255,56 @@ eq_messenger без роли выбирает «редкое боевое ору
 - 7 из 16 целевых PF по-прежнему только no_source, security.csv не менялся. eq_militia (в библии «городской ополченец») через сельское ополчение стоит и в деревне.
 
 Итог: главная ошибка исправлена, basis верен во всех 507 связанных строках. Годно для M2c как candidate с перечисленными ограничениями.
+
+## Независимая проверка imp-crafts PR-A (Claude Opus 5.5, 2026-09-29)
+
+- **Кто.** Проверял Claude Opus 5.5, независимо от автора. Автор — Codex (задача imp-crafts, PR-A), ветка `fleet/imp-crafts-a`, коммит `a68c7533` поверх main `19c4bd3c`. Данные автора проверяющий не правил. Статус данных — `candidate`.
+- **Что.** Архивные решения D46 группы: 25 строк — entity 3 (HLM0013/14/18 как research_only + denylist), variant 2 (FRN0045 → `wp_sword`, MIL0026 → `wp_sword_belt`), routed 12, rejected 8. Правка маршрутов после круга 3. Общий checker владения архивными id.
+- **Проверено скриптами** (копия `git archive a68c7533`; crafts и BIC — как в main):
+  - две сборки `scripts/build.cjs`: hash-list группы равен коммиту и между прогонами;
+  - `scripts/validate.cjs`: ok, 0 ошибок, 12 предупреждений. Из них 11 закоммиченных и 1 от среды (нет внешней sqlite). Отчёт отличается от коммита только этой строкой;
+  - общий checker: 0 ошибок (272 csv, 413 архивных id, 279 владельцев); исключений для пар нет; `node --test` — 36 из 36; `build-catalog.cjs`, `build-status.mjs` — PASS; `git diff --check` — PASS;
+  - полнота: из 26 строк сверки, назначенных группе, в журнале 25, каждая по одной; числа равны кругу 3. Отказы: 4 по периоду (HLM0012, ARM0024, ARM0025, HLM0006), 3 как несуществовавшие или фэнтезийные (HLM0019, ARM0021, ARM0029), ARM0030;
+  - маршруты: 3 с целью в main (MIL0006 → `bp_hearth_open`, MIL0032 → `bp_awning`, AR037 → `of_warrior_male_cold_any`; на AR037 есть ответное решение clothing); 9 с `awaits_owner` (transport 6, BIC 2, crafts 1). У получателей в main сущностей для этих id нет.
+- **Ограничения.**
+  1. MIL0015 «Деревянная миска походная» назначена группе сверкой, но строки в журнале нет. Решение есть только в журнале BIC будущего PR-B (ссылка на `it_hh_turned_bowl`). До PR-B у строки нет решения.
+  2. ARM0030 «Конский доспех» отклонён как «не норма 1230». Это не анахронизм: период содержит 1230, чужая вещь по D40 не исключается. Последовательнее оформить как HLM0013/14.
+  3. HLM0013/14/18 оставлены сущностями `research_only` с denylist, по решению прошлых кругов (D40). Это расходится с буквой правила «research_only → reject». Им, как и `wp_helmet_western`, назначены `expected_for_roles` по tier; генерацию сдерживает только `generation_policy` и denylist.
+  4. `validate.cjs`: проверки FRN0045 и MIL0026 закреплены по id; общий checker запускается через подмену `process.argv` и `console`.
+  5. Без внешней sqlite `validate.cjs` переписывает `validation_report.json` с лишним предупреждением среды — такой файл не коммитить.
+
+**Общий `scripts/check-archive-ownership.mjs` и `scripts/check-archive-ownership.test.mjs`: approve_with_limits.** У корня каталога своей VERIFICATION нет, поэтому оценка записана здесь.
+
+Все требования круга 3 выполнены и подтверждены 23 мутационными пробами на копии реальных данных:
+- коллизию имён гасит только решение, которое называет второй id пары;
+- скобочные уточнения снимаются;
+- у варианта сверяются категория и материал цели;
+- `target_ref` у routed должен существовать и лежать в `target_group`;
+- `awaits_owner` допустим только при пустой цели и без решения получателя;
+- сущность без строки `new` — ошибка;
+- HLM0013/14/18 из кода убраны;
+- live-тест пробует OMI01505, OMI00990, OMI01687 и подмену OMI01504 → `mt_plinfa`.
+
+Для данных PR-A ложных пропусков нет. **Как фильтр для импорта crafts и BIC checker пока не годится:**
+- сверка материалов не сводит словари master и crafts: верные варианты OMI00221 → `mt_flax`, OMI00424 → `mt_fur`, OMI01687 → `mt_quartz_sand` падают, на черновике PR-B — 456 таких ошибок;
+- поиск коллизий не видит garments, компонентов, украшений, контейнеров, частей построек, материалов BIC и ингредиентов;
+- слишком широкие основы-модификаторы выбрасывают «серп», «серебро», «чернила», «бочонок», «короб»;
+- цель маршрута не сверяется с решением получателя;
+- `target_ref` может указывать на не-сущность;
+- маршрут в свою группу не ловится;
+- период у вариантов не проверяется, вместо общего правила зашит WTR0024;
+- остались мёртвые фильтры категорий и фразовые исключения.
+
+Корневые `catalog.json`, `CATALOG.md`, `scripts/domains-a.src.json`, `scripts/domains-b.src.json` — approve: добавлены только регистрации таблиц weapons и clothing.
+
+### Вердикты по файлам imp-crafts PR-A
+
+- authoring/archive_inclusion_manifest.json — approve_with_limits: MIL0015 без решения; отказ ARM0030 обоснован слабо
+- authoring/weapon_kinds.json — approve_with_limits: три research_only шлема получают `expected_for_roles` по tier, генерацию ограничивают только `generation_policy` и denylist
+- counts.json — approve
+- items/archive_inclusion_ledger.csv — approve_with_limits: как у манифеста (MIL0015, ARM0030)
+- items/weapon_source_crosswalk.csv — approve
+- items/weapons_armour.csv — approve_with_limits: `expected_for_roles` у research_only шлемов
+- scripts/build.cjs — approve
+- scripts/validate.cjs — approve_with_limits: проверки FRN0045 и MIL0026 закреплены по id; общий checker запускается через подмену argv и console
+- validation_report.json — approve

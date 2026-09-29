@@ -583,8 +583,12 @@ async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
       return approvedNarration(request);
     }
   };
+  let semanticCalls = 0;
+  let rolls = 0;
+  const observers = { semanticObserver() { semanticCalls += 1; },
+    randomDrawObserver() { rolls += 1; } };
   const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin,
-    narrationService });
+    narrationService, ...observers });
   const opened = await setupRuntime.startNewGame({ scenario_id: 'lower_dvina_trace_v1',
     request_id: 'presentation-exhaust-party' });
   await setupRuntime.acknowledgeOpening(opened.party_id, {
@@ -598,11 +602,19 @@ async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
   assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
   const afterExhaust = narrationCalls;
   assert.equal(afterExhaust, 2, 'workflow pass + one replay');
+  const semanticBeforeRestart = semanticCalls;
+  assert.equal(rolls, 1);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions', opened.party_id), 1);
   narrationFails = false;
-  const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService });
+  const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService,
+    ...observers });
   const recovered = await restart.submitTurn(opened.party_id, input);
   assert.equal(recovered.screen.screen_status, 'ready');
   assert.equal(narrationCalls, afterExhaust + 1, 'recovery makes one successful pass');
+  // The restart replays the committed turn: no second planner call, roll or check row.
+  assert.equal(semanticCalls, semanticBeforeRestart);
+  assert.equal(rolls, 1);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions', opened.party_id), 1);
 }
 
 async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {

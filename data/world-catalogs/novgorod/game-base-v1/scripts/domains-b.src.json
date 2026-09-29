@@ -5,7 +5,7 @@
     "group": "clothing-appearance",
     "entities_ru": "Рубахи, порты, свиты, плащи/корзно, шубы и кожухи, пояса, онучи, обувь (поршни, башмаки, сапоги, лапти — проверить датировку), головные уборы мужские и женские, женская нижняя/поясная одежда; материалы, цвета и красители, декор, состояния износа.",
     "key_fields": ["gm_id", "name_ru", "garment_category", "equipment_slot", "material", "dye_color", "decoration", "sex", "age", "marital_status", "status_band", "season", "wear_states", "mark_slots", "source_refs", "confidence"],
-    "target_tables": ["world_base.item_templates (одежда)", "universal_categories domain=garment (нет)", "world_base.region_clothing_profiles (пусто)"],
+    "target_tables": ["world_base.item_templates (одежда)", "universal_categories domain=garment (нет)", "world_base.region_clothing_profiles (пусто)", "clothing-appearance/garments/material_entities.csv"],
     "consumers": ["approvedClothing (exactly one equipment_template на слот)", "observable_cues.equipment → рассказчик"],
     "existing_sources": ["costume data/catalog_items.csv 180, materials_palette.csv, anti_patterns.csv 20, sources.csv 50 — кандидат, проверка PASS", "risovalka — F01–F05, H01–H05, пояс, A/B/C, 15 ссылок", "wk:clothing.json 13/27 — approved", "v17: 4 шаблона (рубаха, порты, башмаки, верхняя шерстяная)"],
     "gaps_ru": "В runtime 4 вещи; нет женской нижней одежды, головных уборов и поясов; нет домена garment в категориях.",

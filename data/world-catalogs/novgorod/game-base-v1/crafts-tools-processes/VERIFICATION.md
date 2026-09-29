@@ -407,3 +407,16 @@
 - **Основание.** `logical_necessity` по черновику MASTER `RCP0166`/`FOD0012` (D39), проверка на анахронизм: нож и доска, без современного филе. Минуты и отходы — реконструкция C. Рак исключён таксономически, причина здравая.
 - **Ограничение.** Процесс и выход общие для всех рыб, видовые различия (снеток без потрошения, осётр) не моделируются.
 - README.md, build-report.json, validation-report.json, craft_processes/README.md, craft_processes/fish_cleaning_products.csv — approve_with_limits
+
+## Независимая проверка stale-201 (Claude Opus 5.5, 2026-09-29)
+
+Пересборка несвежих выходов по #201: штатные build/crosswalk/pf_crosswalk и validate. Проверка только чтением, скриптами.
+- materials_registry/material_resolution.csv — approve_with_limits: +673 строки из четырёх новых входов (clothing и food material_entities, places-binding environment_presence_authoring и presence_rules). Удалённых строк 0, изменённых `mt_ids` у прежних ключей 0. Все 466 presence-строк разрешаются; проверено 58 разных соответствий, расхождений 0. `mt_birch_tar`, `mt_forge_slag`, `mt_pine_pitch`, `mt_wood_maple` уже есть в materials.csv.
+- validation-report.json — approve: 29 PASS / 0 FAIL, снимок 18 файлов, 1709/2014.
+- craft_tools_gear/occupation_pf_crosswalk.csv — approve: у `pf_burial_ground` confidence C → пусто, как у прочих `no_source`; иных изменений нет.
+- README.md, materials_registry/README.md — счётчики обновлены под пересборку.
+- Ограничения:
+  - резолвер не разбирает `materials` в виде JSON-массива: `["textile"]` остаётся неразрешённым, хотя `textile` → `mt_textile_generic`; так 94 строки. Это доработка токенизатора сборщика;
+  - `mt_forge_slag` имеет `referenced_by_count=0`, хотя на него теперь ссылаются строки presence.
+
+Вердикт группы: **approve_with_limits**.

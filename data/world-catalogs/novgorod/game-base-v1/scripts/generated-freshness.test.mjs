@@ -34,22 +34,6 @@ import { fileURLToPath } from 'node:url';
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../..');
 const GB = 'data/world-catalogs/novgorod/game-base-v1';
 
-// Known stale committed outputs: path (relative to game-base-v1) -> tracking note. The test insists each one still
-// differs, so an entry must be deleted as soon as the data is rebuilt.
-const KNOWN_STALE = {
-  'nature-materials-weather/weather_climate/water_profiles.csv': 'committed data is 153 rows shorter than its builder produces (1754 vs 1907); issue #201',
-  'items-weapons-armour/items/role_tier_pf_crosswalk.csv': 'pf_crosswalk.py --check fails on main too: pf_burial_ground row is stale; issue #201',
-};
-
-// Files compared after dropping a value that follows a KNOWN_STALE file, so other drift in them is still caught.
-const NORMALIZE = {
-  'nature-materials-weather/reports/counts.json': text => {
-    const report = JSON.parse(text);
-    delete report.counts.weather_climate['water_profiles.csv']; // follows the stale water_profiles.csv (issue #201)
-    return JSON.stringify(report);
-  },
-};
-
 // [cwd relative to game-base-v1, interpreter, script, ...args]. Order: group builders, then places-binding, catalog, status.
 const N = 'node', P = 'py';
 const BUILDERS = [
@@ -142,8 +126,7 @@ function differing(committed, rebuilt) {
   return [...new Set([...before.keys(), ...after.keys()])].sort().filter(file => {
     if (!before.has(file) || !after.has(file)) return true;
     const [a, b] = [before.get(file), after.get(file)].map(name => fs.readFileSync(name));
-    const normalize = NORMALIZE[file];
-    return normalize ? normalize(a.toString('utf8')) !== normalize(b.toString('utf8')) : !a.equals(b);
+    return !a.equals(b);
   });
 }
 
@@ -163,10 +146,7 @@ test('committed game-base-v1 generated files match a fresh rebuild', { timeout: 
     assert.deepEqual(failed, [], `builders failed in the temporary copy:\n${failed.join('\n')}`);
 
     const changed = differing(real, copy);
-    const fixed = Object.keys(KNOWN_STALE).filter(file => !changed.includes(file));
-    assert.deepEqual(fixed, [], `KNOWN_STALE entries are fresh now, delete them from the test: ${fixed.join(', ')}`);
-    const unexpected = changed.filter(file => !(file in KNOWN_STALE));
-    assert.deepEqual(unexpected, [], `stale or machine-dependent generated files in ${GB}:\n${unexpected.join('\n')}\n`
+    assert.deepEqual(changed, [], `stale or machine-dependent generated files in ${GB}:\n${changed.join('\n')}\n`
       + 'Rebuild them with the builders listed in scripts/generated-freshness.test.mjs and commit the result.');
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });

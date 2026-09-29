@@ -6,7 +6,7 @@
 |---|---|---:|---:|---:|
 | [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 9 | 17 | 0 |
 | [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 8 | 16 | 0 |
-| [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 17 | 0 |
+| [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 2 | 15 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 11 | 14 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 10 | 13 | 0 |
 | [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 12 | 7 | 0 |
@@ -16,17 +16,17 @@
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
 | [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 9 | 4 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 23 | 23 | 0 |
-| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 12 | 7 | 0 |
+| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 13 | 6 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 5 | 23 | 0 |
-| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 11 | 28 | 0 |
+| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 15 | 26 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 16 | 4 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 12 | 19 | 0 |
 | [resource-catalog](resource-catalog/VERIFICATION.md) | approve_with_limits | 5 | 11 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 11 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 5 | 0 |
-| **Итого** | | **177** | **252** | **0** |
+| **Итого** | | **184** | **247** | **0** |
 
 ## Вердикты по файлам
 
@@ -100,16 +100,16 @@
 | [`craft_processes/process_steps.csv`](crafts-tools-processes/craft_processes/process_steps.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#craft_processesprocess_stepscsv--approve_with_limits) |
 | [`craft_processes/processes.csv`](crafts-tools-processes/craft_processes/processes.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#craft_processesprocessescsv--approve_with_limits) |
 | [`craft_processes/README.md`](crafts-tools-processes/craft_processes/README.md) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#c016--чистка-всех-37-рыб-независимая-проверка-d35) |
-| [`craft_tools_gear/occupation_pf_crosswalk.csv`](crafts-tools-processes/craft_tools_gear/occupation_pf_crosswalk.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#craft_tools_gearoccupation_pf_crosswalkcsv--approve_with_limits-1) |
+| [`craft_tools_gear/occupation_pf_crosswalk.csv`](crafts-tools-processes/craft_tools_gear/occupation_pf_crosswalk.csv) | [approve](crafts-tools-processes/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`craft_tools_gear/occupation_tools.csv`](crafts-tools-processes/craft_tools_gear/occupation_tools.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#craft_tools_gearoccupation_toolscsv--approve_with_limits) |
 | [`craft_tools_gear/tools_gear.csv`](crafts-tools-processes/craft_tools_gear/tools_gear.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#craft_tools_geartools_gearcsv--approve_with_limits) |
 | [`materials_registry/late_materials_denylist.csv`](crafts-tools-processes/materials_registry/late_materials_denylist.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#materials_registrylate_materials_denylistcsv--approve_with_limits) |
 | [`materials_registry/material_crosswalk.csv`](crafts-tools-processes/materials_registry/material_crosswalk.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#materials_registrymaterial_crosswalkcsv--approve_with_limits) |
-| [`materials_registry/material_resolution.csv`](crafts-tools-processes/materials_registry/material_resolution.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#materials_registrymaterial_resolutioncsv--approve_with_limits) |
+| [`materials_registry/material_resolution.csv`](crafts-tools-processes/materials_registry/material_resolution.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`materials_registry/materials.csv`](crafts-tools-processes/materials_registry/materials.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#materials_registrymaterialscsv--approve_with_limits) |
 | [`README.md`](crafts-tools-processes/README.md) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#c016--чистка-всех-37-рыб-независимая-проверка-d35) |
 | [`sources/sources.csv`](crafts-tools-processes/sources/sources.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#sourcessourcescsv--approve_with_limits) |
-| [`validation-report.json`](crafts-tools-processes/validation-report.json) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#c016--чистка-всех-37-рыб-независимая-проверка-d35) |
+| [`validation-report.json`](crafts-tools-processes/validation-report.json) | [approve](crafts-tools-processes/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`workshops/workshops.csv`](crafts-tools-processes/workshops/workshops.csv) | [approve_with_limits](crafts-tools-processes/VERIFICATION.md#workshopsworkshopscsv--approve_with_limits) |
 
 ### economy-trade-measures
@@ -339,7 +339,7 @@
 | [`authoring/weapon_kinds.json`](items-weapons-armour/authoring/weapon_kinds.json) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
 | [`counts.json`](items-weapons-armour/counts.json) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
 | [`items/archive_inclusion_ledger.csv`](items-weapons-armour/items/archive_inclusion_ledger.csv) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
-| [`items/role_tier_pf_crosswalk.csv`](items-weapons-armour/items/role_tier_pf_crosswalk.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsrole_tier_pf_crosswalkcsv--approve_with_limits) |
+| [`items/role_tier_pf_crosswalk.csv`](items-weapons-armour/items/role_tier_pf_crosswalk.csv) | [approve](items-weapons-armour/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`items/weapon_denylist.csv`](items-weapons-armour/items/weapon_denylist.csv) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
 | [`items/weapon_equipment_profiles.csv`](items-weapons-armour/items/weapon_equipment_profiles.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_equipment_profilescsv--approve_with_limits) |
 | [`items/weapon_source_crosswalk.csv`](items-weapons-armour/items/weapon_source_crosswalk.csv) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
@@ -416,19 +416,21 @@
 | [`natural_presentation_texts/presentation_texts.csv`](nature-materials-weather/natural_presentation_texts/presentation_texts.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textspresentation_textscsv--approve_with_limits-2) |
 | [`natural_presentation_texts/reports/denied_landscape_words.csv`](nature-materials-weather/natural_presentation_texts/reports/denied_landscape_words.csv) | [approve](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
 | [`natural_presentation_texts/sensory_coverage.csv`](nature-materials-weather/natural_presentation_texts/sensory_coverage.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textssensory_coveragecsv--weather_climatewater_profilescsv--approve_with_limits) |
-| [`reports/counts.json`](nature-materials-weather/reports/counts.json) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_materials_soils--ресурсы-часть-a-b3--approve_with_limits) |
+| [`README.md`](nature-materials-weather/README.md) | [approve](nature-materials-weather/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
+| [`reports/counts.json`](nature-materials-weather/reports/counts.json) | [approve](nature-materials-weather/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`weather_climate/climate_monthly_normals.csv`](nature-materials-weather/weather_climate/climate_monthly_normals.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/ground_water_condition_rules.csv`](nature-materials-weather/weather_climate/ground_water_condition_rules.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/historical_weather_1224_1231.csv`](nature-materials-weather/weather_climate/historical_weather_1224_1231.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/light_profile_by_month.csv`](nature-materials-weather/weather_climate/light_profile_by_month.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/local_landscape_modifiers.csv`](nature-materials-weather/weather_climate/local_landscape_modifiers.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/precipitation_phase_and_bands.csv`](nature-materials-weather/weather_climate/precipitation_phase_and_bands.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
+| [`weather_climate/README.md`](nature-materials-weather/weather_climate/README.md) | [approve](nature-materials-weather/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`weather_climate/realized_weather_matrix.csv`](nature-materials-weather/weather_climate/realized_weather_matrix.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/seasonal_phenomena.csv`](nature-materials-weather/weather_climate/seasonal_phenomena.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_anomalies.csv`](nature-materials-weather/weather_climate/temperature_anomalies.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_anomaly_transitions.csv`](nature-materials-weather/weather_climate/temperature_anomaly_transitions.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/temperature_profile.csv`](nature-materials-weather/weather_climate/temperature_profile.csv) | [approve](nature-materials-weather/VERIFICATION.md#weather_climate) |
-| [`weather_climate/water_profiles.csv`](nature-materials-weather/weather_climate/water_profiles.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climatewater_profilescsv--approve_with_limits-c007b-к3) |
+| [`weather_climate/water_profiles.csv`](nature-materials-weather/weather_climate/water_profiles.csv) | [approve](nature-materials-weather/VERIFICATION.md#независимая-проверка-stale-201-claude-opus-55-2026-09-29) |
 | [`weather_climate/weather_season_climatology.csv`](nature-materials-weather/weather_climate/weather_season_climatology.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_state_temperature_modifiers.csv`](nature-materials-weather/weather_climate/weather_state_temperature_modifiers.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |
 | [`weather_climate/weather_states.csv`](nature-materials-weather/weather_climate/weather_states.csv) | [approve_with_limits](nature-materials-weather/VERIFICATION.md#weather_climate) |

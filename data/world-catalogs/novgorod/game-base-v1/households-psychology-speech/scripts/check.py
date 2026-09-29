@@ -90,6 +90,156 @@ with open(os.path.join(region_tsv, "novgorod_social_roles_v1_enriched.tsv"), enc
     roles = {r["role_id"]: r for r in csv.DictReader(f, delimiter="\t")}
 all_occ = set(occupations)
 all_role = set(roles)
+M2C_OCCUPATIONS = {
+    "nov_occ_boatman", "nov_occ_fisher", "nov_occ_route_guide", "nov_occ_hunter_trapper",
+    "nov_occ_forest_worker", "nov_occ_local_trader", "nov_occ_long_distance_merchant",
+    "nov_occ_household_servant",
+}
+REWORKED_OCCUPATIONS = all_occ - M2C_OCCUPATIONS
+addition_path = os.path.join(os.path.dirname(ROOT), "occupations-activities", "occupations", "occupations_additions.csv")
+occupation_additions = read_csv(addition_path)
+addition_occupation_ids = {r["occupation_id"] for r in occupation_additions}
+all_candidate_occ = all_occ | addition_occupation_ids
+
+
+def normalized_text(value):
+    return " ".join(re.sub(r"[^\w\s]", " ", unicodedata.normalize("NFKC", value or "").casefold()).split())
+
+
+occupation_labels = {}
+for occupation_id, row in occupations.items():
+    occupation_labels[occupation_id] = {
+        row.get("occupation_title", ""), row.get("historical_term", ""), row.get("modern_explanation", "")
+    }
+for row in occupation_additions:
+    occupation_labels[row["occupation_id"]] = {
+        row.get("occupation_title_ru", ""), row.get("occupation_title", ""),
+        row.get("historical_term", ""), row.get("modern_explanation", "")
+    }
+
+
+def occupation_goal_failures(goal_rows, fear_rows, expected_occupations, authoring_rows):
+    failures = []
+    gap_kinds = {}
+    for index, row in enumerate(authoring_rows):
+        item_kind = row.get("item_kind", "")
+        if item_kind not in {"gap_goal", "gap_fear"}:
+            continue
+        occupation_id = row.get("occupation_id", "")
+        kind = item_kind.removeprefix("gap_")
+        if occupation_id not in expected_occupations:
+            failures.append(f"occupation goal/fear authoring row {index}: gap for unknown occupation {occupation_id!r}")
+        if not row.get("text_ru", "").strip():
+            failures.append(f"occupation goal/fear authoring row {index}: gap needs an explicit reason")
+        if row.get("basis") != "gap" or row.get("confidence") != "C" or row.get("status") != "candidate":
+            failures.append(f"occupation goal/fear authoring row {index}: gap basis/confidence/status mismatch")
+        if (occupation_id, kind) in gap_kinds:
+            failures.append(f"occupation goal/fear authoring row {index}: duplicate {kind} gap for {occupation_id}")
+        gap_kinds[(occupation_id, kind)] = row.get("text_ru", "")
+    expected_fields = ["occupation_id", "item_id", "text_ru", "basis", "source_refs", "confidence", "status"]
+    for kind, rows, minimum in (("goal", goal_rows, 3), ("fear", fear_rows, 2)):
+        expected_ids = set(expected_occupations)
+        keys = set()
+        normalized = set()
+        counts = Counter()
+        for index, row in enumerate(rows):
+            if list(row) != expected_fields:
+                failures.append(f"occupation_{kind}s row {index}: schema mismatch")
+            occupation_id = row.get("occupation_id", "")
+            if occupation_id not in expected_ids:
+                failures.append(f"occupation_{kind}s row {index}: unknown occupation {occupation_id!r}")
+            item_id = row.get("item_id", "")
+            key = (occupation_id, item_id)
+            if not item_id or key in keys:
+                failures.append(f"occupation_{kind}s row {index}: empty or duplicate item_id {key!r}")
+            keys.add(key)
+            counts[occupation_id] += 1
+            if not row.get("text_ru", "").strip():
+                failures.append(f"occupation_{kind}s row {index}: empty text_ru")
+            norm = " ".join(re.sub(r"[^\w\s]", " ", unicodedata.normalize("NFKC", row.get("text_ru", "")).casefold()).split())
+            norm_key = (occupation_id, norm)
+            if norm_key in normalized:
+                failures.append(f"occupation_{kind}s row {index}: duplicate normalized text for {occupation_id}")
+            normalized.add(norm_key)
+            if row.get("basis") not in {"sourced", "analogy", "logical_necessity"}:
+                failures.append(f"occupation_{kind}s row {index}: invalid basis {row.get('basis')!r}")
+            if row.get("confidence") not in {"A", "B", "C"}:
+                failures.append(f"occupation_{kind}s row {index}: invalid confidence {row.get('confidence')!r}")
+            if row.get("basis") == "logical_necessity" and row.get("confidence") != "C":
+                failures.append(f"occupation_{kind}s row {index}: logical_necessity confidence must be C")
+            if row.get("status") != "candidate":
+                failures.append(f"occupation_{kind}s row {index}: status must be candidate")
+            if not row.get("source_refs", "").strip():
+                failures.append(f"occupation_{kind}s row {index}: missing source_refs")
+        for occupation_id in expected_ids:
+            count = counts[occupation_id]
+            has_gap = (occupation_id, kind) in gap_kinds
+            if count < minimum and not has_gap:
+                failures.append(f"occupation_{kind}s: {occupation_id} has {counts[occupation_id]} rows; expected at least {minimum}")
+            if count >= minimum and has_gap:
+                failures.append(f"occupation_{kind}s: {occupation_id} marks a {kind} gap despite meeting minimum coverage")
+    return failures
+
+
+FORBIDDEN_GOAL_FRAMES = (
+    "завершить работу по занятию",
+    "сохранить исправным орудие",
+    "довести до результата порученную работу",
+    "работа x сорвётся из-за утраты",
+    "орудие y сломается прежде",
+    "при работе случится брак",
+    "не удастся избежать дефекта",
+    "довести работу занятия",
+    "рабочая цепочка занятия",
+)
+
+
+def occupation_text_specificity_failures(goal_rows, fear_rows):
+    failures = []
+    prefix_occupations = {}
+    for kind, rows in (("goal", goal_rows), ("fear", fear_rows)):
+        for index, row in enumerate(rows):
+            occupation_id = row.get("occupation_id", "")
+            text = row.get("text_ru", "")
+            normalized = normalized_text(text)
+            for frame in FORBIDDEN_GOAL_FRAMES:
+                # The variable parts of the two fear frames are arbitrary text.
+                if "x сорвётся из-за утраты" in frame:
+                    matched = re.search(r"\bработа\b.*\bсорвётся из-за утраты\b", normalized)
+                elif "y сломается прежде" in frame:
+                    matched = re.search(r"\bорудие\b.*\bсломается прежде\b", normalized)
+                else:
+                    matched = frame in normalized
+                if matched:
+                    failures.append(f"occupation_{kind}s row {index}: forbidden template frame {frame!r}")
+            labels = occupation_labels.get(occupation_id, set()) if occupation_id in REWORKED_OCCUPATIONS | addition_occupation_ids else set()
+            for label in labels:
+                label_norm = normalized_text(label)
+                if not label_norm or label_norm.startswith("no source") or label_norm.startswith("no_source"):
+                    continue
+                if len(label_norm.split()) == 1:
+                    copied = label_norm in normalized.split()
+                else:
+                    copied = label_norm in normalized
+                if copied:
+                    failures.append(f"occupation_{kind}s row {index}: copies occupation name/description {label!r}")
+            words = normalized.split()
+            if len(words) >= 4:
+                prefix_occupations.setdefault(tuple(words[:4]), set()).add(occupation_id)
+    for prefix, ids in prefix_occupations.items():
+        if len(ids) > 3:
+            failures.append(f"occupation pools: first-four-word prefix {prefix!r} occurs in {len(ids)} occupations")
+    return failures
+
+
+goal_path = os.path.join(ROOT, "npc_psychology", "occupation_goals.csv")
+fear_path = os.path.join(ROOT, "npc_psychology", "occupation_fears.csv")
+occupation_goal_rows = read_csv(goal_path)
+occupation_fear_rows = read_csv(fear_path)
+authoring_path = os.path.join(ROOT, "npc_psychology", "occupation_goals_fears_authoring.csv")
+occupation_authoring_rows = read_csv(authoring_path)
+errors.extend(occupation_goal_failures(occupation_goal_rows, occupation_fear_rows, all_candidate_occ, occupation_authoring_rows))
+errors.extend(occupation_text_specificity_failures(occupation_goal_rows, occupation_fear_rows))
 
 
 def psychology_failures(scales, rows):
@@ -438,6 +588,80 @@ def missing_ferry_pairs(pairs):
 
 
 errors.extend(missing_ferry_pairs(start_pairs))
+
+if "--probe" in sys.argv and occupation_goal_rows:
+    duplicate_goal_probe = [dict(row) for row in occupation_goal_rows]
+    duplicate_goal_probe[1]["text_ru"] = duplicate_goal_probe[0]["text_ru"]
+    if not occupation_goal_failures(duplicate_goal_probe, occupation_fear_rows, all_candidate_occ, occupation_authoring_rows):
+        errors.append("negative occupation-goal probe failed to detect normalized duplicate")
+    else:
+        print("OK: negative occupation-goal probe detected normalized duplicate")
+
+    template_probe = [dict(row) for row in occupation_goal_rows]
+    template_probe[0]["text_ru"] = "Завершить работу по занятию кузнец: ковка металла."
+    specificity_errors = occupation_text_specificity_failures(template_probe, occupation_fear_rows)
+    if not any("forbidden template frame" in error for error in specificity_errors):
+        errors.append("negative occupation-template probe failed to detect a forbidden frame")
+    else:
+        print("OK: negative occupation-template probe detected forbidden frame")
+
+    addon_template_probe = [dict(row) for row in occupation_goal_rows]
+    addon = next((row for row in addon_template_probe if row["occupation_id"] in addition_occupation_ids), None)
+    if addon is None:
+        errors.append("negative addition-template probe has no addition occupation")
+    else:
+        addon["text_ru"] = "Довести работу занятия «сетевязальщик» до передачи: ремесло."
+        addon_template_errors = occupation_text_specificity_failures(addon_template_probe, [])
+        if not any("forbidden template frame" in error for error in addon_template_errors):
+            errors.append("negative occupation-addition template probe failed to detect a forbidden frame")
+        else:
+            print("OK: negative occupation-addition template probe detected forbidden frame")
+        addon_fear_probe = [dict(row) for row in occupation_fear_rows]
+        addon_fear = next((row for row in addon_fear_probe if row["occupation_id"] in addition_occupation_ids), None)
+        if addon_fear is None:
+            errors.append("negative addition fear-template probe has no addition occupation")
+        else:
+            addon_fear["text_ru"] = "Рабочая цепочка занятия «сетевязальщик» нарушится до передачи результата."
+            fear_template_errors = occupation_text_specificity_failures([], addon_fear_probe)
+            if not any("forbidden template frame" in error for error in fear_template_errors):
+                errors.append("negative occupation-addition fear-template probe failed to detect a forbidden frame")
+            else:
+                print("OK: negative occupation-addition fear-template probe detected forbidden frame")
+
+    gap_probe_occ = next(iter(sorted(all_candidate_occ)))
+    gap_probe_goals = [dict(row) for row in occupation_goal_rows if row["occupation_id"] != gap_probe_occ]
+    gap_probe_authoring = [dict(row) for row in occupation_authoring_rows
+                           if not (row["occupation_id"] == gap_probe_occ and row["item_kind"] == "gap_goal")]
+    gap_probe_errors = occupation_goal_failures(gap_probe_goals, occupation_fear_rows, all_candidate_occ, gap_probe_authoring)
+    if not any(f"{gap_probe_occ} has" in error and "expected at least" in error for error in gap_probe_errors):
+        errors.append("negative occupation coverage/gap probe failed to detect an unmarked goal gap")
+    else:
+        print("OK: negative occupation coverage/gap probe detected missing gap declaration")
+
+    label_probe = next((label for occupation_id, labels in occupation_labels.items()
+                        if occupation_id in REWORKED_OCCUPATIONS | addition_occupation_ids for label in labels
+                        if normalized_text(label) and len(normalized_text(label).split()) >= 2), None)
+    if label_probe:
+        copied_label_probe = [dict(row) for row in occupation_goal_rows]
+        copied_label_probe[0]["occupation_id"] = next(
+            occupation_id for occupation_id, labels in occupation_labels.items()
+            if occupation_id in REWORKED_OCCUPATIONS | addition_occupation_ids and label_probe in labels)
+        copied_label_probe[0]["text_ru"] = label_probe
+        label_errors = occupation_text_specificity_failures(copied_label_probe, [])
+        if not any("copies occupation name/description" in error for error in label_errors):
+            errors.append("negative occupation-label probe failed to detect copied name/description")
+        else:
+            print("OK: negative occupation-label probe detected copied name/description")
+
+    repeated_prefix_goals = [
+        {"occupation_id": f"probe_{index}", "text_ru": "Удержать кузнечную работу в силе при ударе"}
+        for index in range(4)
+    ]
+    prefix_errors = occupation_text_specificity_failures(repeated_prefix_goals, [])
+    if not any("first-four-word prefix" in error for error in prefix_errors):
+        errors.append("negative occupation-prefix probe failed to detect repeated prefix")
+    else:
+        print("OK: negative occupation-prefix probe detected repeated prefix")
 
 
 def ferry_fisher_failures(relations, forms):

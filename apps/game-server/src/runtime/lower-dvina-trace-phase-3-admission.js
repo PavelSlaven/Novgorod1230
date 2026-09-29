@@ -1,4 +1,5 @@
 import { compareGameTimestamp } from '@rus/time-events-history';
+import { npcSharesPlayerScene } from './lower-dvina-trace-scene-presence.js';
 
 export function tracePhase3PreconditionSatisfied(
   precondition,
@@ -16,8 +17,7 @@ export function tracePhase3PreconditionSatisfied(
       ({ ref }) => ref === precondition.ref);
     const actor = (state.npcs ?? []).find(
       ({ instance_id: id }) => id === contractActor?.instance_id);
-    return actor?.anchor_id != null
-      && actor.anchor_id === state.position?.g5_anchor_id;
+    return actor != null && npcSharesPlayerScene(state, actor);
   }
   if (precondition.kind === 'approved_access_policy') {
     return contracts.access.policy_id === precondition.policy_ref
@@ -43,12 +43,10 @@ export function tracePhase3PreconditionSatisfied(
 }
 
 export function presentPhase3NpcActors(state, contracts) {
-  const anchorId = state.position?.g5_anchor_id;
-  if (anchorId == null) return [];
   return contracts.actors.flatMap((contractActor) => {
     const current = (state.npcs ?? []).find(({ instance_id: id }) =>
       id === contractActor.instance_id);
-    return current?.anchor_id === anchorId ? [{
+    return current != null && npcSharesPlayerScene(state, current) ? [{
       ...structuredClone(contractActor),
       ...structuredClone(current),
       ref: contractActor.ref

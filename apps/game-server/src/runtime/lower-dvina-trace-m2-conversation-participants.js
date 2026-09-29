@@ -4,6 +4,8 @@ import { fail, sameRef } from
   './lower-dvina-trace-m2-conversation-shared.js';
 import { playerSafeHeardNpcIntroduction } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { compareSceneLocus, sceneLocus } from
+  './lower-dvina-trace-scene-presence.js';
 
 export function conversationNpcContext(context, targetRef) {
   const targetActor = context.actualNpcActors.find(
@@ -54,12 +56,9 @@ export function npcConversationDecisionCapability(context) {
   }
   const actorLocation = actor.location_ref ?? actor.location_profile_ref;
   const playerLocation = context.state.position?.location_ref;
-  const actorAnchor = actor.g5_anchor_id ?? actor.anchor_id;
-  const playerAnchor = context.state.position?.g5_anchor_id
-    ?? context.state.position?.anchor_id;
-  if (actorAnchor != null && playerAnchor != null) {
-    return actorAnchor === playerAnchor;
-  }
+  const together = compareSceneLocus(sceneLocus(context.state, actor),
+    sceneLocus(context.state, context.state.position));
+  if (together !== null) return together;
   return actorLocation == null || playerLocation == null
     || actorLocation === playerLocation;
 }

@@ -90,7 +90,7 @@ test('P1-3: seed-only plan rejects aggregate that already contains O1 presence r
   const seedOnly = {
     kind: 'seed',
     request_identity: 'seed-only-with-o1',
-    expected_state_version: 1,
+    expected_state_version: absent.next_aggregate.state_version,
     density_band: 'sparse',
     identity_budget: 0,
     background_groups: [],
@@ -102,12 +102,13 @@ test('P1-3: seed-only plan rejects aggregate that already contains O1 presence r
     transition_digest: canonicalDigest(seedOnly),
     expected_versions: {
       ...absent.expected_versions,
-      ordinary_state_version: 1,
+      ordinary_state_version: absent.next_aggregate.state_version,
     },
     resolution: 'no_change',
     transitions: [seedOnly],
     next_aggregate: absent.next_aggregate,
     item: null,
-  }), { code: 'ORDINARY_PHASE6_TRANSITION_INVALID' });
+  }), (error) => error.code === 'ORDINARY_PHASE6_TRANSITION_INVALID'
+    && String(error.message).includes('seed_presence'));
 });
 test('Phase 6 coordinator calls model before exact reread and atomic commit',async()=>{let reads=0,modelled=false;const coordinator=createOrdinaryMaterializationPhase6Coordinator({loadCommitted:async()=>{reads+=1;return{version_pins:{v:1}};},buildSanitizedRequest:async()=>({}),model:async()=>{modelled=true;return{};},validate:async()=>({}),admit:async()=>({}),buildPurePlan:async()=>{assert.equal(modelled,true);assert.equal(reads,2);return'plan';},atomicCommit:async(plan)=>{assert.equal(plan,'plan');return'ok';}});assert.equal(await coordinator.execute({}),'ok');});

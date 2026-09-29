@@ -287,8 +287,8 @@ scope, subject, для `by_year_season` — `encodePresenceRulePeriodNumber`
 (`year * 4 + season_index`, сезоны `winter|spring|summer|autumn`) и текущий
 сезон календаря). Стартовое место (`state_version === 0`) — `readInitialEnvironment`
 (календарь коммита старта). Первое прибытие в новый G5 при `state_version ≥ 1` —
-`readCurrentEnvironment` в транзакции прибытия (текущие часы партии после перемещения,
-не снимок первого хода). Регион для
+`readCurrentEnvironment` в транзакции прибытия (закоммиченное время партии в транзакции
+прибытия, не снимок первого хода). Регион для
 `pickRegionalPresenceRule` — строгое совпадение с G0-предком закреплённого G4,
 не эвристика по данным. `seed_scope` может идти после presence-only preamble;
 idempotent replay seed не требует `state_version === 1`. Проекции turn/O1

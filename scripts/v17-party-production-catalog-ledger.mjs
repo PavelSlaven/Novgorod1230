@@ -26,14 +26,15 @@ export async function ensureV17PartyProductionCatalogLedger(pool) {
       );
     }
     const existing = (await client.query(
-      `SELECT migration_id, target_schema_fingerprint
+      `SELECT migration_id, migration_digest, target_schema_fingerprint
          FROM party_runtime.schema_migrations WHERE migration_id=$1`,
       [release.party_runtime_catalog_migration_id],
     )).rows[0];
     if (existing) {
-      if (existing.target_schema_fingerprint !== targetFingerprint) {
+      if (existing.target_schema_fingerprint !== targetFingerprint
+          || existing.migration_digest !== release.party_runtime_catalog_migration_digest) {
         throw new Error(
-          `V17_PARTY_PRODUCTION_LEDGER_MISMATCH:${existing.target_schema_fingerprint}`,
+          `V17_PARTY_PRODUCTION_LEDGER_MISMATCH:${existing.migration_digest}:${existing.target_schema_fingerprint}`,
         );
       }
       return targetFingerprint;

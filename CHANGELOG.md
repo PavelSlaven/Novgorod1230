@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- fix(m2c): R-2a presence first arrival on target v17 — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (`bootstrap-live-world-v17.mjs`), старые пины без temporal-v4 и m2c-npc-wave не совместимы с production presence (#158) LW-035 closed LW-071 closed LW-077 added
+- fix(m2c): R-2a presence first arrival on target v17 — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (`bootstrap-live-world-v17.mjs`); штатный bootstrap без D27 даёт пустое presence с diagnostic gap, m2c-npc-wave в production не импортируется (#158) LW-035 closed LW-071 closed LW-077 added
 - fix(llm-runtime): `normalizeExecutionLimits` treats `requestTimeoutMs` as a ceiling (`Math.min` against the 120 s default) instead of always overwriting it, so the remaining turn budget survives the provider request timeout; a provider timeout under a budget-clamped `requestTimeoutMs` now reports `LLM_TURN_BUDGET_EXHAUSTED` instead of a generic provider timeout (#98)
 - feat(r1b): world_base 28.sql D-1/D-2 datasets, wave 11 tables, composition-over-presence validator; pin 337abf9e (#158)
 - fix(r1): REVIEW-R1-fix-4 — approval identity, manifest_path, schema_version; internal readback symbol; LW-076 (#158)

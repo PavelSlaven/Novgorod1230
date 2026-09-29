@@ -59,6 +59,11 @@ PostgreSQL-тесты: часть из них пропускается без п
 (`binding_revision` 1..7): старт сам решает присутствие своего canonical G5 (перехват запросов bindings), у партии нет
 агрегата и enablement. Отдельно от p12-скрипта (~6 мин bootstrap + старты); запуск только через `pg-slot`.
 
+`spatial-v3:test-m2c-wave-bootstrap-postgres` — один bootstrap v17 с этапом волны (D27): строки в БД равны закреплённому
+`m2c-npc-wave/v1/v17-import-request.json`, нет правил `environment` и легаси-региона, каждый из 7 стартов бросает правила
+своего place family. Bootstrap-тесты теперь идут ~465 с каждый (этап волны), поэтому `spatial-v3:test-p12-postgres`
+занимает ~1700 с при лимите 1800 с: не добавляйте в него ещё один bootstrap.
+
 ## 3. Состав `npm test` и CI
 
 `npm test` = последовательно: `test:modules` → `test:domain` → `test:apps` → `test:tools` → `test:shadow` →

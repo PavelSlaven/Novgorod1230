@@ -145,7 +145,7 @@
 
 - `shadow:run`
 
-## spatial-v3 (73)
+## spatial-v3 (74)
 
 - `spatial-v3:check-p01`
 - `spatial-v3:check-p02`
@@ -187,6 +187,7 @@
 - `spatial-v3:p28-local-evidence`
 - `spatial-v3:red`
 - `spatial-v3:test-all-starts-postgres`
+- `spatial-v3:test-m2c-wave-bootstrap-postgres`
 - `spatial-v3:test-p04`
 - `spatial-v3:test-p05`
 - `spatial-v3:test-p09-postgres`

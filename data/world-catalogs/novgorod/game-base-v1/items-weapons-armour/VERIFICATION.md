@@ -308,3 +308,52 @@ eq_messenger без роли выбирает «редкое боевое ору
 - scripts/build.cjs — approve
 - scripts/validate.cjs — approve_with_limits: проверки FRN0045 и MIL0026 закреплены по id; общий checker запускается через подмену argv и console
 - validation_report.json — approve
+
+## Независимая проверка imp-crafts A1 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто.** Проверял Claude Opus 5.5, независимо от автора. Автор — Codex (задача imp-crafts, круг A1). Ветка `fleet/imp-crafts-a1`, коммит `dc41845d` (`47ee2c54` + main `a30dd8ca`). Данные автора проверяющий не правил. Статус данных — `candidate`.
+- **Что.** Правки после PR-A:
+  - MIL0015 «Деревянная миска походная» → routed в IHP `it_hh_turned_bowl`;
+  - ARM0030 «Конский доспех» — вместо отказа research_only-сущность `wp_horse_armour` (D, 1180–1260, denylist `deny_horse_armour`);
+  - в `scripts/validate.cjs` убраны проверки, закреплённые по id (FRN0045, MIL0026); общий checker вызывается как модуль;
+  - общий checker владения архивными id и его реестр таблиц.
+- **Проверено скриптами** (копия `git archive dc41845d`):
+  - две сборки `scripts/build.cjs`: hash-list группы равен коммиту и между прогонами;
+  - `scripts/validate.cjs`: ok, 0 ошибок, 13 предупреждений, из них 1 от среды (нет внешней sqlite). Отчёт отличается от коммита только этой строкой;
+  - общий checker: 0 ошибок (277 csv, 417 архивных id, 283 владельца);
+  - `node --test --test-isolation=none scripts/*.test.mjs`: 48 из 48;
+  - `build-catalog.cjs`, `build-status.mjs` — PASS, производные файлы равны коммиту; `git diff --check` — PASS;
+  - полнота: из 26 строк сверки, назначенных группе, в журнале все 26, каждая по одной. Решения: entity 4, variant 2, routed 13, rejected 7. Относительно PR-A строк не потеряно;
+  - `wp_horse_armour` нет в `weapon_status_access.csv`, `weapon_equipment_profiles.csv` и `equipment_profiles.json`; `source_refs` = `master:mc:ARM0030`, `guard_result` = `restricted:denylist:deny_horse_armour`.
+- **Ограничения.**
+  1. У `wp_horse_armour`, как и у research_only-шлемов, `expected_for_roles` назначены по tier. Генерацию сдерживают только `generation_policy` и denylist. `condition_family=mail` стоит при материале «разные».
+  2. Без внешней sqlite `validate.cjs` дописывает в `validation_report.json` предупреждение среды — такой файл не коммитить.
+
+**Общий `scripts/check-archive-ownership.mjs`, `scripts/archive-ownership-registry.json`, `scripts/check-archive-ownership.test.mjs`: approve_with_limits.** У корня каталога своей VERIFICATION нет, поэтому оценка записана здесь.
+
+Что подтверждено:
+- 23 прежние мутационные пробы на копии реальных данных совпали с ожиданием: коллизии с `garments.csv`, основы «серьги» и «серебро», маршрут в свою группу, `awaits_owner` при существующей сущности, цель-не-сущность, период варианта, расхождение с решением получателя;
+- позитивные контроли OMI01687 → `mt_quartz_sand`, OMI00221 → `mt_flax`, OMI00424 → `mt_fur`, OMI00241 → `mt_wool` проходят; подмены на `mt_bone`, `mt_wool`, `mt_flax`, `mt_hemp` падают;
+- незарегистрированная CSV с `*_id` и `name_ru` падает;
+- ручной карты материалов и зашитых архивных id нет.
+
+Ограничения:
+1. Материал варианта сводится вычисляемой картой только для целей `mt_*`. Для прочих целей осталась классовая сверка: сравнивается `mixed`, списки `mt_*` в поле материала цели не разбираются, `animal_byproduct` не сводится с `leather`. На черновике PR-B это 92 из 115 ошибок материала, в основном ложные. Родственные материалы тоже не сводятся: верный OMI00884 → `mt_antler` падает. Механизма парного решения для материала нет.
+2. Короткие основы-модификаторы (`мал`, `бан`, `корм`, `костян`, `син`, `бур`, `горш`, `корзин`, `мешок`, `ящик`, `сноп`) обнуляют 16 имён в main: «баня», «малина», «кормушка», «синица»… Две сущности «Горшок» коллизии не дают.
+3. Для групп без журнала (IHP, transport) цель маршрута не сверяется с сущностью, которая уже владеет архивным id.
+4. Реестр требует колонку имени: CSV с `*_id` без `name_ru` вне реестра не ловится. `LEDGER_ENTITY_TABLES` зашит и сопоставляется с `ledger_files` реестра по индексу.
+5. Одиночный год периода должен равняться 1230 («до 1300» ложно исключает). Века римскими цифрами не распознаются.
+6. Остались фильтр категорий природы, английские модификаторы под тестовые фикстуры, чёрный список общих фраз, второй список префиксов id; ошибка привязки строки `new` к группе владельца (строки 618–619) не исправлена.
+
+### Вердикты по файлам imp-crafts A1
+
+- authoring/archive_inclusion_manifest.json — approve
+- authoring/denylist.json — approve
+- authoring/weapon_kinds.json — approve_with_limits: wp_horse_armour, как и research_only шлемы, получает expected_for_roles по tier; condition_family mail при материале «разные»
+- counts.json — approve
+- items/archive_inclusion_ledger.csv — approve
+- items/weapon_denylist.csv — approve
+- items/weapon_source_crosswalk.csv — approve
+- items/weapons_armour.csv — approve_with_limits: expected_for_roles по tier у research_only строк, включая wp_horse_armour
+- scripts/validate.cjs — approve
+- validation_report.json — approve

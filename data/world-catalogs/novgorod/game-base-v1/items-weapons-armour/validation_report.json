@@ -1,7 +1,7 @@
 {
   "ok": true,
   "stats": {
-    "weapons_armour": 74,
+    "weapons_armour": 75,
     "status_access_rows": 213,
     "equipment_entries": 111,
     "equipment_profiles": 16,
@@ -11,9 +11,9 @@
     "events": 21,
     "combat_roles": 71,
     "refs": {
-      "total": 1441,
+      "total": 1442,
       "byScheme": {
-        "master": 215,
+        "master": 216,
         "costume": 109,
         "v5": 36,
         "wk": 76,
@@ -32,6 +32,7 @@
   "warnings": [
     "D-row WPN0018 (Праща — спорная для локального военного набора) retained under wp_sling as C with note",
     "D-row ARM0028 (Чешуйчатый панцирь — спорная локальная реконструкция) retained under wp_scale as C with note",
+    "D-row ARM0030 (Конский доспех — не норма 1230) retained as research_only entity; generation restricted",
     "D-row HLM0013 (Железная шапель/«железная шляпа» — возможный западный импорт) retained as research_only entity; generation restricted",
     "D-row HLM0014 (Западноевропейский шлем-«горшок» раннего типа — чужеземный и редкий) retained as research_only entity; generation restricted",
     "D-row HLM0018 (Полный личинный шлем — исключительная и спорная форма) retained as research_only entity; generation restricted",

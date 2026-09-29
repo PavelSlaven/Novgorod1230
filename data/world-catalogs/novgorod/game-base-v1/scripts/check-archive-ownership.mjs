@@ -4,57 +4,32 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const base = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ENTITY_TABLES = [
+const REGISTRY_FILE = 'scripts/archive-ownership-registry.json';
+const MATERIAL_RESOLUTION_FILE = 'crafts-tools-processes/materials_registry/material_resolution.csv';
+const MATERIALS_FILE = 'crafts-tools-processes/materials_registry/materials.csv';
+const registryAt = root => JSON.parse(fs.readFileSync(path.join(root, REGISTRY_FILE), 'utf8'));
+const registry = registryAt(base);
+const ENTITY_SPECS = registry.entity_tables;
+const ENTITY_SPEC_BY_FILE = new Map(ENTITY_SPECS.map(spec => [spec.file, spec]));
+const LEDGER_FILES = registry.ledger_files;
+const LEDGER_ENTITY_TABLES = [
   'crafts-tools-processes/materials_registry/material_entities.csv',
   'buildings-interiors-containers/interiors/material_entities.csv',
   'clothing-appearance/garments/material_entities.csv',
   'items-weapons-armour/items/weapons_armour.csv',
 ];
-const LEDGER_FILES = [
-  'crafts-tools-processes/archive_inclusion_ledger.csv',
-  'buildings-interiors-containers/archive_inclusion_ledger.csv',
-  'clothing-appearance/reports/archive_inclusion_ledger.csv',
-  'items-weapons-armour/items/archive_inclusion_ledger.csv',
-];
-const LEDGER_ENTITY_TABLE = new Map([
-  [LEDGER_FILES[0], ENTITY_TABLES[0]], [LEDGER_FILES[1], ENTITY_TABLES[1]],
-  [LEDGER_FILES[2], ENTITY_TABLES[2]], [LEDGER_FILES[3], ENTITY_TABLES[3]],
-]);
-const ENTITY_SPECS = [
-  { file: 'crafts-tools-processes/materials_registry/materials.csv', key: 'mt_id' },
-  { file: 'crafts-tools-processes/materials_registry/material_entities.csv', key: 'item_id' },
-  { file: 'crafts-tools-processes/craft_tools_gear/tools_gear.csv', key: 'tl_id' },
-  { file: 'crafts-tools-processes/craft_processes/processes.csv', key: 'pc_id' },
-  { file: 'buildings-interiors-containers/interiors/material_entities.csv', key: 'item_id' },
-  { file: 'clothing-appearance/garments/material_entities.csv', key: 'item_id' },
-  { file: 'items-weapons-armour/items/weapons_armour.csv', key: 'wp_id' },
-  { file: 'food-drink/food/material_entities.csv', key: 'item_id' },
-  { file: 'items-household-personal/items/household.csv', key: 'it_id', refs: 'master_refs' },
-  { file: 'items-household-personal/items/personal.csv', key: 'it_id', refs: 'master_refs' },
-  { file: 'nature-materials-weather/natural_materials_soils/natural_materials.csv', key: 'nm_id' },
-  { file: 'fauna-mammals-birds/fauna/mammals.csv', key: 'fa_id' },
-  { file: 'fauna-mammals-birds/fauna/birds.csv', key: 'fa_id' },
-  { file: 'fauna-fish-invertebrates-livestock/fauna/fish.csv', key: 'fa_id' },
-  { file: 'fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv', key: 'fa_id' },
-  { file: 'fauna-fish-invertebrates-livestock/fauna/livestock_species.csv', key: 'fa_id' },
-  { file: 'fauna-fish-invertebrates-livestock/fauna/livestock_types.csv', key: 'ls_id' },
-  { file: 'fauna-fish-invertebrates-livestock/fauna/livestock_products.csv', key: 'lp_id' },
-  { file: 'transport-health-recreation/transport_travel/transport_entities.csv', key: 'tr_id' },
-];
-const ENTITY_SPEC_BY_FILE = new Map(ENTITY_SPECS.map(spec => [spec.file, spec]));
 const NATURE_MASTER_CATEGORIES = new Set(['wood_bark_plant_materials', 'clay_ceramic_mineral']);
-const HOUSEHOLD_MASTER_CATEGORIES = new Set(['small_household_personal']);
 const ITEM_IDS = /\b(?:AC|ACT|AGR|AR|ARC|ARM|CL|CMB|CON|CRF|FG|FOD|FOR|FR|FRN|FSH|FUR|FW|GC|GF|GM|HLM|HNT|HOU|HRS|HW|INT|INV|LIV|LTR|MIL|MSC|MUS|OMI|POT|PRO|RCP|REL|SCN|SHD|SPN|SRC|STA|STR|TRD|WPN|WRT|WTR)\d{3,5}\b/gi;
 const CANONICAL_ITEM_REF = /n1230:material_item:([a-z]{2,4}\d{3,5})/gi;
 const MODIFIERS = new Set([
   // State and stage.
-  'обгорев', 'обуглен', 'горел', 'сгорев', 'слом', 'разбит', 'облом', 'обрез', 'обрыв', 'изнош', 'стар', 'нов', 'сыр', 'сух', 'мокр', 'свеж', 'гнил', 'ржав', 'бит', 'цел', 'заготов', 'обработан', 'необработан', 'запис', 'осторожн',
+  'обгорев', 'обуглен', 'горел', 'сгорев', 'слом', 'разбит', 'облом', 'обрез', 'обрыв', 'изнош', 'стар', 'нов', 'сух', 'мокр', 'свеж', 'гнил', 'ржав', 'бит', 'цел', 'заготов', 'обработан', 'необработан', 'запис', 'осторожн',
   // Size and quantity.
   'мал', 'мелк', 'крупн', 'больш', 'длинн', 'коротк', 'тонк', 'толст', 'один', 'дв', 'нескольк', 'много', 'порц', 'куч', 'пачк', 'сноп', 'связк', 'моток', 'объем',
   // Container, purpose, and location.
-  'меш', 'корзин', 'короб', 'боч', 'горш', 'ящик', 'упаков', 'для', 'присып', 'подсып', 'корм', 'топлив', 'строительн', 'писч', 'рыболовн', 'домашн', 'полев', 'мастерск', 'дворов', 'погреб', 'бан', 'лодочн', 'ремонтн', 'рыбь',
+  'мешок', 'мешка', 'мешке', 'мешком', 'мешки', 'мешков', 'корзин', 'горш', 'ящик', 'упаков', 'для', 'присып', 'подсып', 'корм', 'топлив', 'строительн', 'писч', 'рыболовн', 'домашн', 'полев', 'мастерск', 'дворов', 'погреб', 'бан', 'лодочн', 'ремонтн', 'рыбь',
   // Color, shape, and kind.
-  'син', 'зелен', 'зелён', 'красн', 'бел', 'черн', 'бур', 'желт', 'сер', 'кругл', 'плоск', 'плос', 'дроблен', 'крош', 'кварцев', 'стеклян', 'берестян', 'деревян', 'костян', 'железн', 'медн', 'шерстян', 'льнян', 'коноплян',
+  'син', 'зелен', 'зелён', 'красн', 'белый', 'белая', 'белое', 'белые', 'белых', 'черный', 'черная', 'черное', 'черные', 'черных', 'бур', 'желт', 'серый', 'серая', 'серое', 'серые', 'серых', 'кругл', 'плоск', 'плос', 'дроблен', 'кварцев', 'стеклян', 'берестян', 'деревян', 'костян', 'железн', 'медн', 'шерстян', 'льнян', 'коноплян',
   // English archive identifiers and names.
   'mt', 'quartz', 'charred', 'burnt', 'blue', 'green', 'for', 'sprinkling', 'small', 'large', 'broken', 'worn',
 ]);
@@ -101,24 +76,71 @@ function csvFiles(root) {
   return files.sort();
 }
 
+function registryCoverageErrors(root, files, rowsByFile) {
+  const errors = [];
+  if (!fs.existsSync(path.join(root, 'catalog.json'))) return [];
+  const current = registryAt(root);
+  const known = new Map(current.entity_tables.map(spec => [spec.file, spec]));
+  const excluded = new Map(current.excluded_entity_tables.map(spec => [spec.file, spec]));
+  let catalogGroups;
+  try { catalogGroups = new Set(JSON.parse(fs.readFileSync(path.join(root, 'catalog.json'), 'utf8')).groups.map(group => group.id)); }
+  catch (error) { return [`${REGISTRY_FILE}: cannot read catalog group registrations: ${error.message}`]; }
+  const pathIsRegistered = file => catalogGroups.has(file.split('/')[0]);
+  for (const spec of current.entity_tables) {
+    const rows = rowsByFile.get(spec.file);
+    if (!pathIsRegistered(spec.file) || (!rows && !spec.optional)) errors.push(`${spec.file}: registry entity table is missing or outside catalog groups`);
+    else if (!rows) continue;
+    else {
+      const headers = Object.keys(rows[0] ?? {});
+      if (!headers.includes(spec.key) || !headers.includes(spec.name)) errors.push(`${spec.file}: registry fields ${spec.key}/${spec.name} do not match CSV headers`);
+    }
+  }
+  for (const spec of current.entity_json_files ?? []) {
+    const source = path.join(root, spec.file);
+    if (!pathIsRegistered(spec.file) || !fs.existsSync(source)) errors.push(`${spec.file}: registry JSON entity file is missing or outside catalog groups`);
+    else {
+      let objects = [];
+      try { objects = jsonObjects(JSON.parse(fs.readFileSync(source, 'utf8'))); }
+      catch (error) { errors.push(`${spec.file}: registry JSON entity file cannot be read: ${error.message}`); }
+      if (!objects.some(row => row[spec.key] && row[spec.name])) errors.push(`${spec.file}: registry JSON fields ${spec.key}/${spec.name} do not match any object`);
+    }
+  }
+  for (const exclusion of current.excluded_entity_tables) {
+    if (!pathIsRegistered(exclusion.file) || !exclusion.reason.trim() || !rowsByFile.has(exclusion.file)) errors.push(`${exclusion.file}: registry exclusion needs an existing CSV in a catalog group and a reason`);
+  }
+  for (const file of known.keys()) if (excluded.has(file)) errors.push(`${file}: CSV cannot be both an entity table and an explicit exclusion`);
+  for (const file of files) {
+    if (!pathIsRegistered(file)) continue;
+    const rows = rowsByFile.get(file) ?? [];
+    if (!rows.length) continue;
+    const headers = Object.keys(rows[0]);
+    const key = headers.find(header => /^(?:[a-z][a-z0-9_]*_id|id)$/i.test(header));
+    const hasNamedEntity = headers.some(header => /^(?:name_ru|class_name_ru|title_ru)$/i.test(header));
+    const hasStableIds = key && rows.some(row => String(row[key] ?? '').trim());
+    if (hasNamedEntity && hasStableIds && !known.has(file) && !excluded.has(file)) {
+      errors.push(`${file}: CSV with entity IDs from catalog group is absent from entity registry and exclusions`);
+    }
+  }
+  return errors;
+}
+
 function normalizeSemanticRoot(value) {
   const tokens = String(value ?? '').replace(/\([^()]*\)/gu, ' ').toLowerCase().normalize('NFC').match(/[\p{L}\p{N}]+/gu) ?? [];
   const roots = tokens.flatMap(token => {
     const mapped = EN_RU.get(token) ?? token;
     if ([token, mapped].some(candidate => [...MODIFIERS].some(stem => candidate.startsWith(stem)))) return [];
-    if (/^(?:обожж|сломан|кварцев|стеклян|деревян|костян|железн|медн|льнян|коноплян|син|зелен|красн|бел|черн|бур|желт|сер)/u.test(mapped)) return [];
     return [mapped];
   });
   return roots.join(' ');
 }
 
-function isLedgerFile(file) {
-  return LEDGER_FILES.includes(file);
+function isLedgerFile(file, ledgerFiles) {
+  return ledgerFiles.includes(file);
 }
 
-function isEntityTable(file, headers = []) {
-  const spec = ENTITY_SPEC_BY_FILE.get(file);
-  return Boolean(spec && headers.includes(spec.key) && headers.includes('name_ru'));
+function isEntityTable(file, headers = [], specs = ENTITY_SPEC_BY_FILE) {
+  const spec = specs.get(file);
+  return Boolean(spec && headers.includes(spec.key) && headers.includes(spec.name));
 }
 
 function isPlacementFile(file) {
@@ -126,11 +148,13 @@ function isPlacementFile(file) {
 }
 
 function rowName(row) {
-  return row.name_ru || row.class_name_ru || row.archive_name || row.name || row.item_id || row.entity_id || '';
+  return row.name_ru || row.class_name_ru || row.title_ru || row.name || row.archive_name || row.item_id || row.entity_id || '';
 }
 
-function rowKey(row) {
-  return row.item_id || row.entity_id || row.it_id || row.wp_id || row.gm_id || row.tl_id || row.pc_id || row.mt_id || row.fa_id || row.ls_id || row.lp_id || row.tr_id || row.of_id || row.bp_id || row.ct_id || row.id || row.own_id || row.nm_id || '';
+function rowKey(row, file = '', specs = ENTITY_SPEC_BY_FILE) {
+  const spec = specs.get(file);
+  if (spec && row[spec.key]) return row[spec.key];
+  return row.item_id || row.entity_id || row.product_ref || row.it_id || row.wp_id || row.gm_id || row.gc_id || row.ad_id || row.fd_id || row.tl_id || row.pc_id || row.mt_id || row.fa_id || row.ls_id || row.lp_id || row.tr_id || row.of_id || row.bp_id || row.bt_id || row.mat_id || row.ct_id || row.sf_id || row.sc_id || row.lm_id || row.hl_id || row.rc_id || row.ws_id || row.id || row.own_id || row.nm_id || '';
 }
 
 function primaryArchiveIds(row, targetId) {
@@ -152,9 +176,9 @@ function masterArchiveItems(root) {
   return new Map(parseCsv(fs.readFileSync(source, 'utf8')).map(row => [String(row.item_id ?? '').toUpperCase(), row]));
 }
 
-function entityArchiveIds(file, row, ledgerArchiveIds, masterItems) {
+function entityArchiveIds(file, row, ledgerArchiveIds, masterItems, specs = ENTITY_SPEC_BY_FILE) {
   const ids = new Set();
-  const key = String(rowKey(row)).trim();
+  const key = String(rowKey(row, file, specs)).trim();
   for (const id of archiveIds(key)) ids.add(id);
   for (const [field, value] of Object.entries(row)) {
     if (/^master_refs$/i.test(field)) {
@@ -163,10 +187,7 @@ function entityArchiveIds(file, row, ledgerArchiveIds, masterItems) {
         && /^(?:set|kit|bundle)$/i.test(String(row.quantity_unit ?? '').trim())
         && /набор как сочетание/i.test(row.note ?? '')
         && /сам комплект\s*[—–-]\s*вывод/i.test(row.note ?? '');
-      if (refs.length && !compositeSet) for (const id of archiveIds(refs[0])) {
-        const category = masterItems.get(id)?.category;
-        if (!category || HOUSEHOLD_MASTER_CATEGORIES.has(category)) ids.add(id);
-      }
+      if (refs.length && !compositeSet) for (const id of archiveIds(refs[0])) ids.add(id);
     } else if (file === 'nature-materials-weather/natural_materials_soils/natural_materials.csv') {
       if (/^source_refs$/i.test(field)) for (const id of archiveIds(value)) {
         if (NATURE_MASTER_CATEGORIES.has(masterItems.get(id)?.category)) ids.add(id);
@@ -182,8 +203,8 @@ function entityArchiveIds(file, row, ledgerArchiveIds, masterItems) {
   return ids;
 }
 
-function entitySelfArchiveIds(file, row) {
-  const keyIds = archiveIds(rowKey(row));
+function entitySelfArchiveIds(file, row, specs = ENTITY_SPEC_BY_FILE) {
+  const keyIds = archiveIds(rowKey(row, file, specs));
   if (keyIds.length) return keyIds;
   const values = Object.entries(row)
     .filter(([field]) => /^(?:archive_ref|archive_refs|master_item_ref|primary_ref|primary_source_ref|source_item_id|costume|costume_ref)$/i.test(field))
@@ -191,9 +212,9 @@ function entitySelfArchiveIds(file, row) {
   return [...new Set(values.flatMap(archiveIds))];
 }
 
-function isEntityRow(file, headers, row) {
-  const spec = ENTITY_SPEC_BY_FILE.get(file);
-  if (!spec || !isEntityTable(file, headers) || isLedgerFile(file) || !headers.includes(spec.key) || !headers.includes('name_ru') || !rowKey(row)) return false;
+function isEntityRow(file, headers, row, specs = ENTITY_SPEC_BY_FILE, ledgerFiles = LEDGER_FILES) {
+  const spec = specs.get(file);
+  if (!spec || !isEntityTable(file, headers, specs) || isLedgerFile(file, ledgerFiles) || !headers.includes(spec.key) || !row[spec.key]) return false;
   if (spec.refs && !headers.includes(spec.refs)) return false;
   return true;
 }
@@ -287,7 +308,7 @@ function normalizedMaterial(value) {
   } catch {}
   const classes = [
     [/\bglass\b|стекл/u, 'glass'],
-    [/\btextile\b|текстил|шерст|(?<!\p{L})л[её]н|коноп/u, 'textile'],
+    [/\b(?:textile|fabric|hemp|flax|wool)\b|текстил|ткан|шерст|(?<!\p{L})л[её]н|коноп/u, 'textile'],
     [/\b(?:bone|horn|antler)\b|кост|рог/u, 'bone_horn'],
     [/\b(?:clay|ceramic|masonry)\b|глин|керамик|плинф|кирпич/u, 'clay_ceramic'],
     [/\bwood\b|дерев|берест|лыко/u, 'wood'],
@@ -302,17 +323,103 @@ function normalizedMaterial(value) {
   return classes.length ? [...new Set(classes)].sort().join('|') : text.replace(/\s*\|\s*/g, '|');
 }
 
-function variantIdentityErrors(archiveId, source, target) {
+function materialText(value) {
+  let text = String(value ?? '').trim();
+  if (!text) return [];
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) return parsed.flatMap(materialText);
+  } catch {}
+  return text.split(/[|;,/]+/u).map(part => part.trim()).filter(Boolean);
+}
+
+function materialWords(value) {
+  return String(value ?? '').toLowerCase().normalize('NFC').replace(/\([^()]*\)/gu, ' ')
+    .match(/[\p{L}\p{N}_]+/gu) ?? [];
+}
+
+function buildArchiveMaterialMap(root, masterItems) {
+  const vocabularyFile = path.join(root, MATERIALS_FILE);
+  const resolutionFile = path.join(root, MATERIAL_RESOLUTION_FILE);
+  if (!fs.existsSync(vocabularyFile) || !fs.existsSync(resolutionFile)) {
+    return { byArchiveId: new Map(), unmapped: new Map(), mapped_values: 0 };
+  }
+  const vocabulary = parseCsv(fs.readFileSync(vocabularyFile, 'utf8'));
+  const resolution = parseCsv(fs.readFileSync(resolutionFile, 'utf8'));
+  const aliases = new Map();
+  const addAlias = (mtId, phrase) => {
+    for (const part of materialText(phrase)) {
+      const words = materialWords(part);
+      if (!words.length || words.every(word => ['mixed', 'материал', 'материалы', 'possibly', 'possible'].includes(word))) continue;
+      const key = words.join(' ');
+      if (key.length < 3) continue;
+      const ids = aliases.get(key) ?? new Set();
+      ids.add(mtId);
+      aliases.set(key, ids);
+    }
+  };
+  for (const row of vocabulary) {
+    const id = String(row.mt_id ?? '').trim();
+    if (!id) continue;
+    for (const field of ['mt_id', 'name_ru', 'name_en', 'material_family', 'source_taxon_or_mineral_ref', 'aliases_ru']) addAlias(id, row[field]);
+    addAlias(id, id.replace(/^mt_/, '').replace(/_/g, ' '));
+  }
+  for (const row of resolution) {
+    const ids = String(row.mt_ids ?? '').split(';').map(value => value.trim()).filter(Boolean);
+    if (ids.length !== 1) continue;
+    addAlias(ids[0], row.value);
+  }
+
+  const byArchiveId = new Map();
+  const unmapped = new Map();
+  let mappedValues = 0;
+  for (const [archiveId, source] of masterItems) {
+    const searchable = ['primary_material', 'materials', 'name_ru', 'alt_names_ru', 'description_ru', 'function', 'family_key', 'category', 'subcategory', 'tags', 'construction']
+      .flatMap(field => materialText(source[field])).join(' ');
+    const haystack = materialWords(searchable);
+    const matches = new Set();
+    for (const [alias, ids] of aliases) {
+      const needle = alias.split(' ');
+      const found = haystack.some((word, index) => needle.every((part, offset) => {
+        const candidate = haystack[index + offset] ?? '';
+        return offset === 0 ? candidate.startsWith(part) : candidate.startsWith(part);
+      }));
+      if (found) for (const id of ids) matches.add(id);
+    }
+    const meaningful = ['primary_material', 'materials'].flatMap(field => materialText(source[field]))
+      .filter(value => !/^(?:mixed|unknown|various|разное|смешанн\w*)$/iu.test(value));
+    if (matches.size) {
+      byArchiveId.set(archiveId, matches);
+      mappedValues += meaningful.length || 1;
+    } else if (meaningful.length) unmapped.set(archiveId, meaningful);
+  }
+  return { byArchiveId, unmapped, mapped_values: mappedValues };
+}
+
+function variantIdentityErrors(archiveId, source, target, materialMap) {
   const errors = [];
   const sourceCategory = String(source?.category ?? '').trim().toLowerCase();
   const targetCategory = String(target?.category ?? '').trim().toLowerCase();
   if (sourceCategory && targetCategory && sourceCategory !== targetCategory) {
     errors.push(`${archiveId}: variant target category ${targetCategory} does not match source category ${sourceCategory}`);
   }
-  const sourceMaterial = normalizedMaterial(source?.primary_material || source?.material || '');
-  const targetMaterial = normalizedMaterial(target?.primary_material || target?.material || target?.material_family || target?.materials || '');
-  if (sourceMaterial && targetMaterial && sourceMaterial !== targetMaterial) {
-    errors.push(`${archiveId}: variant target material ${targetMaterial} does not match source material ${sourceMaterial}`);
+  const targetId = String(target?.mt_id ?? target?.item_id ?? target?.id ?? '').trim();
+  if (targetId.startsWith('mt_')) {
+    const sourceMaterials = materialMap.byArchiveId.get(archiveId) ?? new Set();
+    if (!sourceMaterials.size) {
+      const values = materialMap.unmapped.get(archiveId) ?? [];
+      errors.push(`${archiveId}: archive material could not be mapped to crafts materials (${values.join('; ') || 'no material evidence'})`);
+    } else if (!sourceMaterials.has(targetId)) {
+      errors.push(`${archiveId}: variant target material ${targetId} is not among archive material candidates ${[...sourceMaterials].sort().join('|')}`);
+    }
+  } else {
+    const sourceMaterial = normalizedMaterial(source?.primary_material || source?.material || '');
+    const targetMaterial = normalizedMaterial(target?.primary_material || target?.material || target?.material_family || target?.materials || '');
+    const sourceClasses = new Set(sourceMaterial.split('|').filter(Boolean));
+    const targetClasses = new Set(targetMaterial.split('|').filter(Boolean));
+    if (sourceClasses.size && targetClasses.size && ![...sourceClasses].some(value => targetClasses.has(value))) {
+      errors.push(`${archiveId}: variant target material ${targetMaterial} does not match source material ${sourceMaterial}`);
+    }
   }
   return errors;
 }
@@ -367,7 +474,7 @@ function jsonObjects(value, result = []) {
   return result;
 }
 
-function resolveTarget(root, ref, rowsByFile, idRows) {
+function resolveTarget(root, ref, rowsByFile, entityIdRows, { entityOnly = false, specs = ENTITY_SPEC_BY_FILE, jsonSpecs = new Map() } = {}) {
   const value = String(ref ?? '').trim();
   if (!value || /(?:^|[#:/])(?:row[-_ ]?\d+)(?:$|\b)/i.test(value)) return { error: 'variant target is empty or row-number based' };
   const hash = value.lastIndexOf('#');
@@ -377,10 +484,14 @@ function resolveTarget(root, ref, rowsByFile, idRows) {
     const relative = value.slice(0, hash);
     const exact = path.resolve(root, relative);
     if (fs.existsSync(exact) && path.extname(exact).toLowerCase() === '.json') {
+      const jsonSpec = jsonSpecs.get(relative);
+      if (entityOnly && !jsonSpec) return { error: `target path ${relative} is JSON data, not a registered entity table` };
       let objects;
       try { objects = jsonObjects(JSON.parse(fs.readFileSync(exact, 'utf8'))); }
       catch { return { error: `target JSON cannot be read: ${relative}` }; }
-      const matches = objects.filter(candidate => Object.values(candidate).some(cell => String(cell).trim() === targetId));
+      const matches = jsonSpec
+        ? objects.filter(candidate => String(candidate[jsonSpec.key] ?? '').trim() === targetId)
+        : objects.filter(candidate => Object.values(candidate).some(cell => String(cell).trim() === targetId));
       if (matches.length !== 1) return { error: `variant target ID ${targetId} resolves to ${matches.length} objects in ${relative}` };
       const row = matches[0];
       return { id: targetId, name: rowName(row), family: row.family_key || '', file: relative, row, archiveIds: primaryArchiveIds(row, rowKey(row) || targetId) };
@@ -393,30 +504,61 @@ function resolveTarget(root, ref, rowsByFile, idRows) {
     }
     if (file) {
       const rows = rowsByFile.get(file) ?? [];
-      const keyed = rows.filter(candidate => rowKey(candidate).trim() === targetId);
+      if (!isEntityTable(file, Object.keys(rows[0] ?? {}), specs)) return { error: `target path ${relative} is not an entity table` };
+      const spec = specs.get(file);
+      const keyed = rows.filter(candidate => String(candidate[spec.key] ?? '').trim() === targetId);
       const matches = keyed.length ? keyed : rows.filter(candidate => Object.values(candidate).some(cell => cell.trim() === targetId));
       if (matches.length !== 1) return { error: `variant target ID ${targetId} resolves to ${matches.length} rows in ${file}` };
       const row = matches[0];
-      return { id: targetId, name: rowName(row), family: row.family_key || '', file, row, archiveIds: primaryArchiveIds(row, rowKey(row) || targetId) };
+      return { id: targetId, name: rowName(row), family: row.family_key || '', file, row, archiveIds: primaryArchiveIds(row, rowKey(row, file, specs) || targetId) };
     }
   }
-  const matches = idRows.get(targetId) ?? [];
+  const matches = entityIdRows.get(targetId) ?? [];
   if (matches.length !== 1) return { error: `variant target ID ${targetId} resolves to ${matches.length} rows` };
-  return { id: targetId, name: rowName(matches[0].row), family: matches[0].row.family_key || '', file: matches[0].file, row: matches[0].row, archiveIds: primaryArchiveIds(matches[0].row, rowKey(matches[0].row) || targetId) };
+    return { id: targetId, name: rowName(matches[0].row), family: matches[0].row.family_key || '', file: matches[0].file, row: matches[0].row, archiveIds: primaryArchiveIds(matches[0].row, rowKey(matches[0].row, matches[0].file, specs) || targetId) };
+}
+
+function errorCode(message) {
+  if (/archive material could not be mapped/i.test(message)) return 'ICA_MATERIAL_UNMAPPED';
+  if (/variant target material/i.test(message)) return 'ICA_VARIANT_MATERIAL_MISMATCH';
+  if (/variant target category|variant target family/i.test(message)) return 'ICA_VARIANT_IDENTITY_MISMATCH';
+  if (/variant period excludes 1230|new entity period excludes 1230/i.test(message)) return 'ICA_PERIOD_EXCLUDES_1230';
+  if (/research_only/i.test(message)) return 'ICA_RESEARCH_ONLY_INVALID';
+  if (/semantic-root collision/i.test(message)) return 'ICA_NAME_COLLISION';
+  if (/routed target_ref .* disagrees with receiving (?:variant|reference|target|decision)/i.test(message)) return 'ICA_ROUTE_TARGET_MISMATCH';
+  if (/route targets its own group/i.test(message)) return 'ICA_ROUTE_SELF_GROUP';
+  if (/awaits_owner/i.test(message) && /already has an entity|receiving group .* has a decision/i.test(message)) return 'ICA_ROUTE_AWAITS_OWNER_CONFLICT';
+  if (/routed target_ref|target_group|routed decision/i.test(message)) return 'ICA_ROUTE_INVALID';
+  if (/reference /i.test(message)) return 'ICA_REFERENCE_INVALID';
+  if (/placement ref/i.test(message)) return 'ICA_PLACEMENT_UNRESOLVED';
+  if (/entity owner appears|already has entity owner/i.test(message)) return 'ICA_ARCHIVE_MULTIPLE_OWNERS';
+  if (/no new\/entity ledger decision/i.test(message)) return 'ICA_ENTITY_NO_LEDGER_DECISION';
+  if (/new ledger row resolves to/i.test(message)) return 'ICA_ENTITY_ROW_MISSING';
+  if (/variant target|archive item itself/i.test(message)) return 'ICA_VARIANT_TARGET_INVALID';
+  if (/registry|catalog group|CSV with entity IDs/i.test(message)) return 'ICA_REGISTRY_COVERAGE';
+  return 'ICA_OWNERSHIP_INVALID';
 }
 
 export function checkArchiveOwnership(root = base) {
   const errors = [];
+  const currentRegistry = fs.existsSync(path.join(root, REGISTRY_FILE)) ? registryAt(root) : registry;
+  const specs = new Map(currentRegistry.entity_tables.map(spec => [spec.file, spec]));
+  const jsonSpecs = new Map((currentRegistry.entity_json_files ?? []).map(spec => [spec.file, spec]));
+  const ownerTables = new Set(currentRegistry.entity_tables.filter(spec => spec.owner).map(spec => spec.file));
+  const collisionTables = new Set(currentRegistry.entity_tables.filter(spec => spec.collision_scan !== false).map(spec => spec.file));
+  const ledgerFiles = currentRegistry.ledger_files;
+  const ledgerEntityTable = new Map(ledgerFiles.map((file, index) => [file, LEDGER_ENTITY_TABLES[index]]));
   const files = csvFiles(root);
   const masterIds = masterArchiveIds(root);
   const masterItems = masterArchiveItems(root);
+  const archiveMaterialMap = buildArchiveMaterialMap(root, masterItems);
   const rowsByFile = new Map(files.map(file => [file, parseCsv(fs.readFileSync(path.join(root, file), 'utf8'))]));
+  errors.push(...registryCoverageErrors(root, files, rowsByFile));
   const ledgerArchiveIds = new Set();
-  for (const [file, rows] of rowsByFile) if (isLedgerFile(file)) {
+  for (const [file, rows] of rowsByFile) if (isLedgerFile(file, ledgerFiles)) {
     for (const row of rows) for (const id of archiveIds(row.archive_ref || row.master_item_ref || '')) ledgerArchiveIds.add(id);
   }
   const owners = new Map();
-  const idRows = new Map();
   const entityIdRows = new Map();
   const placementRefs = [];
   const ledgers = [];
@@ -424,7 +566,7 @@ export function checkArchiveOwnership(root = base) {
   const pairExceptions = [];
 
   for (const [file, rows] of rowsByFile) {
-    if (isLedgerFile(file)) {
+    if (isLedgerFile(file, ledgerFiles)) {
       for (const [index, row] of rows.entries()) {
         const line = index + 2;
         const archiveId = archiveIds(row.archive_ref || row.master_item_ref || '')[0];
@@ -435,17 +577,10 @@ export function checkArchiveOwnership(root = base) {
     const headers = Object.keys(rows[0] ?? {});
     for (const [index, row] of rows.entries()) {
       const line = index + 2;
-      const key = rowKey(row);
-      const idEntry = { file, line, row, entityArchiveIds: [] };
-      if (key) {
-        const entries = idRows.get(key) ?? [];
-        entries.push(idEntry);
-        idRows.set(key, entries);
-      }
-      if (isEntityRow(file, headers, row)) {
-        const ids = entityArchiveIds(file, row, ledgerArchiveIds, masterItems);
-        idEntry.entityArchiveIds = [...ids];
-        const record = { file, line, row, name: rowName(row), key, selfArchiveIds: entitySelfArchiveIds(file, row) };
+      const key = rowKey(row, file, specs);
+      if (isEntityRow(file, headers, row, specs, ledgerFiles)) {
+        const ids = specs.get(file)?.track_archive_ids !== false ? entityArchiveIds(file, row, ledgerArchiveIds, masterItems, specs) : new Set();
+        const record = { file, line, row, name: rowName(row), key, selfArchiveIds: entitySelfArchiveIds(file, row, specs) };
         if (key) {
           const matches = entityIdRows.get(key) ?? [];
           matches.push(record);
@@ -477,7 +612,7 @@ export function checkArchiveOwnership(root = base) {
   }
 
   for (const entity of entityRecords) {
-    if (!ENTITY_TABLES.includes(entity.file)) continue;
+    if (!ownerTables.has(entity.file)) continue;
     const group = ownerGroup(entity.file);
     for (const id of entity.selfArchiveIds) {
       const hasOwnNewDecision = (ledgerByArchiveId.get(id) ?? []).some(row =>
@@ -491,7 +626,7 @@ export function checkArchiveOwnership(root = base) {
     const { row, file, line, archiveId } = item;
     if (isNewLedgerRow(row)) {
       const existingOwners = owners.get(archiveId) ?? [];
-      const ownTable = LEDGER_ENTITY_TABLE.get(file);
+      const ownTable = ledgerEntityTable.get(file);
       const foreignOwners = existingOwners.filter(entry => entry.file !== ownTable);
       const localOwners = existingOwners.filter(entry => entry.file === ownTable);
       if (foreignOwners.length) errors.push(`${archiveId}: ledger marks new entity but archive ID already has entity owner(s): ${foreignOwners.map(entry => `${entry.file}:${entry.line}`).join(', ')}`);
@@ -503,7 +638,7 @@ export function checkArchiveOwnership(root = base) {
     }
     if (isTerminalReferenceRow(row)) {
       const ref = row.game_base_ref || row.target_ref || '';
-      const target = resolveTarget(root, ref, rowsByFile, idRows);
+      const target = resolveTarget(root, ref, rowsByFile, entityIdRows, { specs, jsonSpecs });
       if (target.error) errors.push(`${archiveId}: reference ${target.error.replace(/^variant /, '')} (${ref || 'missing target'})`);
       else if (!target.name) errors.push(`${archiveId}: reference target ${target.id} has no resolvable identity`);
     }
@@ -511,19 +646,16 @@ export function checkArchiveOwnership(root = base) {
       /^(?:record_type|type|match_type|disposition|inclusion_result|semantic_result|archive_action|selected_action)$/i.test(key)
         && /^(?:variant|add_variant)$/i.test(String(value).trim()));
     if (variantDisposition) {
-      const target = resolveTarget(root, row.game_base_ref || row.target_ref || '', rowsByFile, idRows);
+      const target = resolveTarget(root, row.game_base_ref || row.target_ref || '', rowsByFile, entityIdRows, { specs, jsonSpecs });
       if (target.error) errors.push(`${archiveId}: ${target.error} (${row.game_base_ref || row.target_ref || 'missing target'})`);
       else if (!target.name) errors.push(`${archiveId}: variant target ${target.id} has no resolvable identity`);
       else if (target.archiveIds.includes(archiveId) || archiveIds(target.id).includes(archiveId)) errors.push(`${archiveId}: variant target resolves to the archive item itself`);
       else {
-        errors.push(...variantIdentityErrors(archiveId, masterItems.get(archiveId), target.row));
+        errors.push(...variantIdentityErrors(archiveId, masterItems.get(archiveId), target.row, archiveMaterialMap));
         if (row.family_key && target.family && row.family_key !== target.family) errors.push(`${archiveId}: variant target family ${target.family} does not match ledger family ${row.family_key}`);
       }
+      if (periodContains1230(row.period) === false) errors.push(`${archiveId}: variant period excludes 1230 (${row.period})`);
       if (Object.values(row).some(value => /research_only/i.test(String(value ?? '')))) errors.push(`${archiveId}: research_only material cannot be a variant`);
-    }
-    if (archiveId === 'WTR0024') {
-      const inPeriod = periodContains1230(row.period);
-      if (!isRejectedLedgerRow(row) || inPeriod !== false) errors.push(`WTR0024: must be rejected because period excludes 1230`);
     }
   }
 
@@ -560,14 +692,39 @@ export function checkArchiveOwnership(root = base) {
         return decisionItem && ownerGroup(decisionItem.file) === group && isTerminalDecision(decision);
       });
       if (ref) {
-        const target = resolveTarget(root, ref, rowsByFile, idRows);
+        const target = resolveTarget(root, ref, rowsByFile, entityIdRows, { entityOnly: true, specs, jsonSpecs });
         if (target.error) errors.push(`${id}: routed target_ref does not resolve (${ref}): ${target.error}`);
         else if (group && ownerGroup(target.file) !== group) errors.push(`${id}: routed target_ref resolves in ${ownerGroup(target.file)}, not target_group ${group}`);
+        else {
+          const receivingTargets = (ledgerByArchiveId.get(id) ?? []).filter(decision => {
+            const decisionItem = ledgers.find(candidate => candidate.archiveId === id && candidate.row === decision);
+            return decisionItem && ownerGroup(decisionItem.file) === group
+              && (isNewLedgerRow(decision) || isTerminalReferenceRow(decision)
+                || Object.entries(decision).some(([key, value]) => /^(?:record_type|type|match_type|disposition|inclusion_result|semantic_result|archive_action|selected_action)$/i.test(key) && /^(?:variant|add_variant)$/i.test(String(value).trim())));
+          });
+          for (const decision of receivingTargets) {
+            const expectedRef = String(decision.game_base_ref || decision.target_ref || '').trim();
+            const expectedTarget = expectedRef
+              ? resolveTarget(root, expectedRef, rowsByFile, entityIdRows, { specs, jsonSpecs })
+              : null;
+            const receivingEntities = (owners.get(id) ?? []).filter(entity => ownerGroup(entity.file) === group);
+            const newEntityTarget = isNewLedgerRow(decision) && !expectedRef && receivingEntities.length === 1
+              ? receivingEntities[0]
+              : null;
+            if ((expectedRef && (expectedTarget.error || expectedTarget.id !== target.id || expectedTarget.file !== target.file))
+              || (newEntityTarget && (newEntityTarget.key !== target.id || newEntityTarget.file !== target.file))
+              || (isNewLedgerRow(decision) && !expectedRef && receivingEntities.length !== 1)) {
+              errors.push(`${id}: routed target_ref ${ref} disagrees with receiving decision target ${expectedRef} in ${group}`);
+            }
+          }
+        }
       } else {
         const awaitsOwner = new RegExp(`(?:^|[\\s(])awaits_owner:${group.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=$|[\\s.,;)])`, 'u').test(String(route.row.reason ?? ''));
         if (!awaitsOwner) errors.push(`${id}: empty routed target_ref requires reason token awaits_owner:${group}`);
         if (receivingLedgerDecision) errors.push(`${id}: empty routed target_ref is invalid because receiving group ${group} has a decision`);
+        if ((owners.get(id) ?? []).some(entity => ownerGroup(entity.file) === group)) errors.push(`${id}: awaits_owner is invalid because receiving group ${group} already has an entity`);
       }
+      if (group && group === ownerGroup(route.file)) errors.push(`${id}: route targets its own group ${group}`);
     }
   }
 
@@ -576,7 +733,8 @@ export function checkArchiveOwnership(root = base) {
     const rootKey = normalizeSemanticRoot(entity.name);
     if (!rootKey) continue;
     for (const previous of roots.get(rootKey) ?? []) {
-      if (!ENTITY_TABLES.includes(previous.file) && !ENTITY_TABLES.includes(entity.file)) continue;
+      if (!collisionTables.has(previous.file) || !collisionTables.has(entity.file)) continue;
+      if (!ownerTables.has(previous.file) && !ownerTables.has(entity.file)) continue;
       if (!(previous.selfArchiveIds?.length || entity.selfArchiveIds?.length)) continue;
       const waiver = pairSpecificDecision(previous, entity, ledgerByArchiveId)
         || pairSpecificDecision(entity, previous, ledgerByArchiveId);
@@ -589,7 +747,33 @@ export function checkArchiveOwnership(root = base) {
   }
 
   const archiveIdsSeen = new Set([...owners.keys(), ...ledgers.map(item => item.archiveId).filter(Boolean)]);
-  return { errors, pairExceptions, counts: { csv_files: files.length, archive_ids: archiveIdsSeen.size, entity_owners: owners.size, entity_records: entityRecords.length } };
+  const error_counts = {};
+  for (const message of errors) {
+    const code = errorCode(message);
+    error_counts[code] = (error_counts[code] ?? 0) + 1;
+  }
+  const materialMappingCounts = {
+    mapped_archive_values: archiveMaterialMap.mapped_values,
+    unmapped_archive_ids: archiveMaterialMap.unmapped.size,
+    unmapped_values_by_frequency: [...archiveMaterialMap.unmapped.values()].flat().reduce((counts, value) => {
+      const key = String(value).toLowerCase();
+      counts[key] = (counts[key] ?? 0) + 1;
+      return counts;
+    }, {}),
+  };
+  return {
+    errors,
+    issues: errors.map(message => ({ code: errorCode(message), message })),
+    error_counts,
+    pairExceptions,
+    counts: { csv_files: files.length, archive_ids: archiveIdsSeen.size, entity_owners: owners.size, entity_records: entityRecords.length, ...materialMappingCounts },
+  };
+}
+
+export function checkArchiveOwnershipRegistry(root = base) {
+  const files = csvFiles(root);
+  const rowsByFile = new Map(files.map(file => [file, parseCsv(fs.readFileSync(path.join(root, file), 'utf8'))]));
+  return registryCoverageErrors(root, files, rowsByFile);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

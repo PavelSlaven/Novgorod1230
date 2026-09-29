@@ -267,7 +267,7 @@ test('P18 requires a capability port, and a traversal method absent from the sea
   const [option] = result.options;
   assert.deepEqual([option.executable, option.mechanical_readiness, option.steps.length], [false, 'temporarily_blocked', 0]);
   assert.deepEqual(option.blocking_reasons.map(({ reason_code, severity, diagnostic_message }) => [reason_code, severity, diagnostic_message]),
-    [['requires_method', 'temporary', 'requires_method:movement.small_river_craft']]);
+    [['movement_capability_missing', 'temporary', 'requires_method:movement.small_river_craft']]);
 });
 
 test('P18 offers every path: the foot path is executable and the boat path is blocked with its method, in a stable order', async () => {
@@ -283,7 +283,9 @@ test('P18 offers every path: the foot path is executable and the boat path is bl
   assert.equal(byReadiness.ready.executable, true);
   assert.equal(byReadiness.ready.steps.length, 1);
   assert.equal(byReadiness.temporarily_blocked.executable, false);
-  assert.equal(byReadiness.temporarily_blocked.blocking_reasons[0].diagnostic_message, 'requires_method:movement.small_river_craft');
+  assert.deepEqual(byReadiness.temporarily_blocked.blocking_reasons.map((reason) => [reason.reason_code, reason.diagnostic_message]),
+    [['movement_capability_missing', 'requires_method:movement.small_river_craft']],
+    'the standard\'s Appendix C code; the missing method rides in the diagnostic');
   assert.deepEqual((await ask()).options.map((option) => option.canonical_digest), result.options.map((option) => option.canonical_digest));
   const activated = await activationValidator().activate({ plan_id: 'plan', option: byReadiness.temporarily_blocked,
     world_revision_id: 'revision', catalog_digest: 'a'.repeat(64), planning_algorithm_version: 'test', planning_context_dependency_pins: pins(),
@@ -291,6 +293,25 @@ test('P18 offers every path: the foot path is executable and the boat path is bl
   assert.equal(activated.ok, false, 'a blocked option never activates');
   assert.equal(activated.error.code, 'route_plan_snapshot_missing', 'a typed refusal, not a crash or an unrelated cost failure');
   assert.match(activated.error.diagnostics.reason, /only a ready option/u);
+});
+
+test('P18 keeps a hard data gap of a path over the missing-method reason, and adds the method to a temporary block', async () => {
+  const end = endpoint('world_route_endpoint', 'route-end', { spatial_kind: 'canonical_g5', spatial_id: 'site' });
+  const start = endpoint('world_route_endpoint', 'start-route');
+  const base = { edge_kind: 'world_route_segment', from_endpoint_ref: start, to_endpoint_ref: end, step_kind: 'timed_traversal',
+    static_contract_snapshot: traversalStep('movement.small_river_craft') };
+  const template = { id: 'template', ...base, cost_summary: { cost_kind: 'time', action_units_min: null, action_units_max: null,
+    minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }, risk_summary: risk };
+  const withDigest = (edge) => ({ ...edge, cost_summary: { ...edge.cost_summary, canonical_digest: digest(edge.cost_summary) } });
+  const reason = (severity) => [{ reason_code: 'route_contract_missing', severity, diagnostic_message: 'the edge itself is blocked' }];
+  const ask = (edge) => planner([withDigest(edge)]).resolve(query({ start_endpoint_ref: start, cost_mode: 'time',
+    capability_context: capabilityContext({ allowed_movement_methods: ['movement.foot'] }) }));
+  const hard = (await ask({ ...template, readiness: 'data_gap', blocking_reasons: reason('hard_block') })).options[0];
+  assert.deepEqual([hard.mechanical_readiness, hard.blocking_reasons.map((r) => [r.reason_code, r.severity])],
+    ['data_gap', [['route_contract_missing', 'hard_block']]], 'a hard block is not lost under the temporary method reason');
+  const soft = (await ask({ ...template, readiness: 'temporarily_blocked', blocking_reasons: reason('temporary') })).options[0];
+  assert.deepEqual([soft.mechanical_readiness, soft.blocking_reasons.map((r) => r.reason_code)],
+    ['temporarily_blocked', ['route_contract_missing', 'movement_capability_missing']]);
 });
 
 test('P18 seals capability dependency pins into query, option and activated plan', async () => {

@@ -275,9 +275,7 @@ export async function assertTargetCanonicalStartPostgres({
   assert.equal((await publicRuntime.getPartyScreen(opening.party_id)).screen.main_prose, opening.screen.main_prose);
   await publicRuntime.acknowledgeOpening(opening.party_id, { client_ack_id: 'target-public-ack' });
   const opened = new Map([[profile.scenario_id, { partyId: opening.party_id, digest: canonicalDigest(opening.screen) }]]);
-  const singleStart = process.env.RUS_TARGET_CANONICAL_SINGLE_START === 'true';
-  for (const entry of (singleStart || process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true')
-    ? [] : manifest.starts.slice(1)) {
+  for (const entry of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true' ? [] : manifest.starts.slice(1)) {
     const next = await publicRuntime.startNewGame({ scenario_id: entry.scenario_id,
       request_id: `target-seven-starts-${entry.binding_revision}` });
     assert.equal(next.screen.schema, 'first_game_screen');
@@ -327,7 +325,7 @@ export async function assertTargetCanonicalStartPostgres({
   } finally {
     await factualTransaction.query('ROLLBACK'); factualTransaction.release();
   }
-  for (const [scenarioId, { partyId }] of (singleStart || process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true')
+  for (const [scenarioId, { partyId }] of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true'
     ? [[profile.scenario_id, opened.get(profile.scenario_id)]] : opened) {
     try {
       await publicRuntime.submitTurn(partyId, { raw_text: TARGET_SMOKE_INPUT,

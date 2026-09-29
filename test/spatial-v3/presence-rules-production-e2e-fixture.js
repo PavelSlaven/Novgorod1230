@@ -78,11 +78,19 @@ function databaseUrl(adminUrl, name) {
   return url.href;
 }
 
-function startPostgres(name) {
+export function startPostgres(name, { profile = 'default' } = {}) {
+  const resourceArgs = profile === 'canonical-acceptance'
+    ? ['--shm-size', '2g', '--memory', '6g']
+    : [];
+  const postgresArgs = profile === 'canonical-acceptance'
+    ? ['-c', 'shared_buffers=512MB', '-c', 'max_connections=80']
+    : [];
   const result = docker([
     'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
+    ...resourceArgs,
     '-e', 'POSTGRES_PASSWORD=local_only',
     POSTGRES_IMAGE,
+    ...postgresArgs,
   ]);
   assert.equal(result.status, 0, result.stderr);
 }
@@ -202,11 +210,11 @@ function buildAttest(fixtureApproval) {
 }
 
 /** @returns {Promise<{ container, dataRoot, worldPool, partyPool, approvals, rootDir, releaseContext }>} */
-export async function bootstrapV17PresenceE2e(t) {
+export async function bootstrapV17PresenceE2e(t, { postgresProfile = 'default' } = {}) {
   assert.equal(docker(['version']).status, 0, 'Docker is required.');
   const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-presence-e2e-'));
   const container = `presence-e2e-pg-${randomUUID().slice(0, 12)}`;
-  startPostgres(container);
+  startPostgres(container, { profile: postgresProfile });
   await waitForPostgres(container);
   initializeBootstrapRoles(container);
   const adminUrl = adminDatabaseUrl(container);

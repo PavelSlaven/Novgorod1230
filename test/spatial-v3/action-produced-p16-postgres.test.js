@@ -58,7 +58,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.equal(started.status, 0, started.stderr);
     for (let attempt = 0; attempt < 50; attempt += 1) {
       await new Promise((done) => setTimeout(done, 250));
-      if (docker(['exec', container, 'pg_isready', '-U', 'action', '-d',
+      if (docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'action', '-d',
         'action']).status === 0) break;
       if (attempt === 49) assert.fail('PostgreSQL not ready');
     }

@@ -319,7 +319,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   let ready = false;
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((done) => setTimeout(done, 300));
-    if (docker(['exec', name, 'pg_isready', '-U', 'p16', '-d', 'p16']).status === 0) { ready = true; break; }
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p16', '-d', 'p16']).status === 0) { ready = true; break; }
   }
   assert.equal(ready, true, 'isolated PostgreSQL must become ready');
   await new Promise((done) => setTimeout(done, 500));

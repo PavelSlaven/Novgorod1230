@@ -138,7 +138,7 @@ test('start site: presence at new game, reload and re-look without reroll',
     }
   });
 
-test('generated G5: cross-site movement and reload', { timeout: 1_800_000 },
+test('generated G5: cross-site movement commits presence rules on first entry', { timeout: 1_800_000 },
   async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
     const restoreFetch = installPresenceProductionE2eFetch();

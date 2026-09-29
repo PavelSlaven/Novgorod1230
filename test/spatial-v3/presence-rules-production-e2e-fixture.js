@@ -324,8 +324,9 @@ export function installPresenceProductionE2eFetch({
     } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
       const sources = [...modelInput.required_current_beat.changes,
         ...modelInput.required_current_beat.uncertainties];
-      // A turn without required beats (arrival on a new site) still needs non-empty prose:
-      // fall back to the visible scene the request itself supplies.
+      // Temporary: a turn without required beats (arrival on a new site) still needs non-empty prose,
+      // so fall back to the visible scene the request itself supplies. Remove once the empty beat
+      // at a transition is fixed (tasks rt-narr / rt-walk, NOTE-02).
       const support = modelInput.optional_support;
       const fallback = [support?.visible_scene, ...(support?.sensory_details ?? [])].filter(Boolean);
       output = { prose: (sources.length > 0 ? sources.map(({ text }) => text) : fallback).join('\n\n') };

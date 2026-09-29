@@ -128,6 +128,7 @@ for (const [archiveId, decision] of craftsBicHandoffs) {
 const ROUTED = new Map();
 const route = (group, ids) => ids.split(/\s+/).filter(Boolean).forEach(id => ROUTED.set(id, { group, ref: '' }));
 route('transport-health-recreation', 'LTR0003 LTR0004 LTR0005 LTR0006 LTR0008 LTR0010 LTR0011 LTR0012 LTR0013 LTR0014 LTR0015 LTR0016 LTR0018 LTR0019 LTR0020 LTR0021 LTR0023 LTR0026 LTR0029 LTR0031 LTR0032 WTR0002 WTR0003 WTR0008 WTR0009 WTR0014 WTR0015 WTR0016 WTR0020 WTR0021 WTR0022 WTR0024 WTR0025 WTR0026 WTR0028 WTR0030 WTR0034 WTR0035 WTR0036 WTR0037 HRS0003 HRS0004 HRS0005 HRS0006 HRS0007 HRS0008 HRS0009 HRS0010 HRS0011 HRS0012 HRS0013 HRS0014 HRS0015 HRS0016 HRS0017 HRS0018 HRS0019 HRS0020 HRS0021 HRS0022 HRS0023 HRS0024 HRS0025 HRS0026 HRS0027 HRS0028 HRS0029 HRS0030 HRS0031 HRS0032 HRS0033 HRS0036 FRN0011 FRN0035 FRN0041 FRN0051');
+route('transport-health-recreation', 'FSH0021 HNT0017');
 route('fauna-fish-invertebrates-livestock', 'HNT0013 FSH0025 OMI02061 OMI02062 OMI02063 OMI02064 OMI02065');
 route('food-drink', 'CRF0054 OMI00548');
 route('buildings-interiors-containers', 'AGR0004 AGR0005');
@@ -135,6 +136,7 @@ route('buildings-interiors-containers', 'OMI00422 OMI00423');
 route('items-household-personal', 'OMI00101 OMI00104 OMI00316 OMI00317 OMI00374 OMI01686 OMI01749 OMI00293 WTR0023');
 route('clothing-appearance', 'OMI01220');
 route('food-drink', 'FOD0009');
+route('food-drink', 'OMI02136');
 route('nature-materials-weather', 'OMI00037 OMI00048 OMI00050 OMI00113 OMI00114 OMI00115 OMI00135 OMI00136 OMI00143 OMI00149 OMI00155 OMI00157 OMI00158 OMI01009 OMI01010 OMI01011 OMI01034 OMI01035 OMI01036 OMI01151 OMI01152 OMI01517');
 const ROUTED_REFS = new Map([
   ['LTR0021', 'transport-health-recreation/transport_travel/transport_entities.csv#trv_023'], ['LTR0026', 'transport-health-recreation/transport_travel/transport_entities.csv#trv_024'],
@@ -145,6 +147,9 @@ const ROUTED_REFS = new Map([
   ['OMI01220', 'clothing-appearance/adornment_appearance/adornment.csv#ad_ac020'],
   ['OMI00422', 'buildings-interiors-containers/interiors/matcult_item_refs.csv#TRD0007'], ['OMI00423', 'buildings-interiors-containers/interiors/matcult_item_refs.csv#TRD0008'],
   ['FSH0025', 'fauna-fish-invertebrates-livestock/fauna/fishing_methods.csv#fm_weir_zakol'],
+  ['FSH0021', 'transport-health-recreation/transport_travel/transport_entities.csv#trv_026'],
+  ['HNT0017', 'transport-health-recreation/transport_travel/transport_entities.csv#trv_026'],
+  ['OMI02136', 'food-drink/food/material_entities.csv#n1230:material_item:omi01398'],
   ['OMI02061', 'fauna-fish-invertebrates-livestock/fauna/livestock_products.csv#lp_manure'], ['OMI02062', 'fauna-fish-invertebrates-livestock/fauna/livestock_products.csv#lp_manure'],
   ['OMI02063', 'fauna-fish-invertebrates-livestock/fauna/livestock_products.csv#lp_manure'], ['OMI02064', 'fauna-fish-invertebrates-livestock/fauna/livestock_products.csv#lp_manure'],
   ['OMI02065', 'fauna-fish-invertebrates-livestock/fauna/livestock_products.csv#lp_manure'],
@@ -214,6 +219,7 @@ addVariants('OMI00977', 'crafts-tools-processes/materials_registry/material_enti
 addVariants('OMI00912', 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00910', 'Same object identity as archive OMI00910.');
 addVariants('OMI00903', 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00882', 'Bone/antler item kind property; reuse OMI00882 identity.');
 addVariants('OMI02113', 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_snare', 'Snare form/state; reuse existing trap tool.');
+addVariants('OMI02095', 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_net_sinker', 'Целое снятое грузило остаётся tl_net_sinker; остаток шнура не меняет тип орудия.');
 addVariants('OMI01667', 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi01183', 'Same carbon-black item identity as OMI01183.');
 addVariants('OMI02096', 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00040', 'Quantity/form of existing wooden peg item.');
 addVariants('OMI01755', 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi01754', 'Ash form/state of the existing candidate.');

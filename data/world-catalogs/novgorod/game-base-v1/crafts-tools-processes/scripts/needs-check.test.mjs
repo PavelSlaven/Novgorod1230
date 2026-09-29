@@ -31,7 +31,6 @@ test('needs_check authoring schema and evidence locators are valid', () => {
 
 test('hunting and fishing items resolve to crafts owners or remain with item-specific reasons', () => {
   const terminalToolVariants = new Map([
-    ['STA0003', 'tl_net_set'],
     ['OMI00929', 'tl_netting_needle'],
     ['OMI02104', 'tl_net_float'],
     ['OMI02110', 'tl_snare'], ['OMI02111', 'tl_snare'], ['OMI02112', 'tl_snare'],
@@ -50,6 +49,8 @@ test('hunting and fishing items resolve to crafts owners or remain with item-spe
     assert.ok(!byId.has(id), `${id} is a D38 rejection, not an ownership question`);
     assert.equal(ledgerById.get(id)?.disposition, 'rejected');
   }
+  assert.equal(byId.get('STA0003')?.current_result, 'variant/include');
+  assert.match(byId.get('STA0003')?.note || '', /tl_net_seine.*tl_net_set.*tl_bird_net/u);
   for (const row of A.authoredRows) {
     const id = row[0].split(':').at(-1);
     if (!A.isHuntingFishingCluster(id)) continue;
@@ -64,6 +65,45 @@ test('hunting and fishing items resolve to crafts owners or remain with item-spe
   }
   for (const id of ['OMI00366', 'OMI02061']) {
     assert.ok(!A.isHuntingFishingCluster(id), `${id} is outside the boundary`);
+  }
+});
+
+test('reviewed hunting and fishing targets stay explicit by archive ID', () => {
+  const decisions = new Map([
+    ['FSH0012', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage' }],
+    ['OMI00382', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage' }],
+    ['OMI00383', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage' }],
+    ['OMI00386', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage' }],
+    ['FSH0020', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage' }],
+    ['OMI00408', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage' }],
+    ['STA0036', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_fur' }],
+    ['HNT0010', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_fur' }],
+    ['OMI02113', { ref: 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_snare' }],
+    ['OMI02133', { ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_fur' }],
+    ['OMI02126', { ref: 'crafts-tools-processes/craft_processes/process_products.csv#pr:feathers_down' }],
+    ['OMI02131', { ref: 'crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass' }],
+    ['OMI02132', { ref: 'crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass' }],
+    ['OMI02135', { ref: 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00439' }],
+    ['OMI02096', { ref: 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00040' }],
+    ['OMI02095', { ref: 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_net_sinker' }],
+    ['FSH0021', { group: 'transport-health-recreation', ref: 'transport-health-recreation/transport_travel/transport_entities.csv#trv_026' }],
+    ['HNT0017', { group: 'transport-health-recreation', ref: 'transport-health-recreation/transport_travel/transport_entities.csv#trv_026' }],
+    ['OMI02136', { group: 'food-drink', ref: 'food-drink/food/material_entities.csv#n1230:material_item:omi01398' }],
+  ]);
+  for (const [id, target] of decisions) {
+    assert.ok(!byId.has(id), `${id} is a reviewed terminal decision, not queue material`);
+    const row = ledgerById.get(id);
+    assert.ok(row, `${id} must exist in the generated ledger`);
+    if (target.group) {
+      assert.equal(row.record_type, 'new', `${id} must route its whole identity`);
+      assert.equal(row.disposition, 'routed', `${id} must remain a routed owner decision`);
+      assert.equal(row.target_group, target.group, `${id} receiving owner`);
+      assert.equal(row.target_ref, target.ref, `${id} receiving entity`);
+    } else {
+      assert.equal(row.record_type, 'variant', `${id} must reuse a stable identity`);
+      assert.equal(row.disposition, 'include', `${id} must resolve as a variant`);
+      assert.equal(row.game_base_ref, target.ref, `${id} variant target`);
+    }
   }
 });
 
@@ -151,5 +191,29 @@ test('cross-group semantic clusters are held all-or-none', () => {
       assert.deepEqual(present.filter(id => !byId.has(id)), [], `${name} has a partial queue`);
       for (const id of present) assert.equal(byId.get(id)?.cluster_id, name, `${id} must identify its ${name} cluster`);
     }
+  }
+});
+
+test('needs_check reasons name a candidate or explicit search gap and have unique item-free skeletons', () => {
+  const itemNameById = new Map(A.authoredRows.map(row => [row[0].split(':').at(-1), row[1]]));
+  const candidateId = /(?:\btl_[a-z0-9_]+\b|\bmt_[a-z0-9_]+\b|\bpr:[a-z0-9_]+\b|\bomi\d{5}\b|\btrv_\d+\b)/iu;
+  const batch = queue.filter(row => A.isHuntingFishingCluster(row.archive_id));
+  const skeletons = new Set();
+  for (const row of batch) {
+    const itemName = itemNameById.get(row.archive_id) || '';
+    const reason = row.note.startsWith(`${itemName}: `) ? row.note.slice(itemName.length + 2) : row.note;
+    assert.ok(candidateId.test(reason) || /кандидата нет/iu.test(reason), `${row.archive_id} must name a candidate or say none was found`);
+    const skeleton = reason.toLocaleLowerCase('ru-RU').replace(/\s+/gu, ' ').trim();
+    assert.ok(!skeletons.has(skeleton), `${row.archive_id} repeats a reason skeleton`);
+    skeletons.add(skeleton);
+  }
+  for (const id of ['STA0003', 'FSH0032', 'OMI00410', 'OMI00411']) {
+    const row = byId.get(id);
+    assert.ok(row, `${id} must remain queued while its net type is unknown`);
+    assert.match(row.note, /tl_net_seine.*tl_net_set.*tl_bird_net/u);
+  }
+  for (const id of ['FSH0018', 'FSH0023']) {
+    const row = byId.get(id);
+    assert.match(row?.note || '', /включение отложено.*не отказ/iu);
   }
 });

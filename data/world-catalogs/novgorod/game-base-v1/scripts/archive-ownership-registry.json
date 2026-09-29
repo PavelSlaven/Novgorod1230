@@ -596,6 +596,49 @@
       "verification": "scripts/check-archive-ownership.test.mjs#clothing-material-pair-decisions"
     },
     {
+      "archive_id": "OMI02095",
+      "target_file": "crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "target_id": "tl_net_sinker",
+      "waives": [
+        "category",
+        "material"
+      ],
+      "reason": "OMI02095 — целое грузило; tl_net_sinker обозначает каменное сетевое грузило, тогда как архивный материал mixed не доказывает камень и категория источника agriculture_fishing_hunting_consumables не совпадает с fishing у орудия.",
+      "verification": "crafts-tools-processes/scripts/needs-check.test.mjs#reviewed-hunting-and-fishing-targets"
+    },
+    {
+      "archive_id": "OMI02096",
+      "target_file": "crafts-tools-processes/materials_registry/material_entities.csv",
+      "target_id": "n1230:material_item:omi00040",
+      "waives": [
+        "category"
+      ],
+      "reason": "OMI02096 — сетевой колышек-функция, совпадающая с omi00040; категория источника agriculture_fishing_hunting_consumables отличается от wood_bark_plant_materials у деревянного крепежа.",
+      "verification": "crafts-tools-processes/scripts/needs-check.test.mjs#reviewed-hunting-and-fishing-targets"
+    },
+    {
+      "archive_id": "OMI02133",
+      "target_file": "crafts-tools-processes/materials_registry/materials.csv",
+      "target_id": "mt_fur",
+      "waives": [
+        "category",
+        "material"
+      ],
+      "reason": "OMI02133 — сырая меховая шкурка: архивная категория agriculture_fishing_hunting_consumables отличается от семейства материала fur у mt_fur; запись не называет вид зверя.",
+      "verification": "crafts-tools-processes/scripts/needs-check.test.mjs#reviewed-hunting-and-fishing-targets"
+    },
+    {
+      "archive_id": "OMI02135",
+      "target_file": "crafts-tools-processes/materials_registry/material_entities.csv",
+      "target_id": "n1230:material_item:omi00439",
+      "waives": [
+        "category",
+        "material"
+      ],
+      "reason": "OMI02135 — соскобы со шкурки как отход; omi00439 обозначает жир и мездру, категория источника agriculture_fishing_hunting_consumables отличается от leather_hide_fur у отхода кожевенной обработки.",
+      "verification": "crafts-tools-processes/scripts/needs-check.test.mjs#reviewed-hunting-and-fishing-targets"
+    },
+    {
       "archive_id": "OMI00034",
       "target_file": "crafts-tools-processes/materials_registry/materials.csv",
       "target_id": "mt_wood_willow",

@@ -1,5 +1,5 @@
 import { tracePhase3PreconditionSatisfied } from './lower-dvina-trace-phase-3-admission.js';
-import { withoutSceneNpcs } from './lower-dvina-trace-scene-presence.js';
+import { withoutSceneRead } from './lower-dvina-trace-scene-presence.js';
 import { available, exact, exactMatcher, fail, mode, packageBase,
   phase3WriteTargets } from './lower-dvina-trace-phase-3-command-shared.js';
 import { assertTracePhase3ConversationExecution, resolveTracePhase3NpcDecision } from
@@ -291,7 +291,7 @@ export function createSemanticConversationCommand({
           npc_id: targetActor.instance_id,
           // Scene-read NPCs leave the exchange before the turn envelope (and its
           // idempotency digests) is built, so digest and stored snapshot see one envelope.
-          semantic_exchange: withoutSceneNpcs(semanticExchange),
+          semantic_exchange: withoutSceneRead(semanticExchange),
           ...conversationHandoffProjection(semanticExchange),
           response_kind: semanticExchange.response_kind,
           evidence_input_ref: evidence ? ids.evidence : null,

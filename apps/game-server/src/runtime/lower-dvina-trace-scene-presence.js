@@ -82,14 +82,27 @@ export function withoutSceneNpcs(state) {
   return strip(rest);
 }
 
-function strip(value) {
+/**
+ * withoutSceneNpcs plus the position→G6 map at any depth: for a command whose
+ * consequence carries a copy of the state, cut before the turn envelope is digested.
+ */
+export function withoutSceneRead(value) { return strip(value, true); }
+
+/** True when a scene-read NPC record sits anywhere (array element or object property). */
+export function containsSceneNpc(value) {
+  if (value == null || typeof value !== 'object') return false;
+  if (value.runtime_source === SCENE_NPC_SOURCE) return true;
+  return Object.values(value).some(containsSceneNpc);
+}
+
+function strip(value, dropMap = false) {
   if (value == null || typeof value !== 'object') return value;
   if (Array.isArray(value)) {
     let changed = false;
     const kept = [];
     for (const entry of value) {
       if (entry?.runtime_source === SCENE_NPC_SOURCE) { changed = true; continue; }
-      const next = strip(entry);
+      const next = strip(entry, dropMap);
       if (next !== entry) changed = true;
       kept.push(next);
     }
@@ -98,7 +111,8 @@ function strip(value) {
   let changed = false;
   const out = {};
   for (const [key, child] of Object.entries(value)) {
-    const next = strip(child);
+    if (dropMap && key === 'scene_position_g6') { changed = true; continue; }
+    const next = strip(child, dropMap);
     if (next !== child) changed = true;
     out[key] = next;
   }

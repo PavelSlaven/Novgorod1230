@@ -203,8 +203,13 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       // over the envelope that the snapshot keeps, so the replay evidence is recognised.
       const repeated = await runtime.submitTurn(partyId, { raw_text: TALK_TEXT,
         request_id: 'scene-npcs-talk' });
+      assert.equal(typeof first.state_version, 'number');
       assert.equal(repeated.state_version, first.state_version);
       assert.equal(repeated.turn_number, first.turn_number);
+      assert.ok(first.screen?.turn_id, 'the first answer carries a screen turn_id');
+      assert.equal(repeated.screen?.turn_id, first.screen.turn_id);
+      assert.deepEqual(repeated.screen?.current_projection_anchor,
+        first.screen.current_projection_anchor);
       const afterRepeat = await snapshotNpcs(env.partyPool, partyId);
       assert.equal(afterRepeat.version, after.version, 'no second write for a repeat');
       const replay = await repository.loadPhase2Replay({ partyId,

@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(sprint, process): CURRENT_SPRINT — решения D47–D50 и срез задач D49; HOW_WE_WORK — модели Codex по D48/D50, слияние data-PR (D45), показ владельцу, размер файла, правила процесса D48–D50 (§10.8) (#211)
 - data(game-base): needs_check batch 2, variant material mismatches — point pair decisions with per-item reasons, 37 queued with concrete doubts (imp-variant-mat) (#210)
 - data(game-base): needs_check batch 1, hunting/fishing cluster — exact gear/material variants, per-item queue reasons, scoped pair waivers in the ownership checker (imp-needs-hunt) (#209)
 - chore(architecture): file-size limits removed; split code by responsibility (AI §16), MODULE_RULES item 7 reworded (#208)

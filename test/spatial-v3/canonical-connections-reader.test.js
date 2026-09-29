@@ -63,7 +63,8 @@ test('unapproved profile, digest drift and wrong scope gap only their binding; i
 
 test('a place named without a scene pin is read at the release scene generation, a pinned one as pinned', async () => {
   const seen = [];
-  const readerAt = (generatedTemplateVersion) => createSpatialV3WorldBaseReader({ generatedTemplateVersion,
+  const readerAt = (releaseSceneProfileVersion) => createSpatialV3WorldBaseReader({ releaseSceneProfileVersion,
+    generatedTemplateVersion: 7, // unrelated: the generated-template generation never selects a canonical profile
     query: async (sql, params) => { seen.push(params); return { rows: [] }; } });
   const place = { id: 'g5a', version: 1, world_revision_id: 'target' };
   await readerAt(2).readPinnedCanonicalG5SceneBinding(place);

@@ -84,7 +84,8 @@ function exactReactionRef(ref) {
 }
 
 /** Read-only authoring reader. Every lookup requires one explicit version and revision pin. */
-export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion = 1 } = {}) {
+export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion = 1,
+  releaseSceneProfileVersion = 1 } = {}) {
   async function read({ kind, ref } = {}) {
     if (!SOURCES[kind] || !exact(ref)) return failure('authoring_dependency_pin_missing', kind ?? 'authoring', ref?.id, { kind });
     if (typeof query !== 'function') return failure('generated_schema_mismatch', kind, ref.id, { reason: 'read-only query port is required' });
@@ -761,9 +762,9 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
     [id, version, world_revision_id, scene_template_ref?.id ?? null,
       scene_template_ref?.version ?? null, scene_materialization_profile_ref?.id ?? null,
       scene_materialization_profile_ref?.version ?? null,
-      // Unpinned: the release's scene generation (the open-capacity successor is a second profile
+      // Unpinned: the release's scene-profile generation (the open-capacity successor is a second profile
       // of the same place, so a bare place would otherwise be ambiguous).
-      scene_template_ref || scene_materialization_profile_ref ? null : generatedTemplateVersion]);
+      scene_template_ref || scene_materialization_profile_ref ? null : releaseSceneProfileVersion]);
     if (!Array.isArray(result?.rows) || result.rows.length !== 1) {
       return failure('route_plan_snapshot_missing', 'node', id, {
         reason: result?.rows?.length > 1

@@ -58,9 +58,9 @@ P16 persists those rows with topology and the selection trace.
 
 Canonical connections (passages between canonical places of one G4, Vikhtuy first)
 are a second topology kind of the same owner. The world-base reader returns the
-approved bindings that leave a place (per binding id the highest approved version
-whose profile is a non-conditional `site_connection`; the profile is read by the
-binding's own reference, because the expansion profile pins only one of them).
+approved bindings that leave a place (per binding id its highest approved version;
+the profile is read by the binding's own reference, because the expansion profile pins
+only one of them).
 `eligibleCanonicalConnections` offers them at the departure position the binding
 names; away from it the first local hop toward that position is the approach
 (same rule as exits: only an edge the local-scene owner offers). Disclosure is the
@@ -82,10 +82,11 @@ committer accepts only that kind for topology commits). In `visible_objects` the
 `g5_site_connection` entity carries the approved binding id, not the party row id
 `canconn:<party>:<binding>`, which does not exist before the first passage; the kind is shown
 in the visible context, the turn-step scene and the route panel. A bare canonical scene-binding
-read (no scene or profile pin) uses the release scene generation (`generatedTemplateVersion`:
-2 in v17) - the open-capacity successor made a bare read ambiguous. A binding that has no usable
-profile version (none approved, non-conditional `site_connection`) fails the whole read of that
-place's connections (typed gap), not just that passage.
+read (no scene or profile pin) uses the release scene-profile generation (its own pin
+`releaseSceneProfileVersion`: 2 in v17, default 1) - the open-capacity successor made a bare read ambiguous. Only the highest approved version of a binding is a candidate (no fallback to an older one);
+if its profile is not a non-conditional `site_connection` the reader lists that binding in `gaps`
+(kept in the context as `canonical_connection_gaps`) and the place's other connections, exits and
+visible context are unaffected.
 
 Presence at first arrival (O1, §3A) has one resolver,
 `createTargetPresenceRulesFirstArrivalResolver`, for the start place and every

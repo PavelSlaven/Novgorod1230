@@ -145,7 +145,7 @@
     "group": "occupations-activities",
     "entities_ru": "68 занятий + недостающие ремёсла (ювелир-литейщик, косторез, токарь, скорняк, кожевник, красильщик, верёвочник/сетевяз, замочник, щитник/лучник, каменщик, известежог, иконописец, пивовар/медовар, мясник, хлебник, рыботорговец, пряха/ткачиха, кормилица — проверить каждое); обязательные поля runtime basis для перевода 31 caution в approved.",
     "key_fields": ["occupation_id", "occupation_archetype_id", "daily_schedule_winter/spring_rasputitsa/summer/autumn", "how_to_materialize_as_background/scene/key_npc", "typical_property/tools/clothing/containers", "typical_local/route_knowledge", "common_relationships/fears/goals", "llm_adaptation_rules", "llm_forbidden_uses", "status", "source_refs", "confidence"],
-    "target_tables": ["region_occupations TSV (pinned; новые строки отдельно)", "occupation_archetypes (15)", "occupation_skill_defaults", "skill_catalog (12)"],
+    "target_tables": ["region_occupations TSV (pinned; новые строки отдельно)", "occupation_archetypes (16)", "occupation_skill_defaults", "skill_catalog (12)"],
     "consumers": ["approved-npc-runtime-basis.js (NPC_RUNTIME_BASIS_DATA_GAP при пустом поле)", "procedural-scene-records", "D8 сопоставление запроса игрока с занятием"],
     "existing_sources": ["main:data/novgorod-region/novgorod_occupations_v1_enriched.tsv — 37 approved / 31 caution", "master professions 479 — кандидат (superseded)", "wk:occupation-context.json — approved"],
     "gaps_ru": "31 занятие отбрасывается фильтром; многие засвидетельствованные ремёсла отсутствуют; skill_catalog 12 навыков.",

@@ -15,7 +15,7 @@
 
 | Файл | Строк | Что внутри |
 |---|---|---|
-| `roles/new_role_candidates.tsv` | 33 | Те же 64 колонки, что в пинованном файле. `status=candidate`, `mapping_review_status=candidate`. |
+| `roles/new_role_candidates.tsv` | 33 | 65 колонок: 64 колонки пинованного файла и `allowed_occupations` из `world_base.region_social_roles` (`infra/world-base/schema/04.sql`). `status=candidate`, `mapping_review_status=candidate`. |
 
 ## Метод
 

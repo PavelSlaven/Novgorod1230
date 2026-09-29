@@ -212,7 +212,7 @@ for s in inv_herp_data.INV:
                     key = (fid, pf, se, CORE_SUB)
                     cur = presence.get(key)
                     if cur is None or WEIGHT[cls] > WEIGHT[cur["cls"]] or (WEIGHT[cls] == WEIGHT[cur["cls"]] and act == "active"):
-                        presence[key] = dict(cls=cls, basis=["authored"], activity=act, table="invertebrates_herps", src=src, conf=s["conf"])
+                        presence[key] = dict(cls=cls, basis=[s.get("basis", "authored")], activity=act, table="invertebrates_herps", src=src, conf=s["conf"])
     inv_rows.append(dict(
         fa_id=fid, name_ru=s["name_ru"], name_lat=s["name_lat"], name_en=s["name_en"], group=s["group"],
         category_ref=f"cat:fauna.{s['group']}", taxon_scope="universal", region_id="", presence_region_id=REGION,

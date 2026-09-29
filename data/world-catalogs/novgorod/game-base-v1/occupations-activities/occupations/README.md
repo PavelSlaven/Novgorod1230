@@ -22,8 +22,8 @@ NPC profile. 15 недоступных pinned-target mappings — отдельн
 Archive seasonal fields, `how_to_materialize_as_*` и `common_relationships`
 содержат typed `no_source`, если источник описывает общий workflow, а не факт
 конкретного занятия. `region_id=region_novgorod_land` берётся из archive scope.
-Archetypes следуют reviewer mappings; музыкальные owners сохраняют
-`no_source:occupation_archetype`. Context-only policy вариантов находится в
+Archetypes следуют reviewer mappings; музыкальные owners используют закрытый
+архетип `performance_entertainment`. Context-only policy вариантов находится в
 archive variant provenance token; owner policy не выводится из варианта.
 `basis` сохраняет `sourced` только для PRO0448, PRO0107, PRO0109, PRO0111 и
 PRO0119; A-confidence overrides заданы OA-6.

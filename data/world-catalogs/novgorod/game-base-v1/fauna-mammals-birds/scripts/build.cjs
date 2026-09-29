@@ -195,7 +195,7 @@ for (const t of mammals) pres.push(...presRowsFor(t, 'mammal'));
 for (const b of birds) pres.push(...presRowsFor(b, 'bird'));
 
 // ---- checks + sources tables
-const chkRows = checks.map((c, i) => ({ check_id: `fchk_${String(i + 1).padStart(3, '0')}`, taxon_ru: c.taxon, name_lat: c.lat, verdict: c.verdict, fa_ids: c.fa_id, reason: c.reason, source_refs: c.src, confidence: c.confidence, status: 'candidate' }));
+const chkRows = checks.map((c, i) => ({ check_id: `fchk_${String(i + 1).padStart(3, '0')}`, taxon_ru: c.taxon, name_lat: c.lat, verdict: c.verdict, fa_ids: c.fa_id, basis: c.basis || '', derivation: c.derivation || '', reason: c.reason, source_refs: c.src, confidence: c.confidence, status: 'candidate' }));
 const srcRows = sources.map((s) => ({ source_id: s.id, level: s.level, read_depth: s.read, title: s.title, url: s.url, use: s.use }));
 
 const counts = {};

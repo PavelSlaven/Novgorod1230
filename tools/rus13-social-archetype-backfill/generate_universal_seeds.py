@@ -37,7 +37,7 @@ def row(id_: str, title: str, summary: str = "", game_use: str = "") -> dict:
 def write_csv(name: str, cols: list[str], rows: list[dict]) -> None:
     path = OUT / name
     with path.open("w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
+        w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore", lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
     print(f"wrote {path.name}: {len(rows)} rows")
@@ -135,6 +135,8 @@ def main() -> None:
         row("animal_husbandry", "Скотоводство"),
         row("healing_care", "Лечение и уход"),
         row("domestic_service", "Домашняя служба"),
+        row("performance_entertainment", "Исполнительство и увеселение",
+            "Музыкальное, певческое и сказительское исполнение для слушателей."),
         row("illicit_marginal", "Теневой и маргинальный промысел"),
         row("wage_labor", "Наёмный труд"),
         row("hospitality_service", "Гостеприимство и приют"),

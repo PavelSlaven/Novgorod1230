@@ -127,9 +127,9 @@ ARCHIVE_ARCHETYPE_OVERRIDES = {
     "PRO0398": "religious_literate",
     "PRO0407": "hospitality_service",
     "PRO0465": "hospitality_service",
-    "PRO0448": "no_source:occupation_archetype",
-    "PRO0454": "no_source:occupation_archetype",
-    "PRO0455": "no_source:occupation_archetype",
+    "PRO0448": "performance_entertainment",
+    "PRO0454": "performance_entertainment",
+    "PRO0455": "performance_entertainment",
 }
 
 

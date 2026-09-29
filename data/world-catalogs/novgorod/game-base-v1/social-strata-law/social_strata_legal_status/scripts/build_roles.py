@@ -16,7 +16,7 @@ Reads:
     from the collector brief).
 
 Writes (this folder only):
-  - roles/new_role_candidates.tsv   (same 64-column schema as the pinned TSV)
+  - roles/new_role_candidates.tsv   (the pinned 64 columns plus allowed_occupations)
   - reports/counts.json
   - reports/validation.json
 """
@@ -37,7 +37,7 @@ PINNED_TSV = MAIN_CHECKOUT / "data/novgorod-region/novgorod_social_roles_v1_enri
 SEEDS_DIR = MAIN_CHECKOUT / "data/world-base-seeds"
 
 sys.path.insert(0, str(HERE))
-from seed_new_roles import HEADER, BOILERPLATE, NEW_ROLES  # noqa: E402
+from seed_new_roles import HEADER, PINNED_HEADER, BOILERPLATE, NEW_ROLES  # noqa: E402
 
 ARCHIVE_ROLES = json.loads(
     (HERE / "archive_role_candidates.json").read_text(encoding="utf-8")
@@ -255,10 +255,10 @@ def main():
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
     pinned_header, pinned_rows = load_pinned()
-    if pinned_header != HEADER:
+    if pinned_header != PINNED_HEADER:
         print("ERROR: pinned TSV header does not match expected 64-column schema.")
         print("pinned :", pinned_header)
-        print("expect :", HEADER)
+        print("expect :", PINNED_HEADER)
         sys.exit(1)
     pinned_ids = {row["role_id"] for row in pinned_rows}
 

@@ -15,7 +15,7 @@ Institutional/office context: Yanin, V.L. "Novgorodskie posadniki", 2-е изд.
   https://www.klex.ru/1fg3  (посадник/тысяцкий/владычная канцелярия окружение)
 """
 
-HEADER = [
+PINNED_HEADER = [
     "role_id", "role_title", "role_group", "historical_term", "modern_explanation",
     "period", "region_id", "social_rank", "freedom_status", "dependency_type",
     "typical_authority_over_them", "typical_authority_they_have", "legal_capacity",
@@ -34,6 +34,8 @@ HEADER = [
     "role_archetype_id", "legal_status_archetype_id", "dependency_archetype_id",
     "mobility_archetype_id", "mapping_review_status", "mapping_confidence", "mapping_notes",
 ]
+HEADER = list(PINNED_HEADER)
+HEADER.insert(HEADER.index("common_income_sources") + 1, "allowed_occupations")
 
 # Fields identical across most pinned rows (verified against nov_role_toll_collector,
 # nov_role_dependent_peasant, nov_role_princely_druzhinnik, nov_role_guide,
@@ -64,6 +66,7 @@ BOILERPLATE = {
     "status": "candidate",
     "source_note": "региональная социальная реконструкция для Новгородской земли XIII века на основе Русской Правды (Пространная редакция) и WK residual-law/government claims; точные термины и частные права требуют аудита",
     "mapping_review_status": "candidate",
+    "allowed_occupations": "",
 }
 
 RP = "src_russkaya_pravda"  # http://www.hist.msu.ru/ER/Etext/RP/
@@ -423,6 +426,7 @@ NEW_ROLES = [
         "mobility_archetype_id": "road_mobile",
         "mapping_confidence": "medium",
         "mapping_notes": "explicit_map; аналог nov_role_guide по мобильности, но со своей экономикой и церковным конфликтом",
+        "allowed_occupations": '["occ_gusli_player","occ_singer","occ_storyteller"]',
     },
     # 9. повитуха — женщина-повитуха (акушерка общины).
     {

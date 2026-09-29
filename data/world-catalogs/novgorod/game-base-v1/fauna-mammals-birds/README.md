@@ -13,7 +13,7 @@ The counts below come from `build-report.json` and `validation-report.json`, whi
 | `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, full `voice_description`, short narrator-ready `voice_sound_ru`, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
 | `fauna/wild_habitat_presence.csv` | 4249 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
 | `fauna/fauna_categories.csv` | 220 | Category nodes in domain `fauna`: `fauna.mammal`, `fauna.bird`, 25 group nodes, 193 taxon nodes. Every taxon row and presence row has a `category_ref` |
-| `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 6 included as rare, 4 included reduced or rural-only, 7 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms |
+| `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 7 included as rare, 4 included reduced or rural-only, 6 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms; `basis` and `derivation` record explicit analogies |
 | `fauna/sources.csv` | 21 | Source register: level, read depth (full, extract, abstract, bibliographic) and URL |
 | `fauna/hunting_methods.csv` | 25 | Direct and set/check hunting, trapping, falconry, small-fauna capture and F10 egg collection; taxa/categories, sizes, seasons, basis, derivation and anachronism check are explicit |
 | `fauna/hunting_tenure_defaults.csv` | 3 | Candidate input for F29/F30 tenure: ловища, бобровые гоны and перевесища map to `pf_hunting_ground` with `rights_holder`; no holder or closed months are invented |
@@ -123,10 +123,10 @@ Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. T
 - **Novgorod bird bone list not read.** Зиновьев 2011 (NNZ 25: 277–287) and Hamilton-Dyer et al. 2020 (Oxbow, 255–293) are bibliographic only. The PDF of Hamilton-Dyer, Brisbane & Maltby 2017 (Bournemouth eprints) was unreachable. Waders, most passerines and owls therefore rest on modern regional analogy (B) and not on 1230 bones.
 - **Falconry.** Goshawk is the most popular raptor among the East Slavs (abstract) and falconry is attested in the Novgorod territory (WK research FAU-04). Species-level Novgorod evidence (gyrfalcon or peregrine as tribute or trade) was **not** found in the sources read. `falconry_relevance` for falcons is general European practice, flagged in `notes`.
 - **Range doubts for 1230**, kept rare with confidence C:
-  - wild boar, roe deer, wild forest reindeer, wolverine, sable (probably a trade fur);
+  - wild boar, roe deer, wild forest reindeer, wolverine, sable (probably a trade fur), black rat (rare imported synanthrope by analogy with Northern European ports: Viking-Age Hedeby, ninth to eleventh centuries, and medieval York; no Novgorod find in the sources read);
   - redwing, common rosefinch, black-headed gull, coot, lapwing, great crested grebe, black tern, blackbird, blackcap, nightingale, grey partridge, linnet, house martin, swift in town.
   - The starling date conflicts between sources: the 2025 abstract says later-medieval, the 53news article says XIII c.
-- **Excluded for lack of a source:** brown hare, red deer, aurochs/wisent, desman, black rat, white stork, mute swan, great reed warbler, hawfinch (see `taxa_checks.csv`).
+- **Excluded for lack of a source:** brown hare, red deer, aurochs/wisent, desman, white stork, mute swan, great reed warbler, hawfinch (see `taxa_checks.csv`).
 - `brown_long_eared_bat` has presence C: no regional list for this species was read.
 - **Collector compatibility.** `build-presence-rules.mjs` deduplicates pool rows on (scope, region, category) and ignores season, so the four seasonal rows of one taxon × pf collapse to the highest class. The per-season detail stays here. The places-binding owner has to decide whether presence rules should carry a season key.
 - **Bat winter roosts.** Bat winter rows are dormant in forest and outbuilding families. Specific hibernation sites (cellars, caves) are covered only by `pf_cellar_granary`-type families that have no bat rows. Add them if needed.

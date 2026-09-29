@@ -67,7 +67,7 @@
     "data/world-catalogs/novgorod/game-base-v1/resource-catalog/resource_families.csv",
     "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv"
   ],
-  "references_checked": 8285,
+  "references_checked": 8288,
   "unresolved_references": 1805,
   "unresolved_by_file": {
     "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv": 32,

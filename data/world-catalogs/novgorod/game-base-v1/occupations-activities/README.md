@@ -17,8 +17,8 @@ active runtime, pinned TSV, STATUS и вердикты.
 Общие archive templates не считаются индивидуальными свойствами занятия:
 seasonal schedules, NPC routine, workflow materialization и
 `common_relationships` сериализуются как typed `no_source`. Archive owners
-получают `region_novgorod_land`; archetypes заданы reviewer mappings, а для
-музыкальных занятий закрытый archetype остаётся typed gap. Variant context-only
+получают `region_novgorod_land`; archetypes заданы reviewer mappings, а музыкальные
+занятия используют закрытый `performance_entertainment`. Variant context-only
 policy хранится в provenance token; owner-level policy берётся из отдельного
 списка authoring. Связь трёх музыкальных owners с
 `nov_role_skomorokh` хранится как `related_role` и не объединяет их ID.

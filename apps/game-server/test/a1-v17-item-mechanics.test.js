@@ -21,3 +21,10 @@ test('A1 still refuses a container profile and a broken profile', () => {
   broken.state.inventory_profile_snapshot.mass_grams = -1;
   assert.throws(() => committedMechanics(broken), { code: 'TRACE_A1_ITEM_MECHANICS_INVALID' });
 });
+
+test('the persistence-side conservation check reads the same v5 profile the same way', async () => {
+  const { committedMechanics: conserved } = await import(
+    '../src/infrastructure/postgres/action-produced-mass-conservation.js');
+  assert.deepEqual(conserved({ ...shirt, template_id: shirt.template_id }),
+    committedMechanics(shirt));
+});

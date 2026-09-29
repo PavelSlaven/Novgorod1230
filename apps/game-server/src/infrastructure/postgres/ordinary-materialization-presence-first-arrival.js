@@ -43,7 +43,6 @@ async function loadPinnedG4NodeRef({
   worldBaseReader,
   spatialWorldPin,
   nodeId,
-  requestG4,
 }) {
   const revisionId = spatialWorldPin.world_revision_id;
   const pinned = await worldBaseReader.read(
@@ -55,13 +54,13 @@ async function loadPinnedG4NodeRef({
     [nodeId, revisionId],
   );
   const row = pinned.rows?.[0];
-  const version = Number(row?.version ?? requestG4?.version);
+  const version = Number(row?.version);
   if (!Number.isInteger(version) || version < 1) return null;
   return {
     id: nodeId,
     version,
     world_revision_id: revisionId,
-    canonical_digest: row?.canonical_digest ?? requestG4?.canonical_digest,
+    canonical_digest: row.canonical_digest,
   };
 }
 
@@ -96,6 +95,7 @@ export async function resolvePresenceRulesFirstArrivalForSite({
   regionId,
   season,
   periodNumber = null,
+  bindingRows = null,
 }) {
   if (!worldBaseReader?.read || !spatialNodeId || !Number.isInteger(spatialNodeVersion)) {
     presenceFirstArrivalError(
@@ -122,6 +122,7 @@ export async function resolvePresenceRulesFirstArrivalForSite({
     regionId: regionId.trim(),
     season: season.trim(),
     periodNumber,
+    bindingRows,
   });
 }
 
@@ -137,8 +138,9 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
   regionId,
   season,
   periodNumber = null,
+  bindingRows = null,
 }) {
-  const rows = await loadApprovedPlaceFamilyBindings({
+  const rows = bindingRows ?? await loadApprovedPlaceFamilyBindings({
     worldBaseReader,
     spatialWorldPin,
     spatialNodeId,
@@ -200,6 +202,17 @@ export function applyResolvedPresenceRulesFirstArrival({ aggregate, context }) {
   return applyPresenceRulesFirstArrival({ aggregate, ...context });
 }
 
+/** The resolver is installed after the first-entry owners are built; an uninstalled port must not skip presence. */
+export function delegateToPresenceResolverPort(port) {
+  return async (...args) => {
+    if (typeof port?.resolve !== 'function') {
+      throw serverError('SPATIAL_V3_TARGET_PRESENCE_RESOLVER_REQUIRED',
+        'Target presence first-arrival resolver is not installed.');
+    }
+    return port.resolve(...args);
+  };
+}
+
 export function createTargetPresenceRulesFirstArrivalResolver({
   worldBaseReader,
   spatialWorldPin,
@@ -246,7 +259,6 @@ export function createTargetPresenceRulesFirstArrivalResolver({
           worldBaseReader,
           spatialWorldPin,
           nodeId: row.parent_g4_id,
-          requestG4: request?.g4,
         });
       }
     }
@@ -262,7 +274,6 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         worldBaseReader,
         spatialWorldPin,
         nodeId: resolvedSite.parent_g4_id,
-        requestG4: request?.g4,
       });
     }
     if (!g4?.id || !Number.isInteger(g4.version) || g4.version < 1) {
@@ -284,7 +295,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       && resolvedSite.origin !== 'generated';
     const spatialNodeId = useCanonicalG5Node ? canonicalNodeId : g4.id;
     const spatialNodeVersion = useCanonicalG5Node
-      ? Number(canonicalRef?.authoring_version ?? canonicalRef?.version ?? 1)
+      ? Number(canonicalRef?.authoring_version ?? canonicalRef?.version)
       : g4.version;
     if (!Number.isInteger(spatialNodeVersion) || spatialNodeVersion < 1) {
       presenceFirstArrivalError(
@@ -332,6 +343,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       regionId,
       season: calendar.season,
       periodNumber: calendar.periodNumber,
+      bindingRows,
     });
   };
 }

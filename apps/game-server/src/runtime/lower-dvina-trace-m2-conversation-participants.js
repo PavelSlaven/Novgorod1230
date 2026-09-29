@@ -4,6 +4,8 @@ import { fail, sameRef } from
   './lower-dvina-trace-m2-conversation-shared.js';
 import { playerSafeHeardNpcIntroduction } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { projectNpcCharacterBehavior } from
+  './lower-dvina-trace-m2-conversation-projections.js';
 import { compareSceneLocus, sceneLocus } from
   './lower-dvina-trace-scene-presence.js';
 
@@ -64,9 +66,9 @@ export function npcConversationDecisionCapability(context) {
 }
 
 export function npcPresentationContext(context, latestContribution) {
-  if (context.contracts.neutral_conversation === true
-      || context.phase !== 'phase_3'
-      || context.targetActor?.ref !== context.contracts.ids?.eremeyRef) {
+  const neutral = context.contracts.neutral_conversation === true;
+  if (!neutral && (context.phase !== 'phase_3'
+      || context.targetActor?.ref !== context.contracts.ids?.eremeyRef)) {
     return {};
   }
   const name = context.targetActor?.identity_state?.canonical_name;
@@ -85,9 +87,16 @@ export function npcPresentationContext(context, latestContribution) {
         npcId: context.targetRef.entity_id
       })
     : null;
+  const introduction = greeted && typeof name === 'string' && name.trim()
+    && heardName === null
+    ? { first_contact_introduction: { canonical_name: name.trim() } } : {};
+  if (neutral) {
+    const behavior = projectNpcCharacterBehavior(context.targetActor);
+    return { ...introduction,
+      ...(behavior === null ? {} : { npc_behavior: behavior }) };
+  }
   return {
-    ...(greeted && typeof name === 'string' && name.trim() && heardName === null
-      ? { first_contact_introduction: { canonical_name: name.trim() } } : {}),
+    ...introduction,
     npc_behavior: {
       current_stance: context.evidencePresented ? 'cooperation_enabled' : 'guarded',
       goals: structuredClone(context.contracts.npcPolicy.goals),

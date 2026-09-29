@@ -49,6 +49,29 @@ export function ownNpcProjection(actor) {
   };
 }
 
+/**
+ * The speaker's own persisted character as a hidden position for the NPC
+ * responder. Only labels reach the model; refs and the rest of semantic_state
+ * stay out. Missing or malformed data yields null.
+ */
+export function projectNpcCharacterBehavior(actor) {
+  const character = actor?.semantic_state?.character;
+  if (!plainRecord(character)) return null;
+  const texts = (value, min, max) => Array.isArray(value)
+    && value.length >= min && value.length <= max
+    && value.every(filled) ? value.map((entry) => entry.trim()) : null;
+  const values = texts(character.value_labels_ru, 2, 2);
+  const goals = texts(character.goals_ru, 1, 2);
+  if (!filled(character.temperament_label_ru) || !filled(character.fear_ru)
+      || values === null || goals === null) return null;
+  return { temperament: character.temperament_label_ru.trim(), values, goals,
+    fears: [character.fear_ru.trim()] };
+}
+
+function filled(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
 function trustedRoleRef(value) {
   if (typeof value === 'string' && value) return value;
   return plainRecord(value) && typeof value.id === 'string' && value.id

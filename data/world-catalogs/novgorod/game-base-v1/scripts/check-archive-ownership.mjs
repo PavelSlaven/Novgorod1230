@@ -84,10 +84,14 @@ function registryCoverageErrors(root, files, rowsByFile) {
   const known = new Map(current.entity_tables.map(spec => [spec.file, spec]));
   const excluded = new Map(current.excluded_entity_tables.map(spec => [spec.file, spec]));
   for (const decision of current.pair_decisions ?? []) {
+    const waives = decision.waives;
     if (!archiveIds(decision.archive_id).includes(String(decision.archive_id ?? '').toUpperCase())
       || !decision.target_file || !decision.target_id || String(decision.reason ?? '').trim().length < 16
-      || !/\.test\.(?:mjs|js)(?:#|:|$)/i.test(String(decision.verification ?? ''))) {
-      errors.push(`${REGISTRY_FILE}: pair decision must name an archive ID, target file/ID, specific reason, and test verification`);
+      || !/\.test\.(?:mjs|js)(?:#|:|$)/i.test(String(decision.verification ?? ''))
+      || (waives !== undefined && (!Array.isArray(waives) || waives.length === 0
+        || new Set(waives).size !== waives.length
+        || waives.some(scope => !['category', 'material'].includes(scope))))) {
+      errors.push(`${REGISTRY_FILE}: pair decision must name an archive ID, target file/ID, specific reason, test verification, and valid waiver scopes`);
     }
   }
   let catalogGroups;
@@ -524,9 +528,10 @@ function buildArchiveMaterialMap(root, masterItems) {
   return { byArchiveId, unmapped, mapped_values: mappedValues, fromMaterialValues, materialMetadata, directedProductsByRaw };
 }
 
-function hasVariantPairDecision(archiveId, target, decisions) {
+function hasVariantPairDecision(archiveId, target, decisions, scope) {
   return (decisions ?? []).some(decision => decision.archive_id === archiveId
     && decision.target_file === target.file && decision.target_id === target.id
+    && (decision.waives ?? ['material']).includes(scope)
     && String(decision.reason ?? '').trim().length >= 16
     && mentionsIdentity(decision.reason, { archiveIds: [archiveId], key: archiveId })
     && mentionsIdentity(decision.reason, { archiveIds: target.archiveIds, key: target.id })
@@ -536,9 +541,11 @@ function hasVariantPairDecision(archiveId, target, decisions) {
 function variantIdentityErrors(archiveId, source, target, materialMap, pairDecisions = []) {
   const errors = [];
   const targetRow = target?.row ?? target;
+  const waivesCategory = hasVariantPairDecision(archiveId, target, pairDecisions, 'category');
+  const waivesMaterial = hasVariantPairDecision(archiveId, target, pairDecisions, 'material');
   const sourceCategory = String(source?.category ?? '').trim().toLowerCase();
   const targetCategory = String(targetRow?.category ?? '').trim().toLowerCase();
-  if (sourceCategory && targetCategory && sourceCategory !== targetCategory) {
+  if (sourceCategory && targetCategory && sourceCategory !== targetCategory && !waivesCategory) {
     errors.push(`${archiveId}: variant target category ${targetCategory} does not match source category ${sourceCategory}`);
   }
   const sourceMaterials = materialMap.byArchiveId.get(archiveId) ?? new Set();
@@ -556,7 +563,7 @@ function variantIdentityErrors(archiveId, source, target, materialMap, pairDecis
   const hasDirectionalMatch = [...sourceMaterials].some(sourceId => [...targetMaterials].some(targetId =>
     materialMap.directedProductsByRaw.get(sourceId)?.has(targetId)));
   if (targetMaterials.size && ![...sourceMaterials].some(value => targetMaterials.has(value))
-    && !hasDirectionalMatch && !hasVariantPairDecision(archiveId, target, pairDecisions)) {
+    && !hasDirectionalMatch && !waivesMaterial) {
     errors.push(`${archiveId}: variant target material ${[...targetMaterials].sort().join('|')} does not match archive material candidates ${[...sourceMaterials].sort().join('|')}`);
   }
   return errors;

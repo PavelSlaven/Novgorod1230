@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(game-base): occupation goals and fears for the seeded NPC character (D49), 265 goals / 158 fears, explicit gaps (#206)
 - data(game-base): checker владения архивными id — реестр таблиц, сведение словарей материалов, сверка маршрутов с решением получателя, период вариантов; хвосты одежды и оружия после PR-A (imp-crafts A1) (#204)
 - data(game-base): пересобраны устаревшие generated outputs, сняты исключения freshness (#201)
 - ci(tools): проба готовности PostgreSQL в тестах по TCP (`pg_isready -h 127.0.0.1`), повтор `docker pull` в merge-гейте, build-status понимает `.cjs`, тест свежести сгенерированных файлов game-base-v1 в `test:game-base` (#203)

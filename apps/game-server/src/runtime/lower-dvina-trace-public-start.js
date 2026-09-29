@@ -107,9 +107,9 @@ export async function startLowerDvinaTrace({
   }
   let internal = committedBeforeStart
     ?? await traceStartAdapter.loadInternal(partyId);
-  const ordinaryProvisioningCompatible = binding.runtime_binding == null
-    || Number(binding.runtime_binding.revision) >= 5;
-  if (ordinaryProvisioningCompatible
+  const useTargetOrdinaryProvisioning = binding.runtime_binding != null
+    && Number(binding.runtime_binding.revision) >= 5;
+  if (useTargetOrdinaryProvisioning
       && typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
     await traceStartAdapter.provisionInitialOrdinary(partyId);
     if (binding.runtime_binding != null) {

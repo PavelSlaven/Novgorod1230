@@ -42,7 +42,7 @@ test('P1-4: target presence resolver forwards partyId to calendar read', async (
       request: { g4: { id: 'g4-node', version: 1 } },
     });
   } catch {
-    // Region lookup needs a full approved catalog pin; calendar must still run first.
+    // No bindings: calendar must not run before rule lookup (F5).
   }
-  assert.deepEqual(calendarParties, ['party-forward-presence']);
+  assert.deepEqual(calendarParties, []);
 });

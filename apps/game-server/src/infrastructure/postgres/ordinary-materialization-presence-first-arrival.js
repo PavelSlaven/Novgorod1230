@@ -13,6 +13,10 @@ function scopeInstanceRefForSite(siteId) {
   return siteId.startsWith('g5:') ? siteId : `g5:${siteId}`;
 }
 
+function presenceFirstArrivalError(code, message, details = null) {
+  throw serverError(code, message, { status: 409, details, public_exposure: 'internal' });
+}
+
 async function loadPinnedG4NodeRef({
   worldBaseReader,
   spatialWorldPin,
@@ -39,8 +43,23 @@ async function loadPinnedG4NodeRef({
   };
 }
 
-function isWaveNotActivatedError(error) {
-  return error?.code === 'M2C_NPC_WAVE_ACTIVATION_MISSING';
+async function loadApprovedPlaceFamilyBindings({
+  worldBaseReader,
+  spatialWorldPin,
+  spatialNodeId,
+  spatialNodeVersion,
+}) {
+  const revisionId = spatialWorldPin.world_revision_id;
+  const bindings = await worldBaseReader.read(
+    `SELECT place_family_id, binding_role
+       FROM world_base.spatial_node_place_family_bindings
+      WHERE world_revision_id = $1
+        AND node_id = $2
+        AND node_version = $3
+        AND status = 'approved'`,
+    [revisionId, spatialNodeId, spatialNodeVersion],
+  );
+  return bindings.rows ?? [];
 }
 
 export async function resolvePresenceRulesFirstArrivalForSite({
@@ -57,29 +76,31 @@ export async function resolvePresenceRulesFirstArrivalForSite({
   periodNumber = null,
 }) {
   if (!worldBaseReader?.read || !spatialNodeId || !Number.isInteger(spatialNodeVersion)) {
-    return null;
+    presenceFirstArrivalError(
+      'PRESENCE_FIRST_ARRIVAL_SITE_CONTEXT_INVALID',
+      'Presence first arrival requires a world reader and pinned spatial node version.',
+    );
   }
   if (typeof regionId !== 'string' || !regionId.trim() || typeof season !== 'string' || !season.trim()) {
-    return null;
+    presenceFirstArrivalError(
+      'PRESENCE_FIRST_ARRIVAL_CALENDAR_CONTEXT_INVALID',
+      'Presence first arrival requires committed region and season.',
+      { regionId, season },
+    );
   }
-  try {
-    return await resolvePresenceRulesFirstArrivalForSiteInner({
-      worldBaseReader,
-      spatialWorldPin,
-      worldPin,
-      runtimeCatalogPin,
-      spatialNodeId,
-      spatialNodeVersion,
-      partyId,
-      siteId,
-      regionId: regionId.trim(),
-      season: season.trim(),
-      periodNumber,
-    });
-  } catch (error) {
-    if (isWaveNotActivatedError(error)) return null;
-    throw error;
-  }
+  return resolvePresenceRulesFirstArrivalForSiteInner({
+    worldBaseReader,
+    spatialWorldPin,
+    worldPin,
+    runtimeCatalogPin,
+    spatialNodeId,
+    spatialNodeVersion,
+    partyId,
+    siteId,
+    regionId: regionId.trim(),
+    season: season.trim(),
+    periodNumber,
+  });
 }
 
 async function resolvePresenceRulesFirstArrivalForSiteInner({
@@ -95,18 +116,19 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
   season,
   periodNumber = null,
 }) {
-  const revisionId = spatialWorldPin.world_revision_id;
-  const bindings = await worldBaseReader.read(
-    `SELECT place_family_id, binding_role
-       FROM world_base.spatial_node_place_family_bindings
-      WHERE world_revision_id = $1
-        AND node_id = $2
-        AND node_version = $3
-        AND status = 'approved'`,
-    [revisionId, spatialNodeId, spatialNodeVersion],
-  );
-  const rows = bindings.rows ?? [];
-  if (rows.length === 0) return null;
+  const rows = await loadApprovedPlaceFamilyBindings({
+    worldBaseReader,
+    spatialWorldPin,
+    spatialNodeId,
+    spatialNodeVersion,
+  });
+  if (rows.length === 0) {
+    presenceFirstArrivalError(
+      'PRESENCE_FIRST_ARRIVAL_NO_PLACE_FAMILY_BINDINGS',
+      'Spatial node has no approved place_family bindings for presence resolution.',
+      { spatialNodeId, spatialNodeVersion },
+    );
+  }
   const primaryIds = rows.filter((row) => row.binding_role === 'primary').map((row) => row.place_family_id);
   const secondaryIds = rows.filter((row) => row.binding_role === 'secondary').map((row) => row.place_family_id);
   const readerInput = {
@@ -167,7 +189,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
     let g4 = request?.g4;
     if (!resolvedSite && transaction?.query && partyId && scope?.entity_id) {
       const hosted = await transaction.query(
-        `SELECT g6.host_id, g5.canonical_g5_ref, g5.parent_g4_id, g5.generated_template_ref
+        `SELECT g6.host_id, g5.origin, g5.canonical_g5_ref, g5.parent_g4_id, g5.generated_template_ref
            FROM party_runtime.party_g6_instances g6
            JOIN party_runtime.party_g5_sites g5
              ON g5.party_id=g6.party_id AND g5.id=g6.host_id
@@ -175,9 +197,16 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         [partyId, scope.entity_id],
       );
       const row = hosted.rows[0];
-      if (!row?.host_id) return null;
+      if (!row?.host_id) {
+        presenceFirstArrivalError(
+          'PRESENCE_FIRST_ARRIVAL_HOST_SITE_MISSING',
+          'Active G6 host site is required for presence first arrival.',
+          { partyId, g6Id: scope.entity_id },
+        );
+      }
       resolvedSite = {
         id: row.host_id,
+        origin: row.origin,
         canonical_g5_ref: row.canonical_g5_ref,
         parent_g4_id: row.parent_g4_id,
         generated_template_ref: row.generated_template_ref,
@@ -191,7 +220,12 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         });
       }
     }
-    if (!resolvedSite) return null;
+    if (!resolvedSite) {
+      presenceFirstArrivalError(
+        'PRESENCE_FIRST_ARRIVAL_SITE_MISSING',
+        'Party site context is required for presence first arrival.',
+      );
+    }
     if (!g4?.id && request?.g4?.id) g4 = request.g4;
     if (!g4?.id && resolvedSite.parent_g4_id) {
       g4 = await loadPinnedG4NodeRef({
@@ -201,11 +235,12 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         requestG4: request?.g4,
       });
     }
-    if (!g4?.id || !Number.isInteger(g4.version) || g4.version < 1) return null;
-    const calendar = await readPartyPresenceCalendar?.({ transaction, partyId, request });
-    if (!calendar?.season || calendar.periodNumber == null) {
-      throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
-        'Committed party calendar season and year are required for presence resolution.');
+    if (!g4?.id || !Number.isInteger(g4.version) || g4.version < 1) {
+      presenceFirstArrivalError(
+        'PRESENCE_FIRST_ARRIVAL_G4_PIN_MISSING',
+        'Pinned parent G4 node is required for presence first arrival.',
+        { parentG4Id: resolvedSite.parent_g4_id ?? null },
+      );
     }
     const readerInput = {
       worldBaseReader,
@@ -221,11 +256,43 @@ export function createTargetPresenceRulesFirstArrivalResolver({
     const spatialNodeVersion = useCanonicalG5Node
       ? Number(canonicalRef?.authoring_version ?? canonicalRef?.version ?? 1)
       : g4.version;
+    if (!Number.isInteger(spatialNodeVersion) || spatialNodeVersion < 1) {
+      presenceFirstArrivalError(
+        'PRESENCE_FIRST_ARRIVAL_SPATIAL_NODE_VERSION_INVALID',
+        'Pinned spatial node version is required for presence first arrival.',
+        { spatialNodeId },
+      );
+    }
+    const bindingRows = await loadApprovedPlaceFamilyBindings({
+      worldBaseReader,
+      spatialWorldPin,
+      spatialNodeId,
+      spatialNodeVersion,
+    });
+    if (bindingRows.length === 0) {
+      presenceFirstArrivalError(
+        'PRESENCE_FIRST_ARRIVAL_NO_PLACE_FAMILY_BINDINGS',
+        'Spatial node has no approved place_family bindings for presence resolution.',
+        { spatialNodeId, spatialNodeVersion },
+      );
+    }
+    const calendar = await readPartyPresenceCalendar?.({ transaction, partyId, request });
+    if (!calendar?.season || calendar.periodNumber == null) {
+      throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
+        'Committed party calendar season and year are required for presence resolution.');
+    }
     const regionId = await loadG0RegionIdForSpatialNode({
       ...readerInput,
       nodeId: spatialNodeId,
       nodeVersion: spatialNodeVersion,
     });
+    if (!regionId) {
+      presenceFirstArrivalError(
+        'PRESENCE_FIRST_ARRIVAL_REGION_MISSING',
+        'G0 region binding is required for presence first arrival.',
+        { spatialNodeId, spatialNodeVersion },
+      );
+    }
     return resolvePresenceRulesFirstArrivalForSite({
       ...readerInput,
       spatialNodeId,

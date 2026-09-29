@@ -47,6 +47,16 @@ test('spatial result recognizes committed active movement shapes', () => {
   });
 });
 
+test('blocked movement prefers code-owned consequence field over trace inference', () => {
+  assert.deepEqual(spatialResult({
+    consequence: { status: 'blocked', movement_blocked_reason_code: 'destination_occupied' },
+    modeResolution: { decision_trace: { step_traces: [{
+      applied: false,
+      approved_plan: { resolution: 'direct', goal_result: 'not_achieved', operations: [] }
+    }] } }
+  }), { movement_blocked: true, movement_blocked_reason_code: 'destination_occupied' });
+});
+
 test('blocked movement exposes committed domain reason code in narrator outcome', () => {
   assert.deepEqual(spatialResult({
     consequence: { status: 'blocked' },

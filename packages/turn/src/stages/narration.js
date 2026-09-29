@@ -51,8 +51,8 @@ export function spatialResult({ consequence, checks, modeResolution,
   const movement = typeof before === 'string' && typeof after === 'string'
     && before !== after ? { movement_committed: true } : {};
   if (consequence?.status === 'blocked') {
-    const movement_blocked_reason_code =
-      committedBlockedMovementReasonCode(modeResolution);
+    const movement_blocked_reason_code = consequence.movement_blocked_reason_code
+      ?? committedBlockedMovementReasonCode(modeResolution);
     return movement_blocked_reason_code == null
       ? { movement_blocked: true }
       : { movement_blocked: true, movement_blocked_reason_code };

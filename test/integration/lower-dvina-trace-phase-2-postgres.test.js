@@ -564,7 +564,46 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   });
   await t.test('restrained movement returns HTTP 200 with committed blocked consequence',
     () => assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }));
+  await t.test('exhausted same-request presentation stays pending then restart recovers',
+    () => assertPresentationExhaustedThenRestartRecovers({ pool, release, runtimeCatalogPin }));
 });
+
+async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
+  runtimeCatalogPin }) {
+  let narrationCalls = 0;
+  let narrationFails = true;
+  const narrationService = {
+    async run(request) {
+      narrationCalls += 1;
+      if (narrationFails) {
+        const error = new Error('Narration did not produce an approved presentation.');
+        error.code = 'TURN_NARRATION_REJECTED';
+        throw error;
+      }
+      return approvedNarration(request);
+    }
+  };
+  const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin,
+    narrationService });
+  const opened = await setupRuntime.startNewGame({ scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'presentation-exhaust-party' });
+  await setupRuntime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'presentation-exhaust-ack' });
+  const input = {
+    request_id: 'presentation-exhaust-turn',
+    idempotency_key: 'presentation-exhaust-turn',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  };
+  const pending = await setupRuntime.submitTurn(opened.party_id, input);
+  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
+  const afterExhaust = narrationCalls;
+  assert.ok(afterExhaust >= 2);
+  narrationFails = false;
+  const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService });
+  const recovered = await restart.submitTurn(opened.party_id, input);
+  assert.equal(recovered.screen.screen_status, 'ready');
+  assert.ok(narrationCalls > afterExhaust);
+}
 
 async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {
   const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin });

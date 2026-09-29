@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- fix(narration): rt-narr — повтор presentation в том же submitTurn, handoff-retry opening, `movement_blocked_reason_code` в outcome (structural grounding), кнопки движения в game-web; строка narrator prompt про reason_code откатана до rt-harness; LW-082 added
+- fix(narration): rt-narr — in-request presentation (2 попытки), opening под одним turn budget, `movement_blocked_reason_code` только из code-owned block; recovery/resolve при budget pending; кнопки движения; LW-082 updated
 - fix(combat): weapon classification role returns only qualitative_class, code sets schema and request_id; LW-081 added (#188)
 - fix(m2c): R-2a presence first arrival on target v17 — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (`bootstrap-live-world-v17.mjs`); штатный bootstrap без D27 даёт пустое presence на всех 7 стартах (typed `presence_gap` только в диагностике resolver/provisioner, в БД не пишется; старт v17 выбирается по `catalog_id`, не по `binding_revision`), m2c-npc-wave в production не импортируется (#158) LW-035 closed LW-071 closed LW-077 added LW-078 added
 - fix(llm-runtime): `normalizeExecutionLimits` treats `requestTimeoutMs` as a ceiling (`Math.min` against the 120 s default) instead of always overwriting it, so the remaining turn budget survives the provider request timeout; a provider timeout under a budget-clamped `requestTimeoutMs` now reports `LLM_TURN_BUDGET_EXHAUSTED` instead of a generic provider timeout (#98)

@@ -38,6 +38,45 @@ test('non-pending presentation has no recovery side effect', async () => {
     session: { screen: { screen_status: 'ready' } }, repository }), null);
 });
 
+test('recovery continues in-request resolve after expected replay failure', async () => {
+  let presentationCalls = 0;
+  const replay = {
+    input_digest: 'd'.repeat(64),
+    screen: { screen_status: 'committed_presentation_pending', party_id: 'party-1',
+      turn_id: 'turn-1', turn_number: 1,
+      current_projection_anchor: { committed_state_version: 1,
+        package_id: 'pkg', package_digest: 'dig' } },
+    state: { party_id: 'party-1', party_state: { state_version: 1, turn_number: 1 },
+      last_turn: { idempotency_key: 'turn-1', option_id: 'opt', visible_package: {
+        package_id: 'pkg', package_digest: 'dig', change_set_id: 1 } } },
+    public_result: { party_id: 'party-1', turn_number: 1, state_version: 1, option_id: 'opt',
+      screen: { screen_status: 'committed_presentation_pending', party_id: 'party-1',
+        turn_id: 'turn-1', turn_number: 1,
+        current_projection_anchor: { committed_state_version: 1,
+          package_id: 'pkg', package_digest: 'dig' } } }
+  };
+  const repository = {
+    async loadPhase2State() { return { last_turn: { idempotency_key: 'turn-1' } }; },
+    async loadPhase2Replay() { return structuredClone(replay); },
+    async replayPhase2Turn() {
+      presentationCalls += 1;
+      if (presentationCalls === 1) {
+        throw Object.assign(new Error('narration rejected'), {
+          code: 'TRACE_PHASE_2_NARRATION_REJECTED'
+        });
+      }
+      return { screen: { screen_status: 'ready' } };
+    }
+  };
+  const result = await recoverTracePendingPresentation({
+    partyId: 'party-1',
+    session: { screen: { screen_status: 'committed_presentation_pending' } },
+    repository, narrator: { async run() {} }, turnBudget: null
+  });
+  assert.equal(result.screen.screen_status, 'ready');
+  assert.equal(presentationCalls, 2);
+});
+
 test('runtime recovery records narration retry under pending turn identity', async () => {
   const diagnostics = createLlmDiagnostics();
   const repository = {

@@ -145,13 +145,17 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepBlockPlan: async ({ plan, request }) => {
       if (request.step_index !== 1) return false;
       if (actorMovementBlocked(state) && plan.resolution === 'direct'
-        && plan.goal_result === 'not_achieved' && plan.operations.length === 0) return true;
+        && plan.goal_result === 'not_achieved' && plan.operations.length === 0) {
+        return 'actor_movement_blocked';
+      }
       if (plan.resolution !== 'domain_request') return false;
       const chosen = plan.operations ?? [];
       if (chosen.some((operation) => (request.player_safe_state
         ?.available_domain_operation_grounding ?? []).some((entry) =>
         entry.semantic_scope?.destination_status === 'occupied'
-        && isDeepStrictEqual(entry.operation, operation)))) return true;
+        && isDeepStrictEqual(entry.operation, operation)))) {
+        return 'destination_occupied';
+      }
       // The chosen command's own structural refusal (the movement owner's full-occupancy
       // verdict, which may name occupants the actor cannot perceive and is never shown).
       const commands = typeof registry?.registered === 'function' ? registry.registered() : [];
@@ -159,7 +163,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
         for (const command of commands) {
           if (typeof command.attemptRefusal === 'function'
             && command.semantic_binding?.matches?.({ operation }) === true
-            && await command.attemptRefusal({ committed_state: state }) != null) return true;
+            && await command.attemptRefusal({ committed_state: state }) != null) {
+            return 'destination_occupied';
+          }
         }
       }
       return false;

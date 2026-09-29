@@ -30,7 +30,7 @@ test('narration failure retries presentation in the same turn request', async ()
   const result = await f.runtime.submitTurn({ partyId: f.partyId, input });
   assert.equal(result.screen.screen_status, 'ready');
   assert.equal(f.commitCount(), 1);
-  assert.ok(narrationAttempts >= 1);
+  assert.equal(narrationAttempts, 2);
 });
 
 test('narration-stage failure records one partial workflow trace and replays pending result', async () => {

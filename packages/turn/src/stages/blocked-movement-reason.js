@@ -1,12 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
 
-const DOMAIN_BLOCKED_MOVEMENT_CODES = new Set([
-  'destination_occupied',
-  'actor_movement_blocked',
-  'directional_exit_stale',
-  'local_scene_source_stale'
-]);
-
 export function committedBlockedMovementReasonCode(modeResolution) {
   const traces = modeResolution?.decision_trace?.step_traces;
   if (!Array.isArray(traces)) return null;
@@ -18,8 +11,6 @@ export function committedBlockedMovementReasonCode(modeResolution) {
     const occupied = destinationOccupiedCode(plan, request);
     if (occupied != null) return occupied;
     if (structuralActorMovementBlocked(plan)) return 'actor_movement_blocked';
-    const code = trace.reason_code;
-    if (typeof code === 'string' && DOMAIN_BLOCKED_MOVEMENT_CODES.has(code)) return code;
     return null;
   }
   return null;

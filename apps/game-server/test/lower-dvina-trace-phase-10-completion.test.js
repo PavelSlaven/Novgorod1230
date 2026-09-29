@@ -316,7 +316,7 @@ test('narration rejection during pending replay returns committed pending result
 
     const result = await runtime.submitTurn({ partyId: 'party-1', input });
     assert.deepEqual(result, publicResult);
-    assert.equal(replayCalls, 4);
+    assert.equal(replayCalls, 3);
   });
 
 test('pending replay rethrows unexpected repository and contract failures',

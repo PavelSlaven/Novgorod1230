@@ -96,6 +96,9 @@ export function buildTurnStepDraftConsequence(draft) {
     version: 1,
     schema: 'turn_consequence_package',
     status,
+    ...(status === 'blocked' && draft.loop_result.blocked_plan_reason_code
+      ? { movement_blocked_reason_code: draft.loop_result.blocked_plan_reason_code }
+      : {}),
     duration_minutes: 0,
     visible_seed: {
       completed_steps: structuredClone(draft.loop_result.completed_steps),

@@ -55,7 +55,7 @@ test('destination_occupied is accepted when the referenced option is marked occu
       operations: [operation] };
     const request = requestWithGrounding([{ operation,
       semantic_scope: { destination_status: 'occupied' } }]);
-    assert.equal(await blockPlan({ plan, request }), true);
+    assert.equal(await blockPlan({ plan, request }), 'destination_occupied');
   });
 
 test('destination_occupied is rejected when the referenced option is actually open',
@@ -94,7 +94,7 @@ test('the model reason_code never decides: an occupied grounded operation is blo
       semantic_scope: { destination_status: 'occupied' } }]);
     for (const reason_code of ['visible_movement', 'destination_occupied', undefined, 'anything']) {
       const plan = { resolution: 'domain_request', reason_code, operations: [operation] };
-      assert.equal(await blockPlan({ plan, request }), true, String(reason_code));
+      assert.equal(await blockPlan({ plan, request }), 'destination_occupied', String(reason_code));
     }
   });
 
@@ -115,7 +115,7 @@ test('an occupied grounded operation is blocked when it is one of several planne
     const plan = { resolution: 'domain_request', operations: [other, operation] };
     const request = requestWithGrounding([{ operation,
       semantic_scope: { destination_status: 'occupied' } }]);
-    assert.equal(await blockPlan({ plan, request }), true);
+    assert.equal(await blockPlan({ plan, request }), 'destination_occupied');
   });
 
 test('a structurally blocked actor gets the refusal for a not_achieved direct plan under any reason_code (F5)',
@@ -126,8 +126,8 @@ test('a structurally blocked actor gets the refusal for a not_achieved direct pl
     const blockPlan = await turnStepBlockPlan(blockedState);
     const plan = { resolution: 'direct', goal_result: 'not_achieved', operations: [] };
     for (const reason_code of ['actor_movement_blocked', 'model_wording', undefined]) {
-      assert.equal(await blockPlan({ plan: { ...plan, reason_code }, request: { step_index: 1 } }), true,
-        String(reason_code));
+      assert.equal(await blockPlan({ plan: { ...plan, reason_code }, request: { step_index: 1 } }),
+        'actor_movement_blocked', String(reason_code));
     }
     assert.equal(await blockPlan({ plan: { ...plan, goal_result: 'achieved' }, request: { step_index: 1 } }), false);
     const free = await turnStepBlockPlan();
@@ -142,7 +142,7 @@ test("a restrained actor's non-movement not_achieved plan is refused too (pinned
     const blockPlan = await turnStepBlockPlan(blockedState);
     const plan = { resolution: 'direct', goal_result: 'not_achieved', operations: [],
       interpretation: { adaptation: 'reality_limited' } };
-    assert.equal(await blockPlan({ plan, request: { step_index: 1 } }), true);
+    assert.equal(await blockPlan({ plan, request: { step_index: 1 } }), 'actor_movement_blocked');
     assert.equal(await blockPlan({ plan, request: { step_index: 2 } }), false, 'later steps are not refused');
   });
 
@@ -168,7 +168,7 @@ test('an edge the actor sees as open is refused before executing when the moveme
     // The grounding the planner saw says open - only the owner's verdict blocks.
     const request = requestWithGrounding([{ operation: chosen,
       semantic_scope: { destination_status: 'open' } }]);
-    assert.equal(await blockPlan({ plan, request }), true);
+    assert.equal(await blockPlan({ plan, request }), 'destination_occupied');
     assert.deepEqual(asked, ['edge:one']);
   });
 

@@ -1,5 +1,6 @@
 import { serverError } from '../errors.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
+import { committedPendingReplayResult } from './lower-dvina-trace-phase-10-replay.js';
 import { resolveCommittedPhase2PresentationAfterFailure } from './lower-dvina-trace-phase-2-presentation-resolve.js';
 
 export async function recoverTracePendingPresentation({
@@ -16,6 +17,9 @@ export async function recoverTracePendingPresentation({
   if (replay == null) throw serverError('TRACE_PHASE_2_PRESENTATION_INVALID',
     'Pending presentation replay is unavailable.', { status: 409 });
   const inputDigest = replay.input_digest;
+  const pendingFallback = committedPendingReplayResult({
+    partyId, idempotencyKey, inputDigest, replay
+  });
   try {
     return await repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget });
   } catch (error) {
@@ -27,7 +31,7 @@ export async function recoverTracePendingPresentation({
       repository,
       narrator,
       turnBudget,
-      fallback: null
+      fallback: pendingFallback
     });
   }
 }

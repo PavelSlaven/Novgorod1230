@@ -1,6 +1,6 @@
 # Canonical walk acoustic candidates
 
-Draft-only authoring pack; independent Opus approval is still required. No row in this pack is approved or active.
+Approved authoring pack (`approval.json`, `APPROVE_M2C_CANONICAL_WALK_ACOUSTIC_AUTHORING_V1`, independent data approval only). Rows stay `draft` in `authoring-rows.json`; `scripts/promote-m2c-acoustic-packages.mjs` promotes them into the approved acoustic dataset. Not a production activation.
 
 - Scope: 147 target×G6 rows: 14 Vikhtuy rows first, then 133 other canonical connection targets.
 - The 195-target set comes from distinct to_canonical_g5_id values in spatial_v3_canonical_g5_connection_bindings.json, joined to approved scene profiles, scene candidates and G6 template slots. Every target resolves to one main slot.
@@ -10,4 +10,4 @@ Draft-only authoring pack; independent Opus approval is still required. No row i
 
 ## Post-approval import path
 
-The approved acoustic dataset is the single spatial_v3_g6_acoustic_baselines dataset in the acoustic manifest. P12 rejects duplicate dataset entries for the same table. After independent approval, merge the new rows into the normal approved dataset and regenerate its manifest, capacity-v2 import and P12/v17 pins with the existing workflow. This changes the approved dataset SHA checked by owner-import.mjs; the reviewer will mechanically refresh the SHA in owner-coverage-data-approval.json. Owner rows and owner-import code stay unchanged.
+The approved acoustic dataset is the single spatial_v3_g6_acoustic_baselines dataset in the acoustic manifest. P12 rejects duplicate dataset entries for the same table. The approved rows are merged into the normal approved dataset by `node scripts/promote-m2c-acoustic-packages.mjs`, which regenerates the manifest, capacity-v2 import and the P12 request `m2c-p12-v17-walk-acoustics-v1`. This changes the approved dataset SHA checked by owner-import.mjs; the reviewer mechanically refreshed the SHA in owner-coverage-data-approval.json. Owner rows and owner-import code stay unchanged.

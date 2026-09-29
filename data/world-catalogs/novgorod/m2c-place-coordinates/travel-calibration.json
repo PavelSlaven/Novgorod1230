@@ -34,7 +34,13 @@
     "status": "editorial_assumption_informed_by_modern_estuary_measurements",
     "direction": "positive downstream toward the White Sea; negative upstream",
     "evidence": "lower_dvina_estuary_current",
-    "rationale": "The 1.0 km/h bias is an editorial value within the broad magnitude of modern winter estuary station readings (about 0.5–1.62 km/h), not an adopted station measurement. It is deliberately provisional and must be replaced or affirmed during review."
+    "rationale": "The 1.0 km/h bias is an editorial value within the magnitude of cited modern winter estuary observations (about 0.76–1.62 km/h for 0.21–0.45 m/s), not an adopted station measurement. It is provisional and must be replaced or affirmed during review; still-water body-type overrides take precedence.",
+    "water_body_type_overrides_kmh": {
+      "old_channel_pool": 0,
+      "reed_backwater": 0
+    },
+    "water_body_override_source_type": "editorial_assumption",
+    "water_body_override_rationale": "Candidate water-body type controls the local current bias: still-water old channels and reed backwaters use 0 km/h. Resolve from the assigned water body, not from a nearby river skeleton or line name."
   },
   "modes": {
     "path": {
@@ -42,18 +48,6 @@
       "sinuosity_factor": 1.2,
       "source_type": "editorial_assumption",
       "rationale": "Moderate walking pace below the cited modern trail study; factor allows a winding path."
-    },
-    "forest": {
-      "speed_kmh": 2.2,
-      "sinuosity_factor": 1.4,
-      "source_type": "editorial_assumption",
-      "rationale": "Reduced walking pace relative to the cited modern forest comparison; factor represents detours around vegetation and terrain."
-    },
-    "bog": {
-      "speed_kmh": 0.8,
-      "sinuosity_factor": 1.5,
-      "source_type": "editorial_assumption",
-      "rationale": "Slow cautious movement and indirect footing across wet ground; no local experimental measurement found."
     },
     "shore": {
       "speed_kmh": 2.5,
@@ -86,14 +80,46 @@
       "source_type": "editorial_assumption",
       "current_bias_kmh": 0,
       "rationale": "Open-water craft rate without channel-current adjustment; a small factor allows a non-straight crossing."
+    },
+    "forest_track": {
+      "speed_kmh": 2.75,
+      "sinuosity_factor": 1.3,
+      "source_type": "editorial_assumption",
+      "rationale": "Editorial walking pace within the reviewer-specified 2.5–3.0 km/h range for forest tracks; factor 1.3 allows a moderately winding track. Modern field-study rates are comparison points only."
+    },
+    "wetland_path": {
+      "speed_kmh": 1.5,
+      "sinuosity_factor": 1.3,
+      "source_type": "editorial_assumption",
+      "rationale": "Editorial pace for a marked wetland path, following the reviewer-specified approximate 1.5 km/h; factor 1.3 allows a moderately winding path. No local historical measurement is claimed."
+    },
+    "offroad": {
+      "speed_kmh": 3.0,
+      "sinuosity_factor": 1.0,
+      "source_type": "editorial_assumption",
+      "rationale": "Editorial direct-crossing pace and factor 1.0 for movement described as straight across country; speed and factor are provisional, not measured."
+    },
+    "boat_still_water": {
+      "still_water_speed_kmh": 4.0,
+      "sinuosity_factor": 1.15,
+      "source_type": "editorial_assumption",
+      "current_bias_kmh": 0,
+      "rationale": "Uses the approved still-water craft speed and route factor for a boat moving in a typed still-water body; no current is added or subtracted."
     }
   },
   "editorial_policy": {
     "rounding": "nearest whole minute, ties follow JavaScript Math.round; minimum one minute for positive distances",
     "legacy_minutes": "Retained as old-to-proposed comparison only; they do not calibrate the proposed duration.",
     "long_transition_threshold_minutes": 30,
+    "route_trace_residual_factor": {
+      "water": 1.05,
+      "land": 1.1,
+      "source_type": "editorial_assumption",
+      "rationale": "Residual adjustment for unmeasured bends and access within an authored route trace; the trace already captures its drawn length, so full mode sinuosity would count bends twice."
+    },
     "suggested_segment_count": "ceil(proposed_minutes / 30), minimum 1; informational only and does not split the graph",
     "open_water_classification": "line_kind=open_water selects boat_open_water even when the route is water-bound; current-relative direction remains reported separately but does not affect speed",
-    "unknown_method": "No proposed minutes are emitted when movement mode cannot be classified from line-name candidate / route method."
+    "unknown_method": "No proposed minutes are emitted when movement mode cannot be classified from line-name candidate / route method.",
+    "water_body_current_precedence": "Resolve current from the candidate water body assigned to the line. A matching current.water_body_type_overrides_kmh entry overrides the global current value; a zero-current water body uses boat_still_water for boat movement and reports no river direction."
   }
 }

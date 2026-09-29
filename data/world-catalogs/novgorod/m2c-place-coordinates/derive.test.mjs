@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { buildReport, deriveConnection, deriveTravel, geometry, travelCalibration, validateCandidate } from './derive.mjs';
+import { buildReport, deriveConnection, deriveTravel, geometry, travelCalibration, validateCandidate,
+  validateSpatialTopology } from './derive.mjs';
 
 const here = new URL('./', import.meta.url);
 const staging = new URL('../staging/cells/gn_nov_g1_xp017_yp026/content_revision_002/', here);
 const inventoryUrl = new URL('../spatial-v3/source-approval/p12_novgorod_source_approval_001/data/canonical-g5-inventory.json', here);
+const lineNamesUrl = new URL('file:///srv/novgorod-work/worktrees/line-names/data/world-catalogs/novgorod/m2c-line-names/candidate.json');
 const json = async url => JSON.parse(await readFile(url, 'utf8'));
 const compass = new Set(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']);
 const opposite = { N: 'S', NE: 'SW', E: 'W', SE: 'NW', S: 'N', SW: 'NE', W: 'E', NW: 'SE' };
@@ -19,6 +21,67 @@ async function inputs() {
   ]);
 }
 
+async function lineNamesInput() { return json(lineNamesUrl); }
+
+function connectedLandComponents(candidate, corners, cellM = 20) {
+  const scale = 111_195;
+  const xScale = scale * Math.cos(64.58 * Math.PI / 180);
+  const xy = ([lon, lat]) => [lon * xScale, lat * scale];
+  const polygon = corners.map(point => xy([point.longitude, point.latitude]));
+  const xs = polygon.map(point => point[0]); const ys = polygon.map(point => point[1]);
+  const minX = Math.min(...xs); const maxX = Math.max(...xs);
+  const minY = Math.min(...ys); const maxY = Math.max(...ys);
+  const width = Math.ceil((maxX - minX) / cellM); const height = Math.ceil((maxY - minY) / cellM);
+  const count = width * height; const land = new Uint8Array(count); const components = new Int32Array(count);
+  components.fill(-1);
+  const queue = new Int32Array(count); const halfDiagonal = cellM * Math.SQRT2 / 2;
+  const insideCell = (x, y) => {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const [xi, yi] = polygon[i]; const [xj, yj] = polygon[j];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  };
+  const segmentDistance = (point, a, b) => {
+    const dx = b[0] - a[0]; const dy = b[1] - a[1];
+    const t = Math.max(0, Math.min(1, ((point[0] - a[0]) * dx + (point[1] - a[1]) * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(point[0] - a[0] - t * dx, point[1] - a[1] - t * dy);
+  };
+  const flowSegments = candidate.flow_skeletons.flatMap(flow => flow.points.slice(1).map((point, index) => ({
+    radius: flow.width_m / 2 + halfDiagonal,
+    a: xy([flow.points[index][1], flow.points[index][0]]), b: xy([point[1], point[0]]),
+  })));
+  for (let row = 0; row < height; row += 1) for (let column = 0; column < width; column += 1) {
+    const point = [minX + (column + 0.5) * cellM, minY + (row + 0.5) * cellM];
+    if (!insideCell(...point)) continue;
+    if (flowSegments.some(segment => segmentDistance(point, segment.a, segment.b) <= segment.radius)) continue;
+    land[row * width + column] = 1;
+  }
+  let component = 0;
+  for (let index = 0; index < count; index += 1) {
+    if (!land[index] || components[index] >= 0) continue;
+    let head = 0; let tail = 0; queue[tail++] = index; components[index] = component;
+    while (head < tail) {
+      const cell = queue[head++]; const column = cell % width; const row = Math.floor(cell / width);
+      for (const next of [column ? cell - 1 : -1, column + 1 < width ? cell + 1 : -1,
+        row ? cell - width : -1, row + 1 < height ? cell + width : -1]) {
+        if (next >= 0 && land[next] && components[next] < 0) {
+          components[next] = component; queue[tail++] = next;
+        }
+      }
+    }
+    component += 1;
+  }
+  const componentAt = place => {
+    const [x, y] = xy([place.lon, place.lat]);
+    const column = Math.floor((x - minX) / cellM); const row = Math.floor((y - minY) / cellM);
+    if (column < 0 || row < 0 || column >= width || row >= height) return -1;
+    return components[row * width + column];
+  };
+  return { componentAt, count: component };
+}
+
 test('candidate covers exact G3/G4 and G5 IDs with authored and historical axes', async () => {
   const [candidate, g3, inventory, dossier] = await inputs();
   assert.equal(candidate.status, 'candidate_unapproved');
@@ -28,9 +91,15 @@ test('candidate covers exact G3/G4 and G5 IDs with authored and historical axes'
   assert.deepEqual(new Set(candidate.g5_places.map(p => p.id)), new Set(inventory.records.map(p => p.id)));
   const parents = new Set(candidate.g3_g4_places.map(p => p.id));
   const sourceParents = new Map(inventory.records.map(p => [p.id, p.parent_g4_id]));
+  const precisionCounts = { anchored: 0, reconstructed: 0, schematic: 0 };
   for (const place of [...candidate.g3_g4_places, ...candidate.g5_places]) {
-    assert.equal(place.precision_class, 'authored_reconstruction', place.id);
-    assert.ok(Number.isFinite(place.precision_m) && place.precision_m > 0, place.id);
+    assert.ok(['anchored', 'reconstructed', 'schematic'].includes(place.precision_class), place.id);
+    assert.equal(place.basis, place.precision_class, place.id);
+    precisionCounts[place.precision_class] += 1;
+    assert.ok(Number.isFinite(place.coordinate_precision_m) && place.coordinate_precision_m > 0, place.id);
+    if (place.precision_class === 'anchored') assert.ok(place.precision_m <= 500, place.id);
+    if (place.precision_class === 'reconstructed') assert.ok(place.precision_m >= 1000 && place.precision_m <= 3000, place.id);
+    if (place.precision_class === 'schematic') assert.equal(place.precision_m, null, place.id);
     assert.ok(['anchored_area', 'zone_description', 'schematic'].includes(place.historical_basis), place.id);
     assert.ok(place.historical_uncertainty, place.id);
     assert.ok(place.reasoning && place.evidence.length > 0, place.id);
@@ -40,6 +109,7 @@ test('candidate covers exact G3/G4 and G5 IDs with authored and historical axes'
       assert.equal(place.recognized_area.exact_site, false, place.id);
     }
   }
+  assert.deepEqual(precisionCounts, { anchored: 0, reconstructed: 46, schematic: 181 });
   for (const place of candidate.g5_places) {
     assert.equal(place.parent_id, sourceParents.get(place.id));
     assert.ok(parents.has(place.parent_id));
@@ -47,6 +117,24 @@ test('candidate covers exact G3/G4 and G5 IDs with authored and historical axes'
   assert.deepEqual(validateCandidate(candidate, dossier.coordinates.technical_bounds.corners_wgs84), {
     g4_sectors: 32, g5_footprints: 195, status: 'valid',
   });
+});
+
+test('authored water leaves the 15 dry G4 anchors and large island head on connected land', async () => {
+  const [candidate, , , dossier] = await inputs();
+  const dryAnchors = ['flooded_interior_basin', 'reed_backwater', 'old_channel_pool', 'floodplain_ridge_route',
+    'sheltered_landing_terrace', 'vikhtuy_locality', 'vikhtuy_river_approach', 'vikhtuy_resource_edge',
+    'zaostrovye_settlement_center', 'zaostrovye_burial_area', 'zaostrovye_landing', 'wet_conifer_tract',
+    'dry_pine_ridge', 'tributary_mouth', 'forest_stream_route', 'large_island_head'];
+  const land = connectedLandComponents(candidate, dossier.coordinates.technical_bounds.corners_wgs84);
+  const g4 = new Map(candidate.g3_g4_places.map(place => [place.id.split('_r2_').at(-1), place]));
+  const componentIds = dryAnchors.map(id => {
+    const place = g4.get(id);
+    assert.ok(place, `missing dry G4 anchor ${id}`);
+    const component = land.componentAt(place);
+    assert.ok(component >= 0, `G4 anchor ${id} falls in water or outside cell`);
+    return component;
+  });
+  assert.equal(new Set(componentIds).size, 1, 'dry G4 anchors are split by authored water');
 });
 
 test('geometry rejects overlapping G5 footprints, including identical polygons', async () => {
@@ -70,10 +158,10 @@ test('bearing and flow projection reverse; speed flags use authored map distance
   assert.equal(geometry(west, east).direction_candidate, 'E');
   assert.equal(geometry(east, west).direction_candidate, 'W');
   const forward = deriveConnection('test', 'forward', west, east, 5, 'movement.small_river_craft', {
-    isWater: true, flowSkeletons,
+    isWater: true, flowSkeleton: { ...flowSkeletons[0], waterbody_type: 'main', width_m: 100 },
   });
   const reverse = deriveConnection('test', 'reverse', east, west, 5, 'movement.small_river_craft', {
-    isWater: true, flowSkeletons,
+    isWater: true, flowSkeleton: { ...flowSkeletons[0], waterbody_type: 'main', width_m: 100 },
   });
   assert.equal(forward.direction, 'E');
   assert.equal(reverse.direction, 'W');
@@ -84,6 +172,50 @@ test('bearing and flow projection reverse; speed flags use authored map distance
   assert.equal(tooFast.speed_status, 'выше диапазона');
   const zero = deriveConnection('test', 'zero', west, west, null, null);
   assert.equal(zero.direction, null);
+});
+
+test('route traces derive segment flow and summed travel without adding graph edges', () => {
+  const west = { id: 'west', lat: 0, lon: 0, precision_m: 1 };
+  const east = { id: 'east', lat: 0, lon: 0.002, precision_m: 1 };
+  const trace = {
+    key: 'bent-river', from_id: 'west', to_id: 'east',
+    points: [west, { lat: 0.001, lon: 0.001 }, east],
+    segments: [
+      { surface: 'water', waterbody_ref: 'river', crossing: false },
+      { surface: 'water', waterbody_ref: 'river', crossing: false },
+    ],
+  };
+  const flowSkeleton = { id: 'river', waterbody_type: 'main_channel', width_m: 1000,
+    current_bias_kmh: 0.5, points: [[0, 0], [0.001, 0.001], [0, 0.002]] };
+  const forward = deriveConnection('test', 'forward', west, east, 12, 'movement.small_river_craft', {
+    isWater: true, movementClass: 'river', routeTrace: trace, flowSkeleton, flowSkeletons: [flowSkeleton],
+  });
+  const reverse = deriveConnection('test', 'reverse', east, west, 12, 'movement.small_river_craft', {
+    isWater: true, movementClass: 'river', routeTrace: trace, flowSkeleton, flowSkeletons: [flowSkeleton],
+  });
+  assert.equal(forward.route_trace_key, 'bent-river');
+  assert.equal(forward.route_trace_segments.length, 2);
+  assert.ok(forward.distance_m < forward.distance_route_m);
+  assert.equal(forward.river_direction, 'вниз по течению');
+  assert.equal(reverse.river_direction, 'вверх по течению');
+  assert.ok(forward.proposed_minutes > 0);
+  assert.ok(forward.route_trace_segments[0].suggested_route_point);
+  assert.equal(forward.route_trace_segments[1].suggested_route_point, false);
+
+  const mixed = deriveConnection('test', 'water-to-shore', west,
+    { id: 'shore', lat: 0.001, lon: 0.001, precision_m: 1 }, null, 'movement.small_river_craft', {
+      isWater: true, movementClass: 'river', flowSkeleton,
+      flowSkeletons: [flowSkeleton],
+      routeTrace: { key: 'water-to-shore', from_id: 'west', to_id: 'shore',
+        points: [west, east, { lat: 0.001, lon: 0.001 }],
+        segments: [
+          { surface: 'water', waterbody_ref: 'river', crossing: false },
+          { surface: 'land', waterbody_ref: null, crossing: false, movement_method_id: 'movement.foot' },
+        ] },
+    });
+  assert.equal(mixed.route_trace_segments[0].travel_band, 'boat_downstream');
+  assert.equal(mixed.route_trace_segments[1].travel_band, 'path');
+  assert.equal(mixed.route_trace_segments[1].river_direction, 'не применяется');
 });
 
 test('all 540 directed lines have compass direction; water/land and reverse links are consistent', async () => {
@@ -111,11 +243,75 @@ test('all 540 directed lines have compass direction; water/land and reverse link
       assert.equal(reverse.direction, opposite[line.direction], line.id);
       const oppositeRiver = { 'вверх по течению': 'вниз по течению',
         'вниз по течению': 'вверх по течению', 'поперёк течения': 'поперёк течения',
-        'не применяется': 'не применяется' };
-      assert.equal(reverse.river_direction, oppositeRiver[line.river_direction], line.id);
+        'без течения': 'без течения', 'не применяется': 'не применяется', 'неоценимо': 'неоценимо' };
+      if (line.route_trace_segments && reverse.route_trace_segments) {
+        assert.equal(reverse.river_direction, reverse.route_trace_segments[0].river_direction, line.id);
+        assert.equal(reverse.route_trace_segments.length, line.route_trace_segments.length, line.id);
+        for (let index = 0; index < line.route_trace_segments.length; index += 1) {
+          const forwardLeg = line.route_trace_segments[index];
+          const reverseLeg = reverse.route_trace_segments.at(-1 - index);
+          assert.equal(reverseLeg.river_direction, oppositeRiver[forwardLeg.river_direction], `${line.id}:${index}`);
+          assert.equal(reverseLeg.waterbody_ref, forwardLeg.waterbody_ref, `${line.id}:${index}`);
+        }
+      } else assert.equal(reverse.river_direction, oppositeRiver[line.river_direction], line.id);
     }
   }
   assert.equal(rows.size, 540);
+});
+
+test('topology validates every authored water route and land trace', async () => {
+  const [candidate] = await inputs();
+  const report = await buildReport(candidate, undefined, await lineNamesInput());
+  assert.equal(report.lines.length, 540);
+
+  const topology = validateSpatialTopology(candidate, report.lines);
+  assert.equal(topology.status, 'valid');
+  assert.equal(topology.water_line_corridor_violations, 0);
+  assert.equal(topology.missing_route_traces, 0);
+  for (const key of [
+    'nonwater_flow_intersections',
+    'water_lines_missing_assignment',
+    'nonwater_lines_with_assignment',
+    'invalid_waterbody_assignments',
+    'crossing_flag_direction_mismatches',
+    'dry_g5_in_water_corridor',
+    'water_g5_outside_own_corridor',
+    'invalid_g5_waterbody_assignment',
+    'dry_g4_in_water_corridor',
+    'water_g4_outside_own_corridor',
+    'invalid_g4_waterbody_assignment',
+  ]) assert.equal(topology[key], 0, `${key}: ${topology[key]}`);
+
+  const waterLines = report.lines.filter(line => line.is_water);
+  const landLines = report.lines.filter(line => !line.is_water);
+  const skeletonById = new Map(candidate.flow_skeletons.map(skeleton => [skeleton.id, skeleton]));
+  assert.ok(waterLines.length > 0);
+  assert.ok(landLines.length > 0);
+  assert.ok(waterLines.every(line => typeof line.waterbody_ref === 'string'), 'water line lacks assigned water body');
+  assert.ok(waterLines.every(line => line.flow_skeleton_id
+    && skeletonById.has(line.flow_skeleton_id)), 'flow direction uses an unknown skeleton');
+  assert.ok(waterLines.filter(line => line.route_trace_key).every(line => line.route_trace_segments?.length
+    && line.route_trace_segments.every(segment => segment.surface === 'water' && skeletonById.has(segment.waterbody_ref))),
+  'authored water trace has an unbound segment');
+  assert.deepEqual(waterLines.filter(line => !line.route_trace_key).map(line => line.id.match(/cross_g4_\d+/)?.[0])
+    .filter((id, index, all) => id && all.indexOf(id) === index).sort(), []);
+  assert.ok(waterLines.every(line => line.river_direction_basis.includes(line.flow_skeleton_id)),
+    'river direction basis does not name the first segment skeleton');
+  assert.ok(landLines.every(line => line.waterbody_ref == null), 'land line has water-body assignment');
+
+  for (const line of waterLines.filter(line => line.route_trace_key)) {
+    const firstSegment = line.route_trace_segments[0];
+    assert.equal(Boolean(line.waterbody_crossing), Boolean(firstSegment.crossing), line.id);
+    if (['old_channel_pool', 'reed_backwater'].includes(skeletonById.get(firstSegment.waterbody_ref)?.waterbody_type)) {
+      assert.equal(line.river_direction, 'без течения', line.id);
+      assert.equal(firstSegment.effective_speed_kmh, 4, line.id);
+      assert.equal(firstSegment.travel_band, 'boat_still_water', line.id);
+    }
+  }
+  for (const type of ['old_channel_pool', 'reed_backwater']) {
+    assert.ok(waterLines.some(line => skeletonById.get(line.waterbody_ref)?.waterbody_type === type),
+      `no directed line uses ${type}`);
+  }
 });
 
 test('travel calibration derives rounded proposals, with asymmetric boat current and open water', () => {
@@ -160,13 +356,34 @@ test('travel calibration derives rounded proposals, with asymmetric boat current
   assert.ok(long.proposed_minutes > 30);
 });
 
+test('REVIEW-place-geo-2: forest, wetland, offroad, and still-water modes use their own calibration', () => {
+  const forestTrack = deriveTravel(1000, 'movement.foot', 'forest_track', 'не применяется', travelCalibration);
+  assert.equal(forestTrack.travel_band, 'forest_track');
+  assert.equal(forestTrack.base_speed_kmh, 2.75);
+  assert.equal(forestTrack.sinuosity_factor, 1.3);
+
+  const wetlandPath = deriveTravel(1000, 'movement.foot', 'wetland_path', 'не применяется', travelCalibration);
+  assert.equal(wetlandPath.travel_band, 'wetland_path');
+  assert.equal(wetlandPath.base_speed_kmh, 1.5);
+  assert.equal(wetlandPath.sinuosity_factor, 1.3);
+
+  const offroad = deriveTravel(1000, 'movement.foot', 'offroad', 'не применяется', travelCalibration);
+  assert.equal(offroad.travel_band, 'offroad');
+  assert.equal(offroad.base_speed_kmh, 3);
+  assert.equal(offroad.sinuosity_factor, 1, 'direct movement has no detour multiplier');
+
+  for (const waterbodyType of ['old_channel_pool', 'reed_backwater']) {
+    const stillWater = deriveTravel(1000, 'movement.small_river_craft', 'river', 'без течения', travelCalibration,
+      { waterbodyType, currentBiasKmh: 0 });
+    assert.equal(stillWater.travel_band, 'boat_still_water', waterbodyType);
+    assert.equal(stillWater.current_bias_kmh, 0, waterbodyType);
+    assert.equal(stillWater.effective_speed_kmh, 4, waterbodyType);
+  }
+});
+
 test('all 540 report rows include old-to-proposed minutes, deltas, long flags, and calibration metadata', async () => {
   const [candidate] = await inputs();
-  const bindings = await json(new URL('../spatial-v3/datasets/spatial_v3_canonical_g5_connection_bindings.json', here));
-  const localPairs = [...new Set(bindings.map(binding => binding.source_pair_id))].map(source_pair_id => ({
-    source_pair_id, line_kind: 'path', travel_method: 'foot', base_minutes: 5,
-  }));
-  const report = await buildReport(candidate, undefined, { local_pairs: localPairs });
+  const report = await buildReport(candidate, undefined, await lineNamesInput());
   const calibration = await json(new URL('travel-calibration.json', here));
   assert.deepEqual(report.travel_calibration, calibration);
   assert.equal(report.lines.length, 540);
@@ -178,7 +395,12 @@ test('all 540 report rows include old-to-proposed minutes, deltas, long flags, a
     assert.equal(row.minutes_delta, row.proposed_minutes - row.base_minutes, row.id);
     assert.equal(row.minutes_change_flag_over_30, Math.abs(row.minutes_delta) > 30, row.id);
     assert.ok(Number.isFinite(row.distance_route_m) && row.distance_route_m >= row.distance_m, row.id);
-    assert.ok(Number.isFinite(row.sinuosity_factor) && row.sinuosity_factor >= 1, row.id);
+    if (row.route_trace_segments) {
+      assert.ok(row.route_trace_segments.length > 0, row.id);
+      assert.ok(row.route_trace_segments.every(segment => Number.isFinite(segment.sinuosity_factor)
+        && segment.sinuosity_factor >= 1), row.id);
+      assert.equal(row.sinuosity_factor, null, row.id);
+    } else assert.ok(Number.isFinite(row.sinuosity_factor) && row.sinuosity_factor >= 1, row.id);
     assert.ok(Math.abs(row.route_distance_km - row.distance_route_m / 1000) <= 0.0051, row.id);
   }
   assert.ok(report.lines.some(row => row.proposed_over_30_minutes === true), 'expected long transitions');
@@ -191,9 +413,12 @@ test('all 540 report rows include old-to-proposed minutes, deltas, long flags, a
 
 test('line-names input supplies local river minutes and reports contrary current name', async () => {
   const [candidate] = await inputs();
-  const bindings = await json(new URL('../spatial-v3/datasets/spatial_v3_canonical_g5_connection_bindings.json', here));
-  const pairId = bindings[0].source_pair_id;
-  const neutral = { local_pairs: [{ source_pair_id: pairId, line_kind: 'river', base_minutes: 5 }] };
+  const candidateNames = await lineNamesInput();
+  const waterPair = candidateNames.local_pairs.find(pair => pair.travel_method === 'boat'
+    && candidate.line_waterbody_bindings?.some(binding => binding.source_pair_id === pair.source_pair_id));
+  assert.ok(waterPair, 'no local water pair has an assigned water body');
+  const pairId = waterPair.source_pair_id;
+  const neutral = { local_pairs: [{ ...waterPair, base_minutes: 5 }] };
   const report = await buildReport(candidate, undefined, neutral);
   const lines = report.lines.filter(line => line.source_pair_id === pairId);
   assert.equal(lines.length, 2);
@@ -202,9 +427,9 @@ test('line-names input supplies local river minutes and reports contrary current
   assert.ok(lines.every(line => line.river_direction !== 'не применяется'));
   const contrary = lines[0].river_direction === 'вверх по течению' ? 'вниз по течению' : 'вверх по течению';
   const named = await buildReport(candidate, undefined, {
-    local_pairs: [{ source_pair_id: pairId, from_g5_id: lines[0].from_id, to_g5_id: lines[0].to_id,
-      line_kind: 'river', base_minutes: 5, name_ru: 'речной ход',
-      qualifier: { from_to: contrary, to_from: null } }],
+    local_pairs: [{ ...waterPair, base_minutes: 5, name_ru: 'речной ход',
+      qualifier: lines[0].from_id === waterPair.from_g5_id
+        ? { from_to: contrary, to_from: null } : { from_to: null, to_from: contrary } }],
   });
   assert.ok(named.name_mismatches.some(item => item.id === lines[0].id && item.type === 'flow_name_conflict'));
 });

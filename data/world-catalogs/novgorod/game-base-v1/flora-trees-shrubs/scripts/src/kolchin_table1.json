@@ -29,7 +29,7 @@
     {"wood_ru": "лещина", "count": 10, "fl_id": "fl_ts_corylus_avellana", "origin": "local"},
     {"wood_ru": "рябина", "count": 9, "fl_id": "fl_ts_sorbus_aucuparia", "origin": "local"},
     {"wood_ru": "яблоня", "count": 6, "fl_id": "fl_ts_malus_sylvestris", "origin": "local"},
-    {"wood_ru": "груша", "count": 7, "fl_id": null, "lat": "Pyrus", "origin": "local_or_central_rus", "origin_note": "Колчин относит к «местным, из лесов Новгородской земли или центральных районов Руси»; дикорастущая груша в Новгородской земле источниками коллектора не подтверждена — не включена в trees_shrubs.csv"},
+    {"wood_ru": "груша", "count": 7, "fl_id": null, "lat": "Pyrus", "origin": "local_or_central_rus", "origin_note": "Колчин относит к «местным, из лесов Новгородской земли или центральных районов Руси»; дикорастущая груша в Новгородской земле источниками коллектора не подтверждена — стоит в authoring/needs_check.csv (flora_wild_pear), в trees_shrubs.csv не включена"},
     {"wood_ru": "черёмуха", "count": 2, "fl_id": "fl_ts_prunus_padus", "origin": "local"},
     {"wood_ru": "бересклет", "count": 1, "fl_id": "fl_ts_euonymus_verrucosus", "origin": "local"},
     {"wood_ru": "каштан", "count": 2, "fl_id": null, "lat": "Castanea sativa", "origin": "imported"},

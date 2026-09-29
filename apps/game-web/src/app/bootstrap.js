@@ -146,6 +146,16 @@ export function bootstrapGameWeb({
       await submitTurn({
         selected_action_option_id: actionButton.dataset.actionId
       });
+      return;
+    }
+    const movementButton = target.closest?.('[data-movement-label]');
+    if (movementButton && !movementButton.disabled
+      && !flowNavigationBlocked(store.getState())) {
+      const label = movementButton.dataset.movementLabel ?? '';
+      store.setDraft('turn', label);
+      const textarea = root.querySelector('#turn-intent');
+      if (textarea) textarea.value = label;
+      textarea?.focus();
     }
   });
 

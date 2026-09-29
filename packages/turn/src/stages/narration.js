@@ -1,6 +1,7 @@
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
 import { assertValid, validateNarrationResult } from '../validators.js';
+import { committedBlockedMovementReasonCode } from './blocked-movement-reason.js';
 import { freezeOutput } from './shared.js';
 
 export async function buildNarrationStage({ playerInput, modeResolution, visibleContext,
@@ -49,7 +50,13 @@ export function spatialResult({ consequence, checks, modeResolution,
   const after = movementDestination(consequence);
   const movement = typeof before === 'string' && typeof after === 'string'
     && before !== after ? { movement_committed: true } : {};
-  if (consequence?.status === 'blocked') return { movement_blocked: true };
+  if (consequence?.status === 'blocked') {
+    const movement_blocked_reason_code =
+      committedBlockedMovementReasonCode(modeResolution);
+    return movement_blocked_reason_code == null
+      ? { movement_blocked: true }
+      : { movement_blocked: true, movement_blocked_reason_code };
+  }
   const assessment = modeResolution?.decision_trace?.step_traces?.some(
     ({ applied, approved_plan: plan }) => applied === true
       && plan?.resolution === 'direct'

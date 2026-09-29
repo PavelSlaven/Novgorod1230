@@ -66,6 +66,8 @@ const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certai
   + 'the player; a named or labelled NPC in '
   + 'a required change remains a third-person NPC. Keep each NPC cue with its entity. Item placement proves only '
   + 'placement; actor movement requires confirmed_outcome.movement_committed=true. '
+  + 'When movement_blocked is true, movement_blocked_reason_code names the committed '
+  + 'domain refusal; use it for the refusal beat and do not invent a different cause. '
   + 'Missing or false outcome fields are silent constraints. action_intent supplies '
   + 'intention only, never execution, hearing, response, success or world fact. '
   + 'A committed transient attempt is evidence only of the performed handling; '

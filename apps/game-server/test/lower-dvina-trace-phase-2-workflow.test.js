@@ -4,6 +4,35 @@ import test from 'node:test';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
 
+test('narration failure retries presentation in the same turn request', async () => {
+  let narrationAttempts = 0;
+  const diagnostics = createLlmDiagnostics();
+  const f = fixture({
+    llmDiagnostics: diagnostics,
+    narrationFails: true
+  });
+  const originalRun = f.repository.replayPhase2Turn.bind(f.repository);
+  f.repository.replayPhase2Turn = async (input) => {
+    narrationAttempts += 1;
+    if (narrationAttempts < 2) {
+      const error = new Error('Narration did not produce an approved presentation.');
+      error.code = 'TURN_NARRATION_REJECTED';
+      throw error;
+    }
+    f.setNarrationFails(false);
+    return originalRun(input);
+  };
+  const input = {
+    request_id: 'phase2-same-request-recovery',
+    idempotency_key: 'phase2-same-request-recovery',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  };
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input });
+  assert.equal(result.screen.screen_status, 'ready');
+  assert.equal(f.commitCount(), 1);
+  assert.ok(narrationAttempts >= 1);
+});
+
 test('narration-stage failure records one partial workflow trace and replays pending result', async () => {
   const diagnostics = createLlmDiagnostics({ developerMode: true });
   const f = fixture({ narrationFails: true, llmDiagnostics: diagnostics });

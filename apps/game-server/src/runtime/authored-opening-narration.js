@@ -91,16 +91,39 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
   const auditor = role('gameplay_narrator_auditor', AUDITOR);
   const semanticRepairer = role('gameplay_narrator_semantic_repair',
     `${WRITER} Repair every supplied Stage 23 concern.`, proseOutput);
+  const OPENING_AUDIT_OUTER_ATTEMPTS = 3;
   return Object.freeze({
     async run({ partyId, requestId, visibleContextPackage,
       visibleContextApproval }) {
-      const execute = () => runBoundedOpening({ requestId,
-        visibleContextPackage, visibleContextApproval, writer, auditor,
-        auditOutput, semanticRepairer });
-      return typeof llmDiagnostics?.runTurn === 'function'
-        ? llmDiagnostics.runTurn({ party_id: partyId,
-          request_id: requestId }, execute)
-        : execute();
+      for (let attempt = 0; attempt < OPENING_AUDIT_OUTER_ATTEMPTS; attempt += 1) {
+        const execute = () => runBoundedOpening({ requestId,
+          visibleContextPackage, visibleContextApproval, writer, auditor,
+          auditOutput, semanticRepairer });
+        try {
+          const result = typeof llmDiagnostics?.runTurn === 'function'
+            ? await llmDiagnostics.runTurn({ party_id: partyId,
+              request_id: requestId }, execute)
+            : await execute();
+          return result;
+        } catch (error) {
+          const handoffRetry = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
+            && Array.isArray(error?.details?.codes)
+            && error.details.codes.some((code) => typeof code === 'string'
+              && code.startsWith('STAGE23_'));
+          if (!handoffRetry || attempt + 1 >= OPENING_AUDIT_OUTER_ATTEMPTS) {
+            throw error;
+          }
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'opening_audit_retry',
+              party_id: partyId,
+              request_id: requestId,
+              attempt: attempt + 1,
+              codes: error?.details?.codes ?? null
+            });
+          } catch { /* diagnostics must not affect opening */ }
+        }
+      }
     }
   });
 }

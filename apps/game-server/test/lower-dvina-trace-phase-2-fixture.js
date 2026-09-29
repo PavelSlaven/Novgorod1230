@@ -200,14 +200,26 @@ function fixture({
         max_repairs: 1,
       });
       if (narration?.status !== 'approved' || narration.pass !== true) {
-        throw new Error('narration_flow_result invalid');
+        const error = new Error('Narration did not produce an approved presentation.');
+        error.code = 'TURN_NARRATION_REJECTED';
+        throw error;
       }
+      const screen = {
+        version: 1,
+        schema: 'lower_dvina_trace_turn_screen',
+        party_id: partyId,
+        turn_id: replay.screen?.turn_id ?? replay.factual?.mode_resolution?.turn_id,
+        turn_number: state.party_state.turn_number,
+        screen_status: 'ready',
+        main_prose: narration.approved_output?.prose ?? 'Готово.'
+      };
       const publicResult = {
         party_id: partyId,
         turn_number: state.party_state.turn_number,
         state_version: state.party_state.state_version,
         completion: structuredClone(state.completion ?? null),
         narration,
+        screen,
       };
       const stored = replays.get(replay.factual.player_input.idempotency_key);
       if (stored) stored.public_result = structuredClone(publicResult);

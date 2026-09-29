@@ -47,6 +47,17 @@ test('spatial result recognizes committed active movement shapes', () => {
   });
 });
 
+test('blocked movement exposes committed domain reason code in narrator outcome', () => {
+  assert.deepEqual(spatialResult({
+    consequence: { status: 'blocked' },
+    modeResolution: { decision_trace: { step_traces: [{
+      applied: false,
+      approved_plan: { resolution: 'direct', goal_result: 'not_achieved',
+        operations: [] }
+    }] } }
+  }), { movement_blocked: true, movement_blocked_reason_code: 'actor_movement_blocked' });
+});
+
 test('spatial result recognizes replayed committed movement from its source', () => {
   assert.deepEqual(spatialResult({ consequence: { movement: {
     source: { location_ref: 'camp' },

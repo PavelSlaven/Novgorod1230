@@ -1,8 +1,8 @@
 {
   "schema": "rus.m2c_supplemental_data_approval.v1",
-  "decision": "PENDING_INDEPENDENT_APPROVAL",
-  "reviewer": null,
-  "reviewed_on": null,
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "claude-opus-5.5 — independent reviewer; not the author of the union (author: walk-acoustics-release executor, Claude Sonnet 5.5)",
+  "reviewed_on": "2026-09-29",
   "source_issue": "PavelSlaven/Novgorod1230#133",
   "scope": "Exact acoustic P12 authoring-version union after merging the approved canonical-walk package: 218 acoustic baselines (71 base+canonical-terminal, 147 canonical-walk; 195/195 target x slot with 2 additional-start owner rows) and 2761 authoring-version rows; two dataset SHA repins plus the manifest SHA. Expansion, connection, dependency-edge and other rows are unchanged.",
   "source_approvals": [
@@ -24,5 +24,6 @@
     "connection_profiles_sha256": "9de3d2762bc13d2d7db4dad18f0e70ff9128aff4882657a5ce67a879c90898a8",
     "connection_bindings_sha256": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
     "authoring_dependency_edges_sha256": "aca679943f50bb9e2aacf7af49918649f3d48de896b5446949ec7774ff73d7fd"
-  }
+  },
+  "review_evidence": "Reviewer re-ran scripts/promote-m2c-acoustic-packages.mjs --check: exact_bundle pins equal current bytes; generator reproduces the pre-walk files byte-for-byte on the terminal-only package list (test promote-m2c-acoustic-packages.test.js); the 147 added rows are exactly the approved canonical-walk package; non-acoustic authoring-version rows unchanged."
 }

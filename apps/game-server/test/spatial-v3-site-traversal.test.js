@@ -7,6 +7,8 @@ import { applySiteTraversalTransition, siteTraversalWrites } from
   '../src/infrastructure/postgres/spatial-v3-site-traversal-commit.js';
 import { applyS1LocalPositionTransition } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-projections.js';
+import { createSpatialV3CurrentMovementCapability } from
+  '../src/infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { recheckSiteConnectionTraversal } from
   '../src/infrastructure/postgres/first-playable/recheck-site-connection-traversal.js';
 
@@ -85,8 +87,8 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
   }
   const prepare = createSpatialV3SiteTraversalRuntime({ pool: { query: async (sql) =>
     ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? current : { units: 0 }] }) },
-  assessAvailability: async () => ({ ok: true, connection_id: connection.id,
-    condition_set_ref: localProfile.availability_condition_set_ref }),
+  // the real evaluator: a conditional profile @1 is admitted by the approved policy, not by a stub
+  assessAvailability: createSpatialV3CurrentMovementCapability({ pool: { query() {} } }).assessAvailability,
   assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
     capability_context: capability }),
   projectDestination: async () => ({ ok: true, position_id: 'position:target',

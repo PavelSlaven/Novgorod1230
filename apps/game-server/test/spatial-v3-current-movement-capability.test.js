@@ -168,3 +168,37 @@ test('PostgreSQL body and active conditions control current capability', async (
   assert.equal(restrained.visual_capability, 'clear');
   assert.deepEqual(restrained.allowed_movement_methods, []);
 });
+
+const setRef = (id) => ({ entity_id: id, authoring_version: '1' });
+
+test('every set named by the approved data is evaluated by the one policy: open, with its reason, whatever the light', async () => {
+  const owner = createSpatialV3CurrentMovementCapability({ pool: { query() {} } });
+  for (const id of ['availability.local_state_conditional', 'availability.ground_flood_snow_conditional',
+    'availability.water_ice_conditional', 'availability.shore_conditional', 'availability.wetland_conditional']) {
+    const expected = { ok: true, connection_id: 'connection', condition_set_ref: `${id}@1`,
+      status: 'open', reason_code: 'availability_state_not_evaluable' };
+    assert.deepEqual(await owner.assessAvailability({ connection: {
+      id: 'connection', availability_condition_set_ref: setRef(id) } }), expected, id);
+    // the recheck asks with the bare ref, the traversal with the profile string: same answer
+    assert.deepEqual(await owner.assessAvailability({ connectionId: 'connection',
+      conditionSetRef: setRef(id) }), expected, id);
+    assert.deepEqual(await owner.assessAvailability({ connection: { id: 'connection',
+      availability_condition_set_ref: setRef(id) }, profile: { availability_condition_set_ref: `${id}@1` },
+    environment: { light_state: 'night', weather_state: { visibility: 'poor' } } }), expected,
+    `${id}: night and poor visibility do not close the line`);
+  }
+});
+
+test('a set the policy does not list is a data gap, and a profile that disagrees with its connection is refused', async () => {
+  const owner = createSpatialV3CurrentMovementCapability({ pool: { query() {} } });
+  await assert.rejects(owner.assessAvailability({ connection: { id: 'connection',
+    availability_condition_set_ref: setRef('availability.unlisted') } }),
+  (error) => error.details.reason === 'availability_condition_set_owner_missing');
+  await assert.rejects(owner.assessAvailability({ connection: { id: 'connection',
+    availability_condition_set_ref: setRef('availability.water_ice_conditional') },
+  profile: { availability_condition_set_ref: 'availability.shore_conditional@1' } }),
+  (error) => error.details.reason === 'availability_condition_set_mismatch');
+  await assert.rejects(owner.assessAvailability({ connection: { id: 'connection',
+    availability_condition_set_ref: null }, profile: { availability_condition_set_ref: 'availability.shore_conditional@1' } }),
+  (error) => error.details.reason === 'availability_condition_set_mismatch');
+});

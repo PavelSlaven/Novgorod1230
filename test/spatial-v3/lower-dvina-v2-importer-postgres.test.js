@@ -26,9 +26,9 @@ test('full v2 snapshot imports transactionally and reads back in disposable Post
   let ready = false;
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((done) => setTimeout(done, 250));
-    if (docker(['exec', container, 'pg_isready', '-U', 'lower_dvina', '-d', 'world']).status === 0) {
+    if (docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'lower_dvina', '-d', 'world']).status === 0) {
       await new Promise((done) => setTimeout(done, 750));
-      if (docker(['exec', container, 'pg_isready', '-U', 'lower_dvina', '-d', 'world']).status === 0) {
+      if (docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'lower_dvina', '-d', 'world']).status === 0) {
         ready = true;
         break;
       }

@@ -382,11 +382,11 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (docker([
-      'exec', containerName, 'pg_isready', '-U', 'pr8', '-d', 'pr8'
+      'exec', containerName, 'pg_isready', '-h', '127.0.0.1', '-U', 'pr8', '-d', 'pr8'
     ]).status === 0) {
       await new Promise((resolve) => setTimeout(resolve, 300));
       if (docker([
-        'exec', containerName, 'pg_isready', '-U', 'pr8', '-d', 'pr8'
+        'exec', containerName, 'pg_isready', '-h', '127.0.0.1', '-U', 'pr8', '-d', 'pr8'
       ]).status === 0) {
         ready = true;
         break;

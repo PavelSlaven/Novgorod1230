@@ -9,14 +9,14 @@
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 17 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 11 | 14 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 10 | 13 | 0 |
-| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 8 | 7 | 0 |
+| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 12 | 7 | 0 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 5 | 2 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 13 | 12 | 0 |
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
 | [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 9 | 4 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 23 | 23 | 0 |
-| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 11 | 7 | 0 |
+| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 12 | 7 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 5 | 23 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 11 | 28 | 0 |
@@ -25,8 +25,8 @@
 | [resource-catalog](resource-catalog/VERIFICATION.md) | approve_with_limits | 5 | 11 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 11 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
-| [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 4 | 0 |
-| **Итого** | | **172** | **251** | **0** |
+| [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 5 | 0 |
+| **Итого** | | **177** | **252** | **0** |
 
 ## Вердикты по файлам
 
@@ -185,9 +185,13 @@
 | [`fauna/taxa_checks.csv`](fauna-mammals-birds/fauna/taxa_checks.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`fauna/wild_habitat_presence.csv`](fauna-mammals-birds/fauna/wild_habitat_presence.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 | [`README.md`](fauna-mammals-birds/README.md) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
-| [`scripts/extract_regional_bird_sources.py`](fauna-mammals-birds/scripts/extract_regional_bird_sources.py) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
-| [`scripts/input_snapshots/malchevsky1983_flags.json`](fauna-mammals-birds/scripts/input_snapshots/malchevsky1983_flags.json) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
-| [`scripts/input_snapshots/panteleev2001_list.json`](fauna-mammals-birds/scripts/input_snapshots/panteleev2001_list.json) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/build.cjs`](fauna-mammals-birds/scripts/build.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/src/checks.cjs`](fauna-mammals-birds/scripts/src/checks.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/src/hunting.cjs`](fauna-mammals-birds/scripts/src/hunting.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`scripts/src/mammals.cjs`](fauna-mammals-birds/scripts/src/mammals.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`scripts/validate-phase.cjs`](fauna-mammals-birds/scripts/validate-phase.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`scripts/validate.cjs`](fauna-mammals-birds/scripts/validate.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/voice-phase.cjs`](fauna-mammals-birds/scripts/voice-phase.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |
 | [`validation-report.json`](fauna-mammals-birds/validation-report.json) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 
 ### flora-herbs-berries-mushrooms
@@ -344,7 +348,8 @@
 | [`military/combat_likelihood_by_role.csv`](items-weapons-armour/military/combat_likelihood_by_role.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#militarycombat_likelihood_by_rolecsv--approve_with_limits) |
 | [`military/military_events.csv`](items-weapons-armour/military/military_events.csv) | [approve](items-weapons-armour/VERIFICATION.md#militarymilitary_eventscsv--approve) |
 | [`military/security.csv`](items-weapons-armour/military/security.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#militarysecuritycsv--approve_with_limits) |
-| [`scripts/pf_crosswalk.py`](items-weapons-armour/scripts/pf_crosswalk.py) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
+| [`scripts/build.cjs`](items-weapons-armour/scripts/build.cjs) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`scripts/validate.cjs`](items-weapons-armour/scripts/validate.cjs) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
 | [`validation_report.json`](items-weapons-armour/validation_report.json) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-a1) |
 
 ### misc
@@ -559,6 +564,7 @@
 | [`health_body/health_entities.csv`](transport-health-recreation/health_body/health_entities.csv) | [approve_with_limits](transport-health-recreation/VERIFICATION.md#health_bodyhealth_entitiescsv--approve_with_limits) |
 | [`recreation_culture/README.md`](transport-health-recreation/recreation_culture/README.md) | [approve](transport-health-recreation/VERIFICATION.md#c016--шахматы-и-тавлеи-d40-независимая-проверка-d35) |
 | [`recreation_culture/recreation_entities.csv`](transport-health-recreation/recreation_culture/recreation_entities.csv) | [approve_with_limits](transport-health-recreation/VERIFICATION.md#recreation_culturerecreation_entitiescsv--approve_with_limits) |
+| [`scripts/lib.cjs`](transport-health-recreation/scripts/lib.cjs) | [approve_with_limits](transport-health-recreation/VERIFICATION.md#scripts--approve_with_limits) |
 | [`sources/book_evidence_transport_health_recreation.csv`](transport-health-recreation/sources/book_evidence_transport_health_recreation.csv) | [approve](transport-health-recreation/VERIFICATION.md#sourcesbook_evidence_transport_health_recreationcsv--approve) |
 | [`transport_travel/route_modes.csv`](transport-health-recreation/transport_travel/route_modes.csv) | [approve_with_limits](transport-health-recreation/VERIFICATION.md#transport_travelroute_modescsv--approve_with_limits-было-rework) |
 | [`transport_travel/transport_entities.csv`](transport-health-recreation/transport_travel/transport_entities.csv) | [approve_with_limits](transport-health-recreation/VERIFICATION.md#transport_traveltransport_entitiescsv--approve_with_limits) |
@@ -569,9 +575,5 @@
 |---|---|---|---|
 | crafts-tools-processes | [`Разделка туши и чистка рыбы (C015, D37)`](crafts-tools-processes/VERIFICATION.md#разделка-туши-и-чистка-рыбы-c015-d37--approve_with_limits) | approve_with_limits | `Разделка туши и чистка рыбы (C015, D37)`: нет пути к файлу или каталогу |
 | fauna-mammals-birds | [`Способы охоты и лова, пушнина, права на угодья (C015, D37/D40)`](fauna-mammals-birds/VERIFICATION.md#способы-охоты-и-лова-пушнина-права-на-угодья-c015-d37d40--approve_with_limits) | approve_with_limits | `D37/`: каталог пуст или не найден |
-| fauna-mammals-birds | [`scripts/src/hunting.cjs`](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) | approve_with_limits | `scripts/src/`: каталог пуст или не найден |
-| fauna-mammals-birds | [`scripts/src/mammals.cjs`](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) | approve | `scripts/src/`: каталог пуст или не найден |
-| fauna-mammals-birds | [`scripts/src/checks.cjs`](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) | approve | `scripts/src/`: каталог пуст или не найден |
 | places-binding | [`Слот слуги. Причина пола переписана по строке занятия: дрова, конюшня`](places-binding/VERIFICATION.md#placesnode_bindingcsv--approve_with_limits-c006e4-закрывает-rework-c006e2c006e3) | approve | `Слот слуги. Причина пола переписана по строке занятия: дрова, конюшня`: нет пути к файлу или каталогу |
 | transport-health-recreation | [`README (группа и домены)`](transport-health-recreation/VERIFICATION.md#readme-группа-и-домены--approve_with_limits) | approve_with_limits | `README (группа и домены)`: нет пути к файлу или каталогу |
-| transport-health-recreation | [`scripts/`](transport-health-recreation/VERIFICATION.md#scripts--approve_with_limits) | approve_with_limits | `scripts/`: каталог пуст или не найден |

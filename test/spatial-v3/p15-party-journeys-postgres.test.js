@@ -32,7 +32,7 @@ test('P15 target-only journey, exact time and idempotency constraints are physic
   t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p15_local', '-e', 'POSTGRES_USER=p15', '-e', 'POSTGRES_DB=p15', 'postgres:16-alpine']).status, 0);
   let ready = false;
-  for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p15', '-d', 'p15']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p15', '-d', 'p15']).status === 0) { ready = true; break; } } }
+  for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p15', '-d', 'p15']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p15', '-d', 'p15']).status === 0) { ready = true; break; } } }
   assert.equal(ready, true);
   const psql = (sql) => docker(['exec', '-i', name, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'p15', '-d', 'p15'], sql);
   const files = await Promise.all(['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql'].map((file) => readFile(`schemas/party-db/${file}`, 'utf8')));

@@ -12,9 +12,125 @@ import { build as buildPresenceRules, SUBREGIONS } from './build-presence-rules.
 import { checkPeopleComposition } from './check-people-composition.mjs';
 
 const checks = [];
-const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
+const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 1000), external, ...extra });
 const P = (...p) => path.join(GROUP, ...p);
 const TIME_ORDER = ['morning', 'day', 'evening', 'night'];
+const ENVIRONMENT_KINDS = ['surface_state', 'water_state', 'weather_effect', 'sound', 'odor', 'animal_sign', 'work_trace', 'domestic_trace', 'vegetation', 'waste', 'object_arrangement', 'light_smoke'];
+const ENVIRONMENT_SENSES = ['physical', 'visual', 'audible', 'olfactory'];
+const ENVIRONMENT_BASES = ['sourced', 'analogy', 'logical_necessity', 'editorial'];
+const ENVIRONMENT_REEVALUATION = ['first_observation', 'season_change', 'weather_change', 'time_slot_change', 'presence_change', 'process_change'];
+const ENVIRONMENT_LENSES = ['sound', 'odor', 'seasonal_surface', 'domestic_animal', 'human_companion', 'wild_animal', 'ruderal_plant', 'work_waste', 'loose_object', 'light_smoke', 'weather', 'daypart_marker'];
+const ENVIRONMENT_EXCLUSION_REASONS = ['physically_inapplicable', 'functionally_inapplicable', 'duplicate_of_other_lens'];
+const ENVIRONMENT_SHARED_PHENOMENA = new Map([
+  ['fog', 'weather'], ['frost', 'seasonal_surface'], ['rime', 'seasonal_surface'], ['snow', 'seasonal_surface'],
+  ['snowfall', 'weather'], ['thaw_drip', 'seasonal_surface'], ['rain', 'weather'], ['wind', 'weather'],
+  ['twilight', 'daypart_marker'], ['dawn', 'daypart_marker'], ['night_darkness', 'daypart_marker'],
+  ['heat_dust_open', 'weather'], ['black_ice', 'seasonal_surface'],
+]);
+const ENVIRONMENT_SHARED_IDS = new Set([...ENVIRONMENT_SHARED_PHENOMENA.keys()].map((id) => `epr_shared__${id}`));
+const environmentScopes = (row) => {
+  const shared = split(row.pf_scope);
+  return shared.length ? shared : row.pf_id ? [row.pf_id] : [];
+};
+const PEOPLE_GUARDED_DOMESTIC_FAUNA = new Set(['fa_dom_cat', 'fa_dom_dog', 'fa_dom_pigeon']);
+const ENVIRONMENT_PF_CLASS_BY_ID = new Map([
+  ...['pf_outbuildings', 'pf_cellar_granary', 'pf_bathhouse', 'pf_smithy', 'pf_mill', 'pf_threshing_barn',
+    'pf_dwelling_interior', 'pf_church_interior', 'pf_ordinary_workshop', 'pf_grain_drying_shed_ovin']
+    .map((pf) => [pf, 'interior']),
+  ...['pf_river_channel', 'pf_winter_ice_crossing'].map((pf) => [pf, 'water_surface']),
+  ...['pf_reality_batch_01_open_conditions', 'pf_reality_first_practical_conditions', 'pf_rural_yard',
+    'pf_town_street', 'pf_market_square', 'pf_river_wharf', 'pf_town_courtyard', 'pf_town_wall_edge',
+    'pf_riverbank', 'pf_floodplain_meadow', 'pf_lake_shore', 'pf_arable_field', 'pf_hay_meadow',
+    'pf_broadleaf_woodland', 'pf_conifer_woodland', 'pf_mixed_woodland', 'pf_forest_edge', 'pf_bog',
+    'pf_marshy_stream', 'pf_village_lane', 'pf_peasant_homestead', 'pf_churchyard', 'pf_monastery_yard',
+    'pf_road', 'pf_bridge_crossing', 'pf_ferry_landing', 'pf_forest_track', 'pf_hunting_ground',
+    'pf_orchard_garden', 'pf_pasture', 'pf_field_margin', 'pf_fishing_camp', 'pf_burial_ground']
+    .map((pf) => [pf, 'open_place']),
+]);
+const ENVIRONMENT_FIRE_PROCESSES = new Set(['pc_smith_forging', 'pc_wax_candle', 'pc_birch_tar', 'pc_charcoal_pit', 'pc_pottery_wheel', 'pc_grain_drying_ovin']);
+const ENVIRONMENT_FIRE_SCENES = new Set(['sc_scn001', 'sc_scn002', 'sc_scn008', 'sc_scn022', 'sc_x001_bathhouse', 'sc_x002_ovin']);
+const ENVIRONMENT_DOG_SCENES = new Set(['sc_scn005', 'sc_scn006']);
+const ENVIRONMENT_CHURCH_SCENES = new Set(['sc_scn009', 'sc_scn050', 'sc_scn051', 'sc_scn052']);
+const ENVIRONMENT_PATH = 'presence/environment_presence_authoring.csv';
+const ENVIRONMENT_EXCLUSIONS_PATH = 'presence/environment_lens_exclusions.csv';
+const normalizeEnvironmentClusterText = (value) => String(value || '').normalize('NFC').trim().toLowerCase()
+  .replace(/\s+/gu, ' ').replace(/[.;:]$/u, '');
+const ENVIRONMENT_RU_SUFFIXES = ['иями', 'ями', 'ами', 'ого', 'его', 'ому', 'ему', 'ыми', 'ими', 'ее', 'ое', 'ая', 'яя', 'ые', 'ие', 'ый', 'ий', 'ой', 'ую', 'юю', 'ах', 'ях', 'ам', 'ям', 'ов', 'ев', 'ей', 'ом', 'ем', 'а', 'я', 'ы', 'и', 'е', 'у', 'ю'];
+const ENVIRONMENT_STOP_WORDS = new Set(['и', 'а', 'но', 'или', 'у', 'в', 'во', 'на', 'над', 'под', 'по', 'из', 'за', 'от', 'до', 'для', 'при', 'между', 'рядом', 'может', 'могут', 'видно', 'слышно', 'виден', 'видны', 'граница', 'правило', 'локально']);
+const environmentStem = (token) => {
+  if (!/^[а-яё]+$/u.test(token)) return token;
+  const normalized = token.replaceAll('ё', 'е').replace(/[ьъ]/gu, '');
+  for (const suffix of ENVIRONMENT_RU_SUFFIXES) if (normalized.endsWith(suffix) && normalized.length - suffix.length >= 3)
+    return normalized.slice(0, -suffix.length);
+  return normalized;
+};
+const environmentTokens = (value) => normalizeEnvironmentClusterText(value).replaceAll('ё', 'е')
+  .replace(/pf_[a-z0-9_]+/gu, ' <place> ').replace(/fa_[a-z0-9_]+|fl_[a-z0-9_]+/gu, ' <taxon> ')
+  .replace(/[^a-zа-я0-9<>]+/gu, ' ').trim().split(/\s+/u).filter(Boolean)
+  .map(environmentStem).filter((token) => !ENVIRONMENT_STOP_WORDS.has(token));
+const environmentAliasTokens = (value) => new Set(environmentTokens(value).filter((token) => token.length >= 3));
+const environmentComparable = (value, placeName = '', taxonNames = []) => {
+  const place = environmentAliasTokens(placeName);
+  const taxa = new Set(taxonNames.flatMap((name) => [...environmentAliasTokens(name)]));
+  let sawPlace = false, sawTaxon = false;
+  const out = [];
+  for (const token of environmentTokens(value)) {
+    if (place.has(token)) { if (!sawPlace) out.push('<place>'); sawPlace = true; continue; }
+    if (taxa.has(token)) { if (!sawTaxon) out.push('<taxon>'); sawTaxon = true; continue; }
+    out.push(token);
+  }
+  return out.join(' ');
+};
+const environmentDice = (left, right) => {
+  const a = new Set(left), b = new Set(right);
+  if (!a.size && !b.size) return 1;
+  let overlap = 0;
+  for (const value of a) if (b.has(value)) overlap++;
+  return (2 * overlap) / (a.size + b.size);
+};
+const environmentTrigrams = (value) => {
+  const compact = value.replace(/\s+/gu, ' ').trim();
+  if (compact.length < 3) return compact ? [compact] : [];
+  return [...Array(compact.length - 2)].map((_, index) => compact.slice(index, index + 3));
+};
+const environmentSimilarity = (left, right) => 0.7 * environmentDice(left.split(/\s+/u).filter(Boolean), right.split(/\s+/u).filter(Boolean)) +
+  0.3 * environmentDice(environmentTrigrams(left), environmentTrigrams(right));
+const environmentSlug = (row) => {
+  if (row.env_rule_id.startsWith('epr_shared__')) return row.env_rule_id.slice('epr_shared__'.length);
+  const pf = row.pf_id.slice(3);
+  const legacyPrefix = `epr_${pf}__`;
+  if (row.env_rule_id.startsWith(legacyPrefix)) return row.env_rule_id.slice(legacyPrefix.length);
+  const roundMatch = row.env_rule_id.match(/^epr_r\d+_(.+)$/u);
+  const roundPrefix = `${pf}_`;
+  if (roundMatch?.[1].startsWith(roundPrefix)) return roundMatch[1].slice(roundPrefix.length);
+  return null;
+};
+const catalogBoilerplateDerivation = (value) => {
+  const normalized = normalizeEnvironmentClusterText(value);
+  const catalogPremise = /(?:точн(?:ая|ые)\s+региональн|региональн[^→]{0,80}(?:pf|сезон)|habitat\s*row|точн(?:ая|ые)\s+pf-season|каталог|таблиц|сезонн.{0,20}(?:сведен|данн|запис)|мест.{0,12}обитан)/iu.test(normalized);
+  const permission = /(?:допуска|разреша|связыва|указывает|подтвержда|может|возмож)/iu.test(normalized.split('→')[0] || '');
+  const abstractResult = /→[^;]*(?:сигнал|след|присутств)[^;]*(?:может|возмож|прояв)/iu.test(normalized) || /→[^;]*(?:может|возмож)[^;]*(?:сигнал|след|присутств)/iu.test(normalized);
+  const [cause = '', consequenceAndBoundary = ''] = normalized.split('→');
+  const consequence = consequenceAndBoundary.split('; граница:')[0];
+  const causeTokens = new Set(environmentTokens(cause));
+  const consequenceTokens = new Set(environmentTokens(consequence));
+  const hasPrefix = (tokens, prefixes) => [...tokens].some((token) => prefixes.some((prefix) => token.startsWith(prefix)));
+  const semanticProfile = [
+    hasPrefix(causeTokens, ['запис', 'строк', 'справочник', 'каталог', 'таблиц', 'данн', 'распространени', 'сезонн', 'season', 'habitat']) ||
+      (hasPrefix(causeTokens, ['тип']) && hasPrefix(causeTokens, ['мест'])),
+    hasPrefix(causeTokens, ['вид', 'таксон']),
+    hasPrefix(causeTokens, ['показыва', 'подтвержда', 'отмеч', 'охватыва', 'допуска', 'разреша', 'указыва', 'связыва']),
+    hasPrefix(consequenceTokens, ['сигнал', 'след', 'присутств']) && hasPrefix(consequenceTokens, ['может', 'возмож', 'прояв']),
+  ];
+  const overlap = semanticProfile.filter(Boolean).length;
+  const semanticSimilarity = (2 * overlap) / (overlap + 4);
+  const semanticBoilerplate = semanticProfile[0] && semanticProfile[2] && semanticProfile[3] && semanticSimilarity >= 0.85;
+  return /chance\s*=|редакционн(?:ая|ой|ую)\s+подач/iu.test(normalized) || (catalogPremise && permission && abstractResult) || semanticBoilerplate;
+};
+const exactEntityRef = (ref) => {
+  const typed = String(ref || '').replace(/^(fauna|flora|item):/, '');
+  return typed.match(/#((?:fa|fl|fd|it|tl|trv|mt|nm|pc)_[a-z0-9_]+)$/)?.[1] || typed;
+};
 const ITEM_PATH = 'data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv';
 const FAUNA_PATH = 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv';
 const REGION_INPUT = 'inputs/m2c-nature-coverage-entries.json';
@@ -186,10 +302,12 @@ function presenceIds(rows) {
     const seasons = String(row.allowed_seasons ?? '').trim();
     const ordered = SEASONS.filter((s) => split(seasons).includes(s)).join(';');
     const canonical = seasons === 'all' || ordered === SEASONS.join(';') ? 'all' : ordered;
-    const identity = [row.scope_kind, row.scope_ref, row.region_id];
-    if (row.subregion_scope) identity.push(row.subregion_scope);
-    identity.push(row.subject_kind, row.subject_ref, canonical);
-    const key = JSON.stringify(identity.map((s) => String(s ?? '').trim()));
+    const parts = [row.scope_kind, row.scope_ref, row.region_id];
+    if (row.subregion_scope) parts.push(row.subregion_scope);
+    parts.push(row.subject_kind, row.subject_ref);
+    if (row.subject_kind === 'environment') parts.push(row.condition_key);
+    parts.push(canonical);
+    const key = JSON.stringify(parts.map((s) => String(s ?? '').trim()));
     const expected = `pr_${crypto.createHash('sha256').update(key).digest('hex').slice(0, 16)}`;
     if (seasons !== canonical) failures.push(`${row.pr_id}: noncanonical seasons`);
     if (row.pr_id !== expected) failures.push(`${row.pr_id}: expected ${expected}`);
@@ -202,7 +320,8 @@ function presenceIds(rows) {
 function seasonOverlaps(rows) {
   const seen = new Map(), failures = [];
   for (const r of rows) {
-    const key = [r.scope_kind, r.scope_ref, r.region_id, r.subregion_scope || '', r.subject_kind, r.subject_ref].join('|');
+    const key = [r.scope_kind, r.scope_ref, r.region_id, r.subregion_scope || '', r.subject_kind, r.subject_ref,
+      ...(r.subject_kind === 'environment' ? [r.condition_key] : [])].join('|');
     const tokens = String(r.allowed_seasons ?? '').split(';').map((s) => s.trim());
     if (tokens.some((s) => !s || (s !== 'all' && !SEASONS.includes(s))) || new Set(tokens).size !== tokens.length || (tokens.includes('all') && tokens.length !== 1)) {
       failures.push(`${r.pr_id}: malformed or overlapping seasons ${r.allowed_seasons}`);
@@ -238,7 +357,7 @@ function acceptedCoverage(expected, rules, resolutions, itemRows) {
     if (entry.source_pool.startsWith(`${ITEM_PATH}#`) && !item) failures.push(`resolution item source missing ${entry.source_pool}`);
     if (item && (entry.item_ref !== item.item_or_category_ref || entry.source_row_id !== item.ipf_id)) failures.push(`resolution item ref/id differs from source ${entry.source_pool}`);
   }
-  for (const rule of rules) for (const season of rule.allowed_seasons === 'all' ? SEASONS : split(rule.allowed_seasons)) {
+  for (const rule of rules.filter((row) => row.subject_kind !== 'environment')) for (const season of rule.allowed_seasons === 'all' ? SEASONS : split(rule.allowed_seasons)) {
     const scope = [rule.scope_kind, rule.scope_ref, rule.region_id, rule.subregion_scope || '', rule.subject_kind, rule.subject_ref].join('|');
     const resolution = reported.get(`${scope}|${season}`);
     const sources = split(rule.source_pool);
@@ -284,6 +403,555 @@ function subregionPropagationFailures(rules, faunaSources) {
     }
   }
   return failures;
+}
+
+function environmentIndices() {
+  const rows = (file) => readCsv(P(file));
+  const values = (file, column) => new Set(rows(file).map((row) => row[column]).filter(Boolean));
+  const ground = rows('../nature-materials-weather/weather_climate/ground_water_condition_rules.csv');
+  const scenes = rows('../buildings-interiors-containers/interiors/scenes.csv');
+  const sceneBindings = new Map();
+  for (const row of scenes) {
+    const pfIds = new Set(String(row.pf_ids || '').split('|').map((pf) => pf.trim()).filter(Boolean)
+      .map((pf) => pf.startsWith('pf_') ? pf : `pf_${pf}`));
+    const variant = String(row.season_variants || '').toLowerCase();
+    const seasonWords = [['winter', /зим/u], ['spring', /весн/u], ['summer', /лет/u], ['autumn', /осен/u]];
+    const seasons = new Set(seasonWords.filter(([, pattern]) => pattern.test(variant)).map(([season]) => season));
+    const binding = { pfIds, seasons };
+    for (const id of [row.sc_id, row.source_scene_id].filter(Boolean)) sceneBindings.set(id, binding);
+  }
+  const items = [
+    ...rows('../items-household-personal/items/household.csv'),
+    ...rows('../items-household-personal/items/personal.csv'),
+  ];
+  const families = rows('places/place_families.csv');
+  const facetRows = rows('places/place_family_facets.csv');
+  const templates = new Set(families.flatMap((row) => Object.entries(row)
+    .filter(([column]) => column.endsWith('_refs'))
+    .flatMap(([, value]) => split(value).map((ref) => ref.replace(/@\d+$/, '')))));
+  const familyTokens = new Set(families.flatMap((row) => Object.values(row).flatMap((value) => split(value))));
+  const weatherRefs = new Set(fs.readdirSync(P('../nature-materials-weather/weather_climate'))
+    .filter((file) => file.endsWith('.csv')).flatMap((file) => rows(`../nature-materials-weather/weather_climate/${file}`))
+    .flatMap((row) => Object.values(row).flatMap((value) => split(value))).filter((value) => /^wx[a-z0-9_]+$/.test(value)));
+  const faunaDir = P('../fauna-mammals-birds/fauna');
+  const faunaTaxonTables = [
+    'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/birds.csv',
+    'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/mammals.csv',
+    'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fish.csv',
+    'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv',
+    'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_species.csv',
+  ];
+  const faunaRowsByPath = new Map(faunaTaxonTables.map((sourcePath) => [sourcePath, readCsv(path.join(REPO, sourcePath))]));
+  const faunaRows = [...faunaRowsByPath.values()].flat();
+  const canonicalFaunaRows = faunaRows.filter((row) => row.status !== 'duplicate');
+  const faunaRefs = new Set(canonicalFaunaRows.map((row) => row.fa_id).filter(Boolean));
+  const faunaPrimaryIdsByPath = new Map([...faunaRowsByPath].map(([sourcePath, sourceRows]) =>
+    [sourcePath, new Set(sourceRows.filter((row) => row.status !== 'duplicate').map((row) => row.fa_id).filter(Boolean))]));
+  const faunaIds = canonicalFaunaRows.map((row) => row.fa_id).filter(Boolean);
+  const regionalFauna = new Set(canonicalFaunaRows.filter((row) =>
+    row.fa_id && (row.region_scope === 'region_novgorod_land' || row.presence_region_id === 'region_novgorod_land' || row.taxon_scope === 'universal'))
+    .map((row) => row.fa_id));
+  const floraTables = [
+    '../flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv',
+    '../flora-herbs-berries-mushrooms/flora/cultivated_plants.csv',
+    '../flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv',
+    '../flora-trees-shrubs/flora/trees_shrubs.csv',
+  ];
+  const floraRows = floraTables.flatMap(rows);
+  const taxonNames = new Map([...faunaRows, ...floraRows].filter((row) => row.fa_id || row.fl_id)
+    .map((row) => [row.fa_id || row.fl_id, row.name_ru]));
+  const floraIds = floraRows.map((row) => row.fl_id).filter(Boolean);
+  const floraRefs = new Set(floraRows.map((row) => row.fl_id).filter(Boolean));
+  const regionalFlora = new Set(floraRows.filter((row) => row.fl_id &&
+    (row.universal_taxon === 'true' || row.region_id === 'region_novgorod_land' || String(row.region_scope).includes('region_novgorod_land')))
+    .map((row) => row.fl_id));
+  const faunaMembership = new Set();
+  const faunaActivity = new Map();
+  const faunaPresenceRows = rows('../fauna-mammals-birds/fauna/wild_habitat_presence.csv');
+  const faunaOtherPresenceRows = rows('../fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv');
+  const faunaPresencePaths = new Map([
+    ['data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv', new Map(faunaPresenceRows.map((row) => [row.presence_id, {
+      id: row.presence_id, faId: row.fa_id, pfId: row.pf_id, regionId: row.region_id, season: row.season,
+    }]))],
+    ['data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv', new Map(faunaOtherPresenceRows.map((row) => [row.fpr_id, {
+      id: row.fpr_id, faId: row.fa_id, pfId: row.pf_id.startsWith('pf_') ? row.pf_id : `pf_${row.pf_id}`,
+      regionId: row.region_id, season: row.season_period === 'spring_rasputitsa' ? 'spring' : row.season_period,
+    }]))],
+  ]);
+  const faunaPresenceById = new Map([...faunaPresencePaths.values()].flatMap((presenceMap) => [...presenceMap]));
+  const addFaunaActivity = (key, state) => {
+    if (!faunaActivity.has(key)) faunaActivity.set(key, new Set());
+    faunaActivity.get(key).add(state);
+  };
+  for (const row of faunaPresenceRows) if (row.region_id === 'region_novgorod_land') {
+    const key = `${row.fa_id}|${row.pf_id}|${row.season}`;
+    faunaMembership.add(key);
+    addFaunaActivity(key, row.state);
+  }
+  for (const row of faunaOtherPresenceRows) {
+    const season = row.season_period === 'spring_rasputitsa' ? 'spring' : row.season_period;
+    if (row.region_id === 'region_novgorod_land') {
+      const key = `${row.fa_id}|${row.pf_id.startsWith('pf_') ? row.pf_id : `pf_${row.pf_id}`}|${season}`;
+      faunaMembership.add(key);
+      addFaunaActivity(key, row.activity_state);
+    }
+  }
+  const floraMembership = new Set();
+  const floraPresenceRows = rows('../flora-herbs-berries-mushrooms/flora/flora_habitat_presence.csv');
+  const treePresenceRows = rows('../flora-trees-shrubs/flora/tree_habitat_presence.csv');
+  for (const row of floraPresenceRows) {
+    regionalFlora.add(row.fl_id);
+    if (row.region_id === 'region_novgorod_land') floraMembership.add(`${row.fl_id}|${row.pf_id.startsWith('pf_') ? row.pf_id : `pf_${row.pf_id}`}|${row.season}`);
+  }
+  for (const row of treePresenceRows) {
+    regionalFlora.add(row.fl_id);
+    if (row.region_id === 'region_novgorod_land') floraMembership.add(`${row.fl_id}|${row.pf_id}|${row.season}`);
+  }
+  const toolRows = rows('../crafts-tools-processes/craft_tools_gear/tools_gear.csv');
+  const transports = values('../transport-health-recreation/transport_travel/transport_entities.csv', 'tr_id');
+  const denied = rows('../crafts-tools-processes/materials_registry/late_materials_denylist.csv')
+    .filter((row) => ['deny', 'deny_as_local'].includes(row.verdict))
+    .flatMap((row) => split(row.match_stems).map((pattern) => ({ id: row.dl_id, pattern: pattern.toLowerCase(), match: 'prefix' })));
+  denied.push(...rows('../fauna-fish-invertebrates-livestock/fauna/anachronism_denylist_fauna.csv')
+    .flatMap((row) => String(row.patterns || '').split('|').map((pattern) => ({ id: row.deny_id, pattern: pattern.trim(), match: 'regex' })).filter((row) => row.pattern)));
+  denied.push(...rows('../flora-herbs-berries-mushrooms/flora/anachronism_denylist_flora.csv')
+    .flatMap((row) => [row.pattern_ru, row.pattern_lat].filter(Boolean)
+      .map((pattern) => ({ id: row.deny_id, pattern: pattern.trim(), match: 'regex' })).filter((row) => row.pattern)));
+  denied.push(...rows('../flora-trees-shrubs/flora/woody_denylist.csv')
+    .flatMap((row) => split(row.keywords_ru).map((pattern) => ({ id: row.deny_id, pattern: pattern.trim().toLowerCase(), match: 'prefix' }))));
+  const conditionSeasons = new Map();
+  const setConditionSeasons = (kind, ids, seasons) => ids.forEach((id) => conditionSeasons.set(`${kind}:${id}`, new Set(seasons)));
+  const realizedWeatherRows = rows('../nature-materials-weather/weather_climate/realized_weather_matrix.csv');
+  setConditionSeasons('ground_rule', ['gr_snow'], ['winter', 'spring', 'autumn']);
+  setConditionSeasons('ground_rule', ['gr_ice_glaze'], ['winter', 'spring', 'autumn']);
+  setConditionSeasons('ground_rule', ['gr_flooded'], ['spring']);
+  setConditionSeasons('ground_rule', ['gr_mud', 'gr_wet', 'gr_dry'], SEASONS);
+  setConditionSeasons('water_rule', ['wr_ice'], ['winter', 'spring']);
+  setConditionSeasons('water_rule', ['wr_ice_forming'], ['autumn', 'winter']);
+  setConditionSeasons('water_rule', ['wr_ice_breaking', 'wr_flood'], ['spring']);
+  setConditionSeasons('water_rule', ['wr_open'], ['spring', 'summer', 'autumn']);
+  setConditionSeasons('weather', [...new Set(realizedWeatherRows.map((row) => row.wx_state_id).filter(Boolean))], SEASONS);
+  for (const row of realizedWeatherRows) setConditionSeasons('weather', [row.row_id], row.precipitation_phase === 'snow' ? ['winter', 'spring', 'autumn'] : SEASONS);
+  for (const row of rows('../nature-materials-weather/weather_climate/temperature_anomalies.csv'))
+    conditionSeasons.set(`temperature:${row.anomaly_id}`, new Set(String(row.seasons).split(/[;|]/).map((season) => season.trim()).filter(Boolean)));
+  return {
+    groundRules: new Set(ground.filter((row) => row.target === 'ground_state').map((row) => row.rule_id)),
+    waterRules: new Set(ground.filter((row) => row.target === 'water_condition').map((row) => row.rule_id)),
+    weather: new Set(realizedWeatherRows.flatMap((row) => [row.wx_state_id, row.row_id]).filter(Boolean)),
+    weatherPhaseByRef: new Map(realizedWeatherRows.map((row) => [row.row_id, row.precipitation_phase])),
+    temperature: values('../nature-materials-weather/weather_climate/temperature_anomalies.csv', 'anomaly_id'),
+    workshops: values('../crafts-tools-processes/workshops/workshops.csv', 'ws_id'),
+    processes: values('../crafts-tools-processes/craft_processes/processes.csv', 'pc_id'),
+    materials: new Set([
+      ...values('../crafts-tools-processes/materials_registry/materials.csv', 'mt_id'),
+      ...values('../nature-materials-weather/natural_materials_soils/natural_materials.csv', 'nm_id'),
+      ...values('../nature-materials-weather/natural_materials_soils/ground_types.csv', 'nm_id'),
+      ...values('../buildings-interiors-containers/buildings/materials_vocab.csv', 'mat_id'),
+    ]),
+    items: new Set([
+      ...items.map((row) => row.it_id).filter(Boolean),
+      ...values('../food-drink/food/ingredients.csv', 'fd_id'),
+      ...toolRows.flatMap((row) => [row.tl_id, row.item_template_ref]).filter(Boolean),
+      ...values('../buildings-interiors-containers/interiors/matcult_item_refs.csv', 'item_id'),
+    ]),
+    transports,
+    scenes: new Set(scenes.flatMap((row) => [row.sc_id, row.source_scene_id]).filter(Boolean)),
+    sceneBindings,
+    facets: new Set(facetRows.map((row) => row.pff_id)),
+    facetNames: new Set(facetRows.flatMap((row) => [row.facet_id, `${row.pf_id.slice(3)}.${row.facet_id}`])),
+    spatialScenes: values('places/crosswalk_scene_templates.csv', 'scene_template_ref'),
+    templates,
+    familyTokens,
+    weatherRefs,
+    faunaRefs,
+    faunaPrimaryIdsByPath,
+    faunaPresencePaths,
+    faunaPresenceById,
+    floraRefs,
+    regionalFauna,
+    regionalFlora,
+    faunaMembership,
+    faunaActivity,
+    conditionSeasons,
+    floraMembership,
+    taxonNames,
+    presenceRefs: new Set([
+      ...faunaPresenceRows.map((row) => row.presence_id), ...faunaOtherPresenceRows.map((row) => row.fpr_id),
+      ...floraPresenceRows.map((row) => row.fp_id), ...treePresenceRows.map((row) => row.presence_id),
+    ].filter(Boolean)),
+    taxonomyFailures: [
+      ...(new Set(faunaIds).size === faunaIds.length ? [] : ['duplicate fauna primary ID']),
+      ...(new Set(floraIds).size === floraIds.length ? [] : ['duplicate flora primary ID']),
+      ...faunaIds.filter((id) => floraRefs.has(id)).map((id) => `fauna/flora ID collision ${id}`),
+    ],
+    faunaDir,
+    categories: values('categories/category_registry.csv', 'category_id'),
+    denied,
+  };
+}
+
+function environmentAuthoringFailures(rows, families, indices, requireCoverage = true) {
+  const failures = [...indices.taxonomyFailures];
+  const ids = new Set(), signatures = new Set(), seasonlessSignatures = new Set();
+  const familyIds = new Set(families.map((row) => row.pf_id));
+  const familyById = new Map(families.map((row) => [row.pf_id, row]));
+  const sharedSeen = new Set();
+  const classIds = new Set(ENVIRONMENT_PF_CLASS_BY_ID.keys());
+  for (const pf of familyIds) if (!classIds.has(pf)) failures.push(`${pf}: missing PF physical class`);
+  for (const pf of classIds) if (!familyIds.has(pf)) failures.push(`${pf}: PF physical class has no family`);
+  if ([...ENVIRONMENT_PF_CLASS_BY_ID.values()].some((value) => !['interior', 'water_surface', 'open_place'].includes(value))) failures.push('unknown PF physical class');
+  const resolveCondition = (ref) => {
+    if (ref === 'none') return true;
+    const [kind, value, extra] = ref.split(':');
+    if (!value || extra) return false;
+    return ({
+      ground_rule: indices.groundRules.has(value), water_rule: indices.waterRules.has(value), weather: indices.weather.has(value), temperature: indices.temperature.has(value),
+      presence: ['people', 'livestock', 'fire', 'transport', 'dog', 'church'].includes(value), workshop: indices.workshops.has(value), process: indices.processes.has(value),
+      item: indices.items.has(value), scene: indices.scenes.has(value) || indices.spatialScenes.has(value) || indices.spatialScenes.has(`${value}@1`),
+    })[kind] ?? false;
+  };
+  const resolveFaunaDataRef = (ref) => {
+    const match = String(ref || '').match(/^(data\/[^#]+)#((?:fa|fhp|fpr)_[a-z0-9_]+)$/u);
+    if (!match) return null;
+    const [, sourcePath, id] = match;
+    if (id.startsWith('fa_')) return indices.faunaPrimaryIdsByPath.get(sourcePath)?.has(id) ?? false;
+    return indices.faunaPresencePaths.get(sourcePath)?.has(id) ?? false;
+  };
+  const resolveReuse = (ref) => {
+    if (/^(wk:|claim:|book:|master:|src:)/.test(ref)) return true;
+    if (ref.startsWith('data/')) {
+      const exactFauna = resolveFaunaDataRef(ref);
+      return exactFauna === null ? fs.existsSync(path.join(REPO, ref.split('#')[0])) : exactFauna;
+    }
+    if (ref.startsWith('category:')) return indices.categories.has(ref.slice('category:'.length));
+    if (ref.startsWith('facet:')) return indices.facets.has(ref.slice('facet:'.length));
+    if (ref.startsWith('scene:')) {
+      const value = ref.slice('scene:'.length);
+      return indices.scenes.has(value) || indices.spatialScenes.has(value) || indices.spatialScenes.has(`${value}@1`);
+    }
+    if (ref.startsWith('item:')) return indices.items.has(ref.slice('item:'.length));
+    if (ref.startsWith('fauna:')) return indices.faunaRefs.has(ref.slice('fauna:'.length));
+    if (ref.startsWith('flora:')) return indices.floraRefs.has(ref.slice('flora:'.length));
+    if (ref.startsWith('fauna/')) return fs.existsSync(path.join(indices.faunaDir, ref.split('#')[0].slice('fauna/'.length)));
+    return indices.scenes.has(ref) || indices.facets.has(ref) || indices.facetNames.has(ref) || indices.spatialScenes.has(ref) ||
+      indices.templates.has(ref.replace(/@\d+$/, '')) || indices.familyTokens.has(ref) || indices.weatherRefs.has(ref) ||
+      indices.faunaRefs.has(ref) || indices.floraRefs.has(ref) || indices.presenceRefs.has(ref) || indices.processes.has(ref) || indices.workshops.has(ref) || indices.items.has(ref) || indices.materials.has(ref) || indices.transports.has(ref) || indices.categories.has(ref);
+  };
+  for (const [index, row] of rows.entries()) {
+    const at = row.env_rule_id || `row${index + 2}`;
+    const scopes = environmentScopes(row);
+    const shared = split(row.pf_scope).length > 0;
+    if (!/^epr_[a-z0-9_]+$/.test(row.env_rule_id || '') || ids.has(row.env_rule_id)) failures.push(`${at}: env_rule_id`);
+    ids.add(row.env_rule_id);
+    if (!scopes.length || scopes.some((pf) => !familyIds.has(pf)) || new Set(scopes).size !== scopes.length) failures.push(`${at}: pf_scope/pf_id ${row.pf_scope || row.pf_id}`);
+    const sharedPhenomenon = shared ? row.env_rule_id?.slice('epr_shared__'.length) : '';
+    if (shared) {
+      if (row.pf_id || !ENVIRONMENT_SHARED_IDS.has(row.env_rule_id) || ENVIRONMENT_SHARED_PHENOMENA.get(sharedPhenomenon) !== row.lens)
+        failures.push(`${at}: shared phenomenon contract`);
+      if (sharedSeen.has(row.env_rule_id)) failures.push(`${at}: duplicate shared phenomenon`);
+      sharedSeen.add(row.env_rule_id);
+      if (scopes.some((pf) => ENVIRONMENT_PF_CLASS_BY_ID.get(pf) === 'interior')) failures.push(`${at}: shared phenomenon enters interior`);
+    } else {
+      if (!familyIds.has(row.pf_id)) failures.push(`${at}: pf_id ${row.pf_id}`);
+      if (familyIds.has(row.pf_id) && environmentSlug(row) === null) failures.push(`${at}: env_rule_id lacks canonical PF prefix`);
+    }
+    if (!/^env_[a-z0-9_]+$/.test(row.companion_ref || '') || !row.name_ru) failures.push(`${at}: companion/name`);
+    if (!ENVIRONMENT_LENSES.includes(row.lens)) failures.push(`${at}: lens ${row.lens}`);
+    if (!ENVIRONMENT_KINDS.includes(row.environment_kind)) failures.push(`${at}: environment_kind ${row.environment_kind}`);
+    const senses = split(row.senses);
+    if (!senses.length || senses.some((value) => !ENVIRONMENT_SENSES.includes(value)) || new Set(senses).size !== senses.length) failures.push(`${at}: senses ${row.senses}`);
+    if (!['ubiquitous', 'common', 'contextual', 'rare'].includes(row.frequency_class)) failures.push(`${at}: frequency_class ${row.frequency_class}`);
+    const seasons = split(row.allowed_seasons);
+    if (!seasons.length || seasons.some((value) => !SEASONS.includes(value)) || new Set(seasons).size !== seasons.length) failures.push(`${at}: seasons ${row.allowed_seasons}`);
+    const times = split(row.allowed_times);
+    if (!times.length || times.some((value) => !TIME_ORDER.includes(value)) || new Set(times).size !== times.length) failures.push(`${at}: times ${row.allowed_times}`);
+    const conditions = split(row.condition_refs);
+    if (!conditions.length || conditions.some((ref) => !resolveCondition(ref)) || (conditions.includes('none') && conditions.length !== 1)) failures.push(`${at}: condition_refs ${row.condition_refs}`);
+    if (new Set(conditions).size !== conditions.length) failures.push(`${at}: duplicate condition_refs`);
+    const groundConditions = conditions.filter((ref) => ref.startsWith('ground_rule:'));
+    if (seasons.includes('summer') && groundConditions.length && groundConditions.every((ref) => ['ground_rule:gr_snow', 'ground_rule:gr_ice_glaze'].includes(ref))) failures.push(`${at}: frozen ground condition in summer`);
+    const temperatureConditions = conditions.filter((ref) => ref.startsWith('temperature:'));
+    const exactTemperatureSet = (expected) => temperatureConditions.length === expected.length && expected.every((ref) => temperatureConditions.includes(ref));
+    if (sharedPhenomenon === 'thaw_drip' && (!conditions.includes('ground_rule:gr_snow') || !exactTemperatureSet(['temperature:an_warm'])))
+      failures.push(`${at}: shared thaw_drip temperature contract`);
+    if (['frost', 'rime'].includes(sharedPhenomenon) && !exactTemperatureSet(['temperature:an_severe_cold', 'temperature:an_cold', 'temperature:an_normal']))
+      failures.push(`${at}: shared frost/rime temperature contract`);
+    if (sharedPhenomenon === 'rime' && (seasons.length !== 1 || seasons[0] !== 'winter')) failures.push(`${at}: shared rime winter-only contract`);
+    const physicalCueText = `${row.name_ru} ${row.derivation}`.toLowerCase();
+    const currentCueName = String(row.name_ru || '').toLowerCase();
+    const rainPrecipitationCue = /(?:дожд|ливн|ливен)/u.test(currentCueName);
+    const dropletPrecipitationCue = /капл/u.test(currentCueName);
+    const liquidPrecipitationCue = rainPrecipitationCue || dropletPrecipitationCue;
+    const genericPrecipitationRefs = new Set(['weather:wx_precip_light', 'weather:wx_precip_steady', 'weather:wx_windy_precip']);
+    const hasGenericPrecipitation = conditions.some((ref) => genericPrecipitationRefs.has(ref));
+    const realizedWeatherRefs = conditions.filter((ref) => ref.startsWith('weather:wxr_'));
+    const realizedPhases = realizedWeatherRefs.map((ref) => indices.weatherPhaseByRef.get(ref.slice('weather:'.length))).filter(Boolean);
+    const hasExactRainPhase = realizedPhases.includes('rain');
+    if ((rainPrecipitationCue && !hasExactRainPhase) || (dropletPrecipitationCue && hasGenericPrecipitation))
+      failures.push(`${at}: liquid precipitation lacks exact current rain phase`);
+    if (liquidPrecipitationCue && hasGenericPrecipitation) failures.push(`${at}: liquid precipitation keeps generic current phase`);
+    if (/(?:снегопад|снежин)/u.test(currentCueName) && hasGenericPrecipitation)
+      failures.push(`${at}: snowfall lacks exact current snow phase`);
+    if (liquidPrecipitationCue && realizedPhases.some((phase) => phase !== 'rain')) failures.push(`${at}: rain current precipitation phase mismatch`);
+    if (/(?:снегопад|снежин)/u.test(currentCueName) && realizedPhases.some((phase) => phase !== 'snow')) failures.push(`${at}: snowfall current precipitation phase mismatch`);
+    if (seasons.includes('summer') && /(?:иней|измороз)/u.test(physicalCueText)) failures.push(`${at}: frost/rime in summer`);
+    const seasonalAxes = new Map();
+    for (const ref of conditions) {
+      const axis = ref.split(':')[0];
+      if (!['ground_rule', 'water_rule', 'weather', 'temperature'].includes(axis)) continue;
+      if (!seasonalAxes.has(axis)) seasonalAxes.set(axis, []);
+      seasonalAxes.get(axis).push(ref);
+    }
+    const satisfiableSeasons = seasons.filter((season) => [...seasonalAxes.values()].every((refs) =>
+      refs.some((ref) => indices.conditionSeasons.get(ref)?.has(season))));
+    if (!satisfiableSeasons.length) failures.push(`${at}: unsatisfiable condition axes`);
+    for (const ref of conditions.filter((value) => value.startsWith('scene:'))) {
+      const binding = indices.sceneBindings.get(ref.slice('scene:'.length));
+      if (!binding) continue;
+      if (scopes.some((pf) => !binding.pfIds.has(pf))) failures.push(`${at}: scene PF mismatch ${ref}`);
+      if (binding.seasons.size && seasons.some((season) => !binding.seasons.has(season))) failures.push(`${at}: scene season mismatch ${ref}`);
+    }
+    const reevaluation = split(row.reevaluate_on);
+    if (!reevaluation.length || reevaluation.some((value) => !ENVIRONMENT_REEVALUATION.includes(value)) || new Set(reevaluation).size !== reevaluation.length) failures.push(`${at}: reevaluate_on ${row.reevaluate_on}`);
+    for (const ref of split(row.material_refs)) if (!indices.materials.has(ref)) failures.push(`${at}: material_ref ${ref}`);
+    for (const ref of split(row.process_refs)) if (!indices.processes.has(ref)) failures.push(`${at}: process_ref ${ref}`);
+    for (const ref of split(row.item_refs)) if (!indices.items.has(ref)) failures.push(`${at}: item_ref ${ref}`);
+    const reuseRefs = split(row.reuse_refs);
+    for (const ref of reuseRefs) {
+      if (!resolveReuse(ref)) failures.push(`${at}: reuse_ref ${ref}`);
+      const raw = exactEntityRef(ref);
+      if (/^fa_/.test(raw) && !indices.regionalFauna.has(raw)) failures.push(`${at}: nonregional fauna ${raw}`);
+      if (/^fl_/.test(raw) && !indices.regionalFlora.has(raw)) failures.push(`${at}: nonregional flora ${raw}`);
+      if (ref.startsWith('scene:')) {
+        const binding = indices.sceneBindings.get(ref.slice('scene:'.length));
+        if (binding && scopes.some((pf) => !binding.pfIds.has(pf))) failures.push(`${at}: scene PF mismatch ${ref}`);
+        if (binding?.seasons.size && seasons.some((season) => !binding.seasons.has(season))) failures.push(`${at}: scene season mismatch ${ref}`);
+      }
+    }
+    const faunaLinks = reuseRefs.map(exactEntityRef).filter((ref) => indices.faunaRefs.has(ref));
+    const floraLinks = reuseRefs.map(exactEntityRef).filter((ref) => indices.floraRefs.has(ref));
+    const entityLinks = [...split(row.material_refs), ...split(row.process_refs), ...split(row.item_refs),
+      ...reuseRefs.map(exactEntityRef)]
+      .filter((ref) => indices.materials.has(ref) || indices.processes.has(ref) || indices.items.has(ref) || indices.transports.has(ref));
+    if (['domestic_animal', 'human_companion', 'wild_animal'].includes(row.lens) && !faunaLinks.length) failures.push(`${at}: ${row.lens} lacks exact fauna link`);
+    if (row.lens === 'ruderal_plant' && !floraLinks.length) failures.push(`${at}: ruderal_plant lacks exact flora link`);
+    const domesticGuarded = (ref) => conditions.includes('presence:livestock') || (ref === 'fa_dom_dog' && conditions.includes('presence:dog')) ||
+      (PEOPLE_GUARDED_DOMESTIC_FAUNA.has(ref) && conditions.includes('presence:people'));
+    if (faunaLinks.some((ref) => ref.startsWith('fa_dom_') && !domesticGuarded(ref))) failures.push(`${at}: domestic fauna lacks presence guard`);
+    for (const ref of faunaLinks) if (!ref.startsWith('fa_dom_') && !scopes.some((pf) => seasons.some((season) => indices.faunaMembership.has(`${ref}|${pf}|${season}`))) && !['logical_necessity', 'analogy'].includes(row.basis))
+      failures.push(`${at}: fauna ${ref} lacks exact PF/season membership`);
+    const activeFaunaCue = row.lens === 'sound' || senses.includes('audible') || /(?:летит|летят|летает|летают|пролет|кружит|кружат|роится|роятся|взлет|порх)/iu.test(`${row.name_ru} ${row.derivation}`);
+    if (activeFaunaCue) for (const ref of faunaLinks) for (const season of seasons) for (const pf of scopes) {
+      const activity = indices.faunaActivity.get(`${ref}|${pf}|${season}`);
+      if (activity?.has('dormant')) failures.push(`${at}: dormant fauna sound/flight ${ref}/${season}`);
+    }
+    for (const ref of floraLinks) if (!scopes.some((pf) => seasons.some((season) => indices.floraMembership.has(`${ref}|${pf}|${season}`))) && !['logical_necessity', 'analogy'].includes(row.basis))
+      failures.push(`${at}: flora ${ref} lacks exact PF/season membership`);
+    if (['loose_object', 'work_waste'].includes(row.lens) && !entityLinks.length) failures.push(`${at}: ${row.lens} lacks exact material/item/process link`);
+    if (row.lens === 'domestic_animal' && (!faunaLinks.some((ref) => ref.startsWith('fa_dom_')) || faunaLinks.some((ref) => !domesticGuarded(ref)))) failures.push(`${at}: domestic_animal lacks guarded domestic fauna`);
+    const sourceRefs = split(row.source_refs);
+    if (!ENVIRONMENT_BASES.includes(row.basis) || !row.derivation || !sourceRefs.length ||
+        sourceRefs.some((ref) => ref.startsWith('book:') && !/^book:[0-9]+ §[0-9]+$/.test(ref))) failures.push(`${at}: basis/derivation/source_refs`);
+    for (const ref of sourceRefs) if (resolveFaunaDataRef(ref) === false) failures.push(`${at}: unresolved fauna source_ref ${ref}`);
+    const presenceAnchors = sourceRefs.map((ref) => {
+      const match = ref.match(/^(data\/[^#]+)#((?:fhp|fpr)_[a-z0-9_]+)$/u);
+      return match && indices.faunaPresencePaths.get(match[1])?.get(match[2]);
+    }).filter(Boolean);
+    for (const anchor of presenceAnchors) {
+      if (faunaLinks.length && !faunaLinks.includes(anchor.faId)) failures.push(`${at}: fauna presence taxon mismatch ${anchor.id}`);
+      if (!scopes.includes(anchor.pfId)) failures.push(`${at}: fauna presence PF mismatch ${anchor.id}`);
+      if (anchor.regionId !== 'region_novgorod_land') failures.push(`${at}: fauna presence region mismatch ${anchor.id}`);
+      if (!seasons.includes(anchor.season)) failures.push(`${at}: fauna presence season mismatch ${anchor.id}`);
+    }
+    const allProvenance = [...sourceRefs, ...reuseRefs];
+    const masterRefs = allProvenance.filter((ref) => /(?:master:|master-archive)/iu.test(ref));
+    if (masterRefs.length && row.basis !== 'logical_necessity') failures.push(`${at}: master archive requires logical_necessity`);
+    if (allProvenance.some((ref) => /^\/srv\//u.test(ref))) failures.push(`${at}: absolute source path`);
+    if (row.basis === 'sourced' && sourceRefs.every((ref) => /places-binding\/places\/(?:place_families|place_family_facets)\.csv#/u.test(ref))) failures.push(`${at}: sourced only from PF definition`);
+    if (sourceRefs.includes('book:638081 §1457')) failures.push(`${at}: unrelated burial anchor`);
+    if (sourceRefs.includes('book:622242 §1632') && !/(?:молот|наковаль|кузнечн.{0,20}(?:стук|звон)|звон.{0,20}молот)/iu.test(`${row.name_ru} ${row.derivation}`)) failures.push(`${at}: smithy book anchor does not support this phenomenon`);
+    if (!row.derivation.includes('→') || !row.derivation.includes('; граница:')) failures.push(`${at}: derivation cause/boundary`);
+    if (!['A', 'B', 'C'].includes(row.confidence) || row.status !== 'candidate') failures.push(`${at}: confidence/status`);
+    const lowerName = row.name_ru.trim().toLowerCase();
+    const genericName = lowerName.replace(/[\s.,!?;:]+$/u, '');
+    if (['остатки', 'следы работы', 'шум'].includes(genericName) || /^pf_/.test(lowerName) ||
+        /\b(sound|odor|seasonal_surface|domestic_animal|human_companion|wild_animal|ruderal_plant|work_waste|loose_object|light_smoke|weather|daypart_marker)\b/.test(lowerName) ||
+        /(первый вариант|контрастный вариант|рабочая вещь|временно отложенный предмет|материалов и работы|наблюдаемое следствие описано условно)/.test(lowerName) ||
+        /^отсутствие\b/.test(lowerName) || /^(?:pf(?:_[^:]+)?|звук|запах|следы?|sound|odor)\s*:/u.test(lowerName) || /региональные сезонные признаки/u.test(lowerName)) failures.push(`${at}: generic name`);
+    if (row.name_ru && row.name_ru[0] !== row.name_ru[0].toLocaleUpperCase('ru-RU')) failures.push(`${at}: name must start uppercase`);
+    if (/(?:(?:^|[^а-яё])если(?:[^а-яё]|$)|при наличии|только если|лишь если|только у|лишь у|после соверш[её]нной|при действующей|только в срок|(?:^|[^а-яё])уже(?:[^а-яё]|$)|установленн|имеющ|в сезон присутствия|профил|только как|\/|\bWTR\d+\b|(?:presence|scene|weather|ground_rule|water_rule|temperature|process|item|workshop):)/iu.test(row.name_ru)) failures.push(`${at}: condition in name`);
+    const consequence = normalizeEnvironmentClusterText(row.derivation.split('→').slice(1).join('→').split('; граница:')[0]).replace(/[^a-zа-яё0-9]+/gu, ' ').trim();
+    const normalizedName = normalizeEnvironmentClusterText(row.name_ru).replace(/[^a-zа-яё0-9]+/gu, ' ').trim();
+    if (row.derivation.includes('наблюдаемое следствие описано условно') || row.derivation.includes('возникает только описанный локальный след') ||
+        catalogBoilerplateDerivation(row.derivation) || consequence === normalizedName) failures.push(`${at}: generic derivation`);
+    const causalText = `${row.name_ru} ${row.derivation.split('; граница:')[0]}`.toLowerCase();
+    const hasFireGuard = conditions.includes('presence:fire') || conditions.some((ref) => ref.startsWith('process:') && ENVIRONMENT_FIRE_PROCESSES.has(ref.slice('process:'.length))) ||
+      conditions.some((ref) => ref.startsWith('scene:') && ENVIRONMENT_FIRE_SCENES.has(ref.slice('scene:'.length)));
+    const hasTransportGuard = conditions.includes('presence:transport');
+    const hasDogGuard = conditions.includes('presence:dog') || conditions.some((ref) => ref.startsWith('scene:') && ENVIRONMENT_DOG_SCENES.has(ref.slice('scene:'.length)));
+    const hasChurchGuard = conditions.includes('presence:church') || conditions.some((ref) => ref.startsWith('scene:') && ENVIRONMENT_CHURCH_SCENES.has(ref.slice('scene:'.length)));
+    const causalWords = causalText.match(/[a-zа-яё0-9_]+/gu) || [];
+    const fireCue = causalWords.some((word) => /^(?:огонь|огн(?:я|ю|ём|е)|горящ|горит|горел|плам|печь|зол(?:а|ы|е|у|ой|ою)|дым|дымн|дымит|угл(?:и|я|ей|ём|е)|очаг|горн|копот)/u.test(word));
+    const wheelCue = /(?:телег|кол[её]с[а-яё]*\s+(?:нагруз|след|коле|воз|телег|транспорт)|кол[её]с.{0,18}(?:воз|телег|ось|оси)|скрип оси|ободь|ободы|ободами|возов|(^|[^а-яё])воз(?:а|у|ом|ы|ами)?([^а-яё]|$))/u.test(causalText);
+    const sledCue = /(?:(?:^|[^а-яё])сан(?:и|ей|ям|ями)(?:[^а-яё]|$)|полоз)/u.test(causalText);
+    const dogCue = /(?:собак|собач|(^|[^а-яё])(?:лай|лает|лают)(?:[^а-яё]|$))/u.test(causalText);
+    const churchCue = /(?:колокол|колоколь|(^|[^а-яё])било([^а-яё]|$)|заутрен|вечерн.{0,12}служб)/u.test(causalText);
+    if (fireCue && !hasFireGuard) failures.push(`${at}: fire guard`);
+    if (conditions.includes('presence:fire') && !fireCue) failures.push(`${at}: false fire guard`);
+    if ((wheelCue || sledCue) && !hasTransportGuard) failures.push(`${at}: transport guard`);
+    if (dogCue && !hasDogGuard) failures.push(`${at}: dog guard`);
+    if (conditions.includes('presence:dog') && !dogCue) failures.push(`${at}: false dog guard`);
+    if (churchCue && !hasChurchGuard) failures.push(`${at}: church guard`);
+    if (/(?:запах.{0,30}навоз|навоз.{0,30}запах)/u.test(causalText) && !conditions.includes('presence:livestock')) failures.push(`${at}: manure odor lacks livestock guard`);
+    if (row.pf_id === 'pf_smithy' && /(?:(?:сыр|мокр).{0,20}(?:грунт|земл)|гряз)/u.test(causalText) && conditions.includes('presence:dog')) failures.push(`${at}: smithy wet ground uses dog guard`);
+    if (/мух.{0,40}(?:навоз|пом[её]т)|(?:навоз|пом[её]т).{0,40}мух/u.test(causalText) &&
+        (!conditions.includes('presence:livestock') || seasons.some((season) => season !== 'summer'))) failures.push(`${at}: manure flies require livestock and summer`);
+    if (wheelCue && seasons.includes('winter')) failures.push(`${at}: wheeled transport in winter`);
+    if (sledCue && seasons.some((season) => season !== 'winter')) failures.push(`${at}: sled outside winter`);
+    if (conditions.includes('weather:wx_clear') && !/(?:ясн|безоблач|солн|тень|сух|иней|мороз)/u.test(causalText)) failures.push(`${at}: false clear-weather guard`);
+    if (/крапив/u.test(lowerName) && /(?:раст[её]|зел[её]н)/u.test(lowerName) && seasons.includes('winter')) failures.push(`${at}: growing nettle in winter`);
+    if (/оттепел/u.test(lowerName) && seasons.some((season) => !['winter', 'spring'].includes(season))) failures.push(`${at}: thaw outside winter/spring`);
+    for (const pf of scopes) {
+      const pfClass = ENVIRONMENT_PF_CLASS_BY_ID.get(pf);
+      if (pfClass === 'interior' && /(?:копыт.{0,30}(?:грунт|почв)|собач.{0,20}след|лис.{0,20}след|крапив|лопух|репь|трясогуз|нагрет.{0,15}земл)/u.test(causalText)) failures.push(`${at}: outdoor template in interior`);
+      if (pfClass === 'water_surface' && /(?:угл(?:и|я|ей|ём|е)|(?:^|[^а-яё])дым(?:[^а-яё]|$)|крапив|лопух|репь|сух(?:ой|ая|ую).{0,15}(?:грунт|земл|почв))/u.test(causalText)) failures.push(`${at}: land template on water surface`);
+      if (pf === 'pf_river_channel' && /копыт/u.test(causalText)) failures.push(`${at}: land template on water surface`);
+    }
+    const denyText = `${row.name_ru} ${row.companion_ref}`.toLowerCase();
+    const words = denyText.split(/[^a-zа-яё0-9_]+/u).filter(Boolean);
+    for (const deny of indices.denied) {
+      const matched = deny.match === 'regex'
+        ? (() => { try { return new RegExp(deny.pattern, 'iu').test(denyText); } catch { return false; } })()
+        : words.some((word) => word.startsWith(deny.pattern));
+      if (matched) failures.push(`${at}: anachronism ${deny.id}`);
+    }
+    const signature = [scopes.join(';'), row.companion_ref, [...conditions].sort().join(';'), [...seasons].sort().join(';'), [...times].sort().join(';')].join('|');
+    if (signatures.has(signature)) failures.push(`${at}: duplicate semantic signature`);
+    signatures.add(signature);
+    const seasonlessName = lowerName.replace(/\s*\((зимой|весной|летом|осенью)\)\s*$/u, '');
+    if (!shared) {
+      const seasonlessSignature = `${row.pf_id}|${row.lens}|${seasonlessName}`;
+      if (seasonlessSignatures.has(seasonlessSignature)) failures.push(`${at}: cloned seasonal variant`);
+      seasonlessSignatures.add(seasonlessSignature);
+    }
+  }
+  for (const id of ENVIRONMENT_SHARED_IDS) if (!sharedSeen.has(id)) failures.push(`${id}: missing shared phenomenon`);
+  const fog = rows.find((row) => row.env_rule_id === 'epr_shared__fog');
+  const fogScope = new Set(environmentScopes(fog || {}));
+  const expectedFogScope = [...familyIds].filter((pf) => ENVIRONMENT_PF_CLASS_BY_ID.get(pf) !== 'interior' &&
+    !['pf_reality_batch_01_open_conditions', 'pf_reality_first_practical_conditions', 'pf_hunting_ground'].includes(pf));
+  for (const pf of expectedFogScope) if (!fogScope.has(pf)) failures.push(`epr_shared__fog: missing required scope ${pf}`);
+  for (const pf of fogScope) if (!expectedFogScope.includes(pf)) failures.push(`epr_shared__fog: unexpected scope ${pf}`);
+  const localRows = rows.filter((row) => !split(row.pf_scope).length);
+  const profiles = localRows.map((row) => {
+    const taxonNames = split(row.reuse_refs).map(exactEntityRef).map((ref) => indices.taxonNames.get(ref)).filter(Boolean);
+    const placeName = familyById.get(row.pf_id)?.name_ru || '';
+    const [causeRaw, consequenceAndBoundary = ''] = row.derivation.split('→');
+    const consequenceRaw = consequenceAndBoundary.split('; граница:')[0];
+    const cause = environmentComparable(causeRaw, placeName, taxonNames);
+    const consequence = environmentComparable(consequenceRaw, placeName, taxonNames);
+    return {
+      row,
+      name: environmentComparable(row.name_ru, placeName, taxonNames),
+      slug: environmentComparable(environmentSlug(row) || '', row.pf_id.slice(3).replaceAll('_', ' '), []),
+      cause,
+      consequence,
+      derivation: `${cause} → ${consequence}`,
+    };
+  });
+  const parent = profiles.map((_, index) => index);
+  const find = (index) => parent[index] === index ? index : (parent[index] = find(parent[index]));
+  const join = (left, right) => { const a = find(left), b = find(right); if (a !== b) parent[b] = a; };
+  for (let left = 0; left < profiles.length; left++) for (let right = left + 1; right < profiles.length; right++) {
+    const a = profiles[left], b = profiles[right];
+    const derivationScore = environmentSimilarity(a.derivation, b.derivation);
+    const causeScore = environmentSimilarity(a.cause, b.cause);
+    const consequenceScore = environmentSimilarity(a.consequence, b.consequence);
+    if (a.row.pf_id !== b.row.pf_id && derivationScore >= 0.84 && causeScore >= 0.78 && consequenceScore >= 0.78) join(left, right);
+    if (a.row.pf_id === b.row.pf_id && a.row.lens !== b.row.lens) {
+      const nameScore = environmentSimilarity(a.name, b.name);
+      const fuzzyClone = derivationScore >= 0.60 && nameScore >= 0.50 && consequenceScore >= 0.65;
+      if (fuzzyClone) failures.push(`${a.row.pf_id}: fuzzy cross-lens clone ${a.row.env_rule_id},${b.row.env_rule_id}`);
+    }
+  }
+  const clusters = new Map();
+  for (let index = 0; index < profiles.length; index++) {
+    const root = find(index);
+    if (!clusters.has(root)) clusters.set(root, []);
+    clusters.get(root).push(profiles[index].row);
+  }
+  for (const cluster of clusters.values()) {
+    const pfs = new Set(cluster.map((row) => row.pf_id));
+    if (pfs.size >= 3) failures.push(`fuzzy semantic derivation cluster across ${pfs.size} PF (${cluster.map((row) => row.env_rule_id).join(',')})`);
+  }
+  if (requireCoverage) for (const pf of familyIds) {
+    const scoped = rows.filter((row) => environmentScopes(row).includes(pf));
+    const family = familyById.get(pf);
+    const ownSeason = family?.pf_kind === 'seasonal_overlay' && SEASONS.find((season) => pf.startsWith(`pf_${season}_`));
+    for (const season of ownSeason ? [ownSeason] : SEASONS) if (!scoped.some((row) => split(row.allowed_seasons).includes(season))) failures.push(`${pf}: missing ${season}`);
+  }
+  return failures;
+}
+
+function environmentLensCoverage(rows, exclusions, families, indices) {
+  const failures = [];
+  const familyIds = new Set(families.map((row) => row.pf_id));
+  const exclusionKeys = new Set();
+  const exclusionByKey = new Map();
+  for (const [index, row] of exclusions.entries()) {
+    const at = `environment_lens_exclusions.csv#row${index + 2}`;
+    const key = `${row.pf_id}|${row.lens}`;
+    if (!familyIds.has(row.pf_id)) failures.push(`${at}: pf_id ${row.pf_id}`);
+    if (!ENVIRONMENT_LENSES.includes(row.lens)) failures.push(`${at}: lens ${row.lens}`);
+    if (!ENVIRONMENT_EXCLUSION_REASONS.includes(row.reason)) failures.push(`${at}: reason ${row.reason}`);
+    if (row.status !== 'candidate') failures.push(`${at}: status ${row.status}`);
+    if (exclusionKeys.has(key)) failures.push(`${at}: duplicate exclusion ${key}`);
+    exclusionKeys.add(key);
+    exclusionByKey.set(key, row);
+  }
+  const lensCounts = {};
+  const lensCoverage = [];
+  for (const pf of [...familyIds].sort()) {
+    lensCounts[pf] = {};
+    for (const lens of ENVIRONMENT_LENSES) {
+      const count = rows.filter((row) => environmentScopes(row).includes(pf) && row.lens === lens).length;
+      const excluded = exclusionKeys.has(`${pf}|${lens}`);
+      lensCounts[pf][lens] = count;
+      lensCoverage.push({ pf_id: pf, lens, rule_count: count, state: count > 0 ? 'covered' : excluded ? 'skipped' : 'not_authored', skip_reason: exclusionByKey.get(`${pf}|${lens}`)?.reason || '' });
+      if (count > 0 && excluded) failures.push(`${pf}/${lens}: rules and exclusion both present`);
+      if (count === 0 && !excluded) failures.push(`${pf}/${lens}: not_authored`);
+    }
+  }
+  const entityIds = new Set([...indices.faunaRefs, ...indices.floraRefs, ...indices.items, ...indices.materials, ...indices.processes, ...indices.transports]);
+  const linked = (row) => [
+    ...split(row.reuse_refs).map(exactEntityRef),
+    ...split(row.item_refs), ...split(row.material_refs), ...split(row.process_refs),
+  ].some((ref) => entityIds.has(ref));
+  const regionalTaxonLinked = (row) => split(row.reuse_refs).map(exactEntityRef).some((ref) => {
+    if (ref.startsWith('fa_dom_')) return indices.regionalFauna.has(ref) && (split(row.condition_refs).includes('presence:livestock') || (PEOPLE_GUARDED_DOMESTIC_FAUNA.has(ref) && split(row.condition_refs).includes('presence:people')));
+    if (indices.faunaRefs.has(ref)) return indices.regionalFauna.has(ref);
+    if (indices.floraRefs.has(ref)) return indices.regionalFlora.has(ref);
+    return false;
+  });
+  const entityRatioByPf = {};
+  const regionalTaxonRatioByPf = {};
+  for (const pf of [...familyIds].sort()) {
+    const scoped = rows.filter((row) => environmentScopes(row).includes(pf));
+    const count = scoped.filter(linked).length;
+    entityRatioByPf[pf] = { linked: count, total: scoped.length, ratio: scoped.length ? Number((count / scoped.length).toFixed(3)) : 0 };
+    const taxonCount = scoped.filter(regionalTaxonLinked).length;
+    regionalTaxonRatioByPf[pf] = { linked: taxonCount, total: scoped.length, ratio: scoped.length ? Number((taxonCount / scoped.length).toFixed(3)) : 0 };
+  }
+  return {
+    failures,
+    lensCounts,
+    lensCoverage,
+    exclusions: exclusions.map((row) => ({ pf_id: row.pf_id, lens: row.lens, reason: row.reason })),
+    entityRatioByPf,
+    below50Percent: Object.entries(entityRatioByPf).filter(([, value]) => value.ratio < 0.5).map(([pf_id, value]) => ({ pf_id, ...value })),
+    regionalTaxonRatioByPf,
+    regionalTaxonBelow50Percent: Object.entries(regionalTaxonRatioByPf).filter(([, value]) => value.ratio < 0.5).map(([pf_id, value]) => ({ pf_id, ...value })),
+  };
 }
 function seasonalOverlayFailures(nodes, families, presence) {
   const seasonalPfs = new Map(families.filter((f) => f.pf_kind === 'seasonal_overlay').map((f) =>
@@ -705,18 +1373,19 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (!c) f.push(`${r.pr_id}: class ${r.frequency_class}`);
     else if (+r.probability_ppm !== Math.round((1000000 * c.weight) / 8) || +r.probability_ppm !== c.probability_ppm) f.push(`${r.pr_id}: ppm ${r.probability_ppm} != rule`);
     if (r.subject_kind === 'category') { if (!cats.has(r.category_ref) || r.subject_ref !== r.category_ref) f.push(`${r.pr_id}: category ${r.category_ref}`); }
+    else if (r.subject_kind === 'environment') { if (!/^env_[a-z0-9_]+$/.test(r.subject_ref) || r.category_ref || !r.condition_key) f.push(`${r.pr_id}: environment subject ${r.subject_ref}`); }
     else if (!({ occupation: occupations, social_role: roles })[r.subject_kind]?.has(r.subject_ref) || r.category_ref) f.push(`${r.pr_id}: subject ${r.subject_kind}:${r.subject_ref}`);
     const ok = { place_family: pfSet.has(r.scope_ref), g4: nodes.has(r.scope_ref), g5: nodes.has(r.scope_ref), region: r.scope_ref === ex.region_id,
       landscape_template: reg.get(r.scope_ref)?.kind === 'landscape', place_template: reg.get(r.scope_ref)?.kind === 'place', scene_template: ex.scene_templates.some((s) => s.id === r.scope_ref), container_template: /^container_tpl_/.test(r.scope_ref) }[r.scope_kind];
     if (!ok) f.push(`${r.pr_id}: scope ${r.scope_kind}:${r.scope_ref}`);
     if (!(Number.isInteger(+r.count_limit) && +r.count_limit >= 1)) f.push(`${r.pr_id}: count_limit`);
-    if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1', 'people_authoring'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
+    if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1', 'people_authoring', 'environment_authoring'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
     const s = split(r.allowed_seasons);
     if (!s.length || s.some((x) => x !== 'all' && !SEASONS.includes(x))) f.push(`${r.pr_id}: seasons ${r.allowed_seasons}`);
     const times = split(r.allowed_times);
     if (r.subject_kind === 'category' ? r.allowed_times !== 'all' : !times.length || times.some((t) => !TIME_ORDER.includes(t)) || r.allowed_times !== TIME_ORDER.filter((t) => times.includes(t)).join(';')) f.push(`${r.pr_id}: time ${r.allowed_times}`);
-    if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: people provenance/guards/status`);
-    if (r.subject_kind !== 'category') {
+    if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: non-category provenance/guards/status`);
+    if (['occupation', 'social_role'].includes(r.subject_kind)) {
       const sourceRows = split(r.source_pool).map((ref) => peopleSources[Number(ref.match(/^presence\/people_presence_authoring\.csv#row(\d+)$/)?.[1]) - 2]);
       if (!sourceRows.length || sourceRows.some((source) => !source || source.creation_owner !== 'presence_rule' || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.scope_kind !== source.scope_kind || r.scope_ref !== source.scope_ref || r.guards !== source.guards || (r.allowed_seasons === 'all' ? !SEASONS.every((season) => split(source.allowed_seasons).includes(season)) : !split(source.allowed_seasons).includes(r.allowed_seasons)) || +r.count_limit !== +source.count_limit || +r.probability_ppm !== +rule.classes[source.frequency_class]?.probability_ppm || r.refresh_class !== source.refresh_class || !r.source_refs.includes(source.source_refs))) f.push(`${r.pr_id}: people source subject/season/guards/probability differ from authoring`);
       const supported = new Set(sourceRows.flatMap((source) => source ? split(source.allowed_times) : []));
@@ -739,6 +1408,234 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
   check('presence_rules', 'one_rule_per_base_key_and_season', seasonOverlaps(pr));
+  const environmentSource = readCsv(P(ENVIRONMENT_PATH));
+  const environmentExclusions = readCsv(P(ENVIRONMENT_EXCLUSIONS_PATH));
+  const environmentOutput = pr.filter((row) => row.subject_kind === 'environment');
+  const environmentRefs = environmentIndices();
+  check('presence_rules', 'environment_authoring_closed_vocab_refs_anachronisms_coverage',
+    environmentAuthoringFailures(environmentSource, fam, environmentRefs), {
+      authoring_rows: environmentSource.length, place_families: new Set(environmentSource.flatMap(environmentScopes)).size,
+    });
+  const environmentCoverage = environmentLensCoverage(environmentSource, environmentExclusions, fam, environmentRefs);
+  check('presence_rules', 'environment_pf_lens_coverage_and_entity_links', environmentCoverage.failures, {
+    lens_counts_by_pf: environmentCoverage.lensCounts,
+    lens_coverage_by_pf: environmentCoverage.lensCoverage,
+    lens_exclusions: environmentCoverage.exclusions,
+    entity_link_ratio_by_pf: environmentCoverage.entityRatioByPf,
+    entity_link_ratio_below_50_percent: environmentCoverage.below50Percent,
+    regional_taxon_link_ratio_by_pf: environmentCoverage.regionalTaxonRatioByPf,
+    regional_taxon_link_ratio_below_50_percent: environmentCoverage.regionalTaxonBelow50Percent,
+  });
+  const environmentProjectionFailures = [];
+  const environmentById = new Map(environmentSource.map((row) => [row.env_rule_id, row]));
+  if (environmentById.size !== environmentSource.length) environmentProjectionFailures.push('duplicate authoring ID');
+  const expectedEnvironmentPairs = new Set(environmentSource.flatMap((row) => environmentScopes(row).map((pf) => `${row.env_rule_id}|${pf}`)));
+  const seenEnvironmentPairs = new Set();
+  if (environmentOutput.length !== expectedEnvironmentPairs.size) environmentProjectionFailures.push(`output ${environmentOutput.length} != projected source ${expectedEnvironmentPairs.size}`);
+  for (const output of environmentOutput) {
+    const source = environmentById.get(output.condition_key);
+    const pair = `${output.condition_key}|${output.scope_ref}`;
+    if (seenEnvironmentPairs.has(pair)) environmentProjectionFailures.push(`${output.pr_id}: duplicate projection ${pair}`);
+    seenEnvironmentPairs.add(pair);
+    const sourceSeasons = SEASONS.filter((season) => split(source?.allowed_seasons).includes(season));
+    const family = fam.find((candidate) => candidate.pf_id === output.scope_ref);
+    const ownSeason = family?.pf_kind === 'seasonal_overlay' && SEASONS.find((season) => output.scope_ref.startsWith(`pf_${season}_`));
+    const expectedSeasons = ownSeason || (sourceSeasons.length === SEASONS.length ? 'all' : sourceSeasons.join(';'));
+    const expectedTimes = TIME_ORDER.filter((time) => split(source?.allowed_times).includes(time)).join(';');
+    if (!source || output.source_pool !== `${ENVIRONMENT_PATH}#${output.condition_key}` || output.source_row_id !== output.condition_key ||
+        output.scope_kind !== 'place_family' || !environmentScopes(source || {}).includes(output.scope_ref) || output.subject_ref !== source.companion_ref ||
+        output.name_ru !== source.name_ru || output.lens !== source.lens || output.environment_kind !== source.environment_kind || output.frequency_class !== source.frequency_class ||
+        +output.probability_ppm !== +rule.classes[source.frequency_class]?.probability_ppm || output.allowed_seasons !== expectedSeasons ||
+        output.allowed_times !== expectedTimes || output.guards !== source.condition_refs ||
+        output.senses !== source.senses || output.condition_refs !== source.condition_refs || output.reevaluate_on !== source.reevaluate_on ||
+        output.material_refs !== source.material_refs || output.process_refs !== source.process_refs || output.item_refs !== source.item_refs ||
+        output.reuse_refs !== source.reuse_refs || output.basis !== source.basis || output.derivation !== source.derivation ||
+        output.source_refs !== source.source_refs || output.confidence !== 'C' || output.pool_confidence !== source.confidence ||
+        output.count_limit !== '1' || output.count_limit_basis !== 'environment_authoring' || output.status !== 'candidate') environmentProjectionFailures.push(`${output.pr_id}: projection differs`);
+  }
+  for (const pair of expectedEnvironmentPairs) if (!seenEnvironmentPairs.has(pair)) environmentProjectionFailures.push(`missing projection ${pair}`);
+  check('presence_rules', 'environment_authoring_projects_exactly_once', environmentProjectionFailures, { output_rows: environmentOutput.length });
+  if (process.argv.includes('--self-test') && environmentSource.length) {
+    const first = environmentSource.find((row) => !split(row.pf_scope).length);
+    const sharedProbe = environmentSource.find((row) => split(row.pf_scope).length);
+    if (!first || !sharedProbe) throw new Error('environment self-test requires local and shared rows');
+    const expectFailure = (rows, text, requireCoverage = false) => {
+      const failures = environmentAuthoringFailures(rows, fam, environmentRefs, requireCoverage);
+      if (!failures.some((failure) => failure.includes(text))) throw new Error(`environment negative probe missed ${text}`);
+    };
+    expectFailure([{ ...first, pf_id: 'pf_unknown_probe' }], 'pf_id');
+    expectFailure([{ ...sharedProbe, pf_id: 'pf_road' }], 'shared phenomenon contract');
+    expectFailure([{ ...sharedProbe, pf_scope: `${sharedProbe.pf_scope};pf_dwelling_interior` }], 'shared phenomenon enters interior');
+    expectFailure([{ ...sharedProbe, pf_scope: `${sharedProbe.pf_scope};${environmentScopes(sharedProbe)[0]}` }], 'pf_scope/pf_id');
+    expectFailure([{ ...first, env_rule_id: 'epr_r5_wrong_place_probe' }], 'env_rule_id lacks canonical PF prefix');
+    expectFailure([{ ...first, condition_refs: 'ground_rule:gr_unknown_probe' }], 'condition_refs');
+    expectFailure([{ ...first, environment_kind: 'unknown_probe' }], 'environment_kind');
+    expectFailure([{ ...first, lens: 'unknown_probe' }], 'lens');
+    expectFailure([{ ...first, basis: '' }], 'basis/derivation/source_refs');
+    expectFailure([{ ...first, derivation: 'просто утверждение' }], 'derivation cause/boundary');
+    expectFailure([{ ...first, material_refs: 'mt_unknown_probe' }], 'material_ref');
+    for (const [name, companion] of [
+      ['бетонная лужа', 'env_concrete_puddle_probe'],
+      ['фарфоровая чашка', 'env_porcelain_probe'],
+      ['пластиковая верёвка', 'env_plastic_probe'],
+      ['пороховой дым', 'env_gunpowder_probe'],
+      ['картофельная ботва', 'env_potato_probe'],
+      ['следы пилорамы', 'env_sawmill_probe'],
+      ['серая крыса у склада', 'env_brown_rat_probe'],
+      ['рыжий таракан в избе', 'env_german_cockroach_probe'],
+      ['чёрный таракан в клети', 'env_black_cockroach_probe'],
+      ['рис на местной пашне', 'env_rice_probe'],
+    ]) expectFailure([{ ...first, name_ru: name, companion_ref: companion }], 'anachronism');
+    for (const name_ru of ['остатки', 'Следы работы', 'Шум.', 'Звук: домовая мышь: региональные сезонные признаки']) expectFailure([{ ...first, name_ru }], 'generic name');
+    expectFailure([{ ...first, name_ru: 'pf_road: Пыль над дорогой' }], 'generic name');
+    expectFailure([{ ...first, name_ru: 'PF: Пыль над дорогой' }], 'generic name');
+    expectFailure([{ ...first, name_ru: 'Крапива при наличии WTR0038' }], 'condition in name');
+    expectFailure([{ ...first, name_ru: 'Корзина видна, если её поставили' }], 'condition in name');
+    for (const name_ru of ['Дым лишь у горна', 'Щепа только у верстака', 'Кора после совершённой валки', 'Искры при действующей кузнице', 'Лёд только в срок вскрытия'])
+      expectFailure([{ ...first, name_ru }], 'condition in name');
+    for (const name_ru of ['Уже заметная пыль', 'Установленный у стены ларь', 'Имеющийся у двери мешок', 'Птица в сезон присутствия', 'След в профиле места', 'Верёвка только как возможность', 'Туман / дым'])
+      expectFailure([{ ...first, name_ru }], 'condition in name');
+    expectFailure([{ ...first, derivation: 'Точная региональная PF-season запись связывает вид с местом → возможен названный сигнал; граница: особь не гарантирована.' }], 'generic derivation');
+    for (const derivation of [
+      'Habitat row допускает вид → возможен сигнал; граница: особь не гарантирована.',
+      'Точные PF-season данные допускают вид → возможен сигнал; граница: особь не гарантирована.',
+      'chance=common → след заметен; граница: результат случаен.',
+      'Возможность редакционной подачи подтверждена → след назван; граница: локально.',
+    ]) expectFailure([{ ...first, derivation }], 'generic derivation');
+    expectFailure([{ ...first, derivation: 'Сезонные сведения о местах обитания допускают присутствие вида → может проявиться соответствующий сигнал; граница: особь не гарантирована.' }], 'generic derivation');
+    expectFailure([{ ...first, derivation: `Условие места выполняется → ${first.name_ru}; граница: сигнал не гарантирован.` }], 'generic derivation');
+    expectFailure([{ ...first, name_ru: 'пыль лежит в колее' }], 'name must start uppercase');
+    expectFailure([{ ...first, pf_id: 'pf_dwelling_interior', name_ru: 'Крапива растёт на грунте внутри избы' }], 'outdoor template in interior');
+    expectFailure([{ ...first, pf_id: 'pf_river_channel', name_ru: 'Красный отблеск углей лежит на воде' }], 'land template on water surface');
+    expectFailure([{ ...first, pf_id: 'pf_winter_ice_crossing', name_ru: 'Крапива растёт на сухом грунте переправы', allowed_seasons: 'winter' }], 'land template on water surface');
+    expectFailure([{ ...first, name_ru: 'Дым поднимается над местом', condition_refs: 'presence:people' }], 'fire guard');
+    const hardSurface = { ...first, name_ru: 'След остаётся на твёрдом настиле', derivation: 'Твёрдым настилом удерживается след → борозда заметна; граница: локально.', condition_refs: 'none' };
+    if (environmentAuthoringFailures([hardSurface], fam, environmentRefs, false).some((failure) => failure.includes('fire guard'))) throw new Error('environment fire word-boundary positive probe failed');
+    expectFailure([{ ...first, name_ru: 'Дождь стучит по кровле', derivation: 'Капли ударяют по кровле → слышен дробный стук; граница: во время дождя.', condition_refs: 'weather:wx_precip_steady;presence:fire' }], 'false fire guard');
+    expectFailure([{ ...first, name_ru: 'Телега скрипит на дороге', allowed_seasons: 'spring', condition_refs: 'presence:people' }], 'transport guard');
+    expectFailure([{ ...first, name_ru: 'Собака лает у ворот', condition_refs: 'presence:people' }], 'dog guard');
+    expectFailure([{ ...first, name_ru: 'Листья шуршат под ногами', derivation: 'Сухие листья трутся друг о друга → слышен шорох; граница: локально.', condition_refs: 'presence:dog' }], 'false dog guard');
+    expectFailure([{ ...first, name_ru: 'Колокольный звон слышен над улицей', condition_refs: 'presence:people' }], 'church guard');
+    expectFailure([{ ...first, name_ru: 'Колёсный воз скрипит на дороге', allowed_seasons: 'winter', condition_refs: 'presence:transport' }], 'wheeled transport in winter');
+    expectFailure([{ ...first, name_ru: 'Полозья саней скрипят на дороге', allowed_seasons: 'summer', condition_refs: 'presence:transport' }], 'sled outside winter');
+    expectFailure([{ ...first, allowed_seasons: 'winter', condition_refs: 'ground_rule:gr_snow;water_rule:wr_open' }], 'unsatisfiable condition axes');
+    const sameAxisOr = { ...first, allowed_seasons: 'winter', condition_refs: 'ground_rule:gr_snow;ground_rule:gr_dry' };
+    if (environmentAuthoringFailures([sameAxisOr], fam, environmentRefs, false).some((failure) => failure.includes('unsatisfiable condition axes'))) throw new Error('environment same-axis OR positive probe failed');
+    const noAxis = { ...first, lens: 'seasonal_surface', condition_refs: 'none' };
+    if (environmentAuthoringFailures([noAxis], fam, environmentRefs, false).some((failure) => failure.includes('lacks ground/water/weather'))) throw new Error('environment no-axis positive probe failed');
+    expectFailure([{ ...first, condition_refs: `${first.condition_refs};${first.condition_refs}` }], 'duplicate condition_refs');
+    const sceneSummer = { ...first, env_rule_id: 'epr_dwelling_interior__scene_summer_probe', pf_id: 'pf_dwelling_interior', allowed_seasons: 'summer', condition_refs: 'scene:sc_scn001', reuse_refs: 'scene:sc_scn001' };
+    if (environmentAuthoringFailures([sceneSummer], fam, environmentRefs, false).some((failure) => failure.includes('scene PF mismatch') || failure.includes('scene season mismatch'))) throw new Error('environment scene PF/season positive probe failed');
+    expectFailure([{ ...sceneSummer, pf_id: 'pf_village_lane', env_rule_id: 'epr_village_lane__scene_pf_probe' }], 'scene PF mismatch');
+    expectFailure([{ ...sceneSummer, allowed_seasons: 'winter' }], 'scene season mismatch');
+    expectFailure([{ ...first, env_rule_id: 'epr_dormant_fauna_probe', pf_id: 'pf_cellar_granary', companion_ref: 'env_dormant_fauna_probe', name_ru: 'Комары звенят в зимней кладовой', lens: 'wild_animal', environment_kind: 'animal_sign', senses: 'audible', allowed_seasons: 'winter', condition_refs: 'presence:people', reuse_refs: 'fa_ins_mosquitoes', basis: 'logical_necessity' }], 'dormant fauna sound/flight');
+    expectFailure([{ ...first, name_ru: 'Запах навоза держится у стойла', derivation: 'Навоз нагревается → запах становится заметен; граница: локальный след.', condition_refs: 'presence:fire' }], 'manure odor lacks livestock guard');
+    expectFailure([{ ...first, pf_id: 'pf_smithy', name_ru: 'Сырой грунт темнеет у кузницы', derivation: 'Осадки смачивают землю → грунт темнеет; граница: у наружного входа.', condition_refs: 'ground_rule:gr_wet;presence:dog' }], 'smithy wet ground uses dog guard');
+    expectFailure([{ ...first, name_ru: 'Мухи гудят над навозом', derivation: 'Навоз привлекает мух → слышно гудение; граница: локально.', allowed_seasons: 'spring;summer', condition_refs: 'presence:livestock', reuse_refs: 'fa_ins_house_fly' }], 'manure flies require livestock and summer');
+    const crossLensProbe = [
+      { ...first, env_rule_id: `epr_${first.pf_id.slice(3)}__cross_lens_1`, companion_ref: 'env_cross_lens_1', lens: 'odor', name_ru: 'Одинаковый след у сходней' },
+      { ...first, env_rule_id: `epr_${first.pf_id.slice(3)}__cross_lens_2`, companion_ref: 'env_cross_lens_2', lens: 'seasonal_surface', name_ru: 'Одинаковый след у сходней' },
+    ];
+    expectFailure(crossLensProbe, 'cross-lens clone');
+    const semanticProbe = ['pf_road', 'pf_rural_yard', 'pf_town_street'].map((pf_id, index) => ({
+      ...first, pf_id, env_rule_id: `epr_${pf_id.slice(3)}__semantic_cluster_${index}`, companion_ref: `env_semantic_cluster_${index}`,
+      name_ru: `Различимый местный след ${index}`, derivation: 'Одинаковая физическая причина → одинаковое наблюдаемое следствие; граница: локально.',
+    }));
+    expectFailure(semanticProbe, 'semantic derivation cluster across 3 PF');
+    const placeVariantProbe = [
+      ['pf_road', 'Осадки смачивают дорогу → мокрая поверхность темнеет; граница: локально.'],
+      ['pf_village_lane', 'Осадки смачивают деревенскую улицу → мокрая поверхность темнеет; граница: локально.'],
+      ['pf_town_street', 'Осадки смачивают городскую улицу → мокрая поверхность темнеет; граница: локально.'],
+    ].map(([pf_id, derivation], index) => ({
+      ...first, pf_id, env_rule_id: `epr_${pf_id.slice(3)}__place_variant_${index}`, companion_ref: `env_place_variant_${index}`,
+      name_ru: `Мокрая поверхность темнеет, вариант ${index + 1}`, derivation,
+    }));
+    expectFailure(placeVariantProbe, 'fuzzy semantic derivation cluster across 3 PF');
+    const sparrowAliases = ['Воробей', 'воробья', 'воробьям'].map((word) => environmentComparable(`${word} сидит у края`, '', ['Воробей']));
+    if (new Set(sparrowAliases).size !== 1) throw new Error('environment taxon-inflection normalization probe failed');
+    for (const cause of [
+      'Летняя PF-season запись показывает вид',
+      'Точные сезонные строки для места подтверждают вид',
+      'Справочник распространения отмечает вид',
+      'Вид отмечен для этого типа места',
+      'Данные о распространении вида охватывают место',
+    ]) expectFailure([{ ...first, derivation: `${cause} → возможен соответствующий сигнал; граница: сигнал не гарантирован.` }], 'generic derivation');
+    for (const id of [
+      'epr_r4_market_square_market_sledge',
+      'epr_r4_market_square_market_cart',
+      'epr_peasant_homestead__sound_peasant_homestead_m_house_mouse_resident',
+      'epr_peasant_homestead__sound_peasant_homestead_b_house_sparrow_resident',
+    ]) {
+      const control = environmentSource.find((row) => row.env_rule_id === id);
+      if (!control || catalogBoilerplateDerivation(control.derivation)) throw new Error(`environment catalog-boilerplate legal control failed: ${id}`);
+    }
+    const fuzzyCrossLensProbe = [
+      { ...first, env_rule_id: `epr_${first.pf_id.slice(3)}__fuzzy_cross_lens_1`, companion_ref: 'env_fuzzy_cross_lens_1', lens: 'odor', name_ru: 'Запах сырой древесины у сходней', derivation: 'Влажные доски отдают сыростью → у сходней заметен запах сырой древесины; граница: локально.' },
+      { ...first, env_rule_id: `epr_${first.pf_id.slice(3)}__fuzzy_cross_lens_2`, companion_ref: 'env_fuzzy_cross_lens_2', lens: 'seasonal_surface', name_ru: 'Сырая древесина пахнет возле сходней', derivation: 'Сырые доски источают влажный запах → возле сходней ощущается запах сырой древесины; граница: локально.' },
+    ];
+    expectFailure(fuzzyCrossLensProbe, 'fuzzy cross-lens clone');
+    expectFailure([{ ...first, name_ru: 'Иней серебрит траву летом', allowed_seasons: 'summer', condition_refs: 'weather:wx_fog', derivation: 'Летняя влага замерзает на траве → появляется иней; граница: локально.' }], 'frost/rime in summer');
+    const thawDrip = environmentSource.find((row) => row.env_rule_id === 'epr_shared__thaw_drip');
+    const frost = environmentSource.find((row) => row.env_rule_id === 'epr_shared__frost');
+    const rime = environmentSource.find((row) => row.env_rule_id === 'epr_shared__rime');
+    if (!thawDrip || !frost || !rime) throw new Error('environment shared temperature self-test rows missing');
+    for (const sharedTemperatureRow of [thawDrip, frost, rime]) {
+      const sharedFailures = environmentAuthoringFailures([sharedTemperatureRow], fam, environmentRefs, false);
+      if (sharedFailures.some((failure) => failure.includes('shared thaw_drip temperature contract') || failure.includes('shared frost/rime temperature contract') || failure.includes('shared rime winter-only contract')))
+        throw new Error(`environment shared temperature positive probe failed: ${sharedTemperatureRow.env_rule_id}`);
+    }
+    expectFailure([{ ...thawDrip, condition_refs: thawDrip.condition_refs.replace('temperature:an_warm', 'temperature:an_normal') }], 'shared thaw_drip temperature contract');
+    expectFailure([{ ...thawDrip, condition_refs: `${thawDrip.condition_refs};temperature:an_normal` }], 'shared thaw_drip temperature contract');
+    expectFailure([{ ...thawDrip, condition_refs: 'temperature:an_warm' }], 'shared thaw_drip temperature contract');
+    for (const sharedColdRow of [frost, rime]) {
+      expectFailure([{ ...sharedColdRow, condition_refs: `${sharedColdRow.condition_refs};temperature:an_warm` }], 'shared frost/rime temperature contract');
+      for (const ref of ['temperature:an_severe_cold', 'temperature:an_cold', 'temperature:an_normal'])
+        expectFailure([{ ...sharedColdRow, condition_refs: split(sharedColdRow.condition_refs).filter((value) => value !== ref).join(';') }], 'shared frost/rime temperature contract');
+    }
+    expectFailure([{ ...rime, allowed_seasons: 'winter;autumn' }], 'shared rime winter-only contract');
+    expectFailure([{ ...first, name_ru: 'Дождь мелко сеет', allowed_seasons: 'winter', condition_refs: 'weather:wx_precip_light', derivation: 'Жидкие осадки падают на землю → виден мелкий дождь; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Косой дождь', allowed_seasons: 'winter', condition_refs: 'weather:wx_windy_precip', derivation: 'Ветер несёт жидкие осадки → дождь идёт наклонно; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Капли обложных осадков стучат по кровле', allowed_seasons: 'winter', condition_refs: 'weather:wx_precip_steady', derivation: 'Обложные осадки падают на кровлю → слышен стук капель; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Ливень шумит по настилу', allowed_seasons: 'autumn', condition_refs: 'weather:wx_windy_precip', derivation: 'Ветреные осадки ударяют по настилу → слышен шум ливня; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Дождь стучит по настилу', allowed_seasons: 'autumn', condition_refs: 'weather:wx_precip_steady;ground_rule:gr_wet', derivation: 'Обложные осадки ударяют по настилу → слышен дождевой стук; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Летний дождь стучит по настилу', allowed_seasons: 'summer', condition_refs: 'weather:wx_precip_steady', derivation: 'Обложные осадки ударяют по настилу → слышен дождевой стук; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'След дождя на мокрой земле', allowed_seasons: 'autumn', condition_refs: 'ground_rule:gr_wet', derivation: 'Влажная поверхность темнеет → виден след воды; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Дождь стучит по настилу', allowed_seasons: 'autumn', condition_refs: 'weather:wxr_precip_steady__rain;weather:wx_precip_steady', derivation: 'Жидкие осадки ударяют по настилу → слышен дождевой стук; граница: локально.' }], 'liquid precipitation keeps generic current phase');
+    for (const allowed_seasons of ['spring', 'autumn']) for (const condition_refs of ['weather:wx_precip_light', 'weather:wx_precip_steady', 'weather:wx_windy_precip'])
+      expectFailure([{ ...first, name_ru: 'Дождевые капли падают на землю', allowed_seasons, condition_refs, derivation: 'Жидкие осадки падают на землю → видны капли дождя; граница: локально.' }], 'liquid precipitation lacks exact current rain phase');
+    expectFailure([{ ...first, name_ru: 'Дождевые капли стучат по кровле зимой', allowed_seasons: 'winter', condition_refs: 'weather:wxr_precip_steady__snow', derivation: 'Жидкие осадки падают на кровлю → слышен дождевой стук; граница: локально.' }], 'rain current precipitation phase mismatch');
+    const neutralWetSurface = { ...first, name_ru: 'Грязь проступает между плахами', allowed_seasons: 'autumn', condition_refs: 'ground_rule:gr_mud;weather:wx_precip_steady', derivation: 'Размокший грунт выдавливается в щели → грязь видна между плахами; граница: локально.' };
+    if (environmentAuthoringFailures([neutralWetSurface], fam, environmentRefs, false).some((failure) => failure.includes('precipitation phase'))) throw new Error('environment neutral wet-surface positive probe failed');
+    for (const allowed_seasons of SEASONS) for (const condition_refs of ['weather:wxr_precip_light__rain', 'weather:wxr_precip_steady__rain', 'weather:wxr_windy_precip__rain']) {
+      const rainPositive = { ...first, name_ru: 'Дождевые капли падают на землю', allowed_seasons, condition_refs, derivation: 'Жидкие осадки падают на землю → видны капли дождя; граница: локально.' };
+      if (environmentAuthoringFailures([rainPositive], fam, environmentRefs, false).some((failure) => failure.includes('precipitation phase'))) throw new Error(`environment rain exact-phase positive probe failed: ${allowed_seasons}/${condition_refs}`);
+    }
+    expectFailure([{ ...first, name_ru: 'Снегопад белит крышу', allowed_seasons: 'winter', condition_refs: 'weather:wx_precip_steady', derivation: 'Снежинки оседают на кровле → крыша белеет; граница: локально.' }], 'snowfall lacks exact current snow phase');
+    expectFailure([{ ...first, name_ru: 'Снегопад белит крышу', allowed_seasons: 'winter', condition_refs: 'weather:wxr_precip_steady__rain', derivation: 'Снежинки оседают на кровле → крыша белеет; граница: локально.' }], 'snowfall current precipitation phase mismatch');
+    const snowfallPositive = { ...first, name_ru: 'Снегопад белит крышу', allowed_seasons: 'winter', condition_refs: 'weather:wxr_precip_steady__snow', derivation: 'Снежинки оседают на кровле → крыша белеет; граница: локально.' };
+    if (environmentAuthoringFailures([snowfallPositive], fam, environmentRefs, false).some((failure) => failure.includes('precipitation phase'))) throw new Error('environment snowfall exact-phase positive probe failed');
+    const savedClass = ENVIRONMENT_PF_CLASS_BY_ID.get(first.pf_id);
+    ENVIRONMENT_PF_CLASS_BY_ID.delete(first.pf_id);
+    try { expectFailure([first], 'missing PF physical class'); } finally { ENVIRONMENT_PF_CLASS_BY_ID.set(first.pf_id, savedClass); }
+    const iceSurface = environmentSource.find((row) => row.pf_id === 'pf_winter_ice_crossing' && /полоз/iu.test(`${row.name_ru} ${row.derivation}`));
+    if (!iceSurface || environmentAuthoringFailures([iceSurface], fam, environmentRefs, false).some((failure) => failure.includes('land template on water surface'))) throw new Error('environment ice-surface positive probe failed');
+    if (environmentAuthoringFailures([{ ...first, name_ru: 'Шум ветра над водой' }], fam, environmentRefs, false).some((failure) => failure.includes('generic name')))
+      throw new Error('environment generic-name positive probe failed');
+    if (environmentAuthoringFailures([{ ...first, name_ru: 'Рисунок колеи на влажной земле' }], fam, environmentRefs, false).some((failure) => failure.includes('anachronism')))
+      throw new Error('environment anachronism boundary positive probe failed');
+    expectFailure([{ ...first, reuse_refs: 'fa_b_unknown_probe' }], 'reuse_ref');
+    expectFailure([{ ...first, reuse_refs: 'fl_unknown_probe' }], 'reuse_ref');
+    expectFailure([{ ...first, reuse_refs: 'fa_mamm_house_mouse' }], 'reuse_ref');
+    expectFailure([{ ...first, source_refs: `${first.source_refs};data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv#fpr_fa_mamm_house_mouse__threshing_barn__winter` }], 'unresolved fauna source_ref');
+    const mouseProbe = environmentSource.find((row) => row.env_rule_id === 'epr_threshing_barn__house_mouse_night_rustle');
+    if (!mouseProbe) throw new Error('environment mouse-anchor self-test row missing');
+    expectFailure([{ ...mouseProbe, source_refs: `${mouseProbe.source_refs};data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#fhp_m_house_mouse__peasant_homestead__winter` }], 'fauna presence PF mismatch');
+    expectFailure([first, { ...first }], 'env_rule_id');
+    expectFailure(environmentSource.filter((row) => !environmentScopes(row).includes(first.pf_id)), `${first.pf_id}: missing`, true);
+    const exclusionReasonProbe = environmentLensCoverage(environmentSource, environmentExclusions.map((row, index) => index ? row : { ...row, reason: 'no_pf_specific_source' }), fam, environmentRefs);
+    if (!exclusionReasonProbe.failures.some((failure) => failure.includes('reason no_pf_specific_source'))) throw new Error('environment exclusion reason negative probe failed');
+    console.log('PASS presence_rules / environment_negative_probes');
+  }
   const rr = readJson(P('reports/presence-rules-report.json'));
   check('presence_rules', 'subregion_scope_report_current', isDeepStrictEqual(rr.subregion_scope, rebuiltResult.report.subregion_scope) ? [] : ['report differs from current builder'], {
     scoped_rules: rr.subregion_scope?.scoped_rules,

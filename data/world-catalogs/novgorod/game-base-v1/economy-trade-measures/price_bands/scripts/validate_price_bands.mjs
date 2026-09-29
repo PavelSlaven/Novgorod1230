@@ -32,28 +32,35 @@ const header = rows[0];
 const idx = Object.fromEntries(header.map((h, i) => [h, i]));
 const data = rows.slice(1).filter((r) => r.length > 1);
 
-let failures = 0;
-for (const r of data) {
-  const id = r[idx.pb_id];
-  const band = r[idx.value_band];
-  if (!VALUE_BAND_VOCAB.has(band)) {
-    console.log(`FAIL: ${id} value_band "${band}" not in closed vocabulary`);
-    failures++;
-  }
-  if (!r[idx.basis] || !r[idx.basis].trim()) {
-    console.log(`FAIL: ${id} has empty basis`);
-    failures++;
-  }
-  for (const h of header) {
-    const v = r[idx[h]];
-    if (v && ABS_PRICE_RE.test(v)) {
-      console.log(`FAIL: ${id} field "${h}" contains an absolute price: "${v}"`);
-      failures++;
+function validate(input, quiet = false) {
+  let failures = 0;
+  const fail = (message) => { if (!quiet) console.log(`FAIL: ${message}`); failures += 1; };
+  for (const r of input) {
+    const id = r[idx.pb_id];
+    const band = r[idx.value_band];
+    if (!VALUE_BAND_VOCAB.has(band)) fail(`${id} value_band "${band}" not in closed vocabulary`);
+    if (!r[idx.basis] || !r[idx.basis].trim()) fail(`${id} has empty basis`);
+    const famine = r[idx.famine_modifier] ?? "";
+    if (/multiplier x6\.7/.test(famine) && !new Set(["pb_grain_rye", "pb_grain_barley_oats"]).has(id)) {
+      fail(`${id} uses grain x6.7 outside grain scope`);
+    }
+    if (/multiplier x4(?:\D|$)/.test(famine) && id !== "pb_bread_loaf") fail(`${id} uses bread x4 outside bread scope`);
+    if (/multiplier x/.test(famine) && !/(?:multiplier x6\.7|multiplier x4(?:\D|$))/.test(famine)) fail(`${id} uses an unapproved famine multiplier`);
+    for (const h of header) {
+      const v = r[idx[h]];
+      if (v && ABS_PRICE_RE.test(v)) fail(`${id} field "${h}" contains an absolute price: "${v}"`);
     }
   }
+  return failures;
 }
 
+const failures = validate(data);
+const saltIndex = data.findIndex((row) => row[idx.pb_id] === "pb_salt");
+const badScope = data.map((row) => [...row]);
+badScope[saltIndex][idx.famine_modifier] = "rises, multiplier x6.7";
+if (validate(badScope, true) === 0) throw new Error("negative probe failed: x6.7 on salt was accepted");
+
 console.log(failures === 0
-  ? `\nPASS: ${data.length} rows, all value_band tokens in vocabulary, all basis non-empty, no absolute prices.`
+  ? `\nPASS: ${data.length} rows, bands/basis valid, famine multipliers scoped, no absolute prices; negative scope probe rejected.`
   : `\nFAIL: ${failures} check(s) failed across ${data.length} rows.`);
 process.exit(failures === 0 ? 0 : 1);

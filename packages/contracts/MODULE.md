@@ -25,6 +25,14 @@ same registry validator. `tools/spatial-v3/generate-expansion-vocabularies.mjs`
 reproduces revision 4; unknown entity kinds still fail closed. This registry
 extension does not approve acoustic data or activate a production release.
 
+Spatial controlled vocabulary revision 5 (`controlled-vocabularies.v5.json`,
+Spatial standard amendment 4.7.0) adds the line-kind and duration-band
+vocabularies, three direction values, the `improvised_float` movement method and
+the authoring entity kinds of the line contracts. `tools/spatial-v3/generate-line-vocabularies.mjs`
+reproduces revision 5. The validator accepts it, but `controlled-vocabularies.js`
+still loads revision 4 as the working registry until the code stage switches the
+import; revisions 1–4 remain immutable.
+
 Validators return structured validation errors or typed-error DTO; malformed canonical input may throw type/range errors. Missing vocabulary, schema mismatch and target port availability never degrade to inferred data. Depends only on `@rus/kernel`; no I/O, DB, network, LLM, persistence or side effects.
 
 ## Target / P28 и тесты

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { SCENE_NPC_SOURCE, withSceneNpcs, withoutSceneNpcs } from
   '../src/infrastructure/postgres/scene-npcs-readback.js';
+import { routineNpcSnapshot } from '../src/runtime/lower-dvina-trace-scene-presence.js';
 
 const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'profile',
   profile_level: 'background', anchor_id: null,
@@ -61,6 +62,16 @@ test('scene-loaded NPCs are stripped before a snapshot and nothing else is touch
   assert.equal(withoutSceneNpcs(untouched), untouched);
 });
 
+test('the routine schedule keeps a slim snapshot of a scene-read NPC', () => {
+  const full = { instance_id: 'npc_gen', anchor_id: null, machine_state: { status: 'active' },
+    identity_state: { canonical_name: 'X' }, semantic_state: { hidden: 1 },
+    runtime_source: SCENE_NPC_SOURCE };
+  assert.deepEqual(routineNpcSnapshot(full), { instance_id: 'npc_gen', anchor_id: null,
+    machine_state: { status: 'active' } });
+  const sealed = { instance_id: 'npc_start', semantic_state: {} };
+  assert.equal(routineNpcSnapshot(sealed), sealed);
+});
+
 test('every snapshot writer of the trace runtime drops scene-read NPCs', async () => {
   const { readdir, readFile } = await import('node:fs/promises');
   const dir = new URL('../src/infrastructure/postgres/', import.meta.url);
@@ -78,5 +89,6 @@ test('every snapshot writer of the trace runtime drops scene-read NPCs', async (
   }
   assert.deepEqual(missing, []);
   const commit = await readFile(new URL('lower-dvina-trace-turn-step-commit.js', dir), 'utf8');
-  assert.match(commit, /snapshot: withoutSceneNpcs\(turnStep\.snapshot\)/u);
+  assert.match(commit, /persistedSnapshot = withoutSceneNpcs\(turnStep\.snapshot\)/u);
+  assert.match(commit, /snapshot: persistedSnapshot/u);
 });

@@ -1,6 +1,7 @@
 import { npcRoutineActivity, proposeNpcRoutineTransition } from '@rus/npc-runtime';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
 import { routineRoute, validateRoutineMovement } from './npc-routine-movement.js';
+import { routineNpcSnapshot } from './lower-dvina-trace-scene-presence.js';
 
 const RULE = versioned('action_contract', 'npc-approved-routine-transition');
 const POLICY = versioned('condition_set', 'npc-approved-routine');
@@ -84,7 +85,7 @@ export function npcRoutineTemporalRegistration() {
       next_transition_at_whole_minutes: runtimeAfter.next_transition_at?.whole_minutes ?? null,
       next_transition_at_subminute_numerator: runtimeAfter.next_transition_at?.subminute_numerator ?? null,
       next_transition_at_subminute_denominator: runtimeAfter.next_transition_at?.subminute_denominator ?? null,
-      npc_snapshot: { ...npc, machine_state: machineAfter } };
+      npc_snapshot: routineNpcSnapshot({ ...npc, machine_state: machineAfter }) };
     const transition = { boundary_id: candidate.boundary_id, schedule_id: row.id, npc_id: row.npc_id,
       before: structuredClone(row), after, occurred_at: candidate.scheduled_at,
       proposal: proposed, interrupted };

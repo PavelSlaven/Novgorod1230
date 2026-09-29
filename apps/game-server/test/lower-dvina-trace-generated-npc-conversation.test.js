@@ -31,6 +31,18 @@ test('an unknown G6 is never co-presence: only the same position remains', () =>
   assert.deepEqual(targets(commandsFor(state)), [state.npcs[0].instance_id]);
 });
 
+test('an authored scene without a site (no G6 map): the anchor decides between positions', () => {
+  const state = generatedState((next) => {
+    delete next.scene_position_g6; delete next.position.g6_instance_id;
+    next.position.g5_anchor_id = 'anchor:a';
+    next.npcs.forEach((npc) => { npc.anchor_id = 'anchor:b'; });
+    next.npcs[0].anchor_id = 'anchor:a';
+    next.npcs[1].anchor_id = 'anchor:a'; // another position, same anchor, G6 unknown
+  });
+  assert.deepEqual(targets(commandsFor(state)),
+    [state.npcs[0].instance_id, state.npcs[1].instance_id]);
+});
+
 test('null anchor and null position never match each other', () => {
   const state = generatedState((next) => {
     next.position.position_id = null;

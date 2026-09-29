@@ -1,5 +1,13 @@
 const known = (value) => typeof value === 'string' && value !== '';
 
+/** Marks NPC records read from the party database for the current scene; never persisted in a snapshot. */
+export const SCENE_NPC_SOURCE = 'party_db_scene_read';
+
+/** The schedule row keeps the slim snapshot the loader gives it, never a full scene-read record. */
+export const routineNpcSnapshot = (npc) => npc?.runtime_source === SCENE_NPC_SOURCE
+  ? { instance_id: npc.instance_id, anchor_id: npc.anchor_id ?? null,
+    machine_state: npc.machine_state } : npc;
+
 /**
  * Temporary proxy for Spatial v3 co-presence: two actors share a scene when
  * they stand in the same G6 (acoustically uniform, default_clear visibility;
@@ -22,18 +30,21 @@ export function sceneLocus(state, entity) {
 
 /**
  * true / false / null (not comparable). Positions decide when both sides have
- * one: same position, else same G6; an unknown G6 is never co-presence. The g5
- * anchor decides only when a side has no position. null never equals null.
+ * one: same position, else same G6. Where the G6 of a side is unknown (authored
+ * scenes without a site) the g5 anchor stands in, and it decides alone when a side
+ * has no position. Without an anchor an unknown G6 is never co-presence and null
+ * never equals null.
  */
 export function compareSceneLocus(left, right) {
-  if (known(left.position_id) && known(right.position_id)) {
-    if (left.position_id === right.position_id) return true;
-    return known(left.g6_id) && known(right.g6_id) && left.g6_id === right.g6_id;
+  const bothPositions = known(left.position_id) && known(right.position_id);
+  if (bothPositions && left.position_id === right.position_id) return true;
+  if (bothPositions && known(left.g6_id) && known(right.g6_id)) {
+    return left.g6_id === right.g6_id;
   }
   if (known(left.anchor_id) && known(right.anchor_id)) {
     return left.anchor_id === right.anchor_id;
   }
-  return null;
+  return bothPositions ? false : null;
 }
 
 /** Location of the player for conversation: the authored location, else the site of a generated scene. */

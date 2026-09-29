@@ -41,10 +41,10 @@ import { ensureV17PartyProductionCatalogLedger } from './v17-party-production-ca
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
 const gate1 = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
-const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1';
+const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1';
 const nature = 'data/world-catalogs/novgorod/m2c-natural';
 const capacityManifest = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
-const capacityManifestSha256 = '55b9893171bb8368293857fc2c87e1ca04210c472430d6d5572d2f9ac81e9057';
+const capacityManifestSha256 = 'e0c965d74528c948bd47c64bbae1ec1862cc24382b5f735f5d694d2cd30327ba';
 const generatedNpcIndexMigration = 'scripts/live-world-v17-generated-npc-versioned-index.sql';
 const generatedNpcIndexMigrationSha256 = '27d527784f11a512cea2863b719dc416bcccbc3a483bcfac3145e05e1761538f';
 const naturePins = {

@@ -10,6 +10,7 @@ import { materializeSpatialV3GeneratedScene } from '../../packages/materializati
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { testContainerLabel } from '../helpers/test-containers.js';
+import { ACOUSTIC_PACKAGES } from '../../scripts/promote-m2c-acoustic-packages.mjs';
 
 const manifestPath = 'data/world-catalogs/novgorod/m2c-acoustic-import-manifest.json';
 const basePath = 'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json';
@@ -20,14 +21,15 @@ const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 
 
 test('M2c acoustic promotion preserves approved raw evidence and exact dependency datasets', async () => {
   const raw = [];
-  for (const root of [acousticRoot, `${acousticRoot}/canonical-terminal`]) {
+  for (const root of ACOUSTIC_PACKAGES.map((name) => (name ? `${acousticRoot}/${name}` : acousticRoot))) {
     const approval = await json(`${root}/approval.json`);
     assert.equal(sha(await readFile(`${root}/candidate.json`)), approval.candidate_sha256);
     assert.equal(sha(await readFile(`${root}/authoring-rows.json`)), approval.authoring_rows_sha256);
     raw.push(...await json(`${root}/authoring-rows.json`));
   }
   const rows = await json(`${acousticRoot}/approved/spatial_v3_g6_acoustic_baselines.json`);
-  assert.equal(rows.length, 71);
+  assert.equal(rows.length, raw.length);
+  assert.ok(raw.length >= 218, 'base + canonical-terminal + canonical-walk');
   assert.deepEqual(rows, raw.map((row) => {
     const promoted = { entity_kind: 'g6_acoustic_baseline', ...row, status: 'approved' };
     return { ...promoted, canonical_digest: canonicalDigest(promoted) };
@@ -43,7 +45,7 @@ test('M2c acoustic promotion preserves approved raw evidence and exact dependenc
   assert.equal(validation.ok, true, JSON.stringify(validation.errors));
 });
 
-test('approved generated25 and canonical46 acoustic bundle imports exact pins through P12 and DDL23', async (t) => {
+test('approved acoustic union (generated, canonical-terminal, canonical-walk) imports exact pins through P12 and DDL23', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const container = `m2c-acoustic-import-${process.pid}`;
   let pool;
@@ -98,7 +100,10 @@ test('approved generated25 and canonical46 acoustic bundle imports exact pins th
       scene_closure: scene.value, acoustic_rows: result.value.rows });
     assert.equal(produced.ok, true, JSON.stringify(produced.error));
   }
-  assert.equal((await pool.query('SELECT count(*)::int AS count FROM world_base.spatial_v3_g6_acoustic_baselines')).rows[0].count, 71);
+  assert.equal((await pool.query('SELECT count(*)::int AS count FROM world_base.spatial_v3_g6_acoustic_baselines')).rows[0].count, rows.length);
+  const walkWater = await pool.query(`SELECT id, ambient_noise FROM world_base.spatial_v3_g6_acoustic_baselines
+    WHERE id LIKE 'm2c_acoustic_canonical__%vikhtuy_locality_water_access__main'`);
+  assert.deepEqual(walkWater.rows.map((row) => row.ambient_noise), [1]);
   const generated = rows.find((row) => row.g5_template_id);
   const canonical = rows.find((row) => row.canonical_g5_id);
   for (const [g5, version] of [[canonical.canonical_g5_id, canonical.canonical_g5_version], [null, null]]) {

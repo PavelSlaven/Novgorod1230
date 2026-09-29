@@ -13,6 +13,10 @@ import { SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
   '../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
+import { createSpatialV3WorldBaseReader } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
+import { buildAdditionalStartOwnerRows } from
+  '../../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 
 // Pin 16.14: bootstrap refuses other 16.x cluster identities.
 const POSTGRES_IMAGE = 'postgres:16.14-alpine';
@@ -115,12 +119,14 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(result.schema.world_tables, 219);
     assert.equal(result.schema.party_migrations, 37);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
-    assert.equal(result.p12.inserted_rows, 12359);
+    assert.equal(result.p12.inserted_rows, JSON.parse(await readFile(
+      'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1/request.json', 'utf8')
+    ).expected_readback.distinct_pinned_rows);
     assert.deepEqual(result.additional_start_owners,
       { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
     assert.equal(result.appearance_v3.inserted_rows, 129);
     assert.equal(result.capacity_v2.manifest_sha256,
-      '55b9893171bb8368293857fc2c87e1ca04210c472430d6d5572d2f9ac81e9057');
+      'e0c965d74528c948bd47c64bbae1ec1862cc24382b5f735f5d694d2cd30327ba');
     assert.deepEqual(result.capacity_v2.runtime_record_digests, {
       spatial_v3_scene_templates: '81ebb3fc57e2e07fb27334c0646e074ad65a145ecfaaeb4398dd9d4bed5723eb',
       spatial_v3_scene_materialization_profiles: 'c258f0d99c65ba3357a16a2a5204683a442851fcbfcb994abbbda2e88f11e55c'
@@ -167,7 +173,47 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     } finally {
       await partyPool.end();
     }
+    await assertVikhtuyAcousticReadback(
+      adminDatabaseUrl(postgresContainer).replace(/\/postgres$/, '/novgorod_world_v17'));
   });
+
+// Entering a canonical place needs its exact G6 ambient baseline (v1 and capacity-v2 successor).
+async function assertVikhtuyAcousticReadback(worldUrl) {
+  const catalog = 'data/world-catalogs/novgorod';
+  const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
+  const walk = (await json(`${catalog}/m2c-acoustic/canonical-walk/authoring-rows.json`))
+    .filter((row) => row.canonical_g5_id.includes('_vikhtuy_locality_'));
+  assert.equal(walk.length, 5);
+  const approved = await json(`${catalog}/m2c-acoustic/approved/spatial_v3_g6_acoustic_baselines.json`);
+  const { acoustic: owners } = await buildAdditionalStartOwnerRows();
+  const expansion = `${catalog}/spatial-v3/candidates/m2c-g4-expansion-v1/datasets`;
+  const nodes = await json(`${expansion}/spatial_v3_nodes.json`);
+  const scenes = { 1: await json(`${expansion}/spatial_v3_scene_templates.json`),
+    2: await json(`${catalog}/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json`) };
+  const world = new pg.Pool({ connectionString: worldUrl, max: 1 });
+  try {
+    const reader = createSpatialV3WorldBaseReader({ query: (query, params) => world.query(query, params) });
+    for (const version of [1, 2]) {
+      const stored = (await world.query(`SELECT count(*)::int AS count FROM world_base.spatial_v3_g6_acoustic_baselines
+        WHERE scene_template_version = $1`, [version])).rows[0].count;
+      assert.equal(stored, approved.length + owners.filter((row) => row.version === version).length);
+      for (const row of [...walk, ...owners.filter((owner) => owner.version === version)]) {
+        const g5 = nodes.find((node) => node.id === row.canonical_g5_id
+          && node.version === row.canonical_g5_version);
+        const scene = scenes[version].find((template) => template.id === row.scene_template_id
+          && template.version === (version === 1 ? row.scene_template_version : 2));
+        const closure = await reader.readPinnedCanonicalG5AcousticClosure({ canonical_g5: g5,
+          scene_template: scene, world_revision_id: row.world_revision_id });
+        assert.equal(closure.ok, true, `${row.id} v${version}: ${JSON.stringify(closure.error)}`);
+        assert.equal(closure.value.rows.length, 1, `${row.id} v${version}`);
+      }
+      const water = walk.find((row) => row.canonical_g5_id.endsWith('_vikhtuy_locality_water_access'));
+      const row = (await world.query(`SELECT ambient_noise FROM world_base.spatial_v3_g6_acoustic_baselines
+        WHERE id = $1 AND scene_template_version = $2`, [water.id, version])).rows;
+      assert.deepEqual(row.map((entry) => entry.ambient_noise), [1]);
+    }
+  } finally { await world.end(); }
+}
 
 function startPostgres(name) {
   const result = docker([

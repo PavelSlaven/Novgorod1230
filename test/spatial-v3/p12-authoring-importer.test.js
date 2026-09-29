@@ -200,7 +200,7 @@ test('P12 import SQL is deterministic for the same manifest', async (t) => {
 });
 
 test('P12 v17 bootstrap bundle SQL stays byte-stable after importer changes', async () => {
-  const request = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/request.json', 'utf8'));
+  const request = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1/request.json', 'utf8'));
   for (const bundle of request.bundle_order) {
     const part = await buildTransactionalImportSql({
       root: process.cwd(),

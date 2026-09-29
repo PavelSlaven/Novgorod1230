@@ -258,7 +258,7 @@ test('historical pre-v17 party ledger rejects v17 release readiness without touc
     assert.equal((await latest(pool, 'actor_base_attributes_v1')).catalog_revision_id,
       'actor_base_attributes_spatial_v3_target_001');
     for (const file of partyFiles.slice(11)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
-    const p12 = await json('data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/request.json');
+    const p12 = await json('data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1/request.json');
     const parts = await Promise.all(p12.bundle_order.map((bundle) => buildTransactionalImportSql({
       manifestPath: bundle.manifest_path, wrapTransaction: false,
       temporaryTablePrefix: bundle.temporary_table_prefix })));

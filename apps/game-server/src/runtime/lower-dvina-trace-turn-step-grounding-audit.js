@@ -150,6 +150,8 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       ? audited[0].operation : null;
     if (exactBackgroundNpcDiscoveryGrounding({ operation: exactBackgroundDiscovery,
       plan, request })) return true;
+    if (exactFiniteSourceDiscoveryGrounding({ operation: exactBackgroundDiscovery,
+      plan, request })) return true;
     const genericDiscovery = denialProjection && plan.operations.length === 1
       ? plan.operations[0] : genericOrdinaryDiscovery({ audited, plan, request, resolved });
     if (genericDiscovery != null
@@ -321,6 +323,22 @@ export function exactBackgroundNpcDiscoveryGrounding({ operation, plan,
     && plan.interpretation?.adaptation === 'literal'
     && plan.continuation == null && plan.clarification == null
     && plan.direct_result_kind == null;
+}
+
+/** Code-owned exact case: inspecting a visible committed finite source is
+ * grounded by its ref alone; any unexecuted take intent stays in continuation. */
+export function exactFiniteSourceDiscoveryGrounding({ operation, plan, request }) {
+  const target = operation?.target_refs?.length === 1 ? operation.target_refs[0] : null;
+  const known = request?.player_safe_state?.current_visible_context?.visible_objects
+    ?.some(({ entity_ref: ref, visible_status: status }) =>
+      ref?.entity_kind === 'ordinary_resource_source' && ref.entity_id === target
+      && status === 'known') === true;
+  return operation?.op === 'request_discovery' && operation.discovery_kind === 'inspect'
+    && known && plan?.interpretation?.adaptation === 'literal'
+    && plan.clarification == null && plan.direct_result_kind == null
+    && (plan.continuation == null
+      ? normalized(operation.query) === normalized(request.remaining_intent)
+      : preservesCompleteIntent(plan.continuation, request.remaining_intent));
 }
 
 function containsElapsedDuration(value) {

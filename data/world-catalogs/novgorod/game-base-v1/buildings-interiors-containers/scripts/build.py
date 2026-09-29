@@ -20,14 +20,15 @@ sys.path.insert(0, os.path.join(HERE, "src"))
 SCRATCH = "C:/Users/Slaven/AppData/Local/Temp/claude/C--Users-Slaven-Documents-Novgorod/ff9acd1f-6ccd-44a9-bc42-216c6bc662b8/scratchpad/zips"
 MATCULT_DIR = os.environ.get("MATCULT_DIR", SCRATCH + "/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data")
 MASTER_DIR = os.environ.get("MASTER_DIR", SCRATCH + "/Novgorod1230_MASTER_ARCHIVE_v1/Novgorod1230_MASTER_ARCHIVE_v1/data")
-NOV1230_DB = os.environ.get("NOV1230_DB", "C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite")
+NOV1230_DB_DEFAULT = "C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite"
+NOV1230_DB = os.environ.get("NOV1230_DB", NOV1230_DB_DEFAULT)
 SCENES_CSV = os.path.join(REPO, "data/world-catalogs/novgorod/sources/material-culture-scenes-v1/data/scenes.csv")
 V6_TSV = os.path.join(REPO, "DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv")
 
 FREQ_WEIGHT = {"ubiquitous": 8, "common": 4, "contextual": 2, "rare": 1}
 STATUS = "candidate"
 
-import materials, buildings, parts, settlement, containers, content_profiles, scenes_map, ambience  # noqa: E402
+import materials, buildings, parts, settlement, containers, content_profiles, scenes_map, ambience, archive_inclusions  # noqa: E402
 
 # Bibliography for ref:* tokens (new research / secondary sources).
 REFS = [
@@ -106,7 +107,7 @@ def main():
         "condition_states_from": "building_types.condition_states",
         "forbidden_condition_states": ["burnt_ruin", "abandoned"],
     }
-    with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(GROUP, "buildings/occupied_condition_rule.json"), "w", encoding="utf-8", newline="\r\n") as f:
         json.dump(occupied_rule, f, ensure_ascii=False, indent=2)
     COUNTS["buildings/occupied_condition_rule.json"] = 1
     age_condition_rule = {
@@ -117,7 +118,7 @@ def main():
         "confidence": "C",
         "reason": "Редакторское правило: новая постройка ещё не могла прийти в негодность, получить повреждения, сгореть или быть заброшенной; исторических весов сочетаний нет.",
     }
-    with open(os.path.join(GROUP, "buildings/age_condition_rule.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(GROUP, "buildings/age_condition_rule.json"), "w", encoding="utf-8", newline="\r\n") as f:
         json.dump(age_condition_rule, f, ensure_ascii=False, indent=2)
     COUNTS["buildings/age_condition_rule.json"] = 1
     out("buildings/building_parts.csv",
@@ -352,7 +353,7 @@ def main():
         "never": ["contents created by player request", "contents created by LLM", "reroll on second opening", "hidden stash without causal basis"],
         "source_refs": ["rus13tpl:container:resolve_before_opening_if_significant", "v5:container_content_profiles"],
     }
-    json.dump(rule, open(os.path.join(GROUP, "containers/first_open_rule.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    json.dump(rule, open(os.path.join(GROUP, "containers/first_open_rule.json"), "w", encoding="utf-8", newline="\r\n"), ensure_ascii=False, indent=2)
     COUNTS["containers/first_open_rule.json"] = 1
 
     # ---------------- landmarks (import from curated sqlite + few additions) ----------------
@@ -411,7 +412,7 @@ def main():
                                         "reconstruction_note", "v6_name_match", "source_refs", "confidence", "status"])
     out("sources.csv", [dict(ref=r[0], title=r[1], url_or_path=r[2], confidence_hint=r[3], note=r[4], kind="bibliography") for r in REFS] +
         [dict(ref="nov1230db:" + r["id"], title=r["title"], url_or_path=r["url"], confidence_hint="", note=r["use_note"], kind="nov1230db_source") for r in con.execute("select * from sources")] +
-        [dict(ref="nov1230db", title="Новгородская земля и Великий Новгород в 1230 году (SQLite, 13.07.2026)", url_or_path=NOV1230_DB, confidence_hint="A-D per row", note="curated db, not in repo", kind="database"),
+        [dict(ref="nov1230db", title="Новгородская земля и Великий Новгород в 1230 году (SQLite, 13.07.2026)", url_or_path=NOV1230_DB_DEFAULT, confidence_hint="A-D per row", note="curated db, not in repo", kind="database"),
          dict(ref="matcult", title="Novgorod1230 material culture dataset v1", url_or_path="Downloads/Novgorod1230_material_culture_dataset_v1.zip (catalog_items.csv 1137; scenes copied to sources/material-culture-scenes-v1)", confidence_hint="A-D per row", note="candidate", kind="dataset"),
          dict(ref="master", title="Novgorod1230 MASTER ARCHIVE v1", url_or_path="Downloads/Novgorod1230_MASTER_ARCHIVE_v1.zip", confidence_hint="candidate", note="spawn_profiles, workshop_profiles", kind="dataset"),
          dict(ref="wk", title="World Knowledge production-v1 (approved)", url_or_path="data/world-catalogs/novgorod/world-knowledge/production-v1", confidence_hint="approved", note="claim ids", kind="repo"),
@@ -454,6 +455,12 @@ def main():
               historical_confidence=matcult.get(i, {}).get("historical_confidence", ""), generation_policy=matcult.get(i, {}).get("generation_policy", ""),
               dimensions=matcult.get(i, {}).get("dimensions", ""), source_ids=matcult.get(i, {}).get("source_ids", "")) for i in sorted(refd)],
         ["item_id", "exists", "name_ru", "category", "historical_confidence", "generation_policy", "dimensions", "source_ids"])
+
+    archive_ledger = archive_inclusions.build_ledger(GROUP, read_csv, MATCULT_DIR)
+    out("archive_inclusion_ledger.csv", archive_ledger, archive_inclusions.FIELDS)
+    archive_entities = archive_inclusions.build_entity_rows(GROUP, read_csv, MATCULT_DIR)
+    archive_entity_fields = list(read_csv(os.path.join(REPO, "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"))[0].keys()) + ["basis", "derivation", "source_refs", "confidence", "status"]
+    out("interiors/material_entities.csv", archive_entities, archive_entity_fields)
 
     with open(os.path.join(GROUP, "scripts", "build_counts.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(COUNTS, f, ensure_ascii=False, indent=1)

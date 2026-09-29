@@ -3,6 +3,7 @@
 // Reads the built CSVs, writes validation-report.json and materials_registry/material_resolution.csv. Exit code 1 on any FAIL.
 const L = require('./lib.cjs');
 const { path, fs, split, readCsv, writeCsv, DOMAIN_ROOT, GAME_BASE } = L;
+const ARCHIVE_INCLUSIONS = require('./archive-inclusions.cjs');
 const P = rel => path.join(DOMAIN_ROOT, rel);
 
 const tools = readCsv(P('craft_tools_gear/tools_gear.csv'));
@@ -16,12 +17,21 @@ const fish = readCsv(path.join(GAME_BASE, 'fauna-fish-invertebrates-livestock/fa
 const shops = readCsv(P('workshops/workshops.csv'));
 const mats = readCsv(P('materials_registry/materials.csv'));
 const deny = readCsv(P('materials_registry/late_materials_denylist.csv'));
+const archiveLedger = readCsv(P('archive_inclusion_ledger.csv'));
+const archiveEntities = readCsv(P('materials_registry/material_entities.csv'));
 const occRows = L.loadOccupations();
 
 const results = []; const add = (id, ok, detail) => results.push({ id, result: ok ? 'PASS' : 'FAIL', detail });
 const dupes = (rows, key) => { const s = new Set(); const d = []; rows.forEach(r => (s.has(r[key]) ? d.push(r[key]) : s.add(r[key]))); return d; };
 const tl = new Map(tools.map(t => [t.tl_id, t])); const mt = new Set(mats.map(m => m.mt_id)); const pr = new Set(prods.map(p => p.product_ref));
 const pc = new Set(procs.map(p => p.pc_id));
+
+const archiveCheck = ARCHIVE_INCLUSIONS.buildLedger({ tools, materials: mats, workshops: shops, processes: procs, products: prods }, deny.map(d => [d.dl_id, d.term_ru, d.match_stems, d.kind, d.verdict, d.reason_ru]));
+const ledgerSame = archiveLedger.length === archiveCheck.ledger.length && archiveLedger.every((row, i) => ARCHIVE_INCLUSIONS.LEDGER_HEADER.every(key => row[key] === String(archiveCheck.ledger[i][key] ?? '')));
+add('archive_inclusion_ledger_candidate_provenance', !archiveCheck.errors.length && ledgerSame, archiveCheck.errors.join(' | ') || `${archiveLedger.length} rows; ${archiveCheck.summary.included_new} new + ${archiveCheck.summary.included_variants} variants; ${archiveCheck.summary.rejected} rejected; runtime activation=false`);
+const expectedEntities = ARCHIVE_INCLUSIONS.buildMaterialEntities(archiveCheck.ledger);
+const entityTableSame = archiveEntities.length === expectedEntities.entities.length && archiveEntities.every((row, i) => expectedEntities.header.every(key => row[key] === String(expectedEntities.entities[i][key] ?? '')));
+add('archive_material_entity_table', entityTableSame, `${archiveEntities.length} entity rows; expected ${expectedEntities.entities.length}; generated from included new crafts owners`);
 
 for (const [name, rows, key] of [['tools', tools, 'tl_id'], ['processes', procs, 'pc_id'], ['steps', steps, 'step_id'], ['workshops', shops, 'ws_id'], ['materials', mats, 'mt_id'], ['denylist', deny, 'dl_id']]) {
   const d = dupes(rows, key); add(`unique_ids_${name}`, !d.length, d.length ? d.join(',') : `${rows.length} unique`);
@@ -150,6 +160,7 @@ function fishCleaningIssues(rows, processRows, fishRows) {
 const fishCleaningErr = fishCleaningIssues(fishCleaning, procs, fish);
 add('fish_cleaning_process_and_species_products', !fishCleaningErr.length, fishCleaningErr.join(' | ') || `${fishCleaning.length} species products; knife required; generic output preserves fa_id`);
 if (process.argv.includes('--self-test')) {
+  ARCHIVE_INCLUSIONS.selfTest({ tools, materials: mats, workshops: shops, processes: procs, products: prods }, deny.map(d => [d.dl_id, d.term_ru, d.match_stems, d.kind, d.verdict, d.reason_ru]));
   const noKnife = procs.map(p => p.pc_id === 'proc_butcher_carcass' ? { ...p, tools: '' } : p);
   if (!butcheryIssues(butchery, noKnife).some(x => x.includes('required skinning knife'))) throw new Error('butchery missing-knife negative probe passed');
   const overYield = butchery.map((r, i) => i ? r : { ...r, meat_fraction_max: '0.95' });

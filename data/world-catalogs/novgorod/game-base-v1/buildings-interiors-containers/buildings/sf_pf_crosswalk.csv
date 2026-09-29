@@ -5,6 +5,7 @@ sf_yard_boyar,pf_bathhouse,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov
 ,pf_bog,,,no settlement_form source for this PF,candidate
 ,pf_bridge_crossing,,,no settlement_form source for this PF,candidate
 ,pf_broadleaf_woodland,,,no settlement_form source for this PF,candidate
+,pf_burial_ground,,,no settlement_form source for this PF,candidate
 sf_foreign_court,pf_cellar_granary,nov1230db:B013|nov1230db:B014|nov1230db:S02|nov1230db:S10|matcult_scene:SCN024,SF-PF-1,,candidate
 sf_yard_boyar,pf_cellar_granary,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov1230db:S18,SF-PF-1,,candidate
 sf_yard_merchant_riverside,pf_cellar_granary,matcult_scene:SCN007|wk:claim:household-riverside-storage,SF-PF-1,,candidate
@@ -88,4 +89,3 @@ sf_single_homestead,pf_village_lane,v6tsv:g3_places:двор|matcult_scene:SCN00
 sf_village_derevnya,pf_village_lane,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
 sf_village_selo,pf_village_lane,v6tsv:g3_places:село|matcult_scene:SCN008|matcult_scene:SCN009,SF-PF-1,,candidate
 ,pf_winter_ice_crossing,,,no settlement_form source for this PF,candidate
-,pf_burial_ground,,,no settlement_form source for this PF,candidate

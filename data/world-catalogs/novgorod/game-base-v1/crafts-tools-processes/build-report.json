@@ -1,6 +1,8 @@
 {
   "built_by": "scripts/build.cjs",
   "counts": {
+    "archive_inclusion_ledger.csv": 1269,
+    "materials_registry/material_entities.csv": 295,
     "craft_tools_gear/tools_gear.csv": 157,
     "craft_tools_gear/occupation_tools.csv": 356,
     "craft_processes/processes.csv": 50,
@@ -12,6 +14,20 @@
     "materials_registry/materials.csv": 103,
     "materials_registry/late_materials_denylist.csv": 27,
     "sources/sources.csv": 25
+  },
+  "archive_inclusions": {
+    "runtime_activation": false,
+    "status": "candidate",
+    "action_counts": {
+      "include_d39": 904,
+      "add_variant": 364,
+      "include_analogy": 1
+    },
+    "ledger_rows": 1269,
+    "included_new": 295,
+    "included_variants": 721,
+    "rejected": 8,
+    "routed": 245
   },
   "matcult_checked": false,
   "warnings": []

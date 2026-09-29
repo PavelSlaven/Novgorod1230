@@ -6,13 +6,14 @@ matcult/MASTER/sqlite ids are checked against the snapshot tables written by bui
 (interiors/matcult_item_refs.csv, sources.csv) and, when available, against the originals.
 Exit code 1 on any ERROR. Prints counts and warnings.
 """
-import csv, glob, json, os, re, sys, collections
+import csv, glob, json, os, re, sys, collections, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GROUP = os.path.dirname(HERE)
 REPO = os.path.abspath(os.path.join(GROUP, "..", "..", "..", "..", ".."))
+GAME_BASE = os.path.abspath(os.path.join(GROUP, ".."))
 sys.path.insert(0, HERE)
-import build  # noqa: E402  (paths + REFS)
+import build, archive_inclusions  # noqa: E402  (paths + REFS)
 
 ERR, WARN = [], []
 
@@ -357,6 +358,8 @@ for ct in ("ct_basket_fish", "ct_barrel_cargo"):
         assert ("riverbank", ct) not in pc_pairs
         print("probe K9 absent: riverbank/%s" % ct)
 if "--self-test" in sys.argv:
+    assert os.path.samefile(os.path.join(GAME_BASE, "scripts", "check-archive-ownership.mjs"),
+                            os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/scripts/check-archive-ownership.mjs"))
     assert ("fishing_camp", "ct_basket_fish") in pc_pairs
     assert ("river_wharf", "ct_barrel_cargo") in pc_pairs
 check_refs(list(cts.values()), ["source_refs"], "container_forms", "ct_id")
@@ -437,6 +440,81 @@ for a in amb:
     if a["channel"] not in ("visual", "acoustic", "olfactory"): err("ambience %s unknown channel" % a["sat_id"])
     if a["status"] != "candidate": err("ambience %s not candidate" % a["sat_id"])
 deny_scan(amb, "ambience", "sat_id")
+
+# Archive D39/analogy/variant inclusion is a candidate provenance ledger only;
+# it does not add entity rows or alter runtime schemas.
+archive_ledger = rd("archive_inclusion_ledger.csv")
+archive_errors = archive_inclusions.validate_ledger(archive_ledger, REPO, build.MATCULT_DIR, build.read_csv)
+ERR.extend(archive_errors)
+if "--self-test" in sys.argv:
+    archive_decisions = {r["archive_ref"].rsplit(":", 1)[-1]: r for r in archive_ledger}
+    material_entity_rows = rd("interiors/material_entities.csv")
+    archive_entities = {r["item_id"].rsplit(":", 1)[-1].upper() for r in material_entity_rows}
+    assert all(archive_decisions[item]["semantic_result"] == "routed" for item in ("OMI02219", "OMI02220", "OMI02221"))
+    assert archive_decisions["OMI02245"]["semantic_result"] == "duplicate_rejected"
+    assert not ({"OMI02219", "OMI02220", "OMI02221", "OMI02245"} & archive_entities)
+    assert archive_decisions["CRF0057"]["semantic_result"] == "rejected"
+    assert archive_decisions["CRF0057"]["guard_result"] == "reject:d38_research_only"
+    assert next(r for r in archive_inclusions.records() if r["archive_ref"].endswith(":CRF0057"))["anachronism_result"] == "rejected"
+    assert archive_decisions["MSC0045"]["semantic_result"] == "reference"
+    assert archive_decisions["MSC0045"]["target_ref"] == "interiors/scenes.csv#sc_scn053"
+    assert archive_decisions["OMI01605"]["game_base_ref"] == "buildings-interiors-containers/containers/container_forms.csv#ct_box_wooden_small"
+    assert archive_decisions["CON0019"]["semantic_result"] == "distinct" and "CON0019" in archive_entities
+    assert archive_decisions["STA0045"]["semantic_result"] == "variant"
+    assert archive_decisions["STA0045"]["game_base_ref"] == "buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:con0019"
+    assert archive_decisions["MIL0006"]["game_base_ref"] == "buildings-interiors-containers/buildings/building_parts.csv#bp_hearth_open"
+    assert archive_decisions["MIL0032"]["game_base_ref"] == "buildings-interiors-containers/buildings/building_parts.csv#bp_awning"
+    for item in ("MIL0014", "MIL0028"):
+        entity = next(r for r in material_entity_rows if r["item_id"] == "n1230:material_item:" + item.lower())
+        assert archive_decisions[item]["semantic_result"] == "distinct"
+        assert entity["basis"] == "analogy" and entity["confidence"] == "C"
+        assert entity["generation_policy"] == "reference_required" and "master_military_snapshot.csv#" + item in entity["source_refs"]
+    transport_target = "transport-health-recreation/transport_travel/transport_entities.csv#trv_017"
+    assert archive_decisions["OMI00071"]["target_ref"] == transport_target
+    assert archive_decisions["STA0063"]["semantic_result"] == "routed" and archive_decisions["STA0063"]["target_ref"] == transport_target
+    assert archive_decisions["WTR0019"]["target_ref"] == "crafts-tools-processes/materials_registry/materials.csv#mt_pine_pitch"
+    assert any(r["item_id"] == "WTR0019" and r["ct_id"] == "ct_tar_pot" for r in rd("containers/item_to_container_crosswalk.csv"))
+    assert archive_decisions["MSC0006"]["target_ref"] == "nature-materials-weather/natural_materials_soils/natural_materials.csv#nm_boulders_fieldstone"
+    assert archive_decisions["CON0014"]["game_base_ref"].endswith("building_parts.csv#bp_well_bucket_rope")
+    assert archive_decisions["CON0045"]["game_base_ref"].endswith("building_parts.csv#bp_well_bucket_rope")
+    matcult_rows = build.read_csv(os.path.join(build.MATCULT_DIR, "catalog_items.csv"))
+    msc0045 = next(r for r in matcult_rows if r.get("item_id") == "MSC0045")
+    assert archive_inclusions.material_identity_error(msc0045, "mt_clay", "clay")
+    assert not archive_inclusions.material_identity_error(
+        {"primary_material": "mixed", "name_ru": "Медная фурнитура"}, "mt_copper", "nonferrous")
+    assert "no canonical primary_material" in archive_inclusions.material_identity_error(
+        {"primary_material": "mixed", "name_ru": "Предмет с налётом"}, "mat_iron_metal", "metal")
+    assert not archive_inclusions.material_identity_error(
+        {"primary_material": "lime", "name_ru": "Плинфа с раствором"}, "mat_plinfa", "ceramic")
+    assert archive_inclusions.material_identity_error(
+        {"primary_material": "wood", "name_ru": "Деревянная доска"}, "mat_iron_metal", "metal")
+    for probe_target, expected_error in (("buildings/materials_vocab.csv#row-1", "unresolved/noncanonical variant target"),
+                                     ("interiors/material_entities.csv#n1230:material_item:omi00023", "variant targets itself"),
+                                     ("buildings/materials_vocab.csv#mat_iron_metal", "OMI00023 -> mat_iron_metal")):
+        probe_ledger = [dict(row) for row in archive_ledger]
+        probe = next(r for r in probe_ledger if r["archive_ref"].endswith(":OMI00023"))
+        probe["game_base_ref"] = "buildings-interiors-containers/" + probe_target
+        probe_errors = archive_inclusions.validate_ledger(probe_ledger, REPO, build.MATCULT_DIR, build.read_csv)
+        assert any(expected_error in e for e in probe_errors)
+
+common_checker = os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/scripts/check-archive-ownership.mjs")
+common_checker_summary = ""
+common_checker_error_count = 0
+common_checker_sample = ""
+if os.path.isfile(common_checker):
+    try:
+        checker_run = subprocess.run(["node", common_checker, GAME_BASE], capture_output=True, text=True, check=False)
+        checker_output = (checker_run.stderr if checker_run.returncode else checker_run.stdout).strip()
+        if checker_run.returncode:
+            checker_lines = checker_output.splitlines()
+            common_checker_error_count = len(checker_lines)
+            common_checker_sample = checker_lines[0] if checker_lines else "no diagnostic output"
+            err("common archive ownership checker failed with %d findings; first: %s" % (
+                common_checker_error_count, common_checker_sample))
+        else:
+            common_checker_summary = checker_output
+    except OSError as exc:
+        err("common archive ownership checker could not start: %s" % exc)
 by_pf = collections.defaultdict(lambda: (set(), set()))
 for a in amb:
     by_pf[a["pf_id"]][0].add(a["season_period"]); by_pf[a["pf_id"]][1].add(a["layer"])
@@ -462,9 +540,15 @@ for k, v in pl.items():
 # ---------------- report ----------------
 print("counts:", json.dumps({"building_types": len(bts), "building_parts": len(bps), "bt_parts": len(btp), "materials": len(mats), "settlement_forms": len(sfs),
                              "settlement_mix": len(mix), "scenes": len(scs), "scene_items": len(items), "container_forms": len(cts), "content_profiles": len(cps),
-                             "content_entries": len(ces), "place_containers": len(pcs), "landmarks": len(lms), "ambience_texts": len(amb)}, ensure_ascii=False))
+                             "content_entries": len(ces), "place_containers": len(pcs), "landmarks": len(lms), "ambience_texts": len(amb), "archive_inclusions": len(archive_ledger)}, ensure_ascii=False))
 print("source tokens checked:", dict(tok_seen))
 print("universes: wk_claims=%d pf=%d matcult_refs=%d nov1230db=%s master_spawn=%s" % (len(wk_claims), len(pf_ids), len(mc_refs), "n/a" if nov_ids is None else len(nov_ids), "n/a" if master_spawn is None else len(master_spawn)))
+identity_d38_errors = [e for e in archive_errors if "variant target material/category mismatch" in e or "D38 rejects" in e]
+print("archive identity/D38: FAIL findings=%d" % len(identity_d38_errors) if identity_d38_errors else "archive identity/D38: PASS")
+if common_checker_error_count:
+    print("common archive ownership: FAIL findings=%d; first: %s" % (common_checker_error_count, common_checker_sample))
+elif common_checker_summary:
+    print("common archive ownership: PASS", common_checker_summary)
 for w in WARN: print("WARN", w)
 for e in ERR: print("ERROR", e)
 print("RESULT:", "FAIL" if ERR else "PASS", "errors=%d warnings=%d" % (len(ERR), len(WARN)))

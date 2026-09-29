@@ -13,6 +13,7 @@ const PROCESSES = [...require('./src/processes-a.cjs'), ...require('./src/proces
 const BUTCHERY_PROFILES = require('./src/butchery-profiles.cjs');
 const WORKSHOPS = require('./src/workshops.cjs');
 const OCC = require('./src/occupation-tools.cjs');
+const ARCHIVE_INCLUSIONS = require('./archive-inclusions.cjs');
 
 const STATUS = 'candidate';
 const out = rel => path.join(DOMAIN_ROOT, rel);
@@ -221,6 +222,13 @@ const fishCleaningRows = fishRows.filter(r => r.fa_id.startsWith('fa_fish_') && 
 
 // ---------- write ----------
 const counts = {};
+const archiveInclusions = ARCHIVE_INCLUSIONS.buildLedger({ tools: toolRows, materials: matRows, workshops: wsRows, processes: procRows, products: prodRows }, DENY);
+if (archiveInclusions.errors.length) {
+  warnings.push(...archiveInclusions.errors.map(error => `archive inclusion: ${error}`));
+}
+const archiveEntities = ARCHIVE_INCLUSIONS.buildMaterialEntities(archiveInclusions.ledger);
+counts['archive_inclusion_ledger.csv'] = writeCsv(out('archive_inclusion_ledger.csv'), ARCHIVE_INCLUSIONS.LEDGER_HEADER, archiveInclusions.ledger);
+counts['materials_registry/material_entities.csv'] = writeCsv(out('materials_registry/material_entities.csv'), archiveEntities.header, archiveEntities.entities);
 counts['craft_tools_gear/tools_gear.csv'] = writeCsv(out('craft_tools_gear/tools_gear.csv'), Object.keys(toolRows[0]), toolRows);
 counts['craft_tools_gear/occupation_tools.csv'] = writeCsv(out('craft_tools_gear/occupation_tools.csv'), Object.keys(occToolRows[0]), occToolRows);
 counts['craft_processes/processes.csv'] = writeCsv(out('craft_processes/processes.csv'), Object.keys(procRows[0]), procRows);
@@ -235,6 +243,6 @@ counts['materials_registry/late_materials_denylist.csv'] = writeCsv(out('materia
 const srcRows = SOURCES.map(s => ({ src_id: s[0], citation: s[1], url_or_path: s[2], kind: s[3], base_confidence: s[4], used_for_ru: s[5] }));
 counts['sources/sources.csv'] = writeCsv(out('sources/sources.csv'), Object.keys(srcRows[0]), srcRows);
 
-L.fs.writeFileSync(out('build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts, matcult_checked: !!matcultIds, warnings }, null, 2) + '\n');
-console.log(JSON.stringify({ counts, warnings: warnings.length, matcult_checked: !!matcultIds }, null, 2));
+L.fs.writeFileSync(out('build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts, archive_inclusions: archiveInclusions.summary, matcult_checked: !!matcultIds, warnings }, null, 2) + '\n');
+console.log(JSON.stringify({ counts, archive_inclusions: archiveInclusions.summary, warnings: warnings.length, matcult_checked: !!matcultIds }, null, 2));
 if (warnings.length) { console.log(warnings.join('\n')); process.exitCode = 1; }

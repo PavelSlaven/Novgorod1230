@@ -29,15 +29,35 @@ test('needs_check authoring schema and evidence locators are valid', () => {
   }
 });
 
-test('hunting and fishing archive taxonomy is held as one unresolved ownership cluster', () => {
+test('hunting and fishing items resolve to crafts owners or remain with item-specific reasons', () => {
+  const terminalToolVariants = new Map([
+    ['STA0003', 'tl_net_set'],
+    ['OMI00929', 'tl_netting_needle'],
+    ['OMI02104', 'tl_net_float'],
+    ['OMI02110', 'tl_snare'], ['OMI02111', 'tl_snare'], ['OMI02112', 'tl_snare'],
+    ...'STA0071 STA0072 STA0073 STA0074 STA0075 STA0076 STA0077 STA0078'.split(' ').map(id => [id, 'tl_fishhook']),
+    ...'STA0079 STA0080 STA0081 STA0082 STA0083'.split(' ').map(id => [id, 'tl_net_float']),
+    ...'STA0084 STA0085'.split(' ').map(id => [id, 'tl_net_sinker']),
+  ]);
+  for (const [id, target] of terminalToolVariants) {
+    assert.ok(!byId.has(id), `${id} is an exact existing-tool variant, not queue material`);
+    const row = ledgerById.get(id);
+    assert.equal(row?.disposition, 'include', `${id} should resolve`);
+    assert.equal(row?.record_type, 'variant', `${id} should remain a variant`);
+    assert.match(row?.game_base_ref || '', new RegExp(`#${target}$`));
+  }
+  for (const id of ['HNT0024', 'HNT0028']) {
+    assert.ok(!byId.has(id), `${id} is a D38 rejection, not an ownership question`);
+    assert.equal(ledgerById.get(id)?.disposition, 'rejected');
+  }
   for (const row of A.authoredRows) {
     const id = row[0].split(':').at(-1);
     if (!A.isHuntingFishingCluster(id)) continue;
     const held = byId.get(id);
-    assert.ok(held, `${id} must be queued`);
+    if (!held) continue;
     assert.equal(held.reason_code, 'unresolved');
-    assert.ok(held.cluster_id, `${id} needs a cluster ID`);
-    assert.match(held.note, /crafts ↔ fauna\/hunting/);
+    assert.ok(held.note.includes(row[1]), `${id} needs a reason tied to its exact item`);
+    assert.doesNotMatch(held.note, /hold for cluster review/u, `${id} still has a generic cluster reason`);
   }
   for (const id of ['HNT0004', 'HNT0011', 'FSH0018', 'OMI00124', 'OMI01128', 'OMI02099', 'OMI02127', 'OMI00970', 'OMI00929']) {
     assert.ok(A.isHuntingFishingCluster(id), `${id} must be in the boundary`);

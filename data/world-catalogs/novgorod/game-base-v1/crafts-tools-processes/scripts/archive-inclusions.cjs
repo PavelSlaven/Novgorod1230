@@ -183,6 +183,8 @@ const REVIEW_VARIANTS = new Map([
   ['OMI00208', ['crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00062', 'Сломанная деревянная спица — состояние заготовки спицы.']],
   ['OMI02132', ['crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass', 'Освежёванная туша — состояние pr:whole_carcass.']],
   ['OMI02126', ['crafts-tools-processes/craft_processes/process_products.csv#pr:feathers_down', 'Пух и перья — вариант feathers/down process product.']],
+  ['OMI00929', ['crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_netting_needle', 'Костяная пластинка для плетения сетей — точная форма существующей сетевязальной иглы и мерки ячеи.']],
+  ['OMI02104', ['crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_net_float', 'Поплавок-маркер остаётся сетным поплавком; маркировка не меняет класс орудия.']],
 ]);
 const addVariants = (ids, target, reason) => ids.split(/\s+/).filter(Boolean).forEach(id => REVIEW_VARIANTS.set(id, [target, reason]));
 addVariants('AGR0032 CRF0058 OMI01122', 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_mill_stone', 'Archive form/state of the existing millstone tool.');

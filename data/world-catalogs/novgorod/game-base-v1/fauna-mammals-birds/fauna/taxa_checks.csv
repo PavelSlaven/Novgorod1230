@@ -14,7 +14,7 @@ fchk_012,Енотовидная собака,Nyctereutes procyonoides,excluded_a
 fchk_013,Ондатра,Ondatra zibethicus,excluded_anachronism,,,,"Североамериканский вид, акклиматизирован в XX в. (SRC_VOLOGDA_MAMM: «акклиматизированная у нас ондатра»)",SRC_VOLOGDA_MAMM,A,candidate
 fchk_014,Американская норка,Neogale vison,excluded_anachronism,,,,"Интродуцирована в XX в., вытеснила европейскую норку (общеизвестно; источник не прочитан — GAP)",,B,candidate
 fchk_015,Пятнистый олень,Cervus nippon,excluded_anachronism,,,,Завезён с Дальнего Востока (SRC_NBCRS),SRC_NBCRS,A,candidate
-fchk_016,Кролик (как дикий зверь или скот),Oryctolagus cuniculus,excluded_anachronism,,,,Общий denylist проекта (catalog conventions.anachronism),,B,candidate
+fchk_016,Домашнее кролиководство,Oryctolagus cuniculus (livestock),excluded_anachronism,,,,Домашний кролик как обычный скот исключён по отдельному правилу misc:an_rabbit_livestock (датировка проекта — не ранее XVIII века; источнику нужна библиографическая проверка); дикий кролик не покрывается этим решением.,,C,candidate
 fchk_017,Белый аист,Ciconia ciconia,excluded_doubtful,,,,На Северо-Западе регулярно гнездится лишь с 1970-х (Malchevsky #12); Петров 1885 отмечал в Приильменье; для 1230 г. не размещается,SRC_MALPUK1983;SRC_PANT2001,C,candidate
 fchk_018,Кольчатая горлица,Streptopelia decaocto,excluded_anachronism,,,,Расселение в Европу в XX в. (Malchevsky #127),SRC_MALPUK1983,A,candidate
 fchk_019,Фазан,Phasianus colchicus,excluded_anachronism,,,,Лишь попытки интродукции (Malchevsky «Попытки интродукции фазана»),SRC_MALPUK1983,A,candidate

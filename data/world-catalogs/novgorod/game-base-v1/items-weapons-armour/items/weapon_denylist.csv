@@ -12,12 +12,12 @@ deny_full_mask_helmet,шлем с полной личиной,личин,dispute
 deny_later_halfmask,полумаска второй половины XIII–XIV в. как вещь 1230 г.,,anachronism,находка датирована 1260–1325; для 1230 брать тип IV по Кирпичникову,master:mc:HLM0006 | wk:claim:candidate-novgorod-helmet-half-mask-find,B,candidate
 deny_pavise,павеза,павез | pavise,anachronism,XIV–XVI вв.,master:mc:SHD0013,A,candidate
 deny_heraldic_shield,геральдический щит с гербом,герб,anachronism,развитая геральдика на Руси отсутствует; поздний западный штамп,costume:AR015 | costume:AR016,B,candidate
-deny_morningstar,"моргенштерн, огромный шипованный шар",моргенштерн | morning star,fantasy,поздний тип и фэнтези-гипербола,costume:AR024 | costume:AR025,B,candidate
+deny_morningstar,"моргенштерн, огромный шипованный шар",моргенштерн | morning star,disputed_not_for_generation,Конкретная историческая форма и датировка не установлены; запросить предметное исследование по типу оружия. До проверки не использовать как установленный предмет.,costume:AR024 | costume:AR025,B,candidate
 deny_halberd,алебарда,алебард | halberd,anachronism,XIV–XVI вв.,catalog:conventions.anachronism,B,candidate
 deny_rapier,"шпага, рапира, эсток",шпаг | рапир | эсток | rapier | estoc,anachronism,XVI в. и позже; колющий поздний меч,master:mc:WPN0024,A,candidate
-deny_katana,катана и фэнтезийные клинки,катан | katana,fantasy,чужая традиция и штамп,costume:AR020,A,candidate
-deny_double_bladed_axe,двулезвийная фэнтезийная секира,двулезвийн,fantasy,штамп; см. costume AR022/AR023,costume:AR022 | costume:AR023,A,candidate
-deny_steel_trap,стальной пружинный капкан,капкан,anachronism,современный тип (для охоты — домен hunting),master:mc:HNT0022 | master:mc:HNT0024,B,candidate
+deny_katana,катана и фэнтезийные клинки,катан | katana,disputed_not_for_generation,Конкретная историческая форма и датировка не установлены; запросить предметное исследование по типу оружия. До проверки не использовать как установленный предмет.,costume:AR020,A,candidate
+deny_double_bladed_axe,двулезвийная фэнтезийная секира,двулезвийн,disputed_not_for_generation,Конкретная историческая форма и датировка не установлены; запросить предметное исследование по типу оружия. До проверки не использовать как установленный предмет.,costume:AR022 | costume:AR023,A,candidate
+deny_steel_trap,современный фабричный стальной пружинный капкан,фабричный стальной капкан | современный пружинный капкан | factory steel trap,anachronism,Фабричный стальной пружинный капкан датирован современным периодом по HNT0022; ранняя железная ловушка HNT0024 остаётся отдельной needs_check.,master:mc:HNT0022,B,candidate
 deny_gambeson_thick,толстый стёганый акетон XIV в. как норма,акетон | гамбезон,anachronism,поздняя форма; поддоспешник 1230 умеренной толщины,costume:AR001 | costume:AR002,B,candidate
 deny_uniform,одинаковая униформа дружины и ополчения,униформ,fantasy,снаряжение зависело от достатка и службы,costume:anti:ANTI009 | costume:anti:ANTI018,A,candidate
 deny_mongol_default,«монгольский» облик по умолчанию,,fantasy,монгольские клише не объясняют новгородское вооружение,costume:anti:ANTI008,A,candidate

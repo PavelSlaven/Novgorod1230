@@ -48,6 +48,7 @@ function archiveId(row) {
 function actualAction(row) {
   const status = `${row.status || ''} ${row.decision || ''} ${row.inclusion_result || ''} ${row.archive_action || ''} ${row.disposition || ''} ${row.semantic_result || ''}`.toLowerCase();
   const type = row.match_type || row.record_type || row.type || '';
+  if (/needs.?check/.test(status)) return 'needs_check';
   if (/reject|отклон/.test(status) || status.includes('rejected')) return 'reject';
   if (/routed|route/.test(status) || row.inclusion_result === 'routed' || row.disposition === 'routed') return 'routed';
   if (row.decision === 'entity' || row.inclusion_result === 'entity'

@@ -11,9 +11,9 @@
     "events": 21,
     "combat_roles": 71,
     "refs": {
-      "total": 1436,
+      "total": 1435,
       "byScheme": {
-        "master": 213,
+        "master": 212,
         "costume": 108,
         "v5": 36,
         "wk": 76,
@@ -30,7 +30,6 @@
   },
   "errors": [],
   "warnings": [
-    "sqlite not readable, sqlite: refs not resolved: unable to open database file",
     "D-row WPN0018 (Праща — спорная для локального военного набора) retained under wp_sling as C with note",
     "D-row ARM0028 (Чешуйчатый панцирь — спорная локальная реконструкция) retained under wp_scale as C with note",
     "D-row ARM0030 (Конский доспех — не норма 1230) retained as research_only entity; generation restricted",

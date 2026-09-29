@@ -1,5 +1,5 @@
 // Late / anachronistic materials and technologies that must not appear as local Novgorod ~1230 materials.
-// Columns: dl_id, term_ru, match_stems (; lowercase stems), kind (material|technology|tool), verdict (deny|deny_as_local|restricted), reason_ru, source_refs
+// Columns: dl_id, term_ru, match_stems (; lowercase stems), kind (material|technology|tool), verdict (deny|deny_as_local|needs_check), reason_ru, source_refs
 module.exports = [
   ['dl_porcelain','фарфор','фарфор','material','deny','Фарфор местного производства — анахронизм.','src:master-technology-v1'],
   ['dl_faience','фаянс','фаянс','material','deny','Фаянс — поздний материал для Руси 1230 г.','src:master-technology-v1'],
@@ -17,12 +17,12 @@ module.exports = [
   ['dl_glass_window_common','оконное стекло как обычное','оконное стекло;оконн','material','restricted','Оконное стекло в Руси было редким и дорогим; в обычном доме — нет.','src:kyy1985-applied'],
   ['dl_glazed_mass','глазурованная посуда как массовая','поливн;глазур','material','restricted','Поливная посуда только в подтверждённом контексте (Макарова 1967); не массовая норма.','src:master-technology-v1'],
   ['dl_wire_nail','проволочный гвоздь, шуруп, болт с гайкой','шуруп;гайк;болт;проволочный гвозд','tool','deny','Машинный крепёж — анахронизм; гвозди кованые, нагели, скобы.','src:master-technology-v1'],
-  ['dl_spinning_wheel','самопрялка с колесом','самопрялк;прялка с колес;прялочное колесо','tool','restricted','Колёсная прялка как повсеместная норма 1230 г. не подтверждена; прядут веретеном.','src:master-technology-v1'],
-  ['dl_foot_wheel','ножной гончарный круг','ножной гончарн;ножной круг','tool','restricted','Ножной круг для Новгорода XIII в. спорен (matcult CRF0061 = D); норма — ручной круг.','src:matcult-catalog-v1'],
+  ['dl_spinning_wheel','самопрялка с колесом','самопрялк;прялка с колес;прялочное колесо','tool','needs_check','Наличие колёсной прялки около 1230 года не проверено; запросить датированную публикацию об истории прядильных устройств. До проверки не генерировать как установленную норму.','src:master-technology-v1'],
+  ['dl_foot_wheel','ножной гончарный круг','ножной гончарн;ножной круг','tool','needs_check','Тип привода круга для Новгорода XIII века не установлен; CRF0061 остаётся в needs_check до датированной региональной публикации о ножном и ручном круге.','src:matcult-catalog-v1'],
   ['dl_steel_trap','современный фабричный стальной капкан','современн капкан;стальной пружинный капкан;фабричный капкан','tool','deny','Современный фабричный стальной капкан с пружинными челюстями (HNT0022; период 1600–2000) не относится к спорной ранней железной ловушке HNT0024. HNT0024 поставлен в needs_check до датированного регионального источника.','src:rybina2015-promysly'],
-  ['dl_mouldboard_plough','отвальный плуг','отвальн;плуг','tool','restricted','Плуг с отвалом для Новгородской земли 1230 г. спорен (matcult AGR0022/0036 = D); норма — соха и рало.','src:matcult-catalog-v1'],
+  ['dl_mouldboard_plough','отвальный плуг','отвальн;плуг','tool','needs_check','Наличие и форма плуга с отвалом требуют проверки: Греков описывает отвальные орудия при унавоживании; для региональной датировки запросить археологическую публикацию по плугам Новгородской земли. AGR0022 находится в needs_check.','src:matcult-catalog-v1'],
   ['dl_sawmill','лесопилка, пилорама, ленточная пила','лесопил;пилорам;ленточн','tool','deny','Доски раскалывают и тешут; механической распиловки нет.','src:master-technology-v1'],
-  ['dl_trip_hammer','водяной молот','водяной молот;кричный молот','technology','restricted','Требует прямого источника; ковка ручная.','src:master-technology-v1'],
+  ['dl_trip_hammer','водяной молот','водяной молот;кричный молот','technology','needs_check','Водяной молот физически возможен, но распространение и датировка для Новгородской земли не проверены; запросить региональный источник по вододействующим кузницам.','src:master-technology-v1'],
   ['dl_thermometer','термометр, точная температура','термометр;градус','technology','deny','Жар оценивают по цвету и поведению металла.','src:master-technology-v1'],
   ['dl_printing','печатный станок','печатный станок;типограф','technology','deny','Книгопечатание — XV в.','src:master-technology-v1'],
   ['dl_firearm','огнестрельное оружие, порох','порох;пищал;ружь;пушк','technology','deny','Порох в Европе позже; на Руси огнестрел с конца XIV в.','src:ethno-analogy'],

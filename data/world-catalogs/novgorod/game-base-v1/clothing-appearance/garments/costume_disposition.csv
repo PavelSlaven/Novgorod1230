@@ -46,7 +46,7 @@ HW005,Льняная повязка или головной плат для ра
 HW006,Женский нижний головной чепец/повой,married_under_cap,garment,garments/garments.csv,
 HW007,Женское головное покрывало,married_veil,garment,garments/garments.csv,
 HW008,Женская налобная повязка/очелье,headband,garment,garments/garments.csv,
-HW009,Головной убор с лентами из женского приданого — тип неясен,documented_uncertain,reject,type_undetermined,"головной убор из описи приданого, тип не установлен (C); оставлен как пробел"
+HW009,Головной убор с лентами из женского приданого — тип неясен,documented_uncertain,variant,garments/garments.csv#gm_hw010,По решению D40 лентовидный головной убор относится к уже представленной повязке gm_hw010; неопределённость типа исходной описи не создаёт второй сущности.
 HW010,Девичья лента или мягкое очелье,maiden_headband,garment,garments/garments.csv,
 HW011,Женская зимняя меховая шапка поверх нижнего убора,female_winter_cap,garment,garments/garments.csv,
 HW012,Мягкий тканевый чепец девушки/женщины,soft_cap,garment,garments/garments.csv,

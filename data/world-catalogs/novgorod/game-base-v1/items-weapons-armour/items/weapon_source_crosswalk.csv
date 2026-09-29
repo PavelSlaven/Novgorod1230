@@ -204,7 +204,7 @@ master_material_culture,HNT0020,Рама для растяжки шкуры,"hun
 master_material_culture,HNT0021,Связка пушных шкур,"hunting/охотничьи снасти, промысел и дикие животные",A,1180–1260,out_of_scope,hunting/fur
 master_material_culture,HNT0022,Современный стальной капкан с пружинами,"hunting/охотничьи снасти, промысел и дикие животные",D,1600–2000,denylist,deny_steel_trap
 master_material_culture,HNT0023,Давящий самолов/плашка,hunting/промысловое и охотничье снаряжение,C,1180–1260,out_of_scope,hunting
-master_material_culture,HNT0024,Железный капкан — спорная форма,hunting/промысловое и охотничье снаряжение,D,1180–1260,denylist,deny_steel_trap
+master_material_culture,HNT0024,Железный капкан — спорная форма,hunting/промысловое и охотничье снаряжение,D,1180–1260,out_of_scope,hunting
 master_material_culture,HNT0025,Охотничий нож,hunting/промысловое и охотничье снаряжение,A,1180–1260,wp,wp_knife
 master_material_culture,HNT0026,Охотничья лыжа,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,transport (лыжа)
 master_material_culture,HNT0027,Скребок для мездрения шкуры,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,hunting/fur

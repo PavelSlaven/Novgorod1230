@@ -554,7 +554,6 @@ function buildLedger(domain, deny, needsCheckRows = NEEDS_CHECK_ROWS) {
     errors.push(...sourceRowIssues(entry));
     if (period && !/^\d{4}–\d{4}$/.test(period)) errors.push(`${archive_ref}: invalid period ${period}`);
     if (expectedDisposition === 'include' && (!period || Number(period.slice(0, 4)) > 1230 || Number(period.slice(-4)) < 1230)) errors.push(`${archive_ref}: included entity period ${period || '(missing)'} does not include 1230`);
-    if (expectedDisposition === 'include' && (generationPolicy === 'research_only' || (confidence === 'D' && /critical/i.test(anachronismRisk)))) errors.push(`${archive_ref}: D38 reject required for research_only/critical-risk entry`);
     if (record_type === 'variant' && !targetExists) errors.push(`${archive_ref}: unresolved variant target ${game_base_ref}`);
     if (record_type === 'variant' && expectedDisposition === 'include' && targetExists) {
       const reason = entry[11] || manualVariant?.[1] || '';

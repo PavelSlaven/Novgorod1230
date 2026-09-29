@@ -55,10 +55,10 @@
   },
   "crosswalk": {
     "military_security": 13,
-    "denylist": 12,
+    "denylist": 11,
     "wp": 183,
     "needs_check": 3,
-    "out_of_scope": 41
+    "out_of_scope": 42
   },
   "access_levels": {
     "permitted": 65,

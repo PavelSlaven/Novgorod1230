@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { SCENE_NPC_SOURCE, withSceneNpcs, withoutSceneNpcs } from
   '../src/infrastructure/postgres/scene-npcs-readback.js';
-import { routineNpcSnapshot } from '../src/runtime/lower-dvina-trace-scene-presence.js';
+import { routineNpcSnapshot, withoutSceneRead } from '../src/runtime/lower-dvina-trace-scene-presence.js';
+import { bindLowerDvinaTraceTurnStepIdempotency } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-step-idempotency.js';
 
 const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'profile',
   profile_level: 'background', anchor_id: null,
@@ -96,4 +98,29 @@ test('every snapshot writer of the trace runtime drops scene-read NPCs', async (
   const commit = await readFile(new URL('lower-dvina-trace-turn-step-commit.js', dir), 'utf8');
   assert.match(commit, /persistedSnapshot = withoutSceneNpcs\(turnStep\.snapshot\)/u);
   assert.match(commit, /snapshot: persistedSnapshot/u);
+});
+
+test('the idempotency binder fails closed on a scene NPC anywhere in the envelope', () => {
+  const npc = { instance_id: 'npc_gen', runtime_source: SCENE_NPC_SOURCE };
+  const bind = (envelope) => bindLowerDvinaTraceTurnStepIdempotency({ envelope,
+    inputDigest: 'a'.repeat(64), semanticCommandSnapshot: {},
+    semanticCommandDigest: 'b'.repeat(64), semanticDependencyPins: [],
+    visibleDependencyPins: { pins: [] } });
+  const leaks = { inArray: { consequence: { npcs: [{ instance_id: 'x' }, npc] } },
+    inProperty: { consequence: { conversation: { speaker: npc } } },
+    deep: { a: [{ b: { c: [{ d: npc }] } }] } };
+  for (const [name, envelope] of Object.entries(leaks)) {
+    assert.throws(() => bind(envelope),
+      (error) => error.code === 'TRACE_TURN_STEP_SCENE_NPC_IN_ENVELOPE', name);
+  }
+  assert.equal(bind(null).semantic_command_digest, 'b'.repeat(64));
+});
+
+test('withoutSceneRead cuts the position→G6 map at any depth as well', () => {
+  const exchange = { working_state: { world_state: { scene_position_g6: { p: 'g' },
+    npcs: [{ instance_id: 'npc_gen', runtime_source: SCENE_NPC_SOURCE }, { instance_id: 's' }] } } };
+  const cut = withoutSceneRead(exchange);
+  assert.deepEqual(cut, { working_state: { world_state: { npcs: [{ instance_id: 's' }] } } });
+  const clean = { a: 1 };
+  assert.equal(withoutSceneRead(clean), clean);
 });

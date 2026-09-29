@@ -80,6 +80,7 @@
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
 | 082 | `llm-turn-budget.js`, `lower-dvina-trace-phase-2-presentation-resolve.js`, `apps/game-web/src/api/client.js` | худший submitTurn до ~360 с при клиенте без fetch-timeout | — |
 | 083 | `lower-dvina-trace-phase-2-presentation-replay.js`, `packages/turn/src/stages/narration.js` (`spatialResult`) | replay-подача рассказчику без исходов проверок и оценки: `check_outcomes`/`qualitative_assessment` есть на первом проходе, нет на повторе (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 084 | `scripts/generate-m2c-npc-wave-datasets.mjs`, `data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv` | environment presence rules game-base (lw-env, #176): 1236 строк `subject_kind='environment'` не импортируются в v17 — нет вида в §3A.1 / DDL 27.sql / движке R-2a | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -448,3 +449,9 @@
 - **Что.** С фиксом #188 модель возвращает только `qualitative_class`, а `schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`). Поле `expectedSchema` рантайм не проверяет: оно входит только в хэш конфига. Снимок baseline никем не импортируется.
 - **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
 - **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)
+
+### LW-084 — environment presence rules game-base (lw-env, #176) не импортируются в v17
+- **Где.** `scripts/generate-m2c-npc-wave-datasets.mjs` (`excludedEnvironmentPresenceRules`, `M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED`); `data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv` (`subject_kind='environment'`, 1236 строк на пине 27bd6134); `infra/world-base/schema/27.sql:53` (CHECK на `subject_kind`).
+- **Что.** lw-env добавил «спутники окружения» с новым видом правила `environment`. Его нет в §3A.1 (`category | social_role | occupation`), в DDL `world_base.presence_rules` и в движке R-2a, поэтому генератор волны их отсеивает и считает. Данные не потеряны: они существуют в game-base, но не активированы в runtime.
+- **Как жить.** Не убирать отсев и не расширять CHECK попутно. Подключение — отдельный CR: §3A.1 + DDL 27.sql + engine/reader (Contract Auditor, по D32 одна правка DDL за раз).
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

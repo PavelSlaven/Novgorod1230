@@ -478,12 +478,13 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     raw_text:
       'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
   };
-  const pendingNarration = await retryRuntime.submitTurn(
+  const afterInRequestRetry = await retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
   );
-  assert.equal(pendingNarration.screen.screen_status,
-    'committed_presentation_pending');
+  assert.equal(afterInRequestRetry.screen.screen_status, 'ready');
+  assert.equal(afterInRequestRetry.option_id, 'inspect_wreck_in_detail');
+  assert.equal(narrationCalls, 2);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
@@ -581,7 +582,10 @@ async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalog
       reason: 'Персонаж удерживается и не может идти.'
     }),
     narrationService: { async run(request) {
-      assert.deepEqual(request.context.outcome, { movement_blocked: true });
+      assert.deepEqual(request.context.outcome, {
+        movement_blocked: true,
+        movement_blocked_reason_code: 'actor_movement_blocked'
+      });
       const narration = approvedNarration(request);
       narration.approved_output.prose = 'Вы удерживаетесь на месте и не можете идти.';
       return narration;
@@ -1746,10 +1750,12 @@ async function assertPreparedSemanticBodyRecovery({ pool, release, runtimeCatalo
   await runtime.acknowledgeOpening(opened.party_id, { client_ack_id: 'prepared-body-recovery-ack' });
   const input = { request_id: 'prepared-body-recovery', idempotency_key: 'prepared-body-recovery',
     raw_text: 'Предупреждаю спутников. Проверяю устойчивость опоры.' };
-  const pending = await runtime.submitTurn(opened.party_id, input);
-  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
-  assert.equal(pending.time_update.exact_elapsed.exact_minutes.numerator, '2');
-  assert.deepEqual(pending.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  const ready = await runtime.submitTurn(opened.party_id, input);
+  assert.equal(ready.screen.screen_status, 'ready');
+  assert.equal(ready.time_update.exact_elapsed.exact_minutes.numerator, '2');
+  assert.deepEqual(ready.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  assert.equal(narrations, 2);
+  assert.equal(planners, 2);
   const restarted = buildRuntime(options);
   const recovered = await restarted.submitTurn(opened.party_id, input);
   assert.equal(recovered.screen.screen_status, 'ready');

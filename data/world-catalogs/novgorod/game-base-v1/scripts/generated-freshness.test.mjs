@@ -14,8 +14,14 @@
 //   flora-trees-shrubs (source tables from the Kolchin PDF), flora-herbs extract-sources.py, fauna-mammals-birds
 //   extract_regional_bird_sources.py, history-events-knowledge export_novgorod_1230_extract.py   book/PDF extraction
 //   fetch-gbif.cjs, check-urls.cjs   network
+//   history-events-knowledge knowledge_rumors/scripts/build_knowledge.js, polities_external_relations/scripts/build_polities.js
+//     take their input files (incl. a sqlite) from argv, outside the repo
+//   items-weapons-armour/scripts/snapshot-master.cjs   takes the MASTER archive path from argv, outside the repo
+//   occupations-activities/npc_runtime_profiles/export_pr98.py   exports from a pinned commit of the PR #98 checkout
+//   history-events-knowledge/historical_events/scripts/validate_events.cjs   needs an output-dir argument (fails without)
 //   validators that write reports and depend on the machine or on external files: crafts validate.cjs,
-//   flora-trees validate.mjs, items-weapons-armour validate.cjs (sqlite), items-household validate.py
+//   flora-trees validate.mjs, items-weapons-armour validate.cjs (sqlite), items-household validate.py,
+//   fauna-mammals-birds validate.cjs (report depends on the NOVGOROD_MAIN world-knowledge path)
 // crafts build.cjs reads MATCULT_CATALOG when set; the env below strips it, so the committed output must not depend on it.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -32,7 +38,17 @@ const GB = 'data/world-catalogs/novgorod/game-base-v1';
 // differs, so an entry must be deleted as soon as the data is rebuilt.
 const KNOWN_STALE = {
   'nature-materials-weather/weather_climate/water_profiles.csv': 'committed data is 153 rows shorter than its builder produces (1754 vs 1907); issue #201',
-  'nature-materials-weather/reports/counts.json': 'water_profiles.csv count follows the stale file above; issue #201',
+  'crafts-tools-processes/craft_tools_gear/occupation_pf_crosswalk.csv': 'pf_crosswalk.py --check fails on main too: pf_burial_ground row is stale; issue #201',
+  'items-weapons-armour/items/role_tier_pf_crosswalk.csv': 'pf_crosswalk.py --check fails on main too: pf_burial_ground row is stale; issue #201',
+};
+
+// Files compared after dropping a value that follows a KNOWN_STALE file, so other drift in them is still caught.
+const NORMALIZE = {
+  'nature-materials-weather/reports/counts.json': text => {
+    const report = JSON.parse(text);
+    delete report.counts.weather_climate['water_profiles.csv']; // follows the stale water_profiles.csv (issue #201)
+    return JSON.stringify(report);
+  },
 };
 
 // [cwd relative to game-base-v1, interpreter, script, ...args]. Order: group builders, then places-binding, catalog, status.
@@ -41,24 +57,30 @@ const BUILDERS = [
   ['clothing-appearance', P, 'scripts/build.py'],
   ['crafts-tools-processes', N, 'scripts/build.cjs'],
   ['crafts-tools-processes', N, 'scripts/crosswalk.cjs'],
+  ['crafts-tools-processes', P, 'scripts/pf_crosswalk.py'],
   ['economy-trade-measures', N, 'currencies_measures/scripts/build_currencies_measures.mjs'],
   ['economy-trade-measures', N, 'currencies_measures/scripts/build_econ_rates.mjs'],
   ['economy-trade-measures', N, 'price_bands/scripts/build_category_price_bands.mjs'],
   ['economy-trade-measures', N, 'services_hire_labor/scripts/build_services.mjs'],
   ['economy-trade-measures', N, 'trade_goods_markets/scripts/build_trade_goods_markets.mjs'],
   ['economy-trade-measures', N, 'sources/build_books.mjs'],
+  ['economy-trade-measures', N, 'price_bands/scripts/derive_price_bands.mjs'],
+  ['economy-trade-measures', N, 'currencies_measures/scripts/run_price_bench_c2.mjs'],
+  ['economy-trade-measures', N, 'currencies_measures/scripts/run_household_bench_c3.mjs'],
   ['fauna-fish-invertebrates-livestock', P, 'scripts/build.py'],
   ['fauna-mammals-birds', N, 'scripts/build.cjs'],
   ['flora-herbs-berries-mushrooms', N, 'scripts/build.cjs'],
   ['flora-herbs-berries-mushrooms', N, 'scripts/validate.cjs'],
   ['flora-trees-shrubs', N, 'scripts/build.mjs'],
   ['food-drink', P, 'scripts/build.py'],
+  ['food-drink', P, 'scripts/pf_crosswalk.py'],
   ['history-events-knowledge/historical_events', N, 'scripts/build_events.cjs'],
   ['history-events-knowledge/historical_figures', N, 'scripts/build_figures.cjs'],
   ['households-psychology-speech', P, 'scripts/build.py'],
   ...['items', 'marks', 'ownership', 'frequency', 'household_inventory', 'exclusion_returns', 'evidence_intake', 'trace_relations']
     .map(name => ['items-household-personal', P, `scripts/build_${name}.py`]),
   ['items-weapons-armour', N, 'scripts/build.cjs'],
+  ['items-weapons-armour', P, 'scripts/pf_crosswalk.py'],
   ['misc/anachronism_denylist_lexicon', N, 'scripts/build.mjs'],
   ['misc/hazards_dangers', N, 'scripts/build.mjs'],
   ['names-peoples', N, 'scripts/build-b2-name-pool.mjs'],
@@ -120,7 +142,9 @@ function differing(committed, rebuilt) {
   const before = files(committed), after = files(rebuilt);
   return [...new Set([...before.keys(), ...after.keys()])].sort().filter(file => {
     if (!before.has(file) || !after.has(file)) return true;
-    return !fs.readFileSync(before.get(file)).equals(fs.readFileSync(after.get(file)));
+    const [a, b] = [before.get(file), after.get(file)].map(name => fs.readFileSync(name));
+    const normalize = NORMALIZE[file];
+    return normalize ? normalize(a.toString('utf8')) !== normalize(b.toString('utf8')) : !a.equals(b);
   });
 }
 

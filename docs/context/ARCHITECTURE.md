@@ -130,8 +130,7 @@ G4 expansion profile / scene template (world_base)
 
 | Правило | Нормативный источник | Машинная проверка |
 |---|---|---|
-| Целевой размер файла 100–300 строк | [MODULE_RULES](../architecture/MODULE_RULES.md) п.7 | `apps/*/src/**/*.js` — 300 строк; в пакетах и tools, перечисленных в скрипте, — 500 (domain modules, temporal owners, narration/presentation, g5-scene/time-light/visible-context, стадии new-game, отдельные tools), turn — 300/500, оркестратор new-game — 350; остальные пакеты по строкам не проверяются |
-| Жёсткий предел 25 КБ / строковые ориентиры | MODULE_RULES п.7 | `hardBytes = 25 * 1024`; превышения размера и строковых ориентиров → `warnings` в [check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs). Запреты импортов, allowlist корневых `.md`, лимит экспортов — violations |
+| Файл делится по ответственности, а не по размеру | [MODULE_RULES](../architecture/MODULE_RULES.md) п.7; [ARCHITECTURE_INVARIANTS](../governance/ARCHITECTURE_INVARIANTS.md) §16 | нет: порога размера нет, большой файл — повод на ревью проверить, не смешаны ли в нём ответственности |
 | Публичный API пакета ≤15 экспортов | MODULE_RULES п.8 | считает вхождения слова `export` в `packages/*/src/index.js` (> 15 — violation); строже: turn ≤12, оркестратор new-game ≤5, стадии new-game ≤8 |
 | `packages` ↛ `apps` | MODULE_RULES п.2, DEPENDENCY_RULES | импорт с `/apps/` из `packages/` — violation |
 | `game-web` ↛ `game-server` | DEPENDENCY_RULES | импорт с `game-server` из `apps/game-web/` — violation; кроме того в `apps/game-web/src` запрещена строка `@rus/` |

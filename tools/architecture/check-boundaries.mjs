@@ -5,17 +5,13 @@ import { ROOT_MARKDOWN_ALLOWLIST } from '../docs-tools/src/documentation.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const sourceRoots = ['apps', 'packages'];
-const hardBytes = 25 * 1024;
 const violations = [];
-const warnings = [];
 
 for (const sourceRoot of sourceRoots) {
   for (const file of await walk(join(root, sourceRoot))) {
     if (!['.js', '.mjs'].includes(extname(file))) continue;
     const rel = relative(root, file).replaceAll('\\', '/');
     const text = await readFile(file, 'utf8');
-    const size = Buffer.byteLength(text);
-    if (size > hardBytes) warnings.push(`${rel}: ${size} bytes exceeds module size guideline ${hardBytes}`);
     for (const specifier of importsOf(text)) {
       if (rel.startsWith('packages/') && specifier.includes('/apps/')) violations.push(`${rel}: packages may not import apps (${specifier})`);
       if (rel.startsWith('packages/') && specifier.includes('/legacy/')) {
@@ -53,7 +49,7 @@ const stage26FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/
 const stage26Facade = await readFile(stage26FacadePath, 'utf8');
 if (!stage26Facade.includes("@rus/new-game/stages/stage-26/compat")) violations.push('legacy Stage 26 must delegate to the modular compatibility entry point');
 if (stage26Facade.includes('function ')) violations.push('legacy Stage 26 facade must not contain implementation functions');
-if (stage26Facade.split('\n').length > 10) warnings.push('legacy Stage 26 facade exceeds 10 lines');
+if (!isPureReexportFacade(stage26Facade)) violations.push(`${relative(root, stage26FacadePath).replaceAll('\\', '/')}: facade must only re-export`);
 for (const forbidden of ['stage22-narrator-prose.js', 'stage23-narrator-prose-audit.js', 'stage25-party-commit.js']) {
   if (stage26Facade.includes(forbidden)) violations.push(`legacy Stage 26 may not import sibling stage ${forbidden}`);
 }
@@ -64,8 +60,6 @@ const stage26Forbidden = ['legacy/', 'stage21-', 'stage22-', 'stage23-', 'stage2
 for (const file of stage26Files) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const text = await readFile(file, 'utf8');
-  if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line Stage 26 guideline`);
-  if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds Stage 26 byte guideline`);
   for (const token of stage26Forbidden) if (text.includes(token)) violations.push(`${rel}: forbidden Stage 26 dependency ${token}`);
 }
 const stage26PublicIndex = await readFile(join(stage26Root, 'index.js'), 'utf8');
@@ -94,7 +88,7 @@ const stage25FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/
 const stage25Facade = await readFile(stage25FacadePath, 'utf8');
 if (!stage25Facade.includes("@rus/new-game/stages/stage-25/compat")) violations.push('legacy Stage 25 must delegate to the modular compatibility entry point');
 if (stage25Facade.includes('function ')) violations.push('legacy Stage 25 facade must not contain implementation functions');
-if (stage25Facade.split('\n').length > 5) warnings.push('legacy Stage 25 facade exceeds 5 lines');
+if (!isPureReexportFacade(stage25Facade)) violations.push(`${relative(root, stage25FacadePath).replaceAll('\\', '/')}: facade must only re-export`);
 for (const forbidden of ['stage24-party-db-write-plan.js', 'stage26-first-game-screen.js']) {
   if (stage25Facade.includes(forbidden)) violations.push(`legacy Stage 25 may not import sibling stage ${forbidden}`);
 }
@@ -105,12 +99,10 @@ const stage25Forbidden = ['legacy/', 'stage24-party-db-write-plan.js', 'stage26-
 for (const file of stage25Files) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const text = await readFile(file, 'utf8');
-  if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line Stage 25 guideline`);
-  if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds Stage 25 byte guideline`);
   for (const token of stage25Forbidden) if (text.includes(token)) violations.push(`${rel}: forbidden Stage 25 dependency ${token}`);
 }
-const stage25Orchestrator = await readFile(join(stage25Root, 'orchestration/run-stage-25.js'), 'utf8');
-if (stage25Orchestrator.split('\n').length > 250) warnings.push('Stage 25 orchestrator exceeds 250 lines');
+try { await readFile(join(stage25Root, 'orchestration/run-stage-25.js')); }
+catch { violations.push('Stage 25 orchestrator entrypoint run-stage-25.js is missing'); }
 const stage25PublicIndex = await readFile(join(stage25Root, 'index.js'), 'utf8');
 const stage25PublicExports = (stage25PublicIndex.match(/\bexport\b/g) ?? []).length;
 if (stage25PublicExports > 8) violations.push(`Stage 25 public API exposes ${stage25PublicExports} statements; limit is 8`);
@@ -137,7 +129,7 @@ const stage24FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/
 const stage24Facade = await readFile(stage24FacadePath, 'utf8');
 if (!stage24Facade.includes("@rus/new-game/stages/stage-24/compat")) violations.push('legacy Stage 24 must delegate to the modular compatibility entry point');
 if (stage24Facade.includes('function ')) violations.push('legacy Stage 24 facade must not contain implementation functions');
-if (stage24Facade.split('\n').length > 5) warnings.push('legacy Stage 24 facade exceeds 5 lines');
+if (!isPureReexportFacade(stage24Facade)) violations.push(`${relative(root, stage24FacadePath).replaceAll('\\', '/')}: facade must only re-export`);
 for (const forbidden of ['stage23-narrator-prose-audit.js', 'stage25-party-commit.js']) {
   if (stage24Facade.includes(forbidden)) violations.push(`legacy Stage 24 may not import sibling stage ${forbidden}`);
 }
@@ -148,12 +140,10 @@ const stage24Forbidden = ['legacy/', 'stage23-narrator-prose-audit.js', 'stage25
 for (const file of stage24Files) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const text = await readFile(file, 'utf8');
-  if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line Stage 24 guideline`);
-  if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds Stage 24 byte guideline`);
   for (const token of stage24Forbidden) if (text.includes(token)) violations.push(`${rel}: forbidden Stage 24 dependency ${token}`);
 }
-const stage24Orchestrator = await readFile(join(stage24Root, 'orchestration/run-stage-24.js'), 'utf8');
-if (stage24Orchestrator.split('\n').length > 250) warnings.push('Stage 24 orchestrator exceeds 250 lines');
+try { await readFile(join(stage24Root, 'orchestration/run-stage-24.js')); }
+catch { violations.push('Stage 24 orchestrator entrypoint run-stage-24.js is missing'); }
 const stage24PublicIndex = await readFile(join(stage24Root, 'index.js'), 'utf8');
 const stage24PublicExports = (stage24PublicIndex.match(/\bexport\b/g) ?? []).length;
 if (stage24PublicExports > 8) violations.push(`Stage 24 public API exposes ${stage24PublicExports} statements; limit is 8`);
@@ -183,7 +173,6 @@ for (const stage of [
     slug: 'stage-13-g5-materialization',
     facade: 'stage13-g5-materialization.js',
     compat: '@rus/new-game/stages/stage-13/compat',
-    maxOrchestratorLines: 250,
     forbidden: ['legacy/', '/stage-14-', '/stage-15-', '/stage-16-', '/stage-17-', 'provider.js', '/ui/', '/server/', '@rus/party-store', '@rus/world-base', "from 'pg'", 'from "pg"']
   },
   {
@@ -191,7 +180,6 @@ for (const stage of [
     slug: 'stage-14-g5-audit',
     facade: 'stage14-g5-audit.js',
     compat: '@rus/new-game/stages/stage-14/compat',
-    maxOrchestratorLines: 250,
     forbidden: ['legacy/', '/stage-13-g5-materialization/', '/stage-15-', '/stage-16-', '/stage-17-', 'provider.js', '/ui/', '/server/', '@rus/party-store', '@rus/world-base', "from 'pg'", 'from "pg"']
   },
   {
@@ -199,7 +187,6 @@ for (const stage of [
     slug: 'stage-15-npc-placement',
     facade: 'stage15-npc-placement.js',
     compat: '@rus/new-game/stages/stage-15/compat',
-    maxOrchestratorLines: 300,
     forbidden: ['legacy/', '/stage-13-', '/stage-14-', '/stage-16-', '/stage-17-', 'provider.js', '/ui/', '/server/', '@rus/party-store', '@rus/world-base', "from 'pg'", 'from "pg"']
   },
   {
@@ -207,7 +194,6 @@ for (const stage of [
     slug: 'stage-16-item-placement',
     facade: 'stage16-item-placement.js',
     compat: '@rus/new-game/stages/stage-16/compat',
-    maxOrchestratorLines: 300,
     forbidden: ['legacy/', '/stage-13-', '/stage-14-', '/stage-15-', '/stage-17-', 'provider.js', '/ui/', '/server/', '@rus/party-store', '@rus/world-base', "from 'pg'", 'from "pg"']
   },
   {
@@ -215,7 +201,6 @@ for (const stage of [
     slug: 'stage-17-time-light-gate',
     facade: 'stage17-time-light-gate.js',
     compat: '@rus/new-game/stages/stage-17/compat',
-    maxOrchestratorLines: 250,
     forbidden: ['legacy/', '/stage-18-', '/stage-19-', '/stage-20-', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   },
   {
@@ -223,7 +208,6 @@ for (const stage of [
     slug: 'stage-18-character-knowledge-map',
     facade: 'stage18-character-knowledge-map.js',
     compat: '@rus/new-game/stages/stage-18/compat',
-    maxOrchestratorLines: 300,
     forbidden: ['legacy/', '/stage-17-', '/stage-19-', '/stage-20-', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   },
   {
@@ -231,7 +215,6 @@ for (const stage of [
     slug: 'stage-19-hidden-state',
     facade: 'stage19-hidden-state.js',
     compat: '@rus/new-game/stages/stage-19/compat',
-    maxOrchestratorLines: 300,
     forbidden: ['legacy/', '/stage-17-', '/stage-18-', '/stage-20-', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   },
   {
@@ -239,7 +222,6 @@ for (const stage of [
     slug: 'stage-20-visible-context',
     facade: 'stage20-visible-context.js',
     compat: '@rus/new-game/stages/stage-20/compat',
-    maxOrchestratorLines: 300,
     forbidden: ['legacy/', 'stage21-', 'stage22-', 'stage23-', 'stage24-', 'stage25-', 'stage26-', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   },
   {
@@ -247,7 +229,6 @@ for (const stage of [
     slug: 'stage-21-visible-context-audit',
     facade: 'stage21-visible-context-audit.js',
     compat: '@rus/new-game/stages/stage-21/compat',
-    maxOrchestratorLines: 250,
     forbidden: ['legacy/', 'stage20-visible-context.js', '/stage-20-visible-context/', 'stage22-', 'stage23-', 'stage24-', 'stage25-', 'stage26-', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   },
   {
@@ -255,7 +236,6 @@ for (const stage of [
     slug: 'stage-22-narrator-prose',
     facade: 'stage22-narrator-prose.js',
     compat: '@rus/new-game/stages/stage-22/compat',
-    maxOrchestratorLines: 300,
     forbidden: ['legacy/', 'stage21-', 'stage23-', 'stage24-', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   },
   {
@@ -263,7 +243,6 @@ for (const stage of [
     slug: 'stage-23-narrator-prose-audit',
     facade: 'stage23-narrator-prose-audit.js',
     compat: '@rus/new-game/stages/stage-23/compat',
-    maxOrchestratorLines: 250,
     forbidden: ['legacy/', 'stage22-narrator-prose.js', 'stage24-', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']
   }
 ]) {
@@ -271,20 +250,18 @@ for (const stage of [
   const facade = await readFile(facadePath, 'utf8');
   if (!facade.includes(stage.compat)) violations.push(`legacy Stage ${stage.id} must delegate to ${stage.compat}`);
   if (facade.includes('function ')) violations.push(`legacy Stage ${stage.id} facade must not contain implementation functions`);
-  if (facade.split('\n').length > 5) warnings.push(`legacy Stage ${stage.id} facade exceeds 5 lines`);
+  if (!isPureReexportFacade(facade)) violations.push(`${relative(root, facadePath).replaceAll('\\', '/')}: facade must only re-export`);
 
   const stageRoot = join(root, 'packages/new-game/src/stages', stage.slug);
   const stageFiles = (await walk(stageRoot)).filter((file) => ['.js', '.mjs'].includes(extname(file)));
   for (const file of stageFiles) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const text = await readFile(file, 'utf8');
-    if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line Stage ${stage.id} guideline`);
-    if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds Stage ${stage.id} byte guideline`);
     for (const token of stage.forbidden) if (text.includes(token)) violations.push(`${rel}: forbidden Stage ${stage.id} dependency ${token}`);
   }
   const orchestratorName = `run-stage-${stage.id}.js`;
-  const orchestrator = await readFile(join(stageRoot, 'orchestration', orchestratorName), 'utf8');
-  if (orchestrator.split('\n').length > stage.maxOrchestratorLines) warnings.push(`Stage ${stage.id} orchestrator exceeds ${stage.maxOrchestratorLines} lines`);
+  try { await readFile(join(stageRoot, 'orchestration', orchestratorName)); }
+  catch { violations.push(`Stage ${stage.id} orchestrator entrypoint ${orchestratorName} is missing`); }
   const publicIndex = await readFile(join(stageRoot, 'index.js'), 'utf8');
   const publicExports = (publicIndex.match(/\bexport\b/g) ?? []).length;
   if (publicExports > 8) violations.push(`Stage ${stage.id} public API exposes ${publicExports} statements; limit is 8`);
@@ -322,13 +299,11 @@ for (const stage of [
   const facade = await readFile(join(root, 'legacy/src/world/new-game-pipeline/stages', facadeName), 'utf8');
   if (!facade.includes(`@rus/new-game/stages/stage-${id}/compat`)) violations.push(`legacy Stage ${id} must delegate to modular compatibility entry point`);
   if (facade.includes('function ')) violations.push(`legacy Stage ${id} facade must not contain implementation functions`);
-  if (facade.split('\n').length > 3) warnings.push(`legacy Stage ${id} facade exceeds 3 lines`);
+  if (!isPureReexportFacade(facade)) violations.push(`legacy/src/world/new-game-pipeline/stages/${facadeName}: facade must only re-export`);
   const files = (await walk(join(root, 'packages/new-game/src/stages', slug))).filter((file) => ['.js', '.mjs'].includes(extname(file)));
   for (const file of files) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const text = await readFile(file, 'utf8');
-    if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line Stage ${id} guideline`);
-    if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds Stage ${id} byte guideline`);
     if (!rel.endsWith('/compat.js') && text.includes('legacy-adapter.js')) violations.push(`${rel}: core Stage ${id} may not depend on legacy adapter`);
   }
 }
@@ -353,7 +328,7 @@ for (const stage of [
     }
     if (!facade.includes(`@rus/new-game/stages/stage-${id}/compat`)) violations.push(`${legacyRoot}/${facadeName}: must delegate to modular compatibility entry point`);
     if (facade.includes('function ')) violations.push(`${legacyRoot}/${facadeName}: facade must not contain implementation functions`);
-    if (facade.trim().split('\n').length > 1) warnings.push(`${legacyRoot}/${facadeName}: facade exceeds one line`);
+    if (!isPureReexportFacade(facade)) violations.push(`${legacyRoot}/${facadeName}: facade must only re-export`);
   }
 
   const stageRoot = join(root, 'packages/new-game/src/stages', slug);
@@ -363,8 +338,6 @@ for (const stage of [
   for (const file of stageFiles) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const text = await readFile(file, 'utf8');
-    if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line Stage ${id} guideline`);
-    if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds Stage ${id} byte guideline`);
     for (const token of ['legacy/', '@rus/world-base', '@rus/party-store', 'provider.js', '/ui/', '/server/', "from 'pg'", 'from "pg"']) {
       if (text.includes(token)) violations.push(`${rel}: forbidden Stage ${id} dependency ${token}`);
     }
@@ -390,8 +363,6 @@ const g5SceneFiles = (await walk(g5SceneRoot)).filter((file) => ['.js', '.mjs'].
 for (const file of g5SceneFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const text = await readFile(file, 'utf8');
-  if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line g5-scene boundary guideline`);
-  if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds g5-scene boundary byte guideline`);
   for (const token of ['/stages/', 'legacy/', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', '/server/', "from 'pg'", 'from "pg"']) {
     if (text.includes(token)) violations.push(`${rel}: forbidden g5-scene boundary dependency ${token}`);
   }
@@ -402,8 +373,6 @@ const timeLightFiles = (await walk(timeLightRoot)).filter((file) => ['.js', '.mj
 for (const file of timeLightFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const text = await readFile(file, 'utf8');
-  if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line time-light boundary guideline`);
-  if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds time-light boundary byte guideline`);
   for (const token of ['/stages/', 'legacy/', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']) {
     if (text.includes(token)) violations.push(`${rel}: forbidden time-light boundary dependency ${token}`);
   }
@@ -414,8 +383,6 @@ const visibleContextFiles = (await walk(visibleContextRoot)).filter((file) => ['
 for (const file of visibleContextFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const text = await readFile(file, 'utf8');
-  if (text.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line visible-context boundary guideline`);
-  if (Buffer.byteLength(text) > hardBytes) warnings.push(`${rel}: exceeds visible-context boundary byte guideline`);
   for (const token of ['/stages/', 'legacy/', '@rus/party-store', '@rus/world-base', 'provider.js', '/ui/', "from 'pg'", 'from "pg"']) {
     if (text.includes(token)) violations.push(`${rel}: forbidden visible-context boundary dependency ${token}`);
   }
@@ -428,8 +395,6 @@ const newGameOrchestratorGraph = new Map();
 for (const file of newGameOrchestratorFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const source = await readFile(file, 'utf8');
-  if (source.split('\n').length > 350) warnings.push(`${rel}: exceeds 350 line new-game orchestrator guideline`);
-  if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds new-game orchestrator byte guideline`);
   for (const token of ['legacy/', 'legacy-adapter', '/apps/', '/ui/', '/server/', 'provider.js', "from 'pg'", 'from "pg"']) {
     if (source.includes(token)) violations.push(`${rel}: forbidden new-game orchestrator dependency ${token}`);
   }
@@ -493,8 +458,6 @@ for (const moduleName of domainModuleNames) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const source = await readFile(file, 'utf8');
     combined.push(source);
-    if (source.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line domain module guideline`);
-    if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds domain module byte guideline`);
     for (const token of ['legacy/', '/apps/', '/ui/', '/server/', 'provider.js', '@rus/llm-runtime', '@rus/world-base', '@rus/party-store', '@rus/new-game', '@rus/turn', '@rus/presentation', "from 'pg'", 'from "pg"', 'Math.random(', 'SELECT ', 'INSERT ', 'UPDATE ', 'DELETE FROM ']) {
       if (source.includes(token)) violations.push(`${rel}: forbidden domain dependency or side effect ${token}`);
     }
@@ -554,8 +517,6 @@ for (const [moduleName, testPath] of temporalPureModules) {
   for (const file of files) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const source = await readFile(file, 'utf8');
-    if (source.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line pure Temporal owner guideline`);
-    if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds pure Temporal owner byte guideline`);
     for (const token of [
       'legacy/', '/apps/', '/ui/', '/server/', 'provider.js', '@rus/llm-runtime',
       '@rus/world-base', '@rus/party-store', '@rus/new-game', '@rus/turn',
@@ -610,8 +571,6 @@ for (const spec of [
   for (const file of files) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const source = await readFile(file, 'utf8');
-    if (source.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line ${spec.name} guideline`);
-    if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds ${spec.name} byte guideline`);
     for (const token of spec.forbidden) if (source.includes(token)) violations.push(`${rel}: forbidden ${spec.name} dependency or side effect ${token}`);
     const deps = [];
     for (const specifier of importsOf(source)) {
@@ -677,9 +636,6 @@ const approvedTurnImports = new Set([
 for (const file of turnFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
   const source = await readFile(file, 'utf8');
-  const maxLines = rel.endsWith('/orchestrator.js') ? 300 : 500;
-  if (source.split('\n').length > maxLines) warnings.push(`${rel}: exceeds ${maxLines} line turn workflow guideline`);
-  if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds turn workflow byte guideline`);
   for (const token of [
     'legacy/', '/apps/', '/ui/', '/server/', 'provider.js', '@rus/llm-runtime', '@rus/world-base',
     "from 'pg'", 'from "pg"', 'Math.random(', 'SELECT ', 'INSERT ', 'UPDATE ', 'DELETE FROM ',
@@ -755,8 +711,6 @@ for (const appSpec of [
   for (const file of files) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const source = await readFile(file, 'utf8');
-    if (source.split('\n').length > 300) warnings.push(`${rel}: exceeds 300 line application file guideline`);
-    if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds application byte guideline`);
     if (appSpec.name === 'game-web') {
       for (const token of ['@rus/', 'legacy/', "from 'pg'", 'from "pg"', 'SELECT ', 'INSERT ', 'UPDATE ', 'DELETE FROM ', 'Math.random(']) {
         if (source.includes(token)) violations.push(`${rel}: game-web forbidden dependency or side effect ${token}`);
@@ -880,8 +834,6 @@ for (const toolSpec of [
   for (const file of files) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const source = await readFile(file, 'utf8');
-    if (source.split('\n').length > 500) warnings.push(`${rel}: exceeds 500 line tool file guideline`);
-    if (Buffer.byteLength(source) > hardBytes) warnings.push(`${rel}: exceeds tool byte guideline`);
     for (const token of toolSpec.forbidden) if (source.includes(token)) violations.push(`${rel}: forbidden ${toolSpec.name} dependency or side effect ${token}`);
     const deps = [];
     for (const specifier of importsOf(source)) {
@@ -1012,8 +964,6 @@ for (const packageDir of await childDirs(join(root, 'packages'))) {
   } catch {}
 }
 
-if (warnings.length) console.warn('Architecture warnings:\n'
-  + warnings.map((item) => `- ${item}`).join('\n'));
 if (violations.length) {
   console.error('Architecture violations:\n' + violations.map((item) => `- ${item}`).join('\n'));
   process.exitCode = 1;
@@ -1037,6 +987,15 @@ async function childDirs(dir) {
 }
 function importsOf(text) {
   return [...text.matchAll(/(?:from\s+|import\s*\()(['"])([^'"]+)\1/g)].map((match) => match[2]);
+}
+
+// A facade holds only `export ... from '...'` / `import ... from '...'` statements (comments and blank lines allowed).
+function isPureReexportFacade(source) {
+  const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  const name = String.raw`[\w$]+(?:\s+as\s+[\w$]+)?`;
+  const clause = String.raw`\*(?:\s+as\s+[\w$]+)?|[\w$]+|\{\s*(?:${name}(?:\s*,\s*${name})*\s*,?\s*)?\}`;
+  const statement = new RegExp(String.raw`(?:export|import)\s+(?:${clause})(?:\s*,\s*(?:${clause}))?\s+from\s+(['"])[^'"\n]+\1\s*;?`, 'g');
+  return code.replace(statement, '').trim() === '';
 }
 
 function findCycles(graph) {

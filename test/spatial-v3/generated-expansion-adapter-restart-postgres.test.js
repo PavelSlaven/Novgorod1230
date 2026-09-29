@@ -202,6 +202,7 @@ for (const terminalOrdinal of [0, 1]) test(`generated expansion adapter survives
             VALUES ('probe-location','p','actor','probe-actor','scene',$1,1,'probe')`, [positionId]);
           const worldBaseReader = { readG4ExpansionBinding: async () => ({ ok: true,
             value: { g4: request.g4, profile: request.profile } }),
+            readApprovedCanonicalG5Connections: async () => ({ ok: true, value: [] }),
             readPinnedG4ExpansionClosure: async () => ({ ok: true, value: runClosure }),
             readPinnedSceneTemplateClosure: async () => ({ ok: true, value: scene }) };
           const runtime = createSpatialV3ExpansionRuntime({

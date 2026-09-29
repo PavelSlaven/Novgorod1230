@@ -1,0 +1,23 @@
+{
+  "schema": "rus.m2c_p12_v17_walk_acoustics_import_approval_attestation.v1",
+  "status": "approved_fresh_bootstrap_only",
+  "decision": "APPROVE_EXACT_P12_V17_WALK_ACOUSTICS_REQUEST_FOR_FRESH_BOOTSTRAP",
+  "auditor_ref": "lead reviewer (Claude Opus 5.5), fleet task walk-acoustics-release",
+  "independence_basis": "Review separate from request and data authoring (authored by fleet executor Claude Sonnet 5.5). Re-ran scripts/promote-m2c-acoustic-packages.mjs --check at the reviewed head (exit 0: request, union review, capacity and owner rows regenerate byte-for-byte); recomputed SHA-256 of all five manifests and five approvals, the SQL builder, the schema generator and the superseded request; all equal the request pins. Fresh v17 bootstrap integration test imports this request with inserted rows equal to the 12653 distinct pinned rows (executor log, 1 pass).",
+  "reviewed_on": "2026-09-29",
+  "reviewed_repository_head": "e6a046ab9366c1741b871108818c9a5db3824055",
+  "source_head": "e6a046ab9366c1741b871108818c9a5db3824055",
+  "request_ref": "data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1/request.json",
+  "request_digest": "9f16fd89d3af2231990bb24b064ad06a09dfd4cb7a8e56553789ed0f1cf1f48f",
+  "scope": {
+    "use": "fresh_v17_bootstrap_only",
+    "live_import_authorized": false,
+    "live_import_note": "Owner rule D27 / no backward compatibility: the deployed v17 pair is recreated by a fresh bootstrap, not caught up by import. Live-target preconditions of the request (cluster identity, post-Gate1 baseline, rollback rehearsal) are not attested here.",
+    "operation": "insert_only",
+    "distinct_pinned_rows": 12653,
+    "combined_sql_bytes": 110547912,
+    "combined_sql_sha256": "84db5e07238218b06206ca6c3af46fd5cfe35ee69b6cd87034aef8442654dba2",
+    "activation": "none"
+  },
+  "known_unrelated": "canonical-start-stage24-postgres fails with Connection terminated unexpectedly while applying migrations right after pg_isready, identically on the pre-change base 86d87dae; not caused by this request."
+}

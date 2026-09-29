@@ -4007,7 +4007,7 @@
         "boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving; a turn-back does not cross the boundary and uses the mirror departure with inverted boundary sides.",
         "shared_checkpoint pins the default authored continuation; every additional forward departure is represented only by party_checkpoint_route_departure.",
         "Every allowed departure originates at source_route_point_ref or at its mirror point on the reciprocal route (the same physical point, §4.10) and is compatible with context_snapshot.departure_side_context (for a mirror departure, with the inverted side context).",
-        "A turn-back (mirror departure) is available at an anchor of every role; executing it rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).",
+        "A turn-back exists only when the route has a reverse route (reverse_route_ref); it is the mirror departure followed by an ordinary timed_traversal of the reverse segment, subject to that segment's availability. On a one-way route the anchor exposes no turn-back. Executing a mirror departure rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).",
         "If switch_phase=outbound_dispatch, dispatch atomically changes active_side from arrival to departure before leaving; inbound_completion anchors are already on departure side. No role changes active_side by any other rule.",
         "active forbids terminal_change_set_id; superseded and retired require it."
       ]
@@ -5503,7 +5503,7 @@
       ],
       "invariants": [
         "endpoint requires resolved_endpoint_snapshot and forbids every scene field and every connection field.",
-        "canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.6), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).",
+        "canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.5), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).",
         "transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization, and forbids every connection field.",
         "A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.",
         "Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.",

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { preparationSnapshotMemberOverlapErrors } from './appendix-f-overlap.mjs';
 
 const standard = await readFile('data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md', 'utf8');
 const temporalAmendment = await readFile('data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md', 'utf8');
@@ -53,6 +54,8 @@ const spatialAmendmentText = standard.slice(standard.indexOf('# Приложен
 const spatialAmendmentContracts = [...spatialAmendmentText.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
 const spatialAmendmentErrors = [...spatialAmendmentText.slice(spatialAmendmentText.indexOf('## F.2.')).matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]);
 if (spatialAmendmentContracts.length !== 14 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
+const overlapErrors = preparationSnapshotMemberOverlapErrors(temporalAmendment, standard);
+if (overlapErrors.length) throw new Error(`Appendix F does not mirror the temporal preparation_snapshot_member block:\n${overlapErrors.join('\n')}`);
 const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat(), ...spatialAmendmentContracts]);
 const currentErrors = new Set([...errors, ...temporalErrors, ...spatialAmendmentErrors]);
 if (currentContracts.size !== 228 || currentErrors.size !== 86) throw new Error('Current 4.7 target union audit failed');

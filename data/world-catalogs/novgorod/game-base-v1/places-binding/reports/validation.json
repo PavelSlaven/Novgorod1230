@@ -196,8 +196,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5707,
-      "rebuilt_rows": 5707
+      "rows": 5740,
+      "rebuilt_rows": 5740
     },
     {
       "domain": "presence_rules",
@@ -214,7 +214,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5707
+      "rows": 5740
     },
     {
       "domain": "presence_rules",
@@ -240,7 +240,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "accepted_occurrences": 10880
+      "accepted_occurrences": 10928
     },
     {
       "domain": "presence_rules",
@@ -411,13 +411,13 @@
         "stable_code_missing": 59,
         "parent_missing": 59
       },
-      "registry_rows": 983
+      "registry_rows": 989
     },
     {
       "domain": "category_registry",
       "name": "pool_category_references_resolve (external)",
       "pass": false,
-      "failures": 788,
+      "failures": 1767,
       "sample": [
         "x",
         "x",
@@ -448,7 +448,10 @@
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
         "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
         "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31,
-        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49
+        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49,
+        "data/world-catalogs/novgorod/game-base-v1/resource-catalog/material_resource_families.csv": 29,
+        "data/world-catalogs/novgorod/game-base-v1/resource-catalog/resource_families.csv": 35,
+        "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv": 915
       }
     },
     {
@@ -467,8 +470,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 3697,
-      "categories": 300
+      "rows": 3781,
+      "categories": 306
     }
   ]
 }

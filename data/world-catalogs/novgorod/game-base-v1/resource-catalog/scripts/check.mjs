@@ -19,6 +19,8 @@ const tenure = table('tenure_defaults.csv');
 const fishSeasons = table('fish_season_rules.csv');
 const unbound = readJson(path.join(DIR, 'reports/species-unbound.json'));
 const frequencyRule = readJson(path.join(DIR, 'frequency_rule.json'));
+const startTerritoryFlag = process.argv.indexOf('--start-territory');
+const startTerritoryPath = startTerritoryFlag >= 0 ? process.argv[startTerritoryFlag + 1] : '';
 
 const ids = (rows, key, prefix, out = errors) => {
   const seen = new Set();
@@ -48,7 +50,32 @@ const CHECK_MODES = new Set(['none', 'always', 'only_when_uncertain']);
 const LIGHT_MODES = new Set(['none', 'required', 'bonus']);
 const FAILURE_KINDS = new Set(['lost_time', 'tool_damage', 'injury', 'resource_damage', 'bait_loss', 'gear_loss', 'gear_damage', 'game_alerted', 'weapon_loss', 'misidentification']);
 const EXCLUSION_REASONS = new Set(['anachronism', 'physically_impossible', 'duplicate']);
+const BINDING_BASES = new Set(['sourced', 'logical_necessity', 'analogy']);
 const split = (value) => value ? value.split('|').filter(Boolean) : [];
+const TREE_USE_RULES = new Map([
+  ['woody_use_codes_bark_bast_resin_dye_tanning', /bark|bast|resin|dye|tann/],
+  ['woody_use_codes_rods_roots_browse_or_small_craftwood', /rod|pole|root|hoop|timber_craft|brooms_bedding|fodder_(leaf|browse)/],
+  ['woody_use_code_sap', /^sap$/], ['woody_use_code_food_fruit', /^food_fruit$/],
+  ['woody_use_code_nut_or_mast', /^(food_nut|fodder_mast)$/],
+  ['woody_use_code_kindling_or_tinder', /^(fuel_kindling|tinder)$/],
+]);
+const unsupportedProperty = /не (?:подтвержден|засвидетельствован)|реконструк|аналог|провер|gap/i;
+const parsedUses = (row) => { try { const value = JSON.parse(row.uses || '[]'); return Array.isArray(value) ? value : []; } catch { return []; } };
+const exactPropertyIsSourced = (table, row, ruleId) => {
+  const matcher = table === 'trees_shrubs.csv' ? TREE_USE_RULES.get(ruleId) : null;
+  if (matcher) return parsedUses(row).some((use) => matcher.test(use.use || '') && (use.refs || []).length && !unsupportedProperty.test(use.note || ''));
+  if (ruleId === 'd40_group_physical_bait_possibility' && /наживка|bait/i.test(row.uses || ''))
+    return /claim:static-bait-|\.uses(?:;|$)/.test(row.source_refs || '') && !unsupportedProperty.test(row.notes || '');
+  return false;
+};
+const BAIT_TOO_SMALL_REASON = 'typical individual or represented mountable stage is below about 5 mm and is not collected as bait';
+const BAIT_EXCLUSIONS = new Map([
+  'fa_ins_head_louse', 'fa_ins_body_louse', 'fa_ins_fleas', 'fa_ins_bedbug', 'fa_ins_aphids',
+  'fa_ins_biting_midges', 'fa_ins_mosquitoes', 'fa_ins_blackflies', 'fa_arach_ticks',
+  'fa_ins_granary_weevil', 'fa_ins_bark_beetles',
+].map((id) => [id, BAIT_TOO_SMALL_REASON]));
+const BAIT_PROPERTY_GROUPS = new Set(['insect', 'arachnid', 'annelid', 'amphibian']);
+const shouldBindF20 = (row) => BAIT_PROPERTY_GROUPS.has(row.group) && !BAIT_EXCLUSIONS.has(row.fa_id) && row.status !== 'duplicate';
 
 const validateFamily = (row, out) => {
   if (!CLASSES.has(row.class)) out.push(`FAMILY_CLASS_UNKNOWN:${row.family_id}:${row.class}`);
@@ -94,6 +121,13 @@ const validateSpecies = (row, out) => {
   const family = families.find((f) => f.family_id === row.family_id);
   if (family && row.category_ref !== family.category_ref) out.push(`SPECIES_CATEGORY_MISMATCH:${row.species_ref}:${row.family_id}`);
   if (!row.rule_id) out.push(`SPECIES_RULE_EMPTY:${row.species_ref}:${row.family_id}`);
+  if (!BINDING_BASES.has(row.basis)) out.push(`SPECIES_BASIS_INVALID:${row.species_ref}:${row.family_id}:${row.basis || 'empty'}`);
+  if (!row.derivation) out.push(`SPECIES_DERIVATION_EMPTY:${row.species_ref}:${row.family_id}`);
+  const sourceRow = sourceRowsByRef.get(`${row.source_table}:${row.species_ref}`);
+  if (sourceRow) {
+    const expectedBasis = exactPropertyIsSourced(row.source_table, sourceRow, row.rule_id) ? 'sourced' : 'logical_necessity';
+    if (row.basis !== expectedBasis) out.push(`SPECIES_BASIS_NOT_ROW_SUPPORTED:${row.species_ref}:${row.family_id}:${row.basis}:${expectedBasis}`);
+  }
 };
 for (const row of species) validateSpecies(row, errors);
 const covered = new Set(species.map((r) => `${r.source_table}:${r.species_ref}`));
@@ -113,18 +147,79 @@ const validateUnboundRows = (rows, out) => {
 validateUnboundRows(unbound.rows, errors);
 for (const ref of sourceSpecies) if (!covered.has(ref) && !reportedUnbound.has(ref)) errors.push(`SPECIES_MISSING_FROM_UNBOUND:${ref}`);
 if (covered.size + reportedUnbound.size !== sourceSpecies.size) errors.push('SPECIES_COVERAGE_PARTITION');
-if (covered.size !== sourceSpecies.size || reportedUnbound.size !== 0) errors.push(`SPECIES_D39_NOT_FULLY_BOUND:${covered.size}:${reportedUnbound.size}`);
+const authoredDuplicates = new Set([...sourceRowsByRef]
+  .filter(([, row]) => row.status === 'duplicate')
+  .map(([ref]) => ref));
+const authoredPhysicalExclusions = new Set([...BAIT_EXCLUSIONS.keys()].map((id) => `invertebrates_herps.csv:${id}`));
+const authoredExclusions = new Set([...authoredDuplicates, ...authoredPhysicalExclusions]);
+if (covered.size !== sourceSpecies.size - authoredExclusions.size || reportedUnbound.size !== authoredExclusions.size)
+  errors.push(`SPECIES_COVERAGE_COUNTS:${covered.size}:${reportedUnbound.size}:${authoredExclusions.size}`);
+for (const ref of authoredDuplicates) if (!reportedUnbound.has(ref)) errors.push(`AUTHORED_DUPLICATE_NOT_UNBOUND:${ref}`);
+for (const ref of authoredPhysicalExclusions) if (!reportedUnbound.has(ref)) errors.push(`AUTHORED_PHYSICAL_EXCLUSION_NOT_UNBOUND:${ref}`);
+for (const ref of reportedUnbound) if (!authoredExclusions.has(ref)) errors.push(`UNBOUND_NOT_AUTHORED_EXCLUSION:${ref}`);
+for (const row of unbound.rows.filter((item) => item.exclusion_reason === 'physically_impossible')) {
+  const expected = BAIT_EXCLUSIONS.get(row.species_ref);
+  if (!expected || row.reason !== expected) errors.push(`PHYSICAL_EXCLUSION_REASON_MISMATCH:${row.species_ref}`);
+}
+const validateBaitTypedGap = (report, relationRows, out) => {
+  const gap = Array.isArray(report.typed_gaps) ? report.typed_gaps.find((item) => item.property === 'bait_size_or_stage') : null;
+  if (!gap || !/#178/.test(gap.owner || '') || !Array.isArray(gap.affected_species)) {
+    out.push('BAIT_TYPED_GAP_MISSING');
+    return;
+  }
+  const affected = new Set(gap.affected_species);
+  const expected = new Set(BAIT_EXCLUSIONS.keys());
+  if (affected.size !== expected.size || [...expected].some((id) => !affected.has(id))) out.push('BAIT_TYPED_GAP_SPECIES_MISMATCH');
+  const boundF20 = new Set(relationRows
+    .filter((row) => row.source_table === 'invertebrates_herps.csv' && row.family_id === 'F20')
+    .map((row) => row.species_ref));
+  for (const id of affected) if (boundF20.has(id)) out.push(`BAIT_TYPED_GAP_ALSO_BOUND:${id}`);
+};
+validateBaitTypedGap(unbound, species, errors);
+const validateBaitBindingDerivations = (relationRows, out) => {
+  for (const row of relationRows.filter((item) => item.source_table === 'invertebrates_herps.csv' && item.family_id === 'F20')) {
+    if (/typed[_ -]?gap/i.test(row.derivation || '')) out.push(`BAIT_BOUND_DERIVATION_TYPED_GAP:${row.species_ref}`);
+  }
+};
+validateBaitBindingDerivations(species, errors);
 
+const latinBinomial = (value) => String(value || '').match(/\b([A-Z][a-z]+)\s+([a-z][a-z-]+)/)?.slice(1, 3).join(' ') || '';
+const latinGenera = (value) => new Set([...String(value || '').matchAll(/\b([A-Z][a-z]+)(?=\s)/g)].map((m) => m[1]));
+const duplicateTargetIds = (reason) => String(reason || '').split('+').map((ref) =>
+  ref.match(/^fauna-mammals-birds\/fauna\/mammals\.csv#(fa_m_[a-z0-9_]+)$/)?.[1] || '');
 const bindingFamilies = (tableName, speciesRef, rows = species) => new Set(rows
   .filter((row) => row.source_table === tableName && row.species_ref === speciesRef)
   .map((row) => row.family_id));
+const locallyNestingBird = (row) => Boolean(row.nesting) && (
+  ['breeding', 'resident'].some((state) => [row.migration_spring, row.migration_summer].includes(state))
+  || (row.migration_winter === 'irregular' && /гнездится.*зимой/i.test(row.nesting))
+);
+const validateDuplicateSemantics = (rows, out) => {
+  for (const row of rows.filter((item) => item.exclusion_reason === 'duplicate')) {
+    const sourceRow = sourceRowsByRef.get(`${row.source_table}:${row.species_ref}`);
+    const targetIds = duplicateTargetIds(row.reason);
+    if (!targetIds.length || targetIds.some((id) => !id)) { out.push(`DUPLICATE_TARGET_REF_INVALID:${row.species_ref}`); continue; }
+    const targets = targetIds.map((id) => sourceRowsByRef.get(`mammals.csv:${id}`));
+    if (targets.some((target) => !target)) { out.push(`DUPLICATE_TARGET_UNKNOWN:${row.species_ref}`); continue; }
+    if (targetIds.some((id) => !bindingFamilies('mammals.csv', id).has('F29'))) out.push(`DUPLICATE_TARGET_NOT_BOUND_F29:${row.species_ref}`);
+    if (/spp\.|,/.test(sourceRow.name_lat)) {
+      const sourceGenera = latinGenera(sourceRow.name_lat);
+      const targetGenera = new Set(targets.flatMap((target) => [...latinGenera(target.name_lat)]));
+      if ([...sourceGenera].some((genus) => !targetGenera.has(genus))) out.push(`DUPLICATE_TAXON_MISMATCH:${row.species_ref}`);
+    } else if (!targets.some((target) => latinBinomial(target.name_lat) === latinBinomial(sourceRow.name_lat))) {
+      out.push(`DUPLICATE_TAXON_MISMATCH:${row.species_ref}`);
+    }
+  }
+};
+validateDuplicateSemantics(unbound.rows, errors);
+
 const validateTraitBindings = (rows, out) => {
   for (const [ref, sourceRow] of sourceRowsByRef) {
     const [tableName, speciesRef] = ref.split(':');
     const boundFamilies = bindingFamilies(tableName, speciesRef, rows);
     if (tableName === 'mammals.csv') {
       if (!boundFamilies.has('F29')) out.push(`TRAIT_MAMMAL_GAME_BINDING_MISSING:${ref}`);
-      if (sourceRow.products.split(';').includes('fur') && !boundFamilies.has('F30')) out.push(`TRAIT_FUR_BINDING_MISSING:${ref}`);
+      if (!boundFamilies.has('F30')) out.push(`TRAIT_MAMMAL_PELT_BINDING_MISSING:${ref}`);
     }
     if (tableName === 'birds.csv' && sourceRow.group === 'raptor') {
       if (boundFamilies.has('F29')) out.push(`TRAIT_RAPTOR_GAME_BOUND:${ref}`);
@@ -132,8 +227,17 @@ const validateTraitBindings = (rows, out) => {
     }
     if (tableName === 'birds.csv' && sourceRow.group !== 'raptor' && !boundFamilies.has('F29')) out.push(`TRAIT_NON_RAPTOR_GAME_BINDING_MISSING:${ref}`);
     if (tableName === 'birds.csv' && !boundFamilies.has('F32')) out.push(`TRAIT_BIRD_FEATHER_BINDING_MISSING:${ref}`);
-    if (tableName === 'invertebrates_herps.csv' && ['insect', 'arachnid', 'annelid'].includes(sourceRow.group) && !/наживка|мёд, воск/.test(sourceRow.uses) && !boundFamilies.has('F20')) out.push(`TRAIT_SMALL_BAIT_BINDING_MISSING:${ref}`);
-    if (tableName === 'invertebrates_herps.csv' && ['amphibian', 'reptile', 'rodent_pest'].includes(sourceRow.group) && !sourceRow.uses && !boundFamilies.has('F29')) out.push(`TRAIT_SMALL_GAME_BINDING_MISSING:${ref}`);
+    if (tableName === 'birds.csv') {
+      const locallyNesting = locallyNestingBird(sourceRow);
+      if (locallyNesting && !boundFamilies.has('F10')) out.push(`TRAIT_NESTING_BIRD_EGG_BINDING_MISSING:${ref}`);
+      if (!locallyNesting && boundFamilies.has('F10')) out.push(`TRAIT_NON_NESTING_BIRD_EGG_BOUND:${ref}`);
+    }
+    if (tableName === 'invertebrates_herps.csv' && sourceRow.status !== 'duplicate') {
+      if (shouldBindF20(sourceRow) && !boundFamilies.has('F20')) out.push(`TRAIT_PHYSICAL_BAIT_BINDING_MISSING:${ref}`);
+      if (BAIT_EXCLUSIONS.has(sourceRow.fa_id) && boundFamilies.has('F20')) out.push(`TRAIT_PHYSICALLY_IMPOSSIBLE_BAIT_BOUND:${ref}`);
+    }
+    if (tableName === 'invertebrates_herps.csv' && sourceRow.status !== 'duplicate' && ['amphibian', 'reptile', 'rodent_pest'].includes(sourceRow.group) && !boundFamilies.has('F29')) out.push(`TRAIT_SMALL_GAME_BINDING_MISSING:${ref}`);
+    if (sourceRow.status === 'duplicate' && boundFamilies.size) out.push(`TRAIT_DUPLICATE_BOUND:${ref}`);
   }
 };
 validateTraitBindings(species, errors);
@@ -268,13 +372,16 @@ if (tenureByKey['pf_floodplain_meadow:F13']?.tenure !== 'common' || tenureByKey[
 if (tenureByKey['pf_hay_meadow:F13']?.closed_months) errors.push('TENURE_F13_HAY_MEADOW_CLOSED_FORBIDDEN');
 for (const placeRef of ['pf_broadleaf_woodland', 'pf_conifer_woodland', 'pf_mixed_woodland', 'pf_forest_edge', 'pf_bog']) if (tenureByKey[`${placeRef}:F29`]?.tenure !== 'common') errors.push(`TENURE_F29_COMMON_MISSING:${placeRef}`);
 
-const nmIds = new Set(readCsv(path.join(ROOT, 'nature-materials-weather/natural_materials_soils/natural_materials.csv')).map((r) => r.nm_id));
+const naturalMaterialRows = readCsv(path.join(ROOT, 'nature-materials-weather/natural_materials_soils/natural_materials.csv'));
+const nmIds = new Set(naturalMaterialRows.map((r) => r.nm_id));
 const validateMaterial = (row, out) => {
   if (!nmIds.has(row.nm_ref)) out.push(`MATERIAL_REF_UNKNOWN:${row.nm_ref}`);
   if (row.family_id && !familyIds.has(row.family_id)) out.push(`MATERIAL_FAMILY_UNKNOWN:${row.nm_ref}:${row.family_id}`);
   if (!row.family_id || row.status !== 'candidate') out.push(`MATERIAL_UNBOUND:${row.nm_ref}`);
 };
 for (const row of materials) validateMaterial(row, errors);
+const baitMaterial = naturalMaterialRows.find((row) => row.nm_id === 'nm_bait');
+if (!baitMaterial || !/species refs.*resource-catalog F20/i.test(baitMaterial.note || '') || /authored|физич|тело|стади|uses=/i.test(baitMaterial.note || '')) errors.push('NM_BAIT_F20_RULE_STALE');
 
 const calibration = frequencyRule;
 const expectedFrequencyFamilies = ['F07', 'F08', 'F09', 'F18', 'F29'];
@@ -296,7 +403,7 @@ const validateFrequency = (row, out) => {
   if (suitability?.generation_season_field !== 'season' || suitability?.season_match !== 'habitat_season_contains_generation_season' || suitability?.season_aliases?.spring_rasputitsa !== 'spring') out.push('FREQUENCY_SUITABILITY_SEASON_INVALID');
   if (suitability?.fallback_when !== 'no_qualifying_bound_species_for_node_scope') out.push('FREQUENCY_FALLBACK_CONDITION_INVALID');
   const habitatSources = suitability?.habitat_sources || [];
-  if (habitatSources.length !== 4) out.push(`FREQUENCY_HABITAT_SOURCE_COUNT:${habitatSources.length}`);
+  if (habitatSources.length !== 5) out.push(`FREQUENCY_HABITAT_SOURCE_COUNT:${habitatSources.length}`);
   for (const source of habitatSources) {
     const sourcePath = path.resolve(DIR, source.ref || 'missing');
     if (!source.ref || !fs.existsSync(sourcePath)) { out.push(`FREQUENCY_HABITAT_REF_MISSING:${source.ref || 'empty'}`); continue; }
@@ -318,6 +425,88 @@ const validateFrequency = (row, out) => {
   if (!/encounter_roll_is_separate_by_place_day_day_phase/.test(row.family_semantics?.F29 || '')) out.push('FREQUENCY_F29_SEMANTICS_INVALID');
 };
 validateFrequency(calibration, errors);
+
+const parseList = (value) => String(value || '').split(';').filter(Boolean);
+const habitatRows = readCsv(path.join(ROOT, 'fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv'));
+const validateFaunaPresenceSeasons = (rows, out) => {
+  for (const row of rows) {
+    const sourceTable = `${row.taxon_table}.csv`;
+    const sourceRow = sourceRowsByRef.get(`${sourceTable}:${row.fa_id}`);
+    if (!sourceRow) { out.push(`FAUNA_HABITAT_SPECIES_UNKNOWN:${sourceTable}:${row.fa_id}`); continue; }
+    const expected = row.taxon_table === 'fish'
+      ? parseList(sourceRow.season_presence)
+      : parseList(row.activity_state === 'active' ? sourceRow.active_seasons : sourceRow.dormant_seasons);
+    if (row.activity_state !== 'hidden' && !expected.includes(row.season_period))
+      out.push(`FAUNA_HABITAT_SEASON_MISMATCH:${sourceTable}:${row.fa_id}:${row.activity_state}:${row.season_period}`);
+  }
+};
+validateFaunaPresenceSeasons(habitatRows, errors);
+const validateDuplicatePresence = (rows, out) => {
+  for (const ref of authoredDuplicates) {
+    const [sourceTable, speciesRef] = ref.split(':');
+    if (sourceTable === 'invertebrates_herps.csv' && rows.some((row) => row.taxon_table === 'invertebrates_herps' && row.fa_id === speciesRef))
+      out.push(`DUPLICATE_HAS_HABITAT_PRESENCE:${speciesRef}`);
+  }
+};
+validateDuplicatePresence(habitatRows, errors);
+
+const faunaHabitatCoverage = (territory, rows = habitatRows) => {
+  const placeRefs = new Set((territory.place_types || []).map((ref) => ref.replace(/^pf_/, '')));
+  const territoryRegion = territory.region_id || territory._meta?.region_id || '';
+  const territorySubregion = territory.subregion_scope || territory._meta?.subregion_scope || '';
+  const geographicScopeEvaluated = Boolean(territoryRegion || territorySubregion);
+  const relevant = [...new Set(species
+    .filter((row) => ['fish.csv', 'invertebrates_herps.csv'].includes(row.source_table))
+    .map((row) => `${row.source_table}:${row.species_ref}`))].sort();
+  const uncovered = [];
+  const onlyLowFrequency = [];
+  let withAny = 0;
+  let withQualifying = 0;
+  for (const ref of relevant) {
+    const [sourceTable, speciesRef] = ref.split(':');
+    const taxonTable = sourceTable.replace(/\.csv$/, '');
+    const allActive = rows.filter((row) => row.taxon_table === taxonTable && row.fa_id === speciesRef && row.activity_state === 'active');
+    const scopedActive = allActive.filter((row) =>
+      (!territoryRegion || row.region_id === territoryRegion)
+      && (!territorySubregion || row.subregion_scope === territorySubregion));
+    const startRows = scopedActive.filter((row) => placeRefs.has(row.pf_id));
+    if (startRows.length) withAny += 1;
+    const qualifying = startRows.filter((row) => ['common', 'ubiquitous'].includes(row.frequency_class));
+    if (qualifying.length) withQualifying += 1;
+    else if (startRows.length) onlyLowFrequency.push({ source_table: sourceTable, species_ref: speciesRef, frequencies: [...new Set(startRows.map((row) => row.frequency_class))].sort() });
+    if (!startRows.length) {
+      let reason = 'no_active_habitat_in_start_place_families';
+      if (!allActive.length) reason = 'no_active_habitat_rows';
+      else if (geographicScopeEvaluated && !scopedActive.length) reason = 'presence_only_outside_start_geographic_scope';
+      uncovered.push({
+        source_table: sourceTable,
+        species_ref: speciesRef,
+        reason,
+        available_place_families: [...new Set(scopedActive.map((row) => `pf_${row.pf_id}`))].sort(),
+      });
+    }
+  }
+  return {
+    evaluation_scope: geographicScopeEvaluated ? 'start_place_types_and_geographic_scope' : 'start_place_types_only',
+    geographic_scope_evaluated: geographicScopeEvaluated,
+    geographic_scope_note: geographicScopeEvaluated ? '' : 'territory input has no region_id or subregion_scope',
+    relevant_species: relevant.length,
+    with_compatible_start_place_type: withAny,
+    with_qualifying_start_place_type: withQualifying,
+    uncovered,
+    only_low_frequency: onlyLowFrequency,
+  };
+};
+let habitatCoverage = null;
+if (startTerritoryFlag >= 0) {
+  if (!startTerritoryPath) errors.push('START_TERRITORY_PATH_MISSING');
+  else if (!fs.existsSync(startTerritoryPath)) errors.push(`START_TERRITORY_NOT_FOUND:${startTerritoryPath}`);
+  else {
+    const territory = readJson(startTerritoryPath);
+    if (!Array.isArray(territory.place_types) || !territory.place_types.length) errors.push('START_TERRITORY_PLACE_TYPES_MISSING');
+    else habitatCoverage = faunaHabitatCoverage(territory);
+  }
+}
 
 const groups = readJson(path.join(ROOT, 'scripts/groups.src.json'));
 const validateGroupRegistration = (rows, out) => {
@@ -359,11 +548,28 @@ if (process.argv.includes('--self-test')) {
     [() => { const out = []; validateAction({ ...actions[0], check_mode: 'always' }, out); return out; }, 'ACTION_CHECK_MODE_DC_MISMATCH'],
     [() => { const out = []; validateAction({ ...actions.find((row) => row.dc_id), failure_consequence_kinds: 'explosion' }, out); return out; }, 'ACTION_FAILURE_KIND_UNKNOWN'],
     [() => { const out = []; validateSpecies({ ...species[0], species_ref: 'fl_missing' }, out); return out; }, 'SPECIES_REF_UNKNOWN'],
+    [() => { const out = []; validateSpecies({ ...species[0], basis: '' }, out); return out; }, 'SPECIES_BASIS_INVALID'],
+    [() => { const out = []; validateSpecies({ ...species[0], derivation: '' }, out); return out; }, 'SPECIES_DERIVATION_EMPTY'],
     [() => { const out = []; validateUnboundRows([{ ...selfUnbound, species_ref: 'missing' }], out); return out; }, 'UNBOUND_REF_UNKNOWN'],
     [() => { const out = []; validateUnboundRows([selfUnbound, selfUnbound], out); return out; }, 'UNBOUND_DUPLICATE'],
     [() => { const out = []; validateUnboundRows([selfUnbound], out); return out; }, 'UNBOUND_ALSO_BOUND'],
     [() => { const out = []; validateUnboundRows([{ ...selfUnbound, exclusion_reason: 'not_useful' }], out); return out; }, 'UNBOUND_REASON_INVALID'],
+    [() => { const out = []; validateDuplicateSemantics([{ source_table: 'invertebrates_herps.csv', species_ref: 'fa_mamm_house_mouse', exclusion_reason: 'duplicate', reason: 'bad-ref' }], out); return out; }, 'DUPLICATE_TARGET_REF_INVALID'],
+    [() => { const out = []; validateDuplicateSemantics([{ source_table: 'invertebrates_herps.csv', species_ref: 'fa_mamm_house_mouse', exclusion_reason: 'duplicate', reason: 'fauna-mammals-birds/fauna/mammals.csv#fa_m_house_mouse+bad-ref' }], out); return out; }, 'DUPLICATE_TARGET_REF_INVALID'],
+    [() => { const out = []; validateDuplicatePresence([{ taxon_table: 'invertebrates_herps', fa_id: 'fa_mamm_house_mouse' }], out); return out; }, 'DUPLICATE_HAS_HABITAT_PRESENCE'],
     [() => { const out = []; const [ref] = [...sourceRowsByRef].find(([key, row]) => key.startsWith('birds.csv:') && row.group === 'raptor'); const [source_table, species_ref] = ref.split(':'); validateTraitBindings([...species, { source_table, species_ref, family_id: 'F29' }], out); return out; }, 'TRAIT_RAPTOR_GAME_BOUND'],
+    [() => { const out = []; const row = [...sourceRowsByRef.values()].find((item) => item.fa_id && locallyNestingBird(item)); validateTraitBindings(species.filter((item) => !(item.source_table === 'birds.csv' && item.species_ref === row.fa_id && item.family_id === 'F10')), out); return out; }, 'TRAIT_NESTING_BIRD_EGG_BINDING_MISSING'],
+    [() => { const out = []; const row = [...sourceRowsByRef.values()].find((item) => item.fa_id && item.nesting && !locallyNestingBird(item)); validateTraitBindings([...species, { source_table: 'birds.csv', species_ref: row.fa_id, family_id: 'F10' }], out); return out; }, 'TRAIT_NON_NESTING_BIRD_EGG_BOUND'],
+    [() => { const out = []; validateSpecies({ ...species.find((item) => item.species_ref === 'fl_ts_calluna_vulgaris' && item.family_id === 'F04'), basis: 'sourced' }, out); return out; }, 'SPECIES_BASIS_NOT_ROW_SUPPORTED'],
+    [() => { const out = []; validateTraitBindings(species.filter((item) => !(item.source_table === 'invertebrates_herps.csv' && item.species_ref === 'fa_amph_common_frog' && item.family_id === 'F20')), out); return out; }, 'TRAIT_PHYSICAL_BAIT_BINDING_MISSING'],
+    [() => { const out = []; validateTraitBindings(species.filter((item) => !(item.source_table === 'invertebrates_herps.csv' && item.species_ref === 'fa_ins_bumblebees' && item.family_id === 'F20')), out); return out; }, 'TRAIT_PHYSICAL_BAIT_BINDING_MISSING'],
+    [() => { const out = []; validateTraitBindings([...species, { source_table: 'invertebrates_herps.csv', species_ref: 'fa_arach_ticks', family_id: 'F20' }], out); return out; }, 'TRAIT_PHYSICALLY_IMPOSSIBLE_BAIT_BOUND'],
+    [() => { const out = []; validateBaitTypedGap({ typed_gaps: [{ property: 'bait_size_or_stage', owner: 'fauna property contract #178', affected_species: [...BAIT_EXCLUSIONS.keys(), 'fa_ins_bumblebees'] }] }, species, out); return out; }, 'BAIT_TYPED_GAP_ALSO_BOUND'],
+    [() => { const out = []; validateBaitTypedGap({ typed_gaps: [{ property: 'bait_size_or_stage', owner: 'fauna property contract #178', affected_species: [...BAIT_EXCLUSIONS.keys()].slice(1) }] }, species, out); return out; }, 'BAIT_TYPED_GAP_SPECIES_MISMATCH'],
+    [() => { const out = []; validateBaitBindingDerivations(species.map((item) => item.source_table === 'invertebrates_herps.csv' && item.family_id === 'F20' ? { ...item, derivation: `${item.derivation}; typed_gap:bait_size_or_stage` } : item), out); return out; }, 'BAIT_BOUND_DERIVATION_TYPED_GAP'],
+    [() => { const out = []; validateTraitBindings(species.filter((item) => !(item.source_table === 'mammals.csv' && item.species_ref === 'fa_m_hedgehog' && item.family_id === 'F30')), out); return out; }, 'TRAIT_MAMMAL_PELT_BINDING_MISSING'],
+    [() => { const out = []; validateTraitBindings(species.filter((item) => !(item.source_table === 'invertebrates_herps.csv' && item.species_ref === 'fa_amph_common_frog' && item.family_id === 'F29')), out); return out; }, 'TRAIT_SMALL_GAME_BINDING_MISSING'],
+    [() => { const out = []; validateFaunaPresenceSeasons([{ ...habitatRows[0], season_period: 'not_a_season' }], out); return out; }, 'FAUNA_HABITAT_SEASON_MISMATCH'],
     [() => { const out = []; validateSkill({ ...skills[0], skill_ref: 'riding' }, out); return out; }, 'SKILL_REF_UNKNOWN'],
     [() => { const out = []; validateSkill({ ...skills[0], secondary_skill_ref: skills[0].skill_ref }, out); return out; }, 'SKILL_SECONDARY_DUPLICATES_PRIMARY'],
     [() => { const out = []; validateSkillBijection([skills[0], skills[0], ...skills.slice(1)], out); return out; }, 'SKILL_MAP_DUPLICATE'],
@@ -398,4 +604,5 @@ if (process.argv.includes('--self-test')) {
 }
 
 console.log(`checked: families ${families.length}, source species ${sourceSpecies.size}, bindings ${species.length}, bound unique ${covered.size}, unbound ${reportedUnbound.size}, actions ${actions.length}, skills ${skills.length}, patches ${patches.length}, tenure ${tenure.length}, fish seasons ${fishSeasons.length}, materials ${materials.length}`);
+if (habitatCoverage) console.log(`fauna start-place-type habitat coverage: ${JSON.stringify(habitatCoverage)}`);
 fail(errors, 'resource-catalog check');

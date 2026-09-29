@@ -7,6 +7,7 @@ const DOM = path.resolve(__dirname, '..');
 const GB = path.resolve(DOM, '..');
 const REPO = path.resolve(GB, '../../../..');
 const MAIN = process.env.NOVGOROD_MAIN || 'C:/Users/Slaven/Documents/Novgorod';
+const { climbingNest } = require('./src/hunting.cjs');
 
 function readCsv(f) {
   const t = fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, '');
@@ -81,7 +82,7 @@ function evidenceRefIssues(refs) {
 function huntingDataIssues(methodRows, tenureRows, mammalRows) {
   const issues = [];
   const ids = new Set([...mammalRows, ...birds, ...herps].map(r => r.fa_id));
-  const required = new Set(['hm_snare','hm_wooden_trap_klyapets','hm_wooden_trap_very_small','hm_deadfall','hm_bird_net_pereves','hm_bird_snare','hm_birdlime','hm_bird_bow_trap','hm_bow','hm_hunting_self_shooter','hm_spear','hm_pit_trap','hm_ungulate_noose','hm_drive_hunt','hm_dogs','hm_dog_baiting','hm_falconry','hm_hawking','hm_baited_trap','hm_smoke_burrow','hm_dig_burrow','hm_hand_or_stick_small_fauna','hm_collect_bird_eggs_climbing']);
+  const required = new Set(['hm_snare','hm_wooden_trap_klyapets','hm_wooden_trap_very_small','hm_deadfall','hm_bird_net_pereves','hm_bird_snare','hm_birdlime','hm_bird_bow_trap','hm_bow','hm_hunting_self_shooter','hm_spear','hm_pit_trap','hm_ungulate_noose','hm_drive_hunt','hm_dogs','hm_dog_baiting','hm_falconry','hm_hawking','hm_baited_trap','hm_smoke_burrow','hm_dig_burrow','hm_hand_or_stick_small_fauna','hm_collect_bird_eggs_climbing','hm_collect_bird_eggs_ground','hm_collect_bird_eggs_winter']);
   const sizeClasses = new Set(['bird_egg','bird_very_small','bird_small','bird_large','mammal_very_small','mammal_small','mammal_medium','mammal_large','amphibian_very_small','reptile_very_small']);
   const bases = new Set(['sourced','sourced_tool_editorial_applicability','sourced_class_editorial_applicability','logical_necessity','editorial']);
   const seen = new Set();
@@ -106,6 +107,36 @@ function huntingDataIssues(methodRows, tenureRows, mammalRows) {
     issues.push(...evidenceRefIssues(r.source_refs));
   }
   for (const id of required) if (!seen.has(id)) issues.push('missing method ' + id);
+  const localNest = (row) => Boolean(row.nesting) && (
+    ['breeding', 'resident'].some((state) => [row.migration_spring, row.migration_summer].includes(state))
+    || (row.migration_winter === 'irregular' && /гнездится.*зимой/i.test(row.nesting))
+  );
+  const isWinterNest = (row) => row.migration_winter === 'irregular' && /гнездится.*зимой/i.test(row.nesting);
+  const isClimbingNest = (row) => climbingNest(row.nesting);
+  const climbingExamples = ['гнездо на старой сосне', 'в нишах стволов', 'в старых вороньих гнёздах', 'в старых гнёздах хищников'];
+  const accessibleExamples = ['на земле в ельниках', 'под стрехами, в щелях построек', 'закрытые гнёзда под карнизами'];
+  if (climbingExamples.some((nesting) => !climbingNest(nesting)) || accessibleExamples.some(climbingNest))
+    issues.push('bird egg climbing nesting classifier');
+  const expectedEggTaxa = (predicate) => new Set(birds.filter((row) => localNest(row) && predicate(row)).map((row) => row.fa_id));
+  const actualEggTaxa = (id) => new Set((methodRows.find((row) => row.hm_id === id)?.applicable_taxa || '').split(';').filter(Boolean));
+  const sameSet = (a, b) => a.size === b.size && [...a].every((id) => b.has(id));
+  const expectedWinter = expectedEggTaxa(isWinterNest);
+  const expectedClimbing = expectedEggTaxa((row) => !isWinterNest(row) && isClimbingNest(row));
+  const expectedGeneral = expectedEggTaxa((row) => !isWinterNest(row) && !isClimbingNest(row));
+  const eggMethods = [
+    ['hm_collect_bird_eggs_climbing', 'spring;summer', expectedClimbing],
+    ['hm_collect_bird_eggs_ground', 'spring;summer', expectedGeneral],
+    ['hm_collect_bird_eggs_winter', 'winter', expectedWinter],
+  ];
+  for (const [id, seasons, expected] of eggMethods) {
+    const row = methodRows.find((item) => item.hm_id === id);
+    if (!row || row.applicable_categories || row.resource_family_refs !== 'F10' || !sameSet(actualEggTaxa(id), expected))
+      issues.push('bird egg method property-derived taxa mismatch ' + id);
+    if (row?.seasons !== seasons) issues.push('bird egg method season mismatch ' + id);
+  }
+  const methodTaxa = eggMethods.flatMap(([id]) => [...actualEggTaxa(id)]);
+  if (new Set(methodTaxa).size !== methodTaxa.length || new Set(methodTaxa).size !== birds.filter(localNest).length)
+    issues.push('bird egg methods must partition local nesting taxa');
   const groundKinds = new Set();
   for (const r of tenureRows) {
     if (groundKinds.has(r.ground_kind)) issues.push('duplicate ground kind ' + r.ground_kind); groundKinds.add(r.ground_kind);
@@ -147,6 +178,8 @@ if (process.argv.includes('--self-test')) {
   const commonMole = pres.map((row) => row.fa_id === 'fa_m_mole' && row.season === 'spring' && row.pf_id === 'pf_floodplain_meadow' ? { ...row, frequency_class: 'common', weight: '4' } : row);
   if (!contextualFaunaIssues(mammals, birds, commonMole).includes('mole spring floodplain frequency')) throw new Error('mole flood negative probe passed');
   if (huntingDataIssues(huntingMethods, huntingTenure, mammals).length) throw new Error('hunting data positive probe failed: ' + huntingDataIssues(huntingMethods, huntingTenure, mammals).join(' | '));
+  if (!huntingDataIssues(huntingMethods.map(r => r.hm_id === 'hm_collect_bird_eggs_climbing' ? { ...r, applicable_taxa: 'fa_b_mallard' } : r), huntingTenure, mammals).some(x => x.includes('property-derived taxa mismatch'))) throw new Error('bird egg ownership negative probe passed');
+  if (!huntingDataIssues(huntingMethods.map(r => r.hm_id === 'hm_collect_bird_eggs_winter' ? { ...r, seasons: 'spring;summer' } : r), huntingTenure, mammals).some(x => x.includes('season mismatch'))) throw new Error('bird egg winter season negative probe passed');
   if (!huntingDataIssues(huntingMethods.map((r, i) => i ? r : { ...r, setup_mode: 'instant' }), huntingTenure, mammals).some(x => x.includes('bad setup_mode'))) throw new Error('hunting setup negative probe passed');
   if (!huntingDataIssues(huntingMethods.map((r, i) => i ? r : { ...r, tool_refs: 'n1230:material_item:hnt0022' }), huntingTenure, mammals).some(x => x.includes('D-rated'))) throw new Error('hunting D-rated tool negative probe passed');
   if (!huntingDataIssues(huntingMethods.map((r, i) => i ? r : { ...r, derivation: '' }), huntingTenure, mammals).some(x => x.includes('missing derivation'))) throw new Error('hunting derivation negative probe passed');
@@ -244,7 +277,7 @@ const report = {
     presence_confidence: { B: pres.filter((p) => p.confidence === 'B').length, C: pres.filter((p) => p.confidence === 'C').length },
     taxa_presence_1230_confidence: ['A', 'B', 'C'].reduce((a, k) => ((a[k] = all.filter((t) => t.presence_1230_confidence === k).length), a), {}),
     birds_in_pantelev_2001: birds.filter((b) => b.panteleev_2001_listed === 'true').length, birds_petrov_1885: birds.filter((b) => b.petrov_1885_priilmenye === 'true').length },
-  acceptance: { mammal_signs_min_per_forest_riparian_pf_season: Math.min(...Object.values(accM)), audible_birds_min_per_open_pf_season: Math.min(...Object.values(accB)) },
+  acceptance: { mammal_signs_min_per_forest_riparian_pf_season: Math.min(...Object.values(accM)), audible_birds_min_per_open_pf_season: Math.min(...Object.values(accB)), mammals_without_recorded_products: mammals.filter((row) => !row.products).length },
   errors, warnings,
 };
 fs.writeFileSync(path.join(DOM, 'validation-report.json'), JSON.stringify(report, null, 1) + '\n');

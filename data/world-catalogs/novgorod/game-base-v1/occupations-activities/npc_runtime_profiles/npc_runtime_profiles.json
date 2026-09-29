@@ -1786,7 +1786,21 @@
         "occ_market_baker",
         "occ_fish_trader",
         "occ_wetnurse",
-        "occ_shield_maker"
+        "occ_shield_maker",
+        "occ_enameler",
+        "occ_glass_bead_maker",
+        "occ_charcoal_burner",
+        "occ_plinth_maker",
+        "occ_dairy_worker",
+        "occ_well_builder",
+        "occ_household_stove_maker",
+        "occ_literacy_teacher",
+        "occ_gravedigger",
+        "occ_bath_keeper",
+        "occ_gusli_player",
+        "occ_singer",
+        "occ_storyteller",
+        "occ_inn_host_household"
       ],
       "applicability": [
         {
@@ -3846,7 +3860,17 @@
       },
       "source_refs": [
         "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_fisher_v1",
-        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_fisher_v1"
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_fisher_v1",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0112|name=Зимний подлёдный рыбак|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0113|name=Ловец рыбы острогой|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0114|name=Лодочник при рыболовном промысле|basis=logical_necessity|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0107|name=Неводчик|basis=sourced|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0105|name=Профессиональный рыбак|basis=logical_necessity|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0117|name=Работник рыбацкого стана|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0111|name=Рыбак крючковой снастью|basis=sourced|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0109|name=Рыбак ставными сетями|basis=sourced|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0106|name=Сезонный рыбак|basis=logical_necessity|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0108|name=Участник неводной артели|basis=logical_necessity|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год"
       ],
       "executable": false,
       "typed_gaps": [
@@ -4579,7 +4603,9 @@
       },
       "source_refs": [
         "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_hunter_v1",
-        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_hunter_v1"
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_hunter_v1",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0119|name=Промысловый охотник|basis=sourced|confidence=A|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0120|name=Сезонный охотник|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год"
       ],
       "executable": false,
       "typed_gaps": [
@@ -4810,7 +4836,9 @@
       },
       "source_refs": [
         "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_forest_worker_v1",
-        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_forest_worker_v1"
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_forest_worker_v1",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0104|name=Заготовитель грибов, ягод, орехов и трав|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0071|name=Заготовитель дубильной коры|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год"
       ],
       "executable": false,
       "typed_gaps": [
@@ -5756,7 +5784,8 @@
       },
       "source_refs": [
         "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_household_servant_v1",
-        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_household_servant_v1"
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_household_servant_v1",
+        "archive_variant:gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0421|name=Домашняя служанка|basis=logical_necessity|confidence=B|period=1180-1260|region=Великий Новгород и Новгородская земля, центр модели — 1230 год"
       ],
       "executable": false,
       "typed_gaps": [
@@ -14939,6 +14968,748 @@
           "no_source": "regional_frequency_weights_not_authored"
         }
       ]
+    },
+    {
+      "profile_id": "profile_occ_enameler",
+      "occupation_ref": "occ_enameler",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_enameler",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_glass_bead_maker",
+      "occupation_ref": "occ_glass_bead_maker",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_glass_bead_maker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_charcoal_burner",
+      "occupation_ref": "occ_charcoal_burner",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_charcoal_burner",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_plinth_maker",
+      "occupation_ref": "occ_plinth_maker",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_plinth_maker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_dairy_worker",
+      "occupation_ref": "occ_dairy_worker",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_dairy_worker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_well_builder",
+      "occupation_ref": "occ_well_builder",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_well_builder",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_household_stove_maker",
+      "occupation_ref": "occ_household_stove_maker",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_household_stove_maker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_literacy_teacher",
+      "occupation_ref": "occ_literacy_teacher",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_literacy_teacher",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_gravedigger",
+      "occupation_ref": "occ_gravedigger",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_gravedigger",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_bath_keeper",
+      "occupation_ref": "occ_bath_keeper",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_bath_keeper",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_gusli_player",
+      "occupation_ref": "occ_gusli_player",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_gusli_player",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_singer",
+      "occupation_ref": "occ_singer",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_singer",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_storyteller",
+      "occupation_ref": "occ_storyteller",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_storyteller",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
+    },
+    {
+      "profile_id": "profile_occ_inn_host_household",
+      "occupation_ref": "occ_inn_host_household",
+      "role_ref": null,
+      "role_selection_rule": "no_source:occupation_role_not_established",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "no_source:individual_clothing",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "no_source:exact_game_base_item_bindings",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "no_source:occupation_specific_seasonal_schedule",
+        "spring": "no_source:occupation_specific_seasonal_schedule",
+        "summer": "no_source:occupation_specific_seasonal_schedule",
+        "autumn": "no_source:occupation_specific_seasonal_schedule"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_inn_host_household",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ],
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "allowed_role_refs": [],
+      "regional_option_sets": []
     }
   ]
 }

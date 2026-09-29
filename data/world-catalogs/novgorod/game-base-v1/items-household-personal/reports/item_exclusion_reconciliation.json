@@ -1,0 +1,9 @@
+{
+  "status": "candidate",
+  "utility_exclusions_reviewed": 3759,
+  "returned_as_typed_traces": 3741,
+  "point_dispositions": 18,
+  "point_returns_or_handoffs": 18,
+  "rejected_anachronisms": 0,
+  "equation": "3741 typed traces + 18 point dispositions = 3759 utility exclusions"
+}

@@ -9,12 +9,13 @@
 
 | Папка | Домен(ы) брифа | Приоритет брифа | Статус |
 |---|---|---|---|
-| `social_strata_legal_status/` | `social_strata_legal_status` | M2c | 11 новых кандидатов ролей, все archetype id проверены скриптом против approved seeds |
-| `law_justice_governance/` | `law_justice_governance` | M3 | 33 строки из 32 approved WK claims (Русская Правда + новгородские летописные институты), все claim_ref проверены скриптом |
+| `social_strata_legal_status/` | `social_strata_legal_status` | M2c | 33 кандидата ролей: 11 исходных + 22 архивных; archetype id проверены скриптом против approved seeds |
+| `law_justice_governance/` | `law_justice_governance` | M3 | 81 строка: 33 WK-строки + 48 новых архивных тем; ещё 8 refs прикреплены к конкретным строкам, 4 сведены в 3 канонические темы; один `add_variant` ref прикреплён к существующей записи |
 | `incidents_conflicts/` | `incidents_conflicts` | M3 | 40 конфликтов + 15 вспомогательных строк из черновика rus13tpl, тип и участники резолвлены и проверены скриптом |
 
-Итого новых строк: **11 + 33 + 55 = 99**, во всех — `source_refs` и `confidence`, посчитано скриптами
-(`*/reports/counts.json` в каждой папке).
+Итого в группе: **33 + 81 + 55 = 169** строк (роль-кандидаты + правовые строки + инциденты). Изменение D46:
+**70 новых строк** (22 роли + 48 правовых тем) и **3 варианта** существующих записей; значения посчитаны
+скриптами (`*/reports/counts.json` в каждой папке).
 
 ## Что НЕ сделано (сознательно, не потеряно — см. README каждого домена)
 
@@ -24,17 +25,20 @@
 - `pf_ids` и `timer_rule` для `incidents_conflicts` не резолвлены (нужен отдельный словарь мест и отдельный
   черновик таймеров, который вообще не имеет владельца в каталоге — см. критику брифа).
 - Более широкая ревизия женских/возрастных ролей сверх явно запрошенных в брифе не проводилась.
-- MASTER `legal_rules`/`property_rules`/`social_role_profiles` (economy_social) прочитаны и признаны слишком
-  общими (топик-уровень, без сумм и статей) для механического слияния — не включены построчно, чтобы не
-  разбавлять данные WK-claims более низким качеством источника.
+- MASTER `legal_rules`/`property_rules` представлены 60 архивными refs: 48 новых тем, 8 refs прикреплены к
+  конкретным существующим правилам, 4 refs объединены с парными темами в 3 записи. Отдельный `add_variant` ref присоединён
+  к существующей записи. Это candidate topic scopes,
+  а не готовые механики: неподтверждённые санкции, процедуры и права не выводились. `social_role_profiles`
+  построчно не включались.
+- Повторная правка по REVIEW-imp-people-2: все 22 archive role IDs семантические; workflow-шаблоны убраны из role fields;
+  5 редких ролей получили `context_only_not_mass_default`. Тематические связи права и `sn_rp_*` находятся в
+  существующих `note_ru`, без новой схемы отношений.
 
 ## Как пересобрать всё
 
 ```
-cd social_strata_legal_status/scripts && python build_roles.py
-cd ../../law_justice_governance/scripts && python build_law.py
-cd ../../incidents_conflicts/scripts && python build_incidents.py
+cd data/world-catalogs/novgorod/game-base-v1/social-strata-law/social_strata_legal_status/scripts && python3 build_roles.py
+cd ../../law_justice_governance/scripts && python3 build_law.py
+cd ../../incidents_conflicts/scripts && python3 build_incidents.py
 ```
-Каждый скрипт только читает main checkout (`C:/Users/Slaven/Documents/Novgorod`, read-only) и, где нужно,
-PR #98 worktree (`C:/Users/Slaven/Documents/Novgorod-runtime`, read-only, только `infra/world-base/schema/05.sql`
-на чтение constraint-списка). Пишет только внутри своей папки.
+Скрипты используют пути относительно локального checkout; каждый пишет только внутри своей папки.

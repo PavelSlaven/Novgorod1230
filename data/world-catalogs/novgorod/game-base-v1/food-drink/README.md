@@ -1,35 +1,37 @@
 # Еда и питьё — кандидатный набор game-base-v1
 
 Статус: **candidate**. Не утверждено. Утверждать должен отдельный проход (Opus high или владелец), автор не утверждает сам себя.
-Сборщик: `collect-food-drink`, 2026-09-26.
+Сборщик: `collect-food-drink`, `fleet/imp-food` (Codex sol 5.6), 2026-09-29.
 
 Группа покрывает два домена каталога (`../catalog.json`):
 
 | Домен | Папка | Главные таблицы |
 |---|---|---|
-| `food_ingredients` — продукты и сезонность | [food/](food/README.md) | `ingredients.csv`, `ingredient_months.csv`, `taxon_refs.csv`, `household_food_stock_profiles.csv` |
-| `dishes_meals_preservation` — блюда, напитки, трапезы, хранение, посты, голод | [dishes/](dishes/README.md) | `dishes_meals.csv`, `recipe_steps.csv`, `meal_profiles.csv`, `meal_slot_rules.csv`, `fasting_rules.csv`, `preservation_storage.csv`, `spoilage_states.csv`, `sensory_lexicon.csv`, `famine_1230.csv` |
+| `food_ingredients` — продукты, материальные сущности и сезонность | [food/](food/README.md) | `ingredients.csv`, `material_entities.csv`, `ingredient_months.csv`, `taxon_refs.csv`, `household_food_stock_profiles.csv` |
+| `dishes_meals_preservation` — блюда, напитки, их сезонность, трапезы, хранение, посты, голод | [dishes/](dishes/README.md) | `dishes_meals.csv`, `recipe_months.csv`, `recipe_steps.csv`, `meal_profiles.csv`, `meal_slot_rules.csv`, `fasting_rules.csv`, `preservation_storage.csv`, `spoilage_states.csv`, `sensory_lexicon.csv`, `famine_1230.csv` |
 
 Общий реестр ссылок — `sources.csv`: каждая ссылка из `source_refs` всех таблиц с названием, URL и уровнем доверия. Ссылки на строки файлов сведены до имени файла.
 
-## Числа строк (по скрипту `scripts/check.py`, прогон 2026-09-26)
+## Числа строк (по скрипту `scripts/check.py`, прогон 2026-09-29)
 
 | Файл | Строк | A | B | C |
 |---|---|---|---|---|
 | food/ingredients.csv | 198 | 67 | 107 | 24 |
+| food/material_entities.csv | 94 | 49 | 38 | 7 |
 | food/ingredient_months.csv | 2280 | 756 | 1248 | 276 |
 | food/taxon_refs.csv | 74 | — | 59 | 15 |
 | food/household_food_stock_profiles.csv | 6528 | — | 44 | 6484 |
 | dishes/dishes_meals.csv | 270 | 19 | 2 | 249 |
+| dishes/recipe_months.csv | 3216 | 228 | 2388 | 600 |
 | dishes/recipe_steps.csv | 1164 | 70 | — | 1094 |
 | dishes/meal_profiles.csv | 21 | — | 14 | 7 |
 | dishes/meal_slot_rules.csv | 10 | — | — | 10 |
 | dishes/fasting_rules.csv | 18 | — | 13 | 5 |
 | dishes/preservation_storage.csv | 9 | — | 4 | 5 |
-| dishes/spoilage_states.csv | 8 | — | — | 8 |
+| dishes/spoilage_states.csv | 9 | — | — | 9 |
 | dishes/sensory_lexicon.csv | 23 | — | — | 23 |
 | dishes/famine_1230.csv | 23 | 18 | — | 5 |
-| sources.csv | 111 | | | |
+| sources.csv | 113 | | | |
 
 ## Как собрано
 
@@ -42,8 +44,9 @@
    - ПВЛ под 996 (квасы, мёд в бочках) и 997 (кисель из цежа, «сыта»);
    - берестяные грамоты № 943, 706, 709, 586, 147 (gramoty.ru);
    - Кирьянова 1979: состав зерновых X–XIII вв., горох, кормовые бобы, чечевица, гречиха.
-6. **Курированные входы** — `scripts/curated/curated.json` (таксоны, правки master, добавления, голод, посты, классы, дворы) и `scripts/curated/curated_rules.json` (сенсорный словарь, порча, трапезы, насыщение, способы хранения). У каждой записи есть ссылки.
-7. **Сборка** — `python scripts/build.py`: детерминированная, без сети. **Проверка** — `python scripts/check.py`: acceptance доменов, denylist и разрешение ссылок. Выход 1 при любой ошибке. Последний прогон: `RESULT PASS 0`, проверено 4045 ссылок.
+6. **Курированные входы** — `scripts/curated/curated.json` (таксоны, правки master, добавления, голод, посты, классы, дворы), `scripts/curated/curated_rules.json` (сенсорный словарь, порча, трапезы, насыщение, способы хранения) и `scripts/curated/archive_inclusions.json` (решение D46: точный список включений и вариантов). У каждой записи есть ссылки.
+7. **D46.** Исходные 151 материальная строка сверки разобраны на 94 новые сущности, 53 варианта существующих сущностей и 4 слияния. Вместе с 10 прежними решениями сверки манифест содержит 63 варианта. Также включены 3216 строк сезонности для 268 существующих рецептов.
+8. **Сборка** — `python scripts/build.py`: детерминированная, без сети. **Проверка** — `python scripts/check.py`: acceptance доменов, denylist и разрешение ссылок. Выход 1 при любой ошибке. Последний прогон: `RESULT PASS 0`, проверено 7422 ссылки.
 
 ## Правила уверенности
 
@@ -53,11 +56,11 @@
 
 ## Универсальный слой и регион
 
-Каждая строка продукта — это разрешение для региона на универсальную категорию: `universal_category=true`, `category_id=content_food.<food_category>.<slug>` (предложение для `category_registry`), `region_id=region_novgorod_land`, `origin` (local / regional / local+import / import). Таксон задаётся через `source_taxon_ref = taxon:<латинское имя>`. Сверка с `fl_id`/`fa_id` доменов флоры и фауны выполняется по `name_lat`. Сейчас сверено 0 из 74: соседних файлов с колонкой `name_lat` в game-base-v1 при прогоне ещё не было. check.py сверит их автоматически, когда файлы появятся.
+Каждая строка продукта — это разрешение для региона на универсальную категорию: `universal_category=true`, `category_id=content_food.<food_category>.<slug>` (предложение для `category_registry`), `region_id=region_novgorod_land`, `origin` (local / regional / local+import / import). Таксон задаётся через `source_taxon_ref = taxon:<латинское имя>`. Сверка с `fl_id`/`fa_id` доменов флоры и фауны выполняется по `name_lat`. Сейчас сверено 46 из 74; для 28 ссылок соответствие в соседних файлах ещё не найдено.
 
 ## Известные пробелы (общие)
 
-- Нет сопоставления с `fl_id`/`fa_id` (домены флоры и фауны ещё собираются).
+- Для 28 из 74 таксонов ещё нет сопоставления с `fl_id`/`fa_id`.
 - Сроки нереста и путины по видам рыб не заданы: у всех рыб весь год стоит «conditional». Это передано домену `fauna_fish`.
 - Даты постов на 1230–1233 по пасхалии здесь не вычислены, это задача домена `calendar_feasts_fasts`. Здесь только рамки и классы продуктов.
 - Импортные пряности (перец и др.), грецкий орех, слива, черёмуха, калина для Новгорода около 1230 г. не подтверждены найденными источниками и не включены.

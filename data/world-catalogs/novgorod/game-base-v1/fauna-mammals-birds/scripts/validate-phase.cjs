@@ -93,7 +93,7 @@ function validate(group, rows, header, presenceOverride, taxaOverride) {
     }
   }
   if (fish) {
-    const legacy = new Set(['fa_mamm_house_mouse', 'fa_mamm_striped_field_mouse', 'fa_mamm_voles', 'fa_mamm_black_rat']);
+    const legacy = new Set(['fa_mamm_black_rat']);
     for (const p of presence) if (p.fa_id.startsWith('fa_mamm_') && !legacy.has(p.fa_id)) errors.push(`unmapped legacy mammal ${p.fa_id}`);
     for (const pair of [...scope]) if (legacy.has(pair.split('|')[0])) scope.delete(pair);
   }
@@ -382,7 +382,7 @@ if (require.main === module) {
       reject('fa_ins_horseflies', 'summer', 'daylight', 'voice_text_ref', 'invertebrates_herps.csv#L2', 'unresolved voice text');
       reject('fa_crust_noble_crayfish', 'summer', 'night', 'source_refs', 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L1', 'unresolved source');
       const legacyRows = csv(file(group, 'fauna_presence.csv')).rows.map((p) => ({ ...p }));
-      legacyRows.find((p) => p.fa_id === 'fa_mamm_house_mouse').fa_id = 'fa_mamm_new_probe';
+      legacyRows.find((p) => p.fa_id === 'fa_mamm_black_rat').fa_id = 'fa_mamm_new_probe';
       if (!validate(group, table.rows, table.header, legacyRows).some((e) => e.startsWith('unmapped legacy mammal')))
         errors.push('new legacy mammal accepted');
       const chicken = find('fa_dom_chicken', 'winter', 'night');

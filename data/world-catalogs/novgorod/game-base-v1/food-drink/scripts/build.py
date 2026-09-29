@@ -13,10 +13,13 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE.parent
 NOV = OUT.parents[1]  # data/world-catalogs/novgorod
 MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/food_system'
+MATERIAL_MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities'
 SNAP = HERE / 'source_snapshot'
 CUR = json.loads((HERE / 'curated/curated.json').read_text(encoding='utf-8'))
 RUL = json.loads((HERE / 'curated/curated_rules.json').read_text(encoding='utf-8'))
+ARCHIVE = json.loads((HERE / 'curated/archive_inclusions.json').read_text(encoding='utf-8'))
 MASTER_REL = 'sources/master-archive-v1/data/normalized_source_tables/food_system'
+MATERIAL_REL = 'sources/master-archive-v1/data/normalized_source_tables/material_entities'
 SNAP_REL = 'game-base-v1/food-drink/scripts/source_snapshot'
 
 MONTHS = 'jan feb mar apr may jun jul aug sep oct nov dec'.split()
@@ -72,6 +75,8 @@ MSRC = {r['source_id']: r for r in rd(MASTER / 'sources.csv')}
 STEPS = rd(SNAP / 'recipe_steps.csv')
 LINKS = rd(SNAP / 'recipe_ingredient_links.csv')
 MEALS = rd(SNAP / 'meal_sets.csv')
+MATERIAL_ENTITIES = rd(MATERIAL_MASTER / 'material_entities.csv')
+STATE_VARIANTS = rd(MATERIAL_MASTER / 'state_variants.csv')
 
 ing_by = {r['ingredient_id']: r for r in ING}
 month_av = {}
@@ -210,6 +215,24 @@ def refs_for_master(r, extra=()):
     return uniq(out + list(extra))
 
 
+def material_basis(source, action=''):
+    role = ARCHIVE['material_source_role']
+    if action == 'include_analogy':
+        return 'analogy', f'analogy: {source["evidence_basis"]}'
+    evidence = source['evidence_basis']
+    if evidence.startswith('Прямые археологические, письменные или стратиграфически привязанные новгородские данные'):
+        return 'sourced', f'category-level evidence ({role}): {evidence}'
+    return 'logical_necessity', evidence
+
+
+def repository_archive_ref(archive_ref):
+    return 'sources/master-archive-v1/' + archive_ref
+
+
+def canonical_material_id(archive_id):
+    return f'n1230:material_item:{archive_id.lower()}'
+
+
 # ---------------- ingredients
 ingredients = []
 fd_by_master = {}
@@ -285,8 +308,83 @@ for a in CUR['additions']:
         recipe_evidence_type='direct_text' if a['confidence'] == 'A' else ('archaeological' if a['confidence'] == 'B' else 'comparative_reconstruction'),
         source_refs=uniq(a['refs'] + t.get('refs', [])), confidence=a['confidence'], status='candidate', notes=a['notes']))
 
-ING_COLS = list(ingredients[0].keys())
+# D46 variants enrich existing entities and preserve their identity.
+material_by_id = {r['item_id']: r for r in MATERIAL_ENTITIES}
+state_by_id = {r['state_id']: r for r in STATE_VARIANTS}
 fd_rows = {r['fd_id']: r for r in ingredients}
+variant_report = []
+for spec in ARCHIVE['variants']:
+    archive_id = spec['archive_ref'].rsplit(':', 1)[1]
+    source = material_by_id.get(archive_id) or state_by_id.get(archive_id)
+    if source is None:
+        raise ValueError(f'archive variant source unresolved: {archive_id}')
+    confidence = source['historical_confidence']
+    basis, derivation = material_basis(source, spec['action'])
+    archive_ref = repository_archive_ref(spec['archive_ref'])
+    variant_report.append({'archive_id': archive_id, 'target_kind': spec['target_kind'],
+                           'target_ids': spec['target_ids'], 'action': spec['action'], 'reason': spec['reason'],
+                           'basis': basis, 'derivation': derivation, 'confidence': confidence, 'archive_ref': archive_ref})
+    if spec['target_kind'] != 'fd':
+        continue
+    detail = source.get('manufacturing_or_condition_state') or source.get('manufacturing_state') or source.get('description_ru', '')
+    for target_id in spec['target_ids']:
+        target = fd_rows.get(target_id)
+        if target is None:
+            raise ValueError(f'archive variant target unresolved: {archive_id} -> {target_id}')
+        note = (f'Архивный вариант «{source["name_ru"]}» ({detail}; basis={basis}; confidence={confidence}; '
+                f'reason={spec["reason"]}); сохраняет identity {target_id}.')
+        target['notes'] = (target['notes'] + ' ' + note).strip()
+        target['source_refs'] = uniq(target['source_refs'] + [archive_ref])
+
+# Exact archive rows selected by D46. Archive properties stay intact except
+# canonical item_id and the explicit function links added by merges/variants.
+material_rows = []
+material_rows_by_archive = {}
+for archive_id in ARCHIVE['material_entity_ids']:
+    source = material_by_id.get(archive_id)
+    if source is None:
+        raise ValueError(f'archive material entity unresolved: {archive_id}')
+    row = dict(source)
+    confidence = row['historical_confidence']
+    basis, derivation = material_basis(source)
+    row.update(
+        item_id=canonical_material_id(archive_id),
+        basis=basis,
+        derivation=derivation,
+        source_refs=[f'{MATERIAL_REL}/material_entities.csv:{archive_id}'],
+        confidence=confidence,
+        status='candidate')
+    material_rows.append(row)
+    material_rows_by_archive[archive_id] = row
+
+merge_report = []
+for spec in ARCHIVE['material_merges']:
+    archive_id = spec['archive_ref'].rsplit(':', 1)[1]
+    source = material_by_id.get(archive_id)
+    target = material_rows_by_archive.get(spec['target_item_id'])
+    if source is None or target is None:
+        raise ValueError(f'archive merge unresolved: {archive_id} -> {spec["target_item_id"]}')
+    archive_ref = repository_archive_ref(spec['archive_ref'])
+    target['function'] += f'; вариант формы/назначения: {source["function"]}'
+    target['source_refs'] = uniq(target['source_refs'] + [archive_ref])
+    target['derivation'] += f'; merged {archive_id}: {spec["reason"]}'
+    merge_report.append({'archive_id': archive_id, 'target_item_id': canonical_material_id(spec['target_item_id']),
+                         'reason': spec['reason'], 'confidence': source['historical_confidence'], 'archive_ref': archive_ref})
+
+for spec, report in zip(ARCHIVE['variants'], variant_report):
+    if spec['target_kind'] != 'material':
+        continue
+    source = material_by_id.get(report['archive_id']) or state_by_id.get(report['archive_id'])
+    for target_id in spec['target_ids']:
+        target = material_rows_by_archive.get(target_id)
+        if target is None:
+            raise ValueError(f'archive material variant target unresolved: {report["archive_id"]} -> {target_id}')
+        target['function'] += f'; вариант назначения: {source["function"]}'
+        target['source_refs'] = uniq(target['source_refs'] + [report['archive_ref']])
+        target['derivation'] += f'; variant {report["archive_id"]}: {spec["reason"]}'
+MATERIAL_COLS = list(MATERIAL_ENTITIES[0].keys()) + ['basis', 'derivation', 'source_refs', 'confidence', 'status']
+
+ING_COLS = list(ingredients[0].keys())
 
 # per-month table
 months_rows = []
@@ -528,6 +626,28 @@ for e in EXTRA_DISHES:
 DISH_COLS = list(dishes[0].keys())
 ds_by_master = {d['master_recipe_id']: d['ds_id'] for d in dishes if d['master_recipe_id']}
 
+# Recipe availability is a normalized relation, parallel to ingredient_months.
+# Join by stable master_recipe_id; do not trust crosswalk display refs.
+recipe_month_rows = []
+recipe_by_id = {r['recipe_id']: r for r in RCP}
+seasonality_refinements = {(r['ds_id'], r['month']): r for r in ARCHIVE['seasonality_refinements']}
+for source in SEAS:
+    if source['record_type'] != 'recipe':
+        continue
+    recipe_id = source['record_id']
+    if recipe_id not in ds_by_master or recipe_id not in recipe_by_id:
+        raise ValueError(f'recipe seasonality unresolved: {source["seasonality_id"]} -> {recipe_id}')
+    confidence = source['historical_confidence']
+    ds_id = ds_by_master[recipe_id]
+    month = MONTHS.index(source['month']) + 1
+    refinement = seasonality_refinements.get((ds_id, month))
+    recipe_month_rows.append(dict(
+        ds_id=ds_id, month=month,
+        availability=refinement['availability'] if refinement else source['availability'], basis='logical_necessity',
+        derivation=source['basis'] + (f'; {refinement["reason"]}' if refinement else ''),
+        source_refs=[f'{MASTER_REL}/food_seasonality.csv:{source["seasonality_id"]}'],
+        confidence=confidence, status='candidate'))
+
 # meal profiles
 meal_rows = []
 for m in MEALS:
@@ -566,6 +686,15 @@ for p in PM:
                           source_refs=p['refs'], confidence=p['confidence'], status='candidate'))
 spoil_rows = [dict(state_id=s['state_id'], is_spoilage='false' if s['state_id'] in ('soured',) else 'true', smell_ru=s['smell_ru'], look_ru=s['look_ru'],
                    applies_to_categories=s['applies_to_categories'], body_effect=s['body_effect'], source_refs=s['refs'], confidence='C', status='candidate') for s in SPOIL]
+spoil_by_id = {r['state_id']: r for r in spoil_rows}
+for spec, report in zip(ARCHIVE['variants'], variant_report):
+    if spec['target_kind'] != 'spoilage_state':
+        continue
+    for target_id in spec['target_ids']:
+        target = spoil_by_id.get(target_id)
+        if target is None:
+            raise ValueError(f'archive spoilage variant target unresolved: {report["archive_id"]} -> {target_id}')
+        target['source_refs'] = uniq(target['source_refs'] + [report['archive_ref']])
 lex_rows = [dict(cue_key=e['cue_key'], match_subcategory=e['match_subcategory'], smell_ru=e['smell_ru'], taste_ru=e['taste_ru'], texture_ru=e['texture_ru'],
                  look_ru=e['look_ru'], source_refs=e['refs'] or ['rule:authored_prose_lexicon'], confidence='C', status='candidate') for e in LEX]
 fam_rows = [dict(fam_id=f['id'], kind=f['kind'], name_ru=f['name_ru'], value=f['value'],
@@ -576,10 +705,12 @@ fam_rows = [dict(fam_id=f['id'], kind=f['kind'], name_ru=f['name_ru'], value=f['
 # ---------------- write
 counts = {}
 counts['food/ingredients.csv'] = wr(OUT / 'food/ingredients.csv', ingredients, ING_COLS)
+counts['food/material_entities.csv'] = wr(OUT / 'food/material_entities.csv', material_rows, MATERIAL_COLS)
 counts['food/ingredient_months.csv'] = wr(OUT / 'food/ingredient_months.csv', months_rows, list(months_rows[0].keys()))
 counts['food/taxon_refs.csv'] = wr(OUT / 'food/taxon_refs.csv', taxon_rows, list(taxon_rows[0].keys()))
 counts['food/household_food_stock_profiles.csv'] = wr(OUT / 'food/household_food_stock_profiles.csv', stock_all, list(stock_all[0].keys()))
 counts['dishes/dishes_meals.csv'] = wr(OUT / 'dishes/dishes_meals.csv', dishes, DISH_COLS)
+counts['dishes/recipe_months.csv'] = wr(OUT / 'dishes/recipe_months.csv', recipe_month_rows, list(recipe_month_rows[0].keys()))
 counts['dishes/recipe_steps.csv'] = wr(OUT / 'dishes/recipe_steps.csv', step_rows, list(step_rows[0].keys()))
 counts['dishes/meal_profiles.csv'] = wr(OUT / 'dishes/meal_profiles.csv', meal_rows, list(meal_rows[0].keys()))
 counts['dishes/meal_slot_rules.csv'] = wr(OUT / 'dishes/meal_slot_rules.csv', slot_rows, list(slot_rows[0].keys()))
@@ -621,6 +752,16 @@ for u in sorted(used):
     src_rows.append(dict(ref=u, kind=kind, title=title, url=url, trust=trust))
 ext_used = {k: v for k, v in ext.items()}
 counts['sources.csv'] = wr(OUT / 'sources.csv', src_rows, ['ref', 'kind', 'title', 'url', 'trust'])
-(OUT / 'scripts/build_report.json').write_text(json.dumps({'counts': counts, 'unresolved_recipe_ingredients': unresolved}, ensure_ascii=False, indent=1), encoding='utf-8')
+report_text = json.dumps({'counts': counts,
+                          'archive_disposition_counts': {'new_entities': len(material_rows),
+                                                         'variants': len(variant_report),
+                                                         'merged': len(merge_report)},
+                          'material_source_relation_role': ARCHIVE['material_source_role'],
+                          'original_material_source_relation_count': ARCHIVE['original_material_source_relation_count'],
+                          'independent_entities': ARCHIVE['independent_entities'],
+                          'archive_variants': variant_report, 'archive_merges': merge_report,
+                          'seasonality_refinements': ARCHIVE['seasonality_refinements'],
+                          'unresolved_recipe_ingredients': unresolved}, ensure_ascii=False, indent=1)
+(OUT / 'scripts/build_report.json').write_bytes((report_text.replace('\n', '\r\n') + '\r\n').encode('utf-8'))
 print(json.dumps(counts, ensure_ascii=False, indent=1))
 print('unresolved', len(unresolved), unresolved[:10])

@@ -78,3 +78,40 @@
 2. Добавить недостающие правонарушения и процедуры брифа: вира и дикая вира, кражи по видам, свод, видок/послух, ордалии, находка и возврат вещи. Добавить постоянные институты: вече, князь, посадник, тысяцкий, владыка, сотские, старосты, гости-иноземцы. Источник — книжные свидетельства группы.
 3. Роли: перейти на A/B/C, заменить ссылки-заглушки на конкретные claim или book refs, подтянуть грамоту №147 для подвойского, добавить вариант несвободной кормилицы, решить определение бирича.
 4. Инциденты: `escalation_refs` → id правил, разделить `resolution_refs` и confidence, убрать неверную связь у guarantor. В трёх файлах правил добавить `confidence`.
+
+## Независимая проверка D46 imp-people (Claude Opus 5.5, 2026-09-29)
+
+История: круг 1 — rework (basis тем и ролей, дубли и зонтики тем права, архетипы ролей, жёсткий путь C:/ в incidents). Круг 2 — роли rework (шаблонная цепочка в modern_explanation/typical_places, второй архивный источник, context policy, архетипы наёмника/води/певчего, basis ROL0113 и двух тем, смысловые id); право и инциденты — approve_with_limits (SL-7 связи). Круг 3 — итоговый.
+
+Проверено скриптами в круге 3:
+- 22 новые роли со смысловыми id; 11 старых не изменены. Ни в одном поле нет шагов «Рабочей цепочки»; modern_explanation специфичен для роли; typical_places = no_source 22/22.
+- SL-2: второй источник у 12 ролей в authoring и sources, архивный role_id совпадает. SL-3: context_only ровно ROL0068/0104/0110/0143/0156. SL-4: наёмник armed_retainer_service/armed_retainer/outsider_foreign; водь/ижора free_commoner; певчий = nov_role_ponomar по 9 полям. SL-5: basis 8/5/9, ROL0113 logical_necessity.
+- Право: 48 новых + 8 прикреплённых + 4 слитых = 60 ссылок без потерь и повторов; household_property и pledged_property — logical_necessity, остальные analogy. Все связи SL-7 есть; у старых правил только дописаны note/source_refs.
+- Дубли по основам против pinned ролей и занятий, старого права, норм и инцидентов — новых нет; коллизий id нет; denylist — 0. Жёстких абсолютных путей нет.
+
+Прогоны (копия): build_roles, build_law, build_incidents ×2 — вывод = worktree, повтор побайтно; validation.json всех трёх подпапок ok; build-catalog, build-status + тест — PASS.
+
+Ограничения:
+- build_incidents.py нужен соседний checkout ../ref-pr98 (05.sql), без него FileNotFoundError; README описывает.
+- ROL0113: во входном authoring basis=sourced, в выход — override logical_necessity.
+- Class/role/mobility 14 новых ролей расходятся с дефолтами выбранной social position (часть — по указанию ревьюера); ребёнок в голод — traveler_outsider, спорно.
+- Темы права — тематические кандидаты без статей (analogy); вне списка SL-7 не связаны theft_general ↔ horse/livestock/weapon theft и merchant_dispute ↔ lw_proc_merchant_entrustment_oath_exception.
+
+Вердикт по файлам:
+- social_strata_legal_status/roles/new_role_candidates.tsv — approve_with_limits (архетипные расхождения)
+- social_strata_legal_status/scripts/archive_role_candidates.json (новый) — approve_with_limits (basis ROL0113 во входе)
+- social_strata_legal_status/scripts/build_roles.py — approve
+- social_strata_legal_status/README.md — approve
+- social_strata_legal_status/reports/counts.json — approve
+- social_strata_legal_status/reports/validation.json — approve
+- law_justice_governance/law/institutions.csv, offences_sanctions.csv, procedures.csv — approve_with_limits (темы без статей)
+- law_justice_governance/scripts/build_law.py — approve
+- law_justice_governance/scripts/seed_law_rows.py — approve
+- law_justice_governance/scripts/archive_rule_candidates.json (новый) — approve
+- law_justice_governance/README.md — approve
+- law_justice_governance/reports/counts.json — approve
+- law_justice_governance/reports/validation.json — approve
+- incidents_conflicts/scripts/build_incidents.py, README.md — approve_with_limits (зависимость от ref-pr98)
+- incidents_conflicts/reports/* — approve
+- README.md — approve
+Группа: approve_with_limits.

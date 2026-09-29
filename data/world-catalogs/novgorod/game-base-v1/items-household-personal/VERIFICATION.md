@@ -532,3 +532,58 @@
   - формулы на пряслицах известны по Киеву и Витебску; примеры с корчаг не новгородские («горшок ≈ корчага» — аналогия);
   - перенос надписей на HH_TOOLS_SMALL и знак владельца на оселке — аналогия (§1464 подтверждает имена, а не знаки);
   - согласование притяжательной формы `{object_name}`/`{contents_name}` и выбор варианта шаблона — за кодом, весов вариантов нет.
+
+## Независимая проверка lw-house, круги 1–5 (Claude Opus 5.5, CR #176 шаг 1, незакоммиченный diff поверх bcb90bd5)
+
+Санитарное утверждение D35 (WR §21.1), отдельный проход от автора данных. Статус данных `candidate`, runtime не включён. Итог по группе: **`approve_with_limits`**. Блокирующая находка A круга 4 и мелкие B–E закрыты; остались две мелкие находки без блокировки (G, H).
+
+**Ход кругов.**
+- Круги 1–2. Обязательные наборы дворов, мастерских и мест; следы и контексты D40; точечные возвраты исключённого. Направление принято, возвращено на широту и возвраты.
+- Круг 3. Независимая проверка: 35 проб, все 28 книжных ссылок настоящие. Итог `rework` (узкий), 5 блокирующих находок и 10 мелких.
+  - Блокирующие: наборы без орудий занятия и базовых вещей; две роменско-боршевские формы выданы за источник; пряности отвергнуты по открытой причине; импорт через `R_GROUP_DEFAULT`; ledger армии написан вручную.
+- Круг 4. Все 15 находок закрыты, но исправление находки 4 сняло 62 строки частоты у 11 вещей, которые не costly. Итог `rework` (узкий): находка A и мелкие B–F.
+- Круг 5 (эта проверка). Короткий проход только по A и B–E, скриптами.
+
+**Механика круга 5.** Копия `game-base-v1` на servak в раскладке репозитория, с master, WK, v5 и `run-stage-16.js` из того же worktree; checkout не менялся; копия удалена после прохода.
+- Восемь Python builders, `validate.py --self-test` и `build-catalog.cjs` прогнаны дважды (`PYTHONHASHSEED=7/9001`).
+  - 10/10 разделов PASS; отрицательные пробы автора PASS: частота (с costly и valued `where_used`), наборы 22, следы 8, контексты 5, возвраты 6, evidence v2 5.
+  - Обе сборки побайтно совпадают между собой и со сданным diff: 616 файлов `game-base-v1` без `__pycache__`, включая `CATALOG.md` и `catalog.json`.
+- `node --test scripts/build-status.test.mjs` из `game-base-v1` — PASS 4/4.
+- Собственные пробы: удаление `ipf_it_ps_encolpion__church_interior` validate ловит; удаление `ipf_it_ps_zmeevik__church_interior` не ловит (находка H).
+
+**Находки круга 4 — состояние.**
+- A. Закрыто.
+  - Против HEAD: снято 0 строк, изменено 0, добавлено 5 — `R_GROUP_DEFAULT` у четырёх новых глиняных форм (сковородка, латка, сосуд с отверстиями, прямоугольный противень).
+  - 62/62 строки 11 вещей вернулись побайтно: шахматы (король, ладья, пешка) 33, энколпион 4, каменная иконка 2, змеевик 2, бритва 2, зеркало 2, шкатулка 3, медный подсвечник 3, гусли-лира 11. Энколпион снова в `church_interior`, `churchyard`, `monastery_yard`; иконка и змеевик в `church_interior`; шахматы и гусли-лира на `churchyard`.
+  - Вернулись и 10 строк привозной поливной миски (`R_WHERE_USED_TEXT` 5, `R_WK_COMPOSES` 5): основание master, фильтр их не касается.
+  - Фильтр `allows_group_default` стоит только в ветке `R_GROUP_DEFAULT`. `R_GROUP_DEFAULT` у costly, import и prestige вещей 0. Без строк частоты только 2 вещи из 196: стеклянный сосуд и серебряная чаша, обе costly и без источника места.
+  - `frequency_dropped.csv` — 0 строк. 4 828 снятий HEAD разнесены без потерь: 3 741 в следы, 1 087 в контексты. Причина вне закрытого списка роняет builder (`closed_drop_reason`).
+  - Проба `check_valued_where_used` есть и ловит удаление строки энколпиона.
+- B и C. Закрыто.
+  - Снимок `sources/evidence-household-v2/`: пять небитых CSV армии v2, побайтно равны выпискам армии; 146 строк `*.broken.csv` не взяты.
+  - Ledger 7 331 = все строки v2, лишних и пропущенных нет. Хеш каждой строки пересчитан, у каждой ровно один target или причина.
+  - Период только из v2 `period`, отказ `anachronism_or_late_form` только по флагу v2 `anachronism_denylist_hit`, `note` не разбирается. Нарушений 0.
+  - Итог: 43 кандидата, 5 564 handoff, 1 724 отказа (поздняя форма 21, вне relation 538, вне периода 1 165). Торжок 1238 (`x-food.csv` v2, строки 1515–1517) теперь идёт владельцу на обзор. SHA-256 ledger `33fa9dce…` совпадает с отчётом автора.
+- D. Закрыто. README п. 7: подушек и перин нет, свёрнутый край покрывала служит подголовьем. П. 9: семь отклонений, пряностей среди них нет.
+- E. Закрыто. `key_fields` доменов `item_place_trace_relations` и `item_context_relations` в `domains-a.src.json` и `catalog.json` совпадают с заголовками CSV поимённо и по порядку.
+- F. К коммиту. У пяти `tools/*/src/cli.js` режим 100644→100755 по-прежнему в worktree; в коммит не брать.
+
+**Находки круга 3.** Все 15 закрыты в круге 4 (подробности в REVIEW-lw-house-4); повторная сборка круга 5 их не меняет. Охват каталога 196/196: 79 в наборах, 117 только в частоте.
+
+**Остаются, мелкие, без блокировки.**
+- G. Сосуд с отверстиями и прямоугольный противень (аналогия C, VIII–X вв.) в наборах условные: «0, пока не выполнено условие». В частоте у них безусловный `R_GROUP_DEFAULT` contextual в жилище, у сосуда ещё в хозпостройках. Согласовать при следующей правке: rare или условие.
+- H. `check_valued_where_used` закрепляет только две строки (энколпион в церкви, гусли-лира в жилище). Снятие других возвращённых строк validate не ловит; сейчас защищает только побайтная пересборка. Общая проверка, что каждое место из master `where_used` дошло до частоты, закрыла бы это.
+
+Автор также правил `scripts/seed_items.psv` (6 новых вещей); build-status этот файл не отслеживает.
+
+- items/item_place_frequency.csv, scripts/build_frequency.py — approve_with_limits (A закрыта; candidate; находка G)
+- items/household_inventory_profiles.csv, scripts/household_inventory_rules.py, scripts/build_household_inventory.py, scripts/validate_household_inventory.py — approve_with_limits (candidate, runtime-consumer нет)
+- items/household.csv, items/item_categories.csv, scripts/build_items.py — approve_with_limits (две формы — аналогия C; находка G)
+- reports/household_evidence_ledger.csv, reports/household_evidence_intake.json, scripts/build_evidence_intake.py, scripts/validate_evidence_intake.py, sources/evidence-household-v2/ — approve
+- items/item_place_trace_relations.csv, items/item_context_relations.csv, reports/item_exclusion_returns.csv, scripts/build_trace_relations.py, scripts/build_exclusion_returns.py, scripts/exclusion_return_rules.py, scripts/validate_trace_relations.py, scripts/validate_context_relations.py, scripts/validate_exclusion_returns.py — approve_with_limits (4 handoff без issue; стройка и военный лагерь ждут #176)
+- scripts/validate.py — approve_with_limits (находка H)
+- README.md — approve
+- reports/household_inventory_rejected.csv, reports/household_inventory_coverage.json, reports/item_catalog_coverage.csv, reports/item_catalog_coverage.json, reports/item_place_trace_coverage.json, reports/item_exclusion_reconciliation.json — approve
+- items/condition_vocab.csv, items/archetype_pf_map.csv, reports/frequency_dropped.csv, reports/counts.json, reports/validation.json — approve
+
+Корневые файлы вне группы: `../CATALOG.md` и `../catalog.json` пересобраны `build-catalog.cjs` из `../scripts/domains-a.src.json` побайтно; в `REQUIRED` добавлены три домена; находка E закрыта. Вердикт по ним approve.

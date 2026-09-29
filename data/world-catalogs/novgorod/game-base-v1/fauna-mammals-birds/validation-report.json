@@ -4,21 +4,21 @@
  "counts": {
   "mammals": 44,
   "birds": 149,
-  "hunting_methods": 23,
+  "hunting_methods": 25,
   "hunting_tenure_defaults": 3,
   "pelt_calendars": 16,
-  "presence_rows": 4221,
-  "phase_activity_rows": 2628,
+  "presence_rows": 4249,
+  "phase_activity_rows": 2644,
   "place_families_with_rows": 38,
   "presence_by_class": {
-   "rare": 1457,
-   "contextual": 1374,
-   "common": 1103,
+   "rare": 1465,
+   "contextual": 1390,
+   "common": 1107,
    "ubiquitous": 287
   },
   "presence_confidence": {
-   "B": 3697,
-   "C": 524
+   "B": 3701,
+   "C": 548
   },
   "taxa_presence_1230_confidence": {
    "A": 19,
@@ -30,7 +30,8 @@
  },
  "acceptance": {
   "mammal_signs_min_per_forest_riparian_pf_season": 7,
-  "audible_birds_min_per_open_pf_season": 2
+  "audible_birds_min_per_open_pf_season": 2,
+  "mammals_without_recorded_products": 21
  },
  "errors": [],
  "warnings": [

@@ -71,7 +71,14 @@ used by the pool. Provenance resolves only into that snapshot; builder and
 validator require every `source_form` to occur in its referenced row. The
 decision TSV accounts for all 207 reviewed source rows: 149 included rows
 contribute 223 derived records before key merging, and 58 are excluded with
-a closed row-level reason. The resulting pool has 179 unique entries. Typed
+a closed row-level reason. D46 adds `d46-name-additions.json` as a narrow
+archive-decision owner: 158 origin-bound or local first-name entries are
+projected, 19 variants remain attached to their existing targets, and ten
+forms remain non-selectable typed gaps (four §5.3 exclusions, two forms that
+require lower weight, and four unresolved Turkic origins). The resulting pool
+has 337 unique entries. Exact archive periods, regions, basis, confidence and
+source refs stay in the authoring delta; its two repo-local source snapshots
+are pinned by SHA-256. The B2 import schema is unchanged. Typed
 gaps include every people×sex ordinary pool below 10 rows, unresolved
 social-position selection, the `medieval_general` temporal caveat and the
 component-pool runtime-import gap. No mention-count weights are used.
@@ -81,7 +88,8 @@ component-pool runtime-import gap. No mention-count weights are used.
 `name_component_pools.csv`, `name_component_entries.csv` and
 `name_component_rules.csv` keep patronymics, nicknames and demonyms separate
 from the first-name pool. `name-component-source.json` and the narrow reviewed
-delta `name-component-army-additions.json` are the authoring owners;
+delta `name-component-army-additions.json` and D46 delta
+`d46-name-additions.json` are the authoring owners;
 `../scripts/build-name-components.mjs` produces the three CSVs and
 `name-component-report.json`. The original repo-local snapshot
 `../sources/book_evidence_m2c_name_components.csv` pins all 40 reviewed rows
@@ -116,6 +124,9 @@ For every `source_attested_form` entry and rule the validator additionally
 requires its declared surface form in checked-in support after only the
 declared historical spelling normalizations: ё/е, final ъ/ь and ц/ч. It also
 checks the semantic-rescreen row and component arithmetic against the ledger.
+D46 adds 13 component rows and links five archive decisions to existing
+components, producing 219 component entries without turning components into
+first names. Archive support must contain each new component surface form.
 
 Every entry has grammatical `form_kind`, a shared lexeme id and a referent.
 `people_ref` is used only where the closed selector exists; otherwise

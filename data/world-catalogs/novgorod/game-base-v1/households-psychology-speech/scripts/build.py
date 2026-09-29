@@ -730,6 +730,9 @@ def build_social_norms():
         # finding). Content/classification of these 8 WK claims is
         # unchanged — marriage_inheritance_rules.csv is out of scope for
         # this rework pass.
+        source_refs = "wk:family-social-context.json#" + cl["claim_ref"]
+        if cl["claim_ref"] == "claim:rp-minor-children-conditional-care":
+            source_refs += ";basis:analogy;derivation:n1230:property_rule:minor_property_guardianship;crosswalk_confidence:C;crosswalk_period:ок. 1230–1250;crosswalk_region:Новгородская земля"
         rows.append({
             "sn_id": "sn_wk_" + cl["claim_ref"].split(":", 1)[-1],
             "norm_kind": "family_property" if "care" in cl["claim_ref"] or "household" in cl["claim_ref"] else "social_law_economy",
@@ -739,7 +742,7 @@ def build_social_norms():
             "repair_options": "",
             "applies_to_roles": "",
             "attestation": ";".join(cl.get("evidence_refs", [])),
-            "source_refs": "wk:family-social-context.json#" + cl["claim_ref"],
+            "source_refs": source_refs,
             "confidence": {"high": "A", "medium": "B", "low": "C"}.get(cl.get("qualifiers", {}).get("confidence", ""), "C"),
         })
     # Honour/insult norms from Russkaya Pravda, Prostrannaya redaktsiya.
@@ -778,7 +781,7 @@ def build_social_norms():
         ("sn_rp_slave_insult", "insult", "удар со стороны холопа по свободному",
          "иной правовой вес — ответственность несёт господин, либо выдача холопа",
          "выдача виновного холопа или выплата господином", "холоп/свободный", "C",
-         "Русская Правда, Пространная редакция, общая норма о холопах и ответственности господина — конкретная статья/номер НЕ подтверждена per-row в доступной этой группе book evidence (гэп, требуется отдельная проверка по академическому изданию, напр. Троицкий список)"),
+         "Русская Правда, Пространная редакция, общая норма о холопах и ответственности господина — конкретная статья/номер НЕ подтверждена per-row в доступной этой группе book evidence (гэп, требуется отдельная проверка по академическому изданию, напр. Троицкий список);basis:logical_necessity;derivation:n1230:law_rule:master_liability;crosswalk_confidence:C;crosswalk_period:ок. 1230;crosswalk_region:Новгородская земля"),
     ]
     for sid, kind, trig, weight, repair, roles_, conf, src in RP_INSULT:
         rows.append({

@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- fix(combat): weapon classification role returns only qualitative_class, code sets schema and request_id; LW-081 added (#188)
 - fix(m2c): R-2a presence first arrival on target v17 — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (`bootstrap-live-world-v17.mjs`); штатный bootstrap без D27 даёт пустое presence на всех 7 стартах (typed `presence_gap` только в диагностике resolver/provisioner, в БД не пишется; старт v17 выбирается по `catalog_id`, не по `binding_revision`), m2c-npc-wave в production не импортируется (#158) LW-035 closed LW-071 closed LW-077 added LW-078 added
 - fix(llm-runtime): `normalizeExecutionLimits` treats `requestTimeoutMs` as a ceiling (`Math.min` against the 120 s default) instead of always overwriting it, so the remaining turn budget survives the provider request timeout; a provider timeout under a budget-clamped `requestTimeoutMs` now reports `LLM_TURN_BUDGET_EXHAUSTED` instead of a generic provider timeout (#98)
 - docs(spatial): CR #160 REVIEW-B1-CA-2 cleanup — restrained-actor refusal pinned and described, LW-080 added (occupancy refusal only at step 1; approach path over raw edges after the first step), private host paths removed from reports (#160)

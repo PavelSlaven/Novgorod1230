@@ -28,6 +28,7 @@ import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-comm
 import { loadPhase2JourneyLocation, withJourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
+import { withSceneNpcs } from './scene-npcs-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 import { serverError } from '../../errors.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
@@ -198,7 +199,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     const current = await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
       includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
       includeCurrentVisibleContext ? readCurrentExitDisclosure : null);
-    return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState({
+    return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState(await withSceneNpcs(readPool, partyId, {
       ...current,
       world_identity: {
         world_revision_id: row.world_revision_id,
@@ -209,7 +210,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       temporal_source_proof: structuredClone(temporalSourceProof),
       npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
-      }))));
+      })))));
   }
   async function loadPhase2Replay({ partyId, idempotencyKey, turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);

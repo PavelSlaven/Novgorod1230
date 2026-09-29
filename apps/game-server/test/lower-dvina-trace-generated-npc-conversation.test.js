@@ -1,16 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { DESTINATION_ANCHOR, FAR, NEAR, commandsFor, conversationRun, generatedState } from
+import { FAR, commandsFor, conversationRun, generatedState } from
   './lower-dvina-trace-generated-npc-fixture.js';
 
 const targets = (commands) => commands.map(({ command_id: id }) =>
   id.replace('live_world.conversation.', ''));
 
-test('NPCs of the player G6 are partners after the real first-entry arrival projection',
+test('NPCs of the player G6 are partners; the start NPC of another site is not',
   async () => {
     const state = generatedState();
-    assert.deepEqual(new Set(state.npcs.map(({ anchor_id: a }) => a)),
-      new Set([DESTINATION_ANCHOR]));
     const commands = commandsFor(state);
     assert.deepEqual(targets(commands),
       [state.npcs[0].instance_id, state.npcs[1].instance_id]);
@@ -19,30 +17,21 @@ test('NPCs of the player G6 are partners after the real first-entry arrival proj
     JSON.stringify(commands[0].preconditions));
   });
 
-test('an NPC in another G6 is not a partner although anchor and place are shared', () => {
+test('an NPC in another G6 is not a partner although the site is shared', () => {
   const state = generatedState();
-  assert.equal(state.npcs.length > 2, true);
+  assert.equal(state.npcs.length > 4, true);
   for (const far of state.npcs.slice(2)) {
     assert.equal(targets(commandsFor(state)).includes(far.instance_id), false);
   }
 });
 
-test('with no known G6 the same place stands in; a stale NPC of another place never does', () => {
-  const unknownG6 = generatedState((next) => {
-    delete next.position.g6_id;
-    delete next.first_entry_preparation.scene.rows;
-    delete next.first_entry_preparation.spatial_v3.target.g6_instance_id;
-    next.npcs[2].location_profile_ref = 'another_place';
-    next.npcs[3].position_id = NEAR;
-  });
-  const ids = targets(commandsFor(unknownG6));
-  assert.equal(ids.includes(unknownG6.npcs[2].instance_id), false);
-  assert.equal(ids.includes(unknownG6.npcs[3].instance_id), true);
+test('an unknown G6 is never co-presence: only the same position remains', () => {
+  const state = generatedState((next) => { delete next.scene_position_g6; });
+  assert.deepEqual(targets(commandsFor(state)), [state.npcs[0].instance_id]);
 });
 
 test('null anchor and null position never match each other', () => {
   const state = generatedState((next) => {
-    next.position.g5_anchor_id = null;
     next.position.position_id = null;
     next.npcs.forEach((npc) => { npc.anchor_id = null; delete npc.position_id; });
   });
@@ -59,7 +48,7 @@ test('anchor decides only where a side has no position (authored scene)', () => 
   assert.deepEqual(targets(commandsFor(state)), [state.npcs[0].instance_id]);
 });
 
-test('a routine that moved an anchored NPC into another G6 removes it from the scene', () => {
+test('a routine that moved an NPC into another G6 removes it from the scene', () => {
   const state = generatedState((next) => {
     next.npc_schedule_runtime = [{ npc_id: next.npcs[0].instance_id,
       current_position_node_id: FAR }];

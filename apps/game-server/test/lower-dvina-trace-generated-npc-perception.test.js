@@ -59,12 +59,11 @@ test('nothing is perceived when neither position nor anchor is known (null is no
       state.npcs.slice(0, 2), []).actual_listener_refs, []);
   });
 
-test('an anchored NPC whose routine row moved it to another G6 does not hear', async () => {
+test('an NPC whose routine row moved it to another G6 does not hear', async () => {
   const { state, player, context } = await committed((next) => {
     next.npc_schedule_runtime = [{ npc_id: next.npcs[0].instance_id,
       current_position_node_id: FAR }];
   });
-  assert.equal(state.npcs[0].anchor_id, state.position.g5_anchor_id);
   assert.deepEqual(ids(audienceForStatement(context(state.npcs.slice(0, 2)), player,
     state.npcs.slice(0, 2), []).actual_listener_refs), [state.npcs[1].instance_id]);
 });

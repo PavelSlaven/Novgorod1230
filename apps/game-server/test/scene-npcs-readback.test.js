@@ -11,15 +11,18 @@ const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'p
   skill_profile_snapshot: { approved_defaults: [] }, knowledge_profile_snapshot: { local: 'x' },
   attribute_profile_snapshot: { strength: 3 }, profile_candidate_set_digest: 'digest',
   position_id: `pos:${id}`, g6_instance_id: 'g6:main', ...extra });
-const pool = (rows) => { const calls = []; return { calls, async query(text, values) {
-  calls.push({ text, values }); return { rows }; } }; };
+const pool = (rows, positions = [{ id: 'pos:me', g6_instance_id: 'g6:main' }]) => {
+  const calls = []; return { calls, async query(text, values) {
+    calls.push({ text, values });
+    return { rows: /FROM party_runtime.party_npcs/.test(text) ? rows : positions }; } }; };
 const base = (extra = {}) => ({ position: { site_id: 'site:1', position_id: 'pos:me',
   g6_instance_id: 'g6:main' }, npcs: [{ instance_id: 'npc_start', anchor_id: 'a' }], ...extra });
 
 test('scene NPCs are read from the database for the current site with the G6', async () => {
   const p = pool([row('npc_gen')]);
   const state = await withSceneNpcs(p, 'party', base());
-  assert.deepEqual(p.calls[0].values, ['party', 'site:1']);
+  assert.deepEqual(p.calls.map(({ values }) => values), [['party', 'site:1'], ['party', 'site:1']]);
+  assert.deepEqual(state.scene_position_g6, { 'pos:me': 'g6:main' });
   const loaded = state.npcs.find(({ instance_id: id }) => id === 'npc_gen');
   assert.equal(loaded.g6_instance_id, 'g6:main');
   assert.equal(loaded.position_id, 'pos:npc_gen');
@@ -36,6 +39,7 @@ test('scene NPCs are read from the database for the current site with the G6', a
 test('existing records win by instance_id; no site or no rows leaves the state alone', async () => {
   const kept = await withSceneNpcs(pool([row('npc_start')]), 'party', base());
   assert.deepEqual(kept.npcs, [{ instance_id: 'npc_start', anchor_id: 'a' }]);
+  assert.deepEqual(kept.scene_position_g6, { 'pos:me': 'g6:main' });
   const p = pool([row('npc_gen')]);
   const noSite = base({ position: { position_id: 'pos:me' } });
   assert.equal(await withSceneNpcs(p, 'party', noSite), noSite);
@@ -47,9 +51,10 @@ test('existing records win by instance_id; no site or no rows leaves the state a
 test('scene-loaded NPCs are stripped before a snapshot and nothing else is touched', () => {
   const keep = { instance_id: 'npc_start', anchor_id: 'a' };
   const state = { npcs: [keep, { instance_id: 'npc_gen', runtime_source: SCENE_NPC_SOURCE }],
-    other: 1 };
+    other: 1, scene_position_g6: { p: 'g' } };
   const stripped = withoutSceneNpcs(state);
   assert.deepEqual(stripped.npcs, [keep]);
+  assert.equal(Object.hasOwn(stripped, 'scene_position_g6'), false);
   assert.equal(stripped.other, 1);
   assert.equal(state.npcs.length, 2);
   const untouched = { other: 1 };

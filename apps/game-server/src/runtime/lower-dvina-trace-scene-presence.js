@@ -3,8 +3,9 @@ const known = (value) => typeof value === 'string' && value !== '';
 /**
  * Temporary proxy for Spatial v3 co-presence: two actors share a scene when
  * they stand in the same G6 (acoustically uniform, default_clear visibility;
- * scene_position_node is only a unit below G6). It should delegate to the
- * Spatial v3 visibility/acoustic owners once they are reachable from turn state.
+ * scene_position_node is only a unit below G6). The G6 of each position of the
+ * current site comes from `scene_position_g6`, read per turn. It should delegate
+ * to the Spatial v3 visibility/acoustic owners.
  */
 export function sceneLocus(state, entity) {
   const schedule = known(entity?.instance_id)
@@ -15,22 +16,19 @@ export function sceneLocus(state, entity) {
   return {
     position_id: positionId,
     g6_id: g6Of(state, positionId),
-    anchor_id: entity?.g5_anchor_id ?? entity?.anchor_id ?? null,
-    location_ref: entity?.location_ref ?? entity?.location_profile_ref ?? null
+    anchor_id: entity?.g5_anchor_id ?? entity?.anchor_id ?? null
   };
 }
 
 /**
  * true / false / null (not comparable). Positions decide when both sides have
- * one: same position, else same G6. When a G6 is not known for either side the
- * same place stands in for it (never null = null). The g5 anchor decides only
- * when a side has no position.
+ * one: same position, else same G6; an unknown G6 is never co-presence. The g5
+ * anchor decides only when a side has no position. null never equals null.
  */
 export function compareSceneLocus(left, right) {
   if (known(left.position_id) && known(right.position_id)) {
     if (left.position_id === right.position_id) return true;
-    if (known(left.g6_id) && known(right.g6_id)) return left.g6_id === right.g6_id;
-    return known(left.location_ref) && left.location_ref === right.location_ref;
+    return known(left.g6_id) && known(right.g6_id) && left.g6_id === right.g6_id;
   }
   if (known(left.anchor_id) && known(right.anchor_id)) {
     return left.anchor_id === right.anchor_id;
@@ -44,22 +42,13 @@ export const sameSceneLocus = (left, right) =>
 export const npcSharesPlayerScene = (state, npc) => sameSceneLocus(
   sceneLocus(state, npc), sceneLocus(state, state?.position));
 
-// The G6 of a scene position, from what the committed state carries: the
-// player's own G6, the rows of the prepared scenes, the first-entry target.
+// The G6 of a scene position: the current site's positions (read per turn, not
+// persisted), else the player's own G6 for the player's position.
 function g6Of(state, positionId) {
   if (!known(positionId)) return null;
-  if (state?.position?.position_id === positionId && known(state.position.g6_id)) {
-    return state.position.g6_id;
-  }
-  const target = state?.first_entry_preparation?.spatial_v3?.target;
-  if (target?.position_id === positionId && known(target.g6_instance_id)) {
-    return target.g6_instance_id;
-  }
-  const scenes = [state?.first_entry_preparation?.scene, ...(state?.prepared_scenes ?? [])];
-  for (const scene of scenes) {
-    const row = (scene?.rows ?? []).find(({ target_table: table, id }) =>
-      table === 'scene_position_nodes' && id === positionId);
-    if (known(row?.record?.g6_instance_id)) return row.record.g6_instance_id;
-  }
-  return null;
+  const mapped = state?.scene_position_g6?.[positionId];
+  if (known(mapped)) return mapped;
+  const own = state?.position;
+  const g6 = own?.g6_instance_id ?? own?.g6_id;
+  return own?.position_id === positionId && known(g6) ? g6 : null;
 }

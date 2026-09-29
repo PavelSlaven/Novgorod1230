@@ -46,7 +46,8 @@ export async function readCurrentTargetConditions({ partyId, actorId, scene, nat
       && row.from_position_id === location.scene_position_id
       && row.to_position_id === position.id)
       || ![edgeId, `edge:${edgeId}`].includes(target.target_id)) gap('current_target_conditions_required');
-  } else if (kind === 'directional_exit') {
+  } else if (kind === 'directional_exit' || kind === 'site_connection') {
+    // A passage that starts at the observer's own position: judged like an exit.
     if (position.id !== location.scene_position_id || !target.target_id) {
       gap('current_target_conditions_required');
     }

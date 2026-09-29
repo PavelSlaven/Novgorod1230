@@ -33,7 +33,11 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const consequence = input?.consequence;
       if (consequence?.position_transition?.owner
           === '@rus/turn/spatial-v3-site-connection-traversal') {
-        return structuredClone(consequence.visible_seed?.destination_visible_context);
+        // Arriving is what the narrator must tell: the destination's own approved scene text
+        // becomes the committed visible change, as the known place does for other arrivals.
+        const destination = structuredClone(consequence.visible_seed?.destination_visible_context);
+        return { ...destination,
+          visible_changes: unique([...destination.visible_changes, destination.visible_scene]) };
       }
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];

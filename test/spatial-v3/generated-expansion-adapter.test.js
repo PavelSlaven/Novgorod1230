@@ -289,6 +289,7 @@ async function assertPublicExpansionReload(pool, request, currentClosure) {
       (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
       VALUES ('test-location','p','actor','test-actor','scene',$1,1,'test')`, [request.source_position_id]);
     const worldBaseReader = { readG4ExpansionBinding: async () => ({ ok: true, value: { g4: request.g4, profile: request.profile } }),
+      readApprovedCanonicalG5Connections: async () => ({ ok: true, value: [] }),
       readPinnedG4ExpansionClosure: async () => ({ ok: true, value: currentClosure }),
       readPinnedSceneTemplateClosure: async () => ({ ok: true, value: scene }) };
     const release = { world_revision_id: 'world', world_catalog_digest: 'catalog' };

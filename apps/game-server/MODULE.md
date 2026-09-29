@@ -56,6 +56,53 @@ exact scene binding and acoustic closure. Generated first-entry domain owners
 may contribute admitted write sets and rechecks through `prepareFirstEntry`;
 P16 persists those rows with topology and the selection trace.
 
+Canonical connections (passages between canonical places of one G4, Vikhtuy first)
+are a second topology kind of the same owner. The world-base reader returns the
+approved bindings that leave a place (per binding id its highest approved version;
+the profile is read by the binding's own reference, because the expansion profile pins
+only one of them).
+`eligibleCanonicalConnections` offers them at the departure position the binding
+names; away from it the first local hop toward that position is the approach
+(same rule as exits: only an edge the local-scene owner offers). Disclosure is the
+exit visibility rule (no sight, no passage) with the label from the attested
+`m2c-canonical-connection-labels` catalog by binding id; a revealed connection
+without an approved label is a typed data gap. `prepareCanonicalConnection` of the
+generated expansion adapter shares the terminal preparation and the plan tail
+with frontier resolution (first entry of a created place goes through the same
+`prepareFirstEntry`, i.e. the R-2a presence resolver) and commits
+`resolve_frontier` under `resolve_frontier:canconn:<party>:<binding_id>`. The
+traversal itself is the shared `prepareSiteTraversal`. Arrival gives the narrator
+the destination's own scene text as `visible_changes` (turn-step visible projector,
+for every site connection). Entering a never-visited place needs its approved G6
+ambient baseline (the walk-acoustics data covers every connection target).
+
+Availability of a traversed connection is evaluated by `assessAvailability` of the current
+movement capability (traversal admission and its commit recheck share it and both require
+`status: 'open'`). Other gates still treat a non-empty condition-set ref as unusable without
+asking it (`spatial-v3-world-base-reader.js` connection reader, `spatial-v3-generated-scene.js`,
+`spatial-v3-local-scene-movement.js`, `spatial-v3-local-movement-eligibility.js`); they are
+unreachable today because the refs are NULL in the used data (LW-096). A null condition
+set is open as before. The five condition sets the approved data names carry no predicate and
+the party holds no snow, flood or ice state, so the approved policy
+`live-world-runtime-v17/movement-availability-policy.v1.json` evaluates each as `open` with
+reason `availability_state_not_evaluable`; light and visibility never close a passage. A set
+absent from the policy is a typed data gap (`availability_condition_set_owner_missing`), and a
+profile whose set differs from its connection's is refused. `open_with_requirement` and
+`closed` are not produced until state exists to evaluate. `lower-dvina-boundary-policy.js` of
+`@rus/turn` is only re-exported and has no caller in the v17 runtime.
+
+Notes on the shared vocabulary. `operation_kind=resolve_frontier`, `run_kind=expansion` and
+`trigger=frontier_resolution` also serve a canonical connection (there is no frontier; the
+committer accepts only that kind for topology commits). In `visible_objects` the
+`g5_site_connection` entity carries the approved binding id, not the party row id
+`canconn:<party>:<binding>`, which does not exist before the first passage; the kind is shown
+in the visible context, the turn-step scene and the route panel. A bare canonical scene-binding
+read (no scene or profile pin) uses the release scene-profile generation (its own pin
+`releaseSceneProfileVersion`: 2 in v17, default 1) - the open-capacity successor made a bare read ambiguous. Only the highest approved version of a binding is a candidate (no fallback to an older one);
+if its profile is not a non-conditional `site_connection` the reader lists that binding in `gaps`
+(kept in the context as `canonical_connection_gaps`) and the place's other connections, exits and
+visible context are unaffected.
+
 Presence at first arrival (O1, §3A) has one resolver,
 `createTargetPresenceRulesFirstArrivalResolver`, for the start place and every
 later first arrival. Bindings come from the site node: canonical G5 reads its

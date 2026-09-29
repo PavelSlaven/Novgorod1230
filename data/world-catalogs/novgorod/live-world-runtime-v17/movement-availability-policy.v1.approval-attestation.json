@@ -1,0 +1,15 @@
+{
+  "schema": "rus.live_world_runtime.data_approval_attestation.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "candidate_ref": "movement_availability_policy@1",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/movement-availability-policy.v1.json",
+  "candidate_sha256": "4b82cd02f7af0c5d7ef274344c6b9317fe73e009d17360b5cb288e4fc06ed110",
+  "reviewer": "lead reviewer (senior model, high reasoning), fleet task rt-walk",
+  "reviewed_on": "2026-09-29",
+  "independence_basis": "Authored by the fleet executor; reviewed separately by the lead reviewer, who did not write the policy, its evaluator or its test.",
+  "review_evidence": [
+    "The five condition sets equal the refs present in approved connection profiles and route segments (the executor test cross-checks them against the data).",
+    "Evaluation open_without_evaluable_state follows the owner decision of 2026-09-29: seasons (snow, flood, ice) are stage 3, and light and visibility never close a passage; an unlisted set stays a typed data gap."
+  ],
+  "limits": "Temporary policy for the playable slice: replace by real predicates when snow/flood/ice/water state exists (stage 3)."
+}

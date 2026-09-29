@@ -54,7 +54,8 @@ export function findReachableDeparturePosition(context, firstStepEdgeIds = null)
 /** Server command bridge. Read-only menus never seed frontiers. Selection is
  * repeated by the generated adapter under the existing party/G4 P16 lock. */
 export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansionAdapter,
-  readExitDisclosure, prepareSiteTraversal, materializerVersion, now = () => Date.now() } = {}) {
+  readExitDisclosure, readConnectionDisclosure, prepareSiteTraversal, materializerVersion,
+  now = () => Date.now() } = {}) {
   async function selectedContext({ partyId, actorId, directionalExitId }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
     const context = await readContext({ partyId, actorId });
@@ -107,7 +108,67 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         display_label: disclosure.display_label }];
     });
   }
+  /** Canonical connections revealed from the actor's current position (same disclosure rule as exits). */
+  async function revealedConnections(context, eligible) {
+    if (!eligible.length) return [];
+    if (typeof readConnectionDisclosure !== 'function') gap('current_connection_disclosure_owner_required');
+    const disclosed = await readConnectionDisclosure({ ...context, connections: eligible });
+    if (!Array.isArray(disclosed)) gap('current_connection_disclosure_required');
+    return eligible.flatMap((option) => {
+      const matches = disclosed.filter((row) => row.connection_binding_id === option.binding.id);
+      if (!matches.length) return [];
+      const disclosure = one(matches, 'ambiguous_connection_disclosure');
+      if (!['visible', 'known'].includes(disclosure.knowledge_state)
+        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) gap('approved_connection_disclosure_required');
+      return [{ ...option, display_label: disclosure.display_label }];
+    });
+  }
+  async function selectedConnection({ partyId, actorId, connectionBindingId }) {
+    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    const context = await readContext({ partyId, actorId });
+    const visible = await revealedConnections(context, eligibleCanonicalConnections(context));
+    return { context, selected: one(visible.filter((row) => row.binding.id === connectionBindingId),
+      'selected_connection_unavailable') };
+  }
   return Object.freeze({
+    async listConnectionOptions(input) {
+      if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+      const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
+      return (await revealedConnections(context, eligibleCanonicalConnections(context)))
+        .map(({ binding, display_label }) => ({ kind: 'connection',
+          connection_binding_id: binding.id, display_label }));
+    },
+    /** Same first-hop rule as the exit approach: only an edge the local-scene owner offered. */
+    async listConnectionApproachOptions(input) {
+      if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+      if (!Array.isArray(input.firstStepEdgeIds) || !input.firstStepEdgeIds.length) return [];
+      const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
+      const reachable = findReachableDeparturePosition(context, input.firstStepEdgeIds);
+      if (reachable == null || reachable.path.length === 0) return [];
+      const eligible = eligibleCanonicalConnections({ ...context, position: reachable.position });
+      return (await revealedConnections(context, eligible)).map(({ binding, display_label }) => ({
+        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable.path[0], display_label }));
+    },
+    async prepareConnection(input) {
+      const { context, selected } = await selectedConnection(input);
+      if (selected.connection) return Object.freeze({ ok: true, replay: true,
+        topology_status: 'committed', connection_id: selected.connection.id,
+        source_position_id: context.position.id, moves_traveller: false, advances_time: false });
+      if (typeof generatedExpansionAdapter?.prepareCanonicalConnection !== 'function') gap('p16_expansion_owner_required');
+      return generatedExpansionAdapter.prepareCanonicalConnection({ party_id: input.partyId,
+        actor_id: input.actorId, g4: context.g4, profile: context.profile, binding_id: selected.binding.id,
+        source_site_id: context.site.id, source_position_id: context.position.id,
+        materializer_version: materializerVersion });
+    },
+    async prepareConnectionTraversal(input) {
+      if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
+      const { context, selected } = await selectedConnection(input);
+      if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
+        || context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
+      // The binding names its own profile; the expansion profile pins only one of them.
+      return prepareSiteTraversal({ ...input, connection: selected.connection,
+        context: { ...context, closure: { ...context.closure, connection_profiles: [selected.profile] } } });
+    },
     async listExpansionOptions(input) {
       const { options } = await selectedContext({ partyId: input.partyId, actorId: input.actorId });
       return options.map(({ exit, display_label }) => ({ kind: 'crossing',
@@ -193,5 +254,23 @@ export function eligibleExpansions(context, now) {
   }
   return options;
 }
+export const canonicalConnectionId = (partyId, bindingId) => `canconn:${partyId}:${bindingId}`;
+
+/** Approved intra-G4 connections of the actor's canonical place that start at its current
+ * departure position; `connection` is the committed row when the party already made the passage. */
+export function eligibleCanonicalConnections(context) {
+  const { canonical_connections: connections, snapshot, site, position, scene, partyId } = context;
+  if (site?.origin !== 'canonical' || !connections?.length) return [];
+  const here = scene.endpoint_slots.filter((row) => ['departure', 'both'].includes(row.endpoint_role)
+    && row.required_position_slot_key === position.template_slot_key
+    && row.required_position_instance_ordinal === position.template_instance_ordinal)
+    .map((row) => row.slot_key);
+  return connections.flatMap(({ binding, profile }) => {
+    if (!here.includes(binding.from_scene_endpoint_slot_key)) return [];
+    const committed = snapshot.site_connections.find((row) => row.id === canonicalConnectionId(partyId, binding.id));
+    return committed && committed.status !== 'active' ? [] : [{ binding, profile, connection: committed }];
+  });
+}
+
 function gap(reason) { throw serverError('LIVE_WORLD_EXPANSION_DATA_GAP',
   'This movement is not available.', { status: 409, details: { reason } }); }

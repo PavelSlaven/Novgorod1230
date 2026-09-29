@@ -1,5 +1,6 @@
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
 import { serverError } from '../../errors.js';
+import { conditionSetString, evaluateConditionSet } from './spatial-v3-movement-availability-policy.js';
 
 const text = (value) => typeof value === 'string' && value.length > 0;
 
@@ -80,14 +81,17 @@ export function createSpatialV3CurrentMovementCapability({ pool } = {}) {
     capability_context.canonical_digest = digest(capability_context);
     return { ok: true, actor_id: actorId, capability_context };
   }
+  /** The one evaluator of availability condition sets (traversal admission and its recheck). */
   async function assessAvailability({ connection, connectionId, profile, conditionSetRef } = {}) {
     const id = connection?.id ?? connectionId;
-    const ref = connection ? connection.availability_condition_set_ref : conditionSetRef;
+    const ref = conditionSetString(connection ? connection.availability_condition_set_ref : conditionSetRef);
+    const profileRef = conditionSetString(profile?.availability_condition_set_ref);
     if (!text(id)) gap('site_traversal_availability_source_missing');
-    if (ref != null || profile?.availability_condition_set_ref != null) {
-      gap('availability_condition_set_owner_missing');
-    }
-    return { ok: true, connection_id: id, condition_set_ref: null };
+    if (profile !== undefined && ref !== profileRef) gap('availability_condition_set_mismatch');
+    if (ref == null) return { ok: true, connection_id: id, condition_set_ref: null, status: 'open', reason_code: null };
+    const evaluated = evaluateConditionSet(ref);
+    if (evaluated == null) gap('availability_condition_set_owner_missing');
+    return { ok: true, connection_id: id, ...evaluated };
   }
   return Object.freeze({ assessMovementCapability, assessAvailability });
 }

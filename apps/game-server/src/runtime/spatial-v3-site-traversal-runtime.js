@@ -66,7 +66,7 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
     const admission = await assessAvailability({ partyId, actorId, context,
       connection, profile, from, to, destinationPosition, destinationG6,
       destinationBaseline, destinationSite });
-    if (admission?.ok !== true || admission.condition_set_ref !== profile.availability_condition_set_ref
+    if (admission?.ok !== true || admission.status !== 'open' || admission.condition_set_ref !== profile.availability_condition_set_ref
       || admission.connection_id !== connection.id) gap('site_traversal_availability_denied');
     const projected = await projectDestination({ partyId, actorId, context,
       connection, profile, destinationPosition, destinationG6,

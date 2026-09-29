@@ -254,11 +254,15 @@ export async function bootstrapV17PresenceE2e(t, {
  * (a local hop that carries `route_ref` of the exit it leads to), otherwise the local hop
  * whose edge was taken least often so far (so a site with several local edges is explored
  * instead of ping-ponging over the first one).
+ * exactMovement (rt-walk): the player names one option by its label; anything else is no movement.
  */
-function pickMovementChoice(request, localHopVisits) {
+function pickMovementChoice(request, localHopVisits, { exactMovement = false } = {}) {
   const movementChoices = turnStepOperationChoices(request).filter(({ operation }) =>
     operation.op === 'request_movement'
     && ['local', 'route'].includes(operation.movement_kind));
+  if (exactMovement) {
+    return movementChoices.find(({ operation }) => operation.description === request.root_player_action);
+  }
   const decisive = movementChoices.find(({ operation }) => operation.movement_kind === 'route')
     ?? movementChoices.find(({ operation }) => operation.route_ref != null);
   if (decisive) return decisive;
@@ -271,6 +275,8 @@ function pickMovementChoice(request, localHopVisits) {
 
 export function installPresenceProductionE2eFetch({
   observeText = TARGET_SMOKE_INPUT,
+  movementPrefs = { exactMovement: false },
+  narrationLog = null,
 } = {}) {
   const MATERIALIZATION_ROLES = Object.freeze([
     'ordinary_materialization', 'spatial_semantic_descriptor',
@@ -304,7 +310,15 @@ export function installPresenceProductionE2eFetch({
           reason: 'Обзор ограничен уже предоставленными видимыми сведениями.',
         };
       } else {
-        const pick = pickMovementChoice(request, localHopVisits);
+        const pick = pickMovementChoice(request, localHopVisits, movementPrefs);
+        if (!pick && movementPrefs.exactMovement) {
+          return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
+            interpretation: { adaptation: 'literal' }, resolution: 'direct', goal_result: 'not_achieved',
+            activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+            operations: [], check: null, continuation: null, clarification: null,
+            direct_result_kind: null, reason_code: 'no_named_passage',
+            reason: 'Названного прохода нет.' }) } }] }), { status: 200 });
+        }
         assert.ok(pick, `no movement operation in planner request: ${request.root_player_action}`);
         output = {
           interpretation: {
@@ -324,6 +338,7 @@ export function installPresenceProductionE2eFetch({
     } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
       const sources = [...modelInput.required_current_beat.changes,
         ...modelInput.required_current_beat.uncertainties];
+      narrationLog?.push({ changes: modelInput.required_current_beat.changes.map(({ text }) => text) });
       // Temporary: a turn without required beats (arrival on a new site) still needs non-empty prose,
       // so fall back to the visible scene the request itself supplies. Remove once the empty beat
       // at a transition is fixed (tasks rt-narr / rt-walk, NOTE-02).

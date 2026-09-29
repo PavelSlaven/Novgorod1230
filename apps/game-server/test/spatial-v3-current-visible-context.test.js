@@ -74,3 +74,20 @@ test('incomplete or duplicated current observations fail closed', async () => {
   assert.throws(() => projectSpatialV3CurrentVisibleContext({ ...args,
     positionId: 'wrong' }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
 });
+
+test('disclosed canonical connections join the visible objects like exits and stay optional', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const args = { naturalInput: prepareG4NaturalScenePerceptionInput(input),
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside',
+    entityObservations: [], localEdges: [], directionalExits: [] };
+  assert.deepEqual(projectSpatialV3CurrentVisibleContext(args).visible_objects, [],
+    'callers that know no connections are unchanged');
+  const result = projectSpatialV3CurrentVisibleContext({ ...args, siteConnections: [
+    { connection_binding_id: 'binding:1', display_label: 'Проход 3' }] });
+  assert.deepEqual(result.visible_objects, [{ entity_ref: { entity_kind: 'g5_site_connection',
+    entity_id: 'binding:1' }, display_label: 'Проход 3', recognition: 'known' }]);
+  assert.throws(() => projectSpatialV3CurrentVisibleContext({ ...args, siteConnections: [
+    { connection_binding_id: 'binding:1', display_label: 'Проход 3' },
+    { connection_binding_id: 'binding:1', display_label: 'Проход 3' }] }),
+  (error) => error.details?.reason === 'complete_current_exit_disclosure_required');
+});

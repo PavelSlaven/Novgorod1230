@@ -26,15 +26,19 @@ export function createSpatialV3GenerationAdmission({ worldBaseReader, verifiedCa
         || !Number.isSafeInteger(candidate.weight) || candidate.weight <= 0) gap('scene_policy_owner_required');
       approvedSceneRules = approvedRules({ ...profile, ...candidate }, closure.scene_rules, request.g4.world_revision_id);
       scene_template_ref = { id: candidate.scene_template_id, version: candidate.scene_template_version };
-    } else if (selection.status === 'terminal') {
-      const exit = selection.directional_exit;
+    } else if (['terminal', 'canonical_connection'].includes(selection.status)) {
+      // A terminal exit and an intra-G4 connection both arrive at a canonical place.
+      const destination = selection.status === 'terminal'
+        ? { id: selection.directional_exit.exit_canonical_g5_id,
+          version: selection.directional_exit.exit_canonical_g5_version }
+        : selection.target_canonical_g5;
       const target = snapshot.sites.find((row) => row.origin === 'canonical' && row.status === 'active'
-        && row.canonical_g5_ref?.entity_id === exit.exit_canonical_g5_id
-        && Number(row.canonical_g5_ref.authoring_version) === exit.exit_canonical_g5_version);
+        && row.canonical_g5_ref?.entity_id === destination.id
+        && Number(row.canonical_g5_ref.authoring_version) === destination.version);
       const baseline = snapshot.scene_baselines.find((row) => row.host_kind === 'g5_site'
         && row.host_id === target?.id && row.status === 'active');
       const canonical = await worldBaseReader.readPinnedCanonicalG5SceneBinding({
-        id: exit.exit_canonical_g5_id, version: exit.exit_canonical_g5_version,
+        id: destination.id, version: destination.version,
         world_revision_id: request.g4.world_revision_id,
         ...(baseline && { scene_template_ref: { id: baseline.scene_template_ref.entity_id,
           version: Number(baseline.scene_template_ref.authoring_version) } }) });

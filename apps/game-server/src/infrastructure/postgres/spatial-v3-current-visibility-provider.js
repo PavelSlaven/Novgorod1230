@@ -8,6 +8,7 @@ import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-p
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
 import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
+import { loadApprovedConnectionLabels } from '../../../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/approved-labels.mjs';
 
 const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
 const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
@@ -30,6 +31,7 @@ const visibility = new Set(['clear', 'partial', 'none']);
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
+  readConnectionLabels = loadApprovedConnectionLabels,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
@@ -139,6 +141,23 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       });
     }, transaction, observedPositionId);
   }
+  let connectionLabels = null;
+  const labelsOfConnections = () => {
+    try { return connectionLabels ??= readConnectionLabels(); } catch { gap('approved_connection_label_required'); }
+  };
+  async function discloseConnections(current, connections) {
+    const here = current.scene.location.scene_position_id;
+    const admitted = await admit(current, connections.map(({ binding }) => ({
+      target_id: binding.id, position_id: here, entity_kind: 'site_connection' })));
+    const revealed = new Set(admitted.map((row) => row.target_id));
+    return connections.flatMap(({ binding }) => {
+      if (!revealed.has(binding.id)) return [];
+      const label = labelsOfConnections().get(binding.id);
+      if (label == null) gap('approved_connection_label_required');
+      return [{ connection_binding_id: binding.id, knowledge_state: 'visible',
+        display_label: label.display_label, editorial_choice_ordinal: label.editorial_choice_ordinal }];
+    });
+  }
   const provider = Object.freeze({
     async recheckLocalMovementVisibility({ transaction, partyId, actorId, edgeId,
       positionId } = {}) {
@@ -212,6 +231,33 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         return withPassTargetDisambiguation(disclosed);
       }, context.transaction, context.observedPositionId);
     },
+    /** Canonical connections of the observer's own position, revealed by the same visibility rule
+     * as exits; the approved label comes from the connection label catalog, never from code. */
+    async readConnectionDisclosure(context = {}) {
+      return withCurrent(context.partyId, context.actorId, async (current) => {
+        if (!Array.isArray(context.connections)
+          || context.position?.id !== current.scene.location.scene_position_id) {
+          gap('approved_connection_disclosure_required');
+        }
+        return discloseConnections(current, context.connections);
+      }, context.transaction, context.observedPositionId);
+    },
+    /** Every connection of the current canonical place that the observer can see from here - the
+     * connection counterpart of readCurrentExitDisclosure, for the visible context. */
+    async readCurrentConnectionDisclosure({ partyId, actorId, transaction, observedPositionId } = {}) {
+      return withCurrent(partyId, actorId, async (current) => {
+        const site = current.scene.site;
+        if (site?.origin !== 'canonical') return [];
+        const binding = await worldBaseReader?.readG4ExpansionBinding?.({
+          g4_id: site.parent_g4_id, world_revision_id: current.scene.world_revision_id });
+        if (!binding?.ok) gap('approved_g4_expansion_binding_required');
+        const connections = await worldBaseReader.readApprovedCanonicalG5Connections({
+          g4: binding.value.g4, canonical_g5: { id: site.canonical_g5_ref.entity_id,
+            version: Number(site.canonical_g5_ref.authoring_version) } });
+        if (!connections?.ok) gap('approved_canonical_connections_required');
+        return discloseConnections(current, connections.value);
+      }, transaction, observedPositionId);
+    },
     async readEntityObservations({ partyId, actorId, transaction,
       observedPositionId } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
@@ -264,8 +310,10 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       const exits = await provider.readExitDisclosure({ transaction, partyId, actorId,
         position: { id: positionId }, site: current.scene.site,
         directional_exits: directionalExits, observedPositionId });
+      const siteConnections = await provider.readCurrentConnectionDisclosure({ transaction,
+        partyId, actorId, observedPositionId });
       return { naturalInput, entityObservations, localEdges,
-        directionalExits: exits };
+        directionalExits: exits, siteConnections };
     }
   });
   return provider;

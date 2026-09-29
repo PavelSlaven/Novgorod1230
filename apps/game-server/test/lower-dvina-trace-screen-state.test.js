@@ -62,19 +62,22 @@ test('catalog labels resolve exact template and never expose uncarried or hidden
   assert.deepEqual(project(state).panels.inventory.data.zones.hands.map(x => x.label), ['хозяйственный нож']);
 });
 
-test('route panel includes only disclosed scene edges and directional exits', () => {
+test('route panel includes only disclosed scene edges, directional exits and canonical connections', () => {
   const context = structuredClone(visible);
   context.visible_objects = [
     { entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'local-edge' },
       display_label: 'К просеке' },
     { entity_ref: { entity_kind: 'g4_directional_exit', entity_id: 'world-exit' },
       display_label: 'К лесу' },
+    { entity_ref: { entity_kind: 'g5_site_connection', entity_id: 'world-connection' },
+      display_label: 'Проход 3' },
     { entity_ref: { entity_kind: 'item', entity_id: 'item' }, display_label: 'Топор' }
   ];
   const screen = project(payload(), { visible_context: context });
-  assert.deepEqual(screen.panels.route.data.movement.options.slice(-2), [
+  assert.deepEqual(screen.panels.route.data.movement.options.slice(-3), [
     { label: 'К просеке', knowledge_state: 'known' },
-    { label: 'К лесу', knowledge_state: 'known' }
+    { label: 'К лесу', knowledge_state: 'known' },
+    { label: 'Проход 3', knowledge_state: 'known' }
   ]);
-  assert.doesNotMatch(JSON.stringify(screen.panels.route), /local-edge|world-exit|Топор/u);
+  assert.doesNotMatch(JSON.stringify(screen.panels.route), /local-edge|world-exit|world-connection|Топор/u);
 });

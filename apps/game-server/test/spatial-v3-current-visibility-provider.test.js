@@ -368,3 +368,59 @@ test('local movement recheck uses commit transaction and current source position
     transaction: null }), { ok: false });
   assert.deepEqual(queries, []);
 });
+
+const connectionLabels = JSON.parse(readFileSync(new URL(
+  '../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json', import.meta.url))).labels;
+const connectionAt = (row) => ({ binding: { id: row.binding_ref.id } });
+
+test('a visible canonical connection is disclosed with its approved label; a hidden one is not', async () => {
+  const { provider, natural } = fixture();
+  const [first, second] = connectionLabels;
+  const input = { partyId: 'party', actorId: 'actor', position: { id: 'a' },
+    connections: [connectionAt(first), connectionAt(second)] };
+  assert.deepEqual(await provider.readConnectionDisclosure(input), [first, second].map((row) => ({
+    connection_binding_id: row.binding_ref.id, knowledge_state: 'visible',
+    display_label: row.display_label, editorial_choice_ordinal: row.editorial_choice_ordinal })));
+  natural.observer.visual_capability = 'none';
+  assert.deepEqual(await provider.readConnectionDisclosure(input), [], 'no sight, no disclosed passage (D47.9)');
+});
+
+test('a revealed connection without an approved label is a typed data gap, and a wrong position is refused', async () => {
+  const { provider } = fixture();
+  await assert.rejects(provider.readConnectionDisclosure({ partyId: 'party', actorId: 'actor',
+    position: { id: 'a' }, connections: [{ binding: { id: 'cg5bind-without-label' } }] }),
+  (error) => error.details?.reason === 'approved_connection_label_required');
+  await assert.rejects(provider.readConnectionDisclosure({ partyId: 'party', actorId: 'actor',
+    position: { id: 'elsewhere' }, connections: [connectionAt(connectionLabels[0])] }),
+  (error) => error.details?.reason === 'approved_connection_disclosure_required');
+});
+
+test('the canonical connections of the current place reach the visible context, hidden ones do not', async () => {
+  const [first, second] = connectionLabels;
+  const asked = [];
+  const worldBaseReader = {
+    async readG4ExpansionBinding() { return { ok: true, value: { g4: { id: g4, version: 1 } } }; },
+    async readApprovedCanonicalG5Connections(input) { asked.push(input);
+      return { ok: true, value: [first, second].map(connectionAt) }; } };
+  const { provider, scene, natural } = fixture({ worldBaseReader });
+  scene.site = { id: 'site', origin: 'canonical', parent_g4_id: g4,
+    canonical_g5_ref: { entity_id: 'g5', authoring_version: '1' } };
+  const expected = [first, second].map((row) => ({ connection_binding_id: row.binding_ref.id,
+    knowledge_state: 'visible', display_label: row.display_label,
+    editorial_choice_ordinal: row.editorial_choice_ordinal }));
+  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), expected);
+  assert.deepEqual(asked, [{ g4: { id: g4, version: 1 }, canonical_g5: { id: 'g5', version: 1 } }]);
+  const state = { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' },
+    current_visible_context: { version: 1, schema: 'visible_context_package', visible_scene: 'Двор',
+      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] } };
+  const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure, null,
+    provider.readCurrentConnectionDisclosure);
+  assert.deepEqual(current.current_visible_context.visible_objects.map((row) => [row.entity_ref.entity_kind,
+    row.display_label]), [['scene_movement_edge', localLabel.display_label],
+    ['g5_site_connection', first.display_label], ['g5_site_connection', second.display_label]]);
+  scene.site.origin = 'generated';
+  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
+  scene.site.origin = 'canonical'; natural.observer.visual_capability = 'none';
+  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
+});

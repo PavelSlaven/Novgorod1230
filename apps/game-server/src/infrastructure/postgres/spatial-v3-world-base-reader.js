@@ -84,7 +84,8 @@ function exactReactionRef(ref) {
 }
 
 /** Read-only authoring reader. Every lookup requires one explicit version and revision pin. */
-export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion = 1 } = {}) {
+export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion = 1,
+  releaseSceneProfileVersion = 1 } = {}) {
   async function read({ kind, ref } = {}) {
     if (!SOURCES[kind] || !exact(ref)) return failure('authoring_dependency_pin_missing', kind ?? 'authoring', ref?.id, { kind });
     if (typeof query !== 'function') return failure('generated_schema_mismatch', kind, ref.id, { reason: 'read-only query port is required' });
@@ -756,10 +757,14 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
         AND ($5::int IS NULL OR candidate.scene_template_version=$5)
         AND ($6::text IS NULL OR profile.id=$6)
         AND ($7::int IS NULL OR profile.version=$7)
+        AND ($8::int IS NULL OR profile.version=$8)
       LIMIT 2`,
     [id, version, world_revision_id, scene_template_ref?.id ?? null,
       scene_template_ref?.version ?? null, scene_materialization_profile_ref?.id ?? null,
-      scene_materialization_profile_ref?.version ?? null]);
+      scene_materialization_profile_ref?.version ?? null,
+      // Unpinned: the release's scene-profile generation (the open-capacity successor is a second profile
+      // of the same place, so a bare place would otherwise be ambiguous).
+      scene_template_ref || scene_materialization_profile_ref ? null : releaseSceneProfileVersion]);
     if (!Array.isArray(result?.rows) || result.rows.length !== 1) {
       return failure('route_plan_snapshot_missing', 'node', id, {
         reason: result?.rows?.length > 1
@@ -860,6 +865,63 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
         { reason: 'approved_g4_directional_exits_missing', world_revision_id: g4.world_revision_id });
     }
     return Object.freeze({ ok: true, value: deepFreeze(structuredClone(result.rows)) });
+  }
+  /** Approved connections that leave one canonical G5 inside its G4 (bindings; profiles by the
+   * binding's own reference, since the expansion profile pins only one of them). Per binding id
+   * only the highest approved version is a candidate; when its profile is not a non-conditional
+   * site connection the binding is listed in `gaps`, the other bindings stay available. */
+  async function readApprovedCanonicalG5Connections({ g4, canonical_g5 } = {}) {
+    if (!exact(g4) || !canonical_g5?.id || !Number.isInteger(canonical_g5.version)
+      || typeof query !== 'function') {
+      return failure('authoring_dependency_pin_missing', 'node', g4?.id,
+        { reason: 'exact_g4_and_canonical_g5_pins_and_read_only_query_required' });
+    }
+    const result = await query(`SELECT b.id AS binding_id,b.version AS binding_version,b.parent_g4_id,b.parent_g4_version,b.from_canonical_g5_id,b.from_canonical_g5_version,b.to_canonical_g5_id,b.to_canonical_g5_version,b.connection_profile_id,b.connection_profile_version,b.from_scene_endpoint_slot_key,b.to_scene_endpoint_slot_key,b.status AS binding_status,p.id AS profile_id,p.version AS profile_version,p.profile_scope,p.passage_type_id,p.transition_environment_profile_id,p.transition_environment_profile_version,p.movement_orientation_profile_id,p.movement_orientation_profile_version,p.cost_kind,p.action_units,p.baseline_movement_method_id,p.movement_method_cost_profile_id,p.movement_method_cost_profile_version,p.base_minutes,p.dynamic_recheck_policy_id,p.dynamic_recheck_policy_version,p.capacity,p.capacity_semantics_ref,p.risk_profile_ref,p.availability_condition_set_ref,p.status AS profile_status,p.canonical_digest AS profile_digest,pav.canonical_digest AS profile_authoring_digest
+      FROM world_base.spatial_v3_canonical_g5_connection_bindings b
+      JOIN world_base.spatial_v3_authoring_versions bav ON bav.entity_kind='canonical_g5_connection_binding' AND bav.entity_id=b.id AND bav.version=b.version AND bav.world_revision_id=$3 AND bav.status='approved'
+      JOIN world_base.spatial_v3_canonical_g5_connection_profiles p ON p.id=b.connection_profile_id AND p.version=b.connection_profile_version
+      JOIN world_base.spatial_v3_authoring_versions pav ON pav.entity_kind='canonical_g5_connection_profile' AND pav.entity_id=p.id AND pav.version=p.version AND pav.world_revision_id=$3 AND pav.status='approved'
+      WHERE b.parent_g4_id=$1 AND b.parent_g4_version=$2 AND b.from_canonical_g5_id=$4 AND b.from_canonical_g5_version=$5 AND b.status='approved'
+      ORDER BY b.id,b.version DESC`, [g4.id, g4.version, g4.world_revision_id, canonical_g5.id, canonical_g5.version]);
+    if (!Array.isArray(result?.rows)) {
+      return failure('route_plan_snapshot_missing', 'node', g4.id, { reason: 'canonical_connections_unreadable' });
+    }
+    const usable = (row) => row.profile_status === 'approved' && row.profile_scope === 'site_connection'
+      && row.availability_condition_set_ref == null && row.profile_digest === row.profile_authoring_digest;
+    // Only the highest approved version of a binding is a candidate: an unusable one is a typed gap
+    // of that binding alone, never a silent fall back to an older version.
+    const highest = new Map();
+    for (const row of result.rows) {
+      const known = highest.get(row.binding_id);
+      if (known === undefined || row.binding_version > known.binding_version) highest.set(row.binding_id, row);
+    }
+    const chosen = [...highest.values()].filter(usable);
+    const gaps = [...highest.values()].filter((row) => !usable(row)).map((row) => ({
+      binding_id: row.binding_id, binding_version: row.binding_version,
+      reason: 'canonical_connection_profile_unusable' }));
+    return Object.freeze({ ok: true, gaps: deepFreeze(gaps), value: deepFreeze(chosen.map((row) => ({
+      binding: { id: row.binding_id, version: row.binding_version, parent_g4_id: row.parent_g4_id,
+        parent_g4_version: row.parent_g4_version, from_canonical_g5_id: row.from_canonical_g5_id,
+        from_canonical_g5_version: row.from_canonical_g5_version, to_canonical_g5_id: row.to_canonical_g5_id,
+        to_canonical_g5_version: row.to_canonical_g5_version, connection_profile_id: row.connection_profile_id,
+        connection_profile_version: row.connection_profile_version,
+        from_scene_endpoint_slot_key: row.from_scene_endpoint_slot_key,
+        to_scene_endpoint_slot_key: row.to_scene_endpoint_slot_key, status: row.binding_status },
+      profile: { id: row.profile_id, version: row.profile_version, world_revision_id: g4.world_revision_id,
+        profile_scope: row.profile_scope, passage_type_id: row.passage_type_id,
+        transition_environment_profile_id: row.transition_environment_profile_id,
+        transition_environment_profile_version: row.transition_environment_profile_version,
+        movement_orientation_profile_id: row.movement_orientation_profile_id,
+        movement_orientation_profile_version: row.movement_orientation_profile_version,
+        cost_kind: row.cost_kind, action_units: row.action_units,
+        baseline_movement_method_id: row.baseline_movement_method_id,
+        movement_method_cost_profile_id: row.movement_method_cost_profile_id,
+        movement_method_cost_profile_version: row.movement_method_cost_profile_version,
+        base_minutes: row.base_minutes, dynamic_recheck_policy_id: row.dynamic_recheck_policy_id,
+        dynamic_recheck_policy_version: row.dynamic_recheck_policy_version, capacity: row.capacity,
+        capacity_semantics_ref: row.capacity_semantics_ref, risk_profile_ref: row.risk_profile_ref,
+        availability_condition_set_ref: row.availability_condition_set_ref, status: row.profile_status,
+        canonical_digest: row.profile_digest } }))) });
   }
   async function readPinnedG4ExpansionClosure({ g4, profile } = {}) {
     const validPin = (ref) => ref && typeof ref.id === 'string' && ref.id.trim()
@@ -1115,6 +1177,7 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
     readPinnedCanonicalG5SceneBinding,
     readPinnedG4ExpansionClosure,
     readApprovedG4DirectionalExits,
+    readApprovedCanonicalG5Connections,
     readG4ExpansionBinding,
     readPinnedG4NpcCompositionClosure,
     readOrientationProfile: (ref) =>

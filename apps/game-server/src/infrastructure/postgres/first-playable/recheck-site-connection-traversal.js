@@ -122,7 +122,8 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
     conditionSetRef: check.availability_condition_set_ref,
     sourcePositionId: check.from_position_ref,
     destinationPositionId: check.to_position_ref, current: row });
-  if (availability?.ok !== true || availability.connection_id !== check.connection_id
+  if (availability?.ok !== true || availability.status !== 'open'
+    || availability.connection_id !== check.connection_id
     || availability.condition_set_ref !== (check.availability_condition_set_ref == null ? null
       : `${check.availability_condition_set_ref.entity_id}@${check.availability_condition_set_ref.authoring_version}`)) {
     return result(false);

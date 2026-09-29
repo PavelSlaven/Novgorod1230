@@ -52,3 +52,30 @@ test('commit recheck without prepared context reads approved directional exits o
     current: { destination_g4_id: 'g4' }, worldBaseReader, worldRevisionId: 'revision' }), exits);
   assert.deepEqual(calls, ['binding', 'exits']);
 });
+
+test('a canonical place carries the approved connections of its own G5; a generated one carries none', async () => {
+  const connections = [{ binding: { id: 'b1' }, profile: { id: 'prof' } }];
+  const asked = [];
+  const worldBaseReader = {
+    readPinnedSceneTemplateClosure: async () => ({ ok: true, value: { endpoint_slots: [{
+      endpoint_role: 'departure', required_position_slot_key: 'place', required_position_instance_ordinal: 0 }] } }),
+    readG4ExpansionBinding: async () => ({ ok: true, value: { g4: { id: 'g4', version: 1 }, profile: { id: 'p' } } }),
+    readPinnedG4ExpansionClosure: async () => ({ ok: true, value: { slots: [] } }),
+    readApprovedCanonicalG5Connections: async (input) => { asked.push(input); return { ok: true, value: connections, gaps: [{ binding_id: 'bad', reason: 'canonical_connection_profile_unusable' }] }; }
+  };
+  const emptyState = { ledgers: [], sites: [], chains: [], frontiers: [], reservations: [], bindings: [],
+    scene_baselines: [], g6_instances: [], scene_positions: [], site_connections: [], endpoint_bindings: [] };
+  const read = (site) => readSpatialV3ExpansionContext({ worldBaseReader, release, partyId: 'party', actorId: 'actor',
+    transaction: { query: async (sql) => ({ rows: [sql.includes('WITH sites AS') ? emptyState : { ...current, site }] }) } });
+  const canonical = await read({ parent_g4_id: 'g4', origin: 'canonical',
+    canonical_g5_ref: { entity_id: 'g5a', authoring_version: '1' } });
+  assert.deepEqual(canonical.canonical_connections, connections);
+  assert.deepEqual(canonical.canonical_connection_gaps.map((gap) => gap.binding_id), ['bad'],
+    'a binding without a usable profile is a diagnostic gap; it does not stop the place');
+  assert.deepEqual(asked, [{ g4: { id: 'g4', version: 1 }, canonical_g5: { id: 'g5a', version: 1 } }]);
+  assert.deepEqual((await read({ parent_g4_id: 'g4', origin: 'generated' })).canonical_connections, []);
+  worldBaseReader.readApprovedCanonicalG5Connections = async () => ({ ok: false, error: 'gap' });
+  await assert.rejects(read({ parent_g4_id: 'g4', origin: 'canonical',
+    canonical_g5_ref: { entity_id: 'g5a', authoring_version: '1' } }),
+  (error) => error.details.reason === 'approved_canonical_connections_required');
+});

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { createLlmTurnBudget, GAMEPLAY_LLM_CALL_TIMEOUT_MS, GAMEPLAY_TURN_DEADLINE_MS } from
+  '../src/runtime/llm-turn-budget.js';
 import { resolveCommittedPhase2PresentationAfterFailure } from
   '../src/runtime/lower-dvina-trace-phase-2-presentation-resolve.js';
 
@@ -85,4 +86,61 @@ test('replay failure after one attempt returns pending when fallback matches', a
   });
   assert.equal(result.screen.screen_status, 'committed_presentation_pending');
   assert.equal(replayCalls, 1);
+});
+
+function clockedBudget() {
+  const clock = { now: 0 };
+  return { clock, turnBudget: createLlmTurnBudget({ now: () => clock.now }) };
+}
+
+const resolveWith = (repository, turnBudget) => resolveCommittedPhase2PresentationAfterFailure({
+  partyId: 'party-1', idempotencyKey: 'idem-1', inputDigest: replay.input_digest, repository,
+  narrator: { async run() {} }, turnBudget, fallback: structuredClone(replay.public_result) });
+
+test('a replay loader that enforces the turn deadline itself yields pending, not an error',
+  async () => {
+    const { clock, turnBudget } = clockedBudget();
+    let replayCalls = 0;
+    const repository = {
+      async loadPhase2Replay({ turnBudget: budget }) {
+        clock.now = GAMEPLAY_TURN_DEADLINE_MS + 1;
+        budget.assertWithinDeadline();
+        return structuredClone(replay);
+      },
+      async replayPhase2Turn() { replayCalls += 1; return { screen: { screen_status: 'ready' } }; }
+    };
+    const result = await turnBudget.runTurn(() => resolveWith(repository, turnBudget));
+    assert.equal(result.screen.screen_status, 'committed_presentation_pending');
+    assert.equal(replayCalls, 0);
+  });
+
+test('the retry does not start when the rest of the deadline is not one narrator call',
+  async () => {
+    const { clock, turnBudget } = clockedBudget();
+    let replayCalls = 0;
+    const repository = {
+      async loadPhase2Replay() { return structuredClone(replay); },
+      async replayPhase2Turn() { replayCalls += 1; return { screen: { screen_status: 'ready' } }; }
+    };
+    const tight = await turnBudget.runTurn(() => {
+      clock.now = GAMEPLAY_TURN_DEADLINE_MS - GAMEPLAY_LLM_CALL_TIMEOUT_MS;
+      return resolveWith(repository, turnBudget);
+    });
+    assert.equal(tight.screen.screen_status, 'committed_presentation_pending');
+    assert.equal(replayCalls, 0, 'remaining equals one call timeout: no retry');
+    clock.now = 0;
+    const roomy = await turnBudget.runTurn(() => {
+      clock.now = GAMEPLAY_TURN_DEADLINE_MS - GAMEPLAY_LLM_CALL_TIMEOUT_MS - 1;
+      return resolveWith(repository, turnBudget);
+    });
+    assert.equal(roomy.screen.screen_status, 'ready');
+    assert.equal(replayCalls, 1);
+  });
+
+test('unexpected loader failures are not swallowed', async () => {
+  const repository = {
+    async loadPhase2Replay() { throw Object.assign(new Error('db down'), { code: 'DATABASE_UNAVAILABLE' }); },
+    async replayPhase2Turn() { throw new Error('unexpected'); }
+  };
+  await assert.rejects(resolveWith(repository, null), { code: 'DATABASE_UNAVAILABLE' });
 });

@@ -93,3 +93,26 @@ test('runtime recovery records narration retry under pending turn identity', asy
     session: { screen: { screen_status: 'committed_presentation_pending', turn_id: 'turn-1' } } });
   assert.equal(diagnostics.takeLogReport({ party_id: 'party-1' }).request_id, 'turn-1');
 });
+
+test('recovery returns null (screen stays pending) when the turn budget ends during its loads', async () => {
+  const exhausted = () => Object.assign(new Error('Gameplay turn safety deadline is exhausted.'),
+    { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  const session = { screen: { screen_status: 'committed_presentation_pending' } };
+  const never = async () => { throw new Error('unexpected'); };
+  assert.equal(await recoverTracePendingPresentation({ partyId: 'party-1', session,
+    repository: { loadPhase2State: async () => { throw exhausted(); },
+      loadPhase2Replay: never, replayPhase2Turn: never },
+    narrator: { async run() {} }, turnBudget: null }), null);
+  assert.equal(await recoverTracePendingPresentation({ partyId: 'party-1', session,
+    repository: { loadPhase2State: async () => ({ last_turn: { idempotency_key: 'turn-1' } }),
+      loadPhase2Replay: async () => { throw exhausted(); }, replayPhase2Turn: never },
+    narrator: { async run() {} }, turnBudget: null }), null);
+});
+
+test('recovery still rethrows unexpected load failures', async () => {
+  await assert.rejects(recoverTracePendingPresentation({ partyId: 'party-1',
+    session: { screen: { screen_status: 'committed_presentation_pending' } },
+    repository: { loadPhase2State: async () => {
+      throw Object.assign(new Error('db down'), { code: 'DATABASE_UNAVAILABLE' }); } },
+    narrator: { async run() {} }, turnBudget: null }), { code: 'DATABASE_UNAVAILABLE' });
+});

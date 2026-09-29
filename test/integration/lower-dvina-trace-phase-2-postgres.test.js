@@ -597,12 +597,12 @@ async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
   const pending = await setupRuntime.submitTurn(opened.party_id, input);
   assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
   const afterExhaust = narrationCalls;
-  assert.ok(afterExhaust >= 2);
+  assert.equal(afterExhaust, 2, 'workflow pass + one replay');
   narrationFails = false;
   const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService });
   const recovered = await restart.submitTurn(opened.party_id, input);
   assert.equal(recovered.screen.screen_status, 'ready');
-  assert.ok(narrationCalls > afterExhaust);
+  assert.equal(narrationCalls, afterExhaust + 1, 'recovery makes one successful pass');
 }
 
 async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {

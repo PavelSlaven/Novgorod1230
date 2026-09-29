@@ -31,8 +31,8 @@ const GB = 'data/world-catalogs/novgorod/game-base-v1';
 // Known stale committed outputs: path (relative to game-base-v1) -> tracking note. The test insists each one still
 // differs, so an entry must be deleted as soon as the data is rebuilt.
 const KNOWN_STALE = {
-  'nature-materials-weather/weather_climate/water_profiles.csv': 'committed data is 153 rows shorter than its builder produces (1754 vs 1907); issue TBD',
-  'nature-materials-weather/reports/counts.json': 'water_profiles.csv count follows the stale file above; issue TBD',
+  'nature-materials-weather/weather_climate/water_profiles.csv': 'committed data is 153 rows shorter than its builder produces (1754 vs 1907); issue #201',
+  'nature-materials-weather/reports/counts.json': 'water_profiles.csv count follows the stale file above; issue #201',
 };
 
 // [cwd relative to game-base-v1, interpreter, script, ...args]. Order: group builders, then places-binding, catalog, status.

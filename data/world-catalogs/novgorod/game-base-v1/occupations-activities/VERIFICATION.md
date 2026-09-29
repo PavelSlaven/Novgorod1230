@@ -508,3 +508,25 @@ F2: slot override в `actor_appearance_authoring.json` выбирает `nov_clo
 - skills_competences/README.md — approve
 - validate.py — approve
 Группа: approve_with_limits.
+
+## Независимая проверка owner-fixes D47 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** Claude Opus 5.5, независимый проверяющий, не автор. Ветка `fleet/owner-fixes`, HEAD `ce307cbf` (работа Codex `34070b47`, слияние main с #189 `782f4392`), база main `2b4aa2f9`.
+- **Что:** по D47 занятия `occ_gusli_player`, `occ_singer`, `occ_storyteller` (PRO0448, PRO0454, PRO0455) получили новый закрытый архетип `performance_entertainment` вместо `no_source:occupation_archetype`. `check_occupations_additions.py` берёт словарь архетипов из канонического сида `occupation_archetypes_v1.csv` и требует этот архетип у трёх занятий. Два README описывают новое состояние. Вне группы: строка сида, генератор `generate_universal_seeds.py` (LF), счётчик 15→16 в `field-descriptions.js`, `SCHEMA_REFERENCE.md`, `domains-b.src.json` и каталоге.
+- **Проверено скриптами:**
+  - Semantic diff `occupations_additions.csv` к main: 33 строки, порядок и заголовок те же, изменён только `occupation_archetype_id` у трёх занятий.
+  - В копии `git archive HEAD` два прохода штатных сборщиков: seedgen, `build_occupations_additions.py`, activities, npc_runtime_profiles, skills. Выход совпал с HEAD побайтно, второй проход ничего не изменил.
+  - `check_occupations_additions.py` и `--self-test`, `validate.py` (33/20/42/33): rc=0.
+  - Три id есть в `allowed_occupations` роли скомороха (social-strata-law) и существуют здесь со `status=candidate`.
+- **Ограничения:**
+  - Строка сида несёт общую provenance генератора (`seed:universal_social_layer_v1`, 2026-07-08), ссылки на D47 в ней нет.
+  - В `world_base` 15 архетипов до реимпорта. Навыков у архетипа нет: строки `occupation_skill_defaults` нет, так решено.
+  - Три занятия есть только в candidate `occupations_additions.csv`, их надо импортировать вместе с ролями.
+
+### Вердикты по файлам owner-fixes
+
+- README.md — approve: музыкальные занятия описаны с `performance_entertainment`
+- occupations/README.md — approve_with_limits: фраза про музыкальные занятия верна; прежние оговорки (устаревшая фраза, deferred не поимённо) остаются
+- occupations/occupations_additions.csv — approve_with_limits: дельта D47 чистая, изменён только архетип трёх занятий, файл равен пересборке; прежняя оговорка OA-6 остаётся
+- occupations/scripts/build_occupations_additions.py — approve: три reviewer mapping
+- occupations/scripts/check_occupations_additions.py — approve: словарь берётся из канонического сида, у трёх занятий обязателен `performance_entertainment`

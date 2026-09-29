@@ -9,7 +9,7 @@
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 17 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 11 | 14 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 10 | 13 | 0 |
-| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 11 | 7 | 0 |
+| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 12 | 7 | 0 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 5 | 2 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 13 | 12 | 0 |
@@ -23,10 +23,10 @@
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 16 | 4 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 12 | 19 | 0 |
 | [resource-catalog](resource-catalog/VERIFICATION.md) | approve_with_limits | 5 | 11 | 0 |
-| [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 10 | 0 |
+| [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 11 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 5 | 0 |
-| **Итого** | | **170** | **256** | **0** |
+| **Итого** | | **171** | **257** | **0** |
 
 ## Вердикты по файлам
 
@@ -147,12 +147,12 @@
 | Файл | Последний verdict |
 |---|---|
 | [`fauna/anachronism_denylist_fauna.csv`](fauna-fish-invertebrates-livestock/fauna/anachronism_denylist_fauna.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
-| [`fauna/fauna_presence.csv`](fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`fauna/fauna_presence.csv`](fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`fauna/fish.csv`](fauna-fish-invertebrates-livestock/fauna/fish.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#c016--продукты-всех-рыб-независимая-проверка-d35) |
 | [`fauna/fishing_methods.csv`](fauna-fish-invertebrates-livestock/fauna/fishing_methods.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/herd_composition.csv`](fauna-fish-invertebrates-livestock/fauna/herd_composition.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/household_type_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/household_type_crosswalk.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
-| [`fauna/invertebrates_herps.csv`](fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`fauna/invertebrates_herps.csv`](fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`fauna/livestock_ailments.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_ailments.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/livestock_care.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_care.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/livestock_identification_marks.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_identification_marks.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
@@ -163,10 +163,10 @@
 | [`fauna/place_type_livestock.csv`](fauna-fish-invertebrates-livestock/fauna/place_type_livestock.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/rpgr_pf_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 | [`fauna/water_body_pf_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/water_body_pf_crosswalk.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
-| [`README.md`](fauna-fish-invertebrates-livestock/README.md) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
-| [`scripts/build.py`](fauna-fish-invertebrates-livestock/scripts/build.py) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`README.md`](fauna-fish-invertebrates-livestock/README.md) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/build.py`](fauna-fish-invertebrates-livestock/scripts/build.py) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`scripts/src/fish_data.py`](fauna-fish-invertebrates-livestock/scripts/src/fish_data.py) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#c016--продукты-всех-рыб-независимая-проверка-d35) |
-| [`scripts/src/inv_herp_data.py`](fauna-fish-invertebrates-livestock/scripts/src/inv_herp_data.py) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`scripts/src/inv_herp_data.py`](fauna-fish-invertebrates-livestock/scripts/src/inv_herp_data.py) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`sources.csv`](fauna-fish-invertebrates-livestock/sources.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`validation_report.json`](fauna-fish-invertebrates-livestock/validation_report.json) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 
@@ -182,16 +182,17 @@
 | [`fauna/mammals.csv`](fauna-mammals-birds/fauna/mammals.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 | [`fauna/phase_activity.csv`](fauna-mammals-birds/fauna/phase_activity.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 | [`fauna/sources.csv`](fauna-mammals-birds/fauna/sources.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunasourcescsv--approve_with_limits-21-rows-12-checked-against-the-url-or-file) |
-| [`fauna/taxa_checks.csv`](fauna-mammals-birds/fauna/taxa_checks.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunataxa_checkscsv--approve_with_limits-27-rows-13-checked-against-sources) |
+| [`fauna/taxa_checks.csv`](fauna-mammals-birds/fauna/taxa_checks.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`fauna/wild_habitat_presence.csv`](fauna-mammals-birds/fauna/wild_habitat_presence.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
-| [`README.md`](fauna-mammals-birds/README.md) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
-| [`scripts/build.cjs`](fauna-mammals-birds/scripts/build.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`README.md`](fauna-mammals-birds/README.md) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/build.cjs`](fauna-mammals-birds/scripts/build.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`scripts/src/checks.cjs`](fauna-mammals-birds/scripts/src/checks.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`scripts/src/hunting.cjs`](fauna-mammals-birds/scripts/src/hunting.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 | [`scripts/src/mammals.cjs`](fauna-mammals-birds/scripts/src/mammals.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
 | [`scripts/validate-phase.cjs`](fauna-mammals-birds/scripts/validate-phase.cjs) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
-| [`scripts/validate.cjs`](fauna-mammals-birds/scripts/validate.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`scripts/validate.cjs`](fauna-mammals-birds/scripts/validate.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`scripts/voice-phase.cjs`](fauna-mammals-birds/scripts/voice-phase.cjs) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |
-| [`validation-report.json`](fauna-mammals-birds/validation-report.json) | [approve](fauna-mammals-birds/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
+| [`validation-report.json`](fauna-mammals-birds/validation-report.json) | [approve](fauna-mammals-birds/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 
 ### flora-herbs-berries-mushrooms
 
@@ -448,12 +449,12 @@
 | [`npc_runtime_profiles/pr98_extract.json`](occupations-activities/npc_runtime_profiles/pr98_extract.json) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
 | [`npc_runtime_profiles/README.md`](occupations-activities/npc_runtime_profiles/README.md) | [approve](occupations-activities/VERIFICATION.md#npc_runtime_profiles-subject_applicability-хозяйки--approve-c009) |
 | [`occupations/archive-professions.authoring.json`](occupations-activities/occupations/archive-professions.authoring.json) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`occupations/occupations_additions.csv`](occupations-activities/occupations/occupations_additions.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`occupations/README.md`](occupations-activities/occupations/README.md) | [approve_with_limits](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
+| [`occupations/occupations_additions.csv`](occupations-activities/occupations/occupations_additions.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`occupations/README.md`](occupations-activities/occupations/README.md) | [approve_with_limits](occupations-activities/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`occupations/scripts/archive_professions.py`](occupations-activities/occupations/scripts/archive_professions.py) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`occupations/scripts/build_occupations_additions.py`](occupations-activities/occupations/scripts/build_occupations_additions.py) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`occupations/scripts/check_occupations_additions.py`](occupations-activities/occupations/scripts/check_occupations_additions.py) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`README.md`](occupations-activities/README.md) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
+| [`occupations/scripts/build_occupations_additions.py`](occupations-activities/occupations/scripts/build_occupations_additions.py) | [approve](occupations-activities/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`occupations/scripts/check_occupations_additions.py`](occupations-activities/occupations/scripts/check_occupations_additions.py) | [approve](occupations-activities/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`README.md`](occupations-activities/README.md) | [approve](occupations-activities/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`skills_competences/build.py`](occupations-activities/skills_competences/build.py) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
 | [`skills_competences/README.md`](occupations-activities/skills_competences/README.md) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
 | [`skills_competences/skills_competences.json`](occupations-activities/skills_competences/skills_competences.json) | [approve](occupations-activities/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
@@ -537,12 +538,13 @@
 | [`law_justice_governance/scripts/build_law.py`](social-strata-law/law_justice_governance/scripts/build_law.py) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
 | [`law_justice_governance/scripts/seed_law_rows.py`](social-strata-law/law_justice_governance/scripts/seed_law_rows.py) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
 | [`README.md`](social-strata-law/README.md) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`social_strata_legal_status/README.md`](social-strata-law/social_strata_legal_status/README.md) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
+| [`social_strata_legal_status/README.md`](social-strata-law/social_strata_legal_status/README.md) | [approve_with_limits](social-strata-law/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`social_strata_legal_status/reports/counts.json`](social-strata-law/social_strata_legal_status/reports/counts.json) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
 | [`social_strata_legal_status/reports/validation.json`](social-strata-law/social_strata_legal_status/reports/validation.json) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`social_strata_legal_status/roles/new_role_candidates.tsv`](social-strata-law/social_strata_legal_status/roles/new_role_candidates.tsv) | [approve_with_limits](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
+| [`social_strata_legal_status/roles/new_role_candidates.tsv`](social-strata-law/social_strata_legal_status/roles/new_role_candidates.tsv) | [approve_with_limits](social-strata-law/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 | [`social_strata_legal_status/scripts/archive_role_candidates.json`](social-strata-law/social_strata_legal_status/scripts/archive_role_candidates.json) | [approve_with_limits](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`social_strata_legal_status/scripts/build_roles.py`](social-strata-law/social_strata_legal_status/scripts/build_roles.py) | [approve](social-strata-law/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
+| [`social_strata_legal_status/scripts/build_roles.py`](social-strata-law/social_strata_legal_status/scripts/build_roles.py) | [approve](social-strata-law/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
+| [`social_strata_legal_status/scripts/seed_new_roles.py`](social-strata-law/social_strata_legal_status/scripts/seed_new_roles.py) | [approve](social-strata-law/VERIFICATION.md#вердикты-по-файлам-owner-fixes) |
 
 ### time-calendar-church
 

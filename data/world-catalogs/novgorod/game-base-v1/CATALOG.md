@@ -292,7 +292,7 @@
 
 #### Земноводные, пресмыкающиеся, насекомые и вредители — `fauna_invertebrates_herps`
 
-- Сущности: Лягушки, жабы, тритоны, гадюка, уж, ящерица; комары, мошка, слепни, клещи, пчёлы (дикие и бортевые), осы, муравьи, бабочки, стрекозы, жуки, пиявки, жемчужница; амбарные вредители, мыши, крысы (чёрная крыса — проверить датировку), блохи, вши, клопы (проверить).
+- Сущности: Лягушки, жабы, тритоны, гадюка, уж, ящерица; комары, мошка, слепни, клещи, пчёлы (дикие и бортевые), осы, муравьи, бабочки, стрекозы, жуки, пиявки, жемчужница; амбарные вредители, мыши, крысы (чёрная крыса — D47: редкая завозная, только торг, пристань и склады, hidden/C; пасюк — анахронизм), блохи, вши, клопы (проверить).
 - Ключевые поля: `fa_id`, `name_ru`, `name_lat`, `group`, `habitat_presence[pf_id, season, frequency_class]`, `nuisance_or_danger`, `perceptual_cues`, `season_peak`, `source_refs`, `confidence`
 - Целевые таблицы: new: fauna_taxa; presence_rules; WK claims
 - Потребители: ощущения на месте (гнус, укусы) → natural_presentation_texts; health (укусы, паразиты); WK
@@ -706,7 +706,7 @@
 
 - Сущности: 68 занятий + недостающие ремёсла (ювелир-литейщик, косторез, токарь, скорняк, кожевник, красильщик, верёвочник/сетевяз, замочник, щитник/лучник, каменщик, известежог, иконописец, пивовар/медовар, мясник, хлебник, рыботорговец, пряха/ткачиха, кормилица — проверить каждое); обязательные поля runtime basis для перевода 31 caution в approved.
 - Ключевые поля: `occupation_id`, `occupation_archetype_id`, `daily_schedule_winter/spring_rasputitsa/summer/autumn`, `how_to_materialize_as_background/scene/key_npc`, `typical_property/tools/clothing/containers`, `typical_local/route_knowledge`, `common_relationships/fears/goals`, `llm_adaptation_rules`, `llm_forbidden_uses`, `status`, `source_refs`, `confidence`
-- Целевые таблицы: region_occupations TSV (pinned; новые строки отдельно); occupation_archetypes (15); occupation_skill_defaults; skill_catalog (12)
+- Целевые таблицы: region_occupations TSV (pinned; новые строки отдельно); occupation_archetypes (16); occupation_skill_defaults; skill_catalog (12)
 - Потребители: approved-npc-runtime-basis.js (NPC_RUNTIME_BASIS_DATA_GAP при пустом поле); procedural-scene-records; D8 сопоставление запроса игрока с занятием
 - Источники и статус: main:data/novgorod-region/novgorod_occupations_v1_enriched.tsv — 37 approved / 31 caution; master professions 479 — кандидат (superseded); wk:occupation-context.json — approved
 - Пробел: 31 занятие отбрасывается фильтром; многие засвидетельствованные ремёсла отсутствуют; skill_catalog 12 навыков.

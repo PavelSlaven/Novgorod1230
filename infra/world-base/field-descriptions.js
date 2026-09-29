@@ -186,7 +186,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   mobility_archetypes: 'Архетипы мобильности (local_bound, road_mobile, …).',
   social_position_archetypes: 'Канонические социальные позиции — главный якорь нормализации.',
   class_role_rules: 'Матрица допустимости класс ↔ роль.',
-  occupation_archetypes: 'Универсальные архетипы занятий (15 id).',
+  occupation_archetypes: 'Универсальные архетипы занятий (16 id).',
   skill_catalog: 'Канонический каталог механических навыков (12 id).',
   occupation_skill_defaults: 'Дефолтные primary/secondary навыки по занятию.',
   role_occupation_rules: 'Матрица допустимости роль ↔ занятие.',

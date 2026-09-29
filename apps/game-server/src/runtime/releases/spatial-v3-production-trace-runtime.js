@@ -81,6 +81,7 @@ export function createTraceTurnRuntime({
   spatialLocalSceneRuntime = null,
   readLocalEdgeDisclosure = null,
   readCurrentExitDisclosure = null,
+  readCurrentConnectionDisclosure = null,
   loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts,
@@ -203,7 +204,7 @@ export function createTraceTurnRuntime({
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
-      readLocalEdgeDisclosure, readCurrentExitDisclosure,
+      readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
         : createTargetCurrentFactualContext({ partyPool, committer,
           runtime: targetStartRuntime, authoredRuntimeBindingResolver }).projectEnvironmentAtClock

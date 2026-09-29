@@ -239,6 +239,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           partyPool: pools.partyPool, worldBaseReader: targetContext.runtime.worldBaseReader,
           release }),
         readExitDisclosure: currentVisibility.readExitDisclosure,
+        readConnectionDisclosure: currentVisibility.readConnectionDisclosure,
         prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
           pool: pools.partyPool, ...siteTraversalCapability, projectDestination }),
         materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
@@ -283,6 +284,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           readLocalMovementEligibility }),
         readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
         readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
+        readCurrentConnectionDisclosure: currentVisibility.readCurrentConnectionDisclosure,
         readCurrentSources: currentVisibility.readCurrentSources, targetFiniteFirstEntry }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release

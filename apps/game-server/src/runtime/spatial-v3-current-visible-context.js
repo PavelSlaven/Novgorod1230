@@ -23,9 +23,9 @@ export async function readAndProjectSpatialV3CurrentVisibleContext({ transaction
 /** Compose only observations admitted by the current perception and disclosure owners.
  * Inputs may include proposed destination rows from that transaction. */
 export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, actorId,
-  positionId, entityObservations, localEdges, directionalExits } = {}) {
+  positionId, entityObservations, localEdges, directionalExits, siteConnections = [] } = {}) {
   if (!Array.isArray(entityObservations) || !Array.isArray(localEdges)
-    || !Array.isArray(directionalExits)) gap('complete_current_visible_sources_required');
+    || !Array.isArray(directionalExits) || !Array.isArray(siteConnections)) gap('complete_current_visible_sources_required');
   const natural = projectG4NaturalPerception({ input: naturalInput, partyId, actorId, positionId });
   const seen = new Set();
   const visible_npc = [];
@@ -56,7 +56,8 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
   }
   for (const [kind, rows, idKey] of [
     ['scene_movement_edge', localEdges, 'edge_id'],
-    ['g4_directional_exit', directionalExits, 'directional_exit_id']
+    ['g4_directional_exit', directionalExits, 'directional_exit_id'],
+    ['g5_site_connection', siteConnections, 'connection_binding_id']
   ]) {
     for (const row of rows) {
       const key = `${kind}:${row?.[idKey]}`;

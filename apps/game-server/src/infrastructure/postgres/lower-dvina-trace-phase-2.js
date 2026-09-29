@@ -37,6 +37,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
   loadInitialNaturalScenePerceptionInput = null,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
+  readCurrentConnectionDisclosure = null,
   projectEnvironmentAtClock = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
@@ -151,7 +152,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       const current = await withPhase2CurrentLocalEdges(
         withJourneyLocation(visible, journeyLocation),
         includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
-        includeCurrentVisibleContext ? readCurrentExitDisclosure : null);
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
       return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...current,
         npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) })));
@@ -197,7 +199,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       }));
     const current = await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
       includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
-      includeCurrentVisibleContext ? readCurrentExitDisclosure : null);
+      includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+      includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
     return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState({
       ...current,
       world_identity: {

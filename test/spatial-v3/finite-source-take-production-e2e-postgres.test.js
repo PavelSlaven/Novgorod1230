@@ -15,6 +15,7 @@ import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 
 const TAKE = 'Беру валежник.';
+const TAKE_THREE = 'Возьму три палки из валежника.';
 const WALK = PRESENCE_E2E_MOVE_TEXT;
 const LOOK = 'Осматриваюсь вокруг.';
 const PLANNER = 'Return only one JSON object containing the semantic choice for one turn step.';
@@ -62,14 +63,16 @@ function installTakeFetch(seen) {
     }
     if (system.startsWith('Return only one JSON object containing the ordinary semantic choice')) {
       seen.ordinaryModes.push(user.mode);
+      const quantity = user.required_quantity?.value ?? seen.nextQuantity ?? 1;
       assert.equal(user.mode, 'resolve_presence', 'Stage A must not run for a finite-only scope');
       return respond({ resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
         semantic_admission_class: 'common_mundane', world_knowledge_claim_refs: [],
         world_knowledge_constraint_refs: [], world_knowledge_constraint_verdict: 'clear',
         reason_code: 'materialize', entities: [{ semantic_type: 'deadwood_material_portion',
           name: 'валежник', presence_expectation: 'routine', mechanics_proposal: {
-            mass_grams: 50, external_hand_cost: 1, carry_form: 'regular', packing_slot_cost: 0,
-            quantity: { value: 1, unit: 'item' }, container: null } }] });
+            mass_grams: 50 * quantity, external_hand_cost: 1, carry_form: 'regular',
+            packing_slot_cost: 0, quantity: { value: quantity, unit: 'item' },
+            container: null } }] });
     }
     if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
       seen.auditorCalls += 1;
@@ -79,22 +82,24 @@ function installTakeFetch(seen) {
       const request = user.request ?? user;
       const visible = request.player_safe_state?.current_visible_context?.visible_objects ?? [];
       const actor = request.actor.actor_id ?? request.actor.actor_ref;
-      if (request.root_player_action === TAKE) {
+      if (request.root_player_action === TAKE || request.root_player_action === TAKE_THREE) {
         seen.plannerSteps.push(request.step_index);
-        const item = visible.find(({ entity_ref: ref, display_label: label }) =>
-          ref.entity_kind === 'item' && label === 'валежник');
+        const item = visible.find(({ entity_ref: ref, display_label: label, visible_status: status }) =>
+          ref.entity_kind === 'item' && label === 'валежник' && status === 'available');
         if (item != null) return respond(direct([{ op: 'move_entity',
           entity_ref: item.entity_ref.entity_id,
           placement: { relation: 'held_by', target_ref: actor } }]));
         const source = visible.find(({ entity_ref: ref }) =>
           ref.entity_kind === 'ordinary_resource_source');
         assert.ok(source, 'finite source must be visible to the planner at focus');
-        return respond({ interpretation: { player_goal: TAKE, grounded_attempt: TAKE,
+        const wanted = request.root_player_action;
+        return respond({ interpretation: { player_goal: wanted, grounded_attempt: wanted,
           adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending',
         activity: { owner: 'domain', duration_class: null, effort: null },
         operations: [{ op: 'request_discovery', actor_ref: actor, discovery_kind: 'inspect',
-          target_refs: [source.entity_ref.entity_id], query: source.display_label }],
-        check: null, continuation: { remaining_intent: TAKE, depends_on_refs: [] },
+          target_refs: [source.entity_ref.entity_id], query: source.display_label,
+          ...(wanted === TAKE_THREE ? { quantity: { value: 3, unit: 'item' } } : {}) }],
+        check: null, continuation: { remaining_intent: wanted, depends_on_refs: [] },
         clarification: null, direct_result_kind: null, operation_choice: null,
         reason_code: 'ordinary_material_prerequisite', reason: 'Сначала источник.' });
       }
@@ -137,7 +142,7 @@ async function rows(pool, sql, params) { return (await pool.query(sql, params)).
 test('take from a finite source at a generated G5: item in hand, stock -1, same after restart',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t, { withTestWaveEnrichment: false });
-    const seen = { ordinaryModes: [], plannerSteps: [], auditorCalls: 0 };
+    const seen = { ordinaryModes: [], plannerSteps: [], auditorCalls: 0, nextQuantity: 1 };
     const restoreFetch = installTakeFetch(seen);
     t.after(() => restoreFetch());
     const llmSettings = await qualifiedSettings();
@@ -193,11 +198,17 @@ test('take from a finite source at a generated G5: item in hand, stock -1, same 
       assert.deepEqual(seen.ordinaryModes, ['resolve_presence']);
       assert.deepEqual(seen.plannerSteps, [1, 2]);
 
+      // A different quantity is a different request identity: a second, distinct take works.
+      seen.nextQuantity = 3;
+      await runtime.submitTurn(partyId, { raw_text: TAKE_THREE, request_id: 'finite-take-2' });
+      assert.equal((await stock())[0].quantity_numerator, '56');
+      assert.equal((await held()).length, 2);
+
       reloaded = await createPresenceProductionRoot({ ...env, llmSettings });
       const screen = await reloaded.runtime.getPartyScreen(partyId);
       assert.ok(screen.screen.main_prose.trim().length > 0);
-      assert.deepEqual(await stock(), after);
-      assert.deepEqual(await held(), inHand);
+      assert.equal((await stock())[0].quantity_numerator, '56');
+      assert.equal((await held()).length, 2);
     } finally {
       if (seen.stubError) console.error('SCRIPTED MODEL ERROR', seen.stubError);
       if (reloaded) await reloaded.runtime.close();

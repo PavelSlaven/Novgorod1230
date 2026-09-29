@@ -1759,13 +1759,13 @@
       "confidence": "A",
       "period": "1180–1260",
       "region": "Великий Новгород и Новгородская земля; центр модели — около 1230 года",
-      "reason": "Сетная нить относится к ремеслу изготовления рыболовной сети; цель crafts-tools-processes/craft_processes/process_products.csv#pr:fishing_net.",
+      "reason": "Льняная сетная нить — cordage stock; маршрут к точному существующему материалу mt_cordage.",
       "expected_result": "routed",
       "basis_note": "A: category-level evidence (category_form_material_process_or_context); прямое свидетельство категории/типа, не наличия конкретного экземпляра.",
       "semantic_dedup": "unique",
       "semantic_note": "family_key=net_thread_linen; сверены archive name, русские/английские имена текущих garments/components/adornment/outfits и включённые кандидаты; совпадения по одному состоянию, количеству, таре или назначению не выявлено.",
       "target_group": "crafts-tools-processes",
-      "target_ref": "crafts-tools-processes/craft_processes/process_products.csv#pr:fishing_net",
+      "target_ref": "crafts-tools-processes/materials_registry/materials.csv#mt_cordage",
       "dedup_result": "not_applicable_routed"
     },
     {
@@ -1778,13 +1778,13 @@
       "confidence": "A",
       "period": "1180–1260",
       "region": "Великий Новгород и Новгородская земля; центр модели — около 1230 года",
-      "reason": "Сетная нить относится к ремеслу изготовления рыболовной сети; цель crafts-tools-processes/craft_processes/process_products.csv#pr:fishing_net.",
+      "reason": "Конопляная сетная нить — cordage stock; маршрут к точному существующему материалу mt_cordage.",
       "expected_result": "routed",
       "basis_note": "A: category-level evidence (category_form_material_process_or_context); прямое свидетельство категории/типа, не наличия конкретного экземпляра.",
       "semantic_dedup": "unique",
       "semantic_note": "family_key=net_thread_hemp; сверены archive name, русские/английские имена текущих garments/components/adornment/outfits и включённые кандидаты; совпадения по одному состоянию, количеству, таре или назначению не выявлено.",
       "target_group": "crafts-tools-processes",
-      "target_ref": "crafts-tools-processes/craft_processes/process_products.csv#pr:fishing_net",
+      "target_ref": "crafts-tools-processes/materials_registry/materials.csv#mt_cordage",
       "dedup_result": "not_applicable_routed"
     },
     {
@@ -1797,13 +1797,13 @@
       "confidence": "B",
       "period": "1180–1260",
       "region": "Великий Новгород и Новгородская земля; центр модели — около 1230 года",
-      "reason": "Thread is identified by its hunting-net repair use; reuse the stable crafts fishing-net process/product target already assigned by its owner ledger, without creating a clothing entity.",
+      "reason": "Нить для ремонта ловчей сети — cordage stock; маршрут к точному существующему материалу mt_cordage.",
       "expected_result": "routed",
       "basis_note": "Реконструкция/категорийный контекст; вывод о candidate type, не прямое свидетельство конкретной формы вещи.",
       "semantic_dedup": "unique",
       "semantic_note": "family_key=hunting_net_thread; сверены archive name, русские/английские имена текущих garments/components/adornment/outfits и включённые кандидаты; совпадения по одному состоянию, количеству, таре или назначению не выявлено.",
       "target_group": "crafts-tools-processes",
-      "target_ref": "crafts-tools-processes/craft_processes/process_products.csv#pr:fishing_net",
+      "target_ref": "crafts-tools-processes/materials_registry/materials.csv#mt_cordage",
       "dedup_result": "routed_target_ref"
     },
     {

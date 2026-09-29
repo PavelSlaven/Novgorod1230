@@ -56,6 +56,26 @@ exact scene binding and acoustic closure. Generated first-entry domain owners
 may contribute admitted write sets and rechecks through `prepareFirstEntry`;
 P16 persists those rows with topology and the selection trace.
 
+Canonical connections (passages between canonical places of one G4, Vikhtuy first)
+are a second topology kind of the same owner. The world-base reader returns the
+approved bindings that leave a place (per binding id the highest approved version
+whose profile is a non-conditional `site_connection`; the profile is read by the
+binding's own reference, because the expansion profile pins only one of them).
+`eligibleCanonicalConnections` offers them at the departure position the binding
+names; away from it the first local hop toward that position is the approach
+(same rule as exits: only an edge the local-scene owner offers). Disclosure is the
+exit visibility rule (no sight, no passage) with the label from the attested
+`m2c-canonical-connection-labels` catalog by binding id; a revealed connection
+without an approved label is a typed data gap. `prepareCanonicalConnection` of the
+generated expansion adapter shares the terminal preparation and the plan tail
+with frontier resolution (first entry of a created place goes through the same
+`prepareFirstEntry`, i.e. the R-2a presence resolver) and commits
+`resolve_frontier` under `resolve_frontier:canconn:<party>:<binding_id>`. The
+traversal itself is the shared `prepareSiteTraversal`. Arrival gives the narrator
+the destination's own scene text as `visible_changes` (turn-step visible projector,
+for every site connection). Entering a never-visited place needs its approved G6
+ambient baseline (LW-091).
+
 Presence at first arrival (O1, §3A) has one resolver,
 `createTargetPresenceRulesFirstArrivalResolver`, for the start place and every
 later first arrival. Bindings come from the site node: canonical G5 reads its

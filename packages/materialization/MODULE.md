@@ -231,6 +231,19 @@ exit G5 scene or includes its exact missing site, scene and endpoint rows in the
 same proposal, using the canonical source binding and approved acoustic pins. These functions never
 move a traveller, advance time, approve authoring or write to a database.
 
+`materializeSpatialV3CanonicalConnection` proposes one passage between two
+canonical places of a locked G4 from an approved `canonical_g5_connection_binding`
+and its exact non-conditional `site_connection` profile: the `g5_site_connections`
+row (`canconn:<party>:<binding_id>`) and its `from`/`to` endpoint bindings, beside
+the target place's own rows when it is visited for the first time (the same
+terminal preparation as an expansion). It writes no frontier, chain, ledger or
+reservation and never moves a traveller. The P16 owner commits it as
+`resolve_frontier` under the disjoint idempotency key
+`resolve_frontier:canconn:<party>:<binding_id>`; a frontier key is
+`resolve_frontier:` plus a digest and cannot collide with it. The way back is the
+reverse binding's own connection, prepared when the traveller first stands at the
+target's departure.
+
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.
 
 ## Допустимые зависимости

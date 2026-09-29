@@ -78,6 +78,9 @@
 | 079 | narration-конвейер (`gameplay_narrator*`) | двойной отказ narration-аудита после committed-хода оставляет игрока без прозы (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 080 | `lower-dvina-trace-phase-2-services.js` (`turnStepBlockPlan`), `spatial-v3-expansion-runtime.js` | отказ по занятости только на шаге 1; путь подхода после первого шага — по сырым рёбрам без видимости | [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185) |
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
+| 091 | `spatial_v3_g6_acoustic_baselines`, `spatial-v3-generated-expansion-adapter.js` (`prepareCanonicalTarget`) | у 149 из 195 канонических мест — целей связей нет утверждённого G6 ambient: вход в них невозможен | — |
+| 092 | `test/spatial-v3/generated-expansion-adapter.test.js` (`terminal=1`) | тест ожидает отсутствие `first_entry` у канонического терминала; падает и на базе d9bb04e9 | — |
+| 093 | `data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json`, `m2c-canonical-connection-labels/candidate.json` | подписи проходов «Проход N» не несут направления: «назад/дальше» планировщик путает | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -434,3 +437,21 @@
 - **Что.** С фиксом #188 модель возвращает только `qualitative_class`, а `schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`). Поле `expectedSchema` рантайм не проверяет: оно входит только в хэш конфига. Снимок baseline никем не импортируется.
 - **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
 - **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)
+
+### LW-091 — нет утверждённого G6 ambient у 149 из 195 канонических мест — целей связей
+- **Где.** `world_base.spatial_v3_g6_acoustic_baselines` (строки для канонических G5 есть только у 46 терминалов выходов: `m2c-acoustic/canonical-terminal/authoring-rows.json`); `apps/game-server/src/infrastructure/postgres/spatial-v3-generated-expansion-adapter.js` (`prepareCanonicalTarget`, `readPinnedCanonicalG5AcousticClosure`); `packages/materialization/src/spatial-v3-generated-scene.js` (`approved_exact_g6_ambient_baseline_required`).
+- **Что.** Переход по канонической связи создаёт непосещённое место, а для него обязательна строка ambient на каждый G6-слот. У Vikhtuy locality строк нет для water_access, forest_path, meeting_area, household_cluster, occupation_terrace, landing_candidate: со стартов work_storage и household_cluster ни одно соседнее место не открывается на боевых данных. Сквозной тест `canonical-walk-production-e2e-postgres.test.js` добавляет строки только в одноразовую БД (`enrichVikhtuyAcousticForCanonicalWalk`).
+- **Как жить.** Значения ambient не выдумывать в коде; нужна задача данных (кандидат строк по образцу `canonical-terminal`, утверждение, включение в m2c acoustic manifest и bootstrap v17). До неё считать места без строки недоступными.
+- **Issue.** —
+
+### LW-092 — `generated-expansion-adapter.test.js` (`terminal=1`) падает на базе
+- **Где.** `test/spatial-v3/generated-expansion-adapter.test.js`, ~строка 277 (`traces[1].trace.first_entry`).
+- **Что.** Тест ожидает, что трасса терминала не содержит `first_entry`, но созданный канонический терминал теперь проходит first entry (R-2a); падает и на d9bb04e9 без изменений rt-walk.
+- **Как жить.** Не считать красным от изменений топологии; привести ожидание к first entry терминала отдельной правкой владельца R-2a.
+- **Issue.** —
+
+### LW-093 — подписи проходов не несут направления
+- **Где.** `data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json`, `m2c-canonical-connection-labels/candidate.json`; стенд `/srv/novgorod-work/benches/rt-walk-planner/` (baseline: «назад/дальше» инвертированы уже на утверждённых локальных «Проход 1/2»).
+- **Что.** Планировщик выбирает проход по названному порядковому номеру верно, но «вернусь назад» / «иду дальше» — вслепую: номера направления не несут.
+- **Как жить.** Не лечить текстом из кода. Структурный признак «откуда пришёл» у ребра/связи в видимом контексте и подписи по классу цели — отдельные задачи; кнопки движения снимают проблему для клика.
+- **Issue.** —

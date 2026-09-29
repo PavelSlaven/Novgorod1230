@@ -9,12 +9,34 @@ import {
 } from '@rus/runtime-catalog';
 import { serverError } from '../../errors.js';
 
+export const PRESENCE_FIRST_ARRIVAL_GAP = Object.freeze({
+  NO_PLACE_FAMILY_BINDING: 'no_place_family_binding',
+  NO_MERGED_PRESENCE_RULES: 'no_merged_presence_rules',
+});
+
 function scopeInstanceRefForSite(siteId) {
   return siteId.startsWith('g5:') ? siteId : `g5:${siteId}`;
 }
 
 function presenceFirstArrivalError(code, message, details = null) {
   throw serverError(code, message, { status: 409, details, public_exposure: 'internal' });
+}
+
+export function emptyPresenceFirstArrivalResult({
+  partyId,
+  siteId,
+  presence_gap,
+  periodNumber = null,
+}) {
+  return {
+    partyId,
+    rules: [],
+    presence_gap,
+    scopeInstanceRef: scopeInstanceRefForSite(siteId),
+    parentById: new Map(),
+    periodNumber,
+    requestIdentityPrefix: `presence-first-arrival:${siteId}`,
+  };
 }
 
 async function loadPinnedG4NodeRef({
@@ -123,11 +145,12 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
     spatialNodeVersion,
   });
   if (rows.length === 0) {
-    presenceFirstArrivalError(
-      'PRESENCE_FIRST_ARRIVAL_NO_PLACE_FAMILY_BINDINGS',
-      'Spatial node has no approved place_family bindings for presence resolution.',
-      { spatialNodeId, spatialNodeVersion },
-    );
+    return emptyPresenceFirstArrivalResult({
+      partyId,
+      siteId,
+      presence_gap: PRESENCE_FIRST_ARRIVAL_GAP.NO_PLACE_FAMILY_BINDING,
+      periodNumber,
+    });
   }
   const primaryIds = rows.filter((row) => row.binding_role === 'primary').map((row) => row.place_family_id);
   const secondaryIds = rows.filter((row) => row.binding_role === 'secondary').map((row) => row.place_family_id);
@@ -147,7 +170,14 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
     regionId,
     season,
   });
-  if (rules.length === 0) return null;
+  if (rules.length === 0) {
+    return emptyPresenceFirstArrivalResult({
+      partyId,
+      siteId,
+      presence_gap: PRESENCE_FIRST_ARRIVAL_GAP.NO_MERGED_PRESENCE_RULES,
+      periodNumber,
+    });
+  }
   const categoryIds = rules
     .filter((row) => row.subject_kind === 'category')
     .map((row) => row.subject_ref);
@@ -166,7 +196,7 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
 }
 
 export function applyResolvedPresenceRulesFirstArrival({ aggregate, context }) {
-  if (!context) return aggregate;
+  if (!context?.rules?.length) return aggregate;
   return applyPresenceRulesFirstArrival({ aggregate, ...context });
 }
 
@@ -270,11 +300,11 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       spatialNodeVersion,
     });
     if (bindingRows.length === 0) {
-      presenceFirstArrivalError(
-        'PRESENCE_FIRST_ARRIVAL_NO_PLACE_FAMILY_BINDINGS',
-        'Spatial node has no approved place_family bindings for presence resolution.',
-        { spatialNodeId, spatialNodeVersion },
-      );
+      return emptyPresenceFirstArrivalResult({
+        partyId: partyId ?? request?.party_id,
+        siteId: resolvedSite.id,
+        presence_gap: PRESENCE_FIRST_ARRIVAL_GAP.NO_PLACE_FAMILY_BINDING,
+      });
     }
     const calendar = await readPartyPresenceCalendar?.({ transaction, partyId, request });
     if (!calendar?.season || calendar.periodNumber == null) {

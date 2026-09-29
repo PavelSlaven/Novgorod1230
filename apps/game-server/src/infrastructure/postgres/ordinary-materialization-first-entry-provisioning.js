@@ -336,6 +336,27 @@ function sameExisting(row, expected) {
 }
 async function provisionPartyStartPresenceOnly({ transaction, partyId, scope, profile, presenceContext }) {
   if (!presenceContext?.rules?.length) {
+    if (presenceContext?.presence_gap) {
+      const objective = {
+        request_id: `presence-first-arrival-gap:${presenceContext.presence_gap}`,
+        scope_ref: scope,
+        context_refs: {},
+        policy_refs: {},
+        technical_limits: profile.technical_limits,
+        execution_context: { presence_first_arrival_gap: presenceContext.presence_gap },
+      };
+      const objective_digest = canonicalDigest(objective);
+      await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_enablements
+        (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
+        VALUES ($1,$2,$3,$4::jsonb,$5,true)
+        ON CONFLICT (party_id,scope_kind,scope_id) DO NOTHING`,
+      [partyId, scope.entity_kind, scope.entity_id, JSON.stringify(objective), objective_digest]);
+      return Object.freeze({
+        provisioned: true,
+        scope_ref: Object.freeze(scope),
+        presence_gap: presenceContext.presence_gap,
+      });
+    }
     return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
   }
   const initial = createOrdinaryAggregate({

@@ -44,12 +44,11 @@ export async function assertBootstrapV17PartyProductionLedger(partyPool) {
   assert.equal(fingerprint, release.party_runtime_catalog_target_fingerprint);
 }
 
+/** Test-only enrichment: approved copy of draft m2c-npc-wave (production bootstrap does not import wave until D27). */
 async function enrichV17WorldForTargetStarts(worldPool) {
   const temporalCount = Number((await worldPool.query(
     'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
-  if (temporalCount === 0) {
-    await worldPool.query(await buildApprovedTemporalImportSql());
-  }
+  assert.ok(temporalCount > 0, 'v17 bootstrap must import approved temporal-v4 before presence enrichment');
   const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-presence-e2e-'));
   try {
     const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
@@ -210,7 +209,10 @@ function buildAttest(fixtureApproval) {
 }
 
 /** @returns {Promise<{ container, dataRoot, worldPool, partyPool, approvals, rootDir, releaseContext }>} */
-export async function bootstrapV17PresenceE2e(t, { postgresProfile = 'default' } = {}) {
+export async function bootstrapV17PresenceE2e(t, {
+  postgresProfile = 'default',
+  withTestWaveEnrichment = true,
+} = {}) {
   assert.equal(docker(['version']).status, 0, 'Docker is required.');
   const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-presence-e2e-'));
   const container = `presence-e2e-pg-${randomUUID().slice(0, 12)}`;
@@ -229,7 +231,13 @@ export async function bootstrapV17PresenceE2e(t, { postgresProfile = 'default' }
     docker(['rm', '-fv', container]);
     await rm(dataRoot, { recursive: true, force: true });
   });
-  await enrichV17WorldForTargetStarts(worldPool);
+  if (withTestWaveEnrichment) {
+    await enrichV17WorldForTargetStarts(worldPool);
+  } else {
+    const temporalCount = Number((await worldPool.query(
+      'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+    assert.ok(temporalCount > 0, 'bare v17 bootstrap must still include approved temporal-v4');
+  }
   await assertBootstrapV17PartyProductionLedger(partyPool);
   const rootDir = resolve(import.meta.dirname, '../..');
   return {

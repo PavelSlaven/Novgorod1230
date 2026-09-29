@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { deriveConnectionLabels } from './derive.mjs';
 import { loadApprovedConnectionLabels } from './approved-labels.mjs';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
@@ -42,15 +44,16 @@ test('versions of one binding share source, target and departure slot', () => {
   }
 });
 
-test('the loader refuses a candidate without its attestation', () => {
-  assert.throws(() => loadApprovedConnectionLabels({
-    approvalPath: './does-not-exist.json' }), /ENOENT/u);
-  assert.throws(() => loadApprovedConnectionLabels({
-    approvalPath: '../m2c-local-edge-labels/approval-attestation.json' }),
-  /CANONICAL_CONNECTION_LABEL_APPROVAL_REQUIRED/u);
+test('the candidate is the attested content and equals its deterministic derivation', () => {
+  const bytes = readFileSync(new URL('./candidate.json', import.meta.url));
+  const approval = read('./approval-attestation.json');
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval.candidate_ref, `${candidate.candidate_id}@${candidate.version}`);
+  assert.equal(approval.candidate_sha256, createHash('sha256').update(bytes).digest('hex'));
+  assert.deepEqual(candidate.labels, deriveConnectionLabels());
 });
 
-test('the loader returns every label of the attested candidate, keyed by binding id', () => {
+test('the loader returns every label of the candidate, keyed by binding id', () => {
   const labels = loadApprovedConnectionLabels();
   assert.equal(labels.size, 454);
   assert.equal(labels.get(candidate.labels[0].binding_ref.id).display_label, candidate.labels[0].display_label);

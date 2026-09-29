@@ -25,15 +25,23 @@ export async function runAndPersistTracePhase2Turn({ workflowInput, services,
   } catch (error) {
     if (isExpectedPostCommitPresentationFailure(error)
         && services.committedPublicResult() != null) {
-      return await resolveCommittedPhase2PresentationAfterFailure({
-        partyId,
-        idempotencyKey,
-        inputDigest,
-        repository,
-        narrator: services.narrator,
-        turnBudget,
-        fallback: services.committedPublicResult()
-      });
+      try {
+        return await resolveCommittedPhase2PresentationAfterFailure({
+          partyId,
+          idempotencyKey,
+          inputDigest,
+          repository,
+          narrator: services.narrator,
+          turnBudget,
+          fallback: services.committedPublicResult()
+        });
+      } catch (retryError) {
+        // The turn is committed: answer "saved, narration pending" (recovered by the next
+        // request) instead of a 500; the retry failure stays in the diagnostics.
+        try { llmDiagnostics?.recordFailure?.(retryError); } catch { /* diagnostics only */ }
+        trace(llmDiagnostics, { event: 'presentation_retry_failed', error: failureRecord(retryError) });
+        return services.committedPublicResult();
+      }
     }
     if (error?.code === 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
         && error.details?.topology_status === 'topology_committed') {

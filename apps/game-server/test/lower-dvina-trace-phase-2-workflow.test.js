@@ -44,6 +44,19 @@ test('two failed narrator passes in one request leave the committed turn pending
   assert.equal(replayCalls, 1, 'workflow pass + one replay = two narrator passes');
 });
 
+test('an unexpected error during the in-request retry leaves the committed turn pending, not a 500', async () => {
+  const diagnostics = createLlmDiagnostics();
+  const f = fixture({ llmDiagnostics: diagnostics, narrationFails: true });
+  f.repository.replayPhase2Turn = async () => {
+    throw Object.assign(new Error('database unavailable'), { code: 'DATABASE_UNAVAILABLE' });
+  };
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'phase2-retry-unexpected', idempotency_key: 'phase2-retry-unexpected',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.' } });
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(f.commitCount(), 1);
+});
+
 test('narration-stage failure records one partial workflow trace and replays pending result', async () => {
   const diagnostics = createLlmDiagnostics({ developerMode: true });
   const f = fixture({ narrationFails: true, llmDiagnostics: diagnostics });

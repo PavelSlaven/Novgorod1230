@@ -28,7 +28,7 @@ export async function withSceneNpcs(pool, partyId, state) {
          ON pos.party_id=placement.party_id AND pos.id=placement.position_node_id
        JOIN party_runtime.party_g6_instances g6
          ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
-      WHERE n.party_id=$1 AND g6.host_id=$2 AND pos.status='active' AND g6.status='active'
+      WHERE n.party_id=$1 AND g6.host_id=$2 AND g6.host_kind='g5_site' AND pos.status='active' AND g6.status='active'
       ORDER BY n.npc_id`,
     [partyId, siteId]);
   const positions = await pool.query(
@@ -36,7 +36,7 @@ export async function withSceneNpcs(pool, partyId, state) {
        FROM party_runtime.scene_position_nodes pos
        JOIN party_runtime.party_g6_instances g6
          ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
-      WHERE pos.party_id=$1 AND g6.host_id=$2 AND pos.status='active' AND g6.status='active'`, [partyId, siteId]);
+      WHERE pos.party_id=$1 AND g6.host_id=$2 AND g6.host_kind='g5_site' AND pos.status='active' AND g6.status='active'`, [partyId, siteId]);
   const scene_position_g6 = Object.fromEntries(
     positions.rows.map(({ id, g6_instance_id: g6 }) => [id, g6]));
   const existing = new Set((state.npcs ?? []).map(({ instance_id: id }) => id));

@@ -75,19 +75,21 @@ test('the routine schedule keeps a slim snapshot of a scene-read NPC', () => {
 test('every snapshot writer of the trace runtime drops scene-read NPCs', async () => {
   const { readdir, readFile } = await import('node:fs/promises');
   const dir = new URL('../src/infrastructure/postgres/', import.meta.url);
-  // turn-step-state builds the row; its only caller (turn-step-commit) strips first.
   // party-store*: autonomous change sets patch the stored payload (no scene NPCs in it).
+  // turn-step-state builds the row; its only caller (turn-step-commit) strips first.
   const covered = new Set(['lower-dvina-trace-turn-step-state.js', 'party-store-turn.js',
     'party-store.js', 'scene-npcs-readback.js']);
-  const missing = [];
+  const bad = [];
   for (const name of await readdir(dir)) {
     if (!name.endsWith('.js') || covered.has(name)) continue;
     const source = await readFile(new URL(name, dir), 'utf8');
-    if (/state_payload:\s/u.test(source) && !source.includes('withoutSceneNpcs')) {
-      missing.push(name);
+    for (const [, value] of source.matchAll(/state_payload:\s*([A-Za-z_][\w.]*(?:\(|\b))/gu)) {
+      const stripped = value.startsWith('withoutSceneNpcs(')
+        || new RegExp(`(?:const|let)\\s+${value}\\s*=\\s*withoutSceneNpcs\\(`, 'u').test(source);
+      if (!stripped) bad.push(`${name}: state_payload: ${value}`);
     }
   }
-  assert.deepEqual(missing, []);
+  assert.deepEqual(bad, []);
   const commit = await readFile(new URL('lower-dvina-trace-turn-step-commit.js', dir), 'utf8');
   assert.match(commit, /persistedSnapshot = withoutSceneNpcs\(turnStep\.snapshot\)/u);
   assert.match(commit, /snapshot: persistedSnapshot/u);

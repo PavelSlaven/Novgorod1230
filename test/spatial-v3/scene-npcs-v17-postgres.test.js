@@ -189,6 +189,8 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         (npc) => npc.runtime_source === SCENE_NPC_SOURCE
           || loaded.some(({ instance_id: id }) => id === npc.instance_id)), false);
       assert.equal(Object.hasOwn(after.payload, 'scene_position_g6'), false);
+      // the whole snapshot, not only npcs: no scene-read record hides in schedule rows or turn data
+      assert.equal(JSON.stringify(after.payload).includes(SCENE_NPC_SOURCE), false);
       assert.equal(after.payload.conversation_statements?.some(
         ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'), true);
       // the next load re-checks snapshot against rows and reads the scene NPCs again

@@ -43,6 +43,18 @@ test('an authored scene without a site (no G6 map): the anchor decides between p
     [state.npcs[0].instance_id, state.npcs[1].instance_id]);
 });
 
+test('LW-082 known limit: an anchored NPC without a G6 map stays co-present after a routine moved it', () => {
+  // authored scenes have no map and the routine does not update the anchor
+  const state = generatedState((next) => {
+    delete next.scene_position_g6; delete next.position.g6_instance_id;
+    next.position.g5_anchor_id = 'anchor:a';
+    next.npcs[0].anchor_id = 'anchor:a';
+    next.npc_schedule_runtime = [{ npc_id: next.npcs[0].instance_id,
+      current_position_node_id: FAR }];
+  });
+  assert.equal(targets(commandsFor(state)).includes(state.npcs[0].instance_id), true);
+});
+
 test('null anchor and null position never match each other', () => {
   const state = generatedState((next) => {
     next.position.position_id = null;

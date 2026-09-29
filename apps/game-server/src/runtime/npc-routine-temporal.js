@@ -214,8 +214,8 @@ export function interruptNpcRoutinesForAction(state, {
         interruption?.runtime.next_transition_at?.subminute_denominator ?? null,
       state_version: Number(schedule.state_version) + 1,
       updated_change_set_id: changeSetId,
-      npc_snapshot: { ...schedule.npc_snapshot, ...structuredClone(npc),
-        machine_state: structuredClone(machine) }
+      npc_snapshot: routineNpcSnapshot({ ...schedule.npc_snapshot,
+        ...structuredClone(npc), machine_state: structuredClone(machine) })
     });
   }
   state.temporal_boundary_candidates = (state.temporal_boundary_candidates ?? [])

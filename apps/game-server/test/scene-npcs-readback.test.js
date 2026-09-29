@@ -58,6 +58,9 @@ test('scene-loaded NPCs are stripped before a snapshot and nothing else is touch
   assert.equal(Object.hasOwn(stripped, 'scene_position_g6'), false);
   assert.equal(stripped.other, 1);
   assert.equal(state.npcs.length, 2);
+  const nested = withoutSceneNpcs({ last_turn: { exchange: { world_state: { npcs: [
+    keep, { instance_id: 'npc_gen', runtime_source: SCENE_NPC_SOURCE }] } } } });
+  assert.deepEqual(nested.last_turn.exchange.world_state.npcs, [keep]);
   const untouched = { other: 1 };
   assert.equal(withoutSceneNpcs(untouched), untouched);
 });

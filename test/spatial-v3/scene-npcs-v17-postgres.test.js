@@ -101,6 +101,12 @@ function installStub() {
   return restore;
 }
 
+function pathsWith(value, needle, path = '$') {
+  if (value === needle) return [path];
+  if (value == null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, child]) => pathsWith(child, needle, `${path}.${key}`));
+}
+
 async function snapshotNpcs(partyPool, partyId) {
   const { rows } = await partyPool.query(
     `SELECT s.state_version, s.state_payload FROM party_runtime.party_state_snapshots s
@@ -190,7 +196,7 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
           || loaded.some(({ instance_id: id }) => id === npc.instance_id)), false);
       assert.equal(Object.hasOwn(after.payload, 'scene_position_g6'), false);
       // the whole snapshot, not only npcs: no scene-read record hides in schedule rows or turn data
-      assert.equal(JSON.stringify(after.payload).includes(SCENE_NPC_SOURCE), false);
+      assert.deepEqual(pathsWith(after.payload, SCENE_NPC_SOURCE), []);
       assert.equal(after.payload.conversation_statements?.some(
         ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'), true);
       // the next load re-checks snapshot against rows and reads the scene NPCs again

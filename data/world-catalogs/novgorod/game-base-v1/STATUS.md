@@ -5,7 +5,7 @@
 | Группа | Статус | approve | approve_with_limits | rework |
 |---|---|---:|---:|---:|
 | [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 9 | 17 | 0 |
-| [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 5 | 13 | 0 |
+| [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 7 | 17 | 0 |
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 17 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 11 | 14 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 10 | 13 | 0 |
@@ -16,7 +16,7 @@
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
 | [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 9 | 4 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 23 | 23 | 0 |
-| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
+| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 6 | 11 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 6 | 22 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 11 | 28 | 0 |
@@ -26,7 +26,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 10 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 4 | 0 |
-| **Итого** | | **162** | **247** | **0** |
+| **Итого** | | **167** | **254** | **0** |
 
 ## Вердикты по файлам
 
@@ -67,12 +67,14 @@
 |---|---|
 | [`adornment_appearance/adornment.csv`](clothing-appearance/adornment_appearance/adornment.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#вердикты) |
 | [`adornment_appearance/vocabulary_extension_requests.csv`](clothing-appearance/adornment_appearance/vocabulary_extension_requests.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#вердикты) |
+| [`authoring/archive_inclusion_manifest.json`](clothing-appearance/authoring/archive_inclusion_manifest.json) | [approve_with_limits](clothing-appearance/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`garments/costume_disposition.csv`](clothing-appearance/garments/costume_disposition.csv) | [approve](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/denylist.csv`](clothing-appearance/garments/denylist.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/equipment_slots.csv`](clothing-appearance/garments/equipment_slots.csv) | [approve](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/garment_categories.csv`](clothing-appearance/garments/garment_categories.csv) | [approve](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/garment_components.csv`](clothing-appearance/garments/garment_components.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/garments.csv`](clothing-appearance/garments/garments.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
+| [`garments/material_entities.csv`](clothing-appearance/garments/material_entities.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`garments/materials_colors.csv`](clothing-appearance/garments/materials_colors.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/region_clothing_profiles.csv`](clothing-appearance/garments/region_clothing_profiles.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`garments/wear_states.csv`](clothing-appearance/garments/wear_states.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
@@ -82,6 +84,10 @@
 | [`outfits_by_role/outfits.csv`](clothing-appearance/outfits_by_role/outfits.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`outfits_by_role/role_clothing_map.csv`](clothing-appearance/outfits_by_role/role_clothing_map.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 | [`outfits_by_role/runtime_clothing_profiles.json`](clothing-appearance/outfits_by_role/runtime_clothing_profiles.json) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
+| [`README.md`](clothing-appearance/README.md) | [approve](clothing-appearance/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`reports/archive_inclusion_ledger.csv`](clothing-appearance/reports/archive_inclusion_ledger.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`scripts/build.py`](clothing-appearance/scripts/build.py) | [approve](clothing-appearance/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`scripts/check.py`](clothing-appearance/scripts/check.py) | [approve_with_limits](clothing-appearance/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`sources.csv`](clothing-appearance/sources.csv) | [approve_with_limits](clothing-appearance/VERIFICATION.md#verdicts-by-file) |
 
 ### crafts-tools-processes
@@ -322,17 +328,23 @@
 
 | Файл | Последний verdict |
 |---|---|
+| [`authoring/archive_inclusion_manifest.json`](items-weapons-armour/authoring/archive_inclusion_manifest.json) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`authoring/master_military_snapshot.csv`](items-weapons-armour/authoring/master_military_snapshot.csv) | [approve](items-weapons-armour/VERIFICATION.md#authoringmaster_military_snapshotcsv-master_sources_snapshotcsv--approve) |
 | [`authoring/master_sources_snapshot.csv`](items-weapons-armour/authoring/master_sources_snapshot.csv) | [approve](items-weapons-armour/VERIFICATION.md#authoringmaster_military_snapshotcsv-master_sources_snapshotcsv--approve) |
+| [`authoring/weapon_kinds.json`](items-weapons-armour/authoring/weapon_kinds.json) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`counts.json`](items-weapons-armour/counts.json) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`items/archive_inclusion_ledger.csv`](items-weapons-armour/items/archive_inclusion_ledger.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`items/role_tier_pf_crosswalk.csv`](items-weapons-armour/items/role_tier_pf_crosswalk.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsrole_tier_pf_crosswalkcsv--approve_with_limits) |
 | [`items/weapon_denylist.csv`](items-weapons-armour/items/weapon_denylist.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_denylistcsv--approve_with_limits) |
 | [`items/weapon_equipment_profiles.csv`](items-weapons-armour/items/weapon_equipment_profiles.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_equipment_profilescsv--approve_with_limits) |
-| [`items/weapon_source_crosswalk.csv`](items-weapons-armour/items/weapon_source_crosswalk.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_source_crosswalkcsv--approve_with_limits) |
+| [`items/weapon_source_crosswalk.csv`](items-weapons-armour/items/weapon_source_crosswalk.csv) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`items/weapon_status_access.csv`](items-weapons-armour/items/weapon_status_access.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикт) |
-| [`items/weapons_armour.csv`](items-weapons-armour/items/weapons_armour.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapons_armourcsv--approve_with_limits) |
+| [`items/weapons_armour.csv`](items-weapons-armour/items/weapons_armour.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 | [`military/combat_likelihood_by_role.csv`](items-weapons-armour/military/combat_likelihood_by_role.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#militarycombat_likelihood_by_rolecsv--approve_with_limits) |
 | [`military/military_events.csv`](items-weapons-armour/military/military_events.csv) | [approve](items-weapons-armour/VERIFICATION.md#militarymilitary_eventscsv--approve) |
 | [`military/security.csv`](items-weapons-armour/military/security.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#militarysecuritycsv--approve_with_limits) |
+| [`scripts/pf_crosswalk.py`](items-weapons-armour/scripts/pf_crosswalk.py) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
+| [`validation_report.json`](items-weapons-armour/validation_report.json) | [approve](items-weapons-armour/VERIFICATION.md#вердикты-по-файлам-imp-crafts-pr-a) |
 
 ### misc
 

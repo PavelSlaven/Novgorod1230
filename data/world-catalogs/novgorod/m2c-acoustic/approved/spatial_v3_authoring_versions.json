@@ -19413,6 +19413,1329 @@
     "provenance_ref": "m2c_canonical_acoustic_editorial_001"
   },
   {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "eb0e1aa31ef7ea06641bae30689f8060abdbe113ccb94ec3b2e6f1a6e1ea1d32",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "fef211b63cca3ede91a81769f6146045b915474a21f949707876206da15f6b39",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "8e30de98633e73daf36699bf3fd1ecafaeffdedf8c2479defdae9675fa3e414b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "44236975a741cf36d6dd2239d95c5ca46bc19bbfadc927e02a696a7d0b70531d",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "8f4682ad668ff1237d521fcda87d31ceaed28a57d85324af5de6b1b6852ff773",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "8af10bd1708b00373b1764b617585bd7eee5c1c78d41a89a4b53a92c01b02460",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "84d2412d15765c83d923286f1e4e833fb3c99a9cd1cd54d3eb9e20ac2c6112ef",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "55065a520e843e17ba29374554e8f76dde883322cc3ae677d75674b007977c7e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "95df269c1eec480833ca9f79b4cc02933250e8ffff1b3683124461481fa3eea2",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "cccd6f18832c996eb51fb614c7adfd82332bd161b71e083e940c80c938f356d4",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "34464239d12c8a82f89169c4f003681ae01ca2714ecd8562951e0c27f460d0de",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "4101a857fac73eab1eacc915b8dabdef92a5deab627cbcf9677a7414a7f9e86b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "d9bbd63bed25008eb3fb482350b3a53fd5bdfbe25a695212eb3b2b4b76335ff7",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "48a3bf977900bbb6c02163c74ba69f3d0b13121af7f7c22a844efab0b6d329a4",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "cdaf5bf289a87e50b35845816657eacacc27cf26eb988ad040061d8252d82a6a",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3c68d1d2f2799fa26b76ed1fb58ee3e4e840d616a7a61c9419a62d157b3828a5",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "eff21b552c5608bb8f81148903a2e1044867d5c07cc249efd364c9318f92ce3e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7593c72b258890578aa2d9635e4f929f1b85889b9ca450e11b12ffb6f2337e25",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "d03c4bd613f25db16749c6dc0c95887aaba9f8b2f6f916aaf310de7e7ac525d9",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2b35fa3d693a2f59df1524a9ad84eb0f246593d8b16bb1c91fa756bd9a8c61c8",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "28eb0e014d24232535591367dd02b2b5e14c3c80454591e09876ed07d3ab22b5",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3039974e7156f1d9f450f065487707d75385cf3d0c884f01d7a8bd3a309eeb4d",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b219f61345d2247738a8f7eab7e592aa74b79be92957d79f000c72607b47fed4",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "265c92316be31b6550e469a4c102b43698889548b18484a0052ca846071d1bda",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "560fad8a2d116143e0b971f84b5afb3c9feca7e7e8b7c74fd154fc407f8e456f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "eb26e5dea43e167de1571e9b7718ba7bf2b0c98826936747db06ee577ce06515",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b3527436cd3da684f430b9d2f13e02ae4f4654287831dddc6d6bfa52d4b51780",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a38676b1cce0889cfac78a213538dac5659a7a4e27c8a789349ff1189a1f8cdf",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2d08a15337cb3fc5119d89e29dfe16c5e960e1639f7e4867497cb887f989fa38",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "4fe9987bccabbba968da69e4ce5e28c61db4992c74b977089033129904f39718",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b28f62119598180b53fab74c4ad6d7a772a0ed71dac83d62996fa89a0a381613",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7024e62d2c7c1920eb7d5dfd934cb782146b5be86c3894396c69ebd4de8b8fbc",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "809d79033826ef4c5d829413c1f7e6eaeaac5bfd6fb18a19377e55a515e66f2b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "54f4a773290ec497de39ebe3b9521cc706661e3a1578c559916ff0933bf7bd3e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "4517dacf3fbbe7e4851619076c54745f9783453c4f0f65bb8204b7b1ede7d5eb",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1fcf646db8f8bcae5a7b4096dbbd29b37401adb952d7b49f0cd15c4b072949be",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ebf60e673eec45964117e71126f396c3098ba9aa8c05d02040bc8230dea7ffa9",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "f6e8111c7d46e200f11c6b9f4c2a52a2f2aa137db2c0096d5ce18a99524c2efe",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a3e3b612dd4b4ecf9d230f8685ae1db2884134f28495c746b407f19847c5b94b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b987ff3b6c74dfcb5974b1c2174ecc67f82fb029ff7b243c25c6e48846760297",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1036fd715cfe641f45b0e5e8230fc2c91658abccf46b083a3c8cb9b376a45fbf",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e309a359bc44d204ed9fe64c65d2969c9ee86e528d2e4c68ba8d26b05615d4c0",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ad859c3df5260db53125a4a619defe90bfd73cc6de388f3ba5f02df09aec2ab8",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "fcfe6f4b7ee553ac54c6c1bfbc67332fc73aff37a38967e22f256977c31f38a5",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1e40d22669ce028920e7604f34fa475c7c14ecd1263690bb126549427d54cc35",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0333fa0c6f23e7c25880134654cb4885de8888f35e784529c00439e2ae0a083d",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3d81bc407dcc073da5bf61ddd0173936c26641c5023ad9e94425c3a4c6db0d6a",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "afcb020870d8961b05a1336ac36beb0e43ad04eb56dd2d63ab521fd07b29f7df",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0799b12151f4b77fac3cc0085e1a354dfc34b952c5a839fd2817b51f27eaca3c",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e942a914074d905dba9d7336205f3560eb337e5689e945fe560df74d00732baa",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3861e2d7937d0c908d217f257b807cef77a14bddba06515cdee7e513e8182586",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "680d18bfb94a1c64c6f484044417af77a7198f687236ac049493ead256782808",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ba1d6c02471d7a9d57f9339bf6d14e29d5a74506c40aa23745ff41c228c38beb",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "53f6da5c4f020143595b88584585cdd368ed1a12b6a9957c16f082231ba1a9e6",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "6e5078b3166a73e938a0a836ff7a333f784b04903f90f81899463400a92cc1bf",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "f6be9d92175aa370a31ad9348c5f5549373aaa0ad950cc23419223caeb5ff72e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b346133156c94f2594ad85b43feac8cc84e16d2183941307a25d70388e11e99f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "917c16e084451bde4b765fca5e1fd6ea96f44938ef44c30ed981c2dd3545e908",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "084c66cdf3797ad830b2879cf4a9422af9159bf789d12cae1dd8e28eaeb8699f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "820ff342ca3d3cbde6de7139c7c31656db92257893b74c157a2ee14d339533f5",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c61bbb18053d1ed8771ab936c910918246a87ec3c4a9979005b8c7b4af77adb0",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c42a1cc0dcc810de3bfa8547d36868fa1b765364c10603f48484c2fba5a213e9",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "643db6537ac429fcfb1105ad04f12768a42696b2133c9c810795a6e4cc3cf698",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "55c13b86f88308bfc644c8c0f2767756cbce2199d6772298157f3dc4be9c483a",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "fa0f1f55f2ffacd5bd2e2426e59076d898b606b5e4ed55d46e642ebc0ddd45f9",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2124edcc3aee74457ef40bfe2ff786d6c1329b0c5b3377bff040921d7e83ae04",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b23728e8159ce7682e1d93429380d6d0050150fe65acb573b01b97b3b57d00d1",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1c458f65fbb798a6df4d3bf13bc6b6990c97ffe13a422f88be1946a934038d65",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "91e9933ec66cce9657664cb50c67fd2df05062d2f7133b3a7433aefdcfc347bd",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b4a6dd34ed5057f703b84c95cc3ead621541cd08d775c75c0f8053be01f0be74",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0d9beeae2becb772c827b18cc9f4867148018cf8abbdb277d1782fdcc5da025e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "cc198f2fd4c3299ed2410a3914e3563291213c6415e2d8cbbc5996ce6ff65a38",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "645e052e0602e0e5b44dd32f8b0fe35c065c308a0a85ee45bebe285ad2066ebc",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "850b98fcfa86f6878ee208ddd97c6c53ff3db2ab21eacc1d8de7c7db9de98f10",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c8d02bdece7c996aadee5da852bee251fe28442cd3de909754b5f94af9af9c4a",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0e63488da78e6be7695c0a9e64d2a40e3433338903cf99edc13e7b894fc0409e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "181edb563f73eb4a76be157952221a6c74119af9d54822710264476097b45cb0",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "8ec6096d1fd5f9bc353ee69dd1fab068bf29c1736599fd936ddeb17ca83f886a",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "cca011868e950618611ae8dfde2bd8a7524e26dcbb24708b61bf89e1c59bc833",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "6d711b777345e27e7b6ab9f1b2639ae4ec156614270e3ca7f551af1d2826c937",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e547fe1784abb9019ef90200d412e84b1e87901f6f1d495ad714cc8ca1036840",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "bab5dc1826ecf2e7d6d5f5ced6c9818646940321d7c3651886f9b02089a2a32d",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "640079f8596167a038f507c19355299b4fa5ffd20763ddbd48152d099f379c2f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ba39490366f8c03abd936f0e1fb937db3a3743254dc814ef0ffc6064b8c24228",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a635a761b9ebc88d47b7f428f8a855e6c10f88c4aa7eec8d2e1fc6e86134769b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ae9266ccf686e0572d2f083ceda92ab722d3d6b34f117acde4c8997b6f55baa5",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3c845d4cdcd773d9d40e0921f4fb6b45a0dd8fa7aec9f1da20cc1e2fcadf0674",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b4cc774e16ac33da2d07bf2b485c47322ed3b92b6280df72cf9b581233054738",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "74619de49e5b1d917279eec052d912084beb8d8cb62d36432f17914fd8c51a2f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "72774588e6dd1a83eb241cbd3a287cdaa4344ae5da0ea5ff6b05a38082570564",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2990287d0e3910e1aba2a67778f76818a87a035bd0563e950b93a39890a1bcd6",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "498ff76352e977d3950821283d6d14885351d6007521749280b57ae85bd20c41",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "4b625dbbeff84926dc5520cf055b026555c97b80a7daffaa7f194d7179f407ca",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "31a816252ca1c9810287a8bda3b69b145668d47b5eb6751cca0289b61596594f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7a1008c2bdeedd26f6ee81fff2684593a2e566a28ce5fe19366ddd4b14b6767b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7c6c27f733cc5ffec469ca191cd4466bd8f71d75fa8c9f8d5f814f0a2f580e3f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "89bc10fcdcad3519a63f9b9f51a79dc8b7cb6e1edfd516f2d20d481e3480feb6",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0fa3490daf9675803856f8ca002008a20d3062e03a7523260c26356dec878089",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "40b33563b48b268ca3593579560cb5f4a302e21e8b94d7d7ccbc525b10678ce7",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "915ef5329d4bd15e35af416b4285fb422b67f1e1aa54107177f05ec011ad5296",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "13c1e0f4fbbaf9aaa104e1e9a68fafd5ff5f61673bff7667385cac62ecb6b630",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a61b29a6af55ab37ca764a3605e01c7f9f362ecf70d26dec3c2394ac23060d1f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ae560058e4aa43de71d57d05d15872879927f8debee9ce64859904724295012d",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "d89a9bd6bc2841c6c059f1e5aeec5bb31f390ab27006f17453d2f34c3f1f2f8c",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2ecc584d64bed9b4aa54307a722ca60db6b277cdf0597196777cdab87acd2394",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e3adeffaae7e7659c04c7eb8cae31b5285f166dfe9cbf5f0aacf20001aea019e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "927fd5b86529dbe4da28915cda049beafd72bc669bc524c3eb30ebe282c61b3e",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7fd7519ff91383c2d0075e3930a92491df89edc284d688601ba517deae9a83bd",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "91ea8779827da098768e9a49bdcdc833ba4c1fbaf4ec8c08e5dd0ca915d776ef",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c6c32bb302ca94525dc59c097c482ea9be7b87aba1241929a95bfc9004a8770c",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1e35f9320b2fa96637be8071c30c5a309316e9e5d7ff9014cedce2121ee8fec5",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "4bd37d6839f4eb278c6e31d9024bdc2c6370e24878f306185b613b9c3e9ea6e2",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "eb1887b50540713de18ec8e3fe3bbd23da0d9cbe4944dcb205863e6e227037f0",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "04f14840a97d0f5c80ac9e5ee2fca0c0c7bb580fe26193290da55ec08ab65c75",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c8a6eb7c4c342732fbd14c74b414064d5edf766401534c65666644b41cfc8fd7",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2a00abb7f3a2fda83109f7f59ef43672285eb079c352038b662464b55c639127",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "20202b1afa5d496df282cd40c33c74315eb664d531e04666b96623ee80a315aa",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "d1e7f556564255d5fd8495a990dc63a9c8c4a92399e2640fbcbcbd196882dc5d",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b84727d9eafcc4a343dc646b145027dae084a393c7ccd02d3bd437ca24b2cc28",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "97372ad1b7f3d3837f4885bc31a62f6359db03d136bfc12c3935d197826e0a58",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "128c0c25008f456a458d7f59eee5bcbc5761531c644a1a927c483872e3b27623",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "9dad1d514ae19f120c14a7ee59bc5c01b3a39929cf5961aae4e7536f4340a87c",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "794d6a0ad72091f6c18afd9ee8aa08f4b4752fe4a91abbf69a67971421d5d09a",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "37983b29d05208c66c721d8e16a16a611049629d56c41ef006c193887b36f6f6",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b0b9cf99e4bf9f322a8a75dae6e4a9a98b358e342b36de7b45d1f20ff6ec7540",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "219106968fd27517e86f673fb5f2f711d2959b39b7326254849215203e5d7d6f",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "10c11028426f1dcd558aa6a77d567ebf177d786290f8d70e67ff8da920b9f1f3",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3c9e9a9ab3b687362a6a69a9576d5214d200c67b048d03acb155c06b7a3a583c",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b98de4c52110a19ba2b22919e4a761154808ad41ef6b39e3ee8bc292a599ab9b",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3626b8b4db502dccb353bc7b31101ac6dabbd7f2c91892f780023bb93bd8c6e2",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "f956966178b01a33109a5531f9052675ee6775223153b18cf50a6f81977b8a24",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c8e25e5c2db4480b6636332cd9ba13ce5f828264e161bcb354fff15c9cea448c",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5efb18a1ab7d96328c01a9a83b811390309a974c662582fc54cd8017ca8016fb",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2b4a0196033e22f8965e309f1d485809e833a9f66c250728b5b2442300285bd0",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5af300b52645303acda54322c2e53ab7b5e772de67850ec2ab544b9356c8aa86",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "23ffd719e1ceff75db984c62d67a181f94f91b77295e5d56db210201ba9428ae",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "68dfcc2b9cdc15811618645140f2e13d761d627f4d1fbe14c8de99781a409327",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7311cba6a7367b5e740194db4a084d89dff016032439a179b14e389ecd94b5fb",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3cbccce668c7836986dd2c99025811ea02826a5f17898000771e7dcb90a803b0",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e4421e4c3afb241e11ddfbf15c0ea8d09dee2f473c958ec42695e14971531364",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e1499201ace6f7ac881b3a76244afdb3ce90a2e750393892502a30fb671074af",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5208fac42eeb39feb331df62ee4147aa8b06346e9669a71df07e83ced6cbdb58",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "17df1a95a83a49701b1b7edc5cbc310528952274603eef652a4703525f22db03",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "fbe5d43a5ec2fb9317a2332c1a7fb0576516da8b5167bebc7f38a6ed9f3a2c27",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a71f08d8af1349832c3935f068ebbcc303dd4d377de86e21ee18a02b6d89b7db",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "9adb5cafea120fd86c26e28fd1fbaae53aada02056d2844a31ac44a9699dff76",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
+    "entity_kind": "g6_acoustic_baseline",
+    "entity_id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone__main",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "656294e2605107454e38acddb720442f29f73dfee60b3579d09f75e6c3361239",
+    "provenance_ref": "m2c_canonical_acoustic_editorial_001"
+  },
+  {
     "entity_kind": "canonical_g5_connection_profile",
     "entity_id": "cprofv3__site_connection__alternate_local_passage",
     "version": 2,

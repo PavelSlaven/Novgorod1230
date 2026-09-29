@@ -23,7 +23,9 @@ export const POSTGRES_IMAGE = 'postgres:16.14-alpine';
 export const WORLD_DB = 'novgorod_world_v17';
 export const PARTY_DB = 'novgorod_party_v17';
 export const VIKHTUY_MEETING_G5 = 'cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area';
+export const VIKHTUY_LOCALITY_G4 = 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality';
 export const PF_RURAL_YARD = 'pf_rural_yard';
+export const PF_PEASANT_HOMESTEAD = 'pf_peasant_homestead';
 const TARGET_REV = 'novgorod_spatial_v3_target_contract_approval_001';
 const waveRootRel = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
 

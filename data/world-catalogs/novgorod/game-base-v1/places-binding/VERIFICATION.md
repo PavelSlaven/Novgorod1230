@@ -1149,3 +1149,14 @@
 - reports/validation.json — approve_with_limits: сгенерирован, пересобран штатной сборкой (было устаревшим: 913→915)
 
 Вердикт группы: **approve_with_limits** (после механической пересборки).
+
+## Независимая проверка обновления #189 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор. Пересборку после слияния main сделал Codex (задача `region-ids`, #189); коммит ревьюера 88555d24. Прогоны шли на копии `git archive`.
+- **`presence/presence_rules.csv`:**
+  - изменены 4249 строк: у 4240 `novgorod_land` → `region_novgorod_land`, у 9 `ladoga_lake` → `region_novgorod_land` с `subregion_scope=lower_volkhov_ladoga`;
+  - добавлена колонка `subregion_scope`;
+  - `pr_id` пересчитан ровно у этих 4249 строк. Пересчёт по формуле сборщика даёт 0 расхождений; ссылок на старые id в дереве нет.
+- **`reports/presence-rules-report.json`:** изменилось только `excluded_pool.rows`: 1779 → 1717, после удаления 62 дублей грызунов в #197.
+- **Замечание 5 про `region_id`** (проверки C003 и rc-next выше) закрыто #189: теперь значения только `''` и `region_novgorod_land`, у Ладоги — подрегион.
+- **Прогоны:** `build-all` и `validate.mjs --start-territory … --self-test` (49 PASS, в том числе 3 пробы подрегиона) на копии; результат побайтно равен коммиту.

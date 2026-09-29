@@ -31,6 +31,7 @@ test('the highest approved version whose profile has no condition wins, per bind
     [['b1', 2, 'to_b1'], ['b2', 2, 'to_b2']]);
   assert.equal(result.value[0].profile.availability_condition_set_ref, null);
   assert.equal(result.value[0].profile.id, 'prof');
+  assert.equal(result.value[0].profile.canonical_digest, digest, 'the traversal owner needs the profile digest');
   assert.deepEqual(calls[0].params, ['g4', 1, 'target', 'g5a', 1]);
   assert.match(calls[0].sql, /spatial_v3_canonical_g5_connection_bindings/u);
   assert.equal(Object.isFrozen(result.value), true);
@@ -55,4 +56,16 @@ test('unapproved rows, digest drift and inexact pins are refused; no rows is an 
   assert.equal(inexact.calls.length, 0);
   const empty = await readerWith([]).reader.readApprovedCanonicalG5Connections({ g4, canonical_g5 });
   assert.deepEqual([empty.ok, empty.value], [true, []]);
+});
+
+test('a place named without a scene pin is read at the release scene generation, a pinned one as pinned', async () => {
+  const seen = [];
+  const readerAt = (generatedTemplateVersion) => createSpatialV3WorldBaseReader({ generatedTemplateVersion,
+    query: async (sql, params) => { seen.push(params); return { rows: [] }; } });
+  const place = { id: 'g5a', version: 1, world_revision_id: 'target' };
+  await readerAt(2).readPinnedCanonicalG5SceneBinding(place);
+  await readerAt(1).readPinnedCanonicalG5SceneBinding(place);
+  await readerAt(2).readPinnedCanonicalG5SceneBinding({ ...place, scene_template_ref: { id: 's', version: 1 } });
+  await readerAt(2).readPinnedCanonicalG5SceneBinding({ ...place, scene_materialization_profile_ref: { id: 'p', version: 1 } });
+  assert.deepEqual(seen.map((params) => params[7]), [2, 1, null, null]);
 });

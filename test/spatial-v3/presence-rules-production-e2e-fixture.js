@@ -247,7 +247,7 @@ export async function bootstrapV17PresenceE2e(t, {
   };
 }
 
-function pickMovementChoice(request, { preferDirectionalExit = false } = {}) {
+function pickMovementChoice(request, { preferDirectionalExit = false, exactMovement = false } = {}) {
   const movementChoices = turnStepOperationChoices(request).filter(({ operation }) =>
     operation.op === 'request_movement'
     && ['local', 'route'].includes(operation.movement_kind));
@@ -259,12 +259,14 @@ function pickMovementChoice(request, { preferDirectionalExit = false } = {}) {
   }
   const preferred = movementChoices.find(({ operation }) =>
     operation.description === request.root_player_action);
-  return preferred ?? movementChoices[0];
+  // exactMovement: the player names one option by its label; anything else is no movement at all.
+  return preferred ?? (exactMovement ? undefined : movementChoices[0]);
 }
 
 export function installPresenceProductionE2eFetch({
   observeText = TARGET_SMOKE_INPUT,
   movementPrefs = { preferDirectionalExit: false },
+  narrationLog = null,
 } = {}) {
   const MATERIALIZATION_ROLES = Object.freeze([
     'ordinary_materialization', 'spatial_semantic_descriptor',
@@ -297,9 +299,15 @@ export function installPresenceProductionE2eFetch({
           reason: 'Обзор ограничен уже предоставленными видимыми сведениями.',
         };
       } else {
-        const pick = pickMovementChoice(request, {
-          preferDirectionalExit: movementPrefs.preferDirectionalExit,
-        });
+        const pick = pickMovementChoice(request, movementPrefs);
+        if (!pick && movementPrefs.exactMovement) {
+          return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
+            interpretation: { adaptation: 'literal' }, resolution: 'direct', goal_result: 'not_achieved',
+            activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+            operations: [], check: null, continuation: null, clarification: null,
+            direct_result_kind: null, reason_code: 'no_named_passage',
+            reason: 'Названного прохода нет.' }) } }] }), { status: 200 });
+        }
         assert.ok(pick, `no movement operation in planner request: ${request.root_player_action}`);
         output = {
           interpretation: {
@@ -319,6 +327,7 @@ export function installPresenceProductionE2eFetch({
     } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
       const sources = [...modelInput.required_current_beat.changes,
         ...modelInput.required_current_beat.uncertainties];
+      narrationLog?.push({ changes: modelInput.required_current_beat.changes.map(({ text }) => text) });
       output = { prose: sources.map(({ text }) => text).join('\n\n') };
     } else if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
       const ids = modelInput.segments.map(({ segment_id }) => segment_id);
@@ -446,4 +455,40 @@ export async function walkRouteUntil({
     });
   }
   assert.fail(`site predicate not met within ${maxSteps} movement steps`);
+}
+
+/** Test-only world enrichment (data gap Q-rt-walk-02): 149 canonical places that are targets of
+ * approved connections have no approved G6 ambient baseline. This gives every Vikhtuy-locality
+ * place one row per G6 slot in the throw-away test database only. It authors no project data. */
+export async function enrichVikhtuyAcousticForCanonicalWalk(worldPool) {
+  await worldPool.query(`
+    WITH missing AS (
+      SELECT n.id AS g5_id, n.version AS g5_version, c.scene_template_id, c.scene_template_version,
+             s.scene_slot_key, 'test_acoustic__' || n.id || '__' || s.scene_slot_key AS row_id
+        FROM world_base.spatial_v3_nodes n
+        JOIN world_base.spatial_v3_scene_materialization_profiles p
+          ON p.source_kind='canonical_g5' AND p.source_entity_id=n.id AND p.source_entity_version=n.version
+         AND p.version=2 AND p.status='approved'
+        JOIN world_base.spatial_v3_scene_materialization_candidates c
+          ON c.profile_id=p.id AND c.profile_version=p.version
+        JOIN world_base.spatial_v3_g6_template_slots s
+          ON s.scene_template_id=c.scene_template_id AND s.scene_template_version=c.scene_template_version
+       WHERE n.id LIKE 'cg5v3\\_\\_%vikhtuy\\_locality\\_%' AND n.world_revision_id=$1
+         AND NOT EXISTS (SELECT 1 FROM world_base.spatial_v3_g6_acoustic_baselines b
+                          WHERE b.canonical_g5_id=n.id AND b.scene_template_version=c.scene_template_version
+                            AND b.g6_scene_slot_key=s.scene_slot_key)
+    ), rows AS (
+      INSERT INTO world_base.spatial_v3_g6_acoustic_baselines
+        (id, version, world_revision_id, canonical_g5_id, canonical_g5_version, scene_template_id,
+         scene_template_version, g6_scene_slot_key, ambient_noise, directness, confidence, status,
+         provenance_ref, canonical_digest)
+      SELECT row_id, 1, $1, g5_id, g5_version, scene_template_id, scene_template_version, scene_slot_key,
+             1, 'test_only', 'low', 'approved', 'm2c_canonical_acoustic_editorial_001',
+             encode(sha256(convert_to(row_id, 'UTF8')), 'hex')
+        FROM missing RETURNING id, canonical_digest
+    )
+    INSERT INTO world_base.spatial_v3_authoring_versions
+      (entity_kind, entity_id, version, world_revision_id, canonical_digest, status, provenance_ref)
+    SELECT 'g6_acoustic_baseline', id, 1, $1, canonical_digest, 'approved', 'm2c_canonical_acoustic_editorial_001'
+      FROM rows`, [TARGET_REV]);
 }

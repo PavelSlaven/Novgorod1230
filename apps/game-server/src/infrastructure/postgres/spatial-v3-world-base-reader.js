@@ -756,10 +756,14 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
         AND ($5::int IS NULL OR candidate.scene_template_version=$5)
         AND ($6::text IS NULL OR profile.id=$6)
         AND ($7::int IS NULL OR profile.version=$7)
+        AND ($8::int IS NULL OR profile.version=$8)
       LIMIT 2`,
     [id, version, world_revision_id, scene_template_ref?.id ?? null,
       scene_template_ref?.version ?? null, scene_materialization_profile_ref?.id ?? null,
-      scene_materialization_profile_ref?.version ?? null]);
+      scene_materialization_profile_ref?.version ?? null,
+      // Unpinned: the release's scene generation (the open-capacity successor is a second profile
+      // of the same place, so a bare place would otherwise be ambiguous).
+      scene_template_ref || scene_materialization_profile_ref ? null : generatedTemplateVersion]);
     if (!Array.isArray(result?.rows) || result.rows.length !== 1) {
       return failure('route_plan_snapshot_missing', 'node', id, {
         reason: result?.rows?.length > 1
@@ -908,7 +912,8 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
         base_minutes: row.base_minutes, dynamic_recheck_policy_id: row.dynamic_recheck_policy_id,
         dynamic_recheck_policy_version: row.dynamic_recheck_policy_version, capacity: row.capacity,
         capacity_semantics_ref: row.capacity_semantics_ref, risk_profile_ref: row.risk_profile_ref,
-        availability_condition_set_ref: row.availability_condition_set_ref, status: row.profile_status } }))) });
+        availability_condition_set_ref: row.availability_condition_set_ref, status: row.profile_status,
+        canonical_digest: row.profile_digest } }))) });
   }
   async function readPinnedG4ExpansionClosure({ g4, profile } = {}) {
     const validPin = (ref) => ref && typeof ref.id === 'string' && ref.id.trim()

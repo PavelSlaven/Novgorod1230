@@ -37,6 +37,7 @@ import { WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
 import { buildAdditionalStartOwnerRows } from
   '../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 import { ensureV17PartyProductionCatalogLedger } from './v17-party-production-catalog-ledger.mjs';
+import { assertWaveInputs, readWaveRequest, runWaveImportStage } from './v17-m2c-npc-wave-stage.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -264,6 +265,7 @@ export async function checkV17BootstrapInputs({
         || sql.length !== appearance.sql[`${kind}_bytes`])
       throw new Error(`V17_APPEARANCE_SQL_MISMATCH:${kind}`);
   }
+  await assertWaveInputs({ root, request: await readWaveRequest(root) });
   await exact('scripts/generate-m2c-nature-successors.mjs', naturePins.script);
   await exact(`${nature}/nature-successor-candidate-v2.json`, naturePins.natural);
   await exact('data/world-catalogs/novgorod/m2c-natural-presentation/nature-successor-candidate-v2.json', naturePins.presentation);
@@ -278,7 +280,7 @@ export async function checkV17BootstrapInputs({
       { cwd: root, maxBuffer: 8 * 1024 * 1024 });
     if (digest(approvedBytes) !== source.sha256) throw new Error(`V17_NATURE_APPROVAL_PIN_MISMATCH:${source.path}`);
   }
-  return { schema: 'exact', catalog_ddl: 'exact', gate1: 'exact', p12: 'exact', appearance_v3: 'exact',
+  return { schema: 'exact', catalog_ddl: 'exact', gate1: 'exact', p12: 'exact', appearance_v3: 'exact', m2c_npc_wave: 'exact',
     additional_start_owners: 'exact',
     nature_successor: 'exact', database_mutated: false };
 }
@@ -449,6 +451,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     }
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
+    // D27: the m2c NPC wave (presence rules, bindings, routines, composition) after P12 and temporal-v4.
+    await runWaveImportStage({ world, root,
+      requireAttestation: (stage, request) => requireAttestation(stage, request, attest, onRequest) });
     const graphCheck = (await world.query(`SELECT pg_get_constraintdef(c.oid) AS definition
       FROM pg_catalog.pg_constraint c
       JOIN pg_catalog.pg_class t ON t.oid = c.conrelid
@@ -819,7 +824,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const directory = process.env.V17_BOOTSTRAP_ATTESTATION_DIR;
     if (!directory) throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
     const stages = ['item_baseline', 'item_import', 'item_activation', 'actor_import',
-      'actor_activation'];
+      'actor_activation', 'm2c_npc_wave_import'];
     const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) =>
       [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))])));
     result = await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL,

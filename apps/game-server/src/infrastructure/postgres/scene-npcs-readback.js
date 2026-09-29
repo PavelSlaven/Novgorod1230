@@ -1,6 +1,7 @@
-import { SCENE_NPC_SOURCE } from '../../runtime/lower-dvina-trace-scene-presence.js';
+import { SCENE_NPC_SOURCE, withoutSceneNpcs } from
+  '../../runtime/lower-dvina-trace-scene-presence.js';
 
-export { SCENE_NPC_SOURCE };
+export { SCENE_NPC_SOURCE, withoutSceneNpcs };
 
 /**
  * Turn state carries only the NPCs sealed at party start. NPCs created later at a
@@ -64,39 +65,4 @@ export async function withSceneNpcs(pool, partyId, state) {
   }));
   return { ...state, scene_position_g6,
     npcs: [...(state.npcs ?? []), ...loaded] };
-}
-
-/**
- * Drops every scene-read NPC record and the position→G6 map from a snapshot. The
- * records also travel inside working copies (conversation working_state.world_state,
- * turn envelopes), so arrays are filtered at any depth; unchanged branches keep identity.
- */
-export function withoutSceneNpcs(state) {
-  if (state == null || typeof state !== 'object') return state;
-  if (!Object.hasOwn(state, 'scene_position_g6')) return strip(state);
-  const { scene_position_g6: _positions, ...rest } = state;
-  return strip(rest);
-}
-
-function strip(value) {
-  if (value == null || typeof value !== 'object') return value;
-  if (Array.isArray(value)) {
-    let changed = false;
-    const kept = [];
-    for (const entry of value) {
-      if (entry?.runtime_source === SCENE_NPC_SOURCE) { changed = true; continue; }
-      const next = strip(entry);
-      if (next !== entry) changed = true;
-      kept.push(next);
-    }
-    return changed ? kept : value;
-  }
-  let changed = false;
-  const out = {};
-  for (const [key, child] of Object.entries(value)) {
-    const next = strip(child);
-    if (next !== child) changed = true;
-    out[key] = next;
-  }
-  return changed ? out : value;
 }

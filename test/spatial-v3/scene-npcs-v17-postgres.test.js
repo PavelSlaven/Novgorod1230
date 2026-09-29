@@ -188,7 +188,7 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         'SELECT screen FROM party_runtime.party_server_sessions WHERE party_id=$1', [partyId])).rows[0].screen;
       assert.notEqual(pending?.screen_status, 'committed_presentation_pending',
         'the arrival presentation must be finished');
-      await runtime.submitTurn(partyId, { raw_text: TALK_TEXT, request_id: 'scene-npcs-talk' });
+      const first = await runtime.submitTurn(partyId, { raw_text: TALK_TEXT, request_id: 'scene-npcs-talk' });
       const after = await snapshotNpcs(env.partyPool, partyId);
       assert.equal(Number(after.version) > Number(before.version), true);
       assert.equal((after.payload.npcs ?? []).some(
@@ -199,6 +199,17 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       assert.deepEqual(pathsWith(after.payload, SCENE_NPC_SOURCE), []);
       assert.equal(after.payload.conversation_statements?.some(
         ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'), true);
+      // The same request again is an idempotent replay: the stored digests were computed
+      // over the envelope that the snapshot keeps, so the replay evidence is recognised.
+      const repeated = await runtime.submitTurn(partyId, { raw_text: TALK_TEXT,
+        request_id: 'scene-npcs-talk' });
+      assert.equal(repeated.state_version, first.state_version);
+      assert.equal(repeated.turn_number, first.turn_number);
+      const afterRepeat = await snapshotNpcs(env.partyPool, partyId);
+      assert.equal(afterRepeat.version, after.version, 'no second write for a repeat');
+      const replay = await repository.loadPhase2Replay({ partyId,
+        idempotencyKey: 'scene-npcs-talk' });
+      assert.ok(replay, 'the stored turn is replayable');
       // the next load re-checks snapshot against rows and reads the scene NPCs again
       const reloaded = await repository.loadPhase2State(partyId);
       assert.equal(loaded.every(({ instance_id: id }) => reloaded.npcs.some(

@@ -204,7 +204,7 @@ const denyRu = deny.map(d => new RegExp(d.pattern_ru, 'iu')), denyLat = deny.map
 }
 for (const r of all) {
   const text = [r.name_ru, r.name_lat, r.uses, r.perceptual_cues].join(' ');
-  deny.forEach((d, i) => { if (denyRu[i].test(r.name_ru) || r.name_lat.toLowerCase().startsWith(denyLat[i])) { if (!(r.allowed_1230 === 'no' && d.deny_kind === 'not_attested_1230')) fail(`${r.fl_id}: denylisted ${d.deny_id}`); } else if (denyRu[i].test(text) && d.deny_kind === 'anachronism') fail(`${r.fl_id}: anachronism term ${d.deny_id} in uses/cues`); });
+  deny.forEach((d, i) => { if (denyRu[i].test(r.name_ru) || r.name_lat.toLowerCase().startsWith(denyLat[i])) { if (!(r.allowed_1230 === 'no' && ['not_attested_1230', 'anachronism'].includes(d.deny_kind))) fail(`${r.fl_id}: denylisted ${d.deny_id}`); } else if (denyRu[i].test(text) && d.deny_kind === 'anachronism') fail(`${r.fl_id}: anachronism term ${d.deny_id} in uses/cues`); });
 }
 for (const r of cu.filter(r => !r.crop_kind.startsWith('weed'))) {
   if (r.allowed_1230 === 'no') { if (pres.some(p => p.fl_id === r.fl_id)) fail(`${r.fl_id}: disallowed crop has presence`); continue; }

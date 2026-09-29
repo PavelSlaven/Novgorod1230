@@ -4,7 +4,7 @@
     "items/weapon_status_access.csv": 213,
     "items/weapon_equipment_profiles.csv": 111,
     "items/weapon_source_crosswalk.csv": 252,
-    "items/weapon_denylist.csv": 27,
+    "items/weapon_denylist.csv": 24,
     "items/archive_inclusion_ledger.csv": 26,
     "military/security.csv": 34,
     "military/military_events.csv": 21,
@@ -42,10 +42,11 @@
   "archive_inclusion": {
     "total": 26,
     "by_decision": {
-      "rejected": 7,
+      "rejected": 4,
       "variant": 2,
       "routed": 13,
-      "entity": 4
+      "entity": 4,
+      "needs_check": 3
     },
     "by_match_type": {
       "new": 24,
@@ -54,8 +55,9 @@
   },
   "crosswalk": {
     "military_security": 13,
-    "denylist": 15,
+    "denylist": 12,
     "wp": 183,
+    "needs_check": 3,
     "out_of_scope": 41
   },
   "access_levels": {

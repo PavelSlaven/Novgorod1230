@@ -258,6 +258,9 @@ for (const authored of archiveManifest.records) {
     if (authored.guard_id && !denyIds.has(authored.guard_id)) err(`${w}: entity generation restriction lacks denylist entry`);
     if (entity?.generation_policy === 'research_only' && !split(entity.source_refs).includes(`master:mc:${authored.derivation}`)) err(`${w}: research-only entity lacks archive source ref`);
     if (authored.generation_policy === 'research_only' && r.guard_result !== `restricted:denylist:${authored.guard_id}`) err(`${w}: research-only guard is not represented as generation restriction`);
+  } else if (authored.decision === 'needs_check') {
+    if (authored.game_base_ref || authored.guard_id || r.guard_result !== 'needs_check' || r.dedup_result !== 'needs_check') err(`${w}: needs_check proposal must stay out of entity, denylist and dedup decisions`);
+    if (!authored.reason || !/source|источник|свидетельств/i.test(authored.reason)) err(`${w}: needs_check proposal lacks item-specific source request`);
   } else if (authored.decision === 'routed') {
     if (!authored.target_group || !r.target_group || !String(r.dedup_result).startsWith(`routed:${authored.target_group}`)) err(`${w}: routed owner handoff lacks target_group`);
     if (authored.game_base_ref) err(`${w}: routed row unexpectedly claims weapon entity`);

@@ -306,10 +306,15 @@ def main():
             fail(f'{g["gm_id"]}: confidence/source_refs missing')
         if g['status'] != 'candidate':
             fail(f'{g["gm_id"]}: status must be candidate')
-    moved = {r['source_item_id'] for r in disp if r['target'].startswith('garments/')}
+    moved = {r['source_item_id'] for r in disp if r['target'].startswith('garments/') and r['disposition'] != 'variant'}
     have = {g['source_item_id'] for g in garments + comps if g['source_item_id']}
     if moved != have:
         fail(f'disposition/garments mismatch: {sorted(moved ^ have)}')
+    for r in disp:
+        if r['disposition'] == 'variant':
+            target_id = r['target'].rsplit('#', 1)[-1]
+            if not r['target'].startswith('garments/garments.csv#') or target_id not in gm:
+                fail(f"{r['source_item_id']}: garment variant target does not resolve: {r['target']}")
     adorn_moved = {r['source_item_id'] for r in disp if r['disposition'] == 'adornment'}
     adorn_have = {a['source_item_id'] for a in adorn if a['source_item_id']}
     if adorn_moved != adorn_have:

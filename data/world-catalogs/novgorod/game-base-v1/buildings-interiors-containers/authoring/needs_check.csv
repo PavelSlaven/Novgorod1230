@@ -1,4 +1,5 @@
 archive_id,current_result,current_target_group,current_target_ref,reason_code,finding_ref,cluster_id,note
+CRF0057,needs_check,,,unresolved,,,Водяное мельничное колесо: период архива 1180–1260 включает 1230, но локальная форма спорна (confidence D, basis analogy); запросить датированную региональную публикацию. Не отклонять только по research_only/critical risk.
 AGR0005,routed,places-binding,places-binding/places/place_families.csv#pf_orchard_garden,ICA_ROUTE_INVALID,,,Checker findings: ICA_REFERENCE_INVALID|ICA_ROUTE_INVALID.
 CON0014,variant,,buildings-interiors-containers/buildings/building_parts.csv#bp_well_bucket_rope,review_finding,round3-crafts.md#L9,,Review finding leaves current proposal unresolved.
 CON0017,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.

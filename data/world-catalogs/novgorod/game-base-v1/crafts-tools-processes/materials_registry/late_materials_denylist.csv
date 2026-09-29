@@ -1,7 +1,7 @@
 dl_id,term_ru,match_stems,kind,verdict,reason_ru,source_refs,status
 dl_porcelain,фарфор,фарфор,material,deny,Фарфор местного производства — анахронизм.,src:master-technology-v1,candidate
 dl_faience,фаянс,фаянс,material,deny,Фаянс — поздний материал для Руси 1230 г.,src:master-technology-v1,candidate
-dl_cotton_local,хлопок как местное волокно,хлопок;хлопчат;ситец;бязь,material,deny_as_local,Хлопок не растёт в зоне; ткани из хлопка в Новгороде 1230 г. не засвидетельствованы в WK — только как спорный импорт.,src:master-technology-v1,candidate
+dl_cotton_local,хлопчатник как местное растение,хлопок как растение;хлопчатник,material,deny_as_local,Хлопчатник не растёт в зоне. Импортная хлопковая ткань не исключена: она остаётся в очереди проверки до датированного источника.,src:master-technology-v1,candidate
 dl_paper,бумага,бумаг,material,deny,"Местная бумажная мельница — анахронизм; письмо на бересте, пергамене, воске.",src:master-technology-v1,candidate
 dl_cast_iron,"чугун (массовый, доменный)",чугун,material,deny,Доменная плавка и массовый чугун — анахронизм.,src:master-technology-v1,candidate
 dl_chrome_leather,хромовая кожа,хром,material,deny,Хромовое дубление — XIX в.,src:master-technology-v1,candidate
@@ -17,7 +17,7 @@ dl_glazed_mass,глазурованная посуда как массовая,�
 dl_wire_nail,"проволочный гвоздь, шуруп, болт с гайкой",шуруп;гайк;болт;проволочный гвозд,tool,deny,"Машинный крепёж — анахронизм; гвозди кованые, нагели, скобы.",src:master-technology-v1,candidate
 dl_spinning_wheel,самопрялка с колесом,самопрялк;прялка с колес;прялочное колесо,tool,restricted,Колёсная прялка как повсеместная норма 1230 г. не подтверждена; прядут веретеном.,src:master-technology-v1,candidate
 dl_foot_wheel,ножной гончарный круг,ножной гончарн;ножной круг,tool,restricted,Ножной круг для Новгорода XIII в. спорен (matcult CRF0061 = D); норма — ручной круг.,src:matcult-catalog-v1,candidate
-dl_steel_trap,стальной пружинный капкан,капкан,tool,deny,"Железный капкан для Новгорода XIII в. не засвидетельствован (matcult HNT0022/HNT0024 = D; у Рыбиной 2015 ловушек-капканов нет). Разрешены петли, силки, давящие самоловы.",src:rybina2015-promysly,candidate
+dl_steel_trap,современный фабричный стальной капкан,современн капкан;стальной пружинный капкан;фабричный капкан,tool,deny,Современный фабричный стальной капкан с пружинными челюстями (HNT0022; период 1600–2000) не относится к спорной ранней железной ловушке HNT0024. HNT0024 поставлен в needs_check до датированного регионального источника.,src:rybina2015-promysly,candidate
 dl_mouldboard_plough,отвальный плуг,отвальн;плуг,tool,restricted,Плуг с отвалом для Новгородской земли 1230 г. спорен (matcult AGR0022/0036 = D); норма — соха и рало.,src:matcult-catalog-v1,candidate
 dl_sawmill,"лесопилка, пилорама, ленточная пила",лесопил;пилорам;ленточн,tool,deny,Доски раскалывают и тешут; механической распиловки нет.,src:master-technology-v1,candidate
 dl_trip_hammer,водяной молот,водяной молот;кричный молот,technology,restricted,Требует прямого источника; ковка ручная.,src:master-technology-v1,candidate

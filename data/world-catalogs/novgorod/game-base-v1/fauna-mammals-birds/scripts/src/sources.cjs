@@ -69,7 +69,7 @@ module.exports = [
   { id: 'SRC_MASTER_HNT', level: 'B', read: 'full',
     title: 'MASTER_ARCHIVE_v1 canonical/material_items.csv (hnt0001-hnt0028 hunting gear)',
     url: 'data/world-catalogs/novgorod/sources/master-archive-v1/data/canonical/material_items.csv',
-    use: 'Hunting gear ids referenced in hunting_method_refs; D-rated (hnt0022 steel trap, hnt0024 iron trap, hnt0028 snowshoes) are NOT used.' },
+    use: 'Hunting gear ids referenced in hunting_method_refs. HNT0022 is excluded by its dated 1600–2000 master period; HNT0024 (iron trap) and HNT0028 (snowshoes) remain confidence D and are queued for item-specific source checks, not rejected by confidence.' },
   { id: 'SRC_WK_FAUNA', level: 'B', read: 'full',
     title: 'WK production-v1 fauna-mammals.json, fauna-ecology.json, static-animal-context-b06.json, static-weather-traces-b06.json, agriculture-fauna.json (approved)',
     url: 'data/world-catalogs/novgorod/world-knowledge/production-v1/',

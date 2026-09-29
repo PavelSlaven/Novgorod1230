@@ -396,7 +396,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
             version: Number(sourceSite.canonical_g5_ref.authoring_version) } });
         if (!connections.ok) return connections;
         const approved = connections.value.find((row) => row.binding.id === binding_id);
-        if (!approved) return reject('approved_canonical_connection_required');
+        if (!approved) return reject(connections.gaps?.find((gap) => gap.binding_id === binding_id)?.reason
+          ?? 'approved_canonical_connection_required');
         const { binding, profile: connectionProfile } = approved;
         // The pin vocabulary has no connection kinds: the source place is pinned, the binding and its
         // profile are traced (their catalog is the one pinned world revision).

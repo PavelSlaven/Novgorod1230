@@ -23,7 +23,7 @@ const readerWith = (rows) => {
   return { reader, calls };
 };
 
-test('the highest approved version whose profile has no condition wins, per binding id', async () => {
+test('the highest approved version wins per binding id, whatever the row order', async () => {
   const { reader, calls } = readerWith([row('b1', 1, 1), row('b1', 2, 2), row('b2', 1, 1), row('b2', 2, 2)]);
   const result = await reader.readApprovedCanonicalG5Connections({ g4, canonical_g5 });
   assert.equal(result.ok, true, JSON.stringify(result.error));
@@ -37,20 +37,23 @@ test('the highest approved version whose profile has no condition wins, per bind
   assert.equal(Object.isFrozen(result.value), true);
 });
 
-test('a binding with only conditional profile versions is a typed gap, never a silent skip', async () => {
-  const { reader } = readerWith([row('b1', 1, 1), row('b2', 1, 1), row('b2', 2, 2)]);
+test('the highest approved version is the only candidate: unusable is a typed gap for that binding alone', async () => {
+  // b1: v2 conditional, v1 fine -> no fallback to v1; b2 stays available.
+  const { reader } = readerWith([row('b1', 2, 1), row('b1', 1, 2), row('b2', 2, 2), row('b2', 1, 1)]);
   const result = await reader.readApprovedCanonicalG5Connections({ g4, canonical_g5 });
-  assert.equal(result.ok, false);
-  assert.equal(result.error.diagnostics.reason, 'canonical_connection_profile_unusable');
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.deepEqual(result.value.map(({ binding }) => [binding.id, binding.version]), [['b2', 2]]);
+  assert.deepEqual(result.gaps, [{ binding_id: 'b1', binding_version: 2, reason: 'canonical_connection_profile_unusable' }]);
 });
 
-test('unapproved rows, digest drift and inexact pins are refused; no rows is an empty list', async () => {
-  assert.equal((await readerWith([row('b1', 2, 2, { profile_status: 'retired' })]).reader
-    .readApprovedCanonicalG5Connections({ g4, canonical_g5 })).ok, false);
-  assert.equal((await readerWith([row('b1', 2, 2, { profile_authoring_digest: 'b'.repeat(64) })]).reader
-    .readApprovedCanonicalG5Connections({ g4, canonical_g5 })).ok, false);
-  assert.equal((await readerWith([row('b1', 2, 2, { profile_scope: 'world_route_segment' })]).reader
-    .readApprovedCanonicalG5Connections({ g4, canonical_g5 })).ok, false);
+test('unapproved profile, digest drift and wrong scope gap only their binding; inexact pins are refused; no rows is an empty list', async () => {
+  for (const drift of [{ profile_status: 'retired' }, { profile_authoring_digest: 'b'.repeat(64) },
+    { profile_scope: 'world_route_segment' }]) {
+    const refused = await readerWith([row('b1', 2, 2, drift)].concat(row('b2', 2, 2)))
+      .reader.readApprovedCanonicalG5Connections({ g4, canonical_g5 });
+    assert.deepEqual([refused.ok, refused.value.map(({ binding }) => binding.id), refused.gaps.map((gap) => gap.binding_id)],
+      [true, ['b2'], ['b1']], `${JSON.stringify(drift)}: that binding alone is a gap`);
+  }
   const inexact = readerWith([]);
   assert.equal((await inexact.reader.readApprovedCanonicalG5Connections({ g4: { id: 'g4' }, canonical_g5 })).ok, false);
   assert.equal(inexact.calls.length, 0);

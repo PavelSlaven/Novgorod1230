@@ -867,7 +867,8 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
   }
   /** Approved connections that leave one canonical G5 inside its G4 (bindings; profiles by the
    * binding's own reference, since the expansion profile pins only one of them). Per binding id
-   * the highest approved version whose profile is a non-conditional site connection wins. */
+   * only the highest approved version is a candidate; when its profile is not a non-conditional
+   * site connection the binding is listed in `gaps`, the other bindings stay available. */
   async function readApprovedCanonicalG5Connections({ g4, canonical_g5 } = {}) {
     if (!exact(g4) || !canonical_g5?.id || !Number.isInteger(canonical_g5.version)
       || typeof query !== 'function') {
@@ -886,12 +887,18 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
     }
     const usable = (row) => row.profile_status === 'approved' && row.profile_scope === 'site_connection'
       && row.availability_condition_set_ref == null && row.profile_digest === row.profile_authoring_digest;
-    const ids = [...new Set(result.rows.map((row) => row.binding_id))];
-    const chosen = ids.map((id) => result.rows.filter((row) => row.binding_id === id).find(usable));
-    if (chosen.some((row) => row === undefined)) {
-      return failure('route_plan_snapshot_missing', 'node', g4.id, { reason: 'canonical_connection_profile_unusable' });
+    // Only the highest approved version of a binding is a candidate: an unusable one is a typed gap
+    // of that binding alone, never a silent fall back to an older version.
+    const highest = new Map();
+    for (const row of result.rows) {
+      const known = highest.get(row.binding_id);
+      if (known === undefined || row.binding_version > known.binding_version) highest.set(row.binding_id, row);
     }
-    return Object.freeze({ ok: true, value: deepFreeze(chosen.map((row) => ({
+    const chosen = [...highest.values()].filter(usable);
+    const gaps = [...highest.values()].filter((row) => !usable(row)).map((row) => ({
+      binding_id: row.binding_id, binding_version: row.binding_version,
+      reason: 'canonical_connection_profile_unusable' }));
+    return Object.freeze({ ok: true, gaps: deepFreeze(gaps), value: deepFreeze(chosen.map((row) => ({
       binding: { id: row.binding_id, version: row.binding_version, parent_g4_id: row.parent_g4_id,
         parent_g4_version: row.parent_g4_version, from_canonical_g5_id: row.from_canonical_g5_id,
         from_canonical_g5_version: row.from_canonical_g5_version, to_canonical_g5_id: row.to_canonical_g5_id,

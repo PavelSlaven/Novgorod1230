@@ -7,7 +7,7 @@
 | [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 9 | 17 | 0 |
 | [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 5 | 13 | 0 |
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 17 | 0 |
-| [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 1 | 8 | 0 |
+| [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 11 | 14 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 10 | 13 | 0 |
 | [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 8 | 7 | 0 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
@@ -26,7 +26,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 10 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 4 | 0 |
-| **Итого** | | **152** | **241** | **0** |
+| **Итого** | | **162** | **247** | **0** |
 
 ## Вердикты по файлам
 
@@ -110,10 +110,26 @@
 
 | Файл | Последний verdict |
 |---|---|
+| [`currencies_measures/C2_REPORT.md`](economy-trade-measures/currencies_measures/C2_REPORT.md) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/c3_parameters.csv`](economy-trade-measures/currencies_measures/c3_parameters.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/C3_REPORT.md`](economy-trade-measures/currencies_measures/C3_REPORT.md) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/currency_rates_bue.csv`](economy-trade-measures/currencies_measures/currency_rates_bue.csv) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
 | [`currencies_measures/currency_units.csv`](economy-trade-measures/currencies_measures/currency_units.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#currencies_measurescurrency_unitscsv--approve_with_limits) |
+| [`currencies_measures/master_archive_price_regressions.csv`](economy-trade-measures/currencies_measures/master_archive_price_regressions.csv) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
 | [`currencies_measures/measure_units.csv`](economy-trade-measures/currencies_measures/measure_units.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#currencies_measuresmeasure_unitscsv--approve_with_limits) |
-| [`price_bands/compensation_reference.csv`](economy-trade-measures/price_bands/compensation_reference.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#price_bandscompensation_referencecsv--approve_with_limits) |
-| [`price_bands/price_bands.csv`](economy-trade-measures/price_bands/price_bands.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#price_bandsprice_bandscsv--approve_with_limits) |
+| [`currencies_measures/price_anchors_c1230.csv`](economy-trade-measures/currencies_measures/price_anchors_c1230.csv) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/README.md`](economy-trade-measures/currencies_measures/README.md) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/scripts/build_econ_rates.mjs`](economy-trade-measures/currencies_measures/scripts/build_econ_rates.mjs) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/scripts/run_household_bench_c3.mjs`](economy-trade-measures/currencies_measures/scripts/run_household_bench_c3.mjs) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`currencies_measures/scripts/run_price_bench_c2.mjs`](economy-trade-measures/currencies_measures/scripts/run_price_bench_c2.mjs) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/category_price_bands_c1230.csv`](economy-trade-measures/price_bands/category_price_bands_c1230.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/compensation_reference.csv`](economy-trade-measures/price_bands/compensation_reference.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/price_bands.csv`](economy-trade-measures/price_bands/price_bands.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/README.md`](economy-trade-measures/price_bands/README.md) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/scripts/build_category_price_bands.mjs`](economy-trade-measures/price_bands/scripts/build_category_price_bands.mjs) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/scripts/derive_price_bands.mjs`](economy-trade-measures/price_bands/scripts/derive_price_bands.mjs) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`price_bands/scripts/validate_price_bands.mjs`](economy-trade-measures/price_bands/scripts/validate_price_bands.mjs) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
+| [`README.md`](economy-trade-measures/README.md) | [approve](economy-trade-measures/VERIFICATION.md#вердикты-по-файлам-econ-rates) |
 | [`services_hire_labor/services.csv`](economy-trade-measures/services_hire_labor/services.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#services_hire_laborservicescsv--approve_with_limits) |
 | [`sources/books.csv`](economy-trade-measures/sources/books.csv) | [approve](economy-trade-measures/VERIFICATION.md#sourcesbookscsv--approve) |
 | [`trade_goods_markets/markets_practice.csv`](economy-trade-measures/trade_goods_markets/markets_practice.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#trade_goods_marketsmarkets_practicecsv-и-scriptsbuild_trade_goods_marketsmjs--approve_with_limits-было-rework) |

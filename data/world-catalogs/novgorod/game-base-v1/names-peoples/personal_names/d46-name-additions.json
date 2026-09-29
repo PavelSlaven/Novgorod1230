@@ -7510,7 +7510,7 @@
     },
     "regional_name_pools": {
       "path": "sources/d46-regional-name-pools.json",
-      "sha256": "3d3adcb844e0fbb1a12f6cd98296878e35dbcdcc3f3f9d76acfc97f8c891f931"
+      "sha256": "ffcda1d74a316a7c04cd70b2bcd9c2de6db8c14a7eb43e9fe1cddeeb8a2904d5"
     }
   }
 }

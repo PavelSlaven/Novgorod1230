@@ -3,9 +3,9 @@
     "file_name": "novgorod_npc_name_pools_v1.json",
     "version": "1.0.0",
     "project": "RUS13",
-    "region_id": "novgorod_land",
+    "region_id": "region_novgorod_land",
     "region_id_aliases": [
-      "region_novgorod_land"
+      "novgorod_land"
     ],
     "region_title": "Новгородская земля",
     "period": "1230-1250",

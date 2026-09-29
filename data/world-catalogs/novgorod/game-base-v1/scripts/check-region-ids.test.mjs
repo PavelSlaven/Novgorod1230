@@ -47,3 +47,34 @@ test('rejects an unknown region id', () => {
     fs.rmSync(f.root, { recursive: true, force: true });
   }
 });
+
+test('does not treat evidence region_scope vocabulary as G0 IDs', () => {
+  const f = fixture();
+  try {
+    const evidence = path.join(f.root, 'items-household-personal', 'sources', 'evidence-household-v2');
+    fs.mkdirSync(evidence, { recursive: true });
+    fs.writeFileSync(path.join(evidence, 'evidence.csv'), [
+      'id,region_scope',
+      'one,novgorod_land',
+      'two,rus_other',
+      'three,neighbour',
+      'four,far',
+    ].join('\n'));
+    const result = checkRegionIds({ gameBase: f.root, registryPath: f.registry, placesBindingPath: f.binding });
+    assert.equal(result.errors.length, 0);
+  } finally {
+    fs.rmSync(f.root, { recursive: true, force: true });
+  }
+});
+
+test('rejects an unknown G0-like region_scope outside evidence snapshots', () => {
+  const f = fixture();
+  try {
+    fs.writeFileSync(path.join(f.root, 'group', 'unknown-scope.csv'), 'id,region_scope\nbad,region_unknown\n');
+    const result = checkRegionIds({ gameBase: f.root, registryPath: f.registry, placesBindingPath: f.binding });
+    assert.ok(result.errors.some((error) =>
+      error.code === 'REGION_ID_UNKNOWN' && error.region_id === 'region_unknown'));
+  } finally {
+    fs.rmSync(f.root, { recursive: true, force: true });
+  }
+});

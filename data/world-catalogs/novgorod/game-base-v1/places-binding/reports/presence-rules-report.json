@@ -7477,7 +7477,7 @@
     },
     "excluded_pool": {
       "file": "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv",
-      "rows": 1779,
+      "rows": 1717,
       "reason": "missing category_ref and cat:fauna.* category definitions in category_registry; connect in a separate data task"
     }
   },

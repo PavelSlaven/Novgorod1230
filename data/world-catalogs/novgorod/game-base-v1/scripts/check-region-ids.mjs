@@ -10,6 +10,12 @@ export const PLACES_BINDING_REGION = path.join(GAME_BASE, 'places-binding/inputs
 
 const directRegionFields = new Set(['region_id', 'presence_region_id', 'region_permission']);
 const scopedRegionFields = new Set(['region_scope']);
+const evidenceScopeValues = new Set(['novgorod_land', 'rus_other', 'neighbour', 'far']);
+const evidenceScopePaths = [
+  'items-household-personal/sources/evidence-household-v2/',
+  'items-household-personal/reports/household_evidence_ledger.csv',
+  'items-household-personal/reports/household_evidence_intake.json',
+];
 const idLike = /^[a-z][a-z0-9_]*$/;
 
 function filesUnder(root) {
@@ -26,6 +32,12 @@ function isDirectRegionField(field) {
   return directRegionFields.has(field) || /(?:^|_)region_id$/.test(field);
 }
 
+function isEvidenceScope(source, field, value) {
+  return field === 'region_scope'
+    && evidenceScopeValues.has(value)
+    && evidenceScopePaths.some((prefix) => source.startsWith(prefix));
+}
+
 function addValue(references, malformed, source, field, value) {
   if (value === '' || value === null || value === undefined) return;
   if (typeof value !== 'string') {
@@ -34,6 +46,7 @@ function addValue(references, malformed, source, field, value) {
   }
   const normalized = value.trim();
   if (!normalized) return;
+  if (isEvidenceScope(source, field, normalized)) return;
   if (scopedRegionFields.has(field) && !idLike.test(normalized)) return;
   references.push({ source, field, region_id: normalized });
 }

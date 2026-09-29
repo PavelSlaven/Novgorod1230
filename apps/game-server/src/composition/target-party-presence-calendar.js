@@ -1,5 +1,4 @@
 import { encodePresenceRulePeriodNumber } from '@rus/materialization';
-import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { serverError } from '../errors.js';
 
 /**
@@ -19,10 +18,11 @@ export async function readTargetPartyPresenceCalendar({
   const stateVersion = Number(lifecycle.rows[0]?.state_version);
   let environment;
   if (stateVersion === 0) {
-    const state = await createLowerDvinaTracePhase1ARepository({
-      query: transaction.query.bind(transaction),
-    }).loadInternal(partyId);
-    const actorId = state?.player?.instance_id;
+    const player = await transaction.query(
+      `SELECT character_id FROM party_runtime.party_player_characters WHERE party_id=$1`,
+      [partyId],
+    );
+    const actorId = player.rows[0]?.character_id;
     if (!actorId) {
       throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
         'Committed party actor is required for initial presence resolution.');

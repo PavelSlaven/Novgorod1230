@@ -1,53 +1,71 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { commandsFor, conversationRun, generatedState, ELSEWHERE, HERE } from
+import { DESTINATION_ANCHOR, FAR, NEAR, commandsFor, conversationRun, generatedState } from
   './lower-dvina-trace-generated-npc-fixture.js';
 
 const targets = (commands) => commands.map(({ command_id: id }) =>
   id.replace('live_world.conversation.', ''));
 
-test('NPC on the player scene position is a conversation partner without an anchor',
+test('NPCs of the player G6 are partners after the real first-entry arrival projection',
   async () => {
     const state = generatedState();
+    assert.deepEqual(new Set(state.npcs.map(({ anchor_id: a }) => a)),
+      new Set([DESTINATION_ANCHOR]));
     const commands = commandsFor(state);
-    assert.deepEqual(targets(commands), [state.npcs[0].instance_id]);
+    assert.deepEqual(targets(commands),
+      [state.npcs[0].instance_id, state.npcs[1].instance_id]);
     assert.equal((await commands[0].availability({ committed_state: state,
       action_set_evaluation: true })).can_attempt, true,
     JSON.stringify(commands[0].preconditions));
   });
 
-test('NPC on another scene position is not a partner even in the same location',
-  () => {
-    const state = generatedState();
-    assert.equal(state.npcs.length > 1, true);
-    assert.equal(targets(commandsFor(state)).includes(state.npcs[1].instance_id), false);
+test('an NPC in another G6 is not a partner although anchor and place are shared', () => {
+  const state = generatedState();
+  assert.equal(state.npcs.length > 2, true);
+  for (const far of state.npcs.slice(2)) {
+    assert.equal(targets(commandsFor(state)).includes(far.instance_id), false);
+  }
+});
+
+test('with no known G6 the same place stands in; a stale NPC of another place never does', () => {
+  const unknownG6 = generatedState((next) => {
+    delete next.position.g6_id;
+    delete next.first_entry_preparation.scene.rows;
+    delete next.first_entry_preparation.spatial_v3.target.g6_instance_id;
+    next.npcs[2].location_profile_ref = 'another_place';
+    next.npcs[3].position_id = NEAR;
   });
+  const ids = targets(commandsFor(unknownG6));
+  assert.equal(ids.includes(unknownG6.npcs[2].instance_id), false);
+  assert.equal(ids.includes(unknownG6.npcs[3].instance_id), true);
+});
 
 test('null anchor and null position never match each other', () => {
   const state = generatedState((next) => {
-    next.npcs.forEach((npc) => { delete npc.position_id; });
+    next.position.g5_anchor_id = null;
     next.position.position_id = null;
+    next.npcs.forEach((npc) => { npc.anchor_id = null; delete npc.position_id; });
   });
   assert.deepEqual(commandsFor(state), []);
 });
 
-test('the anchor stays authoritative: equal anchors with a stale node still talk', () => {
+test('anchor decides only where a side has no position (authored scene)', () => {
   const state = generatedState((next) => {
+    delete next.position.position_id;
     next.position.g5_anchor_id = 'anchor:a';
+    next.npcs.forEach((npc) => { delete npc.position_id; npc.anchor_id = 'anchor:b'; });
     next.npcs[0].anchor_id = 'anchor:a';
-    next.npcs[0].position_id = ELSEWHERE;
-    next.npcs[1].anchor_id = 'anchor:b';
-    next.npcs[1].position_id = HERE;
   });
   assert.deepEqual(targets(commandsFor(state)), [state.npcs[0].instance_id]);
 });
 
-test('routine that moved the NPC away removes it from the scene', () => {
+test('a routine that moved an anchored NPC into another G6 removes it from the scene', () => {
   const state = generatedState((next) => {
     next.npc_schedule_runtime = [{ npc_id: next.npcs[0].instance_id,
-      current_position_node_id: ELSEWHERE }];
+      current_position_node_id: FAR }];
   });
-  assert.deepEqual(commandsFor(state), []);
+  assert.equal(targets(commandsFor(state)).includes(state.npcs[0].instance_id), false);
+  assert.equal(targets(commandsFor(state)).includes(state.npcs[1].instance_id), true);
 });
 
 test('generated-shape NPC hears the player and answers over two turns', async () => {

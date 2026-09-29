@@ -5,32 +5,49 @@ import LIVE_WORLD_TURN_PROFILE from
 import { canonicalDigest } from '@rus/materialization';
 import { liveWorldConversationCommands } from
   '../src/runtime/lower-dvina-trace-phase-2.js';
+import { projectFirstEntryArrivalState } from
+  '../src/runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { conversationTemporalOwner, createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 
 const bundle13 = await loadScenarioBundle(13);
 export const HERE = 'position:generated:here';
-export const ELSEWHERE = 'position:generated:elsewhere';
+export const NEAR = 'position:generated:near';
+export const FAR = 'position:generated:far';
+export const DESTINATION_ANCHOR = 'g5:destination';
 export const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
   artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
   revision: LIVE_WORLD_TURN_PROFILE.revision,
   digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
 } };
+const LOCATION = 'trace_ld_v1_smp_fishing_camp';
 
-// Generated scenes live on scene_position_nodes: the player and the NPCs carry a
-// position_id and no g5 anchor. The first NPC shares the player's position.
+// Real v17 shape: first-entry NPCs are created with anchor_id = their scene
+// position, then projectFirstEntryArrivalState rewrites the anchor to the
+// destination anchor. npcs[0] stands at the player position, npcs[1] on another
+// position of the same G6, the rest in another G6.
 export function generatedState(mutate = () => {}) {
   const seed = fixture({ scenarioBundle: bundle13, materializationBundle: bundle13 });
   const state = structuredClone(seed.state);
   state.scenario_id = 'vikhtuy_fishing_camp_v1';
-  state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
-  state.position.g5_anchor_id = null;
-  state.position.position_id = HERE;
-  state.npcs.forEach((npc, index) => {
-    npc.anchor_id = null;
-    npc.location_profile_ref = state.position.location_ref;
-    npc.position_id = index === 0 ? HERE : ELSEWHERE;
+  const spots = [[HERE, 'g6:a'], [NEAR, 'g6:a'], [FAR, 'g6:b']];
+  const arrivals = state.npcs.map((npc, index) => {
+    const [positionId] = spots[Math.min(index, 2)];
+    return { ...npc, anchor_id: positionId, position_id: positionId,
+      location_profile_ref: LOCATION };
   });
+  state.npcs = [];
+  state.position = { ...state.position, location_ref: LOCATION,
+    g5_anchor_id: DESTINATION_ANCHOR, position_id: HERE, g6_id: 'g6:a' };
+  state.first_entry_preparation = {
+    scene: { location_profile_ref: LOCATION, rows: spots.map(([id, g6]) => ({
+      target_table: 'scene_position_nodes', id, record: { g6_instance_id: g6 } })) },
+    spatial_v3: { preparation_snapshot_id: 'snapshot:generated',
+      preparation_member_ordinal: 1, target: { status: 'pending',
+        position_id: HERE, g6_instance_id: 'g6:a' } },
+    npcs: arrivals };
+  projectFirstEntryArrivalState(state, { destination: {
+    location_ref: LOCATION, g5_anchor_id: DESTINATION_ANCHOR } });
   mutate(state);
   return state;
 }

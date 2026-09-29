@@ -1,5 +1,6 @@
 'use strict';
 
+const birds = require('./birds.cjs');
 const H = (n) => `n1230:material_item:hnt${String(n).padStart(4, '0')}`;
 const W = (n) => `n1230:material_item:wpn${String(n).padStart(4, '0')}`;
 const archive = (...ids) => ids.map((id) => `master-archive-v1/data/canonical/material_items.csv#${id}`).join(';');
@@ -11,6 +12,23 @@ const method = (r) => ({
   basis:r.basis, derivation:r.derivation, anachronism_check:r.anachronism_check,
   confidence:r.confidence || 'C', status:'candidate', note:r.note,
 });
+const locallyNestingBird = (bird) => Boolean(bird.nest) && (
+  [bird.mig?.[1], bird.mig?.[2]].some((state) => state === 'B' || state === 'R')
+  || (bird.mig?.[0] === 'I' && /гнездится.*зимой/i.test(bird.nest))
+);
+const climbingNest = (nesting) => {
+  const text = String(nesting || '');
+  if (/на земле/i.test(text)) return false;
+  const directTreeSite = /дерев(?:ьях|ьев|е(?!н)|о)|дупл|крон|ветк|ветв|ствол|сосн|(?:^|\s)ел(?:и|ях|ь|ю)(?:\s|$)|елов.*лап|корой/i.test(text);
+  const reusedTreeNest = /(?:стар|чуж)[^;,.]{0,40}(?:(?:ворон|вранов)[^;,.]{0,20}гн[её]зд|гн[её]зд[^;,.]{0,20}хищник)/i.test(text);
+  return directTreeSite || reusedTreeNest;
+};
+const eggBirds = birds.filter(locallyNestingBird);
+const winterEggBirds = eggBirds.filter((bird) => bird.mig?.[0] === 'I' && /гнездится.*зимой/i.test(bird.nest));
+const ordinaryEggBirds = eggBirds.filter((bird) => !winterEggBirds.includes(bird));
+const climbingEggBirds = ordinaryEggBirds.filter((bird) => climbingNest(bird.nest));
+const generalEggBirds = ordinaryEggBirds.filter((bird) => !climbingNest(bird.nest));
+const taxa = (rows) => rows.map((row) => row.id).sort().join(';');
 
 const methods = [
   method({ hm_id:'hm_snare', name_ru:'Силок или петля', name_en:'snare or loop', description_ru:'Петля на тропе или жёрдочке для птицы и мелкого зверя.', setup_mode:'set_and_check', tool_refs:[H(7),H(8),H(18)].join(';'), applicable_taxa:'fa_m_roe_deer;fa_m_wolf;fa_m_stoat;fa_m_red_squirrel;fa_m_mountain_hare', applicable_categories:'fauna.bird.gamebird;fauna.bird.pigeon', applicable_size_classes:'bird_very_small;bird_small;mammal_very_small;mammal_small;mammal_medium', seasons:'autumn;winter', source_refs:'SRC_MASTER_HNT;books-evidence-v1/occupations-activities.csv#L49', basis:'sourced_class_editorial_applicability', derivation:`${archive(H(7),H(8),H(18))};books-evidence-v1/occupations-activities.csv#L49`, anachronism_check:'passed: органическая петля из шнура/волоса; современная стальная пружина не требуется', note:'Проверка поставленной петли — отдельная позднейшая активность; улов при постановке не создаётся. Охват видов и размеров редакционный.' }),
@@ -35,7 +53,9 @@ const methods = [
   method({ hm_id:'hm_smoke_burrow', name_ru:'Выкуривание из норы', name_en:'smoking game from a burrow', description_ru:'Дым направляют в доступный ход, чтобы выгнать норного зверя к ожидающим охотникам.', setup_mode:'direct', applicable_taxa:'fa_m_red_fox;fa_m_badger', applicable_size_classes:'mammal_small;mammal_medium', seasons:'spring;summer;autumn', basis:'editorial', derivation:'D40 breadth; burrowing taxa in fauna/mammals.csv; no MASTER HNT item or collected direct source', anachronism_check:'passed_with_gap: огонь и дым доступны; конкретная практика, безопасность и местное свидетельство отсутствуют', note:'Не применяется зимой к спящему барсуку; исход, пожар и гибель зверя не предрешены.' }),
   method({ hm_id:'hm_dig_burrow', name_ru:'Раскапывание норы', name_en:'digging out a burrow', description_ru:'Доступный ход норы раскапывают и перекрывают выходы, чтобы добраться до зверя.', setup_mode:'direct', applicable_taxa:'fa_m_red_fox;fa_m_badger;fa_m_beaver', applicable_size_classes:'mammal_small;mammal_medium', seasons:'spring;summer;autumn', basis:'logical_necessity', derivation:'fauna/mammals.csv hunting_methods: fa_m_red_fox, fa_m_badger, fa_m_beaver; no MASTER HNT item', anachronism_check:'passed_with_gap: земляные орудия эпохи существуют, но конкретное орудие и техника здесь не установлены', note:'Видовая применимость следует из текущих hunting_methods; скорость, инструмент и успешность — пробел.' }),
   method({ hm_id:'hm_hand_or_stick_small_fauna', name_ru:'Ловля руками или палкой', name_en:'hand or stick capture of very small fauna', description_ru:'Очень мелкое животное пытаются накрыть рукой, прижать простой палкой или взять из укрытия.', setup_mode:'direct', applicable_taxa:'fa_m_house_mouse;fa_m_striped_field_mouse;fa_m_yellow_necked_mouse;fa_m_bank_vole;fa_m_field_vole;fa_m_common_shrew;fa_m_mole;fa_amph_common_frog;fa_amph_moor_frog;fa_amph_pool_frog;fa_rept_viviparous_lizard', applicable_size_classes:'mammal_very_small;amphibian_very_small;reptile_very_small', seasons:'spring;summer;autumn', basis:'editorial', derivation:'D40 breadth; exact taxa resolved from sibling fauna/invertebrates_herps.csv; no MASTER HNT item', anachronism_check:'passed: рука и простая палка не требуют специальной технологии; промысловая значимость не утверждается', note:'Зимующие в укрытии земноводные и ящерица зимой исключены; строка задаёт возможность, а не обычай или гарантированную встречу.' }),
-  method({ hm_id:'hm_collect_bird_eggs_climbing', name_ru:'Сбор птичьих яиц с лазаньем', name_en:'collecting bird eggs by climbing', description_ru:'К доступному гнезду поднимаются и берут яйца поштучно, сохраняя их хрупкое состояние.', setup_mode:'direct', applicable_taxa:'fa_b_mallard;fa_b_lapwing;fa_b_common_gull;fa_b_black_headed_gull', applicable_size_classes:'bird_egg', seasons:'spring;summer', resource_family_refs:'F10', basis:'logical_necessity', derivation:'resource-catalog-v3.md#F10;fauna/birds.csv#products=eggs; no MASTER HNT item', anachronism_check:'passed: ручной сбор и лазанье не требуют позднего снаряжения; календарь кладки остаётся gap F10', note:'Это связь с собирательным F10, а не утверждение, что всякая птица или всякое гнездо доступно. Конкретные месяцы кладки не заданы.' }),
+  method({ hm_id:'hm_collect_bird_eggs_climbing', name_ru:'Сбор птичьих яиц с лазаньем', name_en:'collecting bird eggs by climbing', description_ru:'К гнезду на дереве, в стволе или в чужом древесном гнезде поднимаются и берут яйца поштучно.', setup_mode:'direct', applicable_taxa:taxa(climbingEggBirds), applicable_size_classes:'bird_egg', seasons:'spring;summer', resource_family_refs:'F10', basis:'logical_necessity', derivation:'birds.cjs nesting establishes a tree, branch, trunk, hollow or reused corvid/raptor tree nest and does not say that the nest is on the ground; exact taxa are generated from that property and local nesting status; no MASTER HNT item', anachronism_check:'passed: ручной сбор и лазанье не требуют позднего снаряжения', note:'Метод не применяется к наземным, тростниковым, норным, building-only или неуточнённым гнёздам. Фактическое гнездо и кладка всё равно требуются состоянием мира.' }),
+  method({ hm_id:'hm_collect_bird_eggs_ground', name_ru:'Сбор птичьих яиц из доступного гнезда', name_en:'collecting eggs from an accessible nest', description_ru:'Яйца берут из доступного гнезда, если его authored-тип не требует вывода о лазанье.', setup_mode:'direct', applicable_taxa:taxa(generalEggBirds), applicable_size_classes:'bird_egg', seasons:'spring;summer', resource_family_refs:'F10', basis:'logical_necessity', derivation:'birds.cjs nesting does not establish a tree, trunk, hollow or reused corvid/raptor tree nest; exact taxa are generated from that property and local nesting status; building nests remain eligible when no climbing property is authored', anachronism_check:'passed: ручной сбор не требует позднего снаряжения', note:'Неуточнённый тип гнезда консервативно остаётся здесь: отсутствие высоты не разрешает лазанье. Кукушка означает доступное гнездо хозяина, не собственное гнездо.' }),
+  method({ hm_id:'hm_collect_bird_eggs_winter', name_ru:'Сбор яиц из зимнего гнезда', name_en:'collecting eggs from a winter nest', description_ru:'Яйца берут только при фактически существующем зимнем гнезде вида с явно записанным зимним гнездованием.', setup_mode:'direct', applicable_taxa:taxa(winterEggBirds), applicable_size_classes:'bird_egg', seasons:'winter', resource_family_refs:'F10', basis:'logical_necessity', derivation:'birds.cjs nesting explicitly records winter nesting; exact taxa are generated from that property', anachronism_check:'passed: ручной сбор не требует позднего снаряжения', note:'Сейчас свойство выполняется только у клеста. Метод не выводит тип или высоту его гнезда и не открывает зимний сбор у остальных птиц.' }),
 ];
 
 const tenure = [
@@ -44,4 +64,4 @@ const tenure = [
   { ground_kind:'perevesishcha', name_ru:'Перевесища', place_family_ref:'pf_hunting_ground', family_id:'F29', tenure:'rights_holder', closed_months:'', source_refs:'books-evidence-v1/fauna-mammals-birds.csv#L220;books-evidence-v1/fauna-mammals-birds.csv#L221;books-evidence-v1/fauna-mammals-birds.csv#L223;books-evidence-v1/fauna-mammals-birds.csv#L224', confidence:'C', status:'candidate', note:'Защищён чужой перевес и снасть; местная карта прав и конкретный держатель не установлены.' },
 ];
 
-module.exports = { methods, tenure };
+module.exports = { methods, tenure, climbingNest };

@@ -1135,3 +1135,17 @@
 - Производные строки пересобраны `build-presence-rules.mjs`, результат побайтно равен worktree. Изменены 26 строк, все — белобровик и чечевица (понижение класса вслед за `fauna/birds.csv`); прочих изменений 0.
 - Полный `validate.mjs --start-territory <bridge> --self-test` — exit 0; внешние проверки INFO 10977/118/788, как прежде.
 - presence/presence_rules.csv, reports/presence-rules-report.json — approve
+
+## Независимая проверка rc-next (Claude Opus 5.5, 2026-09-29)
+
+История. Круги 1–2: approve_with_limits, производные строки присутствия дублей и канона. Круг 3 группу не менял.
+- **Совпадали с пересборкой:** `presence_rules.csv` (+28 строк канонических мышей и полёвки) и `presence-rules-report.json`.
+- **Были устаревшими (механический rework):** `category-registry-report.json` и `validation.json` собраны при 913 связях resource-catalog, пересборка даёт 915 (unresolved 1765→1767). По указанию проверяющего все сгенерированные файлы группы пересобраны штатным `node places-binding/scripts/build-all.mjs` (координатор, при переносе ветки на main `afbc4991`; руками ничего не правилось) — после пересборки проверяющий даёт группе approve_with_limits.
+- **Прогоны на копии:** `build-all.mjs` — exit 0; `validate.mjs --start-territory <codex-data start-territory.json>` — exit 0, с `--self-test` тоже exit 0; три пересборки побайтно совпали.
+- **Ограничения:** 979 unresolved-ссылок категорий resource-catalog (INFO, external) были и на HEAD (там отчёт устарел и не учитывал resource-catalog); rc-next их не вносил. Параллельная задача lw-env меняет те же сгенерированные файлы — при её слиянии они пересобираются, а не сливаются построчно.
+- presence/presence_rules.csv — approve_with_limits: +28 строк канона, сгенерирован, пересобран
+- reports/presence-rules-report.json — approve_with_limits: сгенерирован, пересобран
+- reports/category-registry-report.json — approve_with_limits: сгенерирован, пересобран штатной сборкой (было устаревшим: 913→915)
+- reports/validation.json — approve_with_limits: сгенерирован, пересобран штатной сборкой (было устаревшим: 913→915)
+
+Вердикт группы: **approve_with_limits** (после механической пересборки).

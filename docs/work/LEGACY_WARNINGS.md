@@ -78,6 +78,7 @@
 | 079 | narration-конвейер (`gameplay_narrator*`) | двойной отказ narration-аудита после committed-хода оставляет игрока без прозы (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 080 | `lower-dvina-trace-phase-2-services.js` (`turnStepBlockPlan`), `spatial-v3-expansion-runtime.js` | отказ по занятости только на шаге 1; путь подхода после первого шага — по сырым рёбрам без видимости | [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185) |
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
+| 082 | `llm-turn-budget.js`, `lower-dvina-trace-phase-2-presentation-resolve.js`, `apps/game-web/src/api/client.js` | худший submitTurn до ~360 с при клиенте без fetch-timeout | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -428,6 +429,11 @@
 - **Что.** (1) Рассказанный отказ по занятому ребру срабатывает только на шаге 1 хода; на шаге ≥2 занятое ребро даёт типизированный 409 `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` (тест это закрепляет). (2) После первого шага (он берётся только из `listLocalOptions`) поиск пути подхода идёт по сырым active-рёбрам без видимости и eligibility: возможны подсказка скрытой топологии и тупик на промежуточной позиции. Риск сейчас низкий — все шаблоны сцен `default_clear`.
 - **Как жить.** Не считать шаг ≥2 обработанным: многошаговость — [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185). При появлении явной видимости рёбер подход обязан брать путь только по допущенным рёбрам.
 - **Issue.** [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160), [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185)
+
+### LW-082 — in-request presentation replay: до ~360 с ответа, game-web без fetch-timeout
+- **Где.** `apps/game-server/src/runtime/llm-turn-budget.js` (`GAMEPLAY_TURN_DEADLINE_MS` 360_000, `GAMEPLAY_LLM_CALL_TIMEOUT_MS` 120_000); `apps/game-server/src/runtime/lower-dvina-trace-phase-2-presentation-resolve.js` (`SAME_REQUEST_PRESENTATION_ATTEMPTS` = 3); `apps/game-web/src/api/client.js` (fetch без явного timeout).
+- **Что.** После fleet/rt-narr повтор presentation в том же `submitTurn` может сделать до трёх полных проходов рассказчика; теоретический потолок совпадает с turn deadline (~6 min). Браузерный клиент не обрывает запрос сам — игрок может ждать до обрыва прокси/вкладки или до серверного deadline.
+- **Как жить.** Не считать это регрессией UX для обычных ходов; отдельный таймаут клиента и/или индикация ожидания — отдельная задача. Промпт про `movement_blocked_reason_code` отложен до rt-harness (REVIEW-rt-narr-2); поле в `confirmed_outcome` остаётся.
 
 ### LW-081 — `combat_weapon_classification`: expectedSchema описывает старый формат
 - **Где.** `packages/llm-runtime/src/combat-role-defaults.js` (`expectedSchema: 'rus.combat.action_produced_weapon_classification.v1'`, `outputContractMode: json_object_with_schema`); `data/model-evals/llm-runtime-baselines/lower-dvina-trace-v13-role-defaults-v1.json`.

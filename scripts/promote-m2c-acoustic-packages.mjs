@@ -67,7 +67,8 @@ export async function buildAcousticRelease({ packages = ACOUSTIC_PACKAGES, autho
     if (entry.provenance_ref.startsWith(loaded[0].approvalPath)) entry.provenance_ref = provenance;
   }
   if (out.provenance_ref.startsWith(loaded[0].approvalPath)) out.provenance_ref = provenance;
-  return { baselines, baselinesBytes, authoringVersionsBytes, manifestBytes: bytesOf(out), manifest: out };
+  const packageCounts = loaded.map(({ rows }, index) => ({ name: packages[index] || 'base', rows: rows.length }));
+  return { baselines, packageCounts, baselinesBytes, authoringVersionsBytes, manifestBytes: bytesOf(out), manifest: out };
 }
 
 async function pinnedKeys(bundles) {
@@ -93,15 +94,20 @@ async function pinnedKeys(bundles) {
   return { total: seen.size, byTable, refs };
 }
 
-function unionApproval(existing, release, versionsCount, baselineCount) {
+/** Draft while pending; a signed approval is never rewritten, a bundle that no longer matches it is an error. */
+export function unionApproval(existing, release, versionsCount, counts) {
   const old = existing ?? null;
+  if (old && old.decision !== 'PENDING_INDEPENDENT_APPROVAL'
+      && JSON.stringify(old.exact_bundle) !== JSON.stringify(release))
+    throw new Error('SIGNED_UNION_APPROVAL_PINS_DIFFER: the acoustic bundle changed after signing; request a new approval');
+  const total = counts.reduce((sum, entry) => sum + entry.rows, 0);
   return { ...(old ?? {
     schema: 'rus.m2c_supplemental_data_approval.v1',
     decision: 'PENDING_INDEPENDENT_APPROVAL',
     reviewer: null,
     reviewed_on: null,
     source_issue: 'PavelSlaven/Novgorod1230#133',
-    scope: `Exact acoustic P12 authoring-version union after merging the approved canonical-walk package: ${baselineCount} acoustic baselines (71 base+canonical-terminal, 147 canonical-walk; 195/195 target x slot with 2 additional-start owner rows) and ${versionsCount} authoring-version rows; two dataset SHA repins plus the manifest SHA. Expansion, connection, dependency-edge and other rows are unchanged.`,
+    scope: `Exact acoustic P12 authoring-version union after merging the approved canonical-walk package: ${total} acoustic baselines (${describe(counts)}) and ${versionsCount} authoring-version rows; two dataset SHA repins plus the manifest SHA. Expansion, connection, dependency-edge and other rows are unchanged.`,
     source_approvals: [
       `${catalog}/m2c-expansion-repin-data-approval.json`,
       `${catalog}/m2c-nonportal-availability-data-approval.json`,
@@ -116,13 +122,15 @@ function unionApproval(existing, release, versionsCount, baselineCount) {
   }), exact_bundle: release };
 }
 
+const describe = (counts, join = ', ') => counts.map((entry) => `${entry.name} ${entry.rows}`).join(join);
+
 const reviewText = (release, counts) => `# Acoustic union repin (canonical-walk): independent review request
 
 Review as an independent Contract Auditor. Return \`APPROVE_DATA_ONLY\` or reject with exact findings. Do not self-approve. This request grants no import and no activation.
 
 [authoring-version-union-walk-data-approval.json](authoring-version-union-walk-data-approval.json) is generated with \`decision: PENDING_INDEPENDENT_APPROVAL\`. To approve, replace \`decision\`, \`reviewer\` and \`reviewed_on\`, then re-run \`node scripts/promote-m2c-acoustic-packages.mjs\`: it re-pins the approval SHA in [the P12 walk request](../m2c-p12-v17-walk-acoustics-v1/request.json).
 
-- Acoustic baselines: ${counts.baselines} rows = base 25 + canonical-terminal 46 + canonical-walk 147. Each package approval pins its candidate and authoring-rows SHA; the script asserts both.
+- Acoustic baselines: ${counts.baselines} rows = ${describe(counts.packages, ' + ')}. Each package approval pins its candidate and authoring-rows SHA; the script asserts both.
 - Authoring versions: ${counts.versions} rows; the acoustic block is regenerated from the baselines in place, all other rows are byte-identical.
 - Acoustic manifest SHA-256: \`${release.manifest_sha256}\`. Authoring versions SHA-256: \`${release.authoring_versions_sha256}\`. Connection profile, binding and dependency-edge SHAs are unchanged and are asserted to be present in the manifest.
 - Regenerate and verify: \`node scripts/promote-m2c-acoustic-packages.mjs --check\`.
@@ -148,9 +156,9 @@ export async function promoteAcousticPackages({ check = false } = {}) {
   let existing = null;
   try { existing = await json(unionApprovalPath); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   const versionsCount = JSON.parse(release.authoringVersionsBytes).length;
-  await put(unionApprovalPath, bytesOf(unionApproval(existing, exact, versionsCount, release.baselines.length)));
+  await put(unionApprovalPath, bytesOf(unionApproval(existing, exact, versionsCount, release.packageCounts)));
   await put(unionReviewPath, reviewText({ manifest_sha256: manifestSha, authoring_versions_sha256: versionsSha },
-    { baselines: release.baselines.length, versions: versionsCount }));
+    { baselines: release.baselines.length, versions: versionsCount, packages: release.packageCounts }));
 
   const p12 = await buildWalkRequest(release);
   await put(requestPath, bytesOf(p12.request));

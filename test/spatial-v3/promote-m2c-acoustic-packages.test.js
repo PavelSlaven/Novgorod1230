@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
-  ACOUSTIC_PACKAGES, buildAcousticRelease, promoteAcousticPackages,
+  ACOUSTIC_PACKAGES, buildAcousticRelease, promoteAcousticPackages, unionApproval,
 } from '../../scripts/promote-m2c-acoustic-packages.mjs';
 
 const acoustic = 'data/world-catalogs/novgorod/m2c-acoustic';
@@ -46,4 +46,13 @@ test('committed acoustic release files, capacity-v2 pins and P12 walk request ar
   const result = await promoteAcousticPackages({ check: true });
   assert.equal(result.baselines, 218);
   assert.equal(result.p12.bundle, 'acoustic');
+});
+
+test('generator never rewrites the pins of an already signed union approval', () => {
+  const pins = { manifest_sha256: 'a', authoring_versions_sha256: 'b' };
+  const pending = unionApproval({ decision: 'PENDING_INDEPENDENT_APPROVAL', exact_bundle: { manifest_sha256: 'old' } }, pins, 3, [{ name: 'base', rows: 2 }]);
+  assert.deepEqual(pending.exact_bundle, pins);
+  const signed = { decision: 'APPROVE_DATA_ONLY', reviewer: 'independent', exact_bundle: pins };
+  assert.deepEqual(unionApproval(signed, { ...pins }, 3, [{ name: 'base', rows: 2 }]), signed);
+  assert.throws(() => unionApproval(signed, { ...pins, manifest_sha256: 'changed' }, 3, [{ name: 'base', rows: 2 }]), /SIGNED_UNION_APPROVAL_PINS_DIFFER/u);
 });

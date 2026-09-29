@@ -16,6 +16,7 @@ import { buildVisibleContextAuditApproval,
 import { projectG4NaturalPerception } from './g4-natural-perception.js';
 import { buildCanonicalOpeningVisibleContext } from './canonical-opening-context.js';
 import { projectSpatialV3CurrentVisibleContext } from './spatial-v3-current-visible-context.js';
+import { TARGET_START_CATALOG_ID } from '../internal/target-authored-start-catalog.js';
 
 export async function startLowerDvinaTrace({
   requestId,
@@ -107,11 +108,12 @@ export async function startLowerDvinaTrace({
   }
   let internal = committedBeforeStart
     ?? await traceStartAdapter.loadInternal(partyId);
-  const bindingRevision = binding.runtime_binding == null
-    ? null
-    : Number(binding.runtime_binding.revision);
-  const useLegacyOrdinaryProvisioning = binding.runtime_binding == null;
-  const useTargetOrdinaryProvisioning = bindingRevision != null && bindingRevision >= 5;
+  const runtimeBinding = binding.runtime_binding;
+  // v17 reuses revisions 1..7 for distinct starts; only the v1 catalog gates provisioning by revision.
+  const useLegacyOrdinaryProvisioning = runtimeBinding == null;
+  const useTargetOrdinaryProvisioning = runtimeBinding != null
+    && (runtimeBinding.catalog_id === TARGET_START_CATALOG_ID
+      || Number(runtimeBinding.revision) >= 5);
   if ((useLegacyOrdinaryProvisioning || useTargetOrdinaryProvisioning)
       && typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
     await traceStartAdapter.provisionInitialOrdinary(partyId);

@@ -1,6 +1,8 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 
+export const TARGET_START_CATALOG_ID = 'novgorod_live_world_runtime_v17';
+
 /** Publish the exact loaded target start through the existing authored-start API. */
 export function createTargetAuthoredStartCatalog({ runtime, release, historicalCatalog = null,
   turnProfile = null, ordinaryProfiles = null, bindingRevision = 1 } = {}) {
@@ -22,7 +24,7 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
       resolveProfile: (id) => byId.get(id)?.resolveProfile(id) ?? historicalCatalog?.resolveProfile(id) ?? null,
       loadPublication: (id, options) => byId.get(id)?.loadPublication(id)
         ?? historicalCatalog?.loadPublication(id, options) ?? null,
-      resolveRuntimeBinding: (ref) => ref?.catalog_id === 'novgorod_live_world_runtime_v17'
+      resolveRuntimeBinding: (ref) => ref?.catalog_id === TARGET_START_CATALOG_ID
         ? bindings.get(ref.revision) ?? null : historicalCatalog?.resolveRuntimeBinding(ref) ?? null });
   }
   const profile = runtime?.profile; const start = profile?.canonical_start?.start;
@@ -33,7 +35,7 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
     || release.scenario_profile_exact_pins?.scenario_definition_revision !== 1) {
     throw serverError('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Exact target start publication pins are required.');
   }
-  const runtimeBinding = Object.freeze({ catalog_id: 'novgorod_live_world_runtime_v17', revision: bindingRevision,
+  const runtimeBinding = Object.freeze({ catalog_id: TARGET_START_CATALOG_ID, revision: bindingRevision,
     status: 'approved', scenario_id: profile.scenario_id, materializer_binding_id: 'target_canonical_authored_start_v1',
     materializer_version: 'code_materializer_v3', snapshot_schema: 'rus.authored_start_initial_party_snapshot.v3',
     ...(start.initial_perception_rule == null ? {} : { initial_natural_perception_rule_pin:

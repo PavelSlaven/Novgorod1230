@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- data(game-base): архетип занятий performance_entertainment (гусляр, певец, сказитель), скоморох — точный список занятий; чёрная крыса — редкий завоз по аналогии, общее правило согласованности fauna-групп (D47) (#PR)
+- data(game-base): архетип занятий performance_entertainment (гусляр, певец, сказитель), скоморох — точный список занятий; чёрная крыса — редкий завоз по аналогии, общее правило согласованности fauna-групп (D47) (#202)
 - data(game-base): один id региона region_novgorod_land, Ладога — subregion_scope=lower_volkhov_ladoga; проверка check-region-ids в npm test (#189)
 - data(game-base): импорт архива для оружия и одежды, один владелец на архивный id, усиленный check-archive-ownership (imp-crafts PR-A, D47 п.14) (#200)
 - data(economy): D44 — курсы БУЕ, якорные цены c1230, ценовые полосы категорий, стенды C2/C3 (econ-rates, #184) (#196)

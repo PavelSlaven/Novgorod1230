@@ -1,0 +1,99 @@
+{
+  "schema_version": "rus.m2c_place_travel_calibration.v1",
+  "status": "editorial_candidate_unapproved",
+  "distance_model": {
+    "basis": "WGS84 great-circle distance between authored reconstruction points multiplied by a mode-specific path sinuosity factor",
+    "formula": "proposed_minutes = max(1, round(distance_m * sinuosity_factor / 1000 / effective_speed_kmh * 60))",
+    "historical_scope": "Calibration is a gameplay editorial proposal, not a measured 1230 travel record. The map is an authored reconstruction and the modern delta is only a broad framework."
+  },
+  "evidence": {
+    "walking_field_study": {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10426037/",
+      "summary": "Table 2 reports observed walking speeds around 1.39 m/s on a trail and 1.2 m/s in forest.",
+      "use": "Modern comparison point for trail and forest rates only; not a medieval or local measurement."
+    },
+    "paddled_boat_experiment": {
+      "url": "https://exarc.net/issue-2025-1/rev/monoxylon-expeditions-archaeological-experiment",
+      "quote": "The speed while paddling under normal conditions reached up to 5.5km/hour.",
+      "use": "Experimental upper comparison point for a paddled craft; craft, water, and conditions differ from the lower Dvina."
+    },
+    "lower_dvina_estuary_current": {
+      "url": "https://doi.org/10.1134/S0001437015020095",
+      "full_text_url": "https://www.researchgate.net/publication/276177038_Fieldworks_in_the_Northern_Dvina_estuary_in_March_2014",
+      "quote": "The current velocities were about 21–22 cm/s at mainstream station 1; the current velocity increased to 45 cm/s at station 2.",
+      "scope": "Leshchev et al. 2015 reports SEAGUARD RCM measurements at six estuary stations on 17–28 March 2014 in winter low runoff; tidal slowing and a brief reversal were observed. These modern station readings do not establish a uniform local 1230 current. They only bound a plausible magnitude."
+    },
+    "delta_framework": {
+      "url": "https://sciencejournals.ru/view-article/?a=VodRes2301010Kravtsova&j=vodres&n=1&v=50&y=2023",
+      "quote": "Вершина дельты находится вблизи центра г. Архангельска, откуда веерообразно расходятся основные рукава",
+      "use": "Supports the broad modern branching frame only; does not establish 1230 channels, local travel speeds, or current velocity."
+    }
+  },
+  "current": {
+    "value_kmh": 1.0,
+    "status": "editorial_assumption_informed_by_modern_estuary_measurements",
+    "direction": "positive downstream toward the White Sea; negative upstream",
+    "evidence": "lower_dvina_estuary_current",
+    "rationale": "The 1.0 km/h bias is an editorial value within the broad magnitude of modern winter estuary station readings (about 0.5–1.62 km/h), not an adopted station measurement. It is deliberately provisional and must be replaced or affirmed during review."
+  },
+  "modes": {
+    "path": {
+      "speed_kmh": 3.0,
+      "sinuosity_factor": 1.2,
+      "source_type": "editorial_assumption",
+      "rationale": "Moderate walking pace below the cited modern trail study; factor allows a winding path."
+    },
+    "forest": {
+      "speed_kmh": 2.2,
+      "sinuosity_factor": 1.4,
+      "source_type": "editorial_assumption",
+      "rationale": "Reduced walking pace relative to the cited modern forest comparison; factor represents detours around vegetation and terrain."
+    },
+    "bog": {
+      "speed_kmh": 0.8,
+      "sinuosity_factor": 1.5,
+      "source_type": "editorial_assumption",
+      "rationale": "Slow cautious movement and indirect footing across wet ground; no local experimental measurement found."
+    },
+    "shore": {
+      "speed_kmh": 2.5,
+      "sinuosity_factor": 1.25,
+      "source_type": "editorial_assumption",
+      "rationale": "Walking on a variable bank or landing edge, slower and less direct than a clear path."
+    },
+    "boat_downstream": {
+      "still_water_speed_kmh": 4.0,
+      "sinuosity_factor": 1.15,
+      "source_type": "editorial_assumption",
+      "rationale": "Moderate paddled-craft speed below the cited experimental maximum, with the provisional current added to speed over ground."
+    },
+    "boat_upstream": {
+      "still_water_speed_kmh": 4.0,
+      "sinuosity_factor": 1.15,
+      "source_type": "editorial_assumption",
+      "rationale": "Same still-water craft speed as downstream; provisional current is subtracted from speed over ground."
+    },
+    "boat_across": {
+      "speed_kmh": 3.5,
+      "sinuosity_factor": 1.15,
+      "source_type": "editorial_assumption",
+      "current_bias_kmh": 0,
+      "rationale": "Reduced cross-channel progress under an uncertain angle to the flow; current magnitude is not added along this path."
+    },
+    "boat_open_water": {
+      "speed_kmh": 4.0,
+      "sinuosity_factor": 1.05,
+      "source_type": "editorial_assumption",
+      "current_bias_kmh": 0,
+      "rationale": "Open-water craft rate without channel-current adjustment; a small factor allows a non-straight crossing."
+    }
+  },
+  "editorial_policy": {
+    "rounding": "nearest whole minute, ties follow JavaScript Math.round; minimum one minute for positive distances",
+    "legacy_minutes": "Retained as old-to-proposed comparison only; they do not calibrate the proposed duration.",
+    "long_transition_threshold_minutes": 30,
+    "suggested_segment_count": "ceil(proposed_minutes / 30), minimum 1; informational only and does not split the graph",
+    "open_water_classification": "line_kind=open_water selects boat_open_water even when the route is water-bound; current-relative direction remains reported separately but does not affect speed",
+    "unknown_method": "No proposed minutes are emitted when movement mode cannot be classified from line-name candidate / route method."
+  }
+}

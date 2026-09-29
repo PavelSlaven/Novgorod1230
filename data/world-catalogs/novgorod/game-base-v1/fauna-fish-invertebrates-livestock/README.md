@@ -1,6 +1,6 @@
 # Фауна: рыбы, земноводные и гады, беспозвоночные, домашний скот — кандидатный набор v1
 
-Статус всех строк: **candidate**. Сборщик данные не утверждал. Утверждение — отдельный проход (Opus high или владелец), механические переносы проверяет `scripts/build.py`.
+Статус рабочих строк: **candidate**; три прежние строки грызунов имеют статус **duplicate** и canonical refs. Сборщик данные не утверждал. Утверждение — отдельный проход (Opus high или владелец), механические переносы проверяет `scripts/build.py`.
 
 Домены каталога: `fauna_fish`, `fauna_invertebrates_herps`, `livestock_husbandry` (группа `fauna-fish-invertebrates-livestock`).
 
@@ -14,7 +14,7 @@
 | `fauna/fishing_methods.csv` | 13 | способы лова `fm_*` со ссылками на снасти MASTER (FSH*) |
 | `fauna/water_body_pf_crosswalk.csv` | 52 | шаблон водоёма world_db `wb_*` → семейство мест `pf_id` (правило WB-PF-1) |
 | `fauna/invertebrates_herps.csv` | 45 | земноводные, пресмыкающиеся, насекомые, клещи, пиявки, моллюски, грызуны-вредители |
-| `fauna/fauna_presence.csv` | 1779 | присутствие: таксон × `pf_id` × сезон → класс частоты и вес; 1209 строк рыб, 570 беспозвоночных и гадов |
+| `fauna/fauna_presence.csv` | 1717 | присутствие: таксон × `pf_id` × сезон → класс частоты и вес; 1209 строк рыб, 508 беспозвоночных и гадов |
 | `fauna/livestock_species.csv` | 11 | виды домашних животных `fa_dom_*` |
 | `fauna/livestock_types.csv` | 28 | пол и возраст (`ls_*`): масть, размер, облик, содержание, польза, цена по Русской Правде |
 | `fauna/livestock_care.csv` | 29 | уход по сезонам: помещение, корм, вода, дневные и сезонные дела, продукты, риски |
@@ -159,4 +159,4 @@ node ../fauna-mammals-birds/scripts/validate-phase.cjs fauna-fish-invertebrates-
 
 Для рыб и беспозвоночных `voice=yes` требует существующий `voice_text_ref` на поле того же `fa_id`; содержательную оценку звука выполняет авторский проход, валидатор прозу не разбирает. Ссылки на таблицы размещения скота проверяются по своим ключам. `spawning_site` и `spawning_season` сами по себе не разрешают `visibility=yes`: для рыб нужна ссылка на общее фазовое правило `activity_phase_rules.json`. Ограничение: фазы и содержание голосовых полей проверены выборочно, автоматическая проверка ограничена структурой и ссылками.
 
-Старые ID присутствия вредителей соответствуют ID владельца млекопитающих так: `fa_mamm_house_mouse` → `fa_m_house_mouse`, `fa_mamm_striped_field_mouse` → `fa_m_striped_field_mouse`, `fa_mamm_voles` → группа `fa_m_bank_vole`, `fa_m_field_vole`, `fa_m_common_vole`, `fa_m_water_vole`. `fa_mamm_black_rat` не имеет фазового аналога: чёрная крыса исключена владельцем млекопитающих. Фазовые строки этих старых ID здесь не создаются; таблица присутствия сохраняется для исходного домена.
+Старые ID вредителей соответствуют canonical owner так: `fa_mamm_house_mouse` → `fa_m_house_mouse`, `fa_mamm_striped_field_mouse` → `fa_m_striped_field_mouse`, `fa_mamm_voles` → группа `fa_m_bank_vole`, `fa_m_field_vole`, `fa_m_common_vole`. Их authored presence не генерируется отдельными строками: сборщик проверяет, что все 62 пары `pf_id × сезон` покрыты canonical `wild_habitat_presence.csv`, а более слабый canonical класс отчётно сохраняется и не повышается до класса дубля. `fa_mamm_black_rat` остаётся отдельной candidate-строкой этой группы; фазовые строки старых duplicate-ID не создаются.

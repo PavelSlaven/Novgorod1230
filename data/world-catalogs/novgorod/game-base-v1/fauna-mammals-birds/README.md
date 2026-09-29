@@ -11,16 +11,16 @@ The counts below come from `build-report.json` and `validation-report.json`, whi
 |---|---:|---|
 | `fauna/mammals.csv` | 44 | Wild mammal taxa: names, seasonal states (rut, hibernation, moult, winter coat), sixteen editorial pelt calendars, authored `audible_seasons`, signs, products, hunting text and MASTER gear refs, WK refs |
 | `fauna/birds.csv` | 149 | Wild bird taxa: names, migration status for each of the 4 seasons, full `voice_description`, short narrator-ready `voice_sound_ru`, audible seasons, nesting, game value, falconry relevance, regional-list evidence (Пантелеев 2001 / Петров 1885), Мальчевский page |
-| `fauna/wild_habitat_presence.csv` | 4221 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
+| `fauna/wild_habitat_presence.csv` | 4249 | taxon × place_family × season: `frequency_class`, weight 8/4/2/1, habitat fit, state (active, dormant, breeding, passage, wintering, resident, irregular), `activity_time`, `audible`, observable sign types, `refresh_class=by_year_season` |
 | `fauna/fauna_categories.csv` | 220 | Category nodes in domain `fauna`: `fauna.mammal`, `fauna.bird`, 25 group nodes, 193 taxon nodes. Every taxon row and presence row has a `category_ref` |
 | `fauna/taxa_checks.csv` | 27 | Taxa checked for 1230 and the verdict for each: 6 included as rare, 4 included reduced or rural-only, 7 excluded as doubtful, 2 excluded as unattested, 8 excluded as anachronisms |
 | `fauna/sources.csv` | 21 | Source register: level, read depth (full, extract, abstract, bibliographic) and URL |
-| `fauna/hunting_methods.csv` | 23 | Direct and set/check hunting, trapping, falconry, small-fauna capture and F10 egg collection; taxa/categories, sizes, seasons, basis, derivation and anachronism check are explicit |
+| `fauna/hunting_methods.csv` | 25 | Direct and set/check hunting, trapping, falconry, small-fauna capture and F10 egg collection; taxa/categories, sizes, seasons, basis, derivation and anachronism check are explicit |
 | `fauna/hunting_tenure_defaults.csv` | 3 | Candidate input for F29/F30 tenure: ловища, бобровые гоны and перевесища map to `pf_hunting_ground` with `rights_holder`; no holder or closed months are invented |
 
 Composition. Mammals: 4 ungulates, 2 large predators, 11 fur-bearing and small mustelids and other predators, 2 fur rodents, 1 hare, 18 small mammals (insectivores and rodents), 5 bats, 1 seal (Ladoga only).
 Birds: 15 waterfowl, 17 raptors, 8 owls, 6 gamebirds, 11 waders, 7 woodpeckers, 8 corvids, 57 passerines and others. Falconry: 6 falconry birds, 26 quarry species.
-Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By class: ubiquitous 287, common 1125, contextual 1374, rare 1445. By kind: mammals 1388, birds 2843. The rows cover 38 place families.
+Presence rows by season: winter 765, spring 1182, summer 1139, autumn 1163. By class: ubiquitous 287, common 1107, contextual 1390, rare 1465. By kind: mammals 1416, birds 2833. The rows cover 38 place families.
 
 ## Universal layer vs regional layer
 
@@ -46,7 +46,7 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 `hunting_methods.csv` is a method catalog, not an encounter or action whitelist. The repo-local MASTER provides all `hnt0001–hnt0028`; `hnt0010` (beaver pelt) and `hnt0021` (fur bundle) were removed from mammal `hunting_method_refs` because they are products, not tools. D-rated `hnt0022`, `hnt0024` and `hnt0028` remain forbidden. Every method records `basis`, `derivation` and `anachronism_check`; a sourced row must have a source, while `logical_necessity|editorial` may instead preserve an explicit source gap. `set_and_check` creates no catch when set; a later activity must check it.
 
-Sixteen species have `pelt_prime_months` and twelve `month=quality` values (`winter|transitional|summer`): all 13 F30 fur species plus mole, water vole and flying squirrel. Exact month boundaries are `pelt_calendar_basis=editorial`, confidence C and deliberately have no numeric source ref. `pelt_qualitative_source_refs` preserve only available coat/moult evidence; water vole and the weakly grounded small species keep explicit gaps. Sable keeps its confidence-C range caveat.
+Sixteen species have `pelt_prime_months` and twelve `month=quality` values (`winter|transitional|summer`). This calendar subset is independent from the 44 F30 relations now derived from mammalian hair-bearing skin: F30 does not assert commercial fur value or invent prime months. Exact month boundaries are `pelt_calendar_basis=editorial`, confidence C and deliberately have no numeric source ref. Weasel and the remaining mammals keep an explicit calendar gap; `pelt_qualitative_source_refs` preserve only available coat/moult evidence. Sable keeps its confidence-C range caveat.
 
 The tenure input preserves the target columns `place_family_ref,family_id,tenure,closed_months` and adds evidence fields plus `ground_kind`. Sources support protected hunting assets/grounds only with stated geographic and chronological limits; they do not identify a current site, holder or closed month.
 
@@ -89,7 +89,7 @@ The tenure input preserves the target columns `place_family_ref,family_id,tenure
   - WK ids exist in WK production-v1.
   - MASTER hnt ids exist.
   - Excluded and anachronistic taxa are absent (raccoon dog, muskrat, American mink, brown rat, rabbit, pheasant, collared dove, sika deer).
-  - Twenty-three hunting methods use only repo-local non-D gear when a tool exists; every taxon/category, size, season, basis, derivation, F10 link and anachronism check is closed and validated; three rights rows resolve to `pf_hunting_ground`.
+  - Twenty-five hunting methods use only repo-local non-D gear when a tool exists; every taxon/category, size, season, basis, derivation, F10 link and anachronism check is closed and validated. The three F10 methods partition 137 locally nesting taxa into 53 tree/trunk/hollow/reused-tree-nest, 83 other accessible, and 1 explicitly winter-nesting species. Three rights rows resolve to `pf_hunting_ground`.
   - Sixteen pelt calendars contain all 12 months, only the three quality classes, and explicitly editorial exact boundaries.
   - Magpie and starling have no town rows (Зиновьев 2025).
 - Warning: the overlays `pf_reality_*` get no fauna rows on purpose.

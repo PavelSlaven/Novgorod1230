@@ -447,6 +447,22 @@ fpa_fa_m_field_vole_autumn_civil_dawn,fa_m_field_vole,autumn,civil_dawn,yes,yes,
 fpa_fa_m_field_vole_autumn_daylight,fa_m_field_vole,autumn,daylight,yes,yes,mammals.csv#fa_m_field_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
 fpa_fa_m_field_vole_autumn_civil_dusk,fa_m_field_vole,autumn,civil_dusk,yes,yes,mammals.csv#fa_m_field_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
 fpa_fa_m_field_vole_autumn_night,fa_m_field_vole,autumn,night,yes,yes,mammals.csv#fa_m_field_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
+fpa_fa_m_common_vole_winter_civil_dawn,fa_m_common_vole,winter,civil_dawn,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
+fpa_fa_m_common_vole_winter_daylight,fa_m_common_vole,winter,daylight,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
+fpa_fa_m_common_vole_winter_civil_dusk,fa_m_common_vole,winter,civil_dusk,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
+fpa_fa_m_common_vole_winter_night,fa_m_common_vole,winter,night,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
+fpa_fa_m_common_vole_spring_civil_dawn,fa_m_common_vole,spring,civil_dawn,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
+fpa_fa_m_common_vole_spring_daylight,fa_m_common_vole,spring,daylight,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
+fpa_fa_m_common_vole_spring_civil_dusk,fa_m_common_vole,spring,civil_dusk,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
+fpa_fa_m_common_vole_spring_night,fa_m_common_vole,spring,night,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
+fpa_fa_m_common_vole_summer_civil_dawn,fa_m_common_vole,summer,civil_dawn,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
+fpa_fa_m_common_vole_summer_daylight,fa_m_common_vole,summer,daylight,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
+fpa_fa_m_common_vole_summer_civil_dusk,fa_m_common_vole,summer,civil_dusk,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
+fpa_fa_m_common_vole_summer_night,fa_m_common_vole,summer,night,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
+fpa_fa_m_common_vole_autumn_civil_dawn,fa_m_common_vole,autumn,civil_dawn,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dawn,,C,candidate
+fpa_fa_m_common_vole_autumn_daylight,fa_m_common_vole,autumn,daylight,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight,,C,candidate
+fpa_fa_m_common_vole_autumn_civil_dusk,fa_m_common_vole,autumn,civil_dusk,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.civil_dusk,,C,candidate
+fpa_fa_m_common_vole_autumn_night,fa_m_common_vole,autumn,night,yes,yes,mammals.csv#fa_m_common_vole.signs_sounds,,fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.night,,C,candidate
 fpa_fa_m_water_vole_winter_civil_dawn,fa_m_water_vole,winter,civil_dawn,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dawn,,C,candidate
 fpa_fa_m_water_vole_winter_daylight,fa_m_water_vole,winter,daylight,no_source,no_source,,,,visibility and voice phase unknown,C,candidate
 fpa_fa_m_water_vole_winter_civil_dusk,fa_m_water_vole,winter,civil_dusk,yes,no_source,,,fauna/activity_phase_rules.json#activity-phase-v1.crepuscular.civil_dusk,,C,candidate

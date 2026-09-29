@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -13,8 +13,7 @@ import { createSpatialV3ProductionCompositionRoot } from
   '../../apps/game-server/src/composition/production-spatial-v3.js';
 import { readV17PartyProductionCatalogLedger } from
   '../../scripts/v17-party-production-catalog-ledger.mjs';
-import { buildApprovedTemporalImportSql } from '../../tools/temporal-v4/import-approved-data.mjs';
-import { buildImportWithReadbackSql } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { WAVE_ATTESTATION_SCHEMA } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
@@ -27,46 +26,12 @@ export const VIKHTUY_MEETING_G5 = 'cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_local
 export const VIKHTUY_LOCALITY_G4 = 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality';
 export const PF_RURAL_YARD = 'pf_rural_yard';
 export const PF_PEASANT_HOMESTEAD = 'pf_peasant_homestead';
-const TARGET_REV = 'novgorod_spatial_v3_target_contract_approval_001';
-const waveRootRel = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
-
-async function prepareApprovedWaveCopy(baseDir) {
-  await cp(join(process.cwd(), waveRootRel), baseDir, { recursive: true });
-  const manifestFile = join(baseDir, 'manifest.json');
-  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
-  manifest.status = 'approved';
-  await writeFile(manifestFile, JSON.stringify(manifest));
-  return { manifestFile, approvalPath: join(baseDir, 'approval.json') };
-}
-
 export async function assertBootstrapV17PartyProductionLedger(partyPool) {
   const { row, fingerprint, release } = await readV17PartyProductionCatalogLedger(partyPool);
   assert.ok(row, 'bootstrap must record party_runtime_catalog_pins_v2 ledger row');
   assert.equal(row.migration_digest, release.party_runtime_catalog_migration_digest);
   assert.equal(row.target_schema_fingerprint, release.party_runtime_catalog_target_fingerprint);
   assert.equal(fingerprint, release.party_runtime_catalog_target_fingerprint);
-}
-
-/** Test-only enrichment: approved copy of draft m2c-npc-wave (production bootstrap does not import wave until D27). */
-async function enrichV17WorldForTargetStarts(worldPool) {
-  const temporalCount = Number((await worldPool.query(
-    'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
-  assert.ok(temporalCount > 0, 'v17 bootstrap must import approved temporal-v4 before presence enrichment');
-  const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-presence-e2e-'));
-  try {
-    const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
-    await worldPool.query(await buildImportWithReadbackSql({
-      root: process.cwd(), manifestPath: manifestFile, m2cWaveApprovalPath: approvalPath,
-    }));
-  } finally {
-    await rm(dir, { recursive: true, force: true });
-  }
-  await worldPool.query(
-    `UPDATE world_base.presence_rules
-        SET region_id = 'region_novgorod_land'
-      WHERE world_revision_id = $1 AND region_id = 'novgorod_land'`,
-    [TARGET_REV],
-  );
 }
 
 const docker = (args, options = {}) => spawnSync('docker', args, {
@@ -207,6 +172,9 @@ function buildAttest(fixtureApproval) {
         },
       });
     }
+    if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
+      schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
+      independence_basis: 'Test-only approval fixture', database_mutated: false });
     throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
   };
 }
@@ -214,7 +182,6 @@ function buildAttest(fixtureApproval) {
 /** @returns {Promise<{ container, dataRoot, worldPool, partyPool, approvals, rootDir, releaseContext }>} */
 export async function bootstrapV17PresenceE2e(t, {
   postgresProfile = 'default',
-  withTestWaveEnrichment = true,
 } = {}) {
   assert.equal(docker(['version']).status, 0, 'Docker is required.');
   const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-presence-e2e-'));
@@ -234,13 +201,13 @@ export async function bootstrapV17PresenceE2e(t, {
     docker(['rm', '-fv', container]);
     await rm(dataRoot, { recursive: true, force: true });
   });
-  if (withTestWaveEnrichment) {
-    await enrichV17WorldForTargetStarts(worldPool);
-  } else {
-    const temporalCount = Number((await worldPool.query(
-      'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
-    assert.ok(temporalCount > 0, 'bare v17 bootstrap must still include approved temporal-v4');
-  }
+  // The bootstrap itself imports approved temporal-v4 and the m2c NPC wave (D27).
+  const temporalCount = Number((await worldPool.query(
+    'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+  assert.ok(temporalCount > 0, 'v17 bootstrap must import approved temporal-v4');
+  const waveRules = Number((await worldPool.query(
+    'SELECT count(*)::int AS count FROM world_base.presence_rules')).rows[0].count);
+  assert.ok(waveRules > 0, 'v17 bootstrap must import the m2c NPC wave presence rules (D27)');
   await assertBootstrapV17PartyProductionLedger(partyPool);
   const rootDir = resolve(import.meta.dirname, '../..');
   return {

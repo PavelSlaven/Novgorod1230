@@ -487,39 +487,3 @@ export async function walkRouteUntil({
   }
   assert.fail(`site predicate not met within ${maxSteps} movement steps`);
 }
-
-/** Test-only world enrichment for a branch without the walk-acoustics data (was data gap Q-rt-walk-02):
- * canonical places that are targets of approved connections may lack an approved G6 ambient baseline. This gives every Vikhtuy-locality
- * place one row per G6 slot in the throw-away test database only. It authors no project data. */
-export async function enrichVikhtuyAcousticForCanonicalWalk(worldPool) {
-  await worldPool.query(`
-    WITH missing AS (
-      SELECT n.id AS g5_id, n.version AS g5_version, c.scene_template_id, c.scene_template_version,
-             s.scene_slot_key, 'test_acoustic__' || n.id || '__' || s.scene_slot_key AS row_id
-        FROM world_base.spatial_v3_nodes n
-        JOIN world_base.spatial_v3_scene_materialization_profiles p
-          ON p.source_kind='canonical_g5' AND p.source_entity_id=n.id AND p.source_entity_version=n.version
-         AND p.version=2 AND p.status='approved'
-        JOIN world_base.spatial_v3_scene_materialization_candidates c
-          ON c.profile_id=p.id AND c.profile_version=p.version
-        JOIN world_base.spatial_v3_g6_template_slots s
-          ON s.scene_template_id=c.scene_template_id AND s.scene_template_version=c.scene_template_version
-       WHERE n.id LIKE 'cg5v3\\_\\_%vikhtuy\\_locality\\_%' AND n.world_revision_id=$1
-         AND NOT EXISTS (SELECT 1 FROM world_base.spatial_v3_g6_acoustic_baselines b
-                          WHERE b.canonical_g5_id=n.id AND b.scene_template_version=c.scene_template_version
-                            AND b.g6_scene_slot_key=s.scene_slot_key)
-    ), rows AS (
-      INSERT INTO world_base.spatial_v3_g6_acoustic_baselines
-        (id, version, world_revision_id, canonical_g5_id, canonical_g5_version, scene_template_id,
-         scene_template_version, g6_scene_slot_key, ambient_noise, directness, confidence, status,
-         provenance_ref, canonical_digest)
-      SELECT row_id, 1, $1, g5_id, g5_version, scene_template_id, scene_template_version, scene_slot_key,
-             1, 'test_only', 'low', 'approved', 'm2c_canonical_acoustic_editorial_001',
-             encode(sha256(convert_to(row_id, 'UTF8')), 'hex')
-        FROM missing RETURNING id, canonical_digest
-    )
-    INSERT INTO world_base.spatial_v3_authoring_versions
-      (entity_kind, entity_id, version, world_revision_id, canonical_digest, status, provenance_ref)
-    SELECT 'g6_acoustic_baseline', id, 1, $1, canonical_digest, 'approved', 'm2c_canonical_acoustic_editorial_001'
-      FROM rows`, [TARGET_REV]);
-}

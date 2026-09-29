@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const dir = new URL('../../../data/world-catalogs/novgorod/', import.meta.url);
@@ -25,10 +25,7 @@ test('the policy lists exactly the condition sets the approved data names, no mo
   assert.deepEqual(policy.ignores, ['light', 'visibility']);
 });
 
-test('the reviewer attested exactly this policy file', (t) => {
-  if (!existsSync(new URL('live-world-runtime-v17/movement-availability-policy.v1.approval-attestation.json', dir))) {
-    return t.skip('the attestation is issued by the reviewer, not the author');
-  }
+test('the reviewer attested exactly this policy file', () => {
   const approval = read('live-world-runtime-v17/movement-availability-policy.v1.approval-attestation.json');
   assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
   assert.equal(approval.candidate_ref, `${policy.policy_id}@${policy.version}`);

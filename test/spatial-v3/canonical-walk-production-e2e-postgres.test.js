@@ -6,7 +6,6 @@ import {
   VIKHTUY_LOCALITY_G4,
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
-  enrichVikhtuyAcousticForCanonicalWalk,
   installPresenceProductionE2eFetch,
   publicStartScenario,
 } from './presence-rules-production-e2e-fixture.js';
@@ -37,9 +36,6 @@ async function whereIs(partyPool, partyId) {
 test('work_storage -> water_access -> forest_path -> meeting_area and back, across process restarts',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    // The project data holds the ambient baselines of every connection target (walk-acoustics), so the walk
-    // runs on it alone; RT_WALK_TEST_ACOUSTIC=1 adds test rows for a branch that lacks that data.
-    if (process.env.RT_WALK_TEST_ACOUSTIC === '1') await enrichVikhtuyAcousticForCanonicalWalk(env.worldPool);
     const narrationLog = [];
     const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs: { exactMovement: true }, narrationLog });
     t.after(() => restoreFetch());

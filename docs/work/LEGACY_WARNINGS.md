@@ -72,7 +72,7 @@
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
 | 075 | `spatial-v3-current-visibility-provider.js`, `spatial-v3-proposed-visible-sources.js` | runtime читает `m2c-local-edge-labels`/`m2c-exit-labels`/`m2c-pass-target-labels` файлами напрямую, мимо `world_base` | [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) |
-| 076 | `tools/spatial-v3/p12-authoring-importer.mjs`, `m2c-npc-wave-bundle-validation.mjs`, `infra/world-base/schema/28.sql`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js` | m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; activate отдельно (D27) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 076 | `tools/spatial-v3/p12-authoring-importer.mjs`, `m2c-npc-wave-bundle-validation.mjs`, `infra/world-base/schema/28.sql`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js` | m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; bootstrap импортирует волну этапом (D27) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 077 | `packages/materialization/src/presence-rules-first-arrival.js`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js`, PG-тесты presence | R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 078 | `lower-dvina-trace-public-start.js`, `lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`) | стартовый presence-provisioning — отдельная транзакция после commit new_game; при сбое между ними стартовое место остаётся без решённого присутствия, повтора при загрузке нет | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 079 | narration-конвейер (`gameplay_narrator*`) | двойной отказ narration-аудита после committed-хода оставляет игрока без прозы (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
@@ -80,6 +80,8 @@
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
 | 082 | `llm-turn-budget.js`, `lower-dvina-trace-phase-2-presentation-resolve.js`, `apps/game-web/src/api/client.js` | худший submitTurn до ~360 с при клиенте без fetch-timeout | — |
 | 083 | `lower-dvina-trace-phase-2-presentation-replay.js`, `packages/turn/src/stages/narration.js` (`spatialResult`) | replay-подача рассказчику без исходов проверок и оценки: `check_outcomes`/`qualitative_assessment` есть на первом проходе, нет на повторе (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 084 | `scripts/generate-m2c-npc-wave-datasets.mjs`, `data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv` | environment presence rules game-base (lw-env, #176): 1236 строк `subject_kind='environment'` не импортируются в v17 — нет вида в §3A.1 / DDL 27.sql / движке R-2a | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 085 | `data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/presence_rules.json`, `approval.json` (`limits_note`) | 9 правил ладожской нерпы (`ladoga_ringed_seal`) потеряли региональное сужение к Ладоге и попадают в штатный старт | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 092 | `test/spatial-v3/generated-expansion-adapter.test.js` (`terminal=1`), `test/spatial-v3/m2c-expansion-import-postgres.test.js` | два теста красные и на базе d9bb04e9: устаревшие ожидания (first_entry терминала; capacity-one после open-capacity v2) | — |
 | 093 | `data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json`, `m2c-canonical-connection-labels/candidate.json` | подписи проходов «Проход N» не несут направления: «назад/дальше» планировщик путает | — |
 | 094 | `apps/game-server/src/infrastructure/postgres/spatial-v3-movement-availability-policy.js`, `live-world-runtime-v17/movement-availability-policy.v1.json` | политика доступности читается файлом мимо `world_base.spatial_v3_traversal_availability_policies` | — |
@@ -92,7 +94,7 @@
 
 | LW | Суть | Блокер релиза? |
 |---|---|---|
-| 069 | fresh-schema attestation v2 историчен; действует только attestation с `request_digest` текущего `fresh-schema-request.json` | D27 до v3 от ревьюера |
+| 069 | fresh-schema attestation: закрыто — действует v4 с digest текущего request; amendment v3 закоммичен | нет |
 | 070 | party restart skip по chain ledger; полный DDL только без строки digest | game-server prod party DB |
 | 071 | «предок решён — потомки не бросаются» — owner R-2, не foundation | R-2 |
 | 072 | git provenance worktree + acceptance `startLlm` | нет |
@@ -210,7 +212,7 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-035 — bootstrap v17 без календаря (ветка PR #98) — **closed R-2a**
-- **Что.** Старт v17 читает `world_base.temporal_authoring_records`; `bootstrap-live-world-v17.mjs` импортирует утверждённый temporal-v4 с readback (`collectApprovedTemporalBundle` / `buildApprovedTemporalImportSql`). PG presence-тесты с волной используют **тестовое обогащение** фикстуры (`withTestWaveEnrichment`, approved-копия draft m2c-npc-wave), не штатный bootstrap без D27.
+- **Что.** Старт v17 читает `world_base.temporal_authoring_records`; `bootstrap-live-world-v17.mjs` импортирует утверждённый temporal-v4 с readback (`collectApprovedTemporalBundle` / `buildApprovedTemporalImportSql`). Волну m2c NPC импортирует штатный bootstrap этапом `m2c_npc_wave_import` (D27, `scripts/v17-m2c-npc-wave-stage.mjs`); тестовое обогащение фикстуры (`withTestWaveEnrichment`) удалено.
 - **Как жить.** Локальные пары v17 пересобирать после изменения temporal или wave; календарь старта — только из БД на свежем bootstrap.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
@@ -363,9 +365,10 @@
 - **Как жить.** Редакционное правило: NULL+NULL при обоих режимах → вес 1 и 1. Одна сторона пустая → только другая. Строки без режимов не проходят draw. Пробел Stage 16 (`no_source`) не закрывать выдуманными весами/правилами — только явным источником или отдельным CR.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-069 — fresh-schema attestation снято до нового прохода
+### LW-069 — fresh-schema attestation снято до нового прохода — **closed D27**
 - **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json` + approval/execution attestations; Gate1 request v2.
-- **Как жить.** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения (fresh-schema + Gate1 amendment v3) — до D27. Пин Gate1 amendment v2 на старый restart-test sha — исторический; Gate1 owner-data не перегенерируется (C11). Утверждение amendment v2 снято до v3.
+- **Закрыто.** Действующая attestation `fresh-schema-approval-attestation-v4.json` совпадает с `request_digest` текущего `fresh-schema-request.json` (`ba989f53…`), Gate1 activation-amendment-v3 закоммичен; `checkV17BootstrapInputs` проверяет оба на каждом bootstrap.
+- **Как жить (исторически).** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения (fresh-schema + Gate1 amendment v3) — до D27. Пин Gate1 amendment v2 на старый restart-test sha — исторический; Gate1 owner-data не перегенерируется (C11). Утверждение amendment v2 снято до v3.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-070 — party restart: полный DDL только без chain-ledger строки текущего digest
@@ -392,8 +395,8 @@
 
 ### LW-076 — m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; activate отдельно
 - **Где.** `tools/spatial-v3/p12-authoring-importer.mjs` (`P12_WAVE_IMPORT_REQUIRES_APPROVED`, `P12_WAVE_IMPORT_REQUIRES_READBACK`, `buildImportWithReadbackSql`); `tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs` (`manifestIncludesWaveTables`, `M2C_NPC_WAVE_TABLE_SET`, `M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT`, `M2C_WAVE_COMPOSITION_GROUP_INVALID`, `M2C_WAVE_SCHEDULE_SUBJECT_SEASON_CONFLICT`); `infra/world-base/schema/28.sql`; `packages/runtime-catalog/src/m2c-npc-wave-readers.js` и `world-catalog-gate.js`; `m2c-npc-wave/v1/approval.json` (WR §21.1, D24).
-- **Что.** Любой бандл с таблицами из `M2C_NPC_WAVE_TABLE_SET` (11 таблиц, включая `npc_schedule_routine_rules` и `place_population_composition_rules`) проходит wave-валидацию и при настоящем импорте требует `manifest.status === 'approved'`, подписанный approval (`authored_by` — `… (executor)`, `checked_by` — `… (owner|reviewer)`, личности после нормализации различаются; `manifest_path` сверяется с импортируемым manifest) и обёртку import+readback в одной транзакции. У людей `allowed_times` импортируется пустым `[]` (§8.1, LW-067). На том же PF приоритет состава над `presence_rules` для совпадающих `subject_ref`: при `presence_probability_ppm > 0` нужен `authoring_payload.creation_owner === 'composition'` (C006c2). Bootstrap approved import волны — только **R-1b-activate / D27** по команде ревьюера. Поле `sql_builder.sha256` в утверждённых `request.json` фиксирует сборщик на момент утверждения запроса; байты SQL держит тест «v17 bootstrap bundle SQL stays byte-stable», а не живой пересчёт sha в request.
-- **Как жить.** Не импортировать волновые таблицы без readback-обёртки и без approved manifest + reviewer approval. Repo `manifest.json` волны остаётся `draft` до R-1b-activate/D27. Чтение D-1/D-2 — только через `@rus/runtime-catalog` после spatial pin и runtime-catalog activation; production presence first arrival — consumer R-2a. `validateNpcRoutineProfile` пока не проверяет `location_ref`, `presence_state`, `absence_reason_ru` в фазах — расширение профиля в R-2.
+- **Что.** Любой бандл с таблицами из `M2C_NPC_WAVE_TABLE_SET` (11 таблиц, включая `npc_schedule_routine_rules` и `place_population_composition_rules`) проходит wave-валидацию и при настоящем импорте требует `manifest.status === 'approved'`, подписанный approval (`authored_by` — `… (executor)`, `checked_by` — `… (owner|reviewer)`, личности после нормализации различаются; `manifest_path` сверяется с импортируемым manifest) и обёртку import+readback в одной транзакции. У людей `allowed_times` импортируется пустым `[]` (§8.1, LW-067). На том же PF приоритет состава над `presence_rules` для совпадающих `subject_ref`: при `presence_probability_ppm > 0` нужен `authoring_payload.creation_owner === 'composition'` (C006c2). Bootstrap импортирует волну этапом `m2c_npc_wave_import` (D27): `manifest.status` в репозитории остаётся `draft`, временная копия с `approved` собирается **до** аттестации (нужна, чтобы построить и сверить SQL), после аттестации идёт только commit. Решение «волна утверждена» держат `approval.json` и независимая аттестация request, а `manifest.status` — производный флаг копии. Поле `sql_builder.sha256` в утверждённых `request.json` фиксирует сборщик на момент утверждения запроса; байты SQL держит тест «v17 bootstrap bundle SQL stays byte-stable», а не живой пересчёт sha в request.
+- **Как жить.** Не импортировать волновые таблицы без readback-обёртки и без approved manifest + reviewer approval. Repo `manifest.json` волны остаётся `draft`: его открывает только этап bootstrap. Чтение D-1/D-2 — только через `@rus/runtime-catalog` после spatial pin и runtime-catalog activation; production presence first arrival — consumer R-2a. `validateNpcRoutineProfile` пока не проверяет `location_ref`, `presence_state`, `absence_reason_ru` в фазах — расширение профиля в R-2.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-077 — R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных
@@ -401,7 +404,7 @@
 - **N8 / discovery.** Пустые `entry_exposed_weight` / `search_concealed_weight` при обоих режимах трактуются как **exposed** (null → 1 в draw, см. LW-068). Отдельный committed шаг «скрытое наличие» / concealed discovery не реализован в R-2a path — только явный `discovery_mode` в записи броска.
 - **§3A.4 `subcategory_ref`.** В `applyPresenceRulesFirstArrival` в aggregate всегда пишется `subcategory_ref: null`; сужение по подкатегории из правила не матчится.
 - **Подрегион.** Движок сравнивает только **G0 `region_id`** места со `presence_rules.region_id`. Колонка/поле `subregion_scope` в данных (планируется задачей `region-ids`) в R-2a не читается.
-- **Данные волны.** До подъёма пина game-base и задачи `region-ids` тысячи правил несут legacy `novgorod_land` вместо G0 `region_novgorod_land`. Движок старый id не нормализует; PG-тесты на срезе волны делают `UPDATE … novgorod_land → region_novgorod_land` с комментарием `region-ids` (см. пути выше).
+- **Данные волны — закрыто D27.** Датасет волны пересобран на пине game-base 27bd6134: легаси-региона `novgorod_land` в нём нет (тест `m2c-npc-wave-v17-bootstrap-postgres.test.js`). Старые PG-тесты со своими копиями волны ещё содержат `UPDATE … novgorod_land → region_novgorod_land` — теперь без эффекта.
 - **§3A.2/3A.3 сезонное обновление.** Повторное прибытие в **новом сезоне** в уже созданное G5-место (пересчёт `by_year_season` без нового scope) в R-2a **не** подключено; отложено отдельным шагом CR #158 (решение ревьюера REVIEW-R2a-6 F6). Unit на `encodePresenceRulePeriodNumber` остаётся.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
@@ -455,6 +458,18 @@
 - **Что.** С фиксом #188 модель возвращает только `qualitative_class`, а `schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`). Поле `expectedSchema` рантайм не проверяет: оно входит только в хэш конфига. Снимок baseline никем не импортируется.
 - **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
 - **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)
+
+### LW-084 — environment presence rules game-base (lw-env, #176) не импортируются в v17
+- **Где.** `scripts/generate-m2c-npc-wave-datasets.mjs` (`excludedEnvironmentPresenceRules`, `M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED`); `data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv` (`subject_kind='environment'`, 1236 строк на пине 27bd6134); `infra/world-base/schema/27.sql:53` (CHECK на `subject_kind`).
+- **Что.** lw-env добавил «спутники окружения» с новым видом правила `environment`. Его нет в §3A.1 (`category | social_role | occupation`), в DDL `world_base.presence_rules` и в движке R-2a, поэтому генератор волны их отсеивает и считает. Данные не потеряны: они существуют в game-base, но не активированы в runtime.
+- **Как жить.** Не убирать отсев и не расширять CHECK попутно. Подключение — отдельный CR: §3A.1 + DDL 27.sql + engine/reader (Contract Auditor, по D32 одна правка DDL за раз).
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-085 — ладожская нерпа: 9 правил без регионального сужения попадают в штатный старт (D27)
+- **Где.** `data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/presence_rules.json` (9 правил `fauna.mammal.marine_mammal.ladoga_ringed_seal` на `pf_hunting_ground` 4, `pf_lake_shore` 4, `pf_winter_ice_crossing` 1); `approval.json` → `limits_note`.
+- **Что.** До game-base #189 (коммит 88555d24) эти правила имели регион `ladoga_lake`; единый G0-id оставил только `region_novgorod_land`. Теперь с D27 они импортируются в штатный bootstrap и могут выпасть на любом месте с этими place family в Новгородской земле — специфика озера держится только видом (`subject_ref`) и типом места.
+- **Как жить.** Не считать нерпу привязанной к Ладоге. Возврат сужения — данные game-base (подрегион `subregion_scope` / отдельный регион озера) и их перегенерация волны отдельным шагом.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-092 — два теста падают на базе d9bb04e9 (`generated-expansion-adapter.test.js` `terminal=1`, `m2c-expansion-import-postgres.test.js`)
 - **Где.** `test/spatial-v3/generated-expansion-adapter.test.js`, ~строка 277 (`traces[1].trace.first_entry`); `test/spatial-v3/m2c-expansion-import-postgres.test.js` (`assertLocalMovementEligibilityPostgres`: «NPC at capacity-one focus blocks arrival movement» — после open-capacity v2 ребро не занято).

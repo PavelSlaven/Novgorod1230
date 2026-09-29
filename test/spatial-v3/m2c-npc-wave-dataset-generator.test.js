@@ -272,3 +272,36 @@ test('committed m2c-npc-wave dataset files match generator output on approval pi
     );
   }
 });
+
+// game-base lw-env (#176) added subject_kind='environment' presence rules that neither §3A.1, DDL
+// world_base.presence_rules nor the R-2a engine know: the generator excludes them and counts them.
+const ENVIRONMENT_PIN = '27bd6134cf61200b8da5ffe76ef8ab777ad5a5fd';
+
+test('generator excludes subject_kind=environment presence rules with a typed counter', async (t) => {
+  const parent = await mkdtemp(join(tmpdir(), 'm2c-env-exclusion-'));
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  const outRoot = join(parent, 'v1');
+  const gitShow = (path) => execSync(`git show ${ENVIRONMENT_PIN}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const csvRows = parseCsv(gitShow('data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv'));
+  const result = await buildM2cNpcWaveDatasets({ sourceCommit: ENVIRONMENT_PIN, gitShow, outRoot });
+  const rules = JSON.parse(await readFile(join(outRoot, 'datasets/presence_rules.json'), 'utf8'));
+  assert.equal(result.excludedEnvironmentPresenceRules, 1236);
+  assert.equal(rules.length + result.excludedEnvironmentPresenceRules, csvRows.length);
+  assert.deepEqual([...new Set(rules.map((rule) => rule.subject_kind))].sort(),
+    ['category', 'occupation', 'social_role']);
+});
+
+test('generator refuses a presence subject_kind it neither imports nor explicitly excludes', async () => {
+  const gitShow = (path) => {
+    const text = fixtureGitShow(path);
+    if (!path.endsWith('places-binding/presence/presence_rules.csv')) return text;
+    const [header, first, ...rest] = text.split('\n');
+    const index = header.split(',').indexOf('subject_kind');
+    assert.ok(index >= 0);
+    const cells = first.split(',');
+    cells[index] = 'mystery_kind';
+    return [header, cells.join(','), ...rest].join('\n');
+  };
+  await assert.rejects(buildM2cNpcWaveDatasets({ sourceCommit: 'f'.repeat(40), gitShow,
+    outRoot: join(tmpdir(), 'm2c-unsupported-kind-out') }), /M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED/u);
+});

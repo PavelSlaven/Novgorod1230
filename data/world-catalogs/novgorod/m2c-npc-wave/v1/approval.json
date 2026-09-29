@@ -2,10 +2,10 @@
   "schema_version": "rus.m2c_npc_wave_approval.v1",
   "manifest_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json",
   "verdict": "approve_with_limits",
-  "source_commit": "337abf9ec2810921e324ff8f6f1e85a9324c4bb9",
+  "source_commit": "27bd6134cf61200b8da5ffe76ef8ab777ad5a5fd",
   "authored_by": "cursor composer-2.5 (executor)",
   "checked_by": "claude-opus-5.5 (reviewer)",
-  "checked_at": "2026-09-28",
+  "checked_at": "2026-09-29",
   "source_paths": [
     "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv",
     "data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv",
@@ -29,5 +29,5 @@
     "fauna_mammals_birds": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md",
     "issue": "https://github.com/PavelSlaven/Novgorod1230/issues/158"
   },
-  "limits_note": "Game-base groups approve_with_limits per game-base-v1/STATUS.md on pin 337abf9e (post-merge main #159–#169)."
+  "limits_note": "Game-base groups approve_with_limits per game-base-v1/STATUS.md. Re-signed for pin 27bd6134 (#209) by deterministic re-pin check (m2c-npc-wave/v1/repin-review-request.md, fleet r2a-claude out/wave-repin-diff.py): changes come only from the pin — region ids normalized to region_novgorod_land (#189), environment presence rules (1236) excluded as unsupported subject_kind (LW-084), and game-base content already approved on main (mallard visibility 4c0b90e3, frequency reclass 7bbdd2d2, rc-next rules a3fe91a9, water facets). Limit: 9 ladoga_ringed_seal rules lost their ladoga_lake region and now apply land-wide by place family — sub-regional fauna scoping needs a follow-up in game-base."
 }

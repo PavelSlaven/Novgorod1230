@@ -1,0 +1,16 @@
+{
+  "schema": "rus.m2c_npc_wave_v17_import_approval.v1",
+  "stage": "m2c_npc_wave_import",
+  "request_id": "novgorod_m2c_npc_wave_v17_import_001",
+  "request_digest": "1cd9d6555d9b9691c3ca180b6c19d48b0c84ad27b6f6a12e1e1fbedf028b1475",
+  "verdict": "APPROVE",
+  "attested_by": "claude-opus-5-5 — lead reviewer of the fleet; not the author (the stage and request were authored by executor r2a-claude, Claude Sonnet 5.5)",
+  "independence_basis": "Independent Contract Auditor pass (claude-opus-5-5/high, 2026-09-30, verdict PASS_WITH_NOTES) recomputed request_digest twice (Python and JS canonical serialization) and checked every expected row count against the 14 wave datasets at game-base pin 27bd6134 (presence_rules 5740 = 6976 - 1236 environment rows). The wave data itself is approved in data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json (reviewer re-sign b23ead2e). The executor did not attest.",
+  "attested_on": "2026-09-30",
+  "scope": "Fresh v17 bootstrap import of the m2c NPC wave v1 into the 14 world_base tables named in the request, insert-only, one transaction, activation none.",
+  "limits": [
+    "LW-084: subject_kind=environment presence rules (1236) are excluded from the wave until the DDL and code_driven §3A.1 carry them.",
+    "LW-085: 9 ladoga_ringed_seal rules lost their Ladoga regional scope after #189 and reach the standard start; follow-up in game-base.",
+    "Readers for composition, routines, speech and household tables are separate steps (request authority D-1/D-2)."
+  ]
+}

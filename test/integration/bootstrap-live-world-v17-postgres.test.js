@@ -8,6 +8,7 @@ import test from 'node:test';
 import pg from 'pg';
 
 import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
+import { WAVE_ATTESTATION_SCHEMA } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
 import { readV17PartyProductionCatalogLedger } from '../../scripts/v17-party-production-catalog-ledger.mjs';
 import { SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
   '../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
@@ -114,6 +115,9 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             production_authorized: true, existing_party_migration_authorized: false,
             old_save_rematerialization_authorized: false }
         });
+        if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
+          schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
+          independence_basis: 'Test-only approval fixture', database_mutated: false });
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 219);

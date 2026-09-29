@@ -523,7 +523,16 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
   }
 
   const prCsv = parseCsv(show(`${GAME_BASE}/places-binding/presence/presence_rules.csv`));
-  const presenceRules = prCsv.map((row) => mapPresenceRule(row, worldRevisionId, provenanceRef));
+  // subject_kind=environment (game-base lw-env) has no kind in §3A.1 / DDL / the R-2a engine yet:
+  // excluded and counted; any other unknown kind is an error, never a silent import.
+  const excludedEnvironmentPresenceRules = prCsv.filter((row) => row.subject_kind === 'environment').length;
+  const importedPresenceRows = prCsv.filter((row) => row.subject_kind !== 'environment');
+  for (const row of importedPresenceRows) {
+    if (!['category', 'social_role', 'occupation'].includes(row.subject_kind)) {
+      throw new Error(`M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED:${row.pr_id}:${row.subject_kind}`);
+    }
+  }
+  const presenceRules = importedPresenceRows.map((row) => mapPresenceRule(row, worldRevisionId, provenanceRef));
   const peoplePresenceCsv = parseCsv(show(
     `${GAME_BASE}/places-binding/presence/people_presence_authoring.csv`
   ));
@@ -729,6 +738,7 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     sourceCommit: commit,
     counts: Object.fromEntries(datasets.map((d) => [d.table, 'rows'])),
     presenceRules: presenceRules.length,
+    excludedEnvironmentPresenceRules,
     rulesWithVariants,
     variantElementCount,
     bindings: bindings.length,

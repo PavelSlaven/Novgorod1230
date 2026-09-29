@@ -812,6 +812,47 @@ test('registry covers catalog entity tables and detects an unregistered entity t
   } finally { fs.rmSync(parent, { recursive: true, force: true }); }
 });
 
+test('category mismatch is waived only for the exact reviewed archive-target pair', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const registryPath = path.join(root, 'scripts/archive-ownership-registry.json');
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    const reviewedIds = ['OMI02095', 'OMI02096', 'OMI02133', 'OMI02135'];
+    const approved = registry.pair_decisions.filter(decision => reviewedIds.includes(decision.archive_id));
+    assert.deepEqual(approved.map(decision => decision.archive_id).sort(), reviewedIds);
+
+    const errorsWithDecisions = checkArchiveOwnership(root).errors;
+    for (const id of reviewedIds) {
+      assert.equal(errorsWithDecisions.some(error => error.startsWith(`${id}: variant target category`)), false,
+        errorsWithDecisions.filter(error => error.startsWith(`${id}:`)).join('\n'));
+    }
+
+    registry.pair_decisions = registry.pair_decisions.filter(decision => decision.archive_id !== 'OMI02096');
+    fs.writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+    const errorsWithoutDecision = checkArchiveOwnership(root).errors;
+    assert.ok(errorsWithoutDecision.some(error => error.startsWith('OMI02096: variant target category')),
+      errorsWithoutDecision.filter(error => error.startsWith('OMI02096:')).join('\n'));
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('material-only pair decision does not waive a category mismatch', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const registryPath = path.join(root, 'scripts/archive-ownership-registry.json');
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    const decision = registry.pair_decisions.find(item => item.archive_id === 'OMI02135');
+    assert.ok(decision, 'missing OMI02135 pair decision');
+    decision.waives = ['material'];
+    fs.writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+
+    const errors = checkArchiveOwnership(root).errors.filter(error => error.startsWith('OMI02135:'));
+    assert.ok(errors.some(error => error.startsWith('OMI02135: variant target category')),
+      errors.join('\n'));
+    assert.equal(errors.some(error => error.startsWith('OMI02135: variant target material')), false,
+      errors.join('\n'));
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
 test('clothing material pair decisions waive only the four verified archive-target pairs', () => {
   const root = fixture();
   const pairSpecs = [

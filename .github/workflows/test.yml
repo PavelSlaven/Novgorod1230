@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [fast, integration, acceptance, browser-architecture]
+        suite: [fast, integration, p12, acceptance, browser-architecture]
     steps:
       - name: Checkout clean clone
         uses: actions/checkout@v4
@@ -89,10 +89,10 @@ jobs:
           npm run world-db:import:dry-run -- --report "$RUNNER_TEMP/world-base-import-dry-run.json"
           npm run world-db:fk-audit:staged -- --out-dir "$RUNNER_TEMP/world-base-fk-audit-staged"
       - name: Validate canonical world_base schema
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
         run: npm run world-db:schema-check && npm run world-db:schema-doc-check
       - name: Start PostgreSQL for full profile
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
         run: |
           for attempt in 1 2 3; do
             docker pull postgres:16 && break
@@ -106,7 +106,7 @@ jobs:
             --publish 5432:5432 postgres:16
 
       - name: Execute world_base DDL in PostgreSQL
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
         env:
           PGHOST: localhost
           PGPASSWORD: postgres
@@ -170,7 +170,7 @@ jobs:
           cat "$RUNNER_TEMP/npm-test.log"
           exit "$status"
       - name: Run spatial-v3 P12 postgres tests
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'integration'
+        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'p12'
         env:
           PGHOST: localhost
           PGPASSWORD: postgres
@@ -202,7 +202,7 @@ jobs:
             MODULE_INDEX.md
             ${{ runner.temp }}/npm-test.log
       - name: Stop PostgreSQL
-        if: always() && steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
+        if: always() && steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
         run: docker rm --force spatial-v3-ci-postgres || true
 
   evidence-only:

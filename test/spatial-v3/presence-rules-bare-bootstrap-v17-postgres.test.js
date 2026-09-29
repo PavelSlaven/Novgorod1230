@@ -10,9 +10,13 @@ import {
 const PINE_RIDGE_SCENARIO = 'novgorod_pine_ridge_approach_v1';
 const PINE_RIDGE_G5 = 'cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach';
 
-test('bare v17 bootstrap: the public start itself resolves empty presence for its own G5 and stores no gap',
+test('v17 bootstrap without bindings for the start G5: the public start itself resolves empty presence for its own G5 and stores no gap',
   { timeout: 1_800_000 }, async (t) => {
-    const env = await bootstrapV17PresenceE2e(t, { withTestWaveEnrichment: false });
+    const env = await bootstrapV17PresenceE2e(t);
+    // Precondition of this test (D27 imports the wave in the bootstrap): the start G5 has no
+    // place-family bindings. Reproduced explicitly in this disposable test world.
+    await env.worldPool.query(
+      'DELETE FROM world_base.spatial_node_place_family_bindings WHERE node_id = $1', [PINE_RIDGE_G5]);
     const bindingReads = [];
     let insideStart = false;
     const spiedWorldPool = {
@@ -43,7 +47,7 @@ test('bare v17 bootstrap: the public start itself resolves empty presence for it
       assert.equal(startNodeReads.length, 1,
         'public start must read place-family bindings of its own G5 exactly once');
       assert.equal(startNodeReads[0].rowCount, 0,
-        'bare bootstrap has no bindings for the start G5: empty presence with a typed gap');
+        'no bindings for the start G5: empty presence with a typed gap');
       const aggregates = await env.partyPool.query(
         `SELECT scope_id FROM party_runtime.party_ordinary_materialization_aggregates WHERE party_id=$1`,
         [partyId]);

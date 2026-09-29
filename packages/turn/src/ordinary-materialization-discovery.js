@@ -62,7 +62,18 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
     let newBases = [];
-    if (!enabled.ordinary_aggregate.seeded) {
+    if (!enabled.ordinary_aggregate.seeded && finiteOnlyScope(enabled)) {
+      // A finite-source-only scope has zero background density: nothing for
+      // Stage A to describe, so code seeds it before any model call.
+      const transition = { kind: 'seed', request_identity: objective.request_id,
+        expected_state_version:
+          projection.ordinary_materialization_aggregate.state_version,
+        density_band: 'sparse', identity_budget: 0, background_groups: [] };
+      transitions.push(transition);
+      projection = Object.freeze({ ordinary_materialization_aggregate:
+        applyOrdinaryAggregateTransition({
+          aggregate: projection.ordinary_materialization_aggregate, transition }) });
+    } else if (!enabled.ordinary_aggregate.seeded) {
       const seed = await resolveOrdinaryMaterializationSeedScope({
         request: buildSeedRequest({ objective_context: objective,
           authority_context: seedAuthorityContext({ execution,
@@ -259,6 +270,11 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       resolution: item == null ? presence.status : 'materialize', item,
       finiteResourceEffects });
   };
+}
+
+function finiteOnlyScope(enabled) {
+  return enabled.execution_context?.scope_presence_enabled === false
+    && enabled.ordinary_authority?.finite_source_profile != null;
 }
 
 function seedAuthorityContext({ execution, objective, scopeRef }) {

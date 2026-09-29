@@ -22,6 +22,7 @@ COND = {
              "claim:population-ceramic-fracture;claim:population-ceramic-joint;claim:population-ceramic-water"),
     "iron": ("serviceable;dull;rusted;bent;cracked;broken;repaired", "claim:population-material-iron-rust;claim:population-joining-metal-fatigue"),
     "nonferrous": ("serviceable;tarnished;worn_smooth;bent;cracked;broken", "claim:population-joining-metal-cold-work;claim:population-joining-metal-fatigue"),
+    "glass": ("whole;scratched;chipped;cracked;broken", "claim:population-glass-fracture"),
     "stone": ("whole;worn;chipped;cracked;broken", "claim:stone-whetstone-edge-maintenance"),
     "bone": ("whole;worn_polished;cracked;teeth_broken;broken", "wk:material_culture:novgorod-wood-bone-horn-classes"),
     "leather": ("serviceable;worn;stiff_dry;mouldy;torn;patched;wet", "claim:population-material-leather-dry;claim:population-material-leather-mould;claim:material-water-leather-water-processing"),
@@ -31,11 +32,12 @@ COND = {
 }
 MATFAM = [
     (r"^(wood|twigs|leafy_twigs|gesso)", "wood"), (r"^(birch_bark|bast|willow|reed)", "bark"),
-    (r"^(clay|glaze)", "clay"), (r"^(iron|steel)", "iron"), (r"^(copper|silver|lead|tin|metal)", "nonferrous"),
+    (r"^(clay|glaze)", "clay"), (r"^glass", "glass"), (r"^(iron|steel)", "iron"), (r"^(copper|silver|lead|tin|metal)", "nonferrous"),
     (r"^stone", "stone"), (r"^(bone|horn)", "bone"), (r"^(leather|rawhide|parchment)", "leather"),
     (r"^(linen|wool|hemp|flax|textile|felt|plant_fiber|gut|horsehair|hair|cord)", "textile"),
     (r"^(beeswax|tallow|wax)", "wax"), (r"^(tinder|straw|grass|hay|feather|pigment)", "organic_soft"),
 ]
+BOOK_REF = re.compile(r"book:\d+ §\d+")
 GENERIC = re.compile(r"вариативн|не нормировать|по конкретной|по находке|универсальный размер|type_default|по носителю")
 
 VALUE_RULE = "value_band rule: trifle = common organic/clay/bone work; ordinary = iron tools, lathe/stave work, leatherwork; valued = copper-alloy/silver work, locks, textiles of wool, instruments, imports; costly = glazed imports, codices"
@@ -70,8 +72,13 @@ def main():
         for c in split(s["wk"]):
             if c not in claims and c not in concepts:
                 errors.append(f"{iid}: WK claim {c} not found")
-        for b in split(s["bib"]):
-            if b not in sources:
+        bib_refs = split(s["bib"])
+        book_refs = [b for b in bib_refs if BOOK_REF.fullmatch(b)]
+        for b in bib_refs:
+            if b.startswith("book:") and not BOOK_REF.fullmatch(b):
+                errors.append(f"{iid}: malformed book source {b}")
+        for b in bib_refs:
+            if b not in sources and b not in book_refs:
                 errors.append(f"{iid}: source {b} not found")
         v5code = s["v5"]
         if v5code and v5code not in tpl:
@@ -132,6 +139,8 @@ def main():
                 att.append(f"v5 {tpl[v5code]['id']}: {len(bl)} source bindings ({'/'.join(sorted({b['evidence_class'] for b in bl}))})")
         if split(s["wk"]):
             att.append(f"WK approved claims: {len(split(s['wk']))}")
+        if book_refs:
+            att.append(f"book evidence: {';'.join(book_refs)}")
         # source ids resolved from master records + bib keys
         srcids = []
         for m in mrefs:
@@ -140,14 +149,15 @@ def main():
                 if isinstance(sid, str):
                     sid = [x.strip() for x in re.split(r"[|;,]", sid) if x.strip()]
                 srcids += sid
-        srcids = list(dict.fromkeys(split(s["bib"]) + srcids))
+        srcids = list(dict.fromkeys([b for b in split(s["bib"]) if b not in book_refs] + srcids))
         unknown = [x for x in srcids if x not in sources]
         if unknown:
             errors.append(f"{iid}: unresolved source ids {unknown}")
         src_refs = ([f"master:{master[m]['canonical_id']}" for m in mrefs if m in master]
                     + ([f"v5:{tpl[v5code]['id']}"] if v5code else [])
                     + ([f"v5:container_tpl_nov_{s['container']}_v1"] if s["container"] else [])
-                    + [c if c.startswith("wk:") else f"wk:{c}" for c in split(s["wk"])] + [f"src:{x}" for x in srcids])
+                    + [c if c.startswith("wk:") else f"wk:{c}" for c in split(s["wk"])]
+                    + book_refs + [f"src:{x}" for x in srcids])
         # perceptual cues from primary master record (+ matcult dims)
         cues = []
         if prim:

@@ -26,11 +26,11 @@ test('P12 runs FK-derived staged import/readback only in isolated PostgreSQL and
   let ready = false;
   for (let i = 0; i < 40; i += 1) {
     await new Promise((done) => setTimeout(done, 350));
-    if (docker(['exec', name, 'pg_isready', '-U', 'p12', '-d', 'p12']).status === 0) {
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p12', '-d', 'p12']).status === 0) {
       // PostgreSQL can report accepting connections just before init scripts
       // have released their last startup lock on a busy Docker host.
       await new Promise((done) => setTimeout(done, 500));
-      if (docker(['exec', name, 'pg_isready', '-U', 'p12', '-d', 'p12']).status === 0) { ready = true; break; }
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p12', '-d', 'p12']).status === 0) { ready = true; break; }
     }
   }
   assert.equal(ready, true);

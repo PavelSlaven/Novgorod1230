@@ -27,7 +27,7 @@ urban_house,dwelling_interior,map,
 poor_house,dwelling_interior,map,
 wealthy_house,dwelling_interior,map,
 yard,town_courtyard;peasant_homestead,map,
-boat,,drop,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
-cart_or_sledge,,drop,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
-military_camp,,drop,no WK place family for military camp (gap for military_security / place_families)
-construction_site,,drop,activity overlay without WK place family (gap for place_families)
+boat,,context,"transport_context -> transport_travel; vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+cart_or_sledge,,context,"transport_context -> transport_travel; vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+military_camp,,context,activity_overlay -> place_families; no WK place family for military camp (gap for military_security / place_families)
+construction_site,,context,activity_overlay -> place_families; activity overlay without WK place family (gap for place_families)

@@ -388,3 +388,51 @@
   - 22 многозначных термина G4 отброшены по записанному правилу. Поэтому внутренность церкви, огород и межа стали `no_source`, хотя TSV их называет. По строке `no_source` не отличить «основание есть, но многозначное» от «ничего не названо». Нужна причина пробела или связь `rule` C со всеми PF владельца.
   - Раздела правок C003b в VERIFICATION.md и строки в `craft_tools_gear/README.md` по-прежнему нет.
 - **Ограничения.** Скрипт не запускал, всё пересчитал своим. Шаблонные списки W из TSV дают слабые, но буквальные связи (бортник -> рыбацкий стан). На стартовой территории связаны 9 из 16 PF. Присутствие людей там задаёт `presence_rules`, а не этот crosswalk. 19 занятий из `occupations_additions.csv` в crosswalk не входят.
+
+### Разделка туши и чистка рыбы (C015, D37) — approve_with_limits
+
+Проверено: Claude Opus 5.5, ревьюер, 2026-09-28. Использованы построчный diff против `39a6cc60`, отчёты исполнителя `c015-row-diff.md`, `c015-2-row-diff.md` и самопроверка группы (29/29).
+
+- **Процессы.** `proc_butcher_carcass`: вход — существующая туша, обязательный нож. Классы размера `[min,max)` без перекрытий: очень малая / малая / крупная птица; очень малое / малое / среднее / крупное млекопитающее. Выходы — мясо, шкура-сырьё, кость, жир, жилы, рог, перо и пух — только из продуктовых строк вида или скота. `proc_clean_fish`: свежая рыба + нож → потрошёная.
+- **Числа** — редакционные по реалистичности (D33, `basis=editorial`, confidence C): мясо 25–55 % живой массы, шкура 4–15 %, кость 10–20 %; крупный зверь — 2–6 ч. Проверены на здравый смысл, за исторические измерения не выдаются.
+- **Не входит:** выделка, копчение, засолка.
+- **Ограничение (D40, на доработку):** чистка рыбы связана только с 27 видами, у которых есть продуктовая строка. Остальным рыбам нужны продуктовые строки, а не исключение.
+
+### C016 — чистка всех 37 рыб: независимая проверка D35
+
+Проверено: Claude Opus 5.5 — независимый проход WR §21.1 (D35), 2026-09-28. Незакоммиченный diff против `ec8cb72f`, пересборка в копии дерева.
+
+- **Скрипты.** `build.cjs` и `validate.cjs --self-test` PASS, в том числе `fish_cleaning_process_and_species_products` (37 видов, нож обязателен, общий выход сохраняет `fa_id`). Validator теперь отклоняет рыбу без свежего продукта; отрицательная проба на это есть. Пересборка побайтная.
+- **Таблица.** Скриптом: `craft_processes/fish_cleaning_products.csv` — 37 строк, ровно все `fa_fish_*`, лишних нет. У всех `proc_clean_fish` и выход `ING0144` («рыба потрошёная»). Вход совпадает с `fish.food_ingredient_ref`, у 11 видов это общий `ING0131`, `fa_id` сохраняется.
+- **Основание.** `logical_necessity` по черновику MASTER `RCP0166`/`FOD0012` (D39), проверка на анахронизм: нож и доска, без современного филе. Минуты и отходы — реконструкция C. Рак исключён таксономически, причина здравая.
+- **Ограничение.** Процесс и выход общие для всех рыб, видовые различия (снеток без потрошения, осётр) не моделируются.
+- README.md, build-report.json, validation-report.json, craft_processes/README.md, craft_processes/fish_cleaning_products.csv — approve_with_limits
+
+## Независимая проверка stale-201 (Claude Opus 5.5, 2026-09-29)
+
+Пересборка несвежих выходов по #201: штатные build/crosswalk/pf_crosswalk и validate. Проверка только чтением, скриптами.
+- materials_registry/material_resolution.csv — approve_with_limits: +673 строки из четырёх новых входов (clothing и food material_entities, places-binding environment_presence_authoring и presence_rules). Удалённых строк 0, изменённых `mt_ids` у прежних ключей 0. Все 466 presence-строк разрешаются; проверено 58 разных соответствий, расхождений 0. `mt_birch_tar`, `mt_forge_slag`, `mt_pine_pitch`, `mt_wood_maple` уже есть в materials.csv.
+- validation-report.json — approve: 29 PASS / 0 FAIL, снимок 18 файлов, 1709/2014.
+- craft_tools_gear/occupation_pf_crosswalk.csv — approve: у `pf_burial_ground` confidence C → пусто, как у прочих `no_source`; иных изменений нет.
+- README.md, materials_registry/README.md — счётчики обновлены под пересборку.
+- Ограничения:
+  - резолвер не разбирает `materials` в виде JSON-массива: `["textile"]` остаётся неразрешённым, хотя `textile` → `mt_textile_generic`; так 94 строки. Это доработка токенизатора сборщика;
+  - `mt_forge_slag` имеет `referenced_by_count=0`, хотя на него теперь ссылаются строки presence.
+
+Вердикт группы: **approve_with_limits**.
+
+## Независимая проверка imp-crafts PR-B (Claude Opus 5.5, 2026-09-29)
+
+Импорт из архива, вторая часть (D46/D47): только однозначные решения, спорное — в типизированную очередь `authoring/needs_check.csv`.
+- **Круг 1 (Opus, дерево 4d4d511b): rework.** Скрипт проверил все числа, дубли имён по 47 таблицам реестра, типизацию очереди и кластер охоты. Главный дефект — фильтр (а) не видел голые номера из находок round3.
+- **Круг 2 (ревьюер, скриптом по каждому пункту):** оспоренные решения round3 (L4, L12, кластер L15) ушли в очередь. Варианты медного сплава перенаправлены на `mt_nonferrous_generic`. Компоненты чернил, когти и грузовая сеть — в очереди. Правило охоты/рыбалки добавило OMI00124 и OMI01128, кластер — 116 id. MSC0003 снят как дубль CRF0025. 23 маршрута в `trv_037` ждут владельца transport. Тест `needs-check` больше не читает пути вне репозитория. `test:game-base` 54/54.
+- **Файлы:** archive_inclusion_ledger.csv, materials_registry/material_entities.csv, materials_registry/material_resolution.csv, authoring/needs_check.csv, authoring/category_evidence_ids.csv, scripts/archive-inclusions.cjs, scripts/src/archive-inclusions.cjs, scripts/needs-check.test.mjs, scripts/validate.cjs, build-report.json, validation-report.json — approve_with_limits. Итог: 205 новых, 425 вариантов, 529 в очереди.
+- **Ограничения:**
+  - «sourced» = уверенность A плюс формула на уровне категории, подтверждения на уровне предмета нет.
+  - У 11 сущностей matcult пустое `primary_material`.
+  - Спорные сущности: OMI00860 (бура), AGR0033 (колода-улей), AGR0034 (борть как «инструмент»), OMI02071.
+  - Сомнения во владельце: OMI01761 (масло в BIC, фитиль в crafts); мох OMI01517 и OMI01561; OMI02201 → `nm_river_silt`; OMI01148; MIL0006 → `bp_hearth_open`. У CRF0057 два решения.
+  - Захардкожены числа 84, 94, 732 в `archive-inclusions.cjs`.
+  - Словари `current_result` двух очередей различаются.
+
+Вердикт группы: **approve_with_limits**.

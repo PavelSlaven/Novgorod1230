@@ -52,6 +52,13 @@ body:
     validations:
       required: true
   - type: textarea
+    id: bench
+    attributes:
+      label: Стенд
+      description: Гипотеза, варианты, набор случаев, результат и ссылка; «не нужен» — с причиной (HOW_WE_WORK, раздел 11; решение D41).
+    validations:
+      required: true
+  - type: textarea
     id: checks
     attributes:
       label: Проверки

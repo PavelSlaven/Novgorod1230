@@ -93,7 +93,7 @@ function validate(group, rows, header, presenceOverride, taxaOverride) {
     }
   }
   if (fish) {
-    const legacy = new Set(['fa_mamm_house_mouse', 'fa_mamm_striped_field_mouse', 'fa_mamm_voles', 'fa_mamm_black_rat']);
+    const legacy = new Set(['fa_mamm_black_rat']);
     for (const p of presence) if (p.fa_id.startsWith('fa_mamm_') && !legacy.has(p.fa_id)) errors.push(`unmapped legacy mammal ${p.fa_id}`);
     for (const pair of [...scope]) if (legacy.has(pair.split('|')[0])) scope.delete(pair);
   }
@@ -149,10 +149,12 @@ function validate(group, rows, header, presenceOverride, taxaOverride) {
     if ((taxon.dormant_seasons || '').split(';').includes(row.season) && row.confidence !== 'C') errors.push(`dormant confidence ${key}`);
     if (!fish) {
       const dormant = (taxon.dormant_seasons || '').split(';').includes(row.season);
-      const expectedVisibility = dormant ? 'no' : rules.rules[knownActivity]?.[row.phase];
+      const subterraneanMole = row.fa_id === 'fa_m_mole';
+      const expectedVisibility = dormant ? 'no' : subterraneanMole ? 'no_source' : rules.rules[knownActivity]?.[row.phase];
       const visibilityBook = (row.fa_id === 'fa_m_wild_boar' && row.season === 'summer' && row.phase === 'civil_dusk') ||
         (row.fa_id === 'fa_b_capercaillie' && row.season === 'spring' && row.phase === 'civil_dusk');
       if (row.visibility_state !== (visibilityBook ? 'yes' : expectedVisibility)) errors.push(`activity mapping ${key}`);
+      if (subterraneanMole && row.rule_ref !== `${rulePath}subterranean-surface-sighting-gap`) errors.push(`mole surface visibility ${key}`);
       const audible = taxon.audible_seasons.split(';').includes(row.season) && !dormant;
       if (row.voice_state === 'yes' && !audible) errors.push(`audible season ${key}`);
       if ((row.visibility_state === 'no_source' || row.voice_state === 'no_source' || completeGap) &&
@@ -295,10 +297,15 @@ if (require.main === module) {
       }
       expect('fa_m_beaver', 'winter', 'night', 'voice_state', 'no_source');
       expect('fa_m_water_vole', 'winter', 'civil_dusk', 'voice_state', 'no_source');
+      for (const season of ['winter', 'spring', 'summer', 'autumn']) for (const phase of rules.phases) {
+        expect('fa_m_mole', season, phase, 'visibility_state', 'no_source');
+        expect('fa_m_mole', season, phase, 'rule_ref', 'fauna/activity_phase_rules.json#subterranean-surface-sighting-gap');
+      }
       reject('fa_m_elk', 'winter', 'daylight', 'confidence', 'B', 'editorial/gap confidence');
       reject('fa_b_bittern', 'spring', 'daylight', 'confidence', 'B', 'mixed facet confidence');
       reject('fa_b_corncrake', 'autumn', 'night', 'voice_state', 'yes', 'audible season');
       reject('fa_m_wolf', 'spring', 'night', 'voice_text_ref', '', 'missing own voice text');
+      reject('fa_m_mole', 'spring', 'daylight', 'rule_ref', 'fauna/activity_phase_rules.json#activity-phase-v1.cathemeral.daylight', 'mole surface visibility');
       const presenceRows = csv(file(group, 'wild_habitat_presence.csv')).rows;
       const altered = presenceRows.map((p) => ({ ...p }));
       altered.find((p) => p.fa_id === 'fa_m_wolf' && p.season === 'spring').audible = 'false';
@@ -375,7 +382,7 @@ if (require.main === module) {
       reject('fa_ins_horseflies', 'summer', 'daylight', 'voice_text_ref', 'invertebrates_herps.csv#L2', 'unresolved voice text');
       reject('fa_crust_noble_crayfish', 'summer', 'night', 'source_refs', 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L1', 'unresolved source');
       const legacyRows = csv(file(group, 'fauna_presence.csv')).rows.map((p) => ({ ...p }));
-      legacyRows.find((p) => p.fa_id === 'fa_mamm_house_mouse').fa_id = 'fa_mamm_new_probe';
+      legacyRows.find((p) => p.fa_id === 'fa_mamm_black_rat').fa_id = 'fa_mamm_new_probe';
       if (!validate(group, table.rows, table.header, legacyRows).some((e) => e.startsWith('unmapped legacy mammal')))
         errors.push('new legacy mammal accepted');
       const chicken = find('fa_dom_chicken', 'winter', 'night');

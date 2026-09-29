@@ -37,6 +37,10 @@ def main():
     rows = []
     for occ in occupations:
         oid = occ["occupation_id"]
+        # Archive additions have authored source activity chains, but no
+        # reviewed scene-location binding. Never synthesize one cue per role.
+        if occ["runtime_basis_analog_ref"].startswith("no_source:"):
+            continue
         seasons = ("spring,summer,autumn" if oid == "occ_mason" else
                    "summer,autumn" if oid == "occ_limeburner" else
                    "winter,spring,summer,autumn")
@@ -86,7 +90,9 @@ def main():
         "confidence": "C", "status": "candidate",
     })
     assert len(rows) == len({r["ac_id"] for r in rows})
-    assert {r["occupation_ref"] for r in rows} == {r["occupation_id"] for r in occupations}
+    expected_occupations = {r["occupation_id"] for r in occupations
+                            if not r["runtime_basis_analog_ref"].startswith("no_source:")}
+    assert {r["occupation_ref"] for r in rows} == expected_occupations
     assert all(r["observable_text_ru"].strip() and "committed-состоянием" not in r["observable_text_ru"] for r in rows)
     with open(OUT, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")

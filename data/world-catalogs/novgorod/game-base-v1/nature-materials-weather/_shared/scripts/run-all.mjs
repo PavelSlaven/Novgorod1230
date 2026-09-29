@@ -19,8 +19,8 @@ for (const s of selfTest ? ['failure probe'] : steps) {
 const counts = {};
 for (const d of ['natural_materials_soils', 'weather_climate', 'natural_presentation_texts']) {
   counts[d] = {};
-  for (const f of fs.readdirSync(path.join(GROUP_DIR, d)).filter((f) => f.endsWith('.csv'))) counts[d][f] = readCsv(path.join(GROUP_DIR, d, f)).length;
-  for (const f of fs.readdirSync(path.join(GROUP_DIR, d)).filter((f) => f.endsWith('.json'))) {
+  for (const f of fs.readdirSync(path.join(GROUP_DIR, d)).filter((f) => f.endsWith('.csv')).sort()) counts[d][f] = readCsv(path.join(GROUP_DIR, d, f)).length;
+  for (const f of fs.readdirSync(path.join(GROUP_DIR, d)).filter((f) => f.endsWith('.json')).sort()) {
     const j = JSON.parse(fs.readFileSync(path.join(GROUP_DIR, d, f), 'utf8'));
     counts[d][f] = j.profiles ? `${j.profiles.length} profiles` : j.payload ? `${Object.keys(j.payload.weather_states || {}).length} states` : 'json';
   }

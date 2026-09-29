@@ -18,6 +18,7 @@ const REQ_STR = ['id', 'name_ru', 'group', 'entities_ru', 'gaps_ru', 'fill_metho
 const REQ_ARR = ['key_fields', 'target_tables', 'consumers', 'existing_sources'];
 // Domain ids the task requires to exist (coverage check).
 const REQUIRED = [
+  'resource_catalog',
   'flora_trees_shrubs', 'flora_herbs_grasses_mosses', 'flora_berries_mushrooms', 'cultivated_plants',
   'fauna_mammals', 'fauna_birds', 'fauna_fish', 'fauna_invertebrates_herps', 'livestock_husbandry',
   'natural_materials_soils', 'weather_climate', 'place_families', 'place_binding', 'presence_rules',
@@ -27,7 +28,8 @@ const REQUIRED = [
   'social_strata_legal_status', 'occupations', 'activities_observable', 'households_kinship', 'npc_psychology',
   'personal_names', 'place_names', 'craft_processes', 'craft_tools_gear', 'workshops', 'calendar_feasts_fasts',
   'schedules_routines', 'historical_events', 'historical_figures', 'law_justice_governance', 'religion_church',
-  'transport_travel', 'health_body', 'item_ownership_rules', 'item_marks_text_pools'
+  'transport_travel', 'health_body', 'item_ownership_rules', 'item_marks_text_pools',
+  'household_inventory_profiles', 'item_place_trace_relations', 'item_context_relations'
 ];
 
 const errors = [];
@@ -37,7 +39,7 @@ for (const g of groups) {
   if (gids.has(g.id)) errors.push(`duplicate group ${g.id}`);
   gids.add(g.id);
 }
-if (groups.length < 16 || groups.length > 20) errors.push(`group count ${groups.length} not in 16..20`);
+if (groups.length < 16 || groups.length > 21) errors.push(`group count ${groups.length} not in 16..21`);
 const dids = new Set();
 for (const d of domains) {
   for (const k of REQ_STR) if (typeof d[k] !== 'string' || !d[k].trim()) errors.push(`${d.id}: missing ${k}`);

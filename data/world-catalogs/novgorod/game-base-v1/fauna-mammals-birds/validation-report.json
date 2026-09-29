@@ -4,18 +4,21 @@
  "counts": {
   "mammals": 44,
   "birds": 149,
-  "presence_rows": 4231,
-  "phase_activity_rows": 2632,
+  "hunting_methods": 25,
+  "hunting_tenure_defaults": 3,
+  "pelt_calendars": 16,
+  "presence_rows": 4249,
+  "phase_activity_rows": 2644,
   "place_families_with_rows": 38,
   "presence_by_class": {
-   "rare": 1445,
-   "contextual": 1374,
-   "common": 1125,
+   "rare": 1465,
+   "contextual": 1390,
+   "common": 1107,
    "ubiquitous": 287
   },
   "presence_confidence": {
-   "B": 3707,
-   "C": 524
+   "B": 3701,
+   "C": 548
   },
   "taxa_presence_1230_confidence": {
    "A": 19,
@@ -27,10 +30,12 @@
  },
  "acceptance": {
   "mammal_signs_min_per_forest_riparian_pf_season": 7,
-  "audible_birds_min_per_open_pf_season": 3
+  "audible_birds_min_per_open_pf_season": 2,
+  "mammals_without_recorded_products": 21
  },
  "errors": [],
  "warnings": [
-  "outdoor place families without any fauna rows: pf_reality_batch_01_open_conditions,pf_reality_first_practical_conditions"
+  "explicit gap: pf_ferry_landing winter has 2 audible birds; mallard requires scene-level open water",
+  "outdoor place families without any fauna rows: pf_reality_batch_01_open_conditions,pf_reality_first_practical_conditions,pf_burial_ground"
  ]
 }

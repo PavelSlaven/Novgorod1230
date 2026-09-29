@@ -1,25 +1,30 @@
 # items-household-personal — вещи быта и личные, частота по местам, владение и приметы (D9/D14)
 
 Статус: **candidate**. Автор данных себя не утверждает. Нужен отдельный проход утверждения (WR §21.1: старшая модель на высоком reasoning или владелец).
-Группа каталога `game-base-v1`: домены `household_items`, `personal_items`, `item_place_frequency`, `item_ownership_rules`, `item_marks_text_pools`.
+Группа каталога `game-base-v1`: домены `household_items`, `personal_items`, `item_place_frequency`, `item_place_trace_relations`, `item_context_relations`, `item_ownership_rules`, `item_marks_text_pools`.
 
 ## Файлы (`items/`)
 
 | Файл | Домен | Строк | Что внутри |
 |---|---|---|---|
-| `household.csv` | household_items | 111 | Посуда (дерево, керамика, металл), переработка зерна, клёпочные сосуды, свет и огонь, печной инструмент, уборка и баня, постель, мелкие хранилища, замки и ключи, прядение и ткачество, шитьё, мелкий хозяйственный инвентарь |
+| `household.csv` | household_items | 117 | Посуда (дерево, керамика, металл, стекло), переработка зерна, клёпочные сосуды, свет и огонь, печной инструмент, уборка и баня, постель, мелкие хранилища, замки и ключи, прядение и ткачество, шитьё, мелкий хозяйственный инвентарь |
 | `personal.csv` | personal_items | 79 | Гребни, бритва, зеркальце, ножи и ножны, кошели и сумки, фляги, огнивный набор, писала, береста, церы, чернильницы, книги, бирки, пломбы, печати, весы и гирьки, кресты, энколпионы, иконки, игры (шахматы, кости, бабки), игрушки, коньки, ледоходы, гусли, гудок, свирели, волынка, варган |
-| `item_categories.csv` | → category_registry | 160 | Категории `cat_item_object_<code>_v1`: 39 уже есть в v5 (draft), 121 предложены новыми. Категории универсальные (`category_scope=universal`), регион даёт только разрешение (`region_permission=region_novgorod_land`) |
+| `household_inventory_profiles.csv` | class-C inventory relation | 979 | Обязательные и условные связи 7 типов двора, 7 наборов мест D40 и 21 мастерской с существующими предметами, соседними owner-каталогами и формулой количества |
+| `item_categories.csv` | → category_registry | 166 | Категории `cat_item_object_<code>_v1`: 39 уже есть в v5 (draft), 127 предложены новыми. Категории универсальные (`category_scope=universal`), регион даёт только разрешение (`region_permission=region_novgorod_land`) |
 | `mass_policy.csv` | общий | 6 | Полосы массы tiny…bulky с границами и значением по умолчанию |
-| `condition_vocab.csv` | общий | 11 | Состояния по семейству материала со ссылками на WK claims о поведении материала |
-| `item_place_frequency.csv` | item_place_frequency | 12 629 | 1 652 строки для вещей каталога (`ref_kind=it`) и 10 977 строк для master (`ref_kind=master`) |
-| `archetype_pf_map.csv` | item_place_frequency | 32 | Как типы мест master переводятся в семейства мест WK: 28 переводятся, 4 отброшены с причиной |
+| `condition_vocab.csv` | общий | 12 | Состояния по семейству материала со ссылками на WK claims о поведении материала |
+| `item_place_frequency.csv` | item_place_frequency | 12 634 | 1 657 строк для вещей каталога (`ref_kind=it`) и 10 977 строк для master (`ref_kind=master`) |
+| `item_place_trace_relations.csv` | typed trace relation | 3 741 | Связи отходов, обломков, остатков, отложений и побочных продуктов с местами; конечные находки, не целые предметы и не возобновляемый loot |
+| `item_context_relations.csv` | typed context relation | 1 087 | Целые вещи в транспорте, стройке и военном лагере: 429 transport context и 658 activity overlay/handoff, без выдуманного PF |
+| `archetype_pf_map.csv` | item_place_frequency | 32 | Как типы мест master переводятся в семейства мест WK: 28 переводятся в PF, 4 передаются контекстному owner |
 | `ownership_rules.csv` | item_ownership_rules | 1 614 | Правило владельца для пары place_family × контекст находки × группа вещей, плюс одно правило для носимого |
 | `recognizers.csv` | item_ownership_rules | 28 | Кто может узнать вещь: по виду владельца и по различимости примет |
-| `mark_pools.csv` | item_marks_text_pools | 86 | Приметы семи видов: owner_sign 5, maker_mark 6, ornament 17, repair 14, wear 17, damage 15, inscription 12 (пересчитано скриптом по `mark_pools.csv`) |
-| `identifying_text_pools.csv` | item_marks_text_pools | 18 | Пулы опознавательного текста: 17 candidate и 1 исключён как анахронизм |
+| `mark_pools.csv` | item_marks_text_pools | 86 | Приметы семи видов: owner_sign 5, maker_mark 6, ornament 17, repair 14, wear 17, damage 15, inscription 12; 85 candidate и 1 гончарное клеймо исключено для Новгорода около 1230 г. |
+| `identifying_text_pools.csv` | item_marks_text_pools | 19 | Пулы опознавательного текста: 17 candidate и 2 excluded_anachronism (гончарное клеймо для новой вещи около 1230 г. и более ранний цилиндр-замок). |
 
-Отчёты (`reports/`): `validation.json` (приёмка всех доменов), `counts.json` (счёты), `frequency_dropped.csv` (4 828 отброшенных связей master с причиной), `build_*_errors.txt`.
+Книжный evidence snapshot: `sources/book_evidence_m2c_b3.csv` — 13 проверенных строк для 11 используемых `book:`-ссылок; builder сверяет ссылки с ним.
+
+Отчёты (`reports/`): `validation.json` (приёмка всех доменов), `counts.json` (счёты), `frequency_dropped.csv` (разрешены только причины `anachronism | physical_impossibility | duplicate`), `item_exclusion_returns.csv`, `household_evidence_intake.json` и `household_evidence_ledger.csv` (полный построчный проход 7 331 небитой строки закреплённого v2 snapshot), `item_catalog_coverage.csv`, `item_place_trace_coverage.json`, `build_*_errors.txt`.
 
 Все числа выше посчитаны скриптами (`reports/counts.json`).
 
@@ -27,14 +32,14 @@
 
 ```
 cd scripts
-python build_items.py && python build_marks.py && python build_ownership.py && python build_frequency.py && python validate.py
+python3 build_items.py && python3 build_marks.py && python3 build_ownership.py && python3 build_frequency.py && python3 build_trace_relations.py && python3 build_exclusion_returns.py && python3 build_evidence_intake.py && python3 build_household_inventory.py && python3 validate.py --self-test
 ```
 Скрипты только читают источники: master в `data/world-catalogs/novgorod/sources/`, v5 в `data/knowledge-source/imports/item-container-120-v5/candidate/tables/`, WK в `world-knowledge/production-v1/runtime-bundle.json` и `place-first-cartography.json`. Пишут только в эту папку.
 
 ## Метод
 
 Суждение отделено от механики.
-- **Авторские входы (суждение).** `scripts/seed_items.psv` задаёт, какие вещи берутся и как они классифицируются: категория, группа, материал, техника, полоса размера, функции, роли владельцев, слоты примет и слот текста, а также ссылки на строки master, шаблоны v5 и WK claims. Ещё три авторских файла: `mark_pools.psv`, `text_pools.psv`, `sources_extra.csv` (15 внешних источников с URL).
+- **Авторские входы (суждение).** `scripts/seed_items.psv` задаёт, какие вещи берутся и как они классифицируются: категория, группа, материал, техника, полоса размера, функции, роли владельцев, слоты примет и слот текста, а также ссылки на строки master, шаблоны v5 и WK claims. Ещё три авторских файла: `mark_pools.psv`, `text_pools.psv`, `sources_extra.csv` (15 внешних источников с URL); использованные книжные строки закреплены в `sources/book_evidence_m2c_b3.csv`.
 - **Производное (скрипт).**
   - Каждая ссылка проверяется на существование: master id, v5 template/container, WK claim или concept, источник.
   - Признаки для прозы берутся из master: `colors`, `construction`, `wear_and_condition`, `dimensions`. Общие фразы вроде «по находке» отбрасываются.
@@ -46,11 +51,23 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
   2. иначе масса аналогичного шаблона v5 (`a:<tpl>`);
   3. иначе значение полосы по умолчанию.
 
+- **Обязательный набор двора и мастерской (класс C).** `household_inventory_profiles.csv` — relation-таблица, а не второй словарь вещей.
+  - Бытовые строки ссылаются на `household.csv` / `personal.csv`, мебель и крупную тару — на `buildings-interiors-containers`, орудия и сырьё — на `crafts-tools-processes`, скот — на `herd_composition.csv`, одежду/украшения/деньги — на их действующих владельцев.
+  - Хлеб, квас и сезонные запасы не копируются: строка типа `food_profile` делегирует ассортимент и количество `household_food_stock_profiles.csv`. Привозного вина в этих профилях нет; оно остаётся отдельным `wealth_extra` с условием конкретного пира, гостевого или литургического контекста.
+  - Формула хранимой вещи: `norm × actual composition factor × wealth multiplier`, затем минимум строки. Численность берётся из фактически материализованного двора; `unspecified` в `household_composition_profiles.csv` не заменяется средним значением. Хранимые строки, включая join к пищевому owner, используют `d3_first_open_v1`; стационарные вещи и скот/ремесленная партия не притворяются содержимым контейнера.
+  - `item_place_frequency` остаётся только ambient chance. При наличии точной пары ссылка записана; её отсутствие не отменяет обязательную строку класса C. Владение разрешается существующим правилом `pf × item_group`.
+  - `basis` закрыт значениями `sourced | analogy | logical_necessity | editorial`; у каждой строки есть причинный `derivation`. Строки имеют reviewed confidence C, а три условных master-находки — D; все имеют status candidate и не активируют runtime consumer.
+  - D40 добавляет семь `place_set`: корчма, постоялый двор, баня, мельница, пристанская изба, караульня и лавка на торгу. Корчма и постоялый двор не получают выдуманный PF/scene; их `owner_gap_ref` передан владельцу мест в #176. Частичные пробелы мельницы, пристанской избы и караульни также явны в coverage-отчёте.
+  - Place-set проходят применимые линзы; баня намеренно не получает домовую божницу. Условная строка не гарантирует предмет без соответствующего контекста.
+  - Армия evidence закреплена в `sources/evidence-household-v2/` и пройдена полностью: каждой небитой строке ledger назначает существующий domain/item target либо закрытую причину отказа. Шесть отсутствовавших item identity добавлены с точными `book:<id> §<para>`; каждый перенесённый item anchor остаётся `basis=analogy` и не переносит value или число.
+  - Архив D39 используется только как черновой список для `logical_necessity`: ссылки идут через репозиторный `sources/master-archive-v1` и id строки; цены не используются.
+
   Скрипт проверяет, что номинал лежит внутри полосы. Собственных измерений нет.
 - **Частота.** Классы ubiquitous/common/contextual/rare переводятся в веса 8/4/2/1 по политике каталога. Правила вывода указаны в каждой строке (`derivation_rule`); когда строку правит больше одного правила, столбец несёт составное имя (`+R_...`), а не только имя правила, задавшего первую запись:
-  - `frequency_class` и `weight` описывают только возможное присутствие вещи. `entry_visible_if=placed_exposed` разрешает показать уже размещённую открытую вещь при первом входе; `search_only_if=placed_concealed` разрешает обнаружить уже размещённую скрытую вещь лишь целевым поиском/обыском. `entry_exposed_weight` и `search_concealed_weight` делят 8 условных весов между вариантами `placement_modes` целых вещей master; `placement_basis_ref` указывает поле источника. Это веса выбора способа размещения уже созданного экземпляра, а не историческая частота или гарантия видимости. Без реальных `placement_modes` оба веса пусты, `placement_basis_ref=no_source:placement_modes_absent`, `placement_owner_ref` указывает Stage 16 как владельца решения. Сейчас это 1195 из 1654 строк каталога, затрагивающих 148 вещей (всего 1451 из 12631 строк частоты). Проза `scenes.csv` и правило открытия контейнера не служат основанием для весов. Потребитель `places-binding/presence` переносит `placement_owner_ref` вместе с условиями видимости, а его валидатор сверяет все семь полей с исходным пулом. Валидатор items независимо пересчитывает веса и проверяет явный пробел. Один экземпляр не создаётся второй раз для обыска.
+  - `frequency_class` и `weight` описывают только возможное присутствие вещи. `entry_visible_if=placed_exposed` разрешает показать уже размещённую открытую вещь при первом входе; `search_only_if=placed_concealed` разрешает обнаружить уже размещённую скрытую вещь лишь целевым поиском/обыском. `entry_exposed_weight` и `search_concealed_weight` делят 8 условных весов между вариантами `placement_modes` целых вещей master; `placement_basis_ref` указывает поле источника. Это веса выбора способа размещения уже созданного экземпляра, а не историческая частота или гарантия видимости. Без реальных `placement_modes` оба веса пусты, `placement_basis_ref=no_source:placement_modes_absent`, `placement_owner_ref` указывает Stage 16 как владельца решения. Точные текущие счёты пишет `reports/counts.json`. Проза `scenes.csv` и правило открытия контейнера не служат основанием для весов. Потребитель `places-binding/presence` переносит `placement_owner_ref` вместе с условиями видимости, а его валидатор сверяет все семь полей с исходным пулом. Валидатор items независимо пересчитывает веса и проверяет явный пробел. Один экземпляр не создаётся второй раз для обыска.
   - В `pf_class=wild` рукотворная вещь допустима лишь после установленной причины `wild_arrival_cause_required=prior_visitor_loss_or_discard`: прежний посетитель потерял или оставил вещь именно здесь. Само `R_LOSS_DOWNGRADE` уменьшает класс и не свидетельствует о таком событии. Без причины вещь не создаётся, несмотря на строку частоты.
-  - Археологические `fragment`, `residue`, `deposit`, `waste`, `byproduct` исключены из предметов живой сцены; их связи не доказывают наличие целой вещи. `salvage`, `component`, `blank`, `semifinished`, `manufacturing_state=broken` и «обломок» также не доказывают частоту целой вещи каталога. Если master-вещь уже представлена вещью каталога в том же pf, остаётся одна строка каталога.
+  - Археологические `fragment`, `residue`, `deposit`, `waste`, `byproduct` не доказывают наличие целой вещи и не входят в ambient frequency. Все 3 741 исходные связи сохранены в `item_place_trace_relations.csv` как типизированные конечные находки: фрагмент можно поднять, отход/побочный продукт собрать порцией, остаток извлечь, отложение взять пробой. Они не получают автоматического владельца, refresh или целого parent-item; 113 vehicle-context связей переданы transport/containers, ещё 171 связь без PF — владельцу мест #176.
+  - Остальные 1 087 whole-item links не отброшены: `item_context_relations.csv` возвращает 349 boat + 80 cart/sledge транспортному owner и 318 construction + 340 military-camp как activity overlay/handoff #176. `frequency_dropped.csv` пуст; неизвестная причина не принимается валидатором.
   - `R_MASTER_LINK`: связь master `item_location_links`, класс master. Если связей несколько, берётся максимальный класс по паре (вещь, pf), и `derivation_rule` указывает именно то правило (`R_MASTER_LINK` или `R_SPAWN_PROFILE`), которое дало этот максимум.
   - `R_SPAWN_PROFILE`: вхождение в `spawn_profiles` master. canonical и common дают common, contextual даёт contextual.
   - `R_WHERE_USED_TEXT`: ключевые слова в `where_used` master, за вычетом заявленных исключений (например, «двор» не считается для «Немецкого/Готского двора» и «купеческого двора»; общая фраза «береговая рабочая зона» не доказывает рыбацкий лагерь или берег для вещи любой группы). Класс contextual, confidence C.
@@ -61,7 +78,7 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
   - `R_LOSS_DOWNGRADE` (суффикс к правилу выше): в диких pf (`pf_class=wild`) находка всегда `loose_dropped`, а класс master/каталога описывает частоту употребления на месте, а не частоту потери. Правило понижает класс на два шага (ubiquitous→contextual, common→rare, contextual/rare→rare) перед записью строки.
   - `R_RESIDUAL_RARE_DATING` (суффикс): для вещей, чей собственный источник датирует их как убывающие или уже редкие к 1230 г. (`it_hh_wooden_lock`, `it_ps_lead_plomb`, `it_ps_weight_cubo`), частота во всех pf ограничена сверху `rare`, независимо от класса master-связи; основание добавлено в `source_refs` как `residual_dating:...`.
 
-  Сверка с WK: pf обязан существовать в `place-first-cartography`, у вещи учитывается число WK refs. Сверка отдельных связей master с археологией не проводилась: у таких строк стоит `wk_check=item not WK-checked`; перевод одного архетипа master в несколько pf получает confidence C. `source_refs` берёт до 20 первых оснований, остаток указан как `+N more`. Связи master для отхода не используются как частота целой вещи каталога.
+  Сверка с WK: pf обязан существовать в `place-first-cartography`, у вещи учитывается число WK refs. Для целых master-вещей остаётся `wk_check=item not WK-checked`; перевод одного архетипа master в несколько pf получает confidence C. `source_refs` берёт до 20 первых оснований, остаток указан как `+N more`. Связи отходов не используются как частота целой вещи и проверяются отдельно в typed trace relation.
 - **Владение (D14).**
   - Семейства мест делятся на 12 классов (`rules.PF_CLASS`). Владелец выбирается по классу места, контексту находки (в употреблении или хранении, выставлено на продажу, обронено, выброшено, природное на месте) и по поправкам для групп вещей.
   - В диких местах владелец только `ownerless` или `lost_unknown`. Именованных лиц нет нигде (`named_person=no`).
@@ -70,6 +87,10 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
 - **Приметы и текст (D9).**
   - Приметы задаёт код: `text_ru` описывает примету, `{slot}` заполняется из пула.
   - Опознавательный текст берётся только из `identifying_text_pools.csv`. Слоты заполняются из пула имён (домен names-peoples), из списка святых (домен календаря) или из зафиксированных сущностей. Если заполнить нечем, текста нет. `llm_may_write_text=no`.
+  - Склонение и согласование притяжательных форм `{owner_possessive}` с `{object_name}`/`{contents_name}` выполняет код или владелец соответствующей сущности; этот набор задаёт только допустимые источники слотов. Веса вариантов шаблонов здесь не заданы: выбор варианта принадлежит коду/владельцу.
+  - Пулы владельческих знаков и имён сверены с находками: поплавки и бочки со знаками, новгородские лукошко, оселки и гусли с именами, формулы на пряслицах, имя/содержимое на корчагах. Источники закреплены как `book:<id> §<para_no>`; имена и содержимое всё равно берутся только из committed entities.
+  - Гончарные клейма на днище сохранены как справочный пул находок, но имеют `status=excluded_anachronism`: исчезновение в новгородских слоях XII в. зафиксировано в `value/note` snapshot для `book:624953 §288`, а формы — в цитате. Обычные горшок и миска около 1230 г. больше не ссылаются на этот пул. Пояс наколов или штампованного орнамента по плечику — отдельная примета `ornament`, не клеймо мастерской.
+  - Формула имя+содержимое засвидетельствована на корчагах без новгородской атрибуции; перенос на обычный storage pot — аналогия. Для оселка источник подтверждает именную надпись; владельческий знак на `HH_TOOLS_SMALL` — аналогия.
   - Деревянные цилиндры-замки XI–XII вв. исключены как анахронизм для 1230 года.
 
 ## Источники
@@ -95,16 +116,16 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
 
 ## Приёмка (validate.py → reports/validation.json)
 
-Все пять проверок проходят:
+Все десять проверок проходят:
 - **Предметы.** Категории разрешаются, масса лежит в полосе, дубликатов (категория, материал, name_ru) нет, у каждой вещи есть засвидетельствованность и source_refs, анахронизмов нет.
 - **Слоты текста.** Каждый слот указывает на существующий допустимый пул. Готового опознавательного текста в описаниях нет.
+- **D9.** Для всех 19 пулов `llm_may_write_text=no`; builder требует непустые `source_refs`, сверяет `book:`-ссылки с `sources/book_evidence_m2c_b3.csv` и запускает negative self-test с точными кодами отказа.
 - **Частота.**
   - 100% строк разрешают item и pf, класс входит в четыре допустимых.
-  - Во всех 29 семействах с людьми не меньше 10 вещей. Минимум у hay_meadow: 13.
-  - Отброшенные связи перечислены с причиной:
-    - транспорт и контейнер: 542;
-    - стройплощадка: 427;
-    - военный лагерь: 402.
+  - Во всех 29 семействах с людьми не меньше 10 вещей. Минимум у `field_margin`: 39.
+  - Отброшенных master links нет; closed reject vocabulary и отрицательная проба обязательны.
+- **Типизированные следы, контексты и возвраты D40.** Все 3 741 trace-связи покрыты ровно по одному разу: waste 1 329, fragment 1 127, residue 750, deposit 510, byproduct 25. Ещё 1 087 whole-item links сохранены контекстной relation, а 18 точечных исключений получили существующую identity или handoff владельцу. `HNT0028` возвращён с confidence D и `basis=analogy`; D не считается анахронизмом, форма снегоступа остаётся reference-required, а лыжи подтверждены `book:624953 §1314–1316`.
+- **Evidence intake.** Проверены sha256 и полный построчный ledger пяти небитых v2 CSV: 7 331 = 43 строки шести новых item-кандидатов + 5 564 owner-review handoff + 1 724 reject. Период берётся только из `period`; `dated` и `region_scope` сохраняются в трассировке, `number_unverified` запрещает перенос непроверенного числа, а `note` и унаследованный note-derived флаг для дат не используются. Каждый candidate anchor имеет `basis=analogy` и не переносит `value` или число; у шести identity точный книжный ref сохранён в item `source_refs`.
 - **Владение.**
   - Для каждой пары «pf с людьми × группа вещей из частоты» есть правило.
   - В диких местах только ownerless или lost_unknown.
@@ -120,19 +141,19 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
 
 1. **pf_id.** Используются id семейств WK как есть, потому что домен `place_families` параллельно ещё не выдан. При другой схеме id нужен пересчёт по `archetype_pf_map.csv`.
 2. **Сезоны.** Везде стоят четыре сезона (так в master: у всех 2 196 сущностей четыре сезона). Словарь сезонов календаря (например, `spring_rasputitsa`) не подключён. `refresh_class=none`.
-3. **Стройплощадка и военный лагерь** не имеют семейства мест в WK: 829 связей отброшены. Это пробел для `place_families`. Лодка и повозка переданы доменам `containers_contents` и `transport_travel`.
+3. **Стройплощадка и военный лагерь** не имеют семейства мест в WK: 658 whole-item связей сохранены как activity overlay/handoff #176, не ambient PF. Ещё 171 typed trace link имеет тот же owner gap; 113 trace и 429 whole-item links в `boat`/`cart_or_sledge` переданы транспортному и контейнерному владельцам. Лодка и повозка не становятся place family.
 4. **Качество правил частоты.**
-   - `R_WHERE_USED_TEXT` (436 строк для вещей каталога) и `R_WK_COMPOSES` (694 для вещей каталога, источники — реальный `composes_with` целевого pf в WK) — грубые правила с confidence C.
+   - `R_WHERE_USED_TEXT` (478 строк для вещей каталога) и `R_WK_COMPOSES` (635 для вещей каталога, источники — реальный `composes_with` целевого pf в WK) — грубые правила с confidence C.
    - `R_LOSS_DOWNGRADE`: класс master/каталога в диком месте описывает употребление, а не потерю; правило понижает класс на два шага, но не служит причиной появления вещи.
-   - Классы master (`item_location_links`) — кандидаты, которые владелец переоткрыл. Каждая связь с археологией не сверялась.
-5. **Масса.** Масса у 121 новой категории задана полосой, не измерением. Масса v5 — редакционная политика.
+   - Классы master (`item_location_links`) — кандидаты, которые владелец переоткрыл. Trace validator сверяет 3 741 археологическую связь по исходному FK, периоду, confidence, словарю материала/домена и denylist; это не утверждение каждого конкретного экземпляра.
+5. **Масса.** Масса у 127 новых категорий задана полосой, не измерением. Масса v5 — редакционная политика.
 6. **Проверка источников.**
    - Формулы на крестах: включены только «Святая Богородице, помогай» и «ІС ХС». Формулы с именем владельца не включены до сверки с корпусом.
    - Список форм владельческих знаков (`TXT_OWNER_SIGN`) и метки номинала гирь — реконструкция (C).
    - Тексты Медынцевой и Зализняка не извлекались: цитируются только по библиографии и вторичным сводкам.
 7. **Не найдено основания.**
    - Ухват для 1230 года: в источниках есть только чапельник (WK). Исключён.
-   - Подушки и перины: исключены.
+   - Отдельные подушки и перины не заведены; обязательное шерстяное покрывало служит постелью, его свёрнутый край — подголовьем.
    - Вышитые полотенца: поздний образ, исключены.
    - Бронзовые писала и литые медные змеевики не включены или помечены осторожно.
    - Монеты, слитки и украшения отнесены к доменам `currencies_measures` и `adornment_appearance`. Пояс отнесён к `garments`. Крупные сундуки, лари и бочки — к `containers_contents`.
@@ -140,3 +161,4 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
    - Рисунки у берестяных грамот и надписи на гуслях.
    - OCR МИА 65 и Колчина 1968 не выполнялся: локальные PDF — сканы.
    - Янин (печати) использован только через SRC053 и SRC087 master.
+9. **Профили обязательного набора.** Это candidate data шага 1, не runtime-включение. Отдельный consumer контейнеров должен применить relation при первом открытии, не смешивая её с arrival-frequency. Прямого FK `food household_type → household composition hh_id` нет; маппинг роли в relation явный, а фактическая численность остаётся входом материализации. Рыбацкое жилище не получило выдуманный PF. Наборы корчмы и постоялого двора существуют как relation, но их PF/scene/owner остаются входом #176. `reports/household_inventory_rejected.csv` фиксирует семь отклонений: ухват, чугунная печь, бумажная книга, массовая поливная посуда, местный шёлк, обычная ходячая иностранная монета и generic D&D tavern.

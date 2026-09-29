@@ -564,6 +564,30 @@ def build_npc_psychology(occs, roles):
     )
     report["npc_psychology"] = {"psychology_profiles.csv": n, "occupations_covered": len(occs), "roles_covered": len(roles)}
 
+    # Occupation-specific candidate pools. These are options for a later
+    # seeded runtime selector, not individual facts or selection weights.
+    source_path = os.path.join(out_dir, "occupation_goals_fears_authoring.csv")
+    source_rows = read_csv(source_path)
+    expected_occupations = {row["occupation_id"] for row in occs}
+    additions_path = os.path.join(
+        GAME_BASE_V1, "occupations-activities", "occupations", "occupations_additions.csv")
+    expected_occupations.update(row["occupation_id"] for row in read_csv(additions_path))
+    actual_occupations = {row.get("occupation_id") for row in source_rows}
+    if actual_occupations != expected_occupations:
+        raise ValueError("occupation goal/fear authoring must cover the exact occupation set")
+    motive_fields = ["occupation_id", "item_id", "text_ru", "basis", "source_refs", "confidence", "status"]
+    counts = {}
+    for item_kind, output_name in (("goal", "occupation_goals.csv"), ("fear", "occupation_fears.csv")):
+        rows = []
+        for source in source_rows:
+            if source.get("item_kind") != item_kind:
+                continue
+            row = {field: source.get(field, "") for field in motive_fields}
+            row["status"] = "candidate"
+            rows.append(row)
+        counts[output_name] = write_csv(os.path.join(out_dir, output_name), rows, motive_fields)
+    report["npc_psychology"].update(counts)
+
 
 # ---------------------------------------------------------------------------
 # Domain 3: speech_address
@@ -730,6 +754,9 @@ def build_social_norms():
         # finding). Content/classification of these 8 WK claims is
         # unchanged — marriage_inheritance_rules.csv is out of scope for
         # this rework pass.
+        source_refs = "wk:family-social-context.json#" + cl["claim_ref"]
+        if cl["claim_ref"] == "claim:rp-minor-children-conditional-care":
+            source_refs += ";basis:analogy;derivation:n1230:property_rule:minor_property_guardianship;crosswalk_confidence:C;crosswalk_period:ок. 1230–1250;crosswalk_region:Новгородская земля"
         rows.append({
             "sn_id": "sn_wk_" + cl["claim_ref"].split(":", 1)[-1],
             "norm_kind": "family_property" if "care" in cl["claim_ref"] or "household" in cl["claim_ref"] else "social_law_economy",
@@ -739,7 +766,7 @@ def build_social_norms():
             "repair_options": "",
             "applies_to_roles": "",
             "attestation": ";".join(cl.get("evidence_refs", [])),
-            "source_refs": "wk:family-social-context.json#" + cl["claim_ref"],
+            "source_refs": source_refs,
             "confidence": {"high": "A", "medium": "B", "low": "C"}.get(cl.get("qualifiers", {}).get("confidence", ""), "C"),
         })
     # Honour/insult norms from Russkaya Pravda, Prostrannaya redaktsiya.
@@ -778,7 +805,7 @@ def build_social_norms():
         ("sn_rp_slave_insult", "insult", "удар со стороны холопа по свободному",
          "иной правовой вес — ответственность несёт господин, либо выдача холопа",
          "выдача виновного холопа или выплата господином", "холоп/свободный", "C",
-         "Русская Правда, Пространная редакция, общая норма о холопах и ответственности господина — конкретная статья/номер НЕ подтверждена per-row в доступной этой группе book evidence (гэп, требуется отдельная проверка по академическому изданию, напр. Троицкий список)"),
+         "Русская Правда, Пространная редакция, общая норма о холопах и ответственности господина — конкретная статья/номер НЕ подтверждена per-row в доступной этой группе book evidence (гэп, требуется отдельная проверка по академическому изданию, напр. Троицкий список);basis:logical_necessity;derivation:n1230:law_rule:master_liability;crosswalk_confidence:C;crosswalk_period:ок. 1230;crosswalk_region:Новгородская земля"),
     ]
     for sid, kind, trig, weight, repair, roles_, conf, src in RP_INSULT:
         rows.append({

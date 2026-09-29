@@ -240,7 +240,7 @@
 - `temporal-v4:vocabularies`
 - `temporal-v4:vocabularies-check`
 
-## test (40)
+## test (41)
 
 - `test`
 - `test:acceptance`
@@ -251,6 +251,7 @@
 - `test:domain`
 - `test:finalization`
 - `test:g5-placement`
+- `test:game-base`
 - `test:hidden-boundary`
 - `test:integration`
 - `test:knowledge-source`

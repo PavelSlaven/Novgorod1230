@@ -93,7 +93,18 @@ jobs:
         run: npm run world-db:schema-check && npm run world-db:schema-doc-check
       - name: Start PostgreSQL for full profile
         if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
-        run: docker run --detach --name spatial-v3-ci-postgres --env POSTGRES_DB=postgres --env POSTGRES_PASSWORD=postgres --env POSTGRES_USER=postgres --publish 5432:5432 postgres:16
+        run: |
+          for attempt in 1 2 3; do
+            docker pull postgres:16 && break
+            test "$attempt" -lt 3
+            sleep 5
+          done
+          docker run --detach --name spatial-v3-ci-postgres \
+            --env POSTGRES_DB=postgres \
+            --env POSTGRES_PASSWORD=postgres \
+            --env POSTGRES_USER=postgres \
+            --publish 5432:5432 postgres:16
+
       - name: Execute world_base DDL in PostgreSQL
         if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
         env:
@@ -154,7 +165,7 @@ jobs:
           PGUSER: postgres
         run: |
           set +e
-          { npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:shadow && npm run test:cutover && npm run docs:check; } > "$RUNNER_TEMP/npm-test.log" 2>&1
+          { npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check; } > "$RUNNER_TEMP/npm-test.log" 2>&1
           status=$?
           cat "$RUNNER_TEMP/npm-test.log"
           exit "$status"

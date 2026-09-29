@@ -464,3 +464,69 @@ F2: slot override в `actor_appearance_authoring.json` выбирает `nov_clo
 
 - Правило `hair_visible_only_when_head_uncovered` опирается на надетые вещи и `covers_hair`. Статичного `head_coverage_state` в данных нет. Черты волос у NPC хранятся всегда.
 - `composition_slot_facts`: ровно два связанных слота `pf_peasant_homestead` (домохозяин и хозяйка), `married` только у них. Хозяйке — `of_rural_female_{warm,cool,cold}_married` с головным убором, домохозяину — сельский мужской наряд. Общий профиль `nov_role_household_mistress` вне этого слота остаётся городским.
+
+### npc_runtime_profiles — облик по полу и возрасту (C014) — approve_with_limits
+
+Проверено: Claude Opus 5.5, ревьюер. Проверка шла по отчёту 1000 детерминированных бросков на пару «пол × возраст» (`c014-appearance-rolls`) и по построчному diff против `056cc927`.
+
+- **Лысина** — только у мужчин `adult|middle_aged|old`; веса 1/2/3 против 9 нелысых. На 1000 бросков: 93, 191 и 238 соответственно. У женщин и молодых лысины нет — 0 из 1000.
+- **Седина** (gray/white среди нелысых) растёт с возрастом: 0%, около 7,5%, около 37–40%, около 68–69%, одинаково у обоих полов.
+- **Основание.** Это редакционное игровое допущение по реалистичности (D33), не историческая частота: `no_source` указан явно. Механизм прежний — `applicability` и `incompatible_with` этого файла, нового нет.
+- **Исправляет** дефект прозаического теста v5 (#158, комментарий 5869978527): бритые и лысые женщины, лысые молодые, «старик» с чёрными волосами.
+- **Не изменены:** 28 профилей остаются `candidate`; одобренные исходные строки spatial-v3 не тронуты.
+
+## Независимая проверка D46 imp-people (Claude Opus 5.5, 2026-09-29)
+
+История: круг 1 — rework (дубли и узкие специализации → варианты, B→logical_necessity, копирование ролей/мест/навыков аналога). Круг 2 — rework (шаблоны архивного семейства в сезонности, цепочках и связях; region; context policy; basis A по семейным источникам; PRO0210; непрозрачные id; forest profile; связь музыкантов со скоморохом). Круг 3 — итоговый.
+
+Проверено скриптами в круге 3:
+- 14 новых владельцев со смысловыми id (OA-8, OA-7 occ_household_stove_maker), 43 активных варианта сериализованы ровно один раз у целевого owner/profile, 15 typed deferred не попали в данные.
+- OA-1/2: частоты по всем 479 профессиям архива; сегменты, общие для ≥2 workflow_family, в новых строках есть только в `notes`. 17 поведенческих полей и routine 14 новых профилей — no_source; у изменённых старых строк меняется только provenance.
+- OA-3 архетипы, OA-4 region_novgorod_land 14/14, OA-5 context_only (8 владельцев, 13 variant-токенов = authoring), OA-6 basis (sourced ровно PRO0448/0107/0109/0111/0119; итог 5/4/63 из 72), OA-9 PRO0104/0071 → m2c_npc_forest_worker_v1, OA-10 related_role:nov_role_skomorokh + семья PRO0449–0452.
+- Дубли по основам против 19 старых и 68 pinned занятий — новых нет; коллизий id нет; denylist — 0.
+
+Прогоны (копия): все сборщики ×2 — вывод = worktree, повтор побайтно; check_occupations_additions, validate.py, validate.py --self-test — OK; build-catalog, build-status + тест, places-binding validate --start-territory — PASS; смежные build_schedules и check-people-composition без изменений.
+
+Ограничения:
+- `notes` 14 новых строк цитирует межсемейную «Рабочую цепочку» архива (могильщик — литургическая, хозяин постоя — купеческая). Поле не читает ни один потребитель; вырезать до переноса в approved/runtime.
+- OA-6: у 5 sourced-ссылок нет оговорки «свидетельство о предмете или практике».
+- 15 deferred вариантов поимённо только в authoring JSON; README даёт лишь счёт, фраза о «source patterns» в occupations/README.md устарела.
+- Музыканты без архетипа до решения владельца; двойная provenance PRO0115 (occ_netmaker) и PRO0204 (limeburner/mason).
+- Новые занятия — кандидаты с no_source-поведением; для runtime нужен отдельный authoring и утверждение.
+
+Вердикт по файлам:
+- occupations/occupations_additions.csv — approve_with_limits (notes, оговорка OA-6)
+- occupations/archive-professions.authoring.json (новый) — approve
+- occupations/scripts/archive_professions.py (новый), build_occupations_additions.py, check_occupations_additions.py — approve
+- occupations/README.md — approve_with_limits (устаревшая фраза, deferred не поимённо)
+- README.md — approve
+- activities_observable/activities_new_occupations.csv, scripts/build_activities_for_new_occupations.py — approve
+- npc_runtime_profiles/npc_runtime_profiles.json — approve_with_limits (оговорка OA-6 у fisher/hunter)
+- npc_runtime_profiles/build.py, README.md — approve
+- skills_competences/skills_competences.json — approve
+- skills_competences/build.py — approve
+- skills_competences/README.md — approve
+- validate.py — approve
+Группа: approve_with_limits.
+
+## Независимая проверка owner-fixes D47 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** Claude Opus 5.5, независимый проверяющий, не автор. Ветка `fleet/owner-fixes`, HEAD `ce307cbf` (работа Codex `34070b47`, слияние main с #189 `782f4392`), база main `2b4aa2f9`.
+- **Что:** по D47 занятия `occ_gusli_player`, `occ_singer`, `occ_storyteller` (PRO0448, PRO0454, PRO0455) получили новый закрытый архетип `performance_entertainment` вместо `no_source:occupation_archetype`. `check_occupations_additions.py` берёт словарь архетипов из канонического сида `occupation_archetypes_v1.csv` и требует этот архетип у трёх занятий. Два README описывают новое состояние. Вне группы: строка сида, генератор `generate_universal_seeds.py` (LF), счётчик 15→16 в `field-descriptions.js`, `SCHEMA_REFERENCE.md`, `domains-b.src.json` и каталоге.
+- **Проверено скриптами:**
+  - Semantic diff `occupations_additions.csv` к main: 33 строки, порядок и заголовок те же, изменён только `occupation_archetype_id` у трёх занятий.
+  - В копии `git archive HEAD` два прохода штатных сборщиков: seedgen, `build_occupations_additions.py`, activities, npc_runtime_profiles, skills. Выход совпал с HEAD побайтно, второй проход ничего не изменил.
+  - `check_occupations_additions.py` и `--self-test`, `validate.py` (33/20/42/33): rc=0.
+  - Три id есть в `allowed_occupations` роли скомороха (social-strata-law) и существуют здесь со `status=candidate`.
+- **Ограничения:**
+  - Строка сида несёт общую provenance генератора (`seed:universal_social_layer_v1`, 2026-07-08), ссылки на D47 в ней нет.
+  - В `world_base` 15 архетипов до реимпорта. Навыков у архетипа нет: строки `occupation_skill_defaults` нет, так решено.
+  - Три занятия есть только в candidate `occupations_additions.csv`, их надо импортировать вместе с ролями.
+
+### Вердикты по файлам owner-fixes
+
+- README.md — approve: музыкальные занятия описаны с `performance_entertainment`
+- occupations/README.md — approve_with_limits: фраза про музыкальные занятия верна; прежние оговорки (устаревшая фраза, deferred не поимённо) остаются
+- occupations/occupations_additions.csv — approve_with_limits: дельта D47 чистая, изменён только архетип трёх занятий, файл равен пересборке; прежняя оговорка OA-6 остаётся
+- occupations/scripts/build_occupations_additions.py — approve: три reviewer mapping
+- occupations/scripts/check_occupations_additions.py — approve: словарь берётся из канонического сида, у трёх занятий обязателен `performance_entertainment`

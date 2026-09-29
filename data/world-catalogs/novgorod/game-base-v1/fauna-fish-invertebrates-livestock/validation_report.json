@@ -6,7 +6,7 @@
   "fishing_methods.csv": 13,
   "water_body_pf_crosswalk.csv": 52,
   "invertebrates_herps.csv": 45,
-  "fauna_presence.csv": 1779,
+  "fauna_presence.csv": 1717,
   "phase_activity.csv": 996,
   "livestock_species.csv": 11,
   "livestock_types.csv": 28,
@@ -17,7 +17,7 @@
   "herd_composition.csv": 78,
   "household_type_crosswalk.csv": 58,
   "place_type_livestock.csv": 113,
-  "rpgr_pf_crosswalk.csv": 144,
+  "rpgr_pf_crosswalk.csv": 145,
   "anachronism_denylist_fauna.csv": 11,
   "sources.csv": 68
  },
@@ -26,6 +26,7 @@
   "phase_activity": true,
   "fish_resolve_water_body_template": true,
   "fish_spawning_period_set": true,
+  "all_fish_species_have_food_product": true,
   "fish_species_per_river_lake_pf_ge_6": true,
   "summer_wet_pf_have_bloodsucker": true,
   "no_active_flying_insects_outdoors_in_winter": true,
@@ -40,7 +41,11 @@
   "weights_match_class_rule": true,
   "confidence_in_ABC": true,
   "unique_ids": true,
-  "all_status_candidate": true
+  "statuses_valid": true,
+  "duplicate_status_only_for_authored_duplicates": true,
+  "three_authored_duplicate_taxa": true,
+  "duplicates_absent_from_presence": true,
+  "duplicate_authored_presence_subset_canonical": true
  },
  "fish_species_per_river_lake_pf": {
   "river_channel": 28,
@@ -101,8 +106,454 @@
   ]
  },
  "presence_rows_by_table": {
-  "invertebrates_herps": 570,
+  "invertebrates_herps": 508,
   "fish": 1209
+ },
+ "duplicate_presence_comparison": {
+  "compared_pairs": 62,
+  "missing": [],
+  "weakened": [
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "dwelling_interior",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "dwelling_interior",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "dwelling_interior",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "dwelling_interior",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "cellar_granary",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "cellar_granary",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "cellar_granary",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "cellar_granary",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "threshing_barn",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "threshing_barn",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "threshing_barn",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "threshing_barn",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "grain_drying_shed_ovin",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "grain_drying_shed_ovin",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "grain_drying_shed_ovin",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "grain_drying_shed_ovin",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "outbuildings",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "outbuildings",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "outbuildings",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "outbuildings",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "common",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "market_square",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "market_square",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "market_square",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "market_square",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "river_wharf",
+    "season": "winter",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "river_wharf",
+    "season": "spring",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "river_wharf",
+    "season": "summer",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_house_mouse",
+    "canonical_targets": [
+     "fa_m_house_mouse"
+    ],
+    "pf_id": "river_wharf",
+    "season": "autumn",
+    "duplicate_class": "ubiquitous",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_house_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "arable_field",
+    "season": "summer",
+    "duplicate_class": "common",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "arable_field",
+    "season": "autumn",
+    "duplicate_class": "common",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "field_margin",
+    "season": "summer",
+    "duplicate_class": "common",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "field_margin",
+    "season": "autumn",
+    "duplicate_class": "common",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "hay_meadow",
+    "season": "summer",
+    "duplicate_class": "common",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "hay_meadow",
+    "season": "autumn",
+    "duplicate_class": "common",
+    "canonical_class": "contextual",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "threshing_barn",
+    "season": "autumn",
+    "duplicate_class": "common",
+    "canonical_class": "rare",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "threshing_barn",
+    "season": "winter",
+    "duplicate_class": "common",
+    "canonical_class": "rare",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "grain_drying_shed_ovin",
+    "season": "autumn",
+    "duplicate_class": "common",
+    "canonical_class": "rare",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "grain_drying_shed_ovin",
+    "season": "winter",
+    "duplicate_class": "common",
+    "canonical_class": "rare",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "cellar_granary",
+    "season": "autumn",
+    "duplicate_class": "common",
+    "canonical_class": "rare",
+    "canonical_species": "fa_m_striped_field_mouse"
+   },
+   {
+    "duplicate": "fa_mamm_striped_field_mouse",
+    "canonical_targets": [
+     "fa_m_striped_field_mouse"
+    ],
+    "pf_id": "cellar_granary",
+    "season": "winter",
+    "duplicate_class": "common",
+    "canonical_class": "rare",
+    "canonical_species": "fa_m_striped_field_mouse"
+   }
+  ]
  },
  "confidence_counts": {
   "fish": {
@@ -121,8 +572,8 @@
    "C": 1
   },
   "fauna_presence": {
-   "B": 700,
-   "C": 676,
+   "B": 672,
+   "C": 642,
    "A": 403
   },
   "livestock_care": {

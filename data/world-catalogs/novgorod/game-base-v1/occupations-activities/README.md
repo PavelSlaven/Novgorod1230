@@ -1,9 +1,32 @@
 # occupations-activities — кандидатные данные C001
 
-Четыре артефакта: 19 занятий, 20 наблюдаемых действий, 28 основ
-NPC-профилей (9 исходных M2c и 19 новых), 19 компетенций с 12
+Четыре артефакта: 33 занятия, 20 наблюдаемых действий, 42 основы
+NPC-профиля (9 исходных M2c и 33 новых), 33 компетенции с 12
 родительскими навыками. Все имеют статус `candidate`; генераторы не меняют
 active runtime, pinned TSV, STATUS и вердикты.
+
+14 архивных кандидатов и 43 активных варианта заданы в
+`occupations/archive-professions.authoring.json`; builder разрешает их по
+закреплённой копии master archive. Ещё 15 pinned-target mappings лежат в
+`deferred_variants` как типизированный authoring backlog, так как эти цели
+нельзя безопасно сериализовать в текущий runtime; PRO0104 и PRO0071 связаны с
+`profile:m2c_npc_forest_worker_v1`. Семантические ID владельцев заданы явной
+таблицей `semantic_ids`; PRO0210 — отдельный `occ_household_stove_maker` с
+`context_only_not_mass_default`.
+
+Общие archive templates не считаются индивидуальными свойствами занятия:
+seasonal schedules, NPC routine, workflow materialization и
+`common_relationships` сериализуются как typed `no_source`. Archive owners
+получают `region_novgorod_land`; archetypes заданы reviewer mappings, а музыкальные
+занятия используют закрытый `performance_entertainment`. Variant context-only
+policy хранится в provenance token; owner-level policy берётся из отдельного
+списка authoring. Связь трёх музыкальных owners с
+`nov_role_skomorokh` хранится как `related_role` и не объединяет их ID.
+Кандидатные данные не дают runtime approval. Дополнительные runtime roles,
+places и skills без основания остаются `no_source`.
+Архивные кандидаты не получают одиночный
+activity cue автоматически: новые действия добавляются только как отдельные
+обоснованные контекстные цепочки.
 
 Запускать из корня репозитория:
 

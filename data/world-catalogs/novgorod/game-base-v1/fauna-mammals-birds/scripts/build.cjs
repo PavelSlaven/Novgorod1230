@@ -12,6 +12,8 @@ const mammals = require('./src/mammals.cjs');
 const birds = require('./src/birds.cjs');
 const checks = require('./src/checks.cjs');
 const sources = require('./src/sources.cjs');
+const peltProfiles = require('./src/pelt-profiles.cjs');
+const hunting = require('./src/hunting.cjs');
 const pant = require('./input_snapshots/panteleev2001_list.json').species;
 const malf = require('./input_snapshots/malchevsky1983_flags.json').species;
 const phaseRules = require('../fauna/activity_phase_rules.json');
@@ -22,7 +24,7 @@ const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 const LEVELS = ['rare', 'contextual', 'common', 'ubiquitous'];
 const BASE = { R: 0, X: 1, C: 2, U: 3 };
 const WEIGHT = { rare: 1, contextual: 2, common: 4, ubiquitous: 8 };
-const REGION_DEFAULT = 'novgorod_land';
+const REGION_DEFAULT = 'region_novgorod_land';
 const RULE_REF = 'fauna-mammals-birds/README.md#frequency-rule';
 
 // Habitat group -> pf_id list (pf ids from places-binding/places/place_families.csv).
@@ -32,7 +34,8 @@ const HABITAT_GROUPS = {
   river: ['pf_river_channel'], bank: ['pf_riverbank'], lake: ['pf_lake_shore'], flood: ['pf_floodplain_meadow'],
   hay: ['pf_hay_meadow'], pasture: ['pf_pasture'], field: ['pf_arable_field'], garden: ['pf_orchard_garden'],
   homestead: ['pf_peasant_homestead', 'pf_rural_yard'], lane: ['pf_village_lane'], outb: ['pf_outbuildings'],
-  store: ['pf_cellar_granary', 'pf_mill', 'pf_grain_drying_shed_ovin'], threshing: ['pf_threshing_barn'],
+  store: ['pf_cellar_granary', 'pf_mill', 'pf_grain_drying_shed_ovin'], cellar: ['pf_cellar_granary'],
+  ovin: ['pf_grain_drying_shed_ovin'], threshing: ['pf_threshing_barn'],
   dwelling: ['pf_dwelling_interior'], town: ['pf_town_street', 'pf_town_courtyard', 'pf_town_wall_edge'],
   market: ['pf_market_square'], wharf: ['pf_river_wharf'], church: ['pf_churchyard', 'pf_monastery_yard'],
   ferry: ['pf_ferry_landing'], fishing: ['pf_fishing_camp'], road: ['pf_road', 'pf_bridge_crossing'],
@@ -104,14 +107,17 @@ for (const [kind, list] of [['mammal', mammals], ['bird', birds]]) {
 // ---- mammals
 const mRows = mammals.map((t) => ({
   fa_id: t.id, name_ru: t.ru, name_ru_alt: t.alt || '', name_lat: t.lat, name_en: t.en, class: 'Mammalia', order: t.order, group: t.grp,
-  category_ref: cat('mammal', t.grp, t.id), scope: 'universal_taxon', region_scope: t.region || REGION_DEFAULT,
+  category_ref: cat('mammal', t.grp, t.id), scope: 'universal_taxon', region_scope: t.region || REGION_DEFAULT, subregion_scope: t.subregion || '',
   base_frequency_class: LEVELS[BASE[t.base]], base_frequency_basis: t.baseBasis, presence_1230_confidence: t.pres, historical_evidence: t.evid || '',
   activity_time: t.act, dormant_seasons: (t.dorm || []).join(';'), audible_seasons: t.audible,
   season_winter: t.seas.winter || '', season_spring: t.seas.spring || '', season_summer: t.seas.summer || '', season_autumn: t.seas.autumn || '',
   rut_period: t.rut || '', moult: t.moult || '', winter_coat: t.coat || '',
   signs_tracks: t.tracks || '', signs_droppings: t.drop || '', signs_feeding: t.feed || '', signs_dens_nests: t.den || '', signs_sounds: t.sound || '', signs_smell: t.smell || '',
   behaviour_to_humans: t.human, danger_level: t.danger, products: t.products || '', hunting_methods: t.hunt || '', hunting_method_refs: t.huntRefs || '',
-  wk_refs: t.wk || '', habitats: t.hab, source_refs: `${t.src};mammals.csv#${t.id}.signs_sounds`, confidence: 'B', notes: t.note || '', status: 'candidate',
+  pelt_prime_months: peltProfiles[t.id]?.pelt_prime_months || '', pelt_quality_by_month: peltProfiles[t.id]?.pelt_quality_by_month || '',
+  pelt_calendar_basis: peltProfiles[t.id]?.pelt_calendar_basis || '', pelt_calendar_source_refs: peltProfiles[t.id]?.pelt_calendar_source_refs || '',
+  pelt_qualitative_source_refs: peltProfiles[t.id]?.pelt_qualitative_source_refs || '', pelt_calendar_note: peltProfiles[t.id]?.pelt_calendar_note || '',
+  wk_refs: t.wk || '', habitats: t.hab, source_refs: `${t.src}${t.taxonExtraSources ? ';' + t.taxonExtraSources : ''};mammals.csv#${t.id}.signs_sounds`, confidence: 'B', notes: t.note || '', status: 'candidate',
 }));
 
 // ---- birds
@@ -127,6 +133,7 @@ const bRows = birds.map((b) => {
     base_frequency_class: LEVELS[BASE[b.base]], base_frequency_basis: `Malchevsky head abundance flags: ${(mf && mf.abundance_flags_head.join('|')) || 'n/a'}${b.note ? '; note: ' + b.note : ''}`,
     presence_1230_confidence: b.pres, historical_evidence: b.evid || '',
     migration_winter: MIG[b.mig[0]], migration_spring: MIG[b.mig[1]], migration_summer: MIG[b.mig[2]], migration_autumn: MIG[b.mig[3]], mass_passage: b.massP ? 'true' : 'false',
+    season_presence_conditions: Object.entries(b.seasonConditions || {}).map(([season, condition]) => `${season}=${condition}`).join(';'),
     activity_time: b.act, voice_description: b.voice, voice_sound_ru: b.sound, audible_seasons: audible.join(';'), nesting: b.nest, game_value: b.game, falconry_relevance: b.falc, products: b.products || '',
     habitats: b.hab, panteleev_2001_listed: pe ? 'true' : 'false', petrov_1885_priilmenye: pe && pe.petrov_1885 ? 'true' : 'false',
     malchevsky_page: malPage(b), malchevsky_status_flags: mf ? mf.status_flags.join('|') : '', malchevsky_heading_check: mf ? mf.latin_heading : '',
@@ -146,6 +153,7 @@ function presRowsFor(t, kind) {
   const base = BASE[t.base];
   const rows = [];
   for (const [si, season] of SEASONS.entries()) {
+    if (t.seasonConditions?.[season]) continue;
     let state, sDelta = 0, audible = false;
     if (kind === 'mammal') {
       state = (t.dorm || []).includes(season) ? 'dormant' : 'active';
@@ -165,12 +173,18 @@ function presRowsFor(t, kind) {
     }
     for (const [pf, fit] of fitsSeason) {
       let lvl = state === 'dormant' ? 0 : stepDown(base, (fit === 'marginal' ? 1 : 0) + sDelta);
+      const presenceOverride = t.presenceOverrides?.[`${season}:${pf}`];
+      const levelOverride = typeof presenceOverride === 'string' ? presenceOverride : presenceOverride?.frequency;
+      if (levelOverride) {
+        if (!LEVELS.includes(levelOverride)) throw new Error(`bad presence override ${t.id} ${season}:${pf}: ${levelOverride}`);
+        lvl = LEVELS.indexOf(levelOverride);
+      }
       const fc = LEVELS[lvl];
       rows.push({
         presence_id: `fhp_${t.id.replace(/^fa_/, '')}__${pf.replace(/^pf_/, '')}__${season}`, fa_id: t.id, category_ref: cat(kind, t.grp, t.id), pf_id: pf,
-        region_id: t.region || REGION_DEFAULT, season, frequency_class: fc, weight: WEIGHT[fc], fit, state, activity_time: state === 'dormant' ? 'dormant' : t.act,
+        region_id: t.region || REGION_DEFAULT, subregion_scope: t.subregion || '', season, frequency_class: fc, weight: WEIGHT[fc], fit, state, activity_time: state === 'dormant' ? 'dormant' : t.act,
         audible: audible ? 'true' : 'false', observable_signs: sigSummary(t, kind, season, state), refresh_class: 'by_year_season',
-        rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4', kind === 'mammal' && audible ? `mammals.csv#${t.id}.signs_sounds` : ''].filter(Boolean))].join(';'),
+        rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), ...(typeof presenceOverride === 'object' ? (presenceOverride.sourceRefs || '').split(';') : []), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4', kind === 'mammal' && audible ? `mammals.csv#${t.id}.signs_sounds` : ''].filter(Boolean))].join(';'),
         confidence: t.pres === 'C' ? 'C' : 'B', status: 'candidate',
       });
     }
@@ -181,7 +195,7 @@ for (const t of mammals) pres.push(...presRowsFor(t, 'mammal'));
 for (const b of birds) pres.push(...presRowsFor(b, 'bird'));
 
 // ---- checks + sources tables
-const chkRows = checks.map((c, i) => ({ check_id: `fchk_${String(i + 1).padStart(3, '0')}`, taxon_ru: c.taxon, name_lat: c.lat, verdict: c.verdict, fa_ids: c.fa_id, reason: c.reason, source_refs: c.src, confidence: c.confidence, status: 'candidate' }));
+const chkRows = checks.map((c, i) => ({ check_id: `fchk_${String(i + 1).padStart(3, '0')}`, taxon_ru: c.taxon, name_lat: c.lat, verdict: c.verdict, fa_ids: c.fa_id, basis: c.basis || '', derivation: c.derivation || '', reason: c.reason, source_refs: c.src, confidence: c.confidence, status: 'candidate' }));
 const srcRows = sources.map((s) => ({ source_id: s.id, level: s.level, read_depth: s.read, title: s.title, url: s.url, use: s.use }));
 
 const counts = {};
@@ -191,6 +205,8 @@ counts.wild_habitat_presence = writeCsv(path.join(OUT, 'wild_habitat_presence.cs
 counts.fauna_categories = writeCsv(path.join(OUT, 'fauna_categories.csv'), Object.keys(catRows[0]), catRows);
 counts.taxa_checks = writeCsv(path.join(OUT, 'taxa_checks.csv'), Object.keys(chkRows[0]), chkRows);
 counts.sources = writeCsv(path.join(OUT, 'sources.csv'), Object.keys(srcRows[0]), srcRows);
+counts.hunting_methods = writeCsv(path.join(OUT, 'hunting_methods.csv'), Object.keys(hunting.methods[0]), hunting.methods);
+counts.hunting_tenure_defaults = writeCsv(path.join(OUT, 'hunting_tenure_defaults.csv'), Object.keys(hunting.tenure[0]), hunting.tenure);
 const phaseRows = [];
 const scoped = new Set(pres.filter((p) => startPf.has(p.pf_id)).map((p) => `${p.fa_id}|${p.season}`));
 for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {
@@ -211,6 +227,11 @@ for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {
     let visibilityDirect = false;
     let voiceDirect = voiceFact === 'yes';
     const books = 'books-evidence-v1/fauna-mammals-birds.csv';
+    if (t.fa_id === 'fa_m_mole') {
+      visibility = 'no_source';
+      source = '';
+      visibilityDirect = false;
+    }
     if (t.fa_id === 'fa_b_bittern' && ['spring', 'summer'].includes(season) && ['daylight', 'civil_dusk', 'night'].includes(phase)) {
       voice = 'yes'; source = `${books}#L178`; voiceDirect = true;
     }
@@ -226,9 +247,10 @@ for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {
     if (t.fa_id === 'fa_b_swift' && season === 'summer' && phase === 'civil_dawn') {
       voice = 'yes'; source = `${books}#L299`; voiceDirect = true;
     }
-    const completeGap = visibility === 'no_source' && voice === 'no_source';
+    const completeGap = visibility === 'no_source' && voice === 'no_source' && t.fa_id !== 'fa_m_mole';
     if (completeGap) source = '';
-    const ruleRef = !completeGap && !source ? `fauna/activity_phase_rules.json#${phaseRules.id}.${t.activity_time}.${phase}` : '';
+    const ruleRef = t.fa_id === 'fa_m_mole' ? 'fauna/activity_phase_rules.json#subterranean-surface-sighting-gap' :
+      !completeGap && !source ? `fauna/activity_phase_rules.json#${phaseRules.id}.${t.activity_time}.${phase}` : '';
     phaseRows.push({ phase_rule_id: `fpa_${t.fa_id}_${season}_${phase}`, fa_id: t.fa_id, season, phase,
       visibility_state: visibility, voice_state: voice, voice_text_ref: voice === 'yes' ?
         `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` : '',

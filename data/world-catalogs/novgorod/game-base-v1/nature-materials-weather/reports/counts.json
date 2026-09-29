@@ -4,11 +4,11 @@
  "counts": {
   "natural_materials_soils": {
    "access_tools.csv": 13,
-   "g4_ground_and_materials.csv": 360,
+   "g4_ground_and_materials.csv": 544,
    "ground_types.csv": 34,
    "landscape_ground_binding.csv": 34,
-   "material_landscape_presence.csv": 258,
-   "natural_materials.csv": 22,
+   "material_landscape_presence.csv": 434,
+   "natural_materials.csv": 29,
    "finite_source_profiles_ext.json": "21 profiles"
   },
   "weather_climate": {
@@ -23,10 +23,10 @@
    "temperature_anomalies.csv": 5,
    "temperature_anomaly_transitions.csv": 40,
    "temperature_profile.csv": 48,
-   "water_profiles.csv": 1754,
+   "water_profiles.csv": 1907,
    "weather_season_climatology.csv": 36,
-   "weather_states.csv": 9,
    "weather_state_temperature_modifiers.csv": 9,
+   "weather_states.csv": 9,
    "weather_transitions.csv": 315,
    "wind_air_profiles.csv": 70,
    "weather_transition_profile_v2.candidate.json": "9 states"

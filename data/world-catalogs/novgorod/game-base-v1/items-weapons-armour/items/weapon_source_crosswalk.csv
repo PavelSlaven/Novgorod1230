@@ -114,7 +114,7 @@ master_material_culture,ARM0026,Ремонтная связка колец и з
 master_material_culture,ARM0027,Удлинённая кольчуга с разрезами,armor/кольчуги и дополнительная защита,C,1180–1260,wp,wp_mail_long
 master_material_culture,ARM0028,Чешуйчатый панцирь — спорная локальная реконструкция,armor/кольчуги и дополнительная защита,D,1180–1260,wp,wp_scale
 master_material_culture,ARM0029,Кожаная защита конечностей без металлических пластин,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_leather_limb_armour
-master_material_culture,ARM0030,Конский доспех — не норма 1230,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_horse_armour
+master_material_culture,ARM0030,Конский доспех — не норма 1230,armor/пластинчатая и дополнительная защита,D,1180–1260,wp,wp_horse_armour
 master_material_culture,ARM0031,Ламеллярный панцирь из малых пластин — ограниченно допустим,armor/пластинчатая и дополнительная защита,C,1180–1260,wp,wp_lamellar
 master_material_culture,HLM0001,Шлем с креплением бармицы,helmets/aventail_helmet,B,1180–1260,wp,wp_barmitsa
 master_material_culture,HLM0002,Конический шлем с наносником,helmets/conical_nasal,B,1180–1260,wp,wp_helmet_conical
@@ -128,12 +128,12 @@ master_material_culture,HLM0009,Куполовидный шлем западно
 master_material_culture,HLM0010,Стёганая подшлемная шапочка,helmets/шлемы XII–первой половины XIII века,C,1180–1260,wp,wp_helmet_liner
 master_material_culture,HLM0011,Сфероконический шлем без выраженного наносника,helmets/шлемы XII–первой половины XIII века,B,1180–1260,wp,wp_helmet_spheroconical
 master_material_culture,HLM0012,Бацинет с забралом,helmets/шлемы и защита головы,D,1320–1500,denylist,deny_bascinet
-master_material_culture,HLM0013,Железная шапель/«железная шляпа» — возможный западный импорт,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_kettle_hat
-master_material_culture,HLM0014,Западноевропейский шлем-«горшок» раннего типа — чужеземный и редкий,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_great_helm
+master_material_culture,HLM0013,Железная шапель/«железная шляпа» — возможный западный импорт,helmets/шлемы и защита головы,D,1180–1260,wp,wp_helmet_kettle_hat
+master_material_culture,HLM0014,Западноевропейский шлем-«горшок» раннего типа — чужеземный и редкий,helmets/шлемы и защита головы,D,1180–1260,wp,wp_helmet_great_helm
 master_material_culture,HLM0015,Кольчужная бармица шлема,helmets/шлемы и защита головы,B,1180–1260,wp,wp_barmitsa
 master_material_culture,HLM0016,Конический сегментный шлем,helmets/шлемы и защита головы,C,1180–1260,wp,wp_helmet_conical
 master_material_culture,HLM0017,Наносник шлема,helmets/шлемы и защита головы,B,1180–1260,wp,wp_helmet_nasal
-master_material_culture,HLM0018,Полный личинный шлем — исключительная и спорная форма,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_full_mask_helmet
+master_material_culture,HLM0018,Полный личинный шлем — исключительная и спорная форма,helmets/шлемы и защита головы,D,1180–1260,wp,wp_helmet_full_mask
 master_material_culture,HLM0019,Шлем с рогами,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_horned_helmet
 master_material_culture,SHD0001,Круглый деревянный щит,shields/round_shield,B,1180–1260,wp,wp_shield_round
 master_material_culture,SHD0002,Умбон железный,shields/shield_boss,B,1180–1260,wp,wp_shield_umbo

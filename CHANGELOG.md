@@ -4,6 +4,28 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(game-base): archive import PR-B for crafts and buildings-interiors — unambiguous decisions only, typed needs_check queue, directed material kinship in the ownership checker (imp-crafts) (#207)
+- data(game-base): occupation goals and fears for the seeded NPC character (D49), 265 goals / 158 fears, explicit gaps (#206)
+- data(game-base): checker владения архивными id — реестр таблиц, сведение словарей материалов, сверка маршрутов с решением получателя, период вариантов; хвосты одежды и оружия после PR-A (imp-crafts A1) (#204)
+- data(game-base): пересобраны устаревшие generated outputs, сняты исключения freshness (#201)
+- ci(tools): проба готовности PostgreSQL в тестах по TCP (`pg_isready -h 127.0.0.1`), повтор `docker pull` в merge-гейте, build-status понимает `.cjs`, тест свежести сгенерированных файлов game-base-v1 в `test:game-base` (#203)
+- data(game-base): архетип занятий performance_entertainment (гусляр, певец, сказитель), скоморох — точный список занятий; чёрная крыса — редкий завоз по аналогии, общее правило согласованности fauna-групп (D47) (#202)
+- data(game-base): один id региона region_novgorod_land, Ладога — subregion_scope=lower_volkhov_ladoga; проверка check-region-ids в npm test (#189)
+- data(game-base): импорт архива для оружия и одежды, один владелец на архивный id, усиленный check-archive-ownership (imp-crafts PR-A, D47 п.14) (#200)
+- data(economy): D44 — курсы БУЕ, якорные цены c1230, ценовые полосы категорий, стенды C2/C3 (econ-rates, #184) (#196)
+- docs(sprint): CURRENT_SPRINT — трек экономики #184, импорт архивов D46, нормы #183, переправа #185, каркас карты #187, стенды #181, порядок data-PR по D45 (#194)
+- data(places): правила присутствия окружения по типам мест — общие явления и факты по месту, полное покрытие PF × линза (lw-env, #176) (#198)
+- data(world-catalog): связи ресурсов с земноводными, гнездящимися птицами и млекопитающими выведены из свойств видов; дубли грызунов и стартовая среда учтены в проверках (#197)
+- data(people): D46 — архивные занятия, роли, темы права и отложенные варианты психологии (imp-people) (#195)
+- data(food-drink): D46 — архивные пищевые сущности, варианты и состояния порчи, сезонность блюд по месяцам (imp-food) (#193)
+- data(names-peoples): D46 — архивные личные имена, варианты и компоненты с origin-bound проекцией и fail-closed селекторами (#192)
+- data(household): инвентарь домов и мастерских, следы быта, возвраты D40 (lw-house, #176) (#191)
+- data(names-peoples): компоненты имён, продукты рыб и возвраты D40 (C016) (#186)
+- data(resources): метки вещей (D9) и каталог ресурсов часть A — все виды привязаны (B3, #171) (#182)
+- data(fauna): способы охоты, сезоны шкур, разделка туш и рыбы (C015, D37/D40) (#179)
+- docs(process): стенд — обязательная проверка гипотез вне игры на локальной модели до плана реализации (решение владельца D41): HOW_WE_WORK §11, WORKFLOW, CHANGE_REQUEST и форма CR (поле «Стенд») (#180)
+- docs(governance): PC §9.1 — критерий включения в мир и данные: существование, а не предполагаемая польза; наполнение по логике реальности без выдачи за источник (решения владельца D38, D40) (#177)
+- docs(sprint): CURRENT_SPRINT — архитектура ресурсов #171 для B3/B4, навыки #170, PR данных #172 → #173, R-1b в #158 (#174)
 - fix(combat): weapon classification role returns only qualitative_class, code sets schema and request_id; LW-081 added (#188)
 - fix(m2c): R-2a presence first arrival on target v17 — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (`bootstrap-live-world-v17.mjs`); штатный bootstrap без D27 даёт пустое presence на всех 7 стартах (typed `presence_gap` только в диагностике resolver/provisioner, в БД не пишется; старт v17 выбирается по `catalog_id`, не по `binding_revision`), m2c-npc-wave в production не импортируется (#158) LW-035 closed LW-071 closed LW-077 added LW-078 added
 - fix(llm-runtime): `normalizeExecutionLimits` treats `requestTimeoutMs` as a ceiling (`Math.min` against the 120 s default) instead of always overwriting it, so the remaining turn budget survives the provider request timeout; a provider timeout under a budget-clamped `requestTimeoutMs` now reports `LLM_TURN_BUDGET_EXHAUSTED` instead of a generic provider timeout (#98)

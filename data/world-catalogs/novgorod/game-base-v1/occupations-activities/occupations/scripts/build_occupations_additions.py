@@ -15,8 +15,13 @@ Run: python build_occupations_additions.py
 Writes ../occupations_additions.csv next to this script's parent dir.
 """
 import csv
+import json
 import os
+import unicodedata
 from pathlib import Path
+
+from archive_professions import (archive_period, confidence_basis, derivation_ref,
+                                 provenance_token, read_archive, read_authoring, row_ref)
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "occupations_additions.csv")
 PINNED = Path(__file__).resolve().parents[6] / "novgorod-region" / "novgorod_occupations_v1_enriched.tsv"
@@ -99,6 +104,112 @@ PLACE_OVERRIDES = {
     "occ_butcher": ("pt_market_place; pt_city_major_center", "market_square; household_yards"),
     "occ_market_baker": ("pt_market_place; pt_city_major_center", "market_square; household_yards"),
 }
+
+ARCHIVE_DOMAIN_ANALOGS = {
+    "crafts": "archetype_urban_craftsman",
+    "construction": "archetype_urban_craftsman",
+    "church": "archetype_church_craftsman",
+    "food": "archetype_urban_or_household_craftsman",
+    "forestry": "archetype_rural_or_periurban_craftsman",
+    "writing": "archetype_household_dependent",
+    "music": "archetype_household_dependent",
+    "education": "archetype_household_dependent",
+    "hygiene": "archetype_household_dependent",
+    "fishing": "archetype_rural_or_periurban_craftsman",
+    "trade": "archetype_urban_trader",
+    "monastic": "archetype_church_craftsman",
+    "foreigners": "archetype_urban_trader",
+}
+
+ARCHIVE_ARCHETYPE_OVERRIDES = {
+    "PRO0069": "forest_hunting",
+    "PRO0369": "religious_literate",
+    "PRO0398": "religious_literate",
+    "PRO0407": "hospitality_service",
+    "PRO0465": "hospitality_service",
+    "PRO0448": "performance_entertainment",
+    "PRO0454": "performance_entertainment",
+    "PRO0455": "performance_entertainment",
+}
+
+
+def normalized_name(value):
+    value = unicodedata.normalize("NFKC", value).casefold()
+    return "".join(char for char in value if char.isalnum())
+
+
+def archive_occupation_rows(pinned):
+    authoring = read_authoring()
+    archive = read_archive()
+    selected = authoring["new_profession_ids"]
+    semantic_ids = authoring["semantic_ids"]
+    context_only_owners = set(authoring.get("context_only_owner_profession_ids", []))
+    if len(selected) != 14 or len(set(selected)) != 14:
+        raise ValueError("authoring must contain 14 unique canonical archive owners")
+    if set(selected) != set(semantic_ids) or len(set(semantic_ids.values())) != len(semantic_ids):
+        raise ValueError("every archive owner must have a unique semantic occupation id")
+    if not set(selected) <= archive.keys():
+        raise ValueError("authoring references missing master-archive profession ids")
+    existing_names = {normalized_name(row["occupation_title"]) for row in pinned.values()}
+    existing_names.update(normalized_name(row["occupation_title_ru"]) for row in ROWS)
+    result = []
+    for profession_id in selected:
+        source = archive[profession_id]
+        title = source["name_ru"].strip()
+        if normalized_name(title) in existing_names:
+            raise ValueError(f"normalized occupation name already exists: {title}")
+        existing_names.add(normalized_name(title))
+        archetype = ARCHIVE_ARCHETYPE_OVERRIDES.get(
+            profession_id, ARCHIVE_DOMAIN_ANALOGS[source["domain"]])
+        source_ref = row_ref(profession_id)
+        derivation = derivation_ref(profession_id)
+        period = archive_period(source)
+        confidence = source["historical_confidence"]
+        basis = confidence_basis(source)
+        region = source["region_scope"]
+        historical_names = json.loads(source["historical_names"])
+        seasonal_schedule = {season: "no_source:occupation_specific_seasonal_schedule"
+                             for season in ("winter", "spring", "summer", "autumn")}
+        refs = [source_ref, "basis:" + basis, "derivation:" + derivation,
+                "archive_confidence:" + confidence, "archive_period:" + period,
+                "archive_region:" + region.replace(";", ",")]
+        if profession_id in authoring.get("related_role_profession_ids", []):
+            refs.append("related_role:nov_role_skomorokh")
+        result.append({
+            "occupation_id": semantic_ids[profession_id],
+            "occupation_title_ru": title,
+            "occupation_group": "ремесло" if source["type"] == "CRAFT" else "занятие",
+            "historical_term": "; ".join(historical_names) if historical_names else title,
+            "occupation_archetype_id": archetype,
+            "daily_schedule_winter": seasonal_schedule["winter"],
+            "daily_schedule_spring_rasputitsa": seasonal_schedule["spring"],
+            "daily_schedule_summer": seasonal_schedule["summer"],
+            "daily_schedule_autumn": seasonal_schedule["autumn"],
+            "how_to_materialize_as_background_npc": "no_source:occupation_specific_materialization",
+            "how_to_materialize_as_scene_npc": "no_source:occupation_specific_materialization",
+            "how_to_materialize_as_key_npc": "no_source:occupation_specific_materialization",
+            "typical_property": "no_source:exact_game_base_place_family",
+            "typical_tools": "no_source:exact_game_base_item_bindings",
+            "typical_clothing": "no_source:individual_clothing",
+            "typical_containers": "no_source:exact_game_base_container_bindings",
+            "typical_local_knowledge": "no_source:individual_local_knowledge",
+            "typical_route_knowledge": "no_source:individual_route_knowledge",
+            "common_relationships": "no_source:occupation_specific_relationships",
+            "common_fears": "no_source:individual_fears",
+            "common_goals": "no_source:individual_goals",
+            "llm_adaptation_rules": (
+                "context_only_not_mass_default; candidate only; retain archive period, region, source confidence and contextual limits"
+                if profession_id in context_only_owners else
+                "candidate only; retain archive period, region, source confidence and contextual limits"
+            ),
+            "llm_forbidden_uses": "no_source:do_not_infer_individual_facts_or_runtime_authority",
+            "status": "candidate",
+            "confidence": confidence,
+            "source_refs": ";".join(refs),
+            "notes": f"master archive candidate; period={period}; region={region}; basis={basis}; {source['description_ru']}",
+            "_period": period,
+        })
+    return result
 
 ROWS = [
     dict(
@@ -657,43 +768,79 @@ def main():
         reader = csv.DictReader(f, delimiter="\t")
         pinned_fields = reader.fieldnames
         pinned = {row["occupation_id"]: row for row in reader}
+    archive_rows = archive_occupation_rows(pinned)
+    authoring = read_authoring()
+    archive = read_archive()
+    all_rows = list(ROWS) + archive_rows
+    rows_by_id = {row["occupation_id"]: row for row in all_rows}
+    for variant in authoring["variants"]:
+        if not variant["target"].startswith("occupation:"):
+            continue
+        target_id = variant["target"].split(":", 1)[1]
+        if target_id not in rows_by_id:
+            if target_id not in pinned:
+                raise ValueError(f"variant target occupation is absent: {target_id}")
+            continue
+        source = archive[variant["profession_id"]]
+        row = rows_by_id[target_id]
+        token = provenance_token(source)
+        row["source_refs"] += ";" + token
+        row["notes"] += f" Archive variant: {source['name_ru']} ({source['profession_id']}, confidence={source['historical_confidence']}, period={archive_period(source)}, region={source['region_scope']})."
+        if variant.get("llm_adaptation_rules"):
+            row["llm_adaptation_rules"] += ";" + variant["llm_adaptation_rules"]
     fields = list(dict.fromkeys(FIELDS + pinned_fields + ["runtime_basis_analog_ref", "runtime_basis_rule"]))
     with open(OUT, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
         w.writeheader()
-        for r in ROWS:
-            r["occupation_archetype_id"] = ARCHETYPES[r["occupation_archetype_id"]]
+        for original in all_rows:
+            r = {key: value for key, value in original.items() if not key.startswith("_")}
+            runtime_analog = original.get("_runtime_analog")
+            r["occupation_archetype_id"] = ARCHETYPES.get(
+                r["occupation_archetype_id"], r["occupation_archetype_id"])
             if r["occupation_id"] in BOOK_REFS:
                 r["source_refs"] += ";" + BOOK_REFS[r["occupation_id"]]
             if r["occupation_id"] in NO_DIRECT_SOURCE:
                 r["source_refs"] += ";no_source:direct_book_or_wk_occupation_attestation"
-            else:
+            elif not any(ref.startswith("gb:") for ref in r["source_refs"].split(";")):
                 assert "book:" in r["source_refs"] or "wk:" in r["source_refs"], r["occupation_id"]
-            analog_id = ANALOGS[r["occupation_id"]]
-            analog = pinned[analog_id]
+            analog_id = runtime_analog or ANALOGS.get(r["occupation_id"])
             basis = {field: "no_source" for field in pinned_fields}
-            for field in ("period", "region_id", "allowed_social_role_ids",
-                          "typical_status_range", "typical_g3_place_types",
-                          "typical_g4_location_types", "seasonality", "night_behavior",
-                          "mobility_pattern", "daily_schedule_market_day",
-                          "daily_schedule_church_day", "daily_schedule_crisis"):
-                basis[field] = analog[field]
+            if analog_id:
+                analog = pinned[analog_id]
+                for field in ("period", "region_id", "allowed_social_role_ids",
+                              "typical_status_range", "typical_g3_place_types",
+                              "typical_g4_location_types", "seasonality", "night_behavior",
+                              "mobility_pattern", "daily_schedule_market_day",
+                              "daily_schedule_church_day", "daily_schedule_crisis"):
+                    basis[field] = analog[field]
             if r["occupation_id"] in ROLE_OVERRIDES:
                 basis["allowed_social_role_ids"] = ROLE_OVERRIDES[r["occupation_id"]]
             if r["occupation_id"] in PLACE_OVERRIDES:
                 basis["typical_g3_place_types"], basis["typical_g4_location_types"] = PLACE_OVERRIDES[r["occupation_id"]]
             basis.update(r)
+            if original.get("_period"):
+                basis["period"] = original["_period"]
             basis["occupation_title"] = r["occupation_title_ru"]
-            basis["daily_schedule_normal"] = r["daily_schedule_summer"]
+            basis["daily_schedule_normal"] = ("no_source:archive_normal_schedule_not_established"
+                                               if original.get("_period") else r["daily_schedule_summer"])
             basis["where_work_happens"] = r["typical_property"]
             basis["economic_basis"] = r["occupation_group"]
-            basis["llm_required_checks_before_use"] = analog["llm_required_checks_before_use"]
-            basis["runtime_basis_analog_ref"] = analog_id
-            basis["runtime_basis_rule"] = "regional schedule analogy only; role/place overrides are candidate context, not attestation; unprovided fields=no_source; independent approval required"
-            basis["sources"] = r["source_refs"] + ";rule:runtime_basis_analog_ref#" + analog_id
+            basis["llm_required_checks_before_use"] = analog["llm_required_checks_before_use"] if analog_id else "no_source:occupation_specific_runtime_checks"
+            basis["runtime_basis_analog_ref"] = analog_id or "no_source:no_domain_occupation_analog"
+            basis["runtime_basis_rule"] = ("regional schedule analogy only; role/place overrides are candidate context, not attestation; unprovided fields=no_source; independent approval required"
+                                            if analog_id else
+                                            "archive seasonal values are candidate source context only; occupation-specific runtime routines, roles, places and skills need separate evidence and otherwise remain no_source")
+            if original.get("_period"):
+                basis["period"] = original["_period"]
+                basis["region_id"] = "region_novgorod_land"
+                basis["runtime_basis_rule"] += "; archive occupation facts retain source period and region"
+            basis["sources"] = r["source_refs"] + (
+                ";rule:runtime_basis_analog_ref#" + analog_id if analog_id else
+                ";no_source:no_domain_occupation_analog"
+            )
             basis["source_note"] = basis["runtime_basis_rule"]
             w.writerow(basis)
-    print(f"wrote {len(ROWS)} rows to {OUT}")
+    print(f"wrote {len(all_rows)} rows to {OUT}")
 
 
 if __name__ == "__main__":

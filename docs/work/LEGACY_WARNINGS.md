@@ -72,6 +72,7 @@
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
+| 078 | `lower-dvina-trace-public-start.js`, `lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`) | стартовый presence-provisioning — отдельная транзакция после commit new_game; при сбое между ними стартовое место остаётся без решённого присутствия, повтора при загрузке нет | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -400,3 +401,10 @@
 - **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
 - **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
 - **Issue.** —
+
+### LW-078 — R-2a: стартовое присутствие не повторяется при загрузке, если provisioning не выполнился
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-public-start.js` (вызов `provisionInitialOrdinary` после commit new_game); `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`, отдельная транзакция); путь загрузки партии (`getPartyScreen`) вызова не имеет.
+- **Что.** Присутствие на стартовом месте решается второй транзакцией после commit new_game. Если процесс упал между ними, при загрузке партия останется без записанного присутствия стартового места: пустое присутствие ничего не хранит (typed gap только в диагностике resolver/provisioner), поэтому «не выполнилось» и «решено пустым» в БД неотличимы. Повтор на загрузке возможен только как идемпотентный перезапуск.
+- **Открытый вопрос владельцу.** «Первое прибытие» для стартового места — момент старта (календарь `readInitialEnvironment`, состояние 0) или момент обработки (`readCurrentEnvironment` при `state_version > 0`)? От ответа зависят сезон и номер периода в ключе броска (§3A.1) при повторе после первого хода.
+- **Как жить.** Окно сбоя узкое. Не добавлять хук в путь загрузки и не писать маркер «решено» без решения владельца и отдельного шага (граница game-server + insert-only контракт таблиц ordinary).
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

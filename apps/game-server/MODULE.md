@@ -56,6 +56,21 @@ exact scene binding and acoustic closure. Generated first-entry domain owners
 may contribute admitted write sets and rechecks through `prepareFirstEntry`;
 P16 persists those rows with topology and the selection trace.
 
+Presence at first arrival (O1, §3A) has one resolver,
+`createTargetPresenceRulesFirstArrivalResolver`, for the start place and every
+later first arrival. Bindings come from the site node: canonical G5 reads its
+own node, generated G5 reads its parent G4; the region is the G0 ancestor of
+that node. The calendar comes from `readTargetPartyPresenceCalendar` after the
+bindings are found: `readInitialEnvironment` at `state_version 0` (start),
+`readCurrentEnvironment` inside the arrival transaction later. A node without
+bindings or rules is a legal empty presence: the resolver returns a typed
+`presence_gap` for diagnostics only, nothing is stored and nothing reaches the
+player or LLM. Wrong inputs (missing site, G4 pin, node version, region,
+calendar, resolver port or finite profile) fail closed with typed errors.
+The public start provisions start presence for `runtime_binding == null`, for
+every start of the v17 catalog (`TARGET_START_CATALOG_ID`, any
+`binding_revision`) and for v1 bindings from revision 5.
+
 Spatial semantic materialization hands the server one validated formal proposal.
 Exact physical topology comes from the exact Spatial catalog closure through
 `@rus/materialization/spatial-v3`; Spatial owner supplies exact source and

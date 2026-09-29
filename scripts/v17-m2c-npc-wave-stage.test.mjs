@@ -9,6 +9,7 @@ import {
   buildWaveImportSql,
   computeWaveRequestDigest,
   readWaveRequest,
+  runWaveImportStage,
   WAVE_ATTESTATION_SCHEMA,
 } from './v17-m2c-npc-wave-stage.mjs';
 
@@ -59,12 +60,64 @@ test('the stage opens the gate only in a temporary copy: the repository manifest
 
 test('only an approving attestation of this exact request is accepted', async () => {
   const request = await readWaveRequest(root);
-  const good = { schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest };
+  const good = { schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
+    attested_by: 'reviewer', independence_basis: 'independent read-only review of the request digest' };
   assert.equal(assertWaveAttestation(request, good), good);
   for (const [patch, code] of [
     [{ schema: 'other' }, 'V17_M2C_WAVE_ATTESTATION_SCHEMA_MISMATCH'],
     [{ verdict: 'REJECT' }, 'V17_M2C_WAVE_ATTESTATION_VERDICT_REJECTED'],
     [{ request_digest: '2'.repeat(64) }, 'V17_M2C_WAVE_ATTESTATION_DIGEST_MISMATCH'],
+    [{ attested_by: undefined }, 'V17_M2C_WAVE_ATTESTATION_INDEPENDENCE_REQUIRED'],
+    [{ independence_basis: '' }, 'V17_M2C_WAVE_ATTESTATION_INDEPENDENCE_REQUIRED'],
   ]) assert.throws(() => assertWaveAttestation(request, { ...good, ...patch }), new RegExp(code, 'u'));
   assert.throws(() => assertWaveAttestation(request, null), /V17_M2C_WAVE_ATTESTATION_REQUIRED/u);
+});
+
+// A fake world that records the SQL it receives and answers table counts.
+function fakeWorld(request, { extraRows = {} } = {}) {
+  const log = [];
+  let committed = false;
+  return { log, async query(sql) {
+    if (sql.startsWith('SELECT count(*) FROM world_base.')) {
+      const table = sql.slice('SELECT count(*) FROM world_base.'.length);
+      const base = 100;
+      return { rows: [{ count: base + (committed ? request.expected_readback.by_table[table] + (extraRows[table] ?? 0) : 0) }] };
+    }
+    const kind = sql.endsWith('COMMIT;\n') ? 'COMMIT' : sql.endsWith('ROLLBACK;\n') ? 'ROLLBACK' : 'OTHER';
+    log.push(kind);
+    if (kind === 'COMMIT') committed = true;
+    return { rows: [] };
+  } };
+}
+const approving = (request) => async () => ({ schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE',
+  request_digest: request.request_digest, attested_by: 'reviewer', independence_basis: 'test' });
+
+test('stage order: rollback probe, attestation, commit, idempotent re-import', async () => {
+  const request = await readWaveRequest(root);
+  const world = fakeWorld(request);
+  const result = await runWaveImportStage({ world, root, requireAttestation: approving(request) });
+  assert.deepEqual(world.log, ['ROLLBACK', 'COMMIT', 'ROLLBACK']);
+  assert.equal(result.request_digest, request.request_digest);
+  assert.equal(result.attestation.verdict, 'APPROVE');
+});
+
+test('stage: no attestation means no COMMIT', async () => {
+  const request = await readWaveRequest(root);
+  const world = fakeWorld(request);
+  await assert.rejects(runWaveImportStage({ world, root, requireAttestation: async () => null }),
+    /V17_M2C_WAVE_ATTESTATION_REQUIRED/u);
+  assert.deepEqual(world.log, ['ROLLBACK']);
+  const wrongDigest = fakeWorld(request);
+  await assert.rejects(runWaveImportStage({ world: wrongDigest, root,
+    requireAttestation: async () => ({ ...(await approving(request)()), request_digest: '3'.repeat(64) }) }),
+  /V17_M2C_WAVE_ATTESTATION_DIGEST_MISMATCH/u);
+  assert.ok(!wrongDigest.log.includes('COMMIT'));
+});
+
+test('stage: a row count different from the pinned readback throws after the commit', async () => {
+  const request = await readWaveRequest(root);
+  const world = fakeWorld(request, { extraRows: { presence_rules: 1 } });
+  await assert.rejects(runWaveImportStage({ world, root, requireAttestation: approving(request) }),
+    /V17_M2C_WAVE_READBACK_MISMATCH:presence_rules:5741!=5740/u);
+  assert.deepEqual(world.log, ['ROLLBACK', 'COMMIT']);
 });

@@ -73,6 +73,10 @@ export async function assertWaveInputs({ root = ROOT, request }) {
 
 export function assertWaveAttestation(request, attestation) {
   if (!attestation) throw new Error('V17_M2C_WAVE_ATTESTATION_REQUIRED');
+  if (typeof attestation.attested_by !== 'string' || attestation.attested_by.length === 0
+      || typeof attestation.independence_basis !== 'string' || attestation.independence_basis.length === 0) {
+    throw new Error('V17_M2C_WAVE_ATTESTATION_INDEPENDENCE_REQUIRED');
+  }
   if (attestation.schema !== WAVE_ATTESTATION_SCHEMA) throw new Error('V17_M2C_WAVE_ATTESTATION_SCHEMA_MISMATCH');
   if (!WAVE_ATTESTATION_VERDICTS.has(attestation.verdict)) throw new Error('V17_M2C_WAVE_ATTESTATION_VERDICT_REJECTED');
   if (attestation.request_digest !== request.request_digest) throw new Error('V17_M2C_WAVE_ATTESTATION_DIGEST_MISMATCH');
@@ -99,7 +103,7 @@ export async function runWaveImportStage({ world, root = ROOT, requireAttestatio
   const before = await tableCounts(world, tables);
   await world.query(sql.rollback);
   if (!sameCounts(before, await tableCounts(world, tables))) throw new Error('V17_M2C_WAVE_ROLLBACK_MISMATCH');
-  assertWaveAttestation(request, await requireAttestation('m2c_npc_wave_import', request));
+  const attestation = assertWaveAttestation(request, await requireAttestation('m2c_npc_wave_import', request));
   await world.query(sql.commit);
   const after = await tableCounts(world, tables);
   for (const table of tables) {
@@ -107,8 +111,9 @@ export async function runWaveImportStage({ world, root = ROOT, requireAttestatio
       throw new Error(`V17_M2C_WAVE_READBACK_MISMATCH:${table}:${after[table] - before[table]}!=${expected[table]}`);
     }
   }
-  // Repeating the import compares every pinned row with the committed one and adds nothing.
+  // Repeating the import compares every pinned row with the committed one inside the transaction
+  // and rejects on any difference (importer readback); the ROLLBACK itself leaves counts unchanged.
   await world.query(sql.rollback);
-  if (!sameCounts(after, await tableCounts(world, tables))) throw new Error('V17_M2C_WAVE_IDEMPOTENCY_MISMATCH');
-  return { request_id: request.request_id, added: expected, rollback: 'pass', readback: 'exact' };
+  return { request_id: request.request_id, request_digest: request.request_digest, request, attestation,
+    added: expected, rollback: 'pass', readback: 'exact' };
 }

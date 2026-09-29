@@ -452,7 +452,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
     // D27: the m2c NPC wave (presence rules, bindings, routines, composition) after P12 and temporal-v4.
-    await runWaveImportStage({ world, root,
+    const waveImport = await runWaveImportStage({ world, root,
       requireAttestation: (stage, request) => requireAttestation(stage, request, attest, onRequest) });
     const graphCheck = (await world.query(`SELECT pg_get_constraintdef(c.oid) AS definition
       FROM pg_catalog.pg_constraint c
@@ -705,7 +705,8 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       itemImportApproval: { request: preparation.approval_request, attestation: overlayAttestation },
       itemApproval: { request: itemActivationRequest, attestation: itemActivationAttestation },
       actorImportApproval: { request: actorRequest, attestation: actorAttestation },
-      actorApproval: { request: actorActivationRequest, attestation: actorActivationAttestation }
+      actorApproval: { request: actorActivationRequest, attestation: actorActivationAttestation },
+      waveImportApproval: { request: waveImport.request, attestation: waveImport.attestation }
     };
     await mkdir(dirname(activationApprovalsPath), { recursive: true });
     const pendingPath = `${activationApprovalsPath}.${process.pid}.pending`;
@@ -719,6 +720,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },
       additional_start_owners: ownerImport,
+      m2c_npc_wave: { request_id: waveImport.request_id, request_digest: waveImport.request_digest,
+        added_rows: Object.values(waveImport.added).reduce((sum, count) => sum + count, 0),
+        rollback: waveImport.rollback, readback: waveImport.readback },
       appearance_v3: { inserted_rows: appearanceRequest.expected_import_readback.inserted_rows,
         rollback: 'pass' }, capacity_v2: { manifest_sha256: capacityManifestSha256,
         runtime_record_digests: capacityDigests }, nature_successor: { inserted_rows: natureRecords.length,

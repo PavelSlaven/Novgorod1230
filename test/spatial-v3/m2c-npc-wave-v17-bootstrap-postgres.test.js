@@ -6,6 +6,7 @@ import {
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
 } from './presence-rules-production-e2e-fixture.js';
+import { buildWaveImportSql } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
 
 const WAVE_DIR = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
@@ -18,6 +19,7 @@ test('v17 bootstrap imports the m2c NPC wave and every start resolves presence w
     const request = await readJson(`${WAVE_DIR}/v17-import-request.json`);
     const { starts } = await readJson(
       'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json');
+    assert.equal(starts.length, 7, 'the manifest lists the 7 v17 starts');
 
     await t.test('imported rows match the pinned request; environment rules and legacy regions are absent', async () => {
       const untouchedBeforeWave = new Set(['source_records', 'spatial_v3_world_revisions', 'spatial_v3_nodes']);
@@ -94,5 +96,19 @@ test('v17 bootstrap imports the m2c NPC wave and every start resolves presence w
         restoreFetch();
         await runtime.close();
       }
+    });
+
+    await t.test('re-importing compares committed rows: identical rows pass, a changed row is rejected', async () => {
+      const sql = await buildWaveImportSql({ root: process.cwd() });
+      await env.worldPool.query(sql.rollback);
+      const { rule_id: ruleId, rule_version: ruleVersion, count_limit: countLimit } = (await env.worldPool.query(
+        'SELECT rule_id, rule_version, count_limit FROM world_base.presence_rules ORDER BY rule_id LIMIT 1')).rows[0];
+      const setLimit = (value) => env.worldPool.query(
+        'UPDATE world_base.presence_rules SET count_limit=$3 WHERE rule_id=$1 AND rule_version=$2',
+        [ruleId, ruleVersion, value]);
+      await setLimit(countLimit + 1);
+      try {
+        await assert.rejects(env.worldPool.query(sql.rollback));
+      } finally { await setLimit(countLimit); }
     });
   });

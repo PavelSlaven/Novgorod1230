@@ -56,7 +56,7 @@ import { createSpatialV3GenerationAdmission } from
   '../infrastructure/postgres/spatial-v3-generation-admission.js';
 import { createTargetGeneratedFirstEntry } from
   '../infrastructure/postgres/target-generated-first-entry.js';
-import { createTargetPresenceRulesFirstArrivalResolver } from
+import { createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { readTargetPartyPresenceCalendar as resolveTargetPartyPresenceCalendar } from
   './target-party-presence-calendar.js';
@@ -249,7 +249,7 @@ export async function createSpatialV3ProductionCompositionRoot({
             verifiedItemCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
             actorBaseAttributesBinding: targetContext.runtime.actorBinding,
             approvedActorTemporalBundle: targetContext.runtime.materialization_inputs.approved_actor_temporal_bundle,
-            resolvePresenceRulesFirstArrival: (...args) => targetPresenceResolverPort.resolve?.(...args) ?? null,
+            resolvePresenceRulesFirstArrival: delegateToPresenceResolverPort(targetPresenceResolverPort),
             finiteFirstEntryProfile: targetProfiles?.finite_first_entry?.profile ?? null,
             prepareNaturalFirstEntry: (...args) => {
               if (typeof targetNaturalFirstEntryPort.prepareFirstEntry !== 'function') {

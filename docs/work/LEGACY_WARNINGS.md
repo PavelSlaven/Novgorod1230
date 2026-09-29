@@ -199,9 +199,9 @@
 - **Как жить.** Новых шаблонных фраз не добавлять. Код отдаёт структурные факты, прозу пишет рассказчик, речь NPC — модель NPC или типизированный отказ.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
-### LW-035 — bootstrap v17 без календаря (ветка PR #98)
-- **Что.** Старт v17 читает `world_base.temporal_authoring_records` (`apps/game-server/src/infrastructure/postgres/target-authored-start-runtime.js`), а `scripts/bootstrap-live-world-v17.mjs` не импортирует temporal-v4. Тесты старта читают JSON-фикстуру напрямую и остаются зелёными.
-- **Как жить.** При пересборке пары v17 добавить импорт утверждённых temporal-v4 и readback календаря старта; хотя бы один тест старта должен читать календарь через БД.
+### LW-035 — bootstrap v17 без календаря (ветка PR #98) — **closed R-2a**
+- **Что.** Старт v17 читает `world_base.temporal_authoring_records`; `bootstrap-live-world-v17.mjs` импортирует утверждённый temporal-v4 с readback (`collectApprovedTemporalBundle` / `buildApprovedTemporalImportSql`). E2E/fixture `bootstrapV17PresenceE2e` и acceptance используют штатный bootstrap.
+- **Как жить.** Локальные пары v17 пересобирать после изменения temporal или wave; календарь старта — только из БД на свежем bootstrap.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-036 — тесты M2c вне гейта и заглушки планировщика (ветка PR #98)
@@ -363,9 +363,9 @@
 - **Как жить.** Первый старт или несовпадение `target_schema_fingerprint` / отсутствие строки `spatial_v3_target_chain_<digest>` → полный прогон раннера и append-only запись в `party_runtime.schema_migrations` в той же транзакции, что readiness. Повторный in-process restart при совпадении digest и отпечатка **не** повторяет CREATE/ALTER/DROP 012–037 (PG DDL-wrapper test). Конфликт persisted ledger с release → `SPATIAL_V3_MIGRATION_LEDGER_MISMATCH`. In-place правки уже применённых SQL-файлов 012–037 по-прежнему требуют пересоздания локальных БД со старым отпечатком. D27 rename/bootstrap — отдельный шаг.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-071 — правило «предок уже решён — потомки не бросаются» вне resolve_presence_rule
-- **Где.** Выбор presence-правил / R-2 consumer; не `applyOrdinaryAggregateTransition`/`resolve_presence_rule`.
-- **Как жить.** Примитив агрегата хранит и повторяет исход по ключу §3A.1. Запрет броска потомков при решённом предке — у движка выбора правил (R-2). Тест — там же, не в foundation transition.
+### LW-071 — правило «предок уже решён — потомки не бросаются» — **closed R-2a**
+- **Где.** `applyPresenceRulesFirstArrival` / `isCategoryPresenceBlockedByAncestor` (`packages/materialization/src/presence-rules-first-arrival.js`); PG slice `presence-rules-first-arrival-postgres.test.js`.
+- **Как жить.** Потомки category не бросаются, если предок уже имеет `resolve_presence_rule` в том же `scope_instance_ref`. Новые consumer-пути должны вызывать тот же helper, не дублировать логику.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-072 — local-play git provenance в worktree
@@ -383,7 +383,7 @@
 ### LW-076 — m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; activate отдельно
 - **Где.** `tools/spatial-v3/p12-authoring-importer.mjs` (`P12_WAVE_IMPORT_REQUIRES_APPROVED`, `P12_WAVE_IMPORT_REQUIRES_READBACK`, `buildImportWithReadbackSql`); `tools/spatial-v3/m2c-npc-wave-bundle-validation.mjs` (`manifestIncludesWaveTables`, `M2C_NPC_WAVE_TABLE_SET`, `M2C_WAVE_COMPOSITION_PRESENCE_CONFLICT`, `M2C_WAVE_COMPOSITION_GROUP_INVALID`, `M2C_WAVE_SCHEDULE_SUBJECT_SEASON_CONFLICT`); `infra/world-base/schema/28.sql`; `packages/runtime-catalog/src/m2c-npc-wave-readers.js` и `world-catalog-gate.js`; `m2c-npc-wave/v1/approval.json` (WR §21.1, D24).
 - **Что.** Любой бандл с таблицами из `M2C_NPC_WAVE_TABLE_SET` (11 таблиц, включая `npc_schedule_routine_rules` и `place_population_composition_rules`) проходит wave-валидацию и при настоящем импорте требует `manifest.status === 'approved'`, подписанный approval (`authored_by` — `… (executor)`, `checked_by` — `… (owner|reviewer)`, личности после нормализации различаются; `manifest_path` сверяется с импортируемым manifest) и обёртку import+readback в одной транзакции. У людей `allowed_times` импортируется пустым `[]` (§8.1, LW-067). На том же PF приоритет состава над `presence_rules` для совпадающих `subject_ref`: при `presence_probability_ppm > 0` нужен `authoring_payload.creation_owner === 'composition'` (C006c2). Bootstrap approved import волны — только **R-1b-activate / D27** по команде ревьюера. Поле `sql_builder.sha256` в утверждённых `request.json` фиксирует сборщик на момент утверждения запроса; байты SQL держит тест «v17 bootstrap bundle SQL stays byte-stable», а не живой пересчёт sha в request.
-- **Как жить.** Не импортировать волновые таблицы без readback-обёртки и без approved manifest + reviewer approval. Repo `manifest.json` волны остаётся `draft` до R-1b-activate/D27. Чтение D-1/D-2 — только через `@rus/runtime-catalog` после spatial pin и runtime-catalog activation; до R-2 потребителя в gameplay нет. `validateNpcRoutineProfile` пока не проверяет `location_ref`, `presence_state`, `absence_reason_ru` в фазах — расширение профиля в R-2.
+- **Как жить.** Не импортировать волновые таблицы без readback-обёртки и без approved manifest + reviewer approval. Repo `manifest.json` волны остаётся `draft` до R-1b-activate/D27. Чтение D-1/D-2 — только через `@rus/runtime-catalog` после spatial pin и runtime-catalog activation; production presence first arrival — consumer R-2a. `validateNpcRoutineProfile` пока не проверяет `location_ref`, `presence_state`, `absence_reason_ru` в фазах — расширение профиля в R-2.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-077 — R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных

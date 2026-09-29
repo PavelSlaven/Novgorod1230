@@ -393,7 +393,7 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
   ({ worldPool, partyPool } = await startDualPools(name));
   const worldBaseReader = createRuntimeCatalogWorldBaseReader((sql, params) => worldPool.query(sql, params));
 
-  await t.test('canonical G5 party start commits presence rules', async () => {
+  await t.test('canonical G5 first entry: presence rules without O1 rows', async () => {
     const { first, second } = await provisionPartyStart({
       worldPool, partyPool, partyId: 'party-composition-canonical',
       spatialNodeId: compositionFixture.nodeId, origin: 'canonical',
@@ -405,7 +405,7 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
     assert.equal(o1PresenceRefs(row.aggregate_payload).length, 0);
   });
 
-  await t.test('generated G5 frontier first entry commits presence rules', async () => {
+  await t.test('generated G5 first entry: presence rules on frontier host', async () => {
     const { first } = await provisionPartyStart({
       worldPool, partyPool, partyId: 'party-composition-generated',
       spatialNodeId: compositionFixture.nodeId, origin: 'generated',
@@ -420,7 +420,7 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
     assert.ok(presenceRuleRows(row.aggregate_payload).length > 0);
   });
 
-  await t.test('next step in same scene: O1 projection ignores presence-rule rows', async () => {
+  await t.test('same aggregate: enablement projection excludes presence-rule rows', async () => {
     const row = await loadG6Aggregate(partyPool, 'party-composition-canonical');
     const working = structuredClone(row.aggregate_payload);
     assert.ok(presenceRuleRows(working).length > 0);
@@ -428,7 +428,7 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
     assert.equal(Number(row.state_version), working.state_version);
   });
 
-  await t.test('new runtime reload replays presence without reroll', async () => {
+  await t.test('replay applyPresenceRulesFirstArrival preserves presence digest', async () => {
     const row = await loadG6Aggregate(partyPool, 'party-composition-canonical');
     const digestBefore = canonicalDigest(presenceRuleRows(row.aggregate_payload));
     const context = await resolvePresenceRulesFirstArrivalForSite({
@@ -450,7 +450,7 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
     );
   });
 
-  await t.test('real activation gate and G0 region reader', async () => {
+  await t.test('runtime-catalog gate: G0 region and presence_rules load', async () => {
     const regionId = await loadG0RegionIdForSpatialNode({
       worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
       nodeId: compositionFixture.nodeId, nodeVersion: 1,

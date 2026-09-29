@@ -907,6 +907,37 @@ test('clothing material pair decisions waive only the four verified archive-targ
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
+test('variant-material needs_check resolutions have exact targets and individual evidence', () => {
+  const registry = JSON.parse(fs.readFileSync(path.join(gameBase, 'scripts/archive-ownership-registry.json'), 'utf8'));
+  const verification = 'scripts/check-archive-ownership.test.mjs#variant-material-needs-check';
+  const decisions = registry.pair_decisions.filter(decision => decision.verification === verification);
+  assert.ok(decisions.length > 0, 'the batch must have reviewed pair decisions');
+
+  const masterFile = path.resolve(gameBase, '../sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv');
+  const sourceRows = parseCsv(fs.readFileSync(masterFile, 'utf8'));
+  const ledger = parseCsv(fs.readFileSync(path.join(gameBase, 'crafts-tools-processes/archive_inclusion_ledger.csv'), 'utf8'));
+  for (const decision of decisions) {
+    const sourceMatches = sourceRows.filter(row => row.item_id === decision.archive_id);
+    assert.equal(sourceMatches.length, 1, `${decision.archive_id} must identify one exact archive row`);
+    assert.ok(String(decision.reason ?? '').trim().length >= 16, `${decision.archive_id} needs an individual reason`);
+    const reason = String(decision.reason ?? '');
+    const identityPrefix = `${decision.archive_id} «${sourceMatches[0].name_ru}»: `;
+    assert.ok(reason.startsWith(identityPrefix), `${decision.archive_id} reason must identify its exact archive item`);
+
+    const spec = registry.entity_tables.find(table => table.file === decision.target_file);
+    assert.ok(spec, `${decision.archive_id} target file must be registered`);
+    const targetFile = path.join(gameBase, spec.file);
+    assert.ok(fs.existsSync(targetFile), `${decision.archive_id} target file must exist`);
+    const targets = parseCsv(fs.readFileSync(targetFile, 'utf8')).filter(row => row[spec.key] === decision.target_id);
+    assert.equal(targets.length, 1, `${decision.archive_id} target ${decision.target_id} must exist exactly once`);
+
+    const ledgerMatches = ledger.filter(row => row.archive_ref?.endsWith(`:${decision.archive_id}`));
+    assert.equal(ledgerMatches.length, 1, `${decision.archive_id} must resolve once in the crafts ledger`);
+    assert.equal(ledgerMatches[0].game_base_ref, `${decision.target_file}#${decision.target_id}`,
+      `${decision.archive_id} must use the exact reviewed target`);
+  }
+});
+
 test('unknown ID prefixes are detected, then indexed for target resolution and name collisions when registered', () => {
   const { parent, root } = gameBaseCopy();
   try {

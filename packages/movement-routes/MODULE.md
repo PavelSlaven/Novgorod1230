@@ -33,6 +33,8 @@ terminal proof. Такой interval использует `shared_root_transport_
 
 ## Ошибки, зависимости и effects
 
+A path whose timed traversal needs a movement method the actor's capability context lacks stays in the option set as a `temporarily_blocked`, non-executable option with reason `requires_method` (`diagnostic_message` `requires_method:<method id>`); the other paths are still offered, and a query whose paths are all blocked is answered with those options, not failed. Only a ready option activates.
+
 Typed target failures include route/endpoint/capability/readiness/pin/state-version conflicts (for example `route_contract_missing`, `movement_capability_missing`, `route_plan_snapshot_missing`, `route_plan_execution_conflict`). Depends on `@rus/kernel`, `@rus/contracts`, `@rus/time-events-history`; no direct I/O, DB or state mutation. Duration is consumed by turn/time owner, not committed here.
 
 ## Target / activation и тесты

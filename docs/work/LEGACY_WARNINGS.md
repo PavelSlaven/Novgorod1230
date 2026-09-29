@@ -80,7 +80,6 @@
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
 | 082 | `llm-turn-budget.js`, `lower-dvina-trace-phase-2-presentation-resolve.js`, `apps/game-web/src/api/client.js` | худший submitTurn до ~360 с при клиенте без fetch-timeout | — |
 | 083 | `lower-dvina-trace-phase-2-presentation-replay.js`, `packages/turn/src/stages/narration.js` (`spatialResult`) | replay-подача рассказчику без исходов проверок и оценки: `check_outcomes`/`qualitative_assessment` есть на первом проходе, нет на повторе (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 091 | `spatial_v3_g6_acoustic_baselines`, `spatial-v3-generated-expansion-adapter.js` (`prepareCanonicalTarget`) | у 149 из 195 канонических мест — целей связей нет утверждённого G6 ambient: вход в них невозможен | — |
 | 092 | `test/spatial-v3/generated-expansion-adapter.test.js` (`terminal=1`), `test/spatial-v3/m2c-expansion-import-postgres.test.js` | два теста красные и на базе d9bb04e9: устаревшие ожидания (first_entry терминала; capacity-one после open-capacity v2) | — |
 | 093 | `data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json`, `m2c-canonical-connection-labels/candidate.json` | подписи проходов «Проход N» не несут направления: «назад/дальше» планировщик путает | — |
 
@@ -451,12 +450,6 @@
 - **Что.** С фиксом #188 модель возвращает только `qualitative_class`, а `schema` и `request_id` ставит код (`actionProducedWeaponClassificationFromModelOutput`). Поле `expectedSchema` рантайм не проверяет: оно входит только в хэш конфига. Снимок baseline никем не импортируется.
 - **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
 - **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)
-
-### LW-091 — нет утверждённого G6 ambient у 149 из 195 канонических мест — целей связей
-- **Где.** `world_base.spatial_v3_g6_acoustic_baselines` (строки для канонических G5 есть только у 46 терминалов выходов: `m2c-acoustic/canonical-terminal/authoring-rows.json`); `apps/game-server/src/infrastructure/postgres/spatial-v3-generated-expansion-adapter.js` (`prepareCanonicalTarget`, `readPinnedCanonicalG5AcousticClosure`); `packages/materialization/src/spatial-v3-generated-scene.js` (`approved_exact_g6_ambient_baseline_required`).
-- **Что.** Переход по канонической связи создаёт непосещённое место, а для него обязательна строка ambient на каждый G6-слот. У Vikhtuy locality строк нет для water_access, forest_path, meeting_area, household_cluster, occupation_terrace, landing_candidate: со стартов work_storage и household_cluster ни одно соседнее место не открывается на боевых данных. Сквозной тест `canonical-walk-production-e2e-postgres.test.js` добавляет строки только в одноразовую БД (`enrichVikhtuyAcousticForCanonicalWalk`).
-- **Как жить.** Значения ambient не выдумывать в коде; нужна задача данных (кандидат строк по образцу `canonical-terminal`, утверждение, включение в m2c acoustic manifest и bootstrap v17). До неё считать места без строки недоступными.
-- **Issue.** —
 
 ### LW-092 — два теста падают на базе d9bb04e9 (`generated-expansion-adapter.test.js` `terminal=1`, `m2c-expansion-import-postgres.test.js`)
 - **Где.** `test/spatial-v3/generated-expansion-adapter.test.js`, ~строка 277 (`traces[1].trace.first_entry`); `test/spatial-v3/m2c-expansion-import-postgres.test.js` (`assertLocalMovementEligibilityPostgres`: «NPC at capacity-one focus blocks arrival movement» — после open-capacity v2 ребро не занято).

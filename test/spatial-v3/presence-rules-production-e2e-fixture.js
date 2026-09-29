@@ -488,8 +488,8 @@ export async function walkRouteUntil({
   assert.fail(`site predicate not met within ${maxSteps} movement steps`);
 }
 
-/** Test-only world enrichment (data gap Q-rt-walk-02): 149 canonical places that are targets of
- * approved connections have no approved G6 ambient baseline. This gives every Vikhtuy-locality
+/** Test-only world enrichment for a branch without the walk-acoustics data (was data gap Q-rt-walk-02):
+ * canonical places that are targets of approved connections may lack an approved G6 ambient baseline. This gives every Vikhtuy-locality
  * place one row per G6 slot in the throw-away test database only. It authors no project data. */
 export async function enrichVikhtuyAcousticForCanonicalWalk(worldPool) {
   await worldPool.query(`

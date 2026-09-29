@@ -74,7 +74,18 @@ with frontier resolution (first entry of a created place goes through the same
 traversal itself is the shared `prepareSiteTraversal`. Arrival gives the narrator
 the destination's own scene text as `visible_changes` (turn-step visible projector,
 for every site connection). Entering a never-visited place needs its approved G6
-ambient baseline (LW-091).
+ambient baseline (the walk-acoustics data covers every connection target).
+
+Availability of a connection is evaluated by one owner, `assessAvailability` of the current
+movement capability (traversal admission and its commit recheck share it). A null condition
+set is open as before. The five condition sets the approved data names carry no predicate and
+the party holds no snow, flood or ice state, so the approved policy
+`live-world-runtime-v17/movement-availability-policy.v1.json` evaluates each as `open` with
+reason `availability_state_not_evaluable`; light and visibility never close a passage. A set
+absent from the policy is a typed data gap (`availability_condition_set_owner_missing`), and a
+profile whose set differs from its connection's is refused. `open_with_requirement` and
+`closed` are not produced until state exists to evaluate. `lower-dvina-boundary-policy.js` of
+`@rus/turn` is only re-exported and has no caller in the v17 runtime.
 
 Notes on the shared vocabulary. `operation_kind=resolve_frontier`, `run_kind=expansion` and
 `trigger=frontier_resolution` also serve a canonical connection (there is no frontier; the

@@ -1521,7 +1521,8 @@
       "target_tables": [
         "world_base.item_templates",
         "universal_categories (weapon/protection)",
-        "region_equipment_profiles/entries"
+        "region_equipment_profiles/entries",
+        "items-weapons-armour/items/weapons_armour.csv"
       ],
       "consumers": [
         "NPC equipment (охрана, дружинник)",
@@ -1601,7 +1602,8 @@
       "target_tables": [
         "world_base.item_templates (одежда)",
         "universal_categories domain=garment (нет)",
-        "world_base.region_clothing_profiles (пусто)"
+        "world_base.region_clothing_profiles (пусто)",
+        "clothing-appearance/garments/material_entities.csv"
       ],
       "consumers": [
         "approvedClothing (exactly one equipment_template на слот)",

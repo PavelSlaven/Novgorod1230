@@ -331,3 +331,28 @@ The counts match. There are two inaccuracies:
 - reports/archive_inclusion_ledger.csv — approve_with_limits: как у манифеста
 - scripts/build.py — approve
 - scripts/check.py — approve_with_limits: basis подбирается по фразам текста evidence
+
+## Независимая проверка imp-crafts A1 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто.** Проверял Claude Opus 5.5, независимо от автора. Автор — Codex (задача imp-crafts, круг A1). Ветка `fleet/imp-crafts-a1`, коммит `dc41845d` (`47ee2c54` + main `a30dd8ca`). Данные автора проверяющий не правил. Статус данных — `candidate`.
+- **Что.** Правки после PR-A:
+  - 32 маршрута в crafts получили цель, которая есть в main: `mt_flax` 10, `mt_wool` 10, `mt_hemp` 3, `mt_fur` 3, `mt_textile_generic` 2, `mt_cordage` 2, `pr:fishing_net` 2;
+  - OMI00318 → IHP `it_hh_strainer_cloth`;
+  - OMI00375 из отдельной сущности стал вариантом `garment_components.csv#gm_ac007`;
+  - FR010 → ref `foreign_origin_profiles.csv#orig_fg006`;
+  - у OMI00291 исправлена причина.
+- **Проверено скриптами** (копия `git archive dc41845d`):
+  - `scripts/check.py` — PASS до и после двух сборок; две `scripts/build.py` дали hash-list группы, равный коммиту и между прогонами; общий checker — 0 ошибок;
+  - полнота: 116 строк, как в PR-A; ни одна не потеряна, дублей нет. Все 114 строк сверки, назначенных группе, в журнале, плюс AR037 и OMI01228. Решения: entity 1, variant 7, ref 5, rejected 2, routed 101;
+  - сверка с решениями черновика crafts (PR-B): из 87 маршрутов в crafts совпадают 80, в том числе все 32 новых и весь кластер пушнины OMI00422–00425/00428 → `mt_fur`. Ещё 4 верно ждут crafts: OMI00263, OMI00295, OMI00340, FW022 — их целей в main нет;
+  - ссылки на OMI00375 в IHP и occupations — D39-ссылки на архивный id (`ref_kind=master`), а не на удалённую сущность; общий checker их принимает.
+- **Ограничения.**
+  1. OMI00349 «Шерстяной шнур» ведёт на `tl_rope_coil`, а решение crafts в черновике PR-B — `mt_cordage`. Строка существовала до A1. Когда решение crafts попадёт в main, общий checker выдаст ошибку, и её нужно будет согласовать.
+  2. Для OMI00422 и OMI00423 черновик PR-B ставит маршрут на не-сущность BIC `matcult_item_refs.csv`. Здесь цель — `mt_fur`; исправлять нужно на стороне PR-B.
+
+### Вердикты по файлам imp-crafts A1
+
+- README.md — approve
+- authoring/archive_inclusion_manifest.json — approve_with_limits: OMI00349 → tl_rope_coil расходится с решением crafts (mt_cordage) в черновике PR-B, согласовать при PR-B
+- garments/material_entities.csv — approve
+- reports/archive_inclusion_ledger.csv — approve_with_limits: как у манифеста (OMI00349)

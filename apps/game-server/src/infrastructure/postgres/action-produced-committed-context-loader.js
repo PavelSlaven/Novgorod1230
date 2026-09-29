@@ -38,6 +38,10 @@ export async function assertActionProducedTargetApplicability(pool, partyId, pos
   const row = result.rows[0];
   const sameRef = (actual, expected) => expected != null && actual?.entity_id === expected.id
     && String(actual.authoring_version) === String(expected.version);
+  const classRule = applicability.class_rule;
+  if (result.rows.length === 1 && row.world_revision_id === applicability.world_revision_id
+    && classRule?.kind === 'all_g5_sites'
+    && classRule.world_revision_id === row.world_revision_id) return;
   if (result.rows.length !== 1 || row.world_revision_id !== applicability.world_revision_id
     || !applicability.applicability.some((scope) => scope.g4_ref.id === row.parent_g4_id
       && (scope.canonical_g5_ref != null

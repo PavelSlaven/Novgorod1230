@@ -7,7 +7,20 @@ import { validNeutralActionProductionProfile } from './lower-dvina-trace-a1-bund
 import { validateLowerDvinaTraceOrdinaryStageBEval } from './lower-dvina-trace-ordinary-stage-b-eval.js';
 
 /** The separate mapped-data approval owns applicability; absent owners stay absent. */
-export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog } = {}) {
+const A1_CLASS_FILE = 'data/world-catalogs/novgorod/live-world-runtime-v17/a1-applicability-class.json';
+const APPROVAL_FIELDS = ['approved_by', 'approved_on', 'approved_path', 'approved_commit'];
+
+/** The class rule counts only when its file carries the approver's fields (WR §21.1). */
+export function readApprovedA1ApplicabilityClass(file, worldRevisionId) {
+  return file?.schema === 'rus.a1_applicability_class.v1' && file.status === 'approved'
+    && file.world_revision_id === worldRevisionId && file.rule?.kind === 'all_g5_sites'
+    && APPROVAL_FIELDS.every((key) => typeof file.approval?.[key] === 'string'
+      && file.approval[key].length > 0)
+    ? { kind: 'all_g5_sites', world_revision_id: worldRevisionId } : null;
+}
+
+export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog,
+  a1ApplicabilityClassPath = resolve(rootDir, A1_CLASS_FILE) } = {}) {
   const root = 'data/world-catalogs/novgorod/live-world-runtime-v17';
   const approval = JSON.parse(await readFile(resolve(rootDir,
     'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json'), 'utf8'));
@@ -29,6 +42,8 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
     || !validNeutralActionProductionProfile(data.profiles.action_production)) gap();
   const turn = data.profiles.turn_step;
   const turnPin = { artifact_id: turn.profile_set_id, revision: turn.revision, digest: canonicalDigest(turn) };
+  const a1Class = readApprovedA1ApplicabilityClass(
+    JSON.parse(await readFile(a1ApplicabilityClassPath, 'utf8').catch(() => 'null')), worldRevisionId);
   const finiteFirstEntry = verifiedCatalog == null ? null
     : await loadTargetFiniteFirstEntryProfile({ rootDir, worldRevisionId, verifiedCatalog });
   return freeze({ schema: 'rus.live_world_runtime.target_runtime_profiles_loaded.v1',
@@ -45,7 +60,8 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
       ordinaryContainerContentsProfile: null, localFireProfile: null,
       actionProductionProfile: Object.freeze({ schema: 'rus.live_world_runtime.a1_loaded_profile.v1',
         artifact_digest: manifest.dataset.sha256, profile: data.profiles.action_production,
-        target_applicability: { world_revision_id: worldRevisionId, applicability: data.applicability } }) }),
+        target_applicability: { world_revision_id: worldRevisionId, applicability: data.applicability,
+          ...(a1Class == null ? {} : { class_rule: a1Class }) } }) }),
     capability_gaps: [...data.capability_gaps, ...data.consumer_gaps.filter((entry) =>
       !['M2C_TARGET_A1_PROFILE_CONSUMER_GAP', 'M2C_TARGET_N1_PROFILE_BINDING_CONSUMER_GAP'].includes(entry.code))],
     applicability: data.applicability });

@@ -1,0 +1,17 @@
+{
+  "schema": "rus.a1_applicability_class.v1",
+  "status": "candidate_pending_independent_data_approval",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "rule": { "kind": "all_g5_sites" },
+  "approval": null,
+  "rationale": [
+    "A1 action production is an ordinary player action; a missing applicability profile is an implementation defect solved by a class profile, not a game outcome (AGENTS.md AI §10.1).",
+    "The loaded A1 profile is class-neutral (validNeutralActionProductionProfile); the per-place list in target-runtime-profiles-approved.json (32 generated scopes at template version 1, one canonical G5) cannot match capacity-v2 generated sites, whose generated_template_ref.authoring_version is 2 (live PostgreSQL dump, 2026-09-29), so A1 is refused on every generated G5.",
+    "The rule adds no authority: the item, access, mass and tool checks of the A1 owner still apply at every place; only the per-place admission list is replaced."
+  ],
+  "provenance": {
+    "decision": "reviewer PLAN-OK-rt-items F4 (2026-09-29T18:34:36Z): class rule for A1 applicability",
+    "authored_by": "rt-items executor (Claude Sonnet 5.5); not approved by its author (WR §21.1)"
+  },
+  "approval_fields_when_approved": ["approved_by", "approved_on", "approved_path", "approved_commit"]
+}

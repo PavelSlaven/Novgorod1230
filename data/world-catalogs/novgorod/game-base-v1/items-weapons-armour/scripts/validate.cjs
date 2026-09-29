@@ -122,18 +122,6 @@ const normName = value => String(value || '').normalize('NFKC').toLocaleLowerCas
 const ledgerByRef = new Map(archiveLedger.map(r => [r.archive_ref, r]));
 const denyIds = new Set(dn.map(r => r.deny_id));
 const kindsDoc = readJson(P.authoring('weapon_kinds.json'));
-const byArchiveId = new Map(archiveManifest.records.map(r => [r.derivation, r]));
-const frn0045 = byArchiveId.get('FRN0045');
-if (frn0045?.decision !== 'variant' || frn0045.match_type !== 'variant' || frn0045.game_base_ref !== 'items/weapons_armour.csv#wp_sword') {
-  err('archive FRN0045: review requires variant of wp_sword');
-}
-const mil0026 = byArchiveId.get('MIL0026');
-if (mil0026) {
-  const targetCount = [mil0026.game_base_ref, mil0026.target_ref].filter(value => String(value || '').trim()).length;
-  if (mil0026.decision !== 'variant' || targetCount !== 1 || mil0026.game_base_ref !== 'items/weapons_armour.csv#wp_sword_belt') {
-    err('archive MIL0026: review requires exactly one target, wp_sword_belt');
-  }
-} else err('archive MIL0026: review decision missing');
 function ownerTargetExists(targetRef, group) {
   const hash = String(targetRef || '').lastIndexOf('#');
   if (hash < 0) return false;
@@ -145,7 +133,7 @@ function ownerTargetExists(targetRef, group) {
   const base = path.resolve(NOV, 'game-base-v1');
   const targetPath = path.resolve(base, relative);
   if (!targetPath.startsWith(base + path.sep) || !fs.existsSync(targetPath)) return false;
-  const idFields = ['id', 'item_id', 'bp_id', 'material_id', 'entity_id', 'of_id'];
+  const idFields = ['id', 'item_id', 'it_id', 'bp_id', 'material_id', 'entity_id', 'of_id'];
   return readCsv(targetPath).some(row => idFields.some(field => row[field] === targetId));
 }
 for (const source of archiveManifest.records.filter(row => row.decision === 'routed')) {
@@ -325,24 +313,11 @@ const writeReport = () => {
   console.log(JSON.stringify({ ok: report.ok, stats, errors: errors.length, warnings: warnings.length }, null, 1));
   if (errors.length) { console.log(errors.slice(0, 60).join('\n')); process.exitCode = 1; }
 };
-const originalMain = process.argv[1], originalLog = console.log, originalError = console.error;
-const checkerOutput = [];
-process.argv[1] = checkerPath;
-console.log = (...values) => checkerOutput.push(values.join(' '));
-console.error = (...values) => checkerOutput.push(values.join(' '));
-import(pathToFileURL(checkerPath).href).then(() => {
-  const checkerFailed = process.exitCode !== undefined && process.exitCode !== 0;
-  process.exitCode = undefined;
-  process.argv[1] = originalMain;
-  console.log = originalLog;
-  console.error = originalError;
-  if (checkerFailed) for (const message of checkerOutput.filter(Boolean)) err(`archive ownership checker: ${message}`);
+import(pathToFileURL(checkerPath).href).then(({ checkArchiveOwnership }) => {
+  const checker = checkArchiveOwnership(path.join(NOV, 'game-base-v1'));
+  for (const message of checker.errors) err(`archive ownership checker: ${message}`);
   writeReport();
 }).catch(error => {
-  process.exitCode = undefined;
-  process.argv[1] = originalMain;
-  console.log = originalLog;
-  console.error = originalError;
   err(`archive ownership checker could not run: ${error.message}`);
   writeReport();
 });

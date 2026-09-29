@@ -114,7 +114,7 @@ master_material_culture,ARM0026,Ремонтная связка колец и з
 master_material_culture,ARM0027,Удлинённая кольчуга с разрезами,armor/кольчуги и дополнительная защита,C,1180–1260,wp,wp_mail_long
 master_material_culture,ARM0028,Чешуйчатый панцирь — спорная локальная реконструкция,armor/кольчуги и дополнительная защита,D,1180–1260,wp,wp_scale
 master_material_culture,ARM0029,Кожаная защита конечностей без металлических пластин,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_leather_limb_armour
-master_material_culture,ARM0030,Конский доспех — не норма 1230,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_horse_armour
+master_material_culture,ARM0030,Конский доспех — не норма 1230,armor/пластинчатая и дополнительная защита,D,1180–1260,wp,wp_horse_armour
 master_material_culture,ARM0031,Ламеллярный панцирь из малых пластин — ограниченно допустим,armor/пластинчатая и дополнительная защита,C,1180–1260,wp,wp_lamellar
 master_material_culture,HLM0001,Шлем с креплением бармицы,helmets/aventail_helmet,B,1180–1260,wp,wp_barmitsa
 master_material_culture,HLM0002,Конический шлем с наносником,helmets/conical_nasal,B,1180–1260,wp,wp_helmet_conical

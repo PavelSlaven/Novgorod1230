@@ -24,7 +24,7 @@
 - **Механика** (скрипт): `scripts/build_roles.py` мержит авторский вход и архивные кандидаты с общим шаблоном (`BOILERPLATE`,
   списан построчно с пинованных ролей того же `role_group`), проверяет:
   1. `role_id` не пересекается с пинованным файлом;
-  2. заполнены все 64 колонки;
+  2. заполнены все 64 колонки пинованного файла (65-я, `allowed_occupations`, заполняется только там, где у роли точный список занятий — сейчас у скомороха);
   3. каждый из 6 archetype id (`social_position_archetype_id`, `social_class_id`, `role_archetype_id`,
      `legal_status_archetype_id`, `dependency_archetype_id`, `mobility_archetype_id`) резолвится в
      `data/world-base-seeds/*.csv` (main checkout) со `status=approved`;

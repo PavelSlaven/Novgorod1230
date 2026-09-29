@@ -115,3 +115,32 @@
 - incidents_conflicts/reports/* — approve
 - README.md — approve
 Группа: approve_with_limits.
+
+## Независимая проверка owner-fixes D47 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** Claude Opus 5.5, независимый проверяющий, не автор. Ветка `fleet/owner-fixes`, HEAD `ce307cbf`, база main `2b4aa2f9`.
+- **Что:**
+  - Решение владельца (вариант 3): роль `nov_role_skomorokh` точечно получила `allowed_occupations=["occ_gusli_player","occ_singer","occ_storyteller"]`.
+  - Candidate TSV ролей расширен с 64 до 65 колонок; новая колонка стоит после `common_income_sources`.
+  - `build_roles.py` сверяет пинованный файл с `PINNED_HEADER` (64 колонки), а пишет `HEADER` (65 колонок).
+  - `role_archetype_id=traveler_outsider` и универсальная матрица `role_occupation_rules` не менялись.
+- **Проверено скриптами:**
+  - Сравнение main и HEAD по `role_id`: 33 строки, порядок тот же. Все 64 прежних поля совпадают у всех строк. Новая колонка непуста только у скомороха, её значение — валидный JSON-массив из трёх id. Каждая строка побайтно равна старой строке со вставленным полем.
+  - Три id существуют в `occupations_additions.csv` (`performance_entertainment`, candidate).
+  - Importer читает TSV через pandas по заголовку и нормализует поле в JSONB-массив (`import_world_base.py:472-493`, `550-552`).
+  - Сборка в копии HEAD, два прохода `build_roles.py`: побайтно равно HEAD, 0 warnings.
+  - `build_incidents.py` читает TSV по имени колонки, результат равен HEAD.
+  - `validate-b2-name-pool.mjs` и `--self-test`: PASS.
+- **Ограничения:**
+  - pandas на servak нет, поэтому importer не запускался. Разбор поля `"[""…""]"` проверен модулем csv, у него те же правила кавычек.
+  - Три занятия есть только в candidate `occupations_additions.csv`, в пинованном `novgorod_occupations_v1_enriched.tsv` их нет. При непустом списке `npc-candidates.js:684` допускает только эти занятия. Поэтому роли и занятия надо импортировать вместе, иначе у скомороха не останется ни одного занятия.
+  - Для скомороха список заменяет матричную совместимость `traveler_outsider`: так решил владелец.
+  - README:27 всё ещё пишет «заполнены все 64 колонки».
+  - `build_incidents.py` требует соседний checkout `ref-pr98` (так было и до задачи). Прогон шёл через ссылку на `/srv/novgorod-work/worktrees/ref-pr98`.
+
+### Вердикты по файлам owner-fixes
+
+- social_strata_legal_status/README.md — approve_with_limits: таблица говорит о 65 колонках, но строка 27 всё ещё о 64
+- social_strata_legal_status/roles/new_role_candidates.tsv — approve_with_limits: 64 прежних поля не изменены, значение только у скомороха; импортировать только вместе с `occupations_additions.csv`
+- social_strata_legal_status/scripts/build_roles.py — approve: пинованный заголовок 64, выход 65
+- social_strata_legal_status/scripts/seed_new_roles.py — approve: `allowed_occupations` только у скомороха

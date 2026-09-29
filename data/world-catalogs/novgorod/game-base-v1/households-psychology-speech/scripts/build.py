@@ -564,6 +564,30 @@ def build_npc_psychology(occs, roles):
     )
     report["npc_psychology"] = {"psychology_profiles.csv": n, "occupations_covered": len(occs), "roles_covered": len(roles)}
 
+    # Occupation-specific candidate pools. These are options for a later
+    # seeded runtime selector, not individual facts or selection weights.
+    source_path = os.path.join(out_dir, "occupation_goals_fears_authoring.csv")
+    source_rows = read_csv(source_path)
+    expected_occupations = {row["occupation_id"] for row in occs}
+    additions_path = os.path.join(
+        GAME_BASE_V1, "occupations-activities", "occupations", "occupations_additions.csv")
+    expected_occupations.update(row["occupation_id"] for row in read_csv(additions_path))
+    actual_occupations = {row.get("occupation_id") for row in source_rows}
+    if actual_occupations != expected_occupations:
+        raise ValueError("occupation goal/fear authoring must cover the exact occupation set")
+    motive_fields = ["occupation_id", "item_id", "text_ru", "basis", "source_refs", "confidence", "status"]
+    counts = {}
+    for item_kind, output_name in (("goal", "occupation_goals.csv"), ("fear", "occupation_fears.csv")):
+        rows = []
+        for source in source_rows:
+            if source.get("item_kind") != item_kind:
+                continue
+            row = {field: source.get(field, "") for field in motive_fields}
+            row["status"] = "candidate"
+            rows.append(row)
+        counts[output_name] = write_csv(os.path.join(out_dir, output_name), rows, motive_fields)
+    report["npc_psychology"].update(counts)
+
 
 # ---------------------------------------------------------------------------
 # Domain 3: speech_address

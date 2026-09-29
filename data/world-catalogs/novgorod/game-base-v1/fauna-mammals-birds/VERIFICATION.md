@@ -503,3 +503,26 @@ Limits that remain:
 - **`fchk_026`.** Скриптом: все 7 видов `included_reduced` имеют класс rare или contextual и presence C. Белобровик и чечевица исправлены с common на contextual. В `fauna/wild_habitat_presence.csv` изменились только их строки.
 - **`fchk_023`.** `included_rural_only`, не исключение вида: сорока присутствует в 5 сельских семействах мест (усадьба, двор, межа, выгон, улица деревни), в городских её нет, это соответствует опоре SRC_ZIN2025. Возврат честный.
 - README.md, fauna/birds.csv, fauna/wild_habitat_presence.csv, validation-report.json — approve
+
+## Независимая проверка rc-next (Claude Opus 5.5, 2026-09-29)
+
+История. Круг 1: RCN-01 (дополнить hab канона), RCN-06 (F30 по волосяному покрову), RCN-07 (методы сбора яиц по типу гнезда). Круг 2: R3 — классификатор древесного гнезда по смыслу, один владелец, общий метод не исключает постройки. Круг 3: R3 закрыт.
+- **Классификатор.** `climbingNest` определён только в `scripts/src/hunting.cjs`, `validate.cjs` его импортирует.
+- **Методы.** Все 137 F10 делятся на методы 53 / 83 / 1 без пересечений, у каждого вида ровно один метод. Сверено по тексту `nesting` всех 137. Пять видов из R3 (ушастая сова, чеглок, пустельга, бородатая неясыть, серая мухоловка) стоят в древесном методе. Derivation общего метода постройки не исключает. Проба: чеглок перенесён в общий метод → validator дал ошибку.
+- **Канон.** +28 строк `wild_habitat_presence`: домовая мышь, полевая мышь, обыкновенная полёвка. +16 фаз у полёвки. F30 44/44.
+- **Прогоны:** `build.cjs` — OK; `validate.cjs --self-test` — OK; `validate.cjs` — 0 ошибок; `validate-phase.cjs fauna-mammals-birds --self-test` — 2644 строки, 0 ошибок; три пересборки побайтно совпали, файлы равны worktree.
+- **Ограничения:** синицы с дуплом в пне (хохлатая, пухляк) и московка («у корней») попали в древесный метод, хотя их гнёзда низко; у тетеревятника, большого подорлика, рябинника, кукши, юрка, сойки, ополовника и дербника тип гнезда в `nesting` не уточнён, поэтому они в общем методе; у клеста только зимний метод; правило «локально гнездится» продублировано в `hunting.cjs`, `validate.cjs` и resource `build.mjs`/`check.mjs`; warning «WK dir not found» — от пути по умолчанию на servak, был и на HEAD.
+- README.md — approve: 25 методов, 4249 строк presence, F30 отделён от календаря меха
+- build-report.json — approve: равен пересборке
+- fauna/hunting_methods.csv — approve_with_limits: 3 метода яиц, taxa выведены из `nesting`; пни и неуточнённые гнёзда — как в ограничениях
+- fauna/mammals.csv — approve: изменён только `hab` у трёх видов
+- fauna/phase_activity.csv — approve: +16 строк обыкновенной полёвки, validator 0 ошибок
+- fauna/wild_habitat_presence.csv — approve: +28 строк, прочие строки не изменены
+- scripts/build.cjs — approve: группы `cellar` и `ovin`
+- scripts/src/hunting.cjs — approve_with_limits: единственный владелец `climbingNest`; пни с дуплом считаются древесными
+- scripts/src/mammals.cjs — approve: hab трёх видов
+- scripts/validate-phase.cjs — approve: legacy сужен до чёрной крысы
+- scripts/validate.cjs — approve_with_limits: импортирует классификатор, есть пробы; копия правила «локально гнездится»
+- validation-report.json — approve: errors 0, равен пересборке
+
+Вердикт группы: **approve_with_limits**.

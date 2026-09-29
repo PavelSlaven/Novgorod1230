@@ -499,3 +499,14 @@
 - Что вошло: +7 строк класса A без счётчика и бюджета (лапник и жерди, опад, лёд, снег, наживка, трут и растопка, дёрн); material_landscape_presence 258→434, g4_ground_and_materials 360→544; новый снимок книжных источников для fish_season_rules.
 - Проверки: check OK, пересборка байт-в-байт; сезоны и инструменты новых строк по смыслу; finite_source_profiles_ext.json и бюджеты v17 не тронуты.
 - Ограничения: ссылка `resource-catalog-v3` в source_refs указывает на каталог из #171 (в репозитории его нет); полный run-all переписывает weather_climate/water_profiles.csv — так же и на HEAD, вне этой правки.
+
+## Независимая проверка rc-next (Claude Opus 5.5, 2026-09-29)
+
+История. Круг 1 (RCN-11): `nm_bait` требовал «uses=наживка». Круг 2 (R2): заметка должна только делегировать F20. Круг 3: R2 закрыт.
+- Заметка `nm_bait` только отсылает допустимые species refs к resource-catalog F20, своего правила допуска в ней нет. Проба с пересказом «uses=наживка» → `NM_BAIT_F20_RULE_STALE`.
+- **Прогоны:** `natural_materials_soils/scripts/build.mjs` и `check.mjs` — OK (29 материалов). Три пересборки побайтно совпали, CSV равен worktree.
+- **Ограничения:** candidate.
+- natural_materials_soils/authoring/materials.mjs — approve: `nm_bait` делегирует F20
+- natural_materials_soils/natural_materials.csv — approve: пересобран, равен сборке
+
+Вердикт группы: **approve**.

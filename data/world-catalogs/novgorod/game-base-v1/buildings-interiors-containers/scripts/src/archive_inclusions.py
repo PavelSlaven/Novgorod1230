@@ -34,7 +34,7 @@ def normalize_name(value):
 def material_family(value):
     text = re.sub(r"[^a-zа-яё]+", "_", (value or "").casefold()).strip("_")
     aliases = {
-        "wood": "wood", "timber": "wood", "дерево": "wood", "древесина": "wood",
+        "wood": "wood", "timber": "wood", "shingle_conifer": "wood", "дерево": "wood", "древесина": "wood",
         "birch_bark": "birch_bark", "береста": "birch_bark",
         "iron": "iron", "железо": "iron", "metal": "metal", "металл": "metal",
         "bronze": "bronze", "бронза": "bronze", "copper": "copper", "медь": "copper",
@@ -129,10 +129,7 @@ def build_entity_rows(group, read_csv, matcult_dir=None):
     military_rows = {r.get("item_id"): r for r in read_csv(mil_path, ",")}
     matcult_rows = {}
     if matcult_dir:
-        try:
-            matcult_rows = {r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"), ",")}
-        except OSError:
-            pass
+        matcult_rows = {r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"), ",")}
     result = []
     queued = {row["archive_id"] for row in needs_check_records()}
     for item in records():
@@ -211,10 +208,7 @@ def build_ledger(group, read_csv, matcult_dir=None):
         except (OSError, TypeError):
             pass
     if matcult_dir:
-        try:
-            source_cache.update({r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"))})
-        except OSError:
-            pass
+        source_cache.update({r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"))})
     included_matcult_ids = {
         item.get("archive_ref", "").rsplit(":", 1)[-1]
         for item in rows
@@ -362,10 +356,7 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
             master_cache[rel] = {r.get(id_col): r for r in read_csv(path)}
         except OSError:
             pass
-    try:
-        matcult_cache = {r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"))}
-    except (OSError, TypeError):
-        pass
+    matcult_cache = {r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"))}
     expected_ledger = build_ledger(GROUP, read_csv, matcult_dir)
     if ledger != expected_ledger:
         errors.append("generated archive inclusion ledger differs from authored manifest/current guards/catalog")

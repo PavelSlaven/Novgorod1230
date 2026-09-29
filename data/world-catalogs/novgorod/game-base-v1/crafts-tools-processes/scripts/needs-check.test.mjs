@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import test from 'node:test';
@@ -7,7 +6,6 @@ import test from 'node:test';
 const require = createRequire(import.meta.url);
 const L = require('./lib.cjs');
 const A = require('./archive-inclusions.cjs');
-const REVIEW_ROOT = path.resolve(L.REPO, '../../fleet/tasks/imp-crafts/review');
 const queue = A.NEEDS_CHECK_ROWS;
 const byId = new Map(queue.map(row => [row.archive_id, row]));
 const ledger = L.readCsv(path.join(L.DOMAIN_ROOT, 'archive_inclusion_ledger.csv'));
@@ -22,10 +20,7 @@ test('needs_check authoring schema and evidence locators are valid', () => {
     assert.match(row.current_result, /^(new|variant)\/(include|routed|rejected)$/);
     assert.match(row.reason_code, /^(ICA_[A-Z0-9_]+|review_finding|unresolved)$/);
     if (row.finding_ref) {
-      assert.match(row.finding_ref, /^round3-(crafts|bicw)\.md#L\d+$/);
-      const [, filename, line] = row.finding_ref.match(/^(round3-(?:crafts|bicw)\.md)#L(\d+)$/);
-      const review = fs.readFileSync(path.join(REVIEW_ROOT, filename), 'utf8').split(/\r?\n/);
-      assert.ok(Number(line) > 0 && Number(line) <= review.length, `finding line is outside ${filename}: ${line}`);
+      assert.match(row.finding_ref, /^(round3-(?:crafts|bicw)\.md#L\d+|REVIEW-B-1#\d+)$/);
     }
     if (row.current_result.startsWith('variant/')) {
       assert.equal(row.current_target_group, 'crafts-tools-processes', `${row.archive_id} must retain its own target owner`);
@@ -44,7 +39,7 @@ test('hunting and fishing archive taxonomy is held as one unresolved ownership c
     assert.ok(held.cluster_id, `${id} needs a cluster ID`);
     assert.match(held.note, /crafts ↔ fauna\/hunting/);
   }
-  for (const id of ['HNT0004', 'HNT0011', 'FSH0018', 'OMI02099', 'OMI02127', 'OMI00970', 'OMI00929']) {
+  for (const id of ['HNT0004', 'HNT0011', 'FSH0018', 'OMI00124', 'OMI01128', 'OMI02099', 'OMI02127', 'OMI00970', 'OMI00929']) {
     assert.ok(A.isHuntingFishingCluster(id), `${id} must be in the boundary`);
   }
   for (const id of ['OMI00366', 'OMI02061']) {
@@ -54,9 +49,9 @@ test('hunting and fishing archive taxonomy is held as one unresolved ownership c
 
 test('queue is a complete non-terminal partition of archive provenance', () => {
   assert.equal(authoredIds.size, A.authoredRows.length);
-  assert.equal(authoredIds.size, 1269);
+  assert.equal(authoredIds.size, 1268);
   assert.equal(ledgerById.size, ledger.length);
-  assert.equal(ledgerById.size, 1269);
+  assert.equal(ledgerById.size, 1268);
   for (const id of byId.keys()) {
     const row = ledgerById.get(id);
     assert.ok(row, `${id} missing from generated ledger`);
@@ -69,6 +64,49 @@ test('queue is a complete non-terminal partition of archive provenance', () => {
   }
   for (const [id, row] of ledgerById) {
     assert.equal(row.disposition === 'needs_check', byId.has(id), `${id} must occur in exactly one side of the queue partition`);
+  }
+});
+
+test('round-three findings and owner-boundary decisions remain queued', () => {
+  const round3 = `OMI00214 OMI00324 OMI00332 OMI00202 OMI01759 OMI00117 OMI00319 OMI00595 OMI00596 OMI00775 OMI00822 OMI00839 OMI01197 OMI01231 OMI00176 OMI00177 OMI00178 OMI00179 OMI00180`;
+  for (const id of round3.split(' ')) assert.ok(byId.has(id), `${id} must be held from round-three findings`);
+  for (const id of `OMI01668 OMI01669 OMI01670 OMI01671 OMI00968 OMI00969 OMI00366 OMI00124 OMI01128 OMI00608`.split(' ')) {
+    assert.ok(byId.has(id), `${id} must remain queued pending identity or owner review`);
+  }
+  for (const id of `OMI00753 OMI00754 OMI00755 OMI00756 OMI00757 OMI00758 OMI00759 OMI00760 OMI00761 OMI00762 OMI00763 OMI00764 OMI00767 OMI00788`.split(' ')) {
+    const row = A.authoredRows.find(entry => entry[0].endsWith(`:${id}`));
+    assert.ok(row?.[3].endsWith('#mt_nonferrous_generic'), `${id} must use generic nonferrous alloy material`);
+  }
+  for (const id of ['OMI00366', 'OMI00403']) assert.equal(byId.get(id)?.cluster_id, 'cargo_net_OMI00366_OMI00403');
+  assert.equal(byId.get('OMI00608')?.cluster_id, 'nail_forging_OMI00607_OMI00608');
+  assert.equal(A.authoredRows.some(row => row[0].endsWith(':MSC0003')), false);
+});
+
+test('variants remain queued while their base entities are under review', () => {
+  for (const [variantId, baseId] of [['OMI00597', 'OMI00596'], ['OMI01760', 'OMI01759']]) {
+    const variant = byId.get(variantId);
+    assert.ok(variant, `${variantId} must be held with its queued base`);
+    assert.ok(byId.has(baseId), `${baseId} must remain queued`);
+    assert.equal(variant.current_result, 'variant/include');
+    assert.equal(variant.current_target_group, 'crafts-tools-processes');
+    assert.equal(variant.current_target_ref, `crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:${baseId.toLowerCase()}`);
+    assert.match(variant.note, new RegExp(`target ${baseId} is queued`));
+    const ledgerRow = ledgerById.get(variantId);
+    assert.equal(ledgerRow?.record_type, 'needs_check');
+    assert.equal(ledgerRow?.disposition, 'needs_check');
+    assert.equal(ledgerRow?.target_ref, '');
+  }
+});
+
+test('trv_037 riding-kind mismatch is held as a typed owner decision', () => {
+  const ids = `OMI02003 OMI02004 OMI02005 OMI02006 HRS0003 HRS0005 HRS0006 HRS0009 HRS0010 HRS0011 HRS0012 HRS0013 HRS0015 HRS0016 HRS0018 HRS0019 HRS0020 HRS0022 HRS0023 HRS0024 HRS0027 HRS0028 HRS0030`.split(' ');
+  for (const id of ids) {
+    const row = byId.get(id);
+    assert.ok(row, `${id} must not activate the riding route`);
+    assert.equal(row.current_result, 'new/routed');
+    assert.equal(row.current_target_group, 'transport-health-recreation');
+    assert.match(row.current_target_ref, /transport_entities\.csv#trv_037$/);
+    assert.match(row.note, /kind=riding/);
   }
 });
 

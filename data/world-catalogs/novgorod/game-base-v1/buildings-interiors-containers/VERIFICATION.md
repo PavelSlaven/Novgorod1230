@@ -316,3 +316,22 @@ build.py детерминирован для всех файлов, кроме `
 Проверено: Claude Opus 5.5 (C011 `1040ec2c`).
 
 - Правило касается только жилой постройки (`building_class=dwelling`) на PF, где D-2 даёт жителей (`composition_scope=linked_pf`). Хлев, клеть, навес и плетень автоматически не ограничиваются. Выбор конкретной жилой постройки — за runtime.
+
+## Независимая проверка imp-crafts PR-B (Claude Opus 5.5, 2026-09-29)
+
+Импорт из архива, вторая часть (D46/D47) для построек, интерьеров и контейнеров.
+- **Круг 1 (Opus): rework.** Оспоренные цели: OMI00026 и 00027 (дранка), OMI00212 и 00213. Не выполнен пункт OMI01571. OMI02200 — не строительный материал. Скопированные значения категории по умолчанию у OMI01515 и других.
+- **Круг 2 (ревьюер, скриптом):**
+  - OMI00026 и 00027 → `mat_shingle_conifer`;
+  - у OMI00212 и 00213 цели верные, причины уточнены;
+  - OMI01571, OMI02200, спорные записи со значением по умолчанию и кластер OMI00607 с OMI00608 — в очереди;
+  - тихий обход при чтении MATCULT (`except OSError: pass`) убран;
+  - `test:game-base` 54/54.
+- **Файлы:** archive_inclusion_ledger.csv, interiors/material_entities.csv, authoring/archive_inclusion_manifest.json, authoring/needs_check.csv, scripts/src/archive_inclusions.py, scripts/build_counts.json — approve_with_limits. Итог: 51 новая, 107 вариантов, 213 в очереди.
+- **Ограничения:**
+  - захардкожены CON0019, MIL0014, MIL0028 и число `==467` в `archive_inclusions.py` и `validate.py`;
+  - абсолютные пути Windows по умолчанию в `build.py` (уже в main);
+  - выходы BIC не покрыты тестом свежести;
+  - 4 маршрута ссылаются на `materials.csv#…` (OMI01551, 01560, 01561, 02162).
+
+Вердикт группы: **approve_with_limits**.

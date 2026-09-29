@@ -6,17 +6,17 @@
     {
       "id": "archive_inclusion_ledger_candidate_provenance",
       "result": "PASS",
-      "detail": "1269 rows; 222 new + 440 variants; 4 rejected; 474 queued; runtime activation=false"
+      "detail": "1268 rows; 205 new + 425 variants; 4 rejected; 529 queued; runtime activation=false"
     },
     {
       "id": "archive_needs_check_partition",
       "result": "PASS",
-      "detail": "1269 archive IDs partitioned exactly once; 474 queue rows have record_type/disposition/status=needs_check; no queued entity source refs"
+      "detail": "1268 archive IDs partitioned exactly once; 529 queue rows have record_type/disposition/status=needs_check; no queued entity source refs"
     },
     {
       "id": "archive_material_entity_table",
       "result": "PASS",
-      "detail": "222 entity rows; expected 222; generated from included new crafts owners"
+      "detail": "205 entity rows; expected 205; generated from included new crafts owners"
     },
     {
       "id": "unique_ids_tools",
@@ -156,7 +156,7 @@
     {
       "id": "info_other_domains_material_resolution_snapshot",
       "result": "PASS",
-      "detail": "19 files, 1760/2138 values fully resolved, 76 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
+      "detail": "19 files, 1749/2116 values fully resolved, 76 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
     },
     {
       "id": "info_mass_band_vs_v5_policy",
@@ -194,9 +194,9 @@
       "deny_hits": 0
     },
     "buildings-interiors-containers/interiors/material_entities.csv": {
-      "values": 124,
-      "fully_resolved": 51,
-      "with_unresolved_tokens": 73,
+      "values": 102,
+      "fully_resolved": 40,
+      "with_unresolved_tokens": 62,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },

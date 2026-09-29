@@ -497,6 +497,7 @@ function buildArchiveMaterialMap(root, masterItems) {
     const matches = new Set(meaningful.flatMap(value => [...fromMaterialValues(value)]));
     const mixedOnly = rawMaterialValues.length > 0 && !meaningful.length;
     const nameMatches = specificNameMaterials(mixedOnly ? source.name_ru ?? '' : `${source.name_ru ?? ''} ${source.function ?? ''}`, mixedOnly);
+    const explicitAmbiguousAlloy = rawMaterialValues.some(value => /alloy|сплав/iu.test(value));
     // A name may only refine explicit material evidence within its existing
     // vocabulary family. Exact Russian stems prevent common 4-character
     // prefixes from turning an ordinary name into a broad candidate set.
@@ -508,10 +509,10 @@ function buildArchiveMaterialMap(root, masterItems) {
     });
     if (mixedOnly && nameMatches.size === 1) {
       matches.add([...nameMatches][0]);
-    } else if (familyMatches.length === 1) {
+    } else if (!explicitAmbiguousAlloy && familyMatches.length === 1) {
       matches.clear();
       matches.add(familyMatches[0]);
-    } else if (familyMatches.length > 1) {
+    } else if (!explicitAmbiguousAlloy && familyMatches.length > 1) {
       matches.clear();
       for (const id of familyMatches) matches.add(id);
     }

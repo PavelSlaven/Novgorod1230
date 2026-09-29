@@ -420,3 +420,19 @@
   - `mt_forge_slag` имеет `referenced_by_count=0`, хотя на него теперь ссылаются строки presence.
 
 Вердикт группы: **approve_with_limits**.
+
+## Независимая проверка imp-crafts PR-B (Claude Opus 5.5, 2026-09-29)
+
+Импорт из архива, вторая часть (D46/D47): только однозначные решения, спорное — в типизированную очередь `authoring/needs_check.csv`.
+- **Круг 1 (Opus, дерево 4d4d511b): rework.** Скрипт проверил все числа, дубли имён по 47 таблицам реестра, типизацию очереди и кластер охоты. Главный дефект — фильтр (а) не видел голые номера из находок round3.
+- **Круг 2 (ревьюер, скриптом по каждому пункту):** оспоренные решения round3 (L4, L12, кластер L15) ушли в очередь. Варианты медного сплава перенаправлены на `mt_nonferrous_generic`. Компоненты чернил, когти и грузовая сеть — в очереди. Правило охоты/рыбалки добавило OMI00124 и OMI01128, кластер — 116 id. MSC0003 снят как дубль CRF0025. 23 маршрута в `trv_037` ждут владельца transport. Тест `needs-check` больше не читает пути вне репозитория. `test:game-base` 54/54.
+- **Файлы:** archive_inclusion_ledger.csv, materials_registry/material_entities.csv, materials_registry/material_resolution.csv, authoring/needs_check.csv, authoring/category_evidence_ids.csv, scripts/archive-inclusions.cjs, scripts/src/archive-inclusions.cjs, scripts/needs-check.test.mjs, scripts/validate.cjs, build-report.json, validation-report.json — approve_with_limits. Итог: 205 новых, 425 вариантов, 529 в очереди.
+- **Ограничения:**
+  - «sourced» = уверенность A плюс формула на уровне категории, подтверждения на уровне предмета нет.
+  - У 11 сущностей matcult пустое `primary_material`.
+  - Спорные сущности: OMI00860 (бура), AGR0033 (колода-улей), AGR0034 (борть как «инструмент»), OMI02071.
+  - Сомнения во владельце: OMI01761 (масло в BIC, фитиль в crafts); мох OMI01517 и OMI01561; OMI02201 → `nm_river_silt`; OMI01148; MIL0006 → `bp_hearth_open`. У CRF0057 два решения.
+  - Захардкожены числа 84, 94, 732 в `archive-inclusions.cjs`.
+  - Словари `current_result` двух очередей различаются.
+
+Вердикт группы: **approve_with_limits**.

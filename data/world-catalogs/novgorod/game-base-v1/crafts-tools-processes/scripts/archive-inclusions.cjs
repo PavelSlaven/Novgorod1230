@@ -9,7 +9,7 @@ const NEEDS_CHECK_BY_ID = new Map();
 for (const row of NEEDS_CHECK_ROWS) {
   if (!/^[A-Z]{2,4}\d{3,5}$/.test(row.archive_id) || NEEDS_CHECK_BY_ID.has(row.archive_id)) throw new Error(`needs_check.csv has invalid or duplicate archive id ${row.archive_id}`);
   if (!row.current_result || !/^(?:ICA_[A-Z0-9_]+|review_finding|unresolved)$/.test(row.reason_code)) throw new Error(`needs_check.csv has incomplete decision metadata for ${row.archive_id}`);
-  if (row.finding_ref && !/^round3-(?:crafts|bicw)\.md#L\d+$/.test(row.finding_ref)) throw new Error(`needs_check.csv has invalid finding locator for ${row.archive_id}`);
+  if (row.finding_ref && !/^(?:round3-(?:crafts|bicw)\.md#L\d+|REVIEW-B-1#\d+)$/.test(row.finding_ref)) throw new Error(`needs_check.csv has invalid finding locator for ${row.archive_id}`);
   NEEDS_CHECK_BY_ID.set(row.archive_id, row);
 }
 const ROUND3_RECONCILIATION = readCsv(path.join(DOMAIN_ROOT, 'authoring/round3_merge_reconciliation.csv'));
@@ -58,11 +58,14 @@ function isHuntingFishingCluster(id) {
   const category = source.category || base.category || '';
   const subcategory = source.subcategory || base.subcategory || '';
   const family = source.family_key || base.family_key || '';
+  const func = source.function || base.function || '';
   return category === 'hunting' || category === 'fishing'
     || ['fishing_hooks_floats_sinkers_bait_and_trap_parts',
       'hunting_trapping_bait_and_carcass_small_parts',
       'nets_lines_and_mesh_components'].includes(subcategory)
     || /(?:^|_)(?:fish|fishing|hunting|bird|carcass|bait|trap|snare)(?:_|$)/.test(family)
+    || /рыболовн.{0,24}поплавк/iu.test(func)
+    || (/сеть/iu.test(func) && /(?:net|fish|fishing|float|sinker|weight)/i.test(family))
     || family.startsWith('net_repair_')
     || /(?:^|_)netting_(?:gauge|tool)(?:_|$)/.test(family);
 }
@@ -94,7 +97,7 @@ for (const [archiveId, decision] of craftsOwnerHandoffs) {
     decision.type === 'variant' ? 'add_variant' : 'include_d39', 'include', decision.reason,
   ]);
 }
-if (craftsBicHandoffs.size !== 94) throw new Error(`Expected 94 explicit crafts incoming-owner decisions, found ${craftsBicHandoffs.size}`);
+if (craftsBicHandoffs.size !== 93) throw new Error(`Expected 93 explicit crafts incoming-owner decisions, found ${craftsBicHandoffs.size}`);
 for (const [archiveId, decision] of craftsBicHandoffs) {
   if (authoredRows.some(row => row[0].split(':').at(-1) === archiveId)) throw new Error(`Duplicate crafts authoring for BIC owner handoff ${archiveId}`);
   const source = archiveRowById(archiveId);

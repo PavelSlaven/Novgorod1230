@@ -193,3 +193,22 @@ WRT0009,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: I
 WRT0015,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
 WTR0005,routed,transport-health-recreation,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
 WTR0007,routed,transport-health-recreation,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+OMI01515,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says birch-bark plug; verify copied material default before inclusion.
+OMI01516,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says textile stopper; verify copied material default before inclusion.
+OMI01524,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says leather lid; verify copied material default before inclusion.
+OMI01528,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says stone weight; verify copied material default before inclusion.
+OMI01534,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says clay seal; verify copied material default before inclusion.
+OMI01535,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says clay stopper; verify copied material default before inclusion.
+OMI01567,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is textile although name says wooden lashing toggle; verify copied material default before inclusion.
+OMI01570,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is textile although name says straw packing; verify copied material default before inclusion.
+OMI01571,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §1: round2 item 3 did not resolve this packaging residue; verify as state of contents/packaging before inclusion.
+OMI01579,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says removed textile basket lining; verify copied material default before inclusion.
+OMI01584,distinct,,,unresolved,,,REVIEW-imp-crafts-B-1 §2: source material is wood although name says leather box hinge; verify copied material default before inclusion.
+OMI00607,variant,buildings-interiors-containers,buildings-interiors-containers/buildings/materials_vocab.csv#mat_iron_nail,unresolved,,nail_forging_OMI00607_OMI00608,REVIEW-imp-crafts-B-1 §4: hold with OMI00608 until nail cluster identity is aligned; preserve current variant proposal.
+OMI00608,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00608,unresolved,,nail_forging_OMI00607_OMI00608,REVIEW-imp-crafts-B-1 §4: hold with BIC OMI00607 until nail cluster identity is aligned; preserve current route proposal.
+OMI02200,variant,buildings-interiors-containers,buildings-interiors-containers/buildings/materials_vocab.csv#mat_birch_bark,unresolved,,,REVIEW-imp-crafts-B-1 §1: bark letter fragment in mud is not a building material; verify context and owner.
+OMI00176,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00179,review_finding,round3-crafts.md#L15,wood_shavings_OMI00179_OMI00176_OMI00180,Round3 L15 rule g holds the whole OMI00179 wood-shavings cluster.
+OMI00177,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00179,review_finding,round3-crafts.md#L15,wood_shavings_OMI00179_OMI00176_OMI00180,Round3 L15 rule g holds the whole OMI00179 wood-shavings cluster.
+OMI00178,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00179,review_finding,round3-crafts.md#L15,wood_shavings_OMI00179_OMI00176_OMI00180,Round3 L15 rule g holds the whole OMI00179 wood-shavings cluster.
+OMI00180,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00179,review_finding,round3-crafts.md#L15,wood_shavings_OMI00179_OMI00176_OMI00180,Round3 L15 rule g holds the whole OMI00179 wood-shavings cluster.
+OMI02212,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00179,review_finding,round3-crafts.md#L15,wood_shavings_OMI00179_OMI00176_OMI00180,Round3 L15 rule g holds the whole OMI00179 wood-shavings cluster.

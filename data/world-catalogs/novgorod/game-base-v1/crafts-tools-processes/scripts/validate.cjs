@@ -36,7 +36,7 @@ const ledgerById = new Map(archiveLedger.map(row => [row.archive_ref.split(':').
 const queuePartitionIssues = [];
 if (queueById.size !== queuedRows.length) queuePartitionIssues.push('duplicate queue ID');
 if (authoredById.size !== ARCHIVE_INCLUSIONS.authoredRows.length || ledgerById.size !== archiveLedger.length) queuePartitionIssues.push('duplicate archive ID');
-if (authoredById.size !== 1269 || ledgerById.size !== 1269) queuePartitionIssues.push(`archive partition ${authoredById.size}/${ledgerById.size}, expected 1269`);
+if (authoredById.size !== 1268 || ledgerById.size !== 1268) queuePartitionIssues.push(`archive partition ${authoredById.size}/${ledgerById.size}, expected 1268`);
 for (const [id, queued] of queueById) {
   const source = authoredById.get(id), row = ledgerById.get(id);
   if (!source || !row) { queuePartitionIssues.push(`${id} missing from authored source or ledger`); continue; }

@@ -61,7 +61,7 @@ function gameBaseCopy() {
   return { parent, root };
 }
 
-function updateLedger(root, id, field, value, ledgerPath) {
+function updateLedger(root, id, field, value, ledgerPath, lastMatch = false) {
   const file = path.join(root, ledgerPath);
   const text = fs.readFileSync(file, 'utf8');
   const headers = text.slice(0, text.indexOf('\n')).replace(/^\uFEFF/, '').split(',');
@@ -80,7 +80,8 @@ function updateLedger(root, id, field, value, ledgerPath) {
   });
   const archiveIndex = headers.indexOf('archive_ref');
   const fieldIndex = headers.indexOf(field);
-  const row = rows.find(cells => String(cells[archiveIndex] ?? '').endsWith(`:${id}`));
+  const findRow = cells => String(cells[archiveIndex] ?? '').endsWith(`:${id}`);
+  const row = lastMatch ? [...rows].reverse().find(findRow) : rows.find(findRow);
   assert.ok(row, `missing ${id} in ${ledgerPath}`);
   row[fieldIndex] = value;
   const quote = value => /[",\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
@@ -708,10 +709,13 @@ test('live game-base probes detect pair collision, category/material mismatch, a
     });
     appendCsvObject(root, craftsLedger, {
       archive_ref: `${sourceRef}OMI01687`, archive_name: 'Песок для присыпки',
-      archive_action: 'add_variant', match_type: 'variant', period: '1180–1260',
+      archive_action: 'add_variant', match_type: 'variant', record_type: 'variant', disposition: 'variant', period: '1180–1260',
       game_base_ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_quartz_sand',
       family_key: 'writing_sand', reason: 'Unknown mixed source material is not compared.',
     });
+    const omi01687VariantRows = () => parseCsv(fs.readFileSync(path.join(root, craftsLedger), 'utf8'))
+      .filter(row => row.archive_ref?.endsWith('OMI01687') && row.record_type === 'variant');
+    assert.equal(omi01687VariantRows().at(-1)?.game_base_ref, 'crafts-tools-processes/materials_registry/materials.csv#mt_quartz_sand');
     appendCsvObject(root, bicEntities, {
       item_id: 'it_bic_antler_target', name_ru: 'Заготовка из рога', family_key: 'antler_stock',
       primary_material: 'mt_antler;mt_horn', category: 'bone_antler_horn_shell',
@@ -726,6 +730,7 @@ test('live game-base probes detect pair collision, category/material mismatch, a
       game_base_ref: `${bicEntities}#it_bic_antler_target`, family_key: 'antler_stock',
       reason: 'Positive material family probe.',
     });
+    updateLedger(root, 'OMI00753', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_nonferrous_generic', craftsLedger);
     updateLedger(root, 'OMI00990', 'record_type', 'new', craftsLedger);
     updateLedger(root, 'OMI00990', 'disposition', 'new', craftsLedger);
     appendCsvObject(root, craftsEntities, {
@@ -739,6 +744,8 @@ test('live game-base probes detect pair collision, category/material mismatch, a
     assert.deepEqual(correctTargetErrors, [], correctTargetErrors.join('\n'));
     const foxPeltErrors = positiveResult.errors.filter(error => error.startsWith('OMI00424:'));
     assert.deepEqual(foxPeltErrors, [], foxPeltErrors.join('\n'));
+    const copperAlloyErrors = positiveResult.errors.filter(error => error.startsWith('OMI00753:'));
+    assert.deepEqual(copperAlloyErrors, [], copperAlloyErrors.join('\n'));
     const positives = positiveResult.errors;
     for (const id of ['OMI00350', 'OMI00351', 'OMI00255', 'OMI00884']) {
       assert.equal(positives.some(error => error.startsWith(`${id}: variant target material`)), false, positives.filter(error => error.startsWith(`${id}:`)).join('\n'));
@@ -746,6 +753,9 @@ test('live game-base probes detect pair collision, category/material mismatch, a
     assert.ok(positives.some(error => /OMI03001: variant target material .*mt_wool.* does not match archive material candidates .*mt_felt/.test(error)), positives.filter(error => error.startsWith('OMI03001:')).join('\n'));
 
     updateLedger(root, 'OMI00884', 'game_base_ref', `${bicEntities}#it_bic_bone_target`, bicLedger);
+    updateLedger(root, 'OMI01687', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_bone', craftsLedger, true);
+    assert.equal(omi01687VariantRows().at(-1)?.game_base_ref, 'crafts-tools-processes/materials_registry/materials.csv#mt_bone');
+    updateLedger(root, 'OMI00753', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_copper', craftsLedger);
     updateLedger(root, 'OMI01504', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_plinfa', bicLedger);
     updateLedger(root, 'OMI00350', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_iron', craftsLedger);
 
@@ -757,6 +767,8 @@ test('live game-base probes detect pair collision, category/material mismatch, a
     assert.ok(errors.some(error => /semantic-root collision “пробка затычка”/.test(error)));
     assert.ok(errors.some(error => /semantic-root collision “кость”/.test(error)));
     assert.ok(errors.some(error => /OMI00884: variant target material .*mt_bone.* does not match archive material candidates .*mt_antler/.test(error)), errors.filter(error => error.includes('OMI00884')).join('\n'));
+    assert.ok(errors.some(error => /OMI01687: variant target material .*mt_bone.* does not match archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01687')).join('\n'));
+    assert.ok(errors.some(error => /OMI00753: variant target material .*mt_copper.* does not match archive material candidates/.test(error)), errors.filter(error => error.includes('OMI00753')).join('\n'));
     assert.ok(errors.some(error => /OMI00350: variant target material .*mt_iron/.test(error)));
     assert.ok(errors.some(error => /OMI01504: variant target material .*mt_plinfa.* does not match archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01504')).join('\n'));
 

@@ -8,7 +8,7 @@ for (const script of ['spatial-v3:red', 'spatial-v3:verify-red', 'spatial-v3:che
 }
 const conformance = await collectConformanceReport();
 if (conformance.target.historical.contracts.length !== 160 || conformance.target.historical.errors.length !== 58) throw new Error('P06 harness did not preserve frozen P05 totals');
-if (conformance.target.contracts.length !== 228 || conformance.target.errors.length !== 86) throw new Error('P06 harness did not parse the current 4.5 target union');
+if (conformance.target.contracts.length !== 228 || conformance.target.errors.length !== 86) throw new Error('P06 harness did not parse the current 4.7 target union');
 if (conformance.target.stateMachines.executionTransitions.length !== 16 || conformance.target.stateMachines.executionEvents.length !== 12) throw new Error('P06 harness did not parse Appendix A execution matrices');
 const stateMachines = await collectStateMachineReport();
 const compatibility = await collectCompatibilityReport();

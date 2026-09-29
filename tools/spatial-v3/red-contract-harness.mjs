@@ -88,7 +88,7 @@ export async function loadCanonicalTarget() {
     ...spatialAmendmentContracts
   ]);
   const errors = mergeByName(mergeByName(historical.errors, amendmentErrors), spatialAmendmentErrors);
-  if (spatialAmendmentContracts.length !== 12 || spatialAmendmentErrors.length !== 4) throw new Error('Spatial 4.7 Appendix F totals changed; refresh the target contract evidence');
+  if (spatialAmendmentContracts.length !== 14 || spatialAmendmentErrors.length !== 4) throw new Error('Spatial 4.7 Appendix F totals changed; refresh the target contract evidence');
   if (amendmentContracts.length !== 64 || amendmentErrors.length !== 24) throw new Error('Temporal/PR8 amendment totals changed; refresh the target contract evidence');
   if (npcAmendmentContracts.map((contracts) => contracts.length).join(',') !== '2,3,7') throw new Error('M2 NPC contract amendment totals changed; refresh the target contract evidence');
   if (contracts.length !== 228 || errors.length !== 86) throw new Error('Current 4.7 target union no longer matches the canonical amendments');

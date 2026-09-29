@@ -29,7 +29,7 @@ const temporalErrors = [
   'remote_catch_up_rule_gap', 'propagation_rule_gap', 'visible_package_persistence_gap'
 ];
 
-test('Temporal World v1.1 is part of the current 4.5 target contract set with one declaration per DTO/error', () => {
+test('Temporal World v1.1 is part of the current 4.7 target contract set with one declaration per DTO/error', () => {
   assert.equal(SPATIAL_V3_CONTRACT_VERSION, '4.7.0-target.1');
   const contractNames = contractDefinitions.map(({ contract_name }) => contract_name);
   const errorCodes = typedErrorDefinitions.map(({ error_code }) => error_code);

@@ -966,7 +966,7 @@
         "Exactly one approved from and to endpoint binding exists for an approved route version.",
         "Reverse route, when present, is distinct, independently valid, points back reciprocally and has reversed endpoint/segment order; absence declares a one-way route.",
         "Reverse route is the mirror of the forward route: point k corresponds to point n minus k, segment i to segment n minus 1 minus i; corresponding segments have equal line_kind_id and line_name and inverse line_direction_id; line_discriminator, base_minutes, method and availability may differ.",
-        "route_kind_id is derived from the line_kind_id of the first segment through the approved line-kind to route-kind mapping; it is not authored independently.",
+        "route_kind_id equals the route_kind_id of the line_kind_profile of the first segment; it is not authored independently.",
         "Route version changes whenever point, segment, endpoint binding or mechanically relevant route-level dependency changes."
       ]
     },
@@ -1093,6 +1093,11 @@
           "type": "controlled_line_kind"
         },
         {
+          "name": "line_kind_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
           "name": "line_name",
           "required": true,
           "type": "non_empty_text"
@@ -1163,8 +1168,10 @@
         "UNIQUE route version and ordinal.",
         "Segment ordinal i connects point ordinal i to i plus one.",
         "Segment has exactly one spatial context.",
-        "baseline_movement_method_id, movement_method_cost_profile_ref, dynamic_recheck_policy_ref and transition_environment_profile_ref equal those of the line_kind_profile of line_kind_id (one movement-method id space).",
-        "base_minutes does not exceed max_segment_minutes of that line_kind_profile; violation is route_segment_too_long.",
+        "line_kind_profile_ref is an explicit versioned reference (a bare line_kind_id selects no version); line_kind_id equals the line kind of that profile version.",
+        "baseline_movement_method_id, movement_method_cost_profile_ref, dynamic_recheck_policy_ref and transition_environment_profile_ref equal those of the referenced line_kind_profile version (one movement-method id space).",
+        "A segment incident to an internal route point has a non-null line_direction_id.",
+        "base_minutes does not exceed max_segment_minutes of that line_kind_profile (itself at most 30); violation is route_segment_too_long.",
         "Active outgoing lines of one place (§4.7.2) have distinct (line_name, line_discriminator, line_direction_id); the line of a multi-segment route for this purpose is its first segment."
       ]
     },
@@ -1501,6 +1508,11 @@
           "name": "line_kind_id",
           "required": true,
           "type": "controlled_line_kind"
+        },
+        {
+          "name": "line_kind_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
         },
         {
           "name": "line_name",
@@ -2024,9 +2036,9 @@
           "type": "versioned_ref"
         },
         {
-          "name": "entry_line_kind_id",
+          "name": "entry_line_kind_profile_ref",
           "required": true,
-          "type": "controlled_line_kind"
+          "type": "versioned_ref"
         },
         {
           "name": "entry_line_name",
@@ -2062,6 +2074,7 @@
       ],
       "invariants": [
         "through requires direction, directional exit and length rule and requires terminal policy kind world_route_exit or physical_boundary matching that exit.",
+        "through requires a non-null entry_line_direction_id; entry_line_kind_profile_ref is an explicit versioned reference and the line kind of a generated connection is the kind of that profile version.",
         "branch forbids direction, directional exit and length rule and requires terminal policy kind connect_existing or physical_boundary.",
         "g4_id equals the owning profile G4 and every related authoring record belongs to the same world revision.",
         "allowed_templates is finite and non-empty."
@@ -3990,10 +4003,11 @@
         "UNIQUE one active anchor per party and route point version.",
         "anchor_role matches context_snapshot point_kind so that ordinary_waypoint maps to ordinary, boundary_wait maps to boundary and shared_checkpoint maps to checkpoint.",
         "On creation and on every committed arrival, active_side is set to context_snapshot.default_wait_side.",
-        "ordinary_waypoint pins exactly one authored forward continuation departure and exposes no forward alternative; the only additional departure is the turn-back to the reciprocal point of the reverse route (§4.10).",
-        "boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving.",
-        "shared_checkpoint pins the default authored continuation; every additional departure is represented only by party_checkpoint_route_departure.",
-        "Every allowed departure originates at source_route_point_ref and is compatible with context_snapshot.departure_side_context.",
+        "ordinary_waypoint pins exactly one authored forward continuation departure and exposes no forward alternative.",
+        "boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving; a turn-back does not cross the boundary and uses the mirror departure with inverted boundary sides.",
+        "shared_checkpoint pins the default authored continuation; every additional forward departure is represented only by party_checkpoint_route_departure.",
+        "Every allowed departure originates at source_route_point_ref or at its mirror point on the reciprocal route (the same physical point, §4.10) and is compatible with context_snapshot.departure_side_context (for a mirror departure, with the inverted side context).",
+        "A turn-back (mirror departure) is available at an anchor of every role; executing it rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).",
         "If switch_phase=outbound_dispatch, dispatch atomically changes active_side from arrival to departure before leaving; inbound_completion anchors are already on departure side. No role changes active_side by any other rule.",
         "active forbids terminal_change_set_id; superseded and retired require it."
       ]
@@ -4512,6 +4526,11 @@
           "type": "enum[exact, bounded, unknown]"
         },
         {
+          "name": "duration_band",
+          "required": false,
+          "type": "controlled_duration_band"
+        },
+        {
           "name": "canonical_digest",
           "required": true,
           "type": "sha256_hex"
@@ -4524,6 +4543,7 @@
         "time requires minute bounds and null action-unit bounds.",
         "segmented requires at least one populated dimension and may populate both.",
         "exact requires equal min and max for every populated dimension.",
+        "duration_band, when present, is the band of minutes_max under the approved band profile; it requires minute bounds, and the player projection shows the band, not the bounds (section 14.4).",
         "bounded requires both bounds for every populated dimension.",
         "unknown requires all numeric bounds null, is not executable and accompanies a blocking reason."
       ]
@@ -5412,7 +5432,7 @@
         {
           "name": "member_kind",
           "required": true,
-          "type": "enum[endpoint, transfer_scene]"
+          "type": "enum[endpoint, transfer_scene, canonical_connection]"
         },
         {
           "name": "source_authoring_ref",
@@ -5445,6 +5465,21 @@
           "type": "prepared_scene_materialization_snapshot"
         },
         {
+          "name": "resolved_site_connection_id",
+          "required": false,
+          "type": "stable_id"
+        },
+        {
+          "name": "resolved_reverse_site_connection_id",
+          "required": false,
+          "type": "stable_id"
+        },
+        {
+          "name": "resolved_line_kind_profile_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
           "name": "dependency_pins",
           "required": true,
           "type": "dependency_pin_set"
@@ -5460,10 +5495,16 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "resolved_endpoint_binding_ids",
+          "type": "relation_set[stable_id]"
+        }
+      ],
       "invariants": [
-        "endpoint requires resolved_endpoint_snapshot and forbids every scene field.",
-        "transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization.",
+        "endpoint requires resolved_endpoint_snapshot and forbids every scene field and every connection field.",
+        "canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.6), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).",
+        "transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization, and forbids every connection field.",
         "A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.",
         "Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.",
         "Duplicate member_kind plus dependency-pin digest is forbidden within one snapshot.",
@@ -14471,6 +14512,11 @@
           "type": "versioned_ref"
         },
         {
+          "name": "route_kind_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
           "name": "max_segment_minutes",
           "required": true,
           "type": "positive_integer"
@@ -14494,8 +14540,10 @@
       ],
       "invariants": [
         "UNIQUE one approved profile per line_kind_id.",
+        "max_segment_minutes is at most 30 (the hard ceiling of section 4.5.2); a profile may set less, never more.",
+        "route_kind_id is the route kind of every world route whose first segment has this line kind; it is the only line-kind to route-kind mapping.",
         "cost is time only; there is no action-cost profile for a line (§1.4).",
-        "A water line kind (river, side channel, open water, ford, ferry) has at least one alternative method that needs no transport; a physical boundary, not a missing transport, is the only reason a water line is closed.",
+        "A water line kind (line.river_channel, line.side_channel, line.open_water, line.ford, line.ferry) has at least one alternative method that needs no transport; a physical boundary, not a missing transport, is the only reason a water line is closed.",
         "The profile version changes when any field or alternative method changes; values change only by a new version, never in place."
       ]
     },

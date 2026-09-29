@@ -92,7 +92,7 @@ if (temporalSpecifications.length !== 64 || temporalSpecifications.some((specifi
 if (npcCombatSpecifications.length !== 2 || npcCombatSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('NPC combat machine contract appendix parse failed');
 if (npcAutonomousSpecifications.length !== 3 || npcAutonomousSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('NPC autonomous machine contract appendix parse failed');
 if (npcConversationSpecifications.length !== 7 || npcConversationSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('NPC conversation machine contract appendix parse failed');
-if (spatialAmendmentSpecifications.length !== 12 || spatialAmendmentSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Spatial 4.7 Appendix F contract specification parse failed');
+if (spatialAmendmentSpecifications.length !== 14 || spatialAmendmentSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Spatial 4.7 Appendix F contract specification parse failed');
 const merge = (amendment) => {
   const byName = new Map(baselineSpecifications.map((specification) => [specification.contract_name, specification]));
   for (const specification of amendment) byName.set(specification.contract_name, specification);

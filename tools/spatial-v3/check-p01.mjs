@@ -52,7 +52,7 @@ if (npcContracts.map((entries) => entries.length).join(',') !== '2,3,7' || npcCo
 const spatialAmendmentText = standard.slice(standard.indexOf('# Приложение F.'));
 const spatialAmendmentContracts = [...spatialAmendmentText.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
 const spatialAmendmentErrors = [...spatialAmendmentText.slice(spatialAmendmentText.indexOf('## F.2.')).matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]);
-if (spatialAmendmentContracts.length !== 12 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
+if (spatialAmendmentContracts.length !== 14 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
 const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat(), ...spatialAmendmentContracts]);
 const currentErrors = new Set([...errors, ...temporalErrors, ...spatialAmendmentErrors]);
 if (currentContracts.size !== 228 || currentErrors.size !== 86) throw new Error('Current 4.7 target union audit failed');

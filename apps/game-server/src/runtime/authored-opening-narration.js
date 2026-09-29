@@ -7,6 +7,7 @@ import { buildStage22NarratorInput, buildStage23AuditInput,
 import { computeVisibleContextPackageDigest } from '@rus/contracts';
 import { adaptApprovedOpeningNarration } from '@rus/narration';
 import { serverError } from '../errors.js';
+import { GAMEPLAY_LLM_CALL_TIMEOUT_MS } from './llm-turn-budget.js';
 
 const WRITER = `Return only {"prose":"<complete opening>"}. Write 2-4 connected
 paragraphs of restrained literary Russian in second person. Use only the supplied
@@ -91,22 +92,27 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
   const auditor = role('gameplay_narrator_auditor', AUDITOR);
   const semanticRepairer = role('gameplay_narrator_semantic_repair',
     `${WRITER} Repair every supplied Stage 23 concern.`, proseOutput);
-  const OPENING_AUDIT_OUTER_ATTEMPTS = 3;
+  // A STAGE23_HANDOFF_* refusal follows an audit that still fails after the one semantic repair.
+  // The repair is claimed once per request, so the second attempt runs without it: it delivers
+  // or fails with the audit's own concerns, which are not retried. Two attempts is the ceiling.
+  const OPENING_AUDIT_OUTER_ATTEMPTS = 2;
   return Object.freeze({
     async run({ partyId, requestId, visibleContextPackage,
       visibleContextApproval }) {
       const execute = async () => {
+        const repair = { spent: false };
         for (let attempt = 0; attempt < OPENING_AUDIT_OUTER_ATTEMPTS; attempt += 1) {
           try {
             return await runBoundedOpening({ requestId,
               visibleContextPackage, visibleContextApproval, writer, auditor,
-              auditOutput, semanticRepairer });
+              auditOutput, semanticRepairer, repair });
           } catch (error) {
             const handoffRetry = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
               && Array.isArray(error?.details?.codes)
               && error.details.codes.some((code) => typeof code === 'string'
                 && code.startsWith('STAGE23_'));
-            if (!handoffRetry || attempt + 1 >= OPENING_AUDIT_OUTER_ATTEMPTS) {
+            if (!handoffRetry || attempt + 1 >= OPENING_AUDIT_OUTER_ATTEMPTS
+              || !canAffordAnotherCall(llmDiagnostics?.turnBudget)) {
               throw error;
             }
             try {
@@ -130,8 +136,13 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
   });
 }
 
+function canAffordAnotherCall(turnBudget) {
+  const remaining = turnBudget?.remaining?.();
+  return !remaining || remaining.deadline_ms > GAMEPLAY_LLM_CALL_TIMEOUT_MS;
+}
+
 async function runBoundedOpening({ requestId, visibleContextPackage,
-  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer }) {
+  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer, repair }) {
       const stage22Input = buildStage22NarratorInput({ request_id: requestId,
         visible_context_package: visibleContextPackage,
         visible_context_package_digest:
@@ -168,6 +179,11 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
       openingError('AUTHORED_OPENING_AUDIT_REJECTED',
         stage23.result.narrator_prose_audit.concerns);
     }
+    if (repair.spent) {
+      openingError('AUTHORED_OPENING_AUDIT_REJECTED',
+        stage23.result.narrator_prose_audit.concerns);
+    }
+    repair.spent = true;
     stage22 = stage22Result(stage22Input,
       await semanticRepairer({ ...stage22Input,
         failed_narrator_starting_prose: stage22.narrator_starting_prose,

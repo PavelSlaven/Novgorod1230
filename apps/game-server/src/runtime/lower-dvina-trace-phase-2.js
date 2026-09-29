@@ -19,7 +19,7 @@ import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
 import { completeTracePhase2Replay, recordTracePhase2TurnContext, runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
 import { createTurnCommandRegistry } from '@rus/turn';
-import { npcSharesPlayerScene } from './lower-dvina-trace-scene-presence.js';
+import { npcSharesPlayerScene, sceneLocationRef } from './lower-dvina-trace-scene-presence.js';
 import { TRACE_SCENARIO_ID } from './lower-dvina-trace-session.js';
 import { createSemanticConversationCommand } from
   './lower-dvina-trace-phase-3-conversation-command.js';
@@ -455,7 +455,7 @@ function liveWorldConversationContracts({ state, npc, actorRef, allNpcs,
   });
   const conversationPin = Object.freeze({ ...pin,
     id: profile.activity_profile_id });
-  const locationRef = state.position.location_ref;
+  const locationRef = sceneLocationRef(state);
   return Object.freeze({
     neutral_conversation: true,
     ids: Object.freeze({ eremeyRef: actorRef,

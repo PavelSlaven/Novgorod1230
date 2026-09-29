@@ -8,7 +8,8 @@ const targets = (commands) => commands.map(({ command_id: id }) =>
 
 test('NPCs of the player G6 are partners; the start NPC of another site is not',
   async () => {
-    const state = generatedState();
+    // the real v17 position has no location_ref: the site stands in for it
+    const state = generatedState((next) => { delete next.position.location_ref; });
     const commands = commandsFor(state);
     assert.deepEqual(targets(commands),
       [state.npcs[0].instance_id, state.npcs[1].instance_id]);

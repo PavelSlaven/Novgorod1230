@@ -36,6 +36,12 @@ export function compareSceneLocus(left, right) {
   return null;
 }
 
+/** Location of the player for conversation: the authored location, else the site of a generated scene. */
+export const sceneLocationRef = (state) => {
+  const { location_ref: location, site_id: site } = state?.position ?? {};
+  return known(location) ? location : known(site) ? site : null;
+};
+
 export const sameSceneLocus = (left, right) =>
   compareSceneLocus(left, right) === true;
 

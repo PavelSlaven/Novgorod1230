@@ -1,5 +1,5 @@
 import { compareGameTimestamp } from '@rus/time-events-history';
-import { npcSharesPlayerScene } from './lower-dvina-trace-scene-presence.js';
+import { npcSharesPlayerScene, sceneLocationRef } from './lower-dvina-trace-scene-presence.js';
 
 export function tracePhase3PreconditionSatisfied(
   precondition,
@@ -7,7 +7,7 @@ export function tracePhase3PreconditionSatisfied(
   contracts
 ) {
   if (precondition.kind === 'committed_location') {
-    return state.position?.location_ref === precondition.location_ref;
+    return sceneLocationRef(state) === precondition.location_ref;
   }
   if (precondition.kind === 'committed_evidence_access') {
     return accessibleBlueWoolItem(state, contracts) !== null;
@@ -21,7 +21,7 @@ export function tracePhase3PreconditionSatisfied(
   }
   if (precondition.kind === 'approved_access_policy') {
     return contracts.access.policy_id === precondition.policy_ref
-      && contracts.access.location_ref === state.position?.location_ref
+      && contracts.access.location_ref === sceneLocationRef(state)
       && contracts.access.hidden_or_open_state === 'open'
       && contracts.access.unmaterialized_access === 'forbidden';
   }

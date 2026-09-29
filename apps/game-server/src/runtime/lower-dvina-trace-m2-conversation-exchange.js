@@ -31,7 +31,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-exchange-setup.js';
 import { conversationNpcContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
-import { compareSceneLocus, sceneLocus } from
+import { compareSceneLocus, sceneLocationRef, sceneLocus } from
   './lower-dvina-trace-scene-presence.js';
 import {
   revalidatePendingNpcContribution,
@@ -59,8 +59,7 @@ export function createM2ConversationContext(input) {
       || !input.state.party_id.trim()
       || typeof input.state.actor_id !== 'string'
       || !input.state.actor_id.trim()
-      || typeof input.state.position?.location_ref !== 'string'
-      || !input.state.position.location_ref.trim()) {
+      || sceneLocationRef(input.state) === null) {
     fail(
       'TRACE_M2_CONVERSATION_STATE_INVALID',
       'Conversation requires one exact committed state version and clock.'

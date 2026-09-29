@@ -1,12 +1,13 @@
 import { validatePlayerConversationContributionPlan } from '@rus/npc-runtime';
 import { fail } from './lower-dvina-trace-m2-conversation-shared.js';
+import { sceneLocationRef } from './lower-dvina-trace-scene-presence.js';
 
 export function findResumableConversationSession(state, playerRef, targetRef) {
   const pending = state.pending_npc_conversation_execution
     ?? state.pending_player_conversation_execution ?? null;
   const candidates = (state.conversation_sessions ?? []).filter((session) => {
     const localPlayerSession =
-      session?.location_ref?.entity_id === state.position.location_ref
+      session?.location_ref?.entity_id === sceneLocationRef(state)
       && session.active_participant_refs?.some((participant) =>
         participant.entity_kind === playerRef.entity_kind
           && participant.entity_id === playerRef.entity_id);

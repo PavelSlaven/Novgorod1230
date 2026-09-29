@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- feat(v17): D27 — the standard bootstrap imports the m2c NPC wave (stage `m2c_npc_wave_import`: pinned request, independent attestation, exact readback); PG fixtures no longer import it themselves — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (#158) LW-035 updated LW-076 updated LW-077 updated
+- feat(v17): D27 — the standard bootstrap imports the m2c NPC wave (stage `m2c_npc_wave_import`: pinned request, independent attestation in a sixth file `m2c_npc_wave_import.json` for `--run`, exact readback); p12 now runs in its own CI job; PG fixtures no longer import it themselves — пересоберите локальные пары `novgorod_world_v17` / `novgorod_party_v17` (#158) LW-035 updated LW-076 updated LW-077 updated LW-085 added LW-069 closed
 - data(m2c-wave): m2c-npc-wave v1 regenerated on game-base pin 27bd6134 (#209): legacy region ids gone, 1236 environment presence rules excluded by the generator, approval.json awaits reviewer re-signature (`resign_required`); D27 stage not wired yet (#158) LW-084 added LW-077 closed
 - data(game-base): needs_check batch 1, hunting/fishing cluster — exact gear/material variants, per-item queue reasons, scoped pair waivers in the ownership checker (imp-needs-hunt) (#209)
 - chore(architecture): file-size limits removed; split code by responsibility (AI §16), MODULE_RULES item 7 reworded (#208)

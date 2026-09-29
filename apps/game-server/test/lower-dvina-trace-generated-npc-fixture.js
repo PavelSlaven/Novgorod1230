@@ -44,7 +44,7 @@ export function commandsFor(state, models = createM2ConversationModels()) {
 }
 
 /** Runs real turns on a generated-shape state; npcRequests collects every NPC request. */
-export function conversationRun(state, { greeting = false, npcUtterance = null } = {}) {
+export function conversationRun(state, { greeting = false, npcUtterance = null, leaveOn = null } = {}) {
   const npcRequests = [];
   const models = createM2ConversationModels({
     onNpcCall: (request) => npcRequests.push(request) });
@@ -53,11 +53,17 @@ export function conversationRun(state, { greeting = false, npcUtterance = null }
     plan.speech.utterance_text = npcUtterance;
     return plan;
   };
-  const playerConversationModel = greeting ? (request) => {
+  const playerConversationModel = (request) => {
     const plan = models.playerConversationModel(request);
-    plan.speech.interaction_tags = ['greeting'];
+    if (leaveOn?.test(request.raw_text)) {
+      return { ...plan, contribution_kind: 'leave_conversation', speech: null,
+        primary_addressee_ref: null, intended_addressee_refs: [],
+        affected_actor_refs: [], resolution: 'automatic', supporting_operations: [], check: null,
+        handoff: null };
+    }
+    if (greeting) plan.speech.interaction_tags = ['greeting'];
     return plan;
-  } : models.playerConversationModel;
+  };
   const f = fixture({ committedState: state, authoredTurnProfile: profile,
     playerConversationModel, npcSemanticModel,
     temporalAdvanceOwner: conversationTemporalOwner(state),

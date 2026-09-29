@@ -53,3 +53,24 @@ test('generated-shape NPC hears the player and answers over two turns', async ()
   assert.equal(npcStatements().length > firstCount, true);
   assert.equal(f.commitCount(), 2);
 });
+
+test('greeting, question, second turn and leaving run as one lifecycle', async () => {
+  const state = generatedState();
+  const npc = state.npcs[0];
+  const { f, say, npcRequests } = conversationRun(state,
+    { greeting: true, leaveOn: /прощай/u });
+  const spoken = () => f.state.conversation_statements.filter(
+    ({ speaker_ref: speaker }) => speaker?.entity_id === npc.instance_id).length;
+  await say('lifecycle-1', 'Здравствуй, добрый человек.');
+  await say('lifecycle-2', 'Как идёт работа?');
+  await say('lifecycle-3', 'А что нового?');
+  const beforeLeaving = spoken();
+  assert.equal(beforeLeaving, 3);
+  assert.equal(new Set(npcRequests.map(({ npc_ref: ref }) => ref.entity_id)).size, 1);
+  await say('lifecycle-4', 'Ну, прощай, мне пора.');
+  assert.equal(spoken(), beforeLeaving);
+  assert.equal(f.commitCount(), 4);
+  await say('lifecycle-5', 'Ещё вопрос: далеко ли до воды?');
+  assert.equal(spoken(), beforeLeaving + 1);
+  assert.equal(f.commitCount(), 5);
+});

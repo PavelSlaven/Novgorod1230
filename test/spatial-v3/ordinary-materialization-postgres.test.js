@@ -30,7 +30,7 @@ test('ordinary aggregate PostgreSQL adapter is exact, CAS-only, and rollback-saf
   let ready = false;
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((done) => setTimeout(done, 250));
-    if (docker(['exec', name, 'pg_isready', '-U', 'ordinary', '-d', 'ordinary']).status === 0) { ready = true; break; }
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'ordinary', '-d', 'ordinary']).status === 0) { ready = true; break; }
   }
   assert.equal(ready, true);
   await new Promise((done) => setTimeout(done, 750));

@@ -121,7 +121,8 @@ INV = [
       presence=[(["river_wharf", "cellar_granary", "market_square"], ALL, "r", "hidden")],
       danger="портит запасы", cues="крупный тёмный грызун у пристани и в торговых клетях", peak="—", uses="",
       src=["src:askeyev-2021-black-rat"], conf="C",
-      notes="в средневековье известна в Поволжье по торговым путям (Аскеев 2021); для Новгорода находок не найдено — только rare в городе и на пристанях до проверки. Серая крыса — анахронизм (denylist)"),
+      basis="analogy",
+      notes="D47: редкая завозная в торговом городе, только торг, пристань и склады; hidden, confidence C. По аналогии с портами Северной Европы (Хедебю — эпоха викингов, IX–XI вв.; средневековый Йорк); в прочитанных источниках новгородских находок нет. Аскеев 2021 — ближайшая региональная аналогия: средневековое Поволжье и торговые пути. Серая крыса — анахронизм (denylist)"),
  # ---------- useful and common insects ----------
  dict(fa_id="fa_ins_honeybee", name_ru="Пчела медоносная (лесная, бортевая)", name_lat="Apis mellifera", name_en="Honey bee", group="insect", flying=True, blood=False,
       presence=[(["mixed_woodland", "broadleaf_woodland", "conifer_woodland", "forest_edge", "hay_meadow", "orchard_garden", "field_margin"], ["summer"], "c", "active"), (["mixed_woodland", "broadleaf_woodland", "forest_edge"], ["spring_rasputitsa", "autumn"], "x", "active"), (["mixed_woodland", "broadleaf_woodland"], ["winter"], "x", "dormant")],

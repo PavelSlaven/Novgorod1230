@@ -405,13 +405,13 @@ module.exports = [
     hab: 'river:c,lake:c,stream:m,bank:m', act: 'nocturnal', dorm: ['winter'],
     seas: { winter: 'в спячке в подземельях', spring: '', summer: 'низко летает над гладкой водой, хватая насекомых с поверхности', autumn: '' }, rut: 'осень', moult: '', coat: '',
     tracks: '', drop: '', feed: '', den: 'дупла у воды, щели мостов', sound: 'шорох над водой', smell: '', human: 'безвредна', danger: 'none', products: '', hunt: '', huntRefs: '', wk: '', src: 'SRC_VALDAY_NP', note: '' },
-  { id: 'fa_m_ladoga_ringed_seal', ru: 'Ладожская нерпа', alt: 'нерпа', lat: 'Pusa hispida ladogensis', en: 'Ladoga ringed seal', order: 'Carnivora', grp: 'marine_mammal', region: 'ladoga_lake',
+  { id: 'fa_m_ladoga_ringed_seal', ru: 'Ладожская нерпа', alt: 'нерпа', lat: 'Pusa hispida ladogensis', en: 'Ladoga ringed seal', order: 'Carnivora', grp: 'marine_mammal', region: 'region_novgorod_land', subregion: 'lower_volkhov_ladoga',
     base: 'R', baseBasis: 'Endemic of Lake Ladoga only; birch-bark mention', pres: 'B',
     evid: 'Нерпа названа один раз в берестяных грамотах (SRC_RYBINA2015); обитает только в Ладожском озере',
     hab: 'lake:c', act: 'diurnal', dorm: [],
     seas: { winter: 'во льдах, продухи, щенки в снежных логовищах на льду', spring: 'линяет, лежит на льду', summer: 'на камнях в шхерах севера Ладоги', autumn: '' }, rut: 'весна', moult: 'весна', coat: '',
     tracks: 'продухи во льду', drop: '', feed: '', den: 'снежные логовища на льду', sound: '', smell: '', human: 'пуглива', danger: 'none', products: 'fat;hide;meat', hunt: 'на льду, сети', huntRefs: 'n1230:material_item:hnt0015',
-    wk: '', src: 'SRC_RYBINA2015', note: 'region_id=ladoga_lake only; not in Ильмень/Волхов start territory' },
+    wk: '', src: 'SRC_RYBINA2015', note: 'subregion_scope=lower_volkhov_ladoga only; not in Ильмень/Волхов start territory' },
 ];
 for (const taxon of module.exports) {
   if (!Object.hasOwn(AUDIBLE_SEASONS, taxon.id)) throw new Error(`missing audible seasons: ${taxon.id}`);

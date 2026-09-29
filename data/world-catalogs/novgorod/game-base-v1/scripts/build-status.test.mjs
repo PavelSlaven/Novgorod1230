@@ -75,3 +75,40 @@ test('later verdict wins across bare filename, directory, and full path', () => 
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('.cjs targets resolve to the file, not to the whole directory', () => {
+  const files = ['s/build.cjs', 's/lib.cjs', 's/src/hunting.cjs', 's/src/mammals.cjs', 's/extract.py', 's/data/in.json'];
+  assert.deepEqual(targets('scripts/src/hunting.cjs', files).map(row => row.file), ['s/src/hunting.cjs']);
+  assert.deepEqual(targets('s/build.cjs', files), [{ token: 's/build.cjs', file: 's/build.cjs' }]);
+  assert.deepEqual(targets('build.cjs + src/mammals.cjs', files).map(row => row.file), ['s/build.cjs', 's/src/mammals.cjs']);
+  assert.equal(targets('s/missing.cjs', files)[0].reason, 'файл не найден');
+});
+
+test('directory target covers its files while a file target covers only itself', () => {
+  const files = ['s/build.cjs', 's/extract.py', 's/data/in.json', 't/x.csv'];
+  assert.deepEqual(targets('s/', files).map(row => row.file), ['s/build.cjs', 's/extract.py', 's/data/in.json']);
+  assert.deepEqual(targets('s/build.cjs', files).map(row => row.file), ['s/build.cjs']);
+  assert.equal(targets('empty/', files)[0].reason, 'каталог пуст или не найден');
+});
+
+test('.cjs verdict resolves in a group and does not overwrite sibling files', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'build-status-'));
+  try {
+    for (const file of ['scripts/build.cjs', 'scripts/src/hunting.cjs', 'scripts/extract.py']) {
+      fs.mkdirSync(path.join(root, path.dirname(file)), { recursive: true });
+      fs.writeFileSync(path.join(root, file), '');
+    }
+    fs.writeFileSync(path.join(root, 'VERIFICATION.md'), [
+      '# Проверка',
+      '- scripts/extract.py — approve_with_limits',
+      '- scripts/build.cjs — approve',
+      '- scripts/src/hunting.cjs — approve',
+    ].join('\n'));
+    const { files, unresolved } = parse(root);
+    assert.deepEqual(unresolved, []);
+    assert.deepEqual([...files.keys()].sort(), ['scripts/build.cjs', 'scripts/extract.py', 'scripts/src/hunting.cjs']);
+    assert.equal(files.get('scripts/extract.py').status, 'approve_with_limits');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

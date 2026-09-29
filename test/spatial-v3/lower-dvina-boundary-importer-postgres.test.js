@@ -27,7 +27,7 @@ test('successor snapshot imports, reads back and replays in disposable PostgreSQ
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((done) => setTimeout(done, 250));
     ready = docker([
-      'exec', container, 'pg_isready', '-U', 'lower_dvina', '-d', 'world'
+      'exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'lower_dvina', '-d', 'world'
     ]).status === 0;
     if (ready) break;
   }

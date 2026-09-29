@@ -1,11 +1,11 @@
 {
   "files": {
-    "items/weapons_armour.csv": 74,
+    "items/weapons_armour.csv": 75,
     "items/weapon_status_access.csv": 213,
     "items/weapon_equipment_profiles.csv": 111,
     "items/weapon_source_crosswalk.csv": 252,
     "items/weapon_denylist.csv": 27,
-    "items/archive_inclusion_ledger.csv": 25,
+    "items/archive_inclusion_ledger.csv": 26,
     "military/security.csv": 34,
     "military/military_events.csv": 21,
     "military/combat_likelihood_by_role.csv": 71
@@ -16,10 +16,10 @@
       "component": 20,
       "accessory": 9,
       "ammunition": 3,
-      "protection": 24
+      "protection": 25
     },
     "by_tier": {
-      "elite_war": 35,
+      "elite_war": 36,
       "common_war": 28,
       "tool_weapon": 11
     },
@@ -27,35 +27,35 @@
       "A": 21,
       "B": 30,
       "C": 20,
-      "D": 3
+      "D": 4
     },
     "by_priority": {
-      "M3": 55,
+      "M3": 56,
       "M2c": 16,
       "later": 3
     },
     "by_category_status": {
       "existing_v5_candidate": 22,
-      "proposed": 52
+      "proposed": 53
     }
   },
   "archive_inclusion": {
-    "total": 25,
+    "total": 26,
     "by_decision": {
-      "rejected": 8,
+      "rejected": 7,
       "variant": 2,
-      "routed": 12,
-      "entity": 3
+      "routed": 13,
+      "entity": 4
     },
     "by_match_type": {
-      "new": 23,
+      "new": 24,
       "variant": 2
     }
   },
   "crosswalk": {
     "military_security": 13,
-    "denylist": 16,
-    "wp": 182,
+    "denylist": 15,
+    "wp": 183,
     "out_of_scope": 41
   },
   "access_levels": {

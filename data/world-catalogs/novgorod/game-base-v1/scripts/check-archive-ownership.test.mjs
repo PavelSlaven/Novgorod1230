@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { archiveIds, checkArchiveOwnership, normalizeSemanticRoot, parseCsv } from './check-archive-ownership.mjs';
+import { archiveIds, checkArchiveOwnership, checkArchiveOwnershipRegistry, normalizeSemanticRoot, parseCsv } from './check-archive-ownership.mjs';
 
 const gameBase = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -204,14 +204,12 @@ test('IHP ownership uses only the primary master ref; secondary refs and documen
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
-test('WTR0024 must be rejected when its period excludes 1230', () => {
+test('new entity period rule rejects any proven period that excludes 1230', () => {
   const root = fixture();
   try {
-    append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'WTR0024,Поздний инструмент,rejected,,,1450–1700,,rejected,Период позднее 1230');
-    assert.deepEqual(checkArchiveOwnership(root).errors, []);
     const file = path.join(root, 'crafts-tools-processes/archive_inclusion_ledger.csv');
-    fs.appendFileSync(file, 'WTR0024,Поздний инструмент,new,,,1450–1700,,include,ошибка решения\n');
-    assert.match(checkArchiveOwnership(root).errors.join('\n'), /WTR0024: must be rejected because period excludes 1230/);
+    fs.appendFileSync(file, 'OMI00009,Поздний инструмент,new,,,1450–1700,,include,ошибка решения\n');
+    assert.match(checkArchiveOwnership(root).errors.join('\n'), /OMI00009: new entity period excludes 1230/);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
@@ -259,6 +257,19 @@ test('variant targets require a stable resolvable identity and reject substituti
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
+test('unmapped archive material gets its own stable code', () => {
+  const root = fixture();
+  try {
+    const materials = 'crafts-tools-processes/materials_registry/materials.csv';
+    fs.mkdirSync(path.dirname(path.join(root, materials)), { recursive: true });
+    fs.writeFileSync(path.join(root, materials), 'mt_id,name_ru,name_en,material_family,aliases_ru\nmt_flax,лён,flax,textile,лен;льнян\n');
+    append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'OMI00007,Ложка,variant,crafts-tools-processes/materials_registry/materials.csv#mt_flax,tool,1180–1260,,variant,Material resolution probe.');
+    const result = checkArchiveOwnership(root);
+    assert.equal(result.error_counts.ICA_MATERIAL_UNMAPPED, 1);
+    assert.equal(result.issues.find(issue => issue.code === 'ICA_MATERIAL_UNMAPPED')?.message.includes('OMI00007'), true);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
 test('terminal references resolve a stable target without requiring a new entity row', () => {
   const root = fixture();
   try {
@@ -290,6 +301,102 @@ test('terminal routed decisions agree on owner group and stable target reference
       assert.match(checkArchiveOwnership(alignedRoot).errors.join('\n'), /MUS0011: terminal routed decision is missing the agreed target_ref/);
     } finally { fs.rmSync(alignedRoot, { recursive: true, force: true }); }
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('routes require entity targets, match receiving variants, and cannot target their own group', () => {
+  const root = fixture();
+  try {
+    const targetTable = 'crafts-tools-processes/materials_registry/material_entities.csv';
+    append(root, targetTable, 'n1230:material_item:target_one,Target one,tool,');
+    append(root, targetTable, 'n1230:material_item:target_two,Target two,tool,');
+    append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', [
+      'OMI00007', 'Probe variant', 'variant', `${targetTable}#n1230:material_item:target_one`, 'tool', '1180–1260', '', 'variant', 'Receiving owner chose target one.', '', '', '', '', '',
+    ].join(','));
+    const route = ['OMI00007', 'Probe route', 'routed', '', '', '', '', '', 'routed', 'routed', '', 'crafts-tools-processes', `${targetTable}#n1230:material_item:target_two`, 'routed', ''].join(',');
+    append(root, 'buildings-interiors-containers/archive_inclusion_ledger.csv', route);
+    let errors = checkArchiveOwnership(root);
+    assert.ok(errors.error_counts.ICA_ROUTE_TARGET_MISMATCH > 0);
+
+    const wrongKind = fixture();
+    try {
+      append(wrongKind, 'buildings-interiors-containers/archive_inclusion_ledger.csv', ['OMI00008', 'Wrong kind', 'routed', '', '', '', '', '', 'routed', 'routed', '', 'crafts-tools-processes', 'crafts-tools-processes/archive_inclusion_ledger.csv#OMI00007', 'routed', ''].join(','));
+      assert.ok(checkArchiveOwnership(wrongKind).error_counts.ICA_ROUTE_INVALID > 0);
+    } finally { fs.rmSync(wrongKind, { recursive: true, force: true }); }
+
+    const selfRoute = fixture();
+    try {
+      append(selfRoute, targetTable, 'n1230:material_item:self_target,Self target,tool,');
+      append(selfRoute, 'crafts-tools-processes/archive_inclusion_ledger.csv', ['OMI00008', 'Self route', 'routed', '', '', '', '', '', 'routed', 'routed', '', 'crafts-tools-processes', `${targetTable}#n1230:material_item:self_target`, 'routed', ''].join(','));
+      assert.ok(checkArchiveOwnership(selfRoute).error_counts.ICA_ROUTE_SELF_GROUP > 0);
+    } finally { fs.rmSync(selfRoute, { recursive: true, force: true }); }
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('routes match the entity accepted by the receiving group', () => {
+  const targetTable = 'crafts-tools-processes/materials_registry/material_entities.csv';
+  const receivingLedger = 'crafts-tools-processes/archive_inclusion_ledger.csv';
+  const routeLedger = 'buildings-interiors-containers/archive_inclusion_ledger.csv';
+  const expectedId = 'n1230:material_item:omi00008';
+  const otherId = 'n1230:material_item:other_target';
+
+  const prepare = () => {
+    const root = fixture();
+    appendCsvObject(root, targetTable, {
+      item_id: expectedId,
+      name_ru: 'Accepted entity',
+      family_key: 'tool',
+      source_refs: 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI00008',
+    });
+    appendCsvObject(root, targetTable, {
+      item_id: otherId,
+      name_ru: 'Other entity',
+      family_key: 'tool',
+    });
+    appendCsvObject(root, receivingLedger, {
+      archive_ref: 'OMI00008',
+      archive_name: 'Accepted entity',
+      disposition: 'new',
+      family_key: 'tool',
+      period: '1180–1260',
+      decision: 'entity',
+      reason: 'Receiving group accepts this archive id as its entity.',
+      record_type: 'new',
+      status: 'candidate',
+    });
+    return root;
+  };
+
+  const correctRoot = prepare();
+  try {
+    appendCsvObject(correctRoot, routeLedger, {
+      archive_ref: 'OMI00008',
+      archive_name: 'Accepted entity route',
+      disposition: 'routed',
+      decision: 'routed',
+      reason: 'Route to the authoritative owner.',
+      record_type: 'routed',
+      target_group: 'crafts-tools-processes',
+      target_ref: `${targetTable}#${expectedId}`,
+      status: 'routed',
+    });
+    assert.equal(checkArchiveOwnership(correctRoot).error_counts.ICA_ROUTE_TARGET_MISMATCH ?? 0, 0);
+  } finally { fs.rmSync(correctRoot, { recursive: true, force: true }); }
+
+  const wrongRoot = prepare();
+  try {
+    appendCsvObject(wrongRoot, routeLedger, {
+      archive_ref: 'OMI00008',
+      archive_name: 'Wrong entity route',
+      disposition: 'routed',
+      decision: 'routed',
+      reason: 'Route to the authoritative owner.',
+      record_type: 'routed',
+      target_group: 'crafts-tools-processes',
+      target_ref: `${targetTable}#${otherId}`,
+      status: 'routed',
+    });
+    assert.ok(checkArchiveOwnership(wrongRoot).error_counts.ICA_ROUTE_TARGET_MISMATCH > 0);
+  } finally { fs.rmSync(wrongRoot, { recursive: true, force: true }); }
 });
 
 test('semantic normalization does not fold й into и', () => {
@@ -346,6 +453,18 @@ test('all game-base entity families participate in semantic collision scanning',
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
+test('registered garment entity gm_gm001 participates in archive-name collision checks', () => {
+  const root = fixture();
+  try {
+    const garments = path.join(root, 'clothing-appearance/garments/garments.csv');
+    fs.mkdirSync(path.dirname(garments), { recursive: true });
+    fs.writeFileSync(garments, 'gm_id,source_item_id,name_ru,source_refs\ngm_gm001,GM001,Пробная одежда,costume:GM001\n');
+    append(root, 'crafts-tools-processes/materials_registry/material_entities.csv', 'n1230:material_item:omi00045,Пробная одежда,garment,sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI00045');
+    append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'OMI00045,Пробная одежда,new,,garment,1180–1260,,new entity,Added collision probe.');
+    assert.match(checkArchiveOwnership(root).errors.join('\n'), /semantic-root collision “пробная одежда”/);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
 test('review authoring and bridge CSVs are excluded from entity and ledger scans', () => {
   const root = fixture();
   try {
@@ -381,11 +500,10 @@ test('one unique unrelated ledger reason does not waive a same-name entity colli
 test('variant self-target through a prefixed owner ID fails', () => {
   const root = fixture();
   try {
-    append(root, 'clothing-appearance/garments/material_entities.csv', 'n1230:material_item:cmb021,Одеяние служителя,garment,sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:CMB021');
-    const outfit = path.join(root, 'clothing-appearance/outfits_by_role/liturgical_outfits.csv');
-    fs.mkdirSync(path.dirname(outfit), { recursive: true });
-    fs.writeFileSync(outfit, 'id,name_ru,source_refs\nlit_priest,Священник на литургии,costume:CMB021\n');
-    append(root, 'clothing-appearance/reports/archive_inclusion_ledger.csv', 'CMB021,Священник на литургии,variant,clothing-appearance/outfits_by_role/liturgical_outfits.csv#lit_priest,garment,1180–1260,,variant,Primary costume provenance is CMB021.');
+    const garments = path.join(root, 'clothing-appearance/garments/garments.csv');
+    fs.mkdirSync(path.dirname(garments), { recursive: true });
+    fs.writeFileSync(garments, 'gm_id,source_item_id,name_ru,source_refs\ngm_cmb021,CMB021,Одеяние служителя,costume:CMB021\n');
+    append(root, 'clothing-appearance/reports/archive_inclusion_ledger.csv', 'CMB021,Одеяние служителя,variant,clothing-appearance/garments/garments.csv#gm_cmb021,garment,1180–1260,,variant,Primary costume provenance is CMB021.');
     const components = path.join(root, 'clothing-appearance/garments/garment_components.csv');
     fs.mkdirSync(path.dirname(components), { recursive: true });
     fs.writeFileSync(components, 'gm_id,name_ru,source_refs\ngm_fw021,Кожаные ремешки и завязки обуви,costume:FW021\n');
@@ -468,6 +586,15 @@ test('empty routed target_ref requires exact awaits_owner token and no receiving
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
+test('awaits_owner is invalid when receiving group already owns the archive ID', () => {
+  const root = fixture();
+  try {
+    append(root, 'crafts-tools-processes/materials_registry/material_entities.csv', 'n1230:material_item:omi00093,Already owned,tool,sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:OMI00093');
+    append(root, 'buildings-interiors-containers/archive_inclusion_ledger.csv', ['OMI00093', 'Pending route', 'routed', '', '', '', '', '', 'awaits_owner:crafts-tools-processes', 'routed', '', 'crafts-tools-processes', '', 'routed', ''].join(','));
+    assert.ok(checkArchiveOwnership(root).error_counts.ICA_ROUTE_AWAITS_OWNER_CONFLICT > 0);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
 test('entity archive owner requires a new/entity decision in the same group', () => {
   const root = fixture();
   try {
@@ -535,6 +662,8 @@ test('live game-base probes detect pair collision, category/material mismatch, a
       source_refs: `${sourceRef}OMI00990`,
     });
 
+    const correctTargetErrors = checkArchiveOwnership(root).errors.filter(error => error.includes('OMI01687'));
+    assert.deepEqual(correctTargetErrors, [], correctTargetErrors.join('\n'));
     updateLedger(root, 'OMI01687', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_bone',
       craftsLedger);
     updateLedger(root, 'OMI01504', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_plinfa', bicLedger);
@@ -546,7 +675,72 @@ test('live game-base probes detect pair collision, category/material mismatch, a
     const errors = checkArchiveOwnership(root).errors;
     assert.ok(errors.some(error => /semantic-root collision “пробка затычка”/.test(error)));
     assert.ok(errors.some(error => /semantic-root collision “кость”/.test(error)));
-    assert.ok(errors.some(error => /OMI01687: variant target material bone_horn does not match source material mixed/.test(error)), errors.filter(error => error.includes('OMI01687')).join('\n'));
-    assert.ok(errors.some(error => /OMI01504: variant target material .* does not match source material wood/.test(error)), errors.filter(error => error.includes('OMI01504')).join('\n'));
+    assert.ok(errors.some(error => /OMI01687: variant target material mt_bone is not among archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01687')).join('\n'));
+    assert.ok(errors.some(error => /OMI01504: variant target material mt_plinfa is not among archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01504')).join('\n'));
+    const result = checkArchiveOwnership(root);
+    assert.ok(result.error_counts.ICA_VARIANT_MATERIAL_MISMATCH >= 2);
+    assert.ok(result.counts.mapped_archive_values > 0);
   } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('registry covers catalog entity tables and detects an unregistered entity table', () => {
+  assert.deepEqual(checkArchiveOwnershipRegistry(gameBase), []);
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'archive-ownership-registry-'));
+  const root = path.join(parent, 'game-base-v1');
+  try {
+    fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+    fs.copyFileSync(path.join(gameBase, 'catalog.json'), path.join(root, 'catalog.json'));
+    fs.copyFileSync(path.join(gameBase, 'scripts/archive-ownership-registry.json'), path.join(root, 'scripts/archive-ownership-registry.json'));
+    const registry = JSON.parse(fs.readFileSync(path.join(root, 'scripts/archive-ownership-registry.json'), 'utf8'));
+    for (const spec of registry.entity_tables) {
+      const source = path.join(gameBase, spec.file);
+      if (!fs.existsSync(source)) continue;
+      const target = path.join(root, spec.file);
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.copyFileSync(source, target);
+    }
+    const unexpected = path.join(root, 'crafts-tools-processes/materials_registry/unregistered_materials.csv');
+    fs.mkdirSync(path.dirname(unexpected), { recursive: true });
+    fs.writeFileSync(unexpected, 'mt_id,name_ru\nmt_extra,Новый материал\n');
+    assert.ok(checkArchiveOwnershipRegistry(root).some(error => /unregistered_materials\.csv: CSV with entity IDs/.test(error)));
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('unknown ID prefixes are detected, then indexed for target resolution and name collisions when registered', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const file = 'crafts-tools-processes/materials_registry/probe_entities.csv';
+    const table = path.join(root, file);
+    fs.mkdirSync(path.dirname(table), { recursive: true });
+    fs.writeFileSync(table, 'xq_id,name_ru,archive_ref\nxq_new,Серебро,OMI00001\n');
+    assert.ok(checkArchiveOwnershipRegistry(root).some(error => error.includes(`${file}: CSV with entity IDs`)));
+
+    const registryPath = path.join(root, 'scripts/archive-ownership-registry.json');
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    registry.entity_tables.push({ file, key: 'xq_id', name: 'name_ru', owner: true, track_archive_ids: false });
+    fs.writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+    assert.deepEqual(checkArchiveOwnershipRegistry(root), []);
+
+    appendCsvObject(root, 'clothing-appearance/reports/archive_inclusion_ledger.csv', {
+      archive_ref: 'OMI00002', archive_name: 'Проверка нового префикса', record_type: 'routed',
+      target_group: 'crafts-tools-processes', target_ref: `${file}#xq_new`,
+    });
+    const errors = checkArchiveOwnership(root).errors;
+    assert.ok(errors.some(error => /semantic-root collision “серебро”/.test(error)));
+    assert.ok(!errors.some(error => error.includes('OMI00002') && /routed target_ref/.test(error)), errors.filter(error => error.includes('OMI00002')).join('\n'));
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('base-name probes keep material and item identities in the collision index', () => {
+  const probes = [
+    ['серебро', 'серебро'],
+    ['сыромять', 'сыромять'],
+    ['чернила', 'чернила'],
+    ['серп', 'серп'],
+    ['Сырная крошка', 'сырная крошка'],
+    ['Деревянная мешалка', 'мешалка'],
+    ['Малый бочонок', 'бочонок'],
+    ['Берестяной короб', 'короб'],
+  ];
+  for (const [name, expected] of probes) assert.equal(normalizeSemanticRoot(name), expected, name);
 });

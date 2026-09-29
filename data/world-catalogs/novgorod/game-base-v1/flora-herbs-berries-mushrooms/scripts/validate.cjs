@@ -230,7 +230,7 @@ info.push({ kiryanova_table2_novgorod: nov2 });
 // 8. GBIF regional check (warning only: modern occurrence in NW bbox)
 for (const r of all) if (r.gbif_nw_count === '0') warn(`${r.fl_id}: 0 GBIF occurrences in NW bbox`);
 
-const report = { info, checked_at: new Date().toISOString().slice(0, 10), counts: { herbs: herbs.length, berries_mushrooms: bf.length, cultivated: cu.length, presence_rows: pres.length, refs_checked: nRefs }, family_coverage: famReport, fails, warns };
+const report = { info, counts: { herbs: herbs.length, berries_mushrooms: bf.length, cultivated: cu.length, presence_rows: pres.length, refs_checked: nRefs }, family_coverage: famReport, fails, warns };
 fs.writeFileSync(path.join(ROOT, 'flora', 'validation_report.json'), JSON.stringify(report, null, 1) + '\n');
 console.log('refs', nRefs, 'fails', fails.length, 'warns', warns.length);
 fails.forEach(f => console.log('FAIL', f)); warns.forEach(w => console.log('WARN', w));

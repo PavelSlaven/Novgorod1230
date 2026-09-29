@@ -253,3 +253,32 @@
 - validation_report.json — approve_with_limits: равен пересборке; 40 пар с более слабым каноническим классом — отчётно
 
 Вердикт группы: **approve_with_limits**.
+
+## Независимая проверка owner-fixes D47 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** Claude Opus 5.5, независимый проверяющий, не автор. Ветка `fleet/owner-fixes`, HEAD `ce307cbf`, база main `2b4aa2f9`.
+- **Что:**
+  - `fa_mamm_black_rat` в `inv_herp_data.py` получила `basis="analogy"`. Её notes теперь содержат D47, датировку («Хедебю — эпоха викингов, IX–XI вв.; средневековый Йорк; в прочитанных источниках новгородских находок нет») и пояснение к Аскееву 2021: это ближайшая региональная аналогия, средневековое Поволжье.
+  - Мёртвое поле `derivation` удалено.
+  - `build.py` берёт `basis` из источника; раньше там было жёстко `authored`.
+  - README обновлён: крыса описана, пасюк остаётся в denylist.
+- **Проверено скриптами:**
+  - Semantic diff к main.
+    - `fauna_presence.csv`: 1717 строк, порядок тот же, изменён только `basis` authored→analogy у 12 строк крысы. Это `cellar_granary|market_square|river_wharf` × 4 сезона; у всех rare, weight 1, hidden, C, candidate, `region_novgorod_land`.
+    - `invertebrates_herps.csv`: изменены только notes одной строки.
+    - В `wild_habitat_presence.csv` крысы нет. CRLF в `fauna_presence.csv` такой же, как на main.
+  - Сборка в копии HEAD, два прохода `build.py`: побайтно равно HEAD.
+  - `build.py --self-test`, `validate-phase.cjs fauna-fish-invertebrates-livestock --self-test`: rc=0.
+  - `check-region-ids.mjs`: 0 ошибок.
+  - Общее правило из `fauna-mammals-birds/scripts/validate.cjs` ловит candidate исключённого таксона в `invertebrates_herps.csv` и частоту крысы выше rare в `fauna_presence.csv`. Пробы дали rc=1.
+- **Ограничения:**
+  - Аскеев 2021 — региональная аналогия (Поволжье), а не новгородская находка.
+  - Размещение крысы (3 PF) и `hidden` никакой validator не проверяет, их держит только этот источник.
+
+### Вердикты по файлам owner-fixes
+
+- README.md — approve: датировка Хедебю верна, основание Аскеева и denylist пасюка описаны
+- fauna/fauna_presence.csv — approve: у 12 строк крысы изменён только `basis`, файл равен пересборке
+- fauna/invertebrates_herps.csv — approve: изменены только notes крысы
+- scripts/build.py — approve: `basis` берётся из источника
+- scripts/src/inv_herp_data.py — approve: датировка и Аскеев на месте, мёртвое поле удалено

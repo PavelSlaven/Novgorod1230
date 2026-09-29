@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 36,
-  "own_checks_total": 36,
+  "own_checks_passed": 38,
+  "own_checks_total": 38,
   "checks": [
     {
       "domain": "place_families",
@@ -6199,12 +6199,34 @@
     },
     {
       "domain": "presence_rules",
+      "name": "subregion_scope_report_current",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "scoped_rules": 9
+    },
+    {
+      "domain": "presence_rules",
       "name": "accepted_occurrences_exactly_once",
       "pass": true,
       "failures": 0,
       "sample": [],
       "external": false,
       "accepted_occurrences": 10928
+    },
+    {
+      "domain": "presence_rules",
+      "name": "subregion_scope_matches_source",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "dictionary": [
+        "novgorod_ilmen_core",
+        "lower_volkhov_ladoga"
+      ],
+      "scoped_rules": 9
     },
     {
       "domain": "presence_rules",
@@ -7456,7 +7478,7 @@
       "domain": "category_registry",
       "name": "pool_category_references_resolve (external)",
       "pass": false,
-      "failures": 1767,
+      "failures": 1806,
       "sample": [
         "x",
         "x",
@@ -8463,6 +8485,7 @@
       "unresolved_by_file": {
         "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv": 32,
         "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv": 74,
+        "data/world-catalogs/novgorod/game-base-v1/economy-trade-measures/price_bands/category_price_bands_c1230.csv": 38,
         "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fish.csv": 38,
         "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv": 45,
         "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_species.csv": 11,
@@ -8472,7 +8495,7 @@
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
         "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
         "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31,
-        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49,
+        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 50,
         "data/world-catalogs/novgorod/game-base-v1/resource-catalog/material_resource_families.csv": 29,
         "data/world-catalogs/novgorod/game-base-v1/resource-catalog/resource_families.csv": 35,
         "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv": 915

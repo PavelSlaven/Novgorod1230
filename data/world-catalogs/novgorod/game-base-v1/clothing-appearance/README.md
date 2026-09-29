@@ -37,7 +37,7 @@ Each row in `garments.csv` is a Novgorod instance. It has `region_id=region_novg
 | File | Rows |
 |---|---|
 | garments/garments.csv | 95 |
-| garments/material_entities.csv | 2 |
+| garments/material_entities.csv | 1 |
 | garments/costume_disposition.csv | 180 |
 | garments/garment_components.csv | 7 |
 | garments/garment_categories.csv | 59 |

@@ -45,7 +45,11 @@ export async function assertBootstrapV17PartyProductionLedger(partyPool) {
 }
 
 async function enrichV17WorldForTargetStarts(worldPool) {
-  await worldPool.query(await buildApprovedTemporalImportSql());
+  const temporalCount = Number((await worldPool.query(
+    'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+  if (temporalCount === 0) {
+    await worldPool.query(await buildApprovedTemporalImportSql());
+  }
   const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-presence-e2e-'));
   try {
     const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);

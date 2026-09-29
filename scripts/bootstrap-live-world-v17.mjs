@@ -9,6 +9,7 @@ import pg from 'pg';
 import { localV17ApprovalsPath } from '../tools/local-play/local-postgres.js';
 import { runSpatialV3TargetMigrations, SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST } from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { buildTransactionalImportSql } from '../tools/spatial-v3/p12-authoring-importer.mjs';
+import { buildApprovedTemporalImportSql } from '../tools/temporal-v4/import-approved-data.mjs';
 import { buildTargetAppearanceTransferV3ImportSql } from '../tools/spatial-v3/character-appearance-v1-importer.mjs';
 import { prepareSpatialV3TargetItemCatalog, buildSpatialV3TargetItemImport } from
   '../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
@@ -432,6 +433,14 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     assertAdded(beforeP12, afterP12, p12Request.expected_readback.by_table, 'P12');
     if (afterP12.source_records !== p12Request.expected_readback.p12_source_records_after)
       throw new Error('V17_P12_SOURCE_READBACK_MISMATCH');
+    await world.query(await buildApprovedTemporalImportSql({ root, rollback: true }));
+    const temporalBefore = Number((await world.query(
+      'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+    if (temporalBefore !== 0) throw new Error('V17_TEMPORAL_ROLLBACK_MISMATCH');
+    await world.query(await buildApprovedTemporalImportSql({ root }));
+    const temporalAfter = Number((await world.query(
+      'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+    if (temporalAfter !== 22) throw new Error('V17_TEMPORAL_IMPORT_MISMATCH');
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
     const graphCheck = (await world.query(`SELECT pg_get_constraintdef(c.oid) AS definition

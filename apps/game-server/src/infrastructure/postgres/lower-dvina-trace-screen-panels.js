@@ -88,7 +88,7 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
       .filter(route => route.from_ref === projection.position?.location_ref && route.label);
     const visibleExits = (screen.visible_context?.visible_objects ?? [])
       .filter(({ entity_ref: ref, display_label: label }) =>
-        ['scene_movement_edge', 'g4_directional_exit'].includes(ref?.entity_kind)
+        ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection'].includes(ref?.entity_kind)
           && typeof label === 'string' && label.trim());
     panels.route = createRoutePanel({ current_place: place, movement: {
       options: [...routes.map(route => ({ label: route.label,

@@ -76,6 +76,17 @@ the destination's own scene text as `visible_changes` (turn-step visible project
 for every site connection). Entering a never-visited place needs its approved G6
 ambient baseline (LW-091).
 
+Notes on the shared vocabulary. `operation_kind=resolve_frontier`, `run_kind=expansion` and
+`trigger=frontier_resolution` also serve a canonical connection (there is no frontier; the
+committer accepts only that kind for topology commits). In `visible_objects` the
+`g5_site_connection` entity carries the approved binding id, not the party row id
+`canconn:<party>:<binding>`, which does not exist before the first passage; the kind is shown
+in the visible context, the turn-step scene and the route panel. A bare canonical scene-binding
+read (no scene or profile pin) uses the release scene generation (`generatedTemplateVersion`:
+2 in v17) - the open-capacity successor made a bare read ambiguous. A binding that has no usable
+profile version (none approved, non-conditional `site_connection`) fails the whole read of that
+place's connections (typed gap), not just that passage.
+
 Presence at first arrival (O1, §3A) has one resolver,
 `createTargetPresenceRulesFirstArrivalResolver`, for the start place and every
 later first arrival. Bindings come from the site node: canonical G5 reads its

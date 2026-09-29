@@ -5,7 +5,9 @@ import {
   runWithinTurnDeadline
 } from './llm-turn-budget.js';
 
-export const SAME_REQUEST_PRESENTATION_ATTEMPTS = 2;
+// The caller has already made one narrator pass; this is the single retry (two passes total).
+// The retry shares the request's repair claims, so it cannot spend a second repair.
+export const SAME_REQUEST_PRESENTATION_ATTEMPTS = 1;
 
 export async function resolveCommittedPhase2PresentationAfterFailure({
   partyId,

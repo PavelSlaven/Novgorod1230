@@ -84,5 +84,5 @@ test('replay failure after one attempt returns pending when fallback matches', a
     fallback: pending
   });
   assert.equal(result.screen.screen_status, 'committed_presentation_pending');
-  assert.equal(replayCalls, 2);
+  assert.equal(replayCalls, 1);
 });

@@ -14,11 +14,6 @@ test('narration failure retries presentation in the same turn request', async ()
   const originalRun = f.repository.replayPhase2Turn.bind(f.repository);
   f.repository.replayPhase2Turn = async (input) => {
     narrationAttempts += 1;
-    if (narrationAttempts < 2) {
-      const error = new Error('Narration did not produce an approved presentation.');
-      error.code = 'TURN_NARRATION_REJECTED';
-      throw error;
-    }
     f.setNarrationFails(false);
     return originalRun(input);
   };
@@ -30,7 +25,23 @@ test('narration failure retries presentation in the same turn request', async ()
   const result = await f.runtime.submitTurn({ partyId: f.partyId, input });
   assert.equal(result.screen.screen_status, 'ready');
   assert.equal(f.commitCount(), 1);
-  assert.equal(narrationAttempts, 2);
+  assert.equal(narrationAttempts, 1);
+});
+
+test('two failed narrator passes in one request leave the committed turn pending', async () => {
+  let replayCalls = 0;
+  const f = fixture({ llmDiagnostics: createLlmDiagnostics(), narrationFails: true });
+  const originalRun = f.repository.replayPhase2Turn.bind(f.repository);
+  f.repository.replayPhase2Turn = async (input) => {
+    replayCalls += 1;
+    return originalRun(input);
+  };
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'phase2-two-passes', idempotency_key: 'phase2-two-passes',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.' } });
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(f.commitCount(), 1);
+  assert.equal(replayCalls, 1, 'workflow pass + one replay = two narrator passes');
 });
 
 test('narration-stage failure records one partial workflow trace and replays pending result', async () => {

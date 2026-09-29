@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { canonicalDigest, createOrdinaryAggregate } from '@rus/materialization';
+import {
+  canonicalDigest, createOrdinaryAggregate, applyOrdinaryAggregateTransition,
+  isPresenceRuleRecord,
+} from '@rus/materialization';
 import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../src/infrastructure/postgres/ordinary-materialization-enablement.js';
@@ -127,4 +130,60 @@ test('each context-bound capability gets its own committed finite source', async
   assert.deepEqual(loaded.execution_context.committed_finite_sources.map((source) => [
     source.source_resource_node_id, source.quantity.numerator
   ]), [['node-a', 2], ['node-b', 3]]);
+});
+
+test('P1-2: enablement ordinary_state exposes only O1 presence refs in a mixed aggregate', async () => {
+  let aggregate = createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 4 });
+  aggregate = applyOrdinaryAggregateTransition({
+    aggregate,
+    transition: {
+      kind: 'seed',
+      request_identity: 'seed-mixed',
+      expected_state_version: 0,
+      density_band: 'ordinary',
+      identity_budget: 1,
+      background_groups: [],
+    },
+  });
+  const withO1 = applyOrdinaryAggregateTransition({
+    aggregate,
+    transition: {
+      kind: 'resolve_presence',
+      request_identity: 'o1-mixed',
+      expected_state_version: 1,
+      resolution_ref: 'resolution-o1',
+      candidate_key: 'candidate',
+      coverage_key: 'coverage',
+      category_key: 'category',
+      context_version: 'context',
+      resolution: 'materialize',
+      identity_key: 'identity',
+    },
+  });
+  const mixed = applyOrdinaryAggregateTransition({
+    aggregate: withO1,
+    transition: {
+      kind: 'resolve_presence_rule',
+      request_identity: 'presence-mixed',
+      expected_state_version: 2,
+      subject_kind: 'category',
+      subject_ref: 'cat_wild',
+      subcategory_ref: null,
+      count: 0,
+      rule_ref: 'pr_wild@1',
+      discovery_mode: 'exposed',
+      scope_instance_ref: 'g5:site',
+      period_number: null,
+    },
+  });
+  assert.ok(mixed.presence_resolutions.some(isPresenceRuleRecord));
+  const repository = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: { query: async () => ({ rowCount: 1, rows: [{ enabled: true,
+      objective_snapshot: objective, objective_digest: canonicalDigest(objective),
+      aggregate_payload: mixed, ordinary_state_version: mixed.state_version,
+      property_placement_base_snapshot: property,
+      property_placement_context_digest: propertyDigest }] }) },
+  });
+  const loaded = await repository.load({ partyId: 'party-mixed', scopeRef: scope });
+  assert.deepEqual(loaded.objective_context.ordinary_state.presence_resolutions, ['resolution-o1']);
 });

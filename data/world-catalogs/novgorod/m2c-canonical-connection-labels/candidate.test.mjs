@@ -50,11 +50,8 @@ test('the loader refuses a candidate without its attestation', () => {
   /CANONICAL_CONNECTION_LABEL_APPROVAL_REQUIRED/u);
 });
 
-test('the loader returns every label once the attestation is issued', (t) => {
-  let labels;
-  try { labels = loadApprovedConnectionLabels(); } catch (error) {
-    if (error.code === 'ENOENT') return t.skip('approval-attestation.json is issued by the reviewer, not the author');
-    throw error;
-  }
+test('the loader returns every label of the attested candidate, keyed by binding id', () => {
+  const labels = loadApprovedConnectionLabels();
   assert.equal(labels.size, 454);
+  assert.equal(labels.get(candidate.labels[0].binding_ref.id).display_label, candidate.labels[0].display_label);
 });

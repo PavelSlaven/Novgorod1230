@@ -59,12 +59,9 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
     if (canonicalOnly) {
       const scenes = proposal.inserts.filter((row) => row.target_table === 'party_g6_instances'
         && row.record.host_id === site?.id && row.record.scene_slot_key === 'main');
-      if (scenes.length !== 1 || typeof resolvePresenceRulesFirstArrival !== 'function') {
-        return { ok: true, approved_write_sets: [], expected_state_versions: [],
-          commit_rechecks: [], materialization_trace: { catalog_pins: [itemPin, actorPin],
-            selection: null, choices: [], attribute_traces: [],
-            validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
-          recheck: async () => ({ ok: true }) };
+      if (scenes.length !== 1) return gap('target_first_entry_presence_scene_required');
+      if (typeof resolvePresenceRulesFirstArrival !== 'function') {
+        return gap('target_first_entry_presence_resolver_required');
       }
       const scope = { entity_kind: 'g6', entity_id: scenes[0].id };
       const presenceContext = await resolvePresenceRulesFirstArrival({
@@ -77,9 +74,12 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
             validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
           recheck: async () => ({ ok: true }) };
       }
-      const cap = finiteFirstEntryProfile?.technical_limits?.max_resolution_records ?? 64;
+      const maxResolutionRecords = finiteFirstEntryProfile?.technical_limits?.max_resolution_records;
+      if (!Number.isSafeInteger(maxResolutionRecords) || maxResolutionRecords < 1) {
+        return gap('target_first_entry_presence_profile_required');
+      }
       const aggregate = applyResolvedPresenceRulesFirstArrival({
-        aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: cap }),
+        aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: maxResolutionRecords }),
         context: presenceContext,
       });
       const scopeKey = `${request.party_id}:${scope.entity_kind}:${scope.entity_id}`;

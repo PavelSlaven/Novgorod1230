@@ -47,6 +47,7 @@ import {
 import {
   applyPresenceRulesFirstArrival,
   derivePresenceRuleSeedContext,
+  encodePresenceRulePeriodNumber,
   mergePlaceFamilyPresenceRules,
   presenceRuleSubjectKey,
   ruleAllowedInSeason,
@@ -98,6 +99,7 @@ export {
   validateOrdinaryBackgroundGroup,
   applyPresenceRulesFirstArrival,
   derivePresenceRuleSeedContext,
+  encodePresenceRulePeriodNumber,
   mergePlaceFamilyPresenceRules,
   presenceRuleSubjectKey,
   ruleAllowedInSeason,

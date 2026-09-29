@@ -283,7 +283,10 @@ party-scoped aggregate, что и O1, но записи различаются �
 `resolution_ref`/`candidate_key`; presence-only — `subject_kind`/`subject_ref` и
 `count` (включая явный `0`). Повторяемость — `presenceRuleReplayKey` /
 `derivePresenceRuleSeedContext` в `presence-rules-first-arrival.js` (партия,
-scope, subject, для `by_year_season` — год календаря и сезон). Регион для
+scope, subject, для `by_year_season` — `encodePresenceRulePeriodNumber`
+(`year * 4 + season_index`, сезоны `winter|spring|summer|autumn`) и текущий
+сезон календаря; ключ привязан к календарю прибытия, не к текущим часам хода).
+Регион для
 `pickRegionalPresenceRule` — строгое совпадение с G0-предком закреплённого G4,
 не эвристика по данным. `seed_scope` может идти после presence-only preamble;
 idempotent replay seed не требует `state_version === 1`. Проекции turn/O1

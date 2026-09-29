@@ -118,6 +118,19 @@ export function isCategoryPresenceBlockedByAncestor({
   return false;
 }
 
+export const PRESENCE_RULE_GAMEPLAY_SEASONS = Object.freeze([
+  'winter', 'spring', 'summer', 'autumn',
+]);
+
+/** §3A.1 seasonal key: one draw per (year, season), not year alone. */
+export function encodePresenceRulePeriodNumber({ year, season }) {
+  const seasonIndex = PRESENCE_RULE_GAMEPLAY_SEASONS.indexOf(season);
+  if (!Number.isInteger(year) || year < 1 || seasonIndex < 0) {
+    throw new Error('PRESENCE_RULE_PERIOD_INVALID');
+  }
+  return year * 4 + seasonIndex;
+}
+
 export function derivePresenceRuleSeedContext({
   party_id,
   scope_instance_ref,

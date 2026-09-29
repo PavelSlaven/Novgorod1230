@@ -58,6 +58,7 @@ import { createTargetGeneratedFirstEntry } from
   '../infrastructure/postgres/target-generated-first-entry.js';
 import { createTargetPresenceRulesFirstArrivalResolver } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
+import { encodePresenceRulePeriodNumber } from '@rus/materialization';
 import { createRuntimeCatalogWorldBaseReader } from '@rus/runtime-catalog';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { projectSpatialV3CurrentVisibleContext,
@@ -192,7 +193,23 @@ export async function createSpatialV3ProductionCompositionRoot({
             transaction, partyId, actorId,
           });
         } else {
-          environment = await factualContext.readCurrentEnvironment({ transaction, partyId });
+          const arrival = await transaction.query(
+            `SELECT state_payload
+               FROM party_runtime.party_state_snapshots
+              WHERE party_id=$1 AND state_version=1`,
+            [partyId],
+          );
+          const payload = arrival.rows[0]?.state_payload;
+          const clock = payload?.clock;
+          const environmentSnapshot = payload?.immediate?.environment_snapshot
+            ?? payload?.environment_snapshot;
+          if (!clock || !environmentSnapshot) {
+            throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
+              'Committed arrival snapshot is required for presence resolution.');
+          }
+          environment = factualContext.projectEnvironmentAtClock({
+            state: { clock, environment_snapshot: environmentSnapshot },
+          });
         }
         const season = environment?.season;
         const year = Number(environment?.calendar_date?.year);
@@ -200,7 +217,10 @@ export async function createSpatialV3ProductionCompositionRoot({
           throw serverError('SPATIAL_V3_PARTY_CALENDAR_REQUIRED',
             'Committed party calendar season and year are required for presence resolution.');
         }
-        return Object.freeze({ season, periodNumber: year });
+        return Object.freeze({
+          season,
+          periodNumber: encodePresenceRulePeriodNumber({ year, season }),
+        });
       };
     }
     const currentVisibility = targetContext == null ? null

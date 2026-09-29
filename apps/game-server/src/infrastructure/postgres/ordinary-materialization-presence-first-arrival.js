@@ -13,6 +13,32 @@ function scopeInstanceRefForSite(siteId) {
   return siteId.startsWith('g5:') ? siteId : `g5:${siteId}`;
 }
 
+async function loadPinnedG4NodeRef({
+  worldBaseReader,
+  spatialWorldPin,
+  nodeId,
+  requestG4,
+}) {
+  const revisionId = spatialWorldPin.world_revision_id;
+  const pinned = await worldBaseReader.read(
+    `SELECT version, canonical_digest
+       FROM world_base.spatial_v3_nodes
+      WHERE id=$1 AND world_revision_id=$2 AND status='approved'
+      ORDER BY version DESC
+      LIMIT 1`,
+    [nodeId, revisionId],
+  );
+  const row = pinned.rows?.[0];
+  const version = Number(row?.version ?? requestG4?.version);
+  if (!Number.isInteger(version) || version < 1) return null;
+  return {
+    id: nodeId,
+    version,
+    world_revision_id: revisionId,
+    canonical_digest: row?.canonical_digest ?? requestG4?.canonical_digest,
+  };
+}
+
 function isWaveNotActivatedError(error) {
   return error?.code === 'M2C_NPC_WAVE_ACTIVATION_MISSING';
 }
@@ -157,23 +183,23 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         generated_template_ref: row.generated_template_ref,
       };
       if (!g4 && row.parent_g4_id) {
-        g4 = {
-          id: row.parent_g4_id,
-          version: request?.g4?.version ?? 1,
-          world_revision_id: spatialWorldPin.world_revision_id,
-          canonical_digest: request?.g4?.canonical_digest,
-        };
+        g4 = await loadPinnedG4NodeRef({
+          worldBaseReader,
+          spatialWorldPin,
+          nodeId: row.parent_g4_id,
+          requestG4: request?.g4,
+        });
       }
     }
     if (!resolvedSite) return null;
     if (!g4?.id && request?.g4?.id) g4 = request.g4;
     if (!g4?.id && resolvedSite.parent_g4_id) {
-      g4 = {
-        id: resolvedSite.parent_g4_id,
-        version: request?.g4?.version ?? 1,
-        world_revision_id: spatialWorldPin.world_revision_id,
-        canonical_digest: request?.g4?.canonical_digest,
-      };
+      g4 = await loadPinnedG4NodeRef({
+        worldBaseReader,
+        spatialWorldPin,
+        nodeId: resolvedSite.parent_g4_id,
+        requestG4: request?.g4,
+      });
     }
     if (!g4?.id || !Number.isInteger(g4.version) || g4.version < 1) return null;
     const calendar = await readPartyPresenceCalendar?.({ transaction, partyId, request });

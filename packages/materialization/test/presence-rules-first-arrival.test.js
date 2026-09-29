@@ -6,6 +6,7 @@ import {
   createOrdinaryAggregate,
   createRandomSource,
   derivePresenceRuleSeedContext,
+  encodePresenceRulePeriodNumber,
   deriveSeed,
   mergePlaceFamilyPresenceRules,
   presenceRuleSubjectKey,
@@ -174,6 +175,15 @@ test('unseen-equivalent category uses the same resolve_presence_rule path', () =
     subject_ref: 'cat_obscure_xyz_not_in_fixture_sets',
     period_number: null,
   }));
+});
+
+test('encodePresenceRulePeriodNumber distinguishes seasons within the same year', () => {
+  const year = 1230;
+  const summer = encodePresenceRulePeriodNumber({ year, season: 'summer' });
+  const winter = encodePresenceRulePeriodNumber({ year, season: 'winter' });
+  assert.notEqual(summer, winter);
+  assert.equal(summer, year * 4 + 2);
+  assert.equal(winter, year * 4);
 });
 
 test('period_number enters replay key for seasonal refresh_class', () => {

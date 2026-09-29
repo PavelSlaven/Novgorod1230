@@ -28,6 +28,12 @@ REQUIRED = [
 ]
 
 VALID_CONFIDENCE = {"A", "B", "C"}
+
+
+def unresolved_archetype(value, archetypes):
+    return value not in archetypes and not value.startswith("no_source:")
+
+
 EXPECTED_OWNERS = {
     "PRO0020", "PRO0021", "PRO0069", "PRO0073", "PRO0096", "PRO0209", "PRO0210",
     "PRO0369", "PRO0398", "PRO0407", "PRO0448", "PRO0454", "PRO0455", "PRO0465",
@@ -137,9 +143,13 @@ def main():
         rows = list(csv.DictReader(f))
     with open(TSV_PATH, encoding="utf-8") as f:
         pinned = list(csv.DictReader(f, delimiter="\t"))
-    defaults_path = Path(CSV_PATH).resolve().parents[5] / "world-base-seeds" / "occupation_skill_defaults_v1.csv"
-    with defaults_path.open(encoding="utf-8") as f:
-        archetypes = {r["occupation_archetype_id"] for r in csv.DictReader(f)}
+    archetypes_path = Path(CSV_PATH).resolve().parents[5] / "world-base-seeds" / "occupation_archetypes_v1.csv"
+    with archetypes_path.open(encoding="utf-8") as f:
+        archetypes = {r["id"] for r in csv.DictReader(f)}
+    if "--self-test" in sys.argv:
+        assert unresolved_archetype("unknown_archetype_probe", archetypes)
+        assert not unresolved_archetype("performance_entertainment", archetypes)
+        assert not unresolved_archetype("no_source:occupation_archetype", archetypes)
     for i, row in enumerate(rows, start=2):  # +1 header, +1 1-index
         oid = row.get("occupation_id", "")
         for field in REQUIRED:
@@ -153,7 +163,7 @@ def main():
             errors.append(f"row {i} ({oid}): invalid confidence '{conf}'")
         if row.get("status") != "candidate":
             errors.append(f"row {i} ({oid}): status must be 'candidate' for a collector (not self-approved), got '{row.get('status')}'")
-        if row.get("occupation_archetype_id") not in archetypes and not row.get("occupation_archetype_id", "").startswith("no_source:"):
+        if unresolved_archetype(row.get("occupation_archetype_id", ""), archetypes):
             errors.append(f"row {i} ({oid}): unresolved occupation_archetype_id")
         src = row.get("source_refs", "")
         if not any(prefix in src for prefix in ("gb:sources/", "wk:", "book:")):
@@ -397,8 +407,8 @@ def main():
             if "|policy=context_only_not_mass_default" not in provenance_token(source):
                 errors.append(f"{pid}: context-only policy absent from variant provenance token")
     for pid in ("PRO0448", "PRO0454", "PRO0455"):
-        if by_id[semantic_ids[pid]]["occupation_archetype_id"] != "no_source:occupation_archetype":
-            errors.append(f"{pid}: music archetype gap was filled outside the closed vocabulary")
+        if by_id[semantic_ids[pid]]["occupation_archetype_id"] != "performance_entertainment":
+            errors.append(f"{pid}: music archetype must be performance_entertainment")
     expected_archetypes = {
         "PRO0069": "forest_hunting", "PRO0369": "religious_literate",
         "PRO0398": "religious_literate", "PRO0407": "hospitality_service",

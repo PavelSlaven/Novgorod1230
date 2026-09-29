@@ -526,3 +526,33 @@ Limits that remain:
 - validation-report.json — approve: errors 0, равен пересборке
 
 Вердикт группы: **approve_with_limits**.
+
+## Независимая проверка owner-fixes D47 (Claude Opus 5.5, 2026-09-29)
+
+- **Кто:** Claude Opus 5.5, независимый проверяющий, не автор. Ветка `fleet/owner-fixes`, HEAD `ce307cbf`, база main `2b4aa2f9`.
+- **Что:**
+  - `fchk_010` «Чёрная крыса»: `excluded_doubtful` → `included_rare`, `fa_ids=fa_mamm_black_rat`, `basis=analogy`. В derivation: «Хедебю — эпоха викингов, IX–XI вв.; средневековый Йорк; в прочитанных источниках новгородских находок нет».
+  - В `taxa_checks.csv` новые колонки `basis` и `derivation`, у остальных 26 строк они пусты.
+  - В `validate.cjs` общее правило `taxaCheckIssues` без зашитых id. `excluded_*`: ни candidate-таксона с тем же `name_lat`, ни presence ни в одной fauna-группе. `included_*`: `fa_ids` разрешаются и имеют presence. `included_rare`: частота не выше rare. `basis=analogy`: нужен derivation. Пасюк: `excluded_anachronism` и строка в denylist.
+  - README обновлён. Из `validation-report.json` убрана строка «WK dir not found: C:/…».
+- **Проверено скриптами:**
+  - Semantic diff `taxa_checks.csv` к main: 27 строк, порядок тот же, у `fchk_010` изменены verdict, fa_ids, reason, basis, derivation.
+  - Датировка исправлена в четырёх исходных местах и двух выходах. Формулировки «XIII век» рядом с Хедебю не осталось (rg).
+  - Сборка в копии HEAD, два прохода `build.cjs` и `validate.cjs`: побайтно равно HEAD. `validation-report.json` совпадает при `NOVGOROD_MAIN`, указывающем на копию, errors 0.
+  - `validate.cjs --self-test` и `validate-phase.cjs --self-test`: ok.
+  - Файловые пробы в копии, файлы восстановлены побайтно. Каждая из этих проб даёт rc=1: candidate выхухоли в herps; candidate выхухоли в mammals; candidate пасюка; duplicate-строка выхухоли с presence; крыса `common` в одной строке; крыса `contextual` в 12 строках.
+  - На реальных данных нарушений 0.
+- **Ограничения:**
+  - Составное `name_lat` сравнивается целиком. У `fchk_008` это «Bison bonasus / Bos primigenius», и проба с candidate «Bison bonasus» проходит (rc=0). `livestock_species.csv` в правило не входит. Сейчас нарушений нет.
+  - Ограничения D47 «только торг, пристань, склады» и `hidden` validator не проверяет. Проба с 13-й строкой в `dwelling_yard` проходит, проба со строкой `active` тоже (rc=0). Эти ограничения держит только авторский источник `inv_herp_data.py`.
+  - `validation-report.json` воспроизводится только при заданном `NOVGOROD_MAIN`. Без переменной `validate.cjs:9` берёт Windows-путь, и в отчёт возвращается предупреждение с машинным путём. Так было и до задачи.
+  - Подтверждения аналогии с Хедебю и Йорком в репозитории нет, запись опирается на решение D47.
+
+### Вердикты по файлам owner-fixes
+
+- README.md — approve: 7 rare / 6 doubtful, крыса описана как аналогия с верной датировкой
+- fauna/taxa_checks.csv — approve_with_limits: дельта D47 чистая, изменён только `fchk_010`, две новые колонки, файл равен пересборке; прежние оговорки по source_refs и confidence остаются
+- scripts/build.cjs — approve: колонки `basis` и `derivation`
+- scripts/src/checks.cjs — approve: вердикт и датировка по D47
+- scripts/validate.cjs — approve_with_limits: общее правило без id, но составное `name_lat` и PF/hidden крысы не проверяются
+- validation-report.json — approve: errors 0, равен пересборке при `NOVGOROD_MAIN`

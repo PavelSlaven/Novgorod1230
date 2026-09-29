@@ -23,7 +23,13 @@ function readCsv(f) {
 }
 const F = (n) => path.join(DOM, 'fauna', n);
 const mammals = readCsv(F('mammals.csv')), birds = readCsv(F('birds.csv')), pres = readCsv(F('wild_habitat_presence.csv'));
-const herps = readCsv(path.join(GB, 'fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv'));
+const siblingFauna = path.join(GB, 'fauna-fish-invertebrates-livestock/fauna');
+const herps = readCsv(path.join(siblingFauna, 'invertebrates_herps.csv'));
+const fish = readCsv(path.join(siblingFauna, 'fish.csv'));
+const siblingPres = readCsv(path.join(GB, 'fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv'));
+const siblingDeny = readCsv(path.join(GB, 'fauna-fish-invertebrates-livestock/fauna/anachronism_denylist_fauna.csv'));
+const checkedTaxa = [...mammals, ...birds, ...herps, ...fish];
+const checkedPresence = [...pres, ...siblingPres];
 const huntingMethods = readCsv(F('hunting_methods.csv')), huntingTenure = readCsv(F('hunting_tenure_defaults.csv'));
 const cats = new Set(readCsv(F('fauna_categories.csv')).map((r) => r.category_id));
 const srcIds = new Set(readCsv(F('sources.csv')).map((r) => r.source_id));
@@ -63,6 +69,41 @@ function reducedTaxaIssues(checkRows, birdRows) {
     if (!bird) issues.push('fchk_026 unresolved bird ' + id);
     else if (['common', 'ubiquitous'].includes(bird.base_frequency_class) || bird.presence_1230_confidence !== 'C') issues.push('fchk_026 bird not reduced ' + id);
   }
+  return issues;
+}
+function taxaCheckIssues(checkRows, taxonRows, presenceRows, denyRows) {
+  const issues = [];
+  const verdicts = new Set(['excluded_anachronism','excluded_doubtful','excluded_unattested','included_rare','included_rural_contextual','included_rural_only','included_reduced']);
+  const taxaById = new Map(taxonRows.map((row) => [row.fa_id, row]));
+  for (const check of checkRows) {
+    if (!verdicts.has(check.verdict)) {
+      issues.push('unknown taxa verdict ' + check.verdict);
+      continue;
+    }
+    if (check.basis === 'analogy' && !check.derivation) issues.push('analogy without derivation ' + check.check_id);
+    const ids = check.fa_ids.split(';').filter(Boolean);
+    if (check.verdict.startsWith('excluded_')) {
+      const latin = check.name_lat.trim().toLowerCase();
+      const matchingTaxa = taxonRows.filter((row) => row.name_lat.trim().toLowerCase() === latin);
+      const conflictingTaxa = matchingTaxa.filter((row) => row.status === 'candidate');
+      if (conflictingTaxa.length) issues.push('excluded taxon present ' + check.check_id + ': ' + conflictingTaxa.map((row) => row.fa_id).join(','));
+      const conflictingIds = new Set([...ids, ...matchingTaxa.map((row) => row.fa_id)]);
+      if (presenceRows.some((row) => conflictingIds.has(row.fa_id))) issues.push('excluded taxon presence ' + check.check_id);
+      continue;
+    }
+    if (!ids.length) issues.push('included check without fa_ids ' + check.check_id);
+    for (const id of ids) {
+      if (!taxaById.has(id)) issues.push('included taxon unresolved ' + check.check_id + ': ' + id);
+      const taxonPresence = presenceRows.filter((row) => row.fa_id === id);
+      if (!taxonPresence.length) issues.push('included taxon without presence ' + check.check_id + ': ' + id);
+      if (check.verdict === 'included_rare' && taxonPresence.some((row) => LEVELS[row.frequency_class] > LEVELS.rare))
+        issues.push('included_rare frequency above rare ' + check.check_id + ': ' + id);
+    }
+  }
+  const brownRat = checkRows.find((row) => row.name_lat === 'Rattus norvegicus');
+  const brownRatDenied = brownRat && brownRat.verdict === 'excluded_anachronism' && denyRows.some((row) =>
+    row.scope === 'anachronism' && row.patterns.split(' | ').includes(brownRat.name_lat));
+  if (!brownRatDenied) issues.push('brown rat denylist');
   return issues;
 }
 const MASTER_ITEMS = fs.readFileSync(path.join(REPO, 'data/world-catalogs/novgorod/sources/master-archive-v1/data/canonical/material_items.csv'), 'utf8');
@@ -171,6 +212,17 @@ if (process.argv.includes('--self-test')) {
   for (const [description, seasons] of [['почти молчалив', ''], ['редко слышен', 'winter'], ['почти безмолвен', 'spring;summer']]) if (soundIssue('', description, seasons)) throw new Error('silent voice without sound failed: ' + description);
   if (contextualFaunaIssues(mammals, birds, pres).length) throw new Error('contextual fauna positive probe failed');
   if (reducedTaxaIssues(checks, birds).length) throw new Error('reduced taxa positive probe failed: ' + reducedTaxaIssues(checks, birds).join(' | '));
+  if (taxaCheckIssues(checks, checkedTaxa, checkedPresence, siblingDeny).length) throw new Error('taxa checks positive probe failed: ' + taxaCheckIssues(checks, checkedTaxa, checkedPresence, siblingDeny).join(' | '));
+  if (!taxaCheckIssues(checks.map((row, i) => i ? row : { ...row, verdict: 'unknown_probe' }), checkedTaxa, checkedPresence, siblingDeny).some((issue) => issue.includes('unknown taxa verdict'))) throw new Error('taxa verdict negative probe passed');
+  const excludedProbe = checks.find((row) => row.name_lat === 'Desmana moschata');
+  const conflictingProbe = { fa_id: 'negative_probe_excluded_taxon', name_lat: excludedProbe.name_lat, status: 'candidate' };
+  if (!taxaCheckIssues(checks, [...checkedTaxa, conflictingProbe], checkedPresence, siblingDeny).some((issue) => issue.includes('excluded taxon present'))) throw new Error('cross-group excluded taxon negative probe passed');
+  const blackRatCheck = checks.find((row) => row.name_lat === 'Rattus rattus');
+  const rareId = blackRatCheck.fa_ids.split(';')[0];
+  const commonRareProbe = checkedPresence.map((row) => row.fa_id === rareId ? { ...row, frequency_class: 'common' } : row);
+  if (!taxaCheckIssues(checks, checkedTaxa, commonRareProbe, siblingDeny).some((issue) => issue.includes('included_rare frequency above rare'))) throw new Error('included rare frequency negative probe passed');
+  if (!taxaCheckIssues(checks.map((row) => row.basis === 'analogy' ? { ...row, derivation: '' } : row), checkedTaxa, checkedPresence, siblingDeny).some((issue) => issue.includes('analogy without derivation'))) throw new Error('analogy derivation negative probe passed');
+  if (!taxaCheckIssues(checks, checkedTaxa, checkedPresence, siblingDeny.filter((row) => !row.patterns.split(' | ').includes('Rattus norvegicus'))).includes('brown rat denylist')) throw new Error('brown rat denylist negative probe passed');
   const commonRedwing = birds.map((row) => row.fa_id === 'fa_b_redwing' ? { ...row, base_frequency_class: 'common' } : row);
   if (!reducedTaxaIssues(checks, commonRedwing).some((issue) => issue.includes('fa_b_redwing'))) throw new Error('reduced taxa negative probe passed');
   const winterMallard = { ...pres.find((row) => row.fa_id === 'fa_b_mallard'), presence_id: 'negative_probe_mallard_winter', season: 'winter' };
@@ -196,6 +248,7 @@ const phaseTable = phase.csv(F('phase_activity.csv'));
 errors.push(...phase.validate('fauna-mammals-birds', phaseTable.rows, phaseTable.header));
 errors.push(...contextualFaunaIssues(mammals, birds, pres));
 errors.push(...reducedTaxaIssues(checks, birds));
+errors.push(...taxaCheckIssues(checks, checkedTaxa, checkedPresence, siblingDeny));
 
 // ids
 const all = [...mammals, ...birds]; const ids = new Set();

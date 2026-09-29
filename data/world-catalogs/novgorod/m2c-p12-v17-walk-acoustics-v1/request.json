@@ -79,7 +79,7 @@
       "manifest_path": "data/world-catalogs/novgorod/m2c-acoustic-import-manifest.json",
       "manifest_sha256": "4d468e68cbdecca4d2ae43a0ea9b07101ca17d4be2abb9c016b69f366535daad",
       "approval_path": "data/world-catalogs/novgorod/m2c-acoustic/authoring-version-union-walk-data-approval.json",
-      "approval_sha256": "fcf8a02f6bb70b31361f643e88da4b9b32253988caf985df80153a47db8e2bd3",
+      "approval_sha256": "fbe9a5cccc0718a4964a41c67a9cb64da29971be63b6a6ed90c798c7ea3c7e6b",
       "dataset_count": 49,
       "pinned_row_references": 12280,
       "temporary_table_prefix": "p12a",

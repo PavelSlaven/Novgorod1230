@@ -19,8 +19,8 @@
   "household_type_crosswalk.csv": 58,
   "place_type_livestock.csv": 113,
   "rpgr_pf_crosswalk.csv": 145,
-  "anachronism_denylist_fauna.csv": 10,
-  "sources.csv": 67
+  "anachronism_denylist_fauna.csv": 9,
+  "sources.csv": 66
  },
  "checks": {
   "temporal_cues_mapped": true,

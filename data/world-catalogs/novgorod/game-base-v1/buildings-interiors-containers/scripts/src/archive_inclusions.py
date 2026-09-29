@@ -2,13 +2,16 @@
 import json
 import os
 import re
+import csv
 import unicodedata
 
 
 GROUP = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 MANIFEST = os.path.join(GROUP, "authoring", "archive_inclusion_manifest.json")
+NEEDS_CHECK = os.path.join(GROUP, "authoring", "needs_check.csv")
 FIELDS = ["archive_ref", "archive_name", "archive_action", "match_type", "game_base_ref", "owner_group", "target_group", "target_ref", "basis", "evidence_basis", "family_key",
           "derivation", "confidence", "period", "region", "generation_policy", "anachronism_risk", "semantic_result", "guard_result", "dedup_result", "reason"]
+NEEDS_CHECK_FIELDS = ["archive_id", "current_result", "current_target_group", "current_target_ref", "reason_code", "finding_ref", "cluster_id", "note"]
 DENY = re.compile(r"картоф|кукуруз|(?<!\w)томат|подсолн|табак|индейк|тяжелов|\bчай\b|кофе|сахар|огнестрел|порох|пищал|кирпичн\w* изб|стекольн|застеклённ\w* окн\w* изб", re.I)
 
 
@@ -108,6 +111,16 @@ def records():
     return data["records"]
 
 
+def needs_check_records():
+    if not os.path.exists(NEEDS_CHECK):
+        return []
+    with open(NEEDS_CHECK, encoding="utf-8-sig", newline="") as f:
+        reader = csv.DictReader(f)
+        if reader.fieldnames != NEEDS_CHECK_FIELDS:
+            raise ValueError("needs_check.csv has invalid header")
+        return list(reader)
+
+
 def build_entity_rows(group, read_csv, matcult_dir=None):
     master_root = os.path.abspath(os.path.join(group, "..", "..", "sources", "master-archive-v1", "data", "normalized_source_tables", "material_entities"))
     source_rows = {r.get("item_id"): r for r in read_csv(os.path.join(master_root, "material_entities.csv"), ",")}
@@ -121,10 +134,13 @@ def build_entity_rows(group, read_csv, matcult_dir=None):
         except OSError:
             pass
     result = []
+    queued = {row["archive_id"] for row in needs_check_records()}
     for item in records():
         if item.get("owner_group") != "buildings-interiors-containers" or item.get("semantic_result") != "distinct" or item.get("match_type") != "new":
             continue
         archive_id = item.get("archive_ref", "").rsplit(":", 1)[-1]
+        if archive_id in queued:
+            continue
         source = source_rows.get(archive_id)
         is_catalog_entity = False
         if source is None and archive_id in {"CON0019"}:
@@ -186,6 +202,7 @@ def build_entity_rows(group, read_csv, matcult_dir=None):
 
 def build_ledger(group, read_csv, matcult_dir=None):
     rows = records()
+    needs_check = {row["archive_id"]: row for row in needs_check_records()}
     master_root = os.path.abspath(os.path.join(group, "..", "..", "sources", "master-archive-v1", "data", "normalized_source_tables", "material_entities"))
     source_cache = {}
     for filename, id_field in (("material_entities.csv", "item_id"), ("state_variants.csv", "state_id")):
@@ -225,9 +242,18 @@ def build_ledger(group, read_csv, matcult_dir=None):
         if row.get("basis") == "sourced" and "category-level evidence (category_form_material_process_or_context)" not in row.get("reason", "").casefold() and "уровень категории" not in row.get("reason", "").casefold():
             row["reason"] = (row.get("reason", "") + " Основание: category-level evidence (category_form_material_process_or_context).").strip()
         archive_id = item.get("archive_ref", "").rsplit(":", 1)[-1]
+        queued = needs_check.get(archive_id)
         source = source_cache.get(archive_id, {})
         row["generation_policy"] = source.get("generation_policy", "")
         row["anachronism_risk"] = source.get("anachronism_risk", "")
+        if queued:
+            row["match_type"] = "needs_check"
+            row["archive_action"] = "needs_check"
+            row["semantic_result"] = "needs_check"
+            row["guard_result"] = "needs_check"
+            row["dedup_result"] = "needs_check"
+            result.append(row)
+            continue
         issues = []
         semantic = item.get("semantic_result", "")
         if semantic == "routed":
@@ -284,8 +310,36 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
     terminal_decisions = {"distinct": "entity", "variant": "variant", "routed": "routed", "reference": "ref", "rejected": "reject", "duplicate_rejected": "rejected"}
     authored = records()
     authored_by_ref = {item.get("archive_ref", ""): item for item in authored}
-    if len(authored) != 467:
+    authored_ids = [item.get("archive_ref", "").rsplit(":", 1)[-1] for item in authored]
+    if len(authored) != 467 or len(set(authored_ids)) != len(authored_ids):
         errors.append("BIC authoring decision set must classify all 467 reviewed and receiving rows")
+    queue_rows = needs_check_records()
+    queue_by_id = {}
+    for i, queue_row in enumerate(queue_rows, 2):
+        archive_id = queue_row.get("archive_id", "").strip()
+        where = "needs_check.csv[%d]" % i
+        if not archive_id or archive_id in queue_by_id:
+            errors.append("%s missing/duplicate archive_id" % where)
+            continue
+        queue_by_id[archive_id] = queue_row
+        if archive_id not in set(authored_ids):
+            errors.append("%s archive_id is absent from the authored manifest: %s" % (where, archive_id))
+        if queue_row.get("reason_code", "") not in {"review_finding", "unresolved"} and not re.fullmatch(r"ICA_[A-Z_]+", queue_row.get("reason_code", "")):
+            errors.append("%s invalid reason_code" % where)
+        if queue_row.get("finding_ref", "") and not re.fullmatch(r"round3-(?:bicw|crafts)\.md#L[1-9][0-9]*", queue_row["finding_ref"]):
+            errors.append("%s invalid finding_ref" % where)
+        if not queue_row.get("current_result", "").strip():
+            errors.append("%s missing current_result" % where)
+        item = next((row for row in authored if row.get("archive_ref", "").endswith(":" + archive_id)), None)
+        if item:
+            expected_target = item.get("target_ref", "") or item.get("game_base_ref", "")
+            if queue_row.get("current_result", "") != item.get("semantic_result", ""):
+                errors.append("%s current_result differs from manifest proposal: %s" % (where, archive_id))
+            if queue_row.get("current_target_group", "") != item.get("target_group", "") or queue_row.get("current_target_ref", "") != expected_target:
+                errors.append("%s current target differs from manifest proposal: %s" % (where, archive_id))
+    decision_ids = set(authored_ids) - set(queue_by_id)
+    if (decision_ids & set(queue_by_id)) or (decision_ids | set(queue_by_id)) != set(authored_ids) or len(authored_ids) != 467:
+        errors.append("BIC decisions and needs_check queue do not partition all 467 archive IDs")
     for item in authored:
         semantic = item.get("semantic_result", "")
         expected_decision = terminal_decisions.get(semantic)
@@ -332,7 +386,13 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
     seen_families = {}
     for i, row in enumerate(ledger, 1):
         where = "archive_inclusion_ledger[%d]" % i
-        needs_ref = row.get("match_type") == "variant" and row.get("semantic_result") != "routed"
+        ident = row.get("archive_ref", "").rsplit(":", 1)[-1]
+        queued = ident in queue_by_id
+        if queued and (row.get("semantic_result") != "needs_check"
+                       or row.get("match_type") != "needs_check"
+                       or row.get("archive_action") != "needs_check"):
+            errors.append("%s queued archive ID lacks neutral needs_check status: %s" % (where, ident))
+        needs_ref = row.get("match_type") == "variant" and row.get("semantic_result") != "routed" and not queued
         missing = [k for k in required if (needs_ref or k != "game_base_ref") and not str(row.get(k, "")).strip()]
         if missing:
             errors.append("%s missing required fields: %s" % (where, ",".join(sorted(missing))))
@@ -340,23 +400,24 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
             errors.append("%s invalid basis" % where)
         if row.get("confidence") not in {"A", "B", "C", "D"}:
             errors.append("%s invalid confidence" % where)
-        if row.get("match_type") not in {"new", "variant", "reference", "rejected"}:
+        if row.get("match_type") not in ({"new", "variant", "reference", "rejected", "needs_check"} if queued else {"new", "variant", "reference", "rejected"}):
             errors.append("%s invalid match_type" % where)
-        if row.get("archive_action") not in {"include_d39", "include_analogy", "add_variant", "reference_only", "reject_d38"}:
+        if row.get("archive_action") not in ({"include_d39", "include_analogy", "add_variant", "reference_only", "reject_d38", "needs_check"} if queued else {"include_d39", "include_analogy", "add_variant", "reference_only", "reject_d38"}):
             errors.append("%s invalid archive_action" % where)
         if row.get("match_type") == "variant" and row.get("archive_action") not in {"add_variant", "include_d39"}:
             errors.append("%s variant has invalid archive_action" % where)
         if row.get("archive_action") == "add_variant" and row.get("match_type") != "variant" and row.get("semantic_result") not in {"routed", "reference", "rejected"}:
             errors.append("%s add_variant creates a new entity" % where)
-        if row.get("semantic_result") not in {"distinct", "variant", "duplicate_rejected", "context_only", "routed", "reference", "rejected"}:
+        if row.get("semantic_result") not in ({"distinct", "variant", "duplicate_rejected", "context_only", "routed", "reference", "rejected", "needs_check"} if queued else {"distinct", "variant", "duplicate_rejected", "context_only", "routed", "reference", "rejected"}):
             errors.append("%s missing/invalid semantic_result" % where)
-        if "семантическое решение:" not in row.get("reason", "").casefold():
-            errors.append("%s lacks explicit semantic decision rationale" % where)
-        expected = expected_basis(row.get("archive_action"), row.get("confidence"), row.get("evidence_basis"))
-        if row.get("basis") != expected:
-            errors.append("%s basis does not match source evidence (expected %s)" % (where, expected))
-        if row.get("basis") == "sourced" and not any(marker in row.get("reason", "").casefold() for marker in ("уровень категории", "category-level evidence (category_form_material_process_or_context)")):
-            errors.append("%s sourced basis lacks category-level caveat" % where)
+        if not queued:
+            if "семантическое решение:" not in row.get("reason", "").casefold():
+                errors.append("%s lacks explicit semantic decision rationale" % where)
+            expected = expected_basis(row.get("archive_action"), row.get("confidence"), row.get("evidence_basis"))
+            if row.get("basis") != expected:
+                errors.append("%s basis does not match source evidence (expected %s)" % (where, expected))
+            if row.get("basis") == "sourced" and not any(marker in row.get("reason", "").casefold() for marker in ("уровень категории", "category-level evidence (category_form_material_process_or_context)")):
+                errors.append("%s sourced basis lacks category-level caveat" % where)
         ref = row.get("archive_ref", "")
         ident = ref.rsplit(":", 1)[-1]
         canonical = None
@@ -392,6 +453,16 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
                 if field in canonical or field in {"archive_name", "confidence", "evidence_basis", "family_key", "period", "region", "derivation"}:
                     if row.get(field, "") != value:
                         errors.append("%s %s differs from canonical source (expected %s)" % (where, field, value))
+        if queued:
+            entity_id = "n1230:material_item:" + ident.lower()
+            if entity_id.casefold() in entities_by_ref or ident.casefold() in entities_by_ref:
+                errors.append("%s needs_check row materialized an entity: %s" % (where, ident))
+            years = [int(y) for y in re.findall(r"(?<!\d)(1[01-9]\d{2}|20\d{2})(?!\d)", row.get("period", ""))]
+            if not years or not (min(years) <= 1230 <= max(years)):
+                errors.append("%s queued period missing or excludes 1230: %s" % (where, row.get("period", "")))
+            if not row.get("region", "").strip():
+                errors.append("%s queued region missing" % where)
+            continue
         if row.get("semantic_result") == "routed":
             if not row.get("target_group"):
                 errors.append("%s routed record missing target_group" % where)

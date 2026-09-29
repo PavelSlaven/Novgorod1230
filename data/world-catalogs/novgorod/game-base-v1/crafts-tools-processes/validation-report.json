@@ -1,17 +1,22 @@
 {
   "checked_by": "scripts/validate.cjs",
-  "pass": 31,
+  "pass": 32,
   "fail": 0,
   "results": [
     {
       "id": "archive_inclusion_ledger_candidate_provenance",
       "result": "PASS",
-      "detail": "1269 rows; 295 new + 721 variants; 8 rejected; runtime activation=false"
+      "detail": "1269 rows; 222 new + 440 variants; 4 rejected; 474 queued; runtime activation=false"
+    },
+    {
+      "id": "archive_needs_check_partition",
+      "result": "PASS",
+      "detail": "1269 archive IDs partitioned exactly once; 474 queue rows have record_type/disposition/status=needs_check; no queued entity source refs"
     },
     {
       "id": "archive_material_entity_table",
       "result": "PASS",
-      "detail": "295 entity rows; expected 295; generated from included new crafts owners"
+      "detail": "222 entity rows; expected 222; generated from included new crafts owners"
     },
     {
       "id": "unique_ids_tools",
@@ -151,7 +156,7 @@
     {
       "id": "info_other_domains_material_resolution_snapshot",
       "result": "PASS",
-      "detail": "17 files, 1297/1683 values fully resolved, 76 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
+      "detail": "19 files, 1760/2138 values fully resolved, 76 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
     },
     {
       "id": "info_mass_band_vs_v5_policy",
@@ -189,9 +194,9 @@
       "deny_hits": 0
     },
     "buildings-interiors-containers/interiors/material_entities.csv": {
-      "values": 134,
-      "fully_resolved": 53,
-      "with_unresolved_tokens": 81,
+      "values": 124,
+      "fully_resolved": 51,
+      "with_unresolved_tokens": 73,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
@@ -224,9 +229,9 @@
       "deny_hits": 0
     },
     "clothing-appearance/garments/material_entities.csv": {
-      "values": 4,
-      "fully_resolved": 2,
-      "with_unresolved_tokens": 2,
+      "values": 2,
+      "fully_resolved": 1,
+      "with_unresolved_tokens": 1,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
@@ -266,9 +271,9 @@
       "deny_hits": 0
     },
     "items-weapons-armour/items/weapons_armour.csv": {
-      "values": 74,
+      "values": 75,
       "fully_resolved": 58,
-      "with_unresolved_tokens": 16,
+      "with_unresolved_tokens": 17,
       "out_of_scope_tokens": 0,
       "deny_hits": 0
     },
@@ -284,6 +289,20 @@
       "fully_resolved": 24,
       "with_unresolved_tokens": 5,
       "out_of_scope_tokens": 8,
+      "deny_hits": 0
+    },
+    "places-binding/presence/environment_presence_authoring.csv": {
+      "values": 233,
+      "fully_resolved": 233,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "places-binding/presence/presence_rules.csv": {
+      "values": 233,
+      "fully_resolved": 233,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
       "deny_hits": 0
     }
   }

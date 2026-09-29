@@ -28,7 +28,28 @@ const pc = new Set(procs.map(p => p.pc_id));
 
 const archiveCheck = ARCHIVE_INCLUSIONS.buildLedger({ tools, materials: mats, workshops: shops, processes: procs, products: prods }, deny.map(d => [d.dl_id, d.term_ru, d.match_stems, d.kind, d.verdict, d.reason_ru]));
 const ledgerSame = archiveLedger.length === archiveCheck.ledger.length && archiveLedger.every((row, i) => ARCHIVE_INCLUSIONS.LEDGER_HEADER.every(key => row[key] === String(archiveCheck.ledger[i][key] ?? '')));
-add('archive_inclusion_ledger_candidate_provenance', !archiveCheck.errors.length && ledgerSame, archiveCheck.errors.join(' | ') || `${archiveLedger.length} rows; ${archiveCheck.summary.included_new} new + ${archiveCheck.summary.included_variants} variants; ${archiveCheck.summary.rejected} rejected; runtime activation=false`);
+add('archive_inclusion_ledger_candidate_provenance', !archiveCheck.errors.length && ledgerSame, archiveCheck.errors.join(' | ') || `${archiveLedger.length} rows; ${archiveCheck.summary.included_new} new + ${archiveCheck.summary.included_variants} variants; ${archiveCheck.summary.rejected} rejected; ${archiveCheck.summary.needs_check} queued; runtime activation=false`);
+const queuedRows = ARCHIVE_INCLUSIONS.NEEDS_CHECK_ROWS;
+const queueById = new Map(queuedRows.map(row => [row.archive_id, row]));
+const authoredById = new Map(ARCHIVE_INCLUSIONS.authoredRows.map(row => [row[0].split(':').at(-1), row]));
+const ledgerById = new Map(archiveLedger.map(row => [row.archive_ref.split(':').at(-1), row]));
+const queuePartitionIssues = [];
+if (queueById.size !== queuedRows.length) queuePartitionIssues.push('duplicate queue ID');
+if (authoredById.size !== ARCHIVE_INCLUSIONS.authoredRows.length || ledgerById.size !== archiveLedger.length) queuePartitionIssues.push('duplicate archive ID');
+if (authoredById.size !== 1269 || ledgerById.size !== 1269) queuePartitionIssues.push(`archive partition ${authoredById.size}/${ledgerById.size}, expected 1269`);
+for (const [id, queued] of queueById) {
+  const source = authoredById.get(id), row = ledgerById.get(id);
+  if (!source || !row) { queuePartitionIssues.push(`${id} missing from authored source or ledger`); continue; }
+  if (row.record_type !== 'needs_check' || row.disposition !== 'needs_check' || row.status !== 'needs_check') queuePartitionIssues.push(`${id} is not needs_check in all three terminal fields`);
+  if (row.game_base_ref || row.target_group || row.target_ref) queuePartitionIssues.push(`${id} leaks a decision target into the generated queue row`);
+}
+for (const [id, row] of ledgerById) if ((row.record_type === 'needs_check' || row.disposition === 'needs_check' || row.status === 'needs_check') && !queueById.has(id)) queuePartitionIssues.push(`${id} is needs_check but absent from authoring queue`);
+const queuedEntityRefs = archiveEntities.flatMap(row => {
+  let refs = []; try { refs = JSON.parse(row.source_refs || '[]'); } catch { return [`${row.item_id}:invalid source_refs`]; }
+  return refs.flatMap(ref => [...queueById.keys()].filter(id => ref.endsWith(`:${id}`)).map(id => `${row.item_id}:${id}`));
+});
+if (queuedEntityRefs.length) queuePartitionIssues.push(`queued IDs appear in material entity source_refs: ${queuedEntityRefs.join(',')}`);
+add('archive_needs_check_partition', !queuePartitionIssues.length, queuePartitionIssues.join(' | ') || `${authoredById.size} archive IDs partitioned exactly once; ${queuedRows.length} queue rows have record_type/disposition/status=needs_check; no queued entity source refs`);
 const expectedEntities = ARCHIVE_INCLUSIONS.buildMaterialEntities(archiveCheck.ledger);
 const entityTableSame = archiveEntities.length === expectedEntities.entities.length && archiveEntities.every((row, i) => expectedEntities.header.every(key => row[key] === String(expectedEntities.entities[i][key] ?? '')));
 add('archive_material_entity_table', entityTableSame, `${archiveEntities.length} entity rows; expected ${expectedEntities.entities.length}; generated from included new crafts owners`);

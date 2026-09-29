@@ -19,6 +19,8 @@
 3. Пробелы закрыты адресным поиском по первоисточникам: Рыбина 2015 «Промыслы» (полный текст, A), Колчин и Изюмова МИА 65 (через подробные конспекты — числа отмечены B до сверки с PDF), Колчин 1957, Седова 1981, ИА РАН (Десятинный раскоп, буллотирий), Колчин–Янин–Ямщиков 1985, Смирнова 1998, Щапова 1972.
 4. Всё содержательное (какие инструменты, шаги, материалы) записано в `scripts/src/*.cjs`. Производное — связи «инструмент ↔ процесс ↔ занятие ↔ мастерская», классы массы, состояния и слоты примет, категории, разрешение материалов других доменов — считает скрипт.
 
+`authoring/category_evidence_ids.csv` — отсортированная выписка уникальных `item_id` с ролью `category_form_material_process_or_context` из закреплённого `data/master-archive/unpacked/Novgorod1230_MASTER_ARCHIVE_v1/data/normalized_source_tables/material_entities/source_item_links.csv` (SHA-256 `8ec5dbcb016f48e2e973bce07a5f1c9fbb6f6429812f853c8a05222660281ddc`); воспроизвести: `python3 -c 'import csv,sys; r=csv.DictReader(open(sys.argv[1],encoding="utf-8-sig")); w=csv.writer(sys.stdout,lineterminator="\n"); w.writerow(("archive_id","support_role")); [w.writerow((x,"category_form_material_process_or_context")) for x in sorted({a["item_id"] for a in r if a["support_role"]=="category_form_material_process_or_context"})]' <source_item_links.csv> > authoring/category_evidence_ids.csv`.
+
 ## Запуск
 
 ```bash

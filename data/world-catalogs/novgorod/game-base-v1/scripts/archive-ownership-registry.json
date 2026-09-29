@@ -117,5 +117,35 @@
     "buildings-interiors-containers/archive_inclusion_ledger.csv",
     "clothing-appearance/reports/archive_inclusion_ledger.csv",
     "items-weapons-armour/items/archive_inclusion_ledger.csv"
+  ],
+  "pair_decisions": [
+    {
+      "archive_id": "OMI00308",
+      "target_file": "clothing-appearance/garments/garments.csv",
+      "target_id": "gm_ac002",
+      "reason": "OMI00308 «Узкая тканая лента» совпадает по форме с тесьмой gm_ac002 «Тканый пояс или тесьма»; master задаёт только textile, поэтому шерсть или лён источником не доказаны.",
+      "verification": "scripts/check-archive-ownership.test.mjs#clothing-material-pair-decisions"
+    },
+    {
+      "archive_id": "OMI00309",
+      "target_file": "clothing-appearance/garments/garments.csv",
+      "target_id": "gm_ac002",
+      "reason": "OMI00309 — незавершённая узкая табличнотканая лента, стадия полосы gm_ac002 «Тканый пояс или тесьма»; master указывает textile, но не шерсть либо лён.",
+      "verification": "scripts/check-archive-ownership.test.mjs#clothing-material-pair-decisions"
+    },
+    {
+      "archive_id": "OMI00310",
+      "target_file": "clothing-appearance/garments/garments.csv",
+      "target_id": "gm_ac002",
+      "reason": "OMI00310 «Тканевая тесьма без металлической фурнитуры» совпадает с вариантом тесьмы gm_ac002; исходная запись задаёт лишь textile, не конкретно шерсть или лён.",
+      "verification": "scripts/check-archive-ownership.test.mjs#clothing-material-pair-decisions"
+    },
+    {
+      "archive_id": "OMI00375",
+      "target_file": "clothing-appearance/garments/garment_components.csv",
+      "target_id": "gm_ac007",
+      "reason": "OMI00375 — поясной подвесной hemp-шнур той же функции, что подвесы gm_ac007; состав цели допускает тканую тесьму или кожу, но архив не доказывает тканую часть либо кожаный материал.",
+      "verification": "scripts/check-archive-ownership.test.mjs#clothing-material-pair-decisions"
+    }
   ]
 }

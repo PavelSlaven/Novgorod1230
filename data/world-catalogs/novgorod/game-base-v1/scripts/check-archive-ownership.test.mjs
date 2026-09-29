@@ -114,12 +114,12 @@ test('pair-specific ledger decisions allow only the named semantic-root collisio
   const root = fixture();
   try {
     const groups = [
-      ['crafts-tools-processes/materials_registry/material_entities.csv', 'OMI00001', 'sand', 'sand_use', 'OMI00002 is mineral sand; OMI00001 is writing sand used for ink drying.'],
-      ['buildings-interiors-containers/interiors/material_entities.csv', 'OMI00002', 'mt_quartz_sand', 'quartz_sand', 'OMI00001 is writing sand; OMI00002 is loose quartz mineral stock.'],
-      ['crafts-tools-processes/materials_registry/material_entities.csv', 'OMI00003', 'charred bone', 'bone_burnt', 'OMI00004 is raw bone; OMI00003 is burnt bone with distinct waste use.'],
-      ['buildings-interiors-containers/interiors/material_entities.csv', 'OMI00004', 'mt_bone', 'bone', 'OMI00003 is burnt bone waste; OMI00004 is unburned bone material.'],
-      ['crafts-tools-processes/materials_registry/material_entities.csv', 'OMI00005', 'blue glass drop', 'glass_drop_blue', 'OMI00006 is green glass; OMI00005 has a distinct blue color identity.'],
-      ['buildings-interiors-containers/interiors/material_entities.csv', 'OMI00006', 'green glass drop', 'glass_drop_green', 'OMI00005 is blue glass; OMI00006 has a distinct green color identity.'],
+      ['crafts-tools-processes/materials_registry/material_entities.csv', 'OMI00001', 'sand', 'sand_use', 'Separate source record with independent identity evidence.'],
+      ['buildings-interiors-containers/interiors/material_entities.csv', 'OMI00002', 'mt_quartz_sand', 'quartz_sand', 'Separate source record with independent identity evidence.'],
+      ['crafts-tools-processes/materials_registry/material_entities.csv', 'OMI00003', 'charred bone', 'bone_burnt', 'Separate source record with independent identity evidence.'],
+      ['buildings-interiors-containers/interiors/material_entities.csv', 'OMI00004', 'mt_bone', 'bone', 'Separate source record with independent identity evidence.'],
+      ['crafts-tools-processes/materials_registry/material_entities.csv', 'OMI00005', 'blue glass drop', 'glass_drop_blue', 'Separate source record with independent identity evidence.'],
+      ['buildings-interiors-containers/interiors/material_entities.csv', 'OMI00006', 'green glass drop', 'glass_drop_green', 'Separate source record with independent identity evidence.'],
     ];
     const ledgers = new Map();
     for (const [index, [file, id, name, family, reason]] of groups.entries()) {
@@ -131,8 +131,24 @@ test('pair-specific ledger decisions allow only the named semantic-root collisio
       ledgers.get(ledger).push(`${id},${name},new,,${family},1180–1260,,distinct,${reason}`);
     }
     for (const [file, rows] of ledgers) for (const row of rows) append(root, file, row);
+    assert.equal(checkArchiveOwnership(root).errors.filter(error => /semantic-root collision/.test(error)).length, 3);
+    const registry = JSON.parse(fs.readFileSync(path.join(gameBase, 'scripts/archive-ownership-registry.json'), 'utf8'));
+    registry.pair_decisions = [
+      ['OMI00001', 'buildings-interiors-containers/interiors/material_entities.csv', 'n1230:material_item:omi00002', 'OMI00002 is loose mineral sand; OMI00001 is writing sand for ink drying.'],
+      ['OMI00002', 'crafts-tools-processes/materials_registry/material_entities.csv', 'n1230:material_item:omi00001', 'OMI00001 is writing sand; OMI00002 is loose quartz mineral stock.'],
+      ['OMI00003', 'buildings-interiors-containers/interiors/material_entities.csv', 'n1230:material_item:omi00004', 'OMI00004 is raw bone; OMI00003 is burnt bone waste.'],
+      ['OMI00004', 'crafts-tools-processes/materials_registry/material_entities.csv', 'n1230:material_item:omi00003', 'OMI00003 is burnt bone waste; OMI00004 is unburned bone material.'],
+      ['OMI00005', 'buildings-interiors-containers/interiors/material_entities.csv', 'n1230:material_item:omi00006', 'OMI00006 is green glass; OMI00005 is blue glass with distinct color identity.'],
+      ['OMI00006', 'crafts-tools-processes/materials_registry/material_entities.csv', 'n1230:material_item:omi00005', 'OMI00005 is blue glass; OMI00006 is green glass with distinct color identity.'],
+    ].map(([archive_id, target_file, target_id, reason]) => ({
+      archive_id, target_file, target_id, reason,
+      verification: 'scripts/check-archive-ownership.test.mjs#pair-specific-decision',
+    }));
+    fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+    fs.writeFileSync(path.join(root, 'scripts/archive-ownership-registry.json'), JSON.stringify(registry, null, 2));
     const result = checkArchiveOwnership(root);
     assert.deepEqual(result.errors, []);
+    assert.equal(result.pairExceptions.length, 3);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
@@ -263,10 +279,16 @@ test('unmapped archive material gets its own stable code', () => {
     const materials = 'crafts-tools-processes/materials_registry/materials.csv';
     fs.mkdirSync(path.dirname(path.join(root, materials)), { recursive: true });
     fs.writeFileSync(path.join(root, materials), 'mt_id,name_ru,name_en,material_family,aliases_ru\nmt_flax,лён,flax,textile,лен;льнян\n');
+    fs.writeFileSync(path.join(root, 'crafts-tools-processes/materials_registry/material_resolution.csv'),
+      'file,row_key,column,value,mt_ids,unresolved_tokens,out_of_scope_tokens,denylist_hits\n');
+    fs.writeFileSync(path.join(root, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'),
+      'item_id,name_ru,category,primary_material,materials\nOMI00007,Неизвестная вещь,tool,unobtainium,unobtainium\nOMI00008,Другая вещь,tool,mixed,mixed\n');
     append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'OMI00007,Ложка,variant,crafts-tools-processes/materials_registry/materials.csv#mt_flax,tool,1180–1260,,variant,Material resolution probe.');
     const result = checkArchiveOwnership(root);
     assert.equal(result.error_counts.ICA_MATERIAL_UNMAPPED, 1);
     assert.equal(result.issues.find(issue => issue.code === 'ICA_MATERIAL_UNMAPPED')?.message.includes('OMI00007'), true);
+    append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'OMI00008,Неизвестный материал,variant,crafts-tools-processes/materials_registry/materials.csv#mt_flax,tool,1180–1260,,variant,Mixed material is not comparable.');
+    assert.equal(checkArchiveOwnership(root).errors.some(error => error.startsWith('OMI00008:') && /material/.test(error)), false);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
@@ -595,6 +617,22 @@ test('awaits_owner is invalid when receiving group already owns the archive ID',
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
+test('routed target must match an existing owner even without a receiving ledger', () => {
+  const root = fixture();
+  try {
+    const household = 'items-household-personal/items/household.csv';
+    append(root, household, 'it_hh_owner,Current owner,,,OMI00007,,');
+    append(root, household, 'it_hh_other,Other entity,,,,,');
+    append(root, 'buildings-interiors-containers/archive_inclusion_ledger.csv', [
+      'OMI00007', 'Route to wrong item', 'routed', '', '', '', '', '', 'Route to current owner.', 'routed', '',
+      'items-household-personal', `${household}#it_hh_other`, 'routed', '',
+    ].join(','));
+    const result = checkArchiveOwnership(root);
+    assert.ok(result.errors.some(error => /OMI00007: routed target_ref .* disagrees with existing archive owner .*it_hh_owner/.test(error)));
+    assert.ok(result.error_counts.ICA_ROUTE_TARGET_MISMATCH > 0);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
 test('entity archive owner requires a new/entity decision in the same group', () => {
   const root = fixture();
   try {
@@ -629,6 +667,16 @@ test('live game-base probes detect pair collision, category/material mismatch, a
       family_key: 'wooden_stopper', primary_material: 'wood', category: 'wood_bark_plant_materials',
       source_refs: `${sourceRef}OMI01505`,
     });
+    const bicLedgerFile = path.join(root, bicLedger);
+    const currentBicLedger = parseCsv(fs.readFileSync(bicLedgerFile, 'utf8'));
+    const baselineBicLedger = currentBicLedger.filter(row => !row.archive_ref?.endsWith('OMI01504'));
+    assert.equal(currentBicLedger.length - baselineBicLedger.length, 1, 'fixture expects one queued OMI01504 ledger row to replace');
+    const ledgerHeaders = Object.keys(currentBicLedger[0]);
+    const quoteLedgerCell = value => {
+      const text = String(value ?? '');
+      return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    };
+    fs.writeFileSync(bicLedgerFile, `${ledgerHeaders.join(',')}\n${baselineBicLedger.map(row => ledgerHeaders.map(header => quoteLedgerCell(row[header])).join(',')).join('\n')}\n`);
     appendCsvObject(root, bicLedger, {
       archive_ref: `${sourceRef}OMI01505`, archive_name: 'Деревянная пробка-затычка',
       archive_action: 'include_d39', match_type: 'new', period: '1180–1260', dedup_result: 'distinct',
@@ -643,6 +691,16 @@ test('live game-base probes detect pair collision, category/material mismatch, a
 
     const craftsEntities = 'crafts-tools-processes/materials_registry/material_entities.csv';
     const craftsLedger = 'crafts-tools-processes/archive_inclusion_ledger.csv';
+    const masterEntities = 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv';
+    appendCsvObject(parent, masterEntities, {
+      item_id: 'OMI03001', name_ru: 'Войлок как материал для обратной пробы',
+      category: 'fiber_textile_cordage', primary_material: 'mt_felt',
+    });
+    appendCsvObject(root, craftsLedger, {
+      archive_ref: `${sourceRef}OMI03001`, archive_name: 'Войлок как материал для обратной пробы',
+      record_type: 'variant', disposition: 'variant', period: '1180–1260',
+      game_base_ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_wool',
+    });
     appendCsvObject(root, craftsLedger, {
       archive_ref: `${sourceRef}OMI00990`, archive_name: 'Обгоревшая кость',
       archive_action: 'include_d39', match_type: 'new', record_type: 'new', disposition: 'new',
@@ -652,7 +710,21 @@ test('live game-base probes detect pair collision, category/material mismatch, a
       archive_ref: `${sourceRef}OMI01687`, archive_name: 'Песок для присыпки',
       archive_action: 'add_variant', match_type: 'variant', period: '1180–1260',
       game_base_ref: 'crafts-tools-processes/materials_registry/materials.csv#mt_quartz_sand',
-      family_key: 'writing_sand', reason: 'Live material mismatch probe.',
+      family_key: 'writing_sand', reason: 'Unknown mixed source material is not compared.',
+    });
+    appendCsvObject(root, bicEntities, {
+      item_id: 'it_bic_antler_target', name_ru: 'Заготовка из рога', family_key: 'antler_stock',
+      primary_material: 'mt_antler;mt_horn', category: 'bone_antler_horn_shell',
+    });
+    appendCsvObject(root, bicEntities, {
+      item_id: 'it_bic_bone_target', name_ru: 'Заготовка из кости', family_key: 'antler_stock',
+      primary_material: 'mt_bone', category: 'bone_antler_horn_shell',
+    });
+    appendCsvObject(root, bicLedger, {
+      archive_ref: `${sourceRef}OMI00884`, archive_name: 'Целый сброшенный рог оленевого',
+      archive_action: 'add_variant', match_type: 'variant', period: '1180–1260',
+      game_base_ref: `${bicEntities}#it_bic_antler_target`, family_key: 'antler_stock',
+      reason: 'Positive material family probe.',
     });
     updateLedger(root, 'OMI00990', 'record_type', 'new', craftsLedger);
     updateLedger(root, 'OMI00990', 'disposition', 'new', craftsLedger);
@@ -662,11 +734,20 @@ test('live game-base probes detect pair collision, category/material mismatch, a
       source_refs: `${sourceRef}OMI00990`,
     });
 
-    const correctTargetErrors = checkArchiveOwnership(root).errors.filter(error => error.includes('OMI01687'));
+    const positiveResult = checkArchiveOwnership(root);
+    const correctTargetErrors = positiveResult.errors.filter(error => error.includes('OMI01687'));
     assert.deepEqual(correctTargetErrors, [], correctTargetErrors.join('\n'));
-    updateLedger(root, 'OMI01687', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_bone',
-      craftsLedger);
+    const foxPeltErrors = positiveResult.errors.filter(error => error.startsWith('OMI00424:'));
+    assert.deepEqual(foxPeltErrors, [], foxPeltErrors.join('\n'));
+    const positives = positiveResult.errors;
+    for (const id of ['OMI00350', 'OMI00351', 'OMI00255', 'OMI00884']) {
+      assert.equal(positives.some(error => error.startsWith(`${id}: variant target material`)), false, positives.filter(error => error.startsWith(`${id}:`)).join('\n'));
+    }
+    assert.ok(positives.some(error => /OMI03001: variant target material .*mt_wool.* does not match archive material candidates .*mt_felt/.test(error)), positives.filter(error => error.startsWith('OMI03001:')).join('\n'));
+
+    updateLedger(root, 'OMI00884', 'game_base_ref', `${bicEntities}#it_bic_bone_target`, bicLedger);
     updateLedger(root, 'OMI01504', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_plinfa', bicLedger);
+    updateLedger(root, 'OMI00350', 'game_base_ref', 'crafts-tools-processes/materials_registry/materials.csv#mt_iron', craftsLedger);
 
     const materials = fs.readFileSync(path.join(root, 'crafts-tools-processes/materials_registry/materials.csv'), 'utf8');
     const boneName = parseCsv(materials).find(row => row.mt_id === 'mt_bone')?.name_ru;
@@ -675,9 +756,22 @@ test('live game-base probes detect pair collision, category/material mismatch, a
     const errors = checkArchiveOwnership(root).errors;
     assert.ok(errors.some(error => /semantic-root collision “пробка затычка”/.test(error)));
     assert.ok(errors.some(error => /semantic-root collision “кость”/.test(error)));
-    assert.ok(errors.some(error => /OMI01687: variant target material mt_bone is not among archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01687')).join('\n'));
-    assert.ok(errors.some(error => /OMI01504: variant target material mt_plinfa is not among archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01504')).join('\n'));
+    assert.ok(errors.some(error => /OMI00884: variant target material .*mt_bone.* does not match archive material candidates .*mt_antler/.test(error)), errors.filter(error => error.includes('OMI00884')).join('\n'));
+    assert.ok(errors.some(error => /OMI00350: variant target material .*mt_iron/.test(error)));
+    assert.ok(errors.some(error => /OMI01504: variant target material .*mt_plinfa.* does not match archive material candidates/.test(error)), errors.filter(error => error.includes('OMI01504')).join('\n'));
+
+    const registryPath = path.join(root, 'scripts/archive-ownership-registry.json');
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    registry.pair_decisions = [{
+      archive_id: 'OMI03001', target_file: 'crafts-tools-processes/materials_registry/materials.csv',
+      target_id: 'mt_wool',
+      reason: 'OMI03001 felt source may use mt_wool as its wool raw material in this authored variant.',
+      verification: 'scripts/check-archive-ownership.test.mjs#directed-material-relations',
+    }];
+    fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
     const result = checkArchiveOwnership(root);
+    assert.equal(result.errors.some(error => error.startsWith('OMI03001: variant target material')), false);
+    assert.ok(result.errors.some(error => /OMI00884: variant target material .*mt_bone/.test(error)));
     assert.ok(result.error_counts.ICA_VARIANT_MATERIAL_MISMATCH >= 2);
     assert.ok(result.counts.mapped_archive_values > 0);
   } finally { fs.rmSync(parent, { recursive: true, force: true }); }
@@ -704,6 +798,101 @@ test('registry covers catalog entity tables and detects an unregistered entity t
     fs.writeFileSync(unexpected, 'mt_id,name_ru\nmt_extra,Новый материал\n');
     assert.ok(checkArchiveOwnershipRegistry(root).some(error => /unregistered_materials\.csv: CSV with entity IDs/.test(error)));
   } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('clothing material pair decisions waive only the four verified archive-target pairs', () => {
+  const root = fixture();
+  const pairSpecs = [
+    { archiveId: 'OMI00308', sourceName: 'Узкая тканая лента', sourceMaterial: 'textile', targetFile: 'clothing-appearance/garments/garments.csv', targetId: 'gm_ac002', targetName: 'Тканый пояс или тесьма', targetMaterial: 'шерсть | лён', alternateTargetId: 'gm_ac001' },
+    { archiveId: 'OMI00309', sourceName: 'Табличнотканая лента-заготовка', sourceMaterial: 'textile', targetFile: 'clothing-appearance/garments/garments.csv', targetId: 'gm_ac002', targetName: 'Тканый пояс или тесьма', targetMaterial: 'шерсть | лён', alternateTargetId: 'gm_ac001' },
+    { archiveId: 'OMI00310', sourceName: 'Тканевая тесьма без металлической фурнитуры', sourceMaterial: 'textile', targetFile: 'clothing-appearance/garments/garments.csv', targetId: 'gm_ac002', targetName: 'Тканый пояс или тесьма', targetMaterial: 'шерсть | лён', alternateTargetId: 'gm_ac001' },
+    { archiveId: 'OMI00375', sourceName: 'Поясной подвесной шнур', sourceMaterial: 'hemp', targetFile: 'clothing-appearance/garments/garment_components.csv', targetId: 'gm_ac007', targetName: 'Поясные подвесные ремешки', targetMaterial: 'кожа | тканая тесьма', alternateTargetId: 'gm_ac003' },
+  ];
+  const expectedIds = pairSpecs.map(pair => pair.archiveId).sort();
+  const mismatchIds = errors => errors
+    .filter(error => error.includes(': variant target material '))
+    .map(error => error.match(/^(OMI\d+):/)?.[1])
+    .filter(id => expectedIds.includes(id))
+    .sort();
+
+  try {
+    const masterRelative = 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv';
+    const actualMaster = parseCsv(fs.readFileSync(path.resolve(gameBase, '../', masterRelative), 'utf8'));
+    const actualLedger = parseCsv(fs.readFileSync(path.join(gameBase, 'clothing-appearance/reports/archive_inclusion_ledger.csv'), 'utf8'));
+    const actualTargets = new Map();
+    for (const pair of pairSpecs) {
+      if (!actualTargets.has(pair.targetFile)) {
+        actualTargets.set(pair.targetFile, parseCsv(fs.readFileSync(path.join(gameBase, pair.targetFile), 'utf8')));
+      }
+    }
+    const quote = value => {
+      const text = String(value ?? '');
+      return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    };
+    const writeRows = (relative, rows) => {
+      const file = path.join(root, relative);
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      const headers = Object.keys(rows[0] ?? {});
+      fs.writeFileSync(file, `${headers.join(',')}\n${rows.map(row => headers.map(header => quote(row[header])).join(',')).join('\n')}\n`);
+    };
+    const sourceRows = pairSpecs.map(pair => actualMaster.find(row => row.item_id === pair.archiveId));
+    const ledgerRows = pairSpecs.map(pair => actualLedger.find(row => row.archive_ref?.endsWith(pair.archiveId)));
+    assert.ok(sourceRows.every(Boolean), 'all reviewed IDs must exist in the actual master table');
+    assert.ok(ledgerRows.every(Boolean), 'all reviewed IDs must exist in the actual clothing ledger');
+    writeRows(masterRelative, sourceRows);
+    writeRows('clothing-appearance/reports/archive_inclusion_ledger.csv', ledgerRows);
+    for (const pair of pairSpecs) {
+      const ids = new Set([pair.targetId, pair.alternateTargetId]);
+      writeRows(pair.targetFile, actualTargets.get(pair.targetFile).filter(row => ids.has(row.gm_id)));
+    }
+    for (const relative of [
+      'crafts-tools-processes/materials_registry/materials.csv',
+      'crafts-tools-processes/materials_registry/material_resolution.csv',
+    ]) fs.copyFileSync(path.join(gameBase, relative), path.join(root, relative));
+    const registryPath = path.join(root, 'scripts/archive-ownership-registry.json');
+    fs.mkdirSync(path.dirname(registryPath), { recursive: true });
+    fs.copyFileSync(path.join(gameBase, 'scripts/archive-ownership-registry.json'), registryPath);
+
+    const masterRows = parseCsv(fs.readFileSync(path.join(root, masterRelative), 'utf8'));
+    const fixtureLedger = parseCsv(fs.readFileSync(path.join(root, 'clothing-appearance/reports/archive_inclusion_ledger.csv'), 'utf8'));
+    for (const pair of pairSpecs) {
+      const source = masterRows.find(row => row.item_id === pair.archiveId);
+      assert.ok(source, `missing master archive row ${pair.archiveId}`);
+      assert.equal(source.name_ru, pair.sourceName);
+      assert.equal(source.primary_material, pair.sourceMaterial);
+      assert.equal(source.materials, JSON.stringify([pair.sourceMaterial]));
+      const ledger = fixtureLedger.find(row => row.archive_ref?.endsWith(pair.archiveId));
+      assert.ok(ledger, `missing clothing ledger row ${pair.archiveId}`);
+      assert.equal(ledger.game_base_ref, `${pair.targetFile}#${pair.targetId}`);
+      const target = parseCsv(fs.readFileSync(path.join(root, pair.targetFile), 'utf8')).find(row => row.gm_id === pair.targetId);
+      assert.ok(target, `missing target ${pair.targetId}`);
+      assert.equal(target.name_ru, pair.targetName);
+      assert.equal(target.material, pair.targetMaterial);
+    }
+
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    const approved = registry.pair_decisions.filter(decision => expectedIds.includes(decision.archive_id));
+    assert.deepEqual(approved.map(decision => [decision.archive_id, decision.target_file, decision.target_id]).sort(),
+      pairSpecs.map(pair => [pair.archiveId, pair.targetFile, pair.targetId]).sort());
+
+    registry.pair_decisions = registry.pair_decisions.filter(decision => !expectedIds.includes(decision.archive_id));
+    fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+    const withoutDecisions = checkArchiveOwnership(root);
+    assert.deepEqual(mismatchIds(withoutDecisions.errors), expectedIds);
+
+    registry.pair_decisions.push(...approved);
+    fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+    const withDecisions = checkArchiveOwnership(root);
+    assert.deepEqual(mismatchIds(withDecisions.errors), []);
+
+    registry.pair_decisions = registry.pair_decisions.map(decision => {
+      const pair = pairSpecs.find(item => item.archiveId === decision.archive_id);
+      return pair ? { ...decision, target_id: pair.alternateTargetId } : decision;
+    });
+    fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+    const withSubstitutedTargets = checkArchiveOwnership(root);
+    assert.deepEqual(mismatchIds(withSubstitutedTargets.errors), expectedIds);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
 test('unknown ID prefixes are detected, then indexed for target resolution and name collisions when registered', () => {
@@ -743,4 +932,10 @@ test('base-name probes keep material and item identities in the collision index'
     ['Берестяной короб', 'короб'],
   ];
   for (const [name, expected] of probes) assert.equal(normalizeSemanticRoot(name), expected, name);
+  for (const name of [
+    'баня', 'банник', 'Малина', 'деревянная кормушка', 'костяника', 'зеленушка',
+    'полевица тонкая', 'Малая бурозубка', 'Большая синица', 'Коноплянка', 'Синец',
+    'Краснопёрка', 'Мокрецы', 'Горшок', 'Корзина', 'Мешок', 'Ящик', 'Сноп',
+  ]) assert.notEqual(normalizeSemanticRoot(name), '', name);
+  assert.notEqual(normalizeSemanticRoot('баня'), normalizeSemanticRoot('банник'));
 });

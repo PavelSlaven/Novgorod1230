@@ -88,6 +88,21 @@ def cap_band(slots):
 
 
 def main():
+    if "--archive-inclusions-only" in sys.argv:
+        archive_ledger = archive_inclusions.build_ledger(GROUP, read_csv, MATCULT_DIR)
+        out("archive_inclusion_ledger.csv", archive_ledger, archive_inclusions.FIELDS, lineterminator="\n")
+        archive_entities = archive_inclusions.build_entity_rows(GROUP, read_csv, MATCULT_DIR)
+        archive_entity_fields = list(read_csv(os.path.join(REPO, "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"))[0].keys()) + ["basis", "derivation", "source_refs", "confidence", "status"]
+        out("interiors/material_entities.csv", archive_entities, archive_entity_fields, lineterminator="\n")
+        counts_path = os.path.join(GROUP, "scripts", "build_counts.json")
+        with open(counts_path, encoding="utf-8") as f:
+            counts = json.load(f)
+        counts.update(COUNTS)
+        with open(counts_path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(counts, f, ensure_ascii=False, indent=1)
+        for key, value in COUNTS.items():
+            print("%6d  %s" % (value, key))
+        return
     matcult = {r["item_id"]: r for r in read_csv(os.path.join(MATCULT_DIR, "catalog_items.csv"))}
     antip = {a["anti_id"]: a for a in json.load(open(os.path.join(MATCULT_DIR, "anti_patterns.json"), encoding="utf-8"))}
     scenes = read_csv(SCENES_CSV)
@@ -457,10 +472,10 @@ def main():
         ["item_id", "exists", "name_ru", "category", "historical_confidence", "generation_policy", "dimensions", "source_ids"])
 
     archive_ledger = archive_inclusions.build_ledger(GROUP, read_csv, MATCULT_DIR)
-    out("archive_inclusion_ledger.csv", archive_ledger, archive_inclusions.FIELDS)
+    out("archive_inclusion_ledger.csv", archive_ledger, archive_inclusions.FIELDS, lineterminator="\n")
     archive_entities = archive_inclusions.build_entity_rows(GROUP, read_csv, MATCULT_DIR)
     archive_entity_fields = list(read_csv(os.path.join(REPO, "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv"))[0].keys()) + ["basis", "derivation", "source_refs", "confidence", "status"]
-    out("interiors/material_entities.csv", archive_entities, archive_entity_fields)
+    out("interiors/material_entities.csv", archive_entities, archive_entity_fields, lineterminator="\n")
 
     with open(os.path.join(GROUP, "scripts", "build_counts.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(COUNTS, f, ensure_ascii=False, indent=1)

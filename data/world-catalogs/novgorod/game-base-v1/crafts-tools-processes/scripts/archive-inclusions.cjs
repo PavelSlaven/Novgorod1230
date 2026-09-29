@@ -2,6 +2,16 @@
 
 const { rows: authoredRows, semanticVariants, semanticDuplicates, semanticKeepReasons, craftsOwnerHandoffs, craftsBicHandoffs } = require('./src/archive-inclusions.cjs');
 const { fs, path, REPO, DOMAIN_ROOT, readCsv } = require('./lib.cjs');
+const NEEDS_CHECK_HEADER = ['archive_id', 'current_result', 'current_target_group', 'current_target_ref', 'reason_code', 'finding_ref', 'cluster_id', 'note'];
+const NEEDS_CHECK_ROWS = readCsv(path.join(DOMAIN_ROOT, 'authoring/needs_check.csv'));
+if (Object.keys(NEEDS_CHECK_ROWS[0] || {}).join(',') !== NEEDS_CHECK_HEADER.join(',')) throw new Error('needs_check.csv header does not match the approved schema');
+const NEEDS_CHECK_BY_ID = new Map();
+for (const row of NEEDS_CHECK_ROWS) {
+  if (!/^[A-Z]{2,4}\d{3,5}$/.test(row.archive_id) || NEEDS_CHECK_BY_ID.has(row.archive_id)) throw new Error(`needs_check.csv has invalid or duplicate archive id ${row.archive_id}`);
+  if (!row.current_result || !/^(?:ICA_[A-Z0-9_]+|review_finding|unresolved)$/.test(row.reason_code)) throw new Error(`needs_check.csv has incomplete decision metadata for ${row.archive_id}`);
+  if (row.finding_ref && !/^round3-(?:crafts|bicw)\.md#L\d+$/.test(row.finding_ref)) throw new Error(`needs_check.csv has invalid finding locator for ${row.archive_id}`);
+  NEEDS_CHECK_BY_ID.set(row.archive_id, row);
+}
 const ROUND3_RECONCILIATION = readCsv(path.join(DOMAIN_ROOT, 'authoring/round3_merge_reconciliation.csv'));
 const ROUND3_BY_ID = new Map(ROUND3_RECONCILIATION.map(row => [row.archive_id, row]));
 if (ROUND3_RECONCILIATION.length !== 732 || ROUND3_BY_ID.size !== 732) throw new Error(`Expected 732 unique round-three crafts reconciliation rows, found ${ROUND3_RECONCILIATION.length}/${ROUND3_BY_ID.size}`);
@@ -22,15 +32,11 @@ const COSTUME_BY_ID = new Map(COSTUME_ITEMS.map(item => [item.item_id, item]));
 const MATERIAL_MASTER_DIR = path.join(MASTER_SOURCE_ROOT, 'data/normalized_source_tables/material_entities');
 const MATERIAL_MASTER_ROWS = new Map(readCsv(path.join(MATERIAL_MASTER_DIR, 'material_entities.csv')).map(row => [row.item_id, row]));
 const STATE_MASTER_ROWS = new Map(readCsv(path.join(MATERIAL_MASTER_DIR, 'state_variants.csv')).map(row => [row.state_id, row]));
-const SOURCE_ITEM_LINKS_PATHS = [
-  path.join(MASTER_SOURCE_ROOT, 'data/normalized_source_tables/material_entities/source_item_links.csv'),
-  path.resolve(REPO, '../../data/master-archive/unpacked/Novgorod1230_MASTER_ARCHIVE_v1/data/normalized_source_tables/material_entities/source_item_links.csv'),
-];
-const SOURCE_ITEM_LINKS_PATH = SOURCE_ITEM_LINKS_PATHS.find(candidate => fs.existsSync(candidate));
-const SOURCE_ITEM_LINKS = SOURCE_ITEM_LINKS_PATH ? readCsv(SOURCE_ITEM_LINKS_PATH) : [];
-const CATEGORY_EVIDENCE_IDS = new Set(SOURCE_ITEM_LINKS
-  .filter(link => link.support_role === 'category_form_material_process_or_context')
-  .map(link => link.item_id));
+// Deduplicated from master source_item_links.csv (sha256 8ec5dbcb016f48e2e973bce07a5f1c9fbb6f6429812f853c8a05222660281ddc).
+// Keep the evidence role in authoring so builds do not depend on an unpacked archive outside the repo.
+const CATEGORY_EVIDENCE_ROWS = readCsv(path.join(DOMAIN_ROOT, 'authoring/category_evidence_ids.csv'));
+if (CATEGORY_EVIDENCE_ROWS.some(row => row.support_role !== 'category_form_material_process_or_context')) throw new Error('Invalid category evidence role');
+const CATEGORY_EVIDENCE_IDS = new Set(CATEGORY_EVIDENCE_ROWS.map(row => row.archive_id));
 
 function archiveRowById(id) {
   if (MATERIAL_MASTER_ROWS.has(id)) return MATERIAL_MASTER_ROWS.get(id);
@@ -42,6 +48,23 @@ function archiveRowById(id) {
   }
   const entry = authoredRows.find(row => row[0].split(':').at(-1) === id);
   return entry ? sourceRowFor(entry).row || null : null;
+}
+
+// Hold the whole hunting/fishing ownership boundary together, using structured
+// archive taxonomy rather than an ID list or incidental words in item names.
+function isHuntingFishingCluster(id) {
+  const source = archiveRowById(id) || {};
+  const base = source.base_item_id ? archiveRowById(source.base_item_id) || {} : {};
+  const category = source.category || base.category || '';
+  const subcategory = source.subcategory || base.subcategory || '';
+  const family = source.family_key || base.family_key || '';
+  return category === 'hunting' || category === 'fishing'
+    || ['fishing_hooks_floats_sinkers_bait_and_trap_parts',
+      'hunting_trapping_bait_and_carcass_small_parts',
+      'nets_lines_and_mesh_components'].includes(subcategory)
+    || /(?:^|_)(?:fish|fishing|hunting|bird|carcass|bait|trap|snare)(?:_|$)/.test(family)
+    || family.startsWith('net_repair_')
+    || /(?:^|_)netting_(?:gauge|tool)(?:_|$)/.test(family);
 }
 
 function periodFromSource(source) {
@@ -443,8 +466,12 @@ function round3TargetRef(group, ref) {
   return ref;
 }
 
-function buildLedger(domain, deny) {
+function buildLedger(domain, deny, needsCheckRows = NEEDS_CHECK_ROWS) {
   const entities = makeExistingEntities(domain);
+  const needsCheckById = new Map(needsCheckRows.map(row => [row.archive_id, row]));
+  if (needsCheckById.size !== needsCheckRows.length) throw new Error('needs_check rows contain duplicate archive ids');
+  const authoredIds = new Set(authoredRows.map(entry => entry[0].split(':').at(-1)));
+  for (const id of needsCheckById.keys()) if (!authoredIds.has(id)) throw new Error(`needs_check.csv references unknown crafts archive id ${id}`);
   const newNames = new Map();
   const errors = [];
   const ledger = authoredRows.map((entry, index) => {
@@ -452,6 +479,10 @@ function buildLedger(domain, deny) {
     const sourceResolution = sourceRowFor(entry);
     const source = sourceResolution.row || {};
     const archiveId = archive_ref.split(':').at(-1);
+    const period = authoredPeriod || periodFromSource(source) || (source.base_item_id ? periodFromSource(archiveRowById(source.base_item_id) || {}) : '');
+    const baseSource = source.base_item_id ? archiveRowById(source.base_item_id) : null;
+    const region = authoredRegion || source.region_scope || source.region || baseSource?.region_scope || baseSource?.region || '';
+    const queued = needsCheckById.get(archiveId);
     const mergeDecision = ROUND3_BY_ID.get(archiveId);
     const handoffTarget = craftsBicHandoffs.get(archiveId);
     const mergeRoute = mergeDecision?.decision === 'routed'
@@ -467,11 +498,30 @@ function buildLedger(domain, deny) {
     const game_base_ref = mergeDecision
       ? record_type === 'variant' ? round3TargetRef(mergeDecision.target_group, mergeDecision.target_ref) : ''
       : routeTarget ? '' : manualVariant?.[0] || manualDuplicate?.[0] || authoredRef;
-    const baseSource = source.base_item_id ? archiveRowById(source.base_item_id) : null;
-    const period = authoredPeriod || periodFromSource(source) || (baseSource ? periodFromSource(baseSource) : '');
-    const region = authoredRegion || source.region_scope || source.region || baseSource?.region_scope || baseSource?.region || '';
     const expectedDisposition = D38_REJECTS.has(archiveId) || manualDuplicate || mergeDecision?.decision === 'reject'
       ? 'rejected' : routeTarget ? 'routed' : mergeDecision ? 'include' : authoredDisposition;
+    if (queued) {
+      const proposalResult = `${record_type}/${expectedDisposition}`;
+      const proposalTargetRef = record_type === 'variant' ? game_base_ref : routeTarget?.ref || entry[13] || '';
+      const proposalTargetGroup = record_type === 'variant' ? 'crafts-tools-processes' : routeTarget?.group || entry[12] || '';
+      const ownEntityRef = `crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:${archiveId.toLowerCase()}`;
+      const targetMatchesProposal = queued.current_target_group === proposalTargetGroup && queued.current_target_ref === proposalTargetRef;
+      const targetIsImplicitOwnEntity = !proposalTargetGroup && !proposalTargetRef && record_type === 'new' && expectedDisposition === 'include'
+        && ((queued.current_target_group === '' && queued.current_target_ref === '')
+          || (queued.current_target_group === 'crafts-tools-processes' && ['', ownEntityRef].includes(queued.current_target_ref)));
+      if (queued.current_result !== proposalResult || (!targetMatchesProposal && !targetIsImplicitOwnEntity)) {
+        errors.push(`${archive_ref}: needs_check proposal metadata differs from authored decision (expected ${proposalResult}/${proposalTargetGroup}/${proposalTargetRef})`);
+      }
+      return {
+        archive_ref, archive_name, record_type: 'needs_check', disposition: 'needs_check', game_base_ref: '',
+        basis, derivation, confidence, period, region, source_action: 'needs_check',
+        anachronism_result: 'needs_check', anachronism_reason: queued.reason_code,
+        dedup_result: 'needs_check', dedup_reason: queued.note,
+        metadata_note: `Needs-check queue: ${queued.reason_code}${queued.finding_ref ? ` (${queued.finding_ref})` : ''}; authored proposal retained in authoring/needs_check.csv.`,
+        generation_policy: source.generation_policy || '', anachronism_risk: source.anachronism_risk || '',
+        target_group: '', target_ref: '', status: 'needs_check',
+      };
+    }
     const resolvedBasis = basis;
     const generationPolicy = source.generation_policy || '';
     const anachronismRisk = source.anachronism_risk || '';
@@ -548,6 +598,7 @@ function buildLedger(domain, deny) {
   for (const entry of authoredRows) {
     if (entry[2] !== 'new' || entry[10] !== 'include') continue;
     const id = entry[0].split(':').at(-1);
+    if (needsCheckById.has(id)) continue;
     const source = sourceRowFor(entry).row || {};
     const family = semanticEnglishSignature(source.family_key || '');
     if (!family) continue;
@@ -561,13 +612,14 @@ function buildLedger(domain, deny) {
   const includedVariants = included.filter(row => row.record_type === 'variant').length;
   const rejected = ledger.filter(row => row.disposition === 'rejected');
   const routed = ledger.filter(row => row.disposition === 'routed');
+  const needsCheck = ledger.filter(row => row.disposition === 'needs_check');
   const actionCounts = ledger.reduce((counts, row) => ((counts[row.source_action] = (counts[row.source_action] || 0) + 1), counts), {});
   return {
     ledger, errors,
     summary: {
       runtime_activation: false, status: 'candidate', action_counts: actionCounts,
       ledger_rows: ledger.length, included_new: includedNew, included_variants: includedVariants,
-      rejected: rejected.length, routed: routed.length,
+      rejected: rejected.length, routed: routed.length, needs_check: needsCheck.length,
     },
   };
 }
@@ -609,8 +661,12 @@ function selfTest(domain, deny) {
   const byId = new Map(checked.ledger.map(row => [row.archive_ref.split(':').at(-1), row]));
   const militaryKit = byId.get('MIL0031');
   const militaryEntity = authoredRows.find(row => row[0].endsWith(':MIL0031'));
-  if (!militaryKit || militaryKit.disposition !== 'include' || militaryKit.target_group !== 'crafts-tools-processes' || militaryKit.target_ref !== 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:mil0031' || !militaryEntity?.[11]?.includes('tl_axe_household') || !militaryEntity?.[11]?.includes('tl_spade')) {
-    throw new Error('MIL0031 terminal crafts entity/handoff refs must identify the existing axe and spade components');
+  const militaryQueue = NEEDS_CHECK_BY_ID.get('MIL0031');
+  if (!militaryKit || militaryKit.record_type !== 'needs_check' || militaryKit.disposition !== 'needs_check' || militaryKit.status !== 'needs_check'
+    || militaryQueue?.current_target_group !== 'crafts-tools-processes'
+    || militaryQueue?.current_target_ref !== 'crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:mil0031'
+    || !militaryEntity?.[11]?.includes('tl_axe_household') || !militaryEntity?.[11]?.includes('tl_spade')) {
+    throw new Error('MIL0031 queue must preserve its reviewed axe/spade entity proposal without activating it');
   }
   for (const [id, target] of [['CRF0068', 'crafts-tools-processes/materials_registry/materials.csv#mt_iron'], ['OMI00161', 'crafts-tools-processes/materials_registry/materials.csv#mt_beeswax']]) {
     const source = archiveRowById(id);
@@ -618,23 +674,26 @@ function selfTest(domain, deny) {
   }
   const fixture = { name_ru: 'Серебряный слиток', material: 'silver', category: 'precious_metal_stock' };
   if (!variantIdentityIssues(fixture, 'crafts-tools-processes/materials_registry/materials.csv#mt_iron', domain).length) throw new Error('fixture variant identity probe accepted silver -> mt_iron');
-  if (!SOURCE_ITEM_LINKS_PATH || !CATEGORY_EVIDENCE_IDS.size) throw new Error('source_item_links.csv is required to calculate category-level evidence');
-  const linkedAIds = new Set(authoredRows.filter(entry => entry[6] === 'A' && CATEGORY_EVIDENCE_IDS.has(entry[0].split(':').at(-1))).map(entry => entry[0].split(':').at(-1)));
+  if (!CATEGORY_EVIDENCE_IDS.size) throw new Error('category_evidence_ids.csv is required to calculate category-level evidence');
+  const linkedAIds = new Set(authoredRows.filter(entry => entry[6] === 'A' && CATEGORY_EVIDENCE_IDS.has(entry[0].split(':').at(-1))
+    && !NEEDS_CHECK_BY_ID.has(entry[0].split(':').at(-1))).map(entry => entry[0].split(':').at(-1)));
   for (const id of linkedAIds) {
     const row = byId.get(id);
     if (!row || !row.derivation.startsWith('category-level evidence (category_form_material_process_or_context):')) throw new Error(`source_item_links category evidence formula missing for ${id}`);
   }
-  if (!CATEGORY_EVIDENCE_IDS.has('OMI00161') || !linkedAIds.has('OMI00161')) throw new Error('source_item_links live category evidence probe missing OMI00161');
-  if (byId.get('OMI00349')?.game_base_ref !== 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage') throw new Error('woolen-cord clothing route must resolve to stable crafts cordage material');
-  if (byId.get('OMI00054')?.game_base_ref !== 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_axe_carpenter') throw new Error('BIC tool handoff must resolve to stable carpenter-axe handle component');
+  if (!CATEGORY_EVIDENCE_IDS.has('OMI00161') || (!linkedAIds.has('OMI00161') && !NEEDS_CHECK_BY_ID.has('OMI00161'))) throw new Error('source_item_links category evidence probe missing OMI00161');
+  const proposalRef = id => NEEDS_CHECK_BY_ID.get(id)?.current_target_ref || byId.get(id)?.game_base_ref;
+  if (proposalRef('OMI00349') !== 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage') throw new Error('woolen-cord clothing route must preserve stable crafts cordage target');
+  if (proposalRef('OMI00054') !== 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_axe_carpenter') throw new Error('BIC tool handoff must preserve stable carpenter-axe handle component target');
   for (const id of ['WTR0024', 'WTR0015', 'HRS0021', 'HNT0028', 'CRF0061']) {
-    if (byId.get(id)?.disposition !== 'rejected') throw new Error(`D38 negative probe failed: ${id} is not rejected`);
-    if (byId.get(id)?.anachronism_result !== 'rejected') throw new Error(`D38 result probe failed: ${id} is ${byId.get(id)?.anachronism_result}`);
+    const queued = NEEDS_CHECK_BY_ID.get(id);
+    if (queued ? queued.current_result !== 'new/rejected' : byId.get(id)?.disposition !== 'rejected') throw new Error(`D38 negative probe failed: ${id} rejection proposal is not preserved`);
+    if (!queued && byId.get(id)?.anachronism_result !== 'rejected') throw new Error(`D38 result probe failed: ${id} is ${byId.get(id)?.anachronism_result}`);
   }
   for (const id of ['OMI00037', 'OMI00149']) {
     if (byId.get(id)?.disposition !== 'routed' || !byId.get(id)?.target_ref) throw new Error(`nature-owner route probe failed: ${id}`);
   }
-  if (byId.get('OMI02131')?.record_type !== 'variant' || byId.get('OMI02131')?.game_base_ref !== 'crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass' || byId.get('OMI02132')?.game_base_ref !== 'crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass') throw new Error('whole-carcass variant probe failed');
+  if (proposalRef('OMI02131') !== 'crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass' || proposalRef('OMI02132') !== 'crafts-tools-processes/craft_processes/process_products.csv#pr:whole_carcass') throw new Error('whole-carcass variant proposal probe failed');
   const included = checked.ledger.filter(row => row.disposition === 'include' && row.record_type === 'new');
   for (const row of included) if (!row.period || Number(row.period.slice(0, 4)) > 1230 || Number(row.period.slice(-4)) < 1230) throw new Error(`period inheritance probe failed: ${row.archive_ref} ${row.period}`);
   for (const row of checked.ledger.filter(row => row.confidence === 'A' && row.disposition === 'include' && /category_form_material_process_or_context/u.test(row.derivation))) {
@@ -687,4 +746,4 @@ function buildMaterialEntities(ledger) {
   return { entities: entities.map(row => ({ ...row, source_refs: JSON.stringify(row.source_refs) })), header };
 }
 
-module.exports = { LEDGER_HEADER, authoredRows, buildLedger, buildMaterialEntities, selfTest, normalizeName, semanticRootSignature, semanticEnglishSignature };
+module.exports = { LEDGER_HEADER, NEEDS_CHECK_HEADER, NEEDS_CHECK_ROWS, authoredRows, buildLedger, buildMaterialEntities, selfTest, normalizeName, semanticRootSignature, semanticEnglishSignature, isHuntingFishingCluster };

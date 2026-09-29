@@ -38,7 +38,6 @@ const GB = 'data/world-catalogs/novgorod/game-base-v1';
 // differs, so an entry must be deleted as soon as the data is rebuilt.
 const KNOWN_STALE = {
   'nature-materials-weather/weather_climate/water_profiles.csv': 'committed data is 153 rows shorter than its builder produces (1754 vs 1907); issue #201',
-  'crafts-tools-processes/craft_tools_gear/occupation_pf_crosswalk.csv': 'pf_crosswalk.py --check fails on main too: pf_burial_ground row is stale; issue #201',
   'items-weapons-armour/items/role_tier_pf_crosswalk.csv': 'pf_crosswalk.py --check fails on main too: pf_burial_ground row is stale; issue #201',
 };
 

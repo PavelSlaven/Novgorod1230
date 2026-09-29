@@ -450,13 +450,25 @@ if "--self-test" in sys.argv:
     archive_decisions = {r["archive_ref"].rsplit(":", 1)[-1]: r for r in archive_ledger}
     material_entity_rows = rd("interiors/material_entities.csv")
     archive_entities = {r["item_id"].rsplit(":", 1)[-1].upper() for r in material_entity_rows}
+    queue_rows = archive_inclusions.needs_check_records()
+    queue_ids = [row["archive_id"] for row in queue_rows]
+    assert len(queue_ids) == len(set(queue_ids))
+    assert set(queue_ids) <= set(archive_decisions)
+    assert len(archive_decisions) == 467
+    assert all(archive_decisions[item]["semantic_result"] == "needs_check"
+               and archive_decisions[item]["match_type"] == "needs_check"
+               and archive_decisions[item]["archive_action"] == "needs_check"
+               for item in queue_ids)
+    assert not (set(queue_ids) & archive_entities)
+    rivet_ids = {row["archive_id"] for row in queue_rows if row["cluster_id"] == "rivets"}
+    assert rivet_ids == {"OMI00617", "OMI00618", "OMI00619", "OMI00620", "OMI00621", "OMI02194"}
     assert all(archive_decisions[item]["semantic_result"] == "routed" for item in ("OMI02219", "OMI02220", "OMI02221"))
-    assert archive_decisions["OMI02245"]["semantic_result"] == "duplicate_rejected"
+    assert archive_decisions["OMI02245"]["semantic_result"] == "needs_check"
     assert not ({"OMI02219", "OMI02220", "OMI02221", "OMI02245"} & archive_entities)
     assert archive_decisions["CRF0057"]["semantic_result"] == "rejected"
     assert archive_decisions["CRF0057"]["guard_result"] == "reject:d38_research_only"
     assert next(r for r in archive_inclusions.records() if r["archive_ref"].endswith(":CRF0057"))["anachronism_result"] == "rejected"
-    assert archive_decisions["MSC0045"]["semantic_result"] == "reference"
+    assert archive_decisions["MSC0045"]["semantic_result"] == "needs_check"
     assert archive_decisions["MSC0045"]["target_ref"] == "interiors/scenes.csv#sc_scn053"
     assert archive_decisions["OMI01605"]["game_base_ref"] == "buildings-interiors-containers/containers/container_forms.csv#ct_box_wooden_small"
     assert archive_decisions["CON0019"]["semantic_result"] == "distinct" and "CON0019" in archive_entities
@@ -465,6 +477,10 @@ if "--self-test" in sys.argv:
     assert archive_decisions["MIL0006"]["game_base_ref"] == "buildings-interiors-containers/buildings/building_parts.csv#bp_hearth_open"
     assert archive_decisions["MIL0032"]["game_base_ref"] == "buildings-interiors-containers/buildings/building_parts.csv#bp_awning"
     for item in ("MIL0014", "MIL0028"):
+        if item in queue_ids:
+            assert archive_decisions[item]["semantic_result"] == "needs_check"
+            assert item not in archive_entities
+            continue
         entity = next(r for r in material_entity_rows if r["item_id"] == "n1230:material_item:" + item.lower())
         assert archive_decisions[item]["semantic_result"] == "distinct"
         assert entity["basis"] == "analogy" and entity["confidence"] == "C"

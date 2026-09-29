@@ -1,0 +1,195 @@
+archive_id,current_result,current_target_group,current_target_ref,reason_code,finding_ref,cluster_id,note
+AGR0005,routed,places-binding,places-binding/places/place_families.csv#pf_orchard_garden,ICA_ROUTE_INVALID,,,Checker findings: ICA_REFERENCE_INVALID|ICA_ROUTE_INVALID.
+CON0014,variant,,buildings-interiors-containers/buildings/building_parts.csv#bp_well_bucket_rope,review_finding,round3-crafts.md#L9,,Review finding leaves current proposal unresolved.
+CON0017,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.
+CON0018,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.
+CON0039,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.
+CON0040,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.
+CON0045,variant,,buildings-interiors-containers/buildings/building_parts.csv#bp_well_bucket_rope,review_finding,round3-crafts.md#L9,,Review finding leaves current proposal unresolved.
+FRN0003,routed,economy-trade-measures,economy-trade-measures/currencies_measures/currency_units.csv#cu_grivna_serebra,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+FRN0018,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+FRN0034,routed,crafts-tools-processes,materials_registry/materials.csv#mt_bronze,review_finding,round3-crafts.md#L12,,Review finding leaves current proposal unresolved.
+HNT0010,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+LTR0025,routed,transport-health-recreation,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+MIL0014,distinct,,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+MIL0015,routed,items-household-personal,items/household.csv#it_hh_turned_bowl,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+MIL0028,distinct,,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+MSC0009,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.
+MSC0038,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+MSC0045,reference,buildings-interiors-containers,interiors/scenes.csv#sc_scn053,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID.
+OMI00004,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_log_conifer,review_finding,round3-bicw.md#L6,,Review finding leaves current proposal unresolved.
+OMI00018,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00017,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00030,distinct,,,unresolved,,woodwork_blanks,Generic wooden cylinder blank lacks building or interior use; crafts versus BIC owner needs review with OMI00031.
+OMI00031,distinct,,,unresolved,,woodwork_blanks,Generic wooden disc blank lacks building or interior use; crafts versus BIC owner needs review with OMI00030.
+OMI00047,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00017,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00053,duplicate_rejected,,,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+OMI00054,routed,crafts-tools-processes,crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_axe_carpenter,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI00060,routed,transport-health-recreation,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI00075,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00079,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00076,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00078,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00080,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00079,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00092,variant,,buildings-interiors-containers/containers/container_forms.csv#ct_box_plank_crate,review_finding,round3-crafts.md#L6,,Review finding leaves current proposal unresolved.
+OMI00102,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI00103,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI00161,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_pine_pitch,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI00174,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_carbon_black,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI00175,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_carbon_black,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI00193,variant,buildings-interiors-containers,buildings-interiors-containers/containers/container_forms.csv#ct_box_plank_crate,review_finding,round3-bicw.md#L4,,Review finding leaves current proposal unresolved.
+OMI00194,variant,buildings-interiors-containers,buildings-interiors-containers/containers/container_forms.csv#ct_box_plank_crate,review_finding,round3-bicw.md#L4,,Review finding leaves current proposal unresolved.
+OMI00195,variant,buildings-interiors-containers,buildings-interiors-containers/containers/container_forms.csv#ct_box_plank_crate,review_finding,round3-bicw.md#L4,,Review finding leaves current proposal unresolved.
+OMI00617,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_iron_metal,review_finding,round3-crafts.md#L13,rivets,Whole rivets cluster held pending cross-group owner/target audit.
+OMI00618,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_iron_metal,review_finding,round3-crafts.md#L13,rivets,Whole rivets cluster held pending cross-group owner/target audit.
+OMI00619,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_iron_metal,review_finding,round3-crafts.md#L13,rivets,Whole rivets cluster held pending cross-group owner/target audit.
+OMI00620,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_iron_metal,review_finding,round3-crafts.md#L13,rivets,Whole rivets cluster held pending cross-group owner/target audit.
+OMI00621,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_iron_metal,review_finding,round3-crafts.md#L13,rivets,Whole rivets cluster held pending cross-group owner/target audit.
+OMI00623,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00622,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00624,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00622,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00633,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00631,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00634,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00632,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI00643,routed,crafts-tools-processes,materials_registry/materials.csv#mt_iron,review_finding,round3-crafts.md#L13,iron-scrap,Whole iron-scrap cluster held pending cross-group owner/target audit.
+OMI00853,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH|ICA_ROUTE_INVALID.
+OMI01133,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI01145,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi01144,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01146,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi01144,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01149,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi01147,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01504,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,round3-bicw.md#L6,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01505,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,round3-bicw.md#L6,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01506,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01507,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01508,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01509,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01510,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01511,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01512,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01513,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01514,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01518,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_cordage,ICA_ROUTE_SELF_GROUP,round3-crafts.md#L12,,Checker findings: ICA_ROUTE_SELF_GROUP.
+OMI01522,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00120,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI01527,variant,,buildings-interiors-containers/buildings/materials_vocab.csv#mat_log_conifer,review_finding,round3-bicw.md#L4,,Review finding leaves current proposal unresolved.
+OMI01536,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01537,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01538,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01539,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01546,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_textile_generic,ICA_ROUTE_SELF_GROUP,,,Checker findings: ICA_ROUTE_SELF_GROUP.
+OMI01547,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00358,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID.
+OMI01548,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00358,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID.
+OMI01554,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_textile_generic,review_finding,round3-crafts.md#L8,,Review finding leaves current proposal unresolved.
+OMI01555,routed,crafts-tools-processes,materials.csv#mt_hide_raw,review_finding,round3-crafts.md#L12,,Review finding leaves current proposal unresolved.
+OMI01556,routed,crafts-tools-processes,materials.csv#mt_birch_bark,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI01557,routed,crafts-tools-processes,materials.csv#mt_birch_bark,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI01558,routed,crafts-tools-processes,materials.csv#mt_birch_bark,ICA_VARIANT_MATERIAL_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH.
+OMI01562,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_wood_generic,review_finding,round3-crafts.md#L8,OMI01562-01568,Whole OMI01562-01568 cluster held pending cross-group owner/target audit.
+OMI01564,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00357,ICA_ROUTE_SELF_GROUP,,,Checker findings: ICA_ROUTE_SELF_GROUP.
+OMI01568,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_cordage,review_finding,round3-crafts.md#L8,OMI01562-01568,Whole OMI01562-01568 cluster held pending cross-group owner/target audit.
+OMI01569,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/materials.csv#mt_textile_generic,ICA_ROUTE_SELF_GROUP,,,Checker findings: ICA_ROUTE_SELF_GROUP.
+OMI01585,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00359,ICA_ROUTE_INVALID,round3-crafts.md#L10,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_SELF_GROUP.
+OMI01587,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01588,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01590,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00079,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01593,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi01592,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_MATERIAL_MISMATCH|ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01594,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi01592,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01595,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01596,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi01592,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01597,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00081,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01601,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi01196,ICA_VARIANT_IDENTITY_MISMATCH,round3-crafts.md#L13,salt,Whole salt cluster held pending cross-group owner/target audit.
+OMI01602,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01603,variant,,buildings-interiors-containers/interiors/material_entities.csv#n1230:material_item:omi00077,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01766,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi01499,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI01767,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02142,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02143,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02144,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02145,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02146,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02147,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02149,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02150,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02151,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02154,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02155,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02156,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02157,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02158,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02159,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02160,routed,items-household-personal,,ICA_ROUTE_INVALID,round3-crafts.md#L13,salt,Whole salt cluster held pending cross-group owner/target audit.
+OMI02161,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00340,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02163,routed,crafts-tools-processes,materials_registry/materials.csv#mt_clay,review_finding,round3-crafts.md#L12,,Review finding leaves current proposal unresolved.
+OMI02164,routed,crafts-tools-processes,materials_registry/materials.csv#mt_iron,review_finding,round3-crafts.md#L13,iron-scrap,Whole iron-scrap cluster held pending cross-group owner/target audit.
+OMI02165,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02166,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02167,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02168,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02169,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02170,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:crf0025,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02171,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02172,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02173,routed,nature-materials-weather,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02174,routed,nature-materials-weather,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02175,routed,nature-materials-weather,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02176,routed,nature-materials-weather,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02177,routed,nature-materials-weather,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02182,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L13,salt,Whole salt cluster held pending cross-group owner/target audit.
+OMI02185,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00179,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02186,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L13,resin,Whole resin cluster held pending cross-group owner/target audit.
+OMI02187,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02188,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02189,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi01041,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02191,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00442,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02192,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00982,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02194,routed,crafts-tools-processes,materials_registry/materials.csv#mt_iron,review_finding,round3-crafts.md#L13,rivets,Whole rivets cluster held pending cross-group owner/target audit.
+OMI02197,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02199,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi01257,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02206,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH|ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+OMI02213,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+OMI02225,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02226,routed,food-drink,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02228,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00357,ICA_ROUTE_SELF_GROUP,,,Checker findings: ICA_ROUTE_SELF_GROUP.
+OMI02233,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:crf0025,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02238,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi01214,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02245,duplicate_rejected,,,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+OMI02247,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00182,ICA_VARIANT_IDENTITY_MISMATCH,round3-crafts.md#L15,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02248,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00215,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02249,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00214,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02251,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02252,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00732,ICA_ROUTE_TARGET_MISMATCH,round3-bicw.md#L5,OMI02252-02253,Whole OMI02252-02253 cluster held pending cross-group owner/target audit.
+OMI02253,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi02253,ICA_ROUTE_INVALID,round3-bicw.md#L7,OMI02252-02253,Whole OMI02252-02253 cluster held pending cross-group owner/target audit.
+OMI02254,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00787,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02255,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00842,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02257,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+OMI02258,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00564,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02259,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00442,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02260,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:crf0026,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02261,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02262,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi00983,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02264,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02265,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:crf0094,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH.
+OMI02266,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi00340,ICA_VARIANT_IDENTITY_MISMATCH,,,Checker findings: ICA_VARIANT_IDENTITY_MISMATCH|ICA_VARIANT_MATERIAL_MISMATCH.
+OMI02269,distinct,,,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+OMI02270,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi02270,review_finding,round3-crafts.md#L13,iron-scrap,Whole iron-scrap cluster held pending cross-group owner/target audit.
+OMI02271,routed,crafts-tools-processes,materials_registry/material_entities.csv#n1230:material_item:omi02270,review_finding,round3-crafts.md#L13,iron-scrap,Whole iron-scrap cluster held pending cross-group owner/target audit.
+OMI02272,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-crafts.md#L4,,Checker findings: ICA_ROUTE_INVALID.
+OMI02274,routed,nature-materials-weather,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+OMI02275,routed,crafts-tools-processes,crafts-tools-processes/materials_registry/material_entities.csv#n1230:material_item:omi02270,review_finding,round3-crafts.md#L13,iron-scrap,Whole iron-scrap cluster held pending cross-group owner/target audit.
+REL0005,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+REL0006,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+REL0007,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+REL0010,reference,buildings-interiors-containers,interiors/scenes.csv#sc_scn045,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+REL0011,reference,buildings-interiors-containers,interiors/scenes.csv#sc_scn045,review_finding,round3-bicw.md#L4,,Review finding leaves current proposal unresolved.
+REL0012,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+REL0014,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+REL0016,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+STA0003,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+STA0021,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+STA0033,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+STA0036,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+STA0047,routed,food-drink,food/material_entities.csv#n1230:material_item:omi01262,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+STA0048,routed,food-drink,food/material_entities.csv#n1230:material_item:omi01262,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+STA0049,routed,food-drink,food/material_entities.csv#n1230:material_item:omi01262,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+STA0050,routed,food-drink,food/material_entities.csv#n1230:material_item:omi01262,review_finding,round3-bicw.md#L7,,Review finding leaves current proposal unresolved.
+STA0052,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+STA0089,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID|ICA_ROUTE_AWAITS_OWNER_CONFLICT.
+WRT0009,routed,items-household-personal,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+WRT0015,routed,crafts-tools-processes,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.
+WTR0005,routed,transport-health-recreation,,ICA_ROUTE_INVALID,,,Checker findings: ICA_ROUTE_INVALID.
+WTR0007,routed,transport-health-recreation,,ICA_ROUTE_INVALID,round3-bicw.md#L7,,Checker findings: ICA_ROUTE_INVALID.

@@ -237,3 +237,19 @@
   - Ряпушка и мелкие озёрные рыбы могли бы взять `ING0143` («снеток или мелкая озёрная рыба») вместо общего `ING0131`. Не ошибка.
   - `fish.csv` переведён с CRLF на LF, поэтому diff +39/−39 при содержательных 11 строках.
 - README.md, fauna/fish.csv, scripts/build.py, scripts/src/fish_data.py, validation_report.json — approve_with_limits
+
+## Независимая проверка rc-next (Claude Opus 5.5, 2026-09-29)
+
+История. Круг 1: rework RCN-01, у дублей грызунов не было эквивалента в каноне для 19 пар. Круг 2: approve_with_limits. Круг 3 группу не менял, повторно подтверждено.
+- Три строки грызунов имеют `status=duplicate` и canonical refs. Из `fauna_presence.csv` удалены 62 строки (1779→1717). Все 62 пары pf × сезон покрыты каноном `fauna-mammals-birds`. В 40 из 62 пар канонический класс слабее; это показано в отчёте, класс не повышается.
+- **Прогоны:** `build.py --self-test` — все checks true, включая `duplicate_authored_presence_subset_canonical`; `validate-phase.cjs fauna-fish-invertebrates-livestock --self-test` — 996 строк, 0 ошибок. Три пересборки побайтно совпали, файлы равны worktree.
+- **Ограничения:** candidate; видового источника у дублей нет.
+- README.md — approve: статус duplicate и счётчики 1717/508
+- fauna/fauna_presence.csv — approve: −62 строки дублей, все покрыты каноном
+- fauna/invertebrates_herps.csv — approve: 3 duplicate со ссылками `duplicate_of`
+- fauna/rpgr_pf_crosswalk.csv — approve: только позиция строки `pf_burial_ground`, содержимое то же, равен пересборке
+- scripts/build.py — approve: проверка «presence дубля ⊂ presence канона» с пробой
+- scripts/src/inv_herp_data.py — approve: статус и ссылки дублей, authored presence сохранён для сравнения
+- validation_report.json — approve_with_limits: равен пересборке; 40 пар с более слабым каноническим классом — отчётно
+
+Вердикт группы: **approve_with_limits**.

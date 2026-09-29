@@ -379,13 +379,13 @@ export default [
   },
   {
     id: 'nm_bait', name_ru: 'Природная наживка', name_en: 'natural bait', kind: 'animal_bait', category_code: 'natural_material.animal.bait',
-    counter_class: 'A', portion: { mass_g: null, desc_ru: 'несколько червей, личинок или иных существующих видов с uses=наживка' },
+    counter_class: 'A', portion: { mass_g: null, desc_ru: 'несколько особей или стадий существующих видов со связью F20' },
     renewal: '', operation: 'gather_bait',
     tools: ['tool:hands', 'tool:zastup_ironshod'], tool_required: false,
     season: { winter: ['limited', 'мёрзлый грунт закрывает наземный сбор'], spring: ['open', ''], summer: ['open', ''], autumn: ['open', 'до промерзания грунта'] },
     cues: { visual: 'вид определяется строкой фауны, связанной с F20', touch: '', smell: '', sound: '' },
     crafts: [], master_refs: [], src: ['data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv', 'resource-catalog-v3 §2 F20'],
-    conf: 'C', note: 'Класс A: счётчика нет; строка не создаёт новых видов, допустимы только существующие species refs с uses=наживка. Категория candidate.',
+    conf: 'C', note: 'Класс A: счётчика нет; строка не создаёт новых видов и делегирует допустимый набор species refs в resource-catalog F20. Категория candidate.',
     lt: (lt) => soil(lt, /peat|silt|clay|loam/) || grp(lt, 'floodplain', 'meadow', 'marsh', 'forest') ? 'common' : 'contextual', g4: {},
   },
   {

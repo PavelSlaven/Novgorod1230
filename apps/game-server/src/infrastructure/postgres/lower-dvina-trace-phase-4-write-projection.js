@@ -1,4 +1,5 @@
 
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
@@ -80,8 +81,8 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   }
   assertSharedSemanticSnapshotSafe(next);
   inserts.unshift(row('party_state_snapshots', `${partyId}:${nextVersion}`, {
-    party_id: partyId, state_version: nextVersion, state_payload: next,
-    state_digest: canonicalDigest(next)
+    party_id: partyId, state_version: nextVersion, state_payload: withoutSceneNpcs(next),
+    state_digest: canonicalDigest(withoutSceneNpcs(next))
   }));
   return { inserts, updates, appends, deletes };
 }

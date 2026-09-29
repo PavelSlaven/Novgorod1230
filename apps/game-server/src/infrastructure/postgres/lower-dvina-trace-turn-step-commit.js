@@ -2,6 +2,7 @@ import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvin
 import { canonicalDigest } from '@rus/materialization';
 import { requireTurnStepCommitEnvelope } from '@rus/turn';
 import { serverError } from '../../errors.js';
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -187,9 +188,12 @@ export async function commitLowerDvinaTraceTurnStep({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
     changeSetId, idemId, turnStepAmbientPortionProfileRef, turnStepApprovedOwners
   });
+  // Scene NPCs are read from the party tables each turn; the snapshot never keeps them,
+  // and the pending screen is built from what is persisted, like the final one.
+  const persistedSnapshot = withoutSceneNpcs(turnStep.snapshot);
   const pendingScreen = buildLowerDvinaTracePendingScreen({
-    state: turnStep.snapshot,
-    presentation: await loadLowerDvinaTraceScreenPresentation(turnStep.snapshot),
+    state: persistedSnapshot,
+    presentation: await loadLowerDvinaTraceScreenPresentation(persistedSnapshot),
     turnId: envelope.root_turn_id,
     nextVersion,
     turnNumber,
@@ -197,7 +201,7 @@ export async function commitLowerDvinaTraceTurnStep({
     turnConsequence: factual.consequence
   });
   const rootWrites = buildLowerDvinaTraceTurnStepRootWrites({
-    partyId, state, snapshot: turnStep.snapshot, envelope, nextVersion,
+    partyId, state, snapshot: persistedSnapshot, envelope, nextVersion,
     turnNumber, changeSetId, idemId, pendingScreen,
     clockChanged: base.clockChanged
   });

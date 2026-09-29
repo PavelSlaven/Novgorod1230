@@ -1,3 +1,4 @@
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { appendActivity, appendMovement, appendPacket, appendTemporaryDisposition, phase9ActivityRef } from './lower-dvina-trace-phase-9-disposition-writes.js';
 import { appendBody, appendConversation, appendKnowledge } from './lower-dvina-trace-phase-9-consequence-writes.js';
 export { phase9ActivityRef } from './lower-dvina-trace-phase-9-disposition-writes.js';
@@ -86,8 +87,8 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber, change
     row('party_state_snapshots', `${partyId}:${next.party_state.state_version}`, {
       party_id: partyId,
       state_version: next.party_state.state_version,
-      state_payload: next,
-      state_digest: canonicalDigest(next),
+      state_payload: withoutSceneNpcs(next),
+      state_digest: canonicalDigest(withoutSceneNpcs(next)),
     }),
   ];
   const updates = [

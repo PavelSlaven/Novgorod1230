@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { serverError } from '../../errors.js';
+import { containsSceneNpc } from '../../runtime/lower-dvina-trace-scene-presence.js';
 import {
   deriveLowerDvinaTraceTurnStepVisibleDependencyPins
 } from './lower-dvina-trace-turn-step-state.js';
@@ -12,6 +14,13 @@ export function bindLowerDvinaTraceTurnStepIdempotency({
   visibleDependencyPins,
   deriveVisiblePinsFromEnvelope = false
 }) {
+  if (envelope != null && containsSceneNpc(envelope)) {
+    // Scene-read NPCs must be cut by the command before the envelope is digested; a leak
+    // would silently break the idempotent repeat, so it is a loud commit error instead.
+    throw serverError('TRACE_TURN_STEP_SCENE_NPC_IN_ENVELOPE',
+      'A scene-read NPC record reached the turn-step envelope.',
+      { status: 409, public_exposure: 'internal' });
+  }
   if (envelope == null) {
     return {
       semantic_command_snapshot: semanticCommandSnapshot,

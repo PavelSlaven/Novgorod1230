@@ -19,6 +19,7 @@ import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
 import { completeTracePhase2Replay, recordTracePhase2TurnContext, runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
 import { createTurnCommandRegistry } from '@rus/turn';
+import { npcSharesPlayerScene, sceneLocationRef } from './lower-dvina-trace-scene-presence.js';
 import { TRACE_SCENARIO_ID } from './lower-dvina-trace-session.js';
 import { createSemanticConversationCommand } from
   './lower-dvina-trace-phase-3-conversation-command.js';
@@ -426,10 +427,9 @@ export function liveWorldConversationCommands({ state, inputDigest,
 
 function liveWorldConversationContractEntries({ state,
   authoredTurnProfile }) {
-  const playerAnchor = state.position?.g5_anchor_id;
-  const present = (state.npcs ?? []).filter(({ instance_id: id,
-    anchor_id: anchorId }) => typeof id === 'string' && id
-      && anchorId === playerAnchor);
+  const present = (state.npcs ?? []).filter((npc) =>
+    typeof npc.instance_id === 'string' && npc.instance_id
+      && npcSharesPlayerScene(state, npc));
   return present.map((npc) => ({ npc, contracts:
     liveWorldConversationContracts({ state, npc,
       actorRef: npc.participant_slot_ref ?? npc.instance_id,
@@ -455,7 +455,7 @@ function liveWorldConversationContracts({ state, npc, actorRef, allNpcs,
   });
   const conversationPin = Object.freeze({ ...pin,
     id: profile.activity_profile_id });
-  const locationRef = state.position.location_ref;
+  const locationRef = sceneLocationRef(state);
   return Object.freeze({
     neutral_conversation: true,
     ids: Object.freeze({ eremeyRef: actorRef,

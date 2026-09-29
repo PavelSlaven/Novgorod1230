@@ -4,6 +4,10 @@ import { fail, sameRef } from
   './lower-dvina-trace-m2-conversation-shared.js';
 import { playerSafeHeardNpcIntroduction } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { projectNpcCharacterBehavior } from
+  './lower-dvina-trace-m2-conversation-projections.js';
+import { compareSceneLocus, sceneLocus } from
+  './lower-dvina-trace-scene-presence.js';
 
 export function conversationNpcContext(context, targetRef) {
   const targetActor = context.actualNpcActors.find(
@@ -54,20 +58,17 @@ export function npcConversationDecisionCapability(context) {
   }
   const actorLocation = actor.location_ref ?? actor.location_profile_ref;
   const playerLocation = context.state.position?.location_ref;
-  const actorAnchor = actor.g5_anchor_id ?? actor.anchor_id;
-  const playerAnchor = context.state.position?.g5_anchor_id
-    ?? context.state.position?.anchor_id;
-  if (actorAnchor != null && playerAnchor != null) {
-    return actorAnchor === playerAnchor;
-  }
+  const together = compareSceneLocus(sceneLocus(context.state, actor),
+    sceneLocus(context.state, context.state.position));
+  if (together !== null) return together;
   return actorLocation == null || playerLocation == null
     || actorLocation === playerLocation;
 }
 
 export function npcPresentationContext(context, latestContribution) {
-  if (context.contracts.neutral_conversation === true
-      || context.phase !== 'phase_3'
-      || context.targetActor?.ref !== context.contracts.ids?.eremeyRef) {
+  const neutral = context.contracts.neutral_conversation === true;
+  if (!neutral && (context.phase !== 'phase_3'
+      || context.targetActor?.ref !== context.contracts.ids?.eremeyRef)) {
     return {};
   }
   const name = context.targetActor?.identity_state?.canonical_name;
@@ -86,9 +87,16 @@ export function npcPresentationContext(context, latestContribution) {
         npcId: context.targetRef.entity_id
       })
     : null;
+  const introduction = greeted && typeof name === 'string' && name.trim()
+    && heardName === null
+    ? { first_contact_introduction: { canonical_name: name.trim() } } : {};
+  if (neutral) {
+    const behavior = projectNpcCharacterBehavior(context.targetActor);
+    return { ...introduction,
+      ...(behavior === null ? {} : { npc_behavior: behavior }) };
+  }
   return {
-    ...(greeted && typeof name === 'string' && name.trim() && heardName === null
-      ? { first_contact_introduction: { canonical_name: name.trim() } } : {}),
+    ...introduction,
     npc_behavior: {
       current_stance: context.evidencePresented ? 'cooperation_enabled' : 'guarded',
       goals: structuredClone(context.contracts.npcPolicy.goals),

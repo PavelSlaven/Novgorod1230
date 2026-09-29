@@ -3,16 +3,19 @@ import {
   computeSpatialV3CanonicalDigest
 } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import {
   appendPhase2Clue
 } from './lower-dvina-trace-phase-2-clue-writes.js';
 
 export function buildPhase2Writes(input) {
   const {
-    partyId, state, snapshot, factual, visibleEnvelope, pendingScreen,
+    partyId, state, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, clue, inputDigest,
     nextBodyState
   } = input;
+  // Scene NPCs are read from the party tables each turn; the snapshot never keeps them.
+  const snapshot = withoutSceneNpcs(input.snapshot);
   const inserts = [
     row('party_state_snapshots', `${partyId}:${nextVersion}`, {
       party_id: partyId,

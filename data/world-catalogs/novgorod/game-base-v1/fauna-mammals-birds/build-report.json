@@ -3,12 +3,12 @@
  "counts": {
   "mammals": 44,
   "birds": 149,
-  "wild_habitat_presence": 4221,
+  "wild_habitat_presence": 4249,
   "fauna_categories": 220,
   "taxa_checks": 27,
   "sources": 21,
-  "hunting_methods": 23,
+  "hunting_methods": 25,
   "hunting_tenure_defaults": 3,
-  "phase_activity": 2628
+  "phase_activity": 2644
  }
 }

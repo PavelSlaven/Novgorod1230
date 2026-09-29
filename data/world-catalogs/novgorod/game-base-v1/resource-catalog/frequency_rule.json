@@ -40,6 +40,13 @@
     "season_field": "season_presence"
    },
    {
+    "ref": "../fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv",
+    "species_field": "fa_id",
+    "scope_field": "pf_id",
+    "frequency_field": "frequency_class",
+    "season_field": "season_period"
+   },
+   {
     "ref": "../fauna-mammals-birds/fauna/wild_habitat_presence.csv",
     "species_field": "fa_id",
     "scope_field": "pf_id",

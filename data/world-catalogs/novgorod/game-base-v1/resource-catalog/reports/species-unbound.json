@@ -2,7 +2,126 @@
  "schema": "game_base_v1.resource_species_unbound.v2",
  "status": "candidate",
  "source_rows": 553,
- "bound_unique_species": 553,
- "unbound_count": 0,
- "rows": []
+ "bound_unique_species": 539,
+ "unbound_count": 14,
+ "typed_gaps": [
+  {
+   "property": "bait_size_or_stage",
+   "owner": "fauna property contract #178",
+   "need": "structured size or separately collectible life stage for F20 derivation",
+   "affected_species": [
+    "fa_arach_ticks",
+    "fa_ins_aphids",
+    "fa_ins_bark_beetles",
+    "fa_ins_bedbug",
+    "fa_ins_biting_midges",
+    "fa_ins_blackflies",
+    "fa_ins_body_louse",
+    "fa_ins_fleas",
+    "fa_ins_granary_weevil",
+    "fa_ins_head_louse",
+    "fa_ins_mosquitoes"
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_arach_ticks",
+   "name_ru": "Клещи",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_aphids",
+   "name_ru": "Тля",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_bark_beetles",
+   "name_ru": "Короеды",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_bedbug",
+   "name_ru": "Клоп постельный",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_biting_midges",
+   "name_ru": "Мокрецы",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_blackflies",
+   "name_ru": "Мошка",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_body_louse",
+   "name_ru": "Вошь платяная",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_fleas",
+   "name_ru": "Блохи",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_granary_weevil",
+   "name_ru": "Амбарный долгоносик",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_head_louse",
+   "name_ru": "Вошь головная",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_ins_mosquitoes",
+   "name_ru": "Комары",
+   "exclusion_reason": "physically_impossible",
+   "reason": "typical individual or represented mountable stage is below about 5 mm and is not collected as bait"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_mamm_house_mouse",
+   "name_ru": "Мышь домовая",
+   "exclusion_reason": "duplicate",
+   "reason": "fauna-mammals-birds/fauna/mammals.csv#fa_m_house_mouse"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_mamm_striped_field_mouse",
+   "name_ru": "Мышь полевая",
+   "exclusion_reason": "duplicate",
+   "reason": "fauna-mammals-birds/fauna/mammals.csv#fa_m_striped_field_mouse"
+  },
+  {
+   "source_table": "invertebrates_herps.csv",
+   "species_ref": "fa_mamm_voles",
+   "name_ru": "Полёвки",
+   "exclusion_reason": "duplicate",
+   "reason": "fauna-mammals-birds/fauna/mammals.csv#fa_m_bank_vole+fauna-mammals-birds/fauna/mammals.csv#fa_m_field_vole+fauna-mammals-birds/fauna/mammals.csv#fa_m_common_vole"
+  }
+ ]
 }

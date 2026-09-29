@@ -10,6 +10,7 @@ rpgr_nov_village_arable_meadow,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-
 ,pf_bog,,,no matching allowed place_template_id in rus13 rules v2,candidate
 rpgr_nov_bridge_place,pf_bridge_crossing,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
 ,pf_broadleaf_woodland,,,no matching allowed place_template_id in rus13 rules v2,candidate
+,pf_burial_ground,,,no matching allowed place_template_id in rus13 rules v2,candidate
 rpgr_nov_city_major_center,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
 rpgr_nov_estate_center,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
 rpgr_nov_hamlet,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
@@ -143,4 +144,3 @@ rpgr_nov_pogost_center,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,ca
 rpgr_nov_rural_church_center,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
 rpgr_nov_village_arable_meadow,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
 ,pf_winter_ice_crossing,,,no matching allowed place_template_id in rus13 rules v2,candidate
-,pf_burial_ground,,,no matching allowed place_template_id in rus13 rules v2,candidate

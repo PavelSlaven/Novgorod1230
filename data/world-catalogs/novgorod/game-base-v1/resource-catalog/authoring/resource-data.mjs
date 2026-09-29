@@ -205,6 +205,7 @@ export const FREQUENCY_RULE = {
       { ref: '../flora-herbs-berries-mushrooms/flora/flora_habitat_presence.csv', species_field: 'fl_id', scope_field: 'pf_id', frequency_field: 'frequency_class', season_field: 'season' },
       { ref: '../flora-trees-shrubs/flora/tree_habitat_presence.csv', species_field: 'fl_id', scope_field: 'pf_id', frequency_field: 'frequency_class', season_field: 'season' },
       { ref: '../fauna-fish-invertebrates-livestock/fauna/fish.csv', species_field: 'fa_id', scope_field: 'wb_frequency', frequency_field: 'embedded_scope_frequency_pairs', season_field: 'season_presence' },
+      { ref: '../fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv', species_field: 'fa_id', scope_field: 'pf_id', frequency_field: 'frequency_class', season_field: 'season_period' },
       { ref: '../fauna-mammals-birds/fauna/wild_habitat_presence.csv', species_field: 'fa_id', scope_field: 'pf_id', frequency_field: 'frequency_class', season_field: 'season' },
     ],
     qualifying_frequency_classes: ['ubiquitous', 'common'],

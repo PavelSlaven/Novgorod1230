@@ -203,15 +203,16 @@ inv_rows = []
 for s in inv_herp_data.INV:
     fid = s["fa_id"]
     src = list(s["src"]) + ["wp:" + a for a in inv_herp_data.WP_REFS.get(fid, [])]
-    for pfs, seas, cls, act in s["presence"]:
-        for pf in pfs:
-            if pf not in pf_ids:
-                problems["unknown_pf_id"].append(f"{fid}: {pf}")
-            for se in seas:
-                key = (fid, pf, se, CORE_SUB)
-                cur = presence.get(key)
-                if cur is None or WEIGHT[cls] > WEIGHT[cur["cls"]] or (WEIGHT[cls] == WEIGHT[cur["cls"]] and act == "active"):
-                    presence[key] = dict(cls=cls, basis=["authored"], activity=act, table="invertebrates_herps", src=src, conf=s["conf"])
+    if s.get("status", STATUS) != "duplicate":
+        for pfs, seas, cls, act in s["presence"]:
+            for pf in pfs:
+                if pf not in pf_ids:
+                    problems["unknown_pf_id"].append(f"{fid}: {pf}")
+                for se in seas:
+                    key = (fid, pf, se, CORE_SUB)
+                    cur = presence.get(key)
+                    if cur is None or WEIGHT[cls] > WEIGHT[cur["cls"]] or (WEIGHT[cls] == WEIGHT[cur["cls"]] and act == "active"):
+                        presence[key] = dict(cls=cls, basis=["authored"], activity=act, table="invertebrates_herps", src=src, conf=s["conf"])
     inv_rows.append(dict(
         fa_id=fid, name_ru=s["name_ru"], name_lat=s["name_lat"], name_en=s["name_en"], group=s["group"],
         category_ref=f"cat:fauna.{s['group']}", taxon_scope="universal", region_id="", presence_region_id=REGION,
@@ -220,7 +221,7 @@ for s in inv_herp_data.INV:
         active_seasons=j(sorted({se for (f2, pf, se, sb), c in presence.items() if f2 == fid and c["activity"] == "active"}, key=SEASONS.index)),
         dormant_seasons=j(sorted({se for (f2, pf, se, sb), c in presence.items() if f2 == fid and c["activity"] == "dormant"}, key=SEASONS.index)),
         habitat_presence_count=sum(1 for k in presence if k[0] == fid),
-        source_refs=refs(src, fid), confidence=s["conf"], status=STATUS, notes=s["notes"]))
+        source_refs=refs(src, fid), confidence=s["conf"], status=s.get("status", STATUS), notes=s["notes"]))
 
 pres_rows = []
 for (fid, pf, se, sub), c in sorted(presence.items()):
@@ -707,7 +708,52 @@ dups = [k for k, v in Counter(ids).items() if v > 1]
 checks["unique_ids"] = not dups
 if dups:
     problems["duplicate_ids"] = dups
-checks["all_status_candidate"] = True
+checks["statuses_valid"] = all(r["status"] in (STATUS, "duplicate") for r in allrows)
+checks["duplicate_status_only_for_authored_duplicates"] = all(
+    (r["status"] == "duplicate") == ("duplicate_of=" in r.get("notes", "")) for r in inv_rows)
+duplicate_rows = [r for r in inv_rows if r["status"] == "duplicate"]
+checks["three_authored_duplicate_taxa"] = len(duplicate_rows) == 3
+checks["duplicates_absent_from_presence"] = not ({r["fa_id"] for r in duplicate_rows} & {r["fa_id"] for r in pres_rows})
+
+canonical_presence_path = os.path.join(OUT, '..', 'fauna-mammals-birds', 'fauna', 'wild_habitat_presence.csv')
+with open(canonical_presence_path, encoding='utf-8-sig') as f:
+    canonical_presence = list(csv.DictReader(f))
+
+def duplicate_presence_comparison(authored_rows, canonical_rows):
+    season_map = {'spring_rasputitsa': 'spring'}
+    canonical = defaultdict(list)
+    for row in canonical_rows:
+        canonical[(row['fa_id'], row['pf_id'].removeprefix('pf_'), row['season'])].append(row)
+    missing, weakened, compared = [], [], 0
+    for source in authored_rows:
+        if source.get('status', STATUS) != 'duplicate':
+            continue
+        targets = re.findall(r'fauna-mammals-birds/fauna/mammals\.csv#(fa_m_[a-z0-9_]+)', source.get('notes', ''))
+        for pfs, seasons, frequency, _activity in source['presence']:
+            for pf in pfs:
+                for authored_season in seasons:
+                    season = season_map.get(authored_season, authored_season)
+                    compared += 1
+                    matches = [row for target in targets for row in canonical.get((target, pf, season), [])]
+                    key = dict(duplicate=source['fa_id'], canonical_targets=targets, pf_id=pf, season=season,
+                               duplicate_class=CLASSNAME[frequency])
+                    if not matches:
+                        missing.append(key)
+                        continue
+                    strongest = max(matches, key=lambda row: int(row['weight']))
+                    if int(strongest['weight']) < WEIGHT[frequency]:
+                        weakened.append({**key, 'canonical_class': strongest['frequency_class'],
+                                         'canonical_species': strongest['fa_id']})
+    return dict(compared_pairs=compared, missing=missing, weakened=weakened)
+
+duplicate_presence = duplicate_presence_comparison(inv_herp_data.INV, canonical_presence)
+checks['duplicate_authored_presence_subset_canonical'] = not duplicate_presence['missing']
+if duplicate_presence['missing']:
+    problems['duplicate_presence_missing_from_canonical'] = duplicate_presence['missing']
+if '--self-test' in sys.argv:
+    probe = [row for row in canonical_presence
+             if not (row['fa_id'] == 'fa_m_house_mouse' and row['pf_id'] == 'pf_market_square' and row['season'] == 'winter')]
+    assert duplicate_presence_comparison(inv_herp_data.INV, probe)['missing']
 
 conf_counts = {name: dict(Counter(r["confidence"] for r in rows)) for name, rows in
                [("fish", fish_rows), ("invertebrates_herps", inv_rows), ("livestock_types", lt_rows), ("fauna_presence", pres_rows),
@@ -715,6 +761,7 @@ conf_counts = {name: dict(Counter(r["confidence"] for r in rows)) for name, rows
 report = dict(generated_by="scripts/build.py", status=STATUS, counts=counts, checks=checks,
               fish_species_per_river_lake_pf=per_pf, summer_wet_pf_bloodsuckers=bs,
               presence_rows_by_table=dict(Counter(r["taxon_table"] for r in pres_rows)),
+              duplicate_presence_comparison=duplicate_presence,
               confidence_counts=conf_counts,
               informational=dict(v6_household_tokens=len(tok_counter), v6_tokens_unmapped=len(problems.get("v6_household_token_unmapped", []))),
               problems={k: v for k, v in problems.items()})

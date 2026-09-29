@@ -46,6 +46,11 @@
       "has_category_column": true
     },
     {
+      "file": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_trace_relations.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
       "file": "data/world-catalogs/novgorod/game-base-v1/misc/hazards_dangers/hazards.csv",
       "has_scope_column": true,
       "has_category_column": false
@@ -81,11 +86,11 @@
       "has_category_column": false
     }
   ],
-  "pool_rows_accepted": 5873,
-  "rules_written": 5707,
-  "category_rules": 5690,
+  "pool_rows_accepted": 5906,
+  "rules_written": 5740,
+  "category_rules": 5723,
   "people_rules": 17,
-  "seasonal_candidate_rows": 10880,
+  "seasonal_candidate_rows": 10928,
   "resolutions": [
     {
       "key": "place_family|pf_bridge_crossing||category|cat_item_object_drawstring_pouch_v1",
@@ -7960,12 +7965,12 @@
     }
   ],
   "by_scope_kind": {
-    "place_family": 5707
+    "place_family": 5740
   },
   "by_class": {
-    "common": 1253,
-    "contextual": 2020,
+    "common": 1257,
+    "contextual": 2041,
     "ubiquitous": 345,
-    "rare": 2089
+    "rare": 2097
   }
 }

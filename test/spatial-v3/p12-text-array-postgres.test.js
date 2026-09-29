@@ -15,7 +15,7 @@ test('P12 TEXT[] sqlLiteral round-trips through PostgreSQL', async (t) => {
   let ready = false;
   for (let i = 0; i < 40; i += 1) {
     await new Promise((done) => setTimeout(done, 350));
-    if (docker(['exec', name, 'pg_isready', '-U', 'p12', '-d', 'p12']).status === 0) { ready = true; break; }
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p12', '-d', 'p12']).status === 0) { ready = true; break; }
   }
   assert.equal(ready, true);
   const schema = await readFile('infra/world-base/schema.sql', 'utf8');

@@ -275,7 +275,7 @@ test('P18 offers every path: the foot path is executable and the boat path is bl
   const start = endpoint('world_route_endpoint', 'start-route');
   const boat = { id: 'by-boat', edge_kind: 'world_route_segment', from_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), to_endpoint_ref: end, step_kind: 'timed_traversal', static_contract_snapshot: traversalStep('movement.small_river_craft'), cost_summary: { ...(() => { const value = { cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }; return value; })(), canonical_digest: digest({ cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }) }, risk_summary: risk };
   const foot = { id: 'on-foot', edge_kind: 'world_route_segment', from_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), to_endpoint_ref: end, step_kind: 'timed_traversal', static_contract_snapshot: traversalStep('movement.foot'), cost_summary: { ...(() => { const value = { cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }; return value; })(), canonical_digest: digest({ cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }) }, risk_summary: risk };
-  const ask = () => planner([boat, foot]).resolve(query({ start_endpoint_ref: start, capability_context: capabilityContext({ allowed_movement_methods: ['movement.foot'] }) }));
+  const ask = () => planner([boat, foot]).resolve(query({ start_endpoint_ref: start, cost_mode: 'time', capability_context: capabilityContext({ allowed_movement_methods: ['movement.foot'] }) }));
   const result = await ask();
   assert.equal(result.ok, true);
   assert.equal(result.options.length, 2, 'the blocked option stays in the menu');
@@ -289,6 +289,8 @@ test('P18 offers every path: the foot path is executable and the boat path is bl
     world_revision_id: 'revision', catalog_digest: 'a'.repeat(64), planning_algorithm_version: 'test', planning_context_dependency_pins: pins(),
     created_change_set_id: 'change', created_at_turn: 1 });
   assert.equal(activated.ok, false, 'a blocked option never activates');
+  assert.equal(activated.error.code, 'route_plan_snapshot_missing', 'a typed refusal, not a crash or an unrelated cost failure');
+  assert.match(activated.error.diagnostics.reason, /only a ready option/u);
 });
 
 test('P18 seals capability dependency pins into query, option and activated plan', async () => {

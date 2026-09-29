@@ -6,11 +6,8 @@ import pg from 'pg';
 import { buildCharacterAppearanceV1ImportSql, buildTargetAppearanceTransferImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildApprovedTemporalImportSql } from '../../temporal-v4/import-approved-data.mjs';
 import { buildTransactionalImportSql } from '../../spatial-v3/p12-authoring-importer.mjs';
-import { assertTargetCanonicalStartPostgres } from '../../../test/spatial-v3/target-canonical-start-postgres-acceptance.js';
 import { createSpatialV3WorldBaseReader } from '../../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { importAdditionalStartOwnerRows } from '../../../scripts/bootstrap-live-world-v17.mjs';
-import { ensureV17PartyProductionCatalogLedger } from
-  '../../../scripts/v17-party-production-catalog-ledger.mjs';
 import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
 import { createSpatialV3TargetProductionRelease, SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
   '../../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
@@ -26,7 +23,6 @@ import { runForwardMigration } from '../src/forward-migration.js';
 import { testContainerLabel } from '../../../test/helpers/test-containers.js';
 import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION, ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION,
   PARTY_RUNTIME_CATALOG_MIGRATION, runPartyRuntimeCatalogMigration, runWorldRuntimeCatalogMigration } from '../src/forward-migrations.js';
-import { readPostgresSchemaFingerprint } from '../src/forward-migration.js';
 import { prepareSpatialV3TargetItemCatalog, buildSpatialV3TargetItemImport } from
   '../src/first-playable-v2-activation.js';
 import { registerCatalogBaseline, importApprovedCatalog, activateApprovedCatalog } from
@@ -51,7 +47,7 @@ const fixtureApproval = (payload) => {
   return { ...value, attestation_digest: digestEnvelope(value) };
 };
 
-test('target item and actor successors preserve v6 parties through real PostgreSQL import, activation and replay',
+test('historical pre-v17 party ledger rejects v17 release readiness without touching saved parties',
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     try {
@@ -241,6 +237,8 @@ test('target item and actor successors preserve v6 parties through real PostgreS
     const targetReadback = await assertTargetCatalogActivationReadiness(pool, {
       ...targetInputs, release: candidate });
     assert.equal(targetReadback.actor_binding.pin.activation_event_id, first.event_id);
+    await assert.rejects(assertPartyReleaseReadiness(pool, candidate),
+      { code: 'SPATIAL_V3_PARTY_CATALOG_MIGRATION_REQUIRED' });
     await assert.rejects(createSpatialV3TargetProductionRelease(targetInputs),
       { code: 'SPATIAL_V3_TARGET_START_SCENE_REQUIRED' });
     await assert.rejects(createSpatialV3TargetProductionRelease({ worldPool: pool,
@@ -307,48 +305,6 @@ test('target item and actor successors preserve v6 parties through real PostgreS
           canonical_digest: scene.rows[0].canonical_digest },
         world_revision_id: revision });
       assert.equal(acoustic.ok, true, `${start.scenario_id}: ${JSON.stringify(acoustic)}`);
-    }
-    const partyFingerprint = await readPostgresSchemaFingerprint(pool, 'party_runtime');
-    const ledgerRow = (await pool.query(
-      `SELECT target_schema_fingerprint FROM party_runtime.schema_migrations WHERE migration_id=$1`,
-      [SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_migration_id],
-    )).rows[0];
-    let v17ProductionRootReady = ledgerRow?.target_schema_fingerprint
-      === SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint;
-    if (!ledgerRow && partyFingerprint
-      === SPATIAL_V3_TARGET_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint) {
-      await ensureV17PartyProductionCatalogLedger(pool);
-      v17ProductionRootReady = true;
-    }
-    const partyLedgerRelease = v17ProductionRootReady ? candidate : {
-      ...candidate,
-      party_runtime_catalog_target_fingerprint:
-        PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
-    };
-    const historicalReadiness = await assertPartyReleaseReadiness(pool, partyLedgerRelease);
-    assert.equal(historicalReadiness.party_count, 1);
-    assert.equal(historicalReadiness.historical_pin_count, 1);
-    const partyClient = await pool.connect();
-    try {
-      await partyClient.query('BEGIN');
-      await partyClient.query(`UPDATE party_runtime.parties
-        SET world_catalog_digest=$1 WHERE party_id='historical'`, ['0'.repeat(64)]);
-      await assert.rejects(assertPartyReleaseReadiness(partyClient, partyLedgerRelease),
-        { code: 'SPATIAL_V3_PARTY_MIGRATION_REQUIRED' });
-    } finally { await partyClient.query('ROLLBACK'); partyClient.release(); }
-    if (v17ProductionRootReady) {
-      await assertTargetCanonicalStartPostgres({ pool, itemPin: targetReadback.item_pin,
-        actorBinding: targetReadback.actor_binding, releaseInputs: targetInputs });
-      const targetRelease = await createSpatialV3TargetProductionRelease(targetInputs);
-      assert.equal(targetRelease.scenario_binding_id, 'novgorod_pine_ridge_approach_v1');
-      assert.equal(targetRelease.production_activation, false);
-      assert.equal(targetRelease.parent_release_exact_pins, undefined);
-      assert.equal(targetRelease.scenario_profile_exact_pins.phase_1a_package_id,
-        'novgorod_target_pine_ridge_start_v1');
-      const historicalAfterStart = await historicalSnapshot(pool);
-      assert.deepEqual(historicalAfterStart.parties.find((row) => row.party_id === 'historical'), saved.parties[0]);
-      assert.deepEqual(historicalAfterStart.pins.filter((row) => row.party_id === 'historical'), saved.pins);
-      assert.deepEqual(historicalAfterStart.v6, saved.v6);
     }
     const noPredecessorRequest = buildActorBaseAttributesSuccessorActivationRequest({
       importRequest, importResult, previousEvent: null,

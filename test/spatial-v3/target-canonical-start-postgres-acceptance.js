@@ -25,18 +25,38 @@ import { serveTargetHttpBrowserSmoke, TARGET_SMOKE_INPUT } from './target-http-b
 import { createLlmSettingsFileStore } from '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import { createLlmSettingsOwner } from '../../apps/game-server/src/runtime/llm-settings.js';
 
+function connectablePool(pgPool) {
+  return {
+    query: pgPool.query.bind(pgPool),
+    async connect() {
+      const client = await pgPool.connect();
+      return { query: client.query.bind(client), release() { client.release(true); } };
+    },
+  };
+}
+
 /** Run after the isolated operator has issued, applied and read back exact target pins. */
-export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorBinding, releaseInputs }) {
+export async function assertTargetCanonicalStartPostgres({
+  pool, worldPool, partyPool, itemPin, actorBinding, releaseInputs,
+}) {
+  const world = worldPool ?? pool;
+  const party = partyPool ?? pool;
+  if (!world?.query || !party?.query) {
+    throw new Error('assertTargetCanonicalStartPostgres requires pool or worldPool and partyPool');
+  }
   const rootDir = resolve(import.meta.dirname, '../..');
   const manifest = JSON.parse(await readFile(join(rootDir,
     'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json'), 'utf8'));
-  const releaseContext = await loadSpatialV3TargetProductionRelease(releaseInputs);
+  const releaseContext = await loadSpatialV3TargetProductionRelease({
+    ...releaseInputs, worldPool: releaseInputs.worldPool ?? world,
+  });
   assert.equal(manifest.starts.length, 7);
   assert.deepEqual(releaseContext.runtime.starts.map(({ profile }) => profile.scenario_id),
     manifest.starts.map(({ scenario_id }) => scenario_id));
   const runtime = releaseContext.runtime.starts[0];
   const input = await targetCanonicalStartFixture({ startRuntime: runtime });
-  const worldReadback = await loadTargetStartWorldReadback({ pool, start: runtime.profile.canonical_start.start });
+  const worldReadback = await loadTargetStartWorldReadback({ pool: world,
+    start: runtime.profile.canonical_start.start });
   Object.assign(input, runtime.materialization_inputs);
   const profile = runtime.profile;
   const domainCatalog = input.domain_catalog;
@@ -62,17 +82,18 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.ok(result.immediate.npcs.length > 0, 'actual approved canonical composition selects nonzero NPCs');
   assert.equal(computeMaterializationEnvelopeDigest(JSON.parse(JSON.stringify(result))), result.trace.result_digest,
     'actual PostgreSQL source rows preserve the envelope digest through JSON persistence');
-  const adapter = createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release,
+  const adapter = createLowerDvinaTracePhase1BProductionAdapter({ partyPool: party, worldPool: world, release,
     runtimeCatalogPin: itemPin, actorBaseAttributesBinding: actorBinding, targetStartRuntime: runtime,
     authoredStartResolver: catalog.resolveProfile, approvedActorCatalog: profile.actor_catalog });
   const commit = () => adapter.materialize({ ...result.request_identity, world_compatibility: input.world_compatibility });
   const first = await commit();
   assert.equal(first.status, 'committed');
-  const reloaded = await createLowerDvinaTracePhase1ARepository({ query: pool.query.bind(pool) }).loadInternal(input.party_id);
+  const reloaded = await createLowerDvinaTracePhase1ARepository({ query: party.query.bind(party) })
+    .loadInternal(input.party_id);
   assert.deepEqual(reloaded, first.instance);
-  await assertTargetNpcSemanticReadback({ pool, partyId: input.party_id, expectedNpcs: result.immediate.npcs });
+  await assertTargetNpcSemanticReadback({ pool: party, partyId: input.party_id, expectedNpcs: result.immediate.npcs });
   const targetProfiles = await loadTargetRuntimeProfiles({ worldRevisionId: release.world_revision_id, verifiedCatalog: domainCatalog });
-  const a1 = createLowerDvinaTraceA1ProductionResolverFactory({ pool,
+  const a1 = createLowerDvinaTraceA1ProductionResolverFactory({ pool: party,
     loadedProfile: targetProfiles.materialization_profiles.actionProductionProfile })({ partyId: input.party_id });
   const garment = reloaded.items.find((item) => item.placement.holder_character_id === reloaded.player.instance_id);
   assert.ok(garment);
@@ -82,9 +103,9 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.equal(await a1.referencesApplicable(sourceRequest), true);
   const foreignA1 = structuredClone(targetProfiles.materialization_profiles.actionProductionProfile);
   foreignA1.target_applicability.world_revision_id = 'foreign-world';
-  await assert.rejects(createLowerDvinaTraceA1ProductionResolverFactory({ pool, loadedProfile: foreignA1 })({
+  await assert.rejects(createLowerDvinaTraceA1ProductionResolverFactory({ pool: party, loadedProfile: foreignA1 })({
     partyId: input.party_id }).referencesApplicable(sourceRequest), { code: 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP' });
-  const physicalPosition = (await pool.query(`SELECT location.scene_position_id AS position_id,position.g6_instance_id
+  const physicalPosition = (await party.query(`SELECT location.scene_position_id AS position_id,position.g6_instance_id
     FROM party_runtime.party_journey_locations location JOIN party_runtime.scene_position_nodes position
       ON position.party_id=location.party_id AND position.id=location.scene_position_id
     WHERE location.party_id=$1 AND location.owner_kind='actor' AND location.owner_id=$2`,
@@ -96,18 +117,18 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.equal(replay.status, 'replayed');
   assert.deepEqual(replay.instance, first.instance);
   assert.deepEqual(reloaded.player.base_attributes.values, result.immediate.player.base_attributes.values);
-  const playerBasis = (await pool.query(`SELECT language_profile_snapshot FROM party_runtime.party_actor_profile_bindings
+  const playerBasis = (await party.query(`SELECT language_profile_snapshot FROM party_runtime.party_actor_profile_bindings
     WHERE party_id=$1 AND actor_id=$2`, [input.party_id, result.immediate.player.instance_id])).rows;
   assert.equal(playerBasis.length, 1);
   assert.deepEqual(playerBasis[0].language_profile_snapshot, result.immediate.player.dossier.language);
-  assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_npcs WHERE party_id=$1', [input.party_id])).rows[0].count,
+  assert.equal((await party.query('SELECT count(*)::int AS count FROM party_runtime.party_npcs WHERE party_id=$1', [input.party_id])).rows[0].count,
     result.immediate.npcs.length);
-  assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1', [input.party_id])).rows[0].count, 1);
-  const pinned = (await pool.query('SELECT catalog_scope,catalog_revision_id,catalog_digest,activation_event_id FROM party_runtime.party_catalog_pins WHERE party_id=$1', [input.party_id])).rows;
+  assert.equal((await party.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1', [input.party_id])).rows[0].count, 1);
+  const pinned = (await party.query('SELECT catalog_scope,catalog_revision_id,catalog_digest,activation_event_id FROM party_runtime.party_catalog_pins WHERE party_id=$1', [input.party_id])).rows;
   for (const pin of [itemPin, actorBinding.pin]) assert.ok(pinned.some((row) => row.catalog_scope === pin.catalog_scope
     && row.catalog_revision_id === pin.catalog_revision_id && row.catalog_digest === pin.catalog_digest
     && row.activation_event_id === pin.activation_event_id));
-  const transaction = await pool.connect();
+  const transaction = await party.connect();
   try {
     await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ');
     await transaction.query('SAVEPOINT physical_position_check');
@@ -219,10 +240,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },
       traceTurnDecisionSecret: 'isolated-target-acceptance-secret',
       ...(realProvider ? { llmSettings } : {}) },
-    pools: { worldPool: { query: pool.query.bind(pool), async connect() {
-      const client = await pool.connect();
-      return { query: client.query.bind(client), release() { client.release(true); } };
-    } }, partyPool: pool, async close() {} },
+    pools: { worldPool: connectablePool(world), partyPool: party, async close() {} },
     worldKnowledgeEncoderFactory: () => ({ async ready() {}, async encode() { return new Float32Array(1024); }, async close() {} }) };
   publicRuntime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   assert.equal(publicRuntime.health().release_id, release.release_id);
@@ -257,7 +275,9 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.equal((await publicRuntime.getPartyScreen(opening.party_id)).screen.main_prose, opening.screen.main_prose);
   await publicRuntime.acknowledgeOpening(opening.party_id, { client_ack_id: 'target-public-ack' });
   const opened = new Map([[profile.scenario_id, { partyId: opening.party_id, digest: canonicalDigest(opening.screen) }]]);
-  for (const entry of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true' ? [] : manifest.starts.slice(1)) {
+  const singleStart = process.env.RUS_TARGET_CANONICAL_SINGLE_START === 'true';
+  for (const entry of (singleStart || process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true')
+    ? [] : manifest.starts.slice(1)) {
     const next = await publicRuntime.startNewGame({ scenario_id: entry.scenario_id,
       request_id: `target-seven-starts-${entry.binding_revision}` });
     assert.equal(next.screen.schema, 'first_game_screen');
@@ -281,7 +301,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     assert.equal(look.screen.scenario_id, scenarioId);
     assert.equal(canonicalDigest(look.screen), digest);
   }
-  const phase2 = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool,
+  const phase2 = createLowerDvinaTracePhase2PostgresRepository({ partyPool: party,
     committer: { async commit() { throw new Error('read acceptance must not commit a turn'); } },
     authoredRuntimeBindingResolver: catalog.resolveRuntimeBinding,
     loadInitialNaturalScenePerceptionInput: adapter.loadNaturalScenePerceptionInput });
@@ -290,10 +310,10 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.notEqual(initialTurn.position.location_ref, 'trace_ld_v1_loc_wreck_shore');
   assert.equal(initialTurn.current_visible_context.visible_npc.length, 0,
     'first-turn bootstrap preserves the P22 entity boundary');
-  const factualReader = createTargetCurrentFactualContext({ partyPool: pool, runtime,
+  const factualReader = createTargetCurrentFactualContext({ partyPool: party, runtime,
     committer: { async commit() { throw new Error('factual reader must not commit'); } },
     authoredRuntimeBindingResolver: catalog.resolveRuntimeBinding });
-  const factualTransaction = await pool.connect();
+  const factualTransaction = await party.connect();
   try {
     await factualTransaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ');
     const factual = await factualReader.readFactualContext({ transaction: factualTransaction,
@@ -307,7 +327,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   } finally {
     await factualTransaction.query('ROLLBACK'); factualTransaction.release();
   }
-  for (const [scenarioId, { partyId }] of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true'
+  for (const [scenarioId, { partyId }] of (singleStart || process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true')
     ? [[profile.scenario_id, opened.get(profile.scenario_id)]] : opened) {
     try {
       await publicRuntime.submitTurn(partyId, { raw_text: TARGET_SMOKE_INPUT,
@@ -338,7 +358,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   } finally { await reloadedRuntime.close(); }
   if (process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true') {
     await serveTargetHttpBrowserSmoke({ root: { ...publicRuntime,
-      ...(realProvider ? { getLlmSettings: () => llmSettings.read() } : {}) }, pool, realProvider });
+      ...(realProvider ? { getLlmSettings: () => llmSettings.read() } : {}) }, pool: party, realProvider });
   }
   } finally {
     globalThis.fetch = previousFetch;

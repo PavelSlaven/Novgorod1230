@@ -55,7 +55,7 @@ node data/world-catalogs/novgorod/m2c-pass-target-labels/validate.mjs --self-tes
 
 ## Граница runtime
 
-Каталог читается runtime напрямую через `approved-labels.mjs` (без проверки хеша; LW-075, AI §17) начиная с шага 3 CR #160: `spatial-v3-pass-target-disclosure.js` (метка цели по `expansion_slot_ref`), `local-edge-occupied.js` и команда подхода (`passage_phrases`). Подпись видимого локального ребра по-прежнему ищется по `scene_template_ref` и `edge_slot_key`, подпись выхода — по точному directional-exit ref и контексту (эти пути каталог не заменяет). Проверка текущей видимости, знания и права движения остаётся у действующих runtime-владельцев; текст кандидата сам по себе ничего из этого не открывает.
+Каталог читается runtime напрямую через `approved-labels.mjs` (без проверки хеша; LW-075, AI §17) начиная с шага 3 CR #160: `spatial-v3-pass-target-disclosure.js` (метка цели по `expansion_slot_ref`), `local-edge-occupancy.js` и команда подхода (`passage_phrases`). Подпись видимого локального ребра по-прежнему ищется по `scene_template_ref` и `edge_slot_key`, подпись выхода — по точному directional-exit ref и контексту (эти пути каталог не заменяет). Проверка текущей видимости, знания и права движения остаётся у действующих runtime-владельцев; текст кандидата сам по себе ничего из этого не открывает.
 
 ## Подключение (CR #160, шаг 3)
 

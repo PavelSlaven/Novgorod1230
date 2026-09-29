@@ -79,6 +79,7 @@
 | 080 | `lower-dvina-trace-phase-2-services.js` (`turnStepBlockPlan`), `spatial-v3-expansion-runtime.js` | отказ по занятости только на шаге 1; путь подхода после первого шага — по сырым рёбрам без видимости | [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185) |
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
 | 082 | `llm-turn-budget.js`, `lower-dvina-trace-phase-2-presentation-resolve.js`, `apps/game-web/src/api/client.js` | худший submitTurn до ~360 с при клиенте без fetch-timeout | — |
+| 083 | `lower-dvina-trace-phase-2-presentation-replay.js`, `packages/turn/src/stages/narration.js` (`spatialResult`) | replay-подача рассказчику без исходов проверок и оценки: `check_outcomes`/`qualitative_assessment` есть на первом проходе, нет на повторе (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -429,6 +430,12 @@
 - **Что.** (1) Рассказанный отказ по занятому ребру срабатывает только на шаге 1 хода; на шаге ≥2 занятое ребро даёт типизированный 409 `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` (тест это закрепляет). (2) После первого шага (он берётся только из `listLocalOptions`) поиск пути подхода идёт по сырым active-рёбрам без видимости и eligibility: возможны подсказка скрытой топологии и тупик на промежуточной позиции. Риск сейчас низкий — все шаблоны сцен `default_clear`.
 - **Как жить.** Не считать шаг ≥2 обработанным: многошаговость — [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185). При появлении явной видимости рёбер подход обязан брать путь только по допущенным рёбрам.
 - **Issue.** [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160), [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185)
+
+### LW-083 — replay подаёт рассказчику исход без `check_outcomes` и `qualitative_assessment`
+- **Где.** `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation-replay.js:24` вызывает `spatialResult({ consequence: replay.state.last_turn.consequence })` без `checks` и `modeResolution`; первый проход — `packages/turn/src/stages/narration.js:17` (`spatialResult({ consequence, checks, modeResolution, retrievedState })`), где `check_outcomes` собираются из `checks.results` (`:68-83`), а `qualitative_assessment` — из `modeResolution.decision_trace` (`:60-66`).
+- **Что.** Если рассказчик отработал не в запросе хода, а на повторе (in-request retry, recovery, рестарт), его вход не содержит исходов проверок и оценки, хотя на первом проходе они есть; `movement_blocked`/`movement_blocked_reason_code` одинаковы (берутся из consequence). Так было и на базе d9bb04e9; fleet/rt-narr эту разницу не вносил и не чинил. После rt-narr повтор в том же запросе чаще, чем раньше.
+- **Как жить.** Не чинить точечно: нужны закоммиченные исходы проверок в источнике replay (`last_turn`), владелец — подача рассказчику, CR #158 R-3. Проза на повторе может опускать результат броска.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-082 — in-request presentation replay: до ~360 с ответа, game-web без fetch-timeout
 - **Где.** `apps/game-server/src/runtime/llm-turn-budget.js` (`GAMEPLAY_TURN_DEADLINE_MS` 360_000, `GAMEPLAY_LLM_CALL_TIMEOUT_MS` 120_000); `apps/game-server/src/runtime/lower-dvina-trace-phase-2-presentation-resolve.js` (`SAME_REQUEST_PRESENTATION_ATTEMPTS` = 1); `apps/game-web/src/api/client.js` (`fetch` без `signal`/таймаута).

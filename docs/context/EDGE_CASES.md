@@ -35,7 +35,7 @@
 ## 3. Реестр typed errors (spatial/temporal)
 
 [typed-error-specifications.json](../../packages/contracts/src/spatial-v3/typed-error-specifications.json) —
-82 записи `{error_code, meaning, required_reaction[, retryability]}`, `source_version` `4.5.0-target.1`.
+86 записей `{error_code, meaning, required_reaction[, retryability]}`, `source_version` `4.7.0-target.1`.
 Файл **generated**: его собирает [generate-typed-error-specifications.mjs](../../tools/spatial-v3/generate-typed-error-specifications.mjs)
 из приложения C [spatial_architecture_standard_g0_g6.md](../../data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md)
 и приложения B [temporal_world_and_interruptible_activities.md](../../data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md).

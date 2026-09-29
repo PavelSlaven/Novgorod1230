@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "source_standard": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "source_amendment": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "source_version": "4.5.0-target.1",
+  "source_version": "4.7.0-target.1",
   "activation_status": "target",
   "contracts": [
     {
@@ -118,6 +118,16 @@
     {
       "contract_name": "calendar_profile_ref",
       "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "canonical_g5_connection_binding",
+      "owner_package": "@rus/world-base",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -648,6 +658,26 @@
     {
       "contract_name": "knowledge_spatial_ref",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "line_kind_alternative_method",
+      "owner_package": "@rus/world-base",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "line_kind_profile",
+      "owner_package": "@rus/world-base",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -2322,6 +2352,14 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "canonical_connection_projection_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "classification_gap",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -2475,6 +2513,22 @@
     },
     {
       "error_code": "knowledge_target_resolution_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "line_label_duplicate",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "line_label_invalid",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",
@@ -2699,6 +2753,14 @@
     },
     {
       "error_code": "route_segment_context_gap",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "error_code": "route_segment_too_long",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",

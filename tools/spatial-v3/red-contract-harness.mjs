@@ -60,8 +60,10 @@ const mergeByName = (base, amendment) => [...new Map([...base, ...amendment].map
 export async function loadHistoricalTarget() {
   const [standard, matrixText] = await Promise.all([readFile(standardPath, 'utf8'), readFile(matrixPath, 'utf8')]);
   const matrix = JSON.parse(matrixText);
-  const contracts = parseContracts(standard).sort();
-  const errors = parseTypedErrors(standard, '# Приложение C.', '# Приложение D.').sort();
+  // Historical P05 baseline = the standard before Appendix F (amendment 4.7.0 is an amendment, not baseline).
+  const historicalText = standard.includes('# Приложение F.') ? standard.slice(0, standard.indexOf('# Приложение F.')) : standard;
+  const contracts = parseContracts(historicalText).sort();
+  const errors = parseTypedErrors(historicalText, '# Приложение C.', '# Приложение D.').sort();
   if (contracts.length !== 160 || errors.length !== 58) throw new Error('Canonical P05 totals changed; rerun the normative freeze before P06');
   return { contracts, errors, stateMachines: parseAppendixA(standard) };
 }

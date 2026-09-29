@@ -12,10 +12,11 @@ const targetTypedErrors = JSON.parse(await readFile('packages/contracts/src/spat
 const matrix = JSON.parse(await readFile('docs/migration/spatial-v3/contract-implementation-matrix.json', 'utf8'));
 const conflicts = await readFile('docs/migration/spatial-v3/normative-conflicts.md', 'utf8');
 const count = (value) => new Set(value).size === value.length;
-const contracts = [...standard.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
+const historicalStandard = standard.includes('# Приложение F.') ? standard.slice(0, standard.indexOf('# Приложение F.')) : standard;
+const contracts = [...historicalStandard.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
 const errorSection = standard.slice(standard.indexOf('# Приложение C.'), standard.indexOf('# Приложение D.'));
 const errors = [...errorSection.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]).filter((x) => x !== 'code');
-if (!standard.includes('**Статус:** `active production`') || !standard.includes('**Версия:** `4.2.0`')) throw new Error('Historical standard metadata missing');
+if (!standard.includes('**Статус:** `active production`') || !standard.includes('**Версия:** `4.7.0`')) throw new Error('Historical standard metadata missing');
 if (targetSpecifications.source_version !== '4.5.0-target.1'
   || targetTypedErrors.source_version !== '4.5.0-target.1'
   || targetSpecifications.specifications?.length !== 225

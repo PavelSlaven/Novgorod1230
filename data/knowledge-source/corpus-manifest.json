@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "70f4b619005c972ca9f0e55eb3e91437ce817651558e76451be2190b38b34df0",
-      "bytes": 30570,
+      "sha256": "1841a4eebee36d9f94fd6d61f580018870a94fbfb74fe908d5cb14b77554a6a6",
+      "bytes": 30711,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -343,8 +343,8 @@
       "document_id": "spatial-architecture-standard-g0-g6",
       "canonical_path": "corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
       "file_name": "spatial_architecture_standard_g0_g6.md",
-      "sha256": "85c32000b212a14a21ac60281056e5d9fbe3df9000d636c92cc1ffd50913d021",
-      "bytes": 330841,
+      "sha256": "105763d07e68c6af116dab5fb1ad9064e314d05025ad96cfe1f8a312670a106f",
+      "bytes": 375171,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -383,8 +383,8 @@
       "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/spatial_v3_target_world_base_materialization_table_requirements.md",
       "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
-      "sha256": "b6c9d4422684fe7bb48e76d9a3e40ea542e72076a50a594838de4cd3478040ab",
-      "bytes": 5327,
+      "sha256": "d132e98cf37e268a5e261bdd688b528acb79838703154c7af3d95be0365c8d3b",
+      "bytes": 5742,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "highest_materialization_normative"

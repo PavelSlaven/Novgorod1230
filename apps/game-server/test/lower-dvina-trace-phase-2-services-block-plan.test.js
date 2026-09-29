@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createSeededRandomSource } from '@rus/checks-rng';
-import { createTurnCommandRegistry } from '@rus/turn';
+import { createTurnCommandRegistry, createTurnStepExecutionRegistry, runTurnStepLoop } from '@rus/turn';
 import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
 import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
@@ -168,8 +168,63 @@ test('an edge the actor sees as open is refused before executing when the moveme
     // The grounding the planner saw says open - only the owner's verdict blocks.
     const request = requestWithGrounding([{ operation: chosen,
       semantic_scope: { destination_status: 'open' } }]);
-    assert.equal(await blockPlan({ plan, request }), 'destination_occupied');
+    // The refusal is decided by the movement owner alone: the actor does not perceive
+    // the occupants, so the block carries no reason code (nothing to disclose).
+    assert.equal(await blockPlan({ plan, request }), true);
     assert.deepEqual(asked, ['edge:one']);
+  });
+
+test('an owner-only refusal carries no code even when the planner claims destination_occupied (P1-1)',
+  async () => {
+    const { registry, chosen } = await localRegistry('occupied');
+    const blockPlan = await turnStepBlockPlan({}, registry);
+    const plan = { resolution: 'domain_request', reason_code: 'destination_occupied',
+      operations: [chosen] };
+    const request = requestWithGrounding([{ operation: chosen,
+      semantic_scope: { destination_status: 'open' } }]);
+    const reason = await blockPlan({ plan, request });
+    assert.equal(reason, true);
+    assert.notEqual(typeof reason, 'string');
+  });
+
+test('a perceived occupied edge keeps the destination_occupied code even when the owner also refuses (P1-1)',
+  async () => {
+    const { registry, chosen } = await localRegistry('occupied');
+    const blockPlan = await turnStepBlockPlan({}, registry);
+    const plan = { resolution: 'domain_request', operations: [chosen] };
+    const request = requestWithGrounding([{ operation: chosen,
+      semantic_scope: { destination_status: 'occupied' } }]);
+    assert.equal(await blockPlan({ plan, request }), 'destination_occupied');
+  });
+
+test('through the real turn-step loop an owner-only refusal leaves blocked_plan_reason_code null (P1-1)',
+  async () => {
+    const { registry, chosen } = await localRegistry('occupied');
+    const blockPlan = await turnStepBlockPlan({}, registry);
+    const loop = await runTurnStepLoop({
+      requestId: 'req:p11', rootTurnId: 'turn:p11', committedStateVersion: 1,
+      rootPlayerAction: 'иду в проход', actor: { actor_ref: 'actor' },
+      initialWorkingProjection: { actor_ref: 'actor', visible_entities: [] }
+    }, {
+      blockPlan,
+      executionRegistry: createTurnStepExecutionRegistry({}),
+      projectPlayerSafeState: async () => ({ available_domain_operation_grounding: [{
+        operation: chosen, semantic_scope: { destination_status: 'open' } }] }),
+      revalidateCommittedState: async () => ({ state_version: 1 }),
+      turnStepModel: async (request) => ({
+        schema: 'turn_step_plan_v1', request_id: request.request_id,
+        committed_state_version: request.committed_state_version,
+        working_revision: request.working_revision, step_index: request.step_index,
+        interpretation: { player_goal: request.remaining_intent,
+          grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+        resolution: 'domain_request', goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [chosen], check: null, continuation: null, clarification: null,
+        direct_result_kind: null, reason_code: 'destination_occupied', reason: 'model claim'
+      })
+    });
+    assert.equal(loop.blocked_plan, true);
+    assert.equal(loop.blocked_plan_reason_code, null);
   });
 
 test('an edge the movement owner finds free is never refused, and later steps are not re-checked (F6)',

@@ -755,7 +755,7 @@ owner as any other entity. The movement owner's full occupancy
 (`spatial-v3-local-scene-movement.js`) alone decides the attempt: `turnStepBlockPlan`
 asks the chosen command's server-only `attemptRefusal` (never projected to the
 planner) and, when the owner finds the destination full, refuses the step as a
-zero-duration narrated refusal; the typed `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` stays the
+zero-duration narrated refusal without a reason code (the occupants may be unseen by the actor; only occupancy the actor perceives, in the grounding, yields `destination_occupied`); the typed `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` stays the
 last safety net. The model's `reason_code` never decides the outcome. The refusal is only
 made at step 1 of a turn; at step 2+ an occupied edge still ends in the typed 409 (LW-080).
 

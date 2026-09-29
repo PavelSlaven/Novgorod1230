@@ -158,13 +158,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
       }
       // The chosen command's own structural refusal (the movement owner's full-occupancy
       // verdict, which may name occupants the actor cannot perceive and is never shown).
+      // The block carries no reason code: a code would disclose the unseen occupancy.
       const commands = typeof registry?.registered === 'function' ? registry.registered() : [];
       for (const operation of chosen) {
         for (const command of commands) {
           if (typeof command.attemptRefusal === 'function'
             && command.semantic_binding?.matches?.({ operation }) === true
             && await command.attemptRefusal({ committed_state: state }) != null) {
-            return 'destination_occupied';
+            return true;
           }
         }
       }

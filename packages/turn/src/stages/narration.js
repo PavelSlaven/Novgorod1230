@@ -1,7 +1,6 @@
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
 import { assertValid, validateNarrationResult } from '../validators.js';
-import { committedBlockedMovementReasonCode } from './blocked-movement-reason.js';
 import { freezeOutput } from './shared.js';
 
 export async function buildNarrationStage({ playerInput, modeResolution, visibleContext,
@@ -51,8 +50,9 @@ export function spatialResult({ consequence, checks, modeResolution,
   const movement = typeof before === 'string' && typeof after === 'string'
     && before !== after ? { movement_committed: true } : {};
   if (consequence?.status === 'blocked') {
-    const movement_blocked_reason_code = consequence.movement_blocked_reason_code
-      ?? committedBlockedMovementReasonCode(modeResolution);
+    // The code is committed by the code owner (blockPlan) into the consequence; never inferred
+    // from the model plan, so the first pass and a replay give the narrator the same outcome.
+    const { movement_blocked_reason_code } = consequence;
     return movement_blocked_reason_code == null
       ? { movement_blocked: true }
       : { movement_blocked: true, movement_blocked_reason_code };

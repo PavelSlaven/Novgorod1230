@@ -47,25 +47,37 @@ test('spatial result recognizes committed active movement shapes', () => {
   });
 });
 
-test('blocked movement prefers code-owned consequence field over trace inference', () => {
+test('blocked movement reads its reason code only from the committed consequence', () => {
   assert.deepEqual(spatialResult({
-    consequence: { status: 'blocked', movement_blocked_reason_code: 'destination_occupied' },
-    modeResolution: { decision_trace: { step_traces: [{
-      applied: false,
-      approved_plan: { resolution: 'direct', goal_result: 'not_achieved', operations: [] }
-    }] } }
+    consequence: { status: 'blocked', movement_blocked_reason_code: 'destination_occupied' }
   }), { movement_blocked: true, movement_blocked_reason_code: 'destination_occupied' });
 });
 
-test('blocked movement exposes committed domain reason code in narrator outcome', () => {
-  assert.deepEqual(spatialResult({
-    consequence: { status: 'blocked' },
-    modeResolution: { decision_trace: { step_traces: [{
-      applied: false,
-      approved_plan: { resolution: 'direct', goal_result: 'not_achieved',
-        operations: [] }
-    }] } }
-  }), { movement_blocked: true, movement_blocked_reason_code: 'actor_movement_blocked' });
+test('blocked movement without a consequence code never infers one from the model plan trace', () => {
+  const operation = { op: 'request_movement', actor_ref: 'actor', target_ref: 'edge:1',
+    movement_kind: 'local', description: 'Проход 1' };
+  const modeResolution = { decision_trace: { step_traces: [
+    { applied: false,
+      approved_plan: { resolution: 'domain_request', reason_code: 'destination_occupied',
+        operations: [operation] },
+      plan_request: { player_safe_state: { available_domain_operation_grounding: [{
+        operation, semantic_scope: { destination_status: 'occupied' } }] } } },
+    { applied: false,
+      approved_plan: { resolution: 'direct', goal_result: 'not_achieved', operations: [] } }
+  ] } };
+  assert.deepEqual(spatialResult({ consequence: { status: 'blocked' }, modeResolution }),
+    { movement_blocked: true });
+});
+
+test('first pass and replay give the narrator the same blocked outcome', () => {
+  const consequence = { status: 'blocked', movement_blocked_reason_code: 'actor_movement_blocked' };
+  const firstPass = spatialResult({ consequence, checks: null,
+    modeResolution: { decision_trace: { step_traces: [{ applied: false,
+      approved_plan: { resolution: 'direct', goal_result: 'not_achieved', operations: [] } }] } },
+    retrievedState: null });
+  assert.deepEqual(spatialResult({ consequence }), firstPass);
+  assert.deepEqual(firstPass, { movement_blocked: true,
+    movement_blocked_reason_code: 'actor_movement_blocked' });
 });
 
 test('spatial result recognizes replayed committed movement from its source', () => {

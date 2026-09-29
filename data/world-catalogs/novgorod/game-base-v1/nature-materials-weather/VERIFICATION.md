@@ -510,3 +510,12 @@
 - natural_materials_soils/natural_materials.csv — approve: пересобран, равен сборке
 
 Вердикт группы: **approve**.
+
+## Независимая проверка stale-201 (Claude Opus 5.5, 2026-09-29)
+
+Пересборка несвежих выходов по #201: групповые сборщики, тест свежести без исключений. Проверка только чтением, скриптами.
+- weather_climate/water_profiles.csv — approve: +153 строки (по 51 на `pf_floodplain_meadow`, `pf_riverbank`, `pf_winter_ice_crossing` с `wb_nearshore_sea`). Вход — уже утверждённый `aeb8e72a` (places-binding/VERIFICATION.md:1099-1103). Море привязано только к реальному устьевому G4 `g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach` (node_binding.csv:18, G5-строки 129–134). Новые строки поле-в-поле повторяют утверждённый блок `pf_river_channel × nearshore`. `value_ru` пуст, тексты — ссылки на G4-обусловленные `presentation_texts.csv#npt_outer_exposed_approach__*`. Анахронизмов нет, все строки C/candidate.
+- reports/counts.json, README.md, weather_climate/README.md — approve: 1907 = 648 базовых (27 пар × 24) + 370 пробелов + 867 npt + 22 WK; сверено скриптом.
+- Ограничение: у `nm_spruce_boughs_poles` `material_kind=plant_stem`, поэтому в реестре материалов crafts он разрешается в `mt_reed;mt_straw`. Это неверно для лапника и жердей — исправить источник в natural_materials_soils отдельной задачей.
+
+Вердикт группы: **approve_with_limits**.

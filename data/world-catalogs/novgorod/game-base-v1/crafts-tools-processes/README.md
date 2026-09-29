@@ -48,7 +48,7 @@ node scripts/validate.cjs --self-test # проверки приёмки и от�
 | materials_registry/materials.csv | 103 |
 | materials_registry/late_materials_denylist.csv | 27 |
 | materials_registry/material_crosswalk.csv | 127 |
-| materials_registry/material_resolution.csv | 1498 |
+| materials_registry/material_resolution.csv | 2171 |
 | sources/sources.csv | 25 |
 
 Проверки `validate.cjs`: 29 из 29 PASS, из них 5 информационных (они всегда PASS и только сообщают покрытие). `--self-test` дополнительно отклоняет процесс без ножа, выходы массой больше туши, число с ложной source-ссылкой, разрыв класса very-small и рыбу без свежего продукта или видовой строки чистки.

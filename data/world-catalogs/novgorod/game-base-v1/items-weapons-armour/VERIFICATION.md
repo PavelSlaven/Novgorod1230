@@ -357,3 +357,9 @@ eq_messenger без роли выбирает «редкое боевое ору
 - items/weapons_armour.csv — approve_with_limits: expected_for_roles по tier у research_only строк, включая wp_horse_armour
 - scripts/validate.cjs — approve
 - validation_report.json — approve
+
+## Независимая проверка stale-201 (Claude Opus 5.5, 2026-09-29)
+
+- items/role_tier_pf_crosswalk.csv — approve: только перестановка двух одинаковых строк `no_source`. Отсортированный diff пуст, ключ сортировки полный.
+
+Вердикт группы: **approve**.

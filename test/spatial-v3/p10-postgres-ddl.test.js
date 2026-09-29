@@ -13,9 +13,9 @@ test('P10 applies fresh, reapplies part 13, and rejects route/orientation author
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p10_local_only', '-e', 'POSTGRES_USER=p10', '-e', 'POSTGRES_DB=p10', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 40; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'p10', '-d', 'p10']).status === 0) {
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p10', '-d', 'p10']).status === 0) {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      if (docker(['exec', name, 'pg_isready', '-U', 'p10', '-d', 'p10']).status === 0) { ready = true; break; }
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p10', '-d', 'p10']).status === 0) { ready = true; break; }
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }

@@ -20,7 +20,7 @@ test('P13 applies 001→002 idempotently and enforces the v3 spatial foundation'
   t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p13_local', '-e', 'POSTGRES_USER=p13', '-e', 'POSTGRES_DB=p13', 'postgres:16-alpine']).status, 0);
   let ready = false;
-  for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p13', '-d', 'p13']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p13', '-d', 'p13']).status === 0) { ready = true; break; } } }
+  for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p13', '-d', 'p13']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'p13', '-d', 'p13']).status === 0) { ready = true; break; } } }
   assert.equal(ready, true);
   const psql = (sql) => docker(['exec', '-i', name, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'p13', '-d', 'p13'], sql);
   const [v2, v3] = await Promise.all(['001_party_runtime.sql', '002_party_runtime_v3.sql'].map((file) => readFile(`schemas/party-db/${file}`, 'utf8')));

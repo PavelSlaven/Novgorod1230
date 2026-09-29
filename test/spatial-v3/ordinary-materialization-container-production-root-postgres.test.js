@@ -53,7 +53,7 @@ test('production root provisions active O2b and S1 in the first-entry P16',
     let ready=false;
     for (let attempt=0;attempt<50;attempt+=1) {
       await new Promise((done)=>setTimeout(done,250));
-      if (docker(['exec',containerName,'pg_isready','-U','ordinary',
+      if (docker(['exec',containerName,'pg_isready','-h','127.0.0.1','-U','ordinary',
         '-d','ordinary']).status===0) { ready=true; break; }
     }
     assert.equal(ready,true);

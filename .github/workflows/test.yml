@@ -110,6 +110,11 @@ jobs:
       - name: Start PostgreSQL for full profile
         if: steps.profile.outputs.profile == 'full'
         run: |
+          for attempt in 1 2 3; do
+            docker pull postgres:16 && break
+            test "$attempt" -lt 3
+            sleep 5
+          done
           docker run --detach --name spatial-v3-ci-postgres \
             --env POSTGRES_DB=postgres \
             --env POSTGRES_PASSWORD=postgres \

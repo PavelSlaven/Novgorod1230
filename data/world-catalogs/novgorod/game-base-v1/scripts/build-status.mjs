@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 const base = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const verdicts = ['approve', 'approve_with_limits', 'rework'];
-const extensions = /\.(?:csv|json|md|mjs|py|tsv)$/i;
-const targetPattern = /(?:[\w.-]+\/)*[\w.-]+\.(?:csv|json|md|mjs|py|tsv)\b|(?:[\w.-]+\/)+/gi;
+const extensions = /\.(?:cjs|csv|js|json|md|mjs|py|tsv)$/i;
+const targetPattern = /(?:[\w.-]+\/)*[\w.-]+\.(?:cjs|csv|js|json|md|mjs|py|tsv)\b|(?:[\w.-]+\/)+/gi;
 
 function verdict(text) {
   return text.replace(/\*/g, '').trim().toLowerCase().match(/^(approve_with_limits|approve|rework)(?=$|[\s(.,:;])/)?.[1] ?? null;

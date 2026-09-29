@@ -681,7 +681,9 @@
   "npc_psychology": {
     "psychology_profiles.csv": 139,
     "occupations_covered": 68,
-    "roles_covered": 71
+    "roles_covered": 71,
+    "occupation_goals.csv": 265,
+    "occupation_fears.csv": 158
   },
   "speech_address": {
     "speech_registers.csv": 139,

@@ -101,7 +101,9 @@ test('approved M2c open capacity successor imports through P12 without overwriti
     (SELECT count(*)::int FROM world_base.spatial_v3_scene_materialization_candidates WHERE scene_template_version=2) AS candidates,
     (SELECT count(*)::int FROM world_base.spatial_v3_g6_acoustic_baselines WHERE scene_template_version=2) AS acoustics,
     (SELECT count(*)::int FROM world_base.spatial_v3_local_movement_eligibility_profiles WHERE scene_template_version=2) AS movement`)).rows[0];
-  assert.deepEqual(v2, { scenes: 17, candidates: 220, acoustics: 71, movement: 68 });
+  const approvedAcoustics = JSON.parse(await readFile(
+    'data/world-catalogs/novgorod/m2c-acoustic/approved/spatial_v3_g6_acoustic_baselines.json', 'utf8'));
+  assert.deepEqual(v2, { scenes: 17, candidates: 220, acoustics: approvedAcoustics.length, movement: 68 });
   const binding = (await pool.query(`SELECT p.source_entity_id AS id,
       p.source_entity_version AS version,p.world_revision_id,p.id AS profile_id,
       c.scene_template_id

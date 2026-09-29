@@ -19,7 +19,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_authoring_versions.json",
-      "sha256": "66c377ee01dca7295350ea2488856614404b20abd806e89d954e721c5dedee80",
+      "sha256": "0ad14528df706883a46e8439a718cd17e15e59aa4cce83066f338ec3bfc74f84",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -218,7 +218,7 @@
     {
       "table": "spatial_v3_g6_acoustic_baselines",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_g6_acoustic_baselines.json",
-      "sha256": "8accd51008fe12000254e8edab92e20d8ec4da8d09fc69ee0a7a7e0983320f61",
+      "sha256": "7ec026594d8bf35165bf78958001bdd47d92c6b98de7990861e12919cb78f4b9",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",

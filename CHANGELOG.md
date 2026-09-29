@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- feat(m2c): canonical-walk G6 ambient baselines (147 rows) for the destinations of canonical G5 connections, coverage 195/195 target×slot; generator `scripts/promote-m2c-acoustic-packages.mjs` (base + approved packages → approved acoustic dataset, authoring versions, manifest, capacity-v2, P12 request); P12 request `m2c-p12-v17-walk-acoustics-v1` (12653 rows) — только свежий bootstrap: пересоздайте локальные пары `novgorod_world_v17` / `novgorod_party_v17`, живая v17 не догоняется (D27) (#98)
 - fix(narration): rt-narr — a committed turn no longer waits for a next request to get its text (one in-request narrator retry, two passes total; recovery survives an ended turn budget), the first screen retries a Stage 23 handoff refusal once with one repair per request, `movement_blocked_reason_code` is committed by code only (none for occupants the actor does not perceive), movement buttons in game-web; LW-082 added LW-083 added
 - chore(architecture): file-size limits removed; split code by responsibility (AI §16), MODULE_RULES item 7 reworded (#208)
 - data(game-base): archive import PR-B for crafts and buildings-interiors — unambiguous decisions only, typed needs_check queue, directed material kinship in the ownership checker (imp-crafts) (#207)

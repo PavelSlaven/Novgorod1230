@@ -4,7 +4,7 @@
   "bundle_id": "novgorod_spatial_v3_m2c_acoustic_approved_001",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "status": "approved",
-  "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json",
+  "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-walk/approval.json",
   "delete_policy": "forbid",
   "datasets": [
     {
@@ -12,7 +12,7 @@
       "file": "m2c-acoustic/approved/source_records.json",
       "sha256": "99079ad4ba3f83e0e59878ec4b6f9f80c049c65f2bbba397f378e8f387d54045",
       "status": "approved",
-      "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json",
+      "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-walk/approval.json",
       "delete_policy": "forbid",
       "depends_on": []
     },
@@ -41,9 +41,9 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "m2c-acoustic/approved/spatial_v3_authoring_versions.json",
-      "sha256": "9354ef5b4c9571bc6cef7d9b7c0076d7cea294d9be3f2f103d984acc295193eb",
+      "sha256": "186c178c0cc8225a19be9c643303ecaaf01fdc219cc3963aeabbdc6937d29f7b",
       "status": "approved",
-      "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json",
+      "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-walk/approval.json",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records",
@@ -524,9 +524,9 @@
     {
       "table": "spatial_v3_g6_acoustic_baselines",
       "file": "m2c-acoustic/approved/spatial_v3_g6_acoustic_baselines.json",
-      "sha256": "9d7f7a482fd4709813f1930e0abdd3fb029735c16e401566fb323a40f865be01",
+      "sha256": "8056b3816f512ce1e8c516fea7026942cce60e9e81fb148b14ade67c6e89d91d",
       "status": "approved",
-      "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json",
+      "provenance_ref": "data/world-catalogs/novgorod/m2c-acoustic/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json; data/world-catalogs/novgorod/m2c-acoustic/canonical-walk/approval.json",
       "delete_policy": "forbid",
       "depends_on": [
         "source_records",

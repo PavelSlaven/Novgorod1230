@@ -9,7 +9,6 @@ import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
 import { SITE_TRAVERSAL_OWNER } from './spatial-v3-site-traversal-commit.js';
-import { withoutSceneNpcs } from './scene-npcs-readback.js';
 
 export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
   partyId, turnNumber, nextVersion, changeSetId, idemId, envelope,
@@ -58,7 +57,7 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
   state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,
   visibleEnvelope
 }) {
-  const next = structuredClone(withoutSceneNpcs(state));
+  const next = structuredClone(state);
   applyNpcRoutineTemporalResults(next, envelope.time_update.temporal_results);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;

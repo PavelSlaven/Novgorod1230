@@ -2,6 +2,7 @@ import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvin
 import { canonicalDigest } from '@rus/materialization';
 import { requireTurnStepCommitEnvelope } from '@rus/turn';
 import { serverError } from '../../errors.js';
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -196,8 +197,9 @@ export async function commitLowerDvinaTraceTurnStep({
     visibleEnvelope,
     turnConsequence: factual.consequence
   });
+  // Scene NPCs are read from the party tables each turn; the snapshot never keeps them.
   const rootWrites = buildLowerDvinaTraceTurnStepRootWrites({
-    partyId, state, snapshot: turnStep.snapshot, envelope, nextVersion,
+    partyId, state, snapshot: withoutSceneNpcs(turnStep.snapshot), envelope, nextVersion,
     turnNumber, changeSetId, idemId, pendingScreen,
     clockChanged: base.clockChanged
   });

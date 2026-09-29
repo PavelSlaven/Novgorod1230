@@ -39,6 +39,13 @@ function installStub() {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    if (system.includes('schema must equal world_knowledge_query_plan_v1.')
+      && input.purpose !== 'semantic_resolution') {
+      // only semantic_resolution may plan no domain
+      return json({ schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: [input.allowed_domains[0]], focus_refs: [], requested_predicates: [],
+        search_hints: [] });
+    }
     if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
       const request = input.request ?? input;
       const choices = turnStepOperationChoices(request);
@@ -110,7 +117,7 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
     const { runtime } = await createPresenceProductionRoot(env);
     try {
       let partyId = null;
-      for (let attempt = 0; attempt < 4 && partyId == null; attempt += 1) {
+      for (let attempt = 0; attempt < 6 && partyId == null; attempt += 1) {
         const opening = await runtime.startNewGame({ scenario_id: 'novgorod_riverbank_approach_v1',
           request_id: `scene-npcs-start-${attempt}` });
         await runtime.acknowledgeOpening(opening.party_id, { client_ack_id: `scene-npcs-ack-${attempt}` });
@@ -118,19 +125,37 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
           const generated = (await env.partyPool.query(
             'SELECT bool_or(origin=$2) AS g FROM party_runtime.party_g5_sites WHERE party_id=$1',
             [opening.party_id, 'generated'])).rows[0].g === true;
-          if (generated) { partyId = opening.party_id; break; }
-          const labels = (await runtime.getPartyScreen(opening.party_id)).screen?.panels?.route;
-          if (!labels?.visible && step === 0) {
-            await runtime.submitTurn(opening.party_id, { raw_text: TARGET_SMOKE_INPUT,
-              request_id: `scene-npcs-look-${attempt}` });
+          if (generated) {
+            const people = Number((await env.partyPool.query(
+              `SELECT count(*)::int AS n FROM party_runtime.entity_placements pl
+                 JOIN party_runtime.scene_position_nodes pos ON pos.party_id=pl.party_id
+                  AND pos.id=pl.position_node_id
+                 JOIN party_runtime.party_g6_instances g6 ON g6.party_id=pos.party_id
+                  AND g6.id=pos.g6_instance_id
+                 JOIN party_runtime.party_g5_sites site ON site.party_id=g6.party_id
+                  AND site.id=g6.host_id AND site.origin='generated'
+                WHERE pl.party_id=$1 AND pl.entity_kind='npc'`, [opening.party_id])).rows[0].n);
+            if (people > 0) partyId = opening.party_id; // composition is 0-2 people per place
+            break;
           }
-          await runtime.submitTurn(opening.party_id, { raw_text: PRESENCE_E2E_MOVE_TEXT,
-            request_id: `scene-npcs-move-${attempt}-${step}` });
+          try {
+            const route = (await runtime.getPartyScreen(opening.party_id)).screen?.panels?.route;
+            if (!route?.visible && step === 0) {
+              await runtime.submitTurn(opening.party_id, { raw_text: TARGET_SMOKE_INPUT,
+                request_id: `scene-npcs-look-${attempt}` });
+            }
+            await runtime.submitTurn(opening.party_id, { raw_text: PRESENCE_E2E_MOVE_TEXT,
+              request_id: `scene-npcs-move-${attempt}-${step}` });
+          } catch (error) { // ~1 in 4 parties: the planner offers no movement (B1 finding)
+            console.log('SCENE-NPCS party skipped:', String(error.message).slice(0, 120));
+            break;
+          }
         }
       }
       assert.ok(partyId, 'a generated site must be reached');
 
-      const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool });
+      const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
+        committer: { async commit() { throw new Error('read-only'); } } });
       const state = await repository.loadPhase2State(partyId);
       const loaded = state.npcs.filter((npc) => npc.runtime_source === SCENE_NPC_SOURCE);
       assert.equal(loaded.length > 0, true, 'NPCs of the generated site must be loaded');
@@ -166,6 +191,10 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       assert.equal(Object.hasOwn(after.payload, 'scene_position_g6'), false);
       assert.equal(after.payload.conversation_statements?.some(
         ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'), true);
+      // the next load re-checks snapshot against rows and reads the scene NPCs again
+      const reloaded = await repository.loadPhase2State(partyId);
+      assert.equal(loaded.every(({ instance_id: id }) => reloaded.npcs.some(
+        (npc) => npc.instance_id === id && npc.runtime_source === SCENE_NPC_SOURCE)), true);
     } finally {
       await runtime.close();
     }

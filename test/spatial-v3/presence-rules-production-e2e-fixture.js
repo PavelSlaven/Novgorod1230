@@ -356,7 +356,7 @@ export function installPresenceProductionE2eFetch({
 }
 
 export async function createPresenceProductionRoot({
-  worldPool, partyPool, approvals, rootDir,
+  worldPool, partyPool, approvals, rootDir, llmSettings = null,
 }) {
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
@@ -373,6 +373,7 @@ export async function createPresenceProductionRoot({
         actorApproval: approvals.actorApproval,
       },
       traceTurnDecisionSecret: 'isolated-presence-e2e-secret',
+      ...(llmSettings == null ? {} : { llmSettings }),
     },
     pools: {
       worldPool: {

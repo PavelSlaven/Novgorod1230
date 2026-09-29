@@ -119,9 +119,12 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(result.schema.world_tables, 219);
     assert.equal(result.schema.party_migrations, 37);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
-    assert.equal(result.p12.inserted_rows, JSON.parse(await readFile(
-      'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1/request.json', 'utf8')
-    ).expected_readback.distinct_pinned_rows);
+    // Distinct across five bundles; independent of the request field the bootstrap returns.
+    const p12Readback = JSON.parse(await readFile(
+      'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1/request.json', 'utf8')).expected_readback;
+    const distinctPinnedRows = Object.values(p12Readback.by_table).reduce((sum, count) => sum + count, 0);
+    assert.equal(distinctPinnedRows, p12Readback.distinct_pinned_rows);
+    assert.equal(result.p12.inserted_rows, distinctPinnedRows);
     assert.deepEqual(result.additional_start_owners,
       { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
     assert.equal(result.appearance_v3.inserted_rows, 129);

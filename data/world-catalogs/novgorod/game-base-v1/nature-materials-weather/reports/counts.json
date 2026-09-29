@@ -25,8 +25,8 @@
    "temperature_profile.csv": 48,
    "water_profiles.csv": 1754,
    "weather_season_climatology.csv": 36,
-   "weather_states.csv": 9,
    "weather_state_temperature_modifiers.csv": 9,
+   "weather_states.csv": 9,
    "weather_transitions.csv": 315,
    "wind_air_profiles.csv": 70,
    "weather_transition_profile_v2.candidate.json": "9 states"

@@ -49,8 +49,16 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
   const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({
     party_id: partyId, g4_id: current.site.parent_g4_id });
   if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
+  let canonical_connections = [];
+  if (current.site.origin === 'canonical') {
+    const connections = await worldBaseReader.readApprovedCanonicalG5Connections({ g4: binding.value.g4,
+      canonical_g5: { id: current.site.canonical_g5_ref.entity_id,
+        version: Number(current.site.canonical_g5_ref.authoring_version) } });
+    if (!connections?.ok) gap('approved_canonical_connections_required', connections?.error);
+    canonical_connections = connections.value;
+  }
   return { ...current, ...binding.value, closure: closure.value, snapshot: loaded.snapshot,
-    scene: sceneWithLocalTopology, partyId, actorId };
+    canonical_connections, scene: sceneWithLocalTopology, partyId, actorId };
 }
 
 export function createSpatialV3ExpansionContextReader({ partyPool, worldBaseReader, release } = {}) {

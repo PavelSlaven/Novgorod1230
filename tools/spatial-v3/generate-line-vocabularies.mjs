@@ -44,7 +44,7 @@ const consumers = {
     { contract: 'g5_site_connection', field: 'line_direction_id', rule: 'Only absolute values with an inverse (eight cardinal, upstream/downstream, uphill/downhill, landward/waterward); the reverse line carries the inverse.' },
     { contract: 'world_route_segment', field: 'line_direction_id', rule: 'Only absolute values with an inverse; the reverse segment carries the inverse.' },
     { contract: 'canonical_g5_connection_binding', field: 'line_direction_id', rule: 'Only absolute values with an inverse; the reverse binding carries the inverse.' },
-    { contract: 'expansion_slot', field: 'entry_line_direction_id', rule: 'Only absolute values with an inverse; the reverse row carries the inverse.' }
+    { contract: 'expansion_slot', field: 'entry_line_direction_id', rule: 'Only absolute values with an inverse; required for through slots; the reverse row carries the inverse.' }
   ]
 };
 const newVocabularies = [
@@ -53,10 +53,9 @@ const newVocabularies = [
       { contract: 'line_kind_profile', field: 'line_kind_id', rule: 'Exactly one approved profile per line kind.' },
       { contract: 'g5_site_connection', field: 'line_kind_id', rule: 'Equals the line kind of the projected authoring version.' },
       { contract: 'world_route_segment', field: 'line_kind_id', rule: 'Method, cost profile, recheck policy and environment equal those of the line kind profile.' },
-      { contract: 'expansion_slot', field: 'entry_line_kind_id', rule: 'Line kind of the connection created for a generated site of the slot.' }
     ], source_ranges: ['amendment 4.7.0 §4.7.2'] },
   { pseudo_type: 'controlled_duration_band', registry_id: 'spatial.movement.duration_band', values: durationBands,
-    consumers: [{ contract: 'movement option projection', field: 'duration_band', rule: 'Rough duration shown at choice; band limits in minutes are an approved profile; the exact time is not shown.' }],
+    consumers: [{ contract: 'movement_cost_summary', field: 'duration_band', rule: 'Rough duration shown at choice; band limits in minutes are an approved profile; the exact time is not shown.' }],
     source_ranges: ['amendment 4.7.0 §14.4'] }
 ];
 
@@ -77,7 +76,15 @@ for (const [offset, row] of newVocabularies.entries()) {
     consumers: row.consumers, source_ranges: row.source_ranges, values: rows(row.values).sort(byId) };
   vocabularies.push({ ...value, digest: canonicalDigest(value) });
 }
+// The registry pins the BASE revision of the standard (before amendment 4.7.0), so the standard can pin the registry without a cycle;
+// plan_document_sha256 pins the approved CR text of the amendment.
+const baseStandardSha256 = '85c32000b212a14a21ac60281056e5d9fbe3df9000d636c92cc1ffd50913d021';
+const approvedPlanSha256 = '06e313747730a9c13f7796f1658bb9e454e0f9cc0e1f382d2aeaa74f3bea06ca';
 const registry = { ...base, version,
+  source_document: 'data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md',
+  source_document_supplied_filename: 'spatial_architecture_standard_g0_g6.md',
+  source_document_sha256: baseStandardSha256,
+  plan_document_sha256: approvedPlanSha256,
   approval_basis: 'Spatial standard amendment 4.7.0: line kinds, line direction values, rough duration bands, alternative movement method and authoring entity kinds of the line contracts; historical v1-v4 registries remain immutable.',
   vocabularies, vocabulary_count: vocabularies.length,
   value_count: vocabularies.reduce((count, row) => count + row.values.length, 0) };

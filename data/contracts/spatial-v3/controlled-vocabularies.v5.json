@@ -3,10 +3,10 @@
   "version": "5.0.0",
   "status": "approved",
   "approval_basis": "Spatial standard amendment 4.7.0: line kinds, line direction values, rough duration bands, alternative movement method and authoring entity kinds of the line contracts; historical v1-v4 registries remain immutable.",
-  "source_document": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "source_document_supplied_filename": "Механика_течения_времени_v4_implementation_ready.md",
-  "source_document_sha256": "f97e71536c08a3b5cc0414fe25460bf70b2d95ee94ff861f785b0a3d9fbfb26e",
-  "plan_document_sha256": "d8464cbb91708379c3a4cf288b1842ee41676199fb8a0acaf51b79bcb0623016",
+  "source_document": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+  "source_document_supplied_filename": "spatial_architecture_standard_g0_g6.md",
+  "source_document_sha256": "85c32000b212a14a21ac60281056e5d9fbe3df9000d636c92cc1ffd50913d021",
+  "plan_document_sha256": "06e313747730a9c13f7796f1658bb9e454e0f9cc0e1f382d2aeaa74f3bea06ca",
   "vocabulary_count": 23,
   "value_count": 531,
   "extension_policy": "Any added, removed, renamed or semantically changed value requires a new registry version and new digest. Existing pinned versions remain readable.",
@@ -953,7 +953,7 @@
         {
           "contract": "expansion_slot",
           "field": "entry_line_direction_id",
-          "rule": "Only absolute values with an inverse; the reverse row carries the inverse."
+          "rule": "Only absolute values with an inverse; required for through slots; the reverse row carries the inverse."
         }
       ],
       "source_ranges": [
@@ -1089,7 +1089,7 @@
           "description": "direction / west"
         }
       ],
-      "digest": "2655667596778b36891c295148176271130d6fc8ac7a1aac44416f8889cac9b6"
+      "digest": "e1a411a516c028dbd845bd8cf511b813c54287bfc29775144b89aa8d6392aa32"
     },
     {
       "pseudo_type": "controlled_endpoint_kind",
@@ -4320,11 +4320,6 @@
           "contract": "world_route_segment",
           "field": "line_kind_id",
           "rule": "Method, cost profile, recheck policy and environment equal those of the line kind profile."
-        },
-        {
-          "contract": "expansion_slot",
-          "field": "entry_line_kind_id",
-          "rule": "Line kind of the connection created for a generated site of the slot."
         }
       ],
       "source_ranges": [
@@ -4494,7 +4489,7 @@
           }
         }
       ],
-      "digest": "4174ea161efdfdf6d3b1d5f16cd2190a5992c6709e1e39cd91daf80ec8945993"
+      "digest": "bed2424e0d4cd3ca09b46e76211fe49560a0875eb14a7ee9afe0cc7ed75a8424"
     },
     {
       "pseudo_type": "controlled_duration_band",
@@ -4506,7 +4501,7 @@
       "canonical_order": "value.id ascending (Unicode code-point order)",
       "consumers": [
         {
-          "contract": "movement option projection",
+          "contract": "movement_cost_summary",
           "field": "duration_band",
           "rule": "Rough duration shown at choice; band limits in minutes are an approved profile; the exact time is not shown."
         }
@@ -4561,8 +4556,8 @@
           }
         }
       ],
-      "digest": "8c7c3471e24ded91eba0be90871615567561fa3eaa79dabab2d7409b6ae79670"
+      "digest": "8e9b430afc646e9614f43401c672fa5382db2758aed4910aee843549dbdbb273"
     }
   ],
-  "aggregate_digest": "55fab7d850647b2d5855e7fb1d5cde55a78bb12cd62de57460bef6c1dc1588e5"
+  "aggregate_digest": "a7dbe84290fb490cec216a096b22d7a2ebc82c21b8cc29c36872f5331d324b94"
 }

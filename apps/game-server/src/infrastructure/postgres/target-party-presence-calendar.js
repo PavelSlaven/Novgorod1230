@@ -1,5 +1,5 @@
 import { encodePresenceRulePeriodNumber } from '@rus/materialization';
-import { serverError } from '../errors.js';
+import { serverError } from '../../errors.js';
 
 /**
  * Calendar for presence rules at a G5 site.

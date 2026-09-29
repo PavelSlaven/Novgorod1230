@@ -61,7 +61,7 @@ import { createTargetGeneratedFirstEntry } from
 import { createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { readTargetPartyPresenceCalendar as resolveTargetPartyPresenceCalendar } from
-  './target-party-presence-calendar.js';
+  '../infrastructure/postgres/target-party-presence-calendar.js';
 import { createRuntimeCatalogWorldBaseReader } from '@rus/runtime-catalog';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { projectSpatialV3CurrentVisibleContext,

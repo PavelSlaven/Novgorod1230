@@ -6,7 +6,7 @@ export { createTopologyProposalValidator } from './spatial-v3-ports.js';
 export { materializeS1FormalSpatialProposal, materializeS1OpenOneSpaceTopology } from './spatial-v3-s1-first-entry.js';
 export { deriveSpatialV3ExpansionCapacity } from './spatial-v3-expansion-capacity.js';
 export { selectSpatialV3Expansion } from './spatial-v3-expansion-selection.js';
-export { materializeSpatialV3GeneratedScene, materializeSpatialV3Expansion } from './spatial-v3-generated-scene.js';
+export { materializeSpatialV3GeneratedScene, materializeSpatialV3Expansion, materializeSpatialV3CanonicalConnection } from './spatial-v3-generated-scene.js';
 
 
 /**

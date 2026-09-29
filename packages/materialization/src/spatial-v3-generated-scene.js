@@ -122,6 +122,84 @@ export function materializeSpatialV3GeneratedScene({ party_id, site_id, baseline
   return freeze({ ok: true, proposal: { ...proposal, canonical_digest: digest(proposal) } });
 }
 
+const versionedString = (value) => {
+  if (value == null) return null;
+  const at = value.lastIndexOf('@');
+  return at > 0 ? ref(value.slice(0, at), value.slice(at + 1)) : null;
+};
+
+/** The site connection and its two endpoint bindings, one shape for every kind of connection.
+ * Null when the profile carries a risk or condition reference that is not id@version. */
+function connectionRows({ party_id, change_set_id, connectionId, mechanics, from, to }) {
+  if ([mechanics.risk_profile_ref, mechanics.availability_condition_set_ref]
+    .some((value) => value != null && versionedString(value) == null)) return null;
+  const write = (target_table, id, record) => ({ target_table, id, record: { party_id, ...record } });
+  return [write('g5_site_connections', connectionId, { id: connectionId,
+    from_site_id: from.site_id, to_site_id: to.site_id,
+    ...clean(mechanics, ['passage_type_id', 'cost_kind', 'action_units', 'baseline_movement_method_id', 'base_minutes', 'capacity']),
+    transition_environment_profile_ref: optionalRef(mechanics, 'transition_environment_profile'),
+    movement_orientation_profile_ref: optionalRef(mechanics, 'movement_orientation_profile'),
+    movement_method_cost_profile_ref: optionalRef(mechanics, 'movement_method_cost_profile'),
+    dynamic_recheck_policy_ref: optionalRef(mechanics, 'dynamic_recheck_policy'),
+    risk_profile_ref: versionedString(mechanics.risk_profile_ref),
+    availability_condition_set_ref: versionedString(mechanics.availability_condition_set_ref),
+    status: 'active', state_version: 1, created_change_set_id: change_set_id,
+    updated_change_set_id: change_set_id }),
+  ...[['from', from], ['to', to]].map(([role, end]) => write('party_site_connection_endpoint_bindings',
+    `${connectionId}:${role}`, { id: `${connectionId}:${role}`, site_connection_id: connectionId,
+      endpoint_role: role, g5_site_id: end.site_id, position_id: end.position_id, source_slot_key: end.slot_key,
+      status: 'active', state_version: 1, activated_change_set_id: change_set_id }))];
+}
+
+/** One canonical-to-canonical connection inside a locked G4 (approved connection binding).
+ * Like the terminal of an expansion, the target place is either already committed or prepared
+ * in `terminal_writes`; no frontier, chain, ledger or reservation is involved. */
+export function materializeSpatialV3CanonicalConnection({ party_id, change_set_id, snapshot, source,
+  binding, profile, terminal_target, terminal_writes = [], dependency_pins,
+  materialization_trace_id } = {}) {
+  const reject = (reason) => failure('authoring_dependency_pin_missing',
+    { dependency_pins, world_revision_id: profile?.world_revision_id },
+    { stage: 'canonical_connection', reason });
+  if (!snapshot || !source || !binding || !profile || !terminal_target || !text(party_id)
+    || !text(change_set_id) || !text(materialization_trace_id)) return reject('exact_connection_context_required');
+  const site = snapshot.sites.find((row) => row.id === source.site_id);
+  const position = snapshot.scene_positions.find((row) => row.id === source.position_id);
+  const g6 = snapshot.g6_instances.find((row) => row.id === position?.g6_instance_id);
+  const baseline = snapshot.scene_baselines.find((row) => row.id === g6?.scene_baseline_id);
+  const sameCanonical = (row, id, version) => row?.origin === 'canonical' && row.status === 'active'
+    && row.canonical_g5_ref?.entity_id === id && String(row.canonical_g5_ref.authoring_version) === String(version);
+  if (binding.status !== 'approved' || !sameCanonical(site, binding.from_canonical_g5_id, binding.from_canonical_g5_version)
+    || site.parent_g4_id !== binding.parent_g4_id || position?.status !== 'active'
+    || baseline?.host_id !== site.id || baseline.status !== 'active' || g6?.status !== 'active'
+    || position.template_slot_key !== source.departure_position_slot_key
+    || source.departure_endpoint_slot_key !== binding.from_scene_endpoint_slot_key) {
+    return reject('committed_source_scene_required');
+  }
+  const target = [...snapshot.sites, ...terminal_writes.filter((row) => row.target_table === 'party_g5_sites')
+    .map((row) => row.record)].find((row) => row.id === terminal_target.site_id);
+  if (terminal_target.canonical_g5_id !== binding.to_canonical_g5_id
+    || terminal_target.canonical_g5_version !== binding.to_canonical_g5_version
+    || terminal_target.slot_key !== binding.to_scene_endpoint_slot_key || !text(terminal_target.position_id)
+    || !sameCanonical(target, binding.to_canonical_g5_id, binding.to_canonical_g5_version)
+    || target.parent_g4_id !== binding.parent_g4_id) return reject('prepared_canonical_terminal_endpoint_required');
+  if (profile.status !== 'approved' || profile.profile_scope !== 'site_connection'
+    || profile.id !== binding.connection_profile_id || profile.version !== binding.connection_profile_version
+    || profile.availability_condition_set_ref != null || profile.cost_kind !== 'action') {
+    return reject('exact_connection_profile_required');
+  }
+  const connectionId = `canconn:${party_id}:${binding.id}`;
+  if (snapshot.site_connections.some((row) => row.id === connectionId)) return reject('connection_already_committed');
+  const connection = connectionRows({ party_id, change_set_id, connectionId, mechanics: profile,
+    from: { site_id: site.id, position_id: position.id, slot_key: source.departure_endpoint_slot_key },
+    to: { site_id: target.id, position_id: terminal_target.position_id, slot_key: terminal_target.slot_key } });
+  if (!connection) return reject('versioned_connection_condition_required');
+  const proposal = { kind: 'canonical_connection_rows', party_id, g4_id: binding.parent_g4_id,
+    change_set_id, inserts: [...terminal_writes, ...connection], updates: [], expected_state_versions: [],
+    connection_id: connectionId, target_site_id: target.id, target_position_id: terminal_target.position_id,
+    source_position_id: position.id, dependency_pins, moves_traveller: false, advances_time: false };
+  return freeze({ ok: true, proposal: { ...proposal, canonical_digest: digest(proposal) } });
+}
+
 /** Expansion of one locked G4. All rows remain a proposal until the P16 commit. */
 export function materializeSpatialV3Expansion({ party_id, change_set_id, closure, snapshot,
   selection, source, scene, candidate_ordinal, dependency_pins, now, terminal_target,
@@ -221,31 +299,11 @@ export function materializeSpatialV3Expansion({ party_id, change_set_id, closure
     updated_change_set_id: change_set_id };
   if (ledger) update('party_g4_expansion_ledgers', ledgerId, ledgerRecord, ledger);
   else rows.push(write('party_g4_expansion_ledgers', ledgerId, { ...ledgerRecord, state_version: 1 }));
-  const versionedString = (value) => {
-    if (value == null) return null;
-    const at = value.lastIndexOf('@');
-    return at > 0 ? ref(value.slice(0, at), value.slice(at + 1)) : null;
-  };
-  if ([mechanics.risk_profile_ref, mechanics.availability_condition_set_ref]
-    .some((value) => value != null && versionedString(value) == null)) return reject('versioned_connection_condition_required');
-  rows.push(write('g5_site_connections', connectionId, { id: connectionId,
-    from_site_id: site.id, to_site_id: targetSite,
-    ...clean(mechanics, ['passage_type_id', 'cost_kind', 'action_units', 'baseline_movement_method_id', 'base_minutes', 'capacity']),
-    transition_environment_profile_ref: optionalRef(mechanics, 'transition_environment_profile'),
-    movement_orientation_profile_ref: optionalRef(mechanics, 'movement_orientation_profile'),
-    movement_method_cost_profile_ref: optionalRef(mechanics, 'movement_method_cost_profile'),
-    dynamic_recheck_policy_ref: optionalRef(mechanics, 'dynamic_recheck_policy'),
-    risk_profile_ref: versionedString(mechanics.risk_profile_ref),
-    availability_condition_set_ref: versionedString(mechanics.availability_condition_set_ref),
-    status: 'active', state_version: 1, created_change_set_id: change_set_id,
-    updated_change_set_id: change_set_id }));
-  for (const [role, endpointSite, endpointPosition, slotKey] of [
-    ['from', site.id, position.id, source.departure_endpoint_slot_key],
-    ['to', targetSite, arrival.position_id, arrival.slot_key]
-  ]) rows.push(write('party_site_connection_endpoint_bindings', `${connectionId}:${role}`, {
-    id: `${connectionId}:${role}`, site_connection_id: connectionId, endpoint_role: role,
-    g5_site_id: endpointSite, position_id: endpointPosition, source_slot_key: slotKey,
-    status: 'active', state_version: 1, activated_change_set_id: change_set_id }));
+  const connection = connectionRows({ party_id, change_set_id, connectionId, mechanics,
+    from: { site_id: site.id, position_id: position.id, slot_key: source.departure_endpoint_slot_key },
+    to: { site_id: targetSite, position_id: arrival.position_id, slot_key: arrival.slot_key } });
+  if (!connection) return reject('versioned_connection_condition_required');
+  rows.push(...connection);
   if (!terminal) {
     const template = selection.selected_template;
     rows.push(write('party_g5_sites', scene.site_id, { id: scene.site_id, origin: 'generated',

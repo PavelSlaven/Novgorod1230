@@ -5,7 +5,7 @@ import {
   createOrdinaryAggregate,
   validateOrdinaryBackgroundGroup
 } from '@rus/materialization';
-import { applyResolvedPresenceRulesFirstArrival } from
+import { applyResolvedPresenceRulesFirstArrival, PRESENCE_FIRST_ARRIVAL_GAP } from
   './ordinary-materialization-presence-first-arrival.js';
 import {
   ordinaryWorldPropertyPlacementContextDigest
@@ -336,28 +336,42 @@ function sameExisting(row, expected) {
 }
 async function provisionPartyStartPresenceOnly({ transaction, partyId, scope, profile, presenceContext }) {
   if (!presenceContext?.rules?.length) {
-    if (presenceContext?.presence_gap) {
-      const objective = {
-        request_id: `presence-first-arrival-gap:${presenceContext.presence_gap}`,
-        scope_ref: scope,
-        context_refs: {},
-        policy_refs: {},
-        technical_limits: profile.technical_limits,
-        execution_context: { presence_first_arrival_gap: presenceContext.presence_gap },
-      };
-      const objective_digest = canonicalDigest(objective);
+    const presence_gap = presenceContext?.presence_gap
+      ?? PRESENCE_FIRST_ARRIVAL_GAP.NO_PLACE_FAMILY_BINDING;
+    const objective = {
+      request_id: `presence-first-arrival-gap:${presence_gap}`,
+      scope_ref: scope,
+      context_refs: {},
+      policy_refs: {},
+      technical_limits: profile.technical_limits,
+      execution_context: { presence_first_arrival_gap: presence_gap },
+    };
+    const objective_digest = canonicalDigest(objective);
+    const patched = await transaction.query(
+      `UPDATE party_runtime.party_ordinary_materialization_enablements
+          SET objective_snapshot = jsonb_set(
+                objective_snapshot,
+                '{execution_context,presence_first_arrival_gap}',
+                to_jsonb($4::text),
+                true),
+              objective_digest = $5
+        WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3
+          AND objective_snapshot->'execution_context'->>'presence_first_arrival_gap' IS NULL
+        RETURNING party_id`,
+      [partyId, scope.entity_kind, scope.entity_id, presence_gap, objective_digest],
+    );
+    if (patched.rowCount === 0) {
       await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_enablements
         (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
         VALUES ($1,$2,$3,$4::jsonb,$5,true)
         ON CONFLICT (party_id,scope_kind,scope_id) DO NOTHING`,
       [partyId, scope.entity_kind, scope.entity_id, JSON.stringify(objective), objective_digest]);
-      return Object.freeze({
-        provisioned: true,
-        scope_ref: Object.freeze(scope),
-        presence_gap: presenceContext.presence_gap,
-      });
     }
-    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
+    return Object.freeze({
+      provisioned: true,
+      scope_ref: Object.freeze(scope),
+      presence_gap,
+    });
   }
   const initial = createOrdinaryAggregate({
     scope_ref: scope,

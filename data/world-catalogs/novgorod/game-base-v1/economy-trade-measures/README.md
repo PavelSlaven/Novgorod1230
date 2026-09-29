@@ -6,9 +6,9 @@
 
 | Домен | Файлы | Строк |
 |---|---|---|
-| `currencies_measures/` | `currency_units.csv`, `measure_units.csv` | 15 + 20 |
+| `currencies_measures/` | `currency_units.csv`, `measure_units.csv`, `currency_rates_bue.csv`, `price_anchors_c1230.csv`, `c3_parameters.csv`, `master_archive_price_regressions.csv` | 15 + 20 + 20 + 15 + 13 + 4 |
 | `trade_goods_markets/` | `trade_goods.csv`, `markets_practice.csv` | 22 + 15 |
-| `price_bands/` | `price_bands.csv`, `compensation_reference.csv` (вспомогательная) | 33 + 39 |
+| `price_bands/` | `price_bands.csv`, `category_price_bands_c1230.csv`, `compensation_reference.csv` (вспомогательная) | 33 + 38 + 41 |
 | `services_hire_labor/` | `services.csv` | 34 |
 | `sources/` | `books.csv` — библиографический справочник по всем `book:<id>` ссылкам | 16 |
 
@@ -26,7 +26,7 @@
 - **Денежно-весовая система соотношений — закрыта, не осталась «не утверждена»**: полный, проверяемый скриптом непротиворечивый граф соотношений (гривна серебра=4 гривны кун=80 ногат=200 кун, круговой пересчёт даёт 1), с явными gap-метками там, где источники прямо говорят «соотношение не устанавливается для 1230 г.» (векша, берковец/капь).
 - **sqlite-источник `novgorod_1230(1) (1).sqlite`** (упомянутый в критике сводки как неучтённый) — использован явно для currencies_measures/price_bands/trade_goods_markets.
 - **Anachronism guards добавлены явно** (a не молча пропущены): западная стеклянная посуда (нет в 1230 г.), немецкие скалвы/«весчее»-договор (норма 1259-1270 гг., не 1230 г.), Немецкий (Петров) двор (детали — в основном ганзейская пора), эталоны мер при Иванском сто («гривенка рублевая» — счёт после появления рубля).
-- **price_bands**: honour владельческое решение буквально — ни одна ячейка не содержит абсолютной цены (проверено скриптом), при этом голодная поправка обоснована РЕАЛЬНЫМ вычисленным множителем (×6.7, кадь ржи 1228→1230-1231 по НПЛ), а не выдумана.
+- **price_bands**: ни одна ячейка не содержит абсолютной цены; ржаная shortage→famine пара даёт ×6,7, хлебная собственная пара — ×4. Ordinary-уровень из этих crisis-отношений обратно не выводится.
 
 ## Открытые gaps, вынесенные за пределы этой группы
 
@@ -39,8 +39,9 @@
 
 ```
 node currencies_measures/scripts/build_currencies_measures.mjs && node currencies_measures/scripts/validate_currency_ratios.mjs
+node currencies_measures/scripts/build_econ_rates.mjs && node currencies_measures/scripts/run_price_bench_c2.mjs && node currencies_measures/scripts/run_household_bench_c3.mjs
 node trade_goods_markets/scripts/build_trade_goods_markets.mjs
-node price_bands/scripts/derive_price_bands.mjs && node price_bands/scripts/validate_price_bands.mjs
+node price_bands/scripts/derive_price_bands.mjs && node price_bands/scripts/build_category_price_bands.mjs && node price_bands/scripts/validate_price_bands.mjs
 node services_hire_labor/scripts/build_services.mjs
 node sources/build_books.mjs
 ```

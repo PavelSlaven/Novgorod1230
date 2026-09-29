@@ -189,11 +189,12 @@ for (const conditionRef of [condition, null]) test(
   assert.equal((await pool.query(`SELECT scene_position_id FROM party_runtime.party_journey_locations
     WHERE id='journey'`)).rows[0].scene_position_id, 'source-pos');
   let availabilityOpen = false;
+  let availabilityStatus = 'open';
   let capabilityDigest = 'capability-digest';
   let projectedVisible = visible;
   const availability = async ({ transaction, connectionId, conditionSetRef }) => {
     assert.ok(transaction?.query);
-    return { ok: availabilityOpen, connection_id: connectionId,
+    return { ok: availabilityOpen, status: availabilityStatus, connection_id: connectionId,
       condition_set_ref: conditionSetRef == null ? null
         : `${conditionSetRef.entity_id}@${conditionSetRef.authoring_version}` };
   };
@@ -209,6 +210,10 @@ for (const conditionRef of [condition, null]) test(
   assert.equal(denied.ok, false);
   assert.equal((await pool.query(`SELECT count(*)::int AS n FROM party_runtime.party_route_plans`)).rows[0].n, 0);
   availabilityOpen = true;
+  availabilityStatus = 'closed'; // ok:true but not open: the recheck must refuse (F7)
+  assert.equal((await committer.commit({ plan: await sealedPlan('closed-line', false, conditionRef),
+    created_at_turn: 1 })).ok, false);
+  availabilityStatus = 'open';
   capabilityDigest = 'changed';
   assert.equal((await committer.commit({ plan: await sealedPlan('changed-capability', false, conditionRef),
     created_at_turn: 1 })).ok, false);

@@ -88,7 +88,7 @@ export function createSpatialV3CurrentMovementCapability({ pool } = {}) {
     const profileRef = conditionSetString(profile?.availability_condition_set_ref);
     if (!text(id)) gap('site_traversal_availability_source_missing');
     if (profile !== undefined && ref !== profileRef) gap('availability_condition_set_mismatch');
-    if (ref == null) return { ok: true, connection_id: id, condition_set_ref: null };
+    if (ref == null) return { ok: true, connection_id: id, condition_set_ref: null, status: 'open', reason_code: null };
     const evaluated = evaluateConditionSet(ref);
     if (evaluated == null) gap('availability_condition_set_owner_missing');
     return { ok: true, connection_id: id, ...evaluated };

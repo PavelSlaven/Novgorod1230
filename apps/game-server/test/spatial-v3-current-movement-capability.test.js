@@ -95,7 +95,7 @@ test('only null availability conditions pass without a condition evaluator', asy
   const owner = createSpatialV3CurrentMovementCapability({ pool: { query() {} } });
   assert.deepEqual(await owner.assessAvailability({ connection: {
     id: 'connection', availability_condition_set_ref: null } }),
-  { ok: true, connection_id: 'connection', condition_set_ref: null });
+  { ok: true, connection_id: 'connection', condition_set_ref: null, status: 'open', reason_code: null });
   await assert.rejects(owner.assessAvailability({ connection: {
     id: 'connection', availability_condition_set_ref: { entity_id: 'closed',
       authoring_version: '1' } } }), (error) =>

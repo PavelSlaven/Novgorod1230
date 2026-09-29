@@ -35,3 +35,27 @@ test('physical keys of an ordinary plan lock the finite resource node it decreme
   assert.equal(ordinaryPhysicalKeys({ ...plan, finite_resource_transition: null })
     .some((key) => key.includes('party_resource_nodes')), false);
 });
+
+test('spatial v3 position (site_id, no g5_anchor_id) still yields committed inventory load', async () => {
+  const { createRuntimeInstanceMechanicsSnapshot } = await import('@rus/items-property');
+  const { projectLowerDvinaTracePlayerSafeState } = await import(
+    '../src/runtime/lower-dvina-trace-player-safe-state.js');
+  const { richCommittedState } = await import('./lower-dvina-trace-player-safe-state-fixture.js');
+  const snapshot = createRuntimeInstanceMechanicsSnapshot({
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+    provenance: { source_kind: 'ordinary_direct_action_result', root_turn_id: 'turn:party:0',
+      step_index: 1, operation_ref: 'op:create', origin_kind: 'ambient_ordinary',
+      source_refs: ['site'] },
+    mechanics: { mass_grams: 300, external_hand_cost: 1, carry_form: 'regular',
+      packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null } });
+  const state = richCommittedState();
+  state.party_state = { state_version: 2 };
+  state.position = { location_ref: 'shed', site_id: 'site-1', position_id: 'pos-1' };
+  state.items = [{ item_id: 'runtime-wood', quantity: 1,
+    runtime_instance_mechanics_snapshot: snapshot,
+    placement: { holder_character_id: 'mikula', physical_position: 'hands' } }];
+  const projected = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: 'mikula' });
+  assert.equal(projected.player_safe_state.inventory?.total_weight?.grams, 300);
+  assert.equal(projected.player_safe_state.inventory?.occupied_hands, 1);
+});

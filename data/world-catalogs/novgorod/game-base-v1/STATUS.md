@@ -18,7 +18,7 @@
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 23 | 23 | 0 |
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 6 | 11 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
-| [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 6 | 22 | 0 |
+| [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 5 | 23 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 11 | 28 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 16 | 4 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 12 | 19 | 0 |
@@ -26,7 +26,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 10 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 4 | 0 |
-| **Итого** | | **167** | **254** | **0** |
+| **Итого** | | **166** | **255** | **0** |
 
 ## Вердикты по файлам
 
@@ -361,7 +361,7 @@
 | [`peoples_origins/README.md`](names-peoples/peoples_origins/README.md) | [approve_with_limits](names-peoples/VERIFICATION.md#peoples_originsreadmemd--approve_with_limits) |
 | [`personal_names/b2-name-pool-source.json`](names-peoples/personal_names/b2-name-pool-source.json) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`personal_names/coverage-report.json`](names-peoples/personal_names/coverage-report.json) | [approve](names-peoples/VERIFICATION.md#personal_namescoverage-reportjson--approve) |
-| [`personal_names/d46-name-additions.json`](names-peoples/personal_names/d46-name-additions.json) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`personal_names/d46-name-additions.json`](names-peoples/personal_names/d46-name-additions.json) | [approve_with_limits](names-peoples/VERIFICATION.md#вердикты-по-файлам-обновления-189) |
 | [`personal_names/name_component_candidate_decisions.csv`](names-peoples/personal_names/name_component_candidate_decisions.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`personal_names/name_component_entries.csv`](names-peoples/personal_names/name_component_entries.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
 | [`personal_names/name_component_pools.csv`](names-peoples/personal_names/name_component_pools.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
@@ -384,7 +384,7 @@
 | [`sources/book_evidence_name_component_direct.csv`](names-peoples/sources/book_evidence_name_component_direct.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`sources/book_evidence_name_components_army.csv`](names-peoples/sources/book_evidence_name_components_army.csv) | [approve_with_limits](names-peoples/VERIFICATION.md#независимая-проверка-c016-части-имён-claude-opus-55-круги-14) |
 | [`sources/d46-onomastic-catalog-1230-1250.md`](names-peoples/sources/d46-onomastic-catalog-1230-1250.md) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
-| [`sources/d46-regional-name-pools.json`](names-peoples/sources/d46-regional-name-pools.json) | [approve](names-peoples/VERIFICATION.md#независимая-проверка-d46-архивные-личные-имена-и-части-имён-claude-opus-55-круги-12) |
+| [`sources/d46-regional-name-pools.json`](names-peoples/sources/d46-regional-name-pools.json) | [approve_with_limits](names-peoples/VERIFICATION.md#вердикты-по-файлам-обновления-189) |
 
 ### nature-materials-weather
 

@@ -24,7 +24,7 @@ const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 const LEVELS = ['rare', 'contextual', 'common', 'ubiquitous'];
 const BASE = { R: 0, X: 1, C: 2, U: 3 };
 const WEIGHT = { rare: 1, contextual: 2, common: 4, ubiquitous: 8 };
-const REGION_DEFAULT = 'novgorod_land';
+const REGION_DEFAULT = 'region_novgorod_land';
 const RULE_REF = 'fauna-mammals-birds/README.md#frequency-rule';
 
 // Habitat group -> pf_id list (pf ids from places-binding/places/place_families.csv).
@@ -107,7 +107,7 @@ for (const [kind, list] of [['mammal', mammals], ['bird', birds]]) {
 // ---- mammals
 const mRows = mammals.map((t) => ({
   fa_id: t.id, name_ru: t.ru, name_ru_alt: t.alt || '', name_lat: t.lat, name_en: t.en, class: 'Mammalia', order: t.order, group: t.grp,
-  category_ref: cat('mammal', t.grp, t.id), scope: 'universal_taxon', region_scope: t.region || REGION_DEFAULT,
+  category_ref: cat('mammal', t.grp, t.id), scope: 'universal_taxon', region_scope: t.region || REGION_DEFAULT, subregion_scope: t.subregion || '',
   base_frequency_class: LEVELS[BASE[t.base]], base_frequency_basis: t.baseBasis, presence_1230_confidence: t.pres, historical_evidence: t.evid || '',
   activity_time: t.act, dormant_seasons: (t.dorm || []).join(';'), audible_seasons: t.audible,
   season_winter: t.seas.winter || '', season_spring: t.seas.spring || '', season_summer: t.seas.summer || '', season_autumn: t.seas.autumn || '',
@@ -182,7 +182,7 @@ function presRowsFor(t, kind) {
       const fc = LEVELS[lvl];
       rows.push({
         presence_id: `fhp_${t.id.replace(/^fa_/, '')}__${pf.replace(/^pf_/, '')}__${season}`, fa_id: t.id, category_ref: cat(kind, t.grp, t.id), pf_id: pf,
-        region_id: t.region || REGION_DEFAULT, season, frequency_class: fc, weight: WEIGHT[fc], fit, state, activity_time: state === 'dormant' ? 'dormant' : t.act,
+        region_id: t.region || REGION_DEFAULT, subregion_scope: t.subregion || '', season, frequency_class: fc, weight: WEIGHT[fc], fit, state, activity_time: state === 'dormant' ? 'dormant' : t.act,
         audible: audible ? 'true' : 'false', observable_signs: sigSummary(t, kind, season, state), refresh_class: 'by_year_season',
         rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), ...(typeof presenceOverride === 'object' ? (presenceOverride.sourceRefs || '').split(';') : []), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4', kind === 'mammal' && audible ? `mammals.csv#${t.id}.signs_sounds` : ''].filter(Boolean))].join(';'),
         confidence: t.pres === 'C' ? 'C' : 'B', status: 'candidate',

@@ -571,13 +571,13 @@
 - **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —
 
-### LW-115 — строки G4 v2 и волны v1 D49 изменены на месте под тем же {id, version, revision} (people-data)
+### LW-119 — строки G4 v2 и волны v1 D49 изменены на месте под тем же {id, version, revision} (people-data)
 - **Где.** `data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_g4_npc_composition_bindings.json` (`…vikhtuy_locality`, версия 2), `data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_population_composition_rules.json` и `presence_rules.json` (D-2, волна v1).
 - **Что.** Пороги D49 поменяли содержимое строк без новой версии: G4 v2 `min_count 0 → 1`, три D-2 состава и −3 правила присутствия. Допустимо только потому, что пара v17 пересоздаётся заново, без обратной совместимости (`people-d49/approval.json`, `approval_note`).
 - **Как жить.** Все существующие пары v17 пересобирать (bootstrap заново). Не полагаться на неизменность этих строк в старой базе; будущие правки этих данных — новой версией или новой волной.
 - **Issue.** —
 
-### LW-116 — валидатор approval волны не знает `resign_required` (people-data)
+### LW-120 — валидатор approval волны не знает `resign_required` (people-data)
 - **Где.** `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json`.
 - **Что.** Валидатор требует непустые `checked_by`/`checked_at` и не читает `resign_required`: подпись под старым пином машинно валидна. От неподписанных данных защищает только несовпадение аттестации запроса (`request_digest`).
 - **Как жить.** Не считать зелёный тест approval признаком подписи нового пина; сверять `source_commit` подписи с `source_commit` данных и аттестацию запроса. Правка — научить валидатор отвергать `resign_required` (отдельная задача).

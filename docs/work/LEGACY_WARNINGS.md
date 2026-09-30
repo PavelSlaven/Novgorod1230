@@ -624,4 +624,12 @@
 - **Где.** `apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js` (агрегат в памяти для людей), `finiteFirstEntryProfile.technical_limits.max_resolution_records`.
 - **Что.** В ветке commons с конечными источниками агрегат присутствия пишет natural-владелец, а людские исходы читаются из копии агрегата в памяти. Без `max_resolution_records` копию не построить: людские правила не читаются, в trace лежит typed gap `people_presence_aggregate_unavailable`.
 - **Как жить.** Профиль v17 `max_resolution_records` задаёт; не полагаться на людей по правилам при неполном профиле.
+### LW-119 — строки G4 v2 и волны v1 D49 изменены на месте под тем же {id, version, revision} (people-data)
+- **Где.** `data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_g4_npc_composition_bindings.json` (`…vikhtuy_locality`, версия 2), `data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_population_composition_rules.json` и `presence_rules.json` (D-2, волна v1).
+- **Что.** Пороги D49 поменяли содержимое строк без новой версии: G4 v2 `min_count 0 → 1`, три D-2 состава и −3 правила присутствия. Допустимо только потому, что пара v17 пересоздаётся заново, без обратной совместимости (`people-d49/approval.json`, `approval_note`).
+- **Как жить.** Все существующие пары v17 пересобирать (bootstrap заново). Не полагаться на неизменность этих строк в старой базе; будущие правки этих данных — новой версией или новой волной.
+### LW-120 — валидатор approval волны не знает `resign_required` (people-data)
+- **Где.** `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json`.
+- **Что.** Валидатор требует непустые `checked_by`/`checked_at` и не читает `resign_required`: подпись под старым пином машинно валидна. От неподписанных данных защищает только несовпадение аттестации запроса (`request_digest`).
+- **Как жить.** Не считать зелёный тест approval признаком подписи нового пина; сверять `source_commit` подписи с `source_commit` данных и аттестацию запроса. Правка — научить валидатор отвергать `resign_required` (отдельная задача).
 - **Issue.** —

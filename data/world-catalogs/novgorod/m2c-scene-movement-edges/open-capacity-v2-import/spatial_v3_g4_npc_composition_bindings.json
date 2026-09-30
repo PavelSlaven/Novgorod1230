@@ -2234,11 +2234,10 @@
     "g4_version": 1,
     "generation_template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
     "generation_template_version": 2,
-    "min_count": 0,
+    "min_count": 1,
     "max_count": 2,
     "payload": {
       "count_weights": [
-        1,
         1,
         1
       ],
@@ -2304,7 +2303,7 @@
     "provenance_ref": "m2c_npc_editorial_001",
     "directness": "analogical",
     "confidence": "low",
-    "canonical_digest": "94df10d4682ca111ecb21ba7dde9effc2d158e57d848dda4264cec9233ff7afd"
+    "canonical_digest": "f3f9cc8ee586194947c77a2b09cc1d33ce03823cb93fe658e88b312b8a1f1313"
   },
   {
     "entity_kind": "g4_npc_composition_binding",

@@ -1,0 +1,155 @@
+{
+  "schema": "rus.m2c_people_d49_candidate.v1",
+  "id": "m2c_people_d49_v1",
+  "status": "candidate_approval_pending",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "provenance_ref": "m2c_people_d49_editorial_001",
+  "decision": "Owner decision D49 (#133): on every place of the route slice after leaving the start place there is at least one person, created only from approved data. This candidate supplies the approved-profile side (three npc_binding profiles, one clothing profile, one canonical regional context, two profile successor versions) and the G4 lower bound; the D-2 place-family thresholds are in game-base people_composition_authoring.json (pin c79852e7). Gameplay authoring, no historical claim; individual origin, language and frequency are not asserted.",
+  "reuse_note": "Body, routine, activity, item, inventory and visual rows are existing approved m2c-npc rows (imported by the m2c-npc P12 bundle); no new activity rows. Ferryman reuses the boatman mooring-inspection activity, householder and mistress reuse the household-servant work-area activity.",
+  "template_profile": "m2c_npc_household_servant_v1",
+  "profiles": [
+    {
+      "id": "m2c_npc_ferryman_v1",
+      "version": 1,
+      "role_ref": "nov_role_ferryman",
+      "occupation_ref": "nov_occ_ferryman",
+      "activity_profile_ref": {
+        "id": "activity_m2c_npc_boatman_initial_work_v1",
+        "version": 1
+      },
+      "sex_category": [
+        "nov_1200_1250_sex_category_male"
+      ],
+      "source_refs": [
+        "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_ferryman",
+        "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman",
+        "data/world-catalogs/novgorod/game-base-v1/occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json#subject_applicability[subject_id=nov_occ_ferryman]",
+        "book:221162 §565 «Аще бо бы перевозник Кий, то не бы ходил Царюгороду» (перевозчик как занятие в древнерусской традиции; не свидетельство о Двине 1230 г.)"
+      ],
+      "basis": "D-2 pf_ferry_landing group ferryman (min 1); pair role x occupation is listed in the occupation allowed_social_role_ids; both approved in the actor catalog."
+    },
+    {
+      "id": "m2c_npc_householder_v1",
+      "version": 1,
+      "role_ref": "nov_role_smerd_householder",
+      "occupation_ref": "nov_occ_haymaker",
+      "activity_profile_ref": {
+        "id": "activity_m2c_npc_household_servant_initial_work_v1",
+        "version": 1
+      },
+      "sex_category": [
+        "nov_1200_1250_sex_category_male"
+      ],
+      "source_refs": [
+        "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder",
+        "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_haymaker",
+        "data/world-catalogs/novgorod/game-base-v1/occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json#subject_applicability[subject_id=nov_role_smerd_householder]",
+        "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_schedule_routine_rules.json (D-1 householder and haymaker routines on pf_rural_yard)"
+      ],
+      "basis": "Occupation haymaker (approved, archetype agriculture; floodplain hay meadow and livestock economy of the Lower Dvina). No source found for arable farming on the Lower Dvina about 1230 (only XV-XVI century analogues, e.g. book:373631 §307), so ploughman is not used. Low confidence editorial pairing; the occupation label does not assert the householder's whole economy."
+    },
+    {
+      "id": "m2c_npc_household_mistress_v1",
+      "version": 1,
+      "role_ref": "nov_role_household_mistress",
+      "occupation_ref": "nov_occ_cook_baker",
+      "activity_profile_ref": {
+        "id": "activity_m2c_npc_household_servant_initial_work_v1",
+        "version": 1
+      },
+      "sex_category": [
+        "nov_1200_1250_sex_category_female"
+      ],
+      "source_refs": [
+        "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress",
+        "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_cook_baker",
+        "data/world-catalogs/novgorod/game-base-v1/occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json#subject_applicability[subject_id=nov_role_household_mistress]",
+        "book:622242 §519; book:648161 §2639 (D-2 basis of the mistress group: one family per yard)"
+      ],
+      "basis": "cook_baker is the only approved occupation whose allowed_social_role_ids contain nov_role_household_mistress (weaver_cloth_worker and market_stall_seller are usable_with_caution and absent from the approved actor catalog). Household cooking and bread; its g3/g4 place types are urban or estate, so the transfer to a rural yard is analogical, confidence low."
+    }
+  ],
+  "clothing_profile": {
+    "id": "m2c_npc_ordinary_personal_clothing_d2_v1",
+    "version": 1,
+    "template": "m2c_npc_ordinary_personal_clothing_v1",
+    "note": "Copy of the approved variants; only the allowed role and occupation lists differ (new pairs)."
+  },
+  "regional_context": {
+    "id": "m2c_npc_regional_novgorod_land_d2_v1",
+    "version": 1,
+    "template": "m2c_npc_regional_novgorod_land_v1",
+    "extra_role_refs": [
+      "nov_role_fisher",
+      "nov_role_servant"
+    ],
+    "extra_occupation_refs": [
+      "nov_occ_fisher",
+      "nov_occ_household_servant"
+    ],
+    "applicability_note": "Entries carry only g4_ref (no canonical_g5_ref, no generation_template_ref): applicable to every canonical place of that G4 (owner decision Q3a, PLAN-OK-rt-people). Listed G4: those having a canonical G5 whose primary place family has a D-2 population group.",
+    "g4_ids": [
+      "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+    ]
+  },
+  "profile_successors": [
+    {
+      "id": "m2c_npc_fisher_v1",
+      "from_version": 2,
+      "version": 3,
+      "note": "Adds the canonical regional context so the existing D-2 profile_ref resolves on canonical places; everything else is byte-equal to version 2."
+    },
+    {
+      "id": "m2c_npc_household_servant_v1",
+      "from_version": 2,
+      "version": 3,
+      "note": "Same as the fisher successor."
+    }
+  ],
+  "g4_overrides": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "min_count": 1,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1
+      ],
+      "basis": "D49: a generated place after Vikhtuy locality is not empty; count 1 or 2 with equal weights (was 0..2 equal weights, one third empty). Profile choice, placement policy and version-2 refs unchanged."
+    }
+  ],
+  "not_created": [
+    {
+      "subject": "occupation nov_occ_crossing_guard (D-2 group pf_ferry_landing.crossing_guard)",
+      "reason": "The occupation has status usable_with_caution in data/novgorod-region/novgorod_occupations_v1_enriched.tsv; the approved actor catalog (loadActorCatalog, status=approved) does not contain it, so the materializer would stop with people_actor_bundle_missing for any profile that names it. Promoting the occupation is a decision on the pinned source catalog and is left to the owner. D49 on pf_ferry_landing is met by the ferryman group alone."
+    }
+  ]
+}

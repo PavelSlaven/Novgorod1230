@@ -2615,7 +2615,7 @@
     "version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "status": "approved",
-    "canonical_digest": "94df10d4682ca111ecb21ba7dde9effc2d158e57d848dda4264cec9233ff7afd",
+    "canonical_digest": "f3f9cc8ee586194947c77a2b09cc1d33ce03823cb93fe658e88b312b8a1f1313",
     "provenance_ref": "m2c_npc_editorial_001"
   },
   {
@@ -2727,6 +2727,60 @@
     "provenance_ref": "m2c_npc_editorial_001"
   },
   {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_ferryman_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "386798854c62aab741638cecaf6d8428baa02466b47ad715bc273d082f810a74",
+    "provenance_ref": "m2c_people_d49_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_householder_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "815112523055411196d70bcd35a0562a96402159488807e03776d6b3d6b2c357",
+    "provenance_ref": "m2c_people_d49_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_household_mistress_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "bc87d3aea1d348e1e54e67a9e6d6f2384089d16e9e5f711d7d30a99a35635ae1",
+    "provenance_ref": "m2c_people_d49_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_ordinary_personal_clothing_d2_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "bd8c657ef588b7a72b9a32a93fee98c9c421648b281631f54ff585d445ef118a",
+    "provenance_ref": "m2c_people_d49_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_fisher_v1",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "9299126d9ded8ae0b473ddb3e4d82236aab2719aa4c50e28581d0cc9bb776c0b",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_household_servant_v1",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "6188703feca6cb42dc8deeae5e25382dfc1634af532202761498457bc672cea6",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
     "entity_kind": "npc_regional_context_profile",
     "entity_id": "m2c_npc_regional_novgorod_land_v1",
     "version": 2,
@@ -2770,6 +2824,15 @@
     "status": "approved",
     "canonical_digest": "a539ced3009f9230c457cdc2dbf9249928ff7c27be682cb1faa263c89fae1eaa",
     "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "entity_id": "m2c_npc_regional_novgorod_land_d2_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "007ac5044ea76307e2efab8f2fa644df022710d3598a1fa9426453aabed2d30c",
+    "provenance_ref": "m2c_people_d49_editorial_001"
   },
   {
     "entity_kind": "g6_acoustic_baseline",

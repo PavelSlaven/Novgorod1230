@@ -57,3 +57,18 @@ game-base lw-env (#176, коммит 25ea56d4 — после старого пи
 - generator: 16/16 (в т.ч. parity закоммиченных файлов с выводом генератора на пине `approval.source_commit`, отсев `environment`, отказ на неизвестном виде);
 - approval-валидатор и unit/PG-набор волны — см. DONE.
 - Как переподписать: заменить `checked_by`/`checked_at` и удалить объект `resign_required` в `approval.json`.
+
+# Добавка D49 (people-data): пороги min_count ≥ 1 в составе D-2, пин c79852e7
+Статус: **на переподпись ревьюером**. `source_commit` = `c79852e7b2119630954783a138f920752ef9f55f` (коммит ветки fleet/people-data поверх 27bd6134; меняет только `game-base-v1/places-binding` — см. VERIFICATION.md «Пороги D49»). Подпись `checked_by`/`checked_at` относится к пину 27bd6134 (метка `resign_required`).
+
+Воспроизвести: `M2C_SOURCE_COMMIT=c79852e7b2119630954783a138f920752ef9f55f node scripts/generate-m2c-npc-wave-datasets.mjs`.
+
+Сверка с прежней волной (детерминированно, `provenance_ref` игнорируется — он содержит пин): изменились только две таблицы, остальные 12 — только пин в `provenance_ref`.
+| table | old | new | removed | added |
+|---|---|---|---|---|
+| place_population_composition_rules | 17 | 17 | 3 (pf_riverbank, pf_rural_yard, pf_village_lane) | 3 (те же PF с группой min=max=1) |
+| presence_rules | 5740 | 5737 | 3 (`pr_3350f0641f59045e` fisher@pf_riverbank, `pr_0bc3c2be8d8a6870` householder@pf_rural_yard, `pr_b067191b1b9858d6` householder@pf_village_lane) | 0 |
+| source_records | 1 | 1 | 1 | 1 (только id/title/file_reference — пин) |
+
+Группы: `pf_riverbank.shore_worker` (рыбак, `profile_ref m2c_npc_fisher_v1`), `pf_rural_yard.householder`, `pf_village_lane.householder` (роль `nov_role_smerd_householder`, profile_ref null). Основание — решение владельца D49; confidence C. Правила присутствия тех же PF/субъектов переведены в `creation_owner=composition` (валидатор game-base запрещает дублирование). Порог действует на канонических узлах PF: pf_riverbank 70, pf_village_lane 3, pf_rural_yard 1; правило — минимум один человек **при первом входе**.
+Как переподписать: как выше — заменить `checked_by`/`checked_at`, удалить `resign_required`.

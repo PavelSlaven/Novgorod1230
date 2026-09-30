@@ -1,5 +1,8 @@
 import { loadLowerDvinaTraceScreenPresentation } from '../internal/lower-dvina-trace-screen-presentation.js';
-import { projectLowerDvinaTraceScreenPanels } from '../infrastructure/postgres/lower-dvina-trace-screen-panels.js';
+import {
+  projectLowerDvinaTraceRoutePanel,
+  projectLowerDvinaTraceScreenPanels
+} from '../infrastructure/postgres/lower-dvina-trace-screen-panels.js';
 import { canonicalDigest } from '@rus/materialization';
 import { validateFirstGameScreen } from '@rus/presentation';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
@@ -134,6 +137,7 @@ export async function startLowerDvinaTrace({
   }
   let openingProse = null;
   let openingNarrationResult = null;
+  let openingRoutePanel = null;
   if (binding.runtime_binding != null) {
     if (typeof authoredOpeningNarration?.run !== 'function') {
       throw serverError('AUTHORED_OPENING_NARRATOR_MISSING',
@@ -144,6 +148,11 @@ export async function startLowerDvinaTrace({
     if (typeof traceStartAdapter.loadNaturalScenePerceptionInput === 'function') {
       const perceptionInput = await traceStartAdapter.loadNaturalScenePerceptionInput({
         partyId, actorId: internal.player.instance_id, internal, visible });
+      if (!Array.isArray(perceptionInput.site_connections)) {
+        throw serverError('SPATIAL_V3_CURRENT_CONNECTION_DISCLOSURE_REQUIRED',
+          'Current visible route disclosure is unavailable.',
+          { status: 409, public_exposure: 'internal' });
+      }
       const natural = projectG4NaturalPerception({ input: perceptionInput,
         partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id });
       naturalScenePerception = { ...natural,
@@ -151,6 +160,15 @@ export async function startLowerDvinaTrace({
           partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id,
           entityObservations: perceptionInput.entity_observations,
           localEdges: [], directionalExits: [] }) };
+      const openingRoutes = projectSpatialV3CurrentVisibleContext({ naturalInput: perceptionInput,
+        partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id,
+        entityObservations: perceptionInput.entity_observations,
+        localEdges: [], directionalExits: [],
+        siteConnections: perceptionInput.site_connections });
+      openingRoutePanel = projectLowerDvinaTraceRoutePanel({
+        currentPlace: publication.public_projection.opening_projection?.place_label,
+        visibleContext: openingRoutes
+      });
       canonicalSourceBinding = perceptionInput.canonical_source_binding ?? null;
     }
     const buildOpeningContext = canonicalSourceBinding == null
@@ -179,7 +197,8 @@ export async function startLowerDvinaTrace({
     openingProse = openingNarrationResult.prose;
   }
   const initialScreen = await traceOpeningProjector({
-    visible, approvedProjection: publication.public_projection, openingProse
+    visible, approvedProjection: publication.public_projection, openingProse,
+    routePanel: openingRoutePanel
   });
   const payload = { ...internal, party_id: partyId,
     actor_id: internal.player.instance_id,

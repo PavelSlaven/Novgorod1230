@@ -133,7 +133,7 @@ function overlayTurnStepResults(base, input) {
         ? plan.assessment.text : 'Вы внимательно изучили обстановку.');
     }
     if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
-      text(plan.interpretation?.player_goal) ? `Не удалось достичь цели «${plan.interpretation.player_goal}».` : 'Цель попытки не достигнута.');
+      text(plan.interpretation?.player_goal) ? `Цель «${plan.interpretation.player_goal}» не достигнута.` : 'Цель попытки не достигнута.');
     changes.forEach(change => components.add(change));
     return changes;
   });

@@ -84,26 +84,32 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     payload.last_turn?.time_update?.exact_elapsed?.exact_minutes);
   if (elapsedLabel != null) visibleContext.turn_elapsed_label = elapsedLabel;
   if (place) {
-    const routes = [...(projection.routes ?? []), ...(projection.available_routes ?? [])]
-      .filter(route => route.from_ref === projection.position?.location_ref && route.label);
-    const visibleExits = (screen.visible_context?.visible_objects ?? [])
-      .filter(({ entity_ref: ref, display_label: label }) =>
-        ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection'].includes(ref?.entity_kind)
-          && typeof label === 'string' && label.trim());
-    panels.route = createRoutePanel({ current_place: place, movement: {
-      options: [...routes.map(route => ({ label: route.label,
-        knowledge_state: route.known === true ? 'known' : 'uncertain' })),
-      ...visibleExits.map(({ display_label: label, visible_status: status }) => ({
-        label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
-        knowledge_state: 'known',
-        ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {}) }))]
-    } });
+    panels.route = projectLowerDvinaTraceRoutePanel({ currentPlace: place,
+      projection, visibleContext: screen.visible_context });
   }
   const projected = { ...screen, presentation_context: visibleContext, panels };
   const sceneAssetId = sceneAssetFor(projection.position);
   if (sceneAssetId === null) delete projected.scene_asset_id;
   else projected.scene_asset_id = sceneAssetId;
   return projected;
+}
+
+export function projectLowerDvinaTraceRoutePanel({ currentPlace, projection = {},
+  visibleContext = null } = {}) {
+  const routes = [...(projection.routes ?? []), ...(projection.available_routes ?? [])]
+    .filter(route => route.from_ref === projection.position?.location_ref && route.label);
+  const visibleExits = (visibleContext?.visible_objects ?? [])
+    .filter(({ entity_ref: ref, display_label: label }) =>
+      ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection'].includes(ref?.entity_kind)
+        && typeof label === 'string' && label.trim());
+  return createRoutePanel({ current_place: currentPlace, movement: {
+    options: [...routes.map(route => ({ label: route.label,
+      knowledge_state: route.known === true ? 'known' : 'uncertain' })),
+    ...visibleExits.map(({ display_label: label, visible_status: status }) => ({
+      label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
+      knowledge_state: 'known',
+      ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {}) }))]
+  } });
 }
 
 const SCENE_ASSET_BY_LOCATION = new Map([

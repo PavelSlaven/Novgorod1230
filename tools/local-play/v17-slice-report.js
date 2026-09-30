@@ -72,10 +72,11 @@ function turnSection(turn) {
     `- HTTP: ${turn.http_status}${turn.error ? `, ошибка ${turn.error.code}${turn.error.turn_commit_status ? ` (turn_commit_status ${turn.error.turn_commit_status})` : ''}` : ''}`,
     `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}`,
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
-    ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (в HTTP скрыта за TEMPORARY_ACTION_UNAVAILABLE): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
+    ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
     'Что увидел игрок (дословно):', '',
-    turn.prose ? quote(turn.prose) : '> (текста нет)'];
+    // A refused turn shows the error text of the response, not the screen left over from the previous turn.
+    turn.error ? quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста') : turn.prose ? quote(turn.prose) : '> (текста нет)'];
   if (turn.route_labels?.length > 0) lines.push('', `Проходы на экране: ${turn.route_labels.map((label) => `«${label}»`).join(', ')}`);
   if (turn.people_labels?.length > 0) lines.push('', `Люди на экране: ${turn.people_labels.map((label) => `«${label}»`).join(', ')}`);
   return lines.join('\n');
@@ -102,6 +103,7 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     out.push('### Открытие партии', '',
       `- Партия \`${opening.party_id ?? '—'}\`; попыток new-game: ${opening.attempts}; отказов открытия (AUTHORED_OPENING_AUDIT_REJECTED): ${opening.rejections}.`, '',
       'Что увидел игрок (дословно):', '', opening.prose ? quote(opening.prose) : '> (текста нет)', '');
+    out.push(`Проходы на первом экране: ${opening.route_labels?.length > 0 ? opening.route_labels.map((label) => `«${label}»`).join(', ') : '(нет)'}`, '');
   }
   for (const turn of turns) out.push(turnSection(turn), '');
   out.push('## Persistence/readback', '',

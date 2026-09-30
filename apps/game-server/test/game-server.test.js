@@ -62,6 +62,32 @@ test('unresolved ordinary discovery is a non-5xx conflict without private detail
   assert.equal(error.details.reason, 'budget_or_cap_exhausted');
 });
 
+test('known turn failures use safe public categories and never expose internal diagnostics', () => {
+  for (const [internalCode, publicCode, publicMessage] of [
+    ['TURN_STEP_PLAN_INVALID', 'TURN_NOT_SAVED', 'Ход не сохранён. Попробуйте сформулировать действие иначе.'],
+    ['M2C_TARGET_A1_APPLICABILITY_DATA_GAP', 'WORLD_ACTION_UNAVAILABLE', 'Ход не сохранён. Для этого действия не хватает данных мира.']
+  ]) {
+    const response = errorEnvelope(Object.assign(new Error(
+      `${internalCode} /srv/private/handler.js sk-secret http://internal-host`), {
+      code: internalCode, status: 500, details: { path: '/srv/private/schema.sql', key: 'secret' },
+      turn_commit_status: 'not_started'
+    }));
+    assert.equal(response.status, 409);
+    assert.deepEqual(response.body.error, { code: publicCode, message: publicMessage,
+      turn_commit_status: 'not_started' });
+    assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID|M2C_TARGET_A1|\/srv\/|sk-secret|internal-host|schema\.sql/u);
+  }
+  const unconfirmed = errorEnvelope(Object.assign(new Error('x'), {
+    code: 'TURN_STEP_PLAN_INVALID', status: 500 }));
+  assert.equal(unconfirmed.status, 500, 'no claim that the turn is not saved without not_started');
+  assert.equal(unconfirmed.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  const unknown = errorEnvelope(Object.assign(new Error('private system detail'), {
+    code: 'UNKNOWN_DOMAIN_FAILURE', status: 500
+  }));
+  assert.equal(unknown.status, 500);
+  assert.equal(unknown.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+});
+
 test('provider failures have safe typed public errors', () => {
   for (const [internal, external] of [
     ['timeout', 'LLM_PROVIDER_TIMEOUT'],

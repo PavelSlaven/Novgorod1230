@@ -694,7 +694,7 @@ outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 
-Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP`) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
 
@@ -950,6 +950,13 @@ single transient_item_use получает два соседних atomic curren
 удаляется перед финальной сборкой; search передаёт только выполненное действие и результат.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
 не копирует служебные слова step/attempt и не добавляет минуты.
+
+Первый экран (opening) показывает в панели route только канонические связи текущего места: loader
+`loadNaturalScenePerceptionInput` обязан вернуть `site_connections` (disclosure владельца видимости,
+`readCurrentConnectionDisclosure`), иначе внутренняя ошибка `SPATIAL_V3_CURRENT_CONNECTION_DISCLOSURE_REQUIRED`
+(`public_exposure: internal`, игроку `TEMPORARY_ACTION_UNAVAILABLE`). Локальные рёбра и направленные выходы, которые
+даёт ход (`phase-2-current-visible.js`), на первом экране не раскрываются: LW-097. При плохой видимости disclosure пуст
+(LW-097).
 
 Opening и arrival могут передать exact natural perception input действующему
 `@rus/presentation/spatial-v3-projection.projectSpatialV3NaturalScene` через

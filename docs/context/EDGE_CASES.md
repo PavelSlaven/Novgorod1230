@@ -61,7 +61,10 @@ JSON руками не правят: меняют источник, затем �
 
 Маскирование: при статусе ≥500, при `public_exposure: 'internal'` и для `TURN_ORDINARY_DISCOVERY_UNRESOLVED`
 (отдаётся как 409) игрок видит только `TEMPORARY_ACTION_UNAVAILABLE` и общий текст. Сервер логирует такие
-ошибки ([handler.js](../../apps/game-server/src/http/handler.js)). Карта маршрутов —
+ошибки ([handler.js](../../apps/game-server/src/http/handler.js)). Исключение — два известных отказа хода
+с `turn_commit_status: not_started` (409): `TURN_STEP_PLAN_INVALID` → `TURN_NOT_SAVED`,
+`M2C_TARGET_A1_APPLICABILITY_DATA_GAP` → `WORLD_ACTION_UNAVAILABLE`; текст «Ход не сохранён…», без внутренних
+кодов и деталей ([contracts.js](../../apps/game-server/src/http/contracts.js)). Карта маршрутов —
 [GAME_SERVER_WEB_CONTRACT_MAP.md](../../docs/migration/contracts/GAME_SERVER_WEB_CONTRACT_MAP.md). ⚠ В ней
 перечислено 5 маршрутов; в `handler.js` их больше (`/scenarios`, `/llm-settings*`, `/portrait-spec`,
 `/turns/:requestId/progress`, `/presentation-recovery`, developer-отчёт).

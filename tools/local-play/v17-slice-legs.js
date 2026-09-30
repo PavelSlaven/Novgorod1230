@@ -109,7 +109,8 @@ export async function runLegs({
       else if (response.error?.code === OPENING_REJECTED) rejections += 1;
       else { state.opening = { attempts, rejections, party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
     }
-    state.opening = { attempts, rejections, party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '' };
+    state.opening = { attempts, rejections, party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
+      route_labels: routeLabels(opening?.screen) };
     if (opening == null) throw new Error(`${OPENING_REJECTED} ×${rejections}`);
     partyId = opening.party_id;
     state.party_id = partyId;

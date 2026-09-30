@@ -231,15 +231,18 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
                 rule_ref: { id: selectedStart.initialRule.rule.id, version: selectedStart.initialRule.rule.version } }) });
           const input = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin: runtimeCatalogPin, currentFacts });
           const visibility = createSpatialV3CurrentVisibilityProvider({ pool: partyPool,
-            verifiedCatalog, pin: runtimeCatalogPin,
+            verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: selectedStart.worldBaseReader,
             readNatural: async () => currentFacts,
             readTargetConditions: readCurrentTargetConditions,
             readEntityExterior: readCommittedEntityExterior,
             readPlayerKnowledge });
           const entityObservations = await visibility.readEntityObservations({ transaction,
             partyId, actorId });
+          const siteConnections = await visibility.readCurrentConnectionDisclosure({ transaction,
+            partyId, actorId });
           await transaction.query('COMMIT');
-          return { ...input, entity_observations: entityObservations };
+          return { ...input, entity_observations: entityObservations,
+            site_connections: siteConnections };
         } catch (error) {
           await transaction.query('ROLLBACK');
           throw error;

@@ -150,7 +150,8 @@ export async function startLowerDvinaTrace({
         partyId, actorId: internal.player.instance_id, internal, visible });
       if (!Array.isArray(perceptionInput.site_connections)) {
         throw serverError('SPATIAL_V3_CURRENT_CONNECTION_DISCLOSURE_REQUIRED',
-          'Current visible route disclosure is unavailable.', { status: 409 });
+          'Current visible route disclosure is unavailable.',
+          { status: 409, public_exposure: 'internal' });
       }
       const natural = projectG4NaturalPerception({ input: perceptionInput,
         partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id });

@@ -12,6 +12,7 @@ import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { startLowerDvinaTrace } from '../src/runtime/lower-dvina-trace-public-start.js';
+import { errorEnvelope } from '../src/http/contracts.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
 import { projectG4NaturalPerception } from '../src/runtime/g4-natural-perception.js';
@@ -408,6 +409,42 @@ test('first screen receives natural perception after committed rehydrate without
     assert.equal(JSON.stringify(result.screen).includes('payload_digest'), false);
   }
   }
+});
+
+test('first screen without route disclosure fails closed with an internal error, masked for the player', async () => {
+  const { visible, internal, approvedProjection } = openingPackage({ raw: true });
+  Object.assign(approvedProjection.opening_projection, { version: 1, schema: 'first_game_screen', calendar_label: 'Лето' });
+  let committed = false;
+  await assert.rejects(startLowerDvinaTrace({ requestId: 'opening:1', partyId: 'party:1',
+    creationIdentity: { scenario_id: 'scenario' },
+    release: { world_revision_id: 'world', world_catalog_digest: 'world-digest' },
+    publicationLoader: async () => ({ manifest_digest: 'manifest', public_projection: approvedProjection,
+      binding: { scenario_id: 'scenario', runtime_binding: { revision: 5 }, binding_id: 'binding', revision: 1,
+        binding_digest: 'binding-digest', materializer_binding_id: 'materializer',
+        world_compatibility: { production_world_revision_id: 'world', production_world_catalog_digest: 'world-digest' },
+        scenario_definition_ref: { revision: 1, digest: 'scenario-digest' },
+        phase_1a_manifest_ref: { digest: 'manifest' }, execution_identity: {
+          materializer_version: '1', rng_algorithm_id: 'test', seed_context: 'context', trigger: 'start', occurrence: 0 } } }),
+    traceStartAdapter: {
+      assertExecutionSupport() {},
+      async loadInternal() { return committed ? internal : null; },
+      async materialize(request) { internal.request_identity = request; committed = true; return { status: 'committed' }; },
+      async loadVisible() { return visible; },
+      async provisionInitialOrdinary() {},
+      async loadNaturalScenePerceptionInput() { return { entity_observations: [] }; }
+    },
+    authoredOpeningNarration: { async run() { assert.fail('narrator must not run'); } },
+    traceOpeningProjector: buildLowerDvinaTraceOpeningScreen,
+    repository: { async attachCommittedOpeningSession() {}, async loadSession() {} },
+    validateSession: async () => {}
+  }), (error) => {
+    assert.equal(error.code, 'SPATIAL_V3_CURRENT_CONNECTION_DISCLOSURE_REQUIRED');
+    assert.equal(error.public_exposure, 'internal');
+    const { body } = errorEnvelope(error);
+    assert.equal(body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+    assert.doesNotMatch(JSON.stringify(body), /SPATIAL_V3|disclosure/u);
+    return true;
+  });
 });
 
 function openingApproval(pkg) {

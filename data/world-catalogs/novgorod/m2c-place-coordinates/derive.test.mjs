@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { buildReport, deriveConnection, deriveTravel, geometry, routeTraceSpikes, travelCalibration, validateCandidate,
+import { buildReport, deriveConnection, deriveTravel, geometry, routeTraceSpikes, shortestWaterPathM, travelCalibration, validateCandidate,
   validateFlowContinuity, validateSpatialTopology } from './derive.mjs';
 import { createLandRouter, endpointAccess } from './land-route-search.mjs';
 
@@ -771,4 +771,63 @@ test('A-place-geo-09: a still pool is not a sink for flowing water; a mouth into
   assert.equal(validateFlowContinuity({ flow_skeletons: [...network, mouth(0)] }, cellCorners).status, 'valid');
   const [candidate] = await inputs();
   assert.equal(candidate.flow_skeletons.find(flow => flow.id === 'backwater_mouth').current_bias_kmh, 0);
+});
+
+test('REVIEW-place-geo-5 F1: current_bias_kmh 0 gives «без течения» by value, not by type; the line label comes from the first flowing leg', () => {
+  const west = { id: 'west', lat: 0, lon: 0, precision_m: 1 };
+  const east = { id: 'east', lat: 0, lon: 0.004, precision_m: 1 };
+  const mid = { lat: 0, lon: 0.002 };
+  const stillArm = { id: 'arm', waterbody_type: 'side_channel', width_m: 1000, current_bias_kmh: 0, points: [[0, 0], [0, 0.002]] };
+  const river = { id: 'river', waterbody_type: 'main_channel', width_m: 1000, current_bias_kmh: 1, points: [[0, 0.002], [0, 0.004]] };
+  const line = (from, to, flowSkeleton, trace) => deriveConnection('test', `${from.id}-${to.id}`, from, to, 12,
+    'movement.small_river_craft', { isWater: true, movementClass: 'river', flowSkeleton, flowSkeletons: [stillArm, river], routeTrace: trace });
+  const still = line(west, east, stillArm);
+  assert.equal(still.river_direction, 'без течения', 'a side_channel with current 0 is not «вниз/вверх по течению»');
+  assert.equal(line(east, west, stillArm).river_direction, 'без течения');
+
+  const trace = { key: 't', from_id: 'west', to_id: 'east', points: [west, mid, east], segments: [
+    { surface: 'water', waterbody_ref: 'arm', crossing: false }, { surface: 'water', waterbody_ref: 'river', crossing: false }] };
+  const forward = line(west, east, stillArm, trace);
+  assert.deepEqual(forward.route_trace_segments.map(row => row.river_direction), ['без течения', 'вниз по течению']);
+  assert.equal(forward.river_direction, 'вниз по течению', 'the label skips the still first leg');
+  assert.equal(forward.river_direction_segment_index, 1);
+  const reverse = line(east, west, stillArm, trace);
+  assert.equal(reverse.river_direction, 'вверх по течению');
+  const allStill = { ...trace, key: 'u', segments: [{ surface: 'water', waterbody_ref: 'arm', crossing: false }, { surface: 'water', waterbody_ref: 'arm', crossing: false }] };
+  assert.equal(line(west, east, stillArm, allStill).river_direction, 'без течения', 'no flowing leg: the line is «без течения»');
+});
+
+test('REVIEW-place-geo-5 F2: a water trace longer than 1.15 x the shortest water path is a blocking loop', async () => {
+  const skeletons = [{ id: 'main', waterbody_type: 'main_channel', width_m: 200, current_bias_kmh: 1,
+    points: [[64.5, 40.6], [64.52, 40.6]] }, { id: 'arm', waterbody_type: 'side_channel', width_m: 200, current_bias_kmh: 0,
+    points: [[64.51, 40.6], [64.51, 40.62]] }];
+  const scale = { x: 111195 * Math.cos(64.58 * Math.PI / 180), y: 111195 }; // the map scale of derive.mjs
+  const a = [40.6 * scale.x, 64.502 * scale.y]; const b = [40.612 * scale.x, 64.51 * scale.y];
+  const shortest = shortestWaterPathM(skeletons, a, b);
+  assert.ok(shortest > 900 && shortest < 1500, `shortest water path ${shortest}`);
+  const places = [{ id: 'a', lat: 64.502, lon: 40.6, waterbody_ref: 'main' }, { id: 'b', lat: 64.51, lon: 40.612, waterbody_ref: 'arm' }];
+  const water = (points, segments) => ({ key: 'ab', geometry_status: 'test', points, segments });
+  const check = trace => {
+    const segments = trace.segments.map(segment => ({ from: places[0], to: places[1], ...segment }));
+    const line = { id: 'ab', kind: 'test', from_id: 'a', to_id: 'b', is_water: true, waterbody_ref: 'main', waterbody_crossing: false,
+      flow_skeleton_id: 'main', movement_method_id: 'movement.small_river_craft', route_trace_key: 'ab', route_trace_segments: segments };
+    return validateSpatialTopology({ flow_skeletons: skeletons, g5_places: places, g3_g4_places: [], line_waterbody_bindings: [],
+      route_traces: { ab: trace } }, [line]);
+  };
+  const direct = water([{ lat: 64.502, lon: 40.6 }, { lat: 64.51, lon: 40.6 }, { lat: 64.51, lon: 40.612 }], [
+    { surface: 'water', waterbody_ref: 'main', crossing: false }, { surface: 'water', waterbody_ref: 'arm', crossing: false }]);
+  assert.equal(check(direct).water_trace_detours, 0);
+  const loop = water([{ lat: 64.502, lon: 40.6 }, { lat: 64.5195, lon: 40.6 }, { lat: 64.51, lon: 40.6 }, { lat: 64.51, lon: 40.612 }], [
+    { surface: 'water', waterbody_ref: 'main', crossing: false }, { surface: 'water', waterbody_ref: 'main', crossing: false },
+    { surface: 'water', waterbody_ref: 'arm', crossing: false }]);
+  const result = check(loop);
+  assert.equal(result.water_trace_detours, 1);
+  assert.equal(result.status, 'invalid');
+  assert.ok(result.issues.some(issue => /water loop/.test(issue)));
+
+  const [candidate] = await inputs();
+  const report = await buildReport(candidate, undefined, await lineNamesInput());
+  assert.equal(report.spatial_topology_validation.water_trace_detours, 0);
+  const trace = candidate.route_traces.cross_g4_23;
+  assert.deepEqual(trace.segments.map(segment => segment.waterbody_ref), ['east', 'east', 'central_head_branch', 'dry_island_landing_cove']);
 });

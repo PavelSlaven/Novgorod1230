@@ -187,8 +187,10 @@ function riverDirection(from, to, flowSkeleton, crossing = false) {
   const north = to.lat - from.lat;
   const along = east * tangent.x + north * tangent.y;
   const across = east * -tangent.y + north * tangent.x;
-  if (flowSkeleton.waterbody_type === 'old_channel_pool' || flowSkeleton.waterbody_type === 'reed_backwater') {
-    return { direction: 'без течения', basis: `стоячая вода ${flowSkeleton.waterbody_type}; каркас ${tangent.id}`,
+  if (flowSkeleton.current_bias_kmh === 0 || flowSkeleton.waterbody_type === 'old_channel_pool' || flowSkeleton.waterbody_type === 'reed_backwater') {
+    const stillType = ['old_channel_pool', 'reed_backwater'].includes(flowSkeleton.waterbody_type);
+    return { direction: 'без течения', basis: stillType ? `стоячая вода ${flowSkeleton.waterbody_type}; каркас ${tangent.id}`
+      : `вода без течения (current_bias_kmh 0, ${flowSkeleton.waterbody_type}); каркас ${tangent.id}`,
       along_projection: Math.round(along * 100000) / 100000,
       across_projection: Math.round(across * 100000) / 100000,
       along_projection_m: along * 111195, across_projection_m: across * 111195 };
@@ -424,6 +426,81 @@ export function routeTraceSpikes(trace, key = trace.key) {
   return spikes;
 }
 
+const WATER_TRACE_DETOUR_MAX = 1.15;
+const WATER_MASK_CELL_M = 20;
+const waterMasks = new WeakMap();
+
+// 20 m raster of the water corridors (cell centre inside a corridor), 8-neighbour shortest path between the nearest
+// water cells of the two ends (snap up to 8 cells). Null when an end has no water within reach.
+function waterMask(skeletons) {
+  if (waterMasks.has(skeletons)) return waterMasks.get(skeletons);
+  const flows = skeletons.filter(item => Array.isArray(item.points) && item.points.length > 1 && item.width_m > 0)
+    .map(item => ({ radius: item.width_m / 2, points: flowPoints(item) }));
+  const all = flows.flatMap(flow => flow.points);
+  const cell = WATER_MASK_CELL_M; const margin = 600;
+  const minX = Math.min(...all.map(p => p[0])) - margin; const minY = Math.min(...all.map(p => p[1])) - margin;
+  const width = Math.ceil((Math.max(...all.map(p => p[0])) + margin - minX) / cell) + 1;
+  const height = Math.ceil((Math.max(...all.map(p => p[1])) + margin - minY) / cell) + 1;
+  const water = new Uint8Array(width * height);
+  for (const flow of flows) for (const [a, b] of lineSegments(flow.points)) {
+    const x0 = Math.max(0, Math.floor((Math.min(a[0], b[0]) - flow.radius - minX) / cell));
+    const x1 = Math.min(width - 1, Math.floor((Math.max(a[0], b[0]) + flow.radius - minX) / cell));
+    const y0 = Math.max(0, Math.floor((Math.min(a[1], b[1]) - flow.radius - minY) / cell));
+    const y1 = Math.min(height - 1, Math.floor((Math.max(a[1], b[1]) + flow.radius - minY) / cell));
+    for (let y = y0; y <= y1; y += 1) for (let x = x0; x <= x1; x += 1) {
+      if (pointSegmentDistance([minX + (x + 0.5) * cell, minY + (y + 0.5) * cell], a, b) <= flow.radius) water[y * width + x] = 1;
+    }
+  }
+  const mask = { water, width, height, minX, minY, cell };
+  waterMasks.set(skeletons, mask);
+  return mask;
+}
+
+export function shortestWaterPathM(skeletons, fromPoint, toPoint) {
+  const { water, width, height, minX, minY, cell } = waterMask(skeletons);
+  const snap = point => {
+    const px = Math.floor((point[0] - minX) / cell); const py = Math.floor((point[1] - minY) / cell);
+    let best = null;
+    for (let dy = -8; dy <= 8; dy += 1) for (let dx = -8; dx <= 8; dx += 1) {
+      const x = px + dx; const y = py + dy;
+      if (x < 0 || y < 0 || x >= width || y >= height || !water[y * width + x]) continue;
+      const d = Math.hypot(minX + (x + 0.5) * cell - point[0], minY + (y + 0.5) * cell - point[1]);
+      if (!best || d < best.d) best = { d, x, y };
+    }
+    return best;
+  };
+  const a = snap(fromPoint); const b = snap(toPoint);
+  if (!a || !b) return null;
+  const dist = new Float64Array(width * height).fill(Infinity);
+  const open = [];
+  dist[a.y * width + a.x] = 0;
+  const push = item => { open.push(item); let i = open.length - 1; while (i) { const p = (i - 1) >> 1; if (open[p][0] <= item[0]) break; open[i] = open[p]; i = p; } open[i] = item; };
+  const pop = () => { const top = open[0]; const last = open.pop(); if (open.length) { let i = 0; for (;;) { let c = i * 2 + 1; if (c >= open.length) break; if (c + 1 < open.length && open[c + 1][0] < open[c][0]) c += 1; if (open[c][0] >= last[0]) break; open[i] = open[c]; i = c; } open[i] = last; } return top; };
+  push([Math.hypot(a.x - b.x, a.y - b.y) * cell, 0, a.x, a.y]);
+  while (open.length) {
+    const [, d, x, y] = pop();
+    if (d > dist[y * width + x]) continue;
+    if (x === b.x && y === b.y) return d + a.d + b.d;
+    for (let dy = -1; dy <= 1; dy += 1) for (let dx = -1; dx <= 1; dx += 1) {
+      if (!dx && !dy) continue;
+      const nx = x + dx; const ny = y + dy;
+      if (nx < 0 || ny < 0 || nx >= width || ny >= height || !water[ny * width + nx]) continue;
+      const nd = d + (dx && dy ? Math.SQRT2 : 1) * cell;
+      if (nd < dist[ny * width + nx]) { dist[ny * width + nx] = nd; push([nd + Math.hypot(nx - b.x, ny - b.y) * cell, nd, nx, ny]); }
+    }
+  }
+  return null;
+}
+
+// Length of a water-only trace against the shortest water path between its ends.
+export function waterTraceDetour(trace, skeletons) {
+  if (!trace.segments?.length || !trace.segments.every(segment => segment.surface === 'water')) return null;
+  const points = trace.points.map(mapPoint);
+  const length = lineSegments(points).reduce((sum, [a, b]) => sum + Math.hypot(b[0] - a[0], b[1] - a[1]), 0);
+  const shortest = shortestWaterPathM(skeletons, points[0], points.at(-1));
+  return shortest ? { length_m: Math.round(length), shortest_m: Math.round(shortest), ratio: length / shortest } : null;
+}
+
 export function validateSpatialTopology(candidate, lines, cellCorners = []) {
   const skeletons = candidate.flow_skeletons ?? [];
   const skeletonById = new Map(skeletons.map(skeleton => [skeleton.id, skeleton]));
@@ -447,6 +524,7 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
     flow_continuity_failures: 0,
     nonwater_corridor_intrusion_count: 0,
     route_trace_spikes: 0,
+    water_trace_detours: 0,
   };
   const issues = [...bindingState.issues];
   const nonwaterCorridorIntrusions = [];
@@ -499,6 +577,13 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
     counts.route_trace_spikes += 1;
     issues.push(`route_trace ${spike.trace} spike at point ${spike.point_index} (${spike.leg_before_m} m out, ${spike.leg_after_m} m back)`);
   }
+  for (const [key, trace] of traceEntries) {
+    const detour = waterTraceDetour(trace, skeletons);
+    if (detour && detour.ratio > WATER_TRACE_DETOUR_MAX) {
+      counts.water_trace_detours += 1;
+      issues.push(`route_trace ${key} is a water loop: ${detour.length_m} m against a shortest water path of ${detour.shortest_m} m (x${detour.ratio.toFixed(2)}, limit ${WATER_TRACE_DETOUR_MAX})`);
+    }
+  }
   for (const trace of traces) if (typeof trace.geometry_status !== 'string' || !trace.geometry_status.trim()) {
     counts.missing_trace_geometry_status += 1;
     issues.push(`route_trace ${trace.key ?? '(missing key)'} lacks geometry_status`);
@@ -518,7 +603,7 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
         continue;
       }
       const resolvedFlowId = line.route_trace_key
-        ? line.route_trace_segments?.[0]?.waterbody_ref : assigned.id;
+        ? line.route_trace_segments?.[line.river_direction_segment_index ?? 0]?.waterbody_ref : assigned.id;
       if (line.flow_skeleton_id !== resolvedFlowId || typeof line.waterbody_crossing !== 'boolean') {
         counts.invalid_waterbody_assignments += 1;
         issues.push(`water line ${line.id} has invalid resolved assignment metadata`);
@@ -926,15 +1011,15 @@ function traceMetrics(trace, method, movementClass, options) {
     sum + Math.abs(row.river_projection_m?.along ?? 0), 0) / waterDistance : 1;
   const bankCrossing = waterbody && alongShare < 0.5 && distanceM <= waterbody.width_m * 1.5
     && bankToBankCrossing(trace.points[0], trace.points.at(-1), waterbody);
+  // The line label comes from the first leg on flowing water; with no such leg the line is «без течения».
   const first = segmentRows.find(row => {
-    if (!row.waterbody_ref) return false;
-    if (row.river_direction === 'без течения') return true;
+    if (!row.waterbody_ref || row.river_direction === 'без течения') return false;
     const body = skeletonById.get(row.waterbody_ref);
     const shortCrossEntry = row.distance_m < (body?.width_m ?? 0)
       && Math.abs(row.river_projection_m?.along ?? 0) < row.distance_m / 2;
     return !shortCrossEntry;
   }) ?? segmentRows.find(row => row.waterbody_ref) ?? segmentRows[0];
-  if (bankCrossing && first) {
+  if (bankCrossing && first && first.river_direction !== 'без течения') {
     first.river_direction = 'поперёк течения';
     first.crossing = true;
     first.river_direction_reason = null;

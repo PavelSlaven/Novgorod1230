@@ -26,6 +26,7 @@
     "flow_continuity_failures": 0,
     "nonwater_corridor_intrusion_count": 0,
     "route_trace_spikes": 0,
+    "water_trace_detours": 0,
     "topology_exception_count": 0,
     "invalid_topology_exceptions": 0,
     "exception_line_count": 0,
@@ -361,27 +362,27 @@
       "W": 73
     },
     "river_directions": {
-      "без течения": 20,
-      "вверх по течению": 84,
-      "вниз по течению": 78,
+      "без течения": 48,
+      "вверх по течению": 67,
+      "вниз по течению": 67,
       "не применяется": 346,
       "поперёк течения": 12
     },
     "speed_statuses": {
-      "в пределах допуска": 374,
-      "выше диапазона": 117,
-      "ниже диапазона": 49
+      "в пределах допуска": 373,
+      "выше диапазона": 114,
+      "ниже диапазона": 53
     },
     "name_mismatch_count": 0,
-    "speed_mismatch_count": 166,
+    "speed_mismatch_count": 167,
     "legacy_current_minutes_review": {
       "description": "These existing-minute flags assess source/current candidate minutes only; they do not apply to proposed_minutes.",
       "speed_statuses": {
-        "в пределах допуска": 374,
-        "выше диапазона": 117,
-        "ниже диапазона": 49
+        "в пределах допуска": 373,
+        "выше диапазона": 114,
+        "ниже диапазона": 53
       },
-      "speed_mismatch_count": 166
+      "speed_mismatch_count": 167
     },
     "proposed_minute_distribution": {
       "total_with_proposal": 540,
@@ -401,14 +402,14 @@
           "maximum_minutes": 5
         },
         "boat_downstream": {
-          "count": 71,
+          "count": 88,
           "duration_buckets": {
-            "1-5": 52,
-            "6-15": 8,
+            "1-5": 61,
+            "6-15": 11,
             "16-30": 1,
-            "31-60": 3,
-            "61-120": 3,
-            "121+": 4
+            "31-60": 5,
+            "61-120": 5,
+            "121+": 5
           },
           "minimum_minutes": 1,
           "maximum_minutes": 208
@@ -440,14 +441,14 @@
           "maximum_minutes": 10
         },
         "boat_upstream": {
-          "count": 77,
+          "count": 60,
           "duration_buckets": {
-            "1-5": 35,
-            "6-15": 22,
+            "1-5": 26,
+            "6-15": 19,
             "16-30": 3,
-            "31-60": 2,
-            "61-120": 8,
-            "121+": 7
+            "31-60": 1,
+            "61-120": 5,
+            "121+": 6
           },
           "minimum_minutes": 1,
           "maximum_minutes": 344
@@ -522,12 +523,12 @@
         "1-5": 219,
         "6-15": 158,
         "16-30": 78,
-        "31-60": 31,
-        "61-120": 27,
+        "31-60": 32,
+        "61-120": 26,
         "121+": 27
       }
     },
-    "minutes_change_over_30_count": 54,
+    "minutes_change_over_30_count": 53,
     "long_transition_count": 85,
     "proposed_minutes_extremes": {
       "shortest": [
@@ -1199,6 +1200,21 @@
       "minutes_source": "line_names_candidate_unapproved"
     },
     {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cross",
+      "kind": "g5_connection",
+      "speed_kmh": 0.62,
+      "band": "boat_downstream",
+      "expected_speed_kmh": [
+        1.5,
+        12
+      ],
+      "tolerated_speed_kmh": [
+        1.2000000000000002,
+        14.399999999999999
+      ],
+      "minutes_source": "line_names_candidate_unapproved"
+    },
+    {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cross",
       "kind": "g5_connection",
       "speed_kmh": 0.62,
@@ -1450,6 +1466,21 @@
       "tolerated_speed_kmh": [
         2,
         3.5999999999999996
+      ],
+      "minutes_source": "line_names_candidate_unapproved"
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_2",
+      "kind": "g5_connection",
+      "speed_kmh": 0.6,
+      "band": "boat_downstream",
+      "expected_speed_kmh": [
+        1.5,
+        12
+      ],
+      "tolerated_speed_kmh": [
+        1.2000000000000002,
+        14.399999999999999
       ],
       "minutes_source": "line_names_candidate_unapproved"
     },
@@ -2084,6 +2115,21 @@
       "minutes_source": "line_names_candidate_unapproved"
     },
     {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach_1",
+      "kind": "g5_connection",
+      "speed_kmh": 0.53,
+      "band": "boat_downstream",
+      "expected_speed_kmh": [
+        1.5,
+        12
+      ],
+      "tolerated_speed_kmh": [
+        1.2000000000000002,
+        14.399999999999999
+      ],
+      "minutes_source": "line_names_candidate_unapproved"
+    },
+    {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach_1",
       "kind": "g5_connection",
       "speed_kmh": 0.53,
@@ -2549,6 +2595,21 @@
       "minutes_source": "line_names_candidate_unapproved"
     },
     {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_1",
+      "kind": "g5_connection",
+      "speed_kmh": 1.12,
+      "band": "boat_downstream",
+      "expected_speed_kmh": [
+        1.5,
+        12
+      ],
+      "tolerated_speed_kmh": [
+        1.2000000000000002,
+        14.399999999999999
+      ],
+      "minutes_source": "line_names_candidate_unapproved"
+    },
+    {
       "id": "wrv3__g4dirv3f__cross_g4_04",
       "kind": "world_route",
       "speed_kmh": 16.54,
@@ -2595,21 +2656,6 @@
     },
     {
       "id": "wrv3__g4dirv3f__cross_g4_07",
-      "kind": "world_route",
-      "speed_kmh": 13.41,
-      "band": "boat_upstream",
-      "expected_speed_kmh": [
-        0.4,
-        6
-      ],
-      "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
-      ],
-      "minutes_source": "active_route_segment"
-    },
-    {
-      "id": "wrv3__g4dirv3r__cross_g4_07",
       "kind": "world_route",
       "speed_kmh": 13.41,
       "band": "boat_upstream",
@@ -2935,36 +2981,6 @@
       "tolerated_speed_kmh": [
         1.2000000000000002,
         14.399999999999999
-      ],
-      "minutes_source": "active_route_segment"
-    },
-    {
-      "id": "wrv3__g4dirv3f__cross_g4_23",
-      "kind": "world_route",
-      "speed_kmh": 8.71,
-      "band": "boat_upstream",
-      "expected_speed_kmh": [
-        0.4,
-        6
-      ],
-      "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
-      ],
-      "minutes_source": "active_route_segment"
-    },
-    {
-      "id": "wrv3__g4dirv3r__cross_g4_23",
-      "kind": "world_route",
-      "speed_kmh": 8.71,
-      "band": "boat_upstream",
-      "expected_speed_kmh": [
-        0.4,
-        6
-      ],
-      "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
       ],
       "minutes_source": "active_route_segment"
     },
@@ -3297,7 +3313,7 @@
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
       "base_minutes": 60,
       "proposed_minutes": 177,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "suggested_segment_count": 6
     },
     {
@@ -3402,32 +3418,12 @@
     },
     {
       "kind": "world_route",
-      "id": "wrv3__g4dirv3f__cross_g4_23",
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
-      "base_minutes": 45,
-      "proposed_minutes": 108,
-      "travel_band": "boat_upstream",
-      "suggested_segment_count": 4
-    },
-    {
-      "kind": "world_route",
       "id": "wrv3__g4dirv3r__cross_g4_09",
       "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
       "base_minutes": 15,
       "proposed_minutes": 108,
       "travel_band": "shore",
-      "suggested_segment_count": 4
-    },
-    {
-      "kind": "world_route",
-      "id": "wrv3__g4dirv3r__cross_g4_23",
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
-      "base_minutes": 45,
-      "proposed_minutes": 107,
-      "travel_band": "boat_upstream",
       "suggested_segment_count": 4
     },
     {
@@ -3542,6 +3538,16 @@
     },
     {
       "kind": "world_route",
+      "id": "wrv3__g4dirv3f__cross_g4_23",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "base_minutes": 45,
+      "proposed_minutes": 77,
+      "travel_band": "boat_upstream",
+      "suggested_segment_count": 3
+    },
+    {
+      "kind": "world_route",
       "id": "wrv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
       "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
@@ -3567,7 +3573,7 @@
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
       "base_minutes": 60,
       "proposed_minutes": 71,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "suggested_segment_count": 3
     },
     {
@@ -3587,7 +3593,7 @@
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
       "base_minutes": 45,
       "proposed_minutes": 68,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "suggested_segment_count": 3
     },
     {
@@ -3659,6 +3665,16 @@
       "proposed_minutes": 61,
       "travel_band": "path",
       "suggested_segment_count": 3
+    },
+    {
+      "kind": "world_route",
+      "id": "wrv3__g4dirv3r__cross_g4_23",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+      "base_minutes": 45,
+      "proposed_minutes": 58,
+      "travel_band": "boat_downstream",
+      "suggested_segment_count": 2
     },
     {
       "kind": "world_route",
@@ -3747,7 +3763,7 @@
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
       "base_minutes": 60,
       "proposed_minutes": 43,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "suggested_segment_count": 2
     },
     {
@@ -15060,11 +15076,11 @@
       "direction": "E",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса floodplain_overflow",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, seasonal_channel); каркас floodplain_overflow",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00074,
         "across": 0.00001
@@ -15077,7 +15093,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 1,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 95,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.1,
@@ -15098,17 +15114,17 @@
       "movement_class": "side_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 0.62,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "в пределах допуска",
+      "speed_status": "ниже диапазона",
       "shoreline_alignment": {
         "skeleton_id": "shore_floodplain_overflow_right",
         "alignment": 0.999961094426173,
@@ -15130,11 +15146,11 @@
       "direction": "W",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса floodplain_overflow",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, seasonal_channel); каркас floodplain_overflow",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00074,
         "across": -0.00001
@@ -17210,11 +17226,11 @@
       "direction": "N",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00134,
         "across": -0.00078
@@ -17227,7 +17243,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 3,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 199,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.2,
@@ -17248,14 +17264,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 1.73,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -17280,11 +17296,11 @@
       "direction": "S",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00134,
         "across": 0.00078
@@ -17350,11 +17366,11 @@
       "direction": "NE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00054,
         "across": 0
@@ -17367,7 +17383,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 1,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 69,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.07,
@@ -17388,17 +17404,17 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 0.6,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "в пределах допуска",
+      "speed_status": "ниже диапазона",
       "shoreline_alignment": {
         "skeleton_id": "shore_large_island_channels_right",
         "alignment": 0.9999999981562111,
@@ -17420,11 +17436,11 @@
       "direction": "SW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00054,
         "across": 0
@@ -17758,11 +17774,11 @@
       "direction": "SW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00175,
         "across": 0.00004
@@ -17828,11 +17844,11 @@
       "direction": "NE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00175,
         "across": -0.00004
@@ -17845,7 +17861,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 3,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 223,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.22,
@@ -17866,14 +17882,14 @@
       "movement_class": "side_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 1.94,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -18032,11 +18048,11 @@
       "direction": "S",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00107,
         "across": 0.00078
@@ -18102,11 +18118,11 @@
       "direction": "N",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса large_island_channels",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас large_island_channels",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00107,
         "across": -0.00078
@@ -18119,7 +18135,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 3,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 170,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.17,
@@ -18140,14 +18156,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 1.48,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -25378,11 +25394,11 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса landing_terrace_cove",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tidal_inlet); каркас landing_terrace_cove",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00287,
         "across": 0
@@ -25448,11 +25464,11 @@
       "direction": "SE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса landing_terrace_cove",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tidal_inlet); каркас landing_terrace_cove",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00287,
         "across": 0
@@ -25465,7 +25481,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 6,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 367,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.37,
@@ -25486,14 +25502,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 3.83,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -28512,11 +28528,11 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса small_tributary",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tributary); каркас small_tributary",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00519,
         "across": 0
@@ -28582,11 +28598,11 @@
       "direction": "SE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса small_tributary",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tributary); каркас small_tributary",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00519,
         "across": 0
@@ -28599,7 +28615,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 10,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 665,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.66,
@@ -28620,14 +28636,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 6.94,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -28652,11 +28668,11 @@
       "direction": "SE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса small_tributary",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tributary); каркас small_tributary",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00116,
         "across": 0
@@ -28669,7 +28685,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 2,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 148,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.15,
@@ -28690,14 +28706,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 1.55,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -28722,11 +28738,11 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса small_tributary",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tributary); каркас small_tributary",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00116,
         "across": 0
@@ -28792,11 +28808,11 @@
       "direction": "SE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса small_tributary",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tributary); каркас small_tributary",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00334,
         "across": 0
@@ -28809,7 +28825,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 6,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 427,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.43,
@@ -28830,14 +28846,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 4.45,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -28862,11 +28878,11 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса small_tributary",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tributary); каркас small_tributary",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00334,
         "across": 0
@@ -31612,11 +31628,11 @@
       "direction": "S",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": 3000,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса vikhtuy_access_cove",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, small_stream); каркас vikhtuy_access_cove",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.0004,
         "across": 0
@@ -31629,7 +31645,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 1,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 51,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.05,
@@ -31650,17 +31666,17 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 0.53,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "в пределах допуска",
+      "speed_status": "ниже диапазона",
       "shoreline_alignment": {
         "skeleton_id": "shore_vikhtuy_access_cove_right",
         "alignment": 1,
@@ -31682,11 +31698,11 @@
       "direction": "N",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": 3000,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса vikhtuy_access_cove",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, small_stream); каркас vikhtuy_access_cove",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.0004,
         "across": 0
@@ -36344,11 +36360,11 @@
       "direction": "N",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": 3000,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса zaostrovye_landing_inlet",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tidal_inlet); каркас zaostrovye_landing_inlet",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00185,
         "across": 0
@@ -36414,11 +36430,11 @@
       "direction": "S",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": 3000,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса zaostrovye_landing_inlet",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tidal_inlet); каркас zaostrovye_landing_inlet",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00185,
         "across": 0
@@ -36431,7 +36447,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 4,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 237,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.24,
@@ -36452,14 +36468,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 2.47,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -37542,11 +37558,11 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": 3000,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса zaostrovye_settlement_inlet",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tidal_inlet); каркас zaostrovye_settlement_inlet",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.00084,
         "across": 0
@@ -37612,11 +37628,11 @@
       "direction": "SE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": 3000,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса zaostrovye_settlement_inlet",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, tidal_inlet); каркас zaostrovye_settlement_inlet",
       "river_direction_reason": null,
       "river_direction_segment_index": null,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00084,
         "across": 0
@@ -37629,7 +37645,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 1,
       "proposed_minutes": 2,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 107,
       "sinuosity_factor": 1.15,
       "route_distance_km": 0.11,
@@ -37650,17 +37666,17 @@
       "movement_class": "river_channel",
       "movement_method_source": "line_names_candidate",
       "speed_kmh": 1.12,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "в пределах допуска",
+      "speed_status": "ниже диапазона",
       "shoreline_alignment": {
         "skeleton_id": "shore_zaostrovye_settlement_inlet_right",
         "alignment": 0.9999999904099748,
@@ -41036,11 +41052,11 @@
       "direction": "SW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
       "river_direction_reason": null,
       "river_direction_segment_index": 0,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.02361,
         "across": 0
@@ -41078,10 +41094,10 @@
           "distance_m": 2625,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.02361,
             "across": 0
@@ -41114,10 +41130,10 @@
           "distance_m": 121,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.00099,
             "across": 0.00045
@@ -41138,7 +41154,7 @@
         }
       ],
       "flow_length_shares": {
-        "вниз по течению": 1,
+        "вниз по течению": 0,
         "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
@@ -41185,11 +41201,11 @@
       "direction": "NE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
       "river_direction_reason": null,
       "river_direction_segment_index": 0,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.00099,
         "across": -0.00045
@@ -41202,7 +41218,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 2,
       "proposed_minutes": 43,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 2746,
       "sinuosity_factor": null,
       "route_distance_km": 2.75,
@@ -41227,10 +41243,10 @@
           "distance_m": 121,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.00099,
             "across": -0.00045
@@ -41241,7 +41257,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "river_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -41263,10 +41279,10 @@
           "distance_m": 2625,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.02361,
             "across": 0
@@ -41277,7 +41293,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "river_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -41288,7 +41304,7 @@
       ],
       "flow_length_shares": {
         "вниз по течению": 0,
-        "вверх по течению": 1,
+        "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
       },
@@ -41301,14 +41317,14 @@
       "movement_class": "river_channel",
       "movement_method_source": "active_route_segment",
       "speed_kmh": 2.75,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -41448,10 +41464,10 @@
           "distance_m": 2536,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.0228,
             "across": -0.00057
@@ -41484,10 +41500,10 @@
           "distance_m": 121,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.00099,
             "across": 0.00045
@@ -41508,7 +41524,7 @@
         }
       ],
       "flow_length_shares": {
-        "вниз по течению": 0.1981,
+        "вниз по течению": 0,
         "вверх по течению": 0.8019,
         "поперёк течения": 0,
         "неоценимо": 0
@@ -41555,14 +41571,14 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+      "river_direction": "вниз по течению",
+      "river_direction_basis": "проекция на касательную каркаса west",
       "river_direction_reason": null,
-      "river_direction_segment_index": 0,
+      "river_direction_segment_index": 2,
       "crossing_geometry_valid": true,
       "river_projection": {
-        "along": -0.00099,
-        "across": -0.00045
+        "along": 0.05127,
+        "across": 0
       },
       "base_minutes": 60,
       "minutes_delta": 117,
@@ -41572,12 +41588,12 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 6,
       "proposed_minutes": 177,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 13410,
       "sinuosity_factor": null,
       "route_distance_km": 13.41,
       "base_speed_kmh": 4,
-      "current_bias_kmh": 0,
+      "current_bias_kmh": 1,
       "effective_speed_kmh": 4.76,
       "calculation_status": "расчётная редакционная калибровка",
       "route_trace_key": "cross_g4_07",
@@ -41597,10 +41613,10 @@
           "distance_m": 121,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.00099,
             "across": -0.00045
@@ -41611,7 +41627,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "river_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -41633,10 +41649,10 @@
           "distance_m": 2536,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.0228,
             "across": 0.00057
@@ -41647,7 +41663,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "river_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -41730,30 +41746,30 @@
       ],
       "flow_length_shares": {
         "вниз по течению": 0.8019,
-        "вверх по течению": 0.1981,
+        "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
       },
       "is_water": true,
       "waterbody_ref": "west",
       "waterbody_crossing": false,
-      "flow_skeleton_id": "central_head_branch",
+      "flow_skeleton_id": "west",
       "minutes_source": "active_route_segment",
       "movement_method_id": "movement.small_river_craft",
       "movement_class": "river_channel",
       "movement_method_source": "active_route_segment",
       "speed_kmh": 13.41,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "выше диапазона",
+      "speed_status": "в пределах допуска",
       "shoreline_alignment": {
         "skeleton_id": "shore_west_right",
         "alignment": 0.9537597450661313,
@@ -41890,10 +41906,10 @@
           "distance_m": 2536,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.0228,
             "across": -0.00057
@@ -41926,10 +41942,10 @@
           "distance_m": 121,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.00099,
             "across": 0.00045
@@ -41950,7 +41966,7 @@
         }
       ],
       "flow_length_shares": {
-        "вниз по течению": 0.5332,
+        "вниз по течению": 0,
         "вверх по течению": 0.4668,
         "поперёк течения": 0,
         "неоценимо": 0
@@ -41997,14 +42013,14 @@
       "direction": "NE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+      "river_direction": "вниз по течению",
+      "river_direction_basis": "проекция на касательную каркаса east",
       "river_direction_reason": null,
-      "river_direction_segment_index": 0,
+      "river_direction_segment_index": 2,
       "crossing_geometry_valid": true,
       "river_projection": {
-        "along": -0.00099,
-        "across": -0.00045
+        "along": 0.01699,
+        "across": 0
       },
       "base_minutes": 60,
       "minutes_delta": 11,
@@ -42014,12 +42030,12 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 3,
       "proposed_minutes": 71,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 4983,
       "sinuosity_factor": null,
       "route_distance_km": 4.98,
       "base_speed_kmh": 4,
-      "current_bias_kmh": 0,
+      "current_bias_kmh": 1,
       "effective_speed_kmh": 4.41,
       "calculation_status": "расчётная редакционная калибровка",
       "route_trace_key": "cross_g4_08",
@@ -42039,10 +42055,10 @@
           "distance_m": 121,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.00099,
             "across": -0.00045
@@ -42053,7 +42069,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "river_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -42075,10 +42091,10 @@
           "distance_m": 2536,
           "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса central_head_branch",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.0228,
             "across": 0.00057
@@ -42089,7 +42105,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "river_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -42172,27 +42188,27 @@
       ],
       "flow_length_shares": {
         "вниз по течению": 0.4668,
-        "вверх по течению": 0.5332,
+        "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
       },
       "is_water": true,
       "waterbody_ref": "east",
       "waterbody_crossing": false,
-      "flow_skeleton_id": "central_head_branch",
+      "flow_skeleton_id": "east",
       "minutes_source": "active_route_segment",
       "movement_method_id": "movement.small_river_craft",
       "movement_class": "river_channel",
       "movement_method_source": "active_route_segment",
       "speed_kmh": 4.98,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -48230,11 +48246,11 @@
       "direction": "NW",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вниз по течению",
-      "river_direction_basis": "проекция на касательную каркаса backwater_mouth",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, backwater_mouth); каркас backwater_mouth",
       "river_direction_reason": null,
       "river_direction_segment_index": 0,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": 0.01921,
         "across": 0
@@ -48272,10 +48288,10 @@
           "distance_m": 2136,
           "waterbody_ref": "backwater_mouth",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса backwater_mouth",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, backwater_mouth); каркас backwater_mouth",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.01921,
             "across": 0
@@ -48308,10 +48324,10 @@
           "distance_m": 2150,
           "waterbody_ref": "backwater_mouth",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса backwater_mouth",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, backwater_mouth); каркас backwater_mouth",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.01934,
             "across": 0
@@ -48332,7 +48348,7 @@
         }
       ],
       "flow_length_shares": {
-        "вниз по течению": 1,
+        "вниз по течению": 0,
         "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
@@ -48379,11 +48395,11 @@
       "direction": "SE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса backwater_mouth",
+      "river_direction": "без течения",
+      "river_direction_basis": "вода без течения (current_bias_kmh 0, backwater_mouth); каркас backwater_mouth",
       "river_direction_reason": null,
       "river_direction_segment_index": 0,
-      "crossing_geometry_valid": true,
+      "crossing_geometry_valid": null,
       "river_projection": {
         "along": -0.01934,
         "across": 0
@@ -48396,7 +48412,7 @@
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 3,
       "proposed_minutes": 68,
-      "travel_band": "boat_upstream",
+      "travel_band": "boat_downstream",
       "distance_route_m": 4286,
       "sinuosity_factor": null,
       "route_distance_km": 4.29,
@@ -48421,10 +48437,10 @@
           "distance_m": 2150,
           "waterbody_ref": "backwater_mouth",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса backwater_mouth",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, backwater_mouth); каркас backwater_mouth",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.01934,
             "across": 0
@@ -48435,7 +48451,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -48457,10 +48473,10 @@
           "distance_m": 2136,
           "waterbody_ref": "backwater_mouth",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса backwater_mouth",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, backwater_mouth); каркас backwater_mouth",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.01921,
             "across": 0
@@ -48471,7 +48487,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -48482,7 +48498,7 @@
       ],
       "flow_length_shares": {
         "вниз по течению": 0,
-        "вверх по течению": 1,
+        "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
       },
@@ -48495,14 +48511,14 @@
       "movement_class": "side_channel",
       "movement_method_source": "active_route_segment",
       "speed_kmh": 5.71,
-      "speed_band": "boat_upstream",
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
       "speed_status": "в пределах допуска",
@@ -48538,20 +48554,20 @@
         "across": 0.00073
       },
       "base_minutes": 45,
-      "minutes_delta": 63,
+      "minutes_delta": 32,
       "minutes_change_flag_over_30": true,
       "minutes_change_threshold_minutes": 30,
       "proposed_over_30_minutes": true,
       "long_transition_threshold_minutes": 30,
-      "suggested_segment_count": 4,
-      "proposed_minutes": 108,
+      "suggested_segment_count": 3,
+      "proposed_minutes": 77,
       "travel_band": "boat_upstream",
-      "distance_route_m": 6532,
+      "distance_route_m": 4136,
       "sinuosity_factor": null,
-      "route_distance_km": 6.53,
+      "route_distance_km": 4.14,
       "base_speed_kmh": 4,
       "current_bias_kmh": -1,
-      "effective_speed_kmh": 3.81,
+      "effective_speed_kmh": 3.37,
       "calculation_status": "расчётная редакционная калибровка",
       "route_trace_key": "cross_g4_23",
       "route_trace_fallback": null,
@@ -48636,131 +48652,23 @@
             "lon": 40.64
           },
           "to": {
-            "lat": 64.58692920785394,
-            "lon": 40.63480670877235
-          },
-          "distance_m": 1349,
-          "waterbody_ref": "main",
-          "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса main",
-          "river_direction_reason": null,
-          "crossing_geometry_valid": true,
-          "river_projection": {
-            "along": 0.01201,
-            "across": -0.00177
-          },
-          "river_projection_m": {
-            "along": 1335.0642806031874,
-            "across": -196.36898117039982
-          },
-          "movement_method_id": "movement.small_river_craft",
-          "movement_class": "side_channel",
-          "travel_band": "boat_downstream",
-          "sinuosity_factor": 1.05,
-          "base_speed_kmh": 4,
-          "current_bias_kmh": 1,
-          "effective_speed_kmh": 5,
-          "duration_minutes_unrounded": 16.992,
-          "suggested_route_point": true
-        },
-        {
-          "index": 3,
-          "surface": "water",
-          "from": {
-            "lat": 64.58692920785394,
-            "lon": 40.63480670877235
-          },
-          "to": {
-            "lat": 64.57892920785395,
-            "lon": 40.62880670877235
-          },
-          "distance_m": 935,
-          "waterbody_ref": "island_split_channels",
-          "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса island_split_channels",
-          "river_direction_reason": null,
-          "crossing_geometry_valid": true,
-          "river_projection": {
-            "along": 0.0084,
-            "across": 0
-          },
-          "river_projection_m": {
-            "along": 934.5130164036335,
-            "across": -5.7337318486866407e-11
-          },
-          "movement_method_id": "movement.small_river_craft",
-          "movement_class": "side_channel",
-          "travel_band": "boat_downstream",
-          "sinuosity_factor": 1.05,
-          "base_speed_kmh": 4,
-          "current_bias_kmh": 0.65,
-          "effective_speed_kmh": 4.65,
-          "duration_minutes_unrounded": 12.671,
-          "suggested_route_point": true
-        },
-        {
-          "index": 4,
-          "surface": "water",
-          "from": {
-            "lat": 64.57892920785395,
-            "lon": 40.62880670877235
-          },
-          "to": {
-            "lat": 64.57572920785395,
-            "lon": 40.62580670877235
-          },
-          "distance_m": 384,
-          "waterbody_ref": "island_split_channels",
-          "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса island_split_channels",
-          "river_direction_reason": null,
-          "crossing_geometry_valid": true,
-          "river_projection": {
-            "along": 0.00345,
-            "across": 0
-          },
-          "river_projection_m": {
-            "along": 383.56035805831567,
-            "across": 3.235772977686069e-11
-          },
-          "movement_method_id": "movement.small_river_craft",
-          "movement_class": "side_channel",
-          "travel_band": "boat_downstream",
-          "sinuosity_factor": 1.05,
-          "base_speed_kmh": 4,
-          "current_bias_kmh": 0.65,
-          "effective_speed_kmh": 4.65,
-          "duration_minutes_unrounded": 5.2,
-          "suggested_route_point": true
-        },
-        {
-          "index": 5,
-          "surface": "water",
-          "from": {
-            "lat": 64.57572920785395,
-            "lon": 40.62580670877235
-          },
-          "to": {
             "lat": 64.56889025180115,
             "lon": 40.623478563808455
           },
-          "distance_m": 769,
-          "waterbody_ref": "dry_island_landing_cove",
+          "distance_m": 1041,
+          "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса dry_island_landing_cove",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
-            "along": 0.00691,
-            "across": 0
+            "along": 0.00936,
+            "across": -0.0003
           },
           "river_projection_m": {
-            "along": 768.5384538589929,
-            "across": -1.921210066035961e-10
+            "along": 1040.5098913558436,
+            "across": -33.28938638848963
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "side_channel",
@@ -48769,11 +48677,11 @@
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
           "effective_speed_kmh": 4,
-          "duration_minutes_unrounded": 12.105,
+          "duration_minutes_unrounded": 16.395,
           "suggested_route_point": true
         },
         {
-          "index": 6,
+          "index": 3,
           "surface": "water",
           "from": {
             "lat": 64.56889025180115,
@@ -48786,10 +48694,10 @@
           "distance_m": 769,
           "waterbody_ref": "dry_island_landing_cove",
           "crossing": false,
-          "river_direction": "вниз по течению",
-          "river_direction_basis": "проекция на касательную каркаса dry_island_landing_cove",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас dry_island_landing_cove",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": 0.00691,
             "across": 0
@@ -48810,8 +48718,8 @@
         }
       ],
       "flow_length_shares": {
-        "вниз по течению": 0.6439,
-        "вверх по течению": 0.3561,
+        "вниз по течению": 0,
+        "вверх по течению": 0.5624,
         "поперёк течения": 0,
         "неоценимо": 0
       },
@@ -48823,7 +48731,7 @@
       "movement_method_id": "movement.small_river_craft",
       "movement_class": "side_channel",
       "movement_method_source": "active_route_segment",
-      "speed_kmh": 8.71,
+      "speed_kmh": 5.51,
       "speed_band": "boat_upstream",
       "expected_speed_kmh": [
         0.4,
@@ -48834,11 +48742,11 @@
         7.199999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "выше диапазона",
+      "speed_status": "в пределах допуска",
       "shoreline_alignment": {
         "skeleton_id": "shore_east_left",
-        "alignment": 0.9438796745728485,
-        "distance_m": 114,
+        "alignment": 0.9054588377554199,
+        "distance_m": 115,
         "along_route": true
       },
       "shore_to_water_link": false,
@@ -48857,30 +48765,30 @@
       "direction": "NE",
       "direction_reliability": "авторская игровая карта; не историческая точность",
       "endpoint_uncertainty_m": null,
-      "river_direction": "вверх по течению",
-      "river_direction_basis": "проекция на касательную каркаса dry_island_landing_cove",
+      "river_direction": "вниз по течению",
+      "river_direction_basis": "проекция на касательную каркаса east",
       "river_direction_reason": null,
-      "river_direction_segment_index": 0,
+      "river_direction_segment_index": 2,
       "crossing_geometry_valid": true,
       "river_projection": {
-        "along": -0.00691,
+        "along": 0.01699,
         "across": 0
       },
       "base_minutes": 45,
-      "minutes_delta": 62,
-      "minutes_change_flag_over_30": true,
+      "minutes_delta": 13,
+      "minutes_change_flag_over_30": false,
       "minutes_change_threshold_minutes": 30,
       "proposed_over_30_minutes": true,
       "long_transition_threshold_minutes": 30,
-      "suggested_segment_count": 4,
-      "proposed_minutes": 107,
-      "travel_band": "boat_upstream",
-      "distance_route_m": 6532,
+      "suggested_segment_count": 2,
+      "proposed_minutes": 58,
+      "travel_band": "boat_downstream",
+      "distance_route_m": 4136,
       "sinuosity_factor": null,
-      "route_distance_km": 6.53,
+      "route_distance_km": 4.14,
       "base_speed_kmh": 4,
-      "current_bias_kmh": 0,
-      "effective_speed_kmh": 3.86,
+      "current_bias_kmh": 1,
+      "effective_speed_kmh": 4.51,
       "calculation_status": "расчётная редакционная калибровка",
       "route_trace_key": "cross_g4_23",
       "route_trace_fallback": null,
@@ -48899,10 +48807,10 @@
           "distance_m": 769,
           "waterbody_ref": "dry_island_landing_cove",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса dry_island_landing_cove",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, side_channel); каркас dry_island_landing_cove",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
             "along": -0.00691,
             "across": 0
@@ -48913,7 +48821,7 @@
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
@@ -48929,144 +48837,36 @@
             "lon": 40.623478563808455
           },
           "to": {
-            "lat": 64.57572920785395,
-            "lon": 40.62580670877235
+            "lat": 64.575,
+            "lon": 40.64
           },
-          "distance_m": 769,
-          "waterbody_ref": "dry_island_landing_cove",
+          "distance_m": 1041,
+          "waterbody_ref": "central_head_branch",
           "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса dry_island_landing_cove",
+          "river_direction": "без течения",
+          "river_direction_basis": "вода без течения (current_bias_kmh 0, distributary); каркас central_head_branch",
           "river_direction_reason": null,
-          "crossing_geometry_valid": true,
+          "crossing_geometry_valid": null,
           "river_projection": {
-            "along": -0.00691,
-            "across": 0
+            "along": -0.00936,
+            "across": 0.0003
           },
           "river_projection_m": {
-            "along": -768.5384538589929,
-            "across": 1.921210066035961e-10
+            "along": -1040.5098913558436,
+            "across": 33.28938638848963
           },
           "movement_method_id": "movement.small_river_craft",
           "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
+          "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
           "current_bias_kmh": 0,
           "effective_speed_kmh": 4,
-          "duration_minutes_unrounded": 12.105,
+          "duration_minutes_unrounded": 16.395,
           "suggested_route_point": true
         },
         {
           "index": 2,
-          "surface": "water",
-          "from": {
-            "lat": 64.57572920785395,
-            "lon": 40.62580670877235
-          },
-          "to": {
-            "lat": 64.57892920785395,
-            "lon": 40.62880670877235
-          },
-          "distance_m": 384,
-          "waterbody_ref": "island_split_channels",
-          "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса island_split_channels",
-          "river_direction_reason": null,
-          "crossing_geometry_valid": true,
-          "river_projection": {
-            "along": -0.00345,
-            "across": 0
-          },
-          "river_projection_m": {
-            "along": -383.56035805831567,
-            "across": -3.235772977686069e-11
-          },
-          "movement_method_id": "movement.small_river_craft",
-          "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
-          "sinuosity_factor": 1.05,
-          "base_speed_kmh": 4,
-          "current_bias_kmh": -0.65,
-          "effective_speed_kmh": 3.35,
-          "duration_minutes_unrounded": 7.218,
-          "suggested_route_point": true
-        },
-        {
-          "index": 3,
-          "surface": "water",
-          "from": {
-            "lat": 64.57892920785395,
-            "lon": 40.62880670877235
-          },
-          "to": {
-            "lat": 64.58692920785394,
-            "lon": 40.63480670877235
-          },
-          "distance_m": 935,
-          "waterbody_ref": "island_split_channels",
-          "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса island_split_channels",
-          "river_direction_reason": null,
-          "crossing_geometry_valid": true,
-          "river_projection": {
-            "along": -0.0084,
-            "across": 0
-          },
-          "river_projection_m": {
-            "along": -934.5130164036335,
-            "across": 5.7337318486866407e-11
-          },
-          "movement_method_id": "movement.small_river_craft",
-          "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
-          "sinuosity_factor": 1.05,
-          "base_speed_kmh": 4,
-          "current_bias_kmh": -0.65,
-          "effective_speed_kmh": 3.35,
-          "duration_minutes_unrounded": 17.588,
-          "suggested_route_point": true
-        },
-        {
-          "index": 4,
-          "surface": "water",
-          "from": {
-            "lat": 64.58692920785394,
-            "lon": 40.63480670877235
-          },
-          "to": {
-            "lat": 64.575,
-            "lon": 40.64
-          },
-          "distance_m": 1349,
-          "waterbody_ref": "main",
-          "crossing": false,
-          "river_direction": "вверх по течению",
-          "river_direction_basis": "проекция на касательную каркаса main",
-          "river_direction_reason": null,
-          "crossing_geometry_valid": true,
-          "river_projection": {
-            "along": -0.01201,
-            "across": 0.00177
-          },
-          "river_projection_m": {
-            "along": -1335.0642806031874,
-            "across": 196.36898117039982
-          },
-          "movement_method_id": "movement.small_river_craft",
-          "movement_class": "side_channel",
-          "travel_band": "boat_upstream",
-          "sinuosity_factor": 1.05,
-          "base_speed_kmh": 4,
-          "current_bias_kmh": -1,
-          "effective_speed_kmh": 3,
-          "duration_minutes_unrounded": 28.32,
-          "suggested_route_point": true
-        },
-        {
-          "index": 5,
           "surface": "water",
           "from": {
             "lat": 64.575,
@@ -49102,7 +48902,7 @@
           "suggested_route_point": true
         },
         {
-          "index": 6,
+          "index": 3,
           "surface": "water",
           "from": {
             "lat": 64.585,
@@ -49139,35 +48939,35 @@
         }
       ],
       "flow_length_shares": {
-        "вниз по течению": 0.3561,
-        "вверх по течению": 0.6439,
+        "вниз по течению": 0.5624,
+        "вверх по течению": 0,
         "поперёк течения": 0,
         "неоценимо": 0
       },
       "is_water": true,
       "waterbody_ref": "east",
       "waterbody_crossing": false,
-      "flow_skeleton_id": "dry_island_landing_cove",
+      "flow_skeleton_id": "east",
       "minutes_source": "active_route_segment",
       "movement_method_id": "movement.small_river_craft",
       "movement_class": "side_channel",
       "movement_method_source": "active_route_segment",
-      "speed_kmh": 8.71,
-      "speed_band": "boat_upstream",
+      "speed_kmh": 5.51,
+      "speed_band": "boat_downstream",
       "expected_speed_kmh": [
-        0.4,
-        6
+        1.5,
+        12
       ],
       "tolerated_speed_kmh": [
-        0.32000000000000006,
-        7.199999999999999
+        1.2000000000000002,
+        14.399999999999999
       ],
       "speed_tolerance_percent": 20,
-      "speed_status": "выше диапазона",
+      "speed_status": "в пределах допуска",
       "shoreline_alignment": {
         "skeleton_id": "shore_east_left",
-        "alignment": 0.9438796745728483,
-        "distance_m": 114,
+        "alignment": 0.9054588377554198,
+        "distance_m": 115,
         "along_route": true
       },
       "shore_to_water_link": false,

@@ -16746,18 +16746,6 @@
           "lon": 40.64
         },
         {
-          "lat": 64.58692920785394,
-          "lon": 40.63480670877235
-        },
-        {
-          "lat": 64.57892920785395,
-          "lon": 40.62880670877235
-        },
-        {
-          "lat": 64.57572920785395,
-          "lon": 40.62580670877235
-        },
-        {
           "lat": 64.56889025180115,
           "lon": 40.623478563808455
         },
@@ -16779,22 +16767,7 @@
         },
         {
           "surface": "water",
-          "waterbody_ref": "main",
-          "crossing": false
-        },
-        {
-          "surface": "water",
-          "waterbody_ref": "island_split_channels",
-          "crossing": false
-        },
-        {
-          "surface": "water",
-          "waterbody_ref": "island_split_channels",
-          "crossing": false
-        },
-        {
-          "surface": "water",
-          "waterbody_ref": "dry_island_landing_cove",
+          "waterbody_ref": "central_head_branch",
           "crossing": false
         },
         {

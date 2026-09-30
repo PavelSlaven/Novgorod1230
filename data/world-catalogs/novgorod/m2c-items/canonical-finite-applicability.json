@@ -1,8 +1,22 @@
 {
   "schema": "rus.m2c_canonical_finite_applicability.v1",
-  "status": "candidate_pending_independent_data_approval",
+  "status": "approved",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-  "approval": null,
+  "approval": {
+    "approved_by": "claude-opus-5-5 (Opus 5.5) — independent data-approval pass, Contract Auditor rt-items; not the author (rt-items executor, Sonnet 5.5), not the F4 reviewer",
+    "approved_on": "2026-09-30",
+    "approved_path": "data/world-catalogs/novgorod/m2c-items/canonical-finite-applicability.json",
+    "approved_commit": "44c1a3a95d8f03434a69847255507a9bdc16f1d8",
+    "verdict": "APPROVE_WITH_LIMITS",
+    "limits": [
+      "Exactly 4 rows are approved: G4 vikhtuy_locality@1, revision _001. rule.place_family_to_source derives these rows; it is not a general rule for other G4 (for example pf_village_lane → deadwood would put deadwood on a village lane and needs its own pass).",
+      "Access: this approval explicitly extends m2c_natural_gathering_access_v1 (order: explicit parcel right → default allow → unresolved) to these 4 canonical G5 as commons, despite scope.generated_g5_only. The file asserts 'commons, no known parcel right' for these rows. Yards, homesteads and outbuildings have no sources; unknown ≠ allowed stays. Basis: owner decision in #133 (free gathering, explicit parcel rights apply) and reviewer decision F3. If the owner changes F3, this approval is withdrawn.",
+      "Quantities: deadwood 60 and driftwood 100 are approved editorial values of the m2c profiles, not measured landscape abundance; revisit when the G4 ext profiles are approved.",
+      "Place-family bindings are approved but with confidence low; G4 rows are candidates (C).",
+      "Gaps, not invented and not approved: G4 lists dry brushwood (common, 100), sedge, willow withies, bark, clay, sand and silt for vikhtuy_locality, but they have no approved runtime profiles, so canonical places lack them (record in LW). Seasonality (winter/spring limited) is not modelled. Reed and living trees are excluded (LW-102).",
+      "Do not change approved_commit after production parties exist (F10)."
+    ]
+  },
   "rule": {
     "statement": "A canonical G5 gets the finite natural sources that its place family allows on common land and that its G4 natural-material profile lists; yards and household plots get none unless a parcel right says so.",
     "place_family_to_source": {

@@ -1,9 +1,22 @@
 {
   "schema": "rus.a1_applicability_class.v1",
-  "status": "candidate_pending_independent_data_approval",
+  "status": "approved",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "rule": { "kind": "all_g5_sites" },
-  "approval": null,
+  "approval": {
+    "approved_by": "claude-opus-5-5 (Opus 5.5) — independent data-approval pass, Contract Auditor rt-items; not the author (rt-items executor, Sonnet 5.5), not the F4 reviewer",
+    "approved_on": "2026-09-30",
+    "approved_path": "data/world-catalogs/novgorod/live-world-runtime-v17/a1-applicability-class.json",
+    "approved_commit": "a260fa0651354e11af12e6f16cb9b5e25eb36bca",
+    "verdict": "APPROVE",
+    "limits": [
+      "Only revision novgorod_spatial_v3_target_contract_approval_001.",
+      "Replaces only the A1 place list, not N1 (LW-104).",
+      "A1 owner checks (sources, access, mass, tools) are unchanged.",
+      "On generated G5, A1 stays unavailable because of LW-100: a typed refusal, not a game outcome.",
+      "Plan-form and A1 auditor reliability are not approved (LW-103)."
+    ]
+  },
   "rationale": [
     "A1 action production is an ordinary player action; a missing applicability profile is an implementation defect solved by a class profile, not a game outcome (AGENTS.md AI §10.1).",
     "The loaded A1 profile is class-neutral (validNeutralActionProductionProfile); the per-place list in target-runtime-profiles-approved.json (32 generated scopes at template version 1, one canonical G5) cannot match capacity-v2 generated sites, whose generated_template_ref.authoring_version is 2 (live PostgreSQL dump, 2026-09-29), so A1 is refused on every generated G5.",

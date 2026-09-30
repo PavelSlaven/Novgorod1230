@@ -269,6 +269,8 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_movement_method_cost_options: 'Нормализованные baseline/rational-factor cost варианты.',
   spatial_v3_dynamic_recheck_policies: 'Политика recheck segment movement; slicing не меняет итоговую длительность.',
   spatial_v3_dynamic_recheck_policy_points: 'Явные возрастающие interior progress points recheck policy.',
+  spatial_v3_line_kind_profiles: 'Профиль вида линии (Spatial 4.7.0): метод по умолчанию, среда, ориентация, политика срезов и вид маршрута; один approved профиль на вид линии.',
+  spatial_v3_line_kind_alternative_methods: 'Способы пройти линию вместо базового метода профиля: класс риска и ссылка на правило опасности.',
   spatial_v3_activity_contracts: 'Time-only activity authoring без physical segment progress.',
   spatial_v3_action_contracts: 'Action-only contracts; blocked/failed action preserves exact departure endpoint.',
   spatial_v3_movement_mode_transition_contracts: 'Board/disembark/load/control transitions без transfer active execution.',
@@ -893,5 +895,44 @@ export const fields = {
     generation_allowed: 'Разрешена ли LLM-генерация по этому правилу.',
     layout_rules: 'JSON: правила планировки места.',
     npc_generation_rules: 'JSON: правила NPC для места.'
+  },
+  spatial_v3_line_kind_profiles: {
+    line_kind_id: 'Вид линии из controlled_line_kind (line.path, line.river_channel, …); один профиль на (вид, версия).',
+    transition_environment_profile_id: 'Среда перехода линии (с версией в соседнем поле): FK → spatial_v3_transition_environment_profiles.',
+    topological_orientation_profile_id: 'Топологическая ориентация линии (с версией): FK → spatial_v3_topological_movement_orientation_profiles.',
+    baseline_movement_method_id: 'Метод движения по умолчанию (movement_method.*); минуты лежат на binding, не здесь.',
+    movement_method_cost_profile_id: 'Профиль стоимости методов (с версией): базовый метод и rational_factor-варианты альтернатив.',
+    dynamic_recheck_policy_id: 'Политика перепроверки (с версией): отрезки длиннее 30 минут она режет на срезы не длиннее 30 минут.',
+    route_kind_id: 'Вид маршрута (route.*), по которому линия входит в world route segment.',
+    status: 'Статус профиля: approved, deprecated или retired (как в CHECK).',
+    provenance_ref: 'FK → source_records(id): источник профиля.',
+    canonical_digest: 'sha256 канонического вида строки; совпадает с digest её authoring version.'
+  },
+  spatial_v3_line_kind_alternative_methods: {
+    profile_id: 'Профиль вида линии (с версией в profile_version): FK → spatial_v3_line_kind_profiles, каскадное удаление.',
+    movement_method_id: 'Альтернативный метод движения (movement_method.*); должен быть rational_factor-вариантом профиля стоимости, проверяет валидатор волны.',
+    risk_class: 'Класс риска альтернативы: low, moderate, high или extreme.',
+    hazard_rule_ref: 'Текстовая версионированная ссылка на правило опасности (записей об опасностях ещё нет, LW-097).'
+  },
+  spatial_v3_canonical_g5_connection_bindings: {
+    connection_profile_id: 'Профиль связи старого стиля (binding@1/@2, с версией); NULL у binding нового стиля, ровно одно из connection/line профилей.',
+    line_kind_profile_id: 'Профиль вида линии нового стиля (binding@3 и позже, с версией); NULL у старого стиля.',
+    line_name: 'Имя линии для игрока («тропой вдоль ручья»): непустое, без цифр и порядковых слов; у обратного слота то же имя.',
+    line_discriminator: 'Различитель двух линий одного места с одинаковым именем; необязателен.',
+    line_direction_id: 'Направление линии (east, …); необязательно, без линии не задаётся.',
+    line_toponym: 'Топоним линии, если он есть; необязателен.',
+    base_minutes: 'Минуты пути по линии в этом направлении (целое > 0, стороны независимы); потолка нет, длинный отрезок режет политика срезов.',
+    capacity: 'Вместимость линии (целое > 0); необязательна.',
+    capacity_semantics_ref: 'Версионированная ссылка на смысл вместимости; обязательна у binding нового стиля.',
+    risk_profile_ref: 'Версионированная ссылка на профиль риска; обязательна у binding нового стиля.',
+    availability_condition_set_ref: 'Условие доступности (портал и т. п.); NULL, если у связи нет портала.'
+  },
+  spatial_v3_world_route_segments: {
+    line_kind_id: 'Вид линии (controlled_line_kind) segment нового стиля; NULL у старого, все line-поля заданы вместе.',
+    line_kind_profile_id: 'Профиль вида линии (с версией в line_kind_profile_version): FK → spatial_v3_line_kind_profiles.',
+    line_name: 'Имя линии для игрока; непустое, задано вместе с видом линии.',
+    line_discriminator: 'Различитель одноимённых линий места; необязателен, требует профиль линии.',
+    line_direction_id: 'Направление линии; необязательно, требует профиль линии.',
+    line_toponym: 'Топоним линии; необязателен, требует профиль линии.'
   }
 };

@@ -3034,13 +3034,13 @@ Fixed/curved profiles движения и только явная reciprocal rev
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
-| `line_kind_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_kind_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `line_kind_id` | `TEXT` | да | — | — | — | Вид линии (controlled_line_kind) segment нового стиля; NULL у старого, все line-поля заданы вместе. |
+| `line_kind_profile_id` | `TEXT` | да | — | — | — | Профиль вида линии (с версией в line_kind_profile_version): FK → spatial_v3_line_kind_profiles. |
 | `line_kind_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
-| `line_name` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_discriminator` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_direction_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_toponym` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `line_name` | `TEXT` | да | — | — | — | Имя линии для игрока; непустое, задано вместе с видом линии. |
+| `line_discriminator` | `TEXT` | да | — | — | — | Различитель одноимённых линий места; необязателен, требует профиль линии. |
+| `line_direction_id` | `TEXT` | да | — | — | — | Направление линии; необязательно, требует профиль линии. |
+| `line_toponym` | `TEXT` | да | — | — | — | Топоним линии; необязателен, требует профиль линии. |
 
 **Ограничения таблицы:**
 
@@ -5657,7 +5657,7 @@ Digests, counts и dependency order таблиц одного импорта.
 | `from_canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
 | `to_canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `to_canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
-| `connection_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `connection_profile_id` | `TEXT` | да | — | — | — | Профиль связи старого стиля (binding@1/@2, с версией); NULL у binding нового стиля, ровно одно из connection/line профилей. |
 | `connection_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
 | `from_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `to_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
@@ -5667,17 +5667,17 @@ Digests, counts и dependency order таблиц одного импорта.
 | `source_pair_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `line_kind_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `line_kind_profile_id` | `TEXT` | да | — | — | — | Профиль вида линии нового стиля (binding@3 и позже, с версией); NULL у старого стиля. |
 | `line_kind_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
-| `line_name` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_discriminator` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_direction_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `line_toponym` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `base_minutes` | `INTEGER` | да | — | — | — | Описание отсутствует. |
-| `capacity` | `INTEGER` | да | — | — | — | Описание отсутствует. |
-| `capacity_semantics_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `risk_profile_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `availability_condition_set_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `line_name` | `TEXT` | да | — | — | — | Имя линии для игрока («тропой вдоль ручья»): непустое, без цифр и порядковых слов; у обратного слота то же имя. |
+| `line_discriminator` | `TEXT` | да | — | — | — | Различитель двух линий одного места с одинаковым именем; необязателен. |
+| `line_direction_id` | `TEXT` | да | — | — | — | Направление линии (east, …); необязательно, без линии не задаётся. |
+| `line_toponym` | `TEXT` | да | — | — | — | Топоним линии, если он есть; необязателен. |
+| `base_minutes` | `INTEGER` | да | — | — | — | Минуты пути по линии в этом направлении (целое > 0, стороны независимы); потолка нет, длинный отрезок режет политика срезов. |
+| `capacity` | `INTEGER` | да | — | — | — | Вместимость линии (целое > 0); необязательна. |
+| `capacity_semantics_ref` | `TEXT` | да | — | — | — | Версионированная ссылка на смысл вместимости; обязательна у binding нового стиля. |
+| `risk_profile_ref` | `TEXT` | да | — | — | — | Версионированная ссылка на профиль риска; обязательна у binding нового стиля. |
+| `availability_condition_set_ref` | `TEXT` | да | — | — | — | Условие доступности (портал и т. п.); NULL, если у связи нет портала. |
 
 **Ограничения таблицы:**
 
@@ -6143,7 +6143,7 @@ Digests, counts и dependency order таблиц одного импорта.
 
 ### `world_base.spatial_v3_line_kind_profiles`
 
-Описание назначения отсутствует.
+Профиль вида линии (Spatial 4.7.0): метод по умолчанию, среда, ориентация, политика срезов и вид маршрута; один approved профиль на вид линии.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
@@ -6151,20 +6151,20 @@ Digests, counts и dependency order таблиц одного импорта.
 | `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(version>0)` | Описание отсутствует. |
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `line_kind_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(line_kind_id))>0)` | Описание отсутствует. |
-| `transition_environment_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `line_kind_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(line_kind_id))>0)` | Вид линии из controlled_line_kind (line.path, line.river_channel, …); один профиль на (вид, версия). |
+| `transition_environment_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Среда перехода линии (с версией в соседнем поле): FK → spatial_v3_transition_environment_profiles. |
 | `transition_environment_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `topological_orientation_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `topological_orientation_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Топологическая ориентация линии (с версией): FK → spatial_v3_topological_movement_orientation_profiles. |
 | `topological_orientation_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `baseline_movement_method_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(baseline_movement_method_id))>0)` | Описание отсутствует. |
-| `movement_method_cost_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `baseline_movement_method_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(baseline_movement_method_id))>0)` | Метод движения по умолчанию (movement_method.*); минуты лежат на binding, не здесь. |
+| `movement_method_cost_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Профиль стоимости методов (с версией): базовый метод и rational_factor-варианты альтернатив. |
 | `movement_method_cost_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `dynamic_recheck_policy_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `dynamic_recheck_policy_id` | `TEXT` | нет | — | — | `NOT NULL` | Политика перепроверки (с версией): отрезки длиннее 30 минут она режет на срезы не длиннее 30 минут. |
 | `dynamic_recheck_policy_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `route_kind_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(route_kind_id))>0)` | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `route_kind_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(route_kind_id))>0)` | Вид маршрута (route.*), по которому линия входит в world route segment. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус профиля: approved, deprecated или retired (как в CHECK). |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | FK → source_records(id): источник профиля. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | sha256 канонического вида строки; совпадает с digest её authoring version. |
 
 **Ограничения таблицы:**
 
@@ -6179,15 +6179,15 @@ Digests, counts и dependency order таблиц одного импорта.
 
 ### `world_base.spatial_v3_line_kind_alternative_methods`
 
-Описание назначения отсутствует.
+Способы пройти линию вместо базового метода профиля: класс риска и ссылка на правило опасности.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
-| `profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Профиль вида линии (с версией в profile_version): FK → spatial_v3_line_kind_profiles, каскадное удаление. |
 | `profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `movement_method_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(movement_method_id))>0)` | Описание отсутствует. |
-| `risk_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(risk_class IN ('low','moderate','high','extreme'))` | Описание отсутствует. |
-| `hazard_rule_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(hazard_rule_ref))>0)` | Описание отсутствует. |
+| `movement_method_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(movement_method_id))>0)` | Альтернативный метод движения (movement_method.*); должен быть rational_factor-вариантом профиля стоимости, проверяет валидатор волны. |
+| `risk_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(risk_class IN ('low','moderate','high','extreme'))` | Класс риска альтернативы: low, moderate, high или extreme. |
+| `hazard_rule_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(length(btrim(hazard_rule_ref))>0)` | Текстовая версионированная ссылка на правило опасности (записей об опасностях ещё нет, LW-097). |
 
 **Ограничения таблицы:**
 

@@ -14,10 +14,10 @@ const REQUEST_PATH =
 const REQUEST_FILE = resolve(REQUEST_PATH);
 const REPO_V17 = resolve('data/world-catalogs/novgorod/live-world-runtime-v17');
 
-test('fresh-schema attestation gate selects v5 for current request digest', async () => {
+test('fresh-schema attestation gate selects v6 for current request digest', async () => {
   const requestBytes = await readFile(REQUEST_FILE);
   const requestDigest = computeFreshSchemaRequestDigest(requestBytes);
-  assert.equal(requestDigest, 'b0c42467f199e84b60ed253769ba0324ecc8e30e5f21fc437198d719e844803f');
+  assert.equal(requestDigest, '9ceaa9fb49f36d8756d0e511fe508110ce51d6a32ef646b2781fb103b2cb70e1');
 
   const legacyOnlyDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-legacy-'));
   await copyFile(
@@ -46,24 +46,24 @@ test('fresh-schema attestation gate selects v5 for current request digest', asyn
   );
   await rm(legacyOnlyDir, { recursive: true, force: true });
 
-  const v5Dir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-v5-'));
+  const v6Dir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-v6-'));
   await copyFile(
-    join(REPO_V17, 'fresh-schema-approval-attestation-v5.json'),
-    join(v5Dir, 'fresh-schema-approval-attestation-v5.json')
+    join(REPO_V17, 'fresh-schema-approval-attestation-v6.json'),
+    join(v6Dir, 'fresh-schema-approval-attestation-v6.json')
   );
   const selected = await loadFreshSchemaAttestationFromRepo({
     requestDigest,
-    catalogDir: v5Dir
+    catalogDir: v6Dir
   });
   assert.equal(selected.request_digest, requestDigest);
   assert.equal(selected.verdict, 'APPROVE_CONDITIONAL');
-  assert.equal(selected.scope.expected_world_base_tables, 222);
-  await rm(v5Dir, { recursive: true, force: true });
+  assert.equal(selected.scope.expected_world_base_tables, 224);
+  await rm(v6Dir, { recursive: true, force: true });
 
   const ambiguousDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-ambiguous-'));
-  const v5Bytes = await readFile(join(REPO_V17, 'fresh-schema-approval-attestation-v5.json'), 'utf8');
-  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v5a.json'), v5Bytes);
-  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v5b.json'), v5Bytes);
+  const v6Bytes = await readFile(join(REPO_V17, 'fresh-schema-approval-attestation-v6.json'), 'utf8');
+  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v6a.json'), v6Bytes);
+  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v6b.json'), v6Bytes);
   await assert.rejects(
     () => loadFreshSchemaAttestationFromRepo({ requestDigest, catalogDir: ambiguousDir }),
     /V17_FRESH_SCHEMA_ATTESTATION_AMBIGUOUS/u

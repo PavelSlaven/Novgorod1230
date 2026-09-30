@@ -240,3 +240,20 @@ jobs:
       - name: Run evidence-only checks
         if: steps.profile.outputs.profile == 'evidence_only'
         run: npm run spatial-v3:test-p28 && npm run spatial-v3:check-p28 && npm run spatial-v3:p28-local-evidence && npm run docs:check
+
+  full-npm-test:
+    name: full-npm-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [full-profile, evidence-only]
+    if: always()
+    steps:
+      - name: Require every suite (p12 included) and evidence-only to succeed
+        env:
+          FULL_PROFILE_RESULT: ${{ needs.full-profile.result }}
+          EVIDENCE_ONLY_RESULT: ${{ needs.evidence-only.result }}
+        run: |
+          echo "full-profile (fast, integration, p12, acceptance, browser-architecture): $FULL_PROFILE_RESULT"
+          echo "evidence-only: $EVIDENCE_ONLY_RESULT"
+          test "$FULL_PROFILE_RESULT" = "success"
+          test "$EVIDENCE_ONLY_RESULT" = "success"

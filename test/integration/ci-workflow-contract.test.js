@@ -80,3 +80,24 @@ test('world_base PostgreSQL gate tracks the 219-table schema and grants every ta
   assert.match(workflow, /test "\$select_grants" -eq "\$table_count"/u);
   assert.match(workflow, /test "\$write_grants" -eq 0/u);
 });
+
+test('full-npm-test gate job reports green only when every suite and evidence-only succeed', async () => {
+  const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
+  const jobs = new Map([...workflow.matchAll(/^  ([a-z][\w-]*):\n((?:(?:    .*)?\n)+)/gmu)]
+    .map((match) => [match[1], match[2]]));
+  const gate = [...jobs.values()].find((body) => /^    name: full-npm-test$/mu.test(body));
+  assert.ok(gate, 'a job named exactly "full-npm-test" is required by branch protection');
+  assert.match(gate, /^    needs: \[full-profile, evidence-only\]$/mu);
+  assert.match(gate, /^    if: always\(\)$/mu);
+  assert.match(gate, /needs\.full-profile\.result/u);
+  assert.match(gate, /needs\.evidence-only\.result/u);
+  assert.match(gate, /test "\$FULL_PROFILE_RESULT" = "success"/u);
+  assert.match(gate, /test "\$EVIDENCE_ONLY_RESULT" = "success"/u);
+
+  // Light PRs: the full-profile job itself must never be skipped, only its steps.
+  assert.doesNotMatch(jobs.get('full-profile').split(/^    steps:$/mu)[0], /^    if:/mu);
+  assert.doesNotMatch(jobs.get('evidence-only').split(/^    steps:$/mu)[0], /^    if:/mu);
+  // The matrix keeps all five suites, p12 included.
+  assert.match(jobs.get('full-profile'),
+    /suite: \[fast, integration, p12, acceptance, browser-architecture\]/u);
+});

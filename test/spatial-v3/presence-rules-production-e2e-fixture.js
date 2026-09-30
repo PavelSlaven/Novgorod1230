@@ -179,40 +179,51 @@ function buildAttest(fixtureApproval) {
   };
 }
 
-/** @returns {Promise<{ container, dataRoot, worldPool, partyPool, approvals, rootDir, releaseContext }>} */
+/**
+ * @param t node:test context; without it the caller owns `dispose()` (live harness, tools/local-play).
+ * @returns {Promise<{ container, dataRoot, worldPool, partyPool, approvals, rootDir, dispose }>}
+ */
 export async function bootstrapV17PresenceE2e(t, {
   postgresProfile = 'default',
 } = {}) {
   assert.equal(docker(['version']).status, 0, 'Docker is required.');
   const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-presence-e2e-'));
   const container = `presence-e2e-pg-${randomUUID().slice(0, 12)}`;
-  startPostgres(container, { profile: postgresProfile });
-  await waitForPostgres(container);
-  initializeBootstrapRoles(container);
-  const adminUrl = adminDatabaseUrl(container);
-  const fixtureApproval = buildFixtureApproval();
-  const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
-  await bootstrapV17Imports({ adminUrl, activationApprovalsPath, attest: buildAttest(fixtureApproval) });
-  const approvals = JSON.parse(await readFile(activationApprovalsPath, 'utf8'));
-  const worldPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, WORLD_DB), max: 4 });
-  const partyPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, PARTY_DB), max: 4 });
-  t.after(async () => {
-    await Promise.allSettled([worldPool.end(), partyPool.end()]);
+  let worldPool = null;
+  let partyPool = null;
+  const dispose = async () => {
+    await Promise.allSettled([worldPool?.end(), partyPool?.end()]);
     docker(['rm', '-fv', container]);
     await rm(dataRoot, { recursive: true, force: true });
-  });
-  // The bootstrap itself imports approved temporal-v4 and the m2c NPC wave (D27).
-  const temporalCount = Number((await worldPool.query(
-    'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
-  assert.ok(temporalCount > 0, 'v17 bootstrap must import approved temporal-v4');
-  const waveRules = Number((await worldPool.query(
-    'SELECT count(*)::int AS count FROM world_base.presence_rules')).rows[0].count);
-  assert.ok(waveRules > 0, 'v17 bootstrap must import the m2c NPC wave presence rules (D27)');
-  await assertBootstrapV17PartyProductionLedger(partyPool);
-  const rootDir = resolve(import.meta.dirname, '../..');
-  return {
-    container, dataRoot, worldPool, partyPool, approvals, rootDir,
   };
+  t?.after(dispose);
+  try {
+    startPostgres(container, { profile: postgresProfile });
+    await waitForPostgres(container);
+    initializeBootstrapRoles(container);
+    const adminUrl = adminDatabaseUrl(container);
+    const fixtureApproval = buildFixtureApproval();
+    const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
+    await bootstrapV17Imports({ adminUrl, activationApprovalsPath, attest: buildAttest(fixtureApproval) });
+    const approvals = JSON.parse(await readFile(activationApprovalsPath, 'utf8'));
+    worldPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, WORLD_DB), max: 4 });
+    partyPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, PARTY_DB), max: 4 });
+    // The bootstrap itself imports approved temporal-v4 and the m2c NPC wave (D27).
+    const temporalCount = Number((await worldPool.query(
+      'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+    assert.ok(temporalCount > 0, 'v17 bootstrap must import approved temporal-v4');
+    const waveRules = Number((await worldPool.query(
+      'SELECT count(*)::int AS count FROM world_base.presence_rules')).rows[0].count);
+    assert.ok(waveRules > 0, 'v17 bootstrap must import the m2c NPC wave presence rules (D27)');
+    await assertBootstrapV17PartyProductionLedger(partyPool);
+    const rootDir = resolve(import.meta.dirname, '../..');
+    return {
+      container, dataRoot, worldPool, partyPool, approvals, rootDir, dispose,
+    };
+  } catch (error) {
+    await dispose(); // a failed bootstrap must not leave its container behind
+    throw error;
+  }
 }
 
 /**
@@ -347,15 +358,24 @@ export function installPresenceProductionE2eFetch({
   return () => { globalThis.fetch = previousFetch; };
 }
 
+const FIXTURE_ROOT_ENV = Object.freeze({
+  DEEPSEEK_API_KEY: 'isolated-fixture-key',
+  DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid',
+});
+const zeroVectorEncoderFactory = () => ({
+  async ready() {},
+  async encode() { return new Float32Array(1024); },
+  async close() {},
+});
+
+/** env / worldKnowledgeEncoderFactory: live harness overrides; `null` factory = the real Giga worker. */
 export async function createPresenceProductionRoot({
   worldPool, partyPool, approvals, rootDir, llmSettings = null, extraConfig = {},
+  env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
 }) {
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
-    env: {
-      DEEPSEEK_API_KEY: 'isolated-fixture-key',
-      DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid',
-    },
+    env,
     config: {
       spatialV3BindingsModule: 'builtin:spatial-v3-production-v17',
       rootDir,
@@ -382,11 +402,7 @@ export async function createPresenceProductionRoot({
       partyPool,
       async close() {},
     },
-    worldKnowledgeEncoderFactory: () => ({
-      async ready() {},
-      async encode() { return new Float32Array(1024); },
-      async close() {},
-    }),
+    ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   return { runtime, rootOptions };

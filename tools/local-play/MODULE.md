@@ -91,6 +91,24 @@ production roles. Authored new-game opening после scenario selection ждё
 же composed 20-minute bound для последовательных Stage 22/23 roles; это не
 увеличивает timeout отдельного model call.
 
+`v17-slice-run.mjs` (`npm run play:v17-slice`) — development-only живой прогон
+среза D49 на Linux, без браузера: свежая пара v17 в Docker PostgreSQL
+(`bootstrapV17PresenceE2e` тестовой фикстуры, фикстурные attestation, только
+одноразовые БД), production composition root с реальной LLM из файла
+`RUS_LLM_SETTINGS_PATH` (файл только читается), `createGameHttpServer` на
+127.0.0.1 и скриптовые ноги по публичному HTTP API: start → walk out → meet →
+talk → take → make. После каждого хода — SQL-снимок (позиция, размещения в G6
+игрока, предметы, `party_resource_nodes`, реплики NPC). Итог ноги — `pass`,
+`fail` или `blocked` с причиной; выходы: `report.json` и Markdown-заготовка
+отчёта `docs/playtests/` (WR §24.1, дословный экран по ходам, секреты
+вырезаются). World Knowledge энкодер по умолчанию — заглушка (нулевые векторы),
+это помечается в отчёте; `--wk-encoder giga` требует `RUS_WORLD_KNOWLEDGE_PYTHON`.
+На общей машине запускать под слотом: `pg-slot node tools/local-play/v17-slice-run.mjs`.
+Уборка (сервер, root, пулы, `docker rm -fv`) выполняется всегда, включая сигнал и
+дедлайн игрового окна (`--deadline-min`, по умолчанию 26 мин после bootstrap). Выход: 0 все ноги pass, 1 нога fail
+или blocked, 2 аргументы, 3 preflight, 4 сбой стенда. Windows-раннеры выше не
+затрагиваются и остаются на сценарии v16.
+
 ## Не владеет
 
 Не владеет game-server composition, gameplay, migrations как публичным

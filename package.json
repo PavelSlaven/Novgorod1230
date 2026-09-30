@@ -13,6 +13,7 @@
     "play:local": "node tools/local-play/play-local.mjs",
     "gameplay:acceptance:local": "node tools/local-play/local-provider-acceptance.mjs",
     "playtest:public": "node tools/local-play/public-playtest.mjs",
+    "play:v17-slice": "node tools/local-play/v17-slice-run.mjs",
     "llm-runtime:eval": "node tools/llm-runtime-eval/src/cli.mjs",
     "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:acceptance && npm run test:browser-e2e && npm run architecture:check",
     "test:modules": "node --test test/modules/*.test.js",

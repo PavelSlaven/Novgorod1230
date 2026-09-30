@@ -16,8 +16,13 @@ const RU_ENDINGS = [
 
 function normalize(value) {
   if (typeof value !== 'string') return [];
+  return tokenize(value).map(stem);
+}
+
+function tokenize(value) {
+  if (typeof value !== 'string') return [];
   return [...value.normalize('NFKC').toLocaleLowerCase('ru-RU').replaceAll('ё', 'е').matchAll(TOKEN)]
-    .map(([token]) => stem(token));
+    .map(([token]) => token);
 }
 
 function stem(token) {
@@ -119,7 +124,11 @@ function compiledEntries(snapshot) {
   if (COMPILED.has(snapshot)) return COMPILED.get(snapshot);
   const entries = snapshot.entries.map((entry) => ({
     entry,
-    patterns: entry.patterns.flatMap(({ language, value }) => value.split('|').map((alternative) => ({ language, tokens: normalize(alternative) }))),
+    patterns: entry.patterns.flatMap(({ language, value }) => value.split('|').map((alternative) => {
+      const exactTokens = tokenize(alternative);
+      const exact = exactTokens.length === 1 && exactTokens[0].length <= 5;
+      return { language, exact, exactTokens, tokens: exactTokens.map(stem) };
+    })),
     exceptions: entry.exceptions.map(normalize)
   }));
   if (Object.isFrozen(snapshot)) COMPILED.set(snapshot, entries);
@@ -145,18 +154,24 @@ function matchesAll({ snapshot, candidate }) {
     language, items.filter((value) => typeof value === 'string')
       .map(normalize).filter((tokens) => tokens.length > 0)
   ]));
+  const exactValues = Object.fromEntries(Object.entries(values).map(([language, items]) => [
+    language, items.filter((value) => typeof value === 'string')
+      .map(tokenize).filter((tokens) => tokens.length > 0)
+  ]));
   const hits = [];
   for (const compiled of compiledEntries(snapshot)) {
     const { entry } = compiled;
-    if (candidate.scope && candidate.scope !== 'global' && entry.scope !== 'global' && scope !== entry.scope) continue;
+    if (entry.block_by === 'name' && candidate.scope && candidate.scope !== 'global'
+      && entry.scope !== 'global' && scope !== entry.scope) continue;
     const excluded = compiled.exceptions.some((tokens) => tokens.length > 0
       && Object.values(normalizedValues).flat().some((value) => containsSequence(value, tokens)));
     if (excluded) continue;
     for (const pattern of compiled.patterns) {
       if (entry.block_by === 'archive_id' && pattern.language !== 'id') continue;
-      if (entry.block_by === 'name' && pattern.language === 'id') continue;
-      const { tokens } = pattern;
-      if (tokens.length > 0 && normalizedValues[pattern.language]
+      if (entry.block_by === 'name' && pattern.language === 'id' && candidate.source_kind !== 'entity') continue;
+      const tokens = pattern.exact ? pattern.exactTokens : pattern.tokens;
+      const values = pattern.exact ? exactValues[pattern.language] : normalizedValues[pattern.language];
+      if (tokens.length > 0 && values
         .some((value) => containsSequence(value, tokens))) {
         hits.push(Object.freeze({ queue_id: entry.queue_id, block_by: entry.block_by, scope: entry.scope, reason: entry.reason }));
         break;

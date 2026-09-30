@@ -31,6 +31,8 @@
 
 ## Общий needs_check gate
 
+Правила классификации, областей действия, исключений и снятия блоков находятся в [общем game-base gate](../NEEDS_CHECK.md).
+
 Активные очереди проверяются одним `scripts/check-needs-check.mjs` gate. Блок по archive ID не допускает запись в entity/catalog через registry entities и BIC/crafts archive-inclusions, но не блокирует ссылки на этот ID в частотах, размещении, trace, инвентарях и presence; эти совпадения только выводятся информационно. Блок по имени отражает сомнение в историчности и действует на все entity и item-bearing таблицы, а после интеграции runtime — также на свободную материализацию. Archive-записи с маршрутными или идентификационными причинами блокируются по ID; `unresolved` с запросом источника и малые очереди — по имени. Снять блок можно после утверждения по D38: перенести запись в соответствующий каталог или denylist, удалить дубли строки в BIC и crafts одним изменением, затем пересобрать snapshot командой `node scripts/check-needs-check.mjs --write`. Одной смены confidence недостаточно.
 
 Gate проверяет entity tables и generated item-bearing tables: item place frequency, item context relations, item place trace relations, carried inventories, scene items, presence rules, environment presence authoring, costume disposition, church practice и weapon source crosswalk. Таблица, создающая совпадение, должна остановить сборку либо исключить запись с явным gap в отчёте.

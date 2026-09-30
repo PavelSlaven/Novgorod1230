@@ -11,7 +11,7 @@
       "status": "needs_check",
       "block_pattern_ru": "Слива",
       "block_pattern_lat": "",
-      "block_scope": "food-drink",
+      "block_scope": "global",
       "block_exception": []
     },
     {
@@ -24,8 +24,10 @@
       "status": "needs_check",
       "block_pattern_ru": "Пряность|Пряности",
       "block_pattern_lat": "",
-      "block_scope": "food-drink",
-      "block_exception": []
+      "block_scope": "global",
+      "block_exception": [
+        "Пряности — GAP"
+      ]
     },
     {
       "check_id": "food_herring",
@@ -37,7 +39,7 @@
       "status": "needs_check",
       "block_pattern_ru": "Сельдь",
       "block_pattern_lat": "",
-      "block_scope": "food-drink",
+      "block_scope": "global",
       "block_exception": []
     }
   ]

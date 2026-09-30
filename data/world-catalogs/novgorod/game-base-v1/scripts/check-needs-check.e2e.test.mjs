@@ -91,37 +91,58 @@ function sceneItem(root, itemRef = 'ARC0021', name = 'Жилая клеть') {
   ]));
 }
 
+function generatedRow(root, table, values) {
+  const file = path.join(root, table);
+  const headers = fs.readFileSync(file, 'utf8').split('\n')[0].split(',');
+  fs.appendFileSync(file, csvRow(headers.map((header) => values[header] ?? '')));
+}
+
 function assertCode(result, code) {
   assert.equal(result.status, code, `${result.stdout}\n${result.stderr}`);
 }
 
-test('CLI blocks a real generated item name and archive ID, then passes after queue review', (t) => {
+test('CLI blocks name and archive inclusion across domains, then passes after review', (t) => {
   const nameRoot = fixtureBase(t);
-    sceneItem(nameRoot);
-    queueRow(nameRoot, QUEUES[1], { check_id: 'fixture_ballast', subject: 'Незнакомый предмет', status: 'needs_check', block_pattern_ru: 'Незнакомый предмет', block_pattern_lat: '', block_scope: 'buildings-interiors-containers', block_exception: '[]' });
-    assertCode(cli(nameRoot, '--write'), 0);
-    queueRow(nameRoot, QUEUES[1], { check_id: 'fixture_scene_item', subject: 'Жилая клеть', status: 'needs_check', block_pattern_ru: 'Жилая клеть', block_pattern_lat: '', block_scope: 'buildings-interiors-containers', block_exception: '[]' });
-    const blockedName = cli(nameRoot, '--check');
-    assert.notEqual(blockedName.status, 0);
-    assert.match(blockedName.stderr, /fixture_scene_item/u);
-    const records = fs.readFileSync(path.join(nameRoot, QUEUES[1]), 'utf8').split('\n');
-    fs.writeFileSync(path.join(nameRoot, QUEUES[1]), `${records[0]}\n${records[1]}\n`);
-    assertCode(cli(nameRoot, '--check'), 0);
+  sceneItem(nameRoot);
+  queueRow(nameRoot, QUEUES[1], { check_id: 'fixture_ballast', subject: 'Незнакомый предмет', status: 'needs_check', block_pattern_ru: 'Незнакомый предмет', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
+  assertCode(cli(nameRoot, '--write'), 0);
+  queueRow(nameRoot, QUEUES[1], { check_id: 'fixture_scene_item', subject: 'Жилая клеть', status: 'needs_check', block_pattern_ru: 'Жилая клеть', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
+  const blockedName = cli(nameRoot, '--check');
+  assert.notEqual(blockedName.status, 0);
+  assert.match(blockedName.stderr, /fixture_scene_item/u);
+  const nameRows = fs.readFileSync(path.join(nameRoot, QUEUES[1]), 'utf8').split('\n');
+  fs.writeFileSync(path.join(nameRoot, QUEUES[1]), `${nameRows[0]}\n${nameRows[1]}\n`);
+  assertCode(cli(nameRoot, '--check'), 0);
 
   const idRoot = fixtureBase(t);
-    fs.appendFileSync(path.join(idRoot, 'fixture_entities.csv'), csvRow(['OMI12345', 'Предмет из архива']));
-    queueRow(idRoot, QUEUES[1], { check_id: 'fixture_ballast', subject: 'Незнакомый предмет', status: 'needs_check', block_pattern_ru: 'Незнакомый предмет', block_pattern_lat: '', block_scope: 'buildings-interiors-containers', block_exception: '[]' });
-    const ledger = path.join(idRoot, 'buildings-interiors-containers/archive_inclusion_ledger.csv');
-    fs.mkdirSync(path.dirname(ledger), { recursive: true });
-    fs.writeFileSync(ledger, `archive_ref,archive_name\n${csvRow(['fixture:OMI12345', 'Предмет из архива'])}`);
-    assertCode(cli(idRoot, '--write'), 0);
-    queueRow(idRoot, QUEUES[0], { archive_id: 'OMI12345', current_result: 'routed', current_target_group: 'crafts-tools-processes', current_target_ref: '', reason_code: 'ICA_ROUTE_INVALID', finding_ref: '', cluster_id: '', note: 'fixture', block_pattern_ru: '', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
-    const blockedId = cli(idRoot, '--check');
-    assert.notEqual(blockedId.status, 0);
-    assert.match(blockedId.stderr, /OMI12345/u);
-    assert.match(blockedId.stderr, /informational_id_reference_hits=0/u);
-    const queue = path.join(idRoot, QUEUES[0]);
-    const rows = fs.readFileSync(queue, 'utf8').split('\n');
-    fs.writeFileSync(queue, `${rows[0]}\n`);
-    assertCode(cli(idRoot, '--check'), 0);
+  fs.appendFileSync(path.join(idRoot, 'fixture_entities.csv'), csvRow(['OMI12345', 'Предмет из архива']));
+  sceneItem(idRoot, 'OMI12345', 'Предмет из архива');
+  queueRow(idRoot, QUEUES[1], { check_id: 'fixture_ballast', subject: 'Незнакомый предмет', status: 'needs_check', block_pattern_ru: 'Незнакомый предмет', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
+  const ledger = path.join(idRoot, 'buildings-interiors-containers/archive_inclusion_ledger.csv');
+  fs.writeFileSync(ledger, `archive_ref,archive_name\n${csvRow(['fixture:OMI12345', 'Предмет из архива'])}`);
+  assertCode(cli(idRoot, '--write'), 0);
+  queueRow(idRoot, QUEUES[0], { archive_id: 'OMI12345', current_result: 'routed', current_target_group: 'crafts-tools-processes', current_target_ref: '', reason_code: 'ICA_ROUTE_INVALID', finding_ref: '', cluster_id: '', note: 'fixture', block_pattern_ru: '', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
+  const blockedId = cli(idRoot, '--check');
+  assert.notEqual(blockedId.status, 0);
+  assert.match(blockedId.stderr, /OMI12345/u);
+  assert.match(blockedId.stderr, /informational_id_reference_hits=1/u);
+  const idQueue = path.join(idRoot, QUEUES[0]);
+  fs.writeFileSync(idQueue, `${fs.readFileSync(idQueue, 'utf8').split('\n')[0]}\n`);
+  assertCode(cli(idRoot, '--check'), 0);
+
+  const crossDomainRoot = fixtureBase(t);
+  generatedRow(crossDomainRoot, TABLES[5], { fixture_id: 'presence_peacock', name_ru: 'Павлин' });
+  queueRow(crossDomainRoot, QUEUES[6], { check_id: 'fixture_peacock', subject: 'Павлин', status: 'needs_check', block_pattern_ru: 'Павлин', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
+  const blockedAcrossDomains = cli(crossDomainRoot, '--write');
+  assert.notEqual(blockedAcrossDomains.status, 0);
+  assert.match(blockedAcrossDomains.stderr, /fixture_peacock/u);
+
+  const nameArchiveRoot = fixtureBase(t);
+  fs.appendFileSync(path.join(nameArchiveRoot, 'fixture_entities.csv'), csvRow(['CRF0061', 'Ножной гончарный круг']));
+  const archiveLedger = path.join(nameArchiveRoot, 'buildings-interiors-containers/archive_inclusion_ledger.csv');
+  fs.writeFileSync(archiveLedger, `archive_ref,archive_name\n${csvRow(['fixture:CRF0061', 'Ножной гончарный круг'])}`);
+  queueRow(nameArchiveRoot, QUEUES[0], { archive_id: 'CRF0061', current_result: 'new/include', current_target_group: '', current_target_ref: '', reason_code: 'unresolved', finding_ref: '', cluster_id: '', note: 'Запросить датированную публикацию.', block_pattern_ru: 'Круг гончарный ножной', block_pattern_lat: '', block_scope: 'global', block_exception: '[]' });
+  const blockedNameArchiveId = cli(nameArchiveRoot, '--write');
+  assert.notEqual(blockedNameArchiveId.status, 0);
+  assert.match(blockedNameArchiveId.stderr, /CRF0061/u);
 });

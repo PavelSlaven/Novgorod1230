@@ -3,8 +3,8 @@
     "items/weapons_armour.csv": 75,
     "items/weapon_status_access.csv": 213,
     "items/weapon_equipment_profiles.csv": 111,
-    "items/weapon_source_crosswalk.csv": 251,
-    "reports/needs_check_gaps.csv": 1,
+    "items/weapon_source_crosswalk.csv": 250,
+    "reports/needs_check_gaps.csv": 2,
     "items/weapon_denylist.csv": 24,
     "items/archive_inclusion_ledger.csv": 26,
     "military/security.csv": 34,
@@ -59,7 +59,7 @@
     "denylist": 11,
     "wp": 183,
     "needs_check": 3,
-    "out_of_scope": 41
+    "out_of_scope": 40
   },
   "access_levels": {
     "permitted": 65,

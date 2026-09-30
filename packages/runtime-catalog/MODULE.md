@@ -36,7 +36,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 
 ## Контракты
 
-`rus.needs_check_blockers.v1` — immutable snapshot cross-domain queues с проверкой digest. Каждая запись фиксирует `block_by` (`name` или `archive_id`), `scope`, исключения и нормализуемые шаблоны. Matcher fail-closed на неизвестной схеме, битом digest, пустом после нормализации шаблоне или неизвестном scope; кандидат без scope проверяется против всех записей.
+`rus.needs_check_blockers.v1` — immutable snapshot cross-domain queues с проверкой digest. Каждая запись фиксирует `block_by` (`name` или `archive_id`), `scope`, исключения и нормализуемые шаблоны. Scope применяется к name-записям; archive ID уникален, поэтому ID-запись проверяется независимо от scope. Name-запись archive также несёт ID-шаблон для entity inclusion, но ID не блокирует item-bearing references. Однословный шаблон до 5 букв совпадает только с точной формой; `|` задаёт альтернативы. Matcher учитывает переданные RU/Latin aliases и fail-closed на неизвестной схеме, битом digest, пустом после нормализации шаблоне или неизвестном scope; кандидат без scope проверяется против всех name-записей.
 
 `loadActivePin` возвращает immutable `rus.runtime_catalog_pin.v2`.
 `loadApprovedItemCatalog` возвращает полный immutable verified bundle только

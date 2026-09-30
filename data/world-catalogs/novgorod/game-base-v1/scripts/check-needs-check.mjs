@@ -92,7 +92,7 @@ export function compileQueueRecord(row, file, ledger = new Map()) {
   const source = row.archive_id ? ledger.get(row.archive_id) : null;
   if (row.archive_id && !source?.archive_ref) throw new Error(`${file}#${rowId}: archive ID is missing from its inclusion ledger`);
   const blockBy = row.archive_id
-    ? (row.reason_code === 'unresolved' && /(?:запросить\s+источник|требуется\s+источник|source\s+request)/iu.test(`${row.note ?? ''} ${row.source_request ?? ''}`) ? 'name' : 'archive_id')
+    ? (row.reason_code === 'unresolved' && /(?:запросить|требуется\s+источник|source\s+request)/iu.test(`${row.note ?? ''} ${row.source_request ?? ''}`) ? 'name' : 'archive_id')
     : 'name';
   const ru = row.block_pattern_ru;
   const lat = row.block_pattern_lat;
@@ -107,16 +107,18 @@ export function compileQueueRecord(row, file, ledger = new Map()) {
   if ((blockBy === 'name' && !ru) || typeof scope !== 'string' || !scope || !Array.isArray(exceptions)) {
     throw new Error(`${file}#${rowId}: blocker fields are incomplete`);
   }
-  const validScopes = new Set(['global', ...fs.readdirSync(GAME_BASE, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name)]);
+  const validScopes = new Set(['global', ...fs.readdirSync(GAME_BASE, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'scripts')
+    .map((entry) => entry.name)]);
   if (!validScopes.has(scope)) throw new Error(`${file}#${rowId}: invalid block_scope ${scope}`);
   const patterns = blockBy === 'name'
-    ? [{ language: 'ru', value: ru }, ...(lat || row.name_lat ? [{ language: 'lat', value: lat || row.name_lat }] : [])]
+    ? [{ language: 'ru', value: ru }, ...(lat || row.name_lat ? [{ language: 'lat', value: lat || row.name_lat }] : []), ...(row.archive_id ? [{ language: 'id', value: row.archive_id }] : [])]
     : [{ language: 'id', value: row.archive_id }];
   return {
     queue_id: id,
     block_by: blockBy,
     scope,
-    source_ref: row.archive_id ? `${source.archive_ref}` : `${file}#${id}`,
+    source_ref: row.archive_id ? `${source.archive_ref}` : id,
     reason: row.note || row.reason || row.source_request || 'Unverified authoring queue entry.',
     patterns,
     exceptions
@@ -139,7 +141,7 @@ export function compileSnapshot() {
   return NEEDS_CHECK_BLOCKER.createSnapshot(entries);
 }
 
-function registeredCandidates() {
+export function registeredCandidates() {
   const registry = JSON.parse(fs.readFileSync(path.join(GAME_BASE, 'scripts/archive-ownership-registry.json'), 'utf8'));
   const candidates = [];
   const add = (row, spec) => {
@@ -147,8 +149,9 @@ function registeredCandidates() {
     const ids = typeof identity === 'string'
       ? [...identity.matchAll(/\b[A-Z]{2,4}\d{3,5}\b/giu)].map(([id]) => id) : [];
     const scope = spec.scope ?? spec.file.split('/')[0];
-    const aliasesRu = ['alt_names_ru', 'aliases_ru', 'name_ru_alt'].flatMap((key) => String(row[key] ?? '').split(/[;|]/u)).filter(Boolean);
-    const latSynonyms = String(row.lat_synonyms ?? '').split(/[;|]/u).filter(Boolean);
+    const aliasesRu = ['alt_names_ru', 'aliases_ru', 'name_ru_alt', 'name_folk', 'name_old_ru']
+      .flatMap((key) => String(row[key] ?? '').split(/[;|,]/u)).map((value) => value.trim()).filter(Boolean);
+    const latSynonyms = String(row.lat_synonyms ?? '').split(/[;|]/u).map((value) => value.trim()).filter(Boolean);
     candidates.push({ scope, source_kind: 'entity', id: identity, source_file: spec.file, ids, name: row[spec.name], name_lat: row.name_lat || row.scientific_name || '',
       aliases_ru: aliasesRu, lat_synonyms: latSynonyms });
   };

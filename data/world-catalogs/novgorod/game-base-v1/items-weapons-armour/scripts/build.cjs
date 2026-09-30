@@ -13,7 +13,9 @@ const deny = readJson(P.authoring('denylist.json'));
 const archiveManifest = readJson(P.authoring('archive_inclusion_manifest.json'));
 const master = readCsv(P.authoring('master_military_snapshot.csv'));
 const needsCheck = readCsv(path.join(ROOT, '..', 'crafts-tools-processes', 'authoring', 'needs_check.csv'));
-const needsCheckById = Object.fromEntries(needsCheck.map(row => [row.archive_id, row]));
+const nameBlockersById = new Map(needsCheck
+  .filter(row => row.reason_code === 'unresolved' && /(?:запросить|требуется\s+источник|source\s+request)/iu.test(`${row.note || ''} ${row.source_request || ''}`))
+  .map(row => [row.archive_id, { queue_id: `crafts-tools-processes/authoring/needs_check.csv#${row.archive_id}`, reason: row.note || row.block_pattern_ru }]));
 const masterById = Object.fromEntries(master.map(r => [r.item_id, r]));
 const costume = readCsv(path.join(P.costume, 'catalog_items.csv'));
 const costumeById = Object.fromEntries(costume.map(r => [r.item_id, r]));
@@ -115,12 +117,10 @@ for (const r of costume.filter(r => r.category === 'armor_and_weapons' || ['AC01
   const target = mapC[r.item_id] ? { t: 'wp', v: mapC[r.item_id] } : oos.costume[r.item_id] ? { t: 'out_of_scope', v: [oos.costume[r.item_id]] } : pending ? { t: 'needs_check', v: [] } : { t: 'UNMAPPED', v: [] };
   cw.push({ source_kind: 'costume_catalog', source_id: r.item_id, source_name_ru: r.name_ru, source_category: r.category + '/' + r.subcategory, source_confidence: r.historical_confidence, period: '', mapping: target.t, target: target.v });
 }
-const needsCheckGaps = [];
-if (needsCheckById.HNT0024) {
-  const row = needsCheckById.HNT0024;
-  needsCheckGaps.push({ queue_id: 'crafts-tools-processes/authoring/needs_check.csv#HNT0024', reason: row.note || row.block_pattern_ru, row_id: 'HNT0024' });
-}
-const admittedCrosswalk = cw.filter(row => !(row.source_id === 'HNT0024' && needsCheckById.HNT0024));
+const needsCheckGaps = cw.filter(row => nameBlockersById.has(row.source_id)).map(row => ({
+  ...nameBlockersById.get(row.source_id), row_id: row.source_id
+}));
+const admittedCrosswalk = cw.filter(row => !nameBlockersById.has(row.source_id));
 fs.mkdirSync(path.join(ROOT, 'reports'), { recursive: true });
 
 // --- items/weapon_denylist.csv

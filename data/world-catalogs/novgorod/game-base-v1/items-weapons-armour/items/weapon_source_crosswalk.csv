@@ -207,7 +207,6 @@ master_material_culture,HNT0023,Давящий самолов/плашка,hunti
 master_material_culture,HNT0025,Охотничий нож,hunting/промысловое и охотничье снаряжение,A,1180–1260,wp,wp_knife
 master_material_culture,HNT0026,Охотничья лыжа,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,transport (лыжа)
 master_material_culture,HNT0027,Скребок для мездрения шкуры,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,hunting/fur
-master_material_culture,HNT0028,Снегоступы — спорная региональная реконструкция,hunting/промысловое и охотничье снаряжение,D,1180–1260,out_of_scope,hunting
 costume_catalog,HW015,Стёганый или войлочный подшлемник,headwear/under_helmet,C,,wp,wp_helmet_liner
 costume_catalog,AC010,Мечевой пояс и подвес ножен,accessories/sword_suspension,B,,wp,wp_sword_belt
 costume_catalog,AR001,Льняная/шерстяная одежда под доспехом,armor_and_weapons/under_armor_basic,B,,wp,wp_padded

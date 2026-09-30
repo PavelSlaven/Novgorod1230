@@ -109,6 +109,10 @@
         {
           "language": "ru",
           "value": "Мельничное колесо водяное"
+        },
+        {
+          "language": "id",
+          "value": "CRF0057"
         }
       ],
       "exceptions": []
@@ -2692,7 +2696,7 @@
     {
       "queue_id": "buildings-interiors-containers/authoring/needs_check.csv#REL0005",
       "block_by": "archive_id",
-      "scope": "items-household-personal",
+      "scope": "global",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:REL0005",
       "reason": "Checker findings: ICA_ROUTE_INVALID.",
       "patterns": [
@@ -2720,7 +2724,7 @@
     {
       "queue_id": "buildings-interiors-containers/authoring/needs_check.csv#REL0007",
       "block_by": "archive_id",
-      "scope": "items-household-personal",
+      "scope": "global",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:REL0007",
       "reason": "Checker findings: ICA_ROUTE_INVALID.",
       "patterns": [
@@ -2748,7 +2752,7 @@
     {
       "queue_id": "buildings-interiors-containers/authoring/needs_check.csv#REL0011",
       "block_by": "archive_id",
-      "scope": "buildings-interiors-containers",
+      "scope": "global",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:REL0011",
       "reason": "Review finding leaves current proposal unresolved.",
       "patterns": [
@@ -3000,8 +3004,8 @@
     {
       "queue_id": "buildings-interiors-containers/containers/needs_check.csv#bic_grain_pit_storage",
       "block_by": "name",
-      "scope": "buildings-interiors-containers",
-      "source_ref": "buildings-interiors-containers/containers/needs_check.csv#buildings-interiors-containers/containers/needs_check.csv#bic_grain_pit_storage",
+      "scope": "global",
+      "source_ref": "buildings-interiors-containers/containers/needs_check.csv#bic_grain_pit_storage",
       "reason": "Седов 1982 (book:638081; evidence-household-v2/x-food.csv:801–803) и Рыбаков и др. (book:622242; x-household.csv:1031) описывают зерновые ямы как обычное хранилище зерна домонгольской Руси, но общерусски; новгородские находки ям в этих выписках не названы.",
       "patterns": [
         {
@@ -3014,8 +3018,8 @@
     {
       "queue_id": "buildings-interiors-containers/landmarks/needs_check.csv#bic_arkazhi_monastery",
       "block_by": "name",
-      "scope": "buildings-interiors-containers",
-      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#buildings-interiors-containers/landmarks/needs_check.csv#bic_arkazhi_monastery",
+      "scope": "global",
+      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#bic_arkazhi_monastery",
       "reason": "Успение в Аркажах (lm_b021, 1188, A) заведено только как храм; наличие при нём монастырского устройства около 1230 г. не подтверждено.",
       "patterns": [
         {
@@ -3028,8 +3032,8 @@
     {
       "queue_id": "buildings-interiors-containers/landmarks/needs_check.csv#bic_parish_wooden_churches",
       "block_by": "name",
-      "scope": "buildings-interiors-containers",
-      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#buildings-interiors-containers/landmarks/needs_check.csv#bic_parish_wooden_churches",
+      "scope": "global",
+      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#bic_parish_wooden_churches",
       "reason": "Заведены только два деревянных храма (Спас на Ильине и соседний); число, места и даты остальных деревянных приходских церквей около 1230 г. не собраны.",
       "patterns": [
         {
@@ -3042,8 +3046,8 @@
     {
       "queue_id": "buildings-interiors-containers/landmarks/needs_check.csv#bic_peryn_monastery",
       "block_by": "name",
-      "scope": "buildings-interiors-containers",
-      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#buildings-interiors-containers/landmarks/needs_check.csv#bic_peryn_monastery",
+      "scope": "global",
+      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#bic_peryn_monastery",
       "reason": "Церковь Рождества на Перыне (lm_b022, начало XIII в., B) заведена как одноглавый храм с колеблющейся датировкой; монастырь при ней не подтверждён.",
       "patterns": [
         {
@@ -3056,13 +3060,13 @@
     {
       "queue_id": "buildings-interiors-containers/landmarks/needs_check.csv#bic_veche_bell",
       "block_by": "name",
-      "scope": "buildings-interiors-containers",
-      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#buildings-interiors-containers/landmarks/needs_check.csv#bic_veche_bell",
+      "scope": "global",
+      "source_ref": "buildings-interiors-containers/landmarks/needs_check.csv#bic_veche_bell",
       "reason": "Вечевая площадка входит в описание Ярославова дворища (lm_b006), но сам вечевой колокол как предмет не заведён; датировка и материал не проверены.",
       "patterns": [
         {
           "language": "ru",
-          "value": "Вечевой колокол"
+          "value": "Вечевой колокол|Колокол вечевой"
         }
       ],
       "exceptions": []
@@ -3070,8 +3074,8 @@
     {
       "queue_id": "clothing-appearance/authoring/needs_check.csv#clothing_lapti_frequency",
       "block_by": "name",
-      "scope": "clothing-appearance",
-      "source_ref": "clothing-appearance/authoring/needs_check.csv#clothing-appearance/authoring/needs_check.csv#clothing_lapti_frequency",
+      "scope": "global",
+      "source_ref": "clothing-appearance/authoring/needs_check.csv#clothing_lapti_frequency",
       "reason": "Неизвестны региональная частота и городское употребление; запрет не распространяется на существование лаптей.",
       "patterns": [
         {
@@ -3084,8 +3088,8 @@
     {
       "queue_id": "clothing-appearance/authoring/needs_check.csv#clothing_sarafan_form",
       "block_by": "name",
-      "scope": "clothing-appearance",
-      "source_ref": "clothing-appearance/authoring/needs_check.csv#clothing-appearance/authoring/needs_check.csv#clothing_sarafan_form",
+      "scope": "global",
+      "source_ref": "clothing-appearance/authoring/needs_check.csv#clothing_sarafan_form",
       "reason": "Не установлены форма и распространённость; отсутствие доказательства не означает отсутствия женской верхней одежды.",
       "patterns": [
         {
@@ -3146,7 +3150,11 @@
       "patterns": [
         {
           "language": "ru",
-          "value": "Плуг с отвальной доской — спорная реконструкция"
+          "value": "Плуг с отвальной доской"
+        },
+        {
+          "language": "id",
+          "value": "AGR0022"
         }
       ],
       "exceptions": []
@@ -3300,7 +3308,11 @@
       "patterns": [
         {
           "language": "ru",
-          "value": "Гончарный круг ножной — спорный"
+          "value": "Ножной гончарный круг|Гончарный круг ножной"
+        },
+        {
+          "language": "id",
+          "value": "CRF0061"
         }
       ],
       "exceptions": []
@@ -3552,18 +3564,26 @@
       "patterns": [
         {
           "language": "ru",
-          "value": "Железный капкан — спорная форма"
+          "value": "Железный капкан"
+        },
+        {
+          "language": "id",
+          "value": "HNT0024"
         }
       ],
       "exceptions": []
     },
     {
       "queue_id": "crafts-tools-processes/authoring/needs_check.csv#HNT0028",
-      "block_by": "archive_id",
+      "block_by": "name",
       "scope": "global",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:HNT0028",
       "reason": "Снегоступы — спорная региональная реконструкция: Для снегоступов HNT0028 кандидата нет среди датированных свидетельств местной формы и употребления; соседний источник подтверждает лыжи, но не эту конструкцию. Запросить датированную публикацию о снегоступах Северо-Западной Руси.",
       "patterns": [
+        {
+          "language": "ru",
+          "value": "Снегоступы"
+        },
         {
           "language": "id",
           "value": "HNT0028"
@@ -3672,7 +3692,7 @@
     {
       "queue_id": "crafts-tools-processes/authoring/needs_check.csv#HRS0011",
       "block_by": "archive_id",
-      "scope": "transport-health-recreation",
+      "scope": "global",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:HRS0011",
       "reason": "Opus REVIEW-B-1 point 5: trv_037 has kind=riding; this archive item is not transport equipment. Route proposal held pending owner review.",
       "patterns": [
@@ -3728,7 +3748,7 @@
     {
       "queue_id": "crafts-tools-processes/authoring/needs_check.csv#HRS0015",
       "block_by": "archive_id",
-      "scope": "transport-health-recreation",
+      "scope": "global",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:HRS0015",
       "reason": "Opus REVIEW-B-1 point 5: trv_037 has kind=riding; this archive item is not transport equipment. Route proposal held pending owner review.",
       "patterns": [
@@ -3818,7 +3838,11 @@
       "patterns": [
         {
           "language": "ru",
-          "value": "Дуга оглобельной упряжи — спорная для 1230"
+          "value": "Дуга оглобельной упряжи|Оглобельная дуга"
+        },
+        {
+          "language": "id",
+          "value": "HRS0021"
         }
       ],
       "exceptions": []
@@ -8929,6 +8953,10 @@
         {
           "language": "ru",
           "value": "Кормовой центральный руль раннего типа"
+        },
+        {
+          "language": "id",
+          "value": "WTR0015"
         }
       ],
       "exceptions": []
@@ -9006,8 +9034,8 @@
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_byaz",
       "block_by": "name",
-      "scope": "crafts-tools-processes",
-      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts-tools-processes/materials_registry/needs_check.csv#crafts_byaz",
+      "scope": "global",
+      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_byaz",
       "reason": "Захаренко 2013 (book:378393 §54): в старину бязь звали «азиатской, персидской или бухарской тканью», шла на подкладку кафтанов и платки — без дат; время появления бязи на Руси и её бытование около 1230 г. не установлены.",
       "patterns": [
         {
@@ -9020,8 +9048,8 @@
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_foot_potters_wheel",
       "block_by": "name",
-      "scope": "crafts-tools-processes",
-      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts-tools-processes/materials_registry/needs_check.csv#crafts_foot_potters_wheel",
+      "scope": "global",
+      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_foot_potters_wheel",
       "reason": "Рыбаков 1948 (book:755331): §735 — по отчётам обследований конца XIX в. в губерниях Нижегородской, Костромской, Московской и Калужской (не в Новгородской) «нередко побеждала традиция ручного круга, восходящая в этих местах к X–XI вв.»; §736 (ручной круг на севере, ножной на юге) — этнография кустарей конца XIX в., не данные XIII в.; §743: «Посредствующим звеном между ручным и ножным кругом был ручной круг тяжелого типа». Для CRF0061 привод в Новгороде не засвидетельствован; ручной круг не доказывает отсутствия ножного.",
       "patterns": [
         {
@@ -9034,8 +9062,8 @@
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_mouldboard_plough",
       "block_by": "name",
-      "scope": "crafts-tools-processes",
-      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts-tools-processes/materials_registry/needs_check.csv#crafts_mouldboard_plough",
+      "scope": "global",
+      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_mouldboard_plough",
       "reason": "Греков, «Грозная Киевская Русь» (2012), гл. III, с. 168 подтверждает отвальные орудия при унавоживании, но не локальную датировку AGR0022.",
       "patterns": [
         {
@@ -9048,8 +9076,8 @@
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_spinning_wheel",
       "block_by": "name",
-      "scope": "crafts-tools-processes",
-      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts-tools-processes/materials_registry/needs_check.csv#crafts_spinning_wheel",
+      "scope": "global",
+      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_spinning_wheel",
       "reason": "Не установлены наличие и распространённость колёсной прялки в Новгороде около 1230 г.",
       "patterns": [
         {
@@ -9062,8 +9090,8 @@
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_trip_hammer",
       "block_by": "name",
-      "scope": "crafts-tools-processes",
-      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts-tools-processes/materials_registry/needs_check.csv#crafts_trip_hammer",
+      "scope": "global",
+      "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_trip_hammer",
       "reason": "Физическая возможность не оспаривается; распространение и дата для Новгородской земли не установлены.",
       "patterns": [
         {
@@ -9077,7 +9105,7 @@
       "queue_id": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_black_cockroach",
       "block_by": "name",
       "scope": "fauna-fish-invertebrates-livestock",
-      "source_ref": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_black_cockroach",
+      "source_ref": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_black_cockroach",
       "reason": "Время появления Blatta orientalis в Новгородской земле не установлено; это пробел свидетельств, не датировка анахронизма.",
       "patterns": [
         {
@@ -9095,7 +9123,7 @@
       "queue_id": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_guinea_fowl",
       "block_by": "name",
       "scope": "fauna-fish-invertebrates-livestock",
-      "source_ref": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_guinea_fowl",
+      "source_ref": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_guinea_fowl",
       "reason": "Не установлено появление цесарки в Новгороде около 1230 г.; не переносить неопределённость на павлина.",
       "patterns": [
         {
@@ -9113,7 +9141,7 @@
       "queue_id": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_peacock",
       "block_by": "name",
       "scope": "fauna-fish-invertebrates-livestock",
-      "source_ref": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_peacock",
+      "source_ref": "fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_peacock",
       "reason": "Импортная декоративная птица возможна, но присутствие в Новгороде около 1230 г. не подтверждено.",
       "patterns": [
         {
@@ -9130,13 +9158,13 @@
     {
       "queue_id": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_acorus_calamus",
       "block_by": "name",
-      "scope": "flora-herbs-berries-mushrooms",
-      "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_acorus_calamus",
+      "scope": "global",
+      "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_acorus_calamus",
       "reason": "Региональное присутствие в 1230 г. не установлено; отсутствие находки не доказывает анахронизм.",
       "patterns": [
         {
           "language": "ru",
-          "value": "Аир болотный"
+          "value": "Аир болотный|Болотный аир|Аир"
         },
         {
           "language": "lat",
@@ -9148,8 +9176,8 @@
     {
       "queue_id": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_imported_rice",
       "block_by": "name",
-      "scope": "flora-herbs-berries-mushrooms",
-      "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_imported_rice",
+      "scope": "global",
+      "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_imported_rice",
       "reason": "Импорт не является местным выращиванием; наличие риса в торговле Новгорода около 1230 г. не установлено.",
       "patterns": [
         {
@@ -9166,8 +9194,8 @@
     {
       "queue_id": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_lagenaria",
       "block_by": "name",
-      "scope": "flora-herbs-berries-mushrooms",
-      "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_lagenaria",
+      "scope": "global",
+      "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_lagenaria",
       "reason": "Нужно установить, была ли старосветская Lagenaria известна в регионе, и не смешивать её с американским родом Cucurbita.",
       "patterns": [
         {
@@ -9184,13 +9212,13 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_betula_nana",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_betula_nana",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_betula_nana",
       "reason": "Плантариум (src_plantarium_betula_nana): вид в Красных книгах Тверской, Псковской и Ярославской областей, Новгородской в списке нет; Елина 1993 (book:472733 §172) называет его тундровым, но найденным на болотах лесной зоны. Местное присутствие около 1230 г. не подтверждено и не исключено.",
       "patterns": [
         {
           "language": "ru",
-          "value": "Берёза карликовая"
+          "value": "Берёза карликовая|Карликовая берёза|Ерник"
         },
         {
           "language": "lat",
@@ -9202,13 +9230,13 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_myrica_gale",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_myrica_gale",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_myrica_gale",
       "reason": "Собранные источники называют ареал только общим — северо-запад России, побережья; для Новгородской земли около 1230 г. присутствие не подтверждено. Не путать с хамедафной, которую иногда зовут болотным миртом (fl_ts_chamaedaphne_calyculata).",
       "patterns": [
         {
           "language": "ru",
-          "value": "Восковник|Болотный мирт"
+          "value": "Восковник"
         },
         {
           "language": "lat",
@@ -9222,13 +9250,13 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_populus_nigra",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_populus_nigra",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_populus_nigra",
       "reason": "Непокойчицкий (book:333580 §2173): дикорастущий, широко распространён по речным долинам европейской части России; северная граница ареала и присутствие у Волхова около 1230 г. в собранных источниках не указаны.",
       "patterns": [
         {
           "language": "ru",
-          "value": "Тополь чёрный|Осокорь"
+          "value": "Тополь чёрный|Чёрный тополь|Осокорь"
         },
         {
           "language": "lat",
@@ -9240,13 +9268,13 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_salix_fragilis",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_salix_fragilis",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_salix_fragilis",
       "reason": "Руцкая 2014 (book:365933 §787) называет иву ломкую среди ранних медоносов пасеки без указания региона; природный ареал в Новгородской земле около 1230 г. и происхождение (дикая или культурная) не установлены.",
       "patterns": [
         {
           "language": "ru",
-          "value": "Ива ломкая|Ракита"
+          "value": "Ива ломкая"
         },
         {
           "language": "lat",
@@ -9258,8 +9286,8 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_salix_lapponum",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_salix_lapponum",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_salix_lapponum",
       "reason": "Вид назван в списке пробелов группы вместе с Salix phylicifolia, но собственного источника у записи нет; по собранному нельзя определить, растёт ли он в Новгородской земле.",
       "patterns": [
         {
@@ -9276,8 +9304,8 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_salix_phylicifolia",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_salix_phylicifolia",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_salix_phylicifolia",
       "reason": "Ни книги локального индекса, ни источники группы (flora/sources.csv) не содержат региональных данных об этом виде; вне trees_shrubs.csv он оставлен без оценки присутствия.",
       "patterns": [
         {
@@ -9294,13 +9322,13 @@
     {
       "queue_id": "flora-trees-shrubs/authoring/needs_check.csv#flora_wild_pear",
       "block_by": "name",
-      "scope": "flora-trees-shrubs",
-      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora-trees-shrubs/authoring/needs_check.csv#flora_wild_pear",
+      "scope": "global",
+      "source_ref": "flora-trees-shrubs/authoring/needs_check.csv#flora_wild_pear",
       "reason": "Колчин фиксирует семь изделий из груши, местного либо центральнорусского происхождения; это не доказывает местный ареал дикого дерева.",
       "patterns": [
         {
           "language": "ru",
-          "value": "Груша дикая|Дикая груша"
+          "value": "Дикая груша|Груша дикая"
         },
         {
           "language": "lat",
@@ -9312,8 +9340,8 @@
     {
       "queue_id": "food-drink/authoring/needs_check.json#food_herring",
       "block_by": "name",
-      "scope": "food-drink",
-      "source_ref": "food-drink/authoring/needs_check.json#food-drink/authoring/needs_check.json#food_herring",
+      "scope": "global",
+      "source_ref": "food-drink/authoring/needs_check.json#food_herring",
       "reason": "Вернадский (book:877660 §244) и Казакова (book:605072; x-food.csv:166–173) называют сельдь среди товаров ганзейских купцов в Новгороде, но обе работы о XIV–XV вв. («до половины XV века»; «конец XIV — начало XVI в.»); для XIII в. свидетельство не собрано.",
       "patterns": [
         {
@@ -9326,8 +9354,8 @@
     {
       "queue_id": "food-drink/authoring/needs_check.json#food_imported_spices",
       "block_by": "name",
-      "scope": "food-drink",
-      "source_ref": "food-drink/authoring/needs_check.json#food-drink/authoring/needs_check.json#food_imported_spices",
+      "scope": "global",
+      "source_ref": "food-drink/authoring/needs_check.json#food_imported_spices",
       "reason": "Конкретные виды пряностей в Новгороде не определены; общий импортный статус не подтверждает отдельный ингредиент.",
       "patterns": [
         {
@@ -9335,13 +9363,15 @@
           "value": "Пряность|Пряности"
         }
       ],
-      "exceptions": []
+      "exceptions": [
+        "Пряности — GAP"
+      ]
     },
     {
       "queue_id": "food-drink/authoring/needs_check.json#food_plum_import",
       "block_by": "name",
-      "scope": "food-drink",
-      "source_ref": "food-drink/authoring/needs_check.json#food-drink/authoring/needs_check.json#food_plum_import",
+      "scope": "global",
+      "source_ref": "food-drink/authoring/needs_check.json#food_plum_import",
       "reason": "Не установлены региональная культура и канал поступления сливы около 1230 г.",
       "patterns": [
         {
@@ -9354,8 +9384,8 @@
     {
       "queue_id": "items-household-personal/authoring/needs_check.csv#ihp_bronze_stylus",
       "block_by": "name",
-      "scope": "items-household-personal",
-      "source_ref": "items-household-personal/authoring/needs_check.csv#items-household-personal/authoring/needs_check.csv#ihp_bronze_stylus",
+      "scope": "global",
+      "source_ref": "items-household-personal/authoring/needs_check.csv#ihp_bronze_stylus",
       "reason": "Бронзовый материал и предметный тип не подтверждены одной датированной региональной находкой.",
       "patterns": [
         {
@@ -9368,8 +9398,8 @@
     {
       "queue_id": "items-household-personal/authoring/needs_check.csv#ihp_owner_named_cross_formula",
       "block_by": "name",
-      "scope": "items-household-personal",
-      "source_ref": "items-household-personal/authoring/needs_check.csv#items-household-personal/authoring/needs_check.csv#ihp_owner_named_cross_formula",
+      "scope": "global",
+      "source_ref": "items-household-personal/authoring/needs_check.csv#ihp_owner_named_cross_formula",
       "reason": "Имя владельца может быть частью надписи, но региональная форма и формула не подтверждены для Новгорода около 1230 г.",
       "patterns": [
         {
@@ -9380,5 +9410,5 @@
       "exceptions": []
     }
   ],
-  "digest": "sha256:b3375d320714aa1af61efdad761a3f8447ae7e0b57df48f83c57684b6ec47b68"
+  "digest": "sha256:7adfaa36a82e31c7fb4ea17c438ef78588bf590ceefe2e5f9b5d5521dd1b232f"
 }

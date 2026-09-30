@@ -1,7 +1,6 @@
 import { materializeApprovedProceduralNpc, materializeApprovedActorEquipment } from '@rus/materialization';
 import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
-import { approvedNpcBodyRows, approvedNpcConditionRows, initialNpcRoutineRecords,
-  projectNameProfileSnapshot } from '@rus/new-game/stages/stage-24';
+import { approvedNpcBodyRows, approvedNpcConditionRows, initialNpcRoutineRecords } from '@rus/new-game/stages/stage-24';
 
 /** Compose existing actor, Stage 16 and Stage 24 owners into one P16 proposal. */
 export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId,
@@ -65,7 +64,7 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
     row('party_actor_profile_bindings', `npc:${npc.instance_id}`, {
       actor_kind: 'npc', actor_id: npc.instance_id, role_ref: npc.role_ref,
       occupation_ref: npc.occupation_ref, skill_profile_snapshot: npc.skill_profile_snapshot,
-      name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state), language_profile_snapshot:
+      name_profile_snapshot: nameProfileSnapshot(npc.identity_state), language_profile_snapshot:
         npc.semantic_state.regional_context?.language_status === 'authored'
           ? { repertoire: npc.semantic_state.regional_context.language_repertoire } : {},
       knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
@@ -112,6 +111,11 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
     attribute_traces: results.map((result) => result.attribute_trace) });
 }
 
+/** Same keys stage 24 projects for the canonical start (projectNameProfileSnapshot), for the NPC name fields. */
+function nameProfileSnapshot(identity) {
+  return Object.fromEntries(['canonical_name', 'name_provenance']
+    .filter((key) => Object.hasOwn(identity, key)).map((key) => [key, structuredClone(identity[key])]));
+}
 function text(value) { return typeof value === 'string' && value.trim().length > 0; }
 function same(left, right) { return text(left?.id) && left.id === right?.id
   && Number.isSafeInteger(left.version) && left.version > 0 && left.version === right.version; }

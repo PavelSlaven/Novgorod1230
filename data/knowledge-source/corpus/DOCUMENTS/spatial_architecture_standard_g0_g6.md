@@ -174,14 +174,15 @@ Amendment вводит:
 
 1. Потолок «сегмент ≤ 30 минут» и поле `max_segment_minutes` профиля вида убраны; длинный сегмент режется политикой recheck, правило срезов одно на мир (§4.5.2); typed error `route_segment_too_long` заменён на `line_recheck_slicing_missing` (F.2).
 2. `availability_condition_set_ref` у `canonical_g5_connection_binding` необязателен (`null` для связи без портала; F binding).
-3. Разворот посреди segment разрешён (§4.10.1) с исходом `returned_to_departure` (§11.6, B.4); прежний запрет «не посреди segment» снят.
+3. Разворот посреди segment разрешён (§4.10.1) с исходом `returned_to_departure` (§11.6, F.1.1); прежний запрет «не посреди segment» снят.
 4. Точки маршрута вводятся только на реальных приметах, развилках и границах контекста, не по длине и не по таймеру (§4.5.2).
-5. `dynamic_recheck_policy` получила вид `fixed_time_interval` и поле `interval_minutes` (как в DDL `13.sql` и в утверждённых политиках `recheck.*`): норма отставала от DDL и данных (B.4).
+5. `dynamic_recheck_policy` получила вид `fixed_time_interval` и поле `interval_minutes` (как в DDL `13.sql` и в утверждённых политиках `recheck.*`): норма отставала от DDL и данных (F.1.1).
+7. Приложение B и принятые temporal-блоки A.1–A.6 не менялись (исторические снимки `4.2.0-target.1` и `4.3.0-target.1` прежние): новые поля, исходы и инварианты живут только в F (`dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result`, F.1.1).
 6. Устаревшее описание видимости в «Применимости к v17» снято: линии при плохой видимости предлагаются (§7.1.1; rt-lines, фаза 0).
 
 Версия документа и machine contracts (`4.7.0`, `4.7.0-target.1`) не меняются: amendment ещё не реализован кодом (LW-097), у его machine contracts нет потребителей, кроме генераторов и тестов; изменённые блоки пересоздаются генераторами.
 
-Единственное пересечение Приложения F с temporal-приложениями — `preparation_snapshot_member`: F = Temporal World v4 A.7 + член `canonical_connection`; правка A.7 требует одновременной правки F (проверяет `check-p01.mjs`).
+Пересечения Приложения F с temporal-приложениями — два блока: `preparation_snapshot_member` (F = Temporal World v4 A.7 + член `canonical_connection`) и `party_traversal_interval_result` (F = Temporal A.6 + `turn_back` и исход `returned_to_departure`, F.1.1); правка соответствующего блока temporal-приложения требует одновременной правки F (проверяет `check-p01.mjs`). Temporal §13 (исходы traversal) и A.6 «шесть исходов» относятся к редакции 4.3: седьмой исход добавляет эта редакция (Temporal §13 отсылает сюда).
 
 Ссылки на action-cost `site_connection` в `action_step_static_snapshot` и `party_route_plan_step` (Приложение B) после этой редакции неприменимы: `site_connection` имеет только `cost_kind=time` (§1.4), а action-cost `relation_ref` допустим только для `scene_movement_edge`.
 
@@ -801,7 +802,16 @@ Scene-level checkpoint/interruption использует отдельный rout
 
 Из `paused_in_transit` (§10.8) игрок вместо «дальше» может выбрать «назад»: путь от текущего прогресса назад по той же линии. Условия: у segment есть зеркальный segment (reverse route, reverse binding или reverse connection, §4.5, §4.7.1), и его dynamic access (A.9) пропускает; иначе хода «назад» нет (физически односторонний участок — недоступный зеркальный segment, §4.13). Путь назад не является relocation: место не меняется.
 
-Прогресс зеркалится по доле пути: прогресс p на segment S становится 1 000 000 − p на зеркальном segment S′. Минуты, способ, факторы и доступность берутся у S′ (минуты сторон независимы, §4.7.2): оставшееся время равно `base_minutes(S′)` × факторы × (p / 1 000 000) по §11.2. Разворот не имеет собственного времени: он входит в первый интервал обратного хода (`turn_back`, B.4), который может закончиться и `paused_in_transit` при нулевом времени. Обратный ход заканчивается исходом `returned_to_departure` на departure endpoint исходного segment (§11.6); execution переходит в `waiting_at_anchor` на этом endpoint, оставшиеся шаги плана не диспатчатся (новый план строится от endpoint). Из `paused_in_transit` на обратном пути можно развернуться снова: прогресс зеркалится обратно. При нулевом прогрессе разворот не нужен: состояние на departure endpoint — real endpoint (§10.5). Срезы (§4.5.2) действуют на обеих сторонах.
+Прогресс зеркалится по доле пути: прогресс p на segment S становится 1 000 000 − p на зеркальном segment S′. Минуты, способ, факторы и доступность берутся у S′ (минуты сторон независимы, §4.7.2): оставшееся время равно `base_minutes(S′)` × факторы × (p / 1 000 000) по §11.2. Разворот не имеет собственного времени: он входит в первый интервал обратного хода (`turn_back`, F.1.1), который может закончиться и `paused_in_transit` при нулевом времени.
+
+Разворот — одно атомарное преобразование travel state в коммите результата этого интервала: `mirrored` переключается и прогресс p заменяется на 1 000 000 − p. `progress_before_ppm` первого обратного интервала равен зеркальному прогрессу, а не прежнему `actual_progress_after_ppm`; это единственное исключение из правила непрерывности (§11.5), все остальные интервалы начинаются с прежнего `actual_progress_after_ppm` своей стороны. `last_confirmed_endpoint_ref` не меняется: это departure endpoint исходного segment (для зеркального segment — его arrival endpoint).
+
+- **Повторный разворот.** Из `paused_in_transit` на зеркальной стороне «назад» снова зеркалит прогресс (`mirrored` возвращается в false) по тем же правилам.
+- **Нулевой прогресс.** Разворот требует прогресса 1..999 999: зеркало нуля дало бы 1 000 000, а при нуле party ещё на departure endpoint. При нулевом прогрессе хода «назад» нет.
+- **Отказ.** Если dynamic access зеркального segment не пропускает, интервал заканчивается обычным `blocked_before_progress` с `turn_back` false: `mirrored` и прогресс не меняются, меняются только аудиторские поля; «назад» можно повторить. Интервал с `turn_back` true допускает только исходы `progressed`, `paused_in_transit` и `returned_to_departure`.
+- **Replay.** Результат интервала — append-only запись под idempotency lease; зеркалирование входит в её коммит. Повтор того же запроса возвращает зафиксированный результат и не зеркалит второй раз.
+
+Обратный ход заканчивается исходом `returned_to_departure` на departure endpoint исходного segment (§10.7.1, §11.6); execution переходит в `waiting_at_anchor` на этом endpoint, оставшиеся шаги плана не диспатчатся (новый план строится от endpoint). Срезы (§4.5.2) действуют на обеих сторонах.
 
 ### 4.11. Boundary crossing
 
@@ -1671,6 +1681,16 @@ At `actual_progress_after_ppm = 1_000_000`:
 
 Dispatch of next step is a deterministic child operation. If it fails after arrival, execution becomes `waiting_at_anchor`; completed segment remains committed.
 
+### 10.7.1. Return to departure (turn back completed)
+
+At `actual_progress_after_ppm = 1_000_000` of a mirrored travel state (§4.10.1):
+
+- interval outcome must be `returned_to_departure`;
+- travel state closes as `returned_to_departure`;
+- root carrier is placed at the exact departure endpoint of the step segment;
+- execution becomes `waiting_at_anchor` on that endpoint; the remaining plan steps are not dispatched and a new plan is built from the endpoint;
+- one execution event (`wait_started`) records the location snapshot; there is no `segment_completed` and no arrival on the step segment's arrival endpoint.
+
 ### 10.8. Pause
 
 `paused_in_transit` outcome:
@@ -1851,7 +1871,7 @@ For every interval result:
 0 <= progress_before < 1_000_000
 progress_before <= actual_progress_after <= planned_progress_after <= 1_000_000
 
-progressed or segment_completed
+progressed, segment_completed or returned_to_departure
 → actual_progress_after > progress_before;
 
 paused_in_transit, interrupted_at_anchor or stranded
@@ -1864,9 +1884,9 @@ blocked_before_progress
 → travel/execution/location state remains otherwise unchanged.
 ```
 
-A zero-exact-time result with unchanged progress is allowed only for explicit pause/interruption/stranded control semantics above or `blocked_before_progress`; it crosses no minute boundary. A positive sub-minute physical-progress result advances the exact timestamp even when it crosses zero whole-minute boundaries. `actual_progress_after=1_000_000` is legal only for `segment_completed`; every other outcome is committed below the terminal progress value.
+A zero-exact-time result with unchanged progress is allowed only for explicit pause/interruption/stranded control semantics above or `blocked_before_progress`; it crosses no minute boundary. A positive sub-minute physical-progress result advances the exact timestamp even when it crosses zero whole-minute boundaries. `actual_progress_after=1_000_000` is legal only for `segment_completed` (forward side) and `returned_to_departure` (mirrored side); every other outcome is committed below the terminal progress value.
 
-Next interval starts exactly at previous actual progress. `interval_ordinal` increases only after a committed result. Technical retries reuse the same pending ordinal through the idempotency lease and create no separate domain attempt ordinal.
+Progress is measured along the side the interval traverses: the step segment, or its mirrored segment after a turn back (§4.10.1). Next interval starts exactly at previous actual progress of the same side; the only exception is the `turn_back` interval (F.1.1), which starts at `1_000_000` minus the previous actual progress, in the same commit that flips the side (section 4.10.1). A refused turn back is an ordinary `blocked_before_progress` without any flip. `interval_ordinal` increases only after a committed result. Technical retries reuse the same pending ordinal through the idempotency lease and create no separate domain attempt ordinal.
 
 ### 11.6. Exhaustive interval outcomes
 
@@ -2835,13 +2855,14 @@ stranded_state
 ```text
 progressed
 segment_completed
+returned_to_departure
 paused_in_transit
 interrupted_at_anchor
 stranded
 blocked_before_progress
 ```
 
-No other interval outcome is valid. Navigation/hazard/data-gap classifications are separate reason fields.
+`returned_to_departure` is the seventh outcome of amendment 4.7.0 (§4.10.1, §10.7.1, F.1.1); the other six are the outcomes of Temporal World v4 §13. No other interval outcome is valid. Navigation/hazard/data-gap classifications are separate reason fields.
 
 ## A.13. Frontier status and resolution
 
@@ -5091,18 +5112,16 @@ identity:
 fields:
   id: required stable_id
   version: required authoring_version
-  policy_kind: required enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]
+  policy_kind: required enum[segment_once, fixed_progress_slices, explicit_progress_points]
   progress_slice_ppm: optional positive_integer
-  interval_minutes: optional positive_integer
   status: required enum[approved, deprecated, retired]
   provenance_ref: required stable_id
 relations:
   explicit_progress_points: relation_set[controlled_progress_point]
 invariants:
-  - segment_once forbids slice, interval and explicit points.
-  - fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.
-  - explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.
-  - fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.
+  - segment_once forbids slice and explicit points.
+  - fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids explicit points.
+  - explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice.
   - Slicing policy cannot change final duration under identical factor sequence.
 ```
 
@@ -5425,23 +5444,20 @@ fields:
   navigation_state: required enum[on_course, deviating, lost]
   last_confirmed_endpoint_ref: required movement_endpoint_ref
   last_dynamic_snapshot_digest: optional sha256_hex
-  mirrored: required boolean
   status: required enum[active, paused_in_transit, stranded_in_transit, closed]
   stranded_reason_code: optional stable_id
-  closed_result: optional enum[completed, interrupted_to_anchor, returned_to_departure, superseded]
+  closed_result: optional enum[completed, interrupted_to_anchor, superseded]
   state_version: required state_version
   updated_change_set_id: required stable_id
   closed_change_set_id: optional stable_id
 invariants:
   - movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.
-  - New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.
+  - New state starts with progress zero, exact cumulative time zero and next_interval_ordinal zero.
   - last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state.
   - active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.
   - stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.
   - closed requires closed_result and closed_change_set_id.
-  - closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.
-  - closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.
-  - mirrored flips only in the commit of a turn_back interval, together with the progress mirror (1_000_000 minus progress); while mirrored, progress, cost, method, factors and availability are those of the mirrored segment of the step segment (section 4.10.1).
+  - closed_result=completed requires progress one million and null stranded_reason_code.
   - closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.
   - closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.
   - closed state cannot be reactivated.
@@ -5538,8 +5554,7 @@ fields:
   clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]
   synchronized_time_slice_result_id: optional stable_id
   dynamic_snapshot: required traversal_dynamic_snapshot
-  turn_back: required boolean
-  result_kind: required enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]
+  result_kind: required enum[progressed, segment_completed, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]
   result_code: required stable_id
   navigation_resolution: optional navigation_resolution
   hazard_resolution: optional hazard_resolution
@@ -5551,13 +5566,12 @@ fields:
   occurred_at_turn: required non_negative_integer
 invariants:
   - No active/open result exists and all rational values are reduced.
-  - progress_before_ppm is below one million; planned progress is strictly greater than progress before. For a turn_back interval progress_before_ppm is 1_000_000 minus the travel-state progress before commit (in 1..999999) and the same commit flips travel-state mirrored.
-  - turn_back is true only for the first interval after a paused_in_transit result and requires a mirrored segment whose dynamic access passes (section 4.10.1); cost, method, factors and availability of an interval are those of the segment of the side it traverses.
+  - progress_before_ppm is below one million; planned progress is strictly greater than progress before.
   - actual progress is between progress before and planned progress.
   - cumulative actual time after equals cumulative actual time before plus actual interval time.
   - Interval ordinal equals travel-state next_interval_ordinal before commit; after commit next_interval_ordinal equals interval_ordinal plus one.
   - progressed requires progress_before < actual_progress_after < one million and positive exact actual time.
-  - segment_completed requires planned_progress_after_ppm=actual_progress_after_ppm=one million, positive exact actual time and travel-state mirrored false after commit; returned_to_departure requires the same with mirrored true after commit; no other outcome permits actual progress one million.
+  - segment_completed requires planned_progress_after_ppm=actual_progress_after_ppm=one million and positive exact actual time; no other outcome permits actual progress one million.
   - paused_in_transit, interrupted_at_anchor and stranded require actual progress below one million; equality with progress_before is allowed only when the control outcome occurs before further physical advancement.
   - interrupted_at_anchor requires interruption_anchor_id resolving to an active usable route anchor; all other outcomes forbid it.
   - blocked_before_progress has unchanged progress/cumulative time, zero actual time and zero crossed whole-minute boundaries, and changes only travel-state next_interval_ordinal/state-version audit fields.
@@ -7032,7 +7046,7 @@ unresolved_document_findings: 0
 
 Blocks of this appendix supersede the same-named contract blocks of Appendix B and add new ones; each block is the sole logical declaration of its `contract_name` from amendment 4.7.0 (§0.9). Appendix C is extended by the typed errors listed below. Until the generated registry is synchronized with this appendix, an operation that depends on it is blocked as `normative_contract_conflict`.
 
-Superseded blocks (copies of the Appendix B blocks with the changes listed in the amendment): `g5_site_connection`, `party_site_connection_endpoint_binding`, `world_route`, `world_route_segment`, `preparation_member_proposal`, `spatial_materialization_input`, `materialization_trace`, `expansion_slot`, `party_transit_anchor`, `preparation_snapshot_member`, `movement_cost_summary`. New blocks: `line_kind_profile`, `line_kind_alternative_method`, `canonical_g5_connection_binding`. Typed errors: `line_label_duplicate`, `line_label_invalid`, `line_recheck_slicing_missing`, `canonical_connection_projection_gap`.
+Superseded blocks (copies of the Appendix B blocks with the changes listed in the amendment): `g5_site_connection`, `party_site_connection_endpoint_binding`, `world_route`, `world_route_segment`, `preparation_member_proposal`, `spatial_materialization_input`, `materialization_trace`, `expansion_slot`, `party_transit_anchor`, `preparation_snapshot_member`, `movement_cost_summary`, `dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result` (the last three: F.1.1). New blocks: `line_kind_profile`, `line_kind_alternative_method`, `canonical_g5_connection_binding`. Typed errors: `line_label_duplicate`, `line_label_invalid`, `line_recheck_slicing_missing`, `canonical_connection_projection_gap`.
 
 ## F.1. Amended and new contract blocks
 
@@ -7460,6 +7474,115 @@ invariants:
   - duration_band, when present, is the band of minutes_max under the approved band profile; it requires minute bounds, and the player projection shows the band, not the bounds (section 14.4).
   - bounded requires both bounds for every populated dimension.
   - unknown requires all numeric bounds null, is not executable and accompanies a blocking reason.
+```
+
+### F.1.1. Recheck policy kinds and turn back mid-segment (revision 2026-09-30)
+
+These three blocks are copies of the effective blocks of the listed sources with the changes of the revision (§0.9, D56): `dynamic_recheck_policy` and `traveller_travel_state` copy Appendix B, which stays unchanged; `party_traversal_interval_result` copies Temporal World v4 Appendix A.6 (the effective block: Appendix B is already superseded there) and keeps its exact-time fields; Temporal A.6 and Appendix B are not edited, so the historical 4.2.0 and 4.3.0 snapshots stay as they were.
+
+```yaml
+contract_name: dynamic_recheck_policy
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  policy_kind: required enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]
+  progress_slice_ppm: optional positive_integer
+  interval_minutes: optional positive_integer
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+relations:
+  explicit_progress_points: relation_set[controlled_progress_point]
+invariants:
+  - segment_once forbids slice, interval and explicit points.
+  - fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.
+  - explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.
+  - fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.
+  - Slicing policy cannot change final duration under identical factor sequence.
+```
+
+```yaml
+contract_name: traveller_travel_state
+storage: party_runtime_mutable_history_preserving
+identity:
+  - id
+fields:
+  id: required stable_id
+  party_id: required stable_id
+  route_plan_execution_id: required stable_id
+  plan_step_ordinal: required non_negative_integer
+  movement_carrier_ref: required entity_ref
+  segment_progress_ppm: required ppm
+  cumulative_actual_time_numerator: required non_negative_integer
+  cumulative_actual_time_denominator: required positive_integer
+  next_interval_ordinal: required non_negative_integer
+  intended_direction_id: optional stable_id
+  navigation_state: required enum[on_course, deviating, lost]
+  last_confirmed_endpoint_ref: required movement_endpoint_ref
+  last_dynamic_snapshot_digest: optional sha256_hex
+  mirrored: required boolean
+  status: required enum[active, paused_in_transit, stranded_in_transit, closed]
+  stranded_reason_code: optional stable_id
+  closed_result: optional enum[completed, interrupted_to_anchor, returned_to_departure, superseded]
+  state_version: required state_version
+  updated_change_set_id: required stable_id
+  closed_change_set_id: optional stable_id
+invariants:
+  - movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.
+  - New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.
+  - last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).
+  - active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.
+  - stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.
+  - closed requires closed_result and closed_change_set_id.
+  - closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.
+  - closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.
+  - closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.
+  - closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.
+  - segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.
+  - mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.
+  - closed state cannot be reactivated.
+  - UNIQUE one active, paused or stranded state per execution step.
+```
+
+```yaml
+contract_name: party_traversal_interval_result
+storage: party_runtime_append_only
+identity:
+  - id
+fields:
+  id: required stable_id
+  route_plan_execution_id: required stable_id
+  plan_step_ordinal: required non_negative_integer
+  interval_ordinal: required non_negative_integer
+  progress_before_ppm: required ppm
+  planned_progress_after_ppm: required ppm
+  actual_progress_after_ppm: required ppm
+  planned_elapsed: required rational_minutes
+  actual_elapsed: required rational_minutes
+  cumulative_elapsed_before: required rational_minutes
+  cumulative_elapsed_after: required rational_minutes
+  crossed_whole_minute_boundaries: required non_negative_decimal_string
+  clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]
+  synchronized_time_slice_result_id: optional stable_id
+  execution_context_snapshot: required factual_spatial_context_snapshot
+  turn_back: required boolean
+  result_kind: required enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]
+  result_code: required stable_id
+  dynamic_dependency_pins: required dependency_pin_set
+  result_change_set_id: required stable_id
+  idempotency_record_id: required stable_id
+invariants:
+  - Exact elapsed and cumulative state reconcile without float conversion.
+  - direct_party_clock owns one clock update; shared_root_transport_clock owns none.
+  - Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.
+  - Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.
+  - turn_back is true only for the first interval after a paused_in_transit result, requires a mirrored segment whose dynamic access passes and a travel-state progress in 1..999999, and permits only the outcomes progressed, paused_in_transit and returned_to_departure; a refused turn back is an ordinary blocked_before_progress with turn_back false and no change of travel state other than its audit fields.
+  - Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.
+  - segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit; no other outcome permits actual progress one million.
+  - A retried request reuses idempotency_record_id and returns the committed result: the mirroring is part of that commit and never applies twice.
 ```
 
 ## F.2. Typed errors

@@ -343,8 +343,8 @@
       "document_id": "spatial-architecture-standard-g0-g6",
       "canonical_path": "corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
       "file_name": "spatial_architecture_standard_g0_g6.md",
-      "sha256": "77e847cc7fc4194bb780950f42b5ff0dfe8b49f3e87a3a5a327d909e7539d2c6",
-      "bytes": 394464,
+      "sha256": "26c46b62f6714af249904e799356536c7f94f2eea8101cf731bf034c10a9634e",
+      "bytes": 404977,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -393,8 +393,8 @@
       "document_id": "temporal-world-and-interruptible-activities",
       "canonical_path": "corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
       "file_name": "temporal_world_and_interruptible_activities.md",
-      "sha256": "e5b081a508f12495e4a481e9d4d6c966effa57f15097d4f80276820db333c1dd",
-      "bytes": 146858,
+      "sha256": "b085c7c8f0bf7c07f8fa7241d92fe2b56d164bd960d5c0cbfa42d922c7a4ad6f",
+      "bytes": 147483,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

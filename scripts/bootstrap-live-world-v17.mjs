@@ -38,6 +38,7 @@ import { buildAdditionalStartOwnerRows } from
   '../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 import { ensureV17PartyProductionCatalogLedger } from './v17-party-production-catalog-ledger.mjs';
 import { assertWaveInputs, readWaveRequest, runWaveImportStage } from './v17-m2c-npc-wave-stage.mjs';
+import { runIdentityImportStage } from './v17-npc-identity-stage.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -519,6 +520,10 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
           throw new Error(`V17_APPEARANCE_ROW_MISMATCH:${dataset.table}:${row.id}`);
       }
     }
+    // rt-names (D49): personal-name pool, psychology scales and occupation goals/fears; needs the
+    // world revision row of the appearance import above.
+    const identityImport = await runIdentityImportStage({ world, root,
+      requireAttestation: (stage, request) => requireAttestation(stage, request, attest, onRequest) });
     await applyCatalogDdl(party, 'party_runtime', [
       PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
       ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP
@@ -706,7 +711,8 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       itemApproval: { request: itemActivationRequest, attestation: itemActivationAttestation },
       actorImportApproval: { request: actorRequest, attestation: actorAttestation },
       actorApproval: { request: actorActivationRequest, attestation: actorActivationAttestation },
-      waveImportApproval: { request: waveImport.request, attestation: waveImport.attestation }
+      waveImportApproval: { request: waveImport.request, attestation: waveImport.attestation },
+      npcIdentityImportApproval: { request: identityImport.request, attestation: identityImport.attestation }
     };
     await mkdir(dirname(activationApprovalsPath), { recursive: true });
     const pendingPath = `${activationApprovalsPath}.${process.pid}.pending`;
@@ -723,6 +729,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       m2c_npc_wave: { request_id: waveImport.request_id, request_digest: waveImport.request_digest,
         added_rows: Object.values(waveImport.added).reduce((sum, count) => sum + count, 0),
         rollback: waveImport.rollback, readback: waveImport.readback },
+      npc_identity: { request_id: identityImport.request_id, request_digest: identityImport.request_digest,
+        added_rows: Object.values(identityImport.added).reduce((sum, count) => sum + count, 0),
+        rollback: identityImport.rollback, readback: identityImport.readback },
       appearance_v3: { inserted_rows: appearanceRequest.expected_import_readback.inserted_rows,
         rollback: 'pass' }, capacity_v2: { manifest_sha256: capacityManifestSha256,
         runtime_record_digests: capacityDigests }, nature_successor: { inserted_rows: natureRecords.length,
@@ -828,7 +837,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const directory = process.env.V17_BOOTSTRAP_ATTESTATION_DIR;
     if (!directory) throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
     const stages = ['item_baseline', 'item_import', 'item_activation', 'actor_import',
-      'actor_activation', 'm2c_npc_wave_import'];
+      'actor_activation', 'm2c_npc_wave_import', 'npc_identity_import'];
     const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) =>
       [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))])));
     result = await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL,

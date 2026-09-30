@@ -14,6 +14,7 @@ import { createSpatialV3ProductionCompositionRoot } from
 import { readV17PartyProductionCatalogLedger } from
   '../../scripts/v17-party-production-catalog-ledger.mjs';
 import { WAVE_ATTESTATION_SCHEMA } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
+import { IDENTITY_ATTESTATION_SCHEMA } from '../../scripts/v17-npc-identity-stage.mjs';
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
@@ -174,6 +175,9 @@ function buildAttest(fixtureApproval) {
     }
     if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
       schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
+      independence_basis: 'Test-only approval fixture', database_mutated: false });
+    if (stage === 'npc_identity_import') return fixtureApproval(stage, {
+      schema: IDENTITY_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
       independence_basis: 'Test-only approval fixture', database_mutated: false });
     throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
   };

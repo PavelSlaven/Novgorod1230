@@ -7,8 +7,9 @@ Part B (ref_kind=master): every master item_location_links row converted to pf (
 """
 import json
 import re
+import subprocess
 from collections import defaultdict
-from common import ITEMS, REPORTS, ME, ROOT, read_csv, write_csv, split, load_master, load_me, load_place_families
+from common import DOMAIN, ITEMS, REPORTS, ME, read_csv, write_csv, split, load_master, load_me, load_place_families
 import rules as R
 
 WHERE_KW = [
@@ -387,6 +388,7 @@ def main():
     print(f"item_place_frequency={n} (it={a_rows}, master={n - a_rows}) context_links={len(context_rows)} dropped_links={len(dropped)} errors={len(errs)}")
     for e in errs[:20]:
         print("  ERR", e)
+    subprocess.run(["node", str(DOMAIN.parent / "scripts/check-needs-check.mjs"), "--check"], check=True)
 
 
 if __name__ == "__main__":

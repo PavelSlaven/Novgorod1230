@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(game-base): needs_check queues block generation — only anachronism doubts, per region and period; regional presence stays informational; fail-closed matcher in runtime-catalog, snapshot v2, Opus-approved classification 8/29 (D51 p.3) (#215)
 - fix(items): A1 make works at places reached by walking (rt-make) — result destination on the scene position when the party has no g5 anchor, planner rule names `partial_transformation` and an allowed form, one repair for an invalid `physical_form`; LW-100/LW-103 updated, LW-118 added
 - data(people): D49 minimum-one people — D-2 thresholds for pf_riverbank/pf_rural_yard/pf_village_lane (game-base pin c79852e7, wave regenerated, presence_rules 5740→5737), m2c pack v2 adds ferryman/householder/household-mistress profiles, clothing d2, canonical regional context (g4-only), fisher/servant v3 and G4 vikhtuy_locality min_count 1; crossing guard stays a gap (occupation not approved); approvals and request attestation pending
 - fix(ux): first screen of the v17 start shows the visible passages (connection disclosure of the same visibility owner as a turn, canonical connections only; the provider gets the world-base reader), refused turns with nothing committed reach the player as typed `TURN_NOT_SAVED`/`WORLD_ACTION_UNAVAILABLE` (409, safe text) instead of a masked 500, neutral text for an unachieved direct goal (rt-ux)

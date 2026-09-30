@@ -2,6 +2,8 @@
 // Usage: node scripts/build.mjs
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { REPO, OUT, REPORTS, SRC, src, readJson, readCsv, writeCsv, months, seasonsOf, SEASONS, FOREST_PF } from './lib.mjs';
 
 const taxaSrc = src('taxa.json');
@@ -221,3 +223,4 @@ const report = {
 fs.mkdirSync(REPORTS, { recursive: true });
 fs.writeFileSync(path.join(REPORTS, 'build-report.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2));
+execFileSync(process.execPath, [path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../scripts/check-needs-check.mjs'), '--check'], { stdio: 'inherit' });

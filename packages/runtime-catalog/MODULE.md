@@ -12,6 +12,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - проверкой compatible full-world pin и runtime contract;
 - чистой projection по region/effective date после полной проверки.
 - единой загрузкой неперсистентных common catalog lookups до projection.
+- чистой проверкой кросс-доменного versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI.
 
 ## Не делает
 
@@ -58,6 +59,7 @@ profile per G4 version. Authoring candidates are not runtime input.
   `@rus/runtime-catalog/runtime-contract`.
 - `ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT` и exact digest из того же subpath;
   контракт отделён от item/container scope и не включает equipment allocation.
+- `NEEDS_CHECK_BLOCKER` — единственный API для сборки/проверки versioned blocker snapshot и сопоставления кандидата; пакет не решает, допускать ли действие.
 
 ## Контракты
 
@@ -77,6 +79,8 @@ loads the exact compiled canonical initial rule and checks its world tuple and
 placement candidate digest/reference. It approves no later-state fallback;
 the current-state owner must separately prove that the committed initial state
 still applies.
+
+`rus.needs_check_blockers.v2` — immutable snapshot cross-domain queues с проверкой digest. Snapshot включает отсортированный список `regions` из approved G0 registry; digest покрывает schema, regions и entries. Каждая name-строка фиксирует `doubt_kind` (`anachronism` или `regional_presence`), `block_by` (`name`, `archive_id` или `none`), `block_region`, `block_period`, исключения и нормализуемые шаблоны. Только `anachronism` блокирует по имени: известный совпадающий регион применяется, другой известный регион пропускается, отсутствующий или неизвестный регион проверяется по всем name-записям. `block_period` хранит границы формата `YYYY-YYYY`; game-base snapshot относится к 1230 г., дата кандидата пока не учитывается. `regional_presence` всегда информационный (`block_by=none`); активная name-строка без `doubt_kind` — ошибка сборки. Archive ID блокирует только включение сущности, не item-bearing references, и не зависит от региона, поскольку ID глобально уникален; archive name blocker также несёт ID-шаблон для entity inclusion. Однословный шаблон до 5 букв совпадает только с точной формой; `|` задаёт альтернативы. Matcher учитывает RU/Latin aliases и fail-closed на неизвестной схеме, битом digest, пустом после нормализации шаблоне или некорректной записи. Чтение очередей и сборка snapshot принадлежат game-base CLI; runtime передаёт кандидата и регион тому же чистому matcher.
 
 `loadActivePin` возвращает immutable `rus.runtime_catalog_pin.v2`.
 `loadApprovedItemCatalog` возвращает полный immutable verified bundle только

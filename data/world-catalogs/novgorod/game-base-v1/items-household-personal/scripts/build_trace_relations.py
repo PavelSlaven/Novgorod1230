@@ -1,8 +1,9 @@
 """Return archaeological trace links as typed, finite find candidates."""
 import json
+import subprocess
 from collections import Counter, defaultdict
 
-from common import ITEMS, ME, REPORTS, ROOT, read_csv, write_csv
+from common import DOMAIN, ITEMS, ME, REPORTS, ROOT, read_csv, write_csv
 import rules as R
 
 TRACE_KINDS = {"waste", "fragment", "residue", "deposit", "byproduct"}
@@ -106,6 +107,7 @@ def main():
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     print(f"item_place_trace_relations={count} source_items={report['source_items']}")
+    subprocess.run(["node", str(DOMAIN.parent / "scripts/check-needs-check.mjs"), "--check"], check=True)
 
 
 if __name__ == "__main__":

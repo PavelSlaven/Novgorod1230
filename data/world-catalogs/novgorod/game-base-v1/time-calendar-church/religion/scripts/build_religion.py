@@ -30,6 +30,7 @@ reproducible from one script run rather than hand-authored.
 import csv
 import json
 import os
+import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.dirname(HERE)
@@ -277,6 +278,8 @@ def main():
     from collections import Counter
     print("church_practice kind counts:", dict(Counter(r["kind"] for r in church_rows)))
     print("lifecycle rite_kind counts:", dict(Counter(r["rite_kind"] for r in lifecycle_rows)))
+    checker = os.path.join(os.path.dirname(__file__), "..", "..", "..", "scripts", "check-needs-check.mjs")
+    subprocess.run(["node", checker, "--check"], check=True)
 
 
 if __name__ == "__main__":

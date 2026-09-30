@@ -244,7 +244,8 @@ function approvedRegionalContext(bundle, binding) {
       || !profile.applicability.some((row) =>
         row.g4_ref?.world_revision_id === binding.world_revision_id
           && row.g4_ref?.id === g4.id && row.g4_ref?.version === g4.version
-          && (canonical ? (row.generation_template_ref == null
+          && (binding.regional_applicability === 'g4' ? row.canonical_g5_ref == null && row.generation_template_ref == null
+            : canonical ? (row.generation_template_ref == null
             && row.canonical_g5_ref?.id === canonical.id && row.canonical_g5_ref?.version === canonical.version)
             || (text(binding.canonical_source_generation_template_ref?.id)
               && Number.isSafeInteger(binding.canonical_source_generation_template_ref?.version)

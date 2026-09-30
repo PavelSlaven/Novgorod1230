@@ -121,7 +121,7 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
   const g4 = closure.g4_ref;
   const ctx = { closure: { ...closure, canonical_g5_ref: canonical }, scene, composition: { id: compositionRef.id,
     version: compositionRef.version, payload: {} }, runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
-  approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows,
+  approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows, regionalApplicability: 'g4',
   candidates: [...new Set(people.map((person) => key(person.profile_ref)))].sort(),
   applicable: (profile) => Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
     same(entry.g4_ref, g4) && entry.canonical_g5_ref == null && entry.generation_template_ref == null) };
@@ -130,6 +130,11 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
   return { npc_inputs: npcInputs, equipment_catalog: equipmentCatalog(usedRows, activation, equipmentDigest),
     selection_trace: { algorithm_version: PEOPLE_VERSION, rng_version: RNG_VERSION, seed_digest: seed.digest,
       count: people.length, choices, equipment_catalog_digest: equipmentDigest ?? null, composition_ref: compositionRef } };
+}
+
+/** How many people the scene can hold under the placement policy (0 on a water G6 without carrier). */
+export function placePeopleCapacity(scene, policy) {
+  return approvedPositions(scene, policy).positions.length;
 }
 
 function equipmentCatalog(usedRows, activation, equipmentDigest) {
@@ -202,6 +207,7 @@ function buildNpcInput(ctx, selected, ordinal, select) {
       ...(canonical && composition.payload.canonical_initial_snapshot_only === true
         ? { canonical_source_generation_template_ref:
           composition.payload.canonical_source_generation_template_ref } : {}),
+      ...(ctx.regionalApplicability ? { regional_applicability: ctx.regionalApplicability } : {}),
       ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } };
 }
 

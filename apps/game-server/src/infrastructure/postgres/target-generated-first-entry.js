@@ -7,6 +7,7 @@ import { createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
 import { applyResolvedPresenceRulesFirstArrival } from './ordinary-materialization-presence-first-arrival.js';
 import { prepareGeneratedNpcFirstEntry } from './generated-npc-first-entry.js';
 import { canonicalFiniteProfilesFor } from './ordinary-materialization-canonical-natural.js';
+import { prepareCanonicalPlacePeople } from './target-place-people-first-entry.js';
 
 const pinKeys = ['catalog_scope', 'catalog_revision_id', 'catalog_digest', 'activation_event_id',
   'import_id', 'import_audit_digest', 'record_registry_digest', 'runtime_contract_digest',
@@ -62,32 +63,41 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
       const scenes = proposal.inserts.filter((row) => row.target_table === 'party_g6_instances'
         && row.record.host_id === site?.id && row.record.scene_slot_key === 'main');
       if (scenes.length !== 1) return gap('target_first_entry_presence_scene_required');
+      const scope = { entity_kind: 'g6', entity_id: scenes[0].id };
+      const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
+        ? await resolvePresenceRulesFirstArrival({
+          transaction, request, site, partyId: request.party_id, scope, proposal, change_set_id: changeSetId,
+        }) : null;
+      const people = await prepareCanonicalPlacePeople({ context, site, presenceContext, worldBaseReader,
+        readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin });
+      if (people?.failure !== undefined) return people.failure ?? gap('target_first_entry_factual_context_required');
+      const peopleSets = people?.write_set ? [people.write_set] : [];
+      const chain = (second) => (people?.recheck ? async (recheckContext) => {
+        const checked = await people.recheck(recheckContext);
+        return checked?.ok ? second(recheckContext) : checked;
+      } : second);
+      const trace = { catalog_pins: [itemPin, actorPin], selection: people?.selection ?? null,
+        choices: people?.choices ?? [], attribute_traces: people?.attribute_traces ?? [],
+        validation_report: people?.validation_report ?? { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 },
+        ...(people ? { people: people.trace } : {}) };
       // Approved commons of this canonical G5 carry finite natural sources: the natural owner
       // writes them together with the presence aggregate (it resolves presence itself).
       if (canonicalFiniteProfilesFor(canonicalFiniteApplicability, site, request.g4.id).length > 0) {
         const natural = await prepareNaturalFirstEntry(context);
         if (!natural?.ok) return natural?.error ? natural : gap('target_first_entry_natural_proposal_required');
-        return { ok: true, approved_write_sets: natural.approved_write_sets,
-          expected_state_versions: natural.expected_state_versions ?? [],
-          commit_rechecks: natural.commit_rechecks ?? [],
-          materialization_trace: { catalog_pins: [itemPin, actorPin], selection: null,
-            choices: [], attribute_traces: [],
-            validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
-          recheck: natural.recheck };
+        return { ok: true, approved_write_sets: peopleSets.length ? [...natural.approved_write_sets, ...peopleSets]
+          : natural.approved_write_sets,
+        expected_state_versions: [...(natural.expected_state_versions ?? []), ...(people?.expected_state_versions ?? [])],
+        commit_rechecks: [...(natural.commit_rechecks ?? []), ...(people?.commit_rechecks ?? [])],
+        materialization_trace: trace, recheck: chain(natural.recheck) };
       }
       if (typeof resolvePresenceRulesFirstArrival !== 'function') {
         return gap('target_first_entry_presence_resolver_required');
       }
-      const scope = { entity_kind: 'g6', entity_id: scenes[0].id };
-      const presenceContext = await resolvePresenceRulesFirstArrival({
-        transaction, request, site, partyId: request.party_id, scope, proposal, change_set_id: changeSetId,
-      });
       if (!presenceContext?.rules?.length) {
-        return { ok: true, approved_write_sets: [], expected_state_versions: [],
-          commit_rechecks: [], materialization_trace: { catalog_pins: [itemPin, actorPin],
-            selection: null, choices: [], attribute_traces: [],
-            validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
-          recheck: async () => ({ ok: true }) };
+        return { ok: true, approved_write_sets: peopleSets, expected_state_versions: people?.expected_state_versions ?? [],
+          commit_rechecks: people?.commit_rechecks ?? [], materialization_trace: trace,
+          recheck: chain(async () => ({ ok: true })) };
       }
       const maxResolutionRecords = finiteFirstEntryProfile?.technical_limits?.max_resolution_records;
       if (!Number.isSafeInteger(maxResolutionRecords) || maxResolutionRecords < 1) {
@@ -102,19 +112,17 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
         record: { party_id: request.party_id, scope_kind: scope.entity_kind, scope_id: scope.entity_id,
           state_version: aggregate.state_version, aggregate_payload: aggregate } }];
       const digest = canonicalDigest(aggregate);
-      return { ok: true, approved_write_sets: [{ inserts: writes, updates: [], appends: [] }],
-        expected_state_versions: [], commit_rechecks: [],
-        materialization_trace: { catalog_pins: [itemPin, actorPin], selection: null,
-          choices: [], attribute_traces: [],
-          validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
-        recheck: async ({ transaction: tx }) => {
+      return { ok: true, approved_write_sets: [{ inserts: writes, updates: [], appends: [] }, ...peopleSets],
+        expected_state_versions: people?.expected_state_versions ?? [], commit_rechecks: people?.commit_rechecks ?? [],
+        materialization_trace: trace,
+        recheck: chain(async ({ transaction: tx }) => {
           const row = await tx.query(`SELECT aggregate_payload FROM party_runtime.party_ordinary_materialization_aggregates
             WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3`, [request.party_id, scope.entity_kind, scope.entity_id]);
           if (row.rowCount === 1 && canonicalDigest(row.rows[0].aggregate_payload) !== digest) {
             return gap('target_first_entry_presence_conflict');
           }
           return { ok: true };
-        } };
+        }) };
     }
     const selected = context.selection?.selected_template;
     const template = { id: site?.generated_template_ref?.entity_id,

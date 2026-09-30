@@ -12,8 +12,8 @@ for the new tables exists yet and no import manifest is produced: they come with
   (paired-slot rule), `availability_condition_set_ref` null (D3), no direction/discriminator/toponym.
 - `line_kind_profile` @1 for the 8 kinds, `line_kind_alternative_method` (swim for the three water kinds), cost profiles `cost.line_*`
   (method and options, no minutes: D8), `env.open_water`.
-- D56: there is no length ceiling. The 14 lines of 31–48 minutes are in the wave; a line longer than the slice step (`max_segment_minutes`
-  of the profile, parameter, default 30) must have a recheck policy that slices it (the validator checks `fixed_time_interval` and
+- D56: there is no length ceiling. The 14 lines of 31–48 minutes are in the wave; a line longer than 30 minutes (one rule of the world: the
+  generator/validator parameter `sliceStepMinutes`; no profile field, PLAN-OK-rt-lines-a3) must have a recheck policy of its kind that slices it (the validator checks `fixed_time_interval` and
   `fixed_progress_slices`); the existing policies of the kinds (15 / 30 minutes) do. `long_lines` in the report lists them.
   Editorial values (swim factors), assumptions and open items are in the report for the Opus pass.
 

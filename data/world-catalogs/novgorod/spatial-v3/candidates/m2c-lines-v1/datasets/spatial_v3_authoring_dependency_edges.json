@@ -16389,7 +16389,12 @@
     "target_entity_id": "route.forest_track",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16437,7 +16442,12 @@
     "target_entity_id": "route.river_channel",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16485,7 +16495,12 @@
     "target_entity_id": "route.path",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16533,7 +16548,12 @@
     "target_entity_id": "route.river_channel",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16581,7 +16601,12 @@
     "target_entity_id": "route.water_land_transition",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "1dde60edae64166f7cb8c87b8bf073849e546dd82968cd89b896194d6c74e015"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16629,7 +16654,12 @@
     "target_entity_id": "route.side_channel",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16677,7 +16707,12 @@
     "target_entity_id": "route.wetland_path",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "264ceb23569dc0fb021c92c6f515c56f6b270e439b3e7ab235d32b230784edd9"
   },
   {
     "source_entity_kind": "line_kind_profile",
@@ -16725,6 +16760,11 @@
     "target_entity_id": "route.local",
     "target_version": 1,
     "canonical_ordinal": 0,
-    "provenance_ref": "m2c_lines_v1_candidate"
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "target_registry_type": "spatial_materialization",
+    "target_registry_id": "spatial_v3_external_dependencies",
+    "target_registry_version": "1",
+    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
+    "target_dependency_digest": "a456a68faa67121d9766ffc326c4a5f7267dc0901fd53f4babf203e09a59a634"
   }
 ]

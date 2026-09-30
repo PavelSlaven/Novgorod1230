@@ -231,7 +231,7 @@
   ],
   "open_items": [
     "D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover",
-    "D56: the ceiling of 30 minutes is removed from the norm by CORPUS_EDIT in the cutover; `max_segment_minutes` of a profile is the recheck slice step, the field name is for the corpus edit to settle",
+    "D56: the ceiling of 30 minutes and the profile field max_segment_minutes are removed from the norm by CORPUS_EDIT before the DDL (PLAN-OK-rt-lines-a3); slicing is the recheck policy of the kind, the slice step (30) is one rule of the world",
     "D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus",
     "D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)",
     "rows carry status approved (the importer requires it); approval is the a2 data attestation, none exists yet",
@@ -243,6 +243,6 @@
     "base_bindings": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
     "place_geo_derived_report": "cb9c87db6969ffa376893be2cb28ff748e4a0848605991ac0c2b987aeb9bd82c",
     "line_names_candidate": "ffea92ed07f96b6a027d0bbd947318a9eb796bf7d93493bdff88fa8acd7e180f",
-    "line_kind_spec": "8bf3671b493338c4289e6c2d84fed69ca90c77a2ad14edb3270eb6613776262e"
+    "line_kind_spec": "33a1d921e071389225fd0a05e1a143052992ef8c43f62c2ee5b21e91810dccfb"
   }
 }

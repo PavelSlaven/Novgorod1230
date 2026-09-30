@@ -232,19 +232,7 @@ CREATE TABLE world_base.region_name_pool_entries (
   name_form TEXT NOT NULL,
   name_category_id TEXT REFERENCES world_base.universal_categories(id) ON DELETE RESTRICT,
   weight INTEGER NOT NULL DEFAULT 1 CHECK (weight > 0),
-  sex_category TEXT NOT NULL CHECK (sex_category IN ('female', 'male')),
-  people_ref TEXT NOT NULL CHECK (people_ref ~ '^pp_'),
-  selection_class TEXT NOT NULL
-    CHECK (selection_class IN ('ordinary', 'dynastic', 'monastic', 'significant')),
-  social_position_archetype_id TEXT
-    REFERENCES world_base.social_position_archetypes(id) ON DELETE RESTRICT,
-  derivation_class TEXT,
-  derivation TEXT,
-  people_derivation TEXT,
-  evidence_period TEXT,
-  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','deprecated')),
-  provenance_ref TEXT,
-  UNIQUE (name_pool_id, name_form, sex_category, people_ref)
+  UNIQUE (name_pool_id, name_form)
 );
 CREATE TABLE world_base.region_appearance_profiles (
   id TEXT PRIMARY KEY,

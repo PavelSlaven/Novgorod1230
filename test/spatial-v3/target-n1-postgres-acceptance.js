@@ -24,6 +24,9 @@ export async function assertTargetNpcSemanticReadback({ pool, partyId, expectedN
     const expected = expectedNpcs.find((entry) => (entry.instance_id ?? entry.npc_id) === npc.npc_id);
     assert.deepEqual(npc.semantic_state.source_binding, expected.semantic_state.source_binding);
     assert.equal(npc.semantic_state.profile_revision, expected.semantic_state.source_binding.npc_binding_ref.version);
+    // rt-names: name and character persist exactly as materialized (null name for contexts without a pool).
+    assert.equal(npc.identity_state.canonical_name ?? null, expected.identity_state.canonical_name ?? null);
+    assert.deepEqual(npc.semantic_state.character, expected.semantic_state.character);
     const participant = resolveNpcOrdinarySemanticParticipant({ npc, loadedProfile, committedState: state });
     assert.ok(participant, `exact persisted target N1 participant: ${npc.npc_id}`);
     assert.equal(participant.profile_id, npc.occupation_ref.id);

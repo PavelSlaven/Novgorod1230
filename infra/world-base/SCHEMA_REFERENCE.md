@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 29 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `f2d112185729f592cb0b66fb8fbefa8a5df28e5d51aeb179476b3fc2504f3047`.
+- SHA-256 развёрнутого DDL: `b036909583852b682fd52a12517728ea5a4104079f46f013f8840473c8dd4947`.
 - Таблиц: 222.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3938,7 +3938,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `derivation` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `people_derivation` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `evidence_period` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
 
 **Ограничения таблицы:**

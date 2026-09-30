@@ -1,6 +1,26 @@
--- rt-names (D49): code-set NPC personal names and character.
--- The name pool table itself (region_name_pool_entries: sex/people/class columns and the
--- (pool, form, sex, people) key) is defined in 09.sql; the world schema is drop-and-recreate.
+-- rt-names (D49): personal-name pool key and code-set NPC character data.
+-- 09.sql stays untouched: the legacy world bridge migration is pinned to parts 09-20.
+-- The pool table is empty on any fresh schema, so the NOT NULL columns apply without backfill.
+ALTER TABLE world_base.region_name_pool_entries
+  ADD COLUMN sex_category TEXT NOT NULL CHECK (sex_category IN ('female', 'male')),
+  ADD COLUMN people_ref TEXT NOT NULL CHECK (people_ref ~ '^pp_'),
+  ADD COLUMN selection_class TEXT NOT NULL
+    CHECK (selection_class IN ('ordinary', 'dynastic', 'monastic', 'significant')),
+  ADD COLUMN social_position_archetype_id TEXT
+    REFERENCES world_base.social_position_archetypes(id) ON DELETE RESTRICT,
+  ADD COLUMN derivation_class TEXT,
+  ADD COLUMN derivation TEXT,
+  ADD COLUMN people_derivation TEXT,
+  ADD COLUMN evidence_period TEXT,
+  ADD COLUMN status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'approved', 'deprecated')),
+  ADD COLUMN provenance_ref TEXT;
+
+-- The same form may belong to different sexes and peoples (b2-import-contract).
+ALTER TABLE world_base.region_name_pool_entries
+  DROP CONSTRAINT region_name_pool_entries_name_pool_id_name_form_key;
+ALTER TABLE world_base.region_name_pool_entries
+  ADD CONSTRAINT region_name_pool_entries_name_form_sex_people_key
+  UNIQUE (name_pool_id, name_form, sex_category, people_ref);
 CREATE INDEX region_name_pool_entries_selection_idx
   ON world_base.region_name_pool_entries (name_pool_id, people_ref, sex_category, selection_class, status);
 

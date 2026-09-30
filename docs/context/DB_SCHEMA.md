@@ -34,20 +34,20 @@ migration/rollback source.
 | MSIX / packaged apps | в процессах из MSIX (Codex, Claude Desktop) `%LOCALAPPDATA%` перенаправлен в LocalCache пакета: пара БД, созданная оттуда, не видна `play:local` из обычного терминала, и тот молча берёт v16 (LW-033). Bootstrap и play — из обычного терминала | LW-033; [`tools/local-play/local-postgres.js`](../../tools/local-play/local-postgres.js) |
 | Выбор релиза `play:local` | обе БД v17 есть → release 17; ни одной → 16 (`novgorod_world`/`novgorod_party`); ровно одна → `LOCAL_POSTGRES_V17_PAIR_INCOMPLETE` | `selectLocalRelease` в том же файле; LW-033 |
 | Bootstrap | `node scripts/bootstrap-live-world-v17.mjs` (npm-скрипта нет); входы — каталоги `data/world-catalogs/novgorod/live-world-runtime-v17`, `m2c-*`, runtime-catalog gate1 и др.; этапы: схема → Gate1 → P12 → temporal-v4 → **m2c NPC wave (D27)** → capacity/appearance/nature → item/actor каталоги | сам скрипт; LW-035, LW-076 |
-| Аттестации `--run` | `V17_BOOTSTRAP_ATTESTATION_DIR` содержит **6 файлов** `<стадия>.json`: `item_baseline`, `item_import`, `item_activation`, `actor_import`, `actor_activation` и **`m2c_npc_wave_import`** (`schema: rus.m2c_npc_wave_v17_import_approval.v1`, `verdict` APPROVE/APPROVE_CONDITIONAL, `request_digest` = `request_digest` из `m2c-npc-wave/v1/v17-import-request.json`, непустые `attested_by` и `independence_basis`); без файла стадии bootstrap останавливается до commit | `scripts/bootstrap-live-world-v17.mjs` (`--run`), `scripts/v17-m2c-npc-wave-stage.mjs` |
+| Аттестации `--run` | `V17_BOOTSTRAP_ATTESTATION_DIR` содержит **7 файлов** `<стадия>.json`: `item_baseline`, `item_import`, `item_activation`, `actor_import`, `actor_activation` и **`m2c_npc_wave_import`** (`schema: rus.m2c_npc_wave_v17_import_approval.v1`, `verdict` APPROVE/APPROVE_CONDITIONAL, `request_digest` = `request_digest` из `m2c-npc-wave/v1/v17-import-request.json`, непустые `attested_by` и `independence_basis`); и **`npc_identity_import`** (`schema: rus.npc_identity_v17_import_approval.v1`, `request_digest` из `npc-identity-v17/v1/import-request.json`; имена, шкалы психологии, цели и страхи, rt-names); без файла стадии bootstrap останавливается до commit | `scripts/bootstrap-live-world-v17.mjs` (`--run`), `scripts/v17-m2c-npc-wave-stage.mjs`, `scripts/v17-npc-identity-stage.mjs` |
 | Default binding сервера | без env — `builtin:spatial-v3-production-v16`; v17 — через `RUS_SPATIAL_V3_BINDINGS_MODULE` | [load-spatial-v3-bindings.js](../../apps/game-server/src/runtime/load-spatial-v3-bindings.js) |
 
 Генераторы процедурных сцен (authoring, не runtime write): npm `procedural-scenes:generate`, `procedural-scenes:v6-overlay`, `procedural-scenes:v6-overlay-check`, `procedural-scenes:import-pack`, `procedural-scenes:import-pack-check` — [package.json](../../package.json).
 
 ## 2. `world_base` (read-only)
 
-- **Entrypoint:** [schema.sql](../../infra/world-base/schema.sql) подключает **27** частей через `\ir schema/NN.sql`
-  (`01`–`27`) и снимает `CREATE` на схеме с `PUBLIC`.
-- **Число таблиц: 217.** Проверяется в двух местах:
-  - [check-world-base-schema.mjs](../../scripts/check-world-base-schema.mjs): `EXPECTED_TABLE_COUNT = 217`
+- **Entrypoint:** [schema.sql](../../infra/world-base/schema.sql) подключает **29** частей через `\ir schema/NN.sql`
+  (`01`–`29`) и снимает `CREATE` на схеме с `PUBLIC`.
+- **Число таблиц: 222.** Проверяется в двух местах:
+  - [check-world-base-schema.mjs](../../scripts/check-world-base-schema.mjs): `EXPECTED_TABLE_COUNT = 222`
     (`npm run world-db:schema-check`);
   - [test.yml](../../.github/workflows/test.yml), шаг «Execute world_base DDL in PostgreSQL»: DDL
-    исполняется в `postgres:16`, затем `test "$table_count" -eq 217`. Там же проверяется роль `world_reader`:
+    исполняется в `postgres:16`, затем `test "$table_count" -eq 222`. Там же проверяется роль `world_reader`:
     не superuser, есть `USAGE`, нет `CREATE`, `SELECT` на каждую таблицу, других грантов нет.
 - **Read-only порт:** [packages/world-base/MODULE.md](../../packages/world-base/MODULE.md): `createWorldBaseReader`
   отклоняет mutating SQL до вызова adapter. Production reader — `spatial-v3-world-base-reader.js` в

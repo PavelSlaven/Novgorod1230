@@ -301,7 +301,7 @@ for a in CUR['additions']:
         months_available=[m for m in range(1, 13) if ma.get(m) in AVAIL], months_fresh=[m for m in range(1, 13) if ma.get(m) in FRESH],
         months_limited=[m for m in range(1, 13) if ma.get(m) in LIMITED], season_profile=a['season_profile'],
         month_basis=f'rule: season_profile pattern {a["season_profile"]} from {MASTER_REL}/food_seasonality.csv',
-        access_by_class=access_for(a['relative_cost'], [], cat, famine=famine), storage_forms=storage_forms(cat),
+        access_by_class=access_for(a['relative_cost'], a.get('social_scope', []), cat, famine=famine), storage_forms=storage_forms(cat),
         storage_container_ids=[], shelf_life='', spoilage_signs=[], spoilage_states=spoil_states(cat), rarity=a['rarity'],
         frequency_class=freq, frequency_weight=FREQ_W[freq], relative_cost=a['relative_cost'],
         famine_1230_role=('attested_substitute' if famine and a['confidence'] == 'A' else ('analogy_substitute' if famine else '')),

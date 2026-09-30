@@ -1439,6 +1439,10 @@
    "season_profile": "stored_year_round",
    "rarity": "rare",
    "relative_cost": "high",
+   "social_scope": [
+    "merchant",
+    "boyar"
+   ],
    "confidence": "B",
    "refs": [
     "ext:zasurtsev_novgorod_otkrytyj",

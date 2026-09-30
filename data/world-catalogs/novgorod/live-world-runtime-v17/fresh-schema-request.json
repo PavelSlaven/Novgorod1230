@@ -2,7 +2,7 @@
   "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
   "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
   "status": "pending_independent_high_review",
-  "source_commit": "0cd9f981dab5977181457042e522f500d852b52e",
+  "source_commit": "cc2df1e0f71e58f8a47e7025912cb12946944454",
   "operation": "create_fresh_databases_and_apply_exact_schema",
   "target": {
     "cluster": "existing_managed_local_play_postgresql_16_14_0",
@@ -161,8 +161,8 @@
       },
       {
         "path": "infra/world-base/schema/29.sql",
-        "bytes": 3663,
-        "sha256": "d90138334814f121dfe6d6f55c45319412c42c34e9f8bb1ebf45563b6522f3ab"
+        "bytes": 3885,
+        "sha256": "e46386abfb887c5df522e97502b51cc118f89e1ca61b207dcef27fc7423ff0e4"
       }
     ],
     "expected_world_base_tables": 222

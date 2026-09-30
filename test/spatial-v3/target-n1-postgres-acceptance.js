@@ -6,7 +6,7 @@ import { resolveNpcOrdinarySemanticParticipant } from '../../apps/game-server/sr
 /** Verify actual committed bindings and Stage24 schedules; this does not disclose NPCs to a player. */
 export async function assertTargetNpcSemanticReadback({ pool, partyId, expectedNpcs }) {
   const { rows } = await pool.query(`SELECT n.npc_id,n.profile_set_id,n.profile_level,
-    n.semantic_state,n.machine_state,n.identity_state,b.role_ref,b.occupation_ref,p.position_node_id AS position_id
+    n.semantic_state,n.machine_state,n.identity_state,b.role_ref,b.occupation_ref,b.name_profile_snapshot,p.position_node_id AS position_id
     FROM party_runtime.party_npcs n
     JOIN party_runtime.party_actor_profile_bindings b ON b.party_id=n.party_id AND b.actor_kind='npc' AND b.actor_id=n.npc_id
     JOIN party_runtime.entity_placements p ON p.party_id=n.party_id AND p.entity_kind='npc'
@@ -18,6 +18,10 @@ export async function assertTargetNpcSemanticReadback({ pool, partyId, expectedN
   const profiles = await loadTargetRuntimeProfiles({ worldRevisionId: party.world_revision_id });
   const loadedProfile = profiles.ordinary_profiles.n1;
   assert.ok(loadedProfile, 'actual target loader must supply exact reviewed N1 applicability');
+  // The real bootstrap imports the pool, so the canonical start NPC of the Novgorod-land context are named
+  // and have a full character (rt-names, D49).
+  assert.ok(rows.every((npc) => typeof npc.identity_state.canonical_name === 'string' && npc.semantic_state.character?.value_refs?.length === 2),
+    JSON.stringify(rows.map((npc) => [npc.identity_state.canonical_name, npc.semantic_state.character])));
   const proof = await loadTracePhase2TemporalSourceProof(pool, partyId);
   const state = { npcs: rows, npc_schedule_runtime: proof.npc_schedule_runtime };
   for (const npc of rows) {
@@ -27,6 +31,7 @@ export async function assertTargetNpcSemanticReadback({ pool, partyId, expectedN
     // rt-names: name and character persist exactly as materialized (null name for contexts without a pool).
     assert.equal(npc.identity_state.canonical_name ?? null, expected.identity_state.canonical_name ?? null);
     assert.deepEqual(npc.semantic_state.character, expected.semantic_state.character);
+    assert.equal(npc.name_profile_snapshot.canonical_name ?? null, npc.identity_state.canonical_name ?? null);
     const participant = resolveNpcOrdinarySemanticParticipant({ npc, loadedProfile, committedState: state });
     assert.ok(participant, `exact persisted target N1 participant: ${npc.npc_id}`);
     assert.equal(participant.profile_id, npc.occupation_ref.id);

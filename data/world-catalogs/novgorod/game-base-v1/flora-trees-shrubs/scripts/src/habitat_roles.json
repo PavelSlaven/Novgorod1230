@@ -1166,6 +1166,29 @@
      "W"
     ]
    ]
+  },
+  "fl_ts_rhamnus_cathartica": {
+   "pf_forest_edge": [
+    "occasional",
+    "«на опушках, полянах» (book:333580 §4112); «чаще одиночные особи» и Новгород у северной границы ареала — occasional",
+    [
+     "src:src_nepokoychitsky_rhamnus"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "«Обычен жостер в широколиственных лесах на плодородных почвах» (book:333580 §4112); одиночность и северная граница ареала — occasional",
+    [
+     "src:src_nepokoychitsky_rhamnus"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "«одиночные особи этого растения встречаются в подлеске достаточно осветленных лесов» (book:333580 §4112)",
+    [
+     "src:src_nepokoychitsky_rhamnus"
+    ]
+   ]
   }
  }
 }

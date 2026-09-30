@@ -12,23 +12,23 @@
     "craft_processes/fish_cleaning_products.csv": 37,
     "workshops/workshops.csv": 21,
     "materials_registry/materials.csv": 103,
-    "materials_registry/late_materials_denylist.csv": 27,
+    "materials_registry/late_materials_denylist.csv": 29,
     "sources/sources.csv": 25
   },
   "archive_inclusions": {
     "runtime_activation": false,
     "status": "candidate",
     "action_counts": {
-      "needs_check": 417,
-      "include_d39": 616,
+      "needs_check": 422,
+      "include_d39": 611,
       "add_variant": 235
     },
     "ledger_rows": 1268,
     "included_new": 205,
     "included_variants": 532,
-    "rejected": 6,
+    "rejected": 1,
     "routed": 108,
-    "needs_check": 417
+    "needs_check": 422
   },
   "matcult_checked": false,
   "warnings": []

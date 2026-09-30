@@ -64,6 +64,31 @@ def build_archive_inclusion_ledger():
     return ledger
 
 
+def manifest_garment_variants(manifest=None):
+    """Project manifest variants represented by an existing garment row."""
+    if manifest is None:
+        manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
+    variants = {}
+    prefix = 'clothing-appearance/'
+    garment_target = 'garments/garments.csv#'
+    for decision in manifest:
+        if decision.get('expected_result') != 'variant':
+            continue
+        target = decision.get('target_ref') or decision.get('game_base_ref', '')
+        if not target.startswith(prefix + garment_target):
+            continue
+        target = target[len(prefix):]
+        if not target[len(garment_target):]:
+            raise ValueError(f"invalid garment variant target for {decision.get('archive_ref', '<missing>')}: {target}")
+        archive_ref = decision.get('archive_ref', '')
+        archive_id = archive_ref.rsplit(':', 1)[-1]
+        if not archive_id or archive_id in variants:
+            raise ValueError(f"missing or duplicate garment variant archive ID: {archive_ref}")
+        variants[archive_id] = {'disposition': 'variant', 'target': target,
+                                'reason': decision.get('reason', '')}
+    return variants
+
+
 def build_material_entities():
     """Project only explicitly owned new clothing entities; routed rows stay in the ledger."""
     source_path = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'
@@ -342,6 +367,15 @@ def parse_status(text):
         return BANDS[:], 'unspecified(all)'
     return [b for b in BANDS if b in got], 'kw:' + ';'.join(hits)
 
+
+# Palette rows owned by this group (not in the costume dataset). basis is filled only here; costume rows carry costume:* refs.
+LOCAL_PALETTE = [dict(
+    palette_id='imported_cotton_cloth', kind='material', name_ru='Привозная хлопчатобумажная ткань',
+    typical_scope='состоятельные слои (купцы, знать, зажиточные горожане); редкий привоз',
+    social_notes='Привозная (страны Востока, Византия, Западная Европа), редкая; не местный хлопок и не фабричный ситец (ANTI017). '
+                 'Общее свидетельство по Древней Руси без локализации; пример Пушкарёвой относится к XIV–XV вв.; прямой находки для Новгорода около 1230 г. в собранных источниках нет.',
+    dye_evidence_refs='', visual_value='',
+    source_refs='book:622242 §1778|book:616519 §409', confidence='C', status=STATUS, basis='analogy')]
 
 MATERIAL_RULES = [  # regex -> palette id (costume materials_palette.csv) or local code
     (r'лён|льнян', 'MAT001'), (r'конопл', 'MAT002'), (r'импортн\w* сукн|тонк\w* шерст', 'MAT004'),
@@ -794,9 +828,15 @@ def main():
 
     # ---------------- garments + disposition
     garments, disposition, components = [], [], []
+    manifest_variants = manifest_garment_variants()
     adorn_src = []
     for r in items:
         sub = r['subcategory']
+        if r['item_id'] in manifest_variants:
+            variant = manifest_variants[r['item_id']]
+            disposition.append(dict(source_item_id=r['item_id'], name_ru=r['name_ru'],
+                                    subcategory=sub, **variant))
+            continue
         if sub not in SUB and r['category'] == 'armor_and_weapons':
             SUB[sub] = ('reject:weapons_armor:оружие, доспех или конское снаряжение — домен weapons_armor', '', '', sub, '')
         disp, slot, cat, name_en, ctx = SUB[sub]
@@ -938,11 +978,11 @@ def main():
     write_csv(gdir / 'region_clothing_profiles.csv', rcp,
               ['id', 'region_id', 'garment_category_id', 'slot_key', 'gm_id', 'constraints', 'status', 'source_refs', 'confidence'])
     ANTI_TERMS = {
-        'ANTI001': r'кафтан', 'ANTI002': r'косоворот', 'ANTI003': r'сплошн\w* вышив', 'ANTI004': r'жилет|наплечник',
-        'ANTI005': r'лапт', 'ANTI006': r'высок\w* мехов\w* шапк', 'ANTI007': r'викинг', 'ANTI008': r'монгол',
-        'ANTI009': r'униформ', 'ANTI010': r'латн\w* доспех|полные латы', 'ANTI011': r'рогат\w* шлем', 'ANTI012': r'мехом наружу|шкуры наружу',
-        'ANTI013': r'корсет', 'ANTI014': r'кокошник', 'ANTI015': r'сарафан', 'ANTI016': r'каблук',
-        'ANTI017': r'хлоп|ситец|ситц', 'ANTI018': r'одинаков\w* доспех', 'ANTI019': r'герб|геральд',
+        'ANTI001': r'кафтан', 'ANTI002': r'косоворот', 'ANTI003': r'сплошн\w* вышив', 'ANTI004': r'фэнтезийн\w* кожан\w* (жилет|наплечник)',
+        'ANTI005': r'поголовн\w* лапт', 'ANTI006': r'высок\w* мехов\w* шапк', 'ANTI007': r'викинг', 'ANTI008': r'монгол',
+        'ANTI009': r'униформ', 'ANTI010': r'латн\w* доспех|полные латы', 'ANTI011': r'рогат\w* (шлем|helmet)', 'ANTI012': r'мехом наружу|шкуры наружу',
+        'ANTI013': r'корсет', 'ANTI014': r'кокошник', 'ANTI015': r'универсальн\w* сарафан', 'ANTI016': r'каблук',
+        'ANTI017': r'ситец|ситц\w*|(?:фабричн\w*|набивн\w*) хлопчат\w*|(?:местн\w* производств\w*).{0,30}хлопчат\w*', 'ANTI018': r'одинаков\w* доспех', 'ANTI019': r'герб|геральд',
         'ANTI020': r'ювелирн\w* перегруз',
     }
     extra = [('ANACH_POTATO', r'картоф', 'Картофель — американская культура, после XVI в.', 'wk:technology-boundaries'),
@@ -961,9 +1001,9 @@ def main():
                     social_notes=p['social_notes'], dye_evidence_refs=DYE_REFS.get(p['palette_id'], ''),
                     visual_value=VISUAL_FABRIC.get(p['palette_id'], VISUAL_COLOR.get(p['palette_id'], '')),
                     source_refs='|'.join(['costume:' + p['palette_id']] + ['costume:' + s for s in split(p['source_ids'])]),
-                    confidence=p['confidence'], status=STATUS) for p in palette],
+                    confidence=p['confidence'], status=STATUS, basis='') for p in palette] + LOCAL_PALETTE,
               ['palette_id', 'kind', 'name_ru', 'typical_scope', 'social_notes', 'dye_evidence_refs', 'visual_value',
-               'source_refs', 'confidence', 'status'])
+               'source_refs', 'confidence', 'status', 'basis'])
 
     # ---------------- outfits
     gm_ok = {g['source_item_id'] or g['gm_id']: g for g in garments}

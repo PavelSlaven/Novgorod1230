@@ -5,7 +5,7 @@
     "blob": "bab44418384a0be5270ce1922c32ae65a78af255",
     "sha256": "539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc"
   },
-  "registry_rows": 989,
+  "registry_rows": 990,
   "own_place_family_rows": 62,
   "reused_v17_ids": 66,
   "reused_v17_with_different_stable_code": 39,
@@ -14,7 +14,7 @@
     "game_base_v1:buildings-interiors-containers": 14,
     "v17_item_container_v5": 366,
     "game_base_v1:fauna-mammals-birds": 220,
-    "game_base_v1:flora-trees-shrubs": 42,
+    "game_base_v1:flora-trees-shrubs": 43,
     "game_base_v1:clothing-appearance": 59,
     "game_base_v1:items-household-personal": 127,
     "game_base_v1:places-binding": 62,
@@ -25,7 +25,7 @@
     "container_content": 14,
     "container": 100,
     "fauna": 220,
-    "flora": 42,
+    "flora": 43,
     "g5_anchor": 1,
     "g5_edge": 1,
     "g5_zone": 1,
@@ -67,8 +67,8 @@
     "data/world-catalogs/novgorod/game-base-v1/resource-catalog/resource_families.csv",
     "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv"
   ],
-  "references_checked": 8289,
-  "unresolved_references": 1806,
+  "references_checked": 8293,
+  "unresolved_references": 1810,
   "unresolved_by_file": {
     "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv": 32,
     "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv": 74,
@@ -80,12 +80,12 @@
     "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv": 56,
     "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv": 42,
     "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
-    "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
+    "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 201,
     "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31,
     "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 50,
     "data/world-catalogs/novgorod/game-base-v1/resource-catalog/material_resource_families.csv": 29,
     "data/world-catalogs/novgorod/game-base-v1/resource-catalog/resource_families.csv": 35,
-    "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv": 915
+    "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv": 916
   },
   "unresolved_sample": [
     {

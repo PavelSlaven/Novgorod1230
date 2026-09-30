@@ -96,6 +96,7 @@ function resolve(ref) {
   if (ref.startsWith('src:')) {
     const s = sources.get(ref.slice(4)); if (!s) return `unknown src ${ref}`;
     if (/^https?:\/\/\S+\.\S+/.test(s.url)) return true;
+    if (/^books\/index\.sqlite book:\d+$/.test(s.url)) return true; // local book index, cited as book:<id> §<para> in the title
     if (s.url.startsWith('file:')) { const p = s.url.slice(5); const abs = path.isAbsolute(p) ? p : path.join(path.dirname(OUT), p); return fs.existsSync(abs) || `file missing ${p}`; }
     return `bad url for ${ref}`;
   }
@@ -127,6 +128,11 @@ function resolve(ref) {
     if (tl === dl || (!dl.includes(' ') && tl.split(' ')[0] === dl)) f.push(`${t.fl_id} matches denylist ${d.name_lat}`);
     for (const k of d.keywords_ru.split(';').filter(Boolean)) if (` ${t.name_ru} `.toLowerCase().includes(k)) f.push(`${t.fl_id} name_ru contains denylist keyword '${k}'`);
   }
+  // Probes: the walnut denylist bans the living tree only; imported shells and kernels stay allowed.
+  const walnut = deny.find((d) => d.name_lat === 'Juglans regia');
+  const walnutHit = (text) => walnut.keywords_ru.split(';').filter(Boolean).some((k) => ` ${text} `.toLowerCase().includes(k));
+  for (const text of ['орех грецкий', 'ореховое дерево']) if (!walnutHit(text)) f.push(`walnut denylist probe: '${text}' must match`);
+  for (const text of ['скорлупа грецкого ореха', 'грецкий орех привозной', 'ядро грецкого ореха']) if (walnutHit(text)) f.push(`walnut denylist probe: '${text}' must not match`);
   check('no_denylist_taxa', f);
 }
 // 6. each forest pf has >=5 woody taxa per season

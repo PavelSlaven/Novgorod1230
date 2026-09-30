@@ -45,9 +45,10 @@ function archiveId(row) {
   return ref.split(':').at(-1) || '';
 }
 
-function actualAction(row) {
+function actualAction(row, expectedAction = '') {
   const status = `${row.status || ''} ${row.decision || ''} ${row.inclusion_result || ''} ${row.archive_action || ''} ${row.disposition || ''} ${row.semantic_result || ''}`.toLowerCase();
   const type = row.match_type || row.record_type || row.type || '';
+  if (expectedAction === 'needs_check' && /needs.?check/.test(status)) return 'needs_check';
   if (/reject|отклон/.test(status) || status.includes('rejected')) return 'reject';
   if (/routed|route/.test(status) || row.inclusion_result === 'routed' || row.disposition === 'routed') return 'routed';
   if (row.decision === 'entity' || row.inclusion_result === 'entity'
@@ -187,7 +188,7 @@ export function compareExpectations(expectations, disagreements, records, exists
       && exists(actual._group, expected.expected_target_ref);
     const targetGroupMatches = actual => !expected.expected_target_group
       || (actual.target_group || actual.owner_group || actual._group || '') === expected.expected_target_group;
-    const directMatch = decisionRows.some(actual => actualAction(actual) === expected.expected_action
+    const directMatch = decisionRows.some(actual => actualAction(actual, expected.expected_action) === expected.expected_action
       && (!expected.expected_target_ref || targetMatches(actual, expected.expected_target_ref) || canonicalEntityTarget(actual))
       && targetGroupMatches(actual));
     const routeEquivalent = ['variant', 'ref'].includes(expected.expected_action) && expected.expected_target_ref

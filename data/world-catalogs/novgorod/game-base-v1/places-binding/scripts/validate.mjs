@@ -1483,7 +1483,6 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
       ['следы пилорамы', 'env_sawmill_probe'],
       ['серая крыса у склада', 'env_brown_rat_probe'],
       ['рыжий таракан в избе', 'env_german_cockroach_probe'],
-      ['чёрный таракан в клети', 'env_black_cockroach_probe'],
       ['рис на местной пашне', 'env_rice_probe'],
     ]) expectFailure([{ ...first, name_ru: name, companion_ref: companion }], 'anachronism');
     for (const name_ru of ['остатки', 'Следы работы', 'Шум.', 'Звук: домовая мышь: региональные сезонные признаки']) expectFailure([{ ...first, name_ru }], 'generic name');

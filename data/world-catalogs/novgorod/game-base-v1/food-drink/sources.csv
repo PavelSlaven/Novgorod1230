@@ -9,6 +9,10 @@ ext:npl1950_6738_6739,ext,"Новгородская первая летопис�
 ext:pvl_6504_996,ext,"Повесть временных лет, под 6504 (996): Владимир велит развозить хлебы, мясо, рыбу, овощь, мёд в бочках и квасы",http://lib.pushkinskijdom.ru/Default.aspx?tabid=4869,A text; B as analogy for Novgorod 1230
 ext:pvl_6505_997,ext,"Повесть временных лет, под 6505 (997): белгородский кисель — цеж из овса, пшеницы или отрубей; мёд «росытити»",http://lib.pushkinskijdom.ru/Default.aspx?tabid=4869,A text; B as analogy for Novgorod 1230
 ext:stepanova2014,ext,Степанова Л.Г. Традиционное питание русского крестьянина в XVI в. и резервные источники его пополнения // Политематический сетевой электронный научный журнал КубГАУ. 2014,https://cyberleninka.ru/article/n/traditsionnoe-pitanie-russkogo-krestyanina-v-xvi-v-i-rezervnye-istochniki-ego-popolneniya,B for XVI c.; C as analogy for 1230
+ext:yanin2008_rybina_intl,ext,"Рыбина Е.А. Международные связи Новгорода, в кн.: Янин В.Л. Очерки истории средневекового Новгорода. 2008 (book:220871), §1044-1045",books/index.sqlite book:220871,B (scholarly synthesis of archaeological imports)
+ext:zasurtsev_novgorod_otkrytyj,ext,"Засурцев П.И. Новгород, открытый археологами (book:709382), гл. «Дружинники на Холопьей», §474 и §481",books/index.sqlite book:709382,B (scholarly archaeological narrative)
+game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv,file,Repository file row,,see file
+game-base-v1/flora-trees-shrubs/flora/wood_use_kolchin1968.csv,file,Repository file row,,see file
 game-base-v1/food-drink/scripts/source_snapshot/famine_1230_context.csv,file,Repository file row,,see file
 game-base-v1/food-drink/scripts/source_snapshot/meal_sets.csv,file,Repository file row,,see file
 game-base-v1/food-drink/scripts/source_snapshot/recipe_steps.csv,file,Repository file row,,see file

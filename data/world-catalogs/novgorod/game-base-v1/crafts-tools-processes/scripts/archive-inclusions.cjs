@@ -175,12 +175,7 @@ const ROUTED_REASONS = new Map([
 for (const [id, target] of ROUTED) target.ref = ROUTED_REFS.get(id) || '';
 
 const D38_REJECTS = new Map([
-  ['CRF0057', 'D38: research_only reconstruction with D confidence and critical generation risk; reject rather than materialize an unattested water-wheel form.'],
   ['WTR0024', 'D38: source period 1450–1700 excludes 1230; research-only late vessel.'],
-  ['WTR0015', 'D38: D-confidence, research_only, critical anachronism risk.'],
-  ['HRS0021', 'D38: D-confidence, research_only, critical anachronism risk.'],
-  ['HNT0028', 'D38: D-confidence, research_only, critical anachronism risk.'],
-  ['CRF0061', 'D38: D-confidence, research_only, critical anachronism risk.'],
 ]);
 const REVIEW_VARIANTS = new Map([
   ['CRF0099', ['crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_auger_spoon', 'Коловорот — вариант применения существующего сверла/буравчика.']],
@@ -559,7 +554,7 @@ function buildLedger(domain, deny, needsCheckRows = NEEDS_CHECK_ROWS) {
     errors.push(...sourceRowIssues(entry));
     if (period && !/^\d{4}–\d{4}$/.test(period)) errors.push(`${archive_ref}: invalid period ${period}`);
     if (expectedDisposition === 'include' && (!period || Number(period.slice(0, 4)) > 1230 || Number(period.slice(-4)) < 1230)) errors.push(`${archive_ref}: included entity period ${period || '(missing)'} does not include 1230`);
-    if (expectedDisposition === 'include' && (generationPolicy === 'research_only' || (confidence === 'D' && /critical/i.test(anachronismRisk)))) errors.push(`${archive_ref}: D38 reject required for research_only/critical-risk entry`);
+    if (expectedDisposition === 'include' && (generationPolicy === 'research_only' || (confidence === 'D' && /critical/i.test(anachronismRisk)))) errors.push(`${archive_ref}: research_only or critical-risk entry must stand in authoring/needs_check.csv (D38: risk is not a rejection basis)`);
     if (record_type === 'variant' && !targetExists) errors.push(`${archive_ref}: unresolved variant target ${game_base_ref}`);
     if (record_type === 'variant' && expectedDisposition === 'include' && targetExists) {
       const reason = entry[11] || manualVariant?.[1] || '';
@@ -638,7 +633,8 @@ function buildLedger(domain, deny, needsCheckRows = NEEDS_CHECK_ROWS) {
 function selfTest(domain, deny) {
   if (normalizeName('Ёжик—Костяной!') !== 'ежик костяной') throw new Error('archive name normalization probe failed');
   if (denylistMatches('Узкая меховая опушка', deny).length) throw new Error('archive denylist matched opushka as firearm');
-  if (!denylistMatches('Железный капкан', deny).some(hit => hit.dlId === 'dl_steel_trap')) throw new Error('archive denylist missed steel trap');
+  if (!denylistMatches('Фабричный капкан', deny).some(hit => hit.dlId === 'dl_steel_trap')) throw new Error('archive denylist missed steel trap');
+  if (denylistMatches('Железный капкан', deny).some(hit => hit.dlId === 'dl_steel_trap')) throw new Error('archive denylist matched early iron trap as factory steel trap');
   const entities = makeExistingEntities(domain);
   if (!entities.some(e => e.normalized === normalizeName('Костяной конёк'))) throw new Error('archive dedup probe target missing');
   if (variantTargetExists('crafts-tools-processes/materials_registry/materials.csv#missing', domain)) throw new Error('archive variant probe resolved missing target');
@@ -696,11 +692,11 @@ function selfTest(domain, deny) {
   const proposalRef = id => NEEDS_CHECK_BY_ID.get(id)?.current_target_ref || byId.get(id)?.game_base_ref;
   if (proposalRef('OMI00349') !== 'crafts-tools-processes/materials_registry/materials.csv#mt_cordage') throw new Error('woolen-cord clothing route must preserve stable crafts cordage target');
   if (proposalRef('OMI00054') !== 'crafts-tools-processes/craft_tools_gear/tools_gear.csv#tl_axe_carpenter') throw new Error('BIC tool handoff must preserve stable carpenter-axe handle component target');
-  for (const id of ['WTR0024', 'WTR0015', 'HRS0021', 'HNT0028', 'CRF0061']) {
+  for (const id of ['WTR0015', 'HRS0021', 'HNT0028', 'CRF0061', 'HNT0024', 'AGR0022', 'CRF0057']) {
     const queued = NEEDS_CHECK_BY_ID.get(id);
-    if (queued ? queued.current_result !== 'new/rejected' : byId.get(id)?.disposition !== 'rejected') throw new Error(`D38 negative probe failed: ${id} rejection proposal is not preserved`);
-    if (!queued && byId.get(id)?.anachronism_result !== 'rejected') throw new Error(`D38 result probe failed: ${id} is ${byId.get(id)?.anachronism_result}`);
+    if (!queued || queued.current_result !== 'new/include' || byId.get(id)?.disposition !== 'needs_check') throw new Error(`D38 risk-only probe failed: ${id} must remain queued with its include proposal`);
   }
+  if (byId.get('WTR0024')?.disposition !== 'rejected' || byId.get('WTR0024')?.anachronism_result !== 'rejected') throw new Error('WTR0024 positive late-period rejection must remain explicit');
   for (const id of ['OMI00037', 'OMI00149']) {
     if (byId.get(id)?.disposition !== 'routed' || !byId.get(id)?.target_ref) throw new Error(`nature-owner route probe failed: ${id}`);
   }

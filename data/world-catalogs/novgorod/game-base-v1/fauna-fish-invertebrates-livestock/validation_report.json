@@ -2,6 +2,7 @@
  "generated_by": "scripts/build.py",
  "status": "candidate",
  "counts": {
+  "needs_check.csv": 3,
   "fish.csv": 38,
   "fishing_methods.csv": 13,
   "water_body_pf_crosswalk.csv": 52,
@@ -18,8 +19,8 @@
   "household_type_crosswalk.csv": 58,
   "place_type_livestock.csv": 113,
   "rpgr_pf_crosswalk.csv": 145,
-  "anachronism_denylist_fauna.csv": 11,
-  "sources.csv": 68
+  "anachronism_denylist_fauna.csv": 9,
+  "sources.csv": 66
  },
  "checks": {
   "temporal_cues_mapped": true,

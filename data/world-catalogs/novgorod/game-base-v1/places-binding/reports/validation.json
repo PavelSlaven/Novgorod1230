@@ -7472,13 +7472,13 @@
         "stable_code_missing": 59,
         "parent_missing": 59
       },
-      "registry_rows": 989
+      "registry_rows": 990
     },
     {
       "domain": "category_registry",
       "name": "pool_category_references_resolve (external)",
       "pass": false,
-      "failures": 1806,
+      "failures": 1810,
       "sample": [
         "x",
         "x",
@@ -8493,12 +8493,12 @@
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv": 56,
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv": 42,
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
-        "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
+        "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 201,
         "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31,
         "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 50,
         "data/world-catalogs/novgorod/game-base-v1/resource-catalog/material_resource_families.csv": 29,
         "data/world-catalogs/novgorod/game-base-v1/resource-catalog/resource_families.csv": 35,
-        "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv": 915
+        "data/world-catalogs/novgorod/game-base-v1/resource-catalog/species_resource_families.csv": 916
       }
     },
     {

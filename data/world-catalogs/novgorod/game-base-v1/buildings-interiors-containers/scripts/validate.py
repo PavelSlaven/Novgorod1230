@@ -465,9 +465,9 @@ if "--self-test" in sys.argv:
     assert all(archive_decisions[item]["semantic_result"] == "routed" for item in ("OMI02219", "OMI02220", "OMI02221"))
     assert archive_decisions["OMI02245"]["semantic_result"] == "needs_check"
     assert not ({"OMI02219", "OMI02220", "OMI02221", "OMI02245"} & archive_entities)
-    assert archive_decisions["CRF0057"]["semantic_result"] == "rejected"
-    assert archive_decisions["CRF0057"]["guard_result"] == "reject:d38_research_only"
-    assert next(r for r in archive_inclusions.records() if r["archive_ref"].endswith(":CRF0057"))["anachronism_result"] == "rejected"
+    assert archive_decisions["CRF0057"]["semantic_result"] == "needs_check"
+    assert archive_decisions["CRF0057"]["match_type"] == "needs_check"
+    assert archive_decisions["CRF0057"]["guard_result"] == "needs_check"
     assert archive_decisions["MSC0045"]["semantic_result"] == "needs_check"
     assert archive_decisions["MSC0045"]["target_ref"] == "interiors/scenes.csv#sc_scn053"
     assert archive_decisions["OMI01605"]["game_base_ref"] == "buildings-interiors-containers/containers/container_forms.csv#ct_box_wooden_small"

@@ -104,11 +104,13 @@ const milFortM = {}; for (const s of mil.security) for (const r of s.source_refs
 const oos = kindsDoc.out_of_scope;
 const cw = [];
 for (const r of master) {
-  const target = mapM[r.item_id] ? { t: 'wp', v: mapM[r.item_id] } : milFortM[r.item_id] ? { t: 'military_security', v: milFortM[r.item_id] } : denyM[r.item_id] ? { t: 'denylist', v: [denyM[r.item_id]] } : oos.master[r.item_id] ? { t: 'out_of_scope', v: [oos.master[r.item_id]] } : { t: 'UNMAPPED', v: [] };
+  const pending = archiveManifest.records.some(x => x.derivation === r.item_id && x.decision === 'needs_check');
+  const target = mapM[r.item_id] ? { t: 'wp', v: mapM[r.item_id] } : milFortM[r.item_id] ? { t: 'military_security', v: milFortM[r.item_id] } : denyM[r.item_id] ? { t: 'denylist', v: [denyM[r.item_id]] } : oos.master[r.item_id] ? { t: 'out_of_scope', v: [oos.master[r.item_id]] } : pending ? { t: 'needs_check', v: [] } : { t: 'UNMAPPED', v: [] };
   cw.push({ source_kind: 'master_material_culture', source_id: r.item_id, source_name_ru: r.name_ru, source_category: r.category + '/' + r.subcategory, source_confidence: r.historical_confidence, period: r.period_from + '–' + r.period_to, mapping: target.t, target: target.v });
 }
 for (const r of costume.filter(r => r.category === 'armor_and_weapons' || ['AC010', 'HW015'].includes(r.item_id))) {
-  const target = mapC[r.item_id] ? { t: 'wp', v: mapC[r.item_id] } : oos.costume[r.item_id] ? { t: 'out_of_scope', v: [oos.costume[r.item_id]] } : { t: 'UNMAPPED', v: [] };
+  const pending = archiveManifest.records.some(x => x.derivation === r.item_id && x.decision === 'needs_check');
+  const target = mapC[r.item_id] ? { t: 'wp', v: mapC[r.item_id] } : oos.costume[r.item_id] ? { t: 'out_of_scope', v: [oos.costume[r.item_id]] } : pending ? { t: 'needs_check', v: [] } : { t: 'UNMAPPED', v: [] };
   cw.push({ source_kind: 'costume_catalog', source_id: r.item_id, source_name_ru: r.name_ru, source_category: r.category + '/' + r.subcategory, source_confidence: r.historical_confidence, period: '', mapping: target.t, target: target.v });
 }
 
@@ -133,14 +135,14 @@ const archiveInclusionRows = archiveManifest.records.map(r => {
     seenArchiveNames.set(normalizedName, r.derivation);
   }
   const targetId = r.game_base_ref.match(/#([^#]+)$/)?.[1] || '';
-  const dedupResult = r.decision === 'variant' ? `variant:${targetId}` : r.decision === 'entity' ? `entity:${targetId}` : r.decision === 'routed' ? `routed:${r.target_group}` : duplicateKind ? `duplicate:${duplicateKind}` : duplicateArchive ? `duplicate:archive:${duplicateArchive}` : 'unique';
+  const dedupResult = r.decision === 'needs_check' ? 'needs_check' : r.decision === 'variant' ? `variant:${targetId}` : r.decision === 'entity' ? `entity:${targetId}` : r.decision === 'routed' ? `routed:${r.target_group}` : duplicateKind ? `duplicate:${duplicateKind}` : duplicateArchive ? `duplicate:archive:${duplicateArchive}` : 'unique';
   return {
     archive_ref: r.archive_ref, archive_name: r.archive_name, selected_action: archiveManifest.selected_action,
     match_type: r.match_type, game_base_ref: r.game_base_ref,
     target_group: r.target_group || '', target_ref: r.target_ref || '',
     basis: r.basis, basis_note: r.basis_note || '', derivation: r.derivation, confidence: r.confidence, period: r.period, region: r.region,
     generation_policy: r.generation_policy || '', generation_guard_id: r.guard_id || '', anachronism_risk: r.anachronism_risk || '',
-    guard_result: guard ? `${r.decision === 'entity' ? 'restricted' : 'rejected'}:denylist:${guard.id}` : ownerMismatch ? 'rejected:owner_mismatch' : 'passed', dedup_result: dedupResult,
+    guard_result: r.decision === 'needs_check' ? 'needs_check' : guard ? `${r.decision === 'entity' ? 'restricted' : 'rejected'}:denylist:${guard.id}` : ownerMismatch ? 'rejected:owner_mismatch' : 'passed', dedup_result: dedupResult,
     reason: guard && r.decision !== 'entity' ? `${guard.term_ru}: ${guard.reason}` : r.reason, decision: r.decision
   };
 });

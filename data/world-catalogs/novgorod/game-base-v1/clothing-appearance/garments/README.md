@@ -11,7 +11,7 @@
 - `equipment_slots.csv` has 32 slots. It records `in_runtime_code` and whether the category is registered in v17.
 - `wear_states.csv` has 9 states: new, serviceable, worn, patched, dirty, torn, wet, rusted, broken. Each is tied to a material class. Only `serviceable` exists in v17 today.
 - `denylist.csv` has 24 patterns: the 20 costume anti-patterns plus 4 anachronisms (картофель, петлицы, трикотаж, анилин). `check.py` applies them.
-- `materials_colors.csv` is the costume palette (24 rows) with dye evidence attached.
+- `materials_colors.csv` is the costume palette (24 rows) with dye evidence attached, plus one local material row `imported_cotton_cloth` (imported cotton cloth: basis analogy, confidence C, rare, wealthy layers; book:622242 §1778, book:616519 §409). The `basis` column is filled only for local rows.
 
 ## Method (all in `scripts/build.py`)
 1. Each costume subcategory is mapped to a disposition, slot, universal category and usage context through the `SUB` table.

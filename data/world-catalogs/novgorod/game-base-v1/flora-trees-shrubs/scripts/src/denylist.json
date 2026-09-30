@@ -22,6 +22,6 @@
     {"lat": "Taxus baccata", "name_ru": "тис", "keywords_ru": ["тис "], "kind": "out_of_range", "reason": "Колчин: привозная древесина (3 изделия)", "refs": ["src:src_kolchin_1968"], "confidence": "B", "wood_import": true},
     {"lat": "Castanea sativa", "name_ru": "каштан съедобный", "keywords_ru": ["каштан"], "kind": "out_of_range", "reason": "Колчин: привозная древесина (2 изделия)", "refs": ["src:src_kolchin_1968"], "confidence": "B", "wood_import": true},
     {"lat": "Fagus", "name_ru": "бук", "keywords_ru": ["бук "], "kind": "out_of_range", "reason": "Колчин: привозная древесина (1 изделие)", "refs": ["src:src_kolchin_1968"], "confidence": "B", "wood_import": true},
-    {"lat": "Juglans regia", "name_ru": "орех грецкий", "keywords_ru": ["грецк"], "kind": "out_of_range", "reason": "Колчин: привозная древесина (1 изделие)", "refs": ["src:src_kolchin_1968"], "confidence": "B", "wood_import": true}
+    {"lat": "Juglans regia", "name_ru": "орех грецкий", "keywords_ru": ["орех грецкий", "ореховое дерево"], "kind": "out_of_range", "reason": "Колчин: привозная древесина (1 изделие). Запрещено только живое дерево в Новгородской земле; скорлупа и ядро — привозная еда (food-drink fd_walnut_imported), не запрещены.", "refs": ["src:src_kolchin_1968"], "confidence": "B", "wood_import": true}
   ]
 }

@@ -31,6 +31,19 @@ def fail(msg):
     fails.append(msg)
 
 
+def variant_disposition_errors(dispositions, garments):
+    garment_ids = {row['gm_id'] for row in garments}
+    errors = []
+    for row in dispositions:
+        if row.get('disposition') != 'variant':
+            continue
+        target = row.get('target', '')
+        target_id = target.rsplit('#', 1)[-1]
+        if not target.startswith('garments/garments.csv#') or target_id not in garment_ids:
+            errors.append(f"{row.get('source_item_id', '<missing>')}: garment variant target does not resolve: {target}")
+    return errors
+
+
 def expected_basis(evidence, confidence, combination=False):
     if combination:
         return 'analogy'
@@ -306,10 +319,12 @@ def main():
             fail(f'{g["gm_id"]}: confidence/source_refs missing')
         if g['status'] != 'candidate':
             fail(f'{g["gm_id"]}: status must be candidate')
-    moved = {r['source_item_id'] for r in disp if r['target'].startswith('garments/')}
+    moved = {r['source_item_id'] for r in disp if r['target'].startswith('garments/') and r['disposition'] != 'variant'}
     have = {g['source_item_id'] for g in garments + comps if g['source_item_id']}
     if moved != have:
         fail(f'disposition/garments mismatch: {sorted(moved ^ have)}')
+    for error in variant_disposition_errors(disp, garments):
+        fail(error)
     adorn_moved = {r['source_item_id'] for r in disp if r['disposition'] == 'adornment'}
     adorn_have = {a['source_item_id'] for a in adorn if a['source_item_id']}
     if adorn_moved != adorn_have:

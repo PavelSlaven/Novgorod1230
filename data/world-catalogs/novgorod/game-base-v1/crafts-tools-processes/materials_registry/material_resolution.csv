@@ -1390,7 +1390,7 @@ items-household-personal/items/personal.csv,it_ps_weight_bag,material,leather;li
 items-household-personal/items/personal.csv,it_ps_pectoral_cross,material,copper_alloy;stone;wood;silver;bone_or_antler,mt_nonferrous_generic;mt_fieldstone;mt_wood_generic;mt_silver;mt_bone;mt_antler,,,
 items-household-personal/items/personal.csv,it_ps_encolpion,material,copper_alloy;silver,mt_nonferrous_generic;mt_silver,,,
 items-household-personal/items/personal.csv,it_ps_stone_icon,material,stone,mt_fieldstone,,,
-items-household-personal/items/personal.csv,it_ps_zmeevik,material,copper_alloy;stone,mt_nonferrous_generic;mt_fieldstone,,,
+items-household-personal/items/personal.csv,it_ps_zmeevik,material,copper_alloy,mt_nonferrous_generic,,,
 items-household-personal/items/personal.csv,it_ps_home_icon,material,wood;gesso;pigment,mt_wood_generic;mt_gesso;mt_ochre;mt_carbon_black,,,
 items-household-personal/items/personal.csv,it_ps_hand_bell,material,copper_alloy,mt_nonferrous_generic,,,
 items-household-personal/items/personal.csv,it_ps_chess_rook,material,bone_or_antler;wood,mt_bone;mt_antler;mt_wood_generic,,,

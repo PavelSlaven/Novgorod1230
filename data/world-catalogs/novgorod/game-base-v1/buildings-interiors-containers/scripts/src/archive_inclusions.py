@@ -301,7 +301,7 @@ def build_ledger(group, read_csv, matcult_dir=None):
 
 def validate_ledger(ledger, repo, matcult_dir, read_csv):
     errors = []
-    terminal_decisions = {"distinct": "entity", "variant": "variant", "routed": "routed", "reference": "ref", "rejected": "reject", "duplicate_rejected": "rejected"}
+    terminal_decisions = {"distinct": "entity", "variant": "variant", "routed": "routed", "reference": "ref", "rejected": "reject", "duplicate_rejected": "rejected", "needs_check": "needs_check"}
     authored = records()
     authored_by_ref = {item.get("archive_ref", ""): item for item in authored}
     authored_ids = [item.get("archive_ref", "").rsplit(":", 1)[-1] for item in authored]

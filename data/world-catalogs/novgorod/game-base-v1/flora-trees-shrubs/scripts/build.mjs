@@ -124,7 +124,8 @@ for (const t of taxa) {
 const presByTaxon = new Map();
 for (const p of presence) if (p.season === 'summer') { (presByTaxon.get(p.fl_id) || presByTaxon.set(p.fl_id, []).get(p.fl_id)).push(`${p.pf_id}:${p.weight}`); }
 const taxaRows = taxa.map((t) => {
-  const refs = new Set([...(t.name_folk_refs || []), ...(t.wk_refs || []), W(t)]);
+  const srcIds = new Set(sources.map((x) => x.src_id));
+  const refs = new Set([...(t.name_folk_refs || []), ...(t.wk_refs || []), ...(srcIds.has(W(t).slice(4)) ? [W(t)] : [])]); // wiki ref only if that source is registered
   for (const u of t.uses) refsOfUse(u).forEach((r) => refs.add(r));
   for (const h of t.hazards) (h.refs || []).forEach((r) => refs.add(r));
   if (t.kolchin_name) refs.add('src:src_kolchin_1968');

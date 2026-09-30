@@ -70,6 +70,20 @@
    "url": "",
    "trust": "B (regional flora; URL not verified in this pass)",
    "used_for": "coarse fruiting/greens phenology windows used only by check.py"
+  },
+  {
+   "id": "ext:zasurtsev_novgorod_otkrytyj",
+   "title": "Засурцев П.И. Новгород, открытый археологами (book:709382), гл. «Дружинники на Холопьей», §474 и §481",
+   "url": "books/index.sqlite book:709382",
+   "trust": "B (scholarly archaeological narrative)",
+   "used_for": "walnut shells found on a Novgorod estate as an imported item; the estate finds of the chapter are dated to layers of the late 10th - early 11th c. (tiers 26-25, section 474)"
+  },
+  {
+   "id": "ext:yanin2008_rybina_intl",
+   "title": "Рыбина Е.А. Международные связи Новгорода, в кн.: Янин В.Л. Очерки истории средневекового Новгорода. 2008 (book:220871), §1044-1045",
+   "url": "books/index.sqlite book:220871",
+   "trust": "B (scholarly synthesis of archaeological imports)",
+   "used_for": "walnuts among goods reaching Novgorod by the Dnieper route; trade grows from the mid-10th c., rises in the 12th c., and after the Mongol invasion such imports are practically absent"
   }
  ],
  "taxa": {
@@ -996,7 +1010,40 @@
    "refs": [
     "master-food:SRC040"
    ]
-  }
+  },
+   "Prunus padus": {
+    "kind": "flora",
+    "rank": "species",
+    "name_ru": "черёмуха обыкновенная",
+    "ids": [
+     "ADD_bird_cherry"
+    ],
+    "refs": [
+     "game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv:fl_ts_prunus_padus"
+    ]
+   },
+   "Viburnum opulus": {
+    "kind": "flora",
+    "rank": "species",
+    "name_ru": "калина обыкновенная",
+    "ids": [
+     "ADD_viburnum"
+    ],
+    "refs": [
+     "game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv:fl_ts_viburnum_opulus"
+    ]
+   },
+   "Juglans regia": {
+    "kind": "flora",
+    "rank": "species",
+    "name_ru": "орех грецкий",
+    "ids": [
+     "ADD_walnut"
+    ],
+    "refs": [
+     "game-base-v1/flora-trees-shrubs/flora/wood_use_kolchin1968.csv:грецкий орех"
+    ]
+   }
  },
  "overrides": {
   "ING0003": {
@@ -1343,6 +1390,66 @@
     "ext:stepanova2014"
    ],
    "notes": "Лебеда как голодная примесь засвидетельствована для XVI в.; для 1230 г. — аналогия, НПЛ её не называет."
+  },
+  {
+   "key": "ADD_bird_cherry",
+   "slug": "bird_cherry",
+   "name_ru": "Черёмуха",
+   "name_en": "bird cherry",
+   "ingredient_type": "raw_product",
+   "food_category": "fruit",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "fruit_summer",
+   "rarity": "seasonal",
+   "relative_cost": "very_low",
+   "confidence": "C",
+   "refs": [
+    "game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv:fl_ts_prunus_padus"
+   ],
+   "notes": "Местный вид подтверждён в flora; пищевой кандидат по logical_necessity. Само местное присутствие не доказывает регулярное пищевое употребление; confidence C."
+  },
+  {
+   "key": "ADD_viburnum",
+   "slug": "viburnum_berry",
+   "name_ru": "Калина",
+   "name_en": "guelder rose berries",
+   "ingredient_type": "raw_product",
+   "food_category": "fruit",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "berry_autumn",
+   "rarity": "seasonal",
+   "relative_cost": "very_low",
+   "confidence": "C",
+   "refs": [
+    "game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv:fl_ts_viburnum_opulus"
+   ],
+   "notes": "Местный вид подтверждён в flora; пищевой кандидат по logical_necessity. Современная съедобность не доказывает регулярное пищевое употребление около 1230; confidence C."
+  },
+  {
+   "key": "ADD_walnut",
+   "slug": "walnut_imported",
+   "name_ru": "Грецкий орех (привозной)",
+   "name_en": "walnut (imported)",
+   "ingredient_type": "raw_product",
+   "food_category": "nut_seed",
+   "fasting_class": "plant",
+   "origin": "import",
+   "season_profile": "stored_year_round",
+   "rarity": "rare",
+   "relative_cost": "high",
+   "social_scope": [
+    "merchant",
+    "boyar"
+   ],
+   "confidence": "B",
+   "refs": [
+    "ext:zasurtsev_novgorod_otkrytyj",
+    "ext:yanin2008_rybina_intl",
+    "game-base-v1/flora-trees-shrubs/flora/wood_use_kolchin1968.csv:грецкий орех"
+   ],
+   "notes": "Привозной, редкий, для зажиточных. Скорлупа найдена на новгородской усадьбе, слои которой датируются концом X — началом XI в. (Засурцев, §474, §481); импорт по днепровскому пути идёт с середины X в., растёт в XII в., а после нашествия днепровский импорт практически не встречается (Рыбина в Янин 2008, §1044–1045), то есть 1230 г. приходится до спада. Колчин: одно изделие из привозной ореховой древесины. Дерево в Новгородской земле не растёт; запись описывает только привозной орех."
   }
  ],
  "phenology_windows": {

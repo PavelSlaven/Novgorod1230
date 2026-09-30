@@ -45,7 +45,7 @@ Each row in `garments.csv` is a Novgorod instance. It has `region_id=region_novg
 | garments/equipment_slots.csv | 32 |
 | garments/wear_states.csv | 9 |
 | garments/denylist.csv | 24 |
-| garments/materials_colors.csv | 24 |
+| garments/materials_colors.csv | 25 |
 | outfits_by_role/outfits.csv | 111 |
 | outfits_by_role/runtime_clothing_profiles.json | 14 profiles / 75 variants |
 | outfits_by_role/role_clothing_map.csv | 71 |

@@ -113,10 +113,10 @@ OMI00211,routed,,transport-health-recreation,bic.md:9,round1,
 CON0019,entity,,buildings-interiors-containers,bic.md:11,round1,
 STA0045,variant,n1230:material_item:con0019,buildings-interiors-containers,bic.md:11,round1,
 WTR0024,reject,,,crafts.md:3,round1,
-WTR0015,reject,,,crafts.md:3,round1,
-HRS0021,reject,,,crafts.md:3,round1,
-HNT0028,reject,,,crafts.md:3,round1,
-CRF0061,reject,,,crafts.md:3,round1,
+WTR0015,reject,,,crafts.md:3,round1,d-rated-audit-PLAN-OK-d-rated-audit-2
+HRS0021,reject,,,crafts.md:3,round1,d-rated-audit-PLAN-OK-d-rated-audit-2
+HNT0028,reject,,,crafts.md:3,round1,d-rated-audit-PLAN-OK-d-rated-audit-2
+CRF0061,reject,,,crafts.md:3,round1,d-rated-audit-PLAN-OK-d-rated-audit-2
 CRF0099,variant,,,crafts.md:3,round1,
 LTR0003,routed,,transport-health-recreation,crafts.md:4,round1,
 LTR0004,routed,trv_033,transport-health-recreation,round2-crafts.md:50,round2,
@@ -359,7 +359,7 @@ MIL0014,routed,SCN045,,round2-bicw.md:18,round2,A-imp-crafts-03: receiving BIC e
 MIL0028,routed,SCN045,,round2-bicw.md:18,round2,A-imp-crafts-03: receiving BIC entity/variant replaces scene-only route
 MIL0032,routed,SCN045,,round2-bicw.md:18,round2,A-imp-crafts-03: receiving BIC entity/variant replaces scene-only route
 MIL0026,variant,wp_sword_belt,items-weapons-armour,round2-bicw.md:25,round2,
-ARM0021,reject,,,round2-bicw.md:33,round2,
+ARM0021,reject,,,round2-bicw.md:33,round2,d-rated-audit-PLAN-OK-d-rated-audit-2
 ARM0024,reject,,,round2-bicw.md:33,round2,
 ARM0025,reject,,,round2-bicw.md:33,round2,
 ARM0030,reject,,,round2-bicw.md:33,round2,
@@ -431,8 +431,8 @@ GF012,reject,,,round2-bicw.md:26,round2,
 HW009,variant,,,round2-bicw.md:26,round2,
 FRN0045,variant,wp_sword,,round2-bicw.md:30,round2,
 HLM0006,reject,,,round2-bicw.md:33,round2,
-HLM0019,reject,,,round2-bicw.md:33,round2,
-ARM0029,reject,,,round2-bicw.md:33,round2,
+HLM0019,reject,,,round2-bicw.md:33,round2,d-rated-audit-PLAN-OK-d-rated-audit-2
+ARM0029,reject,,,round2-bicw.md:33,round2,d-rated-audit-PLAN-OK-d-rated-audit-2
 HLM0012,reject,,,round2-bicw.md:33,round2,
 FSH0021,routed,trv_026,transport-health-recreation,round2-crafts.md:6,round2,
 HNT0017,routed,trv_026,transport-health-recreation,round2-crafts.md:6,round2,
@@ -627,7 +627,7 @@ AGR0005,routed,pf_orchard_garden,places-binding,round2-bicw.md:18,round2,
 OMI02143,routed,,items-household-personal,answers.md:125,amend,
 OMI02169,routed,,items-household-personal,answers.md:125,amend,
 OMI01550,variant,ct_bale_wrapped,,round2-bicw.md:5,round2,
-CRF0057,reject,,,round2-bicw.md:4,round2,
+CRF0057,reject,,,round2-bicw.md:4,round2,d-rated-audit-PLAN-OK-d-rated-audit-2
 LTR0006,routed,,transport-health-recreation,crafts.md:4,round1,
 OMI02206,variant,omi00202,,bic.md:4,round1,
 MIL0006,variant,bp_hearth_open,buildings-interiors-containers,answers.md:A-imp-crafts-03,amend,

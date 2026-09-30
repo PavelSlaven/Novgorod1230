@@ -45,9 +45,10 @@ test('hunting and fishing items resolve to crafts owners or remain with item-spe
     assert.equal(row?.record_type, 'variant', `${id} should remain a variant`);
     assert.match(row?.game_base_ref || '', new RegExp(`#${target}$`));
   }
-  for (const id of ['HNT0024', 'HNT0028']) {
-    assert.ok(!byId.has(id), `${id} is a D38 rejection, not an ownership question`);
-    assert.equal(ledgerById.get(id)?.disposition, 'rejected');
+  for (const id of ['CRF0057', 'CRF0061', 'AGR0022', 'HNT0024', 'HNT0028', 'HRS0021', 'WTR0015']) {
+    assert.ok(byId.has(id), `${id} must remain queued pending item-specific source review`);
+    assert.equal(ledgerById.get(id)?.disposition, 'needs_check');
+    assert.match(byId.get(id)?.note || '', /source|источник|свидетельств/i, `${id} needs a concrete source request`);
   }
   assert.equal(byId.get('STA0003')?.current_result, 'variant/include');
   assert.match(byId.get('STA0003')?.note || '', /tl_net_seine.*tl_net_set.*tl_bird_net/u);

@@ -463,6 +463,7 @@ for (did, pats, reason, limit, src, conf, scope) in denylist_data.DENY:
 
 # ---------------- write ----------------
 counts = {}
+counts["needs_check.csv"] = write_csv("needs_check.csv", ["check_id", "taxon_ru", "name_lat", "basis", "confidence", "reason", "source_request", "status"], denylist_data.CHECK_QUEUE)
 counts["fish.csv"] = write_csv("fish.csv", list(fish_rows[0].keys()), fish_rows, "\n")
 counts["fishing_methods.csv"] = write_csv("fishing_methods.csv", list(fm_rows[0].keys()), fm_rows)
 counts["water_body_pf_crosswalk.csv"] = write_csv("water_body_pf_crosswalk.csv", list(cw_rows[0].keys()), cw_rows)

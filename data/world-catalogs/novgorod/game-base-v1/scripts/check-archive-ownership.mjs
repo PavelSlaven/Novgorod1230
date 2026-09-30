@@ -232,6 +232,7 @@ function isEntityRow(file, headers, row, specs = ENTITY_SPEC_BY_FILE, ledgerFile
 }
 
 function isNewLedgerRow(row) {
+  if (Object.entries(row).some(([key, value]) => /^(?:record_type|disposition|type|match_type|semantic_result|inclusion_result|decision)$/i.test(key) && /^needs_check$/i.test(String(value).trim()))) return false;
   if (Object.values(row).some(value => /\b(?:rejected|reject|routed|variant|reference|ref|game_base_ref)\b/i.test(value))) {
     if (/\b(?:rejected|reject|routed|variant|reference|ref)\b/i.test(Object.entries(row).filter(([key]) => /disposition|decision|match_type|type|result|action/i.test(key)).map(([, value]) => value).join(' '))) return false;
   }

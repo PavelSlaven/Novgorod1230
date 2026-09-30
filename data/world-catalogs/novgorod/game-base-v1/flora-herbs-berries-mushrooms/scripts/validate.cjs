@@ -191,7 +191,8 @@ const denyRu = deny.map(d => new RegExp(d.pattern_ru, 'iu')), denyLat = deny.map
     dn_glycine_max: { pos: ['соя', 'соевое масло', 'каша из сои'], neg: ['стоя', 'настоящий'] },
     dn_acorus_calamus: { pos: ['аир', 'аир болотный', 'корень аира'], neg: ['заир', 'наираз'] },
     dn_tea: { pos: ['чай', 'чаю крепкого', 'чая', 'чаепитие'], neg: ['стоячая', 'жгучая', 'непахучая', 'иван-чай узколистный (кипрей)'] },
-    dn_rice_local: { pos: ['рис', 'каша из риса', 'рисовая'], neg: ['ирис', 'кипарис', 'нарисовал', 'рисовать', 'зарисовка'] },
+    dn_rice_local: { pos: ['местное выращивание риса', 'рисовая культура местная', 'рис на местной пашне', 'выращивание риса', 'Рис на местной пашне', 'сеют рис на поле', 'рисовое поле', 'рисовые поля у деревни'], neg: ['привозной рис', 'привезённый рис', 'привезён рис из-за моря', 'импортная каша из риса', 'ирис', 'кипарис', 'нарисовал', 'рисовать', 'зарисовка', 'выращивание ирисов', 'касатик болотный (Iris pseudacorus)', 'местный ирис', 'поле ирисов'] },
+    dn_cucurbita: { pos: ['тыква', 'кабачок', 'Cucurbita pepo'], neg: ['горлянка', 'бутылочная тыква'] },
     dn_beta_sugar: { pos: ['сахарная свёкла', 'сахарной свеклы'], neg: ['сахар и свёкла'] },
     dn_carrot_orange: { pos: ['оранжевая морковь', 'оранжевой моркови'], neg: ['оранжевый и морковь'] },
     dn_capsicum: { pos: ['стручковый перец', 'паприка'], neg: ['чёрный перец'] },
@@ -204,7 +205,7 @@ const denyRu = deny.map(d => new RegExp(d.pattern_ru, 'iu')), denyLat = deny.map
 }
 for (const r of all) {
   const text = [r.name_ru, r.name_lat, r.uses, r.perceptual_cues].join(' ');
-  deny.forEach((d, i) => { if (denyRu[i].test(r.name_ru) || r.name_lat.toLowerCase().startsWith(denyLat[i])) { if (!(r.allowed_1230 === 'no' && d.deny_kind === 'not_attested_1230')) fail(`${r.fl_id}: denylisted ${d.deny_id}`); } else if (denyRu[i].test(text) && d.deny_kind === 'anachronism') fail(`${r.fl_id}: anachronism term ${d.deny_id} in uses/cues`); });
+  deny.forEach((d, i) => { if (denyRu[i].test(r.name_ru) || r.name_lat.toLowerCase().startsWith(denyLat[i])) { if (!(r.allowed_1230 === 'no' && ['not_attested_1230', 'anachronism'].includes(d.deny_kind))) fail(`${r.fl_id}: denylisted ${d.deny_id}`); } else if (denyRu[i].test(text) && d.deny_kind === 'anachronism') fail(`${r.fl_id}: anachronism term ${d.deny_id} in uses/cues`); });
 }
 for (const r of cu.filter(r => !r.crop_kind.startsWith('weed'))) {
   if (r.allowed_1230 === 'no') { if (pres.some(p => p.fl_id === r.fl_id)) fail(`${r.fl_id}: disallowed crop has presence`); continue; }

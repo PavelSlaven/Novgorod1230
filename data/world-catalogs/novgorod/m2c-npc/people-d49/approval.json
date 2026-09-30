@@ -28,12 +28,6 @@
   "verdict": "APPROVE_WITH_LIMITS",
   "import_authorized": true,
   "runtime_activation_authorized": false,
-  "approved_commit": "f5746b1f46bd8851e99c6ba3738ccf9fe00260ba",
-  "approval_note": "Rows of the G4 v2 binding and of the wave v1 change in place under the same {id, version, revision}; valid only because the v17 pair is recreated fresh (no backward compatibility). Existing v17 pairs must be rebuilt.",
-  "resign_required": {
-    "reason": "candidate.json changed after the approval: not_created (the crossing guard) removed by owner decision D53, the guard review point and limit removed; approved_by/approved_on/verdict are the signature for the OLD candidate sha only and are NOT valid for this data until the reviewer re-approves",
-    "signed_candidate_sha256": "44651daa74557e171e3f9a5d7748acc1b41d6b0f4e4a8ad9f85dcb0eac20e417",
-    "new_candidate_sha256": "6d6e5c9ea3a876168600a47c1e9bd9c4889b6022b6e822435555f8bc488df83c",
-    "review_request": "data/world-catalogs/novgorod/m2c-npc/people-d49/reapproval-request.md"
-  }
+  "approved_commit": "740b7101a945e5e439389afc4e68acba514b23f3",
+  "approval_note": "Rows of the G4 v2 binding and of the wave v1 change in place under the same {id, version, revision}; valid only because the v17 pair is recreated fresh (no backward compatibility). Existing v17 pairs must be rebuilt. D53 re-approval 2026-09-30 (independent Opus pass; change authored by fleet ferry-guard, Claude Sonnet 5.5): candidate differs from the approved 44651daa… only by not_created → []; profiles byte-identical; promote --check reproduces capacity manifest 1e7afc22…."
 }

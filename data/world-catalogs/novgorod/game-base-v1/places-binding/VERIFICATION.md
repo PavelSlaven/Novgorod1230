@@ -1230,3 +1230,15 @@
 - reports/validation.json — approve_with_limits: сгенерирован, пересобран
 
 Вердикт группы: **approve_with_limits**.
+
+## Независимая проверка D53 (Claude Opus 5.5, 2026-09-30)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор (автор — исполнитель fleet ferry-guard, Claude Sonnet 5.5). Проверен диапазон `c3b6fc0d..8fc15870`.
+- **Основание:** решение владельца D53 — сторожа переправы на пристанях нет в источниках (в индексе книг «сторож брода/переправы/перевоза» — 0 попаданий); на `pf_ferry_landing` остаётся перевозчик; запись занятия остаётся (D38).
+- **Проверено:** перегенерация волны на пине 81d96576 совпала побайтно; из производных таблиц удалены только строки со сторожем, добавленных строк нет; `build_schedules.py --check` (161), `households check.py`, `occupations validate.py`, `check-people-composition --self-test` (17 PF, 7 групп, 41 проба) — PASS.
+- **Что:** из `people_composition_authoring.json` снята группа `pf_ferry_landing.crossing_guard` и зимние отсутствия сторожа (`pf_ferry_landing`, `pf_winter_ice_crossing`); у пристани осталась группа перевозчика min=max=1.
+- **Ограничение:** зимнее отсутствие перевозчика — только данные: создание при первом входе сезон не учитывает.
+- presence/people_composition_authoring.json — approve_with_limits: сторож снят, основание D53; зимнее отсутствие перевозчика runtime не исполняет
+- reports/validation.json — approve: сгенерирован, пересобран
+
+Вердикт группы: **approve_with_limits** (прежние ограничения группы в силе).

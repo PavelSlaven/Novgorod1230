@@ -2,16 +2,17 @@
   "schema": "rus.m2c_npc_wave_v17_import_approval.v1",
   "stage": "m2c_npc_wave_import",
   "request_id": "novgorod_m2c_npc_wave_v17_import_001",
-  "request_digest": "13bed293a32ae0ba700980ad7f7dcbbcd1fee504972deee3966325630495fc14",
+  "request_digest": "4ca7a2554aa202e2c85f1ffe5aa0ba4e899219ab6f21bb1bab8a3ab52c776175",
   "verdict": "APPROVE",
-  "attested_by": "claude-opus-5-5 — lead reviewer of the fleet; not the author (wave regeneration and request by executor people-data, Claude Sonnet 5.5)",
-  "independence_basis": "Independent Opus data approver and Contract Auditor pass (claude-opus-5-5, 2026-09-30, fleet people-data): regeneration from game-base pin c79852e7 byte-identical to commit 8268817f; only place_population_composition_rules (3 of 17 rows) and presence_rules (-3 rules, 5737) changed in content, the other 12 tables only in the pin; request_digest recomputed with two canonicalizations (JS and Python); assertWaveInputs PASS. The re-sign of approval.json (approval_sha256 325d2e34...) was prepared by the approver and checked again by the reviewer with the stage functions (digest match, assertWaveInputs PASS). The executor did not attest.",
+  "attested_by": "claude-opus-5-5 — lead reviewer of the fleet; not the author (wave regeneration and request by executor ferry-guard, Claude Sonnet 5.5)",
+  "independence_basis": "Independent Opus data approver and Contract Auditor pass (claude-opus-5-5, 2026-09-30, fleet ferry-guard): regeneration from game-base pin 81d96576 byte-identical to commit 898cb00d (14 datasets and manifest); content changed only in npc_relationship_materialization_rules (53 -> 46), speech_address_forms (98 -> 84), npc_schedule_routine_rules (167 -> 161), every removed row naming nov_occ_crossing_guard, and place_population_composition_rules (2 of 17 rows); the other 10 tables only in the pin; request_digest recomputed with two canonicalizations (JS and Python) after the approval.json re-sign (approval_sha256 218d4130...); assertWaveInputs and assertWaveAttestation PASS on the re-signed state. The executor did not attest.",
   "attested_on": "2026-09-30",
   "scope": "Fresh v17 bootstrap import of the m2c NPC wave v1 into the 14 world_base tables named in the request, insert-only, one transaction, activation none.",
   "limits": [
     "LW-084: subject_kind=environment presence rules (1236) are excluded from the wave until the DDL and code_driven §3A.1 carry them.",
     "LW-085: 9 ladoga_ringed_seal rules lost their Ladoga regional scope after #189 and reach the standard start; follow-up in game-base.",
     "Readers for composition, routines, speech and household tables are separate steps (request authority D-1/D-2).",
-    "pf_riverbank D49 lower bound: one fisher at first entry on every one of the 70 canonical riverbank places, including remote shoals (editorial game density, confidence C, owner decision D49)."
+    "pf_riverbank D49 lower bound: one fisher at first entry on every one of the 70 canonical riverbank places, including remote shoals (editorial game density, confidence C, owner decision D49).",
+    "D53: wave v1 rows changed in place under the same {id, version} (LW-119, LW-121); valid only for a freshly recreated v17 pair."
   ]
 }

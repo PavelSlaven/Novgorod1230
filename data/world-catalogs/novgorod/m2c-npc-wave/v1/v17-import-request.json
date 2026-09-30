@@ -14,7 +14,7 @@
     "manifest_sha256": "47396ee6ce902caa0b26041275fb231d3dc6a0d74716c88aacf8bf7bdaa4aca8",
     "manifest_status_in_repository": "draft",
     "approval_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json",
-    "approval_sha256": "9f082375c6994c1aa07fffd217b53bff458df72b8d82270785f5283d07509f3b",
+    "approval_sha256": "218d413005f801fc1e8a53253b4a37f46198a34e96c0da536cae7809006e5034",
     "source_commit": "81d965760627482f4173cabb6bc4d54d1959dacb",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "datasets": [
@@ -133,5 +133,5 @@
   "activation": "none",
   "authority": "data availability only: readers for composition/routines/speech/household tables are separate steps (D-1/D-2)",
   "independent_import_attestation": null,
-  "request_digest": "291d6967dbfcf78230d4953219cc63747c5438571251cfbb00bac492624695ab"
+  "request_digest": "4ca7a2554aa202e2c85f1ffe5aa0ba4e899219ab6f21bb1bab8a3ab52c776175"
 }

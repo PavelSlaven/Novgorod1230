@@ -14,7 +14,7 @@ target-нормативом `temporal_world_and_interruptible_activities.md`. О
 
 `world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.
 
-Cross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.
+Cross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. Узкое правило выбора runtime-профиля, который записывает точную ссылку: если у одного `id` профиля несколько утверждённых версий, выбирается новейшая версия со `status = approved` (`deprecated`/`retired` не участвуют), а в состояние партии пишется точный `{id, version}`, поэтому новая версия не переписывает committed world; неоднозначность между разными `id` остаётся gap. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.
 
 ## 2. Canonical world authoring
 

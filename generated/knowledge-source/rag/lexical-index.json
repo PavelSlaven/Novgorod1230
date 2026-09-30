@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "e9a6a9771327fdf77019480ea366276375561b3fdf122c4229a4bed4b5d3f9e6",
+  "corpus_hash": "98fe9b33366a5c75feb4be5d70878ec80cc4f92e334480703c43ccc4ca21b73d",
   "chunk_count": 2904,
   "chunks": [
     {
@@ -19440,8 +19440,8 @@
       "section": "1. Граница хранилищ",
       "line_start": 13,
       "line_end": 18,
-      "text": "## spatial_v3_target_world_base_materialization_table_requirements.md — 1. Граница хранилищ\n## 1. Граница хранилищ\n\n`world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.\n\nCross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.",
-      "char_count": 751
+      "text": "## spatial_v3_target_world_base_materialization_table_requirements.md — 1. Граница хранилищ\n## 1. Граница хранилищ\n\n`world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.\n\nCross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. Узкое правило выбора runtime-профиля, который записывает точную ссылку: если у одного `id` профиля несколько утверждённых версий, выбирается новейшая версия со `status = approved` (`deprecated`/`retired` не участвуют), а в состояние партии пишется точный `{id, version}`, поэтому новая версия не переписывает committed world; неоднозначность между разными `id` остаётся gap. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.",
+      "char_count": 1126
     },
     {
       "id": "spatial_v3_target_world_base_materialization_table_requirements.md:2. Canonical world authoring:0",

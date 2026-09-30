@@ -70,76 +70,139 @@ export function compileGeneratedNpcBindings({ party_id: partyId, run_id: runId,
     || activation?.status !== 'active' || !text(equipmentDigest) || !actorProfile)) gap('NPC_COMPOSITION_RUNTIME_PIN_GAP');
   const npcInputs = [];
   const usedRows = new Map();
+  const ctx = { closure, scene, composition, runtimeRows, regionalRows, world, worldDigest, actorProfile,
+    activation, approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates,
+    applicable: (profile) => applicable(profile, closure) };
   for (let ordinal = 0; ordinal < count; ordinal += 1) {
     const selected = select(profiles, `npc_profile:${ordinal}`, (entry) => entry.row.id).row;
-    const payload = selected.payload;
-    if (!Array.isArray(payload.runtime_profile_refs) || !payload.runtime_profile_refs.length
-      || !Array.isArray(payload.regional_context_refs) || !payload.regional_context_refs.length) gap('NPC_COMPOSITION_DEPENDENCY_GAP');
-    const shared = new Map(payload.runtime_profile_refs.map((ref) => {
-      const row = resolve(runtimeRows, ref);
-      usedRows.set(key(row), row);
-      return [key(row), row];
-    }));
-    const body = resolve(shared, payload.body_profile_ref, 'body').payload;
-    const activity = resolve(shared, payload.activity_profile_ref, 'activity').payload;
-    const routine = resolve(shared, payload.routine_profile_ref, 'routine').payload;
-    const clothing = resolve(shared, payload.clothing_profile_ref, 'clothing').payload;
-    const regions = payload.regional_context_refs.map((ref) => resolve(regionalRows, ref))
-      .filter((row) => applicable(row.payload, closure))
-      .map((row) => ({ row, weight: row.payload.gameplay_weight }));
-    if (!regions.length) gap('NPC_COMPOSITION_REGIONAL_CONTEXT_GAP');
-    validateWeights(regions);
-    const region = select(regions, `npc_regional_context:${ordinal}`, (entry) => entry.row.id).row;
-    const actorSlot = `${scene.site_id}:npc:${ordinal}`;
-    const tools = (payload.initial_equipment_templates ?? []).map((candidate) => ({ ...structuredClone(candidate),
-      equipment_candidate_id: `${actorSlot}:${candidate.equipment_candidate_id}`,
-      target_actor_slot_ref: actorSlot, owner_ref: actorSlot, holder_ref: actorSlot,
-      controller_ref: actorSlot, instance_key: `${actorSlot}:${candidate.equipment_candidate_id}` }));
-    if (!text(selected.role_ref) || !text(selected.occupation_ref)
-      || activity.status !== 'approved' || clothing.status !== 'approved'
-      || !text(activity.record_id)) gap('NPC_COMPOSITION_RUNTIME_PROFILE_GAP');
-    const position = positionResult.positions[ordinal];
-    const actorSeed = deriveSeed({ parent_seed_digest: seed.digest, actor_slot_ref: actorSlot, domain: 'appearance' });
-    const temporal = [...approvedBundle.temporal_records];
-    const existing = temporal.filter((record) => record.record_id === activity.record_id);
-    if (existing.length > 1 || (existing.length === 1 && canonicalDigest(existing[0]) !== canonicalDigest(activity))) gap('NPC_COMPOSITION_ACTIVITY_CONFLICT');
-    if (!existing.length) temporal.push(activity);
-    npcInputs.push({ position_id: position.id, environment,
-      random: createRandomSource({ seed: actorSeed.uint32 }), routine_profile: routine,
-      approved_bundle: { ...approvedBundle, temporal_records: temporal,
-        clothing_profiles: [clothing], regional_context_profiles: [region.payload] },
-      binding: { schema: 'rus.approved_procedural_npc_binding.v1', status: 'approved',
-        source_binding: { world_revision_id: world,
-          g4_ref: { id: closure.g4_ref.id, version: closure.g4_ref.version },
-          npc_composition_ref: { id: composition.id, version: composition.version },
-          npc_binding_ref: { id: selected.id, version: selected.version },
-          regional_context_ref: { id: region.id, version: region.version },
-          ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) },
-        actor_slot_ref: actorSlot, ordinal, role_ref: selected.role_ref, occupation_ref: selected.occupation_ref,
-        profile_level: payload.profile_level, actor_profile_rule_ref: payload.actor_profile_rule_ref,
-        demographic_profile_ref: payload.demographic_profile_ref, appearance_profile_ref: payload.appearance_profile_ref,
-        anchor_id: position.id, g5_node_id: scene.site_id, location_profile_ref: composition.id,
-        zone_ref: position.template_slot_key, activity_record_ref: activity.record_id,
-        observable_activity: structuredClone(payload.observable_activity), body_profile: body,
-        profile_candidate_set_digest: canonicalDigest(candidates), profile_record_digest: canonicalDigest(selected.payload),
-        world_revision_id: world, world_catalog_digest: worldDigest, parent_seed_digest: actorSeed.digest,
-        actor_base_attributes_runtime_profile: actorProfile, initial_equipment_candidates: tools,
-        equipment_activation: activation, activity_equipment_candidate_refs: tools.map((tool) => tool.equipment_candidate_id),
-        clothing_profile_ref: payload.clothing_profile_ref, regional_context_ref: { id: region.id, version: region.version },
-        g4_ref: { ...closure.g4_ref, world_revision_id: world },
-        ...(canonical && composition.payload.canonical_initial_snapshot_only === true
-          ? { canonical_source_generation_template_ref:
-            composition.payload.canonical_source_generation_template_ref } : {}),
-        ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } });
+    npcInputs.push(buildNpcInput(ctx, selected, ordinal, select));
   }
-  const rows = [...usedRows.values()];
-  return { npc_inputs: npcInputs, equipment_catalog: { activation, catalog_digest: equipmentDigest,
-    item_templates: rows.filter((row) => row.profile_kind === 'item_template').map((row) => row.payload),
-    item_inventory_profiles: rows.filter((row) => row.profile_kind === 'item_inventory').map((row) => row.payload),
-    item_visual_profiles: rows.filter((row) => row.profile_kind === 'item_visual').map((row) => row.payload) },
+  return { npc_inputs: npcInputs, equipment_catalog: equipmentCatalog(usedRows, activation, equipmentDigest),
   selection_trace: { algorithm_version: VERSION, rng_version: RNG_VERSION, seed_digest: seed.digest,
     count, choices, empty_context_rule: positionResult.empty_rule, equipment_catalog_digest: equipmentDigest ?? null,
     composition_ref: { id: composition.id, version: composition.version, canonical_digest: composition.canonical_digest } } };
+}
+
+const PEOPLE_VERSION = 'place_people_compile_v1';
+
+/**
+ * Bind people already decided for a canonical place (see decidePlacePeople) to its scene positions.
+ * The regional context applies when its applicability names this G4 without a canonical or template scope.
+ */
+export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, scene, closure, people,
+  approved_bundle: approvedBundle, environment, actor_base_attributes_runtime_profile: actorProfile,
+  equipment_activation: activation, equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest } = {}) {
+  const world = closure?.world_revision_id;
+  const canonical = closure?.canonical_g5_ref;
+  const compositionRef = closure?.composition_ref;
+  if (closure?.schema !== 'rus.place_people_binding_bundle.v1'
+    || ![partyId, runId, scene?.site_id, world, worldDigest, compositionRef?.id, compositionRef?.canonical_digest].every(text)
+    || scene.party_id !== partyId || !Array.isArray(scene.rows) || !Array.isArray(people) || !people.length
+    || !Number.isSafeInteger(compositionRef.version) || !text(canonical?.id)) gap('NPC_COMPOSITION_SCOPE_GAP');
+  const runtimeRows = approvedIndex(closure.runtime_profiles, world);
+  const regionalRows = approvedIndex(closure.regional_context_profiles, world);
+  const positionResult = approvedPositions(scene, closure.placement_policy);
+  if (people.length > positionResult.positions.length) gap('NPC_COMPOSITION_POSITION_CAPACITY_GAP');
+  if (!approvedBundle || environment?.schema !== 'rus.approved_initial_environment.v1'
+    || activation?.status !== 'active' || !text(equipmentDigest) || !actorProfile) gap('NPC_COMPOSITION_RUNTIME_PIN_GAP');
+  const seed = deriveSeed({ version: PEOPLE_VERSION, rng_version: RNG_VERSION, party_id: partyId, run_id: runId,
+    site_id: scene.site_id, world_revision_id: world, composition_id: compositionRef.id,
+    composition_version: compositionRef.version, composition_digest: compositionRef.canonical_digest });
+  const random = createRandomSource({ seed: seed.uint32 });
+  const choices = [];
+  const select = (entries, choiceKey, identity) => {
+    const draw = random.nextUint32();
+    const selected = weighted(entries, draw);
+    choices.push({ choice_key: choiceKey, rng_draw: draw, rng_counter: random.drawCount,
+      selected_id: identity(selected), candidate_set_digest: canonicalDigest(entries), selected_weight: selected.weight });
+    return selected;
+  };
+  const usedRows = new Map();
+  const g4 = closure.g4_ref;
+  const ctx = { closure: { ...closure, canonical_g5_ref: canonical }, scene, composition: { id: compositionRef.id,
+    version: compositionRef.version, payload: {} }, runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
+  approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows,
+  candidates: [...new Set(people.map((person) => key(person.profile_ref)))].sort(),
+  applicable: (profile) => Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
+    same(entry.g4_ref, g4) && entry.canonical_g5_ref == null && entry.generation_template_ref == null) };
+  const npcInputs = people.map((person, index) =>
+    buildNpcInput(ctx, resolve(runtimeRows, person.profile_ref, 'npc_binding'), index, select));
+  return { npc_inputs: npcInputs, equipment_catalog: equipmentCatalog(usedRows, activation, equipmentDigest),
+    selection_trace: { algorithm_version: PEOPLE_VERSION, rng_version: RNG_VERSION, seed_digest: seed.digest,
+      count: people.length, choices, equipment_catalog_digest: equipmentDigest ?? null, composition_ref: compositionRef } };
+}
+
+function equipmentCatalog(usedRows, activation, equipmentDigest) {
+  const rows = [...usedRows.values()];
+  return { activation, catalog_digest: equipmentDigest,
+    item_templates: rows.filter((row) => row.profile_kind === 'item_template').map((row) => row.payload),
+    item_inventory_profiles: rows.filter((row) => row.profile_kind === 'item_inventory').map((row) => row.payload),
+    item_visual_profiles: rows.filter((row) => row.profile_kind === 'item_visual').map((row) => row.payload) };
+}
+
+/** One approved NPC binding from an already chosen npc_binding row; `select` draws the regional context. */
+function buildNpcInput(ctx, selected, ordinal, select) {
+  const { closure, scene, composition, runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
+    approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates } = ctx;
+  const payload = selected.payload;
+  if (!Array.isArray(payload.runtime_profile_refs) || !payload.runtime_profile_refs.length
+    || !Array.isArray(payload.regional_context_refs) || !payload.regional_context_refs.length) gap('NPC_COMPOSITION_DEPENDENCY_GAP');
+  const shared = new Map(payload.runtime_profile_refs.map((ref) => {
+    const row = resolve(runtimeRows, ref);
+    usedRows.set(key(row), row);
+    return [key(row), row];
+  }));
+  const body = resolve(shared, payload.body_profile_ref, 'body').payload;
+  const activity = resolve(shared, payload.activity_profile_ref, 'activity').payload;
+  const routine = resolve(shared, payload.routine_profile_ref, 'routine').payload;
+  const clothing = resolve(shared, payload.clothing_profile_ref, 'clothing').payload;
+  const regions = payload.regional_context_refs.map((ref) => resolve(regionalRows, ref))
+    .filter((row) => ctx.applicable(row.payload))
+    .map((row) => ({ row, weight: row.payload.gameplay_weight }));
+  if (!regions.length) gap('NPC_COMPOSITION_REGIONAL_CONTEXT_GAP');
+  validateWeights(regions);
+  const region = select(regions, `npc_regional_context:${ordinal}`, (entry) => entry.row.id).row;
+  const actorSlot = `${scene.site_id}:npc:${ordinal}`;
+  const tools = (payload.initial_equipment_templates ?? []).map((candidate) => ({ ...structuredClone(candidate),
+    equipment_candidate_id: `${actorSlot}:${candidate.equipment_candidate_id}`,
+    target_actor_slot_ref: actorSlot, owner_ref: actorSlot, holder_ref: actorSlot,
+    controller_ref: actorSlot, instance_key: `${actorSlot}:${candidate.equipment_candidate_id}` }));
+  if (!text(selected.role_ref) || !text(selected.occupation_ref)
+    || activity.status !== 'approved' || clothing.status !== 'approved'
+    || !text(activity.record_id)) gap('NPC_COMPOSITION_RUNTIME_PROFILE_GAP');
+  const position = positionResult.positions[ordinal];
+  const actorSeed = deriveSeed({ parent_seed_digest: seed.digest, actor_slot_ref: actorSlot, domain: 'appearance' });
+  const temporal = [...approvedBundle.temporal_records];
+  const existing = temporal.filter((record) => record.record_id === activity.record_id);
+  if (existing.length > 1 || (existing.length === 1 && canonicalDigest(existing[0]) !== canonicalDigest(activity))) gap('NPC_COMPOSITION_ACTIVITY_CONFLICT');
+  if (!existing.length) temporal.push(activity);
+  return { position_id: position.id, environment,
+    random: createRandomSource({ seed: actorSeed.uint32 }), routine_profile: routine,
+    approved_bundle: { ...approvedBundle, temporal_records: temporal,
+      clothing_profiles: [clothing], regional_context_profiles: [region.payload] },
+    binding: { schema: 'rus.approved_procedural_npc_binding.v1', status: 'approved',
+      source_binding: { world_revision_id: world,
+        g4_ref: { id: closure.g4_ref.id, version: closure.g4_ref.version },
+        npc_composition_ref: { id: composition.id, version: composition.version },
+        npc_binding_ref: { id: selected.id, version: selected.version },
+        regional_context_ref: { id: region.id, version: region.version },
+        ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) },
+      actor_slot_ref: actorSlot, ordinal, role_ref: selected.role_ref, occupation_ref: selected.occupation_ref,
+      profile_level: payload.profile_level, actor_profile_rule_ref: payload.actor_profile_rule_ref,
+      demographic_profile_ref: payload.demographic_profile_ref, appearance_profile_ref: payload.appearance_profile_ref,
+      anchor_id: position.id, g5_node_id: scene.site_id, location_profile_ref: composition.id,
+      zone_ref: position.template_slot_key, activity_record_ref: activity.record_id,
+      observable_activity: structuredClone(payload.observable_activity), body_profile: body,
+      profile_candidate_set_digest: canonicalDigest(candidates), profile_record_digest: canonicalDigest(selected.payload),
+      world_revision_id: world, world_catalog_digest: worldDigest, parent_seed_digest: actorSeed.digest,
+      actor_base_attributes_runtime_profile: actorProfile, initial_equipment_candidates: tools,
+      equipment_activation: activation, activity_equipment_candidate_refs: tools.map((tool) => tool.equipment_candidate_id),
+      clothing_profile_ref: payload.clothing_profile_ref, regional_context_ref: { id: region.id, version: region.version },
+      g4_ref: { ...closure.g4_ref, world_revision_id: world },
+      ...(canonical && composition.payload.canonical_initial_snapshot_only === true
+        ? { canonical_source_generation_template_ref:
+          composition.payload.canonical_source_generation_template_ref } : {}),
+      ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } };
 }
 
 function approvedPositions(scene, policy) {

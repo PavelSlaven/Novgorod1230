@@ -55,7 +55,8 @@ import {
 import { isO1PresenceRecord, isPresenceRuleRecord } from './ordinary-materialization-foundation-internal.js';
 import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
-import { compileGeneratedNpcBindings } from './generated-npc-bindings.js';
+import { compileGeneratedNpcBindings, compilePlacePeopleBindings } from './generated-npc-bindings.js';
+import { decidePlacePeople } from './place-people-first-arrival.js';
 import { resolveProceduralFunctionalAllocations } from
   './procedural-functional-allocation.js';
 import {
@@ -73,7 +74,8 @@ import {
 export {
   ACTOR_BASE_ATTRIBUTE_KEYS, AUTHORED_MATERIALIZER_VERSION, canonicalCandidateDigest,
   canonicalDigest, canonicalRequestDigest, completeAuthoredItemMechanics,
-  compileApprovedNpcRuntimeBasis, compileGeneratedNpcBindings, compileProceduralScenePartyPackages,
+  compileApprovedNpcRuntimeBasis, compileGeneratedNpcBindings, compilePlacePeopleBindings, compileProceduralScenePartyPackages,
+  decidePlacePeople,
   compileProceduralSceneProfile, createOrdinaryAggregate, createOrdinaryCandidateKey,
   createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey,
   createOrdinaryResolutionRef, createPreparedGroupRef, createRandomSource, deriveSeed,

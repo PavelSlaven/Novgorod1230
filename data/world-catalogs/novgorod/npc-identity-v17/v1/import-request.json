@@ -10,7 +10,7 @@
     "created_by": "scripts/bootstrap-live-world-v17.mjs (fresh pair only)"
   },
   "approved_data": {
-    "source_commit": "74bad07ee71586e1f5cae71e0666907551353f07",
+    "source_commit": "c404e8773254355b9048df340eaa081f15962304",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "sources_in_repository": "draft/candidate; this stage sets status=approved only on the subset below",
     "sources": [
@@ -105,5 +105,5 @@
       "occupation_character_items": 423
     }
   },
-  "request_digest": "abb71452502c01f2e9f6be4c9130367983f1e888ed1888c4f9dac263b1c7e927"
+  "request_digest": "79145f1a107bf5a5c1454985451b9d46f74619d229d222835713025e387fcf7b"
 }

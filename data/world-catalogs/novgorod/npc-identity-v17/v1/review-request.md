@@ -1,7 +1,7 @@
 # NPC identity v17 import: review request
 
-Attest [import-request.json](import-request.json) (request digest `abb71452502c01f2e9f6be4c9130367983f1e888ed1888c4f9dac263b1c7e927`, sources at
-`74bad07ee71586e1f5cae71e0666907551353f07`) with an independent pass that is not the author (WR 21.1). The request is a candidate:
+Attest [import-request.json](import-request.json) (request digest `79145f1a107bf5a5c1454985451b9d46f74619d229d222835713025e387fcf7b`, sources at
+`c404e8773254355b9048df340eaa081f15962304`) with an independent pass that is not the author (WR 21.1). The request is a candidate:
 no attestation exists. The stage `npc_identity_import` of `scripts/bootstrap-live-world-v17.mjs` stops before COMMIT
 without `npc_identity_import.json` (schema `rus.npc_identity_v17_import_approval.v1`).
 

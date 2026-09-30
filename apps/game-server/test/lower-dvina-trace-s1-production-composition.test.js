@@ -278,6 +278,7 @@ test('S1 ambiguous initial authority reaches neither descriptor model nor writes
 
 test('S1 resolver models one open result, then replays current visible local ref', async () => {
   let modelCalls = 0;
+  let guardedCandidate = null;
   const envelope = s1Envelope();
   const pool = { query: async (sql) => {
     if (sql.includes('party_spatial_semantic_resolutions')) {
@@ -289,6 +290,7 @@ test('S1 resolver models one open result, then replays current visible local ref
     assert.fail(`unexpected S1 query: ${sql}`);
   } };
   const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
+    assertNeedsCheckAllowed: async ({ candidate }) => { guardedCandidate = candidate; },
     resolveSpatialSemanticDescriptor: async ({ request: { request_id } }) => {
       modelCalls += 1;
       return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
@@ -297,6 +299,8 @@ test('S1 resolver models one open result, then replays current visible local ref
     } })({ partyId: 'party:s1' });
   const planned = await resolver(s1Request());
   assert.equal(modelCalls, 1);
+  assert.deepEqual(guardedCandidate, { name:'Незнакомый выступ',
+    context:'Сырым камнем выдается у воды.' });
   assert.deepEqual(planned.spatial_semantic_atomic_write_plan.causal_identity, {
     request_id: 'request:s1', root_turn_id: 'turn:s1',
     action_ref: 's1:turn:s1:1', step_index: 1, actor_ref: 'actor:s1'

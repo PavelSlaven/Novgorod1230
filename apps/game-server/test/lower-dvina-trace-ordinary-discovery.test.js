@@ -305,10 +305,17 @@ test('a pre-commit resolver result is not visible or durable and can be modelled
 test('production-shaped bounded mechanics admits one positive ordinary item',
   async () => {
     let preparedBasisRef = null;
+    const guardCandidates = [];
+    const sequence = [];
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
       partyId: 'party', inputDigest: 'positive-o1',
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        guardCandidates.push(candidate);
+        sequence.push(`guard:${guardCandidates.length}`);
+      },
       loadEnablement: async () => enabled(), verifyStageBCutover,
       ordinaryMaterializationModel: async (modelRequest) => {
+        sequence.push(`model:${modelRequest.mode}`);
         if (modelRequest.mode === 'seed_scope') return {
           schema: 'ordinary_materialization_plan_v1',
           request_id: modelRequest.request_id, resolution: 'seeded',
@@ -341,6 +348,12 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
     discoveryRequest.plan = { continuation: {
       remaining_intent: 'связать ею две жерди', depends_on_refs: [] } };
     const result = await resolver(discoveryRequest);
+    assert.deepEqual(guardCandidates, [
+      { name:'найти простую верёвку' },
+      { semantic_type:'cordage', name:'простая верёвка', facts:[] }
+    ]);
+    assert.deepEqual(sequence, ['guard:1','model:seed_scope',
+      'model:resolve_presence','guard:2']);
     const plan = result.ordinary_materialization_atomic_write_plan;
     assert.equal(plan.resolution, 'materialize');
     assert.equal(plan.item.supporting_basis_ref, plan.new_prepared_bases[0].basis_ref);

@@ -67,6 +67,12 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   Presence preflight с `decision: null` не создаёт resolve_presence; сохраняется
   только уже принятый seed. Нормальные модельные отрицательные решения
   сохраняют собственную presence identity, отличную от seed и replay.
+- O1 accepts an injected materialization guard owned by game-server. It checks
+  the normalized free-discovery query before any Stage A model call and checks a
+  genuinely new proposed semantic descriptor before admission/write; existing
+  inspection and equivalent visible items keep their existing owners. A typed
+  needs-check refusal is propagated without semantic repair or presence-ledger
+  transition; `@rus/turn` does not load catalogs or interpret blocker policy.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct

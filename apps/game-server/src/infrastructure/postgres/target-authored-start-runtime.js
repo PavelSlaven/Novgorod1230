@@ -118,7 +118,7 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
     gap('SPATIAL_V3_TARGET_START_TEMPORAL_REQUIRED');
   }
   return Object.freeze({ profile, worldBaseReader: reader, initialRule, itemPin, actorBinding,
-    materialization_inputs: Object.freeze({ scenario_bundle: profile, domain_catalog: catalog, domain_catalog_pin: itemPin,
+      materialization_inputs: Object.freeze({ scenario_bundle: profile, domain_catalog: catalog, domain_catalog_pin: itemPin,
       world_base_reference_snapshot: snapshot, approved_actor_temporal_bundle: actorBundle,
       canonical_npc_closure: npc.value, canonical_acoustic_rows: acoustic.value.rows,
       actor_base_attributes_runtime_profile: actorBinding.runtime_profile,

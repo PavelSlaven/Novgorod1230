@@ -3,6 +3,7 @@
 ## Unreleased
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
+- fix(materialization): pin needs-check runtime guards before model/admission/write, scoped by committed G0 region and calendar year; typed player-safe 409 and D-018 corpus/module contracts (needs-check-rt)
 
 - data(game-base): needs_check queues block generation — only anachronism doubts, per region and period; regional presence stays informational; fail-closed matcher in runtime-catalog, snapshot v2, Opus-approved classification 8/29 (D51 p.3) (#215)
 - fix(items): A1 make works at places reached by walking (rt-make) — result destination on the scene position when the party has no g5 anchor, planner rule names `partial_transformation` and an allowed form, one repair for an invalid `physical_form`; LW-100/LW-103 updated, LW-118 added

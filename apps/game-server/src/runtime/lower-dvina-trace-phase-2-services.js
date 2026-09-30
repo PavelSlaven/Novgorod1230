@@ -26,6 +26,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
+    turnStepNeedsCheckGuard = null,
+    runtimeCatalogContext = null,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner,
@@ -60,6 +62,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
     request_id: requestId,
     idempotency_key: idempotencyKey
   });
+  const needsCheckGuard = typeof turnStepNeedsCheckGuard === 'function'
+    ? (input) => turnStepNeedsCheckGuard({ ...input,
+      catalogContext: runtimeCatalogContext }) : null;
+  const guardFactory = (factory) => typeof factory !== 'function'
+    ? null : (input) => factory({ ...input,
+      assertNeedsCheckAllowed: needsCheckGuard });
+  const spatialSemanticResolverFactory =
+    guardFactory(createTurnStepSpatialSemanticResolver);
   const randomSnapshot = randomSource?.snapshot?.();
   if (!randomSnapshot?.algorithm
       || randomSnapshot.algorithm !== state.materialization_trace?.rng_version) {
@@ -85,10 +95,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
     committedState: state,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
-      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
+      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard }),
     ordinaryContainerContentsResolver:
-      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest}),
+      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard}),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
+    assertNeedsCheckAllowed: typeof needsCheckGuard === 'function'
+      ? (input) => needsCheckGuard({ ...input, partyId }) : null,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
@@ -105,10 +119,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createLowerDvinaTraceTurnStepPlayerSafeProjector({
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
-      createTurnStepActionProductionOwner,
+      createTurnStepActionProductionOwner:
+        guardFactory(createTurnStepActionProductionOwner),
       localFireProfile,
       createTurnStepWorldProcessResolver,
-      createTurnStepSpatialSemanticResolver,
+      createTurnStepSpatialSemanticResolver:
+        spatialSemanticResolverFactory,
       spatialSemanticProfile,
       createTurnStepBackgroundNpcResolver,
       npcSemanticRemainderProfile,
@@ -123,7 +139,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
   const actionProductionOwner =
     typeof createTurnStepActionProductionOwner === 'function'
       && actionProductionProfile?.profile?.status === 'approved'
-      ? createTurnStepActionProductionOwner({
+      ? guardFactory(createTurnStepActionProductionOwner)({
           partyId, requestId, inputDigest,
           applyWorkingProjection: turnStepPorts.applyActionProductionProjection
         })
@@ -194,8 +210,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         applyWorkingProjection: turnStepPorts.applyLocalFireProjection
       })
     } : {}),
-    ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
-      turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
+    ...(typeof spatialSemanticResolverFactory === 'function' ? {
+      turnStepSpatialSemanticResolver: spatialSemanticResolverFactory({ partyId })
     } : {}),
     ...(typeof createTurnStepBackgroundNpcResolver === 'function'
         && npcSemanticRemainderProfile?.profile?.status === 'approved' ? {

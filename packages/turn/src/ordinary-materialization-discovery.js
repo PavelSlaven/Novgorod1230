@@ -24,6 +24,7 @@ import { turnFailure } from './errors.js';
 export function createOrdinaryMaterializationDiscoveryOwner({
   loadDiscoveryContext, ordinaryMaterializationModel, verifyStageBCutover,
   inputDigest, buildSeedRequest, buildPresenceRequest, sealAtomicWritePlan,
+  assertNeedsCheckAllowed = null,
   resolveFiniteResourceEffects = () => null, resolveExistingInspection = () => null
 } = {}) {
   const ports = { loadDiscoveryContext, ordinaryMaterializationModel,
@@ -44,6 +45,11 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     if (inspection != null) return inspection;
     const enabled = await loadDiscoveryContext(request);
     if (enabled == null) return ordinaryNoop(request);
+    if (request.operation?.discovery_kind !== 'look'
+        && typeof assertNeedsCheckAllowed === 'function') {
+      await assertNeedsCheckAllowed({ committedState: request.committed_state,
+        candidate: { name: request.operation?.query } });
+    }
     const modelBudget = semanticModelCallBudget(ordinaryMaterializationModel);
     const { party_id: partyId, scope_ref: scopeRef } = enabled;
     const execution = enabled.execution_context;
@@ -189,6 +195,10 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         return knownResolutionResult(request, { resolution: 'materialize' }, {
           displayName: equivalent.name
         });
+      }
+      if (typeof assertNeedsCheckAllowed === 'function') {
+        await assertNeedsCheckAllowed({ committedState: request.committed_state,
+          candidate: proposed.semantic_descriptor });
       }
       if (proposed.property_basis_ref
           !== envelope.request.context_refs.property_context_ref) {

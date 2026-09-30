@@ -108,6 +108,30 @@ test('multi-item ordinary inspection returns no-result before context or model',
       'ordinary_materialization_atomic_write_plan'), false);
   });
 
+test('needs-check query guard runs before Stage A can call the model', async () => {
+  let checked;
+  let modelCalled = false;
+  const resolve = createOrdinaryMaterializationDiscoveryOwner({
+    loadDiscoveryContext: async () => ({}),
+    ordinaryMaterializationModel: async () => { modelCalled = true; },
+    verifyStageBCutover: () => {}, inputDigest: () => 'unused',
+    buildSeedRequest: () => ({}), buildPresenceRequest: () => ({}),
+    sealAtomicWritePlan: () => ({}),
+    assertNeedsCheckAllowed: async (input) => {
+      checked = input.candidate;
+      const error = new Error('blocked');
+      error.code = 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
+      throw error;
+    }
+  });
+  await assert.rejects(resolve({ operation: { target_refs:['position'],
+    discovery_kind:'search',query:'колёсная прялка' },
+    committed_state:{clock:{whole_minutes:'0'}},
+    working_projection:{} }), {code:'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'});
+  assert.deepEqual(checked, {name:'колёсная прялка'});
+  assert.equal(modelCalled, false);
+});
+
 test('semantic paraphrase reuses one visible ordinary item instead of cloning it', () => {
   const request = { request: { player_safe_state: { items: [{
     item_id: 'ordinary:cord', name: 'Льняной шнур', semantic_type: 'cord'

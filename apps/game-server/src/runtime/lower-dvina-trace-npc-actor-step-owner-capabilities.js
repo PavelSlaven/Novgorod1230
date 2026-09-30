@@ -28,6 +28,7 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
 } = {}) {
   return async ({ partyId, requestId, inputDigest, state, phase7Contracts,
     workingProjection = null, priorLocalFirePlans = [],
+    assertNeedsCheckAllowed = null,
     conversationBindings = null, conversationActivity = null,
     parentTemporal = null,
     runNpcConversationExchange: boundaryConversationExchange =
@@ -45,7 +46,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       loadOrdinaryEnablement });
     const ordinary = typeof createOrdinaryDiscoveryResolver === 'function'
       && discoveryTargets.length > 0
-      ? createOrdinaryDiscoveryResolver({ partyId, inputDigest }) : null;
+      ? createOrdinaryDiscoveryResolver({ partyId, inputDigest,
+        assertNeedsCheckAllowed }) : null;
     if (typeof ordinary === 'function') {
       capabilities.push({
         operation: 'request_discovery',
@@ -70,7 +72,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     }
     const spatial = npcS1Capability({ state, npc,
       resolverAvailable: typeof createSpatialSemanticResolver === 'function' });
-    const s1 = spatial != null ? createSpatialSemanticResolver({ partyId }) : null;
+    const s1 = spatial != null ? createSpatialSemanticResolver({ partyId,
+      assertNeedsCheckAllowed }) : null;
     if (typeof s1 === 'function') capabilities.push({
       operation: 'request_discovery', capability: { owner: '@rus/turn', allowed: [{
         target_refs: [spatial.safe_state.spatial_semantic.position_ref],
@@ -96,7 +99,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       });
       const projectionOwner = createNpcA1ProjectionOwner({ state, npc, itemRefs });
       const ownerFor = (ownerRequestId) => createActionProductionOwner({ partyId,
-        requestId: ownerRequestId, inputDigest, applyWorkingProjection: projectionOwner });
+        requestId: ownerRequestId, inputDigest, applyWorkingProjection: projectionOwner,
+        assertNeedsCheckAllowed });
       const owner = ownerFor(requestId);
       const applicable = typeof owner?.referencesApplicable === 'function'
         ? await applicableNpcA1Refs(owner, itemRefs, referenceInput)
@@ -143,7 +147,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       });
     }
     const containerCapability = createNpcContainerCapability({ state, npc, partyId,
-      inputDigest, createOrdinaryContainerContentsResolver });
+      inputDigest, createOrdinaryContainerContentsResolver,
+      assertNeedsCheckAllowed });
     if (containerCapability != null) capabilities.push(containerCapability);
     if (typeof createModeOwnerCapabilities === 'function') {
       const visibleTargetRefs = npcSafeActorRefs(npc, state);

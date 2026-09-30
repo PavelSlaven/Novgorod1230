@@ -16,7 +16,7 @@ import { validLowerDvinaTraceO2bPhysicalAttestation } from
 
 export function createLowerDvinaTraceO2bContainerResolver({ partyId,
   inputDigest, loadedProfile, loadCommittedContainer,
-  ordinaryMaterializationModel } = {}) {
+  ordinaryMaterializationModel, assertNeedsCheckAllowed = null } = {}) {
   if (loadedProfile == null) return null;
   if (!validLowerDvinaTraceO2bLoadedProfile(loadedProfile)) {
     throw coded('TRACE_O2B_PROFILE_INVALID');
@@ -84,6 +84,15 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
           : raw.density_band_proposal
             !== committed.objective.identity_budget.density_band)) {
       return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID');
+    }
+    if (typeof assertNeedsCheckAllowed === 'function') {
+      for (const entity of raw.entities) await assertNeedsCheckAllowed({
+        partyId,
+        committedState: { world_identity: committed.value.world_identity,
+          position: { g4_id: committed.value.container.actor_g4_id },
+          clock: committed.partyClock },
+        candidate: entity.semantic_descriptor
+      });
     }
     try { return buildO2bContainerResolution({ committed, raw, operation,
       partyId, inputDigest }); }

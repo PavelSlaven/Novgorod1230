@@ -135,6 +135,22 @@ test('generic enabled fixture seals positive and zero outcomes without reroll',
       .ordinary_materialization_atomic_write_plan,null);
   });
 
+test('O2b needs-check guard runs on each new descriptor before its atomic plan',
+  async () => {
+    const model = async (request) => modelPlan(request);
+    const expected = modelPlan(seedRequest()).entities[0].semantic_descriptor;
+    let checked;
+    const guarded = resolver({model,assertNeedsCheckAllowed:async ({candidate}) => {
+      checked = candidate;
+      const error = new Error('blocked');
+      error.code = 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
+      throw error;
+    }});
+    await assert.rejects(guarded(call()),
+      {code:'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'});
+    assert.deepEqual(checked, expected);
+  });
+
 test('P16 projection hides precommit child and publishes only safe committed view',
   async () => {
     const result = await resolver({model:async (request) => modelPlan(request)})(call());
@@ -175,10 +191,11 @@ test('O2b physical locks extend but do not alter legacy O1 keys', () => {
 });
 
 function resolver({load = async () => committedFixture(),model,
+  assertNeedsCheckAllowed = null,
   inputDigest = 'input-o2b'} = {}) {
   return createLowerDvinaTraceO2bContainerResolver({partyId,inputDigest,
     loadedProfile:activeProfile(),loadCommittedContainer:load,
-    ordinaryMaterializationModel:model});
+    ordinaryMaterializationModel:model,assertNeedsCheckAllowed});
 }
 function call() { return {stage_a_request:seedRequest(),
   operation_identity:operationIdentity()}; }

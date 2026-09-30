@@ -65,6 +65,11 @@ import { createAuthoredOpeningNarrationService } from
   '../authored-opening-narration.js';
 import { createTargetCurrentFactualContext } from
   '../../infrastructure/postgres/target-current-factual-context.js';
+import { createNeedsCheckMaterializationGuard } from
+  '../needs-check-materialization-guard.js';
+import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
+import { RUNTIME_CATALOG_CONTRACT_DIGEST } from
+  '@rus/runtime-catalog/runtime-contract';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -123,6 +128,20 @@ export function createTraceTurnRuntime({
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity,
     worldKnowledgeGrounder
   });
+  const materializationInputs = targetStartRuntime?.materialization_inputs;
+  const partyCatalogCoordinator = targetStartRuntime == null ? null
+    : createRuntimeCatalogCoordinator({ worldBaseReader: {
+        read: targetStartRuntime.worldBaseReader.read.bind(
+          targetStartRuntime.worldBaseReader)
+      }, partyPool, supportedRuntimeContractDigests: [
+        RUNTIME_CATALOG_CONTRACT_DIGEST,
+        targetStartRuntime.itemPin.runtime_contract_digest
+      ] });
+  const needsCheckGuard = targetStartRuntime == null ? null
+    : createNeedsCheckMaterializationGuard({
+        worldBaseReader: targetStartRuntime.worldBaseReader,
+        calendarProfile: materializationInputs?.calendar_profile
+      });
   const ordinaryDiscoveryScopeBinding =
     ordinaryMaterializationProfile?.o2a_ambient?.scope_binding ?? null;
   const ordinaryEnablements =
@@ -173,10 +192,12 @@ export function createTraceTurnRuntime({
           worldKnowledgeGrounder
         }) : null;
   const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
-    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
+      assertNeedsCheckAllowed }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
-        loadEnablement: (input) => ordinaryEnablements.load(input),
-        ordinaryMaterializationModel }),
+      loadEnablement: (input) => ordinaryEnablements.load(input),
+        ordinaryMaterializationModel,
+        assertNeedsCheckAllowed }),
     createActionProductionOwner: actionProductionResolverFactory,
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
     loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
@@ -216,10 +237,14 @@ export function createTraceTurnRuntime({
       createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner }),
     actionProducedWeaponClassifier:
       createLowerDvinaTraceActionProducedWeaponClassifier({ roleRunner }),
-    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+    loadTurnRuntimeCatalogContext: partyCatalogCoordinator == null ? null
+      : ({ partyId }) => partyCatalogCoordinator.loadPartyContext({ partyId }),
+    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
+      assertNeedsCheckAllowed }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel,
+        assertNeedsCheckAllowed,
         scopeBinding: ordinaryDiscoveryScopeBinding
       }),
     createTurnStepOrdinaryContainerContentsResolver:
@@ -240,6 +265,7 @@ export function createTraceTurnRuntime({
           disclosure_state:entry.disclosure_state }))) });
     },
     ordinaryDiscoveryScopeBinding,
+    turnStepNeedsCheckGuard: needsCheckGuard,
     createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,

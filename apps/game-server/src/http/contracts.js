@@ -64,6 +64,10 @@ function publicTurnFailureFor(error) {
     code: 'WORLD_ACTION_UNAVAILABLE',
     message: 'Ход не сохранён. Для этого действия не хватает данных мира.'
   };
+  if (code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') return {
+    code: 'WORLD_ACTION_UNAVAILABLE',
+    message: 'Ход не сохранён. Здесь такой вещи не знают.'
+  };
   return null;
 }
 

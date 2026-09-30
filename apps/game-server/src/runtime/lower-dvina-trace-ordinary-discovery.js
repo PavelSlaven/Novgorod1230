@@ -25,6 +25,7 @@ import { resolveExistingItemInspection } from
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   partyId, loadEnablement, ordinaryMaterializationModel,
+  assertNeedsCheckAllowed = null,
   scopeBinding = null,
   verifyStageBCutover = ordinaryMaterializationModel?.verifyStageBCutover,
   inputDigest
@@ -34,12 +35,15 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       || typeof verifyStageBCutover !== 'function') {
     throw new TypeError('ordinary discovery requires enablement and verified model ports');
   }
+  const needsCheck = typeof assertNeedsCheckAllowed === 'function'
+    ? (input) => assertNeedsCheckAllowed({ ...input, partyId }) : null;
   return createOrdinaryMaterializationDiscoveryOwner({
     resolveExistingInspection: resolveExistingItemInspection,
     ordinaryMaterializationModel,
     verifyStageBCutover: (input) => verifyStageBCutover.call(
       ordinaryMaterializationModel, input),
     inputDigest,
+    assertNeedsCheckAllowed: needsCheck,
     buildSeedRequest: buildOrdinaryMaterializationSeedScopeRequest,
     buildPresenceRequest: buildOrdinaryMaterializationPresenceRequest,
     sealAtomicWritePlan: createOrdinaryMaterializationAtomicWritePlan,

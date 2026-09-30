@@ -21,6 +21,15 @@ runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
+Свободная materialization получает `rus.needs_check_blockers.v2` только из
+verified immutable catalog snapshot, совместимого с party pin. Этот owner берёт
+год из committed clock и регион из pinned G0 ancestor текущего G4; guard стоит
+перед O1 Stage A, перед admission нового O1/direct/O2b/S1 результата и перед
+записью независимого A1 output. `TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED`
+сопоставляется только при подтверждённом `not_started` в player-safe
+`WORLD_ACTION_UNAVAILABLE`; очередь остаётся в private trace. Профили O2b/S1
+активируются только их существующими exact gates.
+
 `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
 equipment and Stage 24 body/routine projections for an exact generated scene.
 It returns one P16 write set, validation and deterministic choice traces;

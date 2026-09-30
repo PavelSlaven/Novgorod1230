@@ -16,7 +16,7 @@ import { admitA1PreAttempt, contextForA1Operation,
 import { validNeutralActionProductionProfile } from '../../internal/lower-dvina-trace-a1-bundle.js';
 
 export function createLowerDvinaTraceA1ProductionResolverFactory({
-  pool, loadedProfile
+  pool, loadedProfile, assertNeedsCheckAllowed = null
 } = {}) {
   const profile = validateLoadedProfile(loadedProfile);
   if (!pool?.query) {
@@ -38,7 +38,8 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     allowed_result_classes: Object.freeze([...profile.allowed_result_classes]),
     allowed_output_classes: Object.freeze([...profile.allowed_output_classes])
   });
-  return ({ partyId, requestId, applyWorkingProjection }) => {
+  return ({ partyId, requestId, applyWorkingProjection,
+    assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed }) => {
     const load = async (rawEnvelope, requireEvidence) => {
       const envelope = snapshotA1ExecutionEnvelope(rawEnvelope);
       if (envelope === INVALID_ACTION_PRODUCED_DATA) {
@@ -137,6 +138,17 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           context;
         const { semantic, admission, mechanics } = admitA1PreAttempt(context,
           profile, requestId);
+        if (semantic.identity_mode === 'independent_outputs'
+            && typeof turnGuard === 'function') {
+          const descriptor = semantic.result_descriptor;
+          await turnGuard({
+            partyId,
+            committedState: rawEnvelope?.committed_state,
+            candidate: { name: descriptor.display_name,
+              context: [descriptor.physical_description,
+                ...(descriptor.qualitative_facts ?? [])].filter(Boolean).join(' ') }
+          });
+        }
         const planner = createActionProducedTransitionPlanner({
           resolveMechanics: (mechanicsRequest) => {
             if ([...mechanicsRequest.source_inputs,

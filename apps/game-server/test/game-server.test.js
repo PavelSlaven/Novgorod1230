@@ -65,7 +65,8 @@ test('unresolved ordinary discovery is a non-5xx conflict without private detail
 test('known turn failures use safe public categories and never expose internal diagnostics', () => {
   for (const [internalCode, publicCode, publicMessage] of [
     ['TURN_STEP_PLAN_INVALID', 'TURN_NOT_SAVED', 'Ход не сохранён. Попробуйте сформулировать действие иначе.'],
-    ['M2C_TARGET_A1_APPLICABILITY_DATA_GAP', 'WORLD_ACTION_UNAVAILABLE', 'Ход не сохранён. Для этого действия не хватает данных мира.']
+    ['M2C_TARGET_A1_APPLICABILITY_DATA_GAP', 'WORLD_ACTION_UNAVAILABLE', 'Ход не сохранён. Для этого действия не хватает данных мира.'],
+    ['TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', 'WORLD_ACTION_UNAVAILABLE', 'Ход не сохранён. Здесь такой вещи не знают.']
   ]) {
     const response = errorEnvelope(Object.assign(new Error(
       `${internalCode} /srv/private/handler.js sk-secret http://internal-host`), {
@@ -75,7 +76,7 @@ test('known turn failures use safe public categories and never expose internal d
     assert.equal(response.status, 409);
     assert.deepEqual(response.body.error, { code: publicCode, message: publicMessage,
       turn_commit_status: 'not_started' });
-    assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID|M2C_TARGET_A1|\/srv\/|sk-secret|internal-host|schema\.sql/u);
+    assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID|M2C_TARGET_A1|TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED|\/srv\/|sk-secret|internal-host|schema\.sql/u);
   }
   const unconfirmed = errorEnvelope(Object.assign(new Error('x'), {
     code: 'TURN_STEP_PLAN_INVALID', status: 500 }));

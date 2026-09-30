@@ -10,12 +10,15 @@ import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
 
 export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
   roleRunner, worldKnowledgeGrounder = null,
+  assertNeedsCheckAllowed = null,
   resolveSpatialSemanticDescriptor = resolveTurnSpatialSemanticDescriptor } = {}) {
   if (!pool?.query || typeof resolveSpatialSemanticDescriptor !== 'function') {
     throw new TypeError('S1 PostgreSQL pool and turn semantic resolver are required.');
   }
   const authority = createSpatialSemanticAuthorityRepository({ pool });
-  return ({ partyId }) => async function resolveSpatialSemantic(input) {
+  return ({ partyId,
+    assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed }) =>
+    async function resolveSpatialSemantic(input) {
     const value = strictSnapshot(input);
     const operation = value.operation;
     const request = value.request;
@@ -73,6 +76,12 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
                   ? value.committed_state.historical_events : []
               })).world_knowledge
       }) });
+    if (typeof turnGuard === 'function') {
+      await turnGuard({ committedState: value.committed_state,
+        partyId,
+        candidate: { name: resolution.outcome.name,
+          context: resolution.outcome.description } });
+    }
     const atomic = createSpatialSemanticAtomicWritePlan({
       schema: 'spatial_semantic_atomic_write_plan_v1', party_id: partyId,
       base_party_state_version: Number(request.committed_state_version),

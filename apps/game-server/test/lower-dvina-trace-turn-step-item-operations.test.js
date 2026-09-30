@@ -60,6 +60,29 @@ test('ambient adapter preserves semantic intent for code-owned source selection'
   assert.equal(received.portion_profile_ref, 'committed');
 });
 
+test('needs-check guard rejects a new direct entity before runtime mutation', async () => {
+  const state = initializeRuntimeState(null);
+  let checked;
+  const handlers = createItemOperationHandlers(state, {
+    ordinaryResultPolicy,
+    assertNeedsCheckAllowed: async ({ candidate }) => {
+      checked = candidate;
+      const error = new Error('blocked');
+      error.code = 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
+      error.details = { queue_id: 'private-queue-id' };
+      throw error;
+    }
+  });
+  await assert.rejects(handlers.create_entity(execution(createSand())), {
+    code:'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+    details:{queue_id:'private-queue-id'}
+  });
+  assert.equal(checked.name, 'горсть мокрого песка');
+  assert.equal(state.entities.size, 0);
+  assert.equal(state.aliases.size, 0);
+  assert.equal(state.reservedRefs.size, 0);
+});
+
 test('inside uses a visible open container and code-owned capacity', () => {
   const options = {
     ordinaryResultPolicy,

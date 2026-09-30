@@ -44,6 +44,8 @@ export function createLowerDvinaTracePhase2Runtime({
   createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
+  turnStepNeedsCheckGuard = null,
+  loadTurnRuntimeCatalogContext = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
   requireTurnStepAmbientOrdinaryAdmission = false, turnStepAmbientPortionProfileRef = null,
   createTurnStepActionProductionOwner = null,
@@ -93,6 +95,9 @@ export function createLowerDvinaTracePhase2Runtime({
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
+        const runtimeCatalogContext = typeof loadTurnRuntimeCatalogContext === 'function'
+          ? await runWithinTurnDeadline(turnBudget, () =>
+            loadTurnRuntimeCatalogContext({ partyId })) : null;
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
         const scenarioDefinitionRevision = authored ? null
@@ -153,6 +158,10 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcOwnerCapabilities =
           typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
             createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
+              runtimeCatalogContext,
+              assertNeedsCheckAllowed: typeof turnStepNeedsCheckGuard === 'function'
+                ? (input) => turnStepNeedsCheckGuard({ ...input,
+                  catalogContext: runtimeCatalogContext }) : null,
               bundle, phase7Contracts, npcCombatModel, revalidateStateVersion,
               ...boundary });
         const genericOwners = bundle.turn_step_owner_profiles
@@ -165,6 +174,9 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceNpcActorStepDirectOperations({
               state, phase7Contracts, ...boundary,
               ordinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+              assertNeedsCheckAllowed: typeof turnStepNeedsCheckGuard === 'function'
+                ? (input) => turnStepNeedsCheckGuard({ ...input,
+                  catalogContext: runtimeCatalogContext }) : null,
               packingCalculator: turnStepPackingCalculator, bodyEventOwner: genericOwners?.bodyEventOwner,
               createAmbientOrdinaryPortionAdmission: createTurnStepAmbientOrdinaryPortionAdmission
             });
@@ -286,6 +298,8 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
+          turnStepNeedsCheckGuard,
+          runtimeCatalogContext,
           ordinaryDiscoveryScopeBinding,
           createTurnStepActionProductionOwner: actionProductionEnabled
             ? createTurnStepActionProductionOwner : null,

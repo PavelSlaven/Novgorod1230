@@ -162,6 +162,30 @@ Party state хранит world revision, schema, materializer, RNG, command cata
 
 Repair/migration обязана указать причину, прежний и новый digest, сохранить историю и пройти тот же commit gate. Обычный runtime не имеет права запустить её неявно.
 
+### D-018. Runtime fail-closed проверяет утверждённые сомнения-анахронизмы
+
+До свободной materialization runtime проверяет кандидата по immutable
+`rus.needs_check_blockers.v2` snapshot, закреплённому тем же catalog pin партии.
+Блокирует только name match для сомнения-анахронизма, только в указанном G0
+регионе и включительном годовом периоде записи. `regional_presence` не является
+запретом: незафиксированное региональное присутствие может быть диковинкой.
+Неизвестный или отсутствующий регион кандидата проверяется по всем name-записям.
+Runtime берёт регион из committed G0 места, год — из committed clock; текущие
+authoring queues и более новый catalog не читаются. Существующая сущность,
+осмотр и сохранённая история не переписываются.
+Историческая партия с точным pin `procedural_scene_final_candidate_v1_001`,
+созданным до профиля блокировок, сохраняет прежнее поведение; более новые pins
+без blocker snapshot считаются ошибкой закреплённого каталога.
+
+Проверка применяется к свободному O1 запросу до model call и к предложенной
+O1 семантике до admission/write; к независимому новому результату A1 до write;
+и к новым предложениям direct `create_entity`, применимого O2b и S1. A1
+`preserve_source`, committed/replay пути и движение S1 не являются новыми
+результатами и не блокируются. Срабатывание — отдельный typed отказ до commit,
+без semantic repair и без записи отрицательного результата в presence ledger.
+Игрок получает безопасный отказ; queue ID остаётся только в private trace.
+Новая версия catalog не меняет snapshot уже закреплённой партии.
+
 ## 3A. Наличие категорий в местах и контейнерах
 
 Нормативный источник: PC §9.1; решения владельца [#133 D3, D5, D6, D9, D10](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154); поправки ревьюера [#133 п.1–3,6,8](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5843988793); CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 1; CR [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) (условия C1–C15 и поправка к C3 — в комментарии issue). Этот раздел задаёт действующую семантику.

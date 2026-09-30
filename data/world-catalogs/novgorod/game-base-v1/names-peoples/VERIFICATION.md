@@ -346,3 +346,34 @@ No row in the group is fabricated. The problems are overstated confidence, misla
 
 - sources/d46-regional-name-pools.json — approve_with_limits: снимок отличается от архива двумя полями региона (см. выше).
 - personal_names/d46-name-additions.json — approve_with_limits
+
+## Opus data approval — per-people personal-name pools (D51 p.2), 2026-09-30
+
+- **Verdict:** APPROVE_WITH_LIMITS.
+- **Approver:** Claude Opus 5.5 (claude-opus-5-5), independent data approver, Claude Code.
+- **approved_commit:** 5834b89501d8d7ab3a85b7f3afb6a6c2ef53edc6.
+- **Author:** Codex (gpt-6-luna), fleet task names-foreign.
+
+**Scope.** The game-base-v1/names-peoples/personal_names B2 draft projection:
+- 7 per-people pools, region of use `region_novgorod_land`, 1230–1250;
+- 337 entries, including 26 rows moved unchanged (reviewer script: only `name_pool_id` differs);
+- `nov_name_korela_valit_v1`: Валит, male, pp_korela, significant, medieval_general, attested 1337/38;
+- Igoland as typed gap `people_ref_unresolved`;
+- 48 typed gaps;
+- builder/validator multi-pool changes.
+
+No runtime bindings and no approved row status are implied.
+
+**Checked.**
+- The full diff.
+- The Валит source in the book index (book:318333 §485, §558–574; FTS «Валит» over all books).
+- DDL 09.sql/29.sql, table requirements, the b2 contract and the README.
+- Counts per pool/people/sex/class against the gaps.
+- Builder and validator checks are not weakened.
+
+**Limits.**
+- **L1 — fixed before merge (reviewer checked):** the Валит gap text and README now state the 1337/38 date (book:318333 §573, Sofia chronicle).
+- **L2 — Валит:** significant/medieval_general only, attested 1337/38. It does not attest presence in 1230–1250 and is not promoted to ordinary; it may be a title (book:849577 §312).
+- **L3 — Igoland:** stays a typed gap until a source names the people. No pool for the mixed group pp_fg005 (D51: one pool per people).
+- **L4:** all rows stay draft. Runtime bindings and approval per (pool, people) are a separate step.
+- **L5 — procedurally selectable (ordinary) names:** korela 0, izhora 1, Gotland 1, chud 0, smolyane 0. NPCs of these peoples without an authored name stay unnamed; there is no fallback by design.

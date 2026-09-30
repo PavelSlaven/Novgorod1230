@@ -12,11 +12,9 @@ import { createRouteWalker, peopleAt } from './route-people-helpers.js';
 /**
  * D49: every place of the Vikhtuy slice route after the start has at least one person, made from approved data
  * (people-d49 approval: game-base D-2 thresholds, wave, profiles). The route table is exact: who stands where
- * (occupation and sex from the profile), and the one gap the approved data still has: the crossing guard on the ferry
- * landing (nov_occ_crossing_guard is usable_with_caution, absent from the approved actor catalog — limits of
- * m2c-npc/people-d49/approval.json). Tighten, never loosen.
+ * (occupation and sex from the profile) and that no place has a gap. D53: the ferry landing has the ferryman only
+ * (no crossing guard in the sources). Tighten, never loosen.
  */
-const GUARD_GAP = { code: 'people_profile_missing', subject_ref: 'nov_occ_crossing_guard' };
 const FISHER = { nov_occ_fisher: 'male' };
 const HOUSEHOLDER = { nov_occ_haymaker: 'male' };
 const HOMESTEAD = { nov_occ_haymaker: 'male', nov_occ_cook_baker: 'female' };
@@ -26,7 +24,7 @@ const ROUTE = [
   ['forest_path', 'pf_village_lane', HOUSEHOLDER, []],
   ['meeting_area', 'pf_rural_yard', HOUSEHOLDER, []],
   ['river_approach', 'pf_riverbank', FISHER, []],
-  ['landing_candidate', 'pf_ferry_landing', { nov_occ_ferryman: 'male' }, [GUARD_GAP]],
+  ['landing_candidate', 'pf_ferry_landing', { nov_occ_ferryman: 'male' }, []],
   ['occupation_terrace', 'pf_peasant_homestead', HOMESTEAD, []],
   ['household_cluster', 'pf_peasant_homestead', HOMESTEAD, []],
 ];

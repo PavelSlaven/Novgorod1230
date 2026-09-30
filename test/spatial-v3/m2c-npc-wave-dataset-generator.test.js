@@ -249,7 +249,7 @@ test('schedule routine rules count matches schedules CSV rows on approval pin', 
   await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
   const rules = JSON.parse(await readFile(join(outRoot, 'datasets/npc_schedule_routine_rules.json'), 'utf8'));
   assert.equal(rules.length, csvRows.length, 'one routine rule per schedules.csv row');
-  assert.equal(csvRows.length, 167);
+  assert.equal(csvRows.length, 161);
   await rm(parent, { recursive: true, force: true });
 });
 

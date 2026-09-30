@@ -5,8 +5,10 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { NEEDS_CHECK_BLOCKER } from '@rus/runtime-catalog/needs-check-blocker';
 import { compileQueueRecord, compileSnapshot, registeredCandidates, validateCatalog } from './check-needs-check.mjs';
+import { allowedG0Ids } from './check-region-ids.mjs';
 
 const GAME_BASE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const REGIONS = [...allowedG0Ids()];
 
 function activeQueueRows(directory) {
   let count = 0;
@@ -35,10 +37,9 @@ test('needs_check queue compiles fail-closed blocker templates with no catalog c
   assert.equal(result.candidate_count, registeredCandidates().length);
   assert.ok(result.template_hits.every(({ hits }) => hits === 0));
   assert.ok(Number.isInteger(result.informational_id_reference_hits));
-  assert.equal(result.regional_presence_entries.length, 26);
-  assert.equal(result.disputed_entries.length, 3);
+  assert.equal(result.regional_presence_entries.length, snapshot.entries.filter(({ doubt_kind }) => doubt_kind === 'regional_presence').length);
+  assert.equal(snapshot.entries.filter(({ block_by, doubt_kind }) => block_by !== 'archive_id' && doubt_kind === null).length, 0);
   assert.ok(result.regional_presence_entries.includes('fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fchk_peacock'));
-  assert.ok(result.disputed_entries.includes('crafts-tools-processes/materials_registry/needs_check.csv#crafts_byaz'));
 });
 
 test('registry name_folk and name_old_ru fields participate in matching', () => {
@@ -50,7 +51,7 @@ test('registry name_folk and name_old_ru fields participate in matching', () => 
   assert.ok(old);
   const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([{ queue_id: 'fixture_alias', doubt_kind: 'anachronism', block_by: 'name',
     block_region: 'region_novgorod_land', block_period: '1230-1250',
-    source_ref: 'fixture', reason: 'fixture', patterns: [{ language: 'ru', value: 'Ракита' }], exceptions: [] }]);
+    source_ref: 'fixture', reason: 'fixture', patterns: [{ language: 'ru', value: 'Ракита' }], exceptions: [] }], REGIONS);
   assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: folk }).queue_id, 'fixture_alias');
 });
 
@@ -62,18 +63,7 @@ test('small queue source_ref uses one queue path', () => {
   assert.equal(row.source_ref, 'fauna-fish-invertebrates-livestock/fauna/needs_check.csv#fixture_source');
 });
 
-test('explicitly disputed small queue rows stay informational and do not block names', () => {
-  const row = compileQueueRecord({ check_id: 'fixture_disputed', subject: 'Бязь', status: 'needs_check',
-    block_pattern_ru: 'Бязь', block_pattern_lat: '', doubt_kind: '', block_region: '', block_period: '', block_exception: '[]' },
-  'crafts-tools-processes/materials_registry/needs_check.csv');
-  assert.equal(row.doubt_kind, null);
-  assert.equal(row.block_by, 'none');
-  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([row]);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name: 'бязь' } }), null);
-  assert.equal(validateCatalog(snapshot, [{ name: 'Бязь' }]).disputed_entries.length, 1);
-});
-
-test('fauna name queues block cross-domain aliases and explicit genitive plural', () => {
+test('regional-presence queue rows remain informational across candidate regions', () => {
   const snapshot = compileSnapshot();
   const peacock = snapshot.entries.find(({ queue_id }) => queue_id.endsWith('#fchk_peacock'));
   const guineaFowl = snapshot.entries.find(({ queue_id }) => queue_id.endsWith('#fchk_guinea_fowl'));
@@ -87,15 +77,15 @@ test('fauna name queues block cross-domain aliases and explicit genitive plural'
   }
 });
 
-test('regional anachronism block applies to Nova region and fails closed without region', () => {
+test('regional anachronism block applies to Nova and unknown regions', () => {
   const snapshot = compileSnapshot();
   for (const region of ['region_novgorod_land', undefined]) {
     assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region, name: 'Железный капкан' } }).queue_id,
       'crafts-tools-processes/authoring/needs_check.csv#HNT0024');
   }
   assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: {
-    region: 'region_other', name: 'Железный капкан'
-  } }), null);
+    region: 'region_typo', name: 'Железный капкан'
+  } }).queue_id, 'crafts-tools-processes/authoring/needs_check.csv#HNT0024');
 });
 
 test('queue fixture blocks matching generated output; reviewing the row admits it', () => {
@@ -111,14 +101,14 @@ test('queue fixture blocks matching generated output; reviewing the row admits i
     block_region: 'region_novgorod_land', block_period: '1230-1250', block_exception: '[]'
   }, file);
   const generatedOutput = { region: 'region_novgorod_land', id: 'bird_fixture', name: 'Павлина' };
-  const blocked = NEEDS_CHECK_BLOCKER.createSnapshot([queued, unrelated]);
+  const blocked = NEEDS_CHECK_BLOCKER.createSnapshot([queued, unrelated], REGIONS);
   assert.throws(() => validateCatalog(blocked, [generatedOutput]), (error) => {
     assert.match(error.message, /needs_check blocker hits/u);
     assert.match(error.message, /fixture_peacock/u);
     return true;
   });
 
-  const reviewed = NEEDS_CHECK_BLOCKER.createSnapshot([unrelated]);
+  const reviewed = NEEDS_CHECK_BLOCKER.createSnapshot([unrelated], REGIONS);
   const report = validateCatalog(reviewed, [generatedOutput]);
   assert.equal(report.candidate_count, 1);
   assert.equal(report.template_hits.find(({ queue_id }) => queue_id.endsWith('#fixture_other')).hits, 0);
@@ -131,6 +121,17 @@ test('incomplete active queue row fails closed with its source ID', () => {
   }, 'fauna-fish-invertebrates-livestock/fauna/needs_check.csv'), /fixture_incomplete: blocker fields are incomplete/u);
   assert.throws(() => compileQueueRecord({
     check_id: 'fixture_unclassified', subject: 'Павлин', status: 'needs_check',
-    block_pattern_ru: 'Павлин', block_exception: '[]'
-  }, 'fauna-fish-invertebrates-livestock/fauna/needs_check.csv'), /lacks doubt_kind field/u);
+    block_pattern_ru: 'Павлин', block_pattern_lat: '', doubt_kind: '', block_region: '', block_period: '', block_exception: '[]'
+  }, 'fauna-fish-invertebrates-livestock/fauna/needs_check.csv'), /requires doubt_kind/u);
+  assert.throws(() => compileQueueRecord({
+    archive_id: 'HRS9999', current_result: 'new/include', reason_code: 'unresolved',
+    note: 'Запросить источник.', block_pattern_ru: 'Дуга', block_pattern_lat: '',
+    doubt_kind: '', block_region: '', block_period: '', block_exception: '[]'
+  }, 'crafts-tools-processes/authoring/needs_check.csv', new Map([
+    ['HRS9999', { archive_ref: 'master:HRS9999', archive_name: 'Дуга' }]
+  ])), /requires doubt_kind/u);
+  assert.throws(() => compileQueueRecord({
+    check_id: 'fixture_unknown_region', subject: 'Павлин', status: 'needs_check',
+    block_pattern_ru: 'Павлин', block_pattern_lat: '', doubt_kind: 'anachronism', block_region: 'region_typo', block_period: '1230-1250', block_exception: '[]'
+  }, 'fauna-fish-invertebrates-livestock/fauna/needs_check.csv'), /unknown block_region/u);
 });

@@ -33,8 +33,8 @@ function stem(token) {
   return token;
 }
 
-function digest(schema, entries) {
-  return `sha256:${createHash('sha256').update(canonicalStringify({ schema, entries })).digest('hex')}`;
+function digest(schema, regions, entries) {
+  return `sha256:${createHash('sha256').update(canonicalStringify({ schema, regions, entries })).digest('hex')}`;
 }
 
 function deepFreeze(value) {
@@ -43,10 +43,15 @@ function deepFreeze(value) {
   return Object.freeze(value);
 }
 
-function assertEntries(entries) {
+function assertEntries(entries, regions) {
   if (!Array.isArray(entries) || entries.length === 0) {
     throw new TypeError('needs-check blocker snapshot must contain entries.');
   }
+  if (!Array.isArray(regions) || !regions.length || regions.some((region) => typeof region !== 'string' || !region.trim())
+    || new Set(regions).size !== regions.length) {
+    throw new TypeError('needs-check blocker snapshot must contain unique region IDs.');
+  }
+  const regionIds = new Set(regions);
   const ids = new Set();
   for (const entry of entries) {
     if (!entry || typeof entry.queue_id !== 'string' || !entry.queue_id.trim()
@@ -55,9 +60,9 @@ function assertEntries(entries) {
       || !['anachronism', 'regional_presence', null].includes(entry.doubt_kind)
       || !['name', 'archive_id', 'none'].includes(entry.block_by)
       || typeof entry.block_region !== 'string' || typeof entry.block_period !== 'string'
-      || (entry.block_by === 'name' && (entry.doubt_kind !== 'anachronism' || !entry.block_region || !entry.block_period))
-      || (entry.block_by === 'none' && entry.doubt_kind === 'anachronism')
-      || (entry.block_by === 'archive_id' && (entry.block_region || entry.block_period))
+      || (entry.block_by === 'name' && (entry.doubt_kind !== 'anachronism' || !regionIds.has(entry.block_region) || !/^\d{4}-\d{4}$/u.test(entry.block_period)))
+      || (entry.block_by === 'none' && entry.doubt_kind !== 'regional_presence')
+      || (entry.block_by === 'archive_id' && (entry.doubt_kind !== null || entry.block_region || entry.block_period))
       || !Array.isArray(entry.patterns) || entry.patterns.length === 0
       || !Array.isArray(entry.exceptions)) {
       throw new TypeError('Invalid or duplicate needs-check blocker entry.');
@@ -84,8 +89,9 @@ function assertEntries(entries) {
   }
 }
 
-function createSnapshot(entries) {
-  assertEntries(entries);
+function createSnapshot(entries, regions) {
+  assertEntries(entries, regions);
+  const sortedRegions = [...regions].sort();
   const sorted = entries.map((entry) => ({
     queue_id: entry.queue_id,
     doubt_kind: entry.doubt_kind,
@@ -97,7 +103,7 @@ function createSnapshot(entries) {
     patterns: entry.patterns.map(({ language, value }) => ({ language, value })),
     exceptions: [...entry.exceptions]
   })).sort((left, right) => left.queue_id < right.queue_id ? -1 : left.queue_id > right.queue_id ? 1 : 0);
-  return deepFreeze({ schema: SCHEMA, entries: sorted, digest: digest(SCHEMA, sorted) });
+  return deepFreeze({ schema: SCHEMA, regions: sortedRegions, entries: sorted, digest: digest(SCHEMA, sortedRegions, sorted) });
 }
 
 function validateSnapshot(snapshot) {
@@ -105,11 +111,11 @@ function validateSnapshot(snapshot) {
   if (!snapshot || snapshot.schema !== SCHEMA || typeof snapshot.digest !== 'string') {
     throw new TypeError('Unsupported or malformed needs-check blocker snapshot.');
   }
-  assertEntries(snapshot.entries);
-  if (digest(snapshot.schema, snapshot.entries) !== snapshot.digest) {
+  assertEntries(snapshot.entries, snapshot.regions);
+  if (digest(snapshot.schema, snapshot.regions, snapshot.entries) !== snapshot.digest) {
     throw new TypeError('needs-check blocker snapshot digest mismatch.');
   }
-  if (Object.isFrozen(snapshot) && Object.isFrozen(snapshot.entries)
+  if (Object.isFrozen(snapshot) && Object.isFrozen(snapshot.regions) && Object.isFrozen(snapshot.entries)
     && snapshot.entries.every((entry) => Object.isFrozen(entry)
       && Object.isFrozen(entry.patterns) && Object.isFrozen(entry.exceptions)
       && entry.patterns.every(Object.isFrozen))) {
@@ -166,7 +172,8 @@ function matchesAll({ snapshot, candidate }) {
   for (const compiled of compiledEntries(snapshot)) {
     const { entry } = compiled;
     if (entry.block_by === 'none') continue;
-    if (entry.block_by === 'name' && candidate.region && candidate.region !== entry.block_region) continue;
+    if (entry.block_by === 'name' && snapshot.regions.includes(candidate.region)
+      && candidate.region !== entry.block_region) continue;
     const excluded = compiled.exceptions.some((tokens) => tokens.length > 0
       && Object.values(normalizedValues).flat().some((value) => containsSequence(value, tokens)));
     if (excluded) continue;

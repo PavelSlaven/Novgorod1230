@@ -1,5 +1,8 @@
 {
   "schema": "rus.needs_check_blockers.v2",
+  "regions": [
+    "region_novgorod_land"
+  ],
   "entries": [
     {
       "queue_id": "buildings-interiors-containers/authoring/needs_check.csv#AGR0005",
@@ -3528,7 +3531,7 @@
       "block_region": "region_novgorod_land",
       "block_period": "1230-1250",
       "source_ref": "clothing-appearance/authoring/needs_check.csv#clothing_sarafan_form",
-      "reason": "Не установлены форма и распространённость; отсутствие доказательства не означает отсутствия женской верхней одежды.",
+      "reason": "Слово засвидетельствовано с 1376 г. как мужская одежда; женский крой относится к XVI–XVII вв. Контрдовод: Вернадский описывает для древнерусских женщин платье без рукавов, названное сарафаном (book:426144 §1117: «платье без рукавов, наподобие фартука»). Сомнение относится к датировке формы, а не к самому слову.",
       "patterns": [
         {
           "language": "ru",
@@ -4367,12 +4370,12 @@
     },
     {
       "queue_id": "crafts-tools-processes/authoring/needs_check.csv#HRS0021",
-      "doubt_kind": null,
+      "doubt_kind": "regional_presence",
       "block_by": "none",
       "block_region": "",
       "block_period": "",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:HRS0021",
-      "reason": "Дуга оглобельной упряжи — спорная для 1230: Для дуги оглобельной упряжи HRS0021 не установлены форма крепления и региональное применение. Запросить источник и публикацию по датированным новгородским находкам конской упряжи и реконструкции оглобель.",
+      "reason": "Дуга оглобельной упряжи: датированные целые находки единичны (book:624953 §1294: «Целые дуги на раскопе представлены только единичными экземплярами»); в game-base уже есть transport_entities.csv#trv_030. Сверить возможное соответствие с trv_030 при последующем решении; маппинг в этой задаче не менять. Запросить источник о распространении дуги в Новгородской земле.",
       "patterns": [
         {
           "language": "ru",
@@ -10207,12 +10210,12 @@
     },
     {
       "queue_id": "crafts-tools-processes/authoring/needs_check.csv#WTR0015",
-      "doubt_kind": null,
+      "doubt_kind": "regional_presence",
       "block_by": "none",
       "block_region": "",
       "block_period": "",
       "source_ref": "downloads/Novgorod1230_material_culture_dataset_v1/Novgorod1230_material_culture_dataset_v1/data/catalog_items.csv:WTR0015",
-      "reason": "Кормовой центральный руль раннего типа: Для кормового центрального руля WTR0015 не установлены тип судна, устройство подвеса и датировка в Новгороде. Запросить источник и археологическую публикацию о кормовом рулевом управлении судов XII–XIII веков.",
+      "reason": "Кормовой руль известен в североевропейском судоходстве XIII века (book:463659 §71: «В XIII веке произошло еще одно коренное изменение в конструкции судов — появился кормовой руль»); присутствие именно раннего типа в Новгороде не установлено. Запросить источник о местном использовании кормового руля раннего типа.",
       "patterns": [
         {
           "language": "ru",
@@ -10303,12 +10306,12 @@
     },
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_byaz",
-      "doubt_kind": null,
+      "doubt_kind": "regional_presence",
       "block_by": "none",
       "block_region": "",
       "block_period": "",
       "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_byaz",
-      "reason": "Захаренко 2013 (book:378393 §54): в старину бязь звали «азиатской, персидской или бухарской тканью», шла на подкладку кафтанов и платки — без дат; время появления бязи на Руси и её бытование около 1230 г. не установлены.",
+      "reason": "Бязь известна как азиатская, персидская и бухарская хлопчатобумажная ткань; источник описывает её торговые сорта (book:773473 §1395: «Бязь в торговле двух сортов»). Местное производство не предполагается; вопрос — о конкретном импорте в Новгород около 1230 г. Импортная хлопчатобумажная ткань уже заведена в materials_colors.csv#imported_cotton_cloth.",
       "patterns": [
         {
           "language": "ru",
@@ -10367,12 +10370,12 @@
     },
     {
       "queue_id": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_trip_hammer",
-      "doubt_kind": "regional_presence",
-      "block_by": "none",
-      "block_region": "",
-      "block_period": "",
+      "doubt_kind": "anachronism",
+      "block_by": "name",
+      "block_region": "region_novgorod_land",
+      "block_period": "1230-1250",
       "source_ref": "crafts-tools-processes/materials_registry/needs_check.csv#crafts_trip_hammer",
-      "reason": "Физическая возможность не оспаривается; распространение и дата для Новгородской земли не установлены.",
+      "reason": "Источники относят вододействующие молотовые фабрики на Руси к XVII веку (book:381740 §19: «в конце XVII в.»); установка такого типа для Новгородской земли в 1230–1250 гг. — анахронизм.",
       "patterns": [
         {
           "language": "ru",
@@ -10483,12 +10486,12 @@
     },
     {
       "queue_id": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_lagenaria",
-      "doubt_kind": "anachronism",
-      "block_by": "name",
-      "block_region": "region_novgorod_land",
-      "block_period": "1230-1250",
+      "doubt_kind": "regional_presence",
+      "block_by": "none",
+      "block_region": "",
+      "block_period": "",
       "source_ref": "flora-herbs-berries-mushrooms/authoring/needs_check.csv#flora_lagenaria",
-      "reason": "Нужно установить, была ли старосветская Lagenaria известна в регионе, и не смешивать её с американским родом Cucurbita.",
+      "reason": "Источники описывают горлянку в Европе при Карле Великом (book:708172 §1351–1353: «Впервые тыкву-горлянку упоминает Карл Великий»); это не анахронизм, но местное присутствие не установлено. Не смешивать Lagenaria с американской Cucurbita: этот род отдельно запрещён в dn_cucurbita.",
       "patterns": [
         {
           "language": "ru",
@@ -10726,5 +10729,5 @@
       "exceptions": []
     }
   ],
-  "digest": "sha256:46b7a65dc5679bc205e68491e50400b6f4db0bd1fbc8cded2573f7c35131306d"
+  "digest": "sha256:63db11c14d7bec2286989c21fffc8f4c25121020aea61f8d1ee3d5c9d7202033"
 }

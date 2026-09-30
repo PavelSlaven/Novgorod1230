@@ -47,6 +47,13 @@ const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1';
 const nature = 'data/world-catalogs/novgorod/m2c-natural';
 const capacityManifest = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
 const capacityManifestSha256 = '5ee700861c0ff23f2f03c4112e0e28ef503ce08ecf7d4a72f280e0ef4199421b';
+// rt-lines a4 (Spatial 4.7.0 lines, LW-097): the pin of the line wave import manifest. Declared here so that the cutover (b1) imports
+// it from one place together with its reader; bootstrap does not import the wave yet, because the reader takes the highest
+// approved binding version and would meet binding@3 before it can read it.
+export const LINES_WAVE_MANIFEST = Object.freeze({
+  path: 'data/world-catalogs/novgorod/m2c-lines-v1-import-manifest.json',
+  sha256: '4c66eab49f24ea32ab8948f0cfc133b00fa7634193d0c674472333e949f95fcc'
+});
 const generatedNpcIndexMigration = 'scripts/live-world-v17-generated-npc-versioned-index.sql';
 const generatedNpcIndexMigrationSha256 = '27d527784f11a512cea2863b719dc416bcccbc3a483bcfac3145e05e1761538f';
 const naturePins = {

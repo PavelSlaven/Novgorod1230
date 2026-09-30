@@ -1,0 +1,135 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_kind": "dependency_closure",
+  "bundle_id": "novgorod_m2c_lines_v1_import",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "draft",
+  "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/generator-report.json",
+  "delete_policy": "forbid",
+  "data_gaps": [],
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/source_records.json",
+      "sha256": "4c08c7377e39c793c4b988560eb825eb7692756c1255dcce32067bc48d5b1f3d",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_authoring_versions",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_authoring_versions.json",
+      "sha256": "996675bb2108a2668dd6bddd4921bcfe37dc7ba47fa404dfb0c4d142ef00a220",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_nodes.json",
+      "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+      "status": "approved",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/source-approval/index.json#p12_novgorod_source_approval_001+target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_external_dependency_versions",
+      "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_external_dependency_versions.json",
+      "sha256": "43de895c4c714cac2e9b9fb9cdcf8d54a80ad643d0067676c27a786d447932a3",
+      "status": "approved",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json#spatial_v3_external_dependency_versions; reused exact approved global registry pins",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_transition_environment_profiles",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_transition_environment_profiles.json",
+      "sha256": "62e785e6c423dbc0b819e1bc56eded8ae765143f71c8b9a062b12c6c2acfff58",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_movement_method_cost_profiles",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_movement_method_cost_profiles.json",
+      "sha256": "aa05a345d0c6a90436eb47eb460dbe1bff2263d1c5ac9ddf9700958e79380f08",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_movement_method_cost_options",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_movement_method_cost_options.json",
+      "sha256": "4090b346ae7ab3d78865cd2b18bf7e9ca6f686e65c10b8371acf30124cd0c301",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_movement_method_cost_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_line_kind_profiles",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_line_kind_profiles.json",
+      "sha256": "8679f72f516a72d6d34dd3be5ec90d9aef22aa5f3d142a1d70fd4683167947c5",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_authoring_versions",
+        "spatial_v3_transition_environment_profiles",
+        "spatial_v3_movement_method_cost_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_line_kind_alternative_methods",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_line_kind_alternative_methods.json",
+      "sha256": "79463f0c163e2cea1c5c1066b18913ca27570ae444817fe543f18e7138a9adbd",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_line_kind_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_canonical_g5_connection_bindings",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json",
+      "sha256": "3500af6577b3b8f7f1880b2159f94c437d253cc191705c26fcbfce8a41418ceb",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_line_kind_profiles",
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_authoring_dependency_edges",
+      "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_authoring_dependency_edges.json",
+      "sha256": "b531674bcef27e0fac1acaf51f0aefa11a24aeff97466125950ab56a85fa6101",
+      "status": "draft",
+      "provenance_ref": "m2c_lines_v1_candidate",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions",
+        "spatial_v3_external_dependency_versions"
+      ]
+    }
+  ]
+}

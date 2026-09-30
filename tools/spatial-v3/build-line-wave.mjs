@@ -11,7 +11,9 @@ const root = resolve(import.meta.dirname, '../..');
 const CATALOG = 'data/world-catalogs/novgorod';
 export const LINE_WAVE_DIR = `${CATALOG}/spatial-v3/candidates/m2c-lines-v1`;
 export const LINE_NAMES_PATH = `${CATALOG}/m2c-line-names/candidate.json`;
-const BASE = `${CATALOG}/spatial-v3/candidates/m2c-g4-expansion-v1/datasets`;
+const BASE_DIR = `${CATALOG}/spatial-v3/candidates/m2c-g4-expansion-v1`;
+const BASE = `${BASE_DIR}/datasets`;
+export const LINES_MANIFEST_PATH = `${CATALOG}/m2c-lines-v1-import-manifest.json`;
 const DERIVED_PATH = `${CATALOG}/m2c-place-coordinates/derived-report.json`;
 const VERSION = 3;
 // D56: one rule for the world, not a profile field: a line longer than this has a recheck policy that slices it at this step.
@@ -325,6 +327,40 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
   return problems;
 }
 
+// The import bundle (PLAN-rt-lines-a3 a4): own datasets plus the two unchanged closure datasets the importer validates against
+// (nodes: the G5/G4 targets of the edges; external dependency versions: the pins of the route-kind edges). Insert-only: rows of
+// earlier versions stay in the database as they are. Status draft until the a2 data attestation exists.
+const MANIFEST_TABLES = [
+  ['source_records', 'own', []],
+  ['spatial_v3_authoring_versions', 'own', ['source_records']],
+  ['spatial_v3_nodes', 'closure', ['source_records', 'spatial_v3_authoring_versions']],
+  ['spatial_v3_external_dependency_versions', 'closure', []],
+  ['spatial_v3_transition_environment_profiles', 'own', ['spatial_v3_authoring_versions']],
+  ['spatial_v3_movement_method_cost_profiles', 'own', ['spatial_v3_authoring_versions']],
+  ['spatial_v3_movement_method_cost_options', 'own', ['spatial_v3_movement_method_cost_profiles']],
+  ['spatial_v3_line_kind_profiles', 'own', ['spatial_v3_authoring_versions', 'spatial_v3_transition_environment_profiles', 'spatial_v3_movement_method_cost_profiles']],
+  ['spatial_v3_line_kind_alternative_methods', 'own', ['spatial_v3_line_kind_profiles']],
+  ['spatial_v3_canonical_g5_connection_bindings', 'own', ['spatial_v3_line_kind_profiles', 'spatial_v3_nodes']],
+  ['spatial_v3_authoring_dependency_edges', 'own', ['source_records', 'spatial_v3_authoring_versions', 'spatial_v3_external_dependency_versions']]
+];
+
+export function buildImportManifest({ ownBytes, baseManifest, baseBytes, worldRevisionId }) {
+  const closure = new Map(baseManifest.datasets.map((entry) => [entry.table, entry]));
+  return { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_kind: 'dependency_closure',
+    bundle_id: 'novgorod_m2c_lines_v1_import', world_revision_id: worldRevisionId, status: 'draft',
+    provenance_ref: `${LINE_WAVE_DIR}/generator-report.json`, delete_policy: 'forbid', data_gaps: [],
+    datasets: MANIFEST_TABLES.map(([table, kind, dependsOn]) => {
+      if (kind === 'own') {
+        return { table, file: `${LINE_WAVE_DIR.slice(CATALOG.length + 1)}/datasets/${table}.json`, sha256: sha(ownBytes.get(table)),
+          status: 'draft', provenance_ref: PROVENANCE, delete_policy: 'forbid', depends_on: dependsOn };
+      }
+      const entry = closure.get(table);
+      if (!entry || sha(baseBytes.get(table)) !== entry.sha256) throw new Error(`${table}: the closure dataset differs from the active bundle manifest`);
+      return { table, file: `${BASE_DIR.slice(CATALOG.length + 1)}/${entry.file}`, sha256: entry.sha256, status: entry.status,
+        provenance_ref: entry.provenance_ref, delete_policy: 'forbid', depends_on: dependsOn };
+    }) };
+}
+
 const readJson = (path) => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
 const readBytes = (path) => readFileSync(resolve(root, path));
 
@@ -356,8 +392,14 @@ export async function runLineWave({ check = false, lineNamesPath = LINE_NAMES_PA
   const { datasets, report } = buildLineWave(inputs, sliceStepMinutes == null ? undefined : { sliceStepMinutes });
   const problems = checkLineWaveData(datasets, { spec: inputs.spec, recheckPolicies: inputs.existing.rechecks, sliceStepMinutes: report.parameters.slice_step_minutes });
   if (problems.length) throw new Error(`line wave violates its rules:\n${problems.slice(0, 20).join('\n')}`);
-  const outputs = [...Object.entries(datasets).map(([name, rows]) => [`${LINE_WAVE_DIR}/datasets/${name}.json`, `${JSON.stringify(rows, null, 2)}\n`]),
-    [`${LINE_WAVE_DIR}/generator-report.json`, `${JSON.stringify({ ...report, inputs: hashes }, null, 2)}\n`]];
+  const ownBytes = new Map(Object.entries(datasets).map(([name, rows]) => [name, Buffer.from(`${JSON.stringify(rows, null, 2)}\n`)]));
+  const baseManifest = readJson(`${BASE_DIR}/import-manifest.json`);
+  const baseBytes = new Map(baseManifest.datasets.filter((entry) => ['spatial_v3_nodes', 'spatial_v3_external_dependency_versions'].includes(entry.table))
+    .map((entry) => [entry.table, readBytes(`${BASE_DIR}/${entry.file}`)]));
+  const manifest = buildImportManifest({ ownBytes, baseManifest, baseBytes, worldRevisionId: inputs.worldRevisionId });
+  const outputs = [...Object.entries(datasets).map(([name]) => [`${LINE_WAVE_DIR}/datasets/${name}.json`, ownBytes.get(name).toString('utf8')]),
+    [`${LINE_WAVE_DIR}/generator-report.json`, `${JSON.stringify({ ...report, inputs: hashes }, null, 2)}\n`],
+    [LINES_MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`]];
   for (const [path, bytes] of outputs) {
     if (check) { if (readFileSync(resolve(root, path), 'utf8') !== bytes) throw new Error(`${path} is stale: rerun build-line-wave.mjs`); }
     else { mkdirSync(dirname(resolve(root, path)), { recursive: true }); writeFileSync(resolve(root, path), bytes); }

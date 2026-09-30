@@ -4,7 +4,10 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest } from '../../../packages/contracts/src/spatial-v3/registry.js';
-import { buildLineWave, checkLineWaveData, LINE_WAVE_DIR, policySlices, runLineWave } from '../build-line-wave.mjs';
+import { createHash } from 'node:crypto';
+import { buildLineWave, checkLineWaveData, LINES_MANIFEST_PATH, LINE_WAVE_DIR, policySlices, runLineWave } from '../build-line-wave.mjs';
+import { validateAuthoringBundle } from '../p12-authoring-importer.mjs';
+import { LINES_WAVE_MANIFEST } from '../../../scripts/bootstrap-live-world-v17.mjs';
 
 const root = resolve(import.meta.dirname, '../../..');
 const read = (path) => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
@@ -275,4 +278,50 @@ test('committed candidate: names are the approved line-names names; near-similar
   const names = new Map(read('data/world-catalogs/novgorod/m2c-line-names/candidate.json').local_pairs.map((pair) => [pair.source_pair_id, pair.name_ru]));
   for (const row of data.spatial_v3_canonical_g5_connection_bindings) assert.equal(row.line_name, names.get(row.source_pair_id), row.id);
   assert.ok(Number.isInteger(report.matches.similar_but_distinct_names_at_one_place));
+});
+
+// a4: the wave as an import bundle (dependency closure, insert-only), validated by the real importer.
+const NOVGOROD = 'data/world-catalogs/novgorod';
+const sha256 = (path) => createHash('sha256').update(readFileSync(resolve(root, path))).digest('hex');
+
+test('a4: the import manifest is a dependency closure that the importer validates without a single error', async () => {
+  const manifest = read(LINES_MANIFEST_PATH);
+  assert.deepEqual([manifest.bundle_kind, manifest.delete_policy, manifest.data_gaps ?? [], manifest.status],
+    ['dependency_closure', 'forbid', [], 'draft']);
+  const result = await validateAuthoringBundle({ manifestPath: LINES_MANIFEST_PATH });
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.ok, true);
+  assert.deepEqual(manifest.datasets.map((entry) => entry.table), ['source_records', 'spatial_v3_authoring_versions', 'spatial_v3_nodes',
+    'spatial_v3_external_dependency_versions', 'spatial_v3_transition_environment_profiles', 'spatial_v3_movement_method_cost_profiles',
+    'spatial_v3_movement_method_cost_options', 'spatial_v3_line_kind_profiles', 'spatial_v3_line_kind_alternative_methods',
+    'spatial_v3_canonical_g5_connection_bindings', 'spatial_v3_authoring_dependency_edges']);
+  assert.deepEqual([result.dataset_counts.spatial_v3_canonical_g5_connection_bindings, result.dataset_counts.spatial_v3_line_kind_profiles,
+    result.dataset_counts.spatial_v3_line_kind_alternative_methods, result.dataset_counts.spatial_v3_authoring_versions,
+    result.dataset_counts.spatial_v3_authoring_dependency_edges], [454, 8, 3, 471, 1394]);
+});
+
+test('a4: own datasets are the candidate files, closure datasets are the unchanged files of the active bundle', () => {
+  const manifest = read(LINES_MANIFEST_PATH);
+  const base = read(`${NOVGOROD}/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json`);
+  const baseSha = new Map(base.datasets.map((entry) => [entry.table, entry.sha256]));
+  for (const entry of manifest.datasets) {
+    assert.equal(entry.sha256, sha256(`${NOVGOROD}/${entry.file}`), `${entry.table}: sha256 is the file's`);
+    assert.equal(entry.delete_policy, 'forbid');
+    if (entry.file.includes('m2c-g4-expansion-v1')) {
+      assert.equal(entry.sha256, baseSha.get(entry.table), `${entry.table}: closure dataset unchanged`);
+      assert.equal(entry.status, 'approved', 'the closure keeps the status of the approved bundle');
+    } else {
+      assert.ok(entry.file.startsWith('spatial-v3/candidates/m2c-lines-v1/datasets/'), entry.file);
+      assert.equal(entry.status, 'draft', 'no approval attestation for the wave yet (a2)');
+      assert.equal(entry.provenance_ref, 'm2c_lines_v1_candidate');
+    }
+  }
+  assert.deepEqual(manifest.datasets.filter((entry) => entry.file.includes('m2c-g4-expansion-v1')).map((entry) => entry.table), ['spatial_v3_nodes', 'spatial_v3_external_dependency_versions']);
+});
+
+test('a4: the bootstrap declares the wave manifest pin (b1 imports it) and does not import it yet', async () => {
+  assert.equal(LINES_WAVE_MANIFEST.path, LINES_MANIFEST_PATH);
+  assert.equal(LINES_WAVE_MANIFEST.sha256, sha256(LINES_MANIFEST_PATH), 'repin the constant in bootstrap-live-world-v17.mjs when the wave changes');
+  const source = readFileSync(resolve(root, 'scripts/bootstrap-live-world-v17.mjs'), 'utf8');
+  assert.equal(source.match(/LINES_WAVE_MANIFEST/g).length, 1, 'declared once, used by no import step before b1');
 });

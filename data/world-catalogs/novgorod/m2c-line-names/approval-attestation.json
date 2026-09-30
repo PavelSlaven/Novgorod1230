@@ -1,0 +1,66 @@
+{
+  "schema": "rus.m2c_line_names_authoring_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "decision_before_continuation": "BLOCK",
+  "candidate_ref": "data/world-catalogs/novgorod/m2c-line-names/candidate.json",
+  "branch": "fleet/line-names",
+  "reviewed_commit": "c24198682a23704b25dd7e65d40a7cd4b5fce34c",
+  "reviewed_candidate_sha256": "fe4576d8801e635dfb2b2f22909f119274cb39ab9769abc833f4e5c6621367dd",
+  "candidate_sha256": "ffea92ed07f96b6a027d0bbd947318a9eb796bf7d93493bdff88fa8acd7e180f",
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+  "approved_on": "2026-09-30",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "line_kind and name_ru of 227 local G5-G5 pairs and 43 G4 world-route pairs of start cell gn_nov_g1_xp017_yp026, for rt-lines phase a (binding@3 of canonical G5-G5 links and world routes) and the player-facing label per Spatial 4.7.0 §14.4 (name + discriminator + direction word). All qualifiers are null; this is valid because every name is unique at each G5. Not in scope: base_minutes and minutes_reason (owner decision D56: minutes come from place-geo geometry).",
+  "checks": [
+    "check.mjs: OK, 227 local pairs, 43 world routes, 18 kinds; check.test.mjs 5/5 (the DONE-line-names-5 report said 'pass 1', a reporting error).",
+    "Approver scripts (read-only): per-G5 label similarity (content-stem Jaccard >= 0.34 or subset) over all 540 directed lines, 21 pairs flagged, 5 real near-duplicates at one G5; name words checked against place-geo derived-report river_direction and waterbody width; lines with 'берегом' checked against shore_to_water_link and shoreline_alignment in derived-report (integ-98 86977f99).",
+    "Finding line_names[0] (large_island_head_2 on still lic) is closed: 'по стоячей воде'.",
+    "Finding line_names[1] was not closed at c2419868 (five long shore routes renamed instead of the short shore-water links); closed by the mechanical continuation below.",
+    "All 16 continuation names were applied to a temporary copy and passed through check.mjs validate(): 0 errors; the 9 similar pairs that remain are distinguishable."
+  ],
+  "mechanical_continuation": {
+    "applied_commit": "42c121d8",
+    "accepted_by": "claude-opus-5-5 (lead reviewer; deterministic checks only, per the approver note)",
+    "accepted_on": "2026-09-30",
+    "candidate_sha256": "ffea92ed07f96b6a027d0bbd947318a9eb796bf7d93493bdff88fa8acd7e180f",
+    "checks": [
+      "Comparison script against c2419868: candidate.json differs only in name_ru of exactly the 16 listed records, with exactly the approver's strings; the 5 reverts equal their bb0d2802 values; all other fields identical.",
+      "check.mjs OK (227 local pairs, 43 world routes, 18 kinds); check.test.mjs 5/5.",
+      "README line about the Opus findings replaced with the actual list of changes."
+    ],
+    "renamed": [
+      "sheltered_inner_reach_4",
+      "south_entry_reach_3",
+      "west_side_channel_3",
+      "west_side_channel_5",
+      "reed_backwater_cross",
+      "west_side_channel_2",
+      "west_side_channel_cycle",
+      "shifting_shoal_field_3",
+      "floodplain_ridge_route_cross",
+      "east_side_channel_5",
+      "north_outflow_reach_cross"
+    ],
+    "reverted_to_bb0d2802": [
+      "east_distributary_belt_1",
+      "north_main_channel_1",
+      "river_sea_transition_1",
+      "south_main_channel_1",
+      "west_distributary_belt_1"
+    ],
+    "kept_with_evidence": "central_navigation_reach_cycle keeps 'берегом по траве вдоль воды': it runs along the shore (alignment 0.94, 5 m from the shoreline skeleton)."
+  },
+  "limits": [
+    "Authored game names, not attested 1230 toponyms.",
+    "base_minutes in the candidate are not approved and are not imported (D56).",
+    "line_kind is approved as a draft value of the 18-kind spatial.movement.line_kind registry of the Spatial CR. Inconsistency: large_island_head_1, _2 and _cycle are river_channel while _5 is side_channel on the same still body large_island_channels (a reach of central_head_branch, place-geo limit 7); this does not affect labels.",
+    "check.mjs enforces uniqueness only for identical strings. Remaining similar but distinguishable pairs are accepted: dry_island_ridge_landing, flooded_interior_basin_bog_edge, reed_backwater_entrance, vikhtuy_resource_edge_river_edge, zaostrovye_landing_river_approach, sheltered_inner_reach upstream and downstream approaches. The rt-lines loader should add a near-duplicate check (same content-word set).",
+    "Seven names repeat at different G5s (for example 'по влажной земле у воды', 'по мелководью над илом'); this is allowed.",
+    "Non-blocking style leftovers: 'лодьёй', 'по малому водотоку', 'по узкому водному ответвлению', 'по воде, несущей песок', 'древесных обломков', 'в заводи', 'по воде под редкими деревьями'.",
+    "Names were checked against the place-geo geometry of 86977f99; if that geometry changes (owner_findings.spatial: cross_g4_09/10/11/14 and others), the names of those lines must be rechecked.",
+    "The place-geo derived-report was computed with line-names bb0d2802; recompute it at the next derivation (no name_mismatches effect expected).",
+    "If new G5 nodes or lines are added (see README observations on cross_g4_14/18/20), uniqueness and qualifiers must be rechecked."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false
+}

@@ -29,7 +29,7 @@ test('complete empty modifier set permits same-G6 default and directed explicit 
   assert.deepEqual(ids(input), ['npc:b']);
 });
 
-test('§7.1.1: poor visibility hides an entity but never a line; concealment hides both', () => {
+test('§7.1.1: poor visibility hides an entity but never a line (reported as none); concealment hides both', () => {
   const input = scene();
   const fog = { ...clear, lighting: 'none', weather: 'none' };
   input.observer_visual_capability = 'none';
@@ -39,7 +39,7 @@ test('§7.1.1: poor visibility hides an entity but never a line; concealment hid
       ({ target_id: entity_kind, position_id: 'a', entity_kind, ...fog })),
     { target_id: 'concealed', position_id: 'a', entity_kind: 'site_connection', ...fog, concealment: 'none' }];
   assert.deepEqual(visibleCurrentTargets(input), ['local_edge', 'site_connection', 'directional_exit']
-    .map((target_id) => ({ target_id, visibility: 'partial' })));
+    .map((target_id) => ({ target_id, visibility: 'none' })));
 });
 
 test('empty modifier set is required before any visibility resolution', () => {

@@ -29,12 +29,10 @@ export function visibleCurrentTargets({ observer_position_id, observer_visual_ca
       ...Object.fromEntries(conditions.map((key) => [key, row[key]])) }).visibility;
     const visibility = observer_visual_capability === 'none' || result === 'none' ? 'none'
       : observer_visual_capability === 'partial' || result === 'partial' ? 'partial' : 'clear';
-    // Spatial 4.7.0 §7.1.1: visibility is not availability. A line from here is always offered
-    // (by hearing and touch at `none`); only concealment hides it.
-    if (visibility === 'none' && LINE_KINDS.has(row.entity_kind) && row.concealment !== 'none') {
-      return [{ target_id: row.target_id, visibility: 'partial' }];
-    }
-    return visibility === 'none' ? [] : [{ target_id: row.target_id, visibility }];
+    // Spatial 4.7.0 §7.1.1: visibility is not availability. A line from here stays offered at
+    // `none` (the caller sees `none` and describes it by hearing and touch); only concealment hides it.
+    const offered = visibility !== 'none' || LINE_KINDS.has(row.entity_kind) && row.concealment !== 'none';
+    return offered ? [{ target_id: row.target_id, visibility }] : [];
   });
 }
 

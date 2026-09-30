@@ -164,7 +164,8 @@ test('a partially visible exit still shows its pass-target description (partial 
   });
 
 // Spatial 4.7.0 §7.1.1 (rt-lines phase 0, LW-097): visibility is not availability, so poor sight
-// keeps a line offered; only concealment hides it. Replaces the D47.9 "no sight, no passage" pin.
+// keeps a line offered; only concealment hides it. This is D47.9 ("a start in fog is not a dead end")
+// carried out; the old tests pinned the opposite, "no sight, no passage".
 const concealed = async (input) => ({ ...(await readCurrentTargetConditions(input)), concealment: 'none' });
 
 test('an exit is disclosed without any sight (§7.1.1); a concealed one is not',

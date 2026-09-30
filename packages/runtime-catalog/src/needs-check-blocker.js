@@ -61,6 +61,7 @@ function assertEntries(entries, regions) {
       || !['name', 'archive_id', 'none'].includes(entry.block_by)
       || typeof entry.block_region !== 'string' || typeof entry.block_period !== 'string'
       || (entry.block_by === 'name' && (entry.doubt_kind !== 'anachronism' || !regionIds.has(entry.block_region) || !/^\d{4}-\d{4}$/u.test(entry.block_period)))
+      || (entry.block_by === 'name' && Number(entry.block_period.slice(0, 4)) > Number(entry.block_period.slice(5)))
       || (entry.block_by === 'none' && entry.doubt_kind !== 'regional_presence')
       || (entry.block_by === 'archive_id' && (entry.doubt_kind !== null || entry.block_region || entry.block_period))
       || !Array.isArray(entry.patterns) || entry.patterns.length === 0
@@ -154,6 +155,10 @@ function matchesAll({ snapshot, candidate }) {
   if (candidate.region !== undefined && candidate.region !== null && typeof candidate.region !== 'string') {
     throw new TypeError('candidate.region must be a string when provided.');
   }
+  if (candidate.year !== undefined && (!Number.isSafeInteger(candidate.year)
+    || candidate.year < 1 || candidate.year > 9999)) {
+    throw new TypeError('candidate.year must be an integer from 1 to 9999 when provided.');
+  }
   const values = {
     ru: [candidate.name, candidate.semantic_type, candidate.candidate_hint, candidate.context,
       ...(candidate.aliases_ru ?? [])],
@@ -172,6 +177,10 @@ function matchesAll({ snapshot, candidate }) {
   for (const compiled of compiledEntries(snapshot)) {
     const { entry } = compiled;
     if (entry.block_by === 'none') continue;
+    if (entry.block_by === 'name' && candidate.year !== undefined) {
+      const [startYear, endYear] = entry.block_period.split('-').map(Number);
+      if (candidate.year < startYear || candidate.year > endYear) continue;
+    }
     if (entry.block_by === 'name' && snapshot.regions.includes(candidate.region)
       && candidate.region !== entry.block_region) continue;
     const excluded = compiled.exceptions.some((tokens) => tokens.length > 0

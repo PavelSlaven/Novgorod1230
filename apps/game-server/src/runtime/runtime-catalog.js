@@ -2,6 +2,7 @@ import {
   assertCompatibleWorldPin,
   createRuntimeCatalogLoader,
   loadApprovedProceduralCompiledCatalog,
+  loadApprovedNeedsCheckBlockerSnapshot,
   selectApplicableItemCatalog
 } from '@rus/runtime-catalog';
 import { loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';
@@ -159,6 +160,9 @@ async function buildContext({
     await loader.loadApprovedItemCatalog({ pin }),
     await commonCatalogLookupLoader()
   );
+  const needsCheckBlockerSnapshot = loadApprovedNeedsCheckBlockerSnapshot({
+    verifiedCatalog, pin
+  });
   const actorProfileCatalog = regionId && effectiveDate
     && typeof loader.loadApprovedActorProfileCatalog === 'function'
     ? await loader.loadApprovedActorProfileCatalog({
@@ -192,6 +196,7 @@ async function buildContext({
     actor_profile_catalog: actorProfileCatalog,
     verified_catalog: verifiedCatalog,
     verified_procedural_compiled_catalog: proceduralCatalog,
+    needs_check_blocker_snapshot: needsCheckBlockerSnapshot,
     applicable_catalog: applicableCatalog
   });
 }

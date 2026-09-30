@@ -47,6 +47,7 @@ import { buildG4NaturalPresentationCompiledRecords } from './g4-natural-presenta
 import { buildG4NaturalPlacementCompiledRecords } from './g4-natural-placement-compiled-records.js';
 import { buildTargetStartCompiledRecords } from './target-start-compiled-records.js';
 import { buildTargetFiniteCompiledRecords } from './target-finite-profile.js';
+import { buildNeedsCheckBlockerCompiledRecord } from './needs-check-blocker-compiled-record.js';
 
 const CATALOG_SCOPE = 'item_container_materialization_v2';
 const APPROVED_STAGE3C_REVISION =
@@ -201,6 +202,8 @@ async function targetPresentationRows(root) {
     sceneTemplateBytes,
     capacityApproval: capacityStartApproval, approval,
     naturalRecords: naturalSuccessors, presentationRecords: presentationSuccessors });
+  const needsCheckSnapshot = JSON.parse(await readFile(resolve(base,
+    'game-base-v1/needs_check_blockers.v2.json'), 'utf8'));
   return [...buildG4NaturalCompiledRecords({ candidate: JSON.parse(naturalBytes) }),
     ...buildG4NaturalPresentationCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-presentation/candidate.json'), 'utf8'), approval }),
     ...naturalSuccessors, ...presentationSuccessors,
@@ -211,7 +214,8 @@ async function targetPresentationRows(root) {
       path: `data/world-catalogs/novgorod/${placementPath}`, record: placementSuccessor[0],
       sourceApproval: approval } }),
     ...buildTargetFiniteCompiledRecords({ mappedBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-approved.json'), 'utf8'),
-      manifestBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-manifest.json'), 'utf8'), approval })];
+      manifestBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-manifest.json'), 'utf8'), approval }),
+    buildNeedsCheckBlockerCompiledRecord(needsCheckSnapshot)];
 }
 
 export function buildSpatialV3TargetItemImport({ preparation,

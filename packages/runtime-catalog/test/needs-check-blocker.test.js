@@ -26,6 +26,19 @@ test('blocks anachronisms in matching or unspecified region only', () => {
   }
 });
 
+test('scopes name blockers to inclusive years while unknown year stays fail-closed', () => {
+  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([entry], regions);
+  for (const year of [1230, 1240, 1250, undefined]) {
+    assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_novgorod_land', year, name: 'павлин' } }).queue_id, 'fauna_peacock');
+  }
+  for (const year of [1229, 1251]) {
+    assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_novgorod_land', year, name: 'павлин' } }), null);
+  }
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_test_other', year: 1240, name: 'павлин' } }), null);
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_typo', year: 1240, name: 'павлин' } }).queue_id, 'fauna_peacock');
+  assert.throws(() => NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { year: '1230', name: 'павлин' } }), /candidate.year/u);
+});
+
 test('matches Russian inflections and Latin scientific names', () => {
   const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([entry], regions);
   for (const name of ['павлинами', 'павлинов', 'павлинам', 'павлинах', 'павлином']) {
@@ -84,6 +97,7 @@ test('fails closed on malformed fields, snapshots or changed digest', () => {
   assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, doubt_kind: 'regional_presence', block_by: 'name' }], regions), /Invalid or duplicate/u);
   assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, block_period: '1230' }], regions), /Invalid or duplicate/u);
   assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, block_region: 'region_typo' }], regions), /Invalid or duplicate/u);
+  assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, block_period: '1250-1230' }], regions), /Invalid or duplicate/u);
   assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, patterns: [{ language: 'ru', value: '—' }] }], regions), /Empty normalized/u);
 });
 

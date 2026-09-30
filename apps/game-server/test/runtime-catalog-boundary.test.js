@@ -38,7 +38,8 @@ test('runtime catalog boundary uses active state only for a new party and histor
     },
     async loadApprovedItemCatalog({ pin: actual }) {
       calls.push(`catalog:${actual.catalog_revision_id}`);
-      return Object.freeze({ schema: 'verified', records_by_table: {} });
+      return Object.freeze({ schema: 'rus.verified_item_catalog.v2', verified: true,
+        pin: actual, records_by_table: {} });
     },
     async loadApprovedActorProfileCatalog({ worldPin: actual }) {
       assert.deepEqual(actual, worldPin);
@@ -93,6 +94,7 @@ test('runtime catalog boundary uses active state only for a new party and histor
     effectiveDate: '1230-01-01'
   });
   assert.equal(created.source, 'active');
+  assert.equal(created.needs_check_blocker_snapshot, null);
   assert.deepEqual(calls, [
     'active',
     'compatible',
@@ -105,6 +107,7 @@ test('runtime catalog boundary uses active state only for a new party and histor
   calls.length = 0;
   const reloaded = await coordinator.loadPartyContext({ partyId: 'party-1' });
   assert.equal(reloaded.source, 'persisted_party');
+  assert.equal(reloaded.needs_check_blocker_snapshot, null);
   assert.deepEqual(calls, ['compatible', 'catalog:catalog-v2', 'lookups']);
 });
 

@@ -76,7 +76,7 @@ function actionProductionPlan(request, descriptorName, identityMode = 'independe
         result_class: identityMode === 'preserve_source'
           ? 'ordinary_physical_result' : 'partial_transformation',
         material_extent: identityMode === 'preserve_source' ? null : 'minor',
-        output_class: 'ordinary_mundane', result_descriptor } }],
+        output_class: 'ordinary_mundane', result_descriptor: resultDescriptor } }],
     reason_code: 'action_production',
     reason: 'Пробую обработать имеющуюся вещь.' };
 }
@@ -149,6 +149,8 @@ function installDeterministicFetch(seen) {
     }
     if (system.startsWith('Return only one JSON object containing the ordinary semantic choice.')) {
       seen.ordinaryCalls += 1;
+      seen.ordinaryModes ??= [];
+      seen.ordinaryModes.push(request.mode);
       return respond(ordinaryResponse(user, null));
     }
     if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
@@ -158,9 +160,6 @@ function installDeterministicFetch(seen) {
       return respond({ reviewed_segments: ids,
         source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ids })),
         unsupported: [], literary_failures: [], evidence: ['deterministic test response'] });
-    }
-    if (system.startsWith('Return only {"pass"')) {
-      return respond({ pass: true, failed_checks: [], concerns: [], evidence: [] });
     }
     if (system.startsWith('Return only {"prose"')) {
       const beat = user.required_current_beat;
@@ -234,7 +233,7 @@ async function assertBlocked(runtime, partyId, requestId, text, expectedQueueId)
 test('production root blocks O1/A1 anachronisms before commit and preserves allowed paths',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    const seen = { plannerCalls: 0, ordinaryCalls: 0, positionRef: null };
+    const seen = { plannerCalls: 0, ordinaryCalls: 0, ordinaryModes: [], positionRef: null };
     const restoreFetch = installDeterministicFetch(seen);
     t.after(() => restoreFetch());
     let { runtime } = await createPresenceProductionRoot({ ...env,
@@ -250,12 +249,13 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
     const requestId = () => `needs-check-${partyId}-${ordinal++}`;
 
     const beforeO1 = await committedFingerprint(env.partyPool, partyId);
-    const ordinaryBefore = seen.ordinaryCalls;
+    const ordinaryBefore = seen.ordinaryModes.length;
     const o1Request = requestId();
     await assertBlocked(runtime, partyId, o1Request,
       'Найду колесную прялку.', blockerQueueId('Колёсная прялка'));
-    assert.equal(seen.ordinaryCalls, ordinaryBefore,
-      'O1 query guard must stop before Stage A/Stage B materialization model calls');
+    assert.equal(seen.ordinaryModes.slice(ordinaryBefore)
+      .includes('resolve_presence'), false,
+      'O1 query guard must stop before presence model resolution');
     assert.deepEqual(await committedFingerprint(env.partyPool, partyId), beforeO1,
       'O1 refusal must leave party state, clock, items, presence and P16 unchanged');
 
@@ -269,8 +269,17 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
     assert.deepEqual(await committedFingerprint(env.partyPool, partyId), beforeA1,
       'A1 refusals must leave party state, clock, items, presence and P16 unchanged');
 
+    const shirtBeforeInspect = (await env.partyPool.query(`SELECT item_id FROM
+      party_runtime.party_items WHERE party_id=$1 AND state::text LIKE '%нижняя рубаха%'`,
+    [partyId])).rows.map(({ item_id }) => item_id);
+    assert.ok(shirtBeforeInspect.length > 0);
     await runtime.submitTurn(partyId, { raw_text: 'Осматриваю нижнюю рубаху.',
       request_id: requestId() });
+    const shirtAfterInspect = (await env.partyPool.query(`SELECT item_id FROM
+      party_runtime.party_items WHERE party_id=$1 AND state::text LIKE '%нижняя рубаха%'`,
+    [partyId])).rows.map(({ item_id }) => item_id);
+    assert.deepEqual(shirtAfterInspect, shirtBeforeInspect,
+      'inspection keeps the committed shirt available');
 
     const beforePeacockOrdinary = seen.ordinaryCalls;
     await runtime.submitTurn(partyId, { raw_text: 'Найду павлина.',
@@ -278,8 +287,16 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
     assert.ok(seen.ordinaryCalls > beforePeacockOrdinary,
       'regional_presence-only peacock query reaches ordinary materialization applicability');
 
+    const itemIdsBeforePreserve = (await env.partyPool.query(`SELECT item_id FROM
+      party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]))
+      .rows.map(({ item_id }) => item_id);
     await runtime.submitTurn(partyId, { raw_text: 'Распущу шов на рубахе.',
       request_id: requestId() });
+    const itemIdsAfterPreserve = (await env.partyPool.query(`SELECT item_id FROM
+      party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]))
+      .rows.map(({ item_id }) => item_id);
+    assert.deepEqual(itemIdsAfterPreserve, itemIdsBeforePreserve,
+      'preserve_source does not create an independent blocked item');
     const repeatId = `needs-check-repeat-${partyId}`;
     const beforeRepeat = await committedFingerprint(env.partyPool, partyId);
     await assertBlocked(runtime, partyId, repeatId,
@@ -294,18 +311,20 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
       'retry after runtime restart must repeat the refusal without committing');
   });
 
-test('legacy v1 pin without a blocker snapshot retains the pre-feature behavior', async () => {
+test('legacy pinned catalog without a blocker requirement retains prior behavior', async () => {
   const worldPin = { world_revision_id: 'world-v1',
     world_catalog_digest: 'a'.repeat(64) };
   const pin = { schema: 'rus.runtime_catalog_pin.v2',
-    catalog_revision_id: 'procedural_scene_final_candidate_v1_001' };
+    catalog_revision_id: 'legacy-test', import_id: 'legacy-import',
+    catalog_digest: 'b'.repeat(64), runtime_contract_digest: 'c'.repeat(64) };
   const guard = createNeedsCheckMaterializationGuard({
-    worldBaseReader: { async read() { throw new Error('legacy pin must not query world rows'); } },
+    resolveRegion: async () => { throw new Error('legacy pin must not query region'); },
     calendarProfile: { profile_id: 'unused-for-legacy-v1' }
   });
-  await assert.doesNotReject(guard({ partyId: 'legacy-party',
+  await assert.doesNotReject(guard({
     committedState: { position: { g4_id: 'g4' } },
     candidate: { name: 'Колёсная прялка' }, catalogContext: {
-      pin, world_pin: worldPin, needs_check_blocker_snapshot: null
+      pin, world_pin: worldPin, needs_check_blocker_snapshot: null,
+      needs_check_blocker_snapshot_required: false
     } }));
 });

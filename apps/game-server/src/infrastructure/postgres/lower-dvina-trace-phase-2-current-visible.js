@@ -7,7 +7,7 @@ import { scenePresentationForLocation } from
   '../../runtime/lower-dvina-trace-scene-presentation.js';
 import { projectSpatialV3CurrentVisibleContext } from '../../runtime/spatial-v3-current-visible-context.js';
 import { serverError } from '../../errors.js';
-import { LOCAL_EDGE_OCCUPIED_STATUS } from '../../runtime/local-edge-occupancy.js';
+import { isMovementVisibleObject, movementVisibleObjects } from '../../runtime/spatial-v3-movement-objects.js';
 
 const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
@@ -168,19 +168,8 @@ export async function withPhase2CurrentLocalEdges(state, readLocalEdgeDisclosure
   const context = requirePhase2CurrentVisibleContext(state.current_visible_context);
   return withPhase2CurrentVisibleContext(state, { ...context,
     visible_objects: [
-      ...context.visible_objects.filter((row) =>
-        !['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection']
-          .includes(row?.entity_ref?.entity_kind)),
-      ...disclosed.map(({ edge_id, display_label, destination_status: status }) => ({
-        entity_ref: { entity_kind: 'scene_movement_edge', entity_id: edge_id },
-        display_label, recognition: 'known',
-        ...(status === 'occupied' ? { visible_status: LOCAL_EDGE_OCCUPIED_STATUS } : {}) })),
-      ...exits.map(({ directional_exit_id, display_label }) => ({
-        entity_ref: { entity_kind: 'g4_directional_exit', entity_id: directional_exit_id },
-        display_label, recognition: 'known' })),
-      ...connections.map(({ connection_binding_id, display_label }) => ({
-        entity_ref: { entity_kind: 'g5_site_connection', entity_id: connection_binding_id },
-        display_label, recognition: 'known' }))
+      ...context.visible_objects.filter((row) => !isMovementVisibleObject(row)),
+      ...movementVisibleObjects({ edges: disclosed, exits, connections })
     ] });
 }
 

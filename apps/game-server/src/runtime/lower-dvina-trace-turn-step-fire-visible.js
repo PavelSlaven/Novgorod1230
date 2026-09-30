@@ -9,6 +9,7 @@ import {
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 const SCHEMA =
   'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1';
 const FIRE_SEED_PREFIX = 'turn_step_world_process_';
@@ -65,10 +66,14 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   });
 }
 function finishVisibleProjection(base, input, calendarProfile) {
-  const enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
+  let enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
     committedState: input.retrieved_state, calendarProfile,
     bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after,
     temporalResults: input.time_update?.temporal_results });
+  // A local move changes the place's passages: the retrieved state still holds those of the position left.
+  const arrived = input.consequence?.visible_seed?.destination_movement_objects;
+  if (Array.isArray(arrived)) enriched = { ...enriched, visible_objects: [
+    ...enriched.visible_objects.filter((row) => !isMovementVisibleObject(row)), ...arrived] };
   const consequence = input.consequence;
   const arrival = consequence?.phase3_kind === 'movement'
     || (consequence?.phase6_kind === 'synchronized_carry'

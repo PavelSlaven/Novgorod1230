@@ -1,0 +1,277 @@
+{
+  "schema": "rus.m2c_lines_v1_generator_report.v1",
+  "status": "candidate_unapproved",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "parameters": {
+    "max_segment_minutes": 30
+  },
+  "counts": {
+    "base_bindings": 454,
+    "pairs": 220,
+    "bindings_at_v3": 440,
+    "excluded_pairs": 7,
+    "excluded_lines": 14,
+    "line_kinds_with_profile": 8,
+    "line_kinds_used": 8,
+    "alternative_methods": 3,
+    "authoring_versions": 457,
+    "dependency_edges": 1352
+  },
+  "excluded_pairs": [
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_3",
+      "line_kind": "wetland_path",
+      "name_ru": "по мокрой траве",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_3",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+          "minutes": 31
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_3",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+          "minutes": 31
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    },
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
+      "line_kind": "wetland_path",
+      "name_ru": "через мокрую траву и осоку",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+          "minutes": 48
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+          "minutes": 48
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    },
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
+      "line_kind": "wetland_path",
+      "name_ru": "по листве у воды",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+          "minutes": 40
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+          "minutes": 40
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    },
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "line_kind": "forest_track",
+      "name_ru": "тропой между корнями по мягкой земле",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+          "minutes": 32
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+          "minutes": 32
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    },
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "line_kind": "forest_track",
+      "name_ru": "лесным ходом по сырому краю",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+          "minutes": 35
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+          "minutes": 35
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    },
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
+      "line_kind": "forest_track",
+      "name_ru": "по мягкой земле под кронами",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+          "minutes": 34
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+          "minutes": 34
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    },
+    {
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
+      "line_kind": "forest_track",
+      "name_ru": "тропой по влажному краю",
+      "lines": [
+        {
+          "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+          "minutes": 37
+        },
+        {
+          "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
+          "from": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+          "to": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+          "minutes": 37
+        }
+      ],
+      "reason": "base_minutes_over_max_segment_minutes",
+      "max_segment_minutes": 30,
+      "status": "waits_for_D2"
+    }
+  ],
+  "limit_sensitivity": [
+    {
+      "max_segment_minutes": 30,
+      "pairs_included": 220,
+      "pairs_waiting_for_D2": 7
+    },
+    {
+      "max_segment_minutes": 35,
+      "pairs_included": 224,
+      "pairs_waiting_for_D2": 3
+    },
+    {
+      "max_segment_minutes": 40,
+      "pairs_included": 226,
+      "pairs_waiting_for_D2": 1
+    },
+    {
+      "max_segment_minutes": 48,
+      "pairs_included": 227,
+      "pairs_waiting_for_D2": 0
+    },
+    {
+      "max_segment_minutes": 60,
+      "pairs_included": 227,
+      "pairs_waiting_for_D2": 0
+    }
+  ],
+  "connectivity": {
+    "components_before": 32,
+    "components_after": 34,
+    "places_without_local_line": [
+      "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+      "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge"
+    ]
+  },
+  "matches": {
+    "minutes_from_place_geo": 440,
+    "slot_changes": {
+      "forward_kept": 220,
+      "reverse_swapped": 220
+    },
+    "line_kind_equals_place_geo_movement_class": 220,
+    "line_name_unique_per_place": "checked by checkLineWaveData; 0 digits, 0 ordinal words, 0 duplicate (name, discriminator, direction) per place"
+  },
+  "differences": {
+    "line_kind_differs_from_place_geo_movement_class": 0,
+    "forward_slots_departure_to_arrival_in_source": "all 454 (both directions): the source violates the paired-slot rule (F :7371); binding@3 swaps the reverse side",
+    "line_names_minutes_vs_place_geo": {
+      "lines": 220,
+      "differ_at_least_2x": 127,
+      "differ_10_minutes_or_more": 32,
+      "note": "informational: PLAN-OK-rt-lines-a D1 takes the place-geo minutes"
+    }
+  },
+  "unresolved_refs": [],
+  "editorial_values_for_opus": [
+    {
+      "kind": "river_channel",
+      "method": "movement_method.swim",
+      "factor": "4/1",
+      "risk_class": "high",
+      "hazard_rule_ref": "hazard.swim_river_channel@1",
+      "basis": "editorial: no source in the repository for swimming pace; rowing 4.0 km/h (travel-calibration.json) against an assumed swim of about 1 km/h"
+    },
+    {
+      "kind": "side_channel",
+      "method": "movement_method.swim",
+      "factor": "4/1",
+      "risk_class": "high",
+      "hazard_rule_ref": "hazard.swim_side_channel@1",
+      "basis": "editorial: same assumption as river_channel"
+    },
+    {
+      "kind": "open_water",
+      "method": "movement_method.swim",
+      "factor": "4/1",
+      "risk_class": "extreme",
+      "hazard_rule_ref": "hazard.swim_open_water@1",
+      "basis": "editorial: same assumption as river_channel; risk class extreme for open water"
+    }
+  ],
+  "assumptions": [
+    "yard: risk and route kind of a yard line follow the land path and local route kinds; no yard-specific record exists",
+    "open_water: no open-water environment, orientation or route kind exists: env.open_water is authored here as a copy of env.main_river_channel; orientation, risk and route kind follow the river channel"
+  ],
+  "open_items": [
+    "D2: pairs over max_segment_minutes are not excluded for good; the limit is a parameter (this report is the list)",
+    "D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover",
+    "D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus",
+    "D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)",
+    "rows carry status approved (the importer requires it); approval is the a2 data attestation, none exists yet",
+    "new tables and columns (line_kind_profile, alternatives, binding line fields) do not exist in world_base DDL yet (phase a3); no import manifest is produced in a1",
+    "risk_profile_ref: refs of the route-segment profiles by kind; yard and open_water are assumptions"
+  ],
+  "inputs": {
+    "base_bindings": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
+    "place_geo_derived_report": "cb9c87db6969ffa376893be2cb28ff748e4a0848605991ac0c2b987aeb9bd82c",
+    "line_names_candidate": "bf8cd60226c27d3c8f9c08890e596507767926bc3ef25959ae6a12910051f0a2",
+    "line_kind_spec": "28f17a386ca1cce485b464d4138c4694e101a13bcfb0715ef72d11aa50c40b9f"
+  }
+}

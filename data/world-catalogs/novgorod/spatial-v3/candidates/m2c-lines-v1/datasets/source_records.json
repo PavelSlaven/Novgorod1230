@@ -1,0 +1,14 @@
+[
+  {
+    "id": "m2c_lines_v1_candidate",
+    "title": "M2c lines v1 candidate (local G5-G5 lines of the start cell)",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/generator-report.json",
+    "page_or_section": "inputs: see generator-report.json#inputs",
+    "summary": "Line fields of the local canonical connections: place-geo proposed minutes, line-names names and kinds, registry v5 methods.",
+    "limitations": "Candidate: not approved, not imported; minutes are an authored game map, not a measurement of 1230; lines over the segment limit wait for D2.",
+    "status": "approved",
+    "confidence": "medium",
+    "checked_by": "pending_opus_data_approval"
+  }
+]

@@ -48,10 +48,17 @@ export async function assertLocalMovementEligibilityPostgres(pool) {
     (party_id,entity_kind,entity_id,placement_kind,position_node_id,
       occupies_capacity_units,state_version,updated_change_set_id)
     VALUES ('adjunct-party','npc','focus-occupant','scene_position','focus',1,1,'seed')`);
-  assert.deepEqual(await runtime.listLocalOptions(input), [],
-    'NPC at capacity-one focus blocks arrival movement');
+  const expectedPassage = [{ edge_id: policy.edge_slot_key, action_units: 1,
+    display_label: `Проход ${policy.edge_slot_key}`, destination_status: 'open' }];
+  assert.deepEqual(await runtime.listLocalOptions(input), expectedPassage,
+    'occupied focus leaves the undisclosed passage listed');
+  await assert.rejects(runtime.prepareLocalMovement({ ...input, edgeId: policy.edge_slot_key,
+    playerInput: {}, inputDigest: 'occupied-focus-move' }),
+  { code: 'SPATIAL_V3_LOCAL_EDGE_OCCUPIED' }, 'full focus rejects the movement attempt');
   await pool.query(`DELETE FROM party_runtime.entity_placements
     WHERE party_id='adjunct-party' AND entity_id='focus-occupant'`);
+  assert.deepEqual(await runtime.listLocalOptions(input), expectedPassage,
+    'passage remains available after the focus is freed');
   assert.deepEqual(await createSpatialV3LocalSceneRuntime({ pool,
     readLocalMovementEligibility }).listLocalOptions(input), [], 'topology and policy grant no visibility');
   assert.deepEqual(await createSpatialV3LocalSceneRuntime({ pool,

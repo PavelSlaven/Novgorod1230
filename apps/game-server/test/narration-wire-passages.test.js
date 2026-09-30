@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { lowerDvinaTraceObservedSceneChanges } from '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 const object = (entity_kind, entity_id, display_label) =>
   ({ entity_ref: { entity_kind, entity_id }, display_label, recognition: 'known' });
@@ -18,4 +19,9 @@ test('narrator input: passages are route choices, not scene objects, with or wit
     else assert.equal(shown, undefined, 'with required changes only visible_scene is supplied');
     assert.doesNotMatch(JSON.stringify(wire), /Проход|выход 1/u);
   }
+});
+
+test('an observation or arrival reports scene objects as seen, never the passages (they are route choices)', () => {
+  const scene = request([]).visible_context;
+  assert.deepEqual(lowerDvinaTraceObservedSceneChanges(scene), ['В поле зрения — штаны.']);
 });

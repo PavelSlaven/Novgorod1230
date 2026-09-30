@@ -3,9 +3,11 @@ import { createSpatialV3LocalSceneMovementReader } from
   '../infrastructure/postgres/spatial-v3-local-scene-movement.js';
 import { serverError } from '../errors.js';
 import { packageBase } from './lower-dvina-trace-phase-3-command-shared.js';
+import { movementVisibleObjects } from './spatial-v3-movement-objects.js';
 
 export function createSpatialV3LocalSceneRuntime({ pool,
-  readLocalEdgeDisclosure = null, readLocalMovementEligibility = null } = {}) {
+  readLocalEdgeDisclosure = null, readLocalMovementEligibility = null,
+  readCurrentExitDisclosure = null, readCurrentConnectionDisclosure = null } = {}) {
   const reader = createSpatialV3LocalSceneMovementReader({ pool, readLocalMovementEligibility });
   async function current({ partyId, actorId, state }) {
     const positionId = state?.position?.position_id;
@@ -79,12 +81,22 @@ export function createSpatialV3LocalSceneRuntime({ pool,
         allowed_movement_refs: [edgeId]
       });
       if (!planned.pass) gap('SPATIAL_V3_LOCAL_MOVEMENT_DENIED');
-      return packageBase({ inputDigest, duration: 0, kind: 'movement',
+      // The turn's screen shows the passages of the place the actor arrives at, not of the one left.
+      // ponytail: read before commit, no status per edge (an occupied edge is refused at the attempt).
+      const at = { partyId, actorId, observedPositionId: admission.to_position_ref,
+        state: { ...state, position: { ...state.position, position_id: admission.to_position_ref },
+          journey_location: { ...state.journey_location, scene_position_id: admission.to_position_ref } } };
+      const destination_movement_objects = movementVisibleObjects({
+        edges: await readLocalEdgeDisclosure(at),
+        exits: readCurrentExitDisclosure == null ? [] : await readCurrentExitDisclosure(at),
+        connections: readCurrentConnectionDisclosure == null ? [] : await readCurrentConnectionDisclosure(at) });
+      return { ...packageBase({ inputDigest, duration: 0, kind: 'movement',
         position_transition: { owner: '@rus/movement-routes', actor_id: actorId,
           from_position_ref: admission.from_position_ref,
           to_position_ref: admission.to_position_ref,
           movement_edge_ref: planned.proposal.movement_ref,
-          movement_admission: planned.proposal.persisted_scene_movement_edge } });
+          movement_admission: planned.proposal.persisted_scene_movement_edge } }),
+      visible_seed: { destination_movement_objects } };
     }
   });
 }

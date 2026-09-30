@@ -284,6 +284,8 @@ export async function createSpatialV3ProductionCompositionRoot({
         spatialExpansionRuntime,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
           readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
+          readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
+          readCurrentConnectionDisclosure: currentVisibility.readCurrentConnectionDisclosure,
           readLocalMovementEligibility }),
         readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
         readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,

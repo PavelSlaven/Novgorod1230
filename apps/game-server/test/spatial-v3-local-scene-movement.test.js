@@ -83,6 +83,9 @@ test('local movement follows only committed directed edges; P16 changes exact po
       state: committed, edgeId: `${from}:${to}`, playerInput: {}, inputDigest: 'digest' });
     assert.equal(result.duration_minutes, 0);
     assert.equal(result.position_transition.movement_edge_ref, `${from}:${to}`);
+    assert.deepEqual(result.visible_seed.destination_movement_objects.map((row) => row.entity_ref.entity_id),
+      edges.filter(({ from_position_ref: at }) => at === to).map(({ edge_id: id }) => id),
+      'the screen of the move shows the passages of the arrival position');
     const snapshot = structuredClone(committed);
     applyS1LocalPositionTransition({ snapshot, state: committed,
       transition: result.position_transition });

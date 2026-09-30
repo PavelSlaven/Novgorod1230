@@ -176,7 +176,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       return (await localDisclosure(input)).map((row) => row.edge_id);
     },
     readLocalEdgeDisclosure: localDisclosure,
-    async readCurrentExitDisclosure({ partyId, actorId, transaction } = {}) {
+    async readCurrentExitDisclosure({ partyId, actorId, transaction, observedPositionId } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const binding = await worldBaseReader?.readG4ExpansionBinding?.({
           g4_id: current.scene.site.parent_g4_id,
@@ -196,8 +196,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const slotByExit = closure == null ? null : slotByExitOf(closure.value.slots);
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
-          site: current.scene.site, directional_exits: exits, slotByExit });
-      }, transaction);
+          site: current.scene.site, directional_exits: exits, slotByExit, observedPositionId });
+      }, transaction, observedPositionId);
     },
     async readExitDisclosure(context = {}) {
       return withCurrent(context.partyId, context.actorId, async (current) => {

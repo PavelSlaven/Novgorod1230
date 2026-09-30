@@ -163,17 +163,22 @@ test('a partially visible exit still shows its pass-target description (partial 
     assert.equal(disclosed[0].display_label, 'к руслу');
   });
 
-test('an exit with no visibility at all is not disclosed, not even by its ordinal label',
+// Spatial 4.7.0 §7.1.1 (rt-lines phase 0, LW-097): visibility is not availability, so poor sight
+// keeps a line offered; only concealment hides it. This is D47.9 ("a start in fog is not a dead end")
+// carried out; the old tests pinned the opposite, "no sight, no passage".
+const concealed = async (input) => ({ ...(await readCurrentTargetConditions(input)), concealment: 'none' });
+
+test('an exit is disclosed without any sight (§7.1.1); a concealed one is not',
   async () => {
-    const { natural, provider } = fixture();
-    natural.observer.visual_capability = 'none';
     const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
       canonical_digest: label.directional_exit_ref.canonical_digest,
       direction_context_id: label.direction_context_ref.id };
-    const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
-      position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
-      slotByExit: new Map([[exit.id, passTargetSlot]]) });
-    assert.deepEqual(disclosed, []);
+    const ask = ({ natural, provider }) => (natural.observer.visual_capability = 'none',
+      provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+        position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
+        slotByExit: new Map([[exit.id, passTargetSlot]]) }));
+    assert.deepEqual((await ask(fixture())).map((row) => row.directional_exit_id), [exit.id]);
+    assert.deepEqual(await ask(fixture({ readTargetConditions: concealed })), []);
   });
 
 test('current snapshot discloses the mechanically repinned version 2 edge label', async () => {
@@ -373,7 +378,7 @@ const connectionLabels = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json', import.meta.url))).labels;
 const connectionAt = (row) => ({ binding: { id: row.binding_ref.id } });
 
-test('a visible canonical connection is disclosed with its approved label; a hidden one is not', async () => {
+test('a canonical connection is disclosed with its approved label, also without sight (§7.1.1); a concealed one is not', async () => {
   const { provider, natural } = fixture();
   const [first, second] = connectionLabels;
   const input = { partyId: 'party', actorId: 'actor', position: { id: 'a' },
@@ -382,7 +387,10 @@ test('a visible canonical connection is disclosed with its approved label; a hid
     connection_binding_id: row.binding_ref.id, knowledge_state: 'visible',
     display_label: row.display_label, editorial_choice_ordinal: row.editorial_choice_ordinal })));
   natural.observer.visual_capability = 'none';
-  assert.deepEqual(await provider.readConnectionDisclosure(input), [], 'no sight, no disclosed passage (D47.9)');
+  assert.equal((await provider.readConnectionDisclosure(input)).length, 2, 'no sight still offers the passage');
+  const hidden = fixture({ readTargetConditions: concealed });
+  hidden.natural.observer.visual_capability = 'none';
+  assert.deepEqual(await hidden.provider.readConnectionDisclosure(input), [], 'concealment hides it');
 });
 
 test('a revealed connection without an approved label is a typed data gap, and a wrong position is refused', async () => {
@@ -395,7 +403,7 @@ test('a revealed connection without an approved label is a typed data gap, and a
   (error) => error.details?.reason === 'approved_connection_disclosure_required');
 });
 
-test('the canonical connections of the current place reach the visible context, hidden ones do not', async () => {
+test('the canonical connections of the current place reach the visible context, concealed ones do not', async () => {
   const [first, second] = connectionLabels;
   const asked = [];
   const worldBaseReader = {
@@ -422,5 +430,9 @@ test('the canonical connections of the current place reach the visible context, 
   scene.site.origin = 'generated';
   assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
   scene.site.origin = 'canonical'; natural.observer.visual_capability = 'none';
-  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
+  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), expected,
+    'no sight still lists them (§7.1.1)');
+  const hidden = fixture({ worldBaseReader, readTargetConditions: concealed });
+  hidden.scene.site = scene.site;
+  assert.deepEqual(await hidden.provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
 });

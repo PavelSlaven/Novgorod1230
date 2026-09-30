@@ -5,6 +5,7 @@ import { serverError } from '../errors.js';
 import { assembleNarrationAuditOutput, narrationAuditInstruction } from
   './lower-dvina-trace-narration-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 
 const PROSE_RULES = 'Write connected, restrained literary Russian in second person. '
   + 'Put the current beat first. Convey every required_current_beat source once '
@@ -127,6 +128,10 @@ export function narrationWire(request) {
   const worldKnowledge = outerWk ?? nestedWk;
   const { visible_changes, uncertainties, do_not_imply, allowed_tensions,
     current_light_phase, ...support } = visible_context;
+  // Passages are route-panel choices, not scene objects: their labels must not reach the prose.
+  if (Array.isArray(support.visible_objects)) {
+    support.visible_objects = support.visible_objects.filter((row) => !isMovementVisibleObject(row));
+  }
   const { outcome: contextOutcome, ...otherContext } = context ?? {};
   const outcome = contextOutcome ?? confirmedOutcome;
   const assessmentOnly = outcome?.qualitative_assessment === true;

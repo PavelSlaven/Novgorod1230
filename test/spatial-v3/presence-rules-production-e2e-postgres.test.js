@@ -9,7 +9,6 @@ import {
   VIKHTUY_MEETING_G5,
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
-  assertStartVisibilityAllowsMovement,
   installPresenceProductionE2eFetch,
   publicStartScenario,
   submitObserveTurn,
@@ -146,7 +145,6 @@ test('generated G5: cross-site movement commits presence rules on first entry', 
     const { runtime } = await createPresenceProductionRoot(env);
     try {
       const partyId = await publicStartScenario(runtime, 'novgorod_riverbank_approach_v1');
-      await assertStartVisibilityAllowsMovement(env.partyPool, partyId);
       await walkRouteUntil({
         runtime,
         partyPool: env.partyPool,
@@ -189,7 +187,6 @@ test('canonical vikhtuy meeting_area PF binding', { skip: MEETING_AREA_SKIP_REAS
     const { runtime } = await createPresenceProductionRoot(env);
     try {
       const partyId = await publicStartScenario(runtime, 'novgorod_vikhtuy_work_storage_v1');
-      await assertStartVisibilityAllowsMovement(env.partyPool, partyId);
       await walkRouteUntil({
         runtime,
         partyPool: env.partyPool,

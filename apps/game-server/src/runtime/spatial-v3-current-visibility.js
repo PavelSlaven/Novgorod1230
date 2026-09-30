@@ -3,6 +3,7 @@ import { serverError } from '../errors.js';
 
 const conditions = ['lighting', 'stable_cover', 'dynamic_occlusion', 'concealment', 'weather'];
 const results = new Set(['clear', 'partial', 'none']);
+const LINE_KINDS = new Set(['local_edge', 'site_connection', 'directional_exit']);
 
 /** Resolve committed targets by identity; several targets can share a position. */
 export function visibleCurrentTargets({ observer_position_id, observer_visual_capability,
@@ -28,7 +29,10 @@ export function visibleCurrentTargets({ observer_position_id, observer_visual_ca
       ...Object.fromEntries(conditions.map((key) => [key, row[key]])) }).visibility;
     const visibility = observer_visual_capability === 'none' || result === 'none' ? 'none'
       : observer_visual_capability === 'partial' || result === 'partial' ? 'partial' : 'clear';
-    return visibility === 'none' ? [] : [{ target_id: row.target_id, visibility }];
+    // Spatial 4.7.0 §7.1.1: visibility is not availability. A line from here stays offered at
+    // `none` (the caller sees `none` and describes it by hearing and touch); only concealment hides it.
+    const offered = visibility !== 'none' || LINE_KINDS.has(row.entity_kind) && row.concealment !== 'none';
+    return offered ? [{ target_id: row.target_id, visibility }] : [];
   });
 }
 

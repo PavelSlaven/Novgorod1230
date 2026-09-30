@@ -70,7 +70,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     `SELECT count(*)::int AS n FROM information_schema.tables
      WHERE table_schema='world_base'`
   );
-  assert.equal(tables.rows[0].n, 222);
+  assert.equal(tables.rows[0].n, 224);
   // rt-names: one name form may belong to different sexes and peoples; the same key twice is rejected.
   await world.query(`INSERT INTO world_base.regions(id) VALUES ('rn-region')`);
   await world.query(`INSERT INTO world_base.world_revisions(id,title,catalog_digest,status)

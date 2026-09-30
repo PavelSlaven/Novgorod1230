@@ -41,13 +41,13 @@ migration/rollback source.
 
 ## 2. `world_base` (read-only)
 
-- **Entrypoint:** [schema.sql](../../infra/world-base/schema.sql) подключает **29** частей через `\ir schema/NN.sql`
-  (`01`–`29`) и снимает `CREATE` на схеме с `PUBLIC`.
-- **Число таблиц: 222.** Проверяется в двух местах:
-  - [check-world-base-schema.mjs](../../scripts/check-world-base-schema.mjs): `EXPECTED_TABLE_COUNT = 222`
+- **Entrypoint:** [schema.sql](../../infra/world-base/schema.sql) подключает **30** частей через `\ir schema/NN.sql`
+  (`01`–`30`) и снимает `CREATE` на схеме с `PUBLIC`.
+- **Число таблиц: 224.** Проверяется в двух местах:
+  - [check-world-base-schema.mjs](../../scripts/check-world-base-schema.mjs): `EXPECTED_TABLE_COUNT = 224`
     (`npm run world-db:schema-check`);
   - [test.yml](../../.github/workflows/test.yml), шаг «Execute world_base DDL in PostgreSQL»: DDL
-    исполняется в `postgres:16`, затем `test "$table_count" -eq 222`. Там же проверяется роль `world_reader`:
+    исполняется в `postgres:16`, затем `test "$table_count" -eq 224`. Там же проверяется роль `world_reader`:
     не superuser, есть `USAGE`, нет `CREATE`, `SELECT` на каждую таблицу, других грантов нет.
 - **Read-only порт:** [packages/world-base/MODULE.md](../../packages/world-base/MODULE.md): `createWorldBaseReader`
   отклоняет mutating SQL до вызова adapter. Production reader — `spatial-v3-world-base-reader.js` в

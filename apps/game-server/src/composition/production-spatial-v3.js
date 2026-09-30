@@ -259,6 +259,7 @@ export async function createSpatialV3ProductionCompositionRoot({
             approvedActorTemporalBundle: targetContext.runtime.materialization_inputs.approved_actor_temporal_bundle,
             resolvePresenceRulesFirstArrival: delegateToPresenceResolverPort(targetPresenceResolverPort),
             finiteFirstEntryProfile: targetProfiles?.finite_first_entry?.profile ?? null,
+            canonicalFiniteApplicability: targetProfiles?.finite_first_entry?.canonicalNaturalApplicability ?? null,
             prepareNaturalFirstEntry: (...args) => {
               if (typeof targetNaturalFirstEntryPort.prepareFirstEntry !== 'function') {
                 throw serverError('SPATIAL_V3_TARGET_FIRST_ENTRY_REQUIRED',

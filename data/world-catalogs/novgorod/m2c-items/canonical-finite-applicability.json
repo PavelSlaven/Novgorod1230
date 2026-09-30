@@ -1,0 +1,101 @@
+{
+  "schema": "rus.m2c_canonical_finite_applicability.v1",
+  "status": "candidate_pending_independent_data_approval",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "approval": null,
+  "rule": {
+    "statement": "A canonical G5 gets the finite natural sources that its place family allows on common land and that its G4 natural-material profile lists; yards and household plots get none unless a parcel right says so.",
+    "place_family_to_source": {
+      "pf_riverbank": [
+        "m2c_finite_driftwood_v1"
+      ],
+      "pf_ferry_landing": [
+        "m2c_finite_driftwood_v1"
+      ],
+      "pf_village_lane": [
+        "m2c_finite_deadwood_v1"
+      ]
+    },
+    "g4_profile_evidence": "ref-gamebase natural_materials_soils/g4_ground_and_materials.csv rows nmg4_vikhtuy_locality__deadwood (rare) and __driftwood (rare); finite_source_profiles_ext.json is a candidate, approved=false, not runtime authority",
+    "excluded_place_families": {
+      "pf_rural_yard": "parcel right only (unknown is not permission)",
+      "pf_peasant_homestead": "parcel right only (unknown is not permission)",
+      "pf_outbuildings": "parcel right only (unknown is not permission)"
+    },
+    "not_covered_by_rule": "reeds and standing wood: the G4 profile lists no reed for vikhtuy_locality and cutting needs a tool the code does not check (LW)"
+  },
+  "rows": [
+    {
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+        "version": 1
+      },
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "place_family": "pf_riverbank",
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_driftwood_v1"
+      ]
+    },
+    {
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+        "version": 1
+      },
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "place_family": "pf_riverbank",
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_driftwood_v1"
+      ]
+    },
+    {
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+        "version": 1
+      },
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "place_family": "pf_ferry_landing",
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_driftwood_v1"
+      ]
+    },
+    {
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+        "version": 1
+      },
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "place_family": "pf_village_lane",
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_deadwood_v1"
+      ]
+    }
+  ],
+  "open_questions_for_approver": [
+    "Quantities come from the approved m2c-items profiles (deadwood 60, driftwood 100); the G4 candidate says rare (about 25). Keep the profile numbers or cap them?",
+    "Place-family mapping of the eight Vikhtuy canonical G5 is taken from m2c-npc-wave/v1/datasets/spatial_node_place_family_bindings.json.",
+    "Access: the approved gameplay_access_policy (free gathering) applies to these commons; the property-context file excludes canonical G5, so no explicit parcel rule exists for them."
+  ],
+  "provenance": {
+    "decision": "reviewer PLAN-OK-rt-items F3 (2026-09-29T18:34:36Z): class rule from place family + natural G4 profile; commons open, yards by parcel right",
+    "authored_by": "rt-items executor (Claude Sonnet 5.5); not approved by its author (WR 21.1)"
+  },
+  "approval_fields_when_approved": [
+    "approved_by",
+    "approved_on",
+    "approved_path",
+    "approved_commit"
+  ],
+  "approval_note": "The runtime loads this file only when status is \"approved\" and all approval fields are filled by the independent approver."
+}

@@ -1,4 +1,6 @@
 import { readFile } from 'node:fs/promises';
+import { readApprovedCanonicalFiniteApplicability } from
+  '../infrastructure/postgres/ordinary-materialization-canonical-natural.js';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
@@ -68,7 +70,10 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
 }
 
 /** Finite-only policy stays separate from generic ordinary/Stage B admission. */
-export async function loadTargetFiniteFirstEntryProfile({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog } = {}) {
+const CANONICAL_FINITE_FILE = 'data/world-catalogs/novgorod/m2c-items/canonical-finite-applicability.json';
+
+export async function loadTargetFiniteFirstEntryProfile({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog,
+  canonicalFiniteApplicabilityPath = resolve(rootDir, CANONICAL_FINITE_FILE) } = {}) {
   const read = (path) => readFile(resolve(rootDir, path), 'utf8');
   const root = 'data/world-catalogs/novgorod';
   const approval = JSON.parse(await read(`${root}/m2c-sol-data-approval.json`));
@@ -118,6 +123,9 @@ export async function loadTargetFiniteFirstEntryProfile({ rootDir = process.cwd(
   return freeze({ schema: 'rus.live_world_runtime.target_finite_first_entry_profile.v1',
     world_revision_id: worldRevisionId, candidate_sha256: hash(baseBytes),
     catalog_pin: verifiedCatalog.pin, profile: stageB.profile,
+    canonicalNaturalApplicability: readApprovedCanonicalFiniteApplicability(
+      JSON.parse(await readFile(canonicalFiniteApplicabilityPath, 'utf8').catch(() => 'null')),
+      worldRevisionId),
     stage_b_approval: stageB.receipt,
     naturalSourceAuthoring: { candidateBytes: itemBytes,
       approval: JSON.parse(await read(`${root}/m2c-items/approval-attestation.json`)),

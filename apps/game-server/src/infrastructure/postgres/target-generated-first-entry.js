@@ -16,7 +16,8 @@ const text = (value) => typeof value === 'string' && value.trim().length > 0;
 /** Compose admitted natural and NPC proposals under the existing expansion transaction. */
 export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemCatalog,
   actorBaseAttributesBinding, approvedActorTemporalBundle, prepareNaturalFirstEntry,
-  readFactualContext, resolvePresenceRulesFirstArrival, finiteFirstEntryProfile } = {}) {
+  readFactualContext, resolvePresenceRulesFirstArrival, finiteFirstEntryProfile,
+  canonicalFiniteApplicability = null } = {}) {
   return async function prepareFirstEntry(context) {
     const { transaction, request, proposal, change_set_id: changeSetId, dependency_pins } = context;
     const gap = (reason) => ({ ok: false, error: createSpatialV3TypedError('authoring_dependency_pin_missing', {
@@ -60,6 +61,19 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
       const scenes = proposal.inserts.filter((row) => row.target_table === 'party_g6_instances'
         && row.record.host_id === site?.id && row.record.scene_slot_key === 'main');
       if (scenes.length !== 1) return gap('target_first_entry_presence_scene_required');
+      // Approved commons of this canonical G5 carry finite natural sources: the natural owner
+      // writes them together with the presence aggregate (it resolves presence itself).
+      if (canonicalFiniteApplicability?.profilesFor(site, request.g4.id).length > 0) {
+        const natural = await prepareNaturalFirstEntry(context);
+        if (!natural?.ok) return natural?.error ? natural : gap('target_first_entry_natural_proposal_required');
+        return { ok: true, approved_write_sets: natural.approved_write_sets,
+          expected_state_versions: natural.expected_state_versions ?? [],
+          commit_rechecks: natural.commit_rechecks ?? [],
+          materialization_trace: { catalog_pins: [itemPin, actorPin], selection: null,
+            choices: [], attribute_traces: [],
+            validation_report: { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 } },
+          recheck: natural.recheck };
+      }
       if (typeof resolvePresenceRulesFirstArrival !== 'function') {
         return gap('target_first_entry_presence_resolver_required');
       }

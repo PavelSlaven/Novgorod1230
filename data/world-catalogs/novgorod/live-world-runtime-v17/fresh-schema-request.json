@@ -2,7 +2,7 @@
   "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
   "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
   "status": "pending_independent_high_review",
-  "source_commit": "057cd7def78abb4399c997c9735f4c996e3cf881",
+  "source_commit": "82caea547386e27abe53a21d8d98e1a6cc833de4",
   "operation": "create_fresh_databases_and_apply_exact_schema",
   "target": {
     "cluster": "existing_managed_local_play_postgresql_16_14_0",
@@ -15,8 +15,8 @@
   "world_schema": {
     "entrypoint": {
       "path": "infra/world-base/schema.sql",
-      "bytes": 613,
-      "sha256": "fc8513eb372c8a71a87da9b2e94947894cf1674e768eeeb33740840c24c43814"
+      "bytes": 631,
+      "sha256": "0c08cb0adcecca896b21f6811b83ca99a4d1a877fc4ffebc50bbff428ff8ac53"
     },
     "ordered_parts": [
       {
@@ -61,8 +61,8 @@
       },
       {
         "path": "infra/world-base/schema/09.sql",
-        "bytes": 16933,
-        "sha256": "544ca15351e5cea1f7f5274d6c75f6004485ff416eb5438fee561c5e484cfdb6"
+        "bytes": 17526,
+        "sha256": "6c46647e01161714a1799eb86b9e4b20cf94a8f99242eaf19c16d142465bfc09"
       },
       {
         "path": "infra/world-base/schema/10.sql",
@@ -158,9 +158,14 @@
         "path": "infra/world-base/schema/28.sql",
         "bytes": 3436,
         "sha256": "33a40ca4c1dd7932ba148763b9b80e6628008daeee3124fcd75eca3e2c849811"
+      },
+      {
+        "path": "infra/world-base/schema/29.sql",
+        "bytes": 2547,
+        "sha256": "153149157d57ed5ef88666ce3c629489e1ad9dec5cbe6547e17bdc52b09ff815"
       }
     ],
-    "expected_world_base_tables": 219
+    "expected_world_base_tables": 222
   },
   "party_schema": {
     "owner_migration_module": {
@@ -371,7 +376,7 @@
     "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-037 inside one transaction."
   ],
   "expected_readback": {
-    "world_base_table_count": 219,
+    "world_base_table_count": 222,
     "world_schema": "world_base",
     "party_schema": "party_runtime",
     "party_migrations_applied": 37,

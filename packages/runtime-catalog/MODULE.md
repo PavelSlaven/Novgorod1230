@@ -43,6 +43,9 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `loadApprovedProceduralActorTemporalBundle(...)` reads only approved enriched
   role/occupation dependencies, legal/social/archetype/skill rows, exact active
   actor components and approved Temporal records for procedural compilation;
+  when `world_base` holds them it adds `npc_identity` (approved regional-context name
+  bindings, ordinary pool entries of the bound pools, D29 scale entries and goal/fear items
+  of the bundle occupations) for the NPC name and character pick;
 - `loadApprovedProceduralCompiledCatalog(...)` exposes only the exact activated
   final-candidate compiled profiles/mappings/categories and fails closed for
   another or missing pin;

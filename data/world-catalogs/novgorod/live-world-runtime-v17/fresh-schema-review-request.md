@@ -1,15 +1,15 @@
 # Fresh v17 database schema review request
 
 Review [fresh-schema-request.json](fresh-schema-request.json) at source commit
-`057cd7def78abb4399c997c9735f4c996e3cf881`. Request SHA-256:
-`ba989f536c7532dec5c0eee0aefeed75733e70f0b4f19fae48520978e3a091da` (15625 bytes).
+`cc2df1e0f71e58f8a47e7025912cb12946944454`. Request SHA-256:
+`b0c42467f199e84b60ed253769ba0324ecc8e30e5f21fc437198d719e844803f` (15800 bytes).
 This is a pending request, not an approval or execution record.
 
 Requested target is two **new** databases in the existing managed local-play
 PostgreSQL cluster: `novgorod_world_v17` owned by `world_operator`, and
 `novgorod_party_v17` owned by `party_operator`. Existing `novgorod_world` and
 `novgorod_party` must remain unchanged. Independent Sol high review must verify
-the exact request, source commit, all 28 world DDL parts, the world entrypoint,
+the exact request, source commit, all 29 world DDL parts, the world entrypoint,
 the ordered 37 party migrations and chain digest
 `872412c5875e37896e3633caf300bbaff884ee6f99dba6e60c5f957fa66c9d01` before any write.
 
@@ -23,7 +23,7 @@ repository root against that verified target. Apply party migrations through
 `runSpatialV3TargetMigrations` against the new party database only; its owner
 executes the complete ordered chain in one transaction.
 
-Read back 219 world tables, the world-reader grants, party migration result
+Read back 222 world tables, the world-reader grants, party migration result
 `applied: 37`, empty party count, and unchanged old-database row counts. Record
 actual target identity, source hashes, execution results and exact readback in
 an independent execution attestation. Do not treat this request or its review

@@ -50,6 +50,15 @@ const routine = { schema: 'npc_routine_profile_v1', profile_id: 'routine', revis
   { state_id: 'rest', duration_minutes: 10, activity_ref: 'rest', runtime_status: 'available',
     activity_status: 'paused', summary: 'Отдыхает.', can_continue_automatically: true, decision_required: false }] };
 
+const identity = { schema: 'rus.npc_identity_catalog.v1',
+  name_bindings: [{ regional_context_id: 'regional', name_pool_id: 'pool', people_ref: 'pp_novgorod_rus' }],
+  name_entries: ['Ярослав', 'Гюрята', 'Твердислав'].map((form, index) => ({ id: `m${index}`, name_pool_id: 'pool',
+    name_form: form, weight: 1, sex_category: 'male', people_ref: 'pp_novgorod_rus' })),
+  scale_entries: [...['calm', 'wary', 'diligent'].map((id) => ({ scale_kind: 'trait', entry_id: id, label_ru: `ч ${id}`, weight: 1 })),
+    ...['honour', 'safety', 'piety'].map((id) => ({ scale_kind: 'value', entry_id: id, label_ru: `ц ${id}`, weight: 1 }))],
+  character_items: [{ occupation_id: binding.occupation_ref, item_kind: 'goal', item_id: 'goal_01', text_ru: 'Починить сети.' },
+    { occupation_id: binding.occupation_ref, item_kind: 'fear', item_id: 'fear_01', text_ru: 'Сеть порвётся.' }] };
+
 function input() {
   const g4 = { id: 'g4', version: 1, world_revision_id: 'world' };
   const template = { id: 'template', version: 1 };
@@ -96,7 +105,7 @@ function input() {
       reserved_position_slots: ['arrival'], allowed_physical_class_ids: ['open'], empty_context_rules: [] } }),
   min_count: 1, max_count: 1, g4_id: 'g4', g4_version: 1, generation_template_id: 'template', generation_template_version: 1 };
   const compiled = compileGeneratedNpcBindings({ party_id: 'p', run_id: 'run', scene: result.scene,
-    approved_bundle: bundle, environment, equipment_activation: equipment.activation,
+    approved_bundle: { ...bundle, npc_identity: identity }, environment, equipment_activation: equipment.activation,
     actor_base_attributes_runtime_profile: binding.actor_base_attributes_runtime_profile,
     world_catalog_digest: 'c'.repeat(64), equipment_catalog_digest: equipment.catalog_digest,
     closure: { schema: 'rus.m2c_npc_binding_bundle.v1',
@@ -130,6 +139,18 @@ test('generated NPC first entry binds full actor, body, routine and tools before
   multiple.npc_inputs.push({ ...multiple.npc_inputs[0], binding: { ...multiple.npc_inputs[0].binding,
     actor_slot_ref: 'worker:unclothed', clothing_profile_ref: null, initial_equipment_candidates: [] } });
   assert.throws(() => prepareGeneratedNpcFirstEntry(multiple), { code: 'NPC_FIRST_ENTRY_CLOTHING_GAP' });
+});
+
+test('generated NPC gets a pool name and a seeded character, written to identity and the name snapshot', () => {
+  const rows = prepareGeneratedNpcFirstEntry(input()).write_set.inserts;
+  const npc = rows.find((value) => value.target_table === 'party_npcs').record;
+  const snapshot = rows.find((value) => value.target_table === 'party_actor_profile_bindings').record.name_profile_snapshot;
+  assert.ok(['Ярослав', 'Гюрята', 'Твердислав'].includes(npc.identity_state.canonical_name));
+  assert.deepEqual(snapshot, { canonical_name: npc.identity_state.canonical_name,
+    name_provenance: npc.identity_state.name_provenance });
+  assert.deepEqual(npc.semantic_state.character.goals_ru, ['Починить сети.']);
+  assert.equal(npc.semantic_state.character.fear_ru, 'Сеть порвётся.');
+  assert.equal(npc.semantic_state.character.value_refs.length, 2);
 });
 
 test('canonical initial scene uses explicit canonical regional applicability in the same NPC owner', () => {
@@ -194,6 +215,10 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
   const expected = proposed.write_set.inserts.find((row) => row.target_table === 'party_npcs').record;
   assert.deepEqual(saved.rows[0].identity_state, expected.identity_state);
   assert.deepEqual(saved.rows[0].machine_state, expected.machine_state);
+  assert.equal(typeof saved.rows[0].identity_state.canonical_name, 'string');
+  assert.deepEqual(saved.rows[0].semantic_state.character, expected.semantic_state.character);
+  const snapshotRow = await pool.query(`SELECT name_profile_snapshot FROM party_runtime.party_actor_profile_bindings`);
+  assert.equal(snapshotRow.rows[0].name_profile_snapshot.canonical_name, saved.rows[0].identity_state.canonical_name);
   assert.deepEqual(saved.rows[0].semantic_state.source_binding, input().npc_inputs[0].binding.source_binding);
   assert.equal(saved.rows[0].profile_set_id, saved.rows[0].semantic_state.source_binding.npc_binding_ref.id);
   assert.equal(saved.rows[0].semantic_state.profile_revision, saved.rows[0].semantic_state.source_binding.npc_binding_ref.version);

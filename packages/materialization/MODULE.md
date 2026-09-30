@@ -118,9 +118,19 @@ typed data gap. It does not accept authored light/weather prose.
 `materializeApprovedProceduralNpc` consumes only the verified actor/Temporal
 bundle plus one approved placement binding. It creates stable identity,
 canonical base appearance, social/legal/occupation refs, approved skills/body,
-schedule/current activity and private behavior/knowledge basis. Names remain
-absent without exact authored basis; required tools/clothing hard-block unless
-an active exact equipment mapping is supplied.
+schedule/current activity and private behavior/knowledge basis. Required
+tools/clothing hard-block unless an active exact equipment mapping is supplied.
+
+Name and character (rt-names, D49): when the bundle carries `npc_identity`
+(read from `world_base` by the actor bundle loader), `npc-identity.js` picks
+`identity_state.canonical_name` (+ `name_provenance`) and `semantic_state.character`
+(1 temperament, 2 values, 1-2 goals, 1 fear of the occupation) on their own seed
+streams derived from `parent_seed_digest` and the actor slot; the appearance stream is untouched.
+Name: pool of the regional context binding, `sex_category` of the appearance, ordinary
+approved entries, weighted draw. A context without a binding or without candidates gets
+`canonical_name: null` and a typed `name_provenance.reason` (LW-107). `character` is
+written only when the occupation has goals and fears and the scales are complete (LW-109).
+A bundle without `npc_identity` keeps the unnamed result.
 
 An exact `clothing_profile_ref` resolves one approved sex/age/season variant
 after the existing appearance draw. Its required slots and explicit personal

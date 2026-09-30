@@ -24,8 +24,8 @@ const REVIEW_OUT = resolve(
   'data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md'
 );
 const ENTRY = 'infra/world-base/schema.sql';
-const PART_COUNT = 28;
-const EXPECTED_TABLES = 219;
+const PART_COUNT = 29;
+const EXPECTED_TABLES = 222;
 const INPUT_PATHS = [
   ENTRY,
   'infra/world-base/schema',

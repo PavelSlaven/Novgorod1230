@@ -1,0 +1,108 @@
+{
+  "schema": "rus.npc_identity_v17_import_request.v1",
+  "request_id": "novgorod_npc_identity_v17_import_001",
+  "status": "pending_independent_review",
+  "operation": "insert_only",
+  "transaction": "single_world_base_transaction",
+  "target": {
+    "database": "novgorod_world_v17",
+    "schema": "world_base",
+    "created_by": "scripts/bootstrap-live-world-v17.mjs (fresh pair only)"
+  },
+  "approved_data": {
+    "source_commit": "fe38ecb1b81df04a9a7f8d95b5bed1f0c9e815c7",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "sources_in_repository": "draft/candidate; this stage sets status=approved only on the subset below",
+    "sources": [
+      {
+        "path": "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name_pools.csv",
+        "sha256": "6a7f94bf656251997382bab0b60f94e697dde0db4c8173f64161ff86335f9791"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name_pool_entries.csv",
+        "sha256": "af68e45eb2115a8d2d9890ea9c41334fd2041a4fc20610b6fd52410d7be2cbf8"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/npc_psychology/psychology_scales.json",
+        "sha256": "e7455d0f00f6bf24636251c09944f0fc1c4b16dfa0ea5cea7cc85ecfa0543ca1"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/npc_psychology/occupation_goals.csv",
+        "sha256": "17414b30c0d2f8b9816843b24edfb7ace5d0e602c6f64801fff293db3ab73ad3"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/npc_psychology/occupation_fears.csv",
+        "sha256": "78e0b67cfb0121b0a5b9e83f416ee121e54e6aad8d32ed82c936fd8574b6552b"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/npc-identity-v17/v1/context-bindings.json",
+        "sha256": "5411a38e2b575fc389a9aeaf3b66b495da896780ce498d464d2666971fdc5315"
+      }
+    ],
+    "approved_subset": {
+      "name_pool_entries_approved": 266,
+      "name_pool_entries_left_draft": 71,
+      "name_entries_approved_by_people_and_sex": {
+        "pp_novgorod_rus/female": 62,
+        "pp_novgorod_rus/male": 204
+      },
+      "context_bindings": [
+        "m2c_npc_regional_novgorod_land_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus",
+        "m2c_npc_regional_novgorod_canonical_initial_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus"
+      ],
+      "goal_items": 265,
+      "fear_items": 158,
+      "analogy_basis_items": 60,
+      "occupations_with_items": 97
+    },
+    "limits": [
+      "Only pools bound to a regional context are selectable; contexts without a binding (Gotland, German towns, Karelia, Ingria) leave NPC unnamed (LW-107).",
+      "Approval is per (pool, people): ordinary rows of peoples without a context binding stay draft and are not selectable (pp_fg002 16 male, pp_fg001, pp_fg005 and pp_izhora 1 each, no female); foreign peoples get their own pools (D51, LW-107).",
+      "Every name entry keeps evidence_period as authored: medieval_general is XI-XIV evidence, not an individual 1230-1250 attestation.",
+      "Goal/fear items have confidence C; basis=analogy items are archive-process analogies, not direct Novgorod evidence.",
+      "D29 scales are a game assumption (even weights), not a historical distribution; psychology_profiles.csv is not imported."
+    ],
+    "datasets": [
+      {
+        "table": "region_name_pools",
+        "rows": 1
+      },
+      {
+        "table": "region_name_pool_entries",
+        "rows": 337
+      },
+      {
+        "table": "npc_regional_context_name_bindings",
+        "rows": 2
+      },
+      {
+        "table": "npc_psychology_scale_entries",
+        "rows": 13
+      },
+      {
+        "table": "occupation_character_items",
+        "rows": 423
+      }
+    ],
+    "decision_refs": [
+      "D49",
+      "PLAN-OK-rt-names"
+    ]
+  },
+  "sql": {
+    "commit_sha256": "b7514d7b5ad1c12722b503dd025bdad76b258a80f84bec241b45f2b6c6419596",
+    "commit_bytes": 451123,
+    "rollback_sha256": "65729dec4e3781efdec5f3a948bc3e8833d9163354189509327d87bc662f2ece",
+    "rollback_bytes": 451125
+  },
+  "expected_readback": {
+    "by_table": {
+      "region_name_pools": 1,
+      "region_name_pool_entries": 337,
+      "npc_regional_context_name_bindings": 2,
+      "npc_psychology_scale_entries": 13,
+      "occupation_character_items": 423
+    }
+  },
+  "request_digest": "3e20cfa12aa946cd6e0da642f8ef3f92308c41bf9cf56e32b6f0072875f59d01"
+}

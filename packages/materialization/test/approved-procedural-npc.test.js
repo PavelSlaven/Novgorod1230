@@ -5,7 +5,7 @@ import { createRandomSource,
 
 import { binding, bundle, environment } from './fixtures/approved-procedural-npc.js';
 
-test('approved procedural NPC is deterministic, complete and unnamed', () => {
+test('approved procedural NPC is deterministic, complete and unnamed without an identity catalog', () => {
   const input = { party_id: 'party', run_id: 'run', binding,
     approved_bundle: bundle, environment };
   const left = materializeApprovedProceduralNpc({ ...input,

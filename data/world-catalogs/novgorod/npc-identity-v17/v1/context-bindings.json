@@ -1,0 +1,17 @@
+{
+  "schema": "rus.npc_regional_context_name_bindings.v1",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "note": "Regional contexts without a row here have no name source: their NPC stay unnamed until the owner decides the fallback (LW-107).",
+  "bindings": [
+    {
+      "regional_context_id": "m2c_npc_regional_novgorod_land_v1",
+      "name_pool_id": "novgorod_1230_1250_personal_names_v1",
+      "people_ref": "pp_novgorod_rus"
+    },
+    {
+      "regional_context_id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+      "name_pool_id": "novgorod_1230_1250_personal_names_v1",
+      "people_ref": "pp_novgorod_rus"
+    }
+  ]
+}

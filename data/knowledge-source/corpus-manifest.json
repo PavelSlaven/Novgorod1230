@@ -457,8 +457,8 @@
       "document_id": "world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
       "file_name": "world_base_materialization_table_requirements.md",
-      "sha256": "4dc4ae53f8b12370e77bfa23b41f9a4d1d20fd26d379bf1a0ee6ca0d351ee123",
-      "bytes": 31328,
+      "sha256": "c39b258384a674bb8af2f3d57df611f459b5423af97d7c40a76465becadb2b17",
+      "bytes": 32650,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

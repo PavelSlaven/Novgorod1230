@@ -96,6 +96,11 @@
 | 104 | `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`) | список применимости закреплён на шаблонах @1, а сгенерированные сайты v17 — @2 (общий массив с N1) | — |
 | 105 | `data/world-catalogs/novgorod/m2c-items/README.md`, `packages/items-property` | `M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`: владелец предмета не проверяет `mass_grams = quantity × 50` | — |
 | 106 | `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js`, `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` | значения по умолчанию для v5-профиля (`packing_slot_cost=0`, `quantity=null`, `container=null`) заданы в game-server, вне владельца items-property | — |
+| 107 | `data/world-catalogs/novgorod/npc-identity-v17/v1/context-bindings.json`, `packages/materialization/src/npc-identity.js` | NPC гостевых и путевых контекстов (Готланд, немецкие города, Корела, Ижора) без имени: иноземные пулы — отдельная задача данных (D51), их строки `draft` | — |
+| 108 | `packages/materialization/src/npc-identity.js`, `packages/materialization/src/generated-npc-bindings.js` | имена двух NPC одной сцены выбираются независимо и могут совпасть | — |
+| 109 | `packages/runtime-catalog/src/procedural-scene-records.js` (`readNpcIdentityCatalog`), `packages/materialization/src/npc-identity.js` | `semantic_state.character` пишется только при полных данных занятия; срок действия пула (`valid_from`/`valid_to`) не проверяется | — |
+| 110 | `apps/game-server/src/infrastructure/postgres/generated-npc-first-entry.js` (`nameProfileSnapshot`) | вторая проекция снимка имени рядом с `projectNameProfileSnapshot` stage 24 (лимит API 8) | — |
+| 111 | `infra/world-base/schema/29.sql` (`occupation_character_items`, `npc_regional_context_name_bindings`) | нет FK на реестр занятий (33 занятия, 165 строк вне реестра); привязка контекста без версии | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -569,4 +574,34 @@
 - **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js` (`committedMechanics`, значения по умолчанию), `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` (то же), владелец — `packages/items-property` (`resolveInventoryMechanicsProfile`).
 - **Что.** Профили `item-container-120-v5` не содержат `packing_slot_cost`, `quantity`, `container`; A1 подставляет 0, `null`, `null` в двух файлах game-server. Это толкование профиля вне владельца.
 - **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
+- **Issue.** —
+
+### LW-107 — NPC гостевых и путевых контекстов остаются без имени (rt-names)
+- **Где.** `data/world-catalogs/novgorod/npc-identity-v17/v1/context-bindings.json` (привязаны только два контекста «Новгородская земля»), `packages/materialization/src/npc-identity.js` (`pickNpcName`), `scripts/v17-npc-identity-stage.mjs` (approved по паре «пул + народ»).
+- **Что.** Для контекстов Готланд, «Немецкие города Балтийского торгового круга», Корела, Ижора нет ни строки привязки, ни достаточного пула: в `name_pool_entries.csv` у `pp_fg001`, `pp_fg005`, `pp_izhora` по одной ordinary-строке, у `pp_fg002` 16 мужских и ни одной женской, `pp_korela` нет вовсе. Эти 19 ordinary-строк иноземных народов импортируются `draft` и не выбираются. Такой NPC получает `identity_state.canonical_name = null` и `name_provenance.reason = 'no_pool_binding'`; разговор идёт без самопредставления по имени.
+- **Как жить.** Решение владельца D51: у иноземных народов будут отдельные пулы (потом это новые регионы), запасной вариант с русским пулом не делаем. Авторинг этих пулов — отдельная задача данных; после неё — строки привязки, статус `approved` по паре «пул + народ» и переутверждение запроса стадии `npc_identity_import`.
+- **Issue.** —
+
+### LW-108 — имена двух NPC одной сцены могут совпасть (rt-names)
+- **Где.** `packages/materialization/src/npc-identity.js` (`pickNpcName`), `packages/materialization/src/generated-npc-bindings.js`.
+- **Что.** Имя выбирается по seed каждого NPC отдельно, материализатор не знает других NPC сцены. Пул Новгорода: 204 мужских и 62 женских ordinary-строки, вероятность совпадения пары порядка 1/200 (мужские) и 1/60 (женские).
+- **Как жить.** Не считать имя уникальным ключом сцены. Исключение уже выбранных имён — в задаче rt-people, где создаются группы людей на месте (передать занятые имена в `compileGeneratedNpcBindings`).
+- **Issue.** —
+
+### LW-109 — характер только при полных данных занятия; срок пула не проверяется (rt-names)
+- **Где.** `packages/materialization/src/npc-identity.js` (`pickNpcCharacter`), `packages/runtime-catalog/src/procedural-scene-records.js` (`readNpcIdentityCatalog`), `infra/world-base/schema/29.sql`.
+- **Что.** `semantic_state.character` пишется целиком или не пишется: у занятия без цели или без страха (например `nov_occ_court_clerk_service`, `nov_occ_healer_herbal_helper` без страхов) поля нет, и разговор идёт без `npc_behavior`. Читатель не сверяет `valid_from`/`valid_to` пула и дату старта.
+- **Как жить.** Не заполнять недостающее в коде: добить данные занятий в game-base. Проверку срока пула добавлять вместе с сезоном/датой старта в загрузчик, если появится пул с другим периодом.
+- **Issue.** —
+
+### LW-110 — вторая проекция `name_profile_snapshot` в generated first-entry (rt-names)
+- **Где.** `apps/game-server/src/infrastructure/postgres/generated-npc-first-entry.js` (`nameProfileSnapshot`), владелец — `projectNameProfileSnapshot` в `packages/new-game/src/stages/stage-24-party-db-write-plan/code/lower-dvina-trace-persisted-projection.js`.
+- **Что.** Канонический старт получает снимок имени из stage 24, generated first-entry строит его своей функцией на те же ключи `canonical_name`/`name_provenance`. Публичный API stage 24 ограничен 8 экспортами (`architecture:check`), поэтому общий экспорт не добавлен.
+- **Как жить.** Не добавлять третью проекцию. Когда у stage 24 освободится слот API или проекция уйдёт в общего владельца, заменить локальную функцию вызовом владельца.
+- **Issue.** —
+
+### LW-111 — цели и страхи не привязаны к реестру занятий, контекст без версии (rt-names)
+- **Где.** `infra/world-base/schema/29.sql` (`occupation_character_items`, `npc_regional_context_name_bindings`).
+- **Что.** У `occupation_id` нет FK: 33 занятия из 97 (165 строк из 423) не входят в 68 занятий реестра `region_occupations`. Привязка контекста к пулу хранит `regional_context_id` без версии, поэтому одна строка покрывает все версии контекста (@1 и @2 в датасетах).
+- **Как жить.** Не считать строки целей и страхов доказательством, что занятие есть в реестре; читатель берёт только занятия бандла. Если появится версионирование контекстов с разными народами — добавить версию в ключ привязки.
 - **Issue.** —

@@ -128,7 +128,7 @@ Generic registry для доменов, не имеющих собственно
 | `region_demographic_profiles` | Profile допустимых demographic choices | region; legacy single option nullable для entry-based profile |
 | `region_demographic_profile_entries` | Нормализованные sex/age choices | profile, facet, approved regional option, weight, applicability, status |
 | `region_name_pools` | Региональный/культурный pool для периода | region, period, sources |
-| `region_name_pool_entries` | Конкретные разрешённые формы имён и weights | name pool |
+| `region_name_pool_entries` | Формы личных имён и weights; одна строка на `(pool, name_form, sex_category, people_ref)`; runtime выбирает только `selection_class = ordinary` и `status = approved` | name pool, sex_category, people_ref, selection_class, provenance |
 | `region_appearance_profiles` | Choice sets базовой внешности | region; legacy single option nullable для entry-based profile |
 | `region_appearance_profile_entries` | Нормализованные appearance facets | profile, facet, approved regional option, weight, applicability, status |
 | `region_clothing_profiles` | Согласованные garment slots и ограничения | region, item templates/categories |
@@ -142,6 +142,16 @@ Generic registry для доменов, не имеющих собственно
 | `region_npc_profile_sets` | Profile: одна совместимая композиция компонентов | archetype и все component profiles |
 
 Для всех plural choices создаются нормализованные entry/binding tables. Fallback schedule может ссылаться только на явно перечисленные place/route/activity варианты.
+
+Для v17 (D49) имя и характер NPC задаёт код материализации по seed из трёх таблиц:
+
+| Таблица | Уровень и назначение | Обязательные связи |
+|---|---|---|
+| `npc_regional_context_name_bindings` | Какой пул и народ дают имена NPC регионального контекста v3; без строки NPC без имени | world revision, status, provenance, name pool, people |
+| `npc_psychology_scale_entries` | Закрытый словарь темперамента и ценностей (D29, игровое допущение), `label_ru`, weight | world revision, status, provenance |
+| `occupation_character_items` | Кандидаты целей и страхов по занятию; код выбирает 1–2 цели и 1 страх по seed | world revision, status, provenance, occupation |
+
+Выбор делает код материализации по seed; LLM эти значения не задаёт. Физические колонки — DDL `schema/29.sql` и `SCHEMA_REFERENCE.md`.
 
 Applicability demographic/appearance entry хранит ограничения sex, age и
 hair-length в данных, не в materializer code. Required actor vocabulary:

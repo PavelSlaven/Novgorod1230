@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- fix(ux): first screen of the v17 start shows the visible passages (same admitted current-visible projection as a turn; provider gets the world-base reader), refused turns with nothing committed reach the player as typed `TURN_NOT_SAVED`/`WORLD_ACTION_UNAVAILABLE` (409, safe text) instead of a masked 500, neutral text for an unachieved direct goal (rt-ux)
+- fix(ux): first screen of the v17 start shows the visible passages (connection disclosure of the same visibility owner as a turn, canonical connections only; the provider gets the world-base reader), refused turns with nothing committed reach the player as typed `TURN_NOT_SAVED`/`WORLD_ACTION_UNAVAILABLE` (409, safe text) instead of a masked 500, neutral text for an unachieved direct goal (rt-ux)
 - feat(local-play): `npm run play:v17-slice` — tracked Linux driver for the live D49 slice run (Docker PG v17 bootstrap, real Qwen root, loopback HTTP, legs start/walk/meet/talk/take/make with SQL snapshots, `report.json` + playtest skeleton, always-cleanup); the presence e2e fixture bootstrap can run without a test context (rt-harness)
 - data(game-base): D-rated review step 2 — imported walnut, cast copper snake amulet, imported cotton cloth, common buckthorn, Zverin convent included from indexed sources; katana, chintz and local rice as dated denials (#213)
 - data(game-base): D-rated exclusions reviewed under D38 — risk-only rejections to structural needs_check queues, denials only for dated anachronism or physical impossibility, HW009 variant from the manifest (#212)

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { NEEDS_CHECK_BLOCKER } from '@rus/runtime-catalog/needs-check-blocker';
 
 const GAME_BASE = path.resolve(process.env.NEEDS_CHECK_GAME_BASE || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'));
-const SNAPSHOT_FILE = path.join(GAME_BASE, 'needs_check_blockers.v1.json');
+const SNAPSHOT_FILE = path.join(GAME_BASE, 'needs_check_blockers.v2.json');
 const QUEUES = [
   'buildings-interiors-containers/authoring/needs_check.csv',
   'buildings-interiors-containers/containers/needs_check.csv',
@@ -91,12 +91,23 @@ export function compileQueueRecord(row, file, ledger = new Map()) {
   }
   const source = row.archive_id ? ledger.get(row.archive_id) : null;
   if (row.archive_id && !source?.archive_ref) throw new Error(`${file}#${rowId}: archive ID is missing from its inclusion ledger`);
-  const blockBy = row.archive_id
-    ? (row.reason_code === 'unresolved' && /(?:запросить|требуется\s+источник|source\s+request)/iu.test(`${row.note ?? ''} ${row.source_request ?? ''}`) ? 'name' : 'archive_id')
-    : 'name';
+  const archiveNameQuestion = row.archive_id
+    && row.reason_code === 'unresolved'
+    && /(?:запросить|требуется\s+источник|source\s+request)/iu.test(`${row.note ?? ''} ${row.source_request ?? ''}`);
+  const doubtKind = row.doubt_kind || null;
+  if (!row.archive_id && !('doubt_kind' in row)) {
+    throw new Error(`${file}#${rowId}: small queue row lacks doubt_kind field`);
+  }
+  if (!['anachronism', 'regional_presence', null].includes(doubtKind)) {
+    throw new Error(`${file}#${rowId}: invalid doubt_kind ${doubtKind}`);
+  }
+  const blockBy = row.archive_id && !archiveNameQuestion
+    ? 'archive_id'
+    : doubtKind === 'anachronism' ? 'name' : 'none';
   const ru = row.block_pattern_ru;
   const lat = row.block_pattern_lat;
-  const scope = row.block_scope;
+  const blockRegion = row.block_region || '';
+  const blockPeriod = row.block_period || '';
   let exceptions;
   try {
     exceptions = Array.isArray(row.block_exception)
@@ -104,20 +115,20 @@ export function compileQueueRecord(row, file, ledger = new Map()) {
   } catch {
     throw new Error(`${file}#${rowId}: block_exception must be a JSON array`);
   }
-  if ((blockBy === 'name' && !ru) || typeof scope !== 'string' || !scope || !Array.isArray(exceptions)) {
+  if ((blockBy === 'name' && (!ru || !blockRegion || !blockPeriod))
+    || (blockBy !== 'name' && (blockRegion || blockPeriod)) || !Array.isArray(exceptions)) {
     throw new Error(`${file}#${rowId}: blocker fields are incomplete`);
   }
-  const validScopes = new Set(['global', ...fs.readdirSync(GAME_BASE, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'scripts')
-    .map((entry) => entry.name)]);
-  if (!validScopes.has(scope)) throw new Error(`${file}#${rowId}: invalid block_scope ${scope}`);
   const patterns = blockBy === 'name'
     ? [{ language: 'ru', value: ru }, ...(lat || row.name_lat ? [{ language: 'lat', value: lat || row.name_lat }] : []), ...(row.archive_id ? [{ language: 'id', value: row.archive_id }] : [])]
-    : [{ language: 'id', value: row.archive_id }];
+    : blockBy === 'archive_id' ? [{ language: 'id', value: row.archive_id }]
+      : [{ language: 'ru', value: ru || title }, ...(lat || row.name_lat ? [{ language: 'lat', value: lat || row.name_lat }] : [])];
   return {
     queue_id: id,
+    doubt_kind: doubtKind,
     block_by: blockBy,
-    scope,
+    block_region: blockRegion,
+    block_period: blockPeriod,
     source_ref: row.archive_id ? `${source.archive_ref}` : id,
     reason: row.note || row.reason || row.source_request || 'Unverified authoring queue entry.',
     patterns,
@@ -148,11 +159,12 @@ export function registeredCandidates() {
     const identity = row[spec.key];
     const ids = typeof identity === 'string'
       ? [...identity.matchAll(/\b[A-Z]{2,4}\d{3,5}\b/giu)].map(([id]) => id) : [];
-    const scope = spec.scope ?? spec.file.split('/')[0];
+    const region = row.region_id?.startsWith('region_') ? row.region_id
+      : row.presence_region_id?.startsWith('region_') ? row.presence_region_id : 'region_novgorod_land';
     const aliasesRu = ['alt_names_ru', 'aliases_ru', 'name_ru_alt', 'name_folk', 'name_old_ru']
       .flatMap((key) => String(row[key] ?? '').split(/[;|,]/u)).map((value) => value.trim()).filter(Boolean);
     const latSynonyms = String(row.lat_synonyms ?? '').split(/[;|]/u).map((value) => value.trim()).filter(Boolean);
-    candidates.push({ scope, source_kind: 'entity', id: identity, source_file: spec.file, ids, name: row[spec.name], name_lat: row.name_lat || row.scientific_name || '',
+    candidates.push({ region, source_kind: 'entity', id: identity, source_file: spec.file, ids, name: row[spec.name], name_lat: row.name_lat || row.scientific_name || '',
       aliases_ru: aliasesRu, lat_synonyms: latSynonyms });
   };
   for (const spec of registry.entity_tables) {
@@ -193,7 +205,9 @@ export function registeredCandidates() {
       const ids = [...new Set(idFields.flatMap((key) => String(row[key] ?? '').split(/[;|]/u))
         .flatMap((value) => [...value.matchAll(/\b[A-Z]{2,4}\d{3,5}\b/giu)].map(([id]) => id)))];
       if (!names.length && !ids.length) continue;
-      candidates.push({ scope: relative.split('/')[0], source_kind: 'item-bearing', source_file: relative, id: row.id || row.item_ref || row.item_or_category_ref || row.source_item_id || `${relative}#${index + 2}`,
+      const region = row.region_id?.startsWith('region_') ? row.region_id
+        : row.presence_region_id?.startsWith('region_') ? row.presence_region_id : 'region_novgorod_land';
+      candidates.push({ region, source_kind: 'item-bearing', source_file: relative, id: row.id || row.item_ref || row.item_or_category_ref || row.source_item_id || `${relative}#${index + 2}`,
         ids, name: names[0] || '', aliases_ru: names.slice(1), name_lat: row.name_lat || row.scientific_name || '',
         lat_synonyms: String(row.lat_synonyms ?? '').split(/[;|]/u).filter(Boolean) });
     }
@@ -222,7 +236,9 @@ export function validateCatalog(snapshot, candidates = registeredCandidates()) {
     throw new Error(`needs_check blocker hits (${hits.length}; unique queue/table/item=${unique}; name=${byKind.name}; archive_id=${byKind.archive_id}; informational_id_reference_hits=${informationalIdHits.length}; name_samples=${JSON.stringify(nameSamples)}): ${JSON.stringify(hits.slice(0, 30))}`);
   }
   return { candidate_count: candidates.length, template_count: snapshot.entries.length,
-    template_hits: [...templateHits.values()], informational_id_reference_hits: informationalIdHits.length };
+    template_hits: [...templateHits.values()], informational_id_reference_hits: informationalIdHits.length,
+    regional_presence_entries: snapshot.entries.filter(({ doubt_kind }) => doubt_kind === 'regional_presence').map(({ queue_id }) => queue_id),
+    disputed_entries: snapshot.entries.filter(({ block_by, doubt_kind }) => block_by === 'none' && doubt_kind === null).map(({ queue_id }) => queue_id) };
 }
 
 function main() {
@@ -232,7 +248,7 @@ function main() {
   const metrics = validateCatalog(snapshot);
   if (mode === '--write') {
     fs.writeFileSync(SNAPSHOT_FILE, `${JSON.stringify(snapshot, null, 2)}\n`);
-    process.stdout.write(`needs_check snapshot: ${snapshot.entries.length} entries, ${snapshot.digest}; ${metrics.template_count} templates × ${metrics.candidate_count} records; 0 blocking hits; ID-only refs outside entity inclusion (informational): ${metrics.informational_id_reference_hits}\n`);
+    process.stdout.write(`needs_check snapshot: ${snapshot.entries.length} entries, ${snapshot.digest}; ${metrics.template_count} templates × ${metrics.candidate_count} records; 0 blocking hits; regional_presence informational: ${metrics.regional_presence_entries.length}; disputed: ${metrics.disputed_entries.length}; ID-only refs outside entity inclusion (informational): ${metrics.informational_id_reference_hits}\n`);
     return;
   }
   const current = JSON.parse(fs.readFileSync(SNAPSHOT_FILE, 'utf8'));
@@ -240,7 +256,7 @@ function main() {
   if (current.digest !== snapshot.digest || JSON.stringify(current) !== JSON.stringify(snapshot)) {
     throw new Error('needs_check blocker snapshot is stale; run node check-needs-check.mjs --write');
   }
-  process.stdout.write(`needs_check snapshot verified: ${snapshot.entries.length} entries; ${metrics.template_count} templates × ${metrics.candidate_count} records; 0 blocking hits; ID-only refs outside entity inclusion (informational): ${metrics.informational_id_reference_hits}\n`);
+  process.stdout.write(`needs_check snapshot verified: ${snapshot.entries.length} entries; ${metrics.template_count} templates × ${metrics.candidate_count} records; 0 blocking hits; regional_presence informational: ${metrics.regional_presence_entries.length} [${metrics.regional_presence_entries.join(', ')}]; disputed: ${metrics.disputed_entries.length} [${metrics.disputed_entries.join(', ')}]; ID-only refs outside entity inclusion (informational): ${metrics.informational_id_reference_hits}\n`);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

@@ -1,9 +1,8 @@
 import { createHash } from 'node:crypto';
 import { canonicalStringify } from './canonical-records.js';
 
-const SCHEMA = 'rus.needs_check_blockers.v1';
+const SCHEMA = 'rus.needs_check_blockers.v2';
 const LANGUAGES = new Set(['ru', 'lat', 'id']);
-const SCOPE = /^[a-z0-9][a-z0-9._/-]*$/u;
 const TOKEN = /[\p{L}\p{N}]+/gu;
 const VALIDATED = new WeakSet();
 const COMPILED = new WeakMap();
@@ -53,8 +52,12 @@ function assertEntries(entries) {
     if (!entry || typeof entry.queue_id !== 'string' || !entry.queue_id.trim()
       || ids.has(entry.queue_id) || typeof entry.source_ref !== 'string' || !entry.source_ref.trim()
       || typeof entry.reason !== 'string' || !entry.reason.trim()
-      || typeof entry.scope !== 'string' || !SCOPE.test(entry.scope)
-      || !['name', 'archive_id'].includes(entry.block_by)
+      || !['anachronism', 'regional_presence', null].includes(entry.doubt_kind)
+      || !['name', 'archive_id', 'none'].includes(entry.block_by)
+      || typeof entry.block_region !== 'string' || typeof entry.block_period !== 'string'
+      || (entry.block_by === 'name' && (entry.doubt_kind !== 'anachronism' || !entry.block_region || !entry.block_period))
+      || (entry.block_by === 'none' && entry.doubt_kind === 'anachronism')
+      || (entry.block_by === 'archive_id' && (entry.block_region || entry.block_period))
       || !Array.isArray(entry.patterns) || entry.patterns.length === 0
       || !Array.isArray(entry.exceptions)) {
       throw new TypeError('Invalid or duplicate needs-check blocker entry.');
@@ -85,8 +88,10 @@ function createSnapshot(entries) {
   assertEntries(entries);
   const sorted = entries.map((entry) => ({
     queue_id: entry.queue_id,
+    doubt_kind: entry.doubt_kind,
     block_by: entry.block_by,
-    scope: entry.scope,
+    block_region: entry.block_region,
+    block_period: entry.block_period,
     source_ref: entry.source_ref,
     reason: entry.reason,
     patterns: entry.patterns.map(({ language, value }) => ({ language, value })),
@@ -140,9 +145,8 @@ function matchesAll({ snapshot, candidate }) {
   if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
     throw new TypeError('candidate must be an object.');
   }
-  const scope = candidate.scope ?? 'global';
-  if (typeof scope !== 'string' || !SCOPE.test(scope)) {
-    throw new TypeError('candidate.scope must be a valid scope.');
+  if (candidate.region !== undefined && candidate.region !== null && typeof candidate.region !== 'string') {
+    throw new TypeError('candidate.region must be a string when provided.');
   }
   const values = {
     ru: [candidate.name, candidate.semantic_type, candidate.candidate_hint, candidate.context,
@@ -161,8 +165,8 @@ function matchesAll({ snapshot, candidate }) {
   const hits = [];
   for (const compiled of compiledEntries(snapshot)) {
     const { entry } = compiled;
-    if (entry.block_by === 'name' && candidate.scope && candidate.scope !== 'global'
-      && entry.scope !== 'global' && scope !== entry.scope) continue;
+    if (entry.block_by === 'none') continue;
+    if (entry.block_by === 'name' && candidate.region && candidate.region !== entry.block_region) continue;
     const excluded = compiled.exceptions.some((tokens) => tokens.length > 0
       && Object.values(normalizedValues).flat().some((value) => containsSequence(value, tokens)));
     if (excluded) continue;
@@ -173,7 +177,9 @@ function matchesAll({ snapshot, candidate }) {
       const values = pattern.exact ? exactValues[pattern.language] : normalizedValues[pattern.language];
       if (tokens.length > 0 && values
         .some((value) => containsSequence(value, tokens))) {
-        hits.push(Object.freeze({ queue_id: entry.queue_id, block_by: entry.block_by, scope: entry.scope, reason: entry.reason }));
+        hits.push(Object.freeze({ queue_id: entry.queue_id, doubt_kind: entry.doubt_kind,
+          block_by: entry.block_by, block_region: entry.block_region, block_period: entry.block_period,
+          reason: entry.reason }));
         break;
       }
     }

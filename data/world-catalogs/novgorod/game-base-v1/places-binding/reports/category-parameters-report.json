@@ -1,13 +1,13 @@
 {
   "parameter_definitions": 16,
-  "category_parameter_rows": 3774,
-  "leaf_categories": 305,
+  "category_parameter_rows": 3781,
+  "leaf_categories": 306,
   "by_domain": {
     "container": 18,
-    "garment": 58,
+    "garment": 59,
     "item": 229
   },
   "sourced_values": 870,
-  "rule_only": 2904,
+  "rule_only": 2911,
   "leaves_without_template": 127
 }

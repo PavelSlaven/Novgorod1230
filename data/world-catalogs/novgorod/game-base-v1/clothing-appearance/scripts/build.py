@@ -903,7 +903,7 @@ def main():
     needs_check = {row['check_id']: row for row in read_csv(ROOT / 'authoring/needs_check.csv')}
     needs_check_gaps = []
     for n in NEW_GARMENTS:
-        if n['gm_id'] == 'gm_new_lapti' and 'clothing_lapti_frequency' in needs_check:
+        if n['gm_id'] == 'gm_new_lapti' and needs_check.get('clothing_lapti_frequency', {}).get('doubt_kind') == 'anachronism':
             queue_id = 'clothing-appearance/authoring/needs_check.csv#clothing_lapti_frequency'
             needs_check_gaps.append({'queue_id': queue_id,
                                      'reason': needs_check['clothing_lapti_frequency']['source_request'] or needs_check['clothing_lapti_frequency']['subject'],

@@ -31,8 +31,8 @@ const TABLES = [
   'time-calendar-church/religion/church_practice.csv',
   'items-weapons-armour/items/weapon_source_crosswalk.csv'
 ];
-const ARCHIVE_HEADER = 'archive_id,current_result,current_target_group,current_target_ref,reason_code,finding_ref,cluster_id,note,block_pattern_ru,block_pattern_lat,block_scope,block_exception';
-const SMALL_HEADER = 'check_id,subject,status,block_pattern_ru,block_pattern_lat,block_scope,block_exception';
+const ARCHIVE_HEADER = 'archive_id,current_result,current_target_group,current_target_ref,reason_code,finding_ref,cluster_id,note,block_pattern_ru,block_pattern_lat,doubt_kind,block_region,block_period,block_exception';
+const SMALL_HEADER = 'check_id,subject,status,block_pattern_ru,block_pattern_lat,doubt_kind,block_region,block_period,block_exception';
 
 function csvRow(values) {
   return values.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',') + '\n';
@@ -67,7 +67,7 @@ test('catalog gate reports archive IDs in item-bearing references as information
   fs.mkdirSync(path.dirname(craftsLedger), { recursive: true });
   fs.writeFileSync(craftsLedger, 'archive_ref,archive_name\n');
   const queue = path.join(root, QUEUES[0]);
-  fs.appendFileSync(queue, csvRow(['OMI12346', 'routed', 'crafts-tools-processes', '', 'ICA_ROUTE_INVALID', '', '', 'fixture', '', '', 'global', '[]']));
+  fs.appendFileSync(queue, csvRow(['OMI12346', 'routed', 'crafts-tools-processes', '', 'ICA_ROUTE_INVALID', '', '', 'fixture', '', '', '', '', '', '[]']));
 
   const oldBase = process.env.NEEDS_CHECK_GAME_BASE;
   process.env.NEEDS_CHECK_GAME_BASE = root;

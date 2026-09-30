@@ -52,6 +52,7 @@ garment.kind.wrap_dress_regional,garment,universal,,garment.kind,outer_garment,1
 garment.kind.gloves,garment,universal,,garment.kind,handwear,1,gm_ar038,rule:build.py SUB map from costume subcategory,candidate
 garment.kind.votola,garment,universal,,garment.kind,cloak,1,gm_new_votola,rule:build.py SUB map from costume subcategory,candidate
 garment.kind.korzno,garment,universal,,garment.kind,cloak,1,gm_new_korzno,rule:build.py SUB map from costume subcategory,candidate
+garment.kind.bast_shoes,garment,universal,,garment.kind,footwear,1,gm_new_lapti,rule:build.py SUB map from costume subcategory,candidate
 garment.component.trim,garment,universal,,garment.component,trim,2,gm_gm017|gm_gf010,rule:build.py SUB map from costume subcategory,candidate
 garment.component.shoe_lace,garment,universal,,garment.component,component,1,gm_fw021,rule:build.py SUB map from costume subcategory,candidate
 garment.component.belt_buckle,garment,universal,,garment.component,component,2,gm_ac003|gm_ac004,rule:build.py SUB map from costume subcategory,candidate

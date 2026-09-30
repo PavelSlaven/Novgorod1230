@@ -14,7 +14,7 @@ const archiveManifest = readJson(P.authoring('archive_inclusion_manifest.json'))
 const master = readCsv(P.authoring('master_military_snapshot.csv'));
 const needsCheck = readCsv(path.join(ROOT, '..', 'crafts-tools-processes', 'authoring', 'needs_check.csv'));
 const nameBlockersById = new Map(needsCheck
-  .filter(row => row.reason_code === 'unresolved' && /(?:запросить|требуется\s+источник|source\s+request)/iu.test(`${row.note || ''} ${row.source_request || ''}`))
+  .filter(row => row.doubt_kind === 'anachronism')
   .map(row => [row.archive_id, { queue_id: `crafts-tools-processes/authoring/needs_check.csv#${row.archive_id}`, reason: row.note || row.block_pattern_ru }]));
 const masterById = Object.fromEntries(master.map(r => [r.item_id, r]));
 const costume = readCsv(path.join(P.costume, 'catalog_items.csv'));

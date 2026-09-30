@@ -4,47 +4,50 @@ import { NEEDS_CHECK_BLOCKER } from '../src/needs-check-blocker.js';
 
 const entry = {
   queue_id: 'fauna_peacock',
+  doubt_kind: 'anachronism',
   block_by: 'name',
-  scope: 'fauna',
+  block_region: 'region_novgorod_land',
+  block_period: '1230-1250',
   source_ref: 'authoring/needs_check.csv#fauna_peacock',
-  reason: 'Unverified regional occurrence.',
+  reason: 'Unverified historical form.',
   patterns: [{ language: 'ru', value: 'Павлин' }, { language: 'lat', value: 'Pavo cristatus' }],
   exceptions: ['изображение павлина']
 };
 
-test('matches Russian inflections after normalization', () => {
+test('blocks anachronisms in matching or unspecified region only', () => {
   const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([entry]);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name: 'павлина' } }).queue_id, 'fauna_peacock');
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name: 'павлинами' } }).queue_id, 'fauna_peacock');
-  for (const name of ['павлинов', 'павлинам', 'павлинах', 'павлином']) {
-    assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name } }).queue_id, 'fauna_peacock');
+  for (const region of ['region_novgorod_land', undefined]) {
+    assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region, name: 'павлина' } }).queue_id, 'fauna_peacock');
   }
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_other', name: 'павлина' } }), null);
 });
 
-test('matches Latin scientific names case-insensitively', () => {
+test('matches Russian inflections and Latin scientific names', () => {
   const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([entry]);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name_lat: 'PAVO CRISTATUS' } }).queue_id, 'fauna_peacock');
+  for (const name of ['павлинами', 'павлинов', 'павлинам', 'павлинах', 'павлином']) {
+    assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name } }).queue_id, 'fauna_peacock');
+  }
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name_lat: 'PAVO CRISTATUS' } }).queue_id, 'fauna_peacock');
 });
 
-test('respects block scope and exact exceptions', () => {
+test('regional presence is informational and never blocks', () => {
+  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry,
+    doubt_kind: 'regional_presence', block_by: 'none', block_region: '', block_period: '' }]);
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name: 'павлин' } }), null);
+});
+
+test('respects exact exceptions', () => {
   const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([entry]);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'flora', name: 'павлин' } }), null);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name: 'изображение павлина' } }), null);
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name: 'изображение павлина' } }), null);
 });
 
-test('archive ID entries never block by a shared name and missing candidate scope checks all scopes', () => {
-  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, block_by: 'archive_id', scope: 'fauna', patterns: [
-    { language: 'ru', value: 'Павлин' }, { language: 'id', value: 'FSH0001' }
-  ] }]);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name: 'павлин', scope: 'crafts' } }), null);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { id: 'FSH0001', scope: 'crafts' } }).queue_id, 'fauna_peacock');
-});
-
-test('does not block a common word without its queue context, but catches the exact name', () => {
-  const scopedEntry = { ...entry, patterns: [{ language: 'ru', value: 'Лапти в городском и сельском контексте' }] };
-  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([scopedEntry]);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name: 'лапти' } }), null);
-  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { scope: 'fauna', name: 'Лапти в городском и сельском контексте' } }).queue_id, 'fauna_peacock');
+test('archive ID entries ignore name and region and match only their own ID', () => {
+  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, doubt_kind: null,
+    block_by: 'archive_id', block_region: '', block_period: '', patterns: [
+      { language: 'ru', value: 'Павлин' }, { language: 'id', value: 'FSH0001' }
+    ] }]);
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_other', name: 'павлин' } }), null);
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { region: 'region_other', id: 'FSH0001' } }).queue_id, 'fauna_peacock');
 });
 
 test('short one-word blockers use exact forms; alternatives and aliases still match', () => {
@@ -69,10 +72,11 @@ test('name-blocked archive ID blocks entity inclusion but not item-bearing refer
   assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { source_kind: 'item-bearing', ids: ['CRF0061'], name: 'Другой предмет' } }), null);
 });
 
-test('fails closed on malformed entries and snapshots or a changed digest', () => {
+test('fails closed on malformed fields, snapshots or changed digest', () => {
   const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([entry]);
   assert.throws(() => NEEDS_CHECK_BLOCKER.matches({ snapshot: { ...snapshot, entries: [] }, candidate: { name: 'павлин' } }), /must contain entries/u);
   assert.throws(() => NEEDS_CHECK_BLOCKER.matches({ snapshot: { ...snapshot, digest: `sha256:${'0'.repeat(64)}` }, candidate: { name: 'павлин' } }), /digest mismatch/u);
   assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, queue_id: '' }]), /Invalid or duplicate/u);
+  assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, doubt_kind: 'regional_presence', block_by: 'name' }]), /Invalid or duplicate/u);
   assert.throws(() => NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry, patterns: [{ language: 'ru', value: '—' }] }]), /Empty normalized/u);
 });

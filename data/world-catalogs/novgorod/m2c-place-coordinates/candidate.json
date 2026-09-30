@@ -361,7 +361,7 @@
       "id": "large_island_channels",
       "waterbody_type": "side_channel",
       "width_m": 250,
-      "current_bias_kmh": 0.65,
+      "current_bias_kmh": 0,
       "geometry_status": "local schematic authored waterbody corridor; not a 1230 channel",
       "points": [
         [
@@ -379,7 +379,7 @@
       ],
       "downstream_direction": "local waterbody orientation is schematic; no historical flow direction claimed",
       "direction_reliability": "schematic authoring orientation only",
-      "current_basis": "editorial_assumption; still-water override applies to old_channel_pool and reed_backwater"
+      "current_basis": "editorial assumption: dead-end arm — both ends close on each other at the island head and only the start touches the main network, so no through-current is authored (PLAN-place-geo-8)"
     },
     {
       "id": "vikhtuy_access_cove",
@@ -537,7 +537,7 @@
       "id": "central_head_branch",
       "waterbody_type": "distributary",
       "width_m": 500,
-      "current_bias_kmh": 0.8,
+      "current_bias_kmh": 0,
       "geometry_status": "authored shared branch from central fork to island-head landing; schematic modern-delta frame, not a traced 1230 channel",
       "points": [
         [
@@ -553,9 +553,9 @@
         "CLM_G1R2_MULTICHANNEL",
         "CLM_G1R2_SHORELINE_LIMIT"
       ],
-      "downstream_direction": "from central split toward island-head confluence",
+      "downstream_direction": "local waterbody orientation is schematic; no historical flow direction claimed",
       "direction_reliability": "schematic authoring orientation only",
-      "current_basis": "editorial_assumption"
+      "current_basis": "editorial assumption: dead-end arm — both ends close on each other at the island head and only the start touches the main network, so no through-current is authored (PLAN-place-geo-8)"
     },
     {
       "id": "backwater_mouth",
@@ -802,6 +802,14 @@
             [
               40.630696,
               64.5760918
+            ],
+            [
+              40.6314333,
+              64.5683279
+            ],
+            [
+              40.63176669999999,
+              64.5683279
             ],
             [
               40.6420934,
@@ -2350,6 +2358,10 @@
               64.6557175
             ],
             [
+              40.5214667,
+              64.66217209999999
+            ],
+            [
               40.5181553,
               64.6644154
             ],
@@ -2724,8 +2736,8 @@
       "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
       "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
       "title": "Подход к разделению",
-      "lat": 64.57545292636509,
-      "lon": 40.63508372556155,
+      "lat": 64.5684,
+      "lon": 40.6316,
       "precision_class": "schematic",
       "precision_m": null,
       "basis": "schematic",
@@ -2737,7 +2749,7 @@
         "CLM_G1R2_DVINA_CORRIDOR",
         "CLM_G1R2_NAVIGATION_KNOWLEDGE"
       ],
-      "reasoning": "Относительно родительского сектора: место раннего выбора ветви; авторское смещение -0.55 км вдоль принятой оси и 0 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются.",
+      "reasoning": "Относительно родительского сектора: место раннего выбора ветви; авторское смещение -0.55 км вдоль принятой оси и 0 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются. Позиция уточнена (PLAN-place-geo-8): сдвинута на левую кромку main выше разделения, чтобы сухая тропа шла по одному берегу.",
       "flow_ref": "main",
       "flow_station_km": 9.936,
       "historical_basis": "schematic",
@@ -2748,24 +2760,24 @@
         "coordinates": [
           [
             [
-              40.63491702556155,
-              64.57538082636509
+              40.6314333,
+              64.5683279
             ],
             [
-              40.635250425561544,
-              64.57538082636509
+              40.63176669999999,
+              64.5683279
             ],
             [
-              40.635250425561544,
-              64.57552502636509
+              40.63176669999999,
+              64.5684721
             ],
             [
-              40.63491702556155,
-              64.57552502636509
+              40.6314333,
+              64.5684721
             ],
             [
-              40.63491702556155,
-              64.57538082636509
+              40.6314333,
+              64.5683279
             ]
           ]
         ]
@@ -3008,8 +3020,8 @@
       "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
       "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
       "title": "Кромка мелей — Средний судоходный плёс",
-      "lat": 64.5537207659223,
-      "lon": 40.62595009034827,
+      "lat": 64.55263425000818,
+      "lon": 40.62781268905817,
       "precision_class": "schematic",
       "precision_m": null,
       "basis": "schematic",
@@ -3021,7 +3033,7 @@
         "CLM_G1R2_DVINA_CORRIDOR",
         "CLM_G1R2_NAVIGATION_KNOWLEDGE"
       ],
-      "reasoning": "Относительно родительского сектора: граница безопасного хода и мелководья; авторское смещение 0.15 км вдоль принятой оси и 0.4 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются.",
+      "reasoning": "Относительно родительского сектора: граница безопасного хода и мелководья; авторское смещение 0.15 км вдоль принятой оси и 0.4 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются. Позиция уточнена (PLAN-place-geo-8): сдвинута на 150 м вверх вдоль левой кромки main, чтобы линия от глубокой нитки имела продольную составляющую.",
       "flow_ref": "main",
       "flow_station_km": 8.633,
       "historical_basis": "schematic",
@@ -3032,24 +3044,24 @@
         "coordinates": [
           [
             [
-              40.62578339034827,
-              64.5536486659223
+              40.627645989058166,
+              64.55256215000819
             ],
             [
-              40.62611679034827,
-              64.5536486659223
+              40.62797938905817,
+              64.55256215000819
             ],
             [
-              40.62611679034827,
-              64.55379286592229
+              40.62797938905817,
+              64.55270635000818
             ],
             [
-              40.62578339034827,
-              64.55379286592229
+              40.627645989058166,
+              64.55270635000818
             ],
             [
-              40.62578339034827,
-              64.5536486659223
+              40.627645989058166,
+              64.55256215000819
             ]
           ]
         ]
@@ -6288,8 +6300,8 @@
       "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
       "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
       "title": "Внутреннее понижение — Голова крупного пойменного острова",
-      "lat": 64.56065262445027,
-      "lon": 40.60061442890831,
+      "lat": 64.56148382134282,
+      "lon": 40.60265103299032,
       "precision_class": "schematic",
       "precision_m": null,
       "basis": "schematic",
@@ -6300,7 +6312,7 @@
         "NODE_BINDING",
         "CLM_G1R2_MULTICHANNEL"
       ],
-      "reasoning": "Относительно родительского сектора: затапливаемая внутренняя часть; авторское смещение 0.2 км вдоль принятой оси и 0.2 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются.",
+      "reasoning": "Относительно родительского сектора: затапливаемая внутренняя часть; авторское смещение 0.2 км вдоль принятой оси и 0.2 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются. Позиция уточнена (PLAN-place-geo-8): смещена вверх по рукаву large_island_channels, чтобы расстояние до соседних пунктов совпало с графом (~260 м) и сухая связь не делала разворот на месте.",
       "flow_station_km": 11.4,
       "historical_basis": "schematic",
       "historical_uncertainty": "Положение и границы — авторская игровая реконструкция; точная конфигурация русел, островов и берегов около 1230 г. неизвестна.",
@@ -6310,24 +6322,24 @@
         "coordinates": [
           [
             [
-              40.600447728908314,
-              64.56058052445027
+              40.60248433299033,
+              64.56141172134282
             ],
             [
-              40.60078112890831,
-              64.56058052445027
+              40.602817732990324,
+              64.56141172134282
             ],
             [
-              40.60078112890831,
-              64.56072472445027
+              40.602817732990324,
+              64.56155592134282
             ],
             [
-              40.600447728908314,
-              64.56072472445027
+              40.60248433299033,
+              64.56155592134282
             ],
             [
-              40.600447728908314,
-              64.56058052445027
+              40.60248433299033,
+              64.56141172134282
             ]
           ]
         ]
@@ -6465,8 +6477,8 @@
       "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
       "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
       "title": "Внутренний подход",
-      "lat": 64.65778654757058,
-      "lon": 40.51985551167855,
+      "lat": 64.6621,
+      "lon": 40.5213,
       "precision_class": "schematic",
       "precision_m": null,
       "basis": "schematic",
@@ -6479,7 +6491,7 @@
         "CLM_G1R2_NORTH_EXIT",
         "CLM_G1R2_SEASONAL_WATER"
       ],
-      "reasoning": "Относительно родительского сектора: выход из реки; авторское смещение -0.55 км вдоль принятой оси и 0 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются.",
+      "reasoning": "Относительно родительского сектора: выход из реки; авторское смещение -0.55 км вдоль принятой оси и 0 км вправо. Точная сторона берега/положение в 1230 г. не утверждаются. Позиция уточнена (PLAN-place-geo-8): сдвинута на правую кромку main, чтобы сухая тропа шла по одному берегу.",
       "flow_ref": "main",
       "flow_station_km": 21.182,
       "historical_basis": "schematic",
@@ -6490,24 +6502,24 @@
         "coordinates": [
           [
             [
-              40.51968881167855,
-              64.65771444757058
+              40.521133299999995,
+              64.6620279
             ],
             [
-              40.52002221167855,
-              64.65771444757058
+              40.5214667,
+              64.6620279
             ],
             [
-              40.52002221167855,
-              64.65785864757058
+              40.5214667,
+              64.66217209999999
             ],
             [
-              40.51968881167855,
-              64.65785864757058
+              40.521133299999995,
+              64.66217209999999
             ],
             [
-              40.51968881167855,
-              64.65771444757058
+              40.521133299999995,
+              64.6620279
             ]
           ]
         ]
@@ -13453,40 +13465,44 @@
       "id": "shore_main_left",
       "flow_ref": "main",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 250,
       "points": [
         [
-          64.42685401692718,
-          40.7429369766063
+          64.4277,
+          40.744762259113934
         ],
         [
-          64.51915401692717,
-          40.6829369766063
+          64.49889932291832,
+          40.744762259113934
         ],
         [
-          64.55313445030333,
-          40.624093881757894
+          64.51841584580713,
+          40.686212690447505
         ],
         [
-          64.57566051761576,
-          40.632830433110584
+          64.55448245879384,
+          40.62438421104172
         ],
         [
-          64.62397770223481,
-          40.59306468893329
+          64.57486081121891,
+          40.63457338725426
         ],
         [
-          64.65359055663757,
-          40.55844338987905
+          64.62412764006835,
+          40.59515992417471
         ],
         [
-          64.65695280681497,
-          40.518162463393686
+          64.65307951538958,
+          40.56138273629995
         ],
         [
-          64.73658391359298,
-          40.41357381079124
+          64.658066618865,
+          40.516498805020966
+        ],
+        [
+          64.73701708113785,
+          40.415409864850886
         ]
       ],
       "evidence": [
@@ -13498,40 +13514,44 @@
       "id": "shore_main_right",
       "flow_ref": "main",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 250,
       "points": [
         [
-          64.42854598307282,
-          40.7570630233937
+          64.4277,
+          40.755237740886066
         ],
         [
-          64.52084598307282,
-          40.697063023393696
+          64.50110067708168,
+          40.755237740886066
         ],
         [
-          64.55686554969667,
-          40.63590611824211
+          64.52158415419287,
+          40.693787309552484
         ],
         [
-          64.57433948238426,
-          40.64716956688941
+          64.55551754120617,
+          40.63561578895828
         ],
         [
-          64.62602229776518,
-          40.606935311066714
+          64.57513918878108,
+          40.645426612745744
         ],
         [
-          64.65640944336243,
-          40.57155661012094
+          64.62587235993165,
+          40.6048400758253
         ],
         [
-          64.66304719318501,
-          40.52183753660632
+          64.65692048461044,
+          40.56861726370005
         ],
         [
-          64.73961608640703,
-          40.42642618920876
+          64.66193338113497,
+          40.52350119497904
+        ],
+        [
+          64.73918291886216,
+          40.42459013514912
         ]
       ],
       "evidence": [
@@ -13543,24 +13563,24 @@
       "id": "shore_west_left",
       "flow_ref": "west",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 175,
       "points": [
         [
-          64.57210165627825,
-          40.63714000206583
+          64.57355082813912,
+          40.63857000103292
         ],
         [
-          64.59210165627823,
-          40.527140002065835
+          64.59353103195839,
+          40.52867888002689
         ],
         [
-          64.60702857662696,
-          40.42758100865269
+          64.60888282675546,
+          40.42633358137975
         ],
         [
           64.7375,
-          40.42266716275951
+          40.42633358137975
         ]
       ],
       "evidence": [
@@ -13572,24 +13592,24 @@
       "id": "shore_west_right",
       "flow_ref": "west",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 175,
       "points": [
         [
-          64.57789834372176,
-          40.64285999793417
+          64.57644917186089,
+          40.64142999896709
         ],
         [
-          64.59789834372175,
-          40.532859997934175
+          64.5964689680416,
+          40.531321119973114
         ],
         [
-          64.61297142337305,
-          40.432418991347305
+          64.61111717324454,
+          40.43366641862024
         ],
         [
           64.7375,
-          40.43733283724049
+          40.43366641862024
         ]
       ],
       "evidence": [
@@ -13601,32 +13621,32 @@
       "id": "shore_east_left",
       "flow_ref": "east",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 175,
       "points": [
         [
-          64.57754470007778,
-          40.635684161891994
+          64.57627235003889,
+          40.637842080946
         ],
         [
-          64.58754470007777,
-          40.667684161892
+          64.58626674934472,
+          40.669824158724666
         ],
         [
-          64.61252211206454,
-          40.74561279117962
+          64.61131477979337,
+          40.74797401372447
         ],
         [
-          64.63771994250337,
-          40.8463095591154
+          64.63633510669142,
+          40.84805532131665
         ],
         [
-          64.66061522661123,
-          40.92591938429724
+          64.6592855138122,
+          40.92788282434544
         ],
         [
-          64.68437045335286,
-          40.98917562340511
+          64.68326177832346,
+          41.0028086509431
         ]
       ],
       "evidence": [
@@ -13638,32 +13658,32 @@
       "id": "shore_east_right",
       "flow_ref": "east",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 175,
       "points": [
         [
-          64.57245529992223,
-          40.644315838108
+          64.57372764996111,
+          40.642157919054
         ],
         [
-          64.58245529992222,
-          40.676315838108
+          64.58373325065527,
+          40.67417584127533
         ],
         [
-          64.60747788793547,
-          40.75438720882038
+          64.60868522020662,
+          40.75202598627552
         ],
         [
-          64.63228005749663,
-          40.853690440884606
+          64.63366489330858,
+          40.85194467868335
         ],
         [
-          64.65538477338879,
-          40.93408061570277
+          64.65671448618781,
+          40.93211717565456
         ],
         [
-          64.67962954664715,
-          40.9988243765949
+          64.68073822167655,
+          41.0071913490569
         ]
       ],
       "evidence": [
@@ -13675,20 +13695,12 @@
       "id": "shore_reed_backwater_pool_left",
       "flow_ref": "reed_backwater_pool",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 50,
       "points": [
         [
-          64.638106536719,
-          40.35909422936471
-        ],
-        [
-          64.638324536719,
-          40.3602302293647
-        ],
-        [
-          64.63349314093833,
-          40.349410621763944
+          64.63613216299119,
+          40.35071723168056
         ]
       ],
       "evidence": [
@@ -13700,20 +13712,24 @@
       "id": "shore_reed_backwater_pool_right",
       "flow_ref": "reed_backwater_pool",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 50,
       "points": [
         [
-          64.632359463281,
-          40.3650797706353
+          64.63482249475443,
+          40.36251453866219
         ],
         [
-          64.63257746328101,
-          40.36621577063529
+          64.63504049475443,
+          40.363650538662185
         ],
         [
-          64.63965085906166,
-          40.35245937823606
+          64.63589083700882,
+          40.363440768319435
+        ],
+        [
+          64.63701183700881,
+          40.35115276831944
         ]
       ],
       "evidence": [
@@ -13725,16 +13741,16 @@
       "id": "shore_old_channel_still_pool_left",
       "flow_ref": "old_channel_still_pool",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 40,
       "points": [
         [
-          64.63491239130383,
-          40.38320589809426
+          64.6375638371427,
+          40.385212901267195
         ],
         [
-          64.63580019630429,
-          40.37684042321454
+          64.63845164214315,
+          40.37884742638747
         ]
       ],
       "evidence": [
@@ -13746,16 +13762,16 @@
       "id": "shore_old_channel_still_pool_right",
       "flow_ref": "old_channel_still_pool",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 40,
       "points": [
         [
-          64.640899527069,
-          40.387737840742815
+          64.63824808123013,
+          40.38573083756988
         ],
         [
-          64.64178733206946,
-          40.3813723658631
+          64.63913588623059,
+          40.37936536269016
         ]
       ],
       "evidence": [
@@ -13767,16 +13783,16 @@
       "id": "shore_small_tributary_left",
       "flow_ref": "small_tributary",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 50,
       "points": [
         [
-          64.61310257586935,
-          40.358169504990975
+          64.61457199185483,
+          40.36344079193937
         ],
         [
-          64.6174603349081,
-          40.35157670599473
+          64.61892975089357,
+          40.35684799294312
         ]
       ],
       "evidence": [
@@ -13788,16 +13804,16 @@
       "id": "shore_small_tributary_right",
       "flow_ref": "small_tributary",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 50,
       "points": [
         [
-          64.61653121316878,
-          40.370469174537234
+          64.61506179718332,
+          40.365197887588835
         ],
         [
-          64.62088897220754,
-          40.36387637554099
+          64.61941955622207,
+          40.35860508859259
         ]
       ],
       "evidence": [
@@ -13809,16 +13825,16 @@
       "id": "shore_large_island_channels_left",
       "flow_ref": "large_island_channels",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 125,
       "points": [
         [
-          64.55955033949368,
-          40.607123327605045
+          64.56185503186366,
+          40.60885602895488
         ],
         [
-          64.55955033949368,
-          40.59287667239495
+          64.55915706882575,
+          40.601732701349846
         ]
       ],
       "evidence": [
@@ -13830,16 +13846,16 @@
       "id": "shore_large_island_channels_right",
       "flow_ref": "large_island_channels",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 125,
       "points": [
         [
-          64.56584558658213,
-          40.607123327605045
+          64.56354089421215,
+          40.60539062625521
         ],
         [
-          64.56584558658213,
-          40.59287667239495
+          64.56084293117425,
+          40.598267298650164
         ]
       ],
       "evidence": [
@@ -13851,16 +13867,16 @@
       "id": "shore_vikhtuy_access_cove_left",
       "flow_ref": "vikhtuy_access_cove",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 45,
       "points": [
         [
           64.5198,
-          40.35326716275951
+          40.359657206640506
         ],
         [
           64.5206,
-          40.35326716275951
+          40.359657206640506
         ]
       ],
       "evidence": [
@@ -13872,16 +13888,16 @@
       "id": "shore_vikhtuy_access_cove_right",
       "flow_ref": "vikhtuy_access_cove",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 45,
       "points": [
         [
           64.5198,
-          40.36793283724049
+          40.36154279335949
         ],
         [
           64.5206,
-          40.36793283724049
+          40.36154279335949
         ]
       ],
       "evidence": [
@@ -13893,16 +13909,16 @@
       "id": "shore_landing_terrace_cove_left",
       "flow_ref": "landing_terrace_cove",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 60,
       "points": [
         [
-          64.58827980456375,
-          40.34829692120935
+          64.59030996649665,
+          40.35211090077874
         ],
         [
-          64.59007980456376,
-          40.34309692120935
+          64.59210996649665,
+          40.346910900778745
         ]
       ],
       "evidence": [
@@ -13914,16 +13930,16 @@
       "id": "shore_landing_terrace_cove_right",
       "flow_ref": "landing_terrace_cove",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 60,
       "points": [
         [
-          64.59318019543623,
-          40.35750307879066
+          64.59115003350335,
+          40.353689099221256
         ],
         [
-          64.59498019543624,
-          40.352303078790655
+          64.59295003350336,
+          40.34848909922126
         ]
       ],
       "evidence": [
@@ -13935,20 +13951,20 @@
       "id": "shore_floodplain_overflow_left",
       "flow_ref": "floodplain_overflow",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 50,
       "points": [
         [
-          64.54556579083985,
-          40.653345893541164
+          64.54354376194094,
+          40.639950538915905
         ],
         [
-          64.54606579083985,
-          40.650345893541164
+          64.5440845432183,
+          40.63670585125173
         ],
         [
-          64.54794968473631,
-          40.64543622998206
+          64.54517003249757,
+          40.63453487269319
         ]
       ],
       "evidence": [
@@ -13960,20 +13976,20 @@
       "id": "shore_floodplain_overflow_right",
       "flow_ref": "floodplain_overflow",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 50,
       "points": [
         [
-          64.55143420916016,
-          40.65865410645883
+          64.54438210741527,
+          40.640708855046995
         ],
         [
-          64.55193420916017,
-          40.65565410645883
+          64.54484132613791,
+          40.63795354271117
         ],
         [
-          64.55205031526367,
-          40.65656377001795
+          64.5457558368586,
+          40.63612452126973
         ]
       ],
       "evidence": [
@@ -13985,16 +14001,16 @@
       "id": "shore_zaostrovye_landing_inlet_left",
       "flow_ref": "zaostrovye_landing_inlet",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 70,
       "points": [
         [
-          64.5411868528129,
-          40.44075717708203
+          64.54177097056258,
+          40.446463435416405
         ],
         [
-          64.5429868528129,
-          40.43975717708203
+          64.54357097056258,
+          40.44546343541641
         ]
       ],
       "evidence": [
@@ -14006,16 +14022,16 @@
       "id": "shore_zaostrovye_landing_inlet_right",
       "flow_ref": "zaostrovye_landing_inlet",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 70,
       "points": [
         [
-          64.5426471471871,
-          40.455022822917975
+          64.54206302943741,
+          40.4493165645836
         ],
         [
-          64.5444471471871,
-          40.45402282291798
+          64.54386302943742,
+          40.4483165645836
         ]
       ],
       "evidence": [
@@ -14027,16 +14043,16 @@
       "id": "shore_zaostrovye_settlement_inlet_left",
       "flow_ref": "zaostrovye_settlement_inlet",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 70,
       "points": [
         [
-          64.54482092453816,
-          40.45291543850879
+          64.54652399942377,
+          40.45723650608932
         ],
         [
-          64.54543652453816,
-          40.451598638508784
+          64.54713959942377,
+          40.45591970608932
         ]
       ],
       "evidence": [
@@ -14048,16 +14064,16 @@
       "id": "shore_zaostrovye_settlement_inlet_right",
       "flow_ref": "zaostrovye_settlement_inlet",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 70,
       "points": [
         [
-          64.54907861175218,
-          40.46371810746013
+          64.54737553686657,
+          40.4593970398796
         ],
         [
-          64.54969421175218,
-          40.46240130746013
+          64.54799113686657,
+          40.45808023987959
         ]
       ],
       "evidence": [
@@ -14069,20 +14085,20 @@
       "id": "shore_dry_island_landing_cove_left",
       "flow_ref": "dry_island_landing_cove",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 80,
       "points": [
         [
-          64.57161767759813,
-          40.66828423438489
+          64.57562518046277,
+          40.627465172671734
         ],
         [
-          64.5658176775981,
-          40.655284234384894
+          64.56878622440996,
+          40.625137027707844
         ],
         [
-          64.55947909677312,
-          40.64742000893632
+          64.56194726835716,
+          40.622808882743946
         ]
       ],
       "evidence": [
@@ -14094,20 +14110,20 @@
       "id": "shore_dry_island_landing_cove_right",
       "flow_ref": "dry_island_landing_cove",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 80,
       "points": [
         [
-          64.5759823224019,
-          40.6577157656151
+          64.57583323524514,
+          40.62414824487297
         ],
         [
-          64.57018232240188,
-          40.6447157656151
+          64.56899427919234,
+          40.62182009990907
         ],
         [
-          64.5625209032269,
-          40.634579991063674
+          64.56215532313954,
+          40.619491954945175
         ]
       ],
       "evidence": [
@@ -14119,16 +14135,16 @@
       "id": "shore_central_head_branch_left",
       "flow_ref": "central_head_branch",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 250,
       "points": [
         [
-          64.57364922703921,
-          40.64544435210178
+          64.57431144788515,
+          40.644026822929845
         ],
         [
-          64.55768222703921,
-          40.60496135210178
+          64.55834444788515,
+          40.60354382292984
         ]
       ],
       "evidence": [
@@ -14140,16 +14156,16 @@
       "id": "shore_central_head_branch_right",
       "flow_ref": "central_head_branch",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 250,
       "points": [
         [
-          64.5782847729608,
-          40.63552164789822
+          64.57762255211485,
+          40.63693917707016
         ],
         [
-          64.5623177729608,
-          40.59503864789822
+          64.56165555211486,
+          40.59645617707016
         ]
       ],
       "evidence": [
@@ -14161,20 +14177,20 @@
       "id": "shore_island_split_channels_left",
       "flow_ref": "island_split_channels",
       "bank_side": "left",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 80,
       "points": [
         [
-          64.58403541546998,
-          40.67898003418681
+          64.58670873138995,
+          40.63640214515791
         ],
         [
-          64.57603541546999,
-          40.6729800341868
+          64.57868436368095,
+          40.63038386937616
         ],
         [
-          64.5726249069431,
-          40.66980267157911
+          64.57546061515524,
+          40.627361605133295
         ]
       ],
       "evidence": [
@@ -14186,20 +14202,20 @@
       "id": "shore_island_split_channels_right",
       "flow_ref": "island_split_channels",
       "bank_side": "right",
-      "geometry_status": "schematic authored shoreline offset; not a 1230 shore",
+      "geometry_status": "schematic authored shoreline at the corridor edge (half-width from the flow axis); not a 1230 shore",
       "offset_from_flow_skeleton_m": 80,
       "points": [
         [
-          64.58596458452999,
-          40.665019965813194
+          64.58714968431794,
+          40.633211272386795
         ],
         [
-          64.57796458453,
-          40.659019965813194
+          64.57917405202694,
+          40.62722954816854
         ],
         [
-          64.57497509305692,
-          40.65619732842088
+          64.57599780055267,
+          40.624251812411416
         ]
       ],
       "evidence": [
@@ -14839,8 +14855,8 @@
           "lon": 40.52111553678003
         },
         {
-          "lat": 64.65778654757058,
-          "lon": 40.51985551167855
+          "lat": 64.6621,
+          "lon": 40.5213
         }
       ],
       "segments": [
@@ -14871,8 +14887,8 @@
           "lon": 40.57119137049195
         },
         {
-          "lat": 64.655,
-          "lon": 40.565
+          "lat": 64.646,
+          "lon": 40.5755
         },
         {
           "lat": 64.625,
@@ -14887,11 +14903,20 @@
           "lon": 40.63
         },
         {
+          "lat": 64.5546016108315,
+          "lon": 40.630682952860305
+        },
+        {
           "lat": 64.55332237675378,
           "lon": 40.626633043208564
         }
       ],
       "segments": [
+        {
+          "surface": "water",
+          "waterbody_ref": "main",
+          "crossing": false
+        },
         {
           "surface": "water",
           "waterbody_ref": "main",
@@ -14929,12 +14954,16 @@
           "lon": 40.57119137049195
         },
         {
-          "lat": 64.655,
-          "lon": 40.565
+          "lat": 64.646,
+          "lon": 40.5755
         },
         {
           "lat": 64.625,
           "lon": 40.6
+        },
+        {
+          "lat": 64.62453218803012,
+          "lon": 40.600374249575914
         },
         {
           "lat": 64.62383118384827,
@@ -14942,6 +14971,11 @@
         }
       ],
       "segments": [
+        {
+          "surface": "water",
+          "waterbody_ref": "main",
+          "crossing": false
+        },
         {
           "surface": "water",
           "waterbody_ref": "main",
@@ -14969,8 +15003,8 @@
           "lon": 40.42475907082414
         },
         {
-          "lat": 64.7381,
-          "lon": 40.42
+          "lat": 64.73416919376297,
+          "lon": 40.42503304255702
         },
         {
           "lat": 64.66,
@@ -14981,8 +15015,8 @@
           "lon": 40.565
         },
         {
-          "lat": 64.625,
-          "lon": 40.6
+          "lat": 64.63378659552858,
+          "lon": 40.589748971883324
         },
         {
           "lat": 64.63286038989041,
@@ -15027,20 +15061,16 @@
           "lon": 40.55973007115154
         },
         {
-          "lat": 64.655,
-          "lon": 40.565
-        },
-        {
-          "lat": 64.66,
-          "lon": 40.52
+          "lat": 64.65552974624849,
+          "lon": 40.560232283763646
         },
         {
           "lat": 64.655,
           "lon": 40.565
         },
         {
-          "lat": 64.625,
-          "lon": 40.6
+          "lat": 64.63378659552858,
+          "lon": 40.589748971883324
         },
         {
           "lat": 64.63286038989041,
@@ -15048,11 +15078,6 @@
         }
       ],
       "segments": [
-        {
-          "surface": "water",
-          "waterbody_ref": "main",
-          "crossing": false
-        },
         {
           "surface": "water",
           "waterbody_ref": "main",
@@ -15085,8 +15110,8 @@
           "lon": 40.6861988
         },
         {
-          "lat": 64.52,
-          "lon": 40.69
+          "lat": 64.5201009900482,
+          "lon": 40.68982687420306
         },
         {
           "lat": 64.555,
@@ -15101,8 +15126,8 @@
           "lon": 40.53
         },
         {
-          "lat": 64.61,
-          "lon": 40.43
+          "lat": 64.60502670648759,
+          "lon": 40.46315529008267
         },
         {
           "lat": 64.60375323932773,
@@ -15152,8 +15177,8 @@
           "lon": 40.6861988
         },
         {
-          "lat": 64.52,
-          "lon": 40.69
+          "lat": 64.5201009900482,
+          "lon": 40.68982687420306
         },
         {
           "lat": 64.555,
@@ -15168,8 +15193,8 @@
           "lon": 40.672
         },
         {
-          "lat": 64.61,
-          "lon": 40.75
+          "lat": 64.60755142321617,
+          "lon": 40.74236044043444
         },
         {
           "lat": 64.60636095890352,
@@ -18904,6 +18929,503 @@
       ],
       "geometry_status": "schematic authored dry-land detour; non-authoritative map geometry"
     },
+    "cross_g4_09": {
+      "key": "cross_g4_09",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+          "lon": 40.62588493244658,
+          "lat": 64.5758126464398
+        },
+        {
+          "lon": 40.62338941020189,
+          "lat": 64.57547110931247
+        },
+        {
+          "lon": 40.622551371660116,
+          "lat": 64.57223355366699
+        },
+        {
+          "lon": 40.594896099781685,
+          "lat": 64.56144170151536
+        },
+        {
+          "lon": 40.59405806123991,
+          "lat": 64.55982292369262
+        },
+        {
+          "lon": 40.594896099781685,
+          "lat": 64.55856387427492
+        },
+        {
+          "lon": 40.598667273219654,
+          "lat": 64.55748468905976
+        },
+        {
+          "lon": 40.61081883207533,
+          "lat": 64.55748468905976
+        },
+        {
+          "lon": 40.61919921749303,
+          "lat": 64.56126183731284
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+          "lon": 40.62115041884456,
+          "lat": 64.56205129574835
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 1,
+        "start_seed_count": 9,
+        "end_seed_count": 42,
+        "component_count": 8,
+        "route_length_m": 4105,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    "cross_g4_10": {
+      "key": "cross_g4_10",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+          "lon": 40.62882969698145,
+          "lat": 64.5466629346781
+        },
+        {
+          "lon": 40.628417641452515,
+          "lat": 64.54669283690814
+        },
+        {
+          "lon": 40.56807886644502,
+          "lat": 64.54669283690814
+        },
+        {
+          "lon": 40.38915763777698,
+          "lat": 64.62367471558973
+        },
+        {
+          "lon": 40.36192138516943,
+          "lat": 64.63446656774136
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+          "lon": 40.36208707484658,
+          "lat": 64.63523261773798
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 1,
+        "start_seed_count": 7,
+        "end_seed_count": 11,
+        "component_count": 8,
+        "route_length_m": 16846,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    "g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1": {
+      "key": "g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+          "lon": 40.36208707484658,
+          "lat": 64.63523261773798
+        },
+        {
+          "lon": 40.36024530808589,
+          "lat": 64.63500616034894
+        },
+        {
+          "lon": 40.35018884558464,
+          "lat": 64.63590548136158
+        },
+        {
+          "lon": 40.34935080704287,
+          "lat": 64.63698466657674
+        },
+        {
+          "lon": 40.349769826313754,
+          "lat": 64.63716453077927
+        },
+        {
+          "lon": 40.37910117527573,
+          "lat": 64.63716453077927
+        },
+        {
+          "lon": 40.38035823308839,
+          "lat": 64.63770412338685
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+          "lon": 40.38146020553665,
+          "lat": 64.63822907313063
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 1,
+        "start_seed_count": 11,
+        "end_seed_count": 20,
+        "component_count": 8,
+        "route_length_m": 2300,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1": {
+      "key": "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+          "lon": 40.626633043208564,
+          "lat": 64.55332237675378
+        },
+        {
+          "lon": 40.62464646801455,
+          "lat": 64.55586591123702
+        },
+        {
+          "lon": 40.62464646801455,
+          "lat": 64.56557857817349
+        },
+        {
+          "lon": 40.627160583639856,
+          "lat": 64.56665776338865
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+          "lon": 40.6316,
+          "lat": 64.5684
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 1,
+        "start_seed_count": 344,
+        "end_seed_count": 101,
+        "component_count": 8,
+        "route_length_m": 1835,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    "g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1": {
+      "key": "g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+          "lon": 40.599,
+          "lat": 64.559
+        },
+        {
+          "lon": 40.5944770805108,
+          "lat": 64.56072224470526
+        },
+        {
+          "lon": 40.5944770805108,
+          "lat": 64.56288061513558
+        },
+        {
+          "lon": 40.62213235238923,
+          "lat": 64.57457178829983
+        },
+        {
+          "lon": 40.62213235238923,
+          "lat": 64.57619056612258
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+          "lon": 40.626588945514705,
+          "lat": 64.57656359371245
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 1,
+        "start_seed_count": 252,
+        "end_seed_count": 6,
+        "component_count": 8,
+        "route_length_m": 2778,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    "g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1": {
+      "key": "g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+          "lon": 40.5213,
+          "lat": 64.6621
+        },
+        {
+          "lon": 40.520729688834976,
+          "lat": 64.66468375376591
+        },
+        {
+          "lon": 40.520729688834976,
+          "lat": 64.69472107558794
+        },
+        {
+          "lon": 40.43776387319968,
+          "lat": 64.73015432348578
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+          "lon": 40.43366,
+          "lat": 64.73204415761519
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 4,
+        "start_seed_count": 168,
+        "end_seed_count": 278,
+        "component_count": 8,
+        "route_length_m": 9502,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_3": {
+      "key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_3",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+      "points": [
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+          "lon": 40.626354274491995,
+          "lat": 64.5763132779549
+        },
+        {
+          "lon": 40.62171333311835,
+          "lat": 64.57637043032511
+        },
+        {
+          "lon": 40.621294313847464,
+          "lat": 64.57637043032511
+        },
+        {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+          "lon": 40.620906708772345,
+          "lat": 64.57652920785397
+        }
+      ],
+      "segments": [
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        },
+        {
+          "surface": "land"
+        }
+      ],
+      "geometry_status": "A* dry-mask path on 20m grid; constrained Douglas–Peucker tolerance 40m",
+      "land_pathfinding": {
+        "found": true,
+        "cell_m": 20,
+        "component": 1,
+        "start_seed_count": 51,
+        "end_seed_count": 6,
+        "component_count": 8,
+        "route_length_m": 267,
+        "simplification_tolerance_m": 40,
+        "solver": "A* four-neighbor grid; Douglas–Peucker simplification constrained outside water corridors",
+        "attempts": [
+          {
+            "cell_m": 20,
+            "found": true,
+            "reason": null
+          }
+        ]
+      }
+    },
     "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_dry_island_ridge_1": {
       "key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_dry_island_ridge_1",
       "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
@@ -19753,558 +20275,5 @@
       }
     }
   },
-  "topology_exceptions": [
-    {
-      "id": "topology_exception__cross_g4_09",
-      "route_key": "cross_g4_09",
-      "line_ids": [
-        "wrv3__g4dirv3f__cross_g4_09",
-        "wrv3__g4dirv3r__cross_g4_09"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
-      "waterbody_ref": "island_split_channels",
-      "intersection_point": {
-        "lon": 40.625884932446574,
-        "lat": 64.57581264643979
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.625884932446574,
-        "lat": 64.57581264643979
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__cross_g4_10",
-      "route_key": "cross_g4_10",
-      "line_ids": [
-        "wrv3__g4dirv3f__cross_g4_10",
-        "wrv3__g4dirv3r__cross_g4_10"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
-      "waterbody_ref": "west",
-      "intersection_point": {
-        "lon": 40.44473668792875,
-        "lat": 64.60778949681068
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.44473668792875,
-        "lat": 64.60778949681068
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
-      "route_key": "g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
-      "line_ids": [
-        "wrv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
-        "wrv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
-      "waterbody_ref": "backwater_mouth",
-      "intersection_point": {
-        "lon": 40.36208707484658,
-        "lat": 64.63523261773798
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.36208707484658,
-        "lat": 64.63523261773798
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
-      "route_key": "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
-      "line_ids": [
-        "wrv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
-        "wrv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
-      "waterbody_ref": "central_head_branch",
-      "intersection_point": {
-        "lon": 40.63435746906519,
-        "lat": 64.57355101421743
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.63435746906519,
-        "lat": 64.57355101421743
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
-      "route_key": "g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
-      "line_ids": [
-        "wrv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
-        "wrv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
-      "waterbody_ref": "island_split_channels",
-      "intersection_point": {
-        "lon": 40.62658894551469,
-        "lat": 64.57656359371244
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.62658894551469,
-        "lat": 64.57656359371244
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
-      "route_key": "g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
-      "line_ids": [
-        "wrv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
-        "wrv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
-      "waterbody_ref": "main",
-      "intersection_point": {
-        "lon": 40.490958138288796,
-        "lat": 64.68268169399644
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.490958138288796,
-        "lat": 64.68268169399644
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_3",
-      "route_key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_3",
-      "line_ids": [
-        "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_3",
-        "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_3"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
-      "waterbody_ref": "island_split_channels",
-      "intersection_point": {
-        "lon": 40.626354274491995,
-        "lat": 64.5763132779549
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.626354274491995,
-        "lat": 64.5763132779549
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_5",
-      "route_key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_5",
-      "line_ids": [
-        "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_5",
-        "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_5"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
-      "waterbody_ref": "island_split_channels",
-      "intersection_point": {
-        "lon": 40.62588493244658,
-        "lat": 64.5758126464398
-      },
-      "intersection_kind": "nearest_chord_axis_approach",
-      "axis_point": {
-        "lon": 40.62588493244658,
-        "lat": 64.5758126464398
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": 80,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_cross",
-      "route_key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_cross",
-      "line_ids": [
-        "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_cross",
-        "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_channel_split_islet_cross"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
-      "waterbody_ref": "island_split_channels",
-      "intersection_point": {
-        "lon": 40.62611960346928,
-        "lat": 64.57606296219734
-      },
-      "intersection_kind": "chord_axis_intersection",
-      "axis_point": {
-        "lon": 40.62611960346928,
-        "lat": 64.57606296219734
-      },
-      "approach_distance_m": 0,
-      "corridor_half_width_m": null,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_3",
-      "route_key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_3",
-      "line_ids": [
-        "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_3",
-        "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_3"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
-      "waterbody_ref": "central_head_branch",
-      "intersection_point": {
-        "lon": 40.601085918677775,
-        "lat": 64.56083120137967
-      },
-      "intersection_kind": "nearest_chord_axis_approach",
-      "axis_point": {
-        "lon": 40.601085918677775,
-        "lat": 64.56083120137967
-      },
-      "approach_distance_m": 33,
-      "corridor_half_width_m": 250,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_4",
-      "route_key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_4",
-      "line_ids": [
-        "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_4",
-        "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_4"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
-      "waterbody_ref": "central_head_branch",
-      "intersection_point": {
-        "lon": 40.60061442890831,
-        "lat": 64.56065262445027
-      },
-      "intersection_kind": "nearest_chord_axis_approach",
-      "axis_point": {
-        "lon": 40.60061442890831,
-        "lat": 64.56065262445027
-      },
-      "approach_distance_m": 34,
-      "corridor_half_width_m": 250,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    },
-    {
-      "id": "topology_exception__pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_cross",
-      "route_key": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_cross",
-      "line_ids": [
-        "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_cross",
-        "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_cross"
-      ],
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
-      "waterbody_ref": "central_head_branch",
-      "intersection_point": {
-        "lon": 40.60061442890831,
-        "lat": 64.56065262445027
-      },
-      "intersection_kind": "nearest_chord_axis_approach",
-      "axis_point": {
-        "lon": 40.60061442890831,
-        "lat": 64.56065262445027
-      },
-      "approach_distance_m": 34,
-      "corridor_half_width_m": 250,
-      "reason": "ends on different banks",
-      "search_failure_reason": "endpoint cannot reach dry mask within own-water endpoint allowance",
-      "endpoint_components": {
-        "start": [],
-        "end": []
-      },
-      "required_crossing_kind": [
-        "ford",
-        "footbridge",
-        "ferry"
-      ],
-      "grid_attempts": [
-        {
-          "cell_m": 20,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        },
-        {
-          "cell_m": 10,
-          "found": false,
-          "reason": "endpoint cannot reach dry mask within own-water endpoint allowance"
-        }
-      ],
-      "owner_finding": "dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved"
-    }
-  ]
+  "topology_exceptions": []
 }

@@ -59,9 +59,14 @@ export async function routeRemainingLandLines(candidate, corners, lineNameCandid
         route_length_m: result.route_length_m, points: points.length, attempts });
       continue;
     }
-    const crossing = firstChordFlowIntersection(from, to, candidate.flow_skeletons);
-    const approach = crossing ? null : nearestChordFlowApproach(from, to, candidate.flow_skeletons);
-    const chosen = crossing ?? approach ?? { waterbody_ref: null, point: null };
+    // Only a proven bank-to-bank split is an exception; any other failed search is a blocker to fix, not to record.
+    if (result.failure_kind !== 'different_components' || !result.barrier) {
+      throw new Error(`Land route ${key} (${from.id} -> ${to.id}) failed and is not a proven bank-to-bank split: ${result.reason}`);
+    }
+    const barrierSkeleton = candidate.flow_skeletons.filter(skeleton => skeleton.id === result.barrier.waterbody_ref);
+    const crossing = firstChordFlowIntersection(from, to, barrierSkeleton);
+    const approach = crossing ? null : nearestChordFlowApproach(from, to, barrierSkeleton);
+    const chosen = crossing ?? approach;
     const lineIds = lines.map(line => line.id).sort();
     const exception = {
       id: `topology_exception__${key}`,
@@ -71,13 +76,13 @@ export async function routeRemainingLandLines(candidate, corners, lineNameCandid
       to_id: to.id,
       waterbody_ref: chosen.waterbody_ref,
       intersection_point: chosen.point,
-      intersection_kind: crossing ? 'chord_axis_intersection' : approach ? 'nearest_chord_axis_approach' : 'unlocated',
+      intersection_kind: crossing ? 'chord_axis_intersection' : 'nearest_chord_axis_approach',
       axis_point: approach?.axis_point ?? chosen.point,
       approach_distance_m: approach?.distance_m ?? 0,
       corridor_half_width_m: approach?.corridor_half_width_m ?? null,
       reason: 'ends on different banks',
-      search_failure_reason: result.reason ?? 'A* found no dry route',
-      endpoint_components: { start: result.start_components ?? [], end: result.end_components ?? [] },
+      search_failure_reason: result.reason,
+      endpoint_components: { grid_cell_m: attempts.at(-1).cell_m, start: result.start_components, end: result.end_components },
       required_crossing_kind: ['ford', 'footbridge', 'ferry'],
       grid_attempts: attempts,
       owner_finding: 'dry graph line crosses authored water; Spatial/line-names owner must select ford, footbridge, or ferry if no dry trace is approved',

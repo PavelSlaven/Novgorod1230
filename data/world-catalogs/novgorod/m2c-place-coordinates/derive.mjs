@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { endpointAccess } from './land-route-search.mjs';
 
 const here = new URL('./', import.meta.url);
 const datasets = new URL('../spatial-v3/datasets/', here);
@@ -343,8 +344,22 @@ export function validateFlowContinuity(candidate, cellCorners) {
   const touchesNetwork = (skeleton, point, wantedId = null) => validSkeletons.some(other => other.id !== skeleton.id
     && (!wantedId || other.id === wantedId)
     && pointFlowDistance(mapPoint(point), other) <= skeleton.width_m / 2 + other.width_m / 2 + 1);
+  const drainsToBoundary = (skeleton, seen = new Set()) => {
+    if (seen.has(skeleton.id)) return false;
+    seen.add(skeleton.id);
+    const end = endpoint(skeleton, -1);
+    if (boundaryDistance(end) <= skeleton.width_m / 2 + 50) return true;
+    if (validSkeletons.some(other => ['old_channel_pool', 'reed_backwater'].includes(other.waterbody_type)
+      && pointFlowDistance(mapPoint(endpoint(skeleton, -1)), other) <= other.width_m / 2)) return true;
+    return flowing.some(other => other.id !== skeleton.id && !seen.has(other.id)
+      && pointFlowDistance(mapPoint(end), other) <= skeleton.width_m / 2 + other.width_m / 2 + 1
+      && drainsToBoundary(other, seen));
+  };
   const endpointRows = [];
   const issues = [];
+  for (const skeleton of flowing) if (!drainsToBoundary(skeleton)) {
+    issues.push(`${skeleton.id} flows nowhere: no downstream chain of flowing water reaches the cell boundary or sea (a dead end needs current_bias_kmh 0)`);
+  }
   for (const skeleton of flowing) for (const index of [0, -1]) {
     const point = endpoint(skeleton, index);
     const network = touchesNetwork(skeleton, point);
@@ -388,6 +403,29 @@ export function validateFlowContinuity(candidate, cellCorners) {
     status: issues.length ? 'invalid' : 'valid' };
 }
 
+// A bank-to-bank exception is accepted only with the dry-mask components of both ends: non-empty and disjoint.
+function componentsProveSplit(components) {
+  const start = components?.start; const end = components?.end;
+  return Array.isArray(start) && Array.isArray(end) && start.length > 0 && end.length > 0
+    && start.every(Number.isInteger) && end.every(Number.isInteger) && !start.some(id => end.includes(id));
+}
+
+// A trace that runs out and turns back (>150 degrees, both legs >100 m) on one surface and waterbody is a spike.
+export function routeTraceSpikes(trace, key = trace.key) {
+  const points = (trace.points ?? []).map(mapPoint); const spikes = [];
+  for (let i = 1; i < points.length - 1; i += 1) {
+    const before = trace.segments[i - 1]; const after = trace.segments[i];
+    if (before?.surface !== after?.surface || before?.waterbody_ref !== after?.waterbody_ref) continue;
+    const a = [points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]];
+    const b = [points[i + 1][0] - points[i][0], points[i + 1][1] - points[i][1]];
+    const la = Math.hypot(...a); const lb = Math.hypot(...b);
+    if (la > 100 && lb > 100 && (a[0] * b[0] + a[1] * b[1]) / (la * lb) < Math.cos(150 * radians)) {
+      spikes.push({ trace: key, point_index: i, leg_before_m: Math.round(la), leg_after_m: Math.round(lb) });
+    }
+  }
+  return spikes;
+}
+
 export function validateSpatialTopology(candidate, lines, cellCorners = []) {
   const skeletons = candidate.flow_skeletons ?? [];
   const skeletonById = new Map(skeletons.map(skeleton => [skeleton.id, skeleton]));
@@ -410,6 +448,7 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
     missing_trace_geometry_status: 0,
     flow_continuity_failures: 0,
     nonwater_corridor_intrusion_count: 0,
+    route_trace_spikes: 0,
   };
   const issues = [...bindingState.issues];
   const nonwaterCorridorIntrusions = [];
@@ -425,7 +464,7 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
       && exception.line_ids.every(id => {
         const line = lineById.get(id);
         return typeof id === 'string' && line && !line.is_water && !line.route_trace_key && !exceptionLineIds.has(id);
-      }) && skeletonById.has(exception.waterbody_ref) && Number.isFinite(exception.intersection_point?.lat)
+      }) && componentsProveSplit(exception.endpoint_components) && skeletonById.has(exception.waterbody_ref) && Number.isFinite(exception.intersection_point?.lat)
       && Number.isFinite(exception.intersection_point?.lon) && exception.reason === 'ends on different banks'
       && ['ford', 'footbridge', 'ferry'].every(kind => exception.required_crossing_kind?.includes(kind));
     if (!valid) {
@@ -456,6 +495,12 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
     }
   }
   const traces = Array.isArray(candidate.route_traces) ? candidate.route_traces : Object.values(candidate.route_traces ?? {});
+  const traceEntries = Array.isArray(candidate.route_traces) ? candidate.route_traces.map(trace => [trace.key, trace])
+    : Object.entries(candidate.route_traces ?? {});
+  for (const [key, trace] of traceEntries) for (const spike of routeTraceSpikes(trace, key)) {
+    counts.route_trace_spikes += 1;
+    issues.push(`route_trace ${spike.trace} spike at point ${spike.point_index} (${spike.leg_before_m} m out, ${spike.leg_after_m} m back)`);
+  }
   for (const trace of traces) if (typeof trace.geometry_status !== 'string' || !trace.geometry_status.trim()) {
     counts.missing_trace_geometry_status += 1;
     issues.push(`route_trace ${trace.key ?? '(missing key)'} lacks geometry_status`);
@@ -533,22 +578,15 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
         issues.push(`nonwater line ${line.id} has waterbody assignment`);
       }
       if (from && to) {
+        const access = { from: endpointAccess(from, skeletons), to: endpointAccess(to, skeletons) };
         const crossed = segments.flatMap((segment, index) => segment.surface === 'land'
           ? skeletons.filter(skeleton => {
             if (!lineSegments(flowPoints(skeleton))
               .some(([a, b]) => segmentIntersects(segment.a, segment.b, a, b))) return false;
             const length = Math.hypot(segment.b[0] - segment.a[0], segment.b[1] - segment.a[1]);
-            const endpointAccess = (place, atStart) => {
-              const assigned = skeletonById.get(place?.waterbody_ref);
-              if (!assigned) return false;
-              const sharedJunction = place.waterbody_ref === skeleton.id
-                || pointFlowDistance(mapPoint(place), skeleton) <= 1;
-              const endpointAllowance = Math.min(assigned.width_m / 2 + 50, skeleton.width_m / 2 + 50);
-              return sharedJunction && length <= endpointAllowance
-                && (atStart ? index === 0 : index === segments.length - 1);
-            };
-            const fromEndpointAccess = endpointAccess(from, true);
-            const toEndpointAccess = endpointAccess(to, false);
+            const fromEndpointAccess = index === 0 && access.from.flowIds.has(skeleton.id) && length <= access.from.maxDistanceM;
+            const toEndpointAccess = index === segments.length - 1 && access.to.flowIds.has(skeleton.id)
+              && length <= access.to.maxDistanceM;
             return !fromEndpointAccess && !toEndpointAccess;
           }).map(skeleton => skeleton.id) : []);
         if (crossed.length) {
@@ -580,16 +618,8 @@ export function validateSpatialTopology(candidate, lines, cellCorners = []) {
             const inForbiddenWater = skeletons.some(skeleton => {
               if (!Number.isFinite(skeleton.width_m) || skeleton.width_m <= 0
                 || pointFlowDistance(p, skeleton) > skeleton.width_m / 2) return false;
-              const allowance = skeleton.width_m / 2 + 50;
-              const sharesEndpointAxis = place => {
-                const assigned = skeletonById.get(place?.waterbody_ref);
-                return Boolean(assigned && (place.waterbody_ref === skeleton.id
-                  || pointFlowDistance(mapPoint(place), skeleton) <= 1));
-              };
-              const fromAccess = sharesEndpointAxis(from)
-                && along <= Math.min(allowance, skeletonById.get(from.waterbody_ref).width_m / 2 + 50);
-              const toAccess = sharesEndpointAxis(to)
-                && totalLength - along <= Math.min(allowance, skeletonById.get(to.waterbody_ref).width_m / 2 + 50);
+              const fromAccess = access.from.flowIds.has(skeleton.id) && along <= access.from.maxDistanceM;
+              const toAccess = access.to.flowIds.has(skeleton.id) && totalLength - along <= access.to.maxDistanceM;
               return !fromAccess && !toAccess;
             });
             if (inForbiddenWater) { intrusion = true; break; }
@@ -763,6 +793,27 @@ function speedAssessment(distanceM, minutes, band) {
     tolerated_kmh: allowed,
   };
 }
+const SHORE_TO_WATER_MAX_M = 150;
+
+// For a drawn route the name is judged along the route: leg-length weighted alignment with, and distance to,
+// the nearest shoreline at each leg midpoint (the endpoint chord of a long detour says nothing about the bank).
+function traceShorelineAlignment(points, shorelines) {
+  if (!shorelines.length || points.length < 2) return null;
+  let total = 0; let alignment = 0; let distance = 0; let longest = { length: -1, id: null };
+  for (let i = 1; i < points.length; i += 1) {
+    const a = mapPoint(points[i - 1]); const b = mapPoint(points[i]);
+    const length = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (length < 1e-6) continue;
+    const tangent = nearestTangent([(points[i - 1].lon + points[i].lon) / 2, (points[i - 1].lat + points[i].lat) / 2], shorelines);
+    if (!tangent) continue;
+    total += length;
+    alignment += length * Math.abs(((b[0] - a[0]) * tangent.x + (b[1] - a[1]) * tangent.y) / length);
+    distance += length * tangent.distance_m;
+    if (length > longest.length) longest = { length, id: tangent.id };
+  }
+  return total ? { skeleton_id: longest.id, alignment: alignment / total, distance_m: Math.round(distance / total), along_route: true } : null;
+}
+
 function nameFindings(row, lineName, qualifier) {
   if (!lineName) return [];
   const name = [lineName.name_ru, qualifier].filter(Boolean).join(' ').toLowerCase();
@@ -771,9 +822,9 @@ function nameFindings(row, lineName, qualifier) {
   if (riverMatch && row.river_direction !== (riverMatch[1] === 'вверх' ? 'вверх по течению' : 'вниз по течению')) {
     findings.push({ type: 'flow_name_conflict', expected: riverMatch[1], actual: row.river_direction });
   }
-  if (/берегом/.test(name)) {
+  if (/берегом/.test(name) && !row.shore_to_water_link) {
     const shore = row.shoreline_alignment;
-    if (!shore || shore.alignment < Math.cos(45 * radians) || shore.distance_m > 500) findings.push({
+    if (!shore || (!shore.along_route && shore.alignment < Math.cos(45 * radians)) || shore.distance_m > 500) findings.push({
       type: 'shoreline_name_conflict', alignment: shore?.alignment ?? null, distance_m: shore?.distance_m ?? null,
       threshold_deg: 45, maximum_distance_m: 500,
     });
@@ -936,11 +987,14 @@ export function deriveConnection(kind, id, from, to, minutes, method, options = 
     : options.shorelineSkeletons ?? [];
   const shoreTangent = nearestTangent(mid, shoreCandidates);
   const bearing = measure.azimuth_deg * radians;
-  const shorelineAlignment = shoreTangent ? {
-    skeleton_id: shoreTangent.id,
-    alignment: Math.abs(Math.sin(bearing) * shoreTangent.x + Math.cos(bearing) * shoreTangent.y),
-    distance_m: Math.round(shoreTangent.distance_m),
-  } : null;
+  const shorelineAlignment = (trace && !chordFallback ? traceShorelineAlignment(trace.points, shoreCandidates) : null)
+    ?? (shoreTangent ? {
+      skeleton_id: shoreTangent.id,
+      alignment: Math.abs(Math.sin(bearing) * shoreTangent.x + Math.cos(bearing) * shoreTangent.y),
+      distance_m: Math.round(shoreTangent.distance_m),
+    } : null);
+  // A short land link between a shore point and a water point runs from the bank to the water, not along the bank.
+  const shoreToWaterLink = measure.distance_m <= SHORE_TO_WATER_MAX_M && Boolean(from.water_endpoint) !== Boolean(to.water_endpoint);
   const speedKmh = assessment.speed;
   return {
     kind, id, from_id: from.id, to_id: to.id, ...measure,
@@ -995,6 +1049,7 @@ export function deriveConnection(kind, id, from, to, minutes, method, options = 
     speed_tolerance_percent: assessment.tolerance_percent ?? tolerance * 100,
     speed_status: assessment.status,
     shoreline_alignment: shorelineAlignment,
+    shore_to_water_link: shoreToWaterLink,
   };
 }
 
@@ -1164,7 +1219,7 @@ export async function buildReport(candidate, sources = datasets, lineNameCandida
       distance: 'WGS84 great-circle straight-line distance; not route length',
       direction: '8 compass sectors from authored game-map points; only zero-length line has no sector; historical uncertainty is separate',
       river_direction: 'projection onto tangent of the assigned typed waterbody skeleton; only candidate crossings are transverse; independent of compass direction',
-      shoreline_name: 'line containing берегом must align within 45 degrees and 500 m of shoreline skeleton; pair shore_ref preferred when shared',
+      shoreline_name: 'line containing берегом must align within 45 degrees and 500 m of shoreline skeleton (chord lines); a drawn route is judged by its length-weighted mean distance to the shoreline, at most 500 m; pair shore_ref preferred when shared; short land links between a shore point and a water point are exempt',
       speed: 'LEGACY REVIEW ONLY: straight-line distance / existing minutes; compare with method band using ±20% tolerance. This measures old-source minutes and is not the proposed calibration.',
       route_trace: 'When present, authored WGS84 legs provide segment waterbody/land assignment; reversed graph direction reverses same trace. Compass uses endpoints; river direction is per trace leg; proposed minutes sum unrounded per-leg durations with residual factor 1.05 water / 1.10 land, rounded once.',
       proposed_minutes: 'Without a trace: WGS84 straight-line distance × mode sinuosity factor / calibrated effective speed; rounded to nearest whole minute with a one-minute minimum for positive distances.',

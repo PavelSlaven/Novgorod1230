@@ -44,6 +44,23 @@ function distanceToFlows(point, flows, exceptId = null) {
   return nearest;
 }
 
+const flowsOf = skeletons => skeletons.map(flow => ({
+  id: flow.id, width_m: flow.width_m,
+  points: flow.points.map(([lat, lon]) => [lon * mapScale.x, lat * mapScale.y]),
+}));
+
+// One rule for how far a line may run inside water at its end: half-width + 50 m of every corridor that
+// contains the end point (its own assigned corridor included), the largest of them. Used by the router
+// and by validateSpatialTopology so both accept exactly the same access segments.
+export function endpointAccess(place, skeletons, fallbackM = 0) {
+  if (!place.waterbody_ref) return { flowIds: new Set(), maxDistanceM: fallbackM }; // a dry end has no water access
+  const flows = flowsOf(skeletons); const endpoint = toXY(place);
+  const ids = new Set(flows.filter(flow => distanceToFlows(endpoint, [flow]) <= 0).map(flow => flow.id));
+  if (flows.some(flow => flow.id === place.waterbody_ref)) ids.add(place.waterbody_ref);
+  const allowances = flows.filter(flow => ids.has(flow.id)).map(flow => flow.width_m / 2 + 50);
+  return { flowIds: ids, maxDistanceM: allowances.length ? Math.max(...allowances) : fallbackM };
+}
+
 class MinHeap {
   values = [];
   push(value) {
@@ -103,10 +120,7 @@ export function createLandRouter(candidate, cornersWgs84, cellM) {
   const width = Math.ceil((maxX - minX) / cellM); const height = Math.ceil((maxY - minY) / cellM);
   const size = width * height;
   if (size > 14_000_000) throw new Error(`Land-routing grid too large: ${size} cells`);
-  const flows = candidate.flow_skeletons.map(flow => ({
-    id: flow.id, width_m: flow.width_m,
-    points: flow.points.map(([lat, lon]) => [lon * mapScale.x, lat * mapScale.y]),
-  }));
+  const flows = flowsOf(candidate.flow_skeletons);
   const passable = new Uint8Array(size);
   for (let row = 0; row < height; row += 1) for (let col = 0; col < width; col += 1) {
     const point = [minX + (col + 0.5) * cellM, minY + (row + 0.5) * cellM];
@@ -143,13 +157,9 @@ export function createLandRouter(candidate, cornersWgs84, cellM) {
 
   const pointAt = index => [minX + (index % width + 0.5) * cellM,
     minY + (Math.floor(index / width) + 0.5) * cellM];
-  const allowedEndpoint = place => {
-    const flow = place.water_endpoint ? candidate.flow_skeletons.find(row => row.id === place.waterbody_ref) : null;
-    return { flowId: flow?.id ?? null, maxDistanceM: flow ? flow.width_m / 2 + 50 : cellM * Math.SQRT2 };
-  };
+  const allowedEndpoint = place => endpointAccess(place, candidate.flow_skeletons, cellM * Math.SQRT2);
   const endpointSeeds = place => {
-    const endpoint = toXY(place); const { flowId, maxDistanceM } = allowedEndpoint(place);
-    if (distanceToFlows(endpoint, flows, flowId) <= 0) return [];
+    const endpoint = toXY(place); const { flowIds, maxDistanceM } = allowedEndpoint(place);
     const radius = maxDistanceM + cellM;
     const minCol = Math.max(0, Math.floor((endpoint[0] - radius - minX) / cellM));
     const maxCol = Math.min(width - 1, Math.floor((endpoint[0] + radius - minX) / cellM));
@@ -160,24 +170,57 @@ export function createLandRouter(candidate, cornersWgs84, cellM) {
       const index = row * width + col;
       if (!passable[index]) continue;
       const point = pointAt(index); const distance = Math.hypot(point[0] - endpoint[0], point[1] - endpoint[1]);
-      if (distance > maxDistanceM || distanceToFlows(point, flows) <= 0) continue;
+      if (distance > maxDistanceM || distanceToFlows(point, flows) <= 0 || !clearSegment(endpoint, point, flowIds)) continue;
       seeds.push({ index, distance });
     }
     return seeds;
   };
-  const clearSegment = (a, b, exceptFlowId = null) => flows.every(flow => flow.id === exceptFlowId
+  const clearSegment = (a, b, exceptFlowIds = new Set()) => flows.every(flow => exceptFlowIds.has(flow.id)
     || flow.points.slice(1).every((point, index) => segmentDistance(a, b, flow.points[index], point) > flow.width_m / 2));
+
+  // The corridor whose banks touch both a start component and an end component: the real obstacle between them.
+  // Among several, the one nearest the straight chord. Null when no corridor separates them (e.g. the cell edge does).
+  function separatingCorridor(startComponents, endComponents, from, to) {
+    const startSet = new Set(startComponents); const endSet = new Set(endComponents);
+    const a = toXY(from); const b = toXY(to); const candidates = [];
+    for (const flow of flows) {
+      const reach = flow.width_m / 2 + cellM * 3; const touched = new Set();
+      for (let segment = 1; segment < flow.points.length; segment += 1) {
+        const p = flow.points[segment - 1]; const q = flow.points[segment];
+        const minCol = Math.max(0, Math.floor((Math.min(p[0], q[0]) - reach - minX) / cellM));
+        const maxCol = Math.min(width - 1, Math.floor((Math.max(p[0], q[0]) + reach - minX) / cellM));
+        const minRow = Math.max(0, Math.floor((Math.min(p[1], q[1]) - reach - minY) / cellM));
+        const maxRow = Math.min(height - 1, Math.floor((Math.max(p[1], q[1]) + reach - minY) / cellM));
+        for (let row = minRow; row <= maxRow; row += 1) for (let col = minCol; col <= maxCol; col += 1) {
+          const index = row * width + col;
+          if (components[index] >= 0 && pointSegmentDistance(pointAt(index), p, q) <= reach) touched.add(components[index]);
+        }
+      }
+      if ([...touched].some(id => startSet.has(id)) && [...touched].some(id => endSet.has(id))) {
+        let distance = Infinity;
+        for (let i = 1; i < flow.points.length; i += 1) distance = Math.min(distance, segmentDistance(a, b, flow.points[i - 1], flow.points[i]));
+        candidates.push({ waterbody_ref: flow.id, chord_distance_m: Math.round(distance) });
+      }
+    }
+    candidates.sort((x, y) => x.chord_distance_m - y.chord_distance_m || x.waterbody_ref.localeCompare(y.waterbody_ref));
+    return candidates[0] ?? null;
+  }
 
   function findPath(from, to) {
     const starts = endpointSeeds(from); const goals = endpointSeeds(to);
     const commonComponents = new Set(starts.map(seed => components[seed.index]).filter(id => id >= 0));
     const reachableGoals = goals.filter(seed => commonComponents.has(components[seed.index]));
-    if (!starts.length || !goals.length) return { found: false, reason: 'endpoint cannot reach dry mask within own-water endpoint allowance',
+    if (!starts.length || !goals.length) return { found: false, failure_kind: 'blocker',
+      reason: 'endpoint cannot reach dry mask within its water-access allowance',
       start_seed_count: starts.length, end_seed_count: goals.length, component_count: componentCount };
-    if (!reachableGoals.length) return { found: false, reason: 'endpoints lie on different dry-mask components',
-      start_seed_count: starts.length, end_seed_count: goals.length, component_count: componentCount,
-      start_components: [...new Set(starts.map(seed => components[seed.index]))].filter(id => id >= 0),
-      end_components: [...new Set(goals.map(seed => components[seed.index]))].filter(id => id >= 0) };
+    if (!reachableGoals.length) {
+      const startComponents = [...new Set(starts.map(seed => components[seed.index]))].filter(id => id >= 0).sort((a, b) => a - b);
+      const endComponents = [...new Set(goals.map(seed => components[seed.index]))].filter(id => id >= 0).sort((a, b) => a - b);
+      return { found: false, failure_kind: 'different_components', reason: 'endpoints lie on different dry-mask components',
+        start_seed_count: starts.length, end_seed_count: goals.length, component_count: componentCount,
+        start_components: startComponents, end_components: endComponents,
+        barrier: separatingCorridor(startComponents, endComponents, from, to) };
+    }
 
     const common = new Set(reachableGoals.map(seed => components[seed.index]));
     const validStarts = starts.filter(seed => common.has(components[seed.index]));
@@ -208,7 +251,7 @@ export function createLandRouter(candidate, cornersWgs84, cellM) {
         open.push({ index: next, cost, score: cost + Math.hypot(point[0] - endXY[0], point[1] - endXY[1]) });
       }
     }
-    if (foundIndex < 0) return { found: false, reason: 'A* exhausted shared dry-mask component',
+    if (foundIndex < 0) return { found: false, failure_kind: 'blocker', reason: 'A* exhausted shared dry-mask component',
       start_seed_count: starts.length, end_seed_count: goals.length, component_count: componentCount };
 
     const cells = [];
@@ -220,9 +263,9 @@ export function createLandRouter(candidate, cornersWgs84, cellM) {
     const smoothGrid = simplifyPath(rawGrid, cellM * 2, (a, b) => clearSegment(a, b));
     const start = toXY(from); const end = toXY(to);
     const startCell = rawGrid[0]; const endCell = rawGrid.at(-1);
-    const startFlow = allowedEndpoint(from).flowId; const endFlow = allowedEndpoint(to).flowId;
+    const startFlow = allowedEndpoint(from).flowIds; const endFlow = allowedEndpoint(to).flowIds;
     if (!clearSegment(start, startCell, startFlow) || !clearSegment(endCell, end, endFlow)) {
-      return { found: false, reason: 'endpoint access segment crosses another water corridor',
+      return { found: false, failure_kind: 'blocker', reason: 'endpoint access segment crosses another water corridor',
         start_seed_count: starts.length, end_seed_count: goals.length, component_count: componentCount };
     }
     const pathXY = [start, ...smoothGrid, end].filter((point, index, all) => index === 0

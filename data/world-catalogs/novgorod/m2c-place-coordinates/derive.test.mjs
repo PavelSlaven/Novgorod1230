@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { buildReport, deriveConnection, deriveTravel, geometry, travelCalibration, validateCandidate,
+import { buildReport, deriveConnection, deriveTravel, geometry, routeTraceSpikes, travelCalibration, validateCandidate,
   validateFlowContinuity, validateSpatialTopology } from './derive.mjs';
-import { createLandRouter } from './land-route-search.mjs';
+import { createLandRouter, endpointAccess } from './land-route-search.mjs';
 
 const here = new URL('./', import.meta.url);
 const staging = new URL('../staging/cells/gn_nov_g1_xp017_yp026/content_revision_002/', here);
@@ -416,10 +416,11 @@ test('topology validates every authored water route and land trace', async () =>
   assert.equal(report.lines.length, 540);
 
   const topology = validateSpatialTopology(candidate, report.lines, dossier.coordinates.technical_bounds.corners_wgs84);
-  assert.equal(topology.status, 'valid_with_exceptions');
-  assert.equal(topology.topology_exception_count, 12);
-  assert.equal(topology.exception_line_count, 24);
+  assert.equal(topology.status, 'valid');
+  assert.equal(topology.topology_exception_count, 0);
+  assert.equal(topology.exception_line_count, 0);
   assert.equal(topology.invalid_topology_exceptions, 0);
+  assert.equal(topology.route_trace_spikes, 0);
   assert.deepEqual(topology.issues, []);
   assert.equal(topology.water_line_corridor_violations, 0);
   assert.equal(topology.missing_route_traces, 0);
@@ -605,4 +606,148 @@ test('line-names input supplies local river minutes and reports contrary current
         ? { from_to: contrary, to_from: null } : { from_to: null, to_from: contrary } }],
   });
   assert.ok(named.name_mismatches.some(item => item.id === lines[0].id && item.type === 'flow_name_conflict'));
+});
+
+const boxCorners = [
+  { longitude: 40.6, latitude: 64.58 }, { longitude: 40.62, latitude: 64.58 },
+  { longitude: 40.62, latitude: 64.6 }, { longitude: 40.6, latitude: 64.6 },
+];
+
+test('PLAN-8: one end-access rule — largest half-width + 50 m of every corridor containing a water end; a dry end has none', () => {
+  const skeletons = [
+    { id: 'wide', width_m: 400, points: [[64.59, 40.6], [64.59, 40.62]] },
+    { id: 'narrow', width_m: 60, points: [[64.5905, 40.61], [64.6, 40.61]] },
+    { id: 'far', width_m: 60, points: [[64.581, 40.6], [64.581, 40.62]] },
+  ];
+  const inBoth = { lat: 64.5906, lon: 40.61, waterbody_ref: 'narrow' };
+  const access = endpointAccess(inBoth, skeletons);
+  assert.deepEqual([...access.flowIds].sort(), ['narrow', 'wide']);
+  assert.equal(access.maxDistanceM, 250, 'wide: 200 + 50 beats narrow: 30 + 50');
+  assert.equal(endpointAccess({ lat: 64.5906, lon: 40.61 }, skeletons, 28).maxDistanceM, 28);
+  assert.equal(endpointAccess({ lat: 64.5906, lon: 40.61 }, skeletons, 28).flowIds.size, 0);
+
+  const router = createLandRouter({ flow_skeletons: skeletons }, boxCorners, 20);
+  const dry = { lat: 64.5965, lon: 40.605 };
+  assert.equal(router.findPath(inBoth, dry).found, true, 'an end inside a foreign corridor is not discarded');
+  const behindFar = { lat: 64.5806, lon: 40.61, waterbody_ref: 'far' };
+  const blocked = router.findPath({ lat: 64.5906, lon: 40.61, waterbody_ref: 'wide' }, behindFar);
+  assert.equal(blocked.found, false);
+});
+
+test('PLAN-8: a topology exception needs disjoint dry-mask components of both ends; other failed searches are blockers', () => {
+  const skeleton = { id: 'river', waterbody_type: 'main_channel', width_m: 100, current_bias_kmh: 1,
+    points: [[64.58, 40.61], [64.6, 40.61]] };
+  const router = createLandRouter({ flow_skeletons: [skeleton] }, boxCorners, 20);
+  const west = { lat: 64.59, lon: 40.604 };
+  const east = { lat: 64.59, lon: 40.616 };
+  const split = router.findPath(west, east);
+  assert.equal(split.found, false);
+  assert.equal(split.failure_kind, 'different_components');
+  assert.equal(split.barrier.waterbody_ref, 'river');
+  assert.equal(split.start_components.length > 0 && split.end_components.length > 0, true);
+  assert.equal(split.start_components.some(id => split.end_components.includes(id)), false);
+  const insideWater = router.findPath({ lat: 64.59, lon: 40.61 }, west);
+  assert.equal(insideWater.found, false);
+  assert.equal(insideWater.failure_kind, 'blocker', 'a dry end inside the corridor is a blocker, not a bank split');
+
+  const places = [{ id: 'a', lat: 64.59, lon: 40.604 }, { id: 'b', lat: 64.59, lon: 40.616 }];
+  const line = { id: 'ab', kind: 'test', from_id: 'a', to_id: 'b', is_water: false, waterbody_ref: null,
+    waterbody_crossing: null, movement_method_id: 'movement.foot' };
+  const exception = components => ({ route_key: 'ab', line_ids: ['ab'], waterbody_ref: 'river', reason: 'ends on different banks',
+    intersection_point: { lat: 64.59, lon: 40.61 }, required_crossing_kind: ['ford', 'footbridge', 'ferry'],
+    endpoint_components: components });
+  const check = components => validateSpatialTopology({ flow_skeletons: [skeleton], g5_places: places, g3_g4_places: [],
+    line_waterbody_bindings: [], topology_exceptions: [exception(components)] }, [line]);
+  assert.equal(check({ start: [1], end: [2] }).invalid_topology_exceptions, 0);
+  for (const bad of [undefined, { start: [], end: [2] }, { start: [1], end: [] }, { start: [1, 2], end: [2] }]) {
+    assert.equal(check(bad).invalid_topology_exceptions, 1, JSON.stringify(bad));
+  }
+});
+
+test('PLAN-8: a flowing arm must drain to the cell boundary or sea; a dead end needs current 0', () => {
+  const cellCorners = [
+    { name: 'southwest', longitude: 40.3, latitude: 64.5 }, { name: 'southeast', longitude: 40.7, latitude: 64.5 },
+    { name: 'northeast', longitude: 40.7, latitude: 64.7 }, { name: 'northwest', longitude: 40.3, latitude: 64.7 },
+  ];
+  const network = [
+    { id: 'main', width_m: 100, current_bias_kmh: 1, points: [[64.5, 40.5], [64.7, 40.4]] },
+    { id: 'west', width_m: 100, current_bias_kmh: 1, points: [[64.6, 40.45], [64.65, 40.3]] },
+    { id: 'east', width_m: 100, current_bias_kmh: 1, points: [[64.6, 40.45], [64.65, 40.7]] },
+  ];
+  // a pair of arms that only close on each other (the central_head_branch / large_island_channels shape)
+  const arm = current => [
+    { id: 'arm_a', width_m: 100, current_bias_kmh: current, points: [[64.6, 40.45], [64.57, 40.5]] },
+    { id: 'arm_b', width_m: 60, current_bias_kmh: current, points: [[64.585, 40.475], [64.57, 40.5]] },
+  ];
+  const withCurrent = validateFlowContinuity({ flow_skeletons: [...network, ...arm(0.8)] }, cellCorners);
+  assert.equal(withCurrent.status, 'invalid');
+  assert.ok(withCurrent.issues.some(issue => /arm_a flows nowhere/.test(issue)));
+  assert.ok(withCurrent.issues.some(issue => /arm_b flows nowhere/.test(issue)));
+  assert.equal(validateFlowContinuity({ flow_skeletons: [...network, ...arm(0)] }, cellCorners).status, 'valid');
+  const drains = [...network, { id: 'arm_a', width_m: 100, current_bias_kmh: 0.8, points: [[64.6, 40.45], [64.55, 40.45]] },
+    { id: 'arm_c', width_m: 60, current_bias_kmh: 0.8, points: [[64.55, 40.45], [64.5, 40.5]] }];
+  assert.equal(validateFlowContinuity({ flow_skeletons: drains }, cellCorners).status, 'valid', 'chain reaching the boundary is an exit');
+});
+
+test('PLAN-8: a trace that runs out and turns back on one water body is a blocking spike', () => {
+  const trace = (...lats) => ({ key: 't', points: lats.map(lat => ({ lat, lon: 40.6 })),
+    segments: lats.slice(1).map(() => ({ surface: 'water', waterbody_ref: 'main' })) });
+  assert.equal(routeTraceSpikes(trace(64.5, 64.51, 64.52)).length, 0);
+  const spiked = routeTraceSpikes(trace(64.5, 64.51, 64.5));
+  assert.equal(spiked.length, 1);
+  assert.equal(spiked[0].point_index, 1);
+  const otherBody = trace(64.5, 64.51, 64.5); otherBody.segments[1].waterbody_ref = 'west';
+  assert.equal(routeTraceSpikes(otherBody).length, 0, 'a turn from one body into another is not a spike');
+  const shortTurn = { key: 't', points: [{ lat: 64.5, lon: 40.6 }, { lat: 64.5005, lon: 40.6 }, { lat: 64.5, lon: 40.6 }],
+    segments: [{ surface: 'water', waterbody_ref: 'main' }, { surface: 'water', waterbody_ref: 'main' }] };
+  assert.equal(routeTraceSpikes(shortTurn).length, 0, 'legs of 100 m or less are not spikes');
+
+  const skeleton = { id: 'main', waterbody_type: 'main_channel', width_m: 500, current_bias_kmh: 1,
+    points: [[64.5, 40.6], [64.6, 40.6]] };
+  const a = { id: 'a', lat: 64.51, lon: 40.6, waterbody_ref: 'main' };
+  const b = { id: 'b', lat: 64.52, lon: 40.6, waterbody_ref: 'main' };
+  const line = { id: 'ab', kind: 'test', from_id: 'a', to_id: 'b', is_water: true, waterbody_ref: 'main', waterbody_crossing: false,
+    flow_skeleton_id: 'main', movement_method_id: 'movement.small_river_craft', route_trace_key: 'ab',
+    route_trace_segments: [{ from: a, to: b, surface: 'water', waterbody_ref: 'main', crossing: false }] };
+  const candidate = spikedTrace => ({ flow_skeletons: [skeleton], g5_places: [a, b], g3_g4_places: [], line_waterbody_bindings: [],
+    route_traces: { ab: { key: 'ab', geometry_status: 'test', ...spikedTrace } } });
+  const points = [{ lat: 64.51, lon: 40.6 }, { lat: 64.53, lon: 40.6 }, { lat: 64.52, lon: 40.6 }];
+  const result = validateSpatialTopology(candidate({ points, segments: [{ surface: 'water', waterbody_ref: 'main' }, { surface: 'water', waterbody_ref: 'main' }] }), [line]);
+  assert.equal(result.route_trace_spikes, 1);
+  assert.equal(result.status, 'invalid');
+});
+
+test('PLAN-8: the candidate has no exceptions, dead-end arms have current 0, and every trace is spike-free', async () => {
+  const [candidate] = await inputs();
+  assert.deepEqual(candidate.topology_exceptions, []);
+  const flowById = new Map(candidate.flow_skeletons.map(flow => [flow.id, flow]));
+  for (const id of ['central_head_branch', 'large_island_channels']) assert.equal(flowById.get(id).current_bias_kmh, 0, id);
+  for (const [key, trace] of Object.entries(candidate.route_traces)) assert.deepEqual(routeTraceSpikes(trace, key), [], key);
+  const report = await buildReport(candidate, undefined, await lineNamesInput());
+  assert.equal(report.summary.river_directions['неоценимо'] ?? 0, 0);
+  assert.equal(report.summary.name_mismatch_count, 0);
+  for (const row of report.lines.filter(line => line.shore_to_water_link)) assert.ok(row.distance_m <= 150, row.id);
+});
+
+test('PLAN-8: shoreline skeletons sit at the corridor edge of their flow axis (offset = half-width)', async () => {
+  const [candidate] = await inputs();
+  const scale = { x: 111195 * Math.cos(64.58 * Math.PI / 180), y: 111195 };
+  const xy = ([lat, lon]) => [lon * scale.x, lat * scale.y];
+  const distance = (p, a, b) => {
+    const dx = b[0] - a[0]; const dy = b[1] - a[1]; const length2 = dx * dx + dy * dy;
+    const t = length2 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / length2)) : 0;
+    return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+  };
+  const flowById = new Map(candidate.flow_skeletons.map(flow => [flow.id, flow]));
+  const rebuilt = candidate.shoreline_skeletons.filter(shore => shore.flow_ref);
+  assert.equal(rebuilt.length, 30);
+  for (const shore of rebuilt) {
+    const flow = flowById.get(shore.flow_ref); const half = flow.width_m / 2;
+    assert.equal(shore.offset_from_flow_skeleton_m, half, shore.id);
+    const axis = flow.points.map(xy);
+    for (const point of shore.points.map(xy)) {
+      const nearest = Math.min(...axis.slice(1).map((end, index) => distance(point, axis[index], end)));
+      assert.ok(nearest >= half - 1 && nearest <= half * 2 + 1, `${shore.id}: ${Math.round(nearest)} m from axis, half-width ${half}`);
+    }
+  }
 });

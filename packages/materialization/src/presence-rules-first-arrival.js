@@ -6,7 +6,9 @@ import {
   presenceRuleReplayKey,
 } from './ordinary-materialization-foundation-internal.js';
 
-const WILDLIFE_PRESENCE_SUBJECT_KINDS = new Set(['category']);
+// Every presence rule stores its outcome in the one aggregate (§3A.1): nature, things and people. The category
+// ancestor logic below stays category-only.
+const PRESENCE_RULE_SUBJECT_KINDS = new Set(['category', 'social_role', 'occupation']);
 
 export function presenceRuleSubjectKey(rule) {
   return `${rule.subject_kind}:${rule.subject_ref}`;
@@ -179,7 +181,7 @@ export function applyPresenceRulesFirstArrival({
 }) {
   let current = aggregate;
   for (const rule of sortPresenceRulesForFirstArrival(rules, parentById)) {
-    if (!WILDLIFE_PRESENCE_SUBJECT_KINDS.has(rule.subject_kind)) continue;
+    if (!PRESENCE_RULE_SUBJECT_KINDS.has(rule.subject_kind)) continue;
     const period = rule.refresh_class === 'by_year_season' ? periodNumber : null;
     if (rule.refresh_class === 'by_year_season' && periodNumber == null) {
       throw new Error('PRESENCE_RULE_PERIOD_REQUIRED');

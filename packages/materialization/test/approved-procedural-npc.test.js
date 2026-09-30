@@ -114,3 +114,37 @@ test('clothing resolves exact selected demographic variant without changing appe
   duplicate.clothing_profiles[0].variants.push(profile.variants[0]);
   assert.throws(() => run(duplicate), { code: 'PROCEDURAL_NPC_CLOTHING_DATA_GAP' });
 });
+
+test('a profile that names exactly one sex fixes it without moving the later appearance draws', () => {
+  const run = (seed, sexApplicability) => {
+    try {
+      return materializeApprovedProceduralNpc({ party_id: 'party', run_id: 'run', approved_bundle: bundle, environment,
+        binding: { ...binding, ...(sexApplicability ? { sex_category_applicability: sexApplicability } : {}) },
+        random: createRandomSource({ seed }) }).npc.identity_state;
+    } catch (error) { if (error.code === 'PROCEDURAL_NPC_CLOTHING_DATA_GAP') return null; throw error; }
+  };
+  const seen = new Set();
+  for (let seed = 1; seed <= 60; seed += 1) {
+    const natural = run(seed, null);
+    if (natural == null) continue;
+    seen.add(natural.sex_category);
+    // the id form of game-base data and the plain word both fix the sex
+    const id = `nov_1200_1250_sex_category_${natural.sex_category}`;
+    assert.deepEqual(run(seed, [id]), natural, `seed ${seed}: fixing the sex the draw gave changes nothing else`);
+    assert.deepEqual(run(seed, [natural.sex_category]), natural);
+    // more than one value, or none: the behaviour stays as it was
+    assert.deepEqual(run(seed, ['nov_1200_1250_sex_category_male', 'nov_1200_1250_sex_category_female']), natural);
+    assert.deepEqual(run(seed, []), natural);
+  }
+  assert.ok(seen.size > 0);
+  for (let seed = 1; seed <= 30; seed += 1) {
+    const male = run(seed, ['nov_1200_1250_sex_category_male']);
+    if (male) assert.equal(male.sex_category, 'male');
+  }
+  // the fixture approves only male appearance entries: a fixed female is honoured (and refused), never redrawn
+  assert.throws(() => run(1, ['nov_1200_1250_sex_category_female']), { code: 'ACTOR_APPEARANCE_VALUE_NOT_APPROVED' });
+  assert.throws(() => run(1, ['other_sex_category_male']), { code: 'PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP' },
+    'only the vocabulary word or the exact nov_1200_1250 id, no suffix guessing');
+  assert.throws(() => run(1, ['nov_1200_1250_sex_category_other']),
+    { code: 'PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP' });
+});

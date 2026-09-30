@@ -383,8 +383,8 @@
       "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/spatial_v3_target_world_base_materialization_table_requirements.md",
       "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
-      "sha256": "d132e98cf37e268a5e261bdd688b528acb79838703154c7af3d95be0365c8d3b",
-      "bytes": 5742,
+      "sha256": "0fac70dd6d90b9b0c68e7f5519e767751b723a923a9ddb443bfe40a6f578e138",
+      "bytes": 6724,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "highest_materialization_normative"

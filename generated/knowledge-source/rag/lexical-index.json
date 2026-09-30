@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "662a67f89509b077b9cc3ade7d79e153e90bc173a2afb7ac3119fa349d5c0fd4",
-  "chunk_count": 2905,
+  "corpus_hash": "936a69b6114f5bcd8466073b6418dbc92f19bb597f13f208613b2f9dc29c389c",
+  "chunk_count": 2906,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -19440,8 +19440,17 @@
       "section": "1. Граница хранилищ",
       "line_start": 13,
       "line_end": 18,
-      "text": "## spatial_v3_target_world_base_materialization_table_requirements.md — 1. Граница хранилищ\n## 1. Граница хранилищ\n\n`world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.\n\nCross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.",
-      "char_count": 751
+      "text": "## spatial_v3_target_world_base_materialization_table_requirements.md — 1. Граница хранилищ\n## 1. Граница хранилищ\n\n`world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.",
+      "char_count": 502
+    },
+    {
+      "id": "spatial_v3_target_world_base_materialization_table_requirements.md:1. Граница хранилищ:1",
+      "file": "spatial_v3_target_world_base_materialization_table_requirements.md",
+      "section": "1. Граница хранилищ",
+      "line_start": 13,
+      "line_end": 18,
+      "text": "## spatial_v3_target_world_base_materialization_table_requirements.md — 1. Граница хранилищ\narty_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.\n\nCross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. Узкое исключение из «ambiguous active binding» (§4 этого документа) и из read-only DB §3, только для версий **одного** `id` runtime-профиля: если у этого `id` несколько утверждённых версий, выбирается новейшая версия со `status = approved` (`deprecated`/`retired` не участвуют). Выбранная ссылка записывается точной: в состояние партии идут `{id, version}` вместе с `world_revision_id` и `profile_record_digest`, поэтому появление новой версии не переписывает committed world. Неоднозначность между разными `id` остаётся hard block; «gap» здесь — типизированный отказ по субъекту без выбора профиля, а не fallback на другой профиль. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.",
+      "char_count": 1124
     },
     {
       "id": "spatial_v3_target_world_base_materialization_table_requirements.md:2. Canonical world authoring:0",

@@ -5,6 +5,7 @@ import {
 import {
   loadCategoryParentMap,
   loadG0RegionIdForSpatialNode,
+  loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
 } from '@rus/runtime-catalog';
 import { serverError } from '../../errors.js';
@@ -27,6 +28,7 @@ export function emptyPresenceFirstArrivalResult({
   siteId,
   presence_gap,
   periodNumber = null,
+  people = null,
 }) {
   return {
     partyId,
@@ -36,6 +38,7 @@ export function emptyPresenceFirstArrivalResult({
     parentById: new Map(),
     periodNumber,
     requestIdentityPrefix: `presence-first-arrival:${siteId}`,
+    ...(people ? { people } : {}),
   };
 }
 
@@ -96,6 +99,7 @@ export async function resolvePresenceRulesFirstArrivalForSite({
   season,
   periodNumber = null,
   bindingRows = null,
+  withPlacePeople = false,
 }) {
   if (!worldBaseReader?.read || !spatialNodeId || !Number.isInteger(spatialNodeVersion)) {
     presenceFirstArrivalError(
@@ -123,6 +127,7 @@ export async function resolvePresenceRulesFirstArrivalForSite({
     season: season.trim(),
     periodNumber,
     bindingRows,
+    withPlacePeople,
   });
 }
 
@@ -139,6 +144,7 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
   season,
   periodNumber = null,
   bindingRows = null,
+  withPlacePeople = false,
 }) {
   const rows = bindingRows ?? await loadApprovedPlaceFamilyBindings({
     worldBaseReader,
@@ -162,6 +168,8 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
     worldPin,
     runtimeCatalogPin,
   };
+  // D-2 people of a canonical place: the composition of its primary place family (empty or absent = none).
+  const people = withPlacePeople ? { compositions: await loadPrimaryPlaceFamilyCompositions({ ...readerInput, primaryIds }) } : null;
   const [primaryRules, secondaryRules] = await Promise.all([
     loadPresenceRulesForPlaceFamilies({ ...readerInput, placeFamilyIds: primaryIds }),
     loadPresenceRulesForPlaceFamilies({ ...readerInput, placeFamilyIds: secondaryIds }),
@@ -178,6 +186,7 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
       siteId,
       presence_gap: PRESENCE_FIRST_ARRIVAL_GAP.NO_MERGED_PRESENCE_RULES,
       periodNumber,
+      people,
     });
   }
   const categoryIds = rules
@@ -194,7 +203,20 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
     parentById,
     periodNumber,
     requestIdentityPrefix: `presence-first-arrival:${siteId}`,
+    ...(people ? { people } : {}),
   };
+}
+
+/** The D-2 compositions with people groups of the primary place families, each under its own composition ref. */
+async function loadPrimaryPlaceFamilyCompositions({ primaryIds, ...readerInput }) {
+  const compositions = [];
+  for (const placeFamilyId of [...primaryIds].sort()) {
+    const composition = await loadPlacePopulationComposition({ ...readerInput, placeFamilyId });
+    if (composition?.population_groups?.length) {
+      compositions.push({ composition_ref: composition.composition_ref, population_groups: composition.population_groups });
+    }
+  }
+  return compositions;
 }
 
 export function applyResolvedPresenceRulesFirstArrival({ aggregate, context }) {
@@ -227,6 +249,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
     partyId,
     firstEntryBinding,
     scope,
+    withPlacePeople = false,
   }) {
     let resolvedSite = site;
     let g4 = request?.g4;
@@ -344,6 +367,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       season: calendar.season,
       periodNumber: calendar.periodNumber,
       bindingRows,
+      withPlacePeople: withPlacePeople && useCanonicalG5Node,
     });
   };
 }

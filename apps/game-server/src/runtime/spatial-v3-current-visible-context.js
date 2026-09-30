@@ -47,7 +47,9 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
       recognition: row.display_name === row.display_label ? 'recognized' : 'unrecognized',
       ...(row.entity_kind === 'npc' && row.visibility === 'clear' ? { observable_cues: {
         identity: { ...(row.display_name === row.display_label ? { display_name: row.display_name } : {}),
-          sex_category: row.exterior.sex_category, age_category: row.exterior.age_category,
+          sex_category: row.exterior.sex_category,
+          // actor appearance says young_adult; the player-safe payload word is young
+          age_category: row.exterior.age_category === 'young_adult' ? 'young' : row.exterior.age_category,
           appearance: structuredClone(row.exterior.appearance) },
         equipment: structuredClone(row.exterior.visible_equipment) } }
         : row.entity_kind === 'item' && row.visibility === 'clear'

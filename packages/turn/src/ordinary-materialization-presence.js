@@ -9,7 +9,7 @@ import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOr
 const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
 
-export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null, partyClock = null, historicalEvents = undefined } = {}) {
+export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, assertCandidateAllowed = null, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null, partyClock = null, historicalEvents = undefined } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
   const codeResolution = codeOwnedResolution ?? forbiddenAdmission(input);
   const early = preflight(input, projection, basisCatalog, codeResolution); if (early) return early;
@@ -44,6 +44,13 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
   let errors = planErrors(raw, request, mechanics, requiredQuantity), repaired = false;
   if (errors.length) { if (typeof repairAvailable !== 'function' || !repairAvailable()) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response is invalid and no structural repair budget remains.', { repair_attempted: false, validation_errors: errors }); raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = planErrors(raw, request, mechanics, requiredQuantity); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }
   const plan = freeze(raw);
+  if (typeof assertCandidateAllowed === 'function') {
+    for (const entity of plan.entities ?? []) {
+      await assertCandidateAllowed({ committedState: request.committed_state,
+        candidate: { ...entity.semantic_descriptor,
+          path: 'O1.proposed_entity.semantic_descriptor' } });
+    }
+  }
   if (plan.resolution !== 'materialize') return negative(input, plan, projection, repaired);
   if (input.identity.admission_class === 'common_mundane'
       && plan.entities.length === 1
@@ -52,6 +59,14 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
   }
   const pending = positive(input, plan, projection, basisCatalog);
   return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, working_projection: projection });
+}
+
+export function preflightOrdinaryMaterializationPresence({ envelope,
+  workingProjection, basisCatalog, codeOwnedResolution = null } = {}) {
+  const input = envelopeOf(envelope);
+  const projection = projectionOf(input.request, workingProjection);
+  return preflight(input, projection, basisCatalog,
+    codeOwnedResolution ?? forbiddenAdmission(input));
 }
 
 function preflight(input, projection, bases, codeOwnedResolution) {

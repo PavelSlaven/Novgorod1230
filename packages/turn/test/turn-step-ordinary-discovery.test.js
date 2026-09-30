@@ -108,28 +108,32 @@ test('multi-item ordinary inspection returns no-result before context or model',
       'ordinary_materialization_atomic_write_plan'), false);
   });
 
-test('needs-check query guard runs before Stage A can call the model', async () => {
-  let checked;
-  let modelCalled = false;
+test('already-resolved O1 inspection skips the needs-check query guard', async () => {
+  let guardCalls = 0;
   const resolve = createOrdinaryMaterializationDiscoveryOwner({
-    loadDiscoveryContext: async () => ({}),
-    ordinaryMaterializationModel: async () => { modelCalled = true; },
+    resolveExistingInspection: async () => ({
+      working_projection: { revision: 3 }, write_fragments: [],
+      summary: 'committed inspection', duration_minutes: 0
+    }),
+    loadDiscoveryContext: async () => {
+      throw new Error('known inspection bypasses discovery context');
+    },
+    ordinaryMaterializationModel: async () => {
+      throw new Error('known inspection bypasses model');
+    },
     verifyStageBCutover: () => {}, inputDigest: () => 'unused',
     buildSeedRequest: () => ({}), buildPresenceRequest: () => ({}),
     sealAtomicWritePlan: () => ({}),
-    assertNeedsCheckAllowed: async (input) => {
-      checked = input.candidate;
-      const error = new Error('blocked');
-      error.code = 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
-      throw error;
+    assertNeedsCheckAllowed: async () => {
+      guardCalls += 1;
     }
   });
-  await assert.rejects(resolve({ operation: { target_refs:['position'],
+  const result = await resolve({ operation: { target_refs:['position'],
     discovery_kind:'search',query:'колёсная прялка' },
     committed_state:{clock:{whole_minutes:'0'}},
-    working_projection:{} }), {code:'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'});
-  assert.deepEqual(checked, {name:'колёсная прялка'});
-  assert.equal(modelCalled, false);
+    working_projection:{} });
+  assert.equal(result.summary, 'committed inspection');
+  assert.equal(guardCalls, 0);
 });
 
 test('semantic paraphrase reuses one visible ordinary item instead of cloning it', () => {

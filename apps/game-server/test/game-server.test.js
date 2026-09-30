@@ -89,6 +89,18 @@ test('known turn failures use safe public categories and never expose internal d
   assert.equal(unknown.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
 });
 
+test('required immutable blocker catalog failure is permanent and player-safe', () => {
+  const response = errorEnvelope(Object.assign(new Error('private catalog detail'), {
+    code: 'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED', status: 503,
+    details: { import_id: 'private-import' }, turn_commit_status: 'not_started'
+  }));
+  assert.equal(response.status, 503);
+  assert.deepEqual(response.body.error, { code: 'WORLD_CATALOG_PIN_INVALID',
+    message: 'Данные мира этой партии недоступны.',
+    turn_commit_status: 'not_started' });
+  assert.doesNotMatch(JSON.stringify(response), /NEEDS_CHECK_BLOCKER|private-import|private catalog/u);
+});
+
 test('provider failures have safe typed public errors', () => {
   for (const [internal, external] of [
     ['timeout', 'LLM_PROVIDER_TIMEOUT'],

@@ -22,10 +22,14 @@ presentation delivery. На этой ветке значимая логика х
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
 Свободная materialization получает `rus.needs_check_blockers.v2` только из
-verified immutable catalog snapshot, совместимого с party pin. Этот owner берёт
-год из committed clock и регион из pinned G0 ancestor текущего G4; guard стоит
-перед O1 Stage A, перед admission нового O1/direct/O2b/S1 результата и перед
-записью независимого A1 output. `TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED`
+verified immutable catalog snapshot из контекста того же turn pin. Каталог
+запрашивается лениво при первом guard-вызове; owner берёт год из committed clock
+и регион через runtime-catalog G0 reader для версии текущего G4. O1 проверяет
+запрос после replay/preflight и до model call, предложенный descriptor — до
+resolution-развилки; direct/O2b — до admission/write, A1 independent output — в
+preflight и перед записью. S1 проверяет после `admitSpatialSemanticRemainder` и
+до admission/write. Для NPC blocker отклоняет только его операцию через
+существующий domain-rejected путь. `TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED`
 сопоставляется только при подтверждённом `not_started` в player-safe
 `WORLD_ACTION_UNAVAILABLE`; очередь остаётся в private trace. Профили O2b/S1
 активируются только их существующими exact gates.

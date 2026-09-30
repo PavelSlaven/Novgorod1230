@@ -42,7 +42,7 @@ export function emptyPresenceFirstArrivalResult({
   };
 }
 
-async function loadPinnedG4NodeRef({
+export async function loadPinnedG4NodeRef({
   worldBaseReader,
   spatialWorldPin,
   nodeId,

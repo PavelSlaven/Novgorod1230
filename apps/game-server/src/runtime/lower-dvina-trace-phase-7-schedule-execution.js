@@ -63,7 +63,9 @@ export async function executeTracePhase7SchedulePlan({
       domain_result: structuredClone(autonomous.proposal.domain_result)
     });
   }
-  const execution = await executeTurnStepActorStep({
+  let execution;
+  try {
+    execution = await executeTurnStepActorStep({
     plan: autonomous.proposal.plan,
     request: actorStepRequest(
       autonomous.request, contracts, state, autonomous.proposal.plan,
@@ -74,7 +76,17 @@ export async function executeTracePhase7SchedulePlan({
     priorLocalFirePlans,
     registry: actorStepRuntime.registry,
     ports: actorStepRuntime.ports
-  });
+    });
+  } catch (error) {
+    if (error?.code !== 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') throw error;
+    return Object.freeze({
+      working_projection: structuredClone(temporal.projection),
+      domain_result: Object.freeze({ pass: false, errors: Object.freeze([
+        Object.freeze({ code: error.code, category: 'applicability',
+          retryable: false })
+      ]) })
+    });
+  }
   const result = finalActorStepConsequence(execution.consequenceFragments);
   if (result == null) {
     fail('TRACE_PHASE_7_ACTOR_STEP_RESULT_INVALID');

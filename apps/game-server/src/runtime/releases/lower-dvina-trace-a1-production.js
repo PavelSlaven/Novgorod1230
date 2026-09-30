@@ -123,8 +123,15 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         delete firstEnvelope.operations;
         const base = await load(firstEnvelope, false);
         for (const operation of operations) {
-          admitA1PreAttempt(contextForA1Operation(base, operation, profile),
-            profile, requestId);
+          const { semantic } = admitA1PreAttempt(
+            contextForA1Operation(base, operation, profile), profile, requestId);
+          if (semantic.identity_mode === 'independent_outputs'
+              && typeof turnGuard === 'function') {
+            await turnGuard({ partyId,
+              committedState: rawEnvelope?.committed_state,
+              candidate: a1DescriptorCandidate(semantic.result_descriptor,
+                'A1.preflight.result_descriptor') });
+          }
         }
         return true;
       },
@@ -140,13 +147,11 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           profile, requestId);
         if (semantic.identity_mode === 'independent_outputs'
             && typeof turnGuard === 'function') {
-          const descriptor = semantic.result_descriptor;
           await turnGuard({
             partyId,
             committedState: rawEnvelope?.committed_state,
-            candidate: { name: descriptor.display_name,
-              context: [descriptor.physical_description,
-                ...(descriptor.qualitative_facts ?? [])].filter(Boolean).join(' ') }
+            candidate: a1DescriptorCandidate(semantic.result_descriptor,
+              'A1.execute.result_descriptor')
           });
         }
         const planner = createActionProducedTransitionPlanner({
@@ -211,6 +216,16 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       }
     });
   };
+}
+
+function a1DescriptorCandidate(descriptor, path) {
+  const delta = descriptor.source_fact_delta ?? null;
+  return { name: descriptor.display_name,
+    display_name: descriptor.display_name,
+    physical_description: descriptor.physical_description,
+    qualitative_facts: descriptor.qualitative_facts,
+    inscription_text: descriptor.inscription_text,
+    ...(delta == null ? {} : { source_fact_delta: delta }), path };
 }
 
 export function createActionProductionVisibleConsequence({ actionRef, stepIndex,

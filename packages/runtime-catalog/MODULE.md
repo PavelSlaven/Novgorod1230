@@ -31,6 +31,10 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `createRuntimeCatalogLoader({ worldBaseReader, supportedRuntimeContractDigests })`;
 - `loadActivePin({ catalogScope })`;
 - `loadApprovedItemCatalog({ pin })`;
+- `loadApprovedNeedsCheckBlockerSnapshot({ verifiedCatalog, pin })` — exact
+  immutable `profile:needs_check_blockers` member, без latest fallback;
+- `needsCheckBlockerSnapshotRequired({ verifiedCatalog, pin })` — exact import
+  binding, требующий blocker snapshot;
 - `loadApprovedActorProfileCatalog({ worldPin, regionId, effectiveDate })`;
 - `loadScheduleRoutineRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, season, month? })` — D-1 routine rules из `world_base.npc_schedule_routine_rules` только после spatial pin и последнего runtime-catalog activation;
 - `loadPresenceRulesForPlaceFamilies({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyIds })` — M2c `world_base.presence_rules` для `place_family` после тех же gate;
@@ -80,6 +84,9 @@ placement candidate digest/reference. It approves no later-state fallback;
 the current-state owner must separately prove that the committed initial state
 still applies.
 
+`rus.runtime_catalog_context.v2.needs_check_blocker_snapshot` — snapshot,
+загруженный из verified catalog context того же immutable pin. Обязательность
+определяет `needs_check_blocker_snapshot_required` по binding этого import.
 `rus.needs_check_blockers.v2` — immutable snapshot cross-domain queues с проверкой digest. Snapshot включает отсортированный список `regions` из approved G0 registry; digest покрывает schema, regions и entries. Каждая name-строка фиксирует `doubt_kind` (`anachronism` или `regional_presence`), `block_by` (`name`, `archive_id` или `none`), `block_region`, включительный `block_period` (`YYYY-YYYY`), исключения и нормализуемые шаблоны. Только `anachronism` блокирует по имени: совпадение действует в том же регионе и при candidate year внутри периода; другой известный регион или год вне периода пропускается. Отсутствующий или неизвестный регион проверяется по всем name-записям. `regional_presence` всегда информационный (`block_by=none`). Runtime получает year из committed clock и регион из committed G0 места; consumer решает только чистое совпадение, очередь и допуск действия принадлежат другим owners. Изменение активного указателя не меняет snapshot исторического party pin.
 
 `loadActivePin` возвращает immutable `rus.runtime_catalog_pin.v2`.

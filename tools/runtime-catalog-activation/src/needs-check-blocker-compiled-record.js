@@ -18,6 +18,17 @@ export function buildNeedsCheckBlockerCompiledRecord(snapshot) {
   };
 }
 
+export function buildNeedsCheckBlockerBindingCompiledRecord() {
+  const payload = { schema: 'rus.needs_check_blocker_binding.v1',
+    required: true, snapshot_record_id: 'profile:needs_check_blockers',
+    snapshot_version: 2 };
+  const payload_digest = digest(payload);
+  return { record_id: 'profile:needs_check_blockers_binding', version: 1,
+    record_kind: 'profile', family_candidate_ref: null, payload,
+    payload_digest, source_pack_digest: payload_digest,
+    status: 'approved_authoring_not_runtime_selectable' };
+}
+
 function digest(value) {
   return createHash('sha256').update(canonicalStringify(value)).digest('hex');
 }

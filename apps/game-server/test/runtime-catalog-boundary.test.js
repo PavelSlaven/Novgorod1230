@@ -108,8 +108,33 @@ test('runtime catalog boundary uses active state only for a new party and histor
   const reloaded = await coordinator.loadPartyContext({ partyId: 'party-1' });
   assert.equal(reloaded.source, 'persisted_party');
   assert.equal(reloaded.needs_check_blocker_snapshot, null);
-  assert.deepEqual(calls, ['compatible', 'catalog:catalog-v2', 'lookups']);
+  assert.deepEqual(calls, ['compatible', 'lookups'],
+    'same immutable pin reuses the verified catalog payload');
 });
+
+test('failed immutable-pin catalog load is evicted and retried on next guarded turn',
+  async () => {
+    let loads = 0;
+    const coordinator = createRuntimeCatalogCoordinator({
+      loader: {
+        assertCompatibleWorldPin() {},
+        async loadApprovedItemCatalog({ pin: actual }) {
+          loads += 1;
+          if (loads === 1) throw new Error('read failed');
+          return { schema: 'rus.verified_item_catalog.v2', verified: true,
+            pin: actual, records_by_table: {} };
+        }
+      },
+      partyPool: { async query() { return { rows: [{ ...pin,
+        world_revision_id: worldPin.world_revision_id,
+        world_catalog_digest: worldPin.world_catalog_digest }] }; } },
+      async commonCatalogLookupLoader() { return {}; }
+    });
+    await assert.rejects(coordinator.loadPartyContext({ partyId: 'party-1' }),
+      /read failed/u);
+    await coordinator.loadPartyContext({ partyId: 'party-2' });
+    assert.equal(loads, 2);
+  });
 
 test('runtime catalog boundary fails closed for a missing party or run pin', async () => {
   const coordinator = createRuntimeCatalogCoordinator({

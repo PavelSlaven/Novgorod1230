@@ -67,9 +67,9 @@ import { createTargetCurrentFactualContext } from
   '../../infrastructure/postgres/target-current-factual-context.js';
 import { createNeedsCheckMaterializationGuard } from
   '../needs-check-materialization-guard.js';
+import { createNeedsCheckRegionResolver } from
+  '../../infrastructure/postgres/needs-check-region-resolver.js';
 import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
-import { RUNTIME_CATALOG_CONTRACT_DIGEST } from
-  '@rus/runtime-catalog/runtime-contract';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -133,13 +133,11 @@ export function createTraceTurnRuntime({
     : createRuntimeCatalogCoordinator({ worldBaseReader: {
         read: targetStartRuntime.worldBaseReader.read.bind(
           targetStartRuntime.worldBaseReader)
-      }, partyPool, supportedRuntimeContractDigests: [
-        RUNTIME_CATALOG_CONTRACT_DIGEST,
-        targetStartRuntime.itemPin.runtime_contract_digest
-      ] });
+      }, partyPool, itemPin: targetStartRuntime.itemPin });
   const needsCheckGuard = targetStartRuntime == null ? null
     : createNeedsCheckMaterializationGuard({
-        worldBaseReader: targetStartRuntime.worldBaseReader,
+        resolveRegion: createNeedsCheckRegionResolver({
+          worldBaseReader: targetStartRuntime.worldBaseReader }),
         calendarProfile: materializationInputs?.calendar_profile
       });
   const ordinaryDiscoveryScopeBinding =

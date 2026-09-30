@@ -20,15 +20,18 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
   const unresolvedOrdinary = error?.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED';
   const providerFailure = error?.llm_provider_failure === true
     ? publicProviderFailure(error?.code) : null;
+  const catalogFailure = error?.code === 'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED'
+    ? { code: 'WORLD_CATALOG_PIN_INVALID',
+        message: 'Данные мира этой партии недоступны.' } : null;
   const publicTurnFailure = publicTurnFailureFor(error);
   const status = unresolvedOrdinary || publicTurnFailure ? 409
-    : providerFailure ? 503
+    : providerFailure || catalogFailure ? 503
       : Number.isInteger(error?.status) ? error.status : 500;
-  const internal = !providerFailure && !publicTurnFailure && (unresolvedOrdinary || status >= 500
+  const internal = !providerFailure && !catalogFailure && !publicTurnFailure && (unresolvedOrdinary || status >= 500
     || error?.public_exposure === 'internal');
-  const code = publicTurnFailure?.code ?? providerFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+  const code = publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
     : text(error?.code) || 'REQUEST_FAILED');
-  const message = publicTurnFailure?.message ?? providerFailure?.message ?? (internal
+  const message = publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
     ? 'Действие временно недоступно. Попробуйте ещё раз.'
     : text(error?.message) || 'Request failed.');
   return Object.freeze({

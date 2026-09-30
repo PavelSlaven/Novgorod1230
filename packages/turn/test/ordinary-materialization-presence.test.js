@@ -367,3 +367,36 @@ test('restricted model entity records missing authority without inventing absenc
   assert.equal(replay.known_resolution.resolution, 'authority_required');
   assert.equal(calls, 0);
 });
+
+test('needs-check checks a valid restricted proposal before authority_required ledger transition',
+  async () => {
+    const admittedEnvelope = envelope();
+    admittedEnvelope.request.policy_refs.allowed_admission_classes.push(
+      'specialized_or_valuable');
+    const raw = materialize();
+    raw.entities[0].semantic_descriptor = { semantic_type: 'mechanism',
+      name: 'механизм', facts: ['Колёсная прялка'] };
+    raw.entities[0].admission_class = 'specialized_or_valuable';
+    const workingProjection = projection();
+    const before = structuredClone(workingProjection);
+    let modelCalls = 0;
+    let repairCalls = 0;
+    let checked = null;
+    await assert.rejects(resolveOrdinaryMaterializationPresence({
+      envelope: admittedEnvelope, workingProjection, basisCatalog,
+      ordinaryMaterializationModel: async () => { modelCalls += 1; return raw; },
+      repairAvailable: () => { repairCalls += 1; return true; },
+      assertCandidateAllowed: async ({ candidate }) => {
+        checked = candidate;
+        throw Object.assign(new Error('blocked'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+        });
+      }
+    }), { code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED' });
+    assert.deepEqual(checked, { semantic_type: 'mechanism', name: 'механизм',
+      facts: ['Колёсная прялка'], path: 'O1.proposed_entity.semantic_descriptor' });
+    assert.equal(modelCalls, 1);
+    assert.equal(repairCalls, 0);
+    assert.deepEqual(workingProjection, before,
+      'authority_required must not append a negative presence resolution');
+  });

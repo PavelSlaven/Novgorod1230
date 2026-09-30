@@ -160,7 +160,11 @@ function matchesAll({ snapshot, candidate }) {
     throw new TypeError('candidate.year must be an integer from 1 to 9999 when provided.');
   }
   const values = {
-    ru: [candidate.name, candidate.semantic_type, candidate.candidate_hint, candidate.context,
+    ru: [candidate.name, candidate.display_name, candidate.semantic_type,
+      candidate.candidate_hint, candidate.context, candidate.physical_description,
+      candidate.inscription_text, candidate.source_fact_delta?.physical_description,
+      ...(candidate.facts ?? []), ...(candidate.qualitative_facts ?? []),
+      ...(candidate.source_fact_delta?.qualitative_facts ?? []),
       ...(candidate.aliases_ru ?? [])],
     lat: [candidate.name_lat, candidate.context, ...(candidate.lat_synonyms ?? [])],
     id: [candidate.id, ...(Array.isArray(candidate.ids) ? candidate.ids : [])]

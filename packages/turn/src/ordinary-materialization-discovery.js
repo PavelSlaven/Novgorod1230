@@ -14,6 +14,7 @@ import {
   resolveOrdinaryWorldPropertyPlacement
 } from '@rus/items-property';
 import { resolveOrdinaryMaterializationPresence,
+  preflightOrdinaryMaterializationPresence,
   selectOrdinaryMaterializationSupportingBasis } from
   './ordinary-materialization-presence.js';
 import { resolveOrdinaryMaterializationSeedScope } from
@@ -45,11 +46,6 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     if (inspection != null) return inspection;
     const enabled = await loadDiscoveryContext(request);
     if (enabled == null) return ordinaryNoop(request);
-    if (request.operation?.discovery_kind !== 'look'
-        && typeof assertNeedsCheckAllowed === 'function') {
-      await assertNeedsCheckAllowed({ committedState: request.committed_state,
-        candidate: { name: request.operation?.query } });
-    }
     const modelBudget = semanticModelCallBudget(ordinaryMaterializationModel);
     const { party_id: partyId, scope_ref: scopeRef } = enabled;
     const execution = enabled.execution_context;
@@ -68,6 +64,59 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
     let newBases = [];
+    const candidateContext = candidateForDiscovery({
+      candidateContext: execution.candidate_context,
+      query: request.operation.query,
+      quantity: request.operation.quantity ?? null });
+    let requestGuardedBeforeSeed = false;
+    if (!enabled.ordinary_aggregate.seeded
+        && request.operation?.discovery_kind !== 'look'
+        && candidateContext != null) {
+      const bases = enabled.expected_supporting_bases
+        ?? execution.supporting_bases;
+      const preflightObjective = { ...enabled.objective_context,
+        request_id: `${rootId}:ordinary:presence:step:${request.request.step_index}`,
+        policy_refs: presencePolicyRefs({
+          policyRefs: enabled.objective_context.policy_refs,
+          bases,
+          aggregate: projection.ordinary_materialization_aggregate,
+          currentSeedRequestId: null, currentPreparedRefs: new Set()
+        }),
+        ordinary_state_version:
+          projection.ordinary_materialization_aggregate.state_version,
+        ordinary_state: ordinaryState(
+          projection.ordinary_materialization_aggregate,
+          enabled.objective_context.technical_limits.max_new_entities),
+        property_placement_context: enabled.property_placement_context };
+      const selectedSupportingBasisRef =
+        selectOrdinaryMaterializationSupportingBasis({
+          request: { scope_ref: preflightObjective.scope_ref,
+            policy_refs: preflightObjective.policy_refs },
+          identity: candidateContext, basisCatalog: admissionBases(bases)
+        });
+      const preflightEnvelope = buildPresenceRequest({
+        objective_context: preflightObjective,
+        candidate_context: candidateContext,
+        selected_supporting_basis_ref: selectedSupportingBasisRef
+      });
+      const early = preflightOrdinaryMaterializationPresence({
+        envelope: preflightEnvelope, workingProjection: projection,
+        basisCatalog: admissionBases(bases),
+        codeOwnedResolution: enabled.code_owned_resolution ?? null
+      });
+      if (early?.status === 'already_resolved') {
+        return knownResolutionResult(request, early.known_resolution, {
+          displayName: knownMaterializedItemName({ request, partyId, scopeRef,
+            knownResolution: early.known_resolution })
+        });
+      }
+      if (early == null && typeof assertNeedsCheckAllowed === 'function') {
+        await assertNeedsCheckAllowed({ committedState: request.committed_state,
+          candidate: { name: request.operation?.query,
+            path: 'O1.request.query' } });
+        requestGuardedBeforeSeed = true;
+      }
+    }
     if (!enabled.ordinary_aggregate.seeded && finiteOnlyScope(enabled)) {
       // A finite-source-only scope has zero background density: nothing for
       // Stage A to describe, so code seeds it before any model call.
@@ -144,10 +193,6 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate,
         enabled.objective_context.technical_limits.max_new_entities),
       property_placement_context: enabled.property_placement_context };
-    const candidateContext = candidateForDiscovery({
-      candidateContext: execution.candidate_context,
-      query: request.operation.query,
-      quantity: request.operation.quantity ?? null });
     if (candidateContext == null) return ordinaryNoop(request);
     const selectedSupportingBasisRef = selectOrdinaryMaterializationSupportingBasis({
       request: { scope_ref: presenceObjective.scope_ref,
@@ -163,11 +208,22 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
+      assertCandidateAllowed: assertNeedsCheckAllowed,
       workingProjection: projection,
-      basisCatalog: admissionBases(bases), beforeModel: () =>
-        verifyStageBCutover({
+      basisCatalog: admissionBases(bases), beforeModel: async () => {
+        if (!requestGuardedBeforeSeed
+            && request.operation?.discovery_kind !== 'look'
+            && typeof assertNeedsCheckAllowed === 'function') {
+          await assertNeedsCheckAllowed({
+            committedState: request.committed_state,
+            candidate: { name: request.operation?.query,
+              path: 'O1.request.query' }
+          });
+        }
+        return verifyStageBCutover({
           eval_contract: execution.stage_b_classification_eval
-        }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
+        });
+      }, codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
     if (presence.status === 'already_resolved') {
       return knownResolutionResult(request, presence.known_resolution, {
@@ -195,10 +251,6 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         return knownResolutionResult(request, { resolution: 'materialize' }, {
           displayName: equivalent.name
         });
-      }
-      if (typeof assertNeedsCheckAllowed === 'function') {
-        await assertNeedsCheckAllowed({ committedState: request.committed_state,
-          candidate: proposed.semantic_descriptor });
       }
       if (proposed.property_basis_ref
           !== envelope.request.context_refs.property_context_ref) {

@@ -27,7 +27,6 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
     turnStepNeedsCheckGuard = null,
-    runtimeCatalogContext = null,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner,
@@ -63,8 +62,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     idempotency_key: idempotencyKey
   });
   const needsCheckGuard = typeof turnStepNeedsCheckGuard === 'function'
-    ? (input) => turnStepNeedsCheckGuard({ ...input,
-      catalogContext: runtimeCatalogContext }) : null;
+    ? turnStepNeedsCheckGuard : null;
   const guardFactory = (factory) => typeof factory !== 'function'
     ? null : (input) => factory({ ...input,
       assertNeedsCheckAllowed: needsCheckGuard });

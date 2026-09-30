@@ -3,7 +3,9 @@ import {
   createRuntimeCatalogLoader,
   loadApprovedProceduralCompiledCatalog,
   loadApprovedNeedsCheckBlockerSnapshot,
-  selectApplicableItemCatalog
+  needsCheckBlockerSnapshotRequired,
+  selectApplicableItemCatalog,
+  supportedRuntimeContractDigestsForPin
 } from '@rus/runtime-catalog';
 import { loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';
 import { RUNTIME_CATALOG_CONTRACT_DIGEST } from '@rus/runtime-catalog/runtime-contract';
@@ -23,25 +25,31 @@ export function createRuntimeCatalogCoordinator({
   worldBaseReader,
   partyPool,
   commonCatalogLookupLoader = loadCommonCatalogLookupRecords,
-  supportedRuntimeContractDigests = [RUNTIME_CATALOG_CONTRACT_DIGEST],
+  itemPin = null,
+  supportedRuntimeContractDigests = null,
   loader = createRuntimeCatalogLoader({
     worldBaseReader,
-    supportedRuntimeContractDigests
+    supportedRuntimeContractDigests: supportedRuntimeContractDigests
+      ?? (itemPin == null ? [RUNTIME_CATALOG_CONTRACT_DIGEST]
+        : supportedRuntimeContractDigestsForPin(itemPin))
   })
 } = {}) {
   if (!partyPool || typeof partyPool.query !== 'function') {
     throw new TypeError('partyPool.query is required.');
   }
+  const verifiedCatalogCache = new Map();
 
   async function prepareNewPartyContext({ worldPin, regionId, effectiveDate }) {
     const pin = await loader.loadActivePin({ catalogScope: ITEM_CONTAINER_CATALOG_SCOPE });
     compatible({ domainPin: pin, worldPin });
-    return buildContext({ loader, projection, commonCatalogLookupLoader, pin, worldPin, regionId, effectiveDate, source: 'active' });
+    return buildContext({ loader, projection, commonCatalogLookupLoader,
+      loadVerifiedCatalog, pin, worldPin, regionId, effectiveDate, source: 'active' });
   }
 
   async function restoreNewPartyContext({ pin, worldPin, regionId, effectiveDate }) {
     compatible({ domainPin: pin, worldPin });
-    return buildContext({ loader, projection, commonCatalogLookupLoader, pin, worldPin, regionId, effectiveDate, source: 'checkpoint' });
+    return buildContext({ loader, projection, commonCatalogLookupLoader,
+      loadVerifiedCatalog, pin, worldPin, regionId, effectiveDate, source: 'checkpoint' });
   }
 
   async function loadPartyContext({ partyId, regionId = null, effectiveDate = null }) {
@@ -80,7 +88,8 @@ export function createRuntimeCatalogCoordinator({
       world_catalog_digest: row.world_catalog_digest
     };
     compatible({ domainPin: pin, worldPin });
-    return buildContext({ loader, projection, commonCatalogLookupLoader, pin, worldPin, regionId, effectiveDate, source: 'persisted_party' });
+    return buildContext({ loader, projection, commonCatalogLookupLoader,
+      loadVerifiedCatalog, pin, worldPin, regionId, effectiveDate, source: 'persisted_party' });
   }
 
   async function assertMaterializationRunPin({ partyId, runId, expectedPin }) {
@@ -144,12 +153,27 @@ export function createRuntimeCatalogCoordinator({
   function projection(input) {
     return (loader.selectApplicableItemCatalog ?? selectApplicableItemCatalog)(input);
   }
+
+  function loadVerifiedCatalog(pin) {
+    const key = JSON.stringify([pin.import_id, pin.catalog_digest, pin.import_audit_digest,
+      pin.record_registry_digest, pin.runtime_contract_digest,
+      pin.activation_event_id]);
+    if (!verifiedCatalogCache.has(key)) {
+      const pending = loader.loadApprovedItemCatalog({ pin }).catch((error) => {
+        verifiedCatalogCache.delete(key);
+        throw error;
+      });
+      verifiedCatalogCache.set(key, pending);
+    }
+    return verifiedCatalogCache.get(key);
+  }
 }
 
 async function buildContext({
   loader,
   projection,
   commonCatalogLookupLoader,
+  loadVerifiedCatalog,
   pin,
   worldPin,
   regionId,
@@ -157,7 +181,7 @@ async function buildContext({
   source
 }) {
   const verifiedCatalog = withCommonLookups(
-    await loader.loadApprovedItemCatalog({ pin }),
+    await loadVerifiedCatalog(pin),
     await commonCatalogLookupLoader()
   );
   const needsCheckBlockerSnapshot = loadApprovedNeedsCheckBlockerSnapshot({
@@ -197,6 +221,8 @@ async function buildContext({
     verified_catalog: verifiedCatalog,
     verified_procedural_compiled_catalog: proceduralCatalog,
     needs_check_blocker_snapshot: needsCheckBlockerSnapshot,
+    needs_check_blocker_snapshot_required: needsCheckBlockerSnapshotRequired({
+      verifiedCatalog, pin }),
     applicable_catalog: applicableCatalog
   });
 }

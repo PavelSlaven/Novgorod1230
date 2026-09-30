@@ -84,7 +84,8 @@ export async function resolveOrdinaryContents({ canonical, revealContents,
         resolution_mode:revealContents ? 'reveal' : 'concealed'
       }
     }));
-  } catch {
+  } catch (error) {
+    if (error?.code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') throw error;
     fail('TRACE_TURN_STEP_CONTAINER_ORDINARY_RESOLUTION_FAILED');
   }
   if (!exact(resolved, ['pass','materialized_items',

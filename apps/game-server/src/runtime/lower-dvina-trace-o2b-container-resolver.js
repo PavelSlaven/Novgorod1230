@@ -91,7 +91,8 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
         committedState: { world_identity: committed.value.world_identity,
           position: { g4_id: committed.value.container.actor_g4_id },
           clock: committed.partyClock },
-        candidate: entity.semantic_descriptor
+        candidate: { ...entity.semantic_descriptor,
+          path: 'O2b.proposed_entity.semantic_descriptor' }
       });
     }
     try { return buildO2bContainerResolution({ committed, raw, operation,

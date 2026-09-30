@@ -28,32 +28,23 @@ function calendarProfile(year = '1230') {
 }
 
 function guardFor({ snapshot = sourceSnapshot, region = 'region_novgorod_land',
-  year = '1230', g4 = true, catalogRevision = 'catalog-test' } = {}) {
+  year = '1230', g4 = true, required = true } = {}) {
   const worldPin = {world_revision_id:'world-test',
     world_catalog_digest:'a'.repeat(64)};
   const pin = {schema:'rus.runtime_catalog_pin.v2',
     catalog_scope:'item_container_materialization_v2',
-    catalog_revision_id:catalogRevision,catalog_digest:'b'.repeat(64),
+    catalog_revision_id:'catalog-test',catalog_digest:'b'.repeat(64),
     activation_event_id:'activation-test',import_id:'import-test',
     import_audit_digest:'c'.repeat(64),record_registry_digest:'d'.repeat(64),
     runtime_contract_digest:'e'.repeat(64),
     compatible_world_revision_id:worldPin.world_revision_id,
     compatible_world_catalog_digest:worldPin.world_catalog_digest,
     compatible_world_pin_manifest_digest:'f'.repeat(64)};
-  const worldBaseReader = { async read(sql) {
-    if (sql.includes('world_base.world_revisions')) return {rows:[{id:'world-test'}]};
-    if (sql.includes('world_base.spatial_v3_world_revisions')) return {rows:[{id:'world-test'}]};
-    if (sql.includes('runtime_catalog_activation_events')) return {rows:[{
-      event_id:'activation-test',event_type:'activate',
-      catalog_revision_id:'catalog-test',catalog_digest:'b'.repeat(64),
-      compatible_world_revision_id:'world-test',
-      compatible_world_catalog_digest:'a'.repeat(64)}]};
-    if (sql.includes('WITH RECURSIVE chain')) return {rows:[{id:region}]};
-    throw new Error(`Unexpected world reader query: ${sql}`);
-  } };
-  const guard = createNeedsCheckMaterializationGuard({ worldBaseReader,
+  const guard = createNeedsCheckMaterializationGuard({
+    resolveRegion: async () => g4 ? region : null,
     calendarProfile:calendarProfile(year) });
   const catalogContext = { needs_check_blocker_snapshot:snapshot,
+    needs_check_blocker_snapshot_required:required,
     world_pin:worldPin,pin };
   return (input) => guard({ ...input,
     catalogContext:input.catalogContext ?? catalogContext });
@@ -66,10 +57,12 @@ const committed = { world_identity:{world_revision_id:'world-test',
 test('guard blocks scoped anachronism and preserves queue ID only in typed details', async () => {
   const assertAllowed = guardFor();
   await assert.rejects(assertAllowed({partyId:'party-1',committedState:committed,
-    candidate:{name:'железный капкан'}}), (error) => {
+    candidate:{name:'железный капкан',path:'test.path'}}), (error) => {
     assert.equal(error.code, NEEDS_CHECK_MATERIALIZATION_BLOCKED);
     assert.equal(error.details.queue_id,
       'crafts-tools-processes/authoring/needs_check.csv#HNT0024');
+    assert.deepEqual(error.details.queue_ids, [error.details.queue_id]);
+    assert.equal(error.details.path, 'test.path');
     return true;
   });
 });
@@ -96,11 +89,11 @@ test('regional-presence doubt remains informational and missing region checks al
     {code:NEEDS_CHECK_MATERIALIZATION_BLOCKED});
 });
 
-test('requires blocker snapshot on new pins but preserves pre-feature v1 pins', async () => {
+test('requires snapshot only when the exact activated binding requires it', async () => {
   await assert.rejects(guardFor({snapshot:null})({partyId:'party-1',
     committedState:committed,candidate:{name:'мельничное колесо водяное'}}),
     {code:'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED'});
-  await guardFor({snapshot:null,catalogRevision:'procedural_scene_final_candidate_v1_001'})({
+  await guardFor({snapshot:null,required:false})({
     partyId:'party-1',committedState:committed,candidate:{name:'железный капкан'} });
 });
 
@@ -110,7 +103,9 @@ test('uses the supplied turn catalog context without validating its pin contract
     needs_check_blocker_snapshot:sourceSnapshot,
     world_pin:{world_revision_id:'world-test',world_catalog_digest:'a'.repeat(64)},
     pin:{schema:'rus.runtime_catalog_pin.v2',
-      catalog_revision_id:'catalog-test',runtime_contract_digest:'not-the-loader-digest'} };
+      catalog_revision_id:'catalog-test',import_id:'import-test',
+      catalog_digest:'b'.repeat(64),runtime_contract_digest:'not-the-loader-digest'},
+    needs_check_blocker_snapshot_required:true };
   await assert.rejects(assertAllowed({partyId:'party-1',committedState:committed,
     catalogContext:turnContext,candidate:{name:'железный капкан'}}),
     {code:NEEDS_CHECK_MATERIALIZATION_BLOCKED});

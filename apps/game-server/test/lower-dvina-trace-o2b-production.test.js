@@ -148,7 +148,8 @@ test('O2b needs-check guard runs on each new descriptor before its atomic plan',
     }});
     await assert.rejects(guarded(call()),
       {code:'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'});
-    assert.deepEqual(checked, expected);
+    assert.deepEqual(checked, { ...expected,
+      path: 'O2b.proposed_entity.semantic_descriptor' });
   });
 
 test('P16 projection hides precommit child and publishes only safe committed view',

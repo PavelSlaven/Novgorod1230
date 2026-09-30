@@ -108,6 +108,31 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
     'different normalized queries receive different code-owned identities');
 });
 
+test('unseeded blocked O1 query is rejected after presence preflight and before Stage A',
+  async () => {
+    const modelCalls = [];
+    let guardCalls = 0;
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'blocked-before-seed', verifyStageBCutover,
+      loadEnablement: async () => enabled(),
+      assertNeedsCheckAllowed: async () => {
+        guardCalls += 1;
+        throw Object.assign(new Error('blocked'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+        });
+      },
+      ordinaryMaterializationModel: async (modelRequest) => {
+        modelCalls.push(modelRequest.mode);
+        throw new Error('blocked O1 query must not call a model');
+      }
+    });
+    await assert.rejects(() => resolver(request('павлин')), {
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+    });
+    assert.equal(guardCalls, 1);
+    assert.deepEqual(modelCalls, []);
+  });
+
 test('seed and presence each retain one structural repair',
   async () => {
     let modelCalls = 0;
@@ -349,8 +374,9 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
       remaining_intent: 'связать ею две жерди', depends_on_refs: [] } };
     const result = await resolver(discoveryRequest);
     assert.deepEqual(guardCandidates, [
-      { name:'найти простую верёвку' },
-      { semantic_type:'cordage', name:'простая верёвка', facts:[] }
+      { name:'найти простую верёвку', path:'O1.request.query' },
+      { semantic_type:'cordage', name:'простая верёвка', facts:[],
+        path:'O1.proposed_entity.semantic_descriptor' }
     ]);
     assert.deepEqual(sequence, ['guard:1','model:seed_scope',
       'model:resolve_presence','guard:2']);

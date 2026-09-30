@@ -107,3 +107,19 @@ test('multiword name does not match an unrelated single word', () => {
   assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name: 'капкан' } }), null);
   assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: { name: 'Железный капкан' } }).queue_id, 'fauna_peacock');
 });
+
+test('matches blocker names inside O1/O2b facts and A1 descriptive result fields', () => {
+  const snapshot = NEEDS_CHECK_BLOCKER.createSnapshot([{ ...entry,
+    patterns: [{ language: 'ru', value: 'Колёсная прялка' }], exceptions: [] }], regions);
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: {
+    semantic_type: 'ordinary_item', name: 'механизм', facts: ['Колёсная прялка']
+  } }).queue_id, 'fauna_peacock');
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: {
+    display_name: 'механизм', physical_description: 'Колёсная прялка'
+  } }).queue_id, 'fauna_peacock');
+  assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot, candidate: {
+    display_name: 'механизм', source_fact_delta: {
+      qualitative_facts: ['Колёсная прялка']
+    }
+  } }).queue_id, 'fauna_peacock');
+});

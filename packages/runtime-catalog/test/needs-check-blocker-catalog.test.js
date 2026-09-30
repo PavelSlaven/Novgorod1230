@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { canonicalStringify } from '../src/canonical-records.js';
-import { loadApprovedNeedsCheckBlockerSnapshot } from '../src/needs-check-blocker-catalog.js';
+import { loadApprovedNeedsCheckBlockerSnapshot,
+  needsCheckBlockerSnapshotRequired } from '../src/needs-check-blocker-catalog.js';
 import { NEEDS_CHECK_BLOCKER } from '../src/needs-check-blocker.js';
 
 const pin = Object.freeze({ schema: 'rus.runtime_catalog_pin.v2',
@@ -22,6 +23,16 @@ function verifiedCatalog(snapshot = source) {
       record_kind: 'profile', status: 'approved_authoring_not_runtime_selectable',
       payload: snapshot, payload_digest: payloadDigest
     }] } });
+}
+
+function bindingRow() {
+  const payload = { schema: 'rus.needs_check_blocker_binding.v1',
+    required: true, snapshot_record_id: 'profile:needs_check_blockers',
+    snapshot_version: 2 };
+  return { record_id: 'profile:needs_check_blockers_binding', version: 1,
+    record_kind: 'profile', status: 'approved_authoring_not_runtime_selectable',
+    payload, payload_digest: createHash('sha256')
+      .update(canonicalStringify(payload)).digest('hex') };
 }
 
 test('loads the blocker only from exact verified catalog membership', () => {
@@ -46,4 +57,22 @@ test('rejects a missing digest, malformed snapshot or duplicate blocker profile'
     catalog.records_by_table.procedural_scene_compiled_records[0]);
   assert.throws(() => loadApprovedNeedsCheckBlockerSnapshot({ verifiedCatalog: catalog, pin }),
     { code: 'NEEDS_CHECK_BLOCKER_CATALOG_INVALID' });
+});
+
+test('snapshot requiredness is read from the exact immutable import binding', () => {
+  const catalog = verifiedCatalog(null);
+  assert.equal(needsCheckBlockerSnapshotRequired({ verifiedCatalog: catalog, pin }),
+    false, 'legacy imports without binding retain prior behavior');
+  catalog.records_by_table.procedural_scene_compiled_records.push(bindingRow());
+  assert.equal(needsCheckBlockerSnapshotRequired({ verifiedCatalog: catalog, pin }),
+    true);
+  assert.equal(loadApprovedNeedsCheckBlockerSnapshot({ verifiedCatalog: catalog,
+    pin }), null, 'requiredness is independent of snapshot membership');
+  const malformed = verifiedCatalog(null);
+  malformed.records_by_table.procedural_scene_compiled_records.push({
+    ...bindingRow(), payload: { schema: 'wrong' }
+  });
+  assert.throws(() => needsCheckBlockerSnapshotRequired({
+    verifiedCatalog: malformed, pin
+  }), { code: 'NEEDS_CHECK_BLOCKER_CATALOG_INVALID' });
 });

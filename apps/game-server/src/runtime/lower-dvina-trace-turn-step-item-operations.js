@@ -95,7 +95,9 @@ function createEntityFromAdmission(execution, state, options, ambient = null) {
   if (typeof options.assertNeedsCheckAllowed !== 'function') return apply();
   return Promise.resolve(options.assertNeedsCheckAllowed({
       committedState: state.committedState,
-      candidate: { semantic_type: admitted.semantic_type, name: admitted.name }
+      candidate: { semantic_type: admitted.semantic_type, name: admitted.name,
+        facts: (effectiveOperation.facts ?? []).map(({ text }) => text)
+          .filter((text) => typeof text === 'string') }
     })).then(apply);
 }
 

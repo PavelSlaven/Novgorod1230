@@ -125,7 +125,9 @@ export async function createSpatialV3ProductionCompositionRoot({
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
       rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
-      verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog });
+      verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
+      ...(config.a1ApplicabilityClassPath == null ? {}
+        : { a1ApplicabilityClassPath: config.a1ApplicabilityClassPath }) });
     const [profiles, spatialSemanticProfile, scenePresentation,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([
@@ -258,6 +260,7 @@ export async function createSpatialV3ProductionCompositionRoot({
             approvedActorTemporalBundle: targetContext.runtime.materialization_inputs.approved_actor_temporal_bundle,
             resolvePresenceRulesFirstArrival: delegateToPresenceResolverPort(targetPresenceResolverPort),
             finiteFirstEntryProfile: targetProfiles?.finite_first_entry?.profile ?? null,
+            canonicalFiniteApplicability: targetProfiles?.finite_first_entry?.canonicalNaturalApplicability ?? null,
             prepareNaturalFirstEntry: (...args) => {
               if (typeof targetNaturalFirstEntryPort.prepareFirstEntry !== 'function') {
                 throw serverError('SPATIAL_V3_TARGET_FIRST_ENTRY_REQUIRED',

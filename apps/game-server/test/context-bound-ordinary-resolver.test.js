@@ -220,7 +220,7 @@ test('sensitive wording cannot persist authority', async () => {
   }
 });
 
-test('selected finite capability consumes its own committed source row', async () => {
+function finiteFixture() {
   const value = enabled({ admission_class: 'specialized_or_valuable',
     semantic_type: 'prepared_stock', withProfile: false });
   const capability = (suffix) => {
@@ -286,6 +286,11 @@ test('selected finite capability consumes its own committed source row', async (
       ...value.property_placement_context, supporting_basis_ref: 'source-b',
       causal_basis_refs: ['source-b'], requested_position_ref: 'bench'
     });
+  return value;
+}
+
+test('selected finite capability consumes its own committed source row', async () => {
+  const value = finiteFixture();
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(value)),
@@ -344,6 +349,42 @@ test('selected finite capability consumes its own committed source row', async (
     const unavailable = await resolver(located);
     assert.equal(unavailable.ordinary_materialization_atomic_write_plan, undefined);
   }
+});
+
+test('finite-only scope is seeded by code and never asks Stage A', async () => {
+  const value = finiteFixture();
+  value.execution_context.scope_presence_enabled = false;
+  const modes = [];
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(value)),
+    ordinaryMaterializationModel: verifiedModel(async (input) => {
+      modes.push(input.mode);
+      if (input.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
+        request_id: input.request_id, resolution: 'no_change', density_band_proposal: null,
+        background_groups: [], entities: [], presence_resolutions: [], reason_code: 'no_change' };
+      return { schema: 'ordinary_materialization_plan_v1', request_id: input.request_id,
+        resolution: 'materialize', density_band_proposal: null, background_groups: [],
+        presence_resolutions: [], reason_code: 'present', entities: [{ semantic_descriptor: {
+          semantic_type: 'clay_blank', name: 'заготовка', facts: [] },
+        authority_class: 'ordinary', admission_class: 'specialized_or_valuable',
+        availability_class: 'context_bound', functional_bucket: 'other_ordinary',
+        presence_expectation: 'routine', supporting_basis_ref: 'source-b',
+        causal_basis: { basis_kind: 'finite_source', basis_refs: ['source-b'] },
+        property_basis_ref: 'property-b', placement_proposal: { scope_ref: 'shore',
+          position_ref: 'bench' }, mechanics_proposal: { mass_grams: 300,
+          external_hand_cost: 1, carry_form: 'regular', packing_slot_cost: 1,
+          quantity: { value: 1, unit: 'item' }, container: null } }] };
+    }) });
+  const result = await resolver({ ...request(), operation: {
+    target_refs: ['source-b'], query: 'взять порцию' } });
+  const plan = result.ordinary_materialization_atomic_write_plan;
+  assert.deepEqual(modes, ['resolve_presence'], JSON.stringify(result));
+  assert.equal(plan?.transitions[0].kind, 'seed');
+  assert.equal(plan.transitions[0].background_groups.length, 0);
+  assert.equal(plan.transitions[0].identity_budget, 0);
+  assert.equal(plan.transitions[1].kind, 'resolve_presence');
+  assert.equal(plan.next_aggregate.seeded, true);
+  assert.equal(plan.finite_resource_transition.source_resource_node_id, 'source-b');
 });
 
 test('missing authority persists candidate-free absence', async () => {

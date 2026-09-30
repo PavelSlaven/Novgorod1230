@@ -253,7 +253,10 @@ authored/committed discovery, exact persisted ordinary resolution и остал�
 code-first short circuits `@rus/turn` допускает ordinary model call лишь при
 meaningful engagement. Candidate-free Stage A использует только committed
 objective context, запрещает concrete entities и принимает от model только
-density band; numeric budget выводится versioned code policy. Stage B имеет
+density band; numeric budget выводится versioned code policy. Исключение — finite-only
+scope (scope presence отключён, цель — committed finite-источник): код сам сеет
+агрегат (`sparse`, бюджет 0, групп нет) до вызова модели; это code-first short
+circuit, а не версионная density-политика. Stage B имеет
 `evidence_weight = 0`, а code-owned builder создаёт normalized
 classification/coverage/policy fields. Normalized discovery query (NFKC,
 trim, collapse whitespace, ru-RU lowercase), exact target и canonical

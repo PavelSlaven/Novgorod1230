@@ -23,14 +23,16 @@ const scene = (id) => ({ target_table: 'party_g6_instances', id,
   record: { id, host_id: 'site', scene_slot_key: 'main' } });
 
 function setup({ scenes = [scene('g6')], resolve = async () => rulesContext, profile = { technical_limits: { max_resolution_records: 8 } },
-  withResolver = true } = {}) {
+  withResolver = true, siteRecord = {}, canonicalFiniteApplicability = null,
+  prepareNatural = async () => { throw new Error('canonical path only'); } } = {}) {
   const options = {
     verifiedItemCatalog: fixture.domain_catalog,
     actorBaseAttributesBinding: { schema: 'rus.actor_base_attributes_runtime_binding.v1', pin: actorPin,
       runtime_profile: actorProfile },
     approvedActorTemporalBundle: fixture.approved_actor_temporal_bundle,
     worldBaseReader: { readPinnedG4NpcCompositionClosure: async () => { throw new Error('canonical path only'); } },
-    prepareNaturalFirstEntry: async () => { throw new Error('canonical path only'); },
+    prepareNaturalFirstEntry: prepareNatural,
+    canonicalFiniteApplicability,
     readFactualContext: async () => { throw new Error('canonical path only'); },
     finiteFirstEntryProfile: profile,
     ...(withResolver ? { resolvePresenceRulesFirstArrival: resolve } : {}),
@@ -44,7 +46,7 @@ function setup({ scenes = [scene('g6')], resolve = async () => rulesContext, pro
       version_pin: { pin_kind: 'authoring_version', authoring_version: '1' } }],
     canonical_digest: canonicalDigest('fixture-pins') },
     proposal: { target_site_id: 'site', inserts: [
-      { target_table: 'party_g5_sites', id: 'site', record: { id: 'site', party_id: 'party-c', origin: 'canonical' } },
+      { target_table: 'party_g5_sites', id: 'site', record: { id: 'site', party_id: 'party-c', origin: 'canonical', ...siteRecord } },
       ...scenes] },
   };
   return createTargetGeneratedFirstEntry(options)(context);
@@ -80,4 +82,33 @@ test('canonical arrival fails closed instead of silently skipping presence', asy
     assert.equal(result.error.code, 'authoring_dependency_pin_missing');
     assert.equal(result.error.diagnostics.reason, reason);
   }
+});
+
+const naturalWrites = [{ inserts: [{ target_table: 'party_resource_nodes', id: 'source', record: {} }],
+  updates: [], appends: [] }];
+
+test('canonical arrival at approved commons takes its finite sources from the natural owner', async () => {
+  const canonicalFiniteApplicability = { rows: [{ canonical_g5_ref: { id: 'cg5-water', version: 1 },
+    g4_ref: { id: 'g4', version: 1 }, natural_finite_source_profile_refs: ['m2c_finite_driftwood_v1'] }] };
+  const natural = { ok: true, approved_write_sets: naturalWrites, expected_state_versions: [],
+    commit_rechecks: [], recheck: async () => ({ ok: true }) };
+  const result = await setup({ canonicalFiniteApplicability,
+    siteRecord: { canonical_g5_ref: { entity_id: 'cg5-water', authoring_version: '1' } },
+    prepareNatural: async () => natural });
+  assert.equal(result.ok, true);
+  assert.equal(result.approved_write_sets, naturalWrites);
+  // A canonical place that is not an approved row keeps the presence-only write.
+  const other = await setup({ canonicalFiniteApplicability,
+    siteRecord: { canonical_g5_ref: { entity_id: 'cg5-yard', authoring_version: '1' } } });
+  assert.equal(other.approved_write_sets[0].inserts[0].target_table,
+    'party_ordinary_materialization_aggregates');
+});
+
+test('a failing natural owner fails the canonical arrival closed', async () => {
+  const result = await setup({ canonicalFiniteApplicability: { rows: [{ canonical_g5_ref: { id: 'cg5-x', version: 1 },
+      g4_ref: { id: 'g4', version: 1 }, natural_finite_source_profile_refs: ['m2c_finite_deadwood_v1'] }] },
+    siteRecord: { canonical_g5_ref: { entity_id: 'cg5-x', authoring_version: '1' } },
+    prepareNatural: async () => ({ ok: false }) });
+  assert.equal(result.ok, false);
+  assert.equal(result.error.diagnostics.reason, 'target_first_entry_natural_proposal_required');
 });

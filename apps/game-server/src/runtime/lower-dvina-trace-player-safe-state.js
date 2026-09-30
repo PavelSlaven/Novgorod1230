@@ -162,7 +162,8 @@ function committedInventory(state, fallback) {
   if (!plain(state.party_state)
       || !plain(state.player_profile?.attributes?.strength)
       || !plain(state.position)
-      || typeof state.position.g5_anchor_id !== 'string') return fallback;
+      || (typeof state.position.g5_anchor_id !== 'string'
+        && typeof state.position.site_id !== 'string')) return fallback;
   const current = getCommittedInventoryLoad(state);
   if (!current.mass.pass || !current.hands.pass || !current.load.pass) {
     return fallback;

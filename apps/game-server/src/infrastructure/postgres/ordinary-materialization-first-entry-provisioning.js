@@ -22,6 +22,7 @@ import {
 import { buildFirstEntryNaturalCapabilities, readApprovedNaturalFirstEntryAuthoring }
   from './ordinary-materialization-first-entry-natural.js';
 import { createApprovedGeneratedNaturalPropertyReader } from './ordinary-materialization-natural-property.js';
+import { canonicalFiniteProfilesFor, createCanonicalNaturalPropertyReader } from './ordinary-materialization-canonical-natural.js';
 
 export function createTargetFiniteFirstEntryPorts(loaded, { resolvePresenceRulesFirstArrival } = {}) {
   if (loaded?.schema !== 'rus.live_world_runtime.target_finite_first_entry_profile.v1'
@@ -30,10 +31,24 @@ export function createTargetFiniteFirstEntryPorts(loaded, { resolvePresenceRules
     || loaded.catalog_pin.compatible_world_revision_id !== loaded.world_revision_id) {
     throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
   }
-  const readNaturalSourceProperty = createApprovedGeneratedNaturalPropertyReader(loaded.propertySourceAuthoring);
+  const readGenerated = createApprovedGeneratedNaturalPropertyReader(loaded.propertySourceAuthoring);
+  const canonicalApplicability = loaded.canonicalNaturalApplicability ?? null;
+  const readCanonical = canonicalApplicability == null ? null
+    : createCanonicalNaturalPropertyReader({ applicability: canonicalApplicability,
+      authoring: readApprovedNaturalFirstEntryAuthoring(loaded.naturalSourceAuthoring) });
+  // Canonical sites read the approved applicability rows; generated sites the approved property context.
+  const readNaturalSourceProperty = async (input) => {
+    if (readCanonical == null) return readGenerated(input);
+    const site = input.spatialProposal != null
+      ? input.spatialProposal.inserts.find((row) => row.target_table === 'party_g5_sites'
+        && row.id === input.g5Id)?.record
+      : (await input.transaction.query(`SELECT origin FROM party_runtime.party_g5_sites
+        WHERE party_id=$1 AND id=$2`, [input.partyId, input.g5Id])).rows[0];
+    return site?.origin === 'canonical' ? readCanonical(input) : readGenerated(input);
+  };
   const prepare = createOrdinaryGeneratedFirstEntryProposal({ profile: loaded.profile,
     naturalSourceAuthoring: loaded.naturalSourceAuthoring, readNaturalSourceProperty,
-    resolvePresenceRulesFirstArrival });
+    resolvePresenceRulesFirstArrival, canonicalNaturalApplicability: canonicalApplicability });
   return Object.freeze({ readNaturalSourceProperty,
     async prepareFirstEntry(input) {
       const pin = loaded.catalog_pin;
@@ -52,7 +67,7 @@ export function createTargetFiniteFirstEntryPorts(loaded, { resolvePresenceRules
 /** The existing first-entry owner proposes rows; Spatial P16 remains the writer. */
 export function createOrdinaryGeneratedFirstEntryProposal({ profile,
   naturalSourceAuthoring, readNaturalSourceProperty,
-  resolvePresenceRulesFirstArrival } = {}) {
+  resolvePresenceRulesFirstArrival, canonicalNaturalApplicability = null } = {}) {
   if (!profile) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
   const authoring = readApprovedNaturalFirstEntryAuthoring(naturalSourceAuthoring);
   return async function prepareFirstEntry({ transaction, request, proposal, change_set_id }) {
@@ -78,10 +93,15 @@ export function createOrdinaryGeneratedFirstEntryProposal({ profile,
       scene_template_id: scene.source_scene_template_ref?.entity_id,
       scene_template_version: Number(scene.source_scene_template_ref?.authoring_version),
       g6_slot_key: scene.scene_slot_key, position_slot_key: positions[0].record.template_slot_key };
+    const canonicalProfileIds = site.origin === 'canonical'
+      ? canonicalFiniteProfilesFor(canonicalNaturalApplicability, site, request.g4.id) : null;
+    if (canonicalProfileIds != null && canonicalProfileIds.length === 0) {
+      throw code('ORDINARY_NATURAL_FIRST_ENTRY_BINDING_INVALID');
+    }
     const build = async (tx) => {
       const naturalCapabilities = await buildFirstEntryNaturalCapabilities({ authoring,
         binding, readProperty: readNaturalSourceProperty, transaction: tx, partyId,
-        scope, positionRef, profile, spatialProposal: proposal });
+        scope, positionRef, profile, spatialProposal: proposal, canonicalProfileIds });
       const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
         ? await resolvePresenceRulesFirstArrival({
           transaction: tx,

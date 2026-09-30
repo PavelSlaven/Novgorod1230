@@ -20,15 +20,20 @@ export function readApprovedNaturalFirstEntryAuthoring({ candidateBytes, approva
       materializationProfileBytes });
 }
 
+/** canonicalProfileIds: profiles of an approved canonical applicability row (no generation template). */
 export async function buildFirstEntryNaturalCapabilities({ authoring, binding,
-  readProperty, transaction, partyId, scope, positionRef, profile, spatialProposal = null }) {
+  readProperty, transaction, partyId, scope, positionRef, profile, spatialProposal = null,
+  canonicalProfileIds = null }) {
   if (authoring == null) return [];
   if (!binding || typeof readProperty !== 'function' || !text(binding.g5_id)
-      || binding.world_revision_id !== authoring.target.world_revision_id) {
+      || binding.world_revision_id !== authoring.target.world_revision_id
+      || canonicalProfileIds != null && spatialProposal == null) {
     fail('ORDINARY_NATURAL_FIRST_ENTRY_BINDING_INVALID');
   }
-  const matches = authoring.family_profiles.filter(({ exact_match: match }) =>
-    match.world_revision_id === binding.world_revision_id
+  const matches = canonicalProfileIds != null ? [{
+    natural_finite_source_profile_refs: canonicalProfileIds }]
+    : authoring.family_profiles.filter(({ exact_match: match }) =>
+      match.world_revision_id === binding.world_revision_id
       && match.g5_generation_template_id === binding.g5_generation_template_id
       && match.g5_generation_template_version === binding.g5_generation_template_version
       && match.g4_refs.some(({ id, version }) => id === binding.g4_id
@@ -50,12 +55,14 @@ export async function buildFirstEntryNaturalCapabilities({ authoring, binding,
       AND p.id=$6 AND p.status='active'`, [partyId, binding.g5_id,
     binding.g4_id, binding.world_revision_id, scope.entity_id, positionRef])
     : await proposedSpatialBinding({ transaction, partyId, binding, scope,
-      positionRef, proposal: spatialProposal });
+      positionRef, proposal: spatialProposal,
+      origin: canonicalProfileIds == null ? 'generated' : 'canonical' });
   const bound = spatial.rows[0];
   if (spatial.rowCount !== 1
-      || bound.generated_template_ref?.entity_id !== binding.g5_generation_template_id
-      || String(bound.generated_template_ref?.authoring_version)
-        !== String(binding.g5_generation_template_version)
+      || (canonicalProfileIds == null
+        && (bound.generated_template_ref?.entity_id !== binding.g5_generation_template_id
+          || String(bound.generated_template_ref?.authoring_version)
+            !== String(binding.g5_generation_template_version)))
       || bound.source_scene_template_ref?.entity_id !== binding.scene_template_id
       || String(bound.source_scene_template_ref?.authoring_version)
         !== String(binding.scene_template_version)
@@ -140,7 +147,7 @@ export async function buildFirstEntryNaturalCapabilities({ authoring, binding,
 }
 
 async function proposedSpatialBinding({ transaction, partyId, binding, scope,
-  positionRef, proposal }) {
+  positionRef, proposal, origin = 'generated' }) {
   const one = (table, id) => {
     const rows = proposal.inserts?.filter((write) => write.target_table === table
       && write.id === id && write.record?.party_id === partyId) ?? [];
@@ -153,7 +160,7 @@ async function proposedSpatialBinding({ transaction, partyId, binding, scope,
   const party = await transaction.query(`SELECT world_revision_id
     FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
   if (party.rows[0]?.world_revision_id !== binding.world_revision_id
-      || site?.origin !== 'generated' || site.status !== 'active'
+      || site?.origin !== origin || site.status !== 'active'
       || site.parent_g4_id !== binding.g4_id || proposal.target_site_id !== site.id
       || g6?.host_kind !== 'g5_site' || g6.host_id !== site.id || g6.status !== 'active'
       || baseline?.host_kind !== 'g5_site' || baseline.host_id !== site.id

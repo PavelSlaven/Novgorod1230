@@ -89,6 +89,13 @@
 | 096 | `spatial-v3-world-base-reader.js`, `spatial-v3-generated-scene.js`, `spatial-v3-local-scene-movement.js`, `spatial-v3-local-movement-eligibility.js` | гейты «непустой ref условий доступности = непригодно» вне вычислителя | — |
 | 098 | `lower-dvina-trace-scene-presence.js` (прокси G6); `phase-9-conversation.js`, `phase-4-admission.js`, `phase-8-accusation-command.js`, `m2-conversation-player.js`/`-phase4.js`, `player-safe-entities.js` (`sceneNpcIsVisible`) | присутствие NPC в сцене — временный прокси «тот же G6» без соответствия позиция→G6 в состоянии хода; авторские фазы и видимость игроку на голом `anchor_id` | — |
 | 099 | `scene-npcs-readback.js`, `lower-dvina-trace-phase-2.js` (`loadPhase2State`), писатели снимка | NPC текущего сайта читаются в состояние хода отдельным читателем (дубль формы `hydratedNpcs`, чтение в каждом вызове, только placement `scene_position`, без тела NPC) | — |
+| 100 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, `action-produced-physical-keys.js` | A1: назначение результата привязано к `g5_anchor`; у сгенерированных (capacity-v2) G5 якоря нет, изготовление там невозможно | — |
+| 101 | `packages/turn/src/ordinary-materialization-discovery-identity.js`, `ordinary-materialization-aggregate` (`max_resolution_records`), шаг 2 планировщика | повторное «взять» того же материала: replay по (запрос, количество), потолок записей агрегата, неоднозначность двух предметов с одним именем | — |
+| 102 | `data/world-catalogs/novgorod/m2c-items/candidate.json` (`tool_and_action_precondition`) | инструмент для `cut_reeds` / `cut_standing_wood` — только проза, кодом не проверяется | — |
+| 103 | планировщик A1 (`lower-dvina-trace-turn-step-planner-instructions.js`), `packages/turn/src/turn-step-contracts/action-production-operation.js` | живой Qwen путает `result_class: ordinary_physical_result` с `partial_transformation` (`source_fact_delta`, `material_extent`): план отвергается | — |
+| 104 | `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`) | список применимости закреплён на шаблонах @1, а сгенерированные сайты v17 — @2 (общий массив с N1) | — |
+| 105 | `data/world-catalogs/novgorod/m2c-items/README.md`, `packages/items-property` | `M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`: владелец предмета не проверяет `mass_grams = quantity × 50` | — |
+| 106 | `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js`, `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` | значения по умолчанию для v5-профиля (`packing_slot_cost=0`, `quantity=null`, `container=null`) заданы в game-server, вне владельца items-property | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -521,4 +528,45 @@
 - **Ещё.** (а) `withoutSceneNpcs` молча отбрасывает изменения записи NPC сцены в `next.npcs`: сохраняется только то, что пишется строкой в `party_npcs` (пути: `lower-dvina-trace-turn-step-prepared-state-projection.js:106`, `lower-dvina-trace-combat-state.js:34` — сейчас авторские). (б) Загрузчик выбирает NPC по `entity_placements`, а присутствие — по строке распорядка; рутина `entity_placements` не обновляет, поэтому NPC, приведённый рутиной на сайт, не загружается (ошибка в безопасную сторону; задача владельцу связки «рутина → размещение»). (в) `participant_slot_ref` undefined даёт ключ `"undefined"` в `actorMap` (`phase-6-carry-support.js:12`) и `actorRefs` (`combat-item-owner.js:79`). (г) Стартовый сайт до первого перехода: NPC, созданные при первом входе на канонические места, читаются только после того, как `position.site_id` есть в состоянии (пометка для rt-people); ссылка `location` для `site_id` не проверялась; идемпотентный повтор хода-разговора доказан PG-тестом (digest конверта считается от конверта без NPC сцены: они вырезаются из `semantic_exchange` в `consequence` команды разговора, `lower-dvina-trace-phase-3-conversation-command.js`, до `buildTurnStepCommitEnvelope`); экран replay сверялся только на наличие записи, не побайтно; `exchange.js` сохранил запасную ветку по локации для авторских фаз.
 - **Инвариант.** Команда, чей consequence несёт копию состояния (рабочее состояние обмена, `world_state.npcs`, карта `scene_position_g6`), вырезает NPC сцены **до** конверта хода: конверт и его digest-ы идемпотентности считаются от вырезанного объекта (сейчас это делает команда разговора фазы 3 через `withoutSceneRead`). Фильтр писателей снимка (`withoutSceneNpcs`) — только страховка снимка. `bindLowerDvinaTraceTurnStepIdempotency` (одна точка всех 9 путей коммита) падает `TRACE_TURN_STEP_SCENE_NPC_IN_ENVELOPE`, если запись сцены осталась в конверте. Латентные пути без вырезания (сейчас недостижимы: авторские контракты без `site_id`): `phase-4-semantic-command.js:223`, `turn-10-command.js:79`, `npc-actor-step-mode-handoffs.js:199` (→ `consequence.state_changes`), `combat-command.js:70`; при переводе на сайты v17 они получат громкую ошибку, вырезание нужно добавить в команду.
 - **Как жить.** Не считать `state.npcs` полным списком NPC места вне `loadPhase2State`. Новые писатели снимка обязаны вызывать `withoutSceneNpcs` (guard-тест это проверяет). Владельцу загрузки состояния — перенести чтение в общий читатель формы NPC и добавить флаг «без NPC» для replay/validation.
+
+### LW-100 — A1 на сгенерированных G5: нет `g5_anchor` для назначения результата (rt-items)
+- **Где.** `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js` (`loadActionProducedOutputDestination`: без якоря возвращает `null`), `action-produced-atomic-write-plan-pins.js` (`validateActionProducedDestinationPin` требует `anchor_id` даже для `party_current_scene_position`), `action-produced-physical-keys.js`, `action-produced-persistence-context.js`.
+- **Что.** Изготовление (A1) проверено на v17 живьём и PG-тестом только на каноническом месте (у него якорь есть). У сгенерированного capacity-v2 G5 якоря нет, `output_destination_pin` не строится, и результат некуда положить; проверка применимости тоже опирается на этот pin.
+- **Как жить.** Не обходить: A1 на generated G5 остаётся недоступным. Правка — отдельный CR владельца A1: destination pin без якоря (только сцена-позиция) во всех перечисленных файлах.
+- **Issue.** —
+
+### LW-101 — повторное «взять» того же материала (rt-items)
+- **Где.** `packages/turn/src/ordinary-materialization-discovery-identity.js` (`candidateForDiscovery`), `apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js` (`max_resolution_records === 4`), планировщик шаг 2.
+- **Что.** Идентичность O1 = цель + нормализованный запрос + количество, поэтому повторное «взять» из того же источника с теми же значениями отдаёт уже сохранённое решение без нового предмета (следствие правила D1: запрос = подпись источника); агрегат хранит не больше 4 записей на место (вместе с записями presence); живой прогон: первая порция берётся, «ещё» — нет, а «три палки» создаёт предметы на месте, но второй шаг планировщика повторяет discovery вместо `move_entity` из-за уже удерживаемого предмета с тем же именем.
+- **Как жить.** Не считать многократный сбор решённым: PG-тест берёт разные количества. Правка — решение владельца: идентичность взятия конечного источника по ходу, потолок записей, различимые имена/ссылки на шаге 2.
+- **Issue.** —
+
+### LW-102 — инструмент для тростника и живого дерева не проверяется кодом (rt-items)
+- **Где.** `data/world-catalogs/novgorod/m2c-items/candidate.json` (`extraction.tool_and_action_precondition` у `cut_reeds` и `cut_standing_wood`), `data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json`.
+- **Что.** «Режущий инструмент» — текст данных; у предметов нет таксономии инструментов, код ничего не проверяет. Валежник и плавник инструмента не требуют.
+- **Как жить.** Не добавлять проверку без таксономии инструментов (данные + утверждение). На срезе брать валежник и плавник.
+- **Issue.** —
+
+### LW-103 — живой Qwen ошибается в форме A1-плана (rt-items)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-planner-instructions.js` (правила `action_production`), `packages/turn/src/turn-step-contracts/action-production-operation.js`.
+- **Что.** «Оторву полосу от подола»: модель ставит `result_class: ordinary_physical_result` вместе с `source_fact_delta` и `material_extent: minor`; валидатор требует для этой формы иное (`identity_shape`, `material_extent_shape`), ремонт не помогает. Живьём 1 из 3 попыток дошла до сохранения (2026-09-30); production-аудитор на успешном плане проходит 7 из 12.
+- **Как жить.** Не подгонять валидатор под ошибку модели. Правка — стенд A1 (10–15 случаев) и решение: правило в промпте или детерминированная нормализация.
+- **Issue.** —
+
+### LW-104 — применимость профилей v17 закреплена на шаблонах @1 (rt-items)
+- **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`: 32 generated-шаблона @1 и один канонический G5), `apps/game-server/src/internal/target-runtime-profiles.js`.
+- **Что.** У сгенерированных сайтов v17 `generated_template_ref.authoring_version = "2"` (capacity-v2), список — @1, поэтому ни одно generated-место не совпадает. Для A1 введено классовое правило `a1-applicability-class.json` (ждёт утверждения); тот же массив питает N1 и остаётся несовместимым.
+- **Как жить.** Не править утверждённый файл. Для N1 — вывод @2 из утверждённых @1 по правилу capacity-v2 (`deriveApprovedGeneratedSceneV2Bindings`) или классовое правило владельца N1.
+- **Issue.** —
+
+### LW-105 — масса порции конечного источника не проверяется владельцем предмета (rt-items)
+- **Где.** `data/world-catalogs/novgorod/m2c-items/README.md` (`M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`), `packages/items-property`.
+- **Что.** Профиль задаёт 50 г на порцию, проверка `mass_grams = quantity × 50` есть в `packages/turn` (presence) и phase-6 commit, но владелец предмета (`@rus/items-property`) её не выводит и не проверяет.
+- **Как жить.** Не считать массу порции гарантированной владельцем предмета; закрывается отдельной правкой items-property.
+- **Issue.** —
+
+### LW-106 — толкование v5-профиля инвентаря лежит в game-server (rt-items)
+- **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js` (`committedMechanics`, значения по умолчанию), `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` (то же), владелец — `packages/items-property` (`resolveInventoryMechanicsProfile`).
+- **Что.** Профили `item-container-120-v5` не содержат `packing_slot_cost`, `quantity`, `container`; A1 подставляет 0, `null`, `null` в двух файлах game-server. Это толкование профиля вне владельца.
+- **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —

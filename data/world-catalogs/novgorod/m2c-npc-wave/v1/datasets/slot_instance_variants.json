@@ -44,7 +44,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "transport:trv_011"
     }
@@ -94,7 +94,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "building:bt_izba_heated_single"
     }
@@ -144,7 +144,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "building:bt_palisade_fence"
     }
@@ -194,7 +194,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "building:bt_wattle_fence"
     }
@@ -244,7 +244,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "building:bt_khlev"
     }
@@ -294,7 +294,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "building:bt_klet_ambar"
     }
@@ -344,7 +344,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "building:bt_light_shed"
     }
@@ -394,7 +394,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "payload": {
       "candidate_record_ref": "route:rt_winter_road"
     }

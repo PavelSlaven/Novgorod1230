@@ -81,13 +81,16 @@ function sampleReport(extra = {}) {
     identity: { run_id: 'r1', scenario_id: 'novgorod_vikhtuy_work_storage_v1', branch: 'b', head: 'abcdef123456', dirty: false,
       started_at: 't0', ended_at: 't1', duration_ms: 61000, model: 'qwen', llm_settings_path: '/srv/x/llm-settings.json' },
     preconditions: { postgres_image: 'postgres:16.14-alpine', wk_encoder: 'stub', max_turns: 24, reserve_make: 3, deadline_min: 26, qualification: 'ok' },
-    opening: { attempts: 2, rejections: 1, party_id: 'p1', prose: PROSE },
+    opening: { attempts: 2, rejections: 1, party_id: 'p1', prose: PROSE, route_labels: ['Тропа', 'Брод'] },
     legs: [{ id: 'start', status: 'pass', reason: 'партия p1' }, { id: 'walk', status: 'fail', reason: 'не ушёл | никуда', detail: null },
       { id: 'meet', status: 'blocked', reason: 'нет людей', detail: null }, { id: 'talk', status: 'blocked', reason: 'нет NPC', detail: null },
       { id: 'take', status: 'blocked', reason: 'нет источника', detail: null }, { id: 'make', status: 'blocked', reason: 'бюджет', detail: null }],
     turns: [{ n: 1, leg: 'walk', input: 'Иду по тропе.', http_status: 200, error: null, committed: true, recovered: true,
       prose: PROSE, server_errors: [{ code: 'TURN_STEP_PLAN_INVALID', message: 'Turn-step plan is invalid.', validation: ['identity_shape'] }], before: snap(1, 'arrival'), after: snap(2, 'departure'), ms: 40000, llm_calls: 5,
-      route_labels: ['Тропа'], people_labels: ['человек (1)'] }],
+      route_labels: ['Тропа'], people_labels: ['человек (1)'] },
+    { n: 2, leg: 'make', input: 'Делаю.', http_status: 409, committed: false, recovered: false,
+      error: { code: 'TURN_NOT_SAVED', message: 'Ход не сохранён. Попробуйте сформулировать действие иначе.', turn_commit_status: 'not_started' },
+      prose: PROSE, server_errors: [], before: snap(2, 'departure'), after: snap(2, 'departure'), ms: 1000, llm_calls: 1, route_labels: [], people_labels: [] }],
     llm: { total: 9, failed: 0, by_role: { planner: 9 } }, readback: snap(2, 'departure'), infra_error: null, ...extra
   };
 }
@@ -103,6 +106,11 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
   assert.ok(md.includes('ЗАГЛУШКА'), 'the encoder stub is stated');
   assert.ok(md.includes('presentation-recovery'));
   assert.ok(md.includes('TURN_STEP_PLAN_INVALID: Turn-step plan is invalid. [identity_shape]'), 'the masked server reason is shown');
+  assert.ok(md.includes('Проходы на первом экране: «Тропа», «Брод»'), 'first-screen passages are reported');
+  const refused = md.slice(md.indexOf('### Ход 2'));
+  assert.ok(refused.includes('> Ход не сохранён. Попробуйте сформулировать действие иначе.'), 'a refused turn shows the error text');
+  assert.equal(refused.includes(PROSE), false, 'a refused turn does not repeat the previous screen');
+  assert.equal(md.includes('скрыта за TEMPORARY_ACTION_UNAVAILABLE'), false);
   assert.ok(md.includes('**PARTIAL**'));
   assert.ok(md.includes('позиция s1') === false && md.includes('@arrival → cg5v3__x_r2_work_storage@departure'));
   assert.equal(md.includes(SECRET_KEY), false);

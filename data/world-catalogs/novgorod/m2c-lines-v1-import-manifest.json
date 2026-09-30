@@ -20,7 +20,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_authoring_versions.json",
-      "sha256": "996675bb2108a2668dd6bddd4921bcfe37dc7ba47fa404dfb0c4d142ef00a220",
+      "sha256": "318d86062b97c0c8259ff748c7fc3a86a5b8df6cd281b4c9a6bc25122294d1ba",
       "status": "draft",
       "provenance_ref": "m2c_lines_v1_candidate",
       "delete_policy": "forbid",
@@ -85,7 +85,7 @@
     {
       "table": "spatial_v3_line_kind_profiles",
       "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_line_kind_profiles.json",
-      "sha256": "8679f72f516a72d6d34dd3be5ec90d9aef22aa5f3d142a1d70fd4683167947c5",
+      "sha256": "ee3be32db3d0529d1d86cb96507b4adf04673b3b8cf3a55eac3470f0c5984da9",
       "status": "draft",
       "provenance_ref": "m2c_lines_v1_candidate",
       "delete_policy": "forbid",

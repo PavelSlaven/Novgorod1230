@@ -52,7 +52,7 @@ const capacityManifestSha256 = '5ee700861c0ff23f2f03c4112e0e28ef503ce08ecf7d4a72
 // approved binding version and would meet binding@3 before it can read it.
 export const LINES_WAVE_MANIFEST = Object.freeze({
   path: 'data/world-catalogs/novgorod/m2c-lines-v1-import-manifest.json',
-  sha256: '4c66eab49f24ea32ab8948f0cfc133b00fa7634193d0c674472333e949f95fcc'
+  sha256: 'df4233fb3fd567ba31f8b3b7c9b42b5e806fa41fda4463e289d4464fc4041e6a'
 });
 const generatedNpcIndexMigration = 'scripts/live-world-v17-generated-npc-versioned-index.sql';
 const generatedNpcIndexMigrationSha256 = '27d527784f11a512cea2863b719dc416bcccbc3a483bcfac3145e05e1761538f';

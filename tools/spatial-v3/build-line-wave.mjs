@@ -19,6 +19,12 @@ const VERSION = 3;
 // D56: one rule for the world, not a profile field: a line longer than this has a recheck policy that slices it at this step.
 const DEFAULT_SLICE_STEP_MINUTES = 30;
 const MAX_SLICE_STEP_MINUTES = 30;
+/** Vocabulary id of a spec kind: controlled_line_kind values are `line.<kind>` (controlled-vocabularies v5). */
+const lineKindId = (kind) => `line.${kind}`;
+const kindOfLineKindId = (id) => String(id).replace(/^line\./u, '');
+const LINE_KIND_VOCABULARY_PATH = 'data/contracts/spatial-v3/controlled-vocabularies.v5.json';
+const controlledLineKindIds = () => new Set(JSON.parse(readFileSync(resolve(root, LINE_KIND_VOCABULARY_PATH), 'utf8'))
+  .vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_line_kind').values.map(({ id }) => id));
 const integerIn = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
 /** The slice step: an integer of 1..30 minutes (null, NaN, strings, 0, 31 and more are not steps). */
 const sliceStepProblem = (step) => (integerIn(step, 1, MAX_SLICE_STEP_MINUTES) ? null : `slice step must be an integer of 1..${MAX_SLICE_STEP_MINUTES} minutes, got ${String(step)}`);
@@ -115,7 +121,7 @@ export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRe
     } else need(existing.environments && new Set(existing.environments.keys()), k.environment, 'environment');
     need(existing.orientations, k.orientation, 'orientation'); need(existing.rechecks, k.recheck, 'recheck policy');
     if (!existing.externalDependencies?.has(k.route_kind)) throw new Error(`no external dependency pin for route kind ${k.route_kind}`);
-    const profile = sealed({ id: `lkp__${kind}`, version: 1, world_revision_id: worldRevisionId, line_kind_id: kind,
+    const profile = sealed({ id: `lkp__${kind}`, version: 1, world_revision_id: worldRevisionId, line_kind_id: lineKindId(kind),
       transition_environment_profile_id: k.environment, transition_environment_profile_version: 1,
       topological_orientation_profile_id: k.orientation, topological_orientation_profile_version: 1,
       baseline_movement_method_id: k.method, movement_method_cost_profile_id: cost.id, movement_method_cost_profile_version: 1,
@@ -243,7 +249,7 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
 }
 
 /** Independent rules of Appendix F (binding block :7340, line_kind_profile :7291, §4.7.2) over generated datasets. */
-export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES } = {}) {
+export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES, lineKindIds = controlledLineKindIds() } = {}) {
   const problems = [];
   const stepProblem = sliceStepProblem(sliceStepMinutes);
   if (stepProblem) return [stepProblem];
@@ -251,12 +257,15 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
   const profiles = new Map(datasets[T.profiles].map((row) => [row.id, row]));
   const kinds = datasets[T.profiles].map((row) => row.line_kind_id);
   if (new Set(kinds).size !== kinds.length) problems.push('line_kind_profile: one approved profile per line kind');
+  for (const id of kinds) if (!lineKindIds.has(id)) problems.push(`line_kind_profile: line_kind_id ${id} is not a controlled_line_kind value`);
   for (const profile of datasets[T.profiles]) {
     if (!datasets[T.costProfiles].some((cost) => cost.id === profile.movement_method_cost_profile_id)) problems.push(`${profile.id}: cost profile missing`);
-    const k = spec.kinds[profile.line_kind_id];
+    const kind = kindOfLineKindId(profile.line_kind_id);
+    const k = spec.kinds[kind];
+    if (!k) { problems.push(`${profile.id}: line kind ${profile.line_kind_id} has no spec`); continue; }
     const alternatives = datasets[T.alternatives].filter((alt) => alt.profile_id === profile.id);
     if (alternatives.length !== k.alternatives.length) problems.push(`${profile.id}: alternatives differ from the spec`);
-    if (['river_channel', 'side_channel', 'open_water', 'ford', 'ferry'].includes(profile.line_kind_id) && !alternatives.some((alt) => ['movement_method.swim', 'movement_method.wade'].includes(alt.movement_method_id))) problems.push(`${profile.id}: a water kind needs an alternative without transport`);
+    if (['river_channel', 'side_channel', 'open_water', 'ford', 'ferry'].includes(kind) && !alternatives.some((alt) => ['movement_method.swim', 'movement_method.wade'].includes(alt.movement_method_id))) problems.push(`${profile.id}: a water kind needs an alternative without transport`);
     for (const alt of alternatives) {
       if (alt.movement_method_id === profile.baseline_movement_method_id) problems.push(`${profile.id}: alternative equals the baseline`);
       if (!datasets[T.costOptions].some((option) => option.profile_id === profile.movement_method_cost_profile_id && option.movement_method_id === alt.movement_method_id && option.cost_mode === 'rational_factor')) problems.push(`${profile.id}: alternative ${alt.movement_method_id} is not a rational_factor option`);

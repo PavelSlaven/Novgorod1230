@@ -176,9 +176,10 @@ test('authoring versions carry the canonical digest of each row, three dependenc
 test('every water kind has an alternative that needs no transport, as a rational-factor option of its cost profile', () => {
   const { datasets } = build();
   const profiles = datasets.spatial_v3_line_kind_profiles;
-  assert.deepEqual(profiles.map((row) => row.line_kind_id).sort(), Object.keys(spec.kinds).sort());
+  assert.deepEqual(profiles.map((row) => row.line_kind_id).sort(), Object.keys(spec.kinds).map((kind) => `line.${kind}`).sort(),
+    'line kind ids are controlled_line_kind values (line.<kind>)');
   for (const kind of ['river_channel', 'side_channel', 'open_water']) {
-    const profile = profiles.find((row) => row.line_kind_id === kind);
+    const profile = profiles.find((row) => row.line_kind_id === `line.${kind}`);
     const alternatives = datasets.spatial_v3_line_kind_alternative_methods.filter((row) => row.profile_id === profile.id);
     assert.deepEqual(alternatives.map((row) => row.movement_method_id), ['movement_method.swim']);
     const options = datasets.spatial_v3_movement_method_cost_options.filter((row) => row.profile_id === profile.movement_method_cost_profile_id);
@@ -186,6 +187,15 @@ test('every water kind has an alternative that needs no transport, as a rational
     assert.equal(datasets.spatial_v3_movement_method_cost_profiles.find((row) => row.id === profile.movement_method_cost_profile_id).base_minutes, null,
       'D8: minutes live on the binding, the cost profile carries method and options');
   }
+});
+
+test('a profile line kind outside controlled_line_kind is rejected (no bare kind ids)', () => {
+  for (const bad of ['path', 'line.teleport']) {
+    const wave = build();
+    wave.datasets.spatial_v3_line_kind_profiles[0].line_kind_id = bad;
+    assert.match(checkLineWaveData(wave.datasets, rules()).join(' | '), /not a controlled_line_kind value|has no spec/, bad);
+  }
+  assert.deepEqual(checkLineWaveData(build().datasets, rules({ lineKindIds: new Set() })).filter((row) => /controlled_line_kind/.test(row)).length, 8, 'the vocabulary is what decides');
 });
 
 test('the validator rejects each violated rule of Appendix F §4.7.2 / the binding block', () => {

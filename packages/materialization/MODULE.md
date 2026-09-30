@@ -332,7 +332,7 @@ place-family bindings читаются: закреплённого G4 для gen
 canonical G5 для canonical G5; не эвристика по данным. `seed_scope` может идти после presence-only preamble;
 idempotent replay seed не требует `state_version === 1`. Исходы правил для `occupation`/`social_role` пишутся тем же движком в тот же агрегат
 (subject_kind `occupation|social_role`, `count` включая `0`, `rule_ref` — причинное основание);
-людей по ним создаёт first-entry канонического места. Проекции turn/O1
+людей по ним создаёт только first-entry канонического места: исход может лежать в агрегате сгенерированного G5 или старта, где людей никто не создаёт (LW-115) — такие записи не читать как присутствующих людей. Проекции turn/O1
 (`ordinary_state`, enablement) должны фильтровать только O1-записи
 (`isO1PresenceRecord`). LW-071: пропуск потомков при решённом предке — в движке
 выбора правил, не в transition primitive.

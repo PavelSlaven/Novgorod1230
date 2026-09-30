@@ -571,14 +571,32 @@
 - **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —
 
-### LW-110 — фоновое описание N1 не покрывает людей канонических мест (rt-people)
+### LW-113 — фоновое описание N1 не покрывает людей канонических мест (rt-people)
 - **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-n1-production.js` (`resolveNpcOrdinarySemanticParticipant`), `apps/game-server/src/internal/target-runtime-profiles.js` (применимость N1 по `npc_composition_ref`).
 - **Что.** Человек канонического места создаётся из D-2 состава place family или правила присутствия; в его `source_binding` нет `npc_composition_ref` (есть `place_population_composition_ref` / `presence_rule_ref`), а применимость N1 строится по G4-составам. По чтению кода осмотр такого человека не получит N1-описание (остаётся код-описание внешности); не проверено запуском.
 - **Как жить.** Не расширять применимость N1 молча; отдельное решение владельца N1 (применимость по PF-составу или по профилю).
 - **Issue.** —
 
-### LW-111 — поле `sex` субъекта D-2 состава не исполняется (rt-people)
+### LW-114 — поле `sex` субъекта D-2 состава не исполняется (rt-people)
 - **Где.** `data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json` (`weighted_subjects[].sex`), `packages/materialization/src/place-people-first-arrival.js`.
 - **Что.** Для pf_outbuildings состав задаёт мужчину-слугу (уверенность C); резолвер людей пол не читает, пол берёт материализатор из демографического профиля.
 - **Как жить.** Пол человека задаётся профилем: `payload.actor_applicability.sex_category` с одним значением исполняется материализатором (A-rt-people-06); у профилей без поля и у двух значений пол по-прежнему по seed, поле `sex` субъекта D-2 не читается. Не считать пол слуги на месте гарантированным, пока профиль не задаёт его.
+- **Issue.** —
+
+### LW-115 — исходы людских правил лежат в агрегате и там, где людей никто не создаёт (rt-people)
+- **Где.** Движок `packages/materialization/src/presence-rules-first-arrival.js`; агрегат строят `apps/game-server/src/infrastructure/postgres/ordinary-materialization-presence-first-arrival.js` (place families G4 сгенерированного G5) и `ordinary-materialization-first-entry-provisioning.js` (стартовое provisioning).
+- **Что.** Движок пишет исходы правил `occupation`/`social_role` в каждый агрегат, который строит (§3A.1), а людей по ним создаёт только first-entry канонического места. В committed-агрегате сгенерированного G5 или старта может лежать «охотник ×1» без человека.
+- **Как жить.** Не читать людские записи агрегата как присутствующих людей вне канонического first-entry. Будущий реализатор людей на других местах дедуплицирует их с G4-составом так же, как `owned` в `wantPlacePeople`.
+- **Issue.** —
+
+### LW-116 — `/_DATA_GAP$/` мягко захватывает и неоднозначность (rt-people)
+- **Где.** `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js` (`isDataGap`), коды материализатора `PROCEDURAL_NPC_APPROVED_RECORD_DATA_GAP`, `PROCEDURAL_NPC_…_TEMPORAL_DATA_GAP`.
+- **Что.** Те же коды поднимаются и при отсутствии записи, и при `matches.length !== 1` (неоднозначная утверждённая ссылка). Для людей канонических мест оба случая мягкие (нет человека, gap в trace), хотя неоднозначность должна быть hard block (read-only DB §3).
+- **Как жить.** Не расширять список мягких кодов. Follow-up: разделить missing и ambiguous в материализаторе отдельными кодами.
+- **Issue.** —
+
+### LW-117 — природная ветка канонического first-entry не пишет свой агрегат из профиля (rt-people)
+- **Где.** `apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js` (агрегат в памяти для людей), `finiteFirstEntryProfile.technical_limits.max_resolution_records`.
+- **Что.** В ветке commons с конечными источниками агрегат присутствия пишет natural-владелец, а людские исходы читаются из копии агрегата в памяти. Без `max_resolution_records` копию не построить: людские правила не читаются, в trace лежит typed gap `people_presence_aggregate_unavailable`.
+- **Как жить.** Профиль v17 `max_resolution_records` задаёт; не полагаться на людей по правилам при неполном профиле.
 - **Issue.** —

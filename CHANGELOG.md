@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(game-base): needs_check queues block generation — only anachronism doubts, per region and period; regional presence stays informational; fail-closed matcher in runtime-catalog, snapshot v2, Opus-approved classification 8/29 (D51 p.3) (#215)
 - data(game-base): separate personal-name pools per people (D51) — Gotland and German guests, Korela, Izhora, Chud/Estonians, Smolensk guests; the Novgorod pool keeps only pp_novgorod_rus; Valit (Korela, 1337/38, significant) added, Igoland a typed gap; Opus approve_with_limits (names-foreign)
 - data(game-base): D-rated review step 2 — imported walnut, cast copper snake amulet, imported cotton cloth, common buckthorn, Zverin convent included from indexed sources; katana, chintz and local rice as dated denials (#213)
 - data(game-base): D-rated exclusions reviewed under D38 — risk-only rejections to structural needs_check queues, denials only for dated anachronism or physical impossibility, HW009 variant from the manifest (#212)

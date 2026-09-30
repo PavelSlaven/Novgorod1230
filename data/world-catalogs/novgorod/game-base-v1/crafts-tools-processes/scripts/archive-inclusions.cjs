@@ -2,7 +2,7 @@
 
 const { rows: authoredRows, semanticVariants, semanticDuplicates, semanticKeepReasons, craftsOwnerHandoffs, craftsBicHandoffs } = require('./src/archive-inclusions.cjs');
 const { fs, path, REPO, DOMAIN_ROOT, readCsv } = require('./lib.cjs');
-const NEEDS_CHECK_HEADER = ['archive_id', 'current_result', 'current_target_group', 'current_target_ref', 'reason_code', 'finding_ref', 'cluster_id', 'note'];
+const NEEDS_CHECK_HEADER = ['archive_id', 'current_result', 'current_target_group', 'current_target_ref', 'reason_code', 'finding_ref', 'cluster_id', 'note', 'block_pattern_ru', 'block_pattern_lat', 'doubt_kind', 'block_region', 'block_period', 'block_exception'];
 const NEEDS_CHECK_ROWS = readCsv(path.join(DOMAIN_ROOT, 'authoring/needs_check.csv'));
 if (Object.keys(NEEDS_CHECK_ROWS[0] || {}).join(',') !== NEEDS_CHECK_HEADER.join(',')) throw new Error('needs_check.csv header does not match the approved schema');
 const NEEDS_CHECK_BY_ID = new Map();

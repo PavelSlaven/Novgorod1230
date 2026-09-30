@@ -1,6 +1,7 @@
 """Build items/household.csv, items/personal.csv, items/mass_policy.csv, items/condition_vocab.csv,
 items/item_categories.csv from the authored seed + master/v5/WK sources (deterministic)."""
 import re
+import subprocess
 import sys
 from common import (ITEMS, REPORTS, read_psv, write_csv, split, load_master, load_me, load_sources,
                     load_v5, load_wk, HERE)
@@ -225,6 +226,8 @@ def main():
     print(f"household={n_h} personal={n_p} categories={len(catrows)} errors={len(errors)}")
     for e in errors:
         print("  ERR", e)
+    if not errors:
+        subprocess.run(["node", str(HERE.parents[1] / "scripts/check-needs-check.mjs"), "--check"], check=True)
     sys.exit(1 if errors else 0)
 
 

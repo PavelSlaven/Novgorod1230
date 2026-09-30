@@ -4,6 +4,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const read = (f) => JSON.parse(fs.readFileSync(path.join(__dirname, f), 'utf8'));
@@ -54,6 +55,11 @@ for (const d of domains) {
 for (const g of groups) if (!domains.some((d) => d.group === g.id)) errors.push(`group without domains: ${g.id}`);
 for (const r of REQUIRED) if (!dids.has(r)) errors.push(`required domain missing: ${r}`);
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
+
+execFileSync(process.execPath, [path.join(__dirname, 'check-needs-check.mjs'), '--check'], {
+  cwd: root,
+  stdio: 'inherit'
+});
 
 const count = (f) => domains.reduce((m, d) => ((m[d[f]] = (m[d[f]] || 0) + 1), m), {});
 const byPrio = count('priority');

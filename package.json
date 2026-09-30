@@ -77,7 +77,7 @@
     "test:narration-presentation": "node --test packages/narration/test/*.test.js packages/presentation/test/*.test.js test/modules/narration-presentation.test.js",
     "test:apps": "node --test apps/game-server/test/*.test.js apps/game-web/test/*.test.js",
     "test:tools": "node --test tools/*/test/*.test.js test/spatial-v3/p04-catalog-sync.test.js",
-    "test:game-base": "node --test data/world-catalogs/novgorod/game-base-v1/scripts/*.test.mjs && node data/world-catalogs/novgorod/game-base-v1/scripts/check-region-ids.mjs",
+    "test:game-base": "node --test data/world-catalogs/novgorod/game-base-v1/scripts/*.test.mjs && node data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs --check && node data/world-catalogs/novgorod/game-base-v1/scripts/check-region-ids.mjs",
     "test:integration": "node --test --test-concurrency=1 test/integration/*.test.js",
     "test:acceptance": "node --test --test-concurrency=1 test/acceptance/*.test.js",
     "test:browser-e2e": "node --test test/e2e/*.test.js",

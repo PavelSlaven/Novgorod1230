@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { REPO, GROUP, GAME_BASE, readJson, readCsv, readTsv, writeCsv, writeJson, rel, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry } from './build-place-families.mjs';
 
@@ -364,4 +365,7 @@ export function build({ write = true } = {}) {
   }
   return { rows: allRows, report };
 }
-if (process.argv[1]?.endsWith('build-presence-rules.mjs')) build();
+if (process.argv[1]?.endsWith('build-presence-rules.mjs')) {
+  build();
+  execFileSync(process.execPath, [path.join(GAME_BASE, 'scripts/check-needs-check.mjs'), '--check'], { stdio: 'inherit' });
+}

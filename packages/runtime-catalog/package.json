@@ -7,6 +7,7 @@
     "./canonical-records": "./src/canonical-records.js",
     "./common-lookups": "./src/common-catalog-lookups.js",
     "./ledger-digests": "./src/ledger-digests.js",
+    "./needs-check-blocker": "./src/needs-check-blocker.js",
     "./runtime-contract": "./src/runtime-contract.js"
   },
   "dependencies": {

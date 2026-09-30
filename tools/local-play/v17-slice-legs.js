@@ -131,7 +131,7 @@ export async function runLegs({
   // --- explore: walk out, meeting, talk, take ---
   const visited = new Map(); // site_id -> place name
   const tried = new Map(); // positionKey -> Map(label -> count)
-  const looked = new Set();
+  const looked = new Map(); // positionKey -> looks done; a second look is cheap and shows whether the first was a fluke
   const seen = { npc: null, source: null };
   let stuck = 0;
   const exploreEnd = { reason: null };
@@ -195,8 +195,8 @@ export async function runLegs({
       // a step: the first least-tried passage label of this spot, or a look when the spot offers none yet
       const key = positionKey(last.snap);
       const labels = routeLabels(last.screen);
-      if (labels.length === 0 && !looked.has(key)) { looked.add(key); await play('walk', LOOK); continue; }
-      if (labels.length === 0) { exploreEnd.reason = `на месте ${placeName(last.snap)} экран не показывает проходов`; break; }
+      if (labels.length === 0 && (looked.get(key) ?? 0) < 2) { looked.set(key, (looked.get(key) ?? 0) + 1); await play('walk', LOOK); continue; }
+      if (labels.length === 0) { exploreEnd.reason = `на месте ${placeName(last.snap)} экран не показывает проходов после ${looked.get(key)} осмотров`; break; }
       const counts = tried.get(key) ?? new Map();
       tried.set(key, counts);
       const label = [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];

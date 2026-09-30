@@ -112,14 +112,14 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
 // ---------- legs against a fake world ----------
 
 /** A small world: A (start, shirt) —«Тропа»→ B (a person, deadwood). Talk/take/make behave as configured. */
-function fakeWorld({ talkWorks = true, makeWorks = true, takeWorks = true, hidePeople = false, openingRejections = 0, emptyProse = false } = {}) {
-  const w = { sv: 1, site: 'A', slot: 'arrival', statements: [], node: 60, held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
+function fakeWorld({ blindLooks = 0, talkWorks = true, makeWorks = true, takeWorks = true, hidePeople = false, openingRejections = 0, emptyProse = false } = {}) {
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: [], node: 60, held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
   const items = () => [{ item_id: 'shirt', holder: 'c', position: 'worn' }, ...w.held];
   const snap = () => ({ state_version: w.sv, position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : 'forest_path'}` },
     placements_here: w.site === 'B' && !hidePeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
     items: items(), party_items: w.made, npc_statements: w.statements,
     resource_nodes: w.site === 'B' ? [{ resource_node_id: 'm2c_finite_deadwood_v1:x', quantity_numerator: String(w.node) }] : [] });
-  const screen = () => ({ main_prose: w.prose, labels: w.site === 'A' ? ['Тропа'] : ['Назад'],
+  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа'] : ['Назад'],
     panels: { people: { data: { people: w.site === 'B' && !hidePeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
@@ -131,6 +131,7 @@ function fakeWorld({ talkWorks = true, makeWorks = true, takeWorks = true, hideP
     async recover() { w.recovered += 1; w.prose = 'Восстановлено.'; return env({}); },
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
+      if (text === 'Осматриваюсь вокруг.') w.looks += 1;
       if (text === 'Тропа') { w.site = 'B'; w.sv += 1; w.prose = 'Лесная тропа.'; }
       else if (text === 'Назад') { w.site = 'A'; w.sv += 1; }
       else if (/^Здоров|^Здравств/u.test(text)) { w.sv += 1; if (talkWorks) w.statements = [...w.statements, { speaker_ref: { entity_kind: 'npc' }, text: 'Я Милонег.' }]; }
@@ -156,6 +157,16 @@ test('legs: a working world passes every leg with the exact phrases of the plan'
   assert.deepEqual(world.w.turns, ['Тропа', 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
   assert.equal(result.turns.every(({ ms }) => Number.isFinite(ms)), true);
   assert.equal(exitCodeOf(result.legs), EXIT.PASS);
+});
+
+test('legs: a spot that shows no passages is looked at twice, then walk fails with the reason', async () => {
+  const late = await runFake(fakeWorld({ blindLooks: 2 }));
+  assert.equal(statusOf(late).walk, 'pass', 'the second look showed the passage');
+  const world = fakeWorld({ blindLooks: 99, hidePeople: true });
+  const blind = await runFake(world);
+  assert.equal(world.w.looks, 2);
+  assert.equal(statusOf(blind).walk, 'fail', 'turns were spent, the player never left');
+  assert.match(blind.legs.find(({ id }) => id === 'walk').reason, /не показывает проходов после 2 осмотров/u);
 });
 
 test('legs: a failing talk fails only talk; others still run', async () => {

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 import { targetCanonicalStartFixture } from './target-canonical-start-fixture.js';
+import { approvedNpcIdentityCatalog } from '../helpers/npc-identity-catalog.js';
 import { loadTargetAuthoredStartProfile } from '../../apps/game-server/src/internal/live-world-authored-starts.js';
 
 test('canonical target materializer uses approved player and NPC source shapes deterministically', async () => {
@@ -46,4 +47,34 @@ test('target canonical dependencies reject absent or stale exact pins before gen
   await assert.rejects(loadTargetAuthoredStartProfile({ worldBaseReferenceSnapshot: fixture.world_base_reference_snapshot,
     domainCatalog: { ...fixture.domain_catalog, pin: { ...fixture.domain_catalog_pin, catalog_revision_id: 'historical' } } }),
   { code: 'SPATIAL_V3_TARGET_START_RUNTIME_PIN_REQUIRED' });
+});
+
+test('canonical start NPC get pool names and a seeded character from the approved identity data', async () => {
+  const input = await targetCanonicalStartFixture();
+  input.approved_actor_temporal_bundle = { ...input.approved_actor_temporal_bundle,
+    npc_identity: await approvedNpcIdentityCatalog() };
+  const boundContexts = new Set(input.approved_actor_temporal_bundle.npc_identity.name_bindings.map((row) => row.regional_context_id));
+  const pool = new Set(input.approved_actor_temporal_bundle.npc_identity.name_entries.map((row) => row.name_form));
+  const seen = { named: 0, unnamed: 0 };
+  for (let ordinal = 0; ordinal < 30; ordinal += 1) {
+    const request = { ...input, idempotency_key: `target-identity-${ordinal}` };
+    const first = materializeAuthoredStartPartyInstance(request);
+    assert.deepEqual(materializeAuthoredStartPartyInstance(request).immediate.npcs.map((npc) => npc.identity_state),
+      first.immediate.npcs.map((npc) => npc.identity_state), 'same request, same names');
+    for (const npc of first.immediate.npcs) {
+      const context = npc.semantic_state.source_binding.regional_context_ref.id;
+      if (boundContexts.has(context)) {
+        seen.named += 1;
+        assert.ok(pool.has(npc.identity_state.canonical_name), npc.identity_state.canonical_name);
+        const character = npc.semantic_state.character;
+        assert.equal(character.value_refs.length, 2);
+        assert.ok(character.goals_ru.length >= 1 && character.goals_ru.length <= 2);
+        assert.equal(typeof character.fear_ru, 'string');
+      } else {
+        seen.unnamed += 1;
+        assert.equal(npc.identity_state.canonical_name, null);
+      }
+    }
+  }
+  assert.ok(seen.named > 0, 'at least one Novgorod-land NPC is named');
 });

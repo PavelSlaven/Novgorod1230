@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
   IDENTITY_ATTESTATION_SCHEMA,
@@ -34,7 +35,7 @@ test('only ordinary entries of the bound pool become approved; the rest stay dra
     && row.people_ref === 'pp_novgorod_rus' && row.sex_category === 'female');
   assert.ok(novgorodFemale.length >= 10 && novgorodFemale.every((row) => row.selection_class === 'ordinary'));
   assert.deepEqual(rowsOf(tables, 'npc_regional_context_name_bindings').map((row) => row.regional_context_id),
-    ['m2c_npc_regional_novgorod_land_v1']);
+    ['m2c_npc_regional_novgorod_land_v1', 'm2c_npc_regional_novgorod_canonical_initial_v1']);
   const scales = rowsOf(tables, 'npc_psychology_scale_entries');
   assert.equal(scales.filter((row) => row.scale_kind === 'trait').length, 6);
   assert.equal(scales.filter((row) => row.scale_kind === 'value').length, 7);
@@ -129,4 +130,18 @@ test('stage: a row count different from the pinned readback throws after the com
   await assert.rejects(runIdentityImportStage({ world, root, requireAttestation: approving(request) }),
     /V17_NPC_IDENTITY_READBACK_MISMATCH:occupation_character_items:424!=423/u);
   assert.deepEqual(world.log, ['ROLLBACK', 'COMMIT']);
+});
+
+test('every Novgorod-land regional context of the M2c datasets is bound; guest and traveler origins are not', async () => {
+  const bound = new Set(rowsOf(await buildIdentityRows({ root }), 'npc_regional_context_name_bindings')
+    .map((row) => row.regional_context_id));
+  const datasets = ['m2c-npc/datasets', 'm2c-npc/canonical-initial/datasets',
+    'm2c-scene-movement-edges/open-capacity-v2-import'];
+  const seen = new Map();
+  for (const directory of datasets) {
+    const rows = JSON.parse(await readFile(`${root}data/world-catalogs/novgorod/${directory}/spatial_v3_npc_regional_context_profiles.json`, 'utf8'));
+    for (const row of rows) seen.set(row.id, row.payload.origin.kind);
+  }
+  assert.ok(seen.size >= 6);
+  for (const [id, kind] of seen) assert.equal(bound.has(id), kind === 'regional_affiliation', `${id} (${kind})`);
 });

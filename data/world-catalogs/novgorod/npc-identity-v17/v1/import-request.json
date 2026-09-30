@@ -10,7 +10,7 @@
     "created_by": "scripts/bootstrap-live-world-v17.mjs (fresh pair only)"
   },
   "approved_data": {
-    "source_commit": "e50fd27d1afa110f74d0fe88714e8b4e5cb32953",
+    "source_commit": "fe38ecb1b81df04a9a7f8d95b5bed1f0c9e815c7",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "sources_in_repository": "draft/candidate; this stage sets status=approved only on the subset below",
     "sources": [
@@ -36,7 +36,7 @@
       },
       {
         "path": "data/world-catalogs/novgorod/npc-identity-v17/v1/context-bindings.json",
-        "sha256": "58d6314f46953fb8d6683eb24ae999b2a5d9454c43a15bbd1cfae9e275942122"
+        "sha256": "5411a38e2b575fc389a9aeaf3b66b495da896780ce498d464d2666971fdc5315"
       }
     ],
     "approved_subset": {
@@ -47,7 +47,8 @@
         "pp_novgorod_rus/male": 204
       },
       "context_bindings": [
-        "m2c_npc_regional_novgorod_land_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus"
+        "m2c_npc_regional_novgorod_land_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus",
+        "m2c_npc_regional_novgorod_canonical_initial_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus"
       ],
       "goal_items": 265,
       "fear_items": 158,
@@ -72,7 +73,7 @@
       },
       {
         "table": "npc_regional_context_name_bindings",
-        "rows": 1
+        "rows": 2
       },
       {
         "table": "npc_psychology_scale_entries",
@@ -89,19 +90,19 @@
     ]
   },
   "sql": {
-    "commit_sha256": "67e23538df783eb0439fdf87fb666cffc4932b150b38685068d0b8f6a8ea840e",
-    "commit_bytes": 337518,
-    "rollback_sha256": "81d8cbd314f1d19e9ecc036e776ff03e205fb91f52afe76a41be2b6c0fb4d3b2",
-    "rollback_bytes": 337520
+    "commit_sha256": "21e4a1572c9ba4a68ab036098bade03ef4b0defa344c611c77b9b3b5093c918a",
+    "commit_bytes": 337767,
+    "rollback_sha256": "6af154ba4011098ea94fe33325d8d9a8a9601b333b248af8d2f9be8c69e0cef0",
+    "rollback_bytes": 337769
   },
   "expected_readback": {
     "by_table": {
       "region_name_pools": 1,
       "region_name_pool_entries": 337,
-      "npc_regional_context_name_bindings": 1,
+      "npc_regional_context_name_bindings": 2,
       "npc_psychology_scale_entries": 13,
       "occupation_character_items": 423
     }
   },
-  "request_digest": "0812afcdfabd7012844a81e434ea991a4f97a41fd6db9058a6d77ad20475ff86"
+  "request_digest": "7b7d42f7edb38a7901bdc7ee062715853e0eeb9e9908ae51e2a8730cf55a6672"
 }

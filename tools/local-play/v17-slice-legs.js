@@ -74,6 +74,7 @@ export async function runLegs({
     const before = last?.snap ?? await sql.snapshot(partyId);
     const started = now();
     const calls = llm.count();
+    const errorsBefore = llm.serverErrorCount?.() ?? 0;
     const response = await api.turn(partyId, { raw_text: text, request_id: requestId });
     let recovered = false;
     let view = await refresh();
@@ -88,7 +89,7 @@ export async function runLegs({
     const turn = {
       n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
       committed, recovered, prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
-      llm_calls: llm.count() - calls, route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
+      llm_calls: llm.count() - calls, server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [], route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
     };
     state.turns.push(turn);
     persist(result());
@@ -212,12 +213,17 @@ export async function runLegs({
 
   // verdicts for the exploration legs
   const places = [...visited.values()];
-  if (visited.size >= 2) set('walk', 'pass', `места Вихтуя по ходу: ${places.join(' → ')}`);
-  else if (state.turns.some(({ leg }) => leg === 'walk')) set('walk', 'fail', `игрок не покинул стартовое место (${exploreEnd.reason ?? 'ходы без перехода'})`);
+  const walkTurns = state.turns.filter(({ leg }) => leg === 'walk');
+  const lookedFirst = walkTurns[0]?.input === LOOK;
+  const walkNote = `ходов движения: ${walkTurns.length}, из них без смены места: ${walkTurns.filter(({ before, after }) => before?.position?.site_id === after?.position?.site_id).length}`
+    + `${lookedFirst ? '; на стартовом экране проходов не было, понадобился «Осматриваюсь вокруг.»' : ''}`;
+  if (visited.size >= 2) set('walk', 'pass', `места Вихтуя по ходу: ${places.join(' → ')}`, walkNote);
+  else if (state.turns.some(({ leg }) => leg === 'walk')) set('walk', 'fail', `игрок не покинул стартовое место (${exploreEnd.reason ?? 'ходы без перехода'})`, walkNote);
   else set('walk', 'blocked', exploreEnd.reason ?? 'ходов движения не было');
   if (seen.npc) set('meet', 'pass', `на месте ${seen.npc.place}: ${seen.npc.labels.join(', ') || `NPC по SQL ${seen.npc.sql_npcs.join(', ')}`}`,
     `на экране: ${seen.npc.labels.map((label) => `«${label}»`).join(', ') || 'панель людей пуста'}; NPC в G6 игрока по SQL: ${seen.npc.sql_npcs.length}`);
-  else set('meet', 'blocked', `ни одного видимого NPC на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`);
+  else set('meet', 'blocked', `ни одного видимого NPC на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`,
+    `NPC-размещений во всей партии по SQL: ${last?.snap?.npc_placements_all?.length ?? '?'}`);
   if (!done('talk')) set('talk', 'blocked', seen.npc ? `собеседник виден, но разговор не начат (${exploreEnd.reason})` : 'нет видимого NPC: meet не пройден');
   if (!done('take')) set('take', 'blocked', `ни на одном месте (${places.join(', ') || '—'}) нет непустого источника в party_resource_nodes (${exploreEnd.reason ?? 'бюджет ходов'})`);
 

@@ -5,8 +5,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { EXIT, PreflightError, UsageError, createFinalizers, parseArgs, readLlmSettingsRecord,
-  runHarness } from '../v17-slice-run.mjs';
+import { EXIT, PreflightError, UsageError, createFinalizers, describeServerError, installLlmMeter, parseArgs,
+  readLlmSettingsRecord, runHarness } from '../v17-slice-run.mjs';
 import { RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
 import { createRedactor, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '../v17-slice-report.js';
 
@@ -86,7 +86,7 @@ function sampleReport(extra = {}) {
       { id: 'meet', status: 'blocked', reason: 'нет людей', detail: null }, { id: 'talk', status: 'blocked', reason: 'нет NPC', detail: null },
       { id: 'take', status: 'blocked', reason: 'нет источника', detail: null }, { id: 'make', status: 'blocked', reason: 'бюджет', detail: null }],
     turns: [{ n: 1, leg: 'walk', input: 'Иду по тропе.', http_status: 200, error: null, committed: true, recovered: true,
-      prose: PROSE, before: snap(1, 'arrival'), after: snap(2, 'departure'), ms: 40000, llm_calls: 5,
+      prose: PROSE, server_errors: [{ code: 'TURN_STEP_PLAN_INVALID', message: 'Turn-step plan is invalid.', validation: ['identity_shape'] }], before: snap(1, 'arrival'), after: snap(2, 'departure'), ms: 40000, llm_calls: 5,
       route_labels: ['Тропа'], people_labels: ['человек (1)'] }],
     llm: { total: 9, failed: 0, by_role: { planner: 9 } }, readback: snap(2, 'departure'), infra_error: null, ...extra
   };
@@ -102,6 +102,7 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
   assert.ok(md.includes('Ввод игрока: «Иду по тропе.»'));
   assert.ok(md.includes('ЗАГЛУШКА'), 'the encoder stub is stated');
   assert.ok(md.includes('presentation-recovery'));
+  assert.ok(md.includes('TURN_STEP_PLAN_INVALID: Turn-step plan is invalid. [identity_shape]'), 'the masked server reason is shown');
   assert.ok(md.includes('**PARTIAL**'));
   assert.ok(md.includes('позиция s1') === false && md.includes('@arrival → cg5v3__x_r2_work_storage@departure'));
   assert.equal(md.includes(SECRET_KEY), false);
@@ -213,6 +214,30 @@ test('legs: a committed turn without text triggers one presentation-recovery', a
   assert.equal(result.turns[0].prose, 'Восстановлено.');
 });
 
+test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {
+  const real = globalThis.fetch;
+  const printed = [];
+  const log = { error: (...args) => printed.push(args) };
+  const stub = async () => new Response('{}', { status: 200 });
+  globalThis.fetch = stub;
+  const originalError = log.error;
+  const meter = installLlmMeter({ log });
+  try {
+    await globalThis.fetch('http://x.invalid', { body: JSON.stringify({ messages: [{ role: 'system', content: 'Return a valid json object. Return only {"pass":true}' }] }) });
+    assert.deepEqual([meter.count(), meter.calls[0].role, meter.calls[0].status], [1, 'Return only {"pass":true}', 200]);
+    assert.equal(JSON.stringify(meter.calls).includes('messages'), false);
+    const error = Object.assign(new Error('Turn-step plan is invalid.'), { code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{ code: 'identity_shape' }, {}] } });
+    log.error('[game-server] request abc failed', error);
+    log.error('something else', 1);
+    assert.deepEqual(meter.serverErrorsSince(0), [describeServerError(error)]);
+    assert.deepEqual(meter.serverErrorsSince(0)[0].validation, ['identity_shape', '{}']);
+    assert.equal(printed.length, 1, 'unrelated console.error passes through, the stack is swallowed');
+  } finally { meter.restore(); }
+  assert.equal(globalThis.fetch, stub, 'restore puts fetch back');
+  assert.equal(log.error, originalError, 'restore puts console.error back');
+  globalThis.fetch = real;
+});
+
 // ---------- cleanup ----------
 
 test('finalizers all run in reverse order even when one throws, and only once', async () => {
@@ -258,7 +283,7 @@ test('runHarness: happy path writes report.json and playtest, then cleans in rev
     const json = await readFile(join(dir, 'report.json'), 'utf8');
     assert.equal(json.includes(SECRET_KEY) || json.includes(SECRET_URL), false);
     const [file] = await readdir(join(dir, 'pt'));
-    assert.match(file, /^\d{4}-\d{2}-\d{2}_rt-harness_[0-9a-f]{8}_v17-slice-run\.md$/u);
+    assert.match(file, /^\d{4}-\d{2}-\d{2}_rt-harness_[0-9a-f]{8}_v17-slice-happy\.md$/u);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 

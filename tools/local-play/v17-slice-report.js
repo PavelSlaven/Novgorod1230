@@ -72,6 +72,7 @@ function turnSection(turn) {
     `- HTTP: ${turn.http_status}${turn.error ? `, ошибка ${turn.error.code}${turn.error.turn_commit_status ? ` (turn_commit_status ${turn.error.turn_commit_status})` : ''}` : ''}`,
     `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}`,
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
+    ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (в HTTP скрыта за TEMPORARY_ACTION_UNAVAILABLE): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
     'Что увидел игрок (дословно):', '',
     turn.prose ? quote(turn.prose) : '> (текста нет)'];
@@ -118,4 +119,4 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
   return redact(out.join('\n'));
 }
 
-export const playtestFileName = ({ date, head }) => `${date}_rt-harness_${head.slice(0, 8)}_v17-slice-run.md`;
+export const playtestFileName = ({ date, head, runId }) => `${date}_rt-harness_${head.slice(0, 8)}_v17-slice-${runId}.md`;

@@ -115,6 +115,11 @@ SELECT
      JOIN party_runtime.scene_position_nodes pos ON pos.party_id=pl.party_id AND pos.id=pl.position_node_id
      JOIN me ON pos.g6_instance_id=me.g6
     WHERE pl.party_id=$1) AS placements_here,
+  (SELECT COALESCE(jsonb_agg(jsonb_build_object('entity_id', pl.entity_id, 'slot', pos.template_slot_key,
+      'g6_instance_id', pos.g6_instance_id) ORDER BY pl.entity_id), '[]'::jsonb)
+     FROM party_runtime.entity_placements pl
+     JOIN party_runtime.scene_position_nodes pos ON pos.party_id=pl.party_id AND pos.id=pl.position_node_id
+    WHERE pl.party_id=$1 AND pl.entity_kind='npc') AS npc_placements_all,
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('item_id', p.item_id, 'holder', p.holder_character_id,
       'position', p.physical_position) ORDER BY p.item_id), '[]'::jsonb)
      FROM party_runtime.party_item_placements p WHERE p.party_id=$1) AS items,
@@ -166,10 +171,26 @@ export function createHttpApi(baseUrl, httpFetch) {
   };
 }
 
-/** Counts LLM calls by role head (no request/response content is kept). */
-export function installLlmMeter() {
+/** Server-side reason of a failed request: the HTTP layer masks it as TEMPORARY_ACTION_UNAVAILABLE, its console.error keeps it. */
+export function describeServerError(error) {
+  const nested = (error?.details?.errors ?? []).map((entry) => entry?.code ?? entry?.message ?? JSON.stringify(entry)).slice(0, 6);
+  return { code: error?.code ?? error?.name ?? 'unknown', message: String(error?.message ?? '').slice(0, 300),
+    ...(nested.length > 0 ? { validation: nested } : {}) };
+}
+
+/** Counts LLM calls by role head (no request/response content is kept) and collects masked server errors. */
+export function installLlmMeter({ log = console } = {}) {
   const previous = globalThis.fetch;
+  const previousError = log.error;
   const calls = [];
+  const serverErrors = [];
+  log.error = (...args) => {
+    if (typeof args[0] === 'string' && /^\[game-server\] request \S+ failed/u.test(args[0]) && args[1] instanceof Error) {
+      serverErrors.push(describeServerError(args[1])); // one summary instead of the stack
+      return;
+    }
+    previousError.apply(log, args);
+  };
   globalThis.fetch = async (url, init) => {
     const started = Date.now();
     let role = 'unknown';
@@ -186,7 +207,9 @@ export function installLlmMeter() {
       throw error;
     }
   };
-  return { calls, count: () => calls.length, httpFetch: previous, restore() { globalThis.fetch = previous; } };
+  return { calls, serverErrors, count: () => calls.length, serverErrorCount: () => serverErrors.length,
+    serverErrorsSince: (n) => serverErrors.slice(n), httpFetch: previous,
+    restore() { globalThis.fetch = previous; log.error = previousError; } };
 }
 
 export function summarizeLlm(calls) {
@@ -315,7 +338,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
     await persist();
     if (report.identity && options.playtestDir && code !== EXIT.PREFLIGHT) {
       await mkdir(options.playtestDir, { recursive: true });
-      const file = join(options.playtestDir, playtestFileName({ date: startedAt.slice(0, 10), head: git.head }));
+      const file = join(options.playtestDir, playtestFileName({ date: startedAt.slice(0, 10), head: git.head, runId: options.runId }));
       await writeFile(file, renderPlaytestMarkdown(report, redact));
       report.playtest_file = file;
     } else if (report.identity) {

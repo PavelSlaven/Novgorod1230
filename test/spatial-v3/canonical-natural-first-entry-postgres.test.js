@@ -26,8 +26,6 @@ const G4 = 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality';
 const WATER = 'cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access';
 const file = JSON.parse(readFileSync(new URL(
   '../../data/world-catalogs/novgorod/m2c-items/canonical-finite-applicability.json', import.meta.url), 'utf8'));
-const approvedFile = { ...file, status: 'approved', approval: { approved_by: 'test-fixture',
-  approved_on: '2026-09-30', approved_path: 'test', approved_commit: 'c'.repeat(40) } };
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 
 
@@ -61,12 +59,16 @@ test('PostgreSQL: a canonical commons G5 gets its approved finite source, and a 
   const pinFields = ['party_id', ...Object.keys(catalogPin)];
   await pool.query(`INSERT INTO party_runtime.party_catalog_pins (${pinFields.join(',')})
     VALUES (${pinFields.map((_, index) => `$${index + 1}`).join(',')})`, ['party-canon', ...Object.values(catalogPin)]);
-  const withRows = { ...loaded, canonicalNaturalApplicability:
-    readApprovedCanonicalFiniteApplicability(approvedFile, WORLD) };
+  // The committed file is approved: the loaded profile already carries it.
+  assert.notEqual(loaded.canonicalNaturalApplicability, null);
+  const withRows = loaded;
   const request = { party_id: 'party-canon', g4: { id: G4, version: 1, world_revision_id: WORLD } };
 
-  // Without an approved file nothing is provisioned for a canonical site.
-  const closed = createTargetFiniteFirstEntryPorts(loaded);
+  // Without an approved file nothing is provisioned for a canonical site (explicit unapproved copy).
+  const unapproved = readApprovedCanonicalFiniteApplicability({ ...file,
+    status: 'candidate_pending_independent_data_approval', approval: null }, WORLD);
+  assert.equal(unapproved, null);
+  const closed = createTargetFiniteFirstEntryPorts({ ...loaded, canonicalNaturalApplicability: unapproved });
   const proposalWater = await proposalFor(pool, 'base');
   const yardProposal = await proposalFor(pool, 'yard');
   // The proposal rows are the only copy: the site is created by the entry commit itself.

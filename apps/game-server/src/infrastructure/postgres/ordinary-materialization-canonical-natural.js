@@ -10,12 +10,16 @@ export function readApprovedCanonicalFiniteApplicability(file, worldRevisionId) 
       || file.world_revision_id !== worldRevisionId || !Array.isArray(file.rows)
       || !APPROVAL_FIELDS.every((key) => typeof file.approval?.[key] === 'string'
         && file.approval[key].length > 0)) return null;
-  const profilesFor = (site, g4Id) => site?.origin === 'canonical'
-    ? file.rows.filter((row) => row.canonical_g5_ref?.id === site.canonical_g5_ref?.entity_id
+  return Object.freeze({ worldRevisionId, rows: structuredClone(file.rows),
+    contextRef: `${file.schema}@${file.approval.approved_commit}` });
+}
+
+/** Profiles of the approved rows for one canonical site of a G4 (plain-data applicability). */
+export function canonicalFiniteProfilesFor(applicability, site, g4Id) {
+  return site?.origin === 'canonical' && applicability != null
+    ? applicability.rows.filter((row) => row.canonical_g5_ref?.id === site.canonical_g5_ref?.entity_id
       && String(row.canonical_g5_ref?.version) === String(site.canonical_g5_ref?.authoring_version)
       && row.g4_ref?.id === g4Id).flatMap((row) => row.natural_finite_source_profile_refs) : [];
-  return Object.freeze({ worldRevisionId, profilesFor,
-    contextRef: `${file.schema}@${file.approval.approved_commit}` });
 }
 
 /** Commons of the approved rows are open under the free-gathering policy; no parcel right is invented. */
@@ -34,7 +38,7 @@ export function createCanonicalNaturalPropertyReader({ applicability, authoring 
     if (profiles.length !== 1 || party.rows[0]?.world_revision_id !== applicability.worldRevisionId
         || !authoring.gameplay_access_policy.operations.includes(operation)
         || sites.length !== 1 || sites[0].status !== 'active' || sites[0].parent_g4_id !== g4Id
-        || !applicability.profilesFor(sites[0], g4Id).includes(profileId)
+        || !canonicalFiniteProfilesFor(applicability, sites[0], g4Id).includes(profileId)
         || sourceRef !== `${profileId}:${canonicalDigest({ party_id: partyId, generated_g5_id: g5Id,
           profile_id: profileId, version: profiles[0].version }).slice(0, 24)}`) unresolved();
     if (spatialProposal != null) {

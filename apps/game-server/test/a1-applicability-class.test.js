@@ -22,14 +22,23 @@ const generatedV2Pool = { async query() { return { rows: [{ world_revision_id: w
   generated_template_ref: { entity_id: 'm2c_g5_forest__forest_resource_use__pine_ridge',
     authoring_version: '2' } }] }; } };
 
-test('the committed A1 class-rule file is a pending candidate and grants nothing', async () => {
+test('the committed A1 class-rule file is approved with limits and loads', async () => {
   const file = JSON.parse(await readFile(candidatePath, 'utf8'));
   assert.equal(file.rule.kind, 'all_g5_sites');
-  assert.notEqual(file.status, 'approved');
-  assert.equal(readApprovedA1ApplicabilityClass(file, worldRevisionId), null);
+  assert.equal(file.status, 'approved');
+  for (const key of ['approved_by', 'approved_on', 'approved_path', 'approved_commit']) {
+    assert.ok(file.approval[key].length > 0, key);
+  }
+  assert.equal(file.approval.approved_commit, 'a260fa0651354e11af12e6f16cb9b5e25eb36bca');
+  assert.ok(file.approval.limits.length > 0);
+  const rule = { kind: 'all_g5_sites', world_revision_id: worldRevisionId };
+  assert.deepEqual(readApprovedA1ApplicabilityClass(file, worldRevisionId), rule);
   const loaded = await loadTargetRuntimeProfiles({ worldRevisionId });
-  assert.equal(loaded.materialization_profiles.actionProductionProfile
-    .target_applicability.class_rule, undefined);
+  assert.deepEqual(loaded.materialization_profiles.actionProductionProfile
+    .target_applicability.class_rule, rule);
+  // Explicit unapproved copies grant nothing.
+  assert.equal(readApprovedA1ApplicabilityClass({ ...file,
+    status: 'candidate_pending_independent_data_approval', approval: null }, worldRevisionId), null);
 });
 
 test('only an approved file for this world revision yields the class rule', () => {
@@ -45,7 +54,9 @@ test('only an approved file for this world revision yields the class rule', () =
 
 test('per-place applicability never matches a capacity-v2 generated template, the class rule does', async () => {
   const loaded = await loadTargetRuntimeProfiles({ worldRevisionId });
-  const { target_applicability: listed } = loaded.materialization_profiles.actionProductionProfile;
+  const { class_rule: approvedRule, ...listed } = loaded.materialization_profiles
+    .actionProductionProfile.target_applicability;
+  assert.deepEqual(approvedRule, { kind: 'all_g5_sites', world_revision_id: worldRevisionId });
   await assert.rejects(() => assertActionProducedTargetApplicability(generatedV2Pool, 'party', 'pos', listed),
     { code: 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP' });
   const withRule = { ...listed, class_rule: { kind: 'all_g5_sites', world_revision_id: worldRevisionId } };

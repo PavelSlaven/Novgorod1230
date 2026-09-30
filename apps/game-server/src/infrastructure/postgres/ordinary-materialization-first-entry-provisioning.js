@@ -22,7 +22,7 @@ import {
 import { buildFirstEntryNaturalCapabilities, readApprovedNaturalFirstEntryAuthoring }
   from './ordinary-materialization-first-entry-natural.js';
 import { createApprovedGeneratedNaturalPropertyReader } from './ordinary-materialization-natural-property.js';
-import { createCanonicalNaturalPropertyReader } from './ordinary-materialization-canonical-natural.js';
+import { canonicalFiniteProfilesFor, createCanonicalNaturalPropertyReader } from './ordinary-materialization-canonical-natural.js';
 
 export function createTargetFiniteFirstEntryPorts(loaded, { resolvePresenceRulesFirstArrival } = {}) {
   if (loaded?.schema !== 'rus.live_world_runtime.target_finite_first_entry_profile.v1'
@@ -94,7 +94,7 @@ export function createOrdinaryGeneratedFirstEntryProposal({ profile,
       scene_template_version: Number(scene.source_scene_template_ref?.authoring_version),
       g6_slot_key: scene.scene_slot_key, position_slot_key: positions[0].record.template_slot_key };
     const canonicalProfileIds = site.origin === 'canonical'
-      ? canonicalNaturalApplicability?.profilesFor(site, request.g4.id) ?? [] : null;
+      ? canonicalFiniteProfilesFor(canonicalNaturalApplicability, site, request.g4.id) : null;
     if (canonicalProfileIds != null && canonicalProfileIds.length === 0) {
       throw code('ORDINARY_NATURAL_FIRST_ENTRY_BINDING_INVALID');
     }

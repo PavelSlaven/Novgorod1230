@@ -6,6 +6,7 @@ import {
 import { createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
 import { applyResolvedPresenceRulesFirstArrival } from './ordinary-materialization-presence-first-arrival.js';
 import { prepareGeneratedNpcFirstEntry } from './generated-npc-first-entry.js';
+import { canonicalFiniteProfilesFor } from './ordinary-materialization-canonical-natural.js';
 
 const pinKeys = ['catalog_scope', 'catalog_revision_id', 'catalog_digest', 'activation_event_id',
   'import_id', 'import_audit_digest', 'record_registry_digest', 'runtime_contract_digest',
@@ -63,7 +64,7 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
       if (scenes.length !== 1) return gap('target_first_entry_presence_scene_required');
       // Approved commons of this canonical G5 carry finite natural sources: the natural owner
       // writes them together with the presence aggregate (it resolves presence itself).
-      if (canonicalFiniteApplicability?.profilesFor(site, request.g4.id).length > 0) {
+      if (canonicalFiniteProfilesFor(canonicalFiniteApplicability, site, request.g4.id).length > 0) {
         const natural = await prepareNaturalFirstEntry(context);
         if (!natural?.ok) return natural?.error ? natural : gap('target_first_entry_natural_proposal_required');
         return { ok: true, approved_write_sets: natural.approved_write_sets,

@@ -1,8 +1,5 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mkdtemp, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 
 import {
   bootstrapV17PresenceE2e,
@@ -174,15 +171,7 @@ test('make at the canonical start (A1) and take at a generated G5: results persi
     const restoreFetch = installTakeFetch(seen);
     t.after(() => restoreFetch());
     const llmSettings = await qualifiedSettings();
-    // Test-only approval of the A1 class rule (the committed file is a pending candidate).
-    const classDir = await mkdtemp(join(tmpdir(), 'a1-class-e2e-'));
-    const a1ApplicabilityClassPath = join(classDir, 'a1-applicability-class.json');
-    await writeFile(a1ApplicabilityClassPath, JSON.stringify({ schema: 'rus.a1_applicability_class.v1',
-      status: 'approved', world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',
-      rule: { kind: 'all_g5_sites' }, approval: { approved_by: 'test-fixture',
-        approved_on: '2026-09-30', approved_path: 'test', approved_commit: 'test' } }));
-    const extraConfig = { a1ApplicabilityClassPath };
-    const { runtime } = await createPresenceProductionRoot({ ...env, llmSettings, extraConfig });
+    const { runtime } = await createPresenceProductionRoot({ ...env, llmSettings });
     let reloaded = null;
     try {
       let partyId = null;
@@ -253,7 +242,7 @@ test('make at the canonical start (A1) and take at a generated G5: results persi
       assert.equal((await stock())[0].quantity_numerator, '56');
       assert.equal((await held()).length, 2);
 
-      reloaded = await createPresenceProductionRoot({ ...env, llmSettings, extraConfig });
+      reloaded = await createPresenceProductionRoot({ ...env, llmSettings });
       const screen = await reloaded.runtime.getPartyScreen(partyId);
       assert.ok(screen.screen.main_prose.trim().length > 0);
       assert.equal((await stock())[0].quantity_numerator, '56');

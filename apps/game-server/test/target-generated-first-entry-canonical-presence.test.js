@@ -88,11 +88,8 @@ const naturalWrites = [{ inserts: [{ target_table: 'party_resource_nodes', id: '
   updates: [], appends: [] }];
 
 test('canonical arrival at approved commons takes its finite sources from the natural owner', async () => {
-  const seen = [];
-  const canonicalFiniteApplicability = { profilesFor: (site, g4Id) => {
-    seen.push([site.canonical_g5_ref.entity_id, g4Id]);
-    return site.canonical_g5_ref.entity_id === 'cg5-water' ? ['m2c_finite_driftwood_v1'] : [];
-  } };
+  const canonicalFiniteApplicability = { rows: [{ canonical_g5_ref: { id: 'cg5-water', version: 1 },
+    g4_ref: { id: 'g4', version: 1 }, natural_finite_source_profile_refs: ['m2c_finite_driftwood_v1'] }] };
   const natural = { ok: true, approved_write_sets: naturalWrites, expected_state_versions: [],
     commit_rechecks: [], recheck: async () => ({ ok: true }) };
   const result = await setup({ canonicalFiniteApplicability,
@@ -100,7 +97,6 @@ test('canonical arrival at approved commons takes its finite sources from the na
     prepareNatural: async () => natural });
   assert.equal(result.ok, true);
   assert.equal(result.approved_write_sets, naturalWrites);
-  assert.deepEqual(seen, [['cg5-water', 'g4']]);
   // A canonical place that is not an approved row keeps the presence-only write.
   const other = await setup({ canonicalFiniteApplicability,
     siteRecord: { canonical_g5_ref: { entity_id: 'cg5-yard', authoring_version: '1' } } });
@@ -109,7 +105,8 @@ test('canonical arrival at approved commons takes its finite sources from the na
 });
 
 test('a failing natural owner fails the canonical arrival closed', async () => {
-  const result = await setup({ canonicalFiniteApplicability: { profilesFor: () => ['m2c_finite_deadwood_v1'] },
+  const result = await setup({ canonicalFiniteApplicability: { rows: [{ canonical_g5_ref: { id: 'cg5-x', version: 1 },
+      g4_ref: { id: 'g4', version: 1 }, natural_finite_source_profile_refs: ['m2c_finite_deadwood_v1'] }] },
     siteRecord: { canonical_g5_ref: { entity_id: 'cg5-x', authoring_version: '1' } },
     prepareNatural: async () => ({ ok: false }) });
   assert.equal(result.ok, false);

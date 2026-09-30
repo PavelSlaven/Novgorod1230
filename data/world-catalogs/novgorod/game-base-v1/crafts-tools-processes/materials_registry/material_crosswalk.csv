@@ -126,3 +126,4 @@ MAT012,clothing-appearance/garments/materials_colors.csv,Бронза/медны
 MAT013,clothing-appearance/garments/materials_colors.csv,Серебро,mt_silver,ru_name_stem,
 MAT014,clothing-appearance/garments/materials_colors.csv,Золото и эмаль,mt_gold;mt_enamel,ru_name_stem,
 MAT015,clothing-appearance/garments/materials_colors.csv,"Кость, рог и дерево",mt_bone;mt_horn;mt_wood_generic,ru_name_stem,
+imported_cotton_cloth,clothing-appearance/garments/materials_colors.csv,Привозная хлопчатобумажная ткань,mt_textile_generic,ru_name_stem,

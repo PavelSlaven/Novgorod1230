@@ -13,7 +13,7 @@ DENY = [
  ("deny_modern_breeds", ["голштин", "симментал", "меринос", "ландрас", "леггорн"], "современные породы", "XIX–XX в.", ["master:n1230:material_item:liv0024", "master:n1230:material_item:liv0016"], "A", "anachronism"),
 ]
 
-# Species kept out of generation pending an item-specific source check.
+# Source-check queue: species awaiting an item-specific source; reading the queue by generation is a separate task.
 CHECK_QUEUE = [
     {"check_id": "fchk_black_cockroach", "taxon_ru": "Чёрный таракан", "name_lat": "Blatta orientalis", "basis": "analogy", "confidence": "C", "reason": "Время появления Blatta orientalis в Новгородской земле не установлено; это пробел свидетельств, не датировка анахронизма.", "source_request": "Найти датированное исследование синантропной фауны средневекового Новгорода или Северо-Западной Руси.", "status": "needs_check"},
     {"check_id": "fchk_guinea_fowl", "taxon_ru": "Цесарка", "name_lat": "Numida meleagris", "basis": "analogy", "confidence": "D", "reason": "Не установлено появление цесарки в Новгороде около 1230 г.; не переносить неопределённость на павлина.", "source_request": "Датированное свидетельство ввоза или содержания цесарки на Руси/соседних торговых землях до или около 1230 г.", "status": "needs_check"},

@@ -368,6 +368,15 @@ def parse_status(text):
     return [b for b in BANDS if b in got], 'kw:' + ';'.join(hits)
 
 
+# Palette rows owned by this group (not in the costume dataset). basis is filled only here; costume rows carry costume:* refs.
+LOCAL_PALETTE = [dict(
+    palette_id='imported_cotton_cloth', kind='material', name_ru='Привозная хлопчатобумажная ткань',
+    typical_scope='состоятельные слои (купцы, знать, зажиточные горожане); редкий привоз',
+    social_notes='Привозная (страны Востока, Византия, Западная Европа), редкая; не местный хлопок и не фабричный ситец (ANTI017). '
+                 'Общее свидетельство по Древней Руси без локализации; пример Пушкарёвой относится к XIV–XV вв.; прямой находки для Новгорода около 1230 г. в собранных источниках нет.',
+    dye_evidence_refs='', visual_value='',
+    source_refs='book:622242 §1778|book:616519 §409', confidence='C', status=STATUS, basis='analogy')]
+
 MATERIAL_RULES = [  # regex -> palette id (costume materials_palette.csv) or local code
     (r'лён|льнян', 'MAT001'), (r'конопл', 'MAT002'), (r'импортн\w* сукн|тонк\w* шерст', 'MAT004'),
     (r'шерст', 'MAT003'), (r'войлок', 'MAT005'), (r'кож', 'MAT006'), (r'овчин', 'MAT007'),
@@ -992,9 +1001,9 @@ def main():
                     social_notes=p['social_notes'], dye_evidence_refs=DYE_REFS.get(p['palette_id'], ''),
                     visual_value=VISUAL_FABRIC.get(p['palette_id'], VISUAL_COLOR.get(p['palette_id'], '')),
                     source_refs='|'.join(['costume:' + p['palette_id']] + ['costume:' + s for s in split(p['source_ids'])]),
-                    confidence=p['confidence'], status=STATUS) for p in palette],
+                    confidence=p['confidence'], status=STATUS, basis='') for p in palette] + LOCAL_PALETTE,
               ['palette_id', 'kind', 'name_ru', 'typical_scope', 'social_notes', 'dye_evidence_refs', 'visual_value',
-               'source_refs', 'confidence', 'status'])
+               'source_refs', 'confidence', 'status', 'basis'])
 
     # ---------------- outfits
     gm_ok = {g['source_item_id'] or g['gm_id']: g for g in garments}

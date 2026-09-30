@@ -12,13 +12,13 @@
 
 | Файл | Строк | Что |
 |---|---:|---|
-| `flora/trees_shrubs.csv` | 37 | Таксоны `fl_ts_*`: названия (рус., народные, лат., англ.), жизненная форма, влажность, почва, свет, месяцы фенофаз и `flowering_month_precision`, `phenology_by_season` (JSON по 4 сезонам), `phenology_by_month` и `foliage_by_month` (JSON по 12 месяцам), зимний облик, приметы (кора, лист, запах, звук), использование с качеством и ссылками (JSON), качество древесины, опасности (JSON), единицы добычи, счёт Колчина, `category_code`, source_refs, confidence |
-| `flora/tree_habitat_presence.csv` | 840 | Таксон × `pf_id` × сезон (210 пар × 4 сезона): `frequency_class`, вес, `probability_ppm`, роль в местообитании, способ вывода (authored/overlay), сезонное состояние, видимость над снегом, основание, ссылки, confidence |
+| `flora/trees_shrubs.csv` | 38 | Таксоны `fl_ts_*`: названия (рус., народные, лат., англ.), жизненная форма, влажность, почва, свет, месяцы фенофаз и `flowering_month_precision`, `phenology_by_season` (JSON по 4 сезонам), `phenology_by_month` и `foliage_by_month` (JSON по 12 месяцам), зимний облик, приметы (кора, лист, запах, звук), использование с качеством и ссылками (JSON), качество древесины, опасности (JSON), единицы добычи, счёт Колчина, `category_code`, source_refs, confidence |
+| `flora/tree_habitat_presence.csv` | 860 | Таксон × `pf_id` × сезон (215 пар × 4 сезона): `frequency_class`, вес, `probability_ppm`, роль в местообитании, способ вывода (authored/overlay), сезонное состояние, видимость над снегом, основание, ссылки, confidence |
 | `flora/wood_use_kolchin1968.csv` | 27 | Табл. I Колчина 1968: определения пород у 909 изделий Неревского раскопа (19 местных пород, 8 привозных); сумма проверена скриптом = 909 |
 | `flora/woody_denylist.csv` | 20 | Древесные, которых не должно быть живыми в Новгородской земле 1230 г.: 11 поздних интродуцентов, 1 адвентивный вид, 8 вне ареала (все 8 известны как привозная древесина, `wood_import_allowed=yes`) |
-| `flora/woody_categories.csv` | 42 | Предлагаемые категории `flora.woody.*` в формате `places-binding/categories/category_registry.csv`: корень, 4 жизненные формы и 37 таксонов |
+| `flora/woody_categories.csv` | 43 | Предлагаемые категории `flora.woody.*` в формате `places-binding/categories/category_registry.csv`: корень, 4 жизненные формы и 38 таксонов |
 | `flora/landscape_template_woody_check.csv` | 34 | Сверка `world_db.landscape_templates.dominant_vegetation` (region_novgorod_land, снимок) с таксонами и denylist |
-| `flora/sources.csv` | 63 | Реестр источников `src_*` |
+| `flora/sources.csv` | 64 | Реестр источников `src_*` |
 | `reports/build-report.json`, `reports/validate-report.json` | — | Счёты и результат проверок, записанные скриптами |
 
 Счёты по скрипту:
@@ -106,10 +106,10 @@ node scripts/validate.mjs   # приёмка -> reports/validate-report.json, ex
 - **Нет региональных дат фенофаз.** Летопись Рдейского заповедника за 2012 год фенологии растений не содержит, другие годы не скачались. Месяцы взяты из общих статей о видах (средняя полоса). Для Новгорода фазы, вероятно, на 1–2 недели позже; отдельно не сдвигались. Юлианский календарь 1230 года отстаёт от григорианского примерно на 7 дней; сдвиг не вводился.
 - **Месяцев цветения и плодоношения нет** у сосны, берёз, осины, ивы ушастой, ивы мирзинолистной, крушины, яблони (плоды) и вяза гладкого (плоды): источник их не дал.
 - **Перцептивные признаки** (кора, лист) частью взяты из общей морфологии вида (например, «лопастные листья» дуба, «непарноперистые» ясеня); это уровень C. Звуки на ветру есть только у осины (трепет листьев), дуба (сухая листва зимой) и медоносов (гул пчёл). Снеговая нагрузка описана качественно в `winter_look`, без чисел.
-- **В очереди на проверку регионального присутствия** (по строке в `authoring/needs_check.csv`: `flora_betula_nana`, `flora_myrica_gale`, `flora_rhamnus_cathartica`, `flora_salix_phylicifolia`, `flora_salix_lapponum`, `flora_salix_fragilis`, `flora_populus_nigra`; датировка и местный ареал не подтверждены собранными источниками; список не означает отсутствия):
+- **Жостер слабительный (Rhamnus cathartica)** включён (`fl_ts_rhamnus_cathartica`, C): по справочнику (book:333580 §4110–4112) ареал доходит на севере до Петербурга, то есть охватывает Новгородскую землю; цветёт в мае–июне, плоды — август–сентябрь; присутствие около 1230 г. — перенос современного ареала.
+- **В очереди на проверку регионального присутствия** (по строке в `authoring/needs_check.csv`: `flora_betula_nana`, `flora_myrica_gale`, `flora_salix_phylicifolia`, `flora_salix_lapponum`, `flora_salix_fragilis`, `flora_populus_nigra`; датировка и местный ареал не подтверждены собранными источниками; список не означает отсутствия):
   - Betula nana — Плантариум называет Красные книги Тверской, Псковской и Ярославской областей, Новгородской в списке нет;
   - Myrica gale — северо-запад России в целом, побережья;
-  - Rhamnus cathartica;
   - Salix phylicifolia и S. lapponum;
   - Salix fragilis;
   - Populus nigra.

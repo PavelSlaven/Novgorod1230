@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(game-base): D-rated review step 2 — imported walnut, cast copper snake amulet, imported cotton cloth, common buckthorn, Zverin convent included from indexed sources; katana, chintz and local rice as dated denials (#213)
 - data(game-base): D-rated exclusions reviewed under D38 — risk-only rejections to structural needs_check queues, denials only for dated anachronism or physical impossibility, HW009 variant from the manifest (#212)
 - docs(sprint, process): CURRENT_SPRINT — решения D47–D50 и срез задач D49; HOW_WE_WORK — модели Codex по D48/D50, слияние data-PR (D45), показ владельцу, размер файла, правила процесса D48–D50 (§10.8) (#211)
 - data(game-base): needs_check batch 2, variant material mismatches — point pair decisions with per-item reasons, 37 queued with concrete doubts (imp-variant-mat) (#210)

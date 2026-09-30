@@ -103,8 +103,14 @@ for (const r of wp) {
 }
 // D39 research-only entities remain catalogued but cannot be generated automatically.
 // needs_check entries are a source-request queue, not a ban: they do not block names.
-const denyTerms = dn.filter(d => d.kind !== 'needs_check').flatMap(d => split(d.match_terms).map(t => [d.deny_id, t.toLowerCase()]));
-const scan = (where, text) => { const t = (text || '').toLowerCase(); for (const [id, term] of denyTerms) if (t.includes(term)) err(`${where}: denylisted term '${term}' (${id})`); };
+// A match term is a lowercase substring, or 're:<pattern>' (case-insensitive, Unicode) when word boundaries matter.
+const termHits = (text, term) => term.startsWith('re:') ? new RegExp(term.slice(3), 'iu').test(text) : text.toLocaleLowerCase('ru-RU').includes(term.toLocaleLowerCase('ru-RU'));
+const denyTerms = dn.filter(d => d.kind !== 'needs_check').flatMap(d => split(d.match_terms).map(t => [d.deny_id, t]));
+const scan = (where, text) => { const t = text || ''; for (const [id, term] of denyTerms) if (termHits(t, term)) err(`${where}: denylisted term '${term}' (${id})`); };
+for (const [id, text, hit] of [['deny_katana', 'катана', true], ['deny_katana', 'Клинок катаны', true], ['deny_katana', 'katana', true], ['deny_katana', 'катаный', false], ['deny_katana', 'обкатанный', false], ['deny_katana', 'катание', false]]) {
+  const d = dn.find(x => x.deny_id === id);
+  if (!d || split(d.match_terms).some(term => termHits(text, term)) !== hit) err(`denylist probe: ${id} on '${text}' should ${hit ? '' : 'not '}match`);
+}
 for (const r of wp) if (r.generation_policy !== 'research_only') scan('wp ' + r.wp_id, [r.name_ru, r.name_en, r.material].join(' '));
 for (const r of sec) scan('security ' + r.ms_id, r.name_ru);
 for (const r of dn) { conf('deny ' + r.deny_id, r.confidence); checkRefs('deny ' + r.deny_id, split(r.source_refs)); }
@@ -225,8 +231,8 @@ for (const authored of archiveManifest.records) {
     archiveNames.add(name);
     familyRoots.forEach(root => archiveSemanticRoots.set(root, authored.derivation));
     if (r.dedup_result !== 'unique') err(`${w}: dedup result is ${r.dedup_result}`);
-    const denyTerms = dn.filter(d => d.kind !== 'needs_check').flatMap(d => split(d.match_terms).map(term => term.toLocaleLowerCase('ru-RU')));
-    if (denyTerms.some(term => term && authored.archive_name.toLocaleLowerCase('ru-RU').includes(term))) err(`${w}: candidate name matches weapon denylist`);
+    const denyTerms = dn.filter(d => d.kind !== 'needs_check').flatMap(d => split(d.match_terms));
+    if (denyTerms.some(term => term && termHits(authored.archive_name, term))) err(`${w}: candidate name matches weapon denylist`);
   } else if (authored.decision === 'rejected') {
     const ownerMismatch = !authored.guard_id && /^Owner mismatch:/i.test(authored.reason || '');
     if (!ownerMismatch && (!authored.guard_id || !denyIds.has(authored.guard_id))) err(`${w}: rejection lacks resolvable denylist guard or explicit owner-mismatch reason`);

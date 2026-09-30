@@ -1,26 +1,26 @@
 {
   "generated_by": "scripts/build.mjs",
   "files": {
-    "flora/trees_shrubs.csv": 37,
-    "flora/tree_habitat_presence.csv": 840,
+    "flora/trees_shrubs.csv": 38,
+    "flora/tree_habitat_presence.csv": 860,
     "flora/wood_use_kolchin1968.csv": 27,
     "flora/woody_denylist.csv": 20,
-    "flora/woody_categories.csv": 42,
-    "flora/sources.csv": 63,
+    "flora/woody_categories.csv": 43,
+    "flora/sources.csv": 64,
     "flora/landscape_template_woody_check.csv": 34
   },
   "taxa_by_life_form": {
     "tree": 14,
     "small_tree": 5,
-    "shrub": 14,
+    "shrub": 15,
     "dwarf_shrub": 4
   },
   "taxa_by_confidence": {
     "B": 20,
-    "C": 15,
+    "C": 16,
     "A": 2
   },
-  "taxon_pf_pairs": 210,
+  "taxon_pf_pairs": 215,
   "pf_used": [
     "pf_bog",
     "pf_broadleaf_woodland",
@@ -42,7 +42,7 @@
   "summer_presence_rows_by_class": {
     "common": 86,
     "ubiquitous": 7,
-    "contextual": 90,
+    "contextual": 95,
     "rare": 27
   },
   "kolchin_table1_sum": 909,

@@ -12,7 +12,7 @@
     "craft_processes/fish_cleaning_products.csv": 37,
     "workshops/workshops.csv": 21,
     "materials_registry/materials.csv": 103,
-    "materials_registry/late_materials_denylist.csv": 27,
+    "materials_registry/late_materials_denylist.csv": 29,
     "sources/sources.csv": 25
   },
   "archive_inclusions": {

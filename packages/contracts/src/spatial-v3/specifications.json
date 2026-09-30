@@ -6928,15 +6928,16 @@
       "invariants": [
         "movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.",
         "New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.",
-        "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state.",
+        "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).",
         "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.",
         "stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.",
         "closed requires closed_result and closed_change_set_id.",
         "closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.",
         "closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.",
-        "mirrored flips only in the commit of a turn_back interval, together with the progress mirror (1_000_000 minus progress); while mirrored, progress, cost, method, factors and availability are those of the mirrored segment of the step segment (section 4.10.1).",
         "closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.",
         "closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.",
+        "segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.",
+        "mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.",
         "closed state cannot be reactivated.",
         "UNIQUE one active, paused or stranded state per execution step."
       ]
@@ -7216,9 +7217,14 @@
           "type": "factual_spatial_context_snapshot"
         },
         {
+          "name": "turn_back",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "result_kind",
           "required": true,
-          "type": "enum[progressed, segment_completed, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
+          "type": "enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
         },
         {
           "name": "result_code",
@@ -7245,7 +7251,12 @@
       "invariants": [
         "Exact elapsed and cumulative state reconcile without float conversion.",
         "direct_party_clock owns one clock update; shared_root_transport_clock owns none.",
-        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged."
+        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.",
+        "Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.",
+        "turn_back is true only for the first interval after a paused_in_transit result, requires a mirrored segment whose dynamic access passes and a travel-state progress in 1..999999, and permits only the outcomes progressed, paused_in_transit and returned_to_departure; a refused turn back is an ordinary blocked_before_progress with turn_back false and no change of travel state other than its audit fields.",
+        "Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.",
+        "segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit; no other outcome permits actual progress one million.",
+        "A retried request reuses idempotency_record_id and returns the committed result: the mirroring is part of that commit and never applies twice."
       ]
     },
     {

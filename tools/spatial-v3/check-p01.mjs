@@ -53,9 +53,12 @@ if (npcContracts.map((entries) => entries.length).join(',') !== '2,3,7' || npcCo
 const spatialAmendmentText = standard.slice(standard.indexOf('# Приложение F.'));
 const spatialAmendmentContracts = [...spatialAmendmentText.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
 const spatialAmendmentErrors = [...spatialAmendmentText.slice(spatialAmendmentText.indexOf('## F.2.')).matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]);
-if (spatialAmendmentContracts.length !== 14 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
-const overlapErrors = preparationSnapshotMemberOverlapErrors(temporalAmendment, standard);
-if (overlapErrors.length) throw new Error(`Appendix F does not mirror the temporal preparation_snapshot_member block:\n${overlapErrors.join('\n')}`);
+if (spatialAmendmentContracts.length !== 17 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
+const overlapErrors = [
+  ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard),
+  ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard, 'party_traversal_interval_result', ['  - Existing six traversal outcomes'])
+];
+if (overlapErrors.length) throw new Error(`Appendix F does not mirror the temporal preparation_snapshot_member / party_traversal_interval_result blocks:\n${overlapErrors.join('\n')}`);
 const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat(), ...spatialAmendmentContracts]);
 const currentErrors = new Set([...errors, ...temporalErrors, ...spatialAmendmentErrors]);
 if (currentContracts.size !== 228 || currentErrors.size !== 86) throw new Error('Current 4.7 target union audit failed');

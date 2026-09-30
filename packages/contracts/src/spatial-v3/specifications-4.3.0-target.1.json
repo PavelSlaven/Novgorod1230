@@ -5834,15 +5834,10 @@
         {
           "name": "policy_kind",
           "required": true,
-          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]"
+          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points]"
         },
         {
           "name": "progress_slice_ppm",
-          "required": false,
-          "type": "positive_integer"
-        },
-        {
-          "name": "interval_minutes",
           "required": false,
           "type": "positive_integer"
         },
@@ -5864,10 +5859,9 @@
         }
       ],
       "invariants": [
-        "segment_once forbids slice, interval and explicit points.",
-        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.",
-        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.",
-        "fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.",
+        "segment_once forbids slice and explicit points.",
+        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids explicit points.",
+        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice.",
         "Slicing policy cannot change final duration under identical factor sequence."
       ]
     },
@@ -6746,11 +6740,6 @@
           "type": "sha256_hex"
         },
         {
-          "name": "mirrored",
-          "required": true,
-          "type": "boolean"
-        },
-        {
           "name": "status",
           "required": true,
           "type": "enum[active, paused_in_transit, stranded_in_transit, closed]"
@@ -6763,7 +6752,7 @@
         {
           "name": "closed_result",
           "required": false,
-          "type": "enum[completed, interrupted_to_anchor, returned_to_departure, superseded]"
+          "type": "enum[completed, interrupted_to_anchor, superseded]"
         },
         {
           "name": "state_version",
@@ -6784,14 +6773,12 @@
       "relations": [],
       "invariants": [
         "movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.",
-        "New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.",
+        "New state starts with progress zero, exact cumulative time zero and next_interval_ordinal zero.",
         "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state.",
         "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.",
         "stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.",
         "closed requires closed_result and closed_change_set_id.",
-        "closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.",
-        "closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.",
-        "mirrored flips only in the commit of a turn_back interval, together with the progress mirror (1_000_000 minus progress); while mirrored, progress, cost, method, factors and availability are those of the mirrored segment of the step segment (section 4.10.1).",
+        "closed_result=completed requires progress one million and null stranded_reason_code.",
         "closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.",
         "closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.",
         "closed state cannot be reactivated.",

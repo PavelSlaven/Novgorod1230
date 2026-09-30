@@ -11,9 +11,8 @@ import {
 // D49 / rt-ux: the first screen shows the canonical-connection passages that the visibility owner
 // discloses (`readCurrentConnectionDisclosure`, the same owner as a turn; local edges and exits are
 // not on the first screen). The start seed follows the request id, so several seeds are tried per start.
-// KNOWN LIMIT LW-097: under `poor` visibility (dense fog) the owner discloses nothing, although
-// Spatial 4.7.0 §7.1.1 keeps every non-hidden line available. That branch pins today's behaviour, it
-// is not a requirement, and it must flip when LW-097 is closed.
+// Spatial 4.7.0 §7.1.1: visibility is not availability, so the passages are listed under `poor`
+// visibility (dense fog) too (rt-lines phase 0, LW-097).
 const STARTS = ['novgorod_vikhtuy_work_storage_v1', 'novgorod_vikhtuy_household_cluster_v1'];
 const SEEDS = 6;
 
@@ -27,17 +26,13 @@ test('v17 production start: the first screen route panel lists the visible passa
     const repository = createLowerDvinaTracePhase1ARepository({ query: env.partyPool.query.bind(env.partyPool) });
     for (const scenarioId of STARTS) {
       await t.test(scenarioId, async () => {
-        let seen = 0;
+        let fog = 0;
         for (let seed = 0; seed < SEEDS; seed += 1) {
           const opening = await runtime.startNewGame({
             scenario_id: scenarioId, request_id: `opening-route-${scenarioId}-${seed}` });
           const labels = routeMovementLabels(opening.screen);
           const weather = (await repository.loadInternal(opening.party_id)).environment_snapshot.weather_state;
-          if (weather.visibility === 'poor') {
-            assert.deepEqual(labels, [], `LW-097 known limit (${weather.weather_state_id})`);
-            continue;
-          }
-          seen += 1;
+          if (weather.visibility === 'poor') fog += 1;
           assert.ok(labels.length > 0, `${scenarioId} seed ${seed} (${weather.weather_state_id}): no passages`);
           assert.ok(labels.every((label) => typeof label === 'string' && label.trim()), labels.join(' | '));
           assert.equal(new Set(labels).size, labels.length, `labels are unique: ${labels.join(' | ')}`);
@@ -45,7 +40,7 @@ test('v17 production start: the first screen route panel lists the visible passa
           assert.deepEqual(routeMovementLabels((await runtime.getPartyScreen(opening.party_id)).screen), labels,
             'the stored screen equals the opening screen');
         }
-        assert.ok(seen > 0, `no start of ${scenarioId} with visibility better than poor in ${SEEDS} seeds`);
+        console.error(`${scenarioId}: ${fog} of ${SEEDS} seeds under poor visibility, all listed passages`);
       });
     }
   });

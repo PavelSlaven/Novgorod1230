@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { mkdtemp, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import {
   bootstrapV17PresenceE2e,
@@ -15,6 +18,7 @@ import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 
 const TAKE = 'Беру валежник.';
+const MAKE = 'Оторву полосу от подола рубахи.';
 const TAKE_THREE = 'Возьму три палки из валежника.';
 const WALK = PRESENCE_E2E_MOVE_TEXT;
 const LOOK = 'Осматриваюсь вокруг.';
@@ -103,6 +107,30 @@ function installTakeFetch(seen) {
         clarification: null, direct_result_kind: null, operation_choice: null,
         reason_code: 'ordinary_material_prerequisite', reason: 'Сначала источник.' });
       }
+      if (request.root_player_action === MAKE) {
+        seen.makeSteps.push(request.step_index);
+        const shirt = request.player_safe_state.items.find(({ name, placement }) =>
+          name === 'нижняя рубаха' && placement?.holder_character_id === actor);
+        assert.ok(shirt, 'own shirt must be a planner-visible item');
+        return respond({ interpretation: { player_goal: MAKE, grounded_attempt: MAKE,
+          adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending',
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+        direct_result_kind: null, operation_choice: null,
+        operations: [{ op: 'request_item_use', actor_ref: actor, item_ref: shirt.item_id,
+          use_kind: 'other', target_refs: [], action_production: { source_refs: [shirt.item_id],
+            tool_refs: [], requested_output_count: null, identity_mode: 'independent_outputs',
+            origin: 'direct_partition', result_class: 'partial_transformation',
+            material_extent: 'minor', output_class: 'ordinary_mundane',
+            result_descriptor: { display_name: 'полоса ткани',
+              physical_description: 'отрезанная полоса льняной ткани',
+              qualitative_facts: ['отделена от подола'], removed_physical_fact_refs: [],
+              inscription_text: null, physical_form: 'long',
+              source_fact_delta: { physical_description: 'рубаха с укороченным подолом',
+                qualitative_facts: ['подол укорочен'], removed_physical_fact_refs: [],
+                physical_form: 'regular' } } } }],
+        check: null, continuation: null, clarification: null, reason_code: 'action_production',
+        reason: 'Игрок отрывает полосу от рубахи.' });
+      }
       const moves = turnStepOperationChoices(request).filter(({ operation }) =>
         operation.op === 'request_movement');
       const pick = moves.find(({ operation }) => operation.movement_kind === 'local'
@@ -139,17 +167,26 @@ async function qualifiedSettings() {
 
 async function rows(pool, sql, params) { return (await pool.query(sql, params)).rows; }
 
-test('take from a finite source at a generated G5: item in hand, stock -1, same after restart',
+test('make at the canonical start (A1) and take at a generated G5: results persist across a restart',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t, { withTestWaveEnrichment: false });
-    const seen = { ordinaryModes: [], plannerSteps: [], auditorCalls: 0, nextQuantity: 1 };
+    const seen = { ordinaryModes: [], plannerSteps: [], auditorCalls: 0, nextQuantity: 1, makeSteps: [] };
     const restoreFetch = installTakeFetch(seen);
     t.after(() => restoreFetch());
     const llmSettings = await qualifiedSettings();
-    const { runtime } = await createPresenceProductionRoot({ ...env, llmSettings });
+    // Test-only approval of the A1 class rule (the committed file is a pending candidate).
+    const classDir = await mkdtemp(join(tmpdir(), 'a1-class-e2e-'));
+    const a1ApplicabilityClassPath = join(classDir, 'a1-applicability-class.json');
+    await writeFile(a1ApplicabilityClassPath, JSON.stringify({ schema: 'rus.a1_applicability_class.v1',
+      status: 'approved', world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',
+      rule: { kind: 'all_g5_sites' }, approval: { approved_by: 'test-fixture',
+        approved_on: '2026-09-30', approved_path: 'test', approved_commit: 'test' } }));
+    const extraConfig = { a1ApplicabilityClassPath };
+    const { runtime } = await createPresenceProductionRoot({ ...env, llmSettings, extraConfig });
     let reloaded = null;
     try {
       let partyId = null;
+      let madeSnapshot = null;
       for (let attempt = 0; attempt < 6 && partyId == null; attempt += 1) {
         const opening = await runtime.startNewGame({
           scenario_id: 'novgorod_pine_ridge_approach_v1',
@@ -162,6 +199,18 @@ test('take from a finite source at a generated G5: item in hand, stock -1, same 
         // Some parties start in fog: no visible passage (documented risk) — take a fresh party.
         const lookScreen = (await runtime.getPartyScreen(opening.party_id)).screen;
         if ((lookScreen.panels?.route?.data?.movement?.options ?? []).length === 0) continue;
+        // Make (A1) at the canonical start place: tear a strip from the own shirt.
+        const madeSql = `SELECT item_id, state_version FROM party_runtime.party_items
+          WHERE party_id=$1 AND state::text LIKE '%action_production%' ORDER BY item_id`;
+        const before = await rows(env.partyPool, madeSql, [opening.party_id]);
+        await runtime.submitTurn(opening.party_id, { raw_text: MAKE,
+          request_id: `finite-take-${attempt}-make` });
+        const made = await rows(env.partyPool, madeSql, [opening.party_id]);
+        assert.deepEqual(seen.makeSteps, [1]);
+        assert.equal(made.length, before.length + 2, 'new strip + changed source shirt');
+        assert.ok(made.some(({ item_id: id }) => id.startsWith('a1-result:')), 'new strip item');
+        assert.ok(made.some(({ state_version: v }) => v === '2'), 'source shirt changed in place');
+        madeSnapshot = { sql: madeSql, made };
         for (const step of [WALK, WALK, WALK]) {
           await runtime.submitTurn(opening.party_id, { raw_text: step,
             request_id: `finite-take-${attempt}-${n++}` });
@@ -204,11 +253,12 @@ test('take from a finite source at a generated G5: item in hand, stock -1, same 
       assert.equal((await stock())[0].quantity_numerator, '56');
       assert.equal((await held()).length, 2);
 
-      reloaded = await createPresenceProductionRoot({ ...env, llmSettings });
+      reloaded = await createPresenceProductionRoot({ ...env, llmSettings, extraConfig });
       const screen = await reloaded.runtime.getPartyScreen(partyId);
       assert.ok(screen.screen.main_prose.trim().length > 0);
       assert.equal((await stock())[0].quantity_numerator, '56');
       assert.equal((await held()).length, 2);
+      assert.deepEqual(await rows(env.partyPool, madeSnapshot.sql, [partyId]), madeSnapshot.made);
     } finally {
       if (seen.stubError) console.error('SCRIPTED MODEL ERROR', seen.stubError);
       if (reloaded) await reloaded.runtime.close();

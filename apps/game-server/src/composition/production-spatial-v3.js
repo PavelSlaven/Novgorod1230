@@ -125,7 +125,9 @@ export async function createSpatialV3ProductionCompositionRoot({
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
       rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
-      verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog });
+      verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
+      ...(config.a1ApplicabilityClassPath == null ? {}
+        : { a1ApplicabilityClassPath: config.a1ApplicabilityClassPath }) });
     const [profiles, spatialSemanticProfile, scenePresentation,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([

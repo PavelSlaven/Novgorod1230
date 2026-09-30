@@ -11,16 +11,16 @@
   },
   "approved_data": {
     "manifest_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json",
-    "manifest_sha256": "bc57120f7e7eb407f18e4649864e52b301fb82d1a8fb5b34eb73960cf0b9ec10",
+    "manifest_sha256": "47396ee6ce902caa0b26041275fb231d3dc6a0d74716c88aacf8bf7bdaa4aca8",
     "manifest_status_in_repository": "draft",
     "approval_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json",
-    "approval_sha256": "325d2e34c65bbaf75c552027bf9379108f99cf0ad6dc6e37794072a37d3ddaa2",
-    "source_commit": "c79852e7b2119630954783a138f920752ef9f55f",
+    "approval_sha256": "218d413005f801fc1e8a53253b4a37f46198a34e96c0da536cae7809006e5034",
+    "source_commit": "81d965760627482f4173cabb6bc4d54d1959dacb",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "datasets": [
       {
         "table": "source_records",
-        "sha256": "532a954150a02e63d0b741b766a91284b7589c52b842fed9b9f470d915b3a181",
+        "sha256": "f9b522fef7d5f127fe69857259bb1c0d721c18cc3a2d1e790515c92d79c6be23",
         "rows": 1
       },
       {
@@ -30,57 +30,57 @@
       },
       {
         "table": "place_families",
-        "sha256": "0fca654b896ea815fd533ddb972e91c2a43f01f8cd0ac5c57aa9b29dc69cbea5",
+        "sha256": "1678a10b7c99ceaf02959e8b9a215cc150e67b22bc92482e44f842e0d18b487c",
         "rows": 45
       },
       {
         "table": "spatial_node_place_family_bindings",
-        "sha256": "b00d1f73b2dac510f7c832a330cb4d955bcce4654ea5da9122c7d853f49a303c",
+        "sha256": "7d0c6c92b62964c2eb1c153c059432a9c013cab968e13a87155d04928f04367a",
         "rows": 227
       },
       {
         "table": "presence_rules",
-        "sha256": "af40e682608b087d0dcf96cc94e64b96781a680a8fc3e1d2a9f436eef869d638",
+        "sha256": "420e40272115d3a38a3807fb4d7c958b357c0b7b4ba127c0da3a22bf0314e63a",
         "rows": 5737
       },
       {
         "table": "water_body_presence_facets",
-        "sha256": "21c7577f1bf70eed57b83c3615678bf28eb19c78392bdb5e8896b7634045cb8f",
+        "sha256": "4ff62558f2b5c9f58cf7efd45cf9c8a4eaeecbd99ca64fbca8f231c60e617e7a",
         "rows": 1907
       },
       {
         "table": "npc_relationship_materialization_rules",
-        "sha256": "00c88d1b17c4fa020d8eb4e3c00f263b0a1b1fda3a38dcbf9404b114d873e1de",
-        "rows": 53
+        "sha256": "b20219c39db112cf7f4e1a7e78e75e4236384d4c36cfb352ba6620f57e635f00",
+        "rows": 46
       },
       {
         "table": "speech_address_forms",
-        "sha256": "40d447326fff0db4671af240fea8b80d2d49a85b8b3c0fd86763b1e6240a992b",
-        "rows": 98
+        "sha256": "6b6da2ffd9712867c15413e93258126d913b4de7f74efc94f796b2738ab88655",
+        "rows": 84
       },
       {
         "table": "household_composition_profiles",
-        "sha256": "1443151343fe5fa50e669515df278756f3938e2f2fe4c168def80d3cc81ca0e5",
+        "sha256": "ec4749a5ac1eeae508c6cffd2b0a5d254d69a01702e91abdc7a2d78ada4f3dae",
         "rows": 139
       },
       {
         "table": "slot_instance_variants",
-        "sha256": "001eb733856cc434fe5e79f118a8e29d7c3c1d8f9b7ac09c0bd2f27f2938cc34",
+        "sha256": "a3d5437886785f5db5d6b90265b85e5eaa81488c02b5c496391e033fbbcd657c",
         "rows": 8
       },
       {
         "table": "fauna_phase_activity_rules",
-        "sha256": "a44d1d8e70e704dab4898aa1e7a651ccf62a929ecd3f21af0576baf222511765",
+        "sha256": "b2b7e0fe60ed18c5a2aaabdf05ea58459c3428896f7e0fafec024f2104e96a88",
         "rows": 3640
       },
       {
         "table": "npc_schedule_routine_rules",
-        "sha256": "46c4d716a8ea70bc10074b846211de7ad9ca8b60c0560a7da2bc2cd6950a36bb",
-        "rows": 167
+        "sha256": "518955adff64197fb4e8bfbfec9dd18bb275384d8732bbef6f2d039955d17579",
+        "rows": 161
       },
       {
         "table": "place_population_composition_rules",
-        "sha256": "6682b7dff728f40f19f55b91398e389fa651a8cf3222a53f7b4a853f6bb40024",
+        "sha256": "75a65bd437b72aad81db2194430c440359968356d28016cc3d270834b516486a",
         "rows": 17
       },
       {
@@ -96,10 +96,10 @@
     "builder_path": "scripts/v17-m2c-npc-wave-stage.mjs",
     "importer_path": "tools/spatial-v3/p12-authoring-importer.mjs",
     "wrapper": "buildImportWithReadbackSql over a temporary copy of the wave directory whose manifest status is approved; the repository manifest stays draft",
-    "commit_sha256": "24aeb0fa49a9c37870559b14207a0c032f9033bf0d4a9e77c22abe3064237b95",
-    "commit_bytes": 43547281,
-    "rollback_sha256": "4b49398bcbb0532b6feb812d21e9c607564724055cfea9ec248e65e7f9107c0c",
-    "rollback_bytes": 43547283
+    "commit_sha256": "98470db84b82210c64608ee46764b77f99b785c03b04b4c620f8709bdb24b01a",
+    "commit_bytes": 43415236,
+    "rollback_sha256": "e0a41b97918fbfb6c0eeb3ccf7bcc154650c8341609590343dc2c72f5ccc54e9",
+    "rollback_bytes": 43415238
   },
   "expected_readback": {
     "scope": "rows added by the wave import in a fresh bootstrap after P12 and temporal-v4",
@@ -110,12 +110,12 @@
       "spatial_node_place_family_bindings": 227,
       "presence_rules": 5737,
       "water_body_presence_facets": 1907,
-      "npc_relationship_materialization_rules": 53,
-      "speech_address_forms": 98,
+      "npc_relationship_materialization_rules": 46,
+      "speech_address_forms": 84,
       "household_composition_profiles": 139,
       "slot_instance_variants": 8,
       "fauna_phase_activity_rules": 3640,
-      "npc_schedule_routine_rules": 167,
+      "npc_schedule_routine_rules": 161,
       "place_population_composition_rules": 17,
       "spatial_v3_nodes": 0
     }
@@ -133,5 +133,5 @@
   "activation": "none",
   "authority": "data availability only: readers for composition/routines/speech/household tables are separate steps (D-1/D-2)",
   "independent_import_attestation": null,
-  "request_digest": "13bed293a32ae0ba700980ad7f7dcbbcd1fee504972deee3966325630495fc14"
+  "request_digest": "4ca7a2554aa202e2c85f1ffe5aa0ba4e899219ab6f21bb1bab8a3ab52c776175"
 }

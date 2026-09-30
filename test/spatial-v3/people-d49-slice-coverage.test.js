@@ -85,9 +85,7 @@ test('every slice place after the start has a composition group whose subject re
       assert.equal(group.count_weights.length, group.max_count - group.min_count + 1, `${group.group_id}: count_weights length`);
       for (const subject of group.weighted_subjects) {
         const profile = resolveSubject(subject);
-        // The crossing guard is a documented gap (occupation not approved in the actor catalog); a group at
-        // the same place family must still give the place a person.
-        if (!profile) { assert.equal(subject.subject_ref, 'nov_occ_crossing_guard', `${group.group_id}: profile for ${subject.subject_ref}`); continue; }
+        assert.ok(profile, `${group.group_id}: profile for ${subject.subject_ref}`);
         assert.equal(profileProblem(profile, g4Of(site)), null, `${name} ${subject.subject_ref} -> ${profile.id}@${profile.version}`);
         assert.ok(routines.some((row) => row.scope_ref === pf && row.subject_kind === subject.subject_kind
           && row.subject_ref === subject.subject_ref), `${name}: D-1 routine of ${subject.subject_ref} on ${pf}`);

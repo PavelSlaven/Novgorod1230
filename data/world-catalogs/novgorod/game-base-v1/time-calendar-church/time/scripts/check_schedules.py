@@ -152,7 +152,7 @@ def check_dark_onsite(rows):
                     and (elapsed < sunrise or end > sunset)):
                 assert row["day_type"] == "night_fishing" or (
                     row["day_type"] == "night_watch" and row["occupation_ref"] in {
-                        "nov_occ_crossing_guard", "nov_occ_church_guard", "nov_occ_market_guard"}), row["sch_id"]
+                        "nov_occ_church_guard", "nov_occ_market_guard"}), row["sch_id"]
             elapsed = end
 
 

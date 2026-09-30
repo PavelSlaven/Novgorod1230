@@ -16,7 +16,7 @@
     "empty_reason": "Болото не создаёт постоянного населения; проводник приходит по маршруту.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -32,7 +32,7 @@
     "empty_reason": "Нет источника для обычного присутствия, календаря или частоты посещения могильника около 1230 года.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -54,7 +54,7 @@
     "empty_reason": "Лесные работники приходят из поселения; постоянный лесной двор не задан.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -88,29 +88,6 @@
         "rule_ref": "rule:one_per_work_role_v1",
         "no_source": "",
         "confidence": "C"
-      },
-      {
-        "group_id": "pf_ferry_landing.crossing_guard",
-        "group_kind": "workers",
-        "min_count": 1,
-        "max_count": 1,
-        "count_weights": [
-          1
-        ],
-        "weighted_subjects": [
-          {
-            "subject_kind": "occupation",
-            "subject_ref": "nov_occ_crossing_guard",
-            "profile_ref": null,
-            "household_member_class": null,
-            "weight": 1
-          }
-        ],
-        "household_profile_ref": null,
-        "source_refs": "",
-        "rule_ref": "rule:one_per_work_role_v1",
-        "no_source": "",
-        "confidence": "C"
       }
     ],
     "scheduled_absences": [
@@ -120,21 +97,13 @@
         "seasons": [
           "winter"
         ],
-        "reason": "Речной перевоз зимой не действует; перевозчик и сторож — на ледовой переправе."
-      },
-      {
-        "subject_kind": "occupation",
-        "subject_ref": "nov_occ_crossing_guard",
-        "seasons": [
-          "winter"
-        ],
-        "reason": "Речной перевоз зимой не действует; перевозчик и сторож — на ледовой переправе."
+        "reason": "Речной перевоз зимой не действует; перевозчик — на ледовой переправе."
       }
     ],
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -156,7 +125,7 @@
     "empty_reason": "Пастух приходит на луг, постоянный двор здесь не установлен.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -178,7 +147,7 @@
     "empty_reason": "Охотник приходит на промысел; постоянное поселение на опушке не задано.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -200,7 +169,7 @@
     "empty_reason": "Лесная тропа транзитная.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -222,7 +191,7 @@
     "empty_reason": "Охотничьи угодья не задают постоянного двора.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -244,7 +213,7 @@
     "empty_reason": "Ручей транзитный, постоянное поселение не задано.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -291,7 +260,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -370,7 +339,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": [
         {
@@ -405,7 +374,7 @@
     "empty_reason": "Русло не создаёт постоянное население; лодочник движется по нему.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -451,7 +420,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -473,7 +442,7 @@
     "empty_reason": "Дорога транзитная.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -539,7 +508,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -579,7 +548,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -599,11 +568,6 @@
       },
       {
         "subject_kind": "occupation",
-        "subject_ref": "nov_occ_crossing_guard",
-        "reason": "Сторож закреплён за береговой пристанью; зимой выходит на ледовую переправу."
-      },
-      {
-        "subject_kind": "occupation",
         "subject_ref": "nov_occ_winter_road_worker",
         "reason": "Сезонная дорожная работа не создаёт постоянного работника с ледовой переправой."
       }
@@ -611,7 +575,7 @@
     "empty_reason": "Ледовая переправа сезонная, постоянного жителя или работника не создаёт.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "slot_relationships": []
     }

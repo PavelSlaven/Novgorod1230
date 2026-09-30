@@ -161,8 +161,24 @@ function nearestTangent(point, skeletons) {
   }
   return best;
 }
+function bankToBankCrossing(from, to, skeleton) {
+  if (!Number.isFinite(skeleton?.width_m)) return false;
+  const mid = [(from.lon + to.lon) / 2, (from.lat + to.lat) / 2];
+  const tangent = nearestTangent(mid, [skeleton]);
+  if (!tangent) return false;
+  const side = point => {
+    const p = [point.lon * Math.cos(mid[1] * radians), point.lat];
+    return {
+      signed: tangent.x * (p[1] - tangent.anchor_y) - tangent.y * (p[0] - tangent.anchor_x),
+      near: pointFlowDistance(mapPoint(point), skeleton) <= skeleton.width_m / 2 + 50,
+    };
+  };
+  const a = side(from); const b = side(to);
+  return a.near && b.near && a.signed * b.signed < 0;
+}
 function riverDirection(from, to, flowSkeleton, crossing = false) {
-  if (!flowSkeleton) return { direction: 'неоценимо', basis: 'нет назначенного водоёма для водной линии' };
+  if (!flowSkeleton) return { direction: 'неоценимо', basis: 'нет назначенного водоёма для водной линии',
+    reason: 'водная линия не привязана к каркасу течения' };
   const mid = [(from.lon + to.lon) / 2, (from.lat + to.lat) / 2];
   const tangent = nearestTangent(mid, flowSkeleton ? [flowSkeleton] : []);
   if (!tangent) throw new Error(`Water line ${from.id} -> ${to.id} has no flow-skeleton tangent`);
@@ -173,17 +189,23 @@ function riverDirection(from, to, flowSkeleton, crossing = false) {
   if (flowSkeleton.waterbody_type === 'old_channel_pool' || flowSkeleton.waterbody_type === 'reed_backwater') {
     return { direction: 'без течения', basis: `стоячая вода ${flowSkeleton.waterbody_type}; каркас ${tangent.id}`,
       along_projection: Math.round(along * 100000) / 100000,
-      across_projection: Math.round(across * 100000) / 100000 };
+      across_projection: Math.round(across * 100000) / 100000,
+      along_projection_m: along * 111195, across_projection_m: across * 111195 };
   }
-  if (Math.hypot(along, across) < 1e-12) return { direction: 'нулевая линия', basis: `каркас ${tangent.id}; нулевая проекция` };
+  if (Math.hypot(along, across) < 1e-12) return { direction: 'неоценимо', basis: `каркас ${tangent.id}; нулевая проекция`,
+    reason: 'нулевая проекция линии на каркас течения' };
   const nearPerpendicular = Math.abs(along) <= Math.hypot(along, across) * 0.05;
+  const isCrossing = crossing || (Math.abs(along) < Math.hypot(along, across) / 2
+    && bankToBankCrossing(from, to, flowSkeleton));
   return {
-    direction: crossing ? 'поперёк течения' : nearPerpendicular ? 'неоценимо'
+    direction: isCrossing ? 'поперёк течения' : nearPerpendicular ? 'неоценимо'
       : along > 0 ? 'вниз по течению' : 'вверх по течению',
-    basis: `проекция на касательную каркаса ${tangent.id}${nearPerpendicular && !crossing ? '; поперечная геометрия без явной переправы' : ''}`,
+    basis: `проекция на касательную каркаса ${tangent.id}${nearPerpendicular && !isCrossing ? '; почти поперечная геометрия' : ''}`,
+    reason: nearPerpendicular && !isCrossing ? 'почти поперечный ход без доказанных противоположных берегов' : null,
     along_projection: Math.round(along * 100000) / 100000,
     across_projection: Math.round(across * 100000) / 100000,
-    crossing_geometry_valid: !crossing || (Math.abs(across) > Math.abs(along)
+    along_projection_m: along * 111195, across_projection_m: across * 111195,
+    crossing_geometry_valid: !isCrossing || (Math.abs(across) > Math.abs(along)
       && geometry(from, to).distance_m <= flowSkeleton.width_m * 1.5),
   };
 }
@@ -302,7 +324,71 @@ function dryFootprintTouchesCorridor(place, ring, skeleton) {
   return false;
 }
 
-export function validateSpatialTopology(candidate, lines) {
+export function validateFlowContinuity(candidate, cellCorners) {
+  const skeletons = candidate.flow_skeletons ?? [];
+  const validSkeletons = skeletons.filter(item => Number.isFinite(item.width_m) && item.width_m > 0
+    && Array.isArray(item.points) && item.points.length > 1);
+  const flowing = validSkeletons.filter(item => Number.isFinite(item.current_bias_kmh) && item.current_bias_kmh > 0);
+  const corners = new Map((cellCorners ?? []).map(point => [point.name, mapPoint({ lon: point.longitude, lat: point.latitude })]));
+  const edges = [['southwest', 'southeast', 'south'], ['southeast', 'northeast', 'east'],
+    ['northeast', 'northwest', 'north'], ['northwest', 'southwest', 'west']]
+    .filter(([a, b]) => corners.has(a) && corners.has(b))
+    .map(([a, b, name]) => ({ name, a: corners.get(a), b: corners.get(b) }));
+  const endpoint = (skeleton, index) => {
+    const [lat, lon] = index === 0 ? skeleton.points[0] : skeleton.points.at(-1);
+    return { lat, lon };
+  };
+  const boundaryDistance = point => Math.min(Infinity, ...edges.map(edge =>
+    pointSegmentDistance(mapPoint(point), edge.a, edge.b)));
+  const touchesNetwork = (skeleton, point, wantedId = null) => validSkeletons.some(other => other.id !== skeleton.id
+    && (!wantedId || other.id === wantedId)
+    && pointFlowDistance(mapPoint(point), other) <= skeleton.width_m / 2 + other.width_m / 2 + 1);
+  const endpointRows = [];
+  const issues = [];
+  for (const skeleton of flowing) for (const index of [0, -1]) {
+    const point = endpoint(skeleton, index);
+    const network = touchesNetwork(skeleton, point);
+    const boundary = boundaryDistance(point) <= skeleton.width_m / 2 + 50;
+    const row = { skeleton_id: skeleton.id, endpoint: index === 0 ? 'start' : 'end', network, boundary };
+    endpointRows.push(row);
+    if (!network && !boundary) issues.push(`${skeleton.id} ${row.endpoint} endpoint isolated from water network and cell boundary`);
+  }
+  const main = flowing.find(item => item.id === 'main');
+  if (!main) issues.push('flowing main channel is missing');
+  if (main && edges.length) {
+    const start = endpoint(main, 0); const end = endpoint(main, -1);
+    const south = edges.find(edge => edge.name === 'south'); const north = edges.find(edge => edge.name === 'north');
+    const west = edges.find(edge => edge.name === 'west');
+    if (!south || pointSegmentDistance(mapPoint(start), south.a, south.b) > main.width_m / 2 + 50) {
+      issues.push('main must enter from the south cell boundary');
+    }
+    const northExit = north && pointSegmentDistance(mapPoint(end), north.a, north.b) <= main.width_m / 2 + 50;
+    const westExit = west && pointSegmentDistance(mapPoint(end), west.a, west.b) <= main.width_m / 2 + 50;
+    if (!northExit && !westExit) {
+      issues.push('main must exit to the north or northwest cell boundary');
+    }
+    if (!(end.lat > start.lat && (northExit || westExit && end.lon < start.lon))) {
+      issues.push('main flow must run northward or northwest toward the sea');
+    }
+  }
+  for (const id of ['west', 'east']) {
+    const branch = flowing.find(item => item.id === id);
+    if (!branch) { issues.push(`flowing ${id} branch is missing`); continue; }
+    if (!main) continue;
+    const start = endpoint(branch, 0); const end = endpoint(branch, -1);
+    if (!touchesNetwork(branch, start, 'main')) issues.push(`${id} must begin at main`);
+    const exits = boundaryDistance(end) <= branch.width_m / 2 + 50 || touchesNetwork(branch, end);
+    if (!exits) issues.push(`${id} must reach cell boundary/sea or merge with another watercourse`);
+    if (id === 'west' && !(end.lon < start.lon || end.lat > start.lat)) issues.push('west branch must run westward or northward from main');
+    if (id === 'east' && !(end.lon > start.lon || end.lat > start.lat)) issues.push('east branch must run eastward or northward from main');
+  }
+  return { flowing_skeleton_count: flowing.length, checked_endpoints: endpointRows.length,
+    isolated_endpoint_count: endpointRows.filter(row => !row.network && !row.boundary).length,
+    endpoint_rows: endpointRows, issue_count: issues.length, issues,
+    status: issues.length ? 'invalid' : 'valid' };
+}
+
+export function validateSpatialTopology(candidate, lines, cellCorners = []) {
   const skeletons = candidate.flow_skeletons ?? [];
   const skeletonById = new Map(skeletons.map(skeleton => [skeleton.id, skeleton]));
   const bindingState = waterbodyBindingMap(candidate);
@@ -321,11 +407,42 @@ export function validateSpatialTopology(candidate, lines) {
     invalid_g4_waterbody_assignment: 0,
     dry_g4_in_water_corridor: 0,
     missing_route_traces: 0,
+    missing_trace_geometry_status: 0,
+    flow_continuity_failures: 0,
     nonwater_corridor_intrusion_count: 0,
   };
   const issues = [...bindingState.issues];
   const nonwaterCorridorIntrusions = [];
+  const exceptionRows = candidate.topology_exceptions ?? [];
+  const exceptionLineIds = new Set();
+  const exceptionKeys = new Set();
+  let invalidTopologyExceptions = 0;
+  const lineById = new Map(lines.map(line => [line.id, line]));
+  for (const exception of exceptionRows) {
+    const valid = exception && typeof exception.route_key === 'string' && exception.route_key
+      && !exceptionKeys.has(exception.route_key) && Array.isArray(exception.line_ids) && exception.line_ids.length > 0
+      && new Set(exception.line_ids).size === exception.line_ids.length
+      && exception.line_ids.every(id => {
+        const line = lineById.get(id);
+        return typeof id === 'string' && line && !line.is_water && !line.route_trace_key && !exceptionLineIds.has(id);
+      }) && skeletonById.has(exception.waterbody_ref) && Number.isFinite(exception.intersection_point?.lat)
+      && Number.isFinite(exception.intersection_point?.lon) && exception.reason === 'ends on different banks'
+      && ['ford', 'footbridge', 'ferry'].every(kind => exception.required_crossing_kind?.includes(kind));
+    if (!valid) {
+      invalidTopologyExceptions += 1;
+      issues.push(`invalid topology_exception ${exception?.route_key ?? '(missing route key)'}`);
+      continue;
+    }
+    exceptionKeys.add(exception.route_key);
+    for (const id of exception.line_ids) exceptionLineIds.add(id);
+  }
+  counts.topology_exception_count = exceptionRows.length;
+  counts.invalid_topology_exceptions = invalidTopologyExceptions;
+  counts.exception_line_count = exceptionLineIds.size;
   counts.invalid_waterbody_assignments += bindingState.issues.length;
+  const flowContinuity = validateFlowContinuity(candidate, cellCorners);
+  counts.flow_continuity_failures = flowContinuity.issue_count;
+  issues.push(...flowContinuity.issues);
   for (const skeleton of skeletons) {
     const invalid = !skeleton.id || !skeleton.waterbody_type || !Number.isFinite(skeleton.width_m) || skeleton.width_m <= 0
       || !Number.isFinite(skeleton.current_bias_kmh) || !Array.isArray(skeleton.points) || skeleton.points.length < 2;
@@ -337,6 +454,11 @@ export function validateSpatialTopology(candidate, lines) {
       counts.invalid_waterbody_assignments += 1;
       issues.push(`still-water skeleton ${skeleton.id} must have current_bias_kmh=0`);
     }
+  }
+  const traces = Array.isArray(candidate.route_traces) ? candidate.route_traces : Object.values(candidate.route_traces ?? {});
+  for (const trace of traces) if (typeof trace.geometry_status !== 'string' || !trace.geometry_status.trim()) {
+    counts.missing_trace_geometry_status += 1;
+    issues.push(`route_trace ${trace.key ?? '(missing key)'} lacks geometry_status`);
   }
   for (const line of lines) {
     const from = points.get(line.from_id); const to = points.get(line.to_id);
@@ -411,23 +533,41 @@ export function validateSpatialTopology(candidate, lines) {
         issues.push(`nonwater line ${line.id} has waterbody assignment`);
       }
       if (from && to) {
-        const crossed = segments.flatMap(segment => segment.surface === 'land'
-          ? skeletons.filter(skeleton => lineSegments(flowPoints(skeleton))
-            .some(([a, b]) => segmentIntersects(segment.a, segment.b, a, b))).map(skeleton => skeleton.id) : []);
+        const crossed = segments.flatMap((segment, index) => segment.surface === 'land'
+          ? skeletons.filter(skeleton => {
+            if (!lineSegments(flowPoints(skeleton))
+              .some(([a, b]) => segmentIntersects(segment.a, segment.b, a, b))) return false;
+            const length = Math.hypot(segment.b[0] - segment.a[0], segment.b[1] - segment.a[1]);
+            const endpointAccess = (place, atStart) => {
+              const assigned = skeletonById.get(place?.waterbody_ref);
+              if (!assigned) return false;
+              const sharedJunction = place.waterbody_ref === skeleton.id
+                || pointFlowDistance(mapPoint(place), skeleton) <= 1;
+              const endpointAllowance = Math.min(assigned.width_m / 2 + 50, skeleton.width_m / 2 + 50);
+              return sharedJunction && length <= endpointAllowance
+                && (atStart ? index === 0 : index === segments.length - 1);
+            };
+            const fromEndpointAccess = endpointAccess(from, true);
+            const toEndpointAccess = endpointAccess(to, false);
+            return !fromEndpointAccess && !toEndpointAccess;
+          }).map(skeleton => skeleton.id) : []);
         if (crossed.length) {
-          counts.nonwater_flow_intersections += 1;
-          issues.push(`nonwater line ${line.id} intersects flow skeletons ${[...new Set(crossed)].join(', ')}`);
-          if (!line.route_trace_key) {
+          if (!exceptionLineIds.has(line.id)) {
+            counts.nonwater_flow_intersections += 1;
+            issues.push(`nonwater line ${line.id} intersects flow skeletons ${[...new Set(crossed)].join(', ')}`);
+          }
+          if (!line.route_trace_key && !exceptionLineIds.has(line.id)) {
             counts.missing_route_traces += 1;
             issues.push(`nonwater line ${line.id} requires route_trace`);
           }
         }
         if (segments.some(segment => segment.surface !== 'land')) {
-          counts.nonwater_flow_intersections += 1;
-          issues.push(`nonwater line ${line.id} has a non-land trace segment`);
+          if (!exceptionLineIds.has(line.id)) {
+            counts.nonwater_flow_intersections += 1;
+            issues.push(`nonwater line ${line.id} has a non-land trace segment`);
+          }
         }
         const totalLength = segments.reduce((sum, segment) => sum + Math.hypot(segment.b[0] - segment.a[0], segment.b[1] - segment.a[1]), 0);
-        const accessAllowance = line.movement_method_id === 'movement.shore_transfer' ? 150 : 0;
         let intrusion = false;
         let traversed = 0;
         for (const segment of segments) {
@@ -435,18 +575,33 @@ export function validateSpatialTopology(candidate, lines) {
           const intervals = Math.max(1, Math.ceil(length / 20));
           if (segment.surface === 'land') for (let i = 0; i <= intervals; i += 1) {
             const along = traversed + length * i / intervals;
-            if (along < accessAllowance || totalLength - along < accessAllowance) continue;
             const p = [segment.a[0] + (segment.b[0] - segment.a[0]) * i / intervals,
               segment.a[1] + (segment.b[1] - segment.a[1]) * i / intervals];
-            if (skeletons.some(skeleton => Number.isFinite(skeleton.width_m) && skeleton.width_m > 0
-              && pointFlowDistance(p, skeleton) <= skeleton.width_m / 2)) { intrusion = true; break; }
+            const inForbiddenWater = skeletons.some(skeleton => {
+              if (!Number.isFinite(skeleton.width_m) || skeleton.width_m <= 0
+                || pointFlowDistance(p, skeleton) > skeleton.width_m / 2) return false;
+              const allowance = skeleton.width_m / 2 + 50;
+              const sharesEndpointAxis = place => {
+                const assigned = skeletonById.get(place?.waterbody_ref);
+                return Boolean(assigned && (place.waterbody_ref === skeleton.id
+                  || pointFlowDistance(mapPoint(place), skeleton) <= 1));
+              };
+              const fromAccess = sharesEndpointAxis(from)
+                && along <= Math.min(allowance, skeletonById.get(from.waterbody_ref).width_m / 2 + 50);
+              const toAccess = sharesEndpointAxis(to)
+                && totalLength - along <= Math.min(allowance, skeletonById.get(to.waterbody_ref).width_m / 2 + 50);
+              return !fromAccess && !toAccess;
+            });
+            if (inForbiddenWater) { intrusion = true; break; }
           }
           traversed += length;
           if (intrusion) break;
         }
         if (intrusion) {
-          counts.nonwater_corridor_intrusion_count += 1;
-          nonwaterCorridorIntrusions.push(line.id);
+          if (!exceptionLineIds.has(line.id)) {
+            counts.nonwater_corridor_intrusion_count += 1;
+            nonwaterCorridorIntrusions.push(line.id);
+          }
         }
       }
     }
@@ -509,9 +664,13 @@ export function validateSpatialTopology(candidate, lines) {
       }
     }
   }
-  const blockingCounts = Object.entries(counts).filter(([key]) => key !== 'nonwater_corridor_intrusion_count').map(([, count]) => count);
+  const blockingCounts = Object.entries(counts).filter(([key]) => !['topology_exception_count', 'exception_line_count'].includes(key))
+    .map(([, count]) => count);
+  const status = blockingCounts.every(count => count === 0)
+    ? counts.topology_exception_count ? 'valid_with_exceptions' : 'valid' : 'invalid';
   return { ...counts, nonwater_corridor_intrusions: nonwaterCorridorIntrusions,
-    issues, status: blockingCounts.every(count => count === 0) ? 'valid' : 'invalid' };
+    topology_exceptions: exceptionRows, exception_line_ids: [...exceptionLineIds].sort(),
+    flow_continuity: flowContinuity, issues, status };
 }
 
 function speedBand(method, movementClass, riverDirection, waterbodyType = null) {
@@ -519,7 +678,8 @@ function speedBand(method, movementClass, riverDirection, waterbodyType = null) 
   if (waterbodyType === 'unassigned') return null;
   if (['old_channel_pool', 'reed_backwater'].includes(waterbodyType)) return 'boat_still_water';
   if (kind === 'open_water') return 'boat_open_water';
-  if (method === 'movement.small_river_craft' || kind.includes('river') || kind === 'open_water') {
+  if (method === 'movement.small_river_craft' || kind === 'open_water'
+    || kind.includes('river') && method !== 'movement.foot') {
     return riverDirection === 'вверх по течению' ? 'boat_upstream'
       : riverDirection === 'поперёк течения' ? 'boat_across' : 'boat_downstream';
   }
@@ -536,7 +696,7 @@ function travelBand(method, movementClass, riverDirection, waterbodyType = null)
   if (waterbodyType === 'unassigned') return null;
   if (['old_channel_pool', 'reed_backwater'].includes(waterbodyType)) return 'boat_still_water';
   if (kind === 'open_water') return 'boat_open_water';
-  if (method === 'movement.small_river_craft' || kind.includes('river')) {
+  if (method === 'movement.small_river_craft' || kind.includes('river') && method !== 'movement.foot') {
     return riverDirection === 'вверх по течению' ? 'boat_upstream'
       : riverDirection === 'поперёк течения' ? 'boat_across' : 'boat_downstream';
   }
@@ -666,7 +826,7 @@ function traceMetrics(trace, method, movementClass, options) {
     if (isWater !== overallWater && !segment.movement_method_id) {
       throw new Error(`route_trace ${trace.key} segment ${index} needs movement_method_id when surface changes`);
     }
-    const legMethod = segment.movement_method_id ?? method;
+    const legMethod = segment.movement_method_id ?? (isWater ? method : 'movement.foot');
     const skeleton = isWater ? skeletonById.get(segment.waterbody_ref) : null;
     if (isWater && !skeleton) throw new Error(`route_trace ${trace.key} segment ${index} references unknown waterbody ${segment.waterbody_ref}`);
     if (isWater && typeof segment.crossing !== 'boolean') {
@@ -674,7 +834,7 @@ function traceMetrics(trace, method, movementClass, options) {
     }
     const river = isWater ? riverDirection(from, to, skeleton, segment.crossing)
       : { direction: 'не применяется', basis: 'сухопутный сегмент трассы' };
-    const movement = segment.movement_class ?? (isWater ? movementClass : 'path');
+    const movement = segment.movement_class ?? movementClass;
     const calibration = options.travelCalibration ?? travelCalibration;
     const band = travelBand(legMethod, movement, river.direction, skeleton?.waterbody_type ?? null);
     const routeFactor = calibration.editorial_policy.route_trace_residual_factor?.[segment.surface]
@@ -695,9 +855,12 @@ function traceMetrics(trace, method, movementClass, options) {
     segmentRows.push({ index, surface: segment.surface, from: { lat: from.lat, lon: from.lon },
       to: { lat: to.lat, lon: to.lon }, distance_m: length, waterbody_ref: skeleton?.id ?? null,
       crossing: isWater ? segment.crossing : false, river_direction: river.direction,
-      river_direction_basis: river.basis, crossing_geometry_valid: river.crossing_geometry_valid ?? null,
+      river_direction_basis: river.basis, river_direction_reason: river.reason ?? null,
+      crossing_geometry_valid: river.crossing_geometry_valid ?? null,
       river_projection: river.along_projection === undefined ? null
         : { along: river.along_projection, across: river.across_projection },
+      river_projection_m: river.along_projection_m === undefined ? null
+        : { along: river.along_projection_m, across: river.across_projection_m },
       movement_method_id: legMethod, movement_class: movement,
       travel_band: travel.travel_band, sinuosity_factor: routeFactor,
       base_speed_kmh: travel.base_speed_kmh, current_bias_kmh: travel.current_bias_kmh,
@@ -705,7 +868,29 @@ function traceMetrics(trace, method, movementClass, options) {
       duration_minutes_unrounded: Math.round(segmentDuration * 1000) / 1000,
       suggested_route_point: index < trace.points.length - 2 });
   }
-  const first = segmentRows[0];
+  const waterRows = segmentRows.filter(row => row.surface === 'water' && row.waterbody_ref);
+  const sameWaterbody = waterRows.length === segmentRows.length
+    && new Set(waterRows.map(row => row.waterbody_ref)).size === 1;
+  const waterbody = sameWaterbody ? skeletonById.get(waterRows[0].waterbody_ref) : null;
+  const waterDistance = waterRows.reduce((sum, row) => sum + row.distance_m, 0);
+  const alongShare = waterDistance ? waterRows.reduce((sum, row) =>
+    sum + Math.abs(row.river_projection_m?.along ?? 0), 0) / waterDistance : 1;
+  const bankCrossing = waterbody && alongShare < 0.5 && distanceM <= waterbody.width_m * 1.5
+    && bankToBankCrossing(trace.points[0], trace.points.at(-1), waterbody);
+  const first = segmentRows.find(row => {
+    if (!row.waterbody_ref) return false;
+    if (row.river_direction === 'без течения') return true;
+    const body = skeletonById.get(row.waterbody_ref);
+    const shortCrossEntry = row.distance_m < (body?.width_m ?? 0)
+      && Math.abs(row.river_projection_m?.along ?? 0) < row.distance_m / 2;
+    return !shortCrossEntry;
+  }) ?? segmentRows.find(row => row.waterbody_ref) ?? segmentRows[0];
+  if (bankCrossing && first) {
+    first.river_direction = 'поперёк течения';
+    first.crossing = true;
+    first.river_direction_reason = null;
+    first.crossing_geometry_valid = true;
+  }
   const classes = Object.fromEntries(['вниз по течению', 'вверх по течению', 'поперёк течения', 'неоценимо']
     .map(key => [key, segmentRows.filter(row => row.river_direction === key)
       .reduce((sum, row) => sum + row.distance_m, 0) / distanceM]));
@@ -717,12 +902,15 @@ export function deriveConnection(kind, id, from, to, minutes, method, options = 
   if (!from || !to) throw new Error(`Missing endpoint in ${kind} ${id}`);
   const { direction_candidate: direction, ...measure } = geometry(from, to);
   const trace = orderedTrace(options.routeTrace, from, to);
-  const traceResult = traceMetrics(trace, method, options.movementClass, options);
+  const chordFallback = trace?.segments.length === 1
+    && geometry(trace.points[0], trace.points.at(-1)).distance_m === geometry(from, to).distance_m;
+  const traceResult = chordFallback ? null : traceMetrics(trace, method, options.movementClass, options);
   const uncertaintyM = Number.isFinite(from.precision_m) && Number.isFinite(to.precision_m)
     ? from.precision_m + to.precision_m : null;
   const isWater = options.isWater ?? method === 'movement.small_river_craft';
   const river = traceResult
     ? { direction: traceResult.first.river_direction, basis: traceResult.first.river_direction_basis,
+      reason: traceResult.first.river_direction_reason,
       crossing_geometry_valid: traceResult.first.crossing_geometry_valid,
       along_projection: traceResult.first.river_projection?.along,
       across_projection: traceResult.first.river_projection?.across }
@@ -762,6 +950,8 @@ export function deriveConnection(kind, id, from, to, minutes, method, options = 
       endpoint_uncertainty_m: uncertaintyM,
     river_direction: river.direction,
     river_direction_basis: river.basis,
+    river_direction_reason: river.reason ?? null,
+    river_direction_segment_index: traceResult?.first?.index ?? null,
     crossing_geometry_valid: river.crossing_geometry_valid ?? null,
     river_projection: river.along_projection === undefined ? null
       : { along: river.along_projection, across: river.across_projection },
@@ -787,6 +977,7 @@ export function deriveConnection(kind, id, from, to, minutes, method, options = 
     base_speed_kmh: traceResult?.first.base_speed_kmh ?? travel.base_speed_kmh,
     current_bias_kmh: traceResult?.first.current_bias_kmh ?? travel.current_bias_kmh,
     route_trace_key: trace?.key ?? null,
+    route_trace_fallback: chordFallback ? 'single_segment_matches_endpoint_chord' : null,
     route_trace_segments: traceResult?.segments ?? null,
     flow_length_shares: traceResult?.flow_length_shares ?? null,
     is_water: isWater,
@@ -905,7 +1096,8 @@ export async function buildReport(candidate, sources = datasets, lineNameCandida
   const unusedTraceKeys = routeTraceEntries.map(trace => trace.key).filter(key => !usedTraceKeys.has(key));
   if (unusedTraceKeys.length) throw new Error(`Unmatched route_traces: ${unusedTraceKeys.join(', ')}`);
   if (new Set(all.map(row => `${row.kind}:${row.id}`)).size !== 540) throw new Error('Duplicate directed line IDs');
-  const spatialTopologyValidation = validateSpatialTopology(candidate, all);
+  const spatialTopologyValidation = validateSpatialTopology(candidate, all,
+    g1Dossier.coordinates.technical_bounds.corners_wgs84);
   const tally = key => Object.fromEntries([...new Set(all.map(row => row[key]))].sort()
     .map(value => [value, all.filter(row => row[key] === value).length]));
   const nameMismatches = all.flatMap(row => row.name_findings.map(finding => ({ id: row.id, kind: row.kind, ...finding })));

@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { buildReport, deriveConnection, deriveTravel, geometry, travelCalibration, validateCandidate,
-  validateSpatialTopology } from './derive.mjs';
+  validateFlowContinuity, validateSpatialTopology } from './derive.mjs';
+import { createLandRouter } from './land-route-search.mjs';
 
 const here = new URL('./', import.meta.url);
 const staging = new URL('../staging/cells/gn_nov_g1_xp017_yp026/content_revision_002/', here);
@@ -10,6 +11,24 @@ const inventoryUrl = new URL('../spatial-v3/source-approval/p12_novgorod_source_
 const lineNamesUrl = new URL('file:///srv/novgorod-work/worktrees/line-names/data/world-catalogs/novgorod/m2c-line-names/candidate.json');
 const json = async url => JSON.parse(await readFile(url, 'utf8'));
 const compass = new Set(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']);
+
+test('dry A* routes are deterministic and do not cross a bank-to-bank water obstacle', () => {
+  const corners = [
+    { longitude: 40.6, latitude: 64.58 }, { longitude: 40.62, latitude: 64.58 },
+    { longitude: 40.62, latitude: 64.6 }, { longitude: 40.6, latitude: 64.6 },
+  ];
+  const candidate = { flow_skeletons: [{ id: 'river', width_m: 80,
+    points: [[64.58, 40.61], [64.6, 40.61]] }] };
+  const router = createLandRouter(candidate, corners, 20);
+  const west = { lat: 64.59, lon: 40.604 };
+  const east = { lat: 64.59, lon: 40.606 };
+  const acrossRiver = { lat: 64.59, lon: 40.616 };
+  const first = router.findPath(west, east);
+  const repeated = router.findPath(west, east);
+  assert.equal(first.found, true);
+  assert.deepEqual(first.points, repeated.points);
+  assert.equal(router.findPath(west, acrossRiver).found, false);
+});
 const opposite = { N: 'S', NE: 'SW', E: 'W', SE: 'NW', S: 'N', SW: 'NE', W: 'E', NW: 'SE' };
 
 async function inputs() {
@@ -119,12 +138,13 @@ test('candidate covers exact G3/G4 and G5 IDs with authored and historical axes'
   });
 });
 
-test('authored water leaves the 15 dry G4 anchors and large island head on connected land', async () => {
+test('authored water leaves all 18 dry G4 anchors on connected land', async () => {
   const [candidate, , , dossier] = await inputs();
   const dryAnchors = ['flooded_interior_basin', 'reed_backwater', 'old_channel_pool', 'floodplain_ridge_route',
     'sheltered_landing_terrace', 'vikhtuy_locality', 'vikhtuy_river_approach', 'vikhtuy_resource_edge',
     'zaostrovye_settlement_center', 'zaostrovye_burial_area', 'zaostrovye_landing', 'wet_conifer_tract',
-    'dry_pine_ridge', 'tributary_mouth', 'forest_stream_route', 'large_island_head'];
+    'dry_pine_ridge', 'tributary_mouth', 'forest_stream_route', 'large_island_head',
+    'dry_island_ridge', 'channel_split_islet'];
   const land = connectedLandComponents(candidate, dossier.coordinates.technical_bounds.corners_wgs84);
   const g4 = new Map(candidate.g3_g4_places.map(place => [place.id.split('_r2_').at(-1), place]));
   const componentIds = dryAnchors.map(id => {
@@ -216,11 +236,140 @@ test('route traces derive segment flow and summed travel without adding graph ed
   assert.equal(mixed.route_trace_segments[0].travel_band, 'boat_downstream');
   assert.equal(mixed.route_trace_segments[1].travel_band, 'path');
   assert.equal(mixed.route_trace_segments[1].river_direction, 'не применяется');
+
+  const landOnly = deriveConnection('test', 'implicit-land-method', west, east, 12,
+    'movement.small_river_craft', { isWater: false, movementClass: 'river',
+      routeTrace: { key: 'implicit-land-method', from_id: 'west', to_id: 'east',
+        points: [west, { lat: 0.001, lon: 0.001 }, east],
+        segments: [{ surface: 'land' }, { surface: 'land' }] } });
+  assert.equal(landOnly.route_trace_segments[0].movement_method_id, 'movement.foot');
+  assert.equal(landOnly.route_trace_segments[0].travel_band, 'path');
+});
+
+test('dry trace segments inherit line movement class and chord traces use normal mode factors', () => {
+  const from = { id: 'from', lat: 64.58, lon: 40.60, precision_m: 1 };
+  const to = { id: 'to', lat: 64.58, lon: 40.62, precision_m: 1 };
+  const mid = { lat: 64.581, lon: 40.61 };
+  const multi = deriveConnection('test', 'dry-forest', from, to, 10, 'movement.foot', {
+    movementClass: 'forest_track', isWater: false,
+    routeTrace: { key: 'dry-forest', from_id: from.id, to_id: to.id, points: [from, mid, to],
+      segments: [{ surface: 'land' }, { surface: 'land' }] },
+  });
+  assert.deepEqual(multi.route_trace_segments.map(row => row.travel_band), ['forest_track', 'forest_track']);
+  assert.deepEqual(multi.route_trace_segments.map(row => row.base_speed_kmh), [2.75, 2.75]);
+
+  const chord = deriveConnection('test', 'straight-trace', from, to, 10, 'movement.foot', {
+    movementClass: 'path', isWater: false,
+    routeTrace: { key: 'straight-trace', from_id: from.id, to_id: to.id, points: [from, to],
+      segments: [{ surface: 'land' }] },
+  });
+  const untraced = deriveConnection('test', 'straight-no-trace', from, to, 10, 'movement.foot', {
+    movementClass: 'path', isWater: false,
+  });
+  assert.equal(chord.route_trace_fallback, 'single_segment_matches_endpoint_chord');
+  assert.equal(chord.proposed_minutes, untraced.proposed_minutes);
+  assert.equal(chord.route_distance_km, untraced.route_distance_km);
+});
+
+test('river direction skips short cross entry, identifies bank crossing, and explains unassessable cases', () => {
+  const flowSkeleton = { id: 'river', waterbody_type: 'main', width_m: 100, current_bias_kmh: 0.2,
+    points: [[0, -0.01], [0, 0.01]] };
+  const start = { id: 'start', lat: -0.0001, lon: 0, precision_m: 1 };
+  const end = { id: 'end', lat: 0.0001, lon: 0.002, precision_m: 1 };
+  const entered = deriveConnection('test', 'short-entry', start, end, 10, 'movement.small_river_craft', {
+    isWater: true, movementClass: 'river', flowSkeleton, flowSkeletons: [flowSkeleton],
+    routeTrace: { key: 'short-entry', from_id: start.id, to_id: end.id,
+      points: [start, { lat: 0.0001, lon: 0 }, end],
+      segments: [{ surface: 'water', waterbody_ref: 'river', crossing: false },
+        { surface: 'water', waterbody_ref: 'river', crossing: false }] },
+  });
+  assert.equal(entered.river_direction, 'вниз по течению');
+  assert.equal(entered.river_direction_segment_index, 1);
+
+  const south = { id: 'south', lat: -0.0005, lon: 0, precision_m: 1 };
+  const north = { id: 'north', lat: 0.0005, lon: 0, precision_m: 1 };
+  const crossing = deriveConnection('test', 'bank-crossing', south, north, 10, 'movement.small_river_craft', {
+    isWater: true, movementClass: 'river', flowSkeleton, crossing: false,
+  });
+  assert.equal(crossing.river_direction, 'поперёк течения');
+
+  const farA = { id: 'far-a', lat: 0.001, lon: 0.03, precision_m: 1 };
+  const farB = { id: 'far-b', lat: 0.002, lon: 0.03, precision_m: 1 };
+  const unassessable = deriveConnection('test', 'unassessable', farA, farB, 10, 'movement.small_river_craft', {
+    isWater: true, movementClass: 'river', flowSkeleton,
+  });
+  assert.equal(unassessable.river_direction, 'неоценимо');
+  assert.match(unassessable.river_direction_reason, /берегов|поперечн/);
+});
+
+test('flow continuity requires connected endpoints and downstream cell directions', () => {
+  const cellCorners = [
+    { name: 'southwest', longitude: 40.3, latitude: 64.5 },
+    { name: 'southeast', longitude: 40.7, latitude: 64.5 },
+    { name: 'northeast', longitude: 40.7, latitude: 64.7 },
+    { name: 'northwest', longitude: 40.3, latitude: 64.7 },
+  ];
+  const candidate = { flow_skeletons: [
+    { id: 'main', width_m: 100, current_bias_kmh: 1, points: [[64.5, 40.5], [64.7, 40.4]] },
+    { id: 'west', width_m: 100, current_bias_kmh: 1, points: [[64.6, 40.45], [64.65, 40.3]] },
+    { id: 'east', width_m: 100, current_bias_kmh: 1, points: [[64.6, 40.45], [64.65, 40.7]] },
+  ] };
+  assert.equal(validateFlowContinuity(candidate, cellCorners).status, 'valid');
+  const isolated = { ...candidate, flow_skeletons: [...candidate.flow_skeletons,
+    { id: 'isolated', width_m: 50, current_bias_kmh: 0.2, points: [[64.6, 40.55], [64.61, 40.56]] }] };
+  assert.ok(validateFlowContinuity(isolated, cellCorners).isolated_endpoint_count > 0);
+  const reversedMain = { ...candidate, flow_skeletons: candidate.flow_skeletons.map(item => item.id === 'main'
+    ? { ...item, points: [...item.points].reverse() } : item) };
+  assert.ok(validateFlowContinuity(reversedMain, cellCorners).issues.some(issue => /main must enter/.test(issue)));
+});
+
+test('dry corridor intrusion permits only assigned water-end access within half-width plus 50m', () => {
+  const skeleton = { id: 'river', waterbody_type: 'main', width_m: 100, current_bias_kmh: 0,
+    points: [[64.58, 40.6], [64.58, 40.62]] };
+  const water = { id: 'water', lat: 64.58036, lon: 40.605, waterbody_ref: 'river' };
+  const nearbyDry = { id: 'near-dry', lat: 64.58036, lon: 40.606 };
+  const line = (to, id) => ({ id, kind: 'test', from_id: water.id, to_id: to.id,
+    is_water: false, waterbody_ref: null, waterbody_crossing: null, movement_method_id: 'movement.shore_transfer' });
+  const candidate = { flow_skeletons: [skeleton], g5_places: [water, nearbyDry], g3_g4_places: [],
+    line_waterbody_bindings: [] };
+  const allowed = validateSpatialTopology(candidate, [line(nearbyDry, 'near')]);
+  assert.equal(allowed.nonwater_corridor_intrusion_count, 0);
+
+  const deepDry = { ...nearbyDry, id: 'deep-dry', lon: 40.6075 };
+  const blocked = validateSpatialTopology({ ...candidate, g5_places: [water, deepDry] }, [line(deepDry, 'deep')]);
+  assert.equal(blocked.nonwater_corridor_intrusion_count, 1);
+  assert.equal(blocked.status, 'invalid');
+});
+
+test('land trace may touch its assigned river axis only at a short water endpoint', () => {
+  const skeleton = { id: 'river', waterbody_type: 'main', width_m: 20, current_bias_kmh: 0,
+    points: [[64.58, 40.6], [64.58, 40.62]] };
+  const water = { id: 'water', lat: 64.58, lon: 40.61, waterbody_ref: 'river' };
+  const shore = { id: 'shore', lat: 64.58036, lon: 40.61 };
+  const line = { id: 'water-access', from_id: water.id, to_id: shore.id, is_water: false,
+    waterbody_ref: null, waterbody_crossing: null, movement_method_id: 'movement.shore_transfer',
+    route_trace_key: 'water-access', route_trace_segments: [{ from: water, to: shore, surface: 'land' }] };
+  const candidate = { flow_skeletons: [skeleton], g5_places: [water, shore], g3_g4_places: [], line_waterbody_bindings: [] };
+  const allowed = validateSpatialTopology(candidate, [line]);
+  assert.equal(allowed.nonwater_flow_intersections, 0);
+  assert.equal(allowed.nonwater_corridor_intrusion_count, 0);
+
+  const deepShore = { ...shore, id: 'deep-shore', lat: 64.58108 };
+  const tooLong = { ...line, to_id: deepShore.id,
+    route_trace_segments: [{ from: water, to: deepShore, surface: 'land' }] };
+  const blocked = validateSpatialTopology({ ...candidate, g5_places: [water, deepShore] }, [tooLong]);
+  assert.equal(blocked.nonwater_flow_intersections, 1);
+});
+
+test('every route trace needs geometry_status', () => {
+  const result = validateSpatialTopology({ route_traces: [{ key: 'missing-status' }] }, []);
+  assert.equal(result.missing_trace_geometry_status, 1);
+  assert.equal(result.status, 'invalid');
 });
 
 test('all 540 directed lines have compass direction; water/land and reverse links are consistent', async () => {
   const [candidate] = await inputs();
-  const report = await buildReport(candidate);
+  const report = await buildReport(candidate, undefined, await lineNamesInput());
   assert.equal(report.summary.g5_connections, 454);
   assert.equal(report.summary.world_routes, 86);
   assert.equal(report.lines.length, 540);
@@ -234,8 +383,8 @@ test('all 540 directed lines have compass direction; water/land and reverse link
         assert.notEqual(line.river_direction, 'не применяется');
       } else assert.equal(line.river_direction, 'не применяется');
     } else {
-      assert.equal(line.base_minutes, null);
-      assert.equal(line.minutes_source, 'active_profile_no_minutes');
+      assert.ok(line.base_minutes > 0);
+      assert.equal(line.minutes_source, 'line_names_candidate_unapproved');
     }
     const reverse = report.lines.find(row => row.kind === line.kind
       && row.from_id === line.to_id && row.to_id === line.from_id);
@@ -245,7 +394,9 @@ test('all 540 directed lines have compass direction; water/land and reverse link
         'вниз по течению': 'вверх по течению', 'поперёк течения': 'поперёк течения',
         'без течения': 'без течения', 'не применяется': 'не применяется', 'неоценимо': 'неоценимо' };
       if (line.route_trace_segments && reverse.route_trace_segments) {
-        assert.equal(reverse.river_direction, reverse.route_trace_segments[0].river_direction, line.id);
+        assert.equal(reverse.river_direction,
+          reverse.route_trace_segments.find(segment => segment.index === reverse.river_direction_segment_index)?.river_direction,
+          line.id);
         assert.equal(reverse.route_trace_segments.length, line.route_trace_segments.length, line.id);
         for (let index = 0; index < line.route_trace_segments.length; index += 1) {
           const forwardLeg = line.route_trace_segments[index];
@@ -260,12 +411,16 @@ test('all 540 directed lines have compass direction; water/land and reverse link
 });
 
 test('topology validates every authored water route and land trace', async () => {
-  const [candidate] = await inputs();
+  const [candidate, , , dossier] = await inputs();
   const report = await buildReport(candidate, undefined, await lineNamesInput());
   assert.equal(report.lines.length, 540);
 
-  const topology = validateSpatialTopology(candidate, report.lines);
-  assert.equal(topology.status, 'valid');
+  const topology = validateSpatialTopology(candidate, report.lines, dossier.coordinates.technical_bounds.corners_wgs84);
+  assert.equal(topology.status, 'valid_with_exceptions');
+  assert.equal(topology.topology_exception_count, 12);
+  assert.equal(topology.exception_line_count, 24);
+  assert.equal(topology.invalid_topology_exceptions, 0);
+  assert.deepEqual(topology.issues, []);
   assert.equal(topology.water_line_corridor_violations, 0);
   assert.equal(topology.missing_route_traces, 0);
   for (const key of [
@@ -280,10 +435,23 @@ test('topology validates every authored water route and land trace', async () =>
     'dry_g4_in_water_corridor',
     'water_g4_outside_own_corridor',
     'invalid_g4_waterbody_assignment',
+    'missing_trace_geometry_status',
+    'flow_continuity_failures',
+    'nonwater_corridor_intrusion_count',
   ]) assert.equal(topology[key], 0, `${key}: ${topology[key]}`);
+  assert.equal(topology.flow_continuity.status, 'valid');
 
   const waterLines = report.lines.filter(line => line.is_water);
   const landLines = report.lines.filter(line => !line.is_water);
+  const landLineById = new Map(landLines.map(line => [line.id, line]));
+  for (const exception of candidate.topology_exceptions) {
+    assert.equal(exception.reason, 'ends on different banks', exception.route_key);
+    assert.ok(candidate.flow_skeletons.some(flow => flow.id === exception.waterbody_ref), exception.route_key);
+    assert.ok(Number.isFinite(exception.intersection_point?.lat) && Number.isFinite(exception.intersection_point?.lon), exception.route_key);
+    assert.ok(exception.line_ids.length > 0 && exception.line_ids.every(id => landLineById.has(id)
+      && !landLineById.get(id).route_trace_key), exception.route_key);
+    assert.deepEqual(exception.required_crossing_kind, ['ford', 'footbridge', 'ferry']);
+  }
   const skeletonById = new Map(candidate.flow_skeletons.map(skeleton => [skeleton.id, skeleton]));
   assert.ok(waterLines.length > 0);
   assert.ok(landLines.length > 0);
@@ -297,6 +465,11 @@ test('topology validates every authored water route and land trace', async () =>
     .filter((id, index, all) => id && all.indexOf(id) === index).sort(), []);
   assert.ok(waterLines.every(line => line.river_direction_basis.includes(line.flow_skeleton_id)),
     'river direction basis does not name the first segment skeleton');
+  assert.ok(waterLines.filter(line => line.river_direction === 'неоценимо')
+    .every(line => line.river_direction_reason), 'unassessable water direction lacks a reason');
+  const traceRows = Array.isArray(candidate.route_traces) ? candidate.route_traces : Object.values(candidate.route_traces);
+  assert.ok(traceRows.every(trace => typeof trace.geometry_status === 'string' && trace.geometry_status.trim()),
+    'route trace lacks geometry_status');
   assert.ok(landLines.every(line => line.waterbody_ref == null), 'land line has water-body assignment');
 
   for (const line of waterLines.filter(line => line.route_trace_key)) {

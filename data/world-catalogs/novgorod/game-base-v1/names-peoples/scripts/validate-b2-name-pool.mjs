@@ -84,16 +84,17 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (!STATUSES.has(pool.status)) errors.push(`${pool.id}: unknown pool status ${pool.status}`);
   }
   const configuredPeoplePools = new Map((source.foreign_pools ?? []).map((pool) => [pool.people_ref, pool.id]));
+  const peopleIds = new Set(peopleRows.filter((row) => ["people", "guest_itinerant"].includes(row.entity_kind)).map((row) => row.pp_id));
   if (configuredPeoplePools.size !== (source.foreign_pools ?? []).length) errors.push("duplicate people_ref in foreign pools");
   for (const [peopleRef, poolId] of Object.entries(source.people_to_pool_id ?? {})) {
     if (!configuredPeoplePools.has(peopleRef) || configuredPeoplePools.get(peopleRef) !== poolId) errors.push(`${peopleRef}: people_to_pool_id does not match configured pool`);
   }
   for (const pool of source.foreign_pools ?? []) {
+    if (!peopleIds.has(pool.people_ref)) errors.push(`${pool.id}: unknown people_ref ${pool.people_ref}`);
     if (source.people_to_pool_id?.[pool.people_ref] !== pool.id) errors.push(`${pool.id}: missing people_to_pool_id binding`);
     if (!pool.provenance_ref) errors.push(`${pool.id}: missing pool provenance_ref`);
   }
 
-  const peopleIds = new Set(peopleRows.filter((row) => ["people", "guest_itinerant"].includes(row.entity_kind)).map((row) => row.pp_id));
   const sourceIds = new Set(sourceRows.map((row) => row.nm_id));
   const d46Ids = new Set(d46.name_entries.map((row) => row.id));
   const evidenceLines = new Set(evidenceRows.map((row) => Number(row.source_line?.slice(1))));
@@ -330,6 +331,7 @@ function selfTest(base) {
     ["missing source", (copy) => { copy.entries[0].provenance_ref = ""; }, /missing provenance_ref/],
     ["source outside snapshot", (copy) => { copy.entries[0].provenance_ref = "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L999"; }, /unresolved provenance_ref/],
     ["unknown people_ref", (copy) => { copy.entries[0].people_ref = "pp_unknown"; }, /unknown people_ref/],
+    ["unknown foreign pool people_ref", (copy) => { copy.source.foreign_pools[0].people_ref = "pp_unknown"; }, /unknown people_ref/],
     ["duplicate key", (copy) => { copy.entries.push({ ...copy.entries[0], id: "probe_duplicate" }); }, /duplicate selection key/],
     ["empty upstream source", (copy) => { copy.sourceRows[0].source_refs = ""; }, /empty upstream source_refs/],
     ["generated report drift", (copy) => { copy.report.total_entries += 1; }, /generated report drift/],

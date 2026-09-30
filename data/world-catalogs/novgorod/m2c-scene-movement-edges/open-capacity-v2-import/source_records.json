@@ -46,5 +46,17 @@
     "status": "approved",
     "confidence": "high",
     "checked_by": "gpt-6-sol/high independent data reviewer /root/m2c_capacity_data_reapproval; did not author or modify candidate bytes"
+  },
+  {
+    "id": "m2c_people_d49_editorial_001",
+    "title": "M2c D49 people: profiles, canonical regional context, G4 lower bound",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/m2c-npc/people-d49/candidate.json",
+    "page_or_section": "candidate_sha256:44651daa74557e171e3f9a5d7748acc1b41d6b0f4e4a8ad9f85dcb0eac20e417",
+    "summary": "Owner decision D49 (#133): on every place of the route slice after leaving the start place there is at least one person, created only from approved data. This candidate supplies the approved-profile side (three npc_binding profiles, one clothing profile, one canonical regional context, two profile successor versions) and the G4 lower bound; the D-2 place-family thresholds are in game-base people_composition_authoring.json (pin c79852e7). Gameplay authoring, no historical claim; individual origin, language and frequency are not asserted.",
+    "limitations": "Gameplay authoring; no historical frequency, origin or language claim. Awaits independent approval (people-d49/approval.json).",
+    "status": "approved",
+    "confidence": "low",
+    "checked_by": "pending independent approval of m2c-npc/people-d49/approval.json"
   }
 ]

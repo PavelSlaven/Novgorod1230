@@ -1,0 +1,24 @@
+{
+  "schema": "rus.m2c_people_d49_approval.v1",
+  "status": "candidate_approval_pending",
+  "subject": "novgorod_m2c_people_d49_v1",
+  "exact_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-npc/people-d49/candidate.json",
+    "sha256": "44651daa74557e171e3f9a5d7748acc1b41d6b0f4e4a8ad9f85dcb0eac20e417"
+  },
+  "promoted_by": "scripts/promote-m2c-open-capacity-v2.mjs (--check reproduces the v2 pack and manifest bytes)",
+  "scope": "Three npc_binding profiles (ferryman, householder, household mistress), one clothing profile, one canonical regional context (g4-only applicability, 29 G4), version-3 successors of the fisher and household-servant profiles, G4 vikhtuy_locality version 2 lower bound (min_count 1, count_weights [1,1]). Gameplay authoring, no historical frequency, origin or language claim.",
+  "review_points": [
+    "Pair role x occupation: householder = nov_role_smerd_householder + nov_occ_haymaker (no source for Lower Dvina arable ~1230); mistress = nov_role_household_mistress + nov_occ_cook_baker (only approved occupation listing the role); ferryman = nov_role_ferryman + nov_occ_ferryman.",
+    "Reuse of approved activity rows: boatman mooring inspection for the ferryman, household-servant work-area inspection for householder and mistress.",
+    "Crossing guard profile is not created: nov_occ_crossing_guard is usable_with_caution, absent from the approved actor catalog (see candidate not_created).",
+    "Sex is data (payload.actor_applicability.sex_category, one value each); enforcement is materializer/rt-people code.",
+    "Version 3 of m2c_npc_fisher_v1 and m2c_npc_household_servant_v1 only adds the canonical regional context reference."
+  ],
+  "limits": "Rows carry status approved in the pack datasets by the pack convention; they become approved data only after the independent approval below. Import not authorized, activation not authorized.",
+  "approved_by": null,
+  "approved_on": null,
+  "verdict": null,
+  "import_authorized": false,
+  "runtime_activation_authorized": false
+}

@@ -31,7 +31,8 @@ test('v17 bootstrap imports the m2c NPC wave and every start resolves presence w
       }
       const kinds = (await env.worldPool.query(
         'SELECT subject_kind, count(*)::int AS count FROM world_base.presence_rules GROUP BY 1 ORDER BY 1')).rows;
-      assert.deepEqual(kinds.map(({ subject_kind: kind }) => kind), ['category', 'occupation', 'social_role']);
+      assert.deepEqual(kinds.map(({ subject_kind: kind }) => kind), ['category', 'occupation'],
+        'D49: the two social_role presence rules (householder on pf_rural_yard, pf_village_lane) moved to the D-2 composition');
       const regions = (await env.worldPool.query(
         `SELECT count(*) FILTER (WHERE region_id = 'novgorod_land')::int AS legacy,
                 count(*) FILTER (WHERE region_id = 'region_novgorod_land')::int AS g0

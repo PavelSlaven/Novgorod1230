@@ -133,7 +133,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
       { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
     assert.equal(result.appearance_v3.inserted_rows, 129);
     assert.equal(result.capacity_v2.manifest_sha256,
-      'e0c965d74528c948bd47c64bbae1ec1862cc24382b5f735f5d694d2cd30327ba');
+      '9d09cc6cabd20b0c5ce012ce10bb55f2e8b406f53ac1d41bcf7138a15af54180');
     assert.deepEqual(result.capacity_v2.runtime_record_digests, {
       spatial_v3_scene_templates: '81ebb3fc57e2e07fb27334c0646e074ad65a145ecfaaeb4398dd9d4bed5723eb',
       spatial_v3_scene_materialization_profiles: 'c258f0d99c65ba3357a16a2a5204683a442851fcbfcb994abbbda2e88f11e55c'

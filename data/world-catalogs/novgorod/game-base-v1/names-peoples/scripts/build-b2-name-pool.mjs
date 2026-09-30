@@ -106,9 +106,11 @@ export function build() {
   const derivations = decisionRows.filter((row) => !row.exclude_reason);
   const exclusions = decisionRows.filter((row) => row.exclude_reason);
   const evidence = parseCsv(fs.readFileSync(path.join(GROUP_DIR, source.evidence_snapshot.path), "utf8"));
+  const additionalEvidence = parseCsv(fs.readFileSync(path.join(GROUP_DIR, source.additional_evidence_snapshot.path), "utf8"));
   const peoples = parseCsv(fs.readFileSync(PEOPLE_PATH, "utf8"));
   if (input.length !== source.input.expected_rows) throw new Error(`personal-name input count ${input.length}, expected ${source.input.expected_rows}`);
   if (evidence.length !== source.evidence_snapshot.expected_rows) throw new Error(`evidence snapshot count ${evidence.length}, expected ${source.evidence_snapshot.expected_rows}`);
+  if (additionalEvidence.length !== source.additional_evidence_snapshot.expected_rows) throw new Error(`additional evidence snapshot count ${additionalEvidence.length}, expected ${source.additional_evidence_snapshot.expected_rows}`);
 
   const decisionsByLine = new Map();
   for (const row of decisionRows) {
@@ -161,6 +163,25 @@ export function build() {
     evidence_line: null,
     line_index: null,
   });
+  const additionalEvidenceByLine = new Map(additionalEvidence.map((row) => [row.source_line, row]));
+  for (const row of source.additional_entries ?? []) {
+    const support = additionalEvidenceByLine.get(row.source_line);
+    if (!support || !row.source_form || !Object.values(support).join("\n").includes(row.source_form)) throw new Error(`${row.id}: additional source form missing from ${row.source_line}`);
+    records.push({
+      id: row.id,
+      name_form: row.name_form,
+      sex_category: row.sex_category,
+      people_ref: row.people_ref,
+      selection_class: row.selection_class,
+      derivation_class: row.derivation_class,
+      derivation: row.derivation,
+      people_derivation: row.people_derivation,
+      evidence_period: row.evidence_period,
+      provenance_ref: row.provenance_ref,
+      evidence_line: null,
+      line_index: null,
+    });
+  }
 
   const perLineIndex = new Map();
   for (const row of derivations) {
@@ -179,14 +200,20 @@ export function build() {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(record);
   }
-  const entries = [...groups.values()].map((group) => {
+  const entries = [...groups.values()].filter((group) => {
+    const candidateId = group.find((row) => row.id)?.id;
+    return !source.entry_exclusions?.some((exclusion) => exclusion.id === candidateId);
+  }).map((group) => {
     const candidate = group.find((row) => row.id);
     const firstEvidence = group.filter((row) => row.evidence_line != null).sort((a, b) => a.evidence_line - b.evidence_line || a.line_index - b.line_index)[0];
     const id = candidate?.id ?? `nov_name_evidence_l${firstEvidence.evidence_line}_${String(firstEvidence.line_index).padStart(2, "0")}_v1`;
     const selectionClassValue = ranked(group.map((row) => row.selection_class), CLASS_PRIORITY);
+    const peopleRef = group[0].people_ref;
+    const namePoolId = source.people_to_pool_id?.[peopleRef] ?? (peopleRef === "pp_novgorod_rus" ? source.pool.id : "");
+    if (!namePoolId) throw new Error(`${id}: no name pool configured for ${peopleRef}`);
     return {
       id,
-      name_pool_id: source.pool.id,
+      name_pool_id: namePoolId,
       name_form: group[0].name_form,
       name_category_id: "",
       weight: source.defaults.weight,
@@ -203,13 +230,14 @@ export function build() {
     };
   }).sort((a, b) => a.id.localeCompare(b.id, "en"));
 
-  writeCsv(POOLS_OUT, importContract.tables["world_base.region_name_pools"].csv_columns, [{
-    id: source.pool.id,
-    region_id: source.pool.region_id,
-    valid_from: source.pool.valid_from,
-    valid_to: source.pool.valid_to,
-    status: source.pool.status,
-  }]);
+  const pools = [source.pool, ...(source.foreign_pools ?? [])];
+  writeCsv(POOLS_OUT, importContract.tables["world_base.region_name_pools"].csv_columns, pools.map((pool) => ({
+    id: pool.id,
+    region_id: pool.region_id,
+    valid_from: pool.valid_from,
+    valid_to: pool.valid_to,
+    status: pool.status,
+  })));
   writeCsv(ENTRIES_OUT, importContract.tables["world_base.region_name_pool_entries"].csv_columns, entries);
 
   const counts = {};
@@ -240,6 +268,19 @@ export function build() {
     }
   }
   typedGaps.push(...source.typed_gap_notes);
+  typedGaps.push(...(source.entry_exclusions ?? []).map((gap) => ({
+    gap_id: gap.gap_id,
+    gap_type: gap.gap_type,
+    name_id: gap.id,
+    name_form: gap.name_form,
+    people_ref: gap.people_ref,
+    sex_category: gap.sex_category,
+    selection_class: gap.selection_class,
+    current_count: 0,
+    required_count: 1,
+    reason: gap.reason,
+    provenance_ref: gap.provenance_ref,
+  })));
   typedGaps.push(...d46.name_gaps.map((row) => ({
     gap_id: row.gap_id,
     gap_type: row.gap_type,
@@ -290,6 +331,8 @@ export function build() {
     schema: "novgorod.game_base.personal_name_pool_report.v2",
     status: source.status,
     total_entries: entries.length,
+    pool_count: pools.length,
+    counts_by_pool: Object.fromEntries(pools.map((pool) => [pool.id, entries.filter((entry) => entry.name_pool_id === pool.id).length])),
     counts_by_sex_people_selection_class_derivation: Object.fromEntries(Object.entries(counts).sort(([a], [b]) => a.localeCompare(b, "en"))),
     evidence_accounting: {
       total_rows: source.evidence_derivations.expected_evidence_rows,
@@ -313,14 +356,19 @@ export function build() {
       rejected: d46.rejected.length,
       rejection_reasons: Object.fromEntries([...new Set(d46.rejected.map((row) => row.rejection_reason))].sort().map((reason) => [reason, d46.rejected.filter((row) => row.rejection_reason === reason).length])),
     },
+    additional_evidence_accounting: {
+      snapshot_rows: additionalEvidence.length,
+      included_entries: (source.additional_entries ?? []).length,
+    },
     typed_gaps: typedGaps,
     evidence_review: source.evidence_review,
     import_contract: "b2-import-contract.json",
     pool_provenance_ref: source.pool.provenance_ref,
+    pool_provenance_refs: Object.fromEntries(pools.map((pool) => [pool.id, pool.provenance_ref])),
   };
   fs.writeFileSync(REPORT_OUT, `${JSON.stringify(report, null, 2)}\n`, "utf8");
   console.log(JSON.stringify({
-    pools: 1,
+    pools: pools.length,
     entries: entries.length,
     counts,
     evidence: {

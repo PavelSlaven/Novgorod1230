@@ -279,8 +279,8 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
       // The numbers are checked before they are compared: null <= 30 is true in JS.
       const sliced = bad == null && (policy.policy_kind === 'fixed_time_interval' ? policy.interval_minutes <= sliceStepMinutes
         : row.base_minutes * policy.progress_slice_ppm <= sliceStepMinutes * 1_000_000);
-      if (!recheckPolicies) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step and no recheck policies supplied`);
-      else if (!sliced) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step, recheck ${profile.dynamic_recheck_policy_id}: ${bad ?? `slices of more than ${sliceStepMinutes} minutes`}`);
+      if (!recheckPolicies) problems.push(`line_recheck_slicing_missing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step and no recheck policies supplied`);
+      else if (!sliced) problems.push(`line_recheck_slicing_missing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step, recheck ${profile.dynamic_recheck_policy_id}: ${bad ?? `slices of more than ${sliceStepMinutes} minutes`}`);
     }
     if (row.availability_condition_set_ref !== null) problems.push(`${row.id}: availability_condition_set_ref must be null on a non-portal connection (D3)`);
     const key = [row.from_canonical_g5_id, row.line_name, row.line_discriminator ?? '', row.line_direction_id ?? ''].join('|');
@@ -303,7 +303,7 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
       const bad = policyProblem(recheckPolicies.get(profile.dynamic_recheck_policy_id));
       // a kind whose policy is a slicing kind must have valid numbers even when no line of the kind is long
       const policy = recheckPolicies.get(profile.dynamic_recheck_policy_id);
-      if (bad && ['fixed_time_interval', 'fixed_progress_slices'].includes(policy?.policy_kind)) problems.push(`line_slicing ${profile.id}: recheck ${profile.dynamic_recheck_policy_id}: ${bad}`);
+      if (bad && ['fixed_time_interval', 'fixed_progress_slices'].includes(policy?.policy_kind)) problems.push(`line_recheck_slicing_missing ${profile.id}: recheck ${profile.dynamic_recheck_policy_id}: ${bad}`);
     }
   }
   const covered = [['canonical_g5_connection_binding', rows], ['line_kind_profile', datasets[T.profiles]], ['movement_method_cost_profile', datasets[T.costProfiles]], ['transition_environment_profile', datasets[T.environments]]];

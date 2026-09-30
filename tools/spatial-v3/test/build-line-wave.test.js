@@ -67,9 +67,9 @@ test('D56: no length ceiling - a long line is in the wave and needs a recheck po
   assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
   // the same rows without a slicing policy are a violation; progress slices are checked against the line's minutes
   const kinds = (policy) => rules({ recheckPolicies: new Map([...policies, ['recheck.water_15m', policy]]) });
-  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'segment_once' })).join('|'), /line_slicing.*segment_once/);
-  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_time_interval', interval_minutes: 45 })).join('|'), /line_slicing/);
-  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 800000 })).join('|'), /line_slicing/, '40 x 0.8 = 32 > 30');
+  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'segment_once' })).join('|'), /line_recheck_slicing_missing.*segment_once/);
+  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_time_interval', interval_minutes: 45 })).join('|'), /line_recheck_slicing_missing/);
+  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 800000 })).join('|'), /line_recheck_slicing_missing/, '40 x 0.8 = 32 > 30');
   assert.deepEqual(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 700000 })), [], '40 x 0.7 = 28 <= 30');
 });
 
@@ -94,17 +94,17 @@ test('the validator checks the numbers before it compares them (A-rt-lines-07 P3
   const time = (interval_minutes) => ({ policy_kind: 'fixed_time_interval', interval_minutes });
   const slices = (progress_slice_ppm) => ({ policy_kind: 'fixed_progress_slices', progress_slice_ppm });
   for (const bad of [null, undefined, 0, -1, 1.5, '15', '0', Number.NaN, Infinity]) {
-    assert.match(problems(time(bad)), /line_slicing.*interval_minutes/, `interval_minutes ${String(bad)}`);
+    assert.match(problems(time(bad)), /line_recheck_slicing_missing.*interval_minutes/, `interval_minutes ${String(bad)}`);
   }
   for (const bad of [null, undefined, 0, -1, 1_000_001, 1.5, '700000', '0', Number.NaN]) {
-    assert.match(problems(slices(bad)), /line_slicing.*progress_slice_ppm/, `progress_slice_ppm ${String(bad)}`);
+    assert.match(problems(slices(bad)), /line_recheck_slicing_missing.*progress_slice_ppm/, `progress_slice_ppm ${String(bad)}`);
   }
   assert.deepEqual(problems(time(15)), '');
   assert.deepEqual(problems(slices(700000)), '');
-  assert.deepEqual(problems(slices(1_000_000)).includes('line_slicing'), true, 'one slice of 40 minutes is over the step');
+  assert.deepEqual(problems(slices(1_000_000)).includes('line_recheck_slicing_missing'), true, 'one slice of 40 minutes is over the step');
   // a kind's policy is invalid even when no line of the kind is long: the two kinds exclude each other as in DDL 13.sql
-  assert.match(problems({ ...time(15), progress_slice_ppm: 1 }), /line_slicing.*progress_slice_ppm/);
-  assert.match(problems({ ...slices(700000), interval_minutes: 15 }), /line_slicing.*interval_minutes/);
+  assert.match(problems({ ...time(15), progress_slice_ppm: 1 }), /line_recheck_slicing_missing.*progress_slice_ppm/);
+  assert.match(problems({ ...slices(700000), interval_minutes: 15 }), /line_recheck_slicing_missing.*interval_minutes/);
   for (const step of [0, -1, 31, 1.5, '30', null, Number.NaN]) {
     assert.match(problems(time(15), { sliceStepMinutes: step }), /slice step/, `sliceStepMinutes ${String(step)}`);
     assert.throws(() => build({}, { sliceStepMinutes: step }), /slice step/);
@@ -127,7 +127,7 @@ test('the slice step is one rule of the world, a parameter of the generator and 
   assert.deepEqual(checkLineWaveData(wave.datasets, rules({ sliceStepMinutes: 20 })), [], 'water rechecks every 15 minutes');
   const fine = build({}, { sliceStepMinutes: 10 });
   assert.deepEqual(fine.report.long_lines.map((line) => line.minutes), [12, 40, 40]);
-  assert.match(checkLineWaveData(fine.datasets, rules({ sliceStepMinutes: 10 })).join('|'), /line_slicing.*recheck.land_30m/, 'a 12-minute path under a 30-minute recheck and a 10-minute step');
+  assert.match(checkLineWaveData(fine.datasets, rules({ sliceStepMinutes: 10 })).join('|'), /line_recheck_slicing_missing.*recheck.land_30m/, 'a 12-minute path under a 30-minute recheck and a 10-minute step');
 });
 
 test('profile rows use the columns of the DDL-to-be: topological orientation, no movement_orientation, no ceiling field', () => {

@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 29 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `b036909583852b682fd52a12517728ea5a4104079f46f013f8840473c8dd4947`.
+- SHA-256 развёрнутого DDL: `cd888f9169e2fb08280c67d760968266a92e3fdc4015f694a3cec91755f98d64`.
 - Таблиц: 222.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3921,7 +3921,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 ### `world_base.region_name_pool_entries`
 
-Конкретные утверждённые формы имён и веса.
+Формы личных имён и веса; одна строка на (пул, форма, пол, народ); runtime выбирает только selection_class = ordinary и status = approved.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
@@ -3938,8 +3938,8 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `derivation` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `people_derivation` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `evidence_period` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
-| `provenance_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус допуска записи: draft, approved или deprecated (как в CHECK); runtime читает только approved. |
+| `provenance_ref` | `TEXT` | да | — | — | — | Ссылки на источники строки (game-base pool CSV и snapshot evidence); текст, не FK. |
 
 **Ограничения таблицы:**
 
@@ -4129,11 +4129,12 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
-| `regional_context_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(regional_context_id)) > 0)` | Описание отсутствует. |
-| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `name_pool_id` | `TEXT` | нет | — | `world_base.region_name_pools(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `people_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (people_ref ~ '^pp_')` | Описание отсутствует. |
-| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `regional_context_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(regional_context_id)) > 0)` | id регионального контекста NPC v3 (spatial_v3_npc_regional_context_profiles.id), без версии; полиморфная ссылка без FK. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): ревизия, в которой действует привязка. |
+| `name_pool_id` | `TEXT` | нет | — | `world_base.region_name_pools(id) ON DELETE RESTRICT` | `NOT NULL` | FK → region_name_pools(id): пул личных имён контекста. |
+| `people_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (people_ref ~ '^pp_')` | Народ (pp_*), чьи формы имён берутся из пула для этого контекста. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус допуска привязки: draft, approved или deprecated (как в CHECK). |
+| `provenance_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(provenance_ref)) > 0)` | Источник привязки: файл и id контекста в npc-identity-v17/v1/context-bindings.json. |
 
 **Ограничения таблицы:**
 
@@ -4145,12 +4146,13 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
-| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `scale_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (scale_kind IN ('trait', 'value'))` | Описание отсутствует. |
-| `entry_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(entry_id)) > 0)` | Описание отсутствует. |
-| `label_ru` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(label_ru)) > 0)` | Описание отсутствует. |
-| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
-| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): ревизия шкалы. |
+| `scale_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (scale_kind IN ('trait', 'value'))` | trait — темперамент, value — ценность. |
+| `entry_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(entry_id)) > 0)` | Код записи шкалы (calm, honour, …); попадает в semantic_state.character. |
+| `label_ru` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(label_ru)) > 0)` | Русский ярлык записи для проекции в разговор. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Вес выбора (D29: ровный, игровое допущение). |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус допуска записи: draft, approved или deprecated (как в CHECK). |
+| `provenance_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(provenance_ref)) > 0)` | Источник записи: psychology_scales.json#<id>. |
 
 **Ограничения таблицы:**
 
@@ -4162,14 +4164,15 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
-| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `occupation_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(occupation_id)) > 0)` | FK → region_occupations(id): профессия/занятие. |
-| `item_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (item_kind IN ('goal', 'fear'))` | Описание отсутствует. |
-| `item_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(item_id)) > 0)` | Описание отсутствует. |
-| `text_ru` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(text_ru)) > 0)` | Описание отсутствует. |
-| `basis` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (basis IN ('sourced', 'logical_necessity', 'analogy'))` | Описание отсутствует. |
-| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(confidence)) > 0)` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
-| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | FK → world_revisions(id): ревизия данных. |
+| `occupation_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(occupation_id)) > 0)` | id занятия (nov_occ_*); мягкая ссылка без FK, часть занятий вне реестра region_occupations. |
+| `item_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (item_kind IN ('goal', 'fear'))` | goal — цель, fear — страх. |
+| `item_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(item_id)) > 0)` | Номер кандидата внутри занятия и вида (goal_01, fear_01). |
+| `text_ru` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(text_ru)) > 0)` | Текст кандидата, который код кладёт в semantic_state.character. |
+| `basis` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (basis IN ('sourced', 'logical_necessity', 'analogy'))` | sourced, logical_necessity или analogy. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(confidence)) > 0)` | Буква уверенности источника (C = низкая). |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус допуска записи: draft, approved или deprecated (как в CHECK). |
+| `provenance_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(provenance_ref)) > 0)` | source_refs строки occupation_goals/fears.csv. |
 
 **Ограничения таблицы:**
 

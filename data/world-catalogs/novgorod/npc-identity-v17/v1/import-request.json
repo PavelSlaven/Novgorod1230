@@ -40,8 +40,8 @@
       }
     ],
     "approved_subset": {
-      "name_pool_entries_approved": 285,
-      "name_pool_entries_left_draft": 52,
+      "name_pool_entries_approved": 266,
+      "name_pool_entries_left_draft": 71,
       "name_entries_approved_by_people_and_sex": {
         "pp_novgorod_rus/female": 62,
         "pp_novgorod_rus/male": 204
@@ -57,7 +57,7 @@
     },
     "limits": [
       "Only pools bound to a regional context are selectable; contexts without a binding (Gotland, German towns, Karelia, Ingria) leave NPC unnamed (LW-107).",
-      "Ordinary rows of other peoples are imported approved but unreachable without a binding; pp_fg001, pp_fg005 and pp_izhora have 1 ordinary row each, pp_fg002 16 male, none female.",
+      "Approval is per (pool, people): ordinary rows of peoples without a context binding stay draft and are not selectable (pp_fg002 16 male, pp_fg001, pp_fg005 and pp_izhora 1 each, no female); foreign peoples get their own pools (D51, LW-107).",
       "Every name entry keeps evidence_period as authored: medieval_general is XI-XIV evidence, not an individual 1230-1250 attestation.",
       "Goal/fear items have confidence C; basis=analogy items are archive-process analogies, not direct Novgorod evidence.",
       "D29 scales are a game assumption (even weights), not a historical distribution; psychology_profiles.csv is not imported."
@@ -90,10 +90,10 @@
     ]
   },
   "sql": {
-    "commit_sha256": "21e4a1572c9ba4a68ab036098bade03ef4b0defa344c611c77b9b3b5093c918a",
-    "commit_bytes": 337767,
-    "rollback_sha256": "6af154ba4011098ea94fe33325d8d9a8a9601b333b248af8d2f9be8c69e0cef0",
-    "rollback_bytes": 337769
+    "commit_sha256": "b7514d7b5ad1c12722b503dd025bdad76b258a80f84bec241b45f2b6c6419596",
+    "commit_bytes": 451123,
+    "rollback_sha256": "65729dec4e3781efdec5f3a948bc3e8833d9163354189509327d87bc662f2ece",
+    "rollback_bytes": 451125
   },
   "expected_readback": {
     "by_table": {
@@ -104,5 +104,5 @@
       "occupation_character_items": 423
     }
   },
-  "request_digest": "7b7d42f7edb38a7901bdc7ee062715853e0eeb9e9908ae51e2a8730cf55a6672"
+  "request_digest": "3e20cfa12aa946cd6e0da642f8ef3f92308c41bf9cf56e32b6f0072875f59d01"
 }

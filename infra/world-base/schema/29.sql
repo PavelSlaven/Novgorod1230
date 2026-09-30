@@ -32,6 +32,7 @@ CREATE TABLE world_base.npc_regional_context_name_bindings (
   name_pool_id TEXT NOT NULL REFERENCES world_base.region_name_pools(id) ON DELETE RESTRICT,
   people_ref TEXT NOT NULL CHECK (people_ref ~ '^pp_'),
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'approved', 'deprecated')),
+  provenance_ref TEXT NOT NULL CHECK (length(btrim(provenance_ref)) > 0),
   PRIMARY KEY (regional_context_id, world_revision_id)
 );
 
@@ -43,6 +44,7 @@ CREATE TABLE world_base.npc_psychology_scale_entries (
   label_ru TEXT NOT NULL CHECK (length(btrim(label_ru)) > 0),
   weight INTEGER NOT NULL DEFAULT 1 CHECK (weight > 0),
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'approved', 'deprecated')),
+  provenance_ref TEXT NOT NULL CHECK (length(btrim(provenance_ref)) > 0),
   PRIMARY KEY (world_revision_id, scale_kind, entry_id)
 );
 
@@ -56,5 +58,6 @@ CREATE TABLE world_base.occupation_character_items (
   basis TEXT NOT NULL CHECK (basis IN ('sourced', 'logical_necessity', 'analogy')),
   confidence TEXT NOT NULL CHECK (length(btrim(confidence)) > 0),
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'approved', 'deprecated')),
+  provenance_ref TEXT NOT NULL CHECK (length(btrim(provenance_ref)) > 0),
   PRIMARY KEY (world_revision_id, occupation_id, item_kind, item_id)
 );

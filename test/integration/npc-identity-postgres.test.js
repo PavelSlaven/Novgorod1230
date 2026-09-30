@@ -38,9 +38,15 @@ test('the v17 identity stage imports into the real world_base DDL and the actor 
   const result = await runIdentityImportStage({ world, requireAttestation: async () => ({ schema: IDENTITY_ATTESTATION_SCHEMA,
     verdict: 'APPROVE', request_digest: request.request_digest, attested_by: 'test', independence_basis: 'test fixture' }) });
   assert.equal(result.readback, 'exact');
-  const statuses = await world.query(`SELECT selection_class, status, count(*)::int AS n
-    FROM world_base.region_name_pool_entries GROUP BY 1,2 ORDER BY 1,2`);
-  assert.ok(statuses.rows.every((row) => (row.selection_class === 'ordinary') === (row.status === 'approved')), JSON.stringify(statuses.rows));
+  const statuses = await world.query(`SELECT selection_class, people_ref, status, count(*)::int AS n
+    FROM world_base.region_name_pool_entries GROUP BY 1,2,3 ORDER BY 1,2,3`);
+  assert.ok(statuses.rows.every((row) => (row.selection_class === 'ordinary' && row.people_ref === 'pp_novgorod_rus') === (row.status === 'approved')),
+    JSON.stringify(statuses.rows));
+  assert.equal(statuses.rows.filter((row) => row.status === 'approved').reduce((sum, row) => sum + row.n, 0), 266);
+  for (const table of ['npc_regional_context_name_bindings', 'npc_psychology_scale_entries', 'occupation_character_items']) {
+    const empty = await world.query(`SELECT count(*)::int AS n FROM world_base.${table} WHERE btrim(provenance_ref) = ''`);
+    assert.equal(empty.rows[0].n, 0, table);
+  }
   await assert.rejects(runIdentityImportStage({ world, requireAttestation: async () => ({ schema: IDENTITY_ATTESTATION_SCHEMA,
     verdict: 'APPROVE', request_digest: request.request_digest, attested_by: 'test', independence_basis: 'test' }) }),
   (error) => error.code === '23505', 'insert-only: a second commit is rejected');

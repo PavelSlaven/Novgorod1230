@@ -65,6 +65,7 @@ export async function buildIdentityRows({ root = ROOT } = {}) {
   const bindings = JSON.parse(await read(`${IDENTITY_DIR}/context-bindings.json`));
   const revision = bindings.world_revision_id;
   const bound = new Set(bindings.bindings.map((binding) => binding.name_pool_id));
+  const boundKeys = new Set(bindings.bindings.map((binding) => `${binding.name_pool_id}\u0000${binding.people_ref}`));
   const pools = parseCsv(await read(`${NAMES}/name_pools.csv`)).map((row) => ({ id: row.id,
     world_revision_id: revision, region_id: row.region_id, valid_from: nullable(row.valid_from),
     valid_to: nullable(row.valid_to), status: bound.has(row.id) ? 'approved' : 'draft' }));
@@ -75,18 +76,20 @@ export async function buildIdentityRows({ root = ROOT } = {}) {
     social_position_archetype_id: nullable(row.social_position_archetype_id),
     derivation_class: nullable(row.derivation_class), derivation: nullable(row.derivation),
     people_derivation: nullable(row.people_derivation), evidence_period: nullable(row.evidence_period),
-    status: row.selection_class === 'ordinary' && bound.has(row.name_pool_id) ? 'approved' : 'draft',
+    status: row.selection_class === 'ordinary' && boundKeys.has(`${row.name_pool_id}\u0000${row.people_ref}`)
+      ? 'approved' : 'draft',
     provenance_ref: nullable(row.provenance_ref) }));
   const scales = JSON.parse(await read(`${PSYCHOLOGY}/psychology_scales.json`));
   const scaleRows = [['trait', scales.traits], ['value', scales.values]].flatMap(([kind, list]) =>
     list.map((entry) => ({ world_revision_id: revision, scale_kind: kind, entry_id: entry.id,
-      label_ru: entry.label_ru, weight: scales.default_weight, status: 'approved' })));
+      label_ru: entry.label_ru, weight: scales.default_weight, status: 'approved',
+      provenance_ref: `game-base:households-psychology-speech/npc_psychology/psychology_scales.json#${entry.id}` })));
   const items = [];
   for (const [kind, file] of [['goal', 'occupation_goals.csv'], ['fear', 'occupation_fears.csv']]) {
     for (const row of parseCsv(await read(`${PSYCHOLOGY}/${file}`))) {
       items.push({ world_revision_id: revision, occupation_id: row.occupation_id, item_kind: kind,
         item_id: row.item_id, text_ru: row.text_ru, basis: row.basis, confidence: row.confidence,
-        status: 'approved' });
+        status: 'approved', provenance_ref: row.source_refs });
     }
   }
   return [
@@ -94,7 +97,8 @@ export async function buildIdentityRows({ root = ROOT } = {}) {
     { table: 'region_name_pool_entries', rows: entries },
     { table: 'npc_regional_context_name_bindings', rows: bindings.bindings.map((binding) => ({
       regional_context_id: binding.regional_context_id, world_revision_id: revision,
-      name_pool_id: binding.name_pool_id, people_ref: binding.people_ref, status: 'approved' })) },
+      name_pool_id: binding.name_pool_id, people_ref: binding.people_ref, status: 'approved',
+      provenance_ref: `npc-identity-v17/v1/context-bindings.json#${binding.regional_context_id}` })) },
     { table: 'npc_psychology_scale_entries', rows: scaleRows },
     { table: 'occupation_character_items', rows: items }
   ];
@@ -131,10 +135,8 @@ export async function buildIdentityRequest({ root = ROOT } = {}) {
   const entries = rowsOf('region_name_pool_entries');
   const items = rowsOf('occupation_character_items');
   const bindings = rowsOf('npc_regional_context_name_bindings');
-  const boundPeople = new Set(bindings.map((binding) => binding.people_ref));
-  const ordinary = entries.filter((row) => row.selection_class === 'ordinary');
   const perPeopleSex = {};
-  for (const row of ordinary) {
+  for (const row of entries.filter((entry) => entry.status === 'approved')) {
     const key = `${row.people_ref}/${row.sex_category}`;
     perPeopleSex[key] = (perPeopleSex[key] ?? 0) + 1;
   }
@@ -155,8 +157,7 @@ export async function buildIdentityRequest({ root = ROOT } = {}) {
       approved_subset: {
         name_pool_entries_approved: count(entries, (row) => row.status === 'approved'),
         name_pool_entries_left_draft: count(entries, (row) => row.status === 'draft'),
-        name_entries_approved_by_people_and_sex: Object.fromEntries(Object.entries(perPeopleSex)
-          .filter(([key]) => boundPeople.has(key.split('/')[0]))),
+        name_entries_approved_by_people_and_sex: perPeopleSex,
         context_bindings: bindings.map((row) => `${row.regional_context_id} -> ${row.name_pool_id} / ${row.people_ref}`),
         goal_items: count(items, (row) => row.item_kind === 'goal'),
         fear_items: count(items, (row) => row.item_kind === 'fear'),
@@ -165,7 +166,7 @@ export async function buildIdentityRequest({ root = ROOT } = {}) {
       },
       limits: [
         'Only pools bound to a regional context are selectable; contexts without a binding (Gotland, German towns, Karelia, Ingria) leave NPC unnamed (LW-107).',
-        'Ordinary rows of other peoples are imported approved but unreachable without a binding; pp_fg001, pp_fg005 and pp_izhora have 1 ordinary row each, pp_fg002 16 male, none female.',
+        'Approval is per (pool, people): ordinary rows of peoples without a context binding stay draft and are not selectable (pp_fg002 16 male, pp_fg001, pp_fg005 and pp_izhora 1 each, no female); foreign peoples get their own pools (D51, LW-107).',
         'Every name entry keeps evidence_period as authored: medieval_general is XI-XIV evidence, not an individual 1230-1250 attestation.',
         'Goal/fear items have confidence C; basis=analogy items are archive-process analogies, not direct Novgorod evidence.',
         'D29 scales are a game assumption (even weights), not a historical distribution; psychology_profiles.csv is not imported.'
@@ -259,7 +260,7 @@ no attestation exists. The stage \`npc_identity_import\` of \`scripts/bootstrap-
 without \`npc_identity_import.json\` (schema \`rus.npc_identity_v17_import_approval.v1\`).
 
 What becomes runtime-selectable (status \`approved\` set only by the stage SQL; repository files stay draft/candidate):
-- ${subset.name_pool_entries_approved} ordinary name entries of the bound pool (${JSON.stringify(subset.name_entries_approved_by_people_and_sex)}); ${subset.name_pool_entries_left_draft} other entries are imported \`draft\` and never selected;
+- ${subset.name_pool_entries_approved} ordinary name entries of the bound (pool, people) pairs (${JSON.stringify(subset.name_entries_approved_by_people_and_sex)}); ${subset.name_pool_entries_left_draft} other entries are imported \`draft\` and never selected;
 - context bindings: ${subset.context_bindings.join('; ')};
 - the D29 psychology scales (6 traits, 7 values, even weight);
 - ${subset.goal_items} goal and ${subset.fear_items} fear items for ${subset.occupations_with_items} occupations (${subset.analogy_basis_items} with \`basis=analogy\`).

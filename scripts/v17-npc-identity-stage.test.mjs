@@ -26,14 +26,17 @@ test('the committed request equals a rebuild from the reviewed sources', async (
   await assertIdentityInputs({ root, request });
 });
 
-test('only ordinary entries of the bound pool become approved; the rest stay draft', async () => {
+test('approval is per (pool, people): only ordinary Novgorod entries become approved, foreign ordinary stay draft', async () => {
   const tables = await buildIdentityRows({ root });
   const entries = rowsOf(tables, 'region_name_pool_entries');
   assert.ok(entries.length > 300);
   for (const row of entries) {
-    assert.equal(row.status, row.selection_class === 'ordinary' ? 'approved' : 'draft', row.id);
+    assert.equal(row.status, row.selection_class === 'ordinary' && row.people_ref === 'pp_novgorod_rus' ? 'approved' : 'draft', row.id);
     assert.ok(['female', 'male'].includes(row.sex_category));
   }
+  assert.equal(entries.filter((row) => row.status === 'approved').length, 266);
+  assert.equal(entries.filter((row) => row.status === 'draft').length, entries.length - 266);
+  assert.ok(entries.some((row) => row.selection_class === 'ordinary' && row.people_ref === 'pp_fg002' && row.status === 'draft'));
   const novgorodFemale = entries.filter((row) => row.status === 'approved'
     && row.people_ref === 'pp_novgorod_rus' && row.sex_category === 'female');
   assert.ok(novgorodFemale.length >= 10 && novgorodFemale.every((row) => row.selection_class === 'ordinary'));
@@ -47,6 +50,20 @@ test('only ordinary entries of the bound pool become approved; the rest stay dra
     assert.ok(items.filter((row) => row.occupation_id === occupation && row.item_kind === 'goal').length >= 1);
     assert.ok(items.filter((row) => row.occupation_id === occupation && row.item_kind === 'fear').length >= 1);
   }
+});
+
+test('every row of the three new tables carries the provenance of its source', async () => {
+  const tables = await buildIdentityRows({ root });
+  for (const row of rowsOf(tables, 'npc_regional_context_name_bindings')) {
+    assert.equal(row.provenance_ref, `npc-identity-v17/v1/context-bindings.json#${row.regional_context_id}`);
+  }
+  for (const row of rowsOf(tables, 'npc_psychology_scale_entries')) {
+    assert.equal(row.provenance_ref, `game-base:households-psychology-speech/npc_psychology/psychology_scales.json#${row.entry_id}`);
+  }
+  const items = rowsOf(tables, 'occupation_character_items');
+  assert.ok(items.length > 0);
+  for (const row of items) assert.match(row.provenance_ref, /\S/u);
+  assert.ok(items.every((row) => row.provenance_ref.includes('/')), 'source_refs are file paths');
 });
 
 test('the SQL is one transaction with an in-transaction readback and equal commit/rollback bodies', async () => {

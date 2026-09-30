@@ -85,14 +85,16 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
   await assert.rejects(() => nameRow('rn-6', 'male', 'pp_izhora', 'noble'), (error) => error.code === '23514');
   const defaultStatus = await world.query(`SELECT status FROM world_base.region_name_pool_entries WHERE id='rn-1'`);
   assert.equal(defaultStatus.rows[0].status, 'draft');
-  await world.query(`INSERT INTO world_base.npc_regional_context_name_bindings(regional_context_id,world_revision_id,name_pool_id,people_ref)
-    VALUES ('ctx','rn-rev','rn-pool','pp_novgorod_rus')`);
-  await world.query(`INSERT INTO world_base.npc_psychology_scale_entries(world_revision_id,scale_kind,entry_id,label_ru)
-    VALUES ('rn-rev','trait','calm','самообладание')`);
-  await world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence)
-    VALUES ('rn-rev','occ','goal','goal_01','цель','logical_necessity','C')`);
-  await assert.rejects(() => world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence)
-    VALUES ('rn-rev','occ','wish','goal_02','цель','logical_necessity','C')`), (error) => error.code === '23514');
+  await world.query(`INSERT INTO world_base.npc_regional_context_name_bindings(regional_context_id,world_revision_id,name_pool_id,people_ref,provenance_ref)
+    VALUES ('ctx','rn-rev','rn-pool','pp_novgorod_rus','src#ctx')`);
+  await world.query(`INSERT INTO world_base.npc_psychology_scale_entries(world_revision_id,scale_kind,entry_id,label_ru,provenance_ref)
+    VALUES ('rn-rev','trait','calm','самообладание','src#calm')`);
+  await world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence,provenance_ref)
+    VALUES ('rn-rev','occ','goal','goal_01','цель','logical_necessity','C','src#occ')`);
+  await assert.rejects(() => world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence,provenance_ref)
+    VALUES ('rn-rev','occ','wish','goal_02','цель','logical_necessity','C','src#occ')`), (error) => error.code === '23514');
+  await assert.rejects(() => world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence,provenance_ref)
+    VALUES ('rn-rev','occ','goal','goal_03','цель','logical_necessity','C','  ')`), (error) => error.code === '23514', 'blank provenance is rejected');
   const primaryUq = await world.query(
     `SELECT indexdef FROM pg_indexes
      WHERE schemaname='world_base'

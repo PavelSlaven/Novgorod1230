@@ -286,7 +286,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   region_npc_archetypes: 'Региональные NPC templates без конкретной identity и биографии.',
   region_demographic_profiles: 'Региональные демографические варианты и ограничения.',
   region_name_pools: 'Региональные пулы имён для периода и ревизии.',
-  region_name_pool_entries: 'Конкретные утверждённые формы имён и веса.',
+  region_name_pool_entries: 'Формы личных имён и веса; одна строка на (пул, форма, пол, народ); runtime выбирает только selection_class = ordinary и status = approved.',
   npc_regional_context_name_bindings: 'Пул имён и народ (pp_*), из которого NPC регионального контекста получает личное имя.',
   npc_psychology_scale_entries: 'Закрытый словарь черт темперамента и ценностей NPC с весом выбора.',
   occupation_character_items: 'Кандидаты целей и страхов занятия; NPC выбирает из них по seed.',
@@ -397,7 +397,37 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  npc_regional_context_name_bindings: {
+    regional_context_id: 'id регионального контекста NPC v3 (spatial_v3_npc_regional_context_profiles.id), без версии; полиморфная ссылка без FK.',
+    world_revision_id: 'FK → world_revisions(id): ревизия, в которой действует привязка.',
+    name_pool_id: 'FK → region_name_pools(id): пул личных имён контекста.',
+    people_ref: 'Народ (pp_*), чьи формы имён берутся из пула для этого контекста.',
+    status: 'Статус допуска привязки: draft, approved или deprecated (как в CHECK).',
+    provenance_ref: 'Источник привязки: файл и id контекста в npc-identity-v17/v1/context-bindings.json.'
+  },
+  npc_psychology_scale_entries: {
+    world_revision_id: 'FK → world_revisions(id): ревизия шкалы.',
+    scale_kind: 'trait — темперамент, value — ценность.',
+    entry_id: 'Код записи шкалы (calm, honour, …); попадает в semantic_state.character.',
+    label_ru: 'Русский ярлык записи для проекции в разговор.',
+    weight: 'Вес выбора (D29: ровный, игровое допущение).',
+    status: 'Статус допуска записи: draft, approved или deprecated (как в CHECK).',
+    provenance_ref: 'Источник записи: psychology_scales.json#<id>.'
+  },
+  occupation_character_items: {
+    world_revision_id: 'FK → world_revisions(id): ревизия данных.',
+    occupation_id: 'id занятия (nov_occ_*); мягкая ссылка без FK, часть занятий вне реестра region_occupations.',
+    item_kind: 'goal — цель, fear — страх.',
+    item_id: 'Номер кандидата внутри занятия и вида (goal_01, fear_01).',
+    text_ru: 'Текст кандидата, который код кладёт в semantic_state.character.',
+    basis: 'sourced, logical_necessity или analogy.',
+    confidence: 'Буква уверенности источника (C = низкая).',
+    status: 'Статус допуска записи: draft, approved или deprecated (как в CHECK).',
+    provenance_ref: 'source_refs строки occupation_goals/fears.csv.'
+  },
   region_name_pool_entries: {
+    status: 'Статус допуска записи: draft, approved или deprecated (как в CHECK); runtime читает только approved.',
+    provenance_ref: 'Ссылки на источники строки (game-base pool CSV и snapshot evidence); текст, не FK.',
     sex_category: 'Пол носителя формы имени: female или male.',
     people_ref: 'Народ (pp_* из peoples_origins), которому принадлежит форма имени.',
     selection_class: 'ordinary выбирается процедурно; dynastic, monastic и significant в выбор NPC не входят.',

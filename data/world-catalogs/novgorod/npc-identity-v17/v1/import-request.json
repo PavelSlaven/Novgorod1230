@@ -10,17 +10,17 @@
     "created_by": "scripts/bootstrap-live-world-v17.mjs (fresh pair only)"
   },
   "approved_data": {
-    "source_commit": "fe38ecb1b81df04a9a7f8d95b5bed1f0c9e815c7",
+    "source_commit": "74bad07ee71586e1f5cae71e0666907551353f07",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "sources_in_repository": "draft/candidate; this stage sets status=approved only on the subset below",
     "sources": [
       {
         "path": "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name_pools.csv",
-        "sha256": "6a7f94bf656251997382bab0b60f94e697dde0db4c8173f64161ff86335f9791"
+        "sha256": "57c82e28e4ccda34b55cee0adcae75d5e82ef7e4fed970594f648c04b2e97c24"
       },
       {
         "path": "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name_pool_entries.csv",
-        "sha256": "af68e45eb2115a8d2d9890ea9c41334fd2041a4fc20610b6fd52410d7be2cbf8"
+        "sha256": "2a15f0cef30669f4db2507bb6623c8fcf141e74c44cea48542db49e7e402a924"
       },
       {
         "path": "data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/npc_psychology/psychology_scales.json",
@@ -57,7 +57,7 @@
     },
     "limits": [
       "Only pools bound to a regional context are selectable; contexts without a binding (Gotland, German towns, Karelia, Ingria) leave NPC unnamed (LW-107).",
-      "Approval is per (pool, people): ordinary rows of peoples without a context binding stay draft and are not selectable (pp_fg002 16 male, pp_fg001, pp_fg005 and pp_izhora 1 each, no female); foreign peoples get their own pools (D51, LW-107).",
+      "Approval is per (pool, people) and a pool is approved only when a context binding names it: the six pools of other peoples (Gotland, German, Korela, Izhora, Chud/Est, Smolyane) are imported draft with all their rows and are not selectable (ordinary rows: pp_fg002 16 male, pp_fg001 and pp_izhora 1 each, no female); their authoring is a separate data task (D51, LW-107).",
       "Every name entry keeps evidence_period as authored: medieval_general is XI-XIV evidence, not an individual 1230-1250 attestation.",
       "Goal/fear items have confidence C; basis=analogy items are archive-process analogies, not direct Novgorod evidence.",
       "D29 scales are a game assumption (even weights), not a historical distribution; psychology_profiles.csv is not imported."
@@ -65,7 +65,7 @@
     "datasets": [
       {
         "table": "region_name_pools",
-        "rows": 1
+        "rows": 7
       },
       {
         "table": "region_name_pool_entries",
@@ -90,19 +90,19 @@
     ]
   },
   "sql": {
-    "commit_sha256": "b7514d7b5ad1c12722b503dd025bdad76b258a80f84bec241b45f2b6c6419596",
-    "commit_bytes": 451123,
-    "rollback_sha256": "65729dec4e3781efdec5f3a948bc3e8833d9163354189509327d87bc662f2ece",
-    "rollback_bytes": 451125
+    "commit_sha256": "b4812c6347b7d42edc3ab55413b92de9bc2ec1da9ffc0e3817d38fc813ea7cc1",
+    "commit_bytes": 452512,
+    "rollback_sha256": "2b0a2c55a0a07b209a5ece6149b54ffbcd51f4832c3873f0544f09e0b144fc02",
+    "rollback_bytes": 452514
   },
   "expected_readback": {
     "by_table": {
-      "region_name_pools": 1,
+      "region_name_pools": 7,
       "region_name_pool_entries": 337,
       "npc_regional_context_name_bindings": 2,
       "npc_psychology_scale_entries": 13,
       "occupation_character_items": 423
     }
   },
-  "request_digest": "3e20cfa12aa946cd6e0da642f8ef3f92308c41bf9cf56e32b6f0072875f59d01"
+  "request_digest": "85678239538465b7b9863ba56f4edffeb40a2357fd5c948eef2ff4e390b39feb"
 }

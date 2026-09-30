@@ -43,6 +43,8 @@ test('the v17 identity stage imports into the real world_base DDL and the actor 
   assert.ok(statuses.rows.every((row) => (row.selection_class === 'ordinary' && row.people_ref === 'pp_novgorod_rus') === (row.status === 'approved')),
     JSON.stringify(statuses.rows));
   assert.equal(statuses.rows.filter((row) => row.status === 'approved').reduce((sum, row) => sum + row.n, 0), 266);
+  const pools = await world.query(`SELECT status, count(*)::int AS n FROM world_base.region_name_pools GROUP BY 1 ORDER BY 1`);
+  assert.deepEqual(pools.rows, [{ status: 'approved', n: 1 }, { status: 'draft', n: 6 }], 'seven pools, only the bound one approved');
   for (const table of ['npc_regional_context_name_bindings', 'npc_psychology_scale_entries', 'occupation_character_items']) {
     const empty = await world.query(`SELECT count(*)::int AS n FROM world_base.${table} WHERE btrim(provenance_ref) = ''`);
     assert.equal(empty.rows[0].n, 0, table);

@@ -34,6 +34,12 @@ test('approval is per (pool, people): only ordinary Novgorod entries become appr
     assert.equal(row.status, row.selection_class === 'ordinary' && row.people_ref === 'pp_novgorod_rus' ? 'approved' : 'draft', row.id);
     assert.ok(['female', 'male'].includes(row.sex_category));
   }
+  const pools = rowsOf(tables, 'region_name_pools');
+  assert.equal(pools.length, 7, 'one pool per people (D51)');
+  assert.deepEqual(pools.filter((row) => row.status === 'approved').map((row) => row.id), ['novgorod_1230_1250_personal_names_v1']);
+  assert.ok(entries.every((row) => pools.some((pool) => pool.id === row.name_pool_id)));
+  assert.equal(new Set(entries.map((row) => row.name_pool_id)).size, 7, 'entries of all seven pools are imported');
+  assert.ok(entries.filter((row) => row.name_pool_id !== 'novgorod_1230_1250_personal_names_v1').every((row) => row.status === 'draft'));
   assert.equal(entries.filter((row) => row.status === 'approved').length, 266);
   assert.equal(entries.filter((row) => row.status === 'draft').length, entries.length - 266);
   assert.ok(entries.some((row) => row.selection_class === 'ordinary' && row.people_ref === 'pp_fg002' && row.status === 'draft'));

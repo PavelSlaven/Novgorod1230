@@ -166,7 +166,7 @@ export async function buildIdentityRequest({ root = ROOT } = {}) {
       },
       limits: [
         'Only pools bound to a regional context are selectable; contexts without a binding (Gotland, German towns, Karelia, Ingria) leave NPC unnamed (LW-107).',
-        'Approval is per (pool, people): ordinary rows of peoples without a context binding stay draft and are not selectable (pp_fg002 16 male, pp_fg001, pp_fg005 and pp_izhora 1 each, no female); foreign peoples get their own pools (D51, LW-107).',
+        'Approval is per (pool, people) and a pool is approved only when a context binding names it: the six pools of other peoples (Gotland, German, Korela, Izhora, Chud/Est, Smolyane) are imported draft with all their rows and are not selectable (ordinary rows: pp_fg002 16 male, pp_fg001 and pp_izhora 1 each, no female); their authoring is a separate data task (D51, LW-107).',
         'Every name entry keeps evidence_period as authored: medieval_general is XI-XIV evidence, not an individual 1230-1250 attestation.',
         'Goal/fear items have confidence C; basis=analogy items are archive-process analogies, not direct Novgorod evidence.',
         'D29 scales are a game assumption (even weights), not a historical distribution; psychology_profiles.csv is not imported.'

@@ -9,6 +9,55 @@
     "status": "draft",
     "provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json"
   },
+  "foreign_pools": [
+    { "id": "novgorod_1230_1250_gotland_guest_names_v1", "people_ref": "pp_fg001", "region_id": "region_novgorod_land", "valid_from": "1230-01-01", "valid_to": "1250-12-31", "status": "draft", "provenance_ref": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_fg001" },
+    { "id": "novgorod_1230_1250_german_guest_names_v1", "people_ref": "pp_fg002", "region_id": "region_novgorod_land", "valid_from": "1230-01-01", "valid_to": "1250-12-31", "status": "draft", "provenance_ref": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_fg002" },
+    { "id": "novgorod_1230_1250_korela_names_v1", "people_ref": "pp_korela", "region_id": "region_novgorod_land", "valid_from": "1230-01-01", "valid_to": "1250-12-31", "status": "draft", "provenance_ref": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_korela" },
+    { "id": "novgorod_1230_1250_izhora_names_v1", "people_ref": "pp_izhora", "region_id": "region_novgorod_land", "valid_from": "1230-01-01", "valid_to": "1250-12-31", "status": "draft", "provenance_ref": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_izhora" },
+    { "id": "novgorod_1230_1250_chud_est_names_v1", "people_ref": "pp_chud_est", "region_id": "region_novgorod_land", "valid_from": "1230-01-01", "valid_to": "1250-12-31", "status": "draft", "provenance_ref": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_chud_est" },
+    { "id": "novgorod_1230_1250_smolyane_names_v1", "people_ref": "pp_smolyane", "region_id": "region_novgorod_land", "valid_from": "1230-01-01", "valid_to": "1250-12-31", "status": "draft", "provenance_ref": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_smolyane" }
+  ],
+  "people_to_pool_id": {
+    "pp_fg001": "novgorod_1230_1250_gotland_guest_names_v1",
+    "pp_fg002": "novgorod_1230_1250_german_guest_names_v1",
+    "pp_korela": "novgorod_1230_1250_korela_names_v1",
+    "pp_izhora": "novgorod_1230_1250_izhora_names_v1",
+    "pp_chud_est": "novgorod_1230_1250_chud_est_names_v1",
+    "pp_smolyane": "novgorod_1230_1250_smolyane_names_v1"
+  },
+  "entry_exclusions": [
+    {
+      "id": "nov_name_d46_13_093_v1",
+      "gap_id": "gap_personal_names_pp_fg005_igoland_origin",
+      "gap_type": "people_ref_unresolved",
+      "name_form": "Иголанд",
+      "people_ref": "pp_fg005",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "reason": "Источник относит имя к смешанному гостевому контексту pp_fg005, но не устанавливает конкретный народ; отдельного пула для pp_fg005 и русского fallback нет.",
+      "provenance_ref": "game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_093_v1 | game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#13-person:093"
+    }
+  ],
+  "additional_evidence_snapshot": {
+    "path": "sources/book_evidence_m2c_name_components.csv",
+    "expected_rows": 40
+  },
+  "additional_entries": [
+    {
+      "id": "nov_name_korela_valit_v1",
+      "name_form": "Валит",
+      "source_form": "Валит Корелянин",
+      "source_line": "L197",
+      "sex_category": "male",
+      "people_ref": "pp_korela",
+      "selection_class": "significant",
+      "derivation_class": "",
+      "derivation": "explicit_source_gender",
+      "people_derivation": "source_explicit_people",
+      "evidence_period": "medieval_general",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_name_components.csv#source_line=L197"
+    }
+  ],
   "input": {
     "path": "personal_names.csv",
     "expected_rows": 54,
@@ -189,6 +238,16 @@
     "decision": "Reviewed rows are admitted only when the declared sex, people and class rules close every selector. Evidence rows are merged with the compiled candidate by (name_form, sex_category, people_ref); every contributing line remains in provenance_ref."
   },
   "typed_gap_notes": [
+    {
+      "gap_id": "gap_personal_names_pp_korela_exact_period",
+      "gap_type": "temporal_evidence",
+      "people_ref": "pp_korela",
+      "sex_category": "male",
+      "selection_class": "significant",
+      "name_form": "Валит",
+      "reason": "Источник (book:318333 §573, по Софийской летописи) связывает воеводу Валита Корелянина с событиями 1337/38 г. — XIV в., вне 1230–1250; medieval_general, для окна игры не засвидетельствован. В «Истории Карелии» (book:849577 §312) «валиты» также названы выборными старейшинами, что оставляет терминологическую неоднозначность.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_name_components.csv#source_line=L197"
+    },
     {
       "gap_id": "gap_personal_names_social_position",
       "gap_type": "selector_coverage",

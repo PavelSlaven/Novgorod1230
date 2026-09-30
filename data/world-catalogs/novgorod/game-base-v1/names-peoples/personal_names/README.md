@@ -2,6 +2,29 @@
 
 Status: candidate. Not approved (this collector does not self-approve).
 
+## Per-people pools (D51 p.2)
+
+The B2 projection has one draft pool per represented people. `region_id` is
+the region where these people may be encountered in this world revision;
+`people_ref` and the stable pool id identify the name origin. The six
+per-people pools therefore use `region_novgorod_land` for 1230–1250. Their IDs are
+`novgorod_1230_1250_gotland_guest_names_v1`,
+`novgorod_1230_1250_german_guest_names_v1`,
+`novgorod_1230_1250_korela_names_v1`,
+`novgorod_1230_1250_izhora_names_v1`,
+`novgorod_1230_1250_chud_est_names_v1` and
+`novgorod_1230_1250_smolyane_names_v1`. No G0 regions are introduced here;
+future pools for those homelands need a separate Spatial decision.
+
+Twenty-six entries with established `people_ref` move from the Novgorod pool
+to these six per-people pools. Иголанд remains a typed `people_ref_unresolved` gap because
+its source only establishes mixed guest group `pp_fg005`; it is not assigned a
+Russian or guessed people pool. `pp_korela` has one significant male form,
+`Валит`, from the explicit attestation `book:318333 §564` («воевода Валит
+Корелянин»). The same source dates him to 1337/38 (§573, Sofia chronicle), i.e.
+the XIV century. The entry remains `medieval_general` and the report carries a
+temporal evidence gap; it does not establish a 1230–1250 ordinary pool.
+
 ## B2 import projection (C013b)
 
 `name_pools.csv` and `name_pool_entries.csv` are the deterministic B2 import

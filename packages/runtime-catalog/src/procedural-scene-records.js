@@ -231,6 +231,8 @@ export async function loadApprovedProceduralActorTemporalBundle({
     readSkillDefaults(worldBaseReader,
       refs(occupations, 'occupation_archetype_id'))
   ]);
+  const identity = await readNpcIdentityCatalog(worldBaseReader, worldPin.world_revision_id,
+    refs(occupations, 'occupation_id'));
   return deepFreeze({ schema: 'rus.procedural_actor_temporal_bundle.v1',
     world_pin: structuredClone(worldPin), roles: structuredClone(roles),
     occupations: structuredClone(occupations), role_archetypes: roleArchetypes,
@@ -239,7 +241,34 @@ export async function loadApprovedProceduralActorTemporalBundle({
     social_position_archetypes: socialPositions,
     occupation_skill_defaults: skillDefaults,
     actor_profiles: structuredClone(actorProfileCatalog.records_by_table),
-    temporal_records: structuredClone(temporalRecords) });
+    temporal_records: structuredClone(temporalRecords),
+    ...(identity ? { npc_identity: identity } : {}) });
+}
+
+/** Approved personal-name pool, psychology scales and occupation goals/fears (rt-names, D49); absent in older worlds. */
+async function readNpcIdentityCatalog(reader, worldRevisionId, occupationIds) {
+  const read = async (sql, params) => rowsFrom(await reader.read(sql, params));
+  const [nameBindings, nameEntries, scaleEntries, characterItems] = await Promise.all([
+    read(`SELECT regional_context_id,name_pool_id,people_ref FROM world_base.npc_regional_context_name_bindings
+      WHERE world_revision_id=$1 AND status='approved' ORDER BY regional_context_id`, [worldRevisionId]),
+    read(`SELECT e.id,e.name_pool_id,e.name_form,e.weight,e.sex_category,e.people_ref
+      FROM world_base.region_name_pool_entries e
+      JOIN world_base.region_name_pools p ON p.id=e.name_pool_id
+       AND p.world_revision_id=$1 AND p.status='approved'
+      JOIN world_base.npc_regional_context_name_bindings b ON b.name_pool_id=e.name_pool_id
+       AND b.people_ref=e.people_ref AND b.world_revision_id=$1 AND b.status='approved'
+      WHERE e.status='approved' AND e.selection_class='ordinary'
+      ORDER BY e.name_pool_id,e.people_ref,e.sex_category,e.id`, [worldRevisionId]),
+    read(`SELECT scale_kind,entry_id,label_ru,weight FROM world_base.npc_psychology_scale_entries
+      WHERE world_revision_id=$1 AND status='approved' ORDER BY scale_kind,entry_id`, [worldRevisionId]),
+    occupationIds.length === 0 ? [] : read(`SELECT occupation_id,item_kind,item_id,text_ru
+      FROM world_base.occupation_character_items
+      WHERE world_revision_id=$1 AND status='approved' AND occupation_id=ANY($2::text[])
+      ORDER BY occupation_id,item_kind,item_id`, [worldRevisionId, occupationIds])
+  ]);
+  if (![nameBindings, nameEntries, scaleEntries, characterItems].some((rows) => rows.length > 0)) return null;
+  return { schema: 'rus.npc_identity_catalog.v1', name_bindings: nameBindings, name_entries: nameEntries,
+    scale_entries: scaleEntries, character_items: characterItems };
 }
 
 const OWNER_SQL = Object.freeze({

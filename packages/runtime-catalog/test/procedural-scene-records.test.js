@@ -76,3 +76,33 @@ test('actor Temporal exporter keeps approved source dependencies', async () => {
   assert.deepEqual(result.occupation_skill_defaults[0].primary_skill_ids, ['fishing']);
   assert.equal(result.temporal_records[0].record_id, 'daylight');
 });
+
+test('actor bundle carries the approved NPC identity catalog only when world_base has one', async () => {
+  const calls = [];
+  const rows = { npc_regional_context_name_bindings: [{ regional_context_id: 'ctx', name_pool_id: 'pool', people_ref: 'pp_x' }],
+    region_name_pool_entries: [{ id: 'n1', name_pool_id: 'pool', name_form: 'Ярослав', weight: 1,
+      sex_category: 'male', people_ref: 'pp_x' }],
+    npc_psychology_scale_entries: [{ scale_kind: 'trait', entry_id: 'calm', label_ru: 'самообладание', weight: 1 }],
+    occupation_character_items: [{ occupation_id: 'occupation', item_kind: 'goal', item_id: 'goal_01', text_ru: 'цель' }] };
+  const load = (data) => loadApprovedProceduralActorTemporalBundle({
+    worldBaseReader: { read: async (sql, params) => { calls.push({ sql, params });
+      return { rows: (Object.entries(data).find(([key]) => sql.includes(`FROM world_base.${key}`))
+        ?? Object.entries(data).find(([key]) => sql.includes(key)))?.[1] ?? [] }; } },
+    worldPin,
+    actorCatalog: { schema: 'rus.live_world_runtime.approved_actor_catalog.v1', roles: [],
+      occupations: [{ occupation_id: 'occupation', occupation_archetype_id: 'occ-a', status: 'approved' }] },
+    actorProfileCatalog: { schema: 'rus.verified_actor_profile_catalog.v1', verified: true, world_pin: worldPin,
+      records_by_table: {} },
+    temporalRecords: [] });
+  const withIdentity = await load({ ...rows, occupation_archetypes: [{ id: 'occ-a', status: 'approved' }] });
+  assert.deepEqual(withIdentity.npc_identity, { schema: 'rus.npc_identity_catalog.v1',
+    name_bindings: rows.npc_regional_context_name_bindings, name_entries: rows.region_name_pool_entries,
+    scale_entries: rows.npc_psychology_scale_entries, character_items: rows.occupation_character_items });
+  const itemCall = calls.find(({ sql }) => sql.includes('occupation_character_items'));
+  assert.deepEqual(itemCall.params, [worldPin.world_revision_id, ['occupation']]);
+  assert.match(itemCall.sql, /status='approved'/u);
+  const nameCall = calls.find(({ sql }) => sql.includes('FROM world_base.region_name_pool_entries'));
+  assert.match(nameCall.sql, /selection_class='ordinary'/u);
+  const legacy = await load({ occupation_archetypes: [{ id: 'occ-a', status: 'approved' }] });
+  assert.equal(legacy.npc_identity, undefined);
+});

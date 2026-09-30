@@ -137,9 +137,14 @@ const SEMANTIC_REPAIR_CODES = new Set([
   'source_semantic_grounding'
 ]);
 
+// Which physical form a torn-off piece or its surviving source has is a new semantic choice, not schema.
+const ACTION_PRODUCTION_FORM_PATH =
+  /^\$\.operations\[\d+\]\.action_production\.result_descriptor(\.source_fact_delta)?\.physical_form$/u;
+
 function requiresSemanticRepair({ path, code } = {}) {
   return SEMANTIC_REPAIR_CODES.has(code)
-    || code === 'additional_property' && path === '$.operation_choice';
+    || code === 'additional_property' && path === '$.operation_choice'
+    || code === 'enum' && ACTION_PRODUCTION_FORM_PATH.test(path);
 }
 
 function singleTransientOperation(plan) {

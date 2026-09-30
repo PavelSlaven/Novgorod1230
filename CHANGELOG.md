@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- data(m2c-place-coordinates): authored game-map reconstruction of the start cell (32 G4 sectors, 195 G5 points and footprints, water bodies with width and current, shorelines, 49 route traces, topology valid with 0 exceptions) and a derived report of compass and river directions and proposed minutes for all 540 lines; approved with limits (Opus, 93206de2; F1/F2 mechanical continuation 540420fe); authoring input only, runtime and spatial-v3 unchanged, minutes are a draft for a Spatial CR (place-geo)
 - feat(local-play): `npm run play:v17-slice` — tracked Linux driver for the live D49 slice run (Docker PG v17 bootstrap, real Qwen root, loopback HTTP, legs start/walk/meet/talk/take/make with SQL snapshots, `report.json` + playtest skeleton, always-cleanup); the presence e2e fixture bootstrap can run without a test context (rt-harness)
 - data(game-base): D-rated review step 2 — imported walnut, cast copper snake amulet, imported cotton cloth, common buckthorn, Zverin convent included from indexed sources; katana, chintz and local rice as dated denials (#213)
 - data(game-base): D-rated exclusions reviewed under D38 — risk-only rejections to structural needs_check queues, denials only for dated anachronism or physical impossibility, HW009 variant from the manifest (#212)

@@ -7346,7 +7346,7 @@
       "domain": "category_registry",
       "name": "collected_registry_unique_parents_no_cycles (external)",
       "pass": false,
-      "failures": 118,
+      "failures": 116,
       "sample": [
         "stable_code_missing",
         "stable_code_missing",
@@ -7406,8 +7406,6 @@
         "stable_code_missing",
         "stable_code_missing",
         "stable_code_missing",
-        "stable_code_missing",
-        "parent_missing",
         "parent_missing",
         "parent_missing",
         "parent_missing",
@@ -7469,10 +7467,10 @@
       ],
       "external": true,
       "problems_by_kind": {
-        "stable_code_missing": 59,
-        "parent_missing": 59
+        "stable_code_missing": 58,
+        "parent_missing": 58
       },
-      "registry_rows": 990
+      "registry_rows": 989
     },
     {
       "domain": "category_registry",
@@ -8517,8 +8515,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 3781,
-      "categories": 306
+      "rows": 3774,
+      "categories": 305
     }
   ]
 }

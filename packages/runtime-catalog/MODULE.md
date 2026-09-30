@@ -12,7 +12,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - проверкой compatible full-world pin и runtime contract;
 - чистой projection по region/effective date после полной проверки.
 - единой загрузкой неперсистентных common catalog lookups до projection.
-- чистой проверкой versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI.
+- чистой проверкой кросс-доменного versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI.
 
 ## Не делает
 
@@ -35,6 +35,8 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - `NEEDS_CHECK_BLOCKER` — единственный API для сборки/проверки versioned blocker snapshot и сопоставления кандидата; пакет не решает, допускать ли действие.
 
 ## Контракты
+
+`rus.needs_check_blockers.v1` — immutable snapshot cross-domain queues с проверкой digest. Каждая запись фиксирует `block_by` (`name` или `archive_id`), `scope`, исключения и нормализуемые шаблоны. Matcher fail-closed на неизвестной схеме, битом digest, пустом после нормализации шаблоне или неизвестном scope; кандидат без scope проверяется против всех записей.
 
 `loadActivePin` возвращает immutable `rus.runtime_catalog_pin.v2`.
 `loadApprovedItemCatalog` возвращает полный immutable verified bundle только

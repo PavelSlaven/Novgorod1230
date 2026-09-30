@@ -428,7 +428,6 @@ garment.component.shoe_lace,garment,universal,,garment.component,,,,game_base_v1
 garment.component.trim,garment,universal,,garment.component,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate
 garment.kind.ankle_shoe,garment,universal,,garment.kind,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate
 garment.kind.apron,garment,universal,,garment.kind,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate
-garment.kind.bast_shoes,garment,universal,,garment.kind,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate
 garment.kind.belt,garment,universal,,garment.kind,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate
 garment.kind.belt_set,garment,universal,,garment.kind,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate
 garment.kind.blanket_wrap,garment,universal,,garment.kind,,,,game_base_v1:clothing-appearance,data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv,candidate

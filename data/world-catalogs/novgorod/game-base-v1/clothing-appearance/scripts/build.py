@@ -900,7 +900,15 @@ def main():
             garments.append(row)
             rec.update(target='garments/garments.csv', reason='')
         disposition.append(rec)
+    needs_check = {row['check_id']: row for row in read_csv(ROOT / 'authoring/needs_check.csv')}
+    needs_check_gaps = []
     for n in NEW_GARMENTS:
+        if n['gm_id'] == 'gm_new_lapti' and 'clothing_lapti_frequency' in needs_check:
+            queue_id = 'clothing-appearance/authoring/needs_check.csv#clothing_lapti_frequency'
+            needs_check_gaps.append({'queue_id': queue_id,
+                                     'reason': needs_check['clothing_lapti_frequency']['source_request'] or needs_check['clothing_lapti_frequency']['subject'],
+                                     'row_id': n['gm_id']})
+            continue
         mats = n['material_ids'].split('|'); mclass = material_class(mats)
         cols = n['color_ids'].split('|')
         vfab = [VISUAL_FABRIC[m] for m in mats if m in VISUAL_FABRIC][:1]
@@ -937,6 +945,7 @@ def main():
           'status', 'notes']
     gdir = ROOT / 'garments'
     write_csv(gdir / 'garments.csv', garments, GF)
+    write_csv(ROOT / 'reports/needs_check_gaps.csv', needs_check_gaps, ['queue_id', 'reason', 'row_id'])
     write_csv(gdir / 'garment_components.csv', components, [field for field in GF if field != 'covers_hair'])
     write_csv(gdir / 'costume_disposition.csv', disposition,
               ['source_item_id', 'name_ru', 'subcategory', 'disposition', 'target', 'reason'])

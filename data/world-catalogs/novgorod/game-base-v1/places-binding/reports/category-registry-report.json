@@ -5,7 +5,7 @@
     "blob": "bab44418384a0be5270ce1922c32ae65a78af255",
     "sha256": "539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc"
   },
-  "registry_rows": 990,
+  "registry_rows": 989,
   "own_place_family_rows": 62,
   "reused_v17_ids": 66,
   "reused_v17_with_different_stable_code": 39,
@@ -15,7 +15,7 @@
     "v17_item_container_v5": 366,
     "game_base_v1:fauna-mammals-birds": 220,
     "game_base_v1:flora-trees-shrubs": 43,
-    "game_base_v1:clothing-appearance": 59,
+    "game_base_v1:clothing-appearance": 58,
     "game_base_v1:items-household-personal": 127,
     "game_base_v1:places-binding": 62,
     "v17_spatial_v3": 57
@@ -29,7 +29,7 @@
     "g5_anchor": 1,
     "g5_edge": 1,
     "g5_zone": 1,
-    "garment": 59,
+    "garment": 58,
     "item_property": 1,
     "item": 389,
     "place_family": 62,
@@ -340,8 +340,8 @@
     }
   ],
   "problems_by_kind": {
-    "stable_code_missing": 59,
-    "parent_missing": 59
+    "stable_code_missing": 58,
+    "parent_missing": 58
   },
   "problems": [
     {
@@ -607,11 +607,6 @@
     {
       "kind": "stable_code_missing",
       "category_id": "garment.kind.korzno",
-      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
-    },
-    {
-      "kind": "stable_code_missing",
-      "category_id": "garment.kind.bast_shoes",
       "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
     },
     {
@@ -954,12 +949,6 @@
     {
       "kind": "parent_missing",
       "category_id": "garment.kind.korzno",
-      "parent": "garment.kind",
-      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
-    },
-    {
-      "kind": "parent_missing",
-      "category_id": "garment.kind.bast_shoes",
       "parent": "garment.kind",
       "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
     },

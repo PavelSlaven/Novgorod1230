@@ -10,6 +10,7 @@ const COMPILED = new WeakMap();
 const RU_ENDINGS = [
   'иями', 'ями', 'ами', 'ого', 'ему', 'ыми', 'ими', 'ому', 'ее', 'ие', 'ые',
   'ая', 'яя', 'ое', 'ее', 'ый', 'ий', 'ой', 'ую', 'юю', 'ою', 'ею', 'ых',
+  'иями', 'ов', 'ев', 'ей', 'ам', 'ям', 'ах', 'ях', 'ью', 'его', 'й',
   'их', 'ым', 'им', 'ом', 'ем', 'а', 'я', 'ы', 'и', 'у', 'ю', 'е', 'о', 'ь'
 ];
 
@@ -21,7 +22,7 @@ function normalize(value) {
 
 function stem(token) {
   for (const ending of RU_ENDINGS) {
-    if (token.length - ending.length >= 4 && token.endsWith(ending)) {
+    if (token.length - ending.length >= 3 && token.endsWith(ending)) {
       return token.slice(0, -ending.length);
     }
   }
@@ -48,17 +49,25 @@ function assertEntries(entries) {
       || ids.has(entry.queue_id) || typeof entry.source_ref !== 'string' || !entry.source_ref.trim()
       || typeof entry.reason !== 'string' || !entry.reason.trim()
       || typeof entry.scope !== 'string' || !SCOPE.test(entry.scope)
+      || !['name', 'archive_id'].includes(entry.block_by)
       || !Array.isArray(entry.patterns) || entry.patterns.length === 0
       || !Array.isArray(entry.exceptions)) {
       throw new TypeError('Invalid or duplicate needs-check blocker entry.');
     }
     ids.add(entry.queue_id);
+    let hasApplicablePattern = false;
     for (const pattern of entry.patterns) {
       if (!pattern || !LANGUAGES.has(pattern.language)
         || typeof pattern.value !== 'string' || !pattern.value.trim()) {
         throw new TypeError(`Invalid pattern for needs-check entry ${entry.queue_id}.`);
       }
+      const alternatives = pattern.value.split('|').map(normalize);
+      if (alternatives.some((tokens) => tokens.length === 0)) {
+        throw new TypeError(`Empty normalized pattern for needs-check entry ${entry.queue_id}.`);
+      }
+      hasApplicablePattern ||= alternatives.some((tokens) => tokens.length > 0);
     }
+    if (!hasApplicablePattern) throw new TypeError(`Empty normalized pattern for needs-check entry ${entry.queue_id}.`);
     for (const exception of entry.exceptions) {
       if (typeof exception !== 'string' || !exception.trim()) {
         throw new TypeError(`Invalid exception for needs-check entry ${entry.queue_id}.`);
@@ -71,12 +80,13 @@ function createSnapshot(entries) {
   assertEntries(entries);
   const sorted = entries.map((entry) => ({
     queue_id: entry.queue_id,
+    block_by: entry.block_by,
     scope: entry.scope,
     source_ref: entry.source_ref,
     reason: entry.reason,
     patterns: entry.patterns.map(({ language, value }) => ({ language, value })),
     exceptions: [...entry.exceptions]
-  })).sort((left, right) => left.queue_id.localeCompare(right.queue_id, 'en'));
+  })).sort((left, right) => left.queue_id < right.queue_id ? -1 : left.queue_id > right.queue_id ? 1 : 0);
   return deepFreeze({ schema: SCHEMA, entries: sorted, digest: digest(SCHEMA, sorted) });
 }
 
@@ -109,14 +119,14 @@ function compiledEntries(snapshot) {
   if (COMPILED.has(snapshot)) return COMPILED.get(snapshot);
   const entries = snapshot.entries.map((entry) => ({
     entry,
-    patterns: entry.patterns.map(({ language, value }) => ({ language, tokens: normalize(value) })),
+    patterns: entry.patterns.flatMap(({ language, value }) => value.split('|').map((alternative) => ({ language, tokens: normalize(alternative) }))),
     exceptions: entry.exceptions.map(normalize)
   }));
   if (Object.isFrozen(snapshot)) COMPILED.set(snapshot, entries);
   return entries;
 }
 
-function matches({ snapshot, candidate }) {
+function matchesAll({ snapshot, candidate }) {
   validateSnapshot(snapshot);
   if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
     throw new TypeError('candidate must be an object.');
@@ -126,33 +136,43 @@ function matches({ snapshot, candidate }) {
     throw new TypeError('candidate.scope must be a valid scope.');
   }
   const values = {
-    ru: [candidate.name, candidate.semantic_type, candidate.candidate_hint, candidate.context],
-    lat: [candidate.name_lat, candidate.context],
+    ru: [candidate.name, candidate.semantic_type, candidate.candidate_hint, candidate.context,
+      ...(candidate.aliases_ru ?? [])],
+    lat: [candidate.name_lat, candidate.context, ...(candidate.lat_synonyms ?? [])],
     id: [candidate.id, ...(Array.isArray(candidate.ids) ? candidate.ids : [])]
   };
   const normalizedValues = Object.fromEntries(Object.entries(values).map(([language, items]) => [
     language, items.filter((value) => typeof value === 'string')
       .map(normalize).filter((tokens) => tokens.length > 0)
   ]));
+  const hits = [];
   for (const compiled of compiledEntries(snapshot)) {
     const { entry } = compiled;
-    if (entry.scope !== 'global' && scope !== entry.scope) continue;
+    if (candidate.scope && candidate.scope !== 'global' && entry.scope !== 'global' && scope !== entry.scope) continue;
     const excluded = compiled.exceptions.some((tokens) => tokens.length > 0
       && Object.values(normalizedValues).flat().some((value) => containsSequence(value, tokens)));
     if (excluded) continue;
     for (const pattern of compiled.patterns) {
+      if (entry.block_by === 'archive_id' && pattern.language !== 'id') continue;
+      if (entry.block_by === 'name' && pattern.language === 'id') continue;
       const { tokens } = pattern;
       if (tokens.length > 0 && normalizedValues[pattern.language]
         .some((value) => containsSequence(value, tokens))) {
-        return Object.freeze({ queue_id: entry.queue_id, scope: entry.scope, reason: entry.reason });
+        hits.push(Object.freeze({ queue_id: entry.queue_id, block_by: entry.block_by, scope: entry.scope, reason: entry.reason }));
+        break;
       }
     }
   }
-  return null;
+  return Object.freeze(hits);
+}
+
+function matches(input) {
+  return matchesAll(input)[0] ?? null;
 }
 
 export const NEEDS_CHECK_BLOCKER = Object.freeze({
   createSnapshot,
+  matchesAll,
   matches,
   validateSnapshot
 });

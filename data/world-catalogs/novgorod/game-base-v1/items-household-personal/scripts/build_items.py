@@ -226,9 +226,10 @@ def main():
     print(f"household={n_h} personal={n_p} categories={len(catrows)} errors={len(errors)}")
     for e in errors:
         print("  ERR", e)
+    if not errors:
+        subprocess.run(["node", str(HERE.parents[1] / "scripts/check-needs-check.mjs"), "--check"], check=True)
     sys.exit(1 if errors else 0)
 
 
 if __name__ == "__main__":
     main()
-    subprocess.run(["node", str(HERE.parents[1] / "scripts/check-needs-check.mjs"), "--check"], check=True)

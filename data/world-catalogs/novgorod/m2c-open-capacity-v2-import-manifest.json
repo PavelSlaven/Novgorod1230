@@ -10,7 +10,7 @@
     {
       "table": "source_records",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/source_records.json",
-      "sha256": "f8c45cb3e198610f57095f82d6dc257c69e9e3a1bcd419aa2abdd66ffd806dec",
+      "sha256": "0c3fb84ce1c08f1d2b2395c497128d9b2fbfb480131f3d550680df530124c489",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -19,7 +19,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_authoring_versions.json",
-      "sha256": "a8e1378759bf7595dbd7233be26ddd3f6f989e0d68c3c19f8b2cd7895fbb5268",
+      "sha256": "99475b2291a55c1b1f2406c55039f83068a3bbab2bc3e2ed24928cf3ff78dfe2",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -196,7 +196,7 @@
     {
       "table": "spatial_v3_npc_runtime_profiles",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_npc_runtime_profiles.json",
-      "sha256": "0009838627b52ca7097e5561f0c225013ccb72edea2941d9ed1e30deab459868",
+      "sha256": "139724bd1a703c1776c7c3d4ce2806aade781484f3248821b2a89d706be86968",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",

@@ -57,6 +57,6 @@
     "limitations": "Gameplay authoring; no historical frequency, origin or language claim. Awaits independent approval (people-d49/approval.json).",
     "status": "approved",
     "confidence": "low",
-    "checked_by": "pending independent approval of m2c-npc/people-d49/approval.json"
+    "checked_by": "claude-opus-5-5 — independent data approver (not the author; author Claude Sonnet 5.5, fleet people-data)"
   }
 ]

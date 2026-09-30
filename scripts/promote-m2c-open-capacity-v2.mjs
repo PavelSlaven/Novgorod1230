@@ -22,7 +22,7 @@ const fresh = ({ canonical_digest: _old, ...row }) => digest(row);
  * approved household-servant profile, one clothing profile, one canonical regional context and version-3 successors of
  * the fisher and servant profiles. Every value comes from the candidate or from existing approved rows.
  */
-function peopleD49Rows(candidate, v1Profiles, v1Regional, v2Bindings) {
+function peopleD49Rows(candidate, v1Profiles, v1Regional, v2Bindings, subjectApplicability) {
   const profile = (id) => v1Profiles.find((row) => row.id === id);
   const template = profile(candidate.template_profile);
   const clothingTemplate = profile(candidate.clothing_profile.template);
@@ -47,6 +47,10 @@ function peopleD49Rows(candidate, v1Profiles, v1Regional, v2Bindings) {
   const profiles = candidate.profiles.map((spec) => {
     const activity = profile(spec.activity_profile_ref.id);
     const sex = spec.sex_category.map((id) => id.split('_').at(-1));
+    const applicability = subjectApplicability.filter((entry) => [spec.role_ref, spec.occupation_ref].includes(entry.subject_id)
+      && JSON.stringify(entry.actor_applicability.sex_category) === JSON.stringify(spec.sex_category)).map((entry) => entry.actor_applicability);
+    assert.equal(applicability.length, 1, `${spec.id}: exactly one game-base subject_applicability with this sex`);
+    const [{ sex_basis: sexBasis, confidence: sexConfidence }] = applicability;
     const refs = [...template.payload.runtime_profile_refs
       .filter((ref) => ref.id !== template.payload.activity_profile_ref.id && ref.id !== template.payload.clothing_profile_ref.id),
     spec.activity_profile_ref, { id: clothing.id, version: clothing.version }].sort((a, b) => a.id.localeCompare(b.id));
@@ -56,11 +60,12 @@ function peopleD49Rows(candidate, v1Profiles, v1Regional, v2Bindings) {
         occupation_ref: spec.occupation_ref, activity_profile_ref: spec.activity_profile_ref,
         clothing_profile_ref: { id: clothing.id, version: clothing.version }, runtime_profile_refs: refs,
         regional_context_refs: [ctxRef],
-        actor_applicability: { sex_category: spec.sex_category, sex_basis: 'editorial', confidence: 'C', source_refs: spec.source_refs },
+        actor_applicability: { sex_category: spec.sex_category, sex_basis: sexBasis, confidence: sexConfidence,
+          source_refs: spec.source_refs },
         clothing_variant_requirements: template.payload.clothing_variant_requirements
           .filter((variant) => variant.sex_categories.every((category) => sex.includes(category))),
         observable_activity: { value: activity.payload.payload.editorial_reconstruction.task_focus,
-          source_ref: `record:${activity.payload.record_id}` } } });
+          source_ref: activity.payload.record_id } } });
   });
   const successors = candidate.profile_successors.map((spec) => {
     const base = v2Bindings.find((row) => row.id === spec.id && row.version === spec.from_version);
@@ -125,7 +130,14 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
   const peopleCandidatePath = `${catalog}/m2c-npc/people-d49/candidate.json`;
   const peopleBytes = await readFile(resolve(root, peopleCandidatePath));
   const people = JSON.parse(peopleBytes);
-  const peopleRows = peopleD49Rows(people, v1Profiles, v1Regional, npcBindingsV2);
+  const peopleApprovalPath = `${catalog}/m2c-npc/people-d49/approval.json`;
+  const peopleApproval = await json(peopleApprovalPath);
+  assert.ok(['APPROVE', 'APPROVE_WITH_LIMITS'].includes(peopleApproval.verdict));
+  assert.ok(peopleApproval.approved_by);
+  assert.equal(peopleApproval.exact_candidate.sha256, sha(peopleBytes));
+  const { subject_applicability: subjectApplicability } = await json(
+    `${catalog}/game-base-v1/occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json`);
+  const peopleRows = peopleD49Rows(people, v1Profiles, v1Regional, npcBindingsV2, subjectApplicability);
   const npcBindings = [...npcBindingsV2, ...peopleRows.profiles];
   const npcRegional = [...npcRegionalV2, peopleRows.regional];
   const overrides = new Map(people.g4_overrides.map((entry) => [entry.g4_id, entry]));
@@ -210,7 +222,7 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
   sourceRecord.push({ id: people.provenance_ref, title: 'M2c D49 people: profiles, canonical regional context, G4 lower bound',
     source_type: 'project_note', file_reference: peopleCandidatePath, page_or_section: `candidate_sha256:${sha(peopleBytes)}`,
     summary: people.decision, limitations: 'Gameplay authoring; no historical frequency, origin or language claim. Awaits independent approval (people-d49/approval.json).',
-    status: 'approved', confidence: 'low', checked_by: 'pending independent approval of m2c-npc/people-d49/approval.json' });
+    status: 'approved', confidence: 'low', checked_by: peopleApproval.approved_by });
   replacements.set('source_records', sourceRecord);
   const sourceEntry = new Map(sourceManifest.datasets.map((row) => [row.table, row]));
   const manifest = { ...sourceManifest, bundle_id: 'novgorod_m2c_open_capacity_v2_import',

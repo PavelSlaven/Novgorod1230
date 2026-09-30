@@ -4146,7 +4146,7 @@
       },
       "observable_activity": {
         "value": "Inspects the visible mooring place and approach from the current location; no vessel, fittings, gear, travel, propulsion, or cargo is assumed.",
-        "source_ref": "record:record:activity_categories_profiles:m2c_npc_boatman_initial_work_v1"
+        "source_ref": "record:activity_categories_profiles:m2c_npc_boatman_initial_work_v1"
       },
       "no_goods_or_world_outputs": true,
       "status": "approved",
@@ -4168,7 +4168,7 @@
     "provenance_ref": "m2c_people_d49_editorial_001",
     "directness": "explicit_gameplay_binding_with_analogical_components",
     "confidence": "low",
-    "canonical_digest": "d1419ce7b5b543b5ec5e9177f3a7e08e43eb4486aabc73a8d61ba709ca6f2358"
+    "canonical_digest": "386798854c62aab741638cecaf6d8428baa02466b47ad715bc273d082f810a74"
   },
   {
     "entity_kind": "npc_runtime_profile",
@@ -4467,7 +4467,7 @@
       },
       "observable_activity": {
         "value": "Inspects the assigned household work area from the current place; no specific household objects, tools, production, or goods are assumed.",
-        "source_ref": "record:record:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1"
+        "source_ref": "record:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1"
       },
       "no_goods_or_world_outputs": true,
       "status": "approved",
@@ -4489,7 +4489,7 @@
     "provenance_ref": "m2c_people_d49_editorial_001",
     "directness": "explicit_gameplay_binding_with_analogical_components",
     "confidence": "low",
-    "canonical_digest": "2f1e23b2a7b28f599b38b390fda5344aac7355510a8f30b061b9f2d893872783"
+    "canonical_digest": "815112523055411196d70bcd35a0562a96402159488807e03776d6b3d6b2c357"
   },
   {
     "entity_kind": "npc_runtime_profile",
@@ -4758,7 +4758,7 @@
       },
       "observable_activity": {
         "value": "Inspects the assigned household work area from the current place; no specific household objects, tools, production, or goods are assumed.",
-        "source_ref": "record:record:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1"
+        "source_ref": "record:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1"
       },
       "no_goods_or_world_outputs": true,
       "status": "approved",
@@ -4780,7 +4780,7 @@
     "provenance_ref": "m2c_people_d49_editorial_001",
     "directness": "explicit_gameplay_binding_with_analogical_components",
     "confidence": "low",
-    "canonical_digest": "b7c03a7a8591a0a517eea2f4454504b003375f6e33b67e49c8bd0b2a0db853d0"
+    "canonical_digest": "bc87d3aea1d348e1e54e67a9e6d6f2384089d16e9e5f711d7d30a99a35635ae1"
   },
   {
     "entity_kind": "npc_runtime_profile",

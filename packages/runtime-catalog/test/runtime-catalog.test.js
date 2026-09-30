@@ -295,12 +295,18 @@ test('public loader boundary exposes only immutable read operations', () => {
     supportedRuntimeContractDigests: [digest('d')]
   });
 
+  // Every loader is SELECT-only through worldBaseReader.read (no writes, no cache).
+  // D-1/D-2 readers: 98bf233a (#158); presence rules and category parents: 63d69865 (R-2a).
   assert.deepEqual(
     Object.keys(loader).sort(),
     [
       'loadActivePin',
       'loadApprovedActorProfileCatalog',
-      'loadApprovedItemCatalog'
+      'loadApprovedItemCatalog',
+      'loadCategoryParentMap',
+      'loadPlacePopulationComposition',
+      'loadPresenceRulesForPlaceFamilies',
+      'loadScheduleRoutineRules'
     ]
   );
   assert.equal(Object.isFrozen(loader), true);

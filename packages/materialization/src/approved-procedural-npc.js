@@ -3,6 +3,7 @@ import { materializeActorBaseAppearance, compileApprovedActorAppearanceEntries }
 import { compileApprovedNpcRuntimeBasis } from './approved-npc-runtime-basis.js';
 import { materializeActorBaseAttributes } from './actor-base-attributes.js';
 import { deterministicInstanceId, MaterializationError } from './core.js';
+import { pickNpcCharacter, pickNpcName } from './npc-identity.js';
 
 export function materializeApprovedProceduralNpc({ party_id: partyId,
   run_id: runId, binding, approved_bundle: bundle, environment, random } = {}) {
@@ -112,8 +113,13 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const publicLabel = role.role_title ?? occupation.occupation_title
     ?? binding.public_role_label;
   if (!text(publicLabel)) gap('PROCEDURAL_NPC_PUBLIC_LABEL_DATA_GAP');
+  const catalog = bundle.npc_identity;
+  const seed = { parentSeedDigest: binding.parent_seed_digest, actorSlotRef: binding.actor_slot_ref };
+  const character = pickNpcCharacter({ catalog, occupationId: occupation.occupation_id, ...seed });
   const identity = { ...structuredClone(appearance.identity),
-    public_role_label: publicLabel };
+    public_role_label: publicLabel,
+    ...pickNpcName({ catalog, regionalContextId: binding.regional_context_ref?.id,
+      sexCategory: appearance.identity.sex_category, ...seed }) };
   const npc = {
     instance_id: npcId, participant_slot_ref: binding.actor_slot_ref,
     profile_id: binding.source_binding?.npc_binding_ref.id ?? binding.actor_profile_rule_ref,
@@ -151,6 +157,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
         source: 'social_role_archetypes' }, { id: occupationArchetype.id,
         source: 'occupation_archetypes' }],
       behavior_basis: roleBehaviorBasis(role),
+      ...(character ? { character } : {}),
       approved_runtime_basis: runtimeBasis,
       ...(regionalContext ? { regional_context: regionalContext } : {}),
       body_time_effect_profile_refs: bodyEffects.map((record) =>

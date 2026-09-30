@@ -10,7 +10,7 @@
     {
       "table": "source_records",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/source_records.json",
-      "sha256": "0c3fb84ce1c08f1d2b2395c497128d9b2fbfb480131f3d550680df530124c489",
+      "sha256": "2ffab2a4345267a094054ace6a8fa24b1e59b4aecb5f2fa8025fc9c638cdcd87",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",

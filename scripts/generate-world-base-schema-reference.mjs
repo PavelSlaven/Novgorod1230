@@ -118,6 +118,15 @@ function applyAddedColumns(tables, ddl) {
         }
         continue;
       }
+      // `ALTER COLUMN c DROP|SET NOT NULL` changes what a row must carry (the strict importer row check reads `nullable`).
+      const notNull = /^ALTER\s+COLUMN\s+([a-z_][a-z0-9_]*)\s+(DROP|SET)\s+NOT\s+NULL$/iu.exec(action);
+      if (notNull) {
+        const column = table.columns.find((item) => item.name === notNull[1]);
+        if (!column) throw new Error(`ALTER COLUMN references unknown world_base.${match[1]}.${notNull[1]}`);
+        if (column.primary_key && notNull[2].toUpperCase() === 'DROP') throw new Error(`DROP NOT NULL on primary key column world_base.${match[1]}.${column.name}`);
+        column.nullable = notNull[2].toUpperCase() === 'DROP';
+        continue;
+      }
       const uniqueKey = /^ADD\s+CONSTRAINT\s+[a-z_][a-z0-9_]*\s+(UNIQUE\s*\([\s\S]+\))$/iu.exec(action);
       if (uniqueKey) {
         const constraint = normalizeSql(uniqueKey[1]);

@@ -3899,7 +3899,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 |---|---|---:|---|---|---|---|
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
-| `demographic_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `demographic_option_id` | `TEXT` | да | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `minimum_age` | `INTEGER` | да | — | — | `CHECK (minimum_age >= 0)` | Описание отсутствует. |
 | `maximum_age` | `INTEGER` | да | — | — | `CHECK (maximum_age IS NULL OR maximum_age >= minimum_age)` | Описание отсутствует. |
 | `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
@@ -3960,7 +3960,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 |---|---|---:|---|---|---|---|
 | `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `region_id` | `TEXT` | нет | — | `world_base.regions(id) ON DELETE CASCADE` | `NOT NULL` | FK → regions(id): регион, к которому относится запись. |
-| `appearance_option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `appearance_option_id` | `TEXT` | да | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
 | `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 
@@ -5290,8 +5290,8 @@ Digests, counts и dependency order таблиц одного импорта.
 | `scene_template_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `scene_template_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `weight` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK(weight>0)` | Описание отсутствует. |
-| `applicability_rule_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `applicability_rule_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
+| `applicability_rule_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `applicability_rule_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 
 **Ограничения таблицы:**
 
@@ -5630,7 +5630,7 @@ Digests, counts и dependency order таблиц одного импорта.
 | `capacity` | `INTEGER` | да | — | — | `CHECK(capacity IS NULL OR capacity > 0)` | Описание отсутствует. |
 | `capacity_semantics_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `risk_profile_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `availability_condition_set_ref` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `availability_condition_set_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(status IN ('approved','deprecated','retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK(canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
@@ -5657,8 +5657,8 @@ Digests, counts и dependency order таблиц одного импорта.
 | `from_canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
 | `to_canonical_g5_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `to_canonical_g5_version` | `INTEGER` | нет | `1` | — | `NOT NULL` | Описание отсутствует. |
-| `connection_profile_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `connection_profile_version` | `INTEGER` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `connection_profile_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `connection_profile_version` | `INTEGER` | да | — | — | — | Описание отсутствует. |
 | `from_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `to_scene_endpoint_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `reverse_binding_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |

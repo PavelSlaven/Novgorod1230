@@ -955,8 +955,10 @@ Narrator переводит evidence wording в естественную реч�
 `loadNaturalScenePerceptionInput` обязан вернуть `site_connections` (disclosure владельца видимости,
 `readCurrentConnectionDisclosure`), иначе внутренняя ошибка `SPATIAL_V3_CURRENT_CONNECTION_DISCLOSURE_REQUIRED`
 (`public_exposure: internal`, игроку `TEMPORARY_ACTION_UNAVAILABLE`). Локальные рёбра и направленные выходы, которые
-даёт ход (`phase-2-current-visible.js`), на первом экране не раскрываются: LW-097. При плохой видимости disclosure пуст
-(LW-097).
+даёт ход (`phase-2-current-visible.js`), на первом экране не раскрываются: LW-097. Видимость не входит в доступность
+(Spatial 4.7.0 §7.1.1): при плохой видимости линии (`local_edge`, `site_connection`, `directional_exit`) остаются в disclosure,
+их скрывает только concealment (`visibleCurrentTargets`). Экран локального хода показывает проходы места прибытия:
+`prepareLocalMovement` кладёт их в `visible_seed.destination_movement_objects`, проектор подменяет ими проходы прежней позиции.
 
 Opening и arrival могут передать exact natural perception input действующему
 `@rus/presentation/spatial-v3-projection.projectSpatialV3NaturalScene` через

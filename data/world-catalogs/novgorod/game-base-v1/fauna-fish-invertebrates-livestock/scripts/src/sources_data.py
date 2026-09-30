@@ -4,6 +4,10 @@
 # "read" = the collector actually read the text (2026-09-26); "via" = only cited by a read source.
 
 SOURCES = {
+    "src:project-rabbit-livestock-lexicon": (
+        "Novgorod1230 project anachronism lexicon, denylist.csv#an_rabbit_livestock",
+        "data/world-catalogs/novgorod/game-base-v1/misc/anachronism_denylist_lexicon/denylist.csv#L10",
+        "repo_data", "contains the project’s XVIII-century livestock-dating assertion; no bibliography is attached, so request external confirmation before raising confidence"),
     "src:tarasov-2009-ladoga-fishing": (
         "Тарасов И.И. Рыболовство в средневековой Ладоге // Староладожский сборник. Вып. 7. Старая Ладога, 2009. С. 177–184",
         "http://histfishing.ru/biblio/middleages/tarasov-ii-rybolovstvo-v-srednevekovoj-ladoge.html",

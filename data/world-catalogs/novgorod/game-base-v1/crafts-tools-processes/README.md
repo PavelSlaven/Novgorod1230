@@ -21,6 +21,13 @@
 
 `authoring/category_evidence_ids.csv` — отсортированная выписка уникальных `item_id` с ролью `category_form_material_process_or_context` из закреплённого `data/master-archive/unpacked/Novgorod1230_MASTER_ARCHIVE_v1/data/normalized_source_tables/material_entities/source_item_links.csv` (SHA-256 `8ec5dbcb016f48e2e973bce07a5f1c9fbb6f6429812f853c8a05222660281ddc`); воспроизвести: `python3 -c 'import csv,sys; r=csv.DictReader(open(sys.argv[1],encoding="utf-8-sig")); w=csv.writer(sys.stdout,lineterminator="\n"); w.writerow(("archive_id","support_role")); [w.writerow((x,"category_form_material_process_or_context")) for x in sorted({a["item_id"] for a in r if a["support_role"]=="category_form_material_process_or_context"})]' <source_item_links.csv> > authoring/category_evidence_ids.csv`.
 
+## D38: очередь и датированные ограничения
+
+- CRF0061, HNT0024, HNT0028, HRS0021, WTR0015, AGR0022 и CRF0057 стоят в `authoring/needs_check.csv`: D/research_only и отсутствие датировки не доказывают анахронизм. Причина и запрос источника указаны отдельно по каждой записи; confidence D сохранён; в очереди проверки источника, чтение очереди генерацией — отдельная задача.
+- HNT0022 остаётся исключённым как современный фабричный капкан: мастер-снимок задаёт период 1600–2000. WTR0024 остаётся исключённым по датированному каталожному периоду 1450–1700.
+- Хлопчатник исключён как местное растение, но хлопковая ткань не запрещена: импорт возможен. Для ткани запрошен датированный торговый или археологический источник по Руси около 1230 г.; basis=analogy, confidence D. Колёсная прялка, ножной круг, плуг с отвалом и водяной молот находятся в `materials_registry/needs_check.csv`: в очереди проверки источника; чтение очереди генерацией — отдельная задача. Отсутствие подтверждения не считается анахронизмом, confidence D сохранён.
+- Стекло в окнах ограничено контекстом обычного жилья; это не общий запрет стекла.
+
 ## Запуск
 
 ```bash

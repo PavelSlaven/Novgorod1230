@@ -64,6 +64,31 @@ def build_archive_inclusion_ledger():
     return ledger
 
 
+def manifest_garment_variants(manifest=None):
+    """Project manifest variants represented by an existing garment row."""
+    if manifest is None:
+        manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
+    variants = {}
+    prefix = 'clothing-appearance/'
+    garment_target = 'garments/garments.csv#'
+    for decision in manifest:
+        if decision.get('expected_result') != 'variant':
+            continue
+        target = decision.get('target_ref') or decision.get('game_base_ref', '')
+        if not target.startswith(prefix + garment_target):
+            continue
+        target = target[len(prefix):]
+        if not target[len(garment_target):]:
+            raise ValueError(f"invalid garment variant target for {decision.get('archive_ref', '<missing>')}: {target}")
+        archive_ref = decision.get('archive_ref', '')
+        archive_id = archive_ref.rsplit(':', 1)[-1]
+        if not archive_id or archive_id in variants:
+            raise ValueError(f"missing or duplicate garment variant archive ID: {archive_ref}")
+        variants[archive_id] = {'disposition': 'variant', 'target': target,
+                                'reason': decision.get('reason', '')}
+    return variants
+
+
 def build_material_entities():
     """Project only explicitly owned new clothing entities; routed rows stay in the ledger."""
     source_path = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'
@@ -794,9 +819,15 @@ def main():
 
     # ---------------- garments + disposition
     garments, disposition, components = [], [], []
+    manifest_variants = manifest_garment_variants()
     adorn_src = []
     for r in items:
         sub = r['subcategory']
+        if r['item_id'] in manifest_variants:
+            variant = manifest_variants[r['item_id']]
+            disposition.append(dict(source_item_id=r['item_id'], name_ru=r['name_ru'],
+                                    subcategory=sub, **variant))
+            continue
         if sub not in SUB and r['category'] == 'armor_and_weapons':
             SUB[sub] = ('reject:weapons_armor:оружие, доспех или конское снаряжение — домен weapons_armor', '', '', sub, '')
         disp, slot, cat, name_en, ctx = SUB[sub]
@@ -938,11 +969,11 @@ def main():
     write_csv(gdir / 'region_clothing_profiles.csv', rcp,
               ['id', 'region_id', 'garment_category_id', 'slot_key', 'gm_id', 'constraints', 'status', 'source_refs', 'confidence'])
     ANTI_TERMS = {
-        'ANTI001': r'кафтан', 'ANTI002': r'косоворот', 'ANTI003': r'сплошн\w* вышив', 'ANTI004': r'жилет|наплечник',
-        'ANTI005': r'лапт', 'ANTI006': r'высок\w* мехов\w* шапк', 'ANTI007': r'викинг', 'ANTI008': r'монгол',
-        'ANTI009': r'униформ', 'ANTI010': r'латн\w* доспех|полные латы', 'ANTI011': r'рогат\w* шлем', 'ANTI012': r'мехом наружу|шкуры наружу',
-        'ANTI013': r'корсет', 'ANTI014': r'кокошник', 'ANTI015': r'сарафан', 'ANTI016': r'каблук',
-        'ANTI017': r'хлоп|ситец|ситц', 'ANTI018': r'одинаков\w* доспех', 'ANTI019': r'герб|геральд',
+        'ANTI001': r'кафтан', 'ANTI002': r'косоворот', 'ANTI003': r'сплошн\w* вышив', 'ANTI004': r'фэнтезийн\w* кожан\w* (жилет|наплечник)',
+        'ANTI005': r'поголовн\w* лапт', 'ANTI006': r'высок\w* мехов\w* шапк', 'ANTI007': r'викинг', 'ANTI008': r'монгол',
+        'ANTI009': r'униформ', 'ANTI010': r'латн\w* доспех|полные латы', 'ANTI011': r'рогат\w* (шлем|helmet)', 'ANTI012': r'мехом наружу|шкуры наружу',
+        'ANTI013': r'корсет', 'ANTI014': r'кокошник', 'ANTI015': r'универсальн\w* сарафан', 'ANTI016': r'каблук',
+        'ANTI017': r'ситец|ситц\w*|(?:фабричн\w*|набивн\w*) хлопчат\w*|(?:местн\w* производств\w*).{0,30}хлопчат\w*', 'ANTI018': r'одинаков\w* доспех', 'ANTI019': r'герб|геральд',
         'ANTI020': r'ювелирн\w* перегруз',
     }
     extra = [('ANACH_POTATO', r'картоф', 'Картофель — американская культура, после XVI в.', 'wk:technology-boundaries'),

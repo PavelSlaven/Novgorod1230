@@ -105,7 +105,7 @@ master_material_culture,ARM0017,Нашивной пластинчатый дос
 master_material_culture,ARM0018,Кожаная окантовка кольчуги,armor/кольчуга и мягкая основа,C,1180–1260,wp,wp_armour_repair
 master_material_culture,ARM0019,Кольчужная бармица,armor/кольчуга и мягкая основа,B,1180–1260,wp,wp_barmitsa
 master_material_culture,ARM0020,Кожаная ременная обвязка доспеха,armor/кольчуги и дополнительная защита,B,1180–1260,wp,wp_armour_repair
-master_material_culture,ARM0021,Кожаный доспех как самостоятельная кираса — недоказан,armor/кольчуги и дополнительная защита,D,1180–1260,denylist,deny_leather_cuirass
+master_material_culture,ARM0021,Кожаный доспех как самостоятельная кираса — недоказан,armor/кольчуги и дополнительная защита,D,1180–1260,needs_check,
 master_material_culture,ARM0022,Короткая кольчужная рубаха с коротким рукавом,armor/кольчуги и дополнительная защита,B,1180–1260,wp,wp_mail_shirt
 master_material_culture,ARM0023,Отдельная ламеллярная пластина,armor/кольчуги и дополнительная защита,B,1180–1260,wp,wp_lamellar
 master_material_culture,ARM0024,Пластинчатый бригантинный доспех,armor/кольчуги и дополнительная защита,D,1300–1500,denylist,deny_brigandine
@@ -113,7 +113,7 @@ master_material_culture,ARM0025,Полный латный доспех,armor/к�
 master_material_culture,ARM0026,Ремонтная связка колец и заклёпок,armor/кольчуги и дополнительная защита,C,1180–1260,wp,wp_armour_repair
 master_material_culture,ARM0027,Удлинённая кольчуга с разрезами,armor/кольчуги и дополнительная защита,C,1180–1260,wp,wp_mail_long
 master_material_culture,ARM0028,Чешуйчатый панцирь — спорная локальная реконструкция,armor/кольчуги и дополнительная защита,D,1180–1260,wp,wp_scale
-master_material_culture,ARM0029,Кожаная защита конечностей без металлических пластин,armor/пластинчатая и дополнительная защита,D,1180–1260,denylist,deny_leather_limb_armour
+master_material_culture,ARM0029,Кожаная защита конечностей без металлических пластин,armor/пластинчатая и дополнительная защита,D,1180–1260,needs_check,
 master_material_culture,ARM0030,Конский доспех — не норма 1230,armor/пластинчатая и дополнительная защита,D,1180–1260,wp,wp_horse_armour
 master_material_culture,ARM0031,Ламеллярный панцирь из малых пластин — ограниченно допустим,armor/пластинчатая и дополнительная защита,C,1180–1260,wp,wp_lamellar
 master_material_culture,HLM0001,Шлем с креплением бармицы,helmets/aventail_helmet,B,1180–1260,wp,wp_barmitsa
@@ -134,7 +134,7 @@ master_material_culture,HLM0015,Кольчужная бармица шлема,h
 master_material_culture,HLM0016,Конический сегментный шлем,helmets/шлемы и защита головы,C,1180–1260,wp,wp_helmet_conical
 master_material_culture,HLM0017,Наносник шлема,helmets/шлемы и защита головы,B,1180–1260,wp,wp_helmet_nasal
 master_material_culture,HLM0018,Полный личинный шлем — исключительная и спорная форма,helmets/шлемы и защита головы,D,1180–1260,wp,wp_helmet_full_mask
-master_material_culture,HLM0019,Шлем с рогами,helmets/шлемы и защита головы,D,1180–1260,denylist,deny_horned_helmet
+master_material_culture,HLM0019,Шлем с рогами,helmets/шлемы и защита головы,D,1180–1260,needs_check,
 master_material_culture,SHD0001,Круглый деревянный щит,shields/round_shield,B,1180–1260,wp,wp_shield_round
 master_material_culture,SHD0002,Умбон железный,shields/shield_boss,B,1180–1260,wp,wp_shield_umbo
 master_material_culture,SHD0003,Дощатая основа щита,shields/shield_core,B,1180–1260,wp,wp_shield_parts
@@ -204,7 +204,7 @@ master_material_culture,HNT0020,Рама для растяжки шкуры,"hun
 master_material_culture,HNT0021,Связка пушных шкур,"hunting/охотничьи снасти, промысел и дикие животные",A,1180–1260,out_of_scope,hunting/fur
 master_material_culture,HNT0022,Современный стальной капкан с пружинами,"hunting/охотничьи снасти, промысел и дикие животные",D,1600–2000,denylist,deny_steel_trap
 master_material_culture,HNT0023,Давящий самолов/плашка,hunting/промысловое и охотничье снаряжение,C,1180–1260,out_of_scope,hunting
-master_material_culture,HNT0024,Железный капкан — спорная форма,hunting/промысловое и охотничье снаряжение,D,1180–1260,denylist,deny_steel_trap
+master_material_culture,HNT0024,Железный капкан — спорная форма,hunting/промысловое и охотничье снаряжение,D,1180–1260,out_of_scope,hunting
 master_material_culture,HNT0025,Охотничий нож,hunting/промысловое и охотничье снаряжение,A,1180–1260,wp,wp_knife
 master_material_culture,HNT0026,Охотничья лыжа,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,transport (лыжа)
 master_material_culture,HNT0027,Скребок для мездрения шкуры,hunting/промысловое и охотничье снаряжение,A,1180–1260,out_of_scope,hunting/fur

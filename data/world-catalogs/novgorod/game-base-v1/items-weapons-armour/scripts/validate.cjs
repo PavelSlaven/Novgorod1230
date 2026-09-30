@@ -102,11 +102,13 @@ for (const r of wp) {
   if (r.status !== 'candidate') err(`${w}: status must be candidate`);
 }
 // D39 research-only entities remain catalogued but cannot be generated automatically.
-const denyTerms = dn.flatMap(d => split(d.match_terms).map(t => [d.deny_id, t.toLowerCase()]));
+// needs_check entries are a source-request queue, not a ban: they do not block names.
+const denyTerms = dn.filter(d => d.kind !== 'needs_check').flatMap(d => split(d.match_terms).map(t => [d.deny_id, t.toLowerCase()]));
 const scan = (where, text) => { const t = (text || '').toLowerCase(); for (const [id, term] of denyTerms) if (t.includes(term)) err(`${where}: denylisted term '${term}' (${id})`); };
 for (const r of wp) if (r.generation_policy !== 'research_only') scan('wp ' + r.wp_id, [r.name_ru, r.name_en, r.material].join(' '));
 for (const r of sec) scan('security ' + r.ms_id, r.name_ru);
 for (const r of dn) { conf('deny ' + r.deny_id, r.confidence); checkRefs('deny ' + r.deny_id, split(r.source_refs)); }
+for (const r of dn) if (r.kind === 'needs_check' && !/Запросить источник/.test(r.reason)) err(`deny ${r.deny_id}: needs_check entry lacks item-specific source request`);
 // crosswalk completeness
 for (const r of cw) { if (r.mapping === 'UNMAPPED') err(`crosswalk: ${r.source_id} unmapped`); for (const t of split(r.target)) if (r.mapping === 'wp' && !wpIds.has(t)) err(`crosswalk: ${r.source_id} -> missing wp ${t}`); }
 // D rows can remain entities only under explicit research_only generation restriction.
@@ -223,7 +225,7 @@ for (const authored of archiveManifest.records) {
     archiveNames.add(name);
     familyRoots.forEach(root => archiveSemanticRoots.set(root, authored.derivation));
     if (r.dedup_result !== 'unique') err(`${w}: dedup result is ${r.dedup_result}`);
-    const denyTerms = dn.flatMap(d => split(d.match_terms).map(term => term.toLocaleLowerCase('ru-RU')));
+    const denyTerms = dn.filter(d => d.kind !== 'needs_check').flatMap(d => split(d.match_terms).map(term => term.toLocaleLowerCase('ru-RU')));
     if (denyTerms.some(term => term && authored.archive_name.toLocaleLowerCase('ru-RU').includes(term))) err(`${w}: candidate name matches weapon denylist`);
   } else if (authored.decision === 'rejected') {
     const ownerMismatch = !authored.guard_id && /^Owner mismatch:/i.test(authored.reason || '');
@@ -258,6 +260,9 @@ for (const authored of archiveManifest.records) {
     if (authored.guard_id && !denyIds.has(authored.guard_id)) err(`${w}: entity generation restriction lacks denylist entry`);
     if (entity?.generation_policy === 'research_only' && !split(entity.source_refs).includes(`master:mc:${authored.derivation}`)) err(`${w}: research-only entity lacks archive source ref`);
     if (authored.generation_policy === 'research_only' && r.guard_result !== `restricted:denylist:${authored.guard_id}`) err(`${w}: research-only guard is not represented as generation restriction`);
+  } else if (authored.decision === 'needs_check') {
+    if (authored.game_base_ref || authored.guard_id || r.guard_result !== 'needs_check' || r.dedup_result !== 'needs_check') err(`${w}: needs_check proposal must stay out of entity, denylist and dedup decisions`);
+    if (!authored.reason || !/source|источник|свидетельств/i.test(authored.reason)) err(`${w}: needs_check proposal lacks item-specific source request`);
   } else if (authored.decision === 'routed') {
     if (!authored.target_group || !r.target_group || !String(r.dedup_result).startsWith(`routed:${authored.target_group}`)) err(`${w}: routed owner handoff lacks target_group`);
     if (authored.game_base_ref) err(`${w}: routed row unexpectedly claims weapon entity`);

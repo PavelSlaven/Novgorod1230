@@ -109,29 +109,42 @@ test('A1 "tear a strip from the own shirt" works at the start and at places reac
       assert.equal((await whereIs(env.partyPool, partyId)).name, to);
     }
 
-    /** Each make tears one more strip: one new a1-result item and the shirt changed in place. */
-    async function makeHere(place) {
+    /** Each make tears one more strip: one new a1-result item on the actor's scene position, the shirt changed in place. */
+    let shirtVersion = 1;
+    async function makeHere(place, { anchored }) {
       const before = await made();
       assert.equal((await whereIs(env.partyPool, partyId)).name, place);
       await turn(MAKE);
       const after = await made();
-      assert.equal(after.length, before.length + (before.length === 0 ? 2 : 1),
-        `${place}: a new strip appears (and the shirt is first touched)`);
-      assert.equal(after.filter(({ item_id: id }) => id.startsWith('a1-result:')).length,
-        before.filter(({ item_id: id }) => id.startsWith('a1-result:')).length + 1, `${place}: new a1-result item`);
+      const known = new Set(before.map(({ item_id: id }) => id));
+      const fresh = after.filter(({ item_id: id }) => !known.has(id) && id.startsWith('a1-result:'));
+      assert.equal(fresh.length, 1, `${place}: exactly one new a1-result strip`);
+      shirtVersion += 1;
+      const shirt = after.find(({ item_id: id, state_version: v }) => !id.startsWith('a1-result:') && Number(v) === shirtVersion);
+      assert.ok(shirt, `${place}: the source shirt is at state_version ${shirtVersion}`);
+      const actorScene = (await env.partyPool.query(
+        `SELECT scene_position_id FROM party_runtime.party_journey_locations
+          WHERE party_id=$1 AND owner_kind='actor'`, [partyId])).rows[0].scene_position_id;
       const strip = (await env.partyPool.query(
-        `SELECT p.scene_position_id, p.holder_character_id, e.position_node_id
+        `SELECT p.anchor_id, p.scene_position_id, e.position_node_id
            FROM party_runtime.party_item_placements p
            JOIN party_runtime.entity_placements e ON e.party_id=p.party_id AND e.entity_kind='item' AND e.entity_id=p.item_id
-          WHERE p.party_id=$1 AND p.item_id LIKE 'a1-result:%' ORDER BY p.item_id DESC LIMIT 1`, [partyId])).rows[0];
-      assert.ok(strip?.position_node_id, `${place}: the strip lies on a scene position`);
+          WHERE p.party_id=$1 AND p.item_id=$2`, [partyId, fresh[0].item_id])).rows[0];
+      assert.equal(strip.position_node_id, actorScene, `${place}: the strip lies on the actor's scene position`);
+      if (anchored) {
+        assert.ok(strip.anchor_id, `${place}: legacy start keeps the anchor placement`);
+        assert.equal(strip.scene_position_id, null);
+      } else {
+        assert.equal(strip.anchor_id, null, `${place}: no anchor after walking`);
+        assert.equal(strip.scene_position_id, actorScene, `${place}: item placement carries the scene position`);
+      }
     }
 
-    await makeHere('work_storage');
+    await makeHere('work_storage', { anchored: true });
     await walkTo('water_access');
-    await makeHere('water_access');
+    await makeHere('water_access', { anchored: false });
     await walkTo('forest_path');
     await walkTo('meeting_area');
-    await makeHere('meeting_area');
+    await makeHere('meeting_area', { anchored: false });
     assert.equal(seen.makeSteps, 3);
   });

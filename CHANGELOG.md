@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- fix(items): A1 make works at places reached by walking — result destination on the scene position when the party has no g5 anchor (LW-100), planner rule names `partial_transformation` and an allowed surviving form (LW-103), LW-107 records that the result lies on the scene
+- fix(items): A1 make works at places reached by walking (rt-make) — result destination on the scene position when the party has no g5 anchor, planner rule names `partial_transformation` and an allowed form, one repair for an invalid `physical_form`; LW-100/LW-103 updated, LW-114 added
 - feat(local-play): `npm run play:v17-slice` — tracked Linux driver for the live D49 slice run (Docker PG v17 bootstrap, real Qwen root, loopback HTTP, legs start/walk/meet/talk/take/make with SQL snapshots, `report.json` + playtest skeleton, always-cleanup); the presence e2e fixture bootstrap can run without a test context (rt-harness)
 - data(game-base): D-rated review step 2 — imported walnut, cast copper snake amulet, imported cotton cloth, common buckthorn, Zverin convent included from indexed sources; katana, chintz and local rice as dated denials (#213)
 - data(game-base): D-rated exclusions reviewed under D38 — risk-only rejections to structural needs_check queues, denials only for dated anachronism or physical impossibility, HW009 variant from the manifest (#212)

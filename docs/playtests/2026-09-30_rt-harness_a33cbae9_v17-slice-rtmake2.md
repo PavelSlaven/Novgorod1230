@@ -607,6 +607,7 @@ LLM-вызовы за прогон: 152 (ошибок транспорта/ст�
 - **walk out**: ходов движения: 19, из них без смены места: 17; на стартовом экране проходов не было, понадобился «Осматриваюсь вокруг.»
 - **meet**: на экране: панель людей пуста; NPC в G6 игрока по SQL: 2
 - **talk**: последняя реплика NPC в снимке: {"claims":[],"schema":"conversation_statement_event_v1","duration":{"owner":"approved_activity_contract","activity_ref":"novgorod_live_world_conversation_brief"},"spoken_at":{"whole_minutes":"261123","subminute_numerator":"0","subminute_denominator":"1"},"topic_refs":[],"exchange_id":"exchange:b973978f7a788c2af01a3d6d9935daa8","speaker_ref":{"entity_id":"npc_688c7efbe0f3c2bd09e1c2b8","entity_kind":"npc"},"dominant_act":"answer","statement_id":"statement:b973978f7a788c2af01a3d6d9935daa8bbdb812ea7a094d6ae41f89357ee201e:2","utterance_text":"Здравствуйте. Я слуга. Меня зовут так, как хозяин велел,
+- **make**: ход 22 («Оторву полосу от подола рубахи.») отвергнут кодом на сервере: «Literal physical denial must use the available grounded owner» [operation_semantic_grounding] — планировщик выбрал буквальный отказ, это не шум аудитора; ход 23 («Оторву лоскут от нижней рубахи.») закоммичен на water_access.
 
 ## Result
 

@@ -59,7 +59,7 @@ function normalizedAlias(value) { return normalizedName(value).replace(/[ьъ]/g
 
 function sha256(value) { return crypto.createHash("sha256").update(value).digest("hex"); }
 
-export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, peopleRows, socialIds, report, importContract, source, d46, snapshotContents, poolHeader, entryHeader }) {
+export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, snapshotContents, poolHeader, entryHeader }) {
   const errors = [];
   const expectedPoolHeader = importContract.tables["world_base.region_name_pools"].csv_columns;
   const expectedEntryHeader = importContract.tables["world_base.region_name_pool_entries"].csv_columns;
@@ -71,7 +71,11 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   if (source.selection_rules.class_scope !== "name_form" || source.selection_rules.calendar_name_class !== "ordinary" || source.selection_rules.unique_known_noncalendar_class !== "significant") errors.push("invalid name-form class rules");
   const calendarNameForms = new Set(source.selection_rules.calendar_name_forms ?? []);
   if (!calendarNameForms.size || calendarNameForms.size !== (source.selection_rules.calendar_name_forms ?? []).length) errors.push("invalid calendar-name form registry");
-  if (pools.length !== 1) errors.push(`expected exactly one pool, got ${pools.length}`);
+  const configuredPools = [source.pool, ...(source.foreign_pools ?? [])];
+  const configuredPoolIds = new Set(configuredPools.map((pool) => pool.id));
+  if (pools.length !== configuredPools.length || pools.some((pool) => !configuredPoolIds.has(pool.id))) errors.push(`pool output does not match configured pools (${pools.length}/${configuredPools.length})`);
+  if (configuredPoolIds.size !== configuredPools.length) errors.push("duplicate configured name pool id");
+  if (configuredPools.some((pool) => pool.status !== "draft")) errors.push("candidate name pools must remain draft");
   const poolIds = new Set(pools.map((row) => row.id));
   for (const pool of pools) {
     if (!pool.id) errors.push("pool id is empty");
@@ -79,12 +83,23 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pool.valid_from) || !/^\d{4}-\d{2}-\d{2}$/.test(pool.valid_to) || pool.valid_from > pool.valid_to) errors.push(`${pool.id}: invalid validity interval`);
     if (!STATUSES.has(pool.status)) errors.push(`${pool.id}: unknown pool status ${pool.status}`);
   }
+  const configuredPeoplePools = new Map((source.foreign_pools ?? []).map((pool) => [pool.people_ref, pool.id]));
+  if (configuredPeoplePools.size !== (source.foreign_pools ?? []).length) errors.push("duplicate people_ref in foreign pools");
+  for (const [peopleRef, poolId] of Object.entries(source.people_to_pool_id ?? {})) {
+    if (!configuredPeoplePools.has(peopleRef) || configuredPeoplePools.get(peopleRef) !== poolId) errors.push(`${peopleRef}: people_to_pool_id does not match configured pool`);
+  }
+  for (const pool of source.foreign_pools ?? []) {
+    if (source.people_to_pool_id?.[pool.people_ref] !== pool.id) errors.push(`${pool.id}: missing people_to_pool_id binding`);
+    if (!pool.provenance_ref) errors.push(`${pool.id}: missing pool provenance_ref`);
+  }
 
   const peopleIds = new Set(peopleRows.filter((row) => ["people", "guest_itinerant"].includes(row.entity_kind)).map((row) => row.pp_id));
   const sourceIds = new Set(sourceRows.map((row) => row.nm_id));
   const d46Ids = new Set(d46.name_entries.map((row) => row.id));
   const evidenceLines = new Set(evidenceRows.map((row) => Number(row.source_line?.slice(1))));
   if (evidenceRows.some((row) => !/^L\d+$/.test(row.source_line)) || evidenceLines.size !== evidenceRows.length || evidenceRows.length !== source.evidence_snapshot.expected_rows) errors.push("invalid evidence snapshot source_line set");
+  const additionalEvidenceLines = new Map((additionalEvidenceRows ?? []).map((row) => [row.source_line, row]));
+  if (additionalEvidenceLines.size !== source.additional_evidence_snapshot.expected_rows || (additionalEvidenceRows ?? []).some((row) => !/^L\d+$/.test(row.source_line))) errors.push("invalid additional evidence snapshot source_line set");
   const includedDerivations = derivationRows.filter((row) => !row.exclude_reason);
   const excludedDerivations = derivationRows.filter((row) => row.exclude_reason);
   const authoredDecisionLines = new Set(derivationRows.map((row) => Number(row.evidence_line)));
@@ -104,6 +119,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (row.weight !== "1") errors.push(`${row.id}: weight must be equal to 1`);
     if (!SEXES.has(row.sex_category)) errors.push(`${row.id}: unknown sex_category ${row.sex_category}`);
     if (!peopleIds.has(row.people_ref)) errors.push(`${row.id}: unknown people_ref ${row.people_ref}`);
+    const expectedPoolId = source.people_to_pool_id?.[row.people_ref] ?? (row.people_ref === "pp_novgorod_rus" ? source.pool.id : "");
+    if (!expectedPoolId || row.name_pool_id !== expectedPoolId) errors.push(`${row.id}: name_pool_id does not match people_ref`);
     if (row.social_position_archetype_id && !socialIds.has(row.social_position_archetype_id)) errors.push(`${row.id}: unknown social_position_archetype_id ${row.social_position_archetype_id}`);
     if (!CLASSES.has(row.selection_class)) errors.push(`${row.id}: unknown selection_class ${row.selection_class}`);
     if (!CLASS_DERIVATIONS.has(row.derivation_class)) errors.push(`${row.id}: unknown derivation_class ${row.derivation_class}`);
@@ -118,9 +135,11 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     for (const provenance of row.provenance_ref.split(" | ").filter(Boolean)) {
       const candidateMatch = provenance.match(/^game-base:names-peoples\/personal_names\/personal_names\.csv#nm_id=(.+)$/);
       const evidenceMatch = provenance.match(/^game-base:names-peoples\/sources\/book_evidence_m2c_names_b2\.csv#source_line=L(\d+)$/);
+      const additionalEvidenceMatch = provenance.match(/^game-base:names-peoples\/sources\/book_evidence_m2c_name_components\.csv#source_line=(L\d+)$/);
       const d46Match = provenance.match(/^game-base:names-peoples\/personal_names\/d46-name-additions\.json#name-entry=(.+)$/);
       if (candidateMatch && sourceIds.has(candidateMatch[1])) continue;
       if (evidenceMatch && evidenceLines.has(Number(evidenceMatch[1]))) continue;
+      if (additionalEvidenceMatch && additionalEvidenceLines.has(additionalEvidenceMatch[1])) continue;
       if (d46Match && d46Ids.has(d46Match[1])) continue;
       errors.push(`${row.id}: unresolved provenance_ref ${provenance}`);
     }
@@ -136,6 +155,14 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     const entry = entriesByKey.get(key);
     const ref = `${source.input.provenance_prefix}${sourceRow.nm_id}`;
     if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${sourceRow.nm_id}: compiled candidate missing from merged entry`);
+  }
+  const additionalEntriesById = new Map((source.additional_entries ?? []).map((row) => [row.id, row]));
+  if (additionalEntriesById.size !== (source.additional_entries ?? []).length) errors.push("duplicate additional evidence entry id");
+  for (const row of source.additional_entries ?? []) {
+    const support = additionalEvidenceLines.get(row.source_line);
+    const entry = entries.find((item) => item.id === row.id);
+    if (!support || !Object.values(support).join("\n").includes(row.source_form) || row.provenance_ref !== `game-base:names-peoples/sources/book_evidence_m2c_name_components.csv#source_line=${row.source_line}`) errors.push(`${row.id}: unresolved additional evidence source`);
+    if (!entry || ["name_form", "sex_category", "people_ref", "selection_class", "derivation", "people_derivation", "evidence_period"].some((key) => entry[key] !== row[key]) || !entry.provenance_ref.split(" | ").includes(row.provenance_ref)) errors.push(`${row.id}: additional evidence entry missing or changed`);
   }
   const d46All = [...d46.name_entries, ...d46.name_variants, ...d46.name_gaps, ...d46.component_entries, ...d46.component_updates];
   const d46Keys = d46All.map((row) => normalizedName(row.name_form ?? row.variant_form ?? row.component_form ?? row.archive_name));
@@ -159,9 +186,16 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     for (const sourceRow of row.source_rows ?? []) if (sourceRow.archive_ref !== (row.archive_refs ?? []).find((ref) => ref === sourceRow.archive_ref) || sourceRow.crosswalk_ref?.startsWith("/")) errors.push(`${row.name_form ?? row.variant_form ?? row.component_form ?? row.archive_name}: invalid D46 source-row provenance`);
   }
   const existingNormalizedNames = new Set(entries.filter((row) => !d46Ids.has(row.id)).map((row) => normalizedAlias(row.name_form)));
+  const entryExclusions = new Map((source.entry_exclusions ?? []).map((row) => [row.id, row]));
   for (const row of d46.name_entries) {
     const entry = entriesByKey.get(selectionKey(row));
     const ref = `game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=${row.id}`;
+    const exclusion = entryExclusions.get(row.id);
+    if (exclusion) {
+      const gap = report.typed_gaps.find((item) => item.gap_id === exclusion.gap_id);
+      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || exclusion.gap_type !== "people_ref_unresolved" || !gap || gap.reason !== exclusion.reason || gap.provenance_ref !== exclusion.provenance_ref) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
+      continue;
+    }
     if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${row.id}: D46 name missing from merged entry`);
     const foreignSourced = row.source_rows.some((sourceRow) => sourceRow.source_section?.includes("§9"));
     if (foreignSourced && row.people_ref === "pp_novgorod_rus") errors.push(`${row.id}: foreign name uses Russian fallback`);
@@ -213,11 +247,14 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   }
 
   const counts = {};
+  const countsByPool = Object.fromEntries(configuredPools.map((pool) => [pool.id, entries.filter((entry) => entry.name_pool_id === pool.id).length]));
   for (const row of entries) {
     const key = `${row.sex_category}|${row.people_ref}|${row.selection_class}|${row.derivation}`;
     counts[key] = (counts[key] ?? 0) + 1;
   }
   if (report.total_entries !== entries.length || JSON.stringify(report.counts_by_sex_people_selection_class_derivation) !== JSON.stringify(sortedObject(counts))) errors.push("generated report drift");
+  if (report.pool_count !== pools.length || JSON.stringify(report.counts_by_pool) !== JSON.stringify(countsByPool)) errors.push("generated per-pool report drift");
+  if (report.additional_evidence_accounting?.snapshot_rows !== additionalEvidenceRows.length || report.additional_evidence_accounting?.included_entries !== (source.additional_entries ?? []).length) errors.push("additional evidence report drift");
   if (!report.pool_provenance_ref) errors.push("missing pool provenance_ref");
   const d46Accounting = report.d46_archive_accounting;
   if (d46Accounting?.unique_new_candidates !== 190 || d46Accounting?.included_name_entries !== d46.name_entries.length || d46Accounting?.included_component_entries !== d46.component_entries.length || d46Accounting?.existing_component_updates !== d46.component_updates.length || d46Accounting?.archive_variants !== archiveVariants.length || d46Accounting?.reclassified_candidate_variants !== reclassifiedVariants.length || d46Accounting?.variants !== d46.name_variants.length || d46Accounting?.typed_name_gaps !== d46.name_gaps.length || d46Accounting?.rejected !== 0) errors.push("D46 report accounting drift");
@@ -297,6 +334,11 @@ function selfTest(base) {
     ["empty upstream source", (copy) => { copy.sourceRows[0].source_refs = ""; }, /empty upstream source_refs/],
     ["generated report drift", (copy) => { copy.report.total_entries += 1; }, /generated report drift/],
     ["invalid pool status", (copy) => { copy.pools[0].status = "candidate"; }, /unknown pool status/],
+    ["foreign people mapped to wrong pool", (copy) => { copy.entries.find((row) => row.people_ref === "pp_fg001").name_pool_id = copy.source.pool.id; }, /name_pool_id does not match people_ref/],
+    ["missing foreign pool", (copy) => { copy.pools.pop(); }, /pool output does not match configured pools/],
+    ["Igoland gap missing", (copy) => { copy.report.typed_gaps = copy.report.typed_gaps.filter((gap) => gap.gap_id !== "gap_personal_names_pp_fg005_igoland_origin"); }, /invalid typed exclusion/],
+    ["additional source form absent", (copy) => { copy.source.additional_entries[0].source_form = "не засвидетельствовано"; }, /unresolved additional evidence source/],
+    ["additional entry changed", (copy) => { copy.entries.find((row) => row.id === "nov_name_korela_valit_v1").name_form = "Валентин"; }, /additional evidence entry missing or changed/],
     ["invalid pool date", (copy) => { copy.pools[0].valid_to = "1229-12-31"; }, /invalid validity interval/],
     ["unknown pool region", (copy) => { copy.pools[0].region_id = "region_unknown"; }, /unknown region_id/],
     ["missing pool provenance", (copy) => { copy.report.pool_provenance_ref = ""; }, /missing pool provenance_ref/],
@@ -353,7 +395,15 @@ function selfTest(base) {
   assert.equal(byId.get("nov_name_d46_13_029_v1")?.selection_class, "monastic");
   assert.equal(byId.get("nov_name_d46_13_001_v1")?.people_ref, "pp_fg002");
   assert.deepEqual([byId.get("nov_name_d46_13_250_v1")?.name_form, byId.get("nov_name_d46_13_250_v1")?.people_ref], ["Хейльватр", "pp_fg001"]);
-  assert.equal(byId.get("nov_name_d46_13_093_v1")?.people_ref, "pp_fg005");
+  assert.equal(byId.has("nov_name_d46_13_093_v1"), false);
+  assert.equal(base.report.typed_gaps.some((gap) => gap.gap_id === "gap_personal_names_pp_fg005_igoland_origin"), true);
+  assert.equal(byId.get("nov_name_evidence_l41_02_v1")?.name_form, "Филипп");
+  assert.equal(byId.get("nov_name_evidence_l41_02_v1")?.people_ref, "pp_izhora");
+  assert.equal(byId.get("nov_name_evidence_l41_02_v1")?.selection_class, "ordinary");
+  assert.deepEqual([byId.get("nov_name_korela_valit_v1")?.name_form, byId.get("nov_name_korela_valit_v1")?.people_ref, byId.get("nov_name_korela_valit_v1")?.selection_class, byId.get("nov_name_korela_valit_v1")?.evidence_period], ["Валит", "pp_korela", "significant", "medieval_general"]);
+  const olsten = byId.get("nov_name_evidence_l93_03_v1");
+  assert.equal(olsten?.selection_class, "significant");
+  assert.equal(olsten?.evidence_period, "medieval_general");
   assert.equal(base.d46.rejected.length, 0);
   assert.deepEqual([...DEFAULT_BLOCKED_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "default_1230_1250_requires_new_evidence").map((row) => row.name_form).sort());
   assert.deepEqual([...LOWER_WEIGHT_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "lower_weight_required").map((row) => row.name_form).sort());
@@ -374,6 +424,7 @@ const base = {
   sourceRows: rows(path.join(NAMES_DIR, "personal_names.csv")),
   derivationRows: parseTsv(fs.readFileSync(path.join(NAMES_DIR, source.evidence_derivations.path), "utf8")),
   evidenceRows: rows(path.join(GROUP_DIR, source.evidence_snapshot.path)),
+  additionalEvidenceRows: rows(path.join(GROUP_DIR, source.additional_evidence_snapshot.path)),
   peopleRows: rows(PEOPLE_PATH),
   socialIds: socialPositionIds(),
   report: JSON.parse(fs.readFileSync(REPORT_PATH, "utf8")),

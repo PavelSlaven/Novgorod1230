@@ -2,6 +2,16 @@
   "schema": "novgorod.game_base.personal_name_pool_report.v2",
   "status": "candidate",
   "total_entries": 337,
+  "pool_count": 7,
+  "counts_by_pool": {
+    "novgorod_1230_1250_personal_names_v1": 310,
+    "novgorod_1230_1250_gotland_guest_names_v1": 2,
+    "novgorod_1230_1250_german_guest_names_v1": 19,
+    "novgorod_1230_1250_korela_names_v1": 1,
+    "novgorod_1230_1250_izhora_names_v1": 3,
+    "novgorod_1230_1250_chud_est_names_v1": 1,
+    "novgorod_1230_1250_smolyane_names_v1": 1
+  },
   "counts_by_sex_people_selection_class_derivation": {
     "female|pp_novgorod_rus|monastic|explicit_source_gender": 3,
     "female|pp_novgorod_rus|ordinary|calendar_name_gender": 12,
@@ -12,9 +22,9 @@
     "male|pp_fg001|significant|explicit_source_gender": 1,
     "male|pp_fg002|ordinary|explicit_source_gender": 16,
     "male|pp_fg002|significant|explicit_source_gender": 3,
-    "male|pp_fg005|ordinary|explicit_source_gender": 1,
     "male|pp_izhora|ordinary|explicit_source_gender": 1,
     "male|pp_izhora|significant|explicit_source_gender": 2,
+    "male|pp_korela|significant|explicit_source_gender": 1,
     "male|pp_novgorod_rus|dynastic|compiled_candidate": 1,
     "male|pp_novgorod_rus|dynastic|explicit_source_gender": 6,
     "male|pp_novgorod_rus|monastic|calendar_name_gender": 3,
@@ -2445,6 +2455,10 @@
     "rejected": 0,
     "rejection_reasons": {}
   },
+  "additional_evidence_accounting": {
+    "snapshot_rows": 40,
+    "included_entries": 1
+  },
   "typed_gaps": [
     {
       "gap_id": "gap_personal_names_chud_est_female",
@@ -2562,7 +2576,7 @@
       "people_ref": "pp_fg005",
       "sex_category": "male",
       "selection_class": "ordinary",
-      "current_count": 1,
+      "current_count": 0,
       "required_count": 10,
       "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
@@ -2810,6 +2824,16 @@
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
     },
     {
+      "gap_id": "gap_personal_names_pp_korela_exact_period",
+      "gap_type": "temporal_evidence",
+      "people_ref": "pp_korela",
+      "sex_category": "male",
+      "selection_class": "significant",
+      "name_form": "Валит",
+      "reason": "Источник называет Валита Корелянина мужчиной и воеводой, но не датирует его; medieval_general не подтверждает присутствие в 1230–1250.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_name_components.csv#source_line=L197"
+    },
+    {
       "gap_id": "gap_personal_names_social_position",
       "gap_type": "selector_coverage",
       "people_ref": "*",
@@ -2835,6 +2859,19 @@
       "selection_class": "*",
       "reason": "Patronymics, demonyms and nicknames now have separate candidate component pools; runtime/DDL composition with the first-name pool remains unapproved.",
       "provenance_ref": "game-base:names-peoples/personal_names/name-component-source.json"
+    },
+    {
+      "gap_id": "gap_personal_names_pp_fg005_igoland_origin",
+      "gap_type": "people_ref_unresolved",
+      "name_id": "nov_name_d46_13_093_v1",
+      "name_form": "Иголанд",
+      "people_ref": "pp_fg005",
+      "sex_category": "male",
+      "selection_class": "ordinary",
+      "current_count": 0,
+      "required_count": 1,
+      "reason": "Источник относит имя к смешанному гостевому контексту pp_fg005, но не устанавливает конкретный народ; отдельного пула для pp_fg005 и русского fallback нет.",
+      "provenance_ref": "game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_093_v1 | game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#13-person:093"
     },
     {
       "gap_id": "gap_d46_lower_weight_07_044",
@@ -2973,5 +3010,14 @@
     "decision": "Reviewed rows are admitted only when the declared sex, people and class rules close every selector. Evidence rows are merged with the compiled candidate by (name_form, sex_category, people_ref); every contributing line remains in provenance_ref."
   },
   "import_contract": "b2-import-contract.json",
-  "pool_provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json"
+  "pool_provenance_ref": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json",
+  "pool_provenance_refs": {
+    "novgorod_1230_1250_personal_names_v1": "pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json",
+    "novgorod_1230_1250_gotland_guest_names_v1": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_fg001",
+    "novgorod_1230_1250_german_guest_names_v1": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_fg002",
+    "novgorod_1230_1250_korela_names_v1": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_korela",
+    "novgorod_1230_1250_izhora_names_v1": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_izhora",
+    "novgorod_1230_1250_chud_est_names_v1": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_chud_est",
+    "novgorod_1230_1250_smolyane_names_v1": "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_smolyane"
+  }
 }

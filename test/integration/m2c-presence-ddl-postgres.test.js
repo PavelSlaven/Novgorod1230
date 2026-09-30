@@ -12,14 +12,14 @@ const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 
 
 async function waitForPostgres(name) {
   for (let i = 0; i < 60; i += 1) {
-    const r = docker(['exec', name, 'pg_isready', '-U', 'postgres']);
+    const r = docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres']);
     if (r.status === 0) return;
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   throw new Error('postgres not ready');
 }
 
-test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', {
+test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', {
   timeout: 600_000
 }, async (t) => {
   if (docker(['version']).status !== 0) {
@@ -56,10 +56,11 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
   t.after(async () => { await world.end().catch(() => {}); });
   const schemaSql = await readFile('infra/world-base/schema.sql', 'utf8');
   // schema.sql uses \ir — apply parts manually like bootstrap.
+  const schemaFiles = (await readdir('infra/world-base/schema'))
+    .filter((file) => /^\d\d\.sql$/u.test(file)).sort();
   const parts = [];
-  for (let i = 1; i <= 27; i += 1) {
-    const n = String(i).padStart(2, '0');
-    parts.push(await readFile(`infra/world-base/schema/${n}.sql`, 'utf8'));
+  for (const file of schemaFiles) {
+    parts.push(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
   }
   for (const sql of parts) await world.query(sql);
   const tables = await world.query(

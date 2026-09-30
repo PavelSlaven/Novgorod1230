@@ -2063,7 +2063,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
       "line_kind": "river_channel",
-      "name_ru": "меж речных струй",
+      "name_ru": "по стоячей воде",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7147,7 +7147,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
       "line_kind": "path",
-      "name_ru": "среди прибрежных кустов",
+      "name_ru": "тропой меж водой и берегом",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7279,7 +7279,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
       "line_kind": "path",
-      "name_ru": "вдоль широкой травяной полосы",
+      "name_ru": "ходом меж водой и сушей",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7312,7 +7312,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
       "line_kind": "path",
-      "name_ru": "прибрежной тропой меж низких берегов",
+      "name_ru": "тропой меж берегом и водой",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7411,7 +7411,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
       "line_kind": "path",
-      "name_ru": "берегом по плотному прибрежному лугу",
+      "name_ru": "луговым ходом меж водой и берегом",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7543,7 +7543,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
       "line_kind": "path",
-      "name_ru": "по влажному прибрежью",
+      "name_ru": "ходом меж берегом и водой",
       "qualifier": {
         "from_to": null,
         "to_from": null

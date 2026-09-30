@@ -78,12 +78,12 @@
 | 079 | narration-конвейер (`gameplay_narrator*`) | двойной отказ narration-аудита после committed-хода оставляет игрока без прозы (owner #158 R-3) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 080 | `lower-dvina-trace-phase-2-services.js` (`turnStepBlockPlan`), `spatial-v3-expansion-runtime.js` | отказ по занятости только на шаге 1; путь подхода после первого шага — по сырым рёбрам без видимости | [#185](https://github.com/PavelSlaven/Novgorod1230/issues/185) |
 | 081 | `packages/llm-runtime/src/combat-role-defaults.js` (`combat_weapon_classification`) | `expectedSchema` и `json_object_with_schema` описывают старый выход роли; рантайм их не проверяет | [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188) |
-| 082 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, `action-produced-physical-keys.js` | A1: назначение результата привязано к `g5_anchor`; у сгенерированных (capacity-v2) G5 якоря нет, изготовление там невозможно | — |
-| 083 | `packages/turn/src/ordinary-materialization-discovery-identity.js`, `ordinary-materialization-aggregate` (`max_resolution_records`), шаг 2 планировщика | повторное «взять» того же материала: replay по (запрос, количество), потолок записей агрегата, неоднозначность двух предметов с одним именем | — |
-| 084 | `data/world-catalogs/novgorod/m2c-items/candidate.json` (`tool_and_action_precondition`) | инструмент для `cut_reeds` / `cut_standing_wood` — только проза, кодом не проверяется | — |
-| 085 | планировщик A1 (`lower-dvina-trace-turn-step-planner-instructions.js`), `packages/turn/src/turn-step-contracts/action-production-operation.js` | живой Qwen путает `result_class: ordinary_physical_result` с `partial_transformation` (`source_fact_delta`, `material_extent`): план отвергается | — |
-| 086 | `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`) | список применимости закреплён на шаблонах @1, а сгенерированные сайты v17 — @2 (общий массив с N1) | — |
-| 087 | `data/world-catalogs/novgorod/m2c-items/README.md`, `packages/items-property` | `M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`: владелец предмета не проверяет `mass_grams = quantity × 50` | — |
+| 100 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, `action-produced-physical-keys.js` | A1: назначение результата привязано к `g5_anchor`; у сгенерированных (capacity-v2) G5 якоря нет, изготовление там невозможно | — |
+| 101 | `packages/turn/src/ordinary-materialization-discovery-identity.js`, `ordinary-materialization-aggregate` (`max_resolution_records`), шаг 2 планировщика | повторное «взять» того же материала: replay по (запрос, количество), потолок записей агрегата, неоднозначность двух предметов с одним именем | — |
+| 102 | `data/world-catalogs/novgorod/m2c-items/candidate.json` (`tool_and_action_precondition`) | инструмент для `cut_reeds` / `cut_standing_wood` — только проза, кодом не проверяется | — |
+| 103 | планировщик A1 (`lower-dvina-trace-turn-step-planner-instructions.js`), `packages/turn/src/turn-step-contracts/action-production-operation.js` | живой Qwen путает `result_class: ordinary_physical_result` с `partial_transformation` (`source_fact_delta`, `material_extent`): план отвергается | — |
+| 104 | `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`) | список применимости закреплён на шаблонах @1, а сгенерированные сайты v17 — @2 (общий массив с N1) | — |
+| 105 | `data/world-catalogs/novgorod/m2c-items/README.md`, `packages/items-property` | `M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`: владелец предмета не проверяет `mass_grams = quantity × 50` | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -441,37 +441,37 @@
 - **Как жить.** Не считать `expectedSchema` контрактом выхода модели. Не менять его попутно: смена сдвигает хэш конфига. Привести к фактическому выходу (`expectedSchema: null`, режим `json_object`, снимок baseline, тест `combat-roles.test.js`) — отдельной задачей.
 - **Issue.** [#188](https://github.com/PavelSlaven/Novgorod1230/issues/188)
 
-### LW-082 — A1 на сгенерированных G5: нет `g5_anchor` для назначения результата (rt-items)
+### LW-100 — A1 на сгенерированных G5: нет `g5_anchor` для назначения результата (rt-items)
 - **Где.** `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js` (`loadActionProducedOutputDestination`: без якоря возвращает `null`), `action-produced-atomic-write-plan-pins.js` (`validateActionProducedDestinationPin` требует `anchor_id` даже для `party_current_scene_position`), `action-produced-physical-keys.js`, `action-produced-persistence-context.js`.
 - **Что.** Изготовление (A1) проверено на v17 живьём и PG-тестом только на каноническом месте (у него якорь есть). У сгенерированного capacity-v2 G5 якоря нет, `output_destination_pin` не строится, и результат некуда положить; проверка применимости тоже опирается на этот pin.
 - **Как жить.** Не обходить: A1 на generated G5 остаётся недоступным. Правка — отдельный CR владельца A1: destination pin без якоря (только сцена-позиция) во всех перечисленных файлах.
 - **Issue.** —
 
-### LW-083 — повторное «взять» того же материала (rt-items)
+### LW-101 — повторное «взять» того же материала (rt-items)
 - **Где.** `packages/turn/src/ordinary-materialization-discovery-identity.js` (`candidateForDiscovery`), `apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js` (`max_resolution_records === 4`), планировщик шаг 2.
 - **Что.** Идентичность кандидата = цель + нормализованный запрос + количество, повтор с теми же значениями даёт persisted-resolution без нового предмета; агрегат хранит не больше 4 записей на место (вместе с записями presence); живой прогон: первая порция берётся, «ещё» — нет, а «три палки» создаёт предметы на месте, но второй шаг планировщика повторяет discovery вместо `move_entity` из-за уже удерживаемого предмета с тем же именем.
 - **Как жить.** Не считать многократный сбор решённым: PG-тест берёт разные количества. Правка — решение владельца: идентичность взятия конечного источника по ходу, потолок записей, различимые имена/ссылки на шаге 2.
 - **Issue.** —
 
-### LW-084 — инструмент для тростника и живого дерева не проверяется кодом (rt-items)
+### LW-102 — инструмент для тростника и живого дерева не проверяется кодом (rt-items)
 - **Где.** `data/world-catalogs/novgorod/m2c-items/candidate.json` (`extraction.tool_and_action_precondition` у `cut_reeds` и `cut_standing_wood`), `data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json`.
 - **Что.** «Режущий инструмент» — текст данных; у предметов нет таксономии инструментов, код ничего не проверяет. Валежник и плавник инструмента не требуют.
 - **Как жить.** Не добавлять проверку без таксономии инструментов (данные + утверждение). На срезе брать валежник и плавник.
 - **Issue.** —
 
-### LW-085 — живой Qwen ошибается в форме A1-плана (rt-items)
+### LW-103 — живой Qwen ошибается в форме A1-плана (rt-items)
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-planner-instructions.js` (правила `action_production`), `packages/turn/src/turn-step-contracts/action-production-operation.js`.
 - **Что.** «Оторву полосу от подола»: модель ставит `result_class: ordinary_physical_result` вместе с `source_fact_delta` и `material_extent: minor`; валидатор требует для этой формы иное (`identity_shape`, `material_extent_shape`), ремонт не помогает. Живьём 1 из 3 попыток дошла до сохранения (2026-09-30); production-аудитор на успешном плане проходит 7 из 12.
 - **Как жить.** Не подгонять валидатор под ошибку модели. Правка — стенд A1 (10–15 случаев) и решение: правило в промпте или детерминированная нормализация.
 - **Issue.** —
 
-### LW-086 — применимость профилей v17 закреплена на шаблонах @1 (rt-items)
+### LW-104 — применимость профилей v17 закреплена на шаблонах @1 (rt-items)
 - **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`: 32 generated-шаблона @1 и один канонический G5), `apps/game-server/src/internal/target-runtime-profiles.js`.
 - **Что.** У сгенерированных сайтов v17 `generated_template_ref.authoring_version = "2"` (capacity-v2), список — @1, поэтому ни одно generated-место не совпадает. Для A1 введено классовое правило `a1-applicability-class.json` (ждёт утверждения); тот же массив питает N1 и остаётся несовместимым.
 - **Как жить.** Не править утверждённый файл. Для N1 — вывод @2 из утверждённых @1 по правилу capacity-v2 (`deriveApprovedGeneratedSceneV2Bindings`) или классовое правило владельца N1.
 - **Issue.** —
 
-### LW-087 — масса порции конечного источника не проверяется владельцем предмета (rt-items)
+### LW-105 — масса порции конечного источника не проверяется владельцем предмета (rt-items)
 - **Где.** `data/world-catalogs/novgorod/m2c-items/README.md` (`M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`), `packages/items-property`.
 - **Что.** Профиль задаёт 50 г на порцию, проверка `mass_grams = quantity × 50` есть в `packages/turn` (presence) и phase-6 commit, но владелец предмета (`@rus/items-property`) её не выводит и не проверяет.
 - **Как жить.** Не считать массу порции гарантированной владельцем предмета; закрывается отдельной правкой items-property.

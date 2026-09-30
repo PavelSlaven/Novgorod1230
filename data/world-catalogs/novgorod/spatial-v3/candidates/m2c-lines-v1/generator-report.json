@@ -24,10 +24,11 @@
       "line_name": "по мокрой траве",
       "minutes": 31,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.wetland_15m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 15
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_3",
@@ -35,10 +36,11 @@
       "line_name": "по мокрой траве",
       "minutes": 31,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.wetland_15m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 15
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
     },
     {
       "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
@@ -46,10 +48,11 @@
       "line_name": "через мокрую траву и осоку",
       "minutes": 48,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.wetland_15m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 15
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 4
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
@@ -57,10 +60,11 @@
       "line_name": "через мокрую траву и осоку",
       "minutes": 48,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.wetland_15m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 15
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 4
     },
     {
       "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
@@ -68,10 +72,11 @@
       "line_name": "по листве у воды",
       "minutes": 40,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.wetland_15m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 15
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
@@ -79,10 +84,11 @@
       "line_name": "по листве у воды",
       "minutes": 40,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.wetland_15m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 15
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
     },
     {
       "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
@@ -90,10 +96,11 @@
       "line_name": "тропой между корнями по мягкой земле",
       "minutes": 32,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
@@ -101,10 +108,11 @@
       "line_name": "тропой между корнями по мягкой земле",
       "minutes": 32,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
@@ -112,10 +120,11 @@
       "line_name": "лесным ходом по сырому краю",
       "minutes": 35,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
@@ -123,10 +132,11 @@
       "line_name": "лесным ходом по сырому краю",
       "minutes": 35,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
@@ -134,10 +144,11 @@
       "line_name": "по мягкой земле под кронами",
       "minutes": 34,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
@@ -145,10 +156,11 @@
       "line_name": "по мягкой земле под кронами",
       "minutes": 34,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
@@ -156,10 +168,11 @@
       "line_name": "тропой по влажному краю",
       "minutes": 37,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     },
     {
       "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
@@ -167,10 +180,11 @@
       "line_name": "тропой по влажному краю",
       "minutes": 37,
       "slice_step_minutes": 30,
-      "slices": 2,
       "recheck_policy_id": "recheck.land_30m",
       "recheck_policy_kind": "fixed_time_interval",
-      "recheck_interval_minutes": 30
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
     }
   ],
   "connectivity": {

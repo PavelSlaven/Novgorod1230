@@ -585,7 +585,7 @@ and legal ownership need not belong to the actor. Qualitative outcome is part of
 the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
 validated result is projected into the same root turn before pending continuation.
 An independent output lies at the current scene position (`party_item_placements.scene_position_id`
-plus the scene placement row); the g5 anchor is used only at the legacy start place (LW-100, LW-114).
+plus the scene placement row); the g5 anchor is used only at the legacy start place (LW-100, LW-118).
 profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item

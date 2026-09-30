@@ -96,7 +96,7 @@
 | 104 | `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`) | список применимости закреплён на шаблонах @1, а сгенерированные сайты v17 — @2 (общий массив с N1) | — |
 | 105 | `data/world-catalogs/novgorod/m2c-items/README.md`, `packages/items-property` | `M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`: владелец предмета не проверяет `mass_grams = quantity × 50` | — |
 | 106 | `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js`, `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` | значения по умолчанию для v5-профиля (`packing_slot_cost=0`, `quantity=null`, `container=null`) заданы в game-server, вне владельца items-property | — |
-| 114 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, narration | результат A1 лежит на позиции сцены, рассказчик пишет «в руках» (расхождение narration и committed state); ёмкость позиции ограничивает число полос | — |
+| 118 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, narration | результат A1 лежит на позиции сцены, рассказчик пишет «в руках» (расхождение narration и committed state); ёмкость позиции ограничивает число полос | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -575,7 +575,7 @@
 - **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —
 
-### LW-114 — результат A1 лежит на сцене, а рассказчик пишет «в руках» (rt-make)
+### LW-118 — результат A1 лежит на сцене, а рассказчик пишет «в руках» (rt-make)
 - **Где.** `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js` (`actionProducedOwnerOutputDestination`: `placement_kind ∈ {anchor, scene_position}`), `packages/items-property/src/action-produced-transition-entities.js`; рассказчик — `apps/game-server` narration (проекция committed-изменений).
 - **Что.** Независимый выход A1 попадает на позицию сцены (на старте — на якорь). Игрок «оторвал полосу» — вещь лежит под ногами, а рассказчик пишет «В твоих руках лежит отрезанный кусок». Это расхождение narration и committed state; владелец — narration (рассказчик не должен утверждать место, которого нет в committed). Сцена занята вещью: ёмкость позиции ограничена (7), при большом числе полос ход отвергается `ACTION_PRODUCED_DESTINATION_CAPACITY`.
 - **Как жить.** Не подменять место в обход владельца. Смена контракта («в руки» для частичного отделения от несомой вещи, `holder_ref` в owner-destination) — отдельное решение владельца items-property. Пока — правка narration: не называть руки, если результат на сцене.

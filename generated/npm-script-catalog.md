@@ -109,9 +109,10 @@
 
 - `party-db:seed`
 
-## play (1)
+## play (2)
 
 - `play:local`
+- `play:v17-slice`
 
 ## playtest (1)
 

@@ -12,6 +12,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - проверкой compatible full-world pin и runtime contract;
 - чистой projection по region/effective date после полной проверки.
 - единой загрузкой неперсистентных common catalog lookups до projection.
+- чистой проверкой versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI.
 
 ## Не делает
 
@@ -31,6 +32,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
 - `RUNTIME_CATALOG_CONTRACT` и `RUNTIME_CATALOG_CONTRACT_DIGEST` из
   `@rus/runtime-catalog/runtime-contract`.
+- `NEEDS_CHECK_BLOCKER` — единственный API для сборки/проверки versioned blocker snapshot и сопоставления кандидата; пакет не решает, допускать ли действие.
 
 ## Контракты
 

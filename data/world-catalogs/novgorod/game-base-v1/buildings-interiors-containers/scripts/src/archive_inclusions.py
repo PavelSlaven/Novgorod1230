@@ -11,7 +11,7 @@ MANIFEST = os.path.join(GROUP, "authoring", "archive_inclusion_manifest.json")
 NEEDS_CHECK = os.path.join(GROUP, "authoring", "needs_check.csv")
 FIELDS = ["archive_ref", "archive_name", "archive_action", "match_type", "game_base_ref", "owner_group", "target_group", "target_ref", "basis", "evidence_basis", "family_key",
           "derivation", "confidence", "period", "region", "generation_policy", "anachronism_risk", "semantic_result", "guard_result", "dedup_result", "reason"]
-NEEDS_CHECK_FIELDS = ["archive_id", "current_result", "current_target_group", "current_target_ref", "reason_code", "finding_ref", "cluster_id", "note"]
+NEEDS_CHECK_FIELDS = ["archive_id", "current_result", "current_target_group", "current_target_ref", "reason_code", "finding_ref", "cluster_id", "note", "block_pattern_ru", "block_pattern_lat", "block_scope", "block_exception"]
 DENY = re.compile(r"картоф|кукуруз|(?<!\w)томат|подсолн|табак|индейк|тяжелов|\bчай\b|кофе|сахар|огнестрел|порох|пищал|кирпичн\w* изб|стекольн|застеклённ\w* окн\w* изб", re.I)
 
 

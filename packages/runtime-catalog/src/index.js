@@ -1,4 +1,5 @@
 import recordRegistry from '../../../data/runtime-catalog/item-container-record-registry.v1.json' with { type: 'json' };
+import { NEEDS_CHECK_BLOCKER } from './needs-check-blocker.js';
 import {
   canonicalStringify,
   computeCanonicalRecordDigest,
@@ -27,7 +28,7 @@ import {
   RuntimeCatalogError
 } from './shared.js';
 
-export { loadApprovedActorProfileCatalog, RuntimeCatalogError };
+export { loadApprovedActorProfileCatalog, NEEDS_CHECK_BLOCKER, RuntimeCatalogError };
 
 export const RUNTIME_CATALOG_SCOPE = 'item_container_materialization_v2';
 

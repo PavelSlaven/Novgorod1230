@@ -7,6 +7,7 @@ writes CSV tables under food/ and dishes/ plus sources.csv. No network.
 Run: python build.py   (from anywhere)
 """
 import csv, json, re, sys
+import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -765,3 +766,4 @@ report_text = json.dumps({'counts': counts,
 (OUT / 'scripts/build_report.json').write_bytes((report_text.replace('\n', '\r\n') + '\r\n').encode('utf-8'))
 print(json.dumps(counts, ensure_ascii=False, indent=1))
 print('unresolved', len(unresolved), unresolved[:10])
+subprocess.run(["node", str(Path(__file__).resolve().parents[2] / "scripts/check-needs-check.mjs"), "--check"], check=True)

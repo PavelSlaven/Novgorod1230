@@ -195,3 +195,4 @@ const counts = {
 };
 fs.writeFileSync(path.join(ROOT, 'flora', 'counts.json'), JSON.stringify(counts, null, 1) + '\n');
 console.log(JSON.stringify(counts));
+require('node:child_process').execFileSync(process.execPath, [path.resolve(__dirname, '../../scripts/check-needs-check.mjs'), '--check'], { stdio: 'inherit' });

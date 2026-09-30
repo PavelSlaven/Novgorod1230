@@ -419,7 +419,8 @@
         "exact reconstruction по immutable import membership",
         "проверкой compatible full-world pin и runtime contract",
         "чистой projection по region/effective date после полной проверки",
-        "единой загрузкой неперсистентных common catalog lookups до projection"
+        "единой загрузкой неперсистентных common catalog lookups до projection",
+        "чистой проверкой versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI"
       ],
       "path": "packages/runtime-catalog",
       "public_entry": "./src/index.js",

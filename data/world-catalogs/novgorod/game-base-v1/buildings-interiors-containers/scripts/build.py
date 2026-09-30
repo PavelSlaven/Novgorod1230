@@ -10,7 +10,7 @@ External (non-repo) inputs, overridable by env:
   NOV1230_DB   C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite
 Repo inputs are resolved from the worktree root (5 levels up from this group folder).
 """
-import csv, json, os, re, sqlite3, sys, collections
+import csv, json, os, re, sqlite3, sys, collections, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GROUP = os.path.dirname(HERE)
@@ -490,3 +490,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    subprocess.run(["node", os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs"), "--check"], check=True)

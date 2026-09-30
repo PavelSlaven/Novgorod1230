@@ -6,6 +6,7 @@ occupations TSV, and encodes the authoring rules below as data tables.
 Stdlib only.  Run:  python scripts/build.py   then   python scripts/check.py
 """
 import csv, json, re, unicodedata
+import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -1374,3 +1375,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    subprocess.run(["node", str(Path(__file__).resolve().parents[2] / "scripts/check-needs-check.mjs"), "--check"], check=True)

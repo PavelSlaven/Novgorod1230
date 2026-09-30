@@ -46,7 +46,7 @@ export function createRouteWalker({ env, runtimeRef, partyId }) {
 /** People standing at a site (the NPC placements of its G6 scenes) and the people part of its first-arrival trace. */
 export async function peopleAt(env, partyId, siteId) {
   const npcs = (await env.partyPool.query(
-    `SELECT n.npc_id, n.run_id, b.role_ref->>'id' AS role, b.occupation_ref->>'id' AS occupation,
+    `SELECT n.npc_id, n.run_id, b.role_ref->>'id' AS role, b.occupation_ref->>'id' AS occupation, n.identity_state->>'sex_category' AS sex,
             pos.template_slot_key AS slot
        FROM party_runtime.entity_placements pl
        JOIN party_runtime.scene_position_nodes pos ON pos.party_id=pl.party_id AND pos.id=pl.position_node_id

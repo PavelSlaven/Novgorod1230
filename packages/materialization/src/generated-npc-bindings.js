@@ -94,11 +94,12 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
   equipment_activation: activation, equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest } = {}) {
   const world = closure?.world_revision_id;
   const canonical = closure?.canonical_g5_ref;
-  const compositionRef = closure?.composition_ref;
   if (closure?.schema !== 'rus.place_people_binding_bundle.v1'
-    || ![partyId, runId, scene?.site_id, world, worldDigest, compositionRef?.id, compositionRef?.canonical_digest].every(text)
+    || ![partyId, runId, scene?.site_id, world, worldDigest].every(text)
     || scene.party_id !== partyId || !Array.isArray(scene.rows) || !Array.isArray(people) || !people.length
-    || !Number.isSafeInteger(compositionRef.version) || !text(canonical?.id)) gap('NPC_COMPOSITION_SCOPE_GAP');
+    || people.some((person) => !text(person.place_family_id) || Boolean(person.place_population_composition_ref)
+      === Boolean(person.presence_rule_ref))
+    || !text(canonical?.id)) gap('NPC_COMPOSITION_SCOPE_GAP');
   const runtimeRows = approvedIndex(closure.runtime_profiles, world);
   const regionalRows = approvedIndex(closure.regional_context_profiles, world);
   const positionResult = approvedPositions(scene, closure.placement_policy);
@@ -106,8 +107,7 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
   if (!approvedBundle || environment?.schema !== 'rus.approved_initial_environment.v1'
     || activation?.status !== 'active' || !text(equipmentDigest) || !actorProfile) gap('NPC_COMPOSITION_RUNTIME_PIN_GAP');
   const seed = deriveSeed({ version: PEOPLE_VERSION, rng_version: RNG_VERSION, party_id: partyId, run_id: runId,
-    site_id: scene.site_id, world_revision_id: world, composition_id: compositionRef.id,
-    composition_version: compositionRef.version, composition_digest: compositionRef.canonical_digest });
+    site_id: scene.site_id, world_revision_id: world, people_digest: canonicalDigest(people) });
   const random = createRandomSource({ seed: seed.uint32 });
   const choices = [];
   const select = (entries, choiceKey, identity) => {
@@ -119,17 +119,22 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
   };
   const usedRows = new Map();
   const g4 = closure.g4_ref;
-  const ctx = { closure: { ...closure, canonical_g5_ref: canonical }, scene, composition: { id: compositionRef.id,
-    version: compositionRef.version, payload: {} }, runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
-  approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows, regionalApplicability: 'g4',
-  candidates: [...new Set(people.map((person) => key(person.profile_ref)))].sort(),
-  applicable: (profile) => Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
-    same(entry.g4_ref, g4) && entry.canonical_g5_ref == null && entry.generation_template_ref == null) };
-  const npcInputs = people.map((person, index) =>
-    buildNpcInput(ctx, resolve(runtimeRows, person.profile_ref, 'npc_binding'), index, select));
+  const ctx = { closure: { ...closure, canonical_g5_ref: canonical }, scene, composition: { id: null, version: null, payload: {} },
+    runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
+    approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows, regionalApplicability: 'g4',
+    applicable: (profile) => Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
+      same(entry.g4_ref, g4) && entry.canonical_g5_ref == null && entry.generation_template_ref == null) };
+  const npcInputs = people.map((person, index) => buildNpcInput({ ...ctx,
+    candidates: (person.candidate_refs ?? [person.profile_ref]).map((ref) => key(ref)).sort() },
+  resolve(runtimeRows, person.profile_ref, 'npc_binding'), index, select, {
+    location: person.place_family_id,
+    source: { ...(person.place_population_composition_ref
+      ? { place_population_composition_ref: { ...person.place_population_composition_ref } }
+      : { presence_rule_ref: { ...person.presence_rule_ref } }),
+    ...(person.group_id ? { group_id: person.group_id } : {}) } }));
   return { npc_inputs: npcInputs, equipment_catalog: equipmentCatalog(usedRows, activation, equipmentDigest),
     selection_trace: { algorithm_version: PEOPLE_VERSION, rng_version: RNG_VERSION, seed_digest: seed.digest,
-      count: people.length, choices, equipment_catalog_digest: equipmentDigest ?? null, composition_ref: compositionRef } };
+      count: people.length, choices, equipment_catalog_digest: equipmentDigest ?? null } };
 }
 
 /** How many people the scene can hold under the placement policy (0 on a water G6 without carrier). */
@@ -146,7 +151,7 @@ function equipmentCatalog(usedRows, activation, equipmentDigest) {
 }
 
 /** One approved NPC binding from an already chosen npc_binding row; `select` draws the regional context. */
-function buildNpcInput(ctx, selected, ordinal, select) {
+function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
   const { closure, scene, composition, runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
     approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates } = ctx;
   const payload = selected.payload;
@@ -188,14 +193,14 @@ function buildNpcInput(ctx, selected, ordinal, select) {
     binding: { schema: 'rus.approved_procedural_npc_binding.v1', status: 'approved',
       source_binding: { world_revision_id: world,
         g4_ref: { id: closure.g4_ref.id, version: closure.g4_ref.version },
-        npc_composition_ref: { id: composition.id, version: composition.version },
+        ...(origin ? origin.source : { npc_composition_ref: { id: composition.id, version: composition.version } }),
         npc_binding_ref: { id: selected.id, version: selected.version },
         regional_context_ref: { id: region.id, version: region.version },
         ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) },
       actor_slot_ref: actorSlot, ordinal, role_ref: selected.role_ref, occupation_ref: selected.occupation_ref,
       profile_level: payload.profile_level, actor_profile_rule_ref: payload.actor_profile_rule_ref,
       demographic_profile_ref: payload.demographic_profile_ref, appearance_profile_ref: payload.appearance_profile_ref,
-      anchor_id: position.id, g5_node_id: scene.site_id, location_profile_ref: composition.id,
+      anchor_id: position.id, g5_node_id: scene.site_id, location_profile_ref: origin ? origin.location : composition.id,
       zone_ref: position.template_slot_key, activity_record_ref: activity.record_id,
       observable_activity: structuredClone(payload.observable_activity), body_profile: body,
       profile_candidate_set_digest: canonicalDigest(candidates), profile_record_digest: canonicalDigest(selected.payload),

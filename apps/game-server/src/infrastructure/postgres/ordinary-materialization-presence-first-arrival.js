@@ -169,7 +169,7 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
     runtimeCatalogPin,
   };
   // D-2 people of a canonical place: the composition of its primary place family (empty or absent = none).
-  const people = withPlacePeople ? { composition: await loadPrimaryPlaceFamilyComposition({ ...readerInput, primaryIds }) } : null;
+  const people = withPlacePeople ? { compositions: await loadPrimaryPlaceFamilyCompositions({ ...readerInput, primaryIds }) } : null;
   const [primaryRules, secondaryRules] = await Promise.all([
     loadPresenceRulesForPlaceFamilies({ ...readerInput, placeFamilyIds: primaryIds }),
     loadPresenceRulesForPlaceFamilies({ ...readerInput, placeFamilyIds: secondaryIds }),
@@ -207,18 +207,16 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
   };
 }
 
-/** Groups of every primary place family with approved D-2 people; the first family names the composition. */
-async function loadPrimaryPlaceFamilyComposition({ primaryIds, ...readerInput }) {
+/** The D-2 compositions with people groups of the primary place families, each under its own composition ref. */
+async function loadPrimaryPlaceFamilyCompositions({ primaryIds, ...readerInput }) {
   const compositions = [];
   for (const placeFamilyId of [...primaryIds].sort()) {
     const composition = await loadPlacePopulationComposition({ ...readerInput, placeFamilyId });
-    if (composition?.population_groups?.length) compositions.push(composition);
+    if (composition?.population_groups?.length) {
+      compositions.push({ composition_ref: composition.composition_ref, population_groups: composition.population_groups });
+    }
   }
-  if (!compositions.length) return null;
-  return {
-    composition_ref: compositions[0].composition_ref,
-    population_groups: compositions.flatMap((composition) => composition.population_groups),
-  };
+  return compositions;
 }
 
 export function applyResolvedPresenceRulesFirstArrival({ aggregate, context }) {
@@ -251,6 +249,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
     partyId,
     firstEntryBinding,
     scope,
+    withPlacePeople = false,
   }) {
     let resolvedSite = site;
     let g4 = request?.g4;
@@ -368,7 +367,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       season: calendar.season,
       periodNumber: calendar.periodNumber,
       bindingRows,
-      withPlacePeople: useCanonicalG5Node,
+      withPlacePeople: withPlacePeople && useCanonicalG5Node,
     });
   };
 }

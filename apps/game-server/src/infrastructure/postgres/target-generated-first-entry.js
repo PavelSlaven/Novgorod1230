@@ -67,8 +67,17 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
       const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
         ? await resolvePresenceRulesFirstArrival({
           transaction, request, site, partyId: request.party_id, scope, proposal, change_set_id: changeSetId,
+          withPlacePeople: true,
         }) : null;
-      const people = await prepareCanonicalPlacePeople({ context, site, presenceContext, worldBaseReader,
+      // One engine rolls every presence rule (§3A.1); the people below read their outcomes from this aggregate.
+      const maxResolutionRecords = finiteFirstEntryProfile?.technical_limits?.max_resolution_records;
+      const profileUsable = Number.isSafeInteger(maxResolutionRecords) && maxResolutionRecords >= 1;
+      const presenceAggregate = presenceContext?.rules?.length && profileUsable
+        ? applyResolvedPresenceRulesFirstArrival({
+          aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: maxResolutionRecords }),
+          context: presenceContext,
+        }) : null;
+      const people = await prepareCanonicalPlacePeople({ context, site, presenceContext, presenceAggregate, worldBaseReader,
         readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin });
       if (people?.failure !== undefined) return people.failure ?? gap('target_first_entry_factual_context_required');
       const peopleSets = people?.write_set ? [people.write_set] : [];
@@ -99,14 +108,8 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
           commit_rechecks: people?.commit_rechecks ?? [], materialization_trace: trace,
           recheck: chain(async () => ({ ok: true })) };
       }
-      const maxResolutionRecords = finiteFirstEntryProfile?.technical_limits?.max_resolution_records;
-      if (!Number.isSafeInteger(maxResolutionRecords) || maxResolutionRecords < 1) {
-        return gap('target_first_entry_presence_profile_required');
-      }
-      const aggregate = applyResolvedPresenceRulesFirstArrival({
-        aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: maxResolutionRecords }),
-        context: presenceContext,
-      });
+      if (!profileUsable) return gap('target_first_entry_presence_profile_required');
+      const aggregate = presenceAggregate;
       const scopeKey = `${request.party_id}:${scope.entity_kind}:${scope.entity_id}`;
       const writes = [{ target_table: 'party_ordinary_materialization_aggregates', id: scopeKey,
         record: { party_id: request.party_id, scope_kind: scope.entity_kind, scope_id: scope.entity_id,

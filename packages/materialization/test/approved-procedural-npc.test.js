@@ -143,6 +143,8 @@ test('a profile that names exactly one sex fixes it without moving the later app
   }
   // the fixture approves only male appearance entries: a fixed female is honoured (and refused), never redrawn
   assert.throws(() => run(1, ['nov_1200_1250_sex_category_female']), { code: 'ACTOR_APPEARANCE_VALUE_NOT_APPROVED' });
+  assert.throws(() => run(1, ['other_sex_category_male']), { code: 'PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP' },
+    'only the vocabulary word or the exact nov_1200_1250 id, no suffix guessing');
   assert.throws(() => run(1, ['nov_1200_1250_sex_category_other']),
     { code: 'PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP' });
 });

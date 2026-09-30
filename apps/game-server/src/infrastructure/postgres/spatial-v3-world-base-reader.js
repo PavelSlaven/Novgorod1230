@@ -1,4 +1,4 @@
-import { readPlacePeopleClosure } from './spatial-v3-place-people-closure.js';
+import { readPlacePeopleCandidates, readPlacePeopleClosure } from './spatial-v3-place-people-closure.js';
 import { readApprovedNpcRegionalContexts, readApprovedNpcRuntimeProfiles } from './spatial-v3-npc-profile-closure.js';
 import {
   computeSpatialV3CanonicalDigest,
@@ -1103,6 +1103,7 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
     readApprovedCanonicalG5Connections,
     readG4ExpansionBinding,
     readPinnedG4NpcCompositionClosure,
+    readPlacePeopleCandidates: (input) => readPlacePeopleCandidates(query, input),
     readPlacePeopleClosure: (input) => readPlacePeopleClosure(query, input),
     readOrientationProfile: (ref) =>
       read({ kind: 'orientation_profile', ref }),

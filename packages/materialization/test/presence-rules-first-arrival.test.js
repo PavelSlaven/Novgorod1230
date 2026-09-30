@@ -8,6 +8,7 @@ import {
   derivePresenceRuleSeedContext,
   encodePresenceRulePeriodNumber,
   deriveSeed,
+  isO1PresenceRecord,
   mergePlaceFamilyPresenceRules,
   presenceRuleSubjectKey,
   RNG_VERSION,
@@ -239,4 +240,24 @@ test('period_number enters replay key for seasonal refresh_class', () => {
   assert.notEqual(seedA.uint32, seedB.uint32);
   assert.equal(createRandomSource({ seed: seedA.uint32 }).nextUint32(),
     createRandomSource({ seed: seedA.uint32 }).nextUint32());
+});
+
+test('occupation and social_role rules store their outcome in the same aggregate; O1 projections do not see them (§3A.1)', () => {
+  const scope = { entity_kind: 'g6', entity_id: 'g6-people' };
+  const rules = [rule({ rule_id: 'pr_fisher', subject_kind: 'occupation', subject_ref: 'nov_occ_fisher', count_limit: 1 }),
+    rule({ rule_id: 'pr_householder', subject_kind: 'social_role', subject_ref: 'nov_role_smerd_householder', count_limit: 1,
+      presence_probability_ppm: 0, refresh_class: 'by_year_season' }),
+    rule({ rule_id: 'pr_cat', subject_kind: 'category', subject_ref: 'cat_a' })];
+  const run = () => applyPresenceRulesFirstArrival({ aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 4 }),
+    partyId: 'party', scopeInstanceRef: 'g5:site', rules, periodNumber: 4920, requestIdentityPrefix: 'presence-first-arrival:site' });
+  const aggregate = run();
+  const people = aggregate.presence_resolutions.filter((record) => ['occupation', 'social_role'].includes(record.subject_kind));
+  assert.deepEqual(people.map((record) => [record.subject_ref, record.count, record.rule_ref, record.period_number]).sort(),
+    [['nov_occ_fisher', 1, 'pr_fisher@1', null], ['nov_role_smerd_householder', 0, 'pr_householder@1', 4920]]);
+  assert.equal(aggregate.presence_resolutions.length, 3);
+  assert.deepEqual(aggregate.presence_resolutions.filter(isO1PresenceRecord), [], 'no projection lists a rule outcome as an O1 resolution');
+  assert.deepEqual(run(), aggregate, 'the outcome is a function of party, scope, subject and period');
+  // replay: applying the same rules to the stored aggregate adds nothing
+  assert.deepEqual(applyPresenceRulesFirstArrival({ aggregate, partyId: 'party', scopeInstanceRef: 'g5:site', rules,
+    periodNumber: 4920, requestIdentityPrefix: 'presence-first-arrival:site' }), aggregate);
 });

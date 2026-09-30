@@ -34,8 +34,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     if (source.world_revision_id !== binding.world_revision_id
       || !text(source.npc_binding_ref?.id)
       || !Number.isSafeInteger(source.npc_binding_ref.version) || source.npc_binding_ref.version < 1
-      || source.npc_composition_ref?.id !== binding.location_profile_ref
-      || !Number.isSafeInteger(source.npc_composition_ref.version) || source.npc_composition_ref.version < 1
+      || !validSourceOrigin(source, binding)
       || !same(source.g4_ref, binding.g4_ref) || !same(source.regional_context_ref, binding.regional_context_ref)
       || Boolean(source.canonical_g5_ref) !== Boolean(binding.canonical_g5_ref)
       || Boolean(source.generation_template_ref) !== Boolean(binding.generation_template_ref)
@@ -221,11 +220,27 @@ function approvedClothing(bundle, binding, identity, season) {
       instance_key: `${binding.actor_slot_ref}:${template.equipment_candidate_id}` })) };
 }
 
+/** A G4 composition binding, or a place-people origin: exactly one of a D-2 composition ref and a presence rule ref. */
+function validSourceOrigin(source, binding) {
+  const positive = (value) => Number.isSafeInteger(value) && value > 0;
+  if (source.npc_composition_ref != null) {
+    return source.place_population_composition_ref == null && source.presence_rule_ref == null
+      && source.npc_composition_ref.id === binding.location_profile_ref && positive(source.npc_composition_ref.version);
+  }
+  const composition = source.place_population_composition_ref;
+  const rule = source.presence_rule_ref;
+  if (Boolean(composition) === Boolean(rule)) return false;
+  return composition
+    ? text(composition.id) && composition.id === binding.location_profile_ref && positive(composition.version)
+      && composition.world_revision_id === binding.world_revision_id && text(source.group_id)
+    : text(rule.rule_id) && positive(rule.rule_version) && text(binding.location_profile_ref) && source.group_id == null;
+}
+
 function fixedSexCategory(binding) {
   const values = binding.sex_category_applicability;
   if (!Array.isArray(values) || values.length !== 1) return null;
   const word = ACTOR_BASE_APPEARANCE_VOCABULARY.sex_category.find((value) =>
-    values[0] === value || String(values[0]).endsWith(`_${value}`));
+    values[0] === value || values[0] === `nov_1200_1250_sex_category_${value}`);
   if (!word) gap('PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP');
   return word;
 }

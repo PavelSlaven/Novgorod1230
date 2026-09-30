@@ -1,14 +1,14 @@
 import { canonicalDigest } from '@rus/materialization';
 import { readApprovedNpcRegionalContexts, readApprovedNpcRuntimeProfiles } from './spatial-v3-npc-profile-closure.js';
 
-const fail = (reason) => Object.freeze({ ok: false, reason });
+const fail = (reason, soft = false) => Object.freeze({ ok: false, reason, soft });
 
 /**
- * Approved npc_binding candidates for the subjects of a canonical place, their runtime/regional closure and the
- * placement policy the G4 already uses for its NPC compositions. Read-only; a failure names the reason and lets the
- * caller record a people gap instead of failing the arrival.
+ * Approved npc_binding candidates (id, version, role, occupation only) for the subjects of a canonical place and the
+ * placement policy the G4 already uses for its NPC compositions. Read-only. `soft` marks plain absence of data (the
+ * caller records a gap); every other failure is an invariant or an ambiguous approved reference (the caller fails).
  */
-export async function readPlacePeopleClosure(query, { g4, canonical_g5: canonical, subjects } = {}) {
+export async function readPlacePeopleCandidates(query, { g4, canonical_g5: canonical, subjects } = {}) {
   const revision = g4?.world_revision_id;
   if (typeof query !== 'function' || !g4?.id || !Number.isInteger(g4.version) || !revision
       || !canonical?.id || !Number.isInteger(canonical.version)
@@ -43,16 +43,24 @@ export async function readPlacePeopleClosure(query, { g4, canonical_g5: canonica
   [revision, g4.id, g4.version]);
   const distinct = new Map((policies?.rows ?? []).filter((row) => row.policy)
     .map((row) => [canonicalDigest(row.policy), row.policy]));
-  if (distinct.size !== 1) return fail('g4_placement_policy_missing_or_ambiguous');
-  const runtimeProfiles = candidates.length === 0 ? [] : await readApprovedNpcRuntimeProfiles(query, revision,
-    candidates.map(({ id, version }) => ({ id, version })));
+  if (distinct.size === 0) return fail('g4_placement_policy_missing', true);
+  if (distinct.size > 1) return fail('g4_placement_policy_ambiguous');
+  return Object.freeze({ ok: true, candidates, placement_policy: structuredClone([...distinct.values()][0]) });
+}
+
+/** The runtime and regional closure of the chosen profile refs only (a broken unrelated row cannot matter). */
+export async function readPlacePeopleClosure(query, { g4, canonical_g5: canonical, profile_refs: refs, placement_policy: policy } = {}) {
+  const revision = g4?.world_revision_id;
+  if (typeof query !== 'function' || !revision || !canonical?.id || !Array.isArray(refs) || refs.length === 0 || !policy) {
+    return fail('place_people_input_invalid');
+  }
+  const runtimeProfiles = await readApprovedNpcRuntimeProfiles(query, revision, refs);
   if (!runtimeProfiles) return fail('approved_npc_runtime_profile_closure_invalid');
   const regionalProfiles = await readApprovedNpcRegionalContexts(query, revision, runtimeProfiles);
   if (!regionalProfiles) return fail('approved_npc_regional_context_closure_invalid');
-  return Object.freeze({ ok: true, candidates, closure: structuredClone({
+  return Object.freeze({ ok: true, closure: structuredClone({
     schema: 'rus.place_people_binding_bundle.v1', world_revision_id: revision,
     g4_ref: { id: g4.id, version: g4.version, world_revision_id: revision },
     canonical_g5_ref: { id: canonical.id, version: canonical.version },
-    placement_policy: [...distinct.values()][0], runtime_profiles: runtimeProfiles,
-    regional_context_profiles: regionalProfiles }) });
+    placement_policy: policy, runtime_profiles: runtimeProfiles, regional_context_profiles: regionalProfiles }) });
 }

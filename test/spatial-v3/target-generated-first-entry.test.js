@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { canonicalDigest, createRandomSource, deriveApprovedInitialEnvironment } from '@rus/materialization';
 import { materializeSpatialV3GeneratedScene } from '@rus/materialization/spatial-v3-materialization';
 import { targetCanonicalStartFixture } from './target-canonical-start-fixture.js';
+import { approvedNpcIdentityCatalog } from '../helpers/npc-identity-catalog.js';
 import { createTargetGeneratedFirstEntry } from '../../apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js';
 
 const fixture = await targetCanonicalStartFixture();
@@ -119,4 +120,38 @@ test('missing current facts or exact party catalog pins fail before proposing na
     assert.equal(result.error.code, 'authoring_dependency_pin_missing');
     assert.deepEqual(value.calls, []);
   }
+});
+
+test('generated-place NPC get pool names and a character, identical on a repeated entry', async () => {
+  const identityBundle = { ...fixture.approved_actor_temporal_bundle, npc_identity: await approvedNpcIdentityCatalog() };
+  const bound = new Set(identityBundle.npc_identity.name_bindings.map((row) => row.regional_context_id));
+  const pool = new Set(identityBundle.npc_identity.name_entries.map((row) => row.name_form));
+  let named = 0;
+  let unnamed = 0;
+  for (let ordinal = 0; ordinal < 30; ordinal += 1) {
+    const { options, context } = setup(ordinal);
+    options.approvedActorTemporalBundle = identityBundle;
+    const result = await createTargetGeneratedFirstEntry(options)(context);
+    assert.equal(result.ok, true, JSON.stringify(result.error));
+    const rows = result.approved_write_sets.flatMap((set) => set.inserts);
+    const snapshots = new Map(rows.filter((row) => row.target_table === 'party_actor_profile_bindings')
+      .map((row) => [row.record.actor_id, row.record.name_profile_snapshot]));
+    for (const { record: npc } of rows.filter((row) => row.target_table === 'party_npcs')) {
+      const context = npc.semantic_state.source_binding.regional_context_ref.id;
+      assert.equal(snapshots.get(npc.npc_id).canonical_name, npc.identity_state.canonical_name);
+      if (bound.has(context)) {
+        named += 1;
+        assert.ok(pool.has(npc.identity_state.canonical_name), npc.identity_state.canonical_name);
+        assert.equal(npc.semantic_state.character.value_refs.length, 2);
+      } else {
+        unnamed += 1;
+        assert.equal(npc.identity_state.canonical_name, null);
+        assert.equal(npc.semantic_state.character === undefined || Array.isArray(npc.semantic_state.character.goals_ru), true);
+      }
+    }
+    const again = await createTargetGeneratedFirstEntry(options)(context);
+    assert.deepEqual(again.approved_write_sets.flatMap((set) => set.inserts).filter((row) => row.target_table === 'party_npcs')
+      .map((row) => row.record.identity_state), rows.filter((row) => row.target_table === 'party_npcs').map((row) => row.record.identity_state));
+  }
+  assert.ok(named > 0, 'at least one bound-context NPC over 30 entries');
 });

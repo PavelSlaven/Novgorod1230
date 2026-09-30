@@ -41,6 +41,15 @@ test('canonical and generated current scenes compose admitted natural, entities 
   }
 });
 
+test('a young_adult NPC is disclosed with the player-safe age word `young`', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const result = projectSpatialV3CurrentVisibleContext({ naturalInput: prepareG4NaturalScenePerceptionInput(input),
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside', localEdges: [], directionalExits: [],
+    entityObservations: [{ entity_kind: 'npc', entity_id: 'npc:1', visibility: 'clear', display_label: 'человек',
+      exterior: { sex_category: 'male', age_category: 'young_adult', appearance: { build: 'thin' }, visible_equipment: [] } }] });
+  assert.equal(result.visible_npc[0].observable_cues.identity.age_category, 'young');
+});
+
 test('occupied local edge status passes through; directional exits carry none', async () => {
   const { input } = await approvedNaturalPerceptionFixture();
   const args = { naturalInput: prepareG4NaturalScenePerceptionInput(input),

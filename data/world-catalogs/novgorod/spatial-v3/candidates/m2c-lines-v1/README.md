@@ -1,7 +1,6 @@
 # m2c-lines-v1 — line fields of the local G5–G5 connections (candidate)
 
-**Status: candidate, not approved, not imported.** Phase (а) of PLAN-rt-lines-a (Spatial 4.7.0 lines, LW-097). No world_base DDL
-for the new tables exists yet and no import manifest is produced: they come with phases a3/a4 and only after the Opus data pass.
+**Status: candidate, not approved; imported through P12 only in a test (a4), not by bootstrap.** Phase (а) of PLAN-rt-lines-a (Spatial 4.7.0 lines, LW-097). World_base DDL: `infra/world-base/schema/30.sql`. Import bundle: `../../../m2c-lines-v1-import-manifest.json` (dependency closure, status draft, insert-only: own datasets plus the unchanged nodes and external dependency versions of the active bundle). Its sha256 is pinned in `scripts/bootstrap-live-world-v17.mjs` (`LINES_WAVE_MANIFEST`), but bootstrap does not import it before the cutover (b1). Import test: `test/spatial-v3/m2c-lines-import-postgres.test.js`. The generator writes the manifest too (`--check` covers it).
 
 `node tools/spatial-v3/build-line-wave.mjs [--line-names <path>] [--slice-step-minutes <n>] [--check]` writes `datasets/` and
 `generator-report.json` from: the active binding@2 (`../m2c-g4-expansion-v1`), the approved place-geo minutes

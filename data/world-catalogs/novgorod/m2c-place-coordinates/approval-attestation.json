@@ -47,8 +47,16 @@
         "cross_g4_06",
         "cross_g4_22"
       ],
-      "to_downstream_reverse_only": ["cross_g4_07", "cross_g4_08"],
-      "expected_label_totals": { "upstream": 68, "downstream": 66, "no_current": 48, "across": 12 },
+      "to_downstream_reverse_only": [
+        "cross_g4_07",
+        "cross_g4_08"
+      ],
+      "expected_label_totals": {
+        "upstream": 68,
+        "downstream": 66,
+        "no_current": 48,
+        "across": 12
+      },
       "minutes_unchanged": true
     },
     "F2": {
@@ -76,5 +84,23 @@
     ]
   },
   "import_authorized": false,
-  "activation_authorized": false
+  "activation_authorized": false,
+  "mechanical_continuation": {
+    "applied_commit": "540420fe",
+    "accepted_by": "claude-opus-5-5 (lead reviewer; deterministic checks only, per the approver note)",
+    "accepted_on": "2026-09-30",
+    "candidate_sha256": "f47aa3c42f5ea22fb41c00dfc20b89fc5de6e3cdad5b53022f6cc8c4499c3acd",
+    "derived_report_sha256": "cb9c87db6969ffa376893be2cb28ff748e4a0848605991ac0c2b987aeb9bd82c",
+    "checks": [
+      "derive.test.mjs 27/27 (25 + F1 and F2 tests); derive.mjs with line-names bb0d2802 run twice, byte-identical to the committed report.",
+      "Reviewer field diff 93206de2..540420fe (pg-diff.mjs): candidate.json changes only route_traces.cross_g4_23; 34 report lines change; river_direction changes on exactly the 30 F1 lines plus cross_g4_23 r (F2); minutes change only on cross_g4_23 (f 108->77, r 107->58); geometry validation and name mismatches unchanged; topology gains water_trace_detours = 0.",
+      "Label totals after F1 and F2: upstream 67, downstream 67, no current 48, across 12 (F1 alone 68/66; cross_g4_23 r flips upstream->downstream because its first flowing leg now runs down the east arm)."
+    ],
+    "accepted_consequences": [
+      "cross_g4_07 f and cross_g4_08 f: line label unchanged, their legs on central_head_branch (current 0) now read no current (F1 leg rule).",
+      "Label-dependent derived fields of the same lines follow the label: crossing_geometry_valid true->null on 28 lines now without current; travel_band/speed_band/expected and tolerated speed on 17 lines; speed_mismatches 166->167 (4 added on F1 lines, 3 removed: cross_g4_07 r and both cross_g4_23). Legacy review flags on base minutes, no minute change.",
+      "cross_g4_23 rerouted 6531 m -> 4136 m (shortest water path 4191 m on the approver raster); max water trace ratio now 1.102 (cross_g4_13)."
+    ],
+    "now_approved": "F1 labels and the cross_g4_23 trace with its minutes (draft for a Spatial CR, like all minutes). Limits 4 and 5 are closed by this continuation; limits 1-3 and 6-12 stay."
+  }
 }

@@ -751,3 +751,24 @@ test('PLAN-8: shoreline skeletons sit at the corridor edge of their flow axis (o
     }
   }
 });
+
+test('A-place-geo-09: a still pool is not a sink for flowing water; a mouth into it has current 0', async () => {
+  const cellCorners = [
+    { name: 'southwest', longitude: 40.3, latitude: 64.5 }, { name: 'southeast', longitude: 40.7, latitude: 64.5 },
+    { name: 'northeast', longitude: 40.7, latitude: 64.7 }, { name: 'northwest', longitude: 40.3, latitude: 64.7 },
+  ];
+  const network = [
+    { id: 'main', width_m: 100, current_bias_kmh: 1, points: [[64.5, 40.5], [64.7, 40.4]] },
+    { id: 'west', width_m: 100, current_bias_kmh: 1, points: [[64.6, 40.45], [64.65, 40.3]] },
+    { id: 'east', width_m: 100, current_bias_kmh: 1, points: [[64.6, 40.45], [64.65, 40.7]] },
+    { id: 'pool', waterbody_type: 'reed_backwater', width_m: 100, current_bias_kmh: 0, points: [[64.56, 40.42], [64.55, 40.4]] },
+  ];
+  const mouth = current => ({ id: 'mouth', waterbody_type: 'backwater_mouth', width_m: 80, current_bias_kmh: current,
+    points: [[64.6, 40.45], [64.56, 40.42]] });
+  const flowing = validateFlowContinuity({ flow_skeletons: [...network, mouth(0.25)] }, cellCorners);
+  assert.equal(flowing.status, 'invalid');
+  assert.ok(flowing.issues.some(issue => /mouth flows nowhere/.test(issue)));
+  assert.equal(validateFlowContinuity({ flow_skeletons: [...network, mouth(0)] }, cellCorners).status, 'valid');
+  const [candidate] = await inputs();
+  assert.equal(candidate.flow_skeletons.find(flow => flow.id === 'backwater_mouth').current_bias_kmh, 0);
+});

@@ -579,12 +579,12 @@
         "CLM_G1R2_MULTICHANNEL",
         "CLM_G1R2_SHORELINE_LIMIT"
       ],
-      "downstream_direction": "toward the reed backwater pool; local editorial direction only",
+      "downstream_direction": "local waterbody orientation is schematic; no historical flow direction claimed",
       "direction_reliability": "schematic authored orientation; not a historical flow claim",
       "waterbody_type": "backwater_mouth",
       "width_m": 80,
-      "current_bias_kmh": 0.25,
-      "current_basis": "editorial assumption for a connected narrow mouth; magnitude is not a historical measurement"
+      "current_bias_kmh": 0,
+      "current_basis": "editorial assumption: narrow mouth of a still reed backwater — standing water, no through-current; a still pool is not a sink for flowing water (A-place-geo-09)"
     }
   ],
   "g3_g4_places": [

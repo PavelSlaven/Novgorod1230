@@ -34,7 +34,7 @@ A failed search is either a **proven bank split** or a **blocker**. Only when th
 node route-land-lines.mjs /path/to/final-line-names-candidate.json /tmp/place-candidate.json
 ```
 
-Further blocking checks in `validateSpatialTopology` / `validateFlowContinuity`: a flowing arm must drain through a chain of flowing water to the cell boundary or into a still pool (a closed pair of arms is a dead end and needs `current_bias_kmh: 0`); a trace that runs out and turns back by more than 150° on one water body with both legs over 100 m is a spike (`route_trace_spikes`).
+Further blocking checks in `validateSpatialTopology` / `validateFlowContinuity`: a flowing arm must drain through a chain of flowing water to the cell boundary or sea; a still pool is not a sink, so a mouth into one (`backwater_mouth`) and a closed pair of arms are dead ends and need `current_bias_kmh: 0`; a trace that runs out and turns back by more than 150° on one water body with both legs over 100 m is a spike (`route_trace_spikes`).
 
 Name checks: a line containing «берегом» is judged against the shoreline skeletons — chord lines by alignment (45°) and distance (500 m); drawn routes by length-weighted mean distance (500 m) only, because a chord of a long detour says nothing about the bank; short land links (≤150 m) between one water place and one shore place are exempt (`shore_to_water_link`).
 
@@ -66,7 +66,7 @@ Every numeric rate and route factor in this table is an **editorial assumption f
 PLAN-place-geo-8 changes (graph, line-names, spatial-v3 and runtime untouched):
 
 - End-access rule unified; exceptions need component proof (above).
-- `central_head_branch` and `large_island_channels` are dead-end arms with current 0.
+- `central_head_branch`, `large_island_channels` and `backwater_mouth` are dead-end/standing-water arms with current 0.
 - Moved G5 points: `central_current_split_upstream_nose` (802 m, left main edge above the split) and `mixing_reach_inner_approach` (485 m, right main edge) with their parent G4 sectors widened (convex hull); `central_navigation_reach_shoal_margin` (150 m up the left main edge, so its line to `deep_thread` has an along-flow component); `large_island_head_wet_hollow` (134 m up the arm, so it is ~260 m from its neighbours as in the graph). Route-trace endpoints follow the moved points.
 - Six water traces (`cross_g4_24/13/21/04/12/05`) rebuilt as the axis stretch between the projections of their ends; `cross_g4_23` turns back between two different bodies (main → `island_split_channels`) and is not a spike by the rule.
 - 30 `shoreline_skeletons` rebuilt from the current axes at half-width from the axis (miter joins to 1.4×, bevel beyond, points that fall back into the corridor dropped). The two independent `shore_zaostrovye_water_access_*` traces have no flow axis and are unchanged.

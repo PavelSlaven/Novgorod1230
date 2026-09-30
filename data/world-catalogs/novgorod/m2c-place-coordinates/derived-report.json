@@ -33,8 +33,8 @@
     "topology_exceptions": [],
     "exception_line_ids": [],
     "flow_continuity": {
-      "flowing_skeleton_count": 5,
-      "checked_endpoints": 10,
+      "flowing_skeleton_count": 4,
+      "checked_endpoints": 8,
       "isolated_endpoint_count": 0,
       "endpoint_rows": [
         {
@@ -81,18 +81,6 @@
         },
         {
           "skeleton_id": "island_split_channels",
-          "endpoint": "end",
-          "network": true,
-          "boundary": false
-        },
-        {
-          "skeleton_id": "backwater_mouth",
-          "endpoint": "start",
-          "network": true,
-          "boundary": false
-        },
-        {
-          "skeleton_id": "backwater_mouth",
           "endpoint": "end",
           "network": true,
           "boundary": false
@@ -3564,16 +3552,6 @@
     },
     {
       "kind": "world_route",
-      "id": "wrv3__g4dirv3r__cross_g4_22",
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
-      "base_minutes": 45,
-      "proposed_minutes": 72,
-      "travel_band": "boat_upstream",
-      "suggested_segment_count": 3
-    },
-    {
-      "kind": "world_route",
       "id": "wrv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
       "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
@@ -3589,6 +3567,26 @@
       "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
       "base_minutes": 60,
       "proposed_minutes": 71,
+      "travel_band": "boat_upstream",
+      "suggested_segment_count": 3
+    },
+    {
+      "kind": "world_route",
+      "id": "wrv3__g4dirv3f__cross_g4_22",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "base_minutes": 45,
+      "proposed_minutes": 68,
+      "travel_band": "boat_downstream",
+      "suggested_segment_count": 3
+    },
+    {
+      "kind": "world_route",
+      "id": "wrv3__g4dirv3r__cross_g4_22",
+      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+      "base_minutes": 45,
+      "proposed_minutes": 68,
       "travel_band": "boat_upstream",
       "suggested_segment_count": 3
     },
@@ -3610,16 +3608,6 @@
       "base_minutes": 60,
       "proposed_minutes": 66,
       "travel_band": "boat_upstream",
-      "suggested_segment_count": 3
-    },
-    {
-      "kind": "world_route",
-      "id": "wrv3__g4dirv3f__cross_g4_22",
-      "from_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
-      "to_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
-      "base_minutes": 45,
-      "proposed_minutes": 64,
-      "travel_band": "boat_downstream",
       "suggested_segment_count": 3
     },
     {
@@ -48252,20 +48240,20 @@
         "across": 0
       },
       "base_minutes": 45,
-      "minutes_delta": 19,
+      "minutes_delta": 23,
       "minutes_change_flag_over_30": false,
       "minutes_change_threshold_minutes": 30,
       "proposed_over_30_minutes": true,
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 3,
-      "proposed_minutes": 64,
+      "proposed_minutes": 68,
       "travel_band": "boat_downstream",
       "distance_route_m": 4286,
       "sinuosity_factor": null,
       "route_distance_km": 4.29,
       "base_speed_kmh": 4,
-      "current_bias_kmh": 0.25,
-      "effective_speed_kmh": 4.25,
+      "current_bias_kmh": 0,
+      "effective_speed_kmh": 4,
       "calculation_status": "расчётная редакционная калибровка",
       "route_trace_key": "cross_g4_22",
       "route_trace_fallback": null,
@@ -48301,9 +48289,9 @@
           "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
-          "current_bias_kmh": 0.25,
-          "effective_speed_kmh": 4.25,
-          "duration_minutes_unrounded": 31.666,
+          "current_bias_kmh": 0,
+          "effective_speed_kmh": 4,
+          "duration_minutes_unrounded": 33.645,
           "suggested_route_point": true
         },
         {
@@ -48337,9 +48325,9 @@
           "travel_band": "boat_downstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
-          "current_bias_kmh": 0.25,
-          "effective_speed_kmh": 4.25,
-          "duration_minutes_unrounded": 31.878,
+          "current_bias_kmh": 0,
+          "effective_speed_kmh": 4,
+          "duration_minutes_unrounded": 33.87,
           "suggested_route_point": false
         }
       ],
@@ -48401,20 +48389,20 @@
         "across": 0
       },
       "base_minutes": 45,
-      "minutes_delta": 27,
+      "minutes_delta": 23,
       "minutes_change_flag_over_30": false,
       "minutes_change_threshold_minutes": 30,
       "proposed_over_30_minutes": true,
       "long_transition_threshold_minutes": 30,
       "suggested_segment_count": 3,
-      "proposed_minutes": 72,
+      "proposed_minutes": 68,
       "travel_band": "boat_upstream",
       "distance_route_m": 4286,
       "sinuosity_factor": null,
       "route_distance_km": 4.29,
       "base_speed_kmh": 4,
-      "current_bias_kmh": -0.25,
-      "effective_speed_kmh": 3.75,
+      "current_bias_kmh": 0,
+      "effective_speed_kmh": 4,
       "calculation_status": "расчётная редакционная калибровка",
       "route_trace_key": "cross_g4_22",
       "route_trace_fallback": null,
@@ -48450,9 +48438,9 @@
           "travel_band": "boat_upstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
-          "current_bias_kmh": -0.25,
-          "effective_speed_kmh": 3.75,
-          "duration_minutes_unrounded": 36.128,
+          "current_bias_kmh": 0,
+          "effective_speed_kmh": 4,
+          "duration_minutes_unrounded": 33.87,
           "suggested_route_point": true
         },
         {
@@ -48486,9 +48474,9 @@
           "travel_band": "boat_upstream",
           "sinuosity_factor": 1.05,
           "base_speed_kmh": 4,
-          "current_bias_kmh": -0.25,
-          "effective_speed_kmh": 3.75,
-          "duration_minutes_unrounded": 35.888,
+          "current_bias_kmh": 0,
+          "effective_speed_kmh": 4,
+          "duration_minutes_unrounded": 33.645,
           "suggested_route_point": false
         }
       ],

@@ -349,8 +349,6 @@ export function validateFlowContinuity(candidate, cellCorners) {
     seen.add(skeleton.id);
     const end = endpoint(skeleton, -1);
     if (boundaryDistance(end) <= skeleton.width_m / 2 + 50) return true;
-    if (validSkeletons.some(other => ['old_channel_pool', 'reed_backwater'].includes(other.waterbody_type)
-      && pointFlowDistance(mapPoint(endpoint(skeleton, -1)), other) <= other.width_m / 2)) return true;
     return flowing.some(other => other.id !== skeleton.id && !seen.has(other.id)
       && pointFlowDistance(mapPoint(end), other) <= skeleton.width_m / 2 + other.width_m / 2 + 1
       && drainsToBoundary(other, seen));

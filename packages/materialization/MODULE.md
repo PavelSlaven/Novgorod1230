@@ -54,6 +54,31 @@ Caller связывает exact target runtime item authority до вызова:
 сохраняет смысл world pin для actor generation. Один active marker не
 подменяет проверку каталога, release pin и activation readback у caller.
 
+`wantPlacePeople`/`resolvePlacePeople`/`decidePlacePeople` решают, кто стоит на каноническом
+месте при первом прибытии (D49). `wantPlacePeople` бросает группы D-2 состава primary place
+family (`min_count`/`max_count`/`count_weights`, `weighted_subjects`) и **читает** исходы правил
+присутствия для `occupation`/`social_role`, которые движок R-2a уже записал в агрегат
+`presence_resolutions` (§3A.1); правило здесь не бросается. Субъект, названный составом, из
+правила не берётся. Чистые функции, seed — `party + scope + group_id`. `resolvePlacePeople`
+связывает субъект с профилем (`profile_ref` или единственный `npc_binding` с той же
+ролью/занятием; из версий одного id — новейшая утверждённая, в состояние пишется точный
+`{id, version}`). Субъект без единственного профиля, с ролью/занятием вне actor bundle или сверх
+вместимости никого не создаёт и попадает в `gaps` (`people_profile_missing|ambiguous`,
+`people_actor_bundle_missing`, `people_position_capacity`). Пола «≥1» в коде нет: минимум
+задаёт `min_count` данных. `compilePlacePeopleBindings` привязывает решённых людей к позициям
+focus/departure (arrival зарезервирован) теми же per-NPC входами, что
+`compileGeneratedNpcBindings`; происхождение человека — `place_population_composition_ref
+{id, version, world_revision_id}` + `group_id` либо `presence_rule_ref {rule_id, rule_version}`
+в `source_binding`, `npc_composition_ref` остаётся только у G4-binding. Regional context
+применим к месту по `g4_ref`, если запись применимости не привязана ни к canonical G5, ни к
+generation template (`binding.regional_applicability = 'g4'`). `placePeopleCapacity` даёт число
+позиций места по placement policy. Профиль `npc_binding` с
+`payload.actor_applicability.sex_category` из ровно одного значения (слово словаря или точный id
+`nov_1200_1250_sex_category_<слово>`) задаёт пол идентичности: `materializeApprovedProceduralNpc`
+берёт его как authored, а draw пола, который взял бы неограниченный актор, всё равно снимается —
+остальные facets внешности сохраняют свои draws. Ноль или несколько значений — поведение
+прежнее; значение вне словаря — `PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP`.
+
 `materializeApprovedProceduralNpc` допускает exact approved
 `regional_context_ref` при наличии `g4_ref` и ровно одного
 `generation_template_ref` либо `canonical_g5_ref`.
@@ -305,7 +330,9 @@ scope, subject, для `by_year_season` — `encodePresenceRulePeriodNumber`
 `pickRegionalPresenceRule` — строгое совпадение с G0-предком того же узла, чьи
 place-family bindings читаются: закреплённого G4 для generated G5, самого
 canonical G5 для canonical G5; не эвристика по данным. `seed_scope` может идти после presence-only preamble;
-idempotent replay seed не требует `state_version === 1`. Проекции turn/O1
+idempotent replay seed не требует `state_version === 1`. Исходы правил для `occupation`/`social_role` пишутся тем же движком в тот же агрегат
+(subject_kind `occupation|social_role`, `count` включая `0`, `rule_ref` — причинное основание);
+людей по ним создаёт first-entry канонического места. Проекции turn/O1
 (`ordinary_state`, enablement) должны фильтровать только O1-записи
 (`isO1PresenceRecord`). LW-071: пропуск потомков при решённом предке — в движке
 выбора правил, не в transition primitive.
@@ -319,22 +346,6 @@ NPC composition и Stage 16 owners. Она не создаёт S1, вторую 
 фиксированного NPC. Runtime item/actor pins и operational activation проверяет
 composition до вызова; результат остаётся proposal для Stage 24/25.
 
-`decidePlacePeople` решает, кто стоит на каноническом месте при первом прибытии
-(D49): группы D-2 состава primary place family (`min_count`/`max_count`/
-`count_weights`, `weighted_subjects`) и утверждённые правила присутствия для
-`occupation`/`social_role`; субъект, названный составом, правилом не бросается
-повторно. Чистая функция, seed — `party + scope + group_id | rule`. Субъект без
-единственного утверждённого профиля (`profile_ref` или единственный `npc_binding`
-с той же ролью/занятием; из версий одного id берётся новейшая), с ролью или
-занятием вне actor bundle, либо сверх вместимости никого не создаёт и попадает в
-`gaps` (`people_profile_missing|ambiguous`, `people_actor_bundle_missing`,
-`people_position_capacity`). Пола «≥1» в коде нет: минимум задаёт `min_count` данных.
-`compilePlacePeopleBindings` привязывает решённых людей к позициям focus/departure
-(arrival зарезервирован) теми же per-NPC входами, что `compileGeneratedNpcBindings`;
-regional context применим к месту по `g4_ref`, если запись применимости не привязана
-ни к canonical G5, ни к generation template (`binding.regional_applicability = 'g4'`).
-`placePeopleCapacity` даёт число позиций места по placement policy.
-Профиль `npc_binding` с `payload.actor_applicability.sex_category` из ровно одного значения (слово словаря или id game-base вида `…_sex_category_female`) задаёт пол идентичности: `materializeApprovedProceduralNpc` берёт его как authored, а draw пола, который взял бы неограниченный актор, всё равно снимается — остальные facets внешности сохраняют свои draws. Ноль или несколько значений — поведение прежнее; значение вне словаря — `PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP`.
 
 `MaterializationError` с машиночитаемым code и immutable details.
 

@@ -555,15 +555,17 @@ The item or negative resolution and the discovery cost commit together; transpor
 replays the committed result without another activity or model call.
 
 People of a canonical place (D49): the canonical branch of the target first entry
-(`target-generated-first-entry.js`) asks `prepareCanonicalPlacePeople`
-(`target-place-people-first-entry.js`) for the people of the place. The presence resolver
-context carries the D-2 composition of the primary place family; `readPlacePeopleClosure`
-(world-base reader) returns approved `npc_binding` candidates, their runtime/regional
-closure and the G4's own placement policy. People are decided and bound by
-`@rus/materialization` and written through the generated-NPC first-entry writer in the same
-change set as the presence aggregate. A data gap (no profile, closure, regional
-applicability or capacity) creates nobody, never fails the arrival, and is recorded in
-`materialization_trace.people.gaps` (persisted as `party_materialization_runs.trace.first_entry.people`).
+(`target-generated-first-entry.js`) asks the presence resolver for the place-family
+compositions (D-2) and stores the outcomes of every presence rule, people rules included,
+in the presence aggregate (§3A.1); `prepareCanonicalPlacePeople`
+(`target-place-people-first-entry.js`) reads those outcomes and the compositions, reads light
+`npc_binding` candidates (`readPlacePeopleCandidates`) and the closure of the chosen profiles
+only (`readPlacePeopleClosure`), and writes the people through the generated-NPC first-entry
+writer in the same change set as the aggregate. Plain absence of approved data (no profile,
+regional applicability, capacity, G4 placement policy) creates nobody, does not fail the
+arrival and is recorded in `materialization_trace.people.gaps` (persisted as
+`party_materialization_runs.trace.first_entry.people`). Anything else fails the arrival with
+a typed error: an ambiguous approved reference, a broken closure, wiring or invariant errors.
 Generated places keep the G4 composition; the D-2 composition is not applied to them.
 
 Active O2b keeps the same public `request_container_access`. Production startup

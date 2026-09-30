@@ -573,18 +573,12 @@
 
 ### LW-110 — фоновое описание N1 не покрывает людей канонических мест (rt-people)
 - **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-n1-production.js` (`resolveNpcOrdinarySemanticParticipant`), `apps/game-server/src/internal/target-runtime-profiles.js` (применимость N1 по `npc_composition_ref`).
-- **Что.** Человек канонического места создаётся из D-2 состава place family; его `npc_composition_ref` — состав PF, в утверждённой применимости N1 (по G4-составам) его нет. По чтению кода осмотр такого человека не получит N1-описание (остаётся код-описание внешности); не проверено запуском.
+- **Что.** Человек канонического места создаётся из D-2 состава place family или правила присутствия; в его `source_binding` нет `npc_composition_ref` (есть `place_population_composition_ref` / `presence_rule_ref`), а применимость N1 строится по G4-составам. По чтению кода осмотр такого человека не получит N1-описание (остаётся код-описание внешности); не проверено запуском.
 - **Как жить.** Не расширять применимость N1 молча; отдельное решение владельца N1 (применимость по PF-составу или по профилю).
 - **Issue.** —
 
 ### LW-111 — поле `sex` субъекта D-2 состава не исполняется (rt-people)
 - **Где.** `data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json` (`weighted_subjects[].sex`), `packages/materialization/src/place-people-first-arrival.js`.
 - **Что.** Для pf_outbuildings состав задаёт мужчину-слугу (уверенность C); резолвер людей пол не читает, пол берёт материализатор из демографического профиля.
-- **Как жить.** Не считать пол слуги на месте гарантированным; отдельная правка материализации внешности (заданный пол).
-- **Issue.** —
-
-### LW-112 — люди места решаются один раз при первом прибытии и не хранятся в агрегате присутствия (rt-people)
-- **Где.** `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js`.
-- **Что.** Броски D-2 состава и правил людей идемпотентны только потому, что first-entry канонического места выполняется один раз; они не записаны как `resolve_presence_rule` в агрегат (в отличие от категорий R-2a). Повторный расчёт по тому же seed дал бы то же, но защиты replay-ключом нет; следы бросков — `trace.first_entry.people`.
-- **Как жить.** Не вызывать резолвер людей вне first-entry; при переходе на живое обновление присутствия перенести броски в агрегат.
+- **Как жить.** Пол человека задаётся профилем: `payload.actor_applicability.sex_category` с одним значением исполняется материализатором (A-rt-people-06); у профилей без поля и у двух значений пол по-прежнему по seed, поле `sex` субъекта D-2 не читается. Не считать пол слуги на месте гарантированным, пока профиль не задаёт его.
 - **Issue.** —

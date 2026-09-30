@@ -41,7 +41,8 @@ test('route of Vikhtuy: the start may be empty, every other place reports its pe
     assert.equal(start.name, 'work_storage');
     const startPeople = await peopleAt(env, partyId, start.site_id);
     t.diagnostic(`start work_storage: people=${startPeople.npcs.length}`);
-    assert.ok(startPeople.npcs.length <= 2, 'the start place holds at most the authored people');
+    assert.equal(startPeople.npcs.filter((npc) => npc.run_id.startsWith('trace:')).length, 0,
+      'the start place is authored: the first-arrival people mechanism creates nobody there');
 
     for (const [place, family, allowedGaps] of ROUTE) {
       const at = await walker.walkTo(place);
@@ -55,9 +56,22 @@ test('route of Vikhtuy: the start may be empty, every other place reports its pe
         assert.ok(allowedGaps.some((allowed) => JSON.stringify([allowed].flat()) === JSON.stringify(gap)),
           `${place}: unexpected gap ${JSON.stringify(gap)}`);
       }
-      assert.equal(npcs.length, trace.groups.reduce((sum, group) => sum + group.count, 0)
-        + trace.rules.reduce((sum, rule) => sum + rule.count, 0) - gaps.length,
-      `${place}: created people = decided people - gaps`);
+      const wanted = trace.groups.reduce((sum, group) => sum + group.count, 0) + trace.rules.reduce((sum, rule) => sum + rule.count, 0);
+      const compileFailed = trace.gaps.some((gap) => gap.code === 'people_compile_failed');
+      assert.equal(npcs.length, compileFailed ? 0 : wanted - gaps.length,
+        `${place}: created people = wanted people - gaps (a compile failure covers everybody)`);
+      assert.ok(npcs.every((npc) => npc.run_id.startsWith('trace:')), `${place}: created by the arrival run`);
+      // the rule outcomes of the trace are the ones the presence engine stored in the aggregate (§3A.1)
+      const stored = (await env.partyPool.query(
+        `SELECT r->>'rule_ref' AS rule_ref, (r->>'count')::int AS count
+           FROM party_runtime.party_ordinary_materialization_aggregates a
+           JOIN party_runtime.party_g6_instances g6 ON g6.party_id=a.party_id AND g6.id=a.scope_id AND a.scope_kind='g6',
+                jsonb_array_elements(a.aggregate_payload->'presence_resolutions') r
+          WHERE a.party_id=$1 AND g6.host_id=$2 AND r->>'subject_kind' IN ('occupation','social_role')
+          ORDER BY 1`, [partyId, at.site_id])).rows;
+      const byRef = (a, b) => a.rule_ref.localeCompare(b.rule_ref);
+      assert.deepEqual(stored.sort(byRef), trace.rules.map(({ rule_ref, count }) => ({ rule_ref, count })).sort(byRef),
+        `${place}: rule outcomes are stored in the presence aggregate`);
       assert.ok(npcs.every((npc) => ['focus', 'departure'].includes(npc.slot)), `${place}: nobody at the arrival position`);
       if (family === 'pf_ferry_landing' || family === 'pf_peasant_homestead') {
         assert.equal(gaps.length, 2, `${place}: the composition asks for two people whose profiles are not approved yet`);

@@ -14,6 +14,8 @@ export const LINE_NAMES_PATH = `${CATALOG}/m2c-line-names/candidate.json`;
 const BASE = `${CATALOG}/spatial-v3/candidates/m2c-g4-expansion-v1/datasets`;
 const DERIVED_PATH = `${CATALOG}/m2c-place-coordinates/derived-report.json`;
 const VERSION = 3;
+// D56: one rule for the world, not a profile field: a line longer than this has a recheck policy that slices it at this step.
+const DEFAULT_SLICE_STEP_MINUTES = 30;
 const PROVENANCE = 'm2c_lines_v1_candidate';
 const T = Object.freeze({
   profiles: 'spatial_v3_line_kind_profiles', alternatives: 'spatial_v3_line_kind_alternative_methods',
@@ -47,9 +49,9 @@ const sealed = (row) => ({ ...row, canonical_digest: digest(row) });
 const version = (entity_kind, row, worldRevisionId) => ({ entity_kind, entity_id: row.id, version: row.version ?? VERSION,
   world_revision_id: worldRevisionId, canonical_digest: row.canonical_digest ?? digest(row), status: 'approved', provenance_ref: PROVENANCE });
 
-/** Pure: inputs -> { datasets, report }. D56: there is no length ceiling; `sliceStepMinutes` is the recheck slice step of a profile (`max_segment_minutes`). */
+/** Pure: inputs -> { datasets, report }. D56: there is no length ceiling and no profile field for it; `sliceStepMinutes` is the validator's slice step. */
 export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRevisionId, provenanceRef = PROVENANCE, existing = {} },
-  { sliceStepMinutes = spec.slice_step_minutes_default } = {}) {
+  { sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES } = {}) {
   const minutes = new Map(derivedLines.map((line) => [line.id, line.proposed_minutes]));
   const names = new Map(lineNames.local_pairs.map((pair) => [pair.source_pair_id, pair]));
   const byPair = new Map();
@@ -87,13 +89,13 @@ export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRe
         status: 'approved', provenance_ref: provenanceRef }));
     } else need(existing.environments && new Set(existing.environments.keys()), k.environment, 'environment');
     need(existing.orientations, k.orientation, 'orientation'); need(existing.rechecks, k.recheck, 'recheck policy');
-    need(existing.routeKinds, k.route_kind, 'route kind');
+    if (!existing.externalDependencies?.has(k.route_kind)) throw new Error(`no external dependency pin for route kind ${k.route_kind}`);
     const profile = sealed({ id: `lkp__${kind}`, version: 1, world_revision_id: worldRevisionId, line_kind_id: kind,
       transition_environment_profile_id: k.environment, transition_environment_profile_version: 1,
-      movement_orientation_profile_id: k.orientation, movement_orientation_profile_version: 1,
+      topological_orientation_profile_id: k.orientation, topological_orientation_profile_version: 1,
       baseline_movement_method_id: k.method, movement_method_cost_profile_id: cost.id, movement_method_cost_profile_version: 1,
       dynamic_recheck_policy_id: k.recheck, dynamic_recheck_policy_version: 1, route_kind_id: k.route_kind,
-      max_segment_minutes: sliceStepMinutes, status: 'approved', provenance_ref: provenanceRef });
+      status: 'approved', provenance_ref: provenanceRef });
     datasets[T.profiles].push(profile);
     for (const alt of k.alternatives) {
       datasets[T.alternatives].push({ profile_id: profile.id, profile_version: 1, movement_method_id: alt.method,
@@ -124,9 +126,15 @@ export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRe
     ...datasets[T.profiles].map((row) => version('line_kind_profile', row, worldRevisionId)),
     ...datasets[T.costProfiles].map((row) => version('movement_method_cost_profile', row, worldRevisionId)),
     ...datasets[T.environments].map((row) => version('transition_environment_profile', row, worldRevisionId)));
+  const pinOf = (target) => {
+    if (target.kind !== 'external_dependency') return {};
+    const pin = existing.externalDependencies.get(target.id);
+    return { target_registry_type: pin.registry_type, target_registry_id: pin.registry_id, target_registry_version: pin.registry_version,
+      target_registry_digest: pin.registry_digest, target_dependency_digest: pin.dependency_digest };
+  };
   const edge = (source, role, target) => ({ source_entity_kind: source.kind, source_entity_id: source.id, source_version: source.version,
     world_revision_id: worldRevisionId, dependency_role: role, target_entity_kind: target.kind, target_entity_id: target.id,
-    target_version: target.version, canonical_ordinal: 0, provenance_ref: provenanceRef });
+    target_version: target.version, canonical_ordinal: 0, provenance_ref: provenanceRef, ...pinOf(target) });
   for (const row of rows) {
     const source = { kind: 'canonical_g5_connection_binding', id: row.id, version: VERSION };
     datasets[T.edges].push(edge(source, 'from_canonical_g5', { kind: 'spatial_node', id: row.from_canonical_g5_id, version: row.from_canonical_g5_version }),
@@ -198,7 +206,7 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
     editorial_values_for_opus: alternatives,
     assumptions_for_opus: Object.entries(spec.kinds).filter(([, value]) => value.assumption).map(([kind, value]) => `${kind}: ${value.assumption}`),
     open_items: ['D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover',
-      'D56: the ceiling of 30 minutes is removed from the norm by CORPUS_EDIT in the cutover; `max_segment_minutes` of a profile is the recheck slice step, the field name is for the corpus edit to settle',
+      'D56: the ceiling of 30 minutes and the profile field max_segment_minutes are removed from the norm by CORPUS_EDIT before the DDL (PLAN-OK-rt-lines-a3); slicing is the recheck policy of the kind, the slice step (30) is one rule of the world',
       'D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus',
       'D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)',
       'rows carry status approved (the importer requires it); approval is the a2 data attestation, none exists yet',
@@ -208,14 +216,13 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
 }
 
 /** Independent rules of Appendix F (binding block :7340, line_kind_profile :7291, §4.7.2) over generated datasets. */
-export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = spec.slice_step_minutes_default } = {}) {
+export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES } = {}) {
   const problems = [];
   const rows = datasets[T.bindings]; const byId = new Map(rows.map((row) => [row.id, row]));
   const profiles = new Map(datasets[T.profiles].map((row) => [row.id, row]));
   const kinds = datasets[T.profiles].map((row) => row.line_kind_id);
   if (new Set(kinds).size !== kinds.length) problems.push('line_kind_profile: one approved profile per line kind');
   for (const profile of datasets[T.profiles]) {
-    if (!Number.isInteger(profile.max_segment_minutes) || profile.max_segment_minutes < 1 || profile.max_segment_minutes > sliceStepMinutes) problems.push(`${profile.id}: slice step max_segment_minutes ${profile.max_segment_minutes} outside 1..${sliceStepMinutes}`);
     if (!datasets[T.costProfiles].some((cost) => cost.id === profile.movement_method_cost_profile_id)) problems.push(`${profile.id}: cost profile missing`);
     const k = spec.kinds[profile.line_kind_id];
     const alternatives = datasets[T.alternatives].filter((alt) => alt.profile_id === profile.id);
@@ -238,10 +245,10 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
       if (ORDINAL.test(name)) problems.push(`${row.id}: line_label_invalid ordinal word in "${name}"`);
     }
     if (!Number.isInteger(row.base_minutes) || row.base_minutes < 1) problems.push(`${row.id}: base_minutes ${row.base_minutes} is not a positive integer`);
-    else if (profile && row.base_minutes > profile.max_segment_minutes) {
+    else if (profile && row.base_minutes > sliceStepMinutes) {
       // D56: no length ceiling; a line longer than the slice step needs a policy that slices it.
       const policy = recheckPolicies?.get(profile.dynamic_recheck_policy_id);
-      const step = profile.max_segment_minutes;
+      const step = sliceStepMinutes;
       const sliced = policy?.policy_kind === 'fixed_time_interval' ? policy.interval_minutes <= step
         : policy?.policy_kind === 'fixed_progress_slices' ? row.base_minutes * policy.progress_slice_ppm <= step * 1_000_000 : false;
       if (!sliced) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${step}-minute step, recheck ${profile.dynamic_recheck_policy_id} is ${policy ? `${policy.policy_kind} ${policy.interval_minutes ?? policy.progress_slice_ppm ?? ''}` : 'not supplied'}`);
@@ -267,6 +274,12 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
     const entry = versions.get(`${kind}|${row.id}|${row.version}`);
     if (!entry) problems.push(`${kind} ${row.id}: no authoring version`);
     else if (entry.canonical_digest !== digest(row)) problems.push(`${kind} ${row.id}: digest mismatch`);
+  }
+  for (const edge of datasets[T.edges]) {
+    if (edge.target_entity_kind !== 'external_dependency') continue;
+    if (['target_registry_type', 'target_registry_id', 'target_registry_version', 'target_registry_digest', 'target_dependency_digest'].some((key) => !edge[key])) {
+      problems.push(`${edge.source_entity_id}: external_dependency edge to ${edge.target_entity_id} lacks the registry pin`);
+    }
   }
   for (const row of rows) {
     const roles = datasets[T.edges].filter((edge) => edge.source_entity_id === row.id && edge.source_version === VERSION).map((edge) => edge.dependency_role).sort().join();
@@ -294,7 +307,7 @@ export function loadInputs({ lineNamesPath = LINE_NAMES_PATH } = {}) {
       costProfiles: new Map(table('spatial_v3_movement_method_cost_profiles').map((row) => [row.id, row])),
       orientations: new Set(table('spatial_v3_topological_movement_orientation_profiles').map((row) => row.id)),
       rechecks: new Map(table('spatial_v3_dynamic_recheck_policies').map((row) => [row.id, row])),
-      routeKinds: new Set(external.map((row) => row.dependency_id).filter((id) => id.startsWith('route.'))) } };
+      externalDependencies: new Map(external.map((row) => [row.dependency_id, row])) } };
   const hashes = { base_bindings: `${BASE}/spatial_v3_canonical_g5_connection_bindings.json`, place_geo_derived_report: DERIVED_PATH,
     line_names_candidate: lineNamesPath, line_kind_spec: `${LINE_WAVE_DIR}/line-kind-spec.json` };
   return { inputs, hashes: Object.fromEntries(Object.entries(hashes).map(([key, path]) => [key, sha(readBytes(path))])) };

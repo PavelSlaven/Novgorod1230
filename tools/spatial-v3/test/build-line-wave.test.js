@@ -32,7 +32,11 @@ const policies = new Map([['recheck.land_30m', { policy_kind: 'fixed_time_interv
   ['recheck.wetland_15m', { policy_kind: 'fixed_time_interval', interval_minutes: 15 }],
   ['recheck.shore_15m', { policy_kind: 'fixed_time_interval', interval_minutes: 15 }]]);
 const rules = (extra = {}) => ({ spec, recheckPolicies: policies, ...extra });
-const lenient = (input) => ({ ...input, existing: { ids: null, costProfiles: new Map(), environments: new Map() } });
+// External pins of the route kinds (the real ones are read from the active bundle by the generator).
+const externals = new Map(Object.values(spec.kinds).map((kind) => [kind.route_kind, { registry_type: 'spatial_materialization',
+  registry_id: 'spatial_v3_external_dependencies', registry_version: '1', registry_digest: 'r'.repeat(64), dependency_id: kind.route_kind,
+  dependency_version: 1, dependency_digest: kind.route_kind.length.toString(16).padStart(64, 'd'), status: 'approved' }]));
+const lenient = (input) => ({ ...input, existing: { ids: null, costProfiles: new Map(), environments: new Map(), externalDependencies: externals } });
 const build = (patch = {}, options = {}) => buildLineWave(lenient({ ...fixture(), ...patch }), options);
 const rowOf = (wave, id) => wave.datasets.spatial_v3_canonical_g5_connection_bindings.find((row) => row.id === id);
 
@@ -52,13 +56,13 @@ test('a pair becomes binding@3: line fields from the owners, reverse slots swapp
   assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
 });
 
-test('D56: no length ceiling - a long line is in the wave; the profile limit is the recheck slice step, and a long line needs a slicing policy', () => {
+test('D56: no length ceiling - a long line is in the wave and needs a recheck policy that slices it', () => {
   const wave = build();
   assert.deepEqual(rowOf(wave, 'cg5bindv3__g4dirv3f__p2').base_minutes, 40, 'a 40-minute line is kept');
   assert.equal(wave.report.counts.pairs, 2);
   assert.deepEqual(wave.report.long_lines.map((line) => [line.id.slice(-5), line.minutes, line.slice_step_minutes, line.recheck_policy_id, line.slices]),
     [['f__p2', 40, 30, 'recheck.water_15m', 2], ['r__p2', 40, 30, 'recheck.water_15m', 2]]);
-  assert.equal(wave.datasets.spatial_v3_line_kind_profiles.find((row) => row.line_kind_id === 'river_channel').max_segment_minutes, 30);
+  assert.ok(wave.datasets.spatial_v3_line_kind_profiles.every((row) => !('max_segment_minutes' in row)), 'PLAN-OK-rt-lines-a3: the slicing is the recheck policy of the kind, not a second field');
   assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
   // the same rows without a slicing policy are a violation; progress slices are checked against the line's minutes
   const kinds = (policy) => rules({ recheckPolicies: new Map([...policies, ['recheck.water_15m', policy]]) });
@@ -68,14 +72,38 @@ test('D56: no length ceiling - a long line is in the wave; the profile limit is 
   assert.deepEqual(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 700000 })), [], '40 x 0.7 = 28 <= 30');
 });
 
-test('the slice step is a parameter of the generator and of the profile', () => {
+test('the slice step is one rule of the world, a parameter of the generator and the validator (default 30)', () => {
   const wave = build({}, { sliceStepMinutes: 20 });
-  assert.ok(wave.datasets.spatial_v3_line_kind_profiles.every((row) => row.max_segment_minutes === 20));
+  assert.deepEqual(build().report.parameters, { slice_step_minutes: 30 });
   assert.deepEqual(wave.report.long_lines.map((line) => line.minutes), [40, 40]);
   assert.deepEqual(checkLineWaveData(wave.datasets, rules({ sliceStepMinutes: 20 })), [], 'water rechecks every 15 minutes');
   const fine = build({}, { sliceStepMinutes: 10 });
   assert.deepEqual(fine.report.long_lines.map((line) => line.minutes), [12, 40, 40]);
   assert.match(checkLineWaveData(fine.datasets, rules({ sliceStepMinutes: 10 })).join('|'), /line_slicing.*recheck.land_30m/, 'a 12-minute path under a 30-minute recheck and a 10-minute step');
+});
+
+test('profile rows use the columns of the DDL-to-be: topological orientation, no movement_orientation, no ceiling field', () => {
+  for (const row of build().datasets.spatial_v3_line_kind_profiles) {
+    assert.deepEqual(Object.keys(row).sort(), ['baseline_movement_method_id', 'canonical_digest', 'dynamic_recheck_policy_id', 'dynamic_recheck_policy_version',
+      'id', 'line_kind_id', 'movement_method_cost_profile_id', 'movement_method_cost_profile_version', 'provenance_ref', 'route_kind_id', 'status',
+      'topological_orientation_profile_id', 'topological_orientation_profile_version', 'transition_environment_profile_id',
+      'transition_environment_profile_version', 'version', 'world_revision_id']);
+  }
+});
+
+test('an edge to an external dependency carries the full registry pin of that dependency (trigger spatial_v3_dependency_edge_target_guard)', () => {
+  const wave = build();
+  const external = wave.datasets.spatial_v3_authoring_dependency_edges.filter((edge) => edge.target_entity_kind === 'external_dependency');
+  assert.equal(external.length, 8, 'one route_kind edge per profile');
+  for (const edge of external) {
+    const pin = externals.get(edge.target_entity_id);
+    assert.deepEqual([edge.target_registry_type, edge.target_registry_id, edge.target_registry_version, edge.target_registry_digest, edge.target_dependency_digest],
+      [pin.registry_type, pin.registry_id, pin.registry_version, pin.registry_digest, pin.dependency_digest]);
+  }
+  const broken = build().datasets;
+  delete broken.spatial_v3_authoring_dependency_edges.find((edge) => edge.target_entity_kind === 'external_dependency').target_dependency_digest;
+  assert.match(checkLineWaveData(broken, rules()).join('|'), /external_dependency.*registry pin/);
+  assert.throws(() => buildLineWave({ ...lenient(fixture()), existing: { ...lenient(fixture()).existing, externalDependencies: new Map() } }), /no external dependency pin/);
 });
 
 test('authoring versions carry the canonical digest of each row, three dependency edges per binding', () => {
@@ -174,6 +202,21 @@ test('committed candidate: minutes are the place-geo proposed minutes, names are
 
 test('committed candidate: regenerating from the inputs in the tree gives the same bytes (--check)', async () => {
   await runLineWave({ check: true });
+});
+
+test('committed candidate: every external edge equals the pin of the active bundle', () => {
+  const pins = new Map(read('data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_external_dependency_versions.json')
+    .map((row) => [row.dependency_id, row]));
+  const external = committed().spatial_v3_authoring_dependency_edges.filter((edge) => edge.target_entity_kind === 'external_dependency');
+  assert.equal(external.length, 8);
+  const baseVersions = new Set(read('data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_authoring_versions.json')
+    .map((row) => `${row.entity_kind}|${row.entity_id}|${row.version}`));
+  for (const edge of external) {
+    assert.ok(baseVersions.has(`external_dependency|${edge.target_entity_id}|${edge.target_version}`), `${edge.target_entity_id}: the edge FK needs an authoring version of the pin`);
+    const pin = pins.get(edge.target_entity_id);
+    assert.deepEqual([edge.target_registry_type, edge.target_registry_id, edge.target_registry_version, edge.target_registry_digest, edge.target_dependency_digest, edge.target_version],
+      [pin.registry_type, pin.registry_id, pin.registry_version, pin.registry_digest, pin.dependency_digest, pin.dependency_version]);
+  }
 });
 
 test('committed candidate: names are the approved line-names names; near-similar names at one place are reported, none identical', () => {

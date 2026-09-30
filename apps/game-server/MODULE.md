@@ -959,6 +959,9 @@ Narrator переводит evidence wording в естественную реч�
 (Spatial 4.7.0 §7.1.1): при плохой видимости линии (`local_edge`, `site_connection`, `directional_exit`) остаются в disclosure,
 их скрывает только concealment (`visibleCurrentTargets`). Экран локального хода показывает проходы места прибытия:
 `prepareLocalMovement` кладёт их в `visible_seed.destination_movement_objects`, проектор подменяет ими проходы прежней позиции.
+Проходы — выбор панели route, не объекты сцены: в прозу их метки не идут (источник «В поле зрения — Проход N» —
+`lowerDvinaTraceObservedSceneChanges`, плюс `narrationWire`; оба пропускают `scene_movement_edge`, `g4_directional_exit`,
+`g5_site_connection`). Линия при плохой видимости приходит из `visibleCurrentTargets` с `visibility: 'none'`.
 
 Opening и arrival могут передать exact natural perception input действующему
 `@rus/presentation/spatial-v3-projection.projectSpatialV3NaturalScene` через

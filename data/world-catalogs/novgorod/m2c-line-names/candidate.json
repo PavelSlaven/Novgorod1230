@@ -1389,7 +1389,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
       "line_kind": "side_channel",
-      "name_ru": "под кустами вдоль течения",
+      "name_ru": "под кустами поперёк протоки",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -1792,7 +1792,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
       "line_kind": "path",
-      "name_ru": "меж травами по плотной земле",
+      "name_ru": "напрямик по луговине",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -2752,7 +2752,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
       "line_kind": "river_channel",
-      "name_ru": "руслом под древесными кронами",
+      "name_ru": "поперёк струи",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -3379,7 +3379,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
       "line_kind": "side_channel",
-      "name_ru": "лодкой у осоки",
+      "name_ru": "мелкой водой у бережка",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -3535,7 +3535,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
       "line_kind": "shore",
-      "name_ru": "травяным берегом у воды",
+      "name_ru": "через прибрежную осоку",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -3927,7 +3927,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
       "line_kind": "river_channel",
-      "name_ru": "водой над подводными наносами",
+      "name_ru": "перекатом",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -4136,7 +4136,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
       "line_kind": "shore",
-      "name_ru": "берегом среди трав",
+      "name_ru": "через осоку по илу",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -5333,7 +5333,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
       "line_kind": "side_channel",
-      "name_ru": "по боковому течению",
+      "name_ru": "по струе меж осок",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -5359,7 +5359,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
       "line_kind": "path",
-      "name_ru": "берегом по вязкой земле",
+      "name_ru": "через прибрежную топь",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -5409,7 +5409,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
       "line_kind": "shore",
-      "name_ru": "берегом у пойменной травы",
+      "name_ru": "сквозь прибрежный кустарник",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -5459,7 +5459,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
       "line_kind": "side_channel",
-      "name_ru": "между берегами по боковой воде",
+      "name_ru": "протокой мимо кустов",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7147,7 +7147,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
       "line_kind": "path",
-      "name_ru": "тропой меж водой и берегом",
+      "name_ru": "среди прибрежных кустов",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7279,7 +7279,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
       "line_kind": "path",
-      "name_ru": "ходом меж водой и сушей",
+      "name_ru": "вдоль широкой травяной полосы",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7312,7 +7312,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
       "line_kind": "path",
-      "name_ru": "тропой меж берегом и водой",
+      "name_ru": "прибрежной тропой меж низких берегов",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7411,7 +7411,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
       "line_kind": "path",
-      "name_ru": "луговым ходом меж водой и берегом",
+      "name_ru": "берегом по плотному прибрежному лугу",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7543,7 +7543,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
       "line_kind": "path",
-      "name_ru": "ходом меж берегом и водой",
+      "name_ru": "по влажному прибрежью",
       "qualifier": {
         "from_to": null,
         "to_from": null

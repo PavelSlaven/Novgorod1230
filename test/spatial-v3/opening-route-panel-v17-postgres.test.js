@@ -40,7 +40,7 @@ test('v17 production start: the first screen route panel lists the visible passa
           assert.deepEqual(routeMovementLabels((await runtime.getPartyScreen(opening.party_id)).screen), labels,
             'the stored screen equals the opening screen');
         }
-        console.error(`${scenarioId}: ${fog} of ${SEEDS} seeds under poor visibility, all listed passages`);
+        assert.ok(fog > 0, `no start of ${scenarioId} under poor visibility in ${SEEDS} seeds: the fog branch is untested`);
       });
     }
   });

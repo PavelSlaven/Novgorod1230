@@ -5,7 +5,6 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import pg from 'pg';
-import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 
 import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
@@ -410,21 +409,6 @@ export async function createPresenceProductionRoot({
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   return { runtime, rootOptions };
-}
-
-/**
- * Walking subtests need visible movement options at the start; dense fog (weather visibility
- * `poor`) leaves the planner none (open problem D47.9, task rt-walk). Start seed is fixed by the
- * request id in publicStartScenario, so a foggy start is a fixture problem: change the request id.
- */
-export async function assertStartVisibilityAllowsMovement(partyPool, partyId) {
-  const state = await createLowerDvinaTracePhase1ARepository({
-    query: partyPool.query.bind(partyPool) }).loadInternal(partyId);
-  const weather = state?.environment_snapshot?.weather_state;
-  assert.ok(weather?.visibility, `start weather of ${partyId} is unreadable`);
-  assert.notEqual(weather.visibility, 'poor',
-    `start weather ${weather.weather_state_id} (visibility poor) offers no movement operation; `
-    + 'pick another start request id for this walking subtest');
 }
 
 export function routeMovementLabels(screen) {

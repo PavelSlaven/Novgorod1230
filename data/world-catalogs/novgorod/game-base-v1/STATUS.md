@@ -21,12 +21,12 @@
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 5 | 23 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 15 | 26 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 16 | 4 | 0 |
-| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 12 | 19 | 0 |
+| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 9 | 22 | 0 |
 | [resource-catalog](resource-catalog/VERIFICATION.md) | approve_with_limits | 5 | 11 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 13 | 11 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 2 | 5 | 0 |
-| **Итого** | | **184** | **265** | **0** |
+| **Итого** | | **181** | **268** | **0** |
 
 ## Вердикты по файлам
 
@@ -501,14 +501,14 @@
 | [`presence/environment_lens_exclusions.csv`](places-binding/presence/environment_lens_exclusions.csv) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
 | [`presence/environment_presence_authoring.csv`](places-binding/presence/environment_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
 | [`presence/frequency_rule.json`](places-binding/presence/frequency_rule.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencefrequency_rulejson--approve_with_limits) |
-| [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson--approve_with_limits-2) |
-| [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_presence_authoringcsv--approve_with_limits) |
-| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
+| [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-порогов-d49-claude-opus-55-2026-09-30) |
+| [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-порогов-d49-claude-opus-55-2026-09-30) |
+| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-порогов-d49-claude-opus-55-2026-09-30) |
 | [`presence/README.md`](places-binding/presence/README.md) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
 | [`README.md`](places-binding/README.md) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
 | [`reports/category-registry-report.json`](places-binding/reports/category-registry-report.json) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-rc-next-claude-opus-55-2026-09-29) |
-| [`reports/presence-rules-report.json`](places-binding/reports/presence-rules-report.json) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
-| [`reports/validation.json`](places-binding/reports/validation.json) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
+| [`reports/presence-rules-report.json`](places-binding/reports/presence-rules-report.json) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-порогов-d49-claude-opus-55-2026-09-30) |
+| [`reports/validation.json`](places-binding/reports/validation.json) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-порогов-d49-claude-opus-55-2026-09-30) |
 | [`scripts/build-presence-rules.mjs`](places-binding/scripts/build-presence-rules.mjs) | [approve](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
 | [`scripts/validate.mjs`](places-binding/scripts/validate.mjs) | [approve_with_limits](places-binding/VERIFICATION.md#независимая-проверка-lw-env-claude-opus-55-2026-09-29) |
 | [`slots/materialization_rules.json`](places-binding/slots/materialization_rules.json) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_rulesjson--approve_with_limits) |

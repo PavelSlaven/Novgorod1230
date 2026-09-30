@@ -20,7 +20,8 @@ const SCREEN_ENVIRONMENT_FACTS = new Set(['cold', 'wet', 'exposed']);
 export function buildLowerDvinaTraceOpeningScreen({
   visible,
   approvedProjection,
-  openingProse = null
+  openingProse = null,
+  routePanel = null
 } = {}) {
   assertVisibleSource(visible, approvedProjection);
   const projection = approvedProjection.opening_projection;
@@ -50,7 +51,7 @@ export function buildLowerDvinaTraceOpeningScreen({
           satiety: visible.body.satiety
         }
       },
-      route: {
+      route: routePanel ?? {
         visible: true,
         data: { current_place: projection.place_label }
       }

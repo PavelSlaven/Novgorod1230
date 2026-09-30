@@ -358,7 +358,9 @@ test('first screen receives natural perception after committed rehydrate without
           ...perception, entity_observations: canonical && lighting === 'clear'
             ? [{ entity_kind: 'npc', entity_id: 'npc:arrival', visibility: 'clear',
               display_label: 'человек', exterior: { sex_category: 'male', age_category: 'adult',
-                appearance: { build: 'lean' }, visible_equipment: [] } }] : [] }; }
+                appearance: { build: 'lean' }, visible_equipment: [] } }] : [],
+          site_connections: canonical ? [{ connection_binding_id: 'connection:shore',
+            display_label: 'Проход 3' }] : [] }; }
       },
       authoredOpeningNarration: { async run(input) {
         order.push('narrate'); narratorInput = input.visibleContextPackage;
@@ -377,6 +379,8 @@ test('first screen receives natural perception after committed rehydrate without
     assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);
+    assert.deepEqual(result.screen.panels.route.data.movement?.options ?? [], canonical
+      ? [{ label: 'Проход 3', knowledge_state: 'known' }] : []);
     if (canonical) {
       assert.equal(narratorInput.visible_npcs.length, lighting === 'clear' ? 1 : 0);
       if (lighting === 'clear') {

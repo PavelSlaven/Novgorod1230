@@ -27,9 +27,11 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     return;
   }
   const name = `m2c-presence-ddl-${randomUUID().slice(0, 8)}`;
-  let admin;
+  // node:test runs t.after hooks in registration order: close every pool before the
+  // container dies, or idle clients emit an unhandled 'error' after the test ended.
+  const pools = [];
   t.after(async () => {
-    if (admin) await admin.end().catch(() => {});
+    await Promise.all(pools.map((pool) => pool.end().catch(() => {})));
     docker(['rm', '-fv', name]);
   });
   const started = docker([
@@ -40,10 +42,11 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  admin = new pg.Pool({
+  const admin = new pg.Pool({
     host: '127.0.0.1', port, user: 'postgres', password: 'local_only',
     database: 'postgres', max: 2
   });
+  pools.push(admin);
   await admin.query('CREATE DATABASE world_m2c_test');
   await admin.query('CREATE DATABASE party_m2c_fresh');
   await admin.query('CREATE DATABASE party_m2c_v16');
@@ -53,7 +56,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     host: '127.0.0.1', port, user: 'postgres', password: 'local_only',
     database: 'world_m2c_test', max: 2
   });
-  t.after(async () => { await world.end().catch(() => {}); });
+  pools.push(world);
   const schemaSql = await readFile('infra/world-base/schema.sql', 'utf8');
   // schema.sql uses \ir — apply parts manually like bootstrap.
   const schemaFiles = (await readdir('infra/world-base/schema'))
@@ -194,7 +197,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     host: '127.0.0.1', port, user: 'postgres', password: 'local_only',
     database: 'party_m2c_fresh', max: 2
   });
-  t.after(async () => { await partyFresh.end().catch(() => {}); });
+  pools.push(partyFresh);
   const applied = await runSpatialV3TargetMigrations(partyFresh);
   assert.equal(applied.applied, 37);
 
@@ -203,7 +206,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     host: '127.0.0.1', port, user: 'postgres', password: 'local_only',
     database: 'party_m2c_v16', max: 2
   });
-  t.after(async () => { await partyV16.end().catch(() => {}); });
+  pools.push(partyV16);
   const files = (await readdir('schemas/party-db'))
     .filter((f) => /^\d{3}_.*\.sql$/u.test(f)).sort();
   for (const file of files.slice(0, 36)) {

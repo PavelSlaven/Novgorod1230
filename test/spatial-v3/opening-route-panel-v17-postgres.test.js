@@ -8,9 +8,12 @@ import {
   routeMovementLabels,
 } from './presence-rules-production-e2e-fixture.js';
 
-// D49 / rt-ux: the first screen shows the passages the player can see, from the same admitted
-// current-visible projection as an ordinary turn. Dense fog (visibility `poor`) hides them, and
-// the start seed follows the request id, so several seeds are tried per start.
+// D49 / rt-ux: the first screen shows the canonical-connection passages that the visibility owner
+// discloses (`readCurrentConnectionDisclosure`, the same owner as a turn; local edges and exits are
+// not on the first screen). The start seed follows the request id, so several seeds are tried per start.
+// KNOWN LIMIT LW-097: under `poor` visibility (dense fog) the owner discloses nothing, although
+// Spatial 4.7.0 §7.1.1 keeps every non-hidden line available. That branch pins today's behaviour, it
+// is not a requirement, and it must flip when LW-097 is closed.
 const STARTS = ['novgorod_vikhtuy_work_storage_v1', 'novgorod_vikhtuy_household_cluster_v1'];
 const SEEDS = 6;
 
@@ -31,12 +34,13 @@ test('v17 production start: the first screen route panel lists the visible passa
           const labels = routeMovementLabels(opening.screen);
           const weather = (await repository.loadInternal(opening.party_id)).environment_snapshot.weather_state;
           if (weather.visibility === 'poor') {
-            assert.deepEqual(labels, [], `${weather.weather_state_id}: hidden passages stay hidden`);
+            assert.deepEqual(labels, [], `LW-097 known limit (${weather.weather_state_id})`);
             continue;
           }
           seen += 1;
           assert.ok(labels.length > 0, `${scenarioId} seed ${seed} (${weather.weather_state_id}): no passages`);
-          assert.ok(labels.every((label) => /^Проход \d+/u.test(label)), labels.join(' | '));
+          assert.ok(labels.every((label) => typeof label === 'string' && label.trim()), labels.join(' | '));
+          assert.equal(new Set(labels).size, labels.length, `labels are unique: ${labels.join(' | ')}`);
           await runtime.acknowledgeOpening(opening.party_id, { client_ack_id: `opening-route-ack-${scenarioId}-${seed}` });
           assert.deepEqual(routeMovementLabels((await runtime.getPartyScreen(opening.party_id)).screen), labels,
             'the stored screen equals the opening screen');

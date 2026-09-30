@@ -86,8 +86,9 @@ test('actor bundle carries the approved NPC identity catalog only when world_bas
     occupation_character_items: [{ occupation_id: 'occupation', item_kind: 'goal', item_id: 'goal_01', text_ru: 'цель' }] };
   const load = (data) => loadApprovedProceduralActorTemporalBundle({
     worldBaseReader: { read: async (sql, params) => { calls.push({ sql, params });
-      return { rows: (Object.entries(data).find(([key]) => sql.includes(`FROM world_base.${key}`))
-        ?? Object.entries(data).find(([key]) => sql.includes(key)))?.[1] ?? [] }; } },
+      const first = Object.entries(data).map(([key, value]) => [sql.indexOf(`FROM world_base.${key}`), value])
+        .filter(([index]) => index >= 0).sort((a, b) => a[0] - b[0])[0];
+      return { rows: (first ?? Object.entries(data).find(([key]) => sql.includes(key)))?.[1] ?? [] }; } },
     worldPin,
     actorCatalog: { schema: 'rus.live_world_runtime.approved_actor_catalog.v1', roles: [],
       occupations: [{ occupation_id: 'occupation', occupation_archetype_id: 'occ-a', status: 'approved' }] },

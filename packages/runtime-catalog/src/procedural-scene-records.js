@@ -255,9 +255,10 @@ async function readNpcIdentityCatalog(reader, worldRevisionId, occupationIds) {
       FROM world_base.region_name_pool_entries e
       JOIN world_base.region_name_pools p ON p.id=e.name_pool_id
        AND p.world_revision_id=$1 AND p.status='approved'
-      JOIN world_base.npc_regional_context_name_bindings b ON b.name_pool_id=e.name_pool_id
-       AND b.people_ref=e.people_ref AND b.world_revision_id=$1 AND b.status='approved'
       WHERE e.status='approved' AND e.selection_class='ordinary'
+        AND EXISTS (SELECT 1 FROM world_base.npc_regional_context_name_bindings b
+          WHERE b.name_pool_id=e.name_pool_id AND b.people_ref=e.people_ref
+            AND b.world_revision_id=$1 AND b.status='approved')
       ORDER BY e.name_pool_id,e.people_ref,e.sex_category,e.id`, [worldRevisionId]),
     read(`SELECT scale_kind,entry_id,label_ru,weight FROM world_base.npc_psychology_scale_entries
       WHERE world_revision_id=$1 AND status='approved' ORDER BY scale_kind,entry_id`, [worldRevisionId]),

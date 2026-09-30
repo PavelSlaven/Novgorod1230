@@ -39,6 +39,8 @@ REFS = [
     ("ref:pravenc_zhalnik", "Жальник — Православная энциклопедия", "https://www.pravenc.ru/text/182191.html", "B", "Грунтовые могилы с каменной обкладкой; XII – конец XV в.; зона земледельческой колонизации Новгородской земли."),
     ("ref:dissercat_zhalniki", "Погребальные памятники земли словен новгородских (курганы и жальники XI–XIV вв.) (дисс., аннотация)", "https://www.dissercat.com/content/pogrebalnye-pamyatniki-zemli-sloven-novgorodskikh-kurgany-i-zhalniki-xi-xiv-vv", "B", ""),
     ("ref:novgorodmuseum_khutyn", "Варлаамо-Хутынский Спасо-Преображенский монастырь — Новгородский музей-заповедник", "https://novgorodmuseum.ru/muzei/varlaamo-hutynskij-spaso-preobrazhenskij-monastyr", "B", "Основан 1192 г. Варлаамом; деревянный, затем каменный храм Спаса, освящён 1192 г."),
+    ("ref:kostomarov1994_zverin", "Костомаров Н.И. Русская республика (1994), локальный индекс книг: book:185868 §1164", "books/index.sqlite book:185868", "B", "В первой половине XII в. существовали монастыри, в том числе Зверин за Неревским концом в урочище Зверинцах."),
+    ("ref:leontiev2007_zverin", "Леонтьев А.И., Леонтьева М.В. Истоки медвежьей Руси (2007), локальный индекс книг: book:431037 §433", "books/index.sqlite book:431037", "C", "Зверин-Знаменский монастырь на левом берегу Волхова, первые упоминания — 1148 г.; популярная книга, пересказ Сойкина."),
 ]
 
 
@@ -405,6 +407,9 @@ def main():
         dict(lm_id="lm_x_khutyn_monastery", name_ru="Хутынский Спасо-Преображенский монастырь", category="monastery", source_category="монастырь", location_ref="Хутынь, правый берег Волхова севернее города",
              founded_or_built="1192", material="деревянный, затем каменный храм Спаса (освящён 1192)", status_1230="существует", functions="монастырь", roles_present="монахи|паломники",
              reconstruction_note="нынешний собор 1515 г. — не для 1230", v6_name_match=v6match("Хутын"), source_refs=["ref:novgorodmuseum_khutyn"], confidence="B"),
+        dict(lm_id="lm_x_zverin_monastery", name_ru="Зверин монастырь", category="monastery", source_category="монастырь", location_ref="за Неревским концом, урочище Зверинцы",
+             founded_or_built="существовал в первой половине XII в.; упоминания с 1148 г.", material="", status_1230="вероятно существует", functions="монастырь", roles_present="монахи",
+             reconstruction_note="существование в XII в. подтверждено; действие около 1230 г. и состав построек прямо не подтверждены", v6_name_match=v6match("Зверин"), source_refs=["ref:kostomarov1994_zverin", "ref:leontiev2007_zverin"], confidence="B"),
         dict(lm_id="lm_x_yuriev_monastery", name_ru="Юрьев монастырь", category="monastery", source_category="монастырь", location_ref="у истока Волхова к югу от города",
              founded_or_built="собор 1119–1130", material="каменный собор, деревянные постройки", status_1230="существует", functions="монастырь", roles_present="монахи|игумен",
              reconstruction_note="по собору B018", v6_name_match=v6match("Юрьев монастырь"), source_refs=["nov1230db:B018", "matcult:ARC0003"], confidence="A"),

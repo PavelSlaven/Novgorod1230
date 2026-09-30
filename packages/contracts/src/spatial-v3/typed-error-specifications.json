@@ -448,9 +448,9 @@
       "required_reaction": "Reject authoring"
     },
     {
-      "error_code": "route_segment_too_long",
-      "meaning": "Segment `base_minutes` exceeds `max_segment_minutes` of its line kind profile",
-      "required_reaction": "Hard block authoring; split by waypoint"
+      "error_code": "line_recheck_slicing_missing",
+      "meaning": "A segment with `base_minutes` above 30 has a recheck policy (of its line kind profile) that does not slice it into parts of at most 30 minutes (section 4.5.2)",
+      "required_reaction": "Hard block authoring; repair the recheck policy, the segment is not shortened or split by length"
     },
     {
       "error_code": "canonical_connection_projection_gap",

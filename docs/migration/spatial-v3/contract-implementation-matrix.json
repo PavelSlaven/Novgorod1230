@@ -2536,6 +2536,14 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "error_code": "line_recheck_slicing_missing",
+      "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "validator": "planned/P06+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "error_code": "lock_order_violation",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -2753,14 +2761,6 @@
     },
     {
       "error_code": "route_segment_context_gap",
-      "owner_package": "@rus/contracts",
-      "json_schema_or_dto": "planned/P06+",
-      "validator": "planned/P06+",
-      "tests": "planned/P06+",
-      "migration_step": "planned/P06-P25"
-    },
-    {
-      "error_code": "route_segment_too_long",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
       "validator": "planned/P06+",

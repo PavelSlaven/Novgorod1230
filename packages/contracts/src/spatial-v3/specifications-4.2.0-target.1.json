@@ -5793,10 +5793,15 @@
         {
           "name": "policy_kind",
           "required": true,
-          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points]"
+          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]"
         },
         {
           "name": "progress_slice_ppm",
+          "required": false,
+          "type": "positive_integer"
+        },
+        {
+          "name": "interval_minutes",
           "required": false,
           "type": "positive_integer"
         },
@@ -5818,9 +5823,10 @@
         }
       ],
       "invariants": [
-        "segment_once forbids slice and explicit points.",
-        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids explicit points.",
-        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice.",
+        "segment_once forbids slice, interval and explicit points.",
+        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.",
+        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.",
+        "fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.",
         "Slicing policy cannot change final duration under identical factor sequence."
       ]
     },
@@ -6726,6 +6732,11 @@
           "type": "sha256_hex"
         },
         {
+          "name": "mirrored",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "status",
           "required": true,
           "type": "enum[active, paused_in_transit, stranded_in_transit, closed]"
@@ -6738,7 +6749,7 @@
         {
           "name": "closed_result",
           "required": false,
-          "type": "enum[completed, interrupted_to_anchor, superseded]"
+          "type": "enum[completed, interrupted_to_anchor, returned_to_departure, superseded]"
         },
         {
           "name": "state_version",
@@ -6759,12 +6770,14 @@
       "relations": [],
       "invariants": [
         "movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.",
-        "New state starts with progress zero, exact cumulative time zero and next_interval_ordinal zero.",
+        "New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.",
         "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state.",
         "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.",
         "stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.",
         "closed requires closed_result and closed_change_set_id.",
-        "closed_result=completed requires progress one million and null stranded_reason_code.",
+        "closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.",
+        "closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.",
+        "mirrored flips only in the commit of a turn_back interval, together with the progress mirror (1_000_000 minus progress); while mirrored, progress, cost, method, factors and availability are those of the mirrored segment of the step segment (section 4.10.1).",
         "closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.",
         "closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.",
         "closed state cannot be reactivated.",
@@ -7068,9 +7081,14 @@
           "type": "traversal_dynamic_snapshot"
         },
         {
+          "name": "turn_back",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "result_kind",
           "required": true,
-          "type": "enum[progressed, segment_completed, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
+          "type": "enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
         },
         {
           "name": "result_code",
@@ -7121,12 +7139,13 @@
       "relations": [],
       "invariants": [
         "No active/open result exists and all rational values are reduced.",
-        "progress_before_ppm is below one million; planned progress is strictly greater than progress before.",
+        "progress_before_ppm is below one million; planned progress is strictly greater than progress before. For a turn_back interval progress_before_ppm is 1_000_000 minus the travel-state progress before commit (in 1..999999) and the same commit flips travel-state mirrored.",
+        "turn_back is true only for the first interval after a paused_in_transit result and requires a mirrored segment whose dynamic access passes (section 4.10.1); cost, method, factors and availability of an interval are those of the segment of the side it traverses.",
         "actual progress is between progress before and planned progress.",
         "cumulative actual time after equals cumulative actual time before plus actual interval time.",
         "Interval ordinal equals travel-state next_interval_ordinal before commit; after commit next_interval_ordinal equals interval_ordinal plus one.",
         "progressed requires progress_before < actual_progress_after < one million and positive exact actual time.",
-        "segment_completed requires planned_progress_after_ppm=actual_progress_after_ppm=one million and positive exact actual time; no other outcome permits actual progress one million.",
+        "segment_completed requires planned_progress_after_ppm=actual_progress_after_ppm=one million, positive exact actual time and travel-state mirrored false after commit; returned_to_departure requires the same with mirrored true after commit; no other outcome permits actual progress one million.",
         "paused_in_transit, interrupted_at_anchor and stranded require actual progress below one million; equality with progress_before is allowed only when the control outcome occurs before further physical advancement.",
         "interrupted_at_anchor requires interruption_anchor_id resolving to an active usable route anchor; all other outcomes forbid it.",
         "blocked_before_progress has unchanged progress/cumulative time, zero actual time and zero crossed whole-minute boundaries, and changes only travel-state next_interval_ordinal/state-version audit fields.",

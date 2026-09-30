@@ -64,3 +64,47 @@ test('Appendix F keeps the three revised blocks and leaves the frozen Appendix B
   const appendixB = standard.slice(standard.indexOf('# Приложение B.'), standard.indexOf('# Приложение C.'));
   for (const forbidden of ['mirrored', 'turn_back', 'returned_to_departure', 'fixed_time_interval', 'interval_minutes']) assert.ok(!appendixB.includes(forbidden), `Appendix B stays frozen: no ${forbidden}`);
 });
+
+// rt-lines a6 (REVIEW rt-lines-5): the outcomes of a turn_back interval are read from the F.1.1 text, by the direction after commit.
+const turnBackRule = (text) => {
+  const block = text.slice(text.indexOf('# Приложение F.')).match(/```yaml\r?\ncontract_name: party_traversal_interval_result\r?\n[\s\S]*?```/)[0];
+  const rule = block.split(/\r?\n/).find((line) => line.startsWith('  - turn_back is true only'));
+  const plain = rule.match(/permits the outcomes ([a-z_, ]+?)(?:, plus exactly one terminal outcome|;)/);
+  const terminal = rule.match(/mirrored true after commit permits (\w+), mirrored false after commit.*? permits (\w+)/);
+  return { plain: plain[1].split(/,| and /).map((value) => value.trim()).filter(Boolean), terminalIfMirrored: terminal?.[1], terminalIfForward: terminal?.[2], rule };
+};
+/** Outcomes the norm permits for a turn_back interval whose travel state has `mirrored` after the commit. */
+const turnBackOutcomes = (text, mirroredAfter) => {
+  const { plain, terminalIfMirrored, terminalIfForward } = turnBackRule(text);
+  return new Set([...plain, mirroredAfter ? terminalIfMirrored : terminalIfForward].filter(Boolean));
+};
+const terminalInvariants = (text) => {
+  const block = text.slice(text.indexOf('# Приложение F.')).match(/```yaml\r?\ncontract_name: party_traversal_interval_result\r?\n[\s\S]*?```/)[0];
+  return block.match(/segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit/) !== null;
+};
+
+test('a repeated turn back that finishes the segment in its first interval has a legal outcome (segment_completed)', () => {
+  // mirrored side paused at p = 750 000; the second "back" flips to mirrored=false, progress_before = 250 000, the interval reaches 1 000 000
+  assert.ok(terminalInvariants(standard), 'segment_completed needs mirrored false, returned_to_departure mirrored true');
+  const afterSecondTurnBack = turnBackOutcomes(standard, false);
+  assert.ok(afterSecondTurnBack.has('segment_completed'));
+  assert.ok(!afterSecondTurnBack.has('returned_to_departure'));
+  const afterFirstTurnBack = turnBackOutcomes(standard, true);
+  assert.ok(afterFirstTurnBack.has('returned_to_departure'));
+  assert.ok(!afterFirstTurnBack.has('segment_completed'));
+});
+
+test('interruption and stranding are legal in a turn_back interval on both sides, a refusal never is', () => {
+  for (const mirrored of [true, false]) {
+    const outcomes = turnBackOutcomes(standard, mirrored);
+    for (const outcome of ['progressed', 'paused_in_transit', 'interrupted_at_anchor', 'stranded']) assert.ok(outcomes.has(outcome), `${outcome} (mirrored after commit ${mirrored})`);
+    assert.ok(!outcomes.has('blocked_before_progress'));
+  }
+});
+
+test('the turn_back outcome check fails on the earlier text that forbade the second turn back to finish', () => {
+  const old = standard.replace(/ permits the outcomes progressed, paused_in_transit, interrupted_at_anchor and stranded, plus exactly one terminal outcome[^;]*;/u,
+    ' permits the outcomes progressed, paused_in_transit and returned_to_departure;');
+  assert.notEqual(old, standard);
+  assert.throws(() => turnBackOutcomes(old, false).has('segment_completed') || assert.fail('no legal outcome'), /no legal outcome/u);
+});

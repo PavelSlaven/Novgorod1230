@@ -386,7 +386,19 @@ to numeric budget by a versioned code-owned policy. A normalized discovery
 query equal to the normalized remaining intent, with one visible target owned
 by ordinary discovery and no continuation or check, is structurally grounded
 without an LLM audit; altered or compound discovery still crosses the semantic
-auditor. The normalized query, exact target and canonical requested quantity
+auditor. One exact finite-source case is also code-grounded
+(`exactFiniteSourceDiscoveryGrounding`, same precedent as
+`exactBackgroundNpcDiscoveryGrounding`): an `inspect` discovery whose single
+target is the code-owned ref of a visible `known` `ordinary_resource_source`,
+with the complete take intent kept in `continuation` (or query equal to the
+whole remaining intent) and no check; moving the portion into the hands is a
+separate `move_entity` step. The planner still chooses semantically, code only
+checks the form. Residual risk: code does not verify that the intent is about
+that very source; the worst outcome is an unrequested portion at the same
+position, and mass conservation still holds. Canonical G5 finite sources at
+first entry follow an approved list of commons (`canonical-finite-applicability.json`);
+`m2c_natural_gathering_access_v1` extends to them only through that approval,
+and a parcel right ranks above it. The normalized query, exact target and canonical requested quantity
 (exact `{value,unit}` or `null`) derive the code-owned candidate identity; the query reaches
 the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
 classification/mechanics authority. Exact normalized retry reuses the

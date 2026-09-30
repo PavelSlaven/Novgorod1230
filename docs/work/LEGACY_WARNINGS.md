@@ -84,6 +84,7 @@
 | 103 | планировщик A1 (`lower-dvina-trace-turn-step-planner-instructions.js`), `packages/turn/src/turn-step-contracts/action-production-operation.js` | живой Qwen путает `result_class: ordinary_physical_result` с `partial_transformation` (`source_fact_delta`, `material_extent`): план отвергается | — |
 | 104 | `data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json` (`applicability`) | список применимости закреплён на шаблонах @1, а сгенерированные сайты v17 — @2 (общий массив с N1) | — |
 | 105 | `data/world-catalogs/novgorod/m2c-items/README.md`, `packages/items-property` | `M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`: владелец предмета не проверяет `mass_grams = quantity × 50` | — |
+| 106 | `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js`, `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` | значения по умолчанию для v5-профиля (`packing_slot_cost=0`, `quantity=null`, `container=null`) заданы в game-server, вне владельца items-property | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -449,7 +450,7 @@
 
 ### LW-101 — повторное «взять» того же материала (rt-items)
 - **Где.** `packages/turn/src/ordinary-materialization-discovery-identity.js` (`candidateForDiscovery`), `apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js` (`max_resolution_records === 4`), планировщик шаг 2.
-- **Что.** Идентичность кандидата = цель + нормализованный запрос + количество, повтор с теми же значениями даёт persisted-resolution без нового предмета; агрегат хранит не больше 4 записей на место (вместе с записями presence); живой прогон: первая порция берётся, «ещё» — нет, а «три палки» создаёт предметы на месте, но второй шаг планировщика повторяет discovery вместо `move_entity` из-за уже удерживаемого предмета с тем же именем.
+- **Что.** Идентичность O1 = цель + нормализованный запрос + количество, поэтому повторное «взять» из того же источника с теми же значениями отдаёт уже сохранённое решение без нового предмета (следствие правила D1: запрос = подпись источника); агрегат хранит не больше 4 записей на место (вместе с записями presence); живой прогон: первая порция берётся, «ещё» — нет, а «три палки» создаёт предметы на месте, но второй шаг планировщика повторяет discovery вместо `move_entity` из-за уже удерживаемого предмета с тем же именем.
 - **Как жить.** Не считать многократный сбор решённым: PG-тест берёт разные количества. Правка — решение владельца: идентичность взятия конечного источника по ходу, потолок записей, различимые имена/ссылки на шаге 2.
 - **Issue.** —
 
@@ -475,4 +476,10 @@
 - **Где.** `data/world-catalogs/novgorod/m2c-items/README.md` (`M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`), `packages/items-property`.
 - **Что.** Профиль задаёт 50 г на порцию, проверка `mass_grams = quantity × 50` есть в `packages/turn` (presence) и phase-6 commit, но владелец предмета (`@rus/items-property`) её не выводит и не проверяет.
 - **Как жить.** Не считать массу порции гарантированной владельцем предмета; закрывается отдельной правкой items-property.
+- **Issue.** —
+
+### LW-106 — толкование v5-профиля инвентаря лежит в game-server (rt-items)
+- **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js` (`committedMechanics`, значения по умолчанию), `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` (то же), владелец — `packages/items-property` (`resolveInventoryMechanicsProfile`).
+- **Что.** Профили `item-container-120-v5` не содержат `packing_slot_cost`, `quantity`, `container`; A1 подставляет 0, `null`, `null` в двух файлах game-server. Это толкование профиля вне владельца.
+- **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —

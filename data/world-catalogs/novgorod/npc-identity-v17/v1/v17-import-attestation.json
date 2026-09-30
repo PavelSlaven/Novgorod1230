@@ -2,15 +2,15 @@
   "schema": "rus.npc_identity_v17_import_approval.v1",
   "verdict": "APPROVE_CONDITIONAL",
   "request_path": "data/world-catalogs/novgorod/npc-identity-v17/v1/import-request.json",
-  "request_digest": "3e20cfa12aa946cd6e0da642f8ef3f92308c41bf9cf56e32b6f0072875f59d01",
+  "request_digest": "85678239538465b7b9863ba56f4edffeb40a2357fd5c948eef2ff4e390b39feb",
   "approved_by": "claude-opus-5.5-independent-contract-auditor-and-data-approver-2026-09-30-rt-names",
   "attested_by": "claude-opus-5.5-lead-reviewer-2026-09-30 (issued on the independent approver's verdict after the mechanical rebuild check)",
   "independence_basis": "Neither the approver nor the lead reviewer authored the stage, the request, the DDL or the source data (author: Claude Sonnet 5.5, fleet task rt-names; sources: game-base names-peoples D46 catalog, npc_psychology D29 scales, npc-goals #206). The independent Opus pass was read-only at 2f1bc9cf: request digest recomputed, 6 source pins and the SQL sha verified, all 776 SQL payload rows compared with the CSV/JSON sources (0 mismatches), all 266 ordinary Novgorod names read. It rejected 7b7d42f7 (19 foreign ordinary rows approved) and approved the rebuilt request on condition that the diff is mechanical. The lead reviewer ran the approver's verify_rebuild.py against the rebuild at 029218fc: only the 19 foreign ordinary rows flipped approved -> draft, provenance_ref added and non-empty on the three new tables (goals/fears equal to CSV source_refs), no other change, FAILS 0; request digest recomputed (MATCH), 6 source pins OK, SQL commit pin OK.",
   "approved_on": "2026-09-30",
-  "approved_commit": "029218fc5d62da2afd8156ee3773dd8041e20632",
+  "approved_commit": "91ceed40f5b260e7124e8eac7e57d6a3bc84272f",
   "scope": {
-    "region_name_pools": "1 row: novgorod_1230_1250_personal_names_v1, 1230-1250, approved",
-    "region_name_pool_entries": "337 rows: 266 approved = ordinary pp_novgorod_rus (62 female / 204 male); 71 draft = 52 dynastic/significant/monastic + 19 foreign ordinary",
+    "region_name_pools": "7 rows: novgorod_1230_1250_personal_names_v1 approved (bound); the six per-people pools of #214 (Gotland, German, Korela, Izhora, Chud/Estonians, Smolensk; D51 p.2) imported draft, unbound, never selected",
+    "region_name_pool_entries": "337 rows: 266 approved = ordinary pp_novgorod_rus (62 female / 204 male); 71 draft (52 dynastic/significant/monastic, 18 foreign ordinary in their own pools, Валит significant); Иголанд is a typed gap in game-base, not imported",
     "npc_regional_context_name_bindings": "2 rows: m2c_npc_regional_novgorod_land_v1 and m2c_npc_regional_novgorod_canonical_initial_v1 -> the Novgorod pool with pp_novgorod_rus",
     "npc_psychology_scale_entries": "13 rows: 6 temperament traits + 7 values (D29 game assumption)",
     "occupation_character_items": "423 rows: 265 goals + 158 fears over 97 occupations; basis logical_necessity 287, sourced 76, analogy 60; confidence C"
@@ -38,5 +38,10 @@
   "bootstrap_use": "Copy this file byte-identically as npc_identity_import.json into V17_BOOTSTRAP_ATTESTATION_DIR for the npc_identity_import stage of scripts/bootstrap-live-world-v17.mjs.",
   "import_authorized": true,
   "activation_authorized": false,
-  "database_mutated_by_review": false
+  "database_mutated_by_review": false,
+  "supersedes": {
+    "request_digest": "3e20cfa12aa946cd6e0da642f8ef3f92308c41bf9cf56e32b6f0072875f59d01",
+    "approved_commit": "029218fc5d62da2afd8156ee3773dd8041e20632",
+    "reason": "Rebuild after main #214 (per-people pools, Opus approve_with_limits): only 6 draft pools added, 26 foreign rows changed name_pool_id only, Иголанд removed and Валит added (both draft); bindings, scales, goals/fears unchanged; the approved entry set is identical (266). Reviewer comparison of the two SQL payloads and verify_import (digest MATCH, 6 pins OK) found nothing else, so no new Opus pass is needed under the approver condition (mechanical diff)."
+  }
 }

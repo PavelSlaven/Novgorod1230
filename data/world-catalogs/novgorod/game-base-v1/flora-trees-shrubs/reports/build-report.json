@@ -40,9 +40,9 @@
     "pf_village_lane"
   ],
   "summer_presence_rows_by_class": {
-    "common": 90,
+    "common": 86,
     "ubiquitous": 7,
-    "contextual": 91,
+    "contextual": 95,
     "rare": 27
   },
   "kolchin_table1_sum": 909,

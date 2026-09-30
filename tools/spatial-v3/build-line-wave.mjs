@@ -25,35 +25,44 @@ const T = Object.freeze({
 const ORDINAL = /(^|[^а-яё])(перв|втор|трет|четв[её]рт|пят|шест|седьм|восьм|девят|десят)(ый|ой|ий|ая|ья|ое|ье|ые|ьи|ого|ьего|ому|ьему|ым|ьим|ом|ьем|ую|ью|ых|ьих|ыми|ьими|ьей|ей)($|[^а-яё])|№/iu;
 const digest = (row) => { const { canonical_digest: _omit, ...rest } = row; return computeSpatialV3CanonicalDigest(rest).slice(7); };
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
+// Near-duplicate names at one place (limit of the line-names approval): the same set of content words.
+const FUNCTION_WORDS = new Set(['по', 'над', 'у', 'в', 'во', 'на', 'и', 'а', 'вдоль', 'под', 'между', 'из', 'к', 'ко', 'с', 'со', 'от', 'до', 'за', 'при', 'через']);
+const contentStems = (name) => new Set(String(name).toLowerCase().normalize('NFC').split(/[^а-яё]+/u)
+  .filter((word) => word && !FUNCTION_WORDS.has(word)).map((word) => word.slice(0, 4)));
+const sameSet = (a, b) => a.size > 0 && a.size === b.size && [...a].every((item) => b.has(item));
+const jaccard = (a, b) => [...a].filter((item) => b.has(item)).length / new Set([...a, ...b]).size;
+function similarNamesPerPlace(rows) {
+  const byPlace = new Map();
+  for (const row of rows) byPlace.set(row.from_canonical_g5_id, [...(byPlace.get(row.from_canonical_g5_id) ?? []), row]);
+  const identical = []; let similar = 0;
+  for (const [place, list] of byPlace) for (let i = 0; i < list.length; i += 1) for (let j = i + 1; j < list.length; j += 1) {
+    if (list[i].line_name === list[j].line_name) continue;
+    const a = contentStems(list[i].line_name); const b = contentStems(list[j].line_name);
+    if (sameSet(a, b)) identical.push(`${place}: "${list[i].line_name}" / "${list[j].line_name}"`);
+    else if (jaccard(a, b) >= 0.34) similar += 1;
+  }
+  return { identical, similar };
+}
 const sealed = (row) => ({ ...row, canonical_digest: digest(row) });
 const version = (entity_kind, row, worldRevisionId) => ({ entity_kind, entity_id: row.id, version: row.version ?? VERSION,
   world_revision_id: worldRevisionId, canonical_digest: row.canonical_digest ?? digest(row), status: 'approved', provenance_ref: PROVENANCE });
 
-/** Pure: inputs -> { datasets, report }. `maxSegmentMinutes` overrides the profile limit (D2: a parameter, not a constant). */
+/** Pure: inputs -> { datasets, report }. D56: there is no length ceiling; `sliceStepMinutes` is the recheck slice step of a profile (`max_segment_minutes`). */
 export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRevisionId, provenanceRef = PROVENANCE, existing = {} },
-  { maxSegmentMinutes = spec.max_segment_minutes_default } = {}) {
+  { sliceStepMinutes = spec.slice_step_minutes_default } = {}) {
   const minutes = new Map(derivedLines.map((line) => [line.id, line.proposed_minutes]));
   const names = new Map(lineNames.local_pairs.map((pair) => [pair.source_pair_id, pair]));
   const byPair = new Map();
   for (const row of bindings) byPair.set(row.source_pair_id, [...(byPair.get(row.source_pair_id) ?? []), row]);
-  const included = []; const excluded = []; const pairMaxima = []; const slotCounts = { forward_kept: 0, reverse_swapped: 0 };
+  const included = []; const slotCounts = { forward_kept: 0, reverse_swapped: 0 };
   for (const [pairId, pair] of [...byPair].sort(([a], [b]) => (a < b ? -1 : 1))) {
     if (pair.length !== 2) throw new Error(`${pairId}: a pair needs two bindings`);
     const [forward, reverse] = [...pair].sort((a, b) => (a.id < b.id ? -1 : 1));
     const name = names.get(pairId);
     if (!name) throw new Error(`${pairId}: no line-names record`);
     if (!spec.kinds[name.line_kind]) throw new Error(`${pairId}: line kind ${name.line_kind} has no profile spec`);
-    const lines = [forward, reverse].map((row) => {
-      if (!minutes.has(row.id)) throw new Error(`${row.id}: no place-geo minutes`);
-      return { id: row.id, from: row.from_canonical_g5_id, to: row.to_canonical_g5_id, minutes: minutes.get(row.id) };
-    });
-    pairMaxima.push(Math.max(...lines.map((line) => line.minutes)));
-    if (lines.some((line) => line.minutes > maxSegmentMinutes)) {
-      excluded.push({ source_pair_id: pairId, line_kind: name.line_kind, name_ru: name.name_ru, lines,
-        reason: 'base_minutes_over_max_segment_minutes', max_segment_minutes: maxSegmentMinutes, status: 'waits_for_D2' });
-      continue;
-    }
-    included.push({ forward, reverse, name, lines });
+    for (const row of [forward, reverse]) if (!minutes.has(row.id)) throw new Error(`${row.id}: no place-geo minutes`);
+    included.push({ forward, reverse, name });
   }
   const datasets = Object.fromEntries(Object.values(T).map((table) => [table, []]));
   const usedKinds = [...new Set(included.map(({ name }) => name.line_kind))];
@@ -84,7 +93,7 @@ export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRe
       movement_orientation_profile_id: k.orientation, movement_orientation_profile_version: 1,
       baseline_movement_method_id: k.method, movement_method_cost_profile_id: cost.id, movement_method_cost_profile_version: 1,
       dynamic_recheck_policy_id: k.recheck, dynamic_recheck_policy_version: 1, route_kind_id: k.route_kind,
-      max_segment_minutes: maxSegmentMinutes, status: 'approved', provenance_ref: provenanceRef });
+      max_segment_minutes: sliceStepMinutes, status: 'approved', provenance_ref: provenanceRef });
     datasets[T.profiles].push(profile);
     for (const alt of k.alternatives) {
       datasets[T.alternatives].push({ profile_id: profile.id, profile_version: 1, movement_method_id: alt.method,
@@ -134,14 +143,14 @@ export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRe
   datasets[T.sources].push({ id: provenanceRef, title: 'M2c lines v1 candidate (local G5-G5 lines of the start cell)', source_type: 'project_note',
     file_reference: `${LINE_WAVE_DIR}/generator-report.json`, page_or_section: 'inputs: see generator-report.json#inputs',
     summary: 'Line fields of the local canonical connections: place-geo proposed minutes, line-names names and kinds, registry v5 methods.',
-    limitations: 'Candidate: not approved, not imported; minutes are an authored game map, not a measurement of 1230; lines over the segment limit wait for D2.',
+    limitations: 'Candidate: not approved, not imported; minutes are an authored game map, not a measurement of 1230; long lines are sliced by the recheck policy of their kind (D56).',
     status: 'approved', confidence: 'medium', checked_by: 'pending_opus_data_approval' });
-  const report = reportOf({ bindings, included, excluded, slotCounts, minutes, names, spec, derivedLines, unresolved,
-    maxSegmentMinutes, usedKinds, datasets, lineNames, pairMaxima });
+  const report = reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines, unresolved,
+    sliceStepMinutes, usedKinds, datasets, lineNames, existing });
   return { datasets, report };
 }
 
-function reportOf({ bindings, included, excluded, slotCounts, minutes, names, spec, derivedLines, unresolved, maxSegmentMinutes, usedKinds, datasets, lineNames, pairMaxima }) {
+function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines, unresolved, sliceStepMinutes, usedKinds, datasets, lineNames, existing }) {
   const nodes = new Set(bindings.flatMap((row) => [row.from_canonical_g5_id, row.to_canonical_g5_id]));
   const components = (rows) => {
     const adjacent = new Map([...nodes].map((node) => [node, new Set()]));
@@ -156,50 +165,57 @@ function reportOf({ bindings, included, excluded, slotCounts, minutes, names, sp
   };
   const kept = datasets.spatial_v3_canonical_g5_connection_bindings;
   const before = components(bindings); const after = components(kept);
-  const moved = lineNames.local_pairs.filter((pair) => included.some((item) => item.name.source_pair_id === pair.source_pair_id))
-    .map((pair) => ({ pair, a: minutes.get(included.find((item) => item.name.source_pair_id === pair.source_pair_id).forward.id), b: pair.base_minutes }));
+  const pairOf = new Map(included.map((item) => [item.name.source_pair_id, item]));
+  const moved = lineNames.local_pairs.filter((pair) => pairOf.has(pair.source_pair_id))
+    .map((pair) => ({ a: minutes.get(pairOf.get(pair.source_pair_id).forward.id), b: pair.base_minutes }));
   const kindOfDerived = new Map(derivedLines.map((line) => [line.id, line.movement_class]));
   const kindMismatch = included.filter((item) => kindOfDerived.get(item.forward.id) !== item.name.line_kind).length;
   const alternatives = Object.entries(spec.kinds).flatMap(([kind, value]) => value.alternatives.map((alt) => ({ kind, method: alt.method,
     factor: alt.factor.join('/'), risk_class: alt.risk_class, hazard_rule_ref: alt.hazard_rule_ref, basis: alt.basis })));
+  const kindOfRow = new Map(kept.map((row) => [row.id, row.line_kind_profile_id.replace(/^lkp__/, '')]));
+  const longLines = kept.filter((row) => row.base_minutes > sliceStepMinutes).map((row) => ({ id: row.id, line_kind: kindOfRow.get(row.id),
+    line_name: row.line_name, minutes: row.base_minutes, slice_step_minutes: sliceStepMinutes, slices: Math.ceil(row.base_minutes / sliceStepMinutes),
+    recheck_policy_id: spec.kinds[kindOfRow.get(row.id)].recheck,
+    recheck_policy_kind: existing.rechecks?.get?.(spec.kinds[kindOfRow.get(row.id)].recheck)?.policy_kind ?? null,
+    recheck_interval_minutes: existing.rechecks?.get?.(spec.kinds[kindOfRow.get(row.id)].recheck)?.interval_minutes ?? null }));
+  const names = similarNamesPerPlace(kept);
   return { schema: 'rus.m2c_lines_v1_generator_report.v1', status: 'candidate_unapproved', import_authorized: false, activation_authorized: false,
-    parameters: { max_segment_minutes: maxSegmentMinutes },
-    counts: { base_bindings: bindings.length, pairs: included.length, bindings_at_v3: kept.length, excluded_pairs: excluded.length,
-      excluded_lines: excluded.reduce((sum, pair) => sum + pair.lines.length, 0), line_kinds_with_profile: datasets.spatial_v3_line_kind_profiles.length,
-      line_kinds_used: usedKinds.length, alternative_methods: datasets.spatial_v3_line_kind_alternative_methods.length,
+    parameters: { slice_step_minutes: sliceStepMinutes },
+    counts: { base_bindings: bindings.length, pairs: included.length, bindings_at_v3: kept.length, long_lines: longLines.length,
+      line_kinds_with_profile: datasets.spatial_v3_line_kind_profiles.length, line_kinds_used: usedKinds.length,
+      alternative_methods: datasets.spatial_v3_line_kind_alternative_methods.length,
       authoring_versions: datasets.spatial_v3_authoring_versions.length, dependency_edges: datasets.spatial_v3_authoring_dependency_edges.length },
-    excluded_pairs: excluded,
-    // D2 input: how many pairs fit under other limits (the limit is a parameter of this generator, not a constant)
-    limit_sensitivity: [30, 35, 40, 48, 60].map((limit) => ({ max_segment_minutes: limit,
-      pairs_included: pairMaxima.filter((max) => max <= limit).length, pairs_waiting_for_D2: pairMaxima.filter((max) => max > limit).length })),
-    connectivity: { components_before: before.count, components_after: after.count,
-      places_without_local_line: after.without.filter((id) => !before.without.includes(id)) },
+    // D56: a line longer than the step is kept and sliced by the recheck policy of its kind (the existing policies are fixed_time_interval of 15/30 minutes).
+    long_lines: longLines,
+    connectivity: { components_before: before.count, components_after: after.count, places_without_local_line: after.without.filter((id) => !before.without.includes(id)) },
     matches: { minutes_from_place_geo: kept.length, slot_changes: slotCounts, line_kind_equals_place_geo_movement_class: included.length - kindMismatch,
-      line_name_unique_per_place: 'checked by checkLineWaveData; 0 digits, 0 ordinal words, 0 duplicate (name, discriminator, direction) per place' },
+      line_name_unique_per_place: 'checked by checkLineWaveData; 0 digits, 0 ordinal words, 0 duplicate (name, discriminator, direction) and 0 identical content-word sets per place',
+      similar_but_distinct_names_at_one_place: names.similar },
     differences: { line_kind_differs_from_place_geo_movement_class: kindMismatch, forward_slots_departure_to_arrival_in_source: 'all 454 (both directions): the source violates the paired-slot rule (F :7371); binding@3 swaps the reverse side',
       line_names_minutes_vs_place_geo: { lines: moved.length, differ_at_least_2x: moved.filter(({ a, b }) => a >= 2 * b || b >= 2 * a).length, differ_10_minutes_or_more: moved.filter(({ a, b }) => Math.abs(a - b) >= 10).length,
-        note: 'informational: PLAN-OK-rt-lines-a D1 takes the place-geo minutes' } },
+        note: 'informational: D1 takes the place-geo minutes; line-names minutes are not approved (their attestation, D56)' } },
     unresolved_refs: unresolved.sort(),
     editorial_values_for_opus: alternatives,
-    assumptions: Object.entries(spec.kinds).filter(([, value]) => value.assumption).map(([kind, value]) => `${kind}: ${value.assumption}`),
-    open_items: ['D2: pairs over max_segment_minutes are not excluded for good; the limit is a parameter (this report is the list)',
-      'D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover',
+    assumptions_for_opus: Object.entries(spec.kinds).filter(([, value]) => value.assumption).map(([kind, value]) => `${kind}: ${value.assumption}`),
+    open_items: ['D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover',
+      'D56: the ceiling of 30 minutes is removed from the norm by CORPUS_EDIT in the cutover; `max_segment_minutes` of a profile is the recheck slice step, the field name is for the corpus edit to settle',
       'D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus',
       'D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)',
       'rows carry status approved (the importer requires it); approval is the a2 data attestation, none exists yet',
       'new tables and columns (line_kind_profile, alternatives, binding line fields) do not exist in world_base DDL yet (phase a3); no import manifest is produced in a1',
-      'risk_profile_ref: refs of the route-segment profiles by kind; yard and open_water are assumptions'] };
+      'risk_profile_ref: refs of the route-segment profiles by kind; yard and open_water are assumptions',
+      'line-names attestation limits: the loader needs the near-duplicate check (done in checkLineWaveData); line_kind of large_island_head_1/_2/_cycle (river_channel) vs _5 (side_channel) on one still body is inconsistent (place-geo limit 7); names depend on the place-geo geometry of 86977f99 (owner_findings.spatial)'] };
 }
 
 /** Independent rules of Appendix F (binding block :7340, line_kind_profile :7291, §4.7.2) over generated datasets. */
-export function checkLineWaveData(datasets, { spec, maxSegmentMinutes = spec.max_segment_minutes_default } = {}) {
+export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = spec.slice_step_minutes_default } = {}) {
   const problems = [];
   const rows = datasets[T.bindings]; const byId = new Map(rows.map((row) => [row.id, row]));
   const profiles = new Map(datasets[T.profiles].map((row) => [row.id, row]));
   const kinds = datasets[T.profiles].map((row) => row.line_kind_id);
   if (new Set(kinds).size !== kinds.length) problems.push('line_kind_profile: one approved profile per line kind');
   for (const profile of datasets[T.profiles]) {
-    if (!Number.isInteger(profile.max_segment_minutes) || profile.max_segment_minutes < 1 || profile.max_segment_minutes > maxSegmentMinutes) problems.push(`${profile.id}: max_segment_minutes ${profile.max_segment_minutes} outside 1..${maxSegmentMinutes}`);
+    if (!Number.isInteger(profile.max_segment_minutes) || profile.max_segment_minutes < 1 || profile.max_segment_minutes > sliceStepMinutes) problems.push(`${profile.id}: slice step max_segment_minutes ${profile.max_segment_minutes} outside 1..${sliceStepMinutes}`);
     if (!datasets[T.costProfiles].some((cost) => cost.id === profile.movement_method_cost_profile_id)) problems.push(`${profile.id}: cost profile missing`);
     const k = spec.kinds[profile.line_kind_id];
     const alternatives = datasets[T.alternatives].filter((alt) => alt.profile_id === profile.id);
@@ -222,7 +238,14 @@ export function checkLineWaveData(datasets, { spec, maxSegmentMinutes = spec.max
       if (ORDINAL.test(name)) problems.push(`${row.id}: line_label_invalid ordinal word in "${name}"`);
     }
     if (!Number.isInteger(row.base_minutes) || row.base_minutes < 1) problems.push(`${row.id}: base_minutes ${row.base_minutes} is not a positive integer`);
-    else if (row.base_minutes > Math.min(maxSegmentMinutes, profile?.max_segment_minutes ?? maxSegmentMinutes)) problems.push(`${row.id}: route_segment_too_long ${row.base_minutes}`);
+    else if (profile && row.base_minutes > profile.max_segment_minutes) {
+      // D56: no length ceiling; a line longer than the slice step needs a policy that slices it.
+      const policy = recheckPolicies?.get(profile.dynamic_recheck_policy_id);
+      const step = profile.max_segment_minutes;
+      const sliced = policy?.policy_kind === 'fixed_time_interval' ? policy.interval_minutes <= step
+        : policy?.policy_kind === 'fixed_progress_slices' ? row.base_minutes * policy.progress_slice_ppm <= step * 1_000_000 : false;
+      if (!sliced) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${step}-minute step, recheck ${profile.dynamic_recheck_policy_id} is ${policy ? `${policy.policy_kind} ${policy.interval_minutes ?? policy.progress_slice_ppm ?? ''}` : 'not supplied'}`);
+    }
     if (row.availability_condition_set_ref !== null) problems.push(`${row.id}: availability_condition_set_ref must be null on a non-portal connection (D3)`);
     const key = [row.from_canonical_g5_id, row.line_name, row.line_discriminator ?? '', row.line_direction_id ?? ''].join('|');
     outgoing.set(key, (outgoing.get(key) ?? 0) + 1);
@@ -237,6 +260,7 @@ export function checkLineWaveData(datasets, { spec, maxSegmentMinutes = spec.max
     if (reverse.source_pair_id !== row.source_pair_id) problems.push(`${row.id}: reverse belongs to another pair`);
   }
   for (const [key, count] of outgoing) if (count > 1) problems.push(`line_label_duplicate ${key}`);
+  for (const pair of similarNamesPerPlace(rows).identical) problems.push(`line_label_near_duplicate ${pair}`);
   const versions = new Map(datasets[T.versions].map((row) => [`${row.entity_kind}|${row.entity_id}|${row.version}`, row]));
   const covered = [['canonical_g5_connection_binding', rows], ['line_kind_profile', datasets[T.profiles]], ['movement_method_cost_profile', datasets[T.costProfiles]], ['transition_environment_profile', datasets[T.environments]]];
   for (const [kind, list] of covered) for (const row of list) {
@@ -269,7 +293,7 @@ export function loadInputs({ lineNamesPath = LINE_NAMES_PATH } = {}) {
     existing: { environments: new Map(table('spatial_v3_transition_environment_profiles').map((row) => [row.id, row])),
       costProfiles: new Map(table('spatial_v3_movement_method_cost_profiles').map((row) => [row.id, row])),
       orientations: new Set(table('spatial_v3_topological_movement_orientation_profiles').map((row) => row.id)),
-      rechecks: new Set(table('spatial_v3_dynamic_recheck_policies').map((row) => row.id)),
+      rechecks: new Map(table('spatial_v3_dynamic_recheck_policies').map((row) => [row.id, row])),
       routeKinds: new Set(external.map((row) => row.dependency_id).filter((id) => id.startsWith('route.'))) } };
   const hashes = { base_bindings: `${BASE}/spatial_v3_canonical_g5_connection_bindings.json`, place_geo_derived_report: DERIVED_PATH,
     line_names_candidate: lineNamesPath, line_kind_spec: `${LINE_WAVE_DIR}/line-kind-spec.json` };
@@ -277,10 +301,10 @@ export function loadInputs({ lineNamesPath = LINE_NAMES_PATH } = {}) {
 }
 
 /** Writes (or with check:true compares) datasets and report; the report names the inputs by sha256, not by path. */
-export async function runLineWave({ check = false, lineNamesPath = LINE_NAMES_PATH, maxSegmentMinutes } = {}) {
+export async function runLineWave({ check = false, lineNamesPath = LINE_NAMES_PATH, sliceStepMinutes } = {}) {
   const { inputs, hashes } = loadInputs({ lineNamesPath });
-  const { datasets, report } = buildLineWave(inputs, maxSegmentMinutes == null ? undefined : { maxSegmentMinutes });
-  const problems = checkLineWaveData(datasets, { spec: inputs.spec, maxSegmentMinutes: report.parameters.max_segment_minutes });
+  const { datasets, report } = buildLineWave(inputs, sliceStepMinutes == null ? undefined : { sliceStepMinutes });
+  const problems = checkLineWaveData(datasets, { spec: inputs.spec, recheckPolicies: inputs.existing.rechecks, sliceStepMinutes: report.parameters.slice_step_minutes });
   if (problems.length) throw new Error(`line wave violates its rules:\n${problems.slice(0, 20).join('\n')}`);
   const outputs = [...Object.entries(datasets).map(([name, rows]) => [`${LINE_WAVE_DIR}/datasets/${name}.json`, `${JSON.stringify(rows, null, 2)}\n`]),
     [`${LINE_WAVE_DIR}/generator-report.json`, `${JSON.stringify({ ...report, inputs: hashes }, null, 2)}\n`]];
@@ -293,8 +317,8 @@ export async function runLineWave({ check = false, lineNamesPath = LINE_NAMES_PA
 
 if (process.argv[1] && resolve(process.argv[1]) === import.meta.filename) {
   const arg = (flag) => { const at = process.argv.indexOf(flag); return at < 0 ? undefined : process.argv[at + 1]; };
-  const limit = arg('--max-segment-minutes');
+  const step = arg('--slice-step-minutes');
   const report = await runLineWave({ check: process.argv.includes('--check'), lineNamesPath: arg('--line-names') ?? LINE_NAMES_PATH,
-    maxSegmentMinutes: limit == null ? undefined : Number(limit) });
-  console.log(JSON.stringify({ counts: report.counts, excluded_pairs: report.excluded_pairs.length, connectivity: report.connectivity }));
+    sliceStepMinutes: step == null ? undefined : Number(step) });
+  console.log(JSON.stringify({ counts: report.counts, connectivity: report.connectivity }));
 }

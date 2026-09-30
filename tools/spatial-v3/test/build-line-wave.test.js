@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest } from '../../../packages/contracts/src/spatial-v3/registry.js';
-import { buildLineWave, checkLineWaveData, LINE_WAVE_DIR, LINE_NAMES_PATH, runLineWave } from '../build-line-wave.mjs';
+import { buildLineWave, checkLineWaveData, LINE_WAVE_DIR, runLineWave } from '../build-line-wave.mjs';
 
 const root = resolve(import.meta.dirname, '../../..');
 const read = (path) => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
@@ -27,6 +27,11 @@ const fixture = () => ({
   spec, worldRevisionId: 'rev', provenanceRef: 'm2c_lines_v1_candidate',
   existing: { ids: new Set(), costProfiles: new Map(), environments: new Map() }
 });
+const policies = new Map([['recheck.land_30m', { policy_kind: 'fixed_time_interval', interval_minutes: 30 }],
+  ['recheck.water_15m', { policy_kind: 'fixed_time_interval', interval_minutes: 15 }],
+  ['recheck.wetland_15m', { policy_kind: 'fixed_time_interval', interval_minutes: 15 }],
+  ['recheck.shore_15m', { policy_kind: 'fixed_time_interval', interval_minutes: 15 }]]);
+const rules = (extra = {}) => ({ spec, recheckPolicies: policies, ...extra });
 const lenient = (input) => ({ ...input, existing: { ids: null, costProfiles: new Map(), environments: new Map() } });
 const build = (patch = {}, options = {}) => buildLineWave(lenient({ ...fixture(), ...patch }), options);
 const rowOf = (wave, id) => wave.datasets.spatial_v3_canonical_g5_connection_bindings.find((row) => row.id === id);
@@ -44,29 +49,33 @@ test('a pair becomes binding@3: line fields from the owners, reverse slots swapp
   assert.equal(fwd.availability_condition_set_ref, null, 'D3: no availability on a non-portal connection');
   assert.equal(fwd.line_kind_profile_id, 'lkp__path');
   assert.equal('connection_profile_id' in fwd, false, 'the F block has no connection profile');
-  assert.deepEqual(checkLineWaveData(wave.datasets, { spec }), []);
+  assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
 });
 
-test('the segment limit is a parameter: a pair over it waits for D2 (both directions), not dropped silently', () => {
+test('D56: no length ceiling - a long line is in the wave; the profile limit is the recheck slice step, and a long line needs a slicing policy', () => {
   const wave = build();
-  assert.equal(rowOf(wave, 'cg5bindv3__g4dirv3f__p2'), undefined);
-  assert.deepEqual(wave.report.excluded_pairs.map((pair) => [pair.source_pair_id, pair.status, pair.max_segment_minutes,
-    pair.lines.map((line) => line.minutes)]), [['pepv3__p2', 'waits_for_D2', 30, [40, 40]]]);
-  const raised = build({}, { maxSegmentMinutes: 60 });
-  assert.equal(raised.report.excluded_pairs.length, 0);
-  assert.equal(raised.datasets.spatial_v3_line_kind_profiles.find((row) => row.line_kind_id === 'river_channel').max_segment_minutes, 60);
-  assert.equal(rowOf(raised, 'cg5bindv3__g4dirv3r__p2').base_minutes, 40);
-  assert.deepEqual(checkLineWaveData(raised.datasets, { spec, maxSegmentMinutes: 60 }), []);
-  assert.ok(checkLineWaveData(raised.datasets, { spec }).some((problem) => /route_segment_too_long/.test(problem)),
-    'the same rows violate the default limit of 30');
+  assert.deepEqual(rowOf(wave, 'cg5bindv3__g4dirv3f__p2').base_minutes, 40, 'a 40-minute line is kept');
+  assert.equal(wave.report.counts.pairs, 2);
+  assert.deepEqual(wave.report.long_lines.map((line) => [line.id.slice(-5), line.minutes, line.slice_step_minutes, line.recheck_policy_id, line.slices]),
+    [['f__p2', 40, 30, 'recheck.water_15m', 2], ['r__p2', 40, 30, 'recheck.water_15m', 2]]);
+  assert.equal(wave.datasets.spatial_v3_line_kind_profiles.find((row) => row.line_kind_id === 'river_channel').max_segment_minutes, 30);
+  assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
+  // the same rows without a slicing policy are a violation; progress slices are checked against the line's minutes
+  const kinds = (policy) => rules({ recheckPolicies: new Map([...policies, ['recheck.water_15m', policy]]) });
+  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'segment_once' })).join('|'), /line_slicing.*segment_once/);
+  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_time_interval', interval_minutes: 45 })).join('|'), /line_slicing/);
+  assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 800000 })).join('|'), /line_slicing/, '40 x 0.8 = 32 > 30');
+  assert.deepEqual(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 700000 })), [], '40 x 0.7 = 28 <= 30');
 });
 
-test('a pair with one direction over the limit is excluded whole', () => {
-  const input = fixture();
-  input.derivedLines[1].proposed_minutes = 31;
-  const wave = buildLineWave(lenient(input));
-  assert.deepEqual(wave.report.excluded_pairs.map((pair) => pair.source_pair_id), ['pepv3__p1', 'pepv3__p2']);
-  assert.equal(wave.datasets.spatial_v3_canonical_g5_connection_bindings.length, 0);
+test('the slice step is a parameter of the generator and of the profile', () => {
+  const wave = build({}, { sliceStepMinutes: 20 });
+  assert.ok(wave.datasets.spatial_v3_line_kind_profiles.every((row) => row.max_segment_minutes === 20));
+  assert.deepEqual(wave.report.long_lines.map((line) => line.minutes), [40, 40]);
+  assert.deepEqual(checkLineWaveData(wave.datasets, rules({ sliceStepMinutes: 20 })), [], 'water rechecks every 15 minutes');
+  const fine = build({}, { sliceStepMinutes: 10 });
+  assert.deepEqual(fine.report.long_lines.map((line) => line.minutes), [12, 40, 40]);
+  assert.match(checkLineWaveData(fine.datasets, rules({ sliceStepMinutes: 10 })).join('|'), /line_slicing.*recheck.land_30m/, 'a 12-minute path under a 30-minute recheck and a 10-minute step');
 });
 
 test('authoring versions carry the canonical digest of each row, three dependency edges per binding', () => {
@@ -104,7 +113,7 @@ test('the validator rejects each violated rule of Appendix F §4.7.2 / the bindi
   const mutate = (change) => {
     const wave = build();
     change(wave.datasets.spatial_v3_canonical_g5_connection_bindings);
-    return checkLineWaveData(wave.datasets, { spec }).join(' | ');
+    return checkLineWaveData(wave.datasets, rules()).join(' | ');
   };
   assert.match(mutate((rows) => { rows[0].line_name = 'тропа 2'; }), /line_label_invalid.*digit/);
   assert.match(mutate((rows) => { rows[0].line_name = 'вторая тропа'; rows[1].line_name = 'вторая тропа'; }), /line_label_invalid.*ordinal/);
@@ -114,10 +123,13 @@ test('the validator rejects each violated rule of Appendix F §4.7.2 / the bindi
   assert.doesNotMatch(mutate((rows) => { rows[0].line_name = 'пятнистой тропой'; rows[1].line_name = 'пятнистой тропой'; }), /line_label_invalid/);
   assert.match(mutate((rows) => { rows[1].line_name = 'иным именем'; }), /reverse.*line_name/);
   assert.match(mutate((rows) => { rows[1].from_scene_endpoint_slot_key = 'departure'; rows[1].to_scene_endpoint_slot_key = 'arrival'; }), /paired-slot/);
-  assert.match(mutate((rows) => { rows[0].base_minutes = 31; }), /route_segment_too_long/);
+  assert.doesNotMatch(mutate((rows) => { rows[0].base_minutes = 61; rows[0].line_name = rows[0].line_name; }), /route_segment_too_long/, 'D56: no ceiling');
   assert.match(mutate((rows) => { rows[1].base_minutes = 0; }), /base_minutes/);
   assert.match(mutate((rows) => { rows[0].reverse_binding_version = 2; }), /reverse.*@3/);
   assert.match(mutate((rows) => { rows[0].availability_condition_set_ref = 'availability.x@1'; }), /availability/);
+  // near-duplicates at one place: the same set of content words (REVIEW limit of the line-names approval)
+  assert.match(mutate((rows) => { rows.push({ ...rows[0], id: 'cg5bindv3__g4dirv3f__near', line_name: 'вдоль ручья тропой', to_canonical_g5_id: g5('z'), reverse_binding_id: 'nope' }); }), /line_label_near_duplicate/);
+  assert.doesNotMatch(mutate((rows) => { rows.push({ ...rows[0], id: 'cg5bindv3__g4dirv3f__other', line_name: 'тропой через брод', to_canonical_g5_id: g5('z'), reverse_binding_id: 'nope' }); }), /near_duplicate/);
   // two outgoing lines of one place with the same (line_name, discriminator, direction)
   assert.match(mutate((rows) => { rows.push({ ...rows[0], id: 'cg5bindv3__g4dirv3f__extra', to_canonical_g5_id: g5('z'), reverse_binding_id: 'nope' }); }), /line_label_duplicate/);
 });
@@ -125,28 +137,23 @@ test('the validator rejects each violated rule of Appendix F §4.7.2 / the bindi
 // Data of the committed candidate, produced by the generator from the active binding@2, the approved place-geo minutes and the line-names candidate.
 const datasetsDir = `${LINE_WAVE_DIR}/datasets`;
 const table = (name) => read(`${datasetsDir}/${name}.json`);
+const committedPolicies = () => new Map(read('data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_dynamic_recheck_policies.json').map((row) => [row.id, row]));
 const committed = () => Object.fromEntries(['spatial_v3_line_kind_profiles', 'spatial_v3_line_kind_alternative_methods',
   'spatial_v3_movement_method_cost_profiles', 'spatial_v3_movement_method_cost_options', 'spatial_v3_transition_environment_profiles',
   'spatial_v3_canonical_g5_connection_bindings', 'spatial_v3_authoring_versions', 'spatial_v3_authoring_dependency_edges', 'source_records']
   .map((name) => [name, table(name)]));
 
-test('committed candidate: 440 lines of 220 pairs, the 7 pairs over 30 minutes wait for D2, all rules hold', () => {
+test('committed candidate: all 454 lines of 227 pairs (D56), long lines are sliced, all rules hold', () => {
   const data = committed();
   const report = read(`${LINE_WAVE_DIR}/generator-report.json`);
-  assert.equal(data.spatial_v3_canonical_g5_connection_bindings.length, 440);
-  assert.equal(report.counts.pairs, 220);
-  assert.equal(report.counts.base_bindings, 454);
-  assert.deepEqual(report.excluded_pairs.map((pair) => pair.source_pair_id.replace(/^.*xp017_yp026_/, '')).sort(), [
+  assert.equal(data.spatial_v3_canonical_g5_connection_bindings.length, 454);
+  assert.deepEqual([report.counts.pairs, report.counts.base_bindings, report.counts.long_lines], [227, 454, 14]);
+  assert.deepEqual([...new Set(report.long_lines.map((line) => line.id.replace(/^.*xp017_yp026_/, '').replace(/^.*g4route_gn_nov_g3_/, '')))].sort(), [
     'r2_flooded_interior_basin_3', 'r2_flooded_interior_basin_cycle', 'r2_forest_stream_route_cross', 'r2_vikhtuy_resource_edge_1',
     'r2_vikhtuy_resource_edge_cycle', 'r2_wet_conifer_tract_1', 'r2_wet_conifer_tract_cycle']);
-  assert.ok(report.excluded_pairs.every((pair) => pair.status === 'waits_for_D2' && pair.max_segment_minutes === 30));
-  assert.deepEqual(report.limit_sensitivity.map((row) => [row.max_segment_minutes, row.pairs_included]),
-    [[30, 220], [35, 224], [40, 226], [48, 227], [60, 227]], 'D2: the limit is a parameter; what each value would admit');
-  assert.equal(report.connectivity.components_before, 32);
-  assert.equal(report.connectivity.components_after, 34);
-  assert.deepEqual(report.connectivity.places_without_local_line.map((id) => id.replace(/^.*xp017_yp026_/, '')).sort(),
-    ['r2_vikhtuy_resource_edge_river_edge', 'r2_wet_conifer_tract_river_edge']);
-  assert.deepEqual(checkLineWaveData(data, { spec }), []);
+  assert.ok(report.long_lines.every((line) => line.minutes > line.slice_step_minutes && line.slices === Math.ceil(line.minutes / line.slice_step_minutes)));
+  assert.deepEqual([report.connectivity.components_before, report.connectivity.components_after, report.connectivity.places_without_local_line], [32, 32, []]);
+  assert.deepEqual(checkLineWaveData(data, { spec, recheckPolicies: committedPolicies() }), []);
 });
 
 test('committed candidate: minutes are the place-geo proposed minutes, names are the line-names names, nothing is invented', () => {
@@ -154,7 +161,7 @@ test('committed candidate: minutes are the place-geo proposed minutes, names are
   const derived = new Map(read('data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json').lines.map((line) => [line.id, line.proposed_minutes]));
   for (const row of data.spatial_v3_canonical_g5_connection_bindings) {
     assert.equal(row.base_minutes, derived.get(row.id), row.id);
-    assert.ok(row.base_minutes >= 1 && row.base_minutes <= 30);
+    assert.ok(Number.isInteger(row.base_minutes) && row.base_minutes >= 1);
   }
   const base = read('data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json')
     .filter((row) => row.version === 2);
@@ -165,8 +172,14 @@ test('committed candidate: minutes are the place-geo proposed minutes, names are
   }
 });
 
-const lineNamesPresent = existsSync(resolve(root, LINE_NAMES_PATH));
-test('committed candidate: regenerating from the inputs gives the same bytes (--check)',
-  { skip: lineNamesPresent ? false : `${LINE_NAMES_PATH} is not merged yet (fleet/line-names, PLAN-OK-rt-lines-a)` }, async () => {
-    await runLineWave({ check: true });
-  });
+test('committed candidate: regenerating from the inputs in the tree gives the same bytes (--check)', async () => {
+  await runLineWave({ check: true });
+});
+
+test('committed candidate: names are the approved line-names names; near-similar names at one place are reported, none identical', () => {
+  const data = committed();
+  const report = read(`${LINE_WAVE_DIR}/generator-report.json`);
+  const names = new Map(read('data/world-catalogs/novgorod/m2c-line-names/candidate.json').local_pairs.map((pair) => [pair.source_pair_id, pair.name_ru]));
+  for (const row of data.spatial_v3_canonical_g5_connection_bindings) assert.equal(row.line_name, names.get(row.source_pair_id), row.id);
+  assert.ok(Number.isInteger(report.matches.similar_but_distinct_names_at_one_place));
+});

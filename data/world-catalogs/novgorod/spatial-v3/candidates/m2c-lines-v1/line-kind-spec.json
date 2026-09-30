@@ -1,8 +1,8 @@
 {
   "schema": "rus.m2c_lines_v1_line_kind_spec.v1",
   "status": "candidate_unapproved",
-  "note": "Authoring input of tools/spatial-v3/build-line-wave.mjs. Refs reuse the route-segment profiles of the active bundle by kind (cprofv3__world_route_segment__*); method ids are the registry v5 controlled_movement_method values (PLAN-OK-rt-lines-a D5). Values marked assumption or editorial have no source in the repository and wait for the Opus data pass.",
-  "max_segment_minutes_default": 30,
+  "note": "Authoring input of tools/spatial-v3/build-line-wave.mjs. Refs reuse the route-segment profiles of the active bundle by kind (cprofv3__world_route_segment__*); method ids are the registry v5 controlled_movement_method values (PLAN-OK-rt-lines-a D5). Values marked assumption or editorial have no source in the repository and wait for the Opus data pass. D56 (2026-09-30): the ceiling of 30 minutes per segment is removed; a line longer than the step has a recheck policy that slices it (fixed_time_interval or fixed_progress_slices, slice <= step). `max_segment_minutes` of a profile is that step.",
+  "slice_step_minutes_default": 30,
   "movement_method_map": {
     "movement.foot": "movement_method.walk",
     "movement.small_river_craft": "movement_method.boat_rowed",

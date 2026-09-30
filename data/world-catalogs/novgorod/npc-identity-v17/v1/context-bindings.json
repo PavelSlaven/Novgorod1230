@@ -12,6 +12,11 @@
       "regional_context_id": "m2c_npc_regional_novgorod_canonical_initial_v1",
       "name_pool_id": "novgorod_1230_1250_personal_names_v1",
       "people_ref": "pp_novgorod_rus"
+    },
+    {
+      "regional_context_id": "m2c_npc_regional_novgorod_land_d2_v1",
+      "name_pool_id": "novgorod_1230_1250_personal_names_v1",
+      "people_ref": "pp_novgorod_rus"
     }
   ]
 }

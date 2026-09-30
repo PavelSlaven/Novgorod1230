@@ -36,7 +36,7 @@
       },
       {
         "path": "data/world-catalogs/novgorod/npc-identity-v17/v1/context-bindings.json",
-        "sha256": "5411a38e2b575fc389a9aeaf3b66b495da896780ce498d464d2666971fdc5315"
+        "sha256": "24eadb203631f7deeaef5aab72b8cc7b24289046707a243bfb6e4a376a8f1c6c"
       }
     ],
     "approved_subset": {
@@ -48,7 +48,8 @@
       },
       "context_bindings": [
         "m2c_npc_regional_novgorod_land_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus",
-        "m2c_npc_regional_novgorod_canonical_initial_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus"
+        "m2c_npc_regional_novgorod_canonical_initial_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus",
+        "m2c_npc_regional_novgorod_land_d2_v1 -> novgorod_1230_1250_personal_names_v1 / pp_novgorod_rus"
       ],
       "goal_items": 265,
       "fear_items": 158,
@@ -73,7 +74,7 @@
       },
       {
         "table": "npc_regional_context_name_bindings",
-        "rows": 2
+        "rows": 3
       },
       {
         "table": "npc_psychology_scale_entries",
@@ -90,19 +91,19 @@
     ]
   },
   "sql": {
-    "commit_sha256": "b4812c6347b7d42edc3ab55413b92de9bc2ec1da9ffc0e3817d38fc813ea7cc1",
-    "commit_bytes": 452512,
-    "rollback_sha256": "2b0a2c55a0a07b209a5ece6149b54ffbcd51f4832c3873f0544f09e0b144fc02",
-    "rollback_bytes": 452514
+    "commit_sha256": "ef7d22a2ed917fd3fd7ea2dfa7d97d7095188a1140cbc4d3049d91a228f7ab77",
+    "commit_bytes": 452849,
+    "rollback_sha256": "8e6ae63d2949b0821526824454c9249884f3a87085b4efd94b60e5832a939553",
+    "rollback_bytes": 452851
   },
   "expected_readback": {
     "by_table": {
       "region_name_pools": 7,
       "region_name_pool_entries": 337,
-      "npc_regional_context_name_bindings": 2,
+      "npc_regional_context_name_bindings": 3,
       "npc_psychology_scale_entries": 13,
       "occupation_character_items": 423
     }
   },
-  "request_digest": "85678239538465b7b9863ba56f4edffeb40a2357fd5c948eef2ff4e390b39feb"
+  "request_digest": "abb71452502c01f2e9f6be4c9130367983f1e888ed1888c4f9dac263b1c7e927"
 }

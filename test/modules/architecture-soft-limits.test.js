@@ -1,13 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 
-test('architecture file-size guidelines warn without becoming violations', async () => {
+// Owner decision 2026-09-29 (AI §16, MODULE_RULES item 7): there is no file-size threshold.
+test('architecture check has no file-size findings and does not fail on file size', async () => {
   const source = await readFile(new URL('../../tools/architecture/check-boundaries.mjs',
     import.meta.url), 'utf8');
-  const sizeChecks = source.split('\n').filter((line) =>
-    /split\('\\n'\)\.length|Buffer\.byteLength|size > hardBytes/u.test(line));
-  assert.ok(sizeChecks.length > 0);
-  assert.equal(sizeChecks.some((line) => line.includes('violations.push')), false);
-  assert.match(source, /Architecture warnings/u);
+  assert.doesNotMatch(source,
+    /split\('\\n'\)\.length|Buffer\.byteLength|hardBytes|Architecture warnings/u);
+  const run = spawnSync(process.execPath, ['tools/architecture/check-boundaries.mjs'], {
+    encoding: 'utf8'
+  });
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.doesNotMatch(run.stdout + run.stderr, /warning|lines|bytes|size/iu);
 });

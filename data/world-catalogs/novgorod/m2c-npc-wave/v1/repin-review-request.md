@@ -72,3 +72,22 @@ game-base lw-env (#176, коммит 25ea56d4 — после старого пи
 
 Группы: `pf_riverbank.shore_worker` (рыбак, `profile_ref m2c_npc_fisher_v1`), `pf_rural_yard.householder`, `pf_village_lane.householder` (роль `nov_role_smerd_householder`, profile_ref null). Основание — решение владельца D49; confidence C. Правила присутствия тех же PF/субъектов переведены в `creation_owner=composition` (валидатор game-base запрещает дублирование). Порог действует на канонических узлах PF: pf_riverbank 70, pf_village_lane 3, pf_rural_yard 1; правило — минимум один человек **при первом входе**.
 Как переподписать: как выше — заменить `checked_by`/`checked_at`, удалить `resign_required`.
+
+# Добавка D53 (ferry-guard): сторож снят с пристани и ледовой переправы, пин 81d96576
+Статус: **на переподпись ревьюером**. `source_commit` = `81d965760627482f4173cabb6bc4d54d1959dacb` (ветка fleet/ferry-guard поверх c79852e7; меняет только game-base: состав D-2, расписания, производные пары, пост `ms_post_ferry_crossing`, пометка термина). Подпись `checked_by`/`checked_at` относится к пину c79852e7 (метка `resign_required`). `v17-import-attestation.json` не тронут: его `request_digest` (13bed293…) больше не совпадает с запросом, новый — `291d6967dbfcf78230d4953219cc63747c5438571251cfbb00bac492624695ab` (пересчитан JS `computeWaveRequestDigest` и независимо Python: `json.dumps(sort_keys, separators=(',',':'), ensure_ascii=False)`, совпали; `assertWaveInputs` PASS).
+
+Воспроизвести: `M2C_SOURCE_COMMIT=81d965760627482f4173cabb6bc4d54d1959dacb node scripts/generate-m2c-npc-wave-datasets.mjs`.
+
+Основание — решение владельца D53: роли «сторож брода или переправы» нет в источниках (в индексе книг точные фразы 0 попаданий), на перевозе остаётся один перевозчик. Занятие `nov_occ_crossing_guard` остаётся в каталоге (D38).
+
+Сверка с прежней волной (`wave-repin-diff.py`, `provenance_ref` игнорируется):
+| table | old | new | removed | changed |
+|---|---|---|---|---|
+| npc_relationship_materialization_rules | 53 | 46 | 7 (пары сторожа с перевозчиком, рыбаком, пастухом, слугой, охотником, зимним дорожным работником, домохозяином) | 0 |
+| speech_address_forms | 98 | 84 | 14 (те же 7 пар в обе стороны) | 0 |
+| npc_schedule_routine_rules | 167 | 161 | 6 (`sch_nov_occ_crossing_guard_*`) | 0 |
+| place_population_composition_rules | 17 | 17 | 0 | 2: `pf_ferry_landing` (группа `pf_ferry_landing.crossing_guard` и обе зимние записи о сторожа убраны, причина отсутствия перевозчика без сторожа), `pf_winter_ice_crossing` (запись о сторожа убрана) |
+Остальные 10 таблиц (в т.ч. presence_rules 5737, household 139) — только пин в `provenance_ref`; `source_records` — id/title/file_reference (пин).
+
+Что проверить: (1) удалённые строки — ровно все, где сторож; ни одна пара других занятий не пострадала; (2) `pf_ferry_landing` — одна группа `ferryman` (min=max=1); (3) `ferry_pairs`/`winter_pair` в `households check.py` теперь на перевозчике; (4) LW-121. Строки волны v1 изменены на месте под тем же {id, version} (как LW-119): пару v17 пересобирать.
+Как переподписать: заменить `checked_by`/`checked_at` в `approval.json`, удалить `resign_required`, пересчитать `approval_sha256` в `v17-import-request.json` и `request_digest`, затем аттестовать новый `request_digest`.

@@ -137,7 +137,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "book:622242 ¶519;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -284,7 +284,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "book:622242 ¶519;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -431,7 +431,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "book:622242 ¶519;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -578,7 +578,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "book:622242 ¶519;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -725,7 +725,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_blacksmith:where_work_happens;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -872,7 +872,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_blacksmith:where_work_happens;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -1019,7 +1019,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_blacksmith:where_work_happens;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -1166,7 +1166,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_blacksmith:where_work_happens;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -1313,7 +1313,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_boatman:occupation_title;places-binding/places/place_families.csv#pf_river_channel;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_boatman",
@@ -1460,7 +1460,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_boatman:occupation_title;places-binding/places/place_families.csv#pf_river_channel;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_boatman",
@@ -1607,7 +1607,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_boatman:occupation_title;places-binding/places/place_families.csv#pf_river_channel;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_boatman",
@@ -1754,7 +1754,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_boatman:occupation_title;places-binding/places/place_families.csv#pf_river_channel;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_boatman",
@@ -1901,7 +1901,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_carpenter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -2048,7 +2048,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_carpenter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -2195,7 +2195,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_carpenter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -2342,7 +2342,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_carpenter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -2489,7 +2489,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_cart_driver:occupation_title;places-binding/places/place_families.csv#pf_road;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_cart_driver",
@@ -2636,7 +2636,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_cart_driver:occupation_title;places-binding/places/place_families.csv#pf_road;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_cart_driver",
@@ -2783,7 +2783,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_cart_driver:occupation_title;places-binding/places/place_families.csv#pf_road;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_cart_driver",
@@ -2930,7 +2930,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_cart_driver:occupation_title;places-binding/places/place_families.csv#pf_road;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_cart_driver",
@@ -3007,7 +3007,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:night_behavior;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -3154,7 +3154,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:where_work_happens;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -3231,7 +3231,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:night_behavior;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -3378,7 +3378,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:where_work_happens;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -3455,7 +3455,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:night_behavior;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -3602,7 +3602,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:where_work_happens;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -3679,7 +3679,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:night_behavior;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -3826,612 +3826,10 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_church_guard:where_work_happens;places-binding/places/place_families.csv#pf_churchyard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
-      "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
-      "no_source": "no_source:exact_clock_times_and_individual_presence",
-      "csv_status": "candidate"
-    }
-  },
-  {
-    "schedule_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_night_watch_autumn",
-    "schedule_version": 2,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "scope_kind": "place_family",
-    "scope_ref": "pf_ferry_landing",
-    "subject_kind": "occupation",
-    "subject_ref": "nov_occ_crossing_guard",
-    "season": "autumn",
-    "months": [
-      9,
-      10,
-      11
-    ],
-    "day_type": "night_watch",
-    "routine_profile": {
-      "schema": "npc_routine_profile_v1",
-      "profile_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_night_watch_autumn",
-      "revision": 2,
-      "status": "approved",
-      "phases": [
-        {
-          "state_id": "night_work",
-          "duration_minutes": 120,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "day_rest",
-          "duration_minutes": 960,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_day_rest_v1",
-          "summary": "Отдых между ночными сменами; место ночлега не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "night_work_after_dusk",
-          "duration_minutes": 360,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_after_dusk_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        }
-      ],
-      "local_start_minute": 0
-    },
-    "status": "approved",
-    "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
-    "authoring_payload": {
-      "place_access_ref": null,
-      "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard:night_behavior;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
-      "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
-      "no_source": "no_source:exact_clock_times_and_individual_presence",
-      "csv_status": "candidate"
-    }
-  },
-  {
-    "schedule_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_night_watch_spring",
-    "schedule_version": 2,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "scope_kind": "place_family",
-    "scope_ref": "pf_ferry_landing",
-    "subject_kind": "occupation",
-    "subject_ref": "nov_occ_crossing_guard",
-    "season": "spring",
-    "months": [
-      3,
-      4,
-      5
-    ],
-    "day_type": "night_watch",
-    "routine_profile": {
-      "schema": "npc_routine_profile_v1",
-      "profile_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_night_watch_spring",
-      "revision": 2,
-      "status": "approved",
-      "phases": [
-        {
-          "state_id": "night_work",
-          "duration_minutes": 120,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "day_rest",
-          "duration_minutes": 1048,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_day_rest_v1",
-          "summary": "Отдых между ночными сменами; место ночлега не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "night_work_after_dusk",
-          "duration_minutes": 272,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_after_dusk_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        }
-      ],
-      "local_start_minute": 0
-    },
-    "status": "approved",
-    "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
-    "authoring_payload": {
-      "place_access_ref": null,
-      "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard:night_behavior;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
-      "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
-      "no_source": "no_source:exact_clock_times_and_individual_presence",
-      "csv_status": "candidate"
-    }
-  },
-  {
-    "schedule_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_night_watch_summer",
-    "schedule_version": 2,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "scope_kind": "place_family",
-    "scope_ref": "pf_ferry_landing",
-    "subject_kind": "occupation",
-    "subject_ref": "nov_occ_crossing_guard",
-    "season": "summer",
-    "months": [
-      6,
-      7,
-      8
-    ],
-    "day_type": "night_watch",
-    "routine_profile": {
-      "schema": "npc_routine_profile_v1",
-      "profile_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_night_watch_summer",
-      "revision": 2,
-      "status": "approved",
-      "phases": [
-        {
-          "state_id": "night_work",
-          "duration_minutes": 120,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "day_rest",
-          "duration_minutes": 1123,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_day_rest_v1",
-          "summary": "Отдых между ночными сменами; место ночлега не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "night_work_after_dusk",
-          "duration_minutes": 197,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_after_dusk_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        }
-      ],
-      "local_start_minute": 0
-    },
-    "status": "approved",
-    "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
-    "authoring_payload": {
-      "place_access_ref": null,
-      "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard:night_behavior;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
-      "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
-      "no_source": "no_source:exact_clock_times_and_individual_presence",
-      "csv_status": "candidate"
-    }
-  },
-  {
-    "schedule_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_normal_summer",
-    "schedule_version": 2,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "scope_kind": "place_family",
-    "scope_ref": "pf_ferry_landing",
-    "subject_kind": "occupation",
-    "subject_ref": "nov_occ_crossing_guard",
-    "season": "summer",
-    "months": [
-      6,
-      7,
-      8
-    ],
-    "day_type": "normal",
-    "routine_profile": {
-      "schema": "npc_routine_profile_v1",
-      "profile_id": "sch_nov_occ_crossing_guard_pf_ferry_landing_normal_summer",
-      "revision": 2,
-      "status": "approved",
-      "phases": [
-        {
-          "state_id": "sleep_before_dawn",
-          "duration_minutes": 206,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_sleep_before_dawn_v1",
-          "summary": "Ночной сон; место неизвестно.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "ночлег требует индивидуальной привязки"
-        },
-        {
-          "state_id": "preparation",
-          "duration_minutes": 60,
-          "runtime_status": "available",
-          "activity_ref": "routine_preparation_v1",
-          "summary": "Готовится к работе дома; место не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "дома; место не установлено"
-        },
-        {
-          "state_id": "morning_work",
-          "duration_minutes": 454,
-          "runtime_status": "available",
-          "activity_ref": "routine_morning_work_v1",
-          "summary": "наблюдает за местом переправы",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "noon_meal",
-          "duration_minutes": 45,
-          "runtime_status": "available",
-          "activity_ref": "routine_noon_meal_v1",
-          "summary": "Полуденная трапеза (аналогия).",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "post_meal_rest",
-          "duration_minutes": 90,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_post_meal_rest_v1",
-          "summary": "Послеобеденный отдых (аналогия; длительность редакционная).",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "afternoon_work",
-          "duration_minutes": 388,
-          "runtime_status": "available",
-          "activity_ref": "routine_afternoon_work_v1",
-          "summary": "наблюдает за местом переправы",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_ferry_landing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "evening_tasks",
-          "duration_minutes": 77,
-          "runtime_status": "available",
-          "activity_ref": "routine_evening_tasks_v1",
-          "summary": "Вечерние дела дома; место не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "дома; место не установлено"
-        },
-        {
-          "state_id": "sleep_after_dusk",
-          "duration_minutes": 120,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_sleep_after_dusk_v1",
-          "summary": "Ночной сон; место неизвестно.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "ночлег требует индивидуальной привязки"
-        }
-      ],
-      "local_start_minute": 0
-    },
-    "status": "approved",
-    "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
-    "authoring_payload": {
-      "place_access_ref": null,
-      "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard:where_work_happens;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
-      "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
-      "no_source": "no_source:exact_clock_times_and_individual_presence",
-      "csv_status": "candidate"
-    }
-  },
-  {
-    "schedule_id": "sch_nov_occ_crossing_guard_pf_winter_ice_crossing_night_watch_winter",
-    "schedule_version": 2,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "scope_kind": "place_family",
-    "scope_ref": "pf_winter_ice_crossing",
-    "subject_kind": "occupation",
-    "subject_ref": "nov_occ_crossing_guard",
-    "season": "winter",
-    "months": [
-      12,
-      1,
-      2
-    ],
-    "day_type": "night_watch",
-    "routine_profile": {
-      "schema": "npc_routine_profile_v1",
-      "profile_id": "sch_nov_occ_crossing_guard_pf_winter_ice_crossing_night_watch_winter",
-      "revision": 2,
-      "status": "approved",
-      "phases": [
-        {
-          "state_id": "night_work",
-          "duration_minutes": 120,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_winter_ice_crossing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "day_rest",
-          "duration_minutes": 960,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_day_rest_v1",
-          "summary": "Отдых между ночными сменами; место ночлега не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "night_work_after_dusk",
-          "duration_minutes": 360,
-          "runtime_status": "available",
-          "activity_ref": "routine_night_work_after_dusk_v1",
-          "summary": "Ночная стража при назначенной смене.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_winter_ice_crossing",
-          "absence_reason_ru": ""
-        }
-      ],
-      "local_start_minute": 0
-    },
-    "status": "approved",
-    "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
-    "authoring_payload": {
-      "place_access_ref": null,
-      "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard:night_behavior;places-binding/places/place_families.csv#pf_winter_ice_crossing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
-      "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
-      "no_source": "no_source:exact_clock_times_and_individual_presence",
-      "csv_status": "candidate"
-    }
-  },
-  {
-    "schedule_id": "sch_nov_occ_crossing_guard_pf_winter_ice_crossing_normal_winter",
-    "schedule_version": 2,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "scope_kind": "place_family",
-    "scope_ref": "pf_winter_ice_crossing",
-    "subject_kind": "occupation",
-    "subject_ref": "nov_occ_crossing_guard",
-    "season": "winter",
-    "months": [
-      12,
-      1,
-      2
-    ],
-    "day_type": "normal",
-    "routine_profile": {
-      "schema": "npc_routine_profile_v1",
-      "profile_id": "sch_nov_occ_crossing_guard_pf_winter_ice_crossing_normal_winter",
-      "revision": 2,
-      "status": "approved",
-      "phases": [
-        {
-          "state_id": "sleep_before_dawn",
-          "duration_minutes": 270,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_sleep_before_dawn_v1",
-          "summary": "Ночной сон; место неизвестно.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "ночлег требует индивидуальной привязки"
-        },
-        {
-          "state_id": "preparation",
-          "duration_minutes": 238,
-          "runtime_status": "available",
-          "activity_ref": "routine_preparation_v1",
-          "summary": "Готовится к работе дома; место не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "дома; место не установлено"
-        },
-        {
-          "state_id": "morning_work",
-          "duration_minutes": 212,
-          "runtime_status": "available",
-          "activity_ref": "routine_morning_work_v1",
-          "summary": "наблюдает за ледовой переправой",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_winter_ice_crossing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "noon_meal",
-          "duration_minutes": 45,
-          "runtime_status": "available",
-          "activity_ref": "routine_noon_meal_v1",
-          "summary": "Полуденная трапеза (аналогия).",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "post_meal_rest",
-          "duration_minutes": 90,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_post_meal_rest_v1",
-          "summary": "Послеобеденный отдых (аналогия; длительность редакционная).",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "место вне службы требует индивидуальной привязки"
-        },
-        {
-          "state_id": "afternoon_work",
-          "duration_minutes": 104,
-          "runtime_status": "available",
-          "activity_ref": "routine_afternoon_work_v1",
-          "summary": "наблюдает за ледовой переправой",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "on_site",
-          "location_ref": "pf_winter_ice_crossing",
-          "absence_reason_ru": ""
-        },
-        {
-          "state_id": "evening_tasks",
-          "duration_minutes": 301,
-          "runtime_status": "available",
-          "activity_ref": "routine_evening_tasks_v1",
-          "summary": "Вечерние дела дома; место не установлено.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "дома; место не установлено"
-        },
-        {
-          "state_id": "sleep_after_dusk",
-          "duration_minutes": 180,
-          "runtime_status": "sleeping",
-          "activity_ref": "routine_sleep_after_dusk_v1",
-          "summary": "Ночной сон; место неизвестно.",
-          "activity_status": "active",
-          "uses_current_activity": false,
-          "can_continue_automatically": true,
-          "decision_required": false,
-          "presence_state": "away",
-          "location_ref": null,
-          "absence_reason_ru": "ночлег требует индивидуальной привязки"
-        }
-      ],
-      "local_start_minute": 0
-    },
-    "status": "approved",
-    "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
-    "authoring_payload": {
-      "place_access_ref": null,
-      "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_crossing_guard:where_work_happens;places-binding/places/place_families.csv#pf_winter_ice_crossing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
       "source_rule_ref": "rule:editorial_daylight_phase_partition_v2",
       "no_source": "no_source:exact_clock_times_and_individual_presence",
       "csv_status": "candidate"
@@ -4575,7 +3973,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman:occupation_title;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_ferryman",
@@ -4722,7 +4120,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman:occupation_title;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_ferryman",
@@ -4869,7 +4267,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman:where_work_happens;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_ferryman",
@@ -5016,7 +4414,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ferryman:where_work_happens;places-binding/places/place_families.csv#pf_ferry_landing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_winter_ice_crossing;places-binding/presence/people_presence_authoring.csv#nov_occ_ferryman",
@@ -5163,7 +4561,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fish_weir_keeper:where_work_happens;places-binding/places/place_families.csv#pf_fishing_camp;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_riverbank",
@@ -5310,7 +4708,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:where_work_happens;places-binding/places/place_families.csv#pf_fishing_camp;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_riverbank",
@@ -5457,7 +4855,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:where_work_happens;places-binding/places/place_families.csv#pf_fishing_camp;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -5604,7 +5002,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:occupation_title;places-binding/places/place_families.csv#pf_riverbank;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_fisher",
@@ -5751,7 +5149,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:occupation_title;places-binding/places/place_families.csv#pf_riverbank;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_fisher",
@@ -5828,7 +5226,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:night_behavior;places-binding/places/place_families.csv#pf_riverbank;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_fisher;book:622242 ¶1435",
@@ -5975,7 +5373,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:occupation_title;places-binding/places/place_families.csv#pf_riverbank;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_fisher",
@@ -6122,7 +5520,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_fisher:occupation_title;places-binding/places/place_families.csv#pf_riverbank;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_fisher",
@@ -6269,7 +5667,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_forest_worker:occupation_title;places-binding/places/place_families.csv#pf_conifer_woodland;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_forest_worker",
@@ -6416,7 +5814,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_forest_worker:occupation_title;places-binding/places/place_families.csv#pf_conifer_woodland;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_forest_worker",
@@ -6563,7 +5961,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_forest_worker:occupation_title;places-binding/places/place_families.csv#pf_conifer_woodland;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_forest_worker",
@@ -6710,7 +6108,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_forest_worker:occupation_title;places-binding/places/place_families.csv#pf_conifer_woodland;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_forest_worker",
@@ -6857,7 +6255,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_haymaker:where_work_happens;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_hay_meadow;book:622242 ¶519",
@@ -7004,7 +6402,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_herder:occupation_title;places-binding/places/place_families.csv#pf_floodplain_meadow;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_herder",
@@ -7151,7 +6549,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_herder:occupation_title;places-binding/places/place_families.csv#pf_floodplain_meadow;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_herder",
@@ -7298,7 +6696,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_herder:occupation_title;places-binding/places/place_families.csv#pf_floodplain_meadow;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_herder",
@@ -7445,7 +6843,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_herder:where_work_happens;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_pasture;book:622242 ¶519",
@@ -7592,7 +6990,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_herder:where_work_happens;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -7739,7 +7137,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_outbuildings;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_household_servant;book:622242 ¶519;places-binding/places/place_families.csv#pf_rural_yard",
@@ -7886,7 +7284,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_outbuildings;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_household_servant;book:622242 ¶519;places-binding/places/place_families.csv#pf_rural_yard",
@@ -8033,7 +7431,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_outbuildings;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_household_servant;book:622242 ¶519;places-binding/places/place_families.csv#pf_rural_yard",
@@ -8180,7 +7578,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_outbuildings;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_household_servant;book:622242 ¶519;places-binding/places/place_families.csv#pf_rural_yard",
@@ -8327,7 +7725,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -8474,7 +7872,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -8621,7 +8019,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -8768,7 +8166,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_household_servant:occupation_title;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -8915,7 +8313,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_forest_edge;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9062,7 +8460,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_forest_edge;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9209,7 +8607,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_forest_edge;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9356,7 +8754,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_forest_edge;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9503,7 +8901,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_hunting_ground;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9650,7 +9048,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_hunting_ground;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9797,7 +9195,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_hunting_ground;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -9944,7 +9342,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_hunter_trapper:occupation_title;places-binding/places/place_families.csv#pf_hunting_ground;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_hunter_trapper",
@@ -10091,7 +9489,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -10238,7 +9636,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -10385,7 +9783,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -10532,7 +9930,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -10679,7 +10077,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -10826,7 +10224,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -10973,7 +10371,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -11120,7 +10518,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_local_trader:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -11267,7 +10665,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -11344,7 +10742,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:night_behavior;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -11491,7 +10889,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -11638,7 +11036,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -11715,7 +11113,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:night_behavior;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -11862,7 +11260,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -12009,7 +11407,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -12086,7 +11484,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:night_behavior;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -12233,7 +11631,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -12380,7 +11778,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -12457,7 +11855,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:night_behavior;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:185868 ¶684",
@@ -12604,7 +12002,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_guard:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -12751,7 +12149,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -12898,7 +12296,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -13045,7 +12443,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -13192,7 +12590,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -13339,7 +12737,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -13486,7 +12884,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -13633,7 +13031,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:where_work_happens;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967",
@@ -13780,7 +13178,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_market_stall_seller:occupation_title;places-binding/places/place_families.csv#pf_market_square;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -13927,7 +13325,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14074,7 +13472,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14221,7 +13619,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14368,7 +13766,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14515,7 +13913,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14662,7 +14060,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14809,7 +14207,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -14956,7 +14354,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_parish_priest_service:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788",
@@ -15103,7 +14501,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ploughman:where_work_happens;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_arable_field;book:622242 ¶519",
@@ -15250,7 +14648,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ploughman:where_work_happens;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_arable_field;book:622242 ¶519",
@@ -15397,7 +14795,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ploughman:where_work_happens;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -15544,7 +14942,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -15691,7 +15089,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -15838,7 +15236,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -15985,7 +15383,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -16132,7 +15530,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -16279,7 +15677,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -16426,7 +15824,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:where_work_happens;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -16573,7 +15971,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_ponomar:occupation_title;places-binding/places/place_families.csv#pf_church_interior;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:641342 ¶1788;book:641342 ¶1557",
@@ -16720,7 +16118,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_potter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -16867,7 +16265,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_potter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -17014,7 +16412,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_potter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -17161,7 +16559,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_potter:where_work_happens;places-binding/places/place_families.csv#pf_ordinary_workshop;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -17308,7 +16706,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_bog;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -17455,7 +16853,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_bog;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -17602,7 +17000,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_bog;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -17749,7 +17147,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_bog;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -17896,7 +17294,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_forest_track;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18043,7 +17441,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_forest_track;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18190,7 +17588,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_forest_track;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18337,7 +17735,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_forest_track;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18484,7 +17882,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_marshy_stream;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18631,7 +18029,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_marshy_stream;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18778,7 +18176,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_route_guide:occupation_title;places-binding/places/place_families.csv#pf_marshy_stream;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_route_guide",
@@ -18925,7 +18323,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_winter_road_worker:occupation_title;places-binding/places/place_families.csv#pf_winter_ice_crossing;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_occ_winter_road_worker",
@@ -19072,7 +18470,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_locksmith:daily_schedule_autumn;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -19219,7 +18617,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_locksmith:daily_schedule_spring_rasputitsa;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -19366,7 +18764,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_locksmith:daily_schedule_summer;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -19513,7 +18911,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_locksmith:daily_schedule_winter;places-binding/places/place_families.csv#pf_smithy;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter",
@@ -19646,7 +19044,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_autumn;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519;occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter",
@@ -19779,7 +19177,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_autumn;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519;occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter",
@@ -19912,7 +19310,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_spring_rasputitsa;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519;occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter",
@@ -20045,7 +19443,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_spring_rasputitsa;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519;occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter",
@@ -20178,7 +19576,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_summer;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519;occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter",
@@ -20311,7 +19709,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_summer;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519;occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter",
@@ -20444,7 +19842,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:375645 ¶967;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519",
@@ -20577,7 +19975,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_market_baker:daily_schedule_winter;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_market_square;book:622242 ¶519",
@@ -20724,7 +20122,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_autumn;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_fishing_camp;book:622242 ¶519",
@@ -20871,7 +20269,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_spring_rasputitsa;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_fishing_camp;book:622242 ¶519",
@@ -21018,7 +20416,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_summer;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_fishing_camp;book:622242 ¶519",
@@ -21165,7 +20563,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;book:622242 ¶519",
@@ -21312,7 +20710,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -21459,7 +20857,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -21606,7 +21004,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -21753,7 +21151,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;book:622242 ¶519",
@@ -21900,7 +21298,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22047,7 +21445,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22194,7 +21592,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22341,7 +21739,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_peasant_homestead;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22488,7 +21886,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22635,7 +22033,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22782,7 +22180,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -22929,7 +22327,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_rural_yard;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder;book:622242 ¶519",
@@ -23076,7 +22474,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_village_lane;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder",
@@ -23223,7 +22621,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_village_lane;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder",
@@ -23370,7 +22768,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_village_lane;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder",
@@ -23517,7 +22915,7 @@
     },
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
     "authoring_payload": {
       "place_access_ref": null,
       "source_refs": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_smerd_householder;places-binding/places/place_families.csv#pf_village_lane;data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json#record:calendar_daylight_light_profiles:novgorod_1230_1233_v2;book:375645 ¶959;book:375645 ¶960;book:375645 ¶963;book:375645 ¶964;book:375645 ¶965;occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter;places-binding/presence/people_presence_authoring.csv#nov_role_smerd_householder",

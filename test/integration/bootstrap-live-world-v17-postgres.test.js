@@ -120,7 +120,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
           independence_basis: 'Test-only approval fixture', database_mutated: false });
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
-    assert.equal(result.schema.world_tables, 219);
+    assert.equal(result.schema.world_tables, 222);
     assert.equal(result.schema.party_migrations, 37);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     // Distinct across five bundles; independent of the request field the bootstrap returns.

@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 28 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `f25442ebaecce5d4122935f2d94318535b16732c2b34b47c155b0ae5c391eadc`.
-- Таблиц: 219.
+- Исполняемый источник: `infra/world-base/schema.sql` и 29 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `f2d112185729f592cb0b66fb8fbefa8a5df28e5d51aeb179476b3fc2504f3047`.
+- Таблиц: 222.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -3930,10 +3930,20 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `name_form` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `name_category_id` | `TEXT` | да | — | `world_base.universal_categories(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `sex_category` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (sex_category IN ('female', 'male'))` | Пол носителя формы имени: female или male. |
+| `people_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (people_ref ~ '^pp_')` | Народ (pp_* из peoples_origins), которому принадлежит форма имени. |
+| `selection_class` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (selection_class IN ('ordinary', 'dynastic', 'monastic', 'significant'))` | ordinary выбирается процедурно; dynastic, monastic и significant в выбор NPC не входят. |
+| `social_position_archetype_id` | `TEXT` | да | — | `world_base.social_position_archetypes(id) ON DELETE RESTRICT` | — | FK → social_position_archetypes(id): ограничение по положению; NULL — без ограничения. |
+| `derivation_class` | `TEXT` | да | — | — | — | Почему форма считается ordinary (например календарное христианское имя); NULL, если не задано. |
+| `derivation` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `people_derivation` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `evidence_period` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
 
 **Ограничения таблицы:**
 
-- `UNIQUE (name_pool_id, name_form)`
+- `UNIQUE (name_pool_id, name_form, sex_category, people_ref)`
 
 ### `world_base.region_appearance_profiles`
 
@@ -4112,6 +4122,58 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `UNIQUE INDEX region_npc_profile_set_revision (world_revision_id, id) WHERE status = 'approved'`
+
+### `world_base.npc_regional_context_name_bindings`
+
+Пул имён и народ (pp_*), из которого NPC регионального контекста получает личное имя.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `regional_context_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(regional_context_id)) > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `name_pool_id` | `TEXT` | нет | — | `world_base.region_name_pools(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `people_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (people_ref ~ '^pp_')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (regional_context_id, world_revision_id)`
+
+### `world_base.npc_psychology_scale_entries`
+
+Закрытый словарь черт темперамента и ценностей NPC с весом выбора.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `scale_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (scale_kind IN ('trait', 'value'))` | Описание отсутствует. |
+| `entry_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(entry_id)) > 0)` | Описание отсутствует. |
+| `label_ru` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(label_ru)) > 0)` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (world_revision_id, scale_kind, entry_id)`
+
+### `world_base.occupation_character_items`
+
+Кандидаты целей и страхов занятия; NPC выбирает из них по seed.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `world_revision_id` | `TEXT` | нет | — | `world_base.world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `occupation_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(occupation_id)) > 0)` | FK → region_occupations(id): профессия/занятие. |
+| `item_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (item_kind IN ('goal', 'fear'))` | Описание отсутствует. |
+| `item_id` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(item_id)) > 0)` | Описание отсутствует. |
+| `text_ru` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(text_ru)) > 0)` | Описание отсутствует. |
+| `basis` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (basis IN ('sourced', 'logical_necessity', 'analogy'))` | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(confidence)) > 0)` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (world_revision_id, occupation_id, item_kind, item_id)`
 
 ## Materialization v2: G4 и G5
 

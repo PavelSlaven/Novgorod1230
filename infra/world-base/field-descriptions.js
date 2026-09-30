@@ -145,7 +145,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: NPC-профили',
-    tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
+    tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets', 'npc_regional_context_name_bindings', 'npc_psychology_scale_entries', 'occupation_character_items']
   },
   {
     title: 'Materialization v2: G4 и G5',
@@ -287,6 +287,9 @@ export const TABLE_PURPOSE_FALLBACK = {
   region_demographic_profiles: 'Региональные демографические варианты и ограничения.',
   region_name_pools: 'Региональные пулы имён для периода и ревизии.',
   region_name_pool_entries: 'Конкретные утверждённые формы имён и веса.',
+  npc_regional_context_name_bindings: 'Пул имён и народ (pp_*), из которого NPC регионального контекста получает личное имя.',
+  npc_psychology_scale_entries: 'Закрытый словарь черт темперамента и ценностей NPC с весом выбора.',
+  occupation_character_items: 'Кандидаты целей и страхов занятия; NPC выбирает из них по seed.',
   region_appearance_profiles: 'Региональные варианты внешности из разрешённых категорий.',
   region_clothing_profiles: 'Региональные garment slots и ограничения одежды.',
   region_equipment_profiles: 'Профили снаряжения для ролей и занятий.',
@@ -394,6 +397,13 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  region_name_pool_entries: {
+    sex_category: 'Пол носителя формы имени: female или male.',
+    people_ref: 'Народ (pp_* из peoples_origins), которому принадлежит форма имени.',
+    selection_class: 'ordinary выбирается процедурно; dynastic, monastic и significant в выбор NPC не входят.',
+    social_position_archetype_id: 'FK → social_position_archetypes(id): ограничение по положению; NULL — без ограничения.',
+    derivation_class: 'Почему форма считается ordinary (например календарное христианское имя); NULL, если не задано.'
+  },
   item_templates: {
     category_id: 'FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором.',
     world_revision_id: 'FK → world_revisions(id): pinned revision для нового нормализованного authoring template.',

@@ -67,7 +67,32 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     `SELECT count(*)::int AS n FROM information_schema.tables
      WHERE table_schema='world_base'`
   );
-  assert.equal(tables.rows[0].n, 219);
+  assert.equal(tables.rows[0].n, 222);
+  // rt-names: one name form may belong to different sexes and peoples; the same key twice is rejected.
+  await world.query(`INSERT INTO world_base.regions(id) VALUES ('rn-region')`);
+  await world.query(`INSERT INTO world_base.world_revisions(id,title,catalog_digest,status)
+    VALUES ('rn-rev','rn',repeat('b',64),'approved')`);
+  await world.query(`INSERT INTO world_base.region_name_pools(id,world_revision_id,region_id)
+    VALUES ('rn-pool','rn-rev','rn-region')`);
+  const nameRow = (id, sex, people, cls = 'ordinary') => world.query(
+    `INSERT INTO world_base.region_name_pool_entries(id,name_pool_id,name_form,sex_category,people_ref,selection_class)
+     VALUES ($1,'rn-pool','Ярослав',$2,$3,$4)`, [id, sex, people, cls]);
+  await nameRow('rn-1', 'male', 'pp_novgorod_rus');
+  await nameRow('rn-2', 'female', 'pp_novgorod_rus');
+  await nameRow('rn-3', 'male', 'pp_fg002');
+  await assert.rejects(() => nameRow('rn-4', 'male', 'pp_novgorod_rus'), (error) => error.code === '23505');
+  await assert.rejects(() => nameRow('rn-5', 'other', 'pp_x'), (error) => error.code === '23514');
+  await assert.rejects(() => nameRow('rn-6', 'male', 'pp_izhora', 'noble'), (error) => error.code === '23514');
+  const defaultStatus = await world.query(`SELECT status FROM world_base.region_name_pool_entries WHERE id='rn-1'`);
+  assert.equal(defaultStatus.rows[0].status, 'draft');
+  await world.query(`INSERT INTO world_base.npc_regional_context_name_bindings(regional_context_id,world_revision_id,name_pool_id,people_ref)
+    VALUES ('ctx','rn-rev','rn-pool','pp_novgorod_rus')`);
+  await world.query(`INSERT INTO world_base.npc_psychology_scale_entries(world_revision_id,scale_kind,entry_id,label_ru)
+    VALUES ('rn-rev','trait','calm','самообладание')`);
+  await world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence)
+    VALUES ('rn-rev','occ','goal','goal_01','цель','logical_necessity','C')`);
+  await assert.rejects(() => world.query(`INSERT INTO world_base.occupation_character_items(world_revision_id,occupation_id,item_kind,item_id,text_ru,basis,confidence)
+    VALUES ('rn-rev','occ','wish','goal_02','цель','logical_necessity','C')`), (error) => error.code === '23514');
   const primaryUq = await world.query(
     `SELECT indexdef FROM pg_indexes
      WHERE schemaname='world_base'

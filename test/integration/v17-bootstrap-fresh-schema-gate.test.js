@@ -53,7 +53,7 @@ test('fresh-schema attestation gate selects v4 for current request digest', asyn
   });
   assert.equal(selected.request_digest, requestDigest);
   assert.equal(selected.verdict, 'APPROVE_CONDITIONAL');
-  assert.equal(selected.scope.expected_world_base_tables, 219);
+  assert.equal(selected.scope.expected_world_base_tables, 222);
   await rm(v4Dir, { recursive: true, force: true });
 
   const ambiguousDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-ambiguous-'));

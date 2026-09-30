@@ -1,6 +1,6 @@
 {
   "schema": "rus.m2c_people_d49_approval.v1",
-  "status": "candidate_approval_pending",
+  "status": "approved_with_limits",
   "subject": "novgorod_m2c_people_d49_v1",
   "exact_candidate": {
     "path": "data/world-catalogs/novgorod/m2c-npc/people-d49/candidate.json",
@@ -15,10 +15,21 @@
     "Sex is data (payload.actor_applicability.sex_category, one value each); enforcement is materializer/rt-people code.",
     "Version 3 of m2c_npc_fisher_v1 and m2c_npc_household_servant_v1 only adds the canonical regional context reference."
   ],
-  "limits": "Rows carry status approved in the pack datasets by the pack convention; they become approved data only after the independent approval below. Import not authorized, activation not authorized.",
-  "approved_by": null,
-  "approved_on": null,
-  "verdict": null,
-  "import_authorized": false,
-  "runtime_activation_authorized": false
+  "limits": [
+    "Occupations are editorial analogies: householder = haymaker (floodplain meadows and cattle; no source for Lower Dvina arable around 1230), mistress = cook_baker (household cooking and bread); confidence C/low. Narration must not present the mistress as a professional cook.",
+    "The mistress has no headdress: m2c clothing has no married-woman variant, while a married woman went covered around 1230. Follow-up: a headdress variant from game-base garments.",
+    "No winter hat or mittens for anyone (inherited from clothing v1).",
+    "Sex is enforced by the rt-people materializer code (payload.actor_applicability.sex_category); merge together with rt-people, otherwise a mistress can be male.",
+    "The crossing guard stays a typed gap: nov_occ_crossing_guard is usable_with_caution and absent from the approved actor catalog (owner decision needed to promote it).",
+    "Future subjects with occupation haymaker or cook_baker and no profile_ref resolve to the householder or mistress profile; they need an explicit profile_ref.",
+    "D-2 is not seasonal: the ferryman is at the landing in winter too.",
+    "The G4 lower bound covers vikhtuy_locality only; generated places of other G4 can be empty (about 1/3)."
+  ],
+  "approved_by": "claude-opus-5-5 — independent data approver (not the author; author Claude Sonnet 5.5, fleet people-data)",
+  "approved_on": "2026-09-30",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "import_authorized": true,
+  "runtime_activation_authorized": false,
+  "approved_commit": "f5746b1f46bd8851e99c6ba3738ccf9fe00260ba",
+  "approval_note": "Rows of the G4 v2 binding and of the wave v1 change in place under the same {id, version, revision}; valid only because the v17 pair is recreated fresh (no backward compatibility). Existing v17 pairs must be rebuilt."
 }

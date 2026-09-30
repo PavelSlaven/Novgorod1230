@@ -334,6 +334,7 @@ composition до вызова; результат остаётся proposal дл
 regional context применим к месту по `g4_ref`, если запись применимости не привязана
 ни к canonical G5, ни к generation template (`binding.regional_applicability = 'g4'`).
 `placePeopleCapacity` даёт число позиций места по placement policy.
+Профиль `npc_binding` с `payload.actor_applicability.sex_category` из ровно одного значения (слово словаря или id game-base вида `…_sex_category_female`) задаёт пол идентичности: `materializeApprovedProceduralNpc` берёт его как authored, а draw пола, который взял бы неограниченный актор, всё равно снимается — остальные facets внешности сохраняют свои draws. Ноль или несколько значений — поведение прежнее; значение вне словаря — `PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP`.
 
 `MaterializationError` с машиночитаемым code и immutable details.
 

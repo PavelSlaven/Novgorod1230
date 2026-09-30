@@ -207,6 +207,8 @@ function buildNpcInput(ctx, selected, ordinal, select) {
       ...(canonical && composition.payload.canonical_initial_snapshot_only === true
         ? { canonical_source_generation_template_ref:
           composition.payload.canonical_source_generation_template_ref } : {}),
+      ...(Array.isArray(payload.actor_applicability?.sex_category)
+        ? { sex_category_applicability: [...payload.actor_applicability.sex_category] } : {}),
       ...(ctx.regionalApplicability ? { regional_applicability: ctx.regionalApplicability } : {}),
       ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } };
 }

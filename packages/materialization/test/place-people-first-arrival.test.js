@@ -125,6 +125,17 @@ test('compilePlacePeopleBindings binds decided people to focus/departure of a ca
     result.npc_inputs.map((value) => value.binding.parent_seed_digest));
 });
 
+test('the sex list of a profile actor_applicability reaches the binding as is; without it the binding carries none', () => {
+  const sexOf = (values) => {
+    const input = compileInput();
+    const worker = input.closure.runtime_profiles.find((entry) => entry.id === 'worker');
+    if (values) worker.payload.actor_applicability = { sex_category: values };
+    return compilePlacePeopleBindings(input).npc_inputs[0].binding.sex_category_applicability;
+  };
+  assert.deepEqual(sexOf(['nov_1200_1250_sex_category_female']), ['nov_1200_1250_sex_category_female']);
+  assert.equal(sexOf(null), undefined);
+});
+
 test('compilePlacePeopleBindings takes a regional context only when its applicability names this G4 without a canonical or template scope', () => {
   const tied = [{ g4_ref: ref('g4'), generation_template_ref: ref('template') }];
   assert.throws(() => compilePlacePeopleBindings(compileInput({ regionalApplicability: tied })),

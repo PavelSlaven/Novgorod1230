@@ -1,3 +1,4 @@
+import { ACTOR_BASE_APPEARANCE_VOCABULARY } from '@rus/actors';
 import { deepFreeze } from '@rus/kernel';
 import { materializeActorBaseAppearance, compileApprovedActorAppearanceEntries } from './actor-base-appearance.js';
 import { compileApprovedNpcRuntimeBasis } from './approved-npc-runtime-basis.js';
@@ -52,7 +53,11 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     occupation.occupation_archetype_id);
   const runtimeBasis = compileApprovedNpcRuntimeBasis({ role, occupation,
     season: environment.season, profile_level: binding.profile_level });
-  const appearance = materializeActorBaseAppearance({ identity: {},
+  // A profile that names exactly one sex fixes it; the draw an unfixed actor would take for sex is still taken,
+  // so every later appearance facet keeps its draw.
+  const fixedSex = fixedSexCategory(binding);
+  if (fixedSex) random.nextUint32();
+  const appearance = materializeActorBaseAppearance({ identity: fixedSex ? { sex_category: fixedSex } : {},
     approved_entries: compileApprovedActorAppearanceEntries({ records: bundle.actor_profiles,
       demographic_profile_ref: binding.demographic_profile_ref,
       appearance_profile_ref: binding.appearance_profile_ref }),
@@ -214,6 +219,15 @@ function approvedClothing(bundle, binding, identity, season) {
       target_actor_slot_ref: binding.actor_slot_ref, owner_ref: binding.actor_slot_ref,
       holder_ref: binding.actor_slot_ref, controller_ref: binding.actor_slot_ref,
       instance_key: `${binding.actor_slot_ref}:${template.equipment_candidate_id}` })) };
+}
+
+function fixedSexCategory(binding) {
+  const values = binding.sex_category_applicability;
+  if (!Array.isArray(values) || values.length !== 1) return null;
+  const word = ACTOR_BASE_APPEARANCE_VOCABULARY.sex_category.find((value) =>
+    values[0] === value || String(values[0]).endsWith(`_${value}`));
+  if (!word) gap('PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP');
+  return word;
 }
 
 function approvedRegionalContext(bundle, binding) {

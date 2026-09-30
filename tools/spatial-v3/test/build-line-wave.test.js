@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest } from '../../../packages/contracts/src/spatial-v3/registry.js';
-import { buildLineWave, checkLineWaveData, LINE_WAVE_DIR, runLineWave } from '../build-line-wave.mjs';
+import { buildLineWave, checkLineWaveData, LINE_WAVE_DIR, policySlices, runLineWave } from '../build-line-wave.mjs';
 
 const root = resolve(import.meta.dirname, '../../..');
 const read = (path) => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
@@ -36,7 +37,7 @@ const rules = (extra = {}) => ({ spec, recheckPolicies: policies, ...extra });
 const externals = new Map(Object.values(spec.kinds).map((kind) => [kind.route_kind, { registry_type: 'spatial_materialization',
   registry_id: 'spatial_v3_external_dependencies', registry_version: '1', registry_digest: 'r'.repeat(64), dependency_id: kind.route_kind,
   dependency_version: 1, dependency_digest: kind.route_kind.length.toString(16).padStart(64, 'd'), status: 'approved' }]));
-const lenient = (input) => ({ ...input, existing: { ids: null, costProfiles: new Map(), environments: new Map(), externalDependencies: externals } });
+const lenient = (input) => ({ ...input, existing: { ids: null, costProfiles: new Map(), environments: new Map(), externalDependencies: externals, rechecks: policies } });
 const build = (patch = {}, options = {}) => buildLineWave(lenient({ ...fixture(), ...patch }), options);
 const rowOf = (wave, id) => wave.datasets.spatial_v3_canonical_g5_connection_bindings.find((row) => row.id === id);
 
@@ -61,7 +62,7 @@ test('D56: no length ceiling - a long line is in the wave and needs a recheck po
   assert.deepEqual(rowOf(wave, 'cg5bindv3__g4dirv3f__p2').base_minutes, 40, 'a 40-minute line is kept');
   assert.equal(wave.report.counts.pairs, 2);
   assert.deepEqual(wave.report.long_lines.map((line) => [line.id.slice(-5), line.minutes, line.slice_step_minutes, line.recheck_policy_id, line.slices]),
-    [['f__p2', 40, 30, 'recheck.water_15m', 2], ['r__p2', 40, 30, 'recheck.water_15m', 2]]);
+    [['f__p2', 40, 30, 'recheck.water_15m', 3], ['r__p2', 40, 30, 'recheck.water_15m', 3]]);
   assert.ok(wave.datasets.spatial_v3_line_kind_profiles.every((row) => !('max_segment_minutes' in row)), 'PLAN-OK-rt-lines-a3: the slicing is the recheck policy of the kind, not a second field');
   assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
   // the same rows without a slicing policy are a violation; progress slices are checked against the line's minutes
@@ -70,6 +71,53 @@ test('D56: no length ceiling - a long line is in the wave and needs a recheck po
   assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_time_interval', interval_minutes: 45 })).join('|'), /line_slicing/);
   assert.match(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 800000 })).join('|'), /line_slicing/, '40 x 0.8 = 32 > 30');
   assert.deepEqual(checkLineWaveData(wave.datasets, kinds({ policy_kind: 'fixed_progress_slices', progress_slice_ppm: 700000 })), [], '40 x 0.7 = 28 <= 30');
+});
+
+test('slices are counted by the recheck policy of the line, not by the step (A-rt-lines-07 P3-2)', () => {
+  const time = (interval_minutes) => ({ policy_kind: 'fixed_time_interval', interval_minutes });
+  assert.equal(policySlices(31, time(15)), 3);
+  assert.equal(policySlices(48, time(15)), 4);
+  assert.equal(policySlices(48, time(30)), 2);
+  assert.equal(policySlices(30, time(30)), 1);
+  assert.equal(policySlices(48, { policy_kind: 'fixed_progress_slices', progress_slice_ppm: 500000 }), 2);
+  assert.equal(policySlices(48, { policy_kind: 'fixed_progress_slices', progress_slice_ppm: 300000 }), 4);
+  assert.equal(policySlices(48, { policy_kind: 'segment_once' }), null, 'no slicing policy, no count');
+  assert.equal(policySlices(48, time(null)), null);
+  assert.deepEqual(build().report.long_lines.map((line) => [line.recheck_policy_kind, line.recheck_interval_minutes, line.slices]),
+    [['fixed_time_interval', 15, 3], ['fixed_time_interval', 15, 3]]);
+});
+
+test('the validator checks the numbers before it compares them (A-rt-lines-07 P3-1)', () => {
+  const wave = build();
+  const problems = (policy, options = {}) => checkLineWaveData(wave.datasets, rules({
+    recheckPolicies: new Map([...policies, ['recheck.water_15m', policy]]), ...options })).join('|');
+  const time = (interval_minutes) => ({ policy_kind: 'fixed_time_interval', interval_minutes });
+  const slices = (progress_slice_ppm) => ({ policy_kind: 'fixed_progress_slices', progress_slice_ppm });
+  for (const bad of [null, undefined, 0, -1, 1.5, '15', '0', Number.NaN, Infinity]) {
+    assert.match(problems(time(bad)), /line_slicing.*interval_minutes/, `interval_minutes ${String(bad)}`);
+  }
+  for (const bad of [null, undefined, 0, -1, 1_000_001, 1.5, '700000', '0', Number.NaN]) {
+    assert.match(problems(slices(bad)), /line_slicing.*progress_slice_ppm/, `progress_slice_ppm ${String(bad)}`);
+  }
+  assert.deepEqual(problems(time(15)), '');
+  assert.deepEqual(problems(slices(700000)), '');
+  assert.deepEqual(problems(slices(1_000_000)).includes('line_slicing'), true, 'one slice of 40 minutes is over the step');
+  // a kind's policy is invalid even when no line of the kind is long: the two kinds exclude each other as in DDL 13.sql
+  assert.match(problems({ ...time(15), progress_slice_ppm: 1 }), /line_slicing.*progress_slice_ppm/);
+  assert.match(problems({ ...slices(700000), interval_minutes: 15 }), /line_slicing.*interval_minutes/);
+  for (const step of [0, -1, 31, 1.5, '30', null, Number.NaN]) {
+    assert.match(problems(time(15), { sliceStepMinutes: step }), /slice step/, `sliceStepMinutes ${String(step)}`);
+    assert.throws(() => build({}, { sliceStepMinutes: step }), /slice step/);
+  }
+});
+
+test('the CLI validates --slice-step-minutes before it generates anything (REVIEW rt-lines-2)', () => {
+  for (const value of ['invalid', '0', '60', '-3', '1.5', '']) {
+    const run = spawnSync(process.execPath, [resolve(root, 'tools/spatial-v3/build-line-wave.mjs'), '--check', '--slice-step-minutes', value], { encoding: 'utf8' });
+    assert.notEqual(run.status, 0, `--slice-step-minutes ${JSON.stringify(value)} must fail, stdout ${run.stdout}`);
+    assert.match(run.stderr, /slice step/, `--slice-step-minutes ${JSON.stringify(value)}`);
+  }
+  assert.equal(spawnSync(process.execPath, [resolve(root, 'tools/spatial-v3/build-line-wave.mjs'), '--check', '--slice-step-minutes', '30'], { encoding: 'utf8' }).status, 0);
 });
 
 test('the slice step is one rule of the world, a parameter of the generator and the validator (default 30)', () => {
@@ -179,7 +227,9 @@ test('committed candidate: all 454 lines of 227 pairs (D56), long lines are slic
   assert.deepEqual([...new Set(report.long_lines.map((line) => line.id.replace(/^.*xp017_yp026_/, '').replace(/^.*g4route_gn_nov_g3_/, '')))].sort(), [
     'r2_flooded_interior_basin_3', 'r2_flooded_interior_basin_cycle', 'r2_forest_stream_route_cross', 'r2_vikhtuy_resource_edge_1',
     'r2_vikhtuy_resource_edge_cycle', 'r2_wet_conifer_tract_1', 'r2_wet_conifer_tract_cycle']);
-  assert.ok(report.long_lines.every((line) => line.minutes > line.slice_step_minutes && line.slices === Math.ceil(line.minutes / line.slice_step_minutes)));
+  assert.ok(report.long_lines.every((line) => line.minutes > line.slice_step_minutes && line.recheck_policy_kind === 'fixed_time_interval'
+    && line.slices === Math.ceil(line.minutes / line.recheck_interval_minutes)), 'slices follow the policy: 31/15 -> 3, 48/15 -> 4, 32/30 -> 2');
+  assert.deepEqual(report.long_lines.filter((line) => line.minutes === 48).map((line) => line.slices), [4, 4]);
   assert.deepEqual([report.connectivity.components_before, report.connectivity.components_after, report.connectivity.places_without_local_line], [32, 32, []]);
   assert.deepEqual(checkLineWaveData(data, { spec, recheckPolicies: committedPolicies() }), []);
 });

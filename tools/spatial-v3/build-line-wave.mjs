@@ -16,6 +16,27 @@ const DERIVED_PATH = `${CATALOG}/m2c-place-coordinates/derived-report.json`;
 const VERSION = 3;
 // D56: one rule for the world, not a profile field: a line longer than this has a recheck policy that slices it at this step.
 const DEFAULT_SLICE_STEP_MINUTES = 30;
+const MAX_SLICE_STEP_MINUTES = 30;
+const integerIn = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
+/** The slice step: an integer of 1..30 minutes (null, NaN, strings, 0, 31 and more are not steps). */
+const sliceStepProblem = (step) => (integerIn(step, 1, MAX_SLICE_STEP_MINUTES) ? null : `slice step must be an integer of 1..${MAX_SLICE_STEP_MINUTES} minutes, got ${String(step)}`);
+/** Why a recheck policy cannot slice a line, or null. The two slicing kinds exclude each other, as in DDL 13.sql (interval_minutes / progress_slice_ppm). */
+function policyProblem(policy) {
+  if (policy?.policy_kind === 'fixed_time_interval') {
+    if (!integerIn(policy.interval_minutes, 1, Number.MAX_SAFE_INTEGER)) return `fixed_time_interval needs interval_minutes as an integer >= 1, got ${String(policy.interval_minutes)}`;
+    return policy.progress_slice_ppm == null ? null : `fixed_time_interval forbids progress_slice_ppm, got ${String(policy.progress_slice_ppm)}`;
+  }
+  if (policy?.policy_kind === 'fixed_progress_slices') {
+    if (!integerIn(policy.progress_slice_ppm, 1, 1_000_000)) return `fixed_progress_slices needs progress_slice_ppm as an integer of 1..1000000, got ${String(policy.progress_slice_ppm)}`;
+    return policy.interval_minutes == null ? null : `fixed_progress_slices forbids interval_minutes, got ${String(policy.interval_minutes)}`;
+  }
+  return `${policy?.policy_kind ?? 'no policy'} does not slice a line`;
+}
+/** Number of slices the recheck policy cuts a line of `minutes` into, or null when the policy does not slice. */
+export function policySlices(minutes, policy) {
+  if (policyProblem(policy) != null) return null;
+  return policy.policy_kind === 'fixed_time_interval' ? Math.ceil(minutes / policy.interval_minutes) : Math.ceil(1_000_000 / policy.progress_slice_ppm);
+}
 const PROVENANCE = 'm2c_lines_v1_candidate';
 const T = Object.freeze({
   profiles: 'spatial_v3_line_kind_profiles', alternatives: 'spatial_v3_line_kind_alternative_methods',
@@ -52,6 +73,8 @@ const version = (entity_kind, row, worldRevisionId) => ({ entity_kind, entity_id
 /** Pure: inputs -> { datasets, report }. D56: there is no length ceiling and no profile field for it; `sliceStepMinutes` is the validator's slice step. */
 export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRevisionId, provenanceRef = PROVENANCE, existing = {} },
   { sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES } = {}) {
+  const stepProblem = sliceStepProblem(sliceStepMinutes);
+  if (stepProblem) throw new Error(stepProblem);
   const minutes = new Map(derivedLines.map((line) => [line.id, line.proposed_minutes]));
   const names = new Map(lineNames.local_pairs.map((pair) => [pair.source_pair_id, pair]));
   const byPair = new Map();
@@ -181,11 +204,13 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
   const alternatives = Object.entries(spec.kinds).flatMap(([kind, value]) => value.alternatives.map((alt) => ({ kind, method: alt.method,
     factor: alt.factor.join('/'), risk_class: alt.risk_class, hazard_rule_ref: alt.hazard_rule_ref, basis: alt.basis })));
   const kindOfRow = new Map(kept.map((row) => [row.id, row.line_kind_profile_id.replace(/^lkp__/, '')]));
-  const longLines = kept.filter((row) => row.base_minutes > sliceStepMinutes).map((row) => ({ id: row.id, line_kind: kindOfRow.get(row.id),
-    line_name: row.line_name, minutes: row.base_minutes, slice_step_minutes: sliceStepMinutes, slices: Math.ceil(row.base_minutes / sliceStepMinutes),
-    recheck_policy_id: spec.kinds[kindOfRow.get(row.id)].recheck,
-    recheck_policy_kind: existing.rechecks?.get?.(spec.kinds[kindOfRow.get(row.id)].recheck)?.policy_kind ?? null,
-    recheck_interval_minutes: existing.rechecks?.get?.(spec.kinds[kindOfRow.get(row.id)].recheck)?.interval_minutes ?? null }));
+  const longLines = kept.filter((row) => row.base_minutes > sliceStepMinutes).map((row) => {
+    const policyId = spec.kinds[kindOfRow.get(row.id)].recheck;
+    const policy = existing.rechecks?.get?.(policyId) ?? null;
+    return { id: row.id, line_kind: kindOfRow.get(row.id), line_name: row.line_name, minutes: row.base_minutes, slice_step_minutes: sliceStepMinutes,
+      recheck_policy_id: policyId, recheck_policy_kind: policy?.policy_kind ?? null, recheck_interval_minutes: policy?.interval_minutes ?? null,
+      recheck_progress_slice_ppm: policy?.progress_slice_ppm ?? null, slices: policy ? policySlices(row.base_minutes, policy) : null };
+  });
   const names = similarNamesPerPlace(kept);
   return { schema: 'rus.m2c_lines_v1_generator_report.v1', status: 'candidate_unapproved', import_authorized: false, activation_authorized: false,
     parameters: { slice_step_minutes: sliceStepMinutes },
@@ -218,6 +243,8 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
 /** Independent rules of Appendix F (binding block :7340, line_kind_profile :7291, §4.7.2) over generated datasets. */
 export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES } = {}) {
   const problems = [];
+  const stepProblem = sliceStepProblem(sliceStepMinutes);
+  if (stepProblem) return [stepProblem];
   const rows = datasets[T.bindings]; const byId = new Map(rows.map((row) => [row.id, row]));
   const profiles = new Map(datasets[T.profiles].map((row) => [row.id, row]));
   const kinds = datasets[T.profiles].map((row) => row.line_kind_id);
@@ -248,10 +275,12 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
     else if (profile && row.base_minutes > sliceStepMinutes) {
       // D56: no length ceiling; a line longer than the slice step needs a policy that slices it.
       const policy = recheckPolicies?.get(profile.dynamic_recheck_policy_id);
-      const step = sliceStepMinutes;
-      const sliced = policy?.policy_kind === 'fixed_time_interval' ? policy.interval_minutes <= step
-        : policy?.policy_kind === 'fixed_progress_slices' ? row.base_minutes * policy.progress_slice_ppm <= step * 1_000_000 : false;
-      if (!sliced) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${step}-minute step, recheck ${profile.dynamic_recheck_policy_id} is ${policy ? `${policy.policy_kind} ${policy.interval_minutes ?? policy.progress_slice_ppm ?? ''}` : 'not supplied'}`);
+      const bad = policyProblem(policy);
+      // The numbers are checked before they are compared: null <= 30 is true in JS.
+      const sliced = bad == null && (policy.policy_kind === 'fixed_time_interval' ? policy.interval_minutes <= sliceStepMinutes
+        : row.base_minutes * policy.progress_slice_ppm <= sliceStepMinutes * 1_000_000);
+      if (!recheckPolicies) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step and no recheck policies supplied`);
+      else if (!sliced) problems.push(`line_slicing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step, recheck ${profile.dynamic_recheck_policy_id}: ${bad ?? `slices of more than ${sliceStepMinutes} minutes`}`);
     }
     if (row.availability_condition_set_ref !== null) problems.push(`${row.id}: availability_condition_set_ref must be null on a non-portal connection (D3)`);
     const key = [row.from_canonical_g5_id, row.line_name, row.line_discriminator ?? '', row.line_direction_id ?? ''].join('|');
@@ -269,6 +298,14 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
   for (const [key, count] of outgoing) if (count > 1) problems.push(`line_label_duplicate ${key}`);
   for (const pair of similarNamesPerPlace(rows).identical) problems.push(`line_label_near_duplicate ${pair}`);
   const versions = new Map(datasets[T.versions].map((row) => [`${row.entity_kind}|${row.entity_id}|${row.version}`, row]));
+  if (recheckPolicies) {
+    for (const profile of datasets[T.profiles]) {
+      const bad = policyProblem(recheckPolicies.get(profile.dynamic_recheck_policy_id));
+      // a kind whose policy is a slicing kind must have valid numbers even when no line of the kind is long
+      const policy = recheckPolicies.get(profile.dynamic_recheck_policy_id);
+      if (bad && ['fixed_time_interval', 'fixed_progress_slices'].includes(policy?.policy_kind)) problems.push(`line_slicing ${profile.id}: recheck ${profile.dynamic_recheck_policy_id}: ${bad}`);
+    }
+  }
   const covered = [['canonical_g5_connection_binding', rows], ['line_kind_profile', datasets[T.profiles]], ['movement_method_cost_profile', datasets[T.costProfiles]], ['transition_environment_profile', datasets[T.environments]]];
   for (const [kind, list] of covered) for (const row of list) {
     const entry = versions.get(`${kind}|${row.id}|${row.version}`);
@@ -330,8 +367,8 @@ export async function runLineWave({ check = false, lineNamesPath = LINE_NAMES_PA
 
 if (process.argv[1] && resolve(process.argv[1]) === import.meta.filename) {
   const arg = (flag) => { const at = process.argv.indexOf(flag); return at < 0 ? undefined : process.argv[at + 1]; };
-  const step = arg('--slice-step-minutes');
+  // A flag that is present must carry a valid value: no silent default for a mistyped step.
   const report = await runLineWave({ check: process.argv.includes('--check'), lineNamesPath: arg('--line-names') ?? LINE_NAMES_PATH,
-    sliceStepMinutes: step == null ? undefined : Number(step) });
+    sliceStepMinutes: process.argv.includes('--slice-step-minutes') ? Number(arg('--slice-step-minutes')) : undefined });
   console.log(JSON.stringify({ counts: report.counts, connectivity: report.connectivity }));
 }

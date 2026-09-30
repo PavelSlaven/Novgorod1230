@@ -127,6 +127,11 @@ function resolve(ref) {
     if (tl === dl || (!dl.includes(' ') && tl.split(' ')[0] === dl)) f.push(`${t.fl_id} matches denylist ${d.name_lat}`);
     for (const k of d.keywords_ru.split(';').filter(Boolean)) if (` ${t.name_ru} `.toLowerCase().includes(k)) f.push(`${t.fl_id} name_ru contains denylist keyword '${k}'`);
   }
+  // Probes: the walnut denylist bans the living tree only; imported shells and kernels stay allowed.
+  const walnut = deny.find((d) => d.name_lat === 'Juglans regia');
+  const walnutHit = (text) => walnut.keywords_ru.split(';').filter(Boolean).some((k) => ` ${text} `.toLowerCase().includes(k));
+  for (const text of ['орех грецкий', 'ореховое дерево']) if (!walnutHit(text)) f.push(`walnut denylist probe: '${text}' must match`);
+  for (const text of ['скорлупа грецкого ореха', 'грецкий орех привозной', 'ядро грецкого ореха']) if (walnutHit(text)) f.push(`walnut denylist probe: '${text}' must not match`);
   check('no_denylist_taxa', f);
 }
 // 6. each forest pf has >=5 woody taxa per season

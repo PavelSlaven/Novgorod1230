@@ -7478,7 +7478,7 @@
       "domain": "category_registry",
       "name": "pool_category_references_resolve (external)",
       "pass": false,
-      "failures": 1808,
+      "failures": 1809,
       "sample": [
         "x",
         "x",
@@ -8493,7 +8493,7 @@
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv": 56,
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv": 42,
         "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
-        "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 200,
+        "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 201,
         "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31,
         "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 50,
         "data/world-catalogs/novgorod/game-base-v1/resource-catalog/material_resource_families.csv": 29,

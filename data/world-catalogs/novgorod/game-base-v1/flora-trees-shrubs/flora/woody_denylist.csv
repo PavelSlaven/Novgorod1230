@@ -18,4 +18,4 @@ fldeny_buxus,Buxus,самшит,самшит,out_of_range,yes,"Колчин: п�
 fldeny_taxus_baccata,Taxus baccata,тис,тис ,out_of_range,yes,Колчин: привозная древесина (3 изделия),src:src_kolchin_1968,B,candidate
 fldeny_castanea_sativa,Castanea sativa,каштан съедобный,каштан,out_of_range,yes,Колчин: привозная древесина (2 изделия),src:src_kolchin_1968,B,candidate
 fldeny_fagus,Fagus,бук,бук ,out_of_range,yes,Колчин: привозная древесина (1 изделие),src:src_kolchin_1968,B,candidate
-fldeny_juglans_regia,Juglans regia,орех грецкий,грецк,out_of_range,yes,Колчин: привозная древесина (1 изделие),src:src_kolchin_1968,B,candidate
+fldeny_juglans_regia,Juglans regia,орех грецкий,орех грецкий;ореховое дерево,out_of_range,yes,"Колчин: привозная древесина (1 изделие). Запрещено только живое дерево в Новгородской земле; скорлупа и ядро — привозная еда (food-drink fd_walnut_imported), не запрещены.",src:src_kolchin_1968,B,candidate

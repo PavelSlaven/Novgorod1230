@@ -33,7 +33,7 @@
     },
     "x-food.csv": {
       "rows": 1558,
-      "sha256": "88c04bfa961896a4b2a8feaf418985e5d67f406e28568cd72bb9c8b81776a284",
+      "sha256": "6cfb70e9f838e047a2113329bda586708f7218d4d635decde04e797396e03621",
       "dispositions": {
         "owner_review_handoff": 1089,
         "rejected": 469
@@ -59,7 +59,7 @@
   "ledger": {
     "path": "reports/household_evidence_ledger.csv",
     "rows": 7331,
-    "sha256": "33fa9dce356d7c629ee05cf5fd4e571a1993b34f2ca16ab880af0c5675a5e4e7"
+    "sha256": "eac405354d79d1ffe8f2589cf4166921982d6dfd1c8e4cbf736e02308258a292"
   },
   "screening_rule": {
     "basis": "editorial",

@@ -75,3 +75,4 @@ taxon:Salmonidae,Salmonidae,лососевые,fauna,family,"[""fd_salmonid""]",
 taxon:Osmerus eperlanus (incl. f. spirinchus),Osmerus eperlanus (incl. f. spirinchus),"корюшка, снеток",fauna,species,"[""fd_smelt""]",fauna_* / livestock_husbandry (fa_id),,"[""master-food:SRC040""]",B,candidate
 taxon:Prunus padus,Prunus padus,черёмуха обыкновенная,flora,species,"[""fd_bird_cherry""]",flora_* / cultivated_plants (fl_id),,"[""game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv:fl_ts_prunus_padus""]",B,candidate
 taxon:Viburnum opulus,Viburnum opulus,калина обыкновенная,flora,species,"[""fd_viburnum_berry""]",flora_* / cultivated_plants (fl_id),,"[""game-base-v1/flora-trees-shrubs/flora/trees_shrubs.csv:fl_ts_viburnum_opulus""]",B,candidate
+taxon:Juglans regia,Juglans regia,орех грецкий,flora,species,"[""fd_walnut_imported""]",flora_* / cultivated_plants (fl_id),,"[""game-base-v1/flora-trees-shrubs/flora/wood_use_kolchin1968.csv:грецкий орех""]",B,candidate

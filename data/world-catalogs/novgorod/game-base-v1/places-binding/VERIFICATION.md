@@ -1204,3 +1204,11 @@
 - **Ограничения:**
   - строки ладожской нерпы (подрегион) валидатор окружения теперь считает наличием во всём регионе; ссылок на неё в окружении нет, учёт подрегиона — вместе с #158 R-2a;
   - полный `npm test` не запускался.
+
+## Пороги D49 в составе D-2 (`pf_riverbank`, `pf_rural_yard`, `pf_village_lane`)
+
+- **Кто:** исполнитель fleet people-data (Claude Sonnet 5.5), не утверждающий; утверждение — независимый проход Opus.
+- **Что:** три группы min=max=1 в `people_composition_authoring.json`; 4 строки `people_presence_authoring.csv` (`pf_riverbank|fisher`, `pf_village_lane|householder`, `pf_rural_yard|householder` день и вечер) переведены `presence_rule` → `composition`; `presence_rules.csv` 6976 → 6973 строки (убраны 3 правила, остальные побайтно прежние); отчёты пересобраны.
+- **Основание:** решение владельца D49 (минимум один человек на месте маршрута среза после старта); подтверждения численности в источниках нет, confidence C.
+- **Проверено скриптами:** `check-people-composition.mjs --self-test` (17 PF, 8 групп, 41 проба) PASS; `validate.mjs` без FAIL; `npm run test:game-base` 57/57, включая «committed generated files match a fresh rebuild».
+- **Ограничения:** порог на уровне PF действует на всех канонических узлах PF стартовой территории (`pf_riverbank` — 70 узлов); более узкой гранулярности в D-2 нет.

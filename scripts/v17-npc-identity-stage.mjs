@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 const ROOT = resolve(import.meta.dirname, '..');
 export const IDENTITY_DIR = 'data/world-catalogs/novgorod/npc-identity-v17/v1';
 export const IDENTITY_REQUEST_PATH = `${IDENTITY_DIR}/import-request.json`;
+export const IDENTITY_REVIEW_PATH = `${IDENTITY_DIR}/review-request.md`;
 export const IDENTITY_ATTESTATION_SCHEMA = 'rus.npc_identity_v17_import_approval.v1';
 const ATTESTATION_VERDICTS = new Set(['APPROVE', 'APPROVE_CONDITIONAL']);
 const GAME_BASE = 'data/world-catalogs/novgorod/game-base-v1';
@@ -245,9 +246,39 @@ export async function runIdentityImportStage({ world, root = ROOT, requireAttest
     added: expected, rollback: 'pass', readback: 'exact' };
 }
 
+/** Text for the independent reviewer, derived from the request so it cannot drift from it. */
+export function renderIdentityReviewRequest(request) {
+  const data = request.approved_data;
+  const subset = data.approved_subset;
+  const rows = Object.entries(request.expected_readback.by_table).map(([table, count]) => `- \`${table}\`: ${count}`);
+  return `# NPC identity v17 import: review request
+
+Attest [import-request.json](import-request.json) (request digest \`${request.request_digest}\`, sources at
+\`${data.source_commit}\`) with an independent pass that is not the author (WR 21.1). The request is a candidate:
+no attestation exists. The stage \`npc_identity_import\` of \`scripts/bootstrap-live-world-v17.mjs\` stops before COMMIT
+without \`npc_identity_import.json\` (schema \`rus.npc_identity_v17_import_approval.v1\`).
+
+What becomes runtime-selectable (status \`approved\` set only by the stage SQL; repository files stay draft/candidate):
+- ${subset.name_pool_entries_approved} ordinary name entries of the bound pool (${JSON.stringify(subset.name_entries_approved_by_people_and_sex)}); ${subset.name_pool_entries_left_draft} other entries are imported \`draft\` and never selected;
+- context bindings: ${subset.context_bindings.join('; ')};
+- the D29 psychology scales (6 traits, 7 values, even weight);
+- ${subset.goal_items} goal and ${subset.fear_items} fear items for ${subset.occupations_with_items} occupations (${subset.analogy_basis_items} with \`basis=analogy\`).
+
+Rows inserted (insert-only, one transaction, in-transaction exact readback):
+${rows.join('\n')}
+
+Limits carried into the approval:
+${data.limits.map((limit) => `- ${limit}`).join('\n')}
+
+Also for review: DDL \`infra/world-base/schema/29.sql\` (key change of \`region_name_pool_entries\`, three new tables) needs the
+Contract Auditor (AR 25.1: DDL, persistence, NPC) and the fresh-schema v5 attestation (\`live-world-runtime-v17/fresh-schema-review-request.md\`).
+`;
+}
+
 if (process.argv[1] === import.meta.filename && process.argv.includes('--write')) {
   const request = await buildIdentityRequest();
   await writeFile(resolve(ROOT, IDENTITY_REQUEST_PATH), `${JSON.stringify(request, null, 2)}\n`);
+  await writeFile(resolve(ROOT, IDENTITY_REVIEW_PATH), renderIdentityReviewRequest(request));
   console.log(JSON.stringify({ request_id: request.request_id, request_digest: request.request_digest,
     added: request.expected_readback.by_table }, null, 2));
 }

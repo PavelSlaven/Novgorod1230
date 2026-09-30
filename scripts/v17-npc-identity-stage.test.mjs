@@ -9,7 +9,9 @@ import {
   buildIdentityRequest,
   buildIdentityRows,
   computeIdentityRequestDigest,
+  IDENTITY_REVIEW_PATH,
   readIdentityRequest,
+  renderIdentityReviewRequest,
   runIdentityImportStage,
 } from './v17-npc-identity-stage.mjs';
 
@@ -20,6 +22,7 @@ test('the committed request equals a rebuild from the reviewed sources', async (
   const request = await readIdentityRequest(root);
   assert.equal(request.request_digest, computeIdentityRequestDigest(request));
   assert.deepEqual(await buildIdentityRequest({ root }), request);
+  assert.equal(await readFile(`${root}${IDENTITY_REVIEW_PATH}`, 'utf8'), renderIdentityReviewRequest(request));
   await assertIdentityInputs({ root, request });
 });
 

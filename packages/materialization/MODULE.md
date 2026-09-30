@@ -319,6 +319,22 @@ NPC composition и Stage 16 owners. Она не создаёт S1, вторую 
 фиксированного NPC. Runtime item/actor pins и operational activation проверяет
 composition до вызова; результат остаётся proposal для Stage 24/25.
 
+`decidePlacePeople` решает, кто стоит на каноническом месте при первом прибытии
+(D49): группы D-2 состава primary place family (`min_count`/`max_count`/
+`count_weights`, `weighted_subjects`) и утверждённые правила присутствия для
+`occupation`/`social_role`; субъект, названный составом, правилом не бросается
+повторно. Чистая функция, seed — `party + scope + group_id | rule`. Субъект без
+единственного утверждённого профиля (`profile_ref` или единственный `npc_binding`
+с той же ролью/занятием; из версий одного id берётся новейшая), с ролью или
+занятием вне actor bundle, либо сверх вместимости никого не создаёт и попадает в
+`gaps` (`people_profile_missing|ambiguous`, `people_actor_bundle_missing`,
+`people_position_capacity`). Пола «≥1» в коде нет: минимум задаёт `min_count` данных.
+`compilePlacePeopleBindings` привязывает решённых людей к позициям focus/departure
+(arrival зарезервирован) теми же per-NPC входами, что `compileGeneratedNpcBindings`;
+regional context применим к месту по `g4_ref`, если запись применимости не привязана
+ни к canonical G5, ни к generation template (`binding.regional_applicability = 'g4'`).
+`placePeopleCapacity` даёт число позиций места по placement policy.
+
 `MaterializationError` с машиночитаемым code и immutable details.
 
 ## Тесты

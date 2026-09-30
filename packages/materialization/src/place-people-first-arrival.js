@@ -61,10 +61,11 @@ export function decidePlacePeople({ party_id: partyId, scope_instance_ref: scope
   const gaps = [];
   for (const want of wanted) {
     const { profile_id: exactId, ...subject } = want;
-    const matches = exactId != null
-      ? candidates.filter((row) => row.id === exactId)
-      : candidates.filter((row) => (subject.subject_kind === 'social_role'
-        ? row.role_ref : row.occupation_ref) === subject.subject_ref);
+    // Approved profiles keep older versions next to the newest one: the newest version of an id is the profile.
+    const newest = new Map();
+    for (const row of candidates) if (!newest.has(row.id) || newest.get(row.id).version < row.version) newest.set(row.id, row);
+    const matches = [...newest.values()].filter((row) => (exactId != null ? row.id === exactId
+      : (subject.subject_kind === 'social_role' ? row.role_ref : row.occupation_ref) === subject.subject_ref));
     const gap = (code) => gaps.push({ code, group_key: subject.group_key, subject_kind: subject.subject_kind,
       subject_ref: subject.subject_ref });
     if (matches.length === 0) { gap('people_profile_missing'); continue; }

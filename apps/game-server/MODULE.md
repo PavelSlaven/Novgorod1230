@@ -554,6 +554,18 @@ Existing-item inspection, recall, `look`, and material-prerequisite inspect rema
 The item or negative resolution and the discovery cost commit together; transport retry
 replays the committed result without another activity or model call.
 
+People of a canonical place (D49): the canonical branch of the target first entry
+(`target-generated-first-entry.js`) asks `prepareCanonicalPlacePeople`
+(`target-place-people-first-entry.js`) for the people of the place. The presence resolver
+context carries the D-2 composition of the primary place family; `readPlacePeopleClosure`
+(world-base reader) returns approved `npc_binding` candidates, their runtime/regional
+closure and the G4's own placement policy. People are decided and bound by
+`@rus/materialization` and written through the generated-NPC first-entry writer in the same
+change set as the presence aggregate. A data gap (no profile, closure, regional
+applicability or capacity) creates nobody, never fails the arrival, and is recorded in
+`materialization_trace.people.gaps` (persisted as `party_materialization_runs.trace.first_entry.people`).
+Generated places keep the G4 composition; the D-2 composition is not applied to them.
+
 Active O2b keeps the same public `request_container_access`. Production startup
 loads and SHA-validates revision 20 M8 / Phase 1A v16 / Phase 1B v15 plus one
 exact existing-container profile; revision 19 publication/loading remains an

@@ -51,6 +51,16 @@ test('a subject with no approved profile, an ambiguous one or a role missing fro
   assert.deepEqual([noRole.people.length, noRole.gaps[0].code], [0, 'people_actor_bundle_missing']);
 });
 
+test('an older approved version of the same profile id is not a second candidate; the newest version is bound', () => {
+  const comp = composition(group('g.f', [['occupation', 'nov_occ_fisher']]));
+  const older = [...CANDIDATES, { ...profile('m2c_npc_fisher_v1', 'nov_role_fisher', 'nov_occ_fisher'), version: 2 }];
+  const result = decide({ composition: comp, candidates: older });
+  assert.deepEqual(result.people.map((person) => person.profile_ref), [{ id: 'm2c_npc_fisher_v1', version: 2 }]);
+  const exact = decide({ composition: composition(group('g.f', [['occupation', 'nov_occ_fisher', 'm2c_npc_fisher_v1']])),
+    candidates: older });
+  assert.deepEqual(exact.people.map((person) => person.profile_ref), [{ id: 'm2c_npc_fisher_v1', version: 2 }]);
+});
+
 test('presence rules for occupations and roles roll by their own probability; a subject the composition names is not rolled again', () => {
   assert.equal(decide({ rules: [rule('nov_occ_fisher', 1_000_000)] }).people[0].origin, 'presence_rule');
   assert.equal(decide({ rules: [rule('nov_occ_fisher', 0)] }).people.length, 0);

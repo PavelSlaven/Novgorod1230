@@ -103,6 +103,7 @@ test('a canonical place with an approved composition group gets its people at fo
   const [servant] = npcRows(result);
   assert.equal(npcRows(result).length, 1);
   assert.equal(servant.record.profile_set_id, 'm2c_npc_household_servant_v1');
+  assert.equal(servant.record.identity_state.public_role_label != null, true);
   const source = servant.record.semantic_state.source_binding;
   assert.deepEqual(source.place_population_composition_ref, { id: 'pf_outbuildings', version: 1, world_revision_id: g4.world_revision_id });
   assert.equal(source.group_id, 'pf_outbuildings.household_servant');
@@ -117,6 +118,7 @@ test('a canonical place with an approved composition group gets its people at fo
   assert.deepEqual(asked, [['nov_occ_household_servant'], ['m2c_npc_household_servant_v1']], 'the closure is read for the chosen profile only');
   assert.deepEqual(calls[0], ['resolver', true], 'the canonical branch asks the resolver for people');
   assert.deepEqual(await result.recheck({ transaction: context.transaction }), { ok: true });
+  assert.deepEqual(calls, [['resolver', true], 'factual-recheck']);
   const again = await createTargetGeneratedFirstEntry(setup().options)(setup().context);
   assert.equal(canonicalDigest(again.materialization_trace), canonicalDigest(result.materialization_trace));
 });
@@ -177,6 +179,26 @@ test('anything that is not a plain data gap fails the arrival: ambiguous policy,
     regional_context_profiles: regionalFor(true) } }) });
   await assert.rejects(() => createTargetGeneratedFirstEntry(missingRow.options)(missingRow.context),
     (error) => error.code === 'NPC_COMPOSITION_EXACT_REF_GAP');
+});
+
+test('a reader port that is not installed is a wiring error, not a gap', async () => {
+  const { options, context } = setup();
+  delete options.worldBaseReader.readPlacePeopleCandidates;
+  await assert.rejects(() => createTargetGeneratedFirstEntry(options)(context), (error) => error.code === 'PLACE_PEOPLE_READER_REQUIRED');
+});
+
+test('people rules cannot be read without a usable presence profile in the natural branch: the gap is typed, not silent', async () => {
+  const natural = { ok: true, approved_write_sets: [], expected_state_versions: [], commit_rechecks: [], recheck: async () => ({ ok: true }) };
+  const { options, context } = setup({ groups: [], rules: [fisherRule] });
+  options.finiteFirstEntryProfile = { technical_limits: {} };
+  options.prepareNaturalFirstEntry = async () => natural;
+  options.canonicalFiniteApplicability = { rows: [{ canonical_g5_ref: { id: canonical.canonical_g5_ref.id,
+    version: canonical.canonical_g5_ref.version }, g4_ref: { id: g4.id, version: g4.version },
+  natural_finite_source_profile_refs: ['m2c_finite_deadwood_v1'] }] };
+  const result = await createTargetGeneratedFirstEntry(options)(context);
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.equal(npcRows(result).length, 0);
+  assert.deepEqual(result.materialization_trace.people.gaps.map((gap) => gap.code), ['people_presence_aggregate_unavailable']);
 });
 
 test('without people information in the resolver context the canonical arrival is unchanged', async () => {

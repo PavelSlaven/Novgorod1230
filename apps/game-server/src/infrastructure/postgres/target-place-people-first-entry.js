@@ -41,10 +41,16 @@ export async function prepareCanonicalPlacePeople({ context, site, presenceConte
   const { wanted, trace: wantTrace } = wantPlacePeople({ party_id: request.party_id,
     scope_instance_ref: presenceContext.scopeInstanceRef, compositions: info.compositions ?? [],
     rule_outcomes: ruleOutcomes(presenceAggregate, rules) });
-  const nobody = (gaps) => ({ created_count: 0, trace: { ...wantTrace, gaps } });
+  // People rules were not rolled into an aggregate (the natural branch has no usable presence profile): say so.
+  const preGaps = !presenceAggregate && rules.some((rule) => PEOPLE_KINDS.has(rule.subject_kind))
+    ? [{ code: 'people_presence_aggregate_unavailable' }] : [];
+  const nobody = (gaps) => ({ created_count: 0, trace: { ...wantTrace, gaps: [...preGaps, ...gaps] } });
   if (wanted.length === 0) return nobody([]);
   if (typeof worldBaseReader?.readPlacePeopleCandidates !== 'function'
-    || typeof worldBaseReader.readPlacePeopleClosure !== 'function') return nobody([{ code: 'people_reader_missing' }]);
+    || typeof worldBaseReader.readPlacePeopleClosure !== 'function') {
+    throw serverError('PLACE_PEOPLE_READER_REQUIRED', 'The place-people reader port is not installed.',
+      { status: 409, public_exposure: 'internal' });
+  }
   const canonical = { id: site.canonical_g5_ref?.entity_id ?? site.canonical_g5_ref?.id,
     version: Number(site.canonical_g5_ref?.authoring_version ?? site.canonical_g5_ref?.version) };
   const scene = { party_id: request.party_id, site_id: proposal.target_site_id, rows: proposal.inserts };
@@ -65,7 +71,7 @@ export async function prepareCanonicalPlacePeople({ context, site, presenceConte
   }
   const decided = resolvePlacePeople({ wanted, candidates: candidates.candidates,
     bundle: approvedActorTemporalBundle, capacity });
-  const trace = { ...wantTrace, gaps: decided.gaps };
+  const trace = { ...wantTrace, gaps: [...preGaps, ...decided.gaps] };
   if (decided.people.length === 0) return { created_count: 0, trace };
   const closure = await worldBaseReader.readPlacePeopleClosure({ g4: request.g4, canonical_g5: canonical,
     profile_refs: [...new Map(decided.people.map((person) => [`${person.profile_ref.id}:${person.profile_ref.version}`,
@@ -91,6 +97,6 @@ export async function prepareCanonicalPlacePeople({ context, site, presenceConte
       validation_report: npc.validation_report, selection: compiled.selection_trace, trace };
   } catch (error) {
     if (typeof error?.code !== 'string' || !isDataGap(error.code)) throw error;
-    return { created_count: 0, trace: { ...trace, gaps: [...decided.gaps, { code: 'people_compile_failed', reason: error.code }] } };
+    return { created_count: 0, trace: { ...trace, gaps: [...preGaps, ...decided.gaps, { code: 'people_compile_failed', reason: error.code }] } };
   }
 }

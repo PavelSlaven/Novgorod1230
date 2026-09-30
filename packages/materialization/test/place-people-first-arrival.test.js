@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { canonicalDigest, compilePlacePeopleBindings, decidePlacePeople, wantPlacePeople } from '../src/index.js';
+import { canonicalDigest, compilePlacePeopleBindings, decidePlacePeople, materializeApprovedProceduralNpc, wantPlacePeople } from '../src/index.js';
 import { binding, bundle, environment } from './fixtures/approved-procedural-npc.js';
 
 const ref = (id) => ({ id, version: 1 });
@@ -152,4 +152,23 @@ test('compilePlacePeopleBindings takes a regional context only when its applicab
   const other = [{ g4_ref: ref('other-g4') }];
   assert.throws(() => compilePlacePeopleBindings(compileInput({ regionalApplicability: other })),
     (error) => error.code === 'NPC_COMPOSITION_REGIONAL_CONTEXT_GAP');
+});
+
+test('a binding source that names both origins, none, or a composition ref that is not the location is refused', () => {
+  const build = () => {
+    const input = compileInput();
+    const [first] = compilePlacePeopleBindings(input).npc_inputs;
+    return { party_id: 'party', run_id: 'run', approved_bundle: first.approved_bundle, environment: first.environment,
+      random: first.random, binding: structuredClone(first.binding) };
+  };
+  const refused = (mutate) => {
+    const input = build(); mutate(input.binding);
+    assert.throws(() => materializeApprovedProceduralNpc(input), { code: 'PROCEDURAL_NPC_SOURCE_BINDING_DATA_GAP' });
+  };
+  refused((b) => { b.source_binding.presence_rule_ref = { rule_id: 'pr_x', rule_version: 1 }; });
+  refused((b) => { delete b.source_binding.place_population_composition_ref; });
+  refused((b) => { b.source_binding.place_population_composition_ref.id = 'pf_other'; });
+  refused((b) => { b.source_binding.npc_composition_ref = { id: 'pf_test', version: 1 }; });
+  // the untouched binding passes the source check and stops later, at the regional context of this thin fixture
+  assert.throws(() => materializeApprovedProceduralNpc(build()), { code: 'PROCEDURAL_NPC_REGIONAL_CONTEXT_DATA_GAP' });
 });

@@ -1166,6 +1166,29 @@
      "W"
     ]
    ]
+  },
+  "fl_ts_rhamnus_cathartica": {
+   "pf_forest_edge": [
+    "component",
+    "«на опушках, полянах» (book:333580 §4112)",
+    [
+     "src:src_nepokoychitsky_rhamnus"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "component",
+    "«обычен в широколиственных лесах на плодородных почвах» (§4112)",
+    [
+     "src:src_nepokoychitsky_rhamnus"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "«одиночные особи … в подлеске достаточно осветлённых лесов» (§4112)",
+    [
+     "src:src_nepokoychitsky_rhamnus"
+    ]
+   ]
   }
  }
 }

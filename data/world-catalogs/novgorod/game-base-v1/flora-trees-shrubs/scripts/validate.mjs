@@ -96,6 +96,7 @@ function resolve(ref) {
   if (ref.startsWith('src:')) {
     const s = sources.get(ref.slice(4)); if (!s) return `unknown src ${ref}`;
     if (/^https?:\/\/\S+\.\S+/.test(s.url)) return true;
+    if (/^books\/index\.sqlite book:\d+$/.test(s.url)) return true; // local book index, cited as book:<id> §<para> in the title
     if (s.url.startsWith('file:')) { const p = s.url.slice(5); const abs = path.isAbsolute(p) ? p : path.join(path.dirname(OUT), p); return fs.existsSync(abs) || `file missing ${p}`; }
     return `bad url for ${ref}`;
   }

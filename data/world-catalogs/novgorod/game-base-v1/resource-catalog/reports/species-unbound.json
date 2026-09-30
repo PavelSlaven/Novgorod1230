@@ -1,8 +1,8 @@
 {
  "schema": "game_base_v1.resource_species_unbound.v2",
  "status": "candidate",
- "source_rows": 553,
- "bound_unique_species": 539,
+ "source_rows": 554,
+ "bound_unique_species": 540,
  "unbound_count": 14,
  "typed_gaps": [
   {

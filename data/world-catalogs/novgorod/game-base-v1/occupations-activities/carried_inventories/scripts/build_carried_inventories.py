@@ -13,6 +13,7 @@ Run: python build_carried_inventories.py
 """
 import csv
 import os
+import subprocess
 
 SRC = os.path.join(
     os.path.dirname(__file__), "..", "..", "..", "..", "sources",
@@ -57,6 +58,8 @@ def main():
         w.writeheader()
         w.writerows(out_rows)
     print(f"wrote {len(out_rows)} rows to {OUT}")
+    checker = os.path.join(os.path.dirname(__file__), "..", "..", "..", "scripts", "check-needs-check.mjs")
+    subprocess.run(["node", checker, "--check"], check=True)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@
     "empty_reason": "Болото не создаёт постоянного населения; проводник приходит по маршруту.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -32,7 +32,7 @@
     "empty_reason": "Нет источника для обычного присутствия, календаря или частоты посещения могильника около 1230 года.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -54,7 +54,7 @@
     "empty_reason": "Лесные работники приходят из поселения; постоянный лесной двор не задан.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -134,7 +134,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -156,7 +156,7 @@
     "empty_reason": "Пастух приходит на луг, постоянный двор здесь не установлен.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -178,7 +178,7 @@
     "empty_reason": "Охотник приходит на промысел; постоянное поселение на опушке не задано.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -200,7 +200,7 @@
     "empty_reason": "Лесная тропа транзитная.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -222,7 +222,7 @@
     "empty_reason": "Охотничьи угодья не задают постоянного двора.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -244,7 +244,7 @@
     "empty_reason": "Ручей транзитный, постоянное поселение не задано.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -291,7 +291,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -370,7 +370,7 @@
     "empty_reason": null,
     "status": "approved",
     "confidence": "low",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": [
         {
@@ -405,7 +405,7 @@
     "empty_reason": "Русло не создаёт постоянное население; лодочник движется по нему.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -416,23 +416,42 @@
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "place_family_id": "pf_riverbank",
     "place_family_version": 1,
-    "population_groups": [],
+    "population_groups": [
+      {
+        "group_id": "pf_riverbank.shore_worker",
+        "group_kind": "workers",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "occupation",
+            "subject_ref": "nov_occ_fisher",
+            "profile_ref": "m2c_npc_fisher_v1",
+            "household_member_class": null,
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_work_role_v1",
+        "no_source": "",
+        "confidence": "C"
+      }
+    ],
     "scheduled_absences": [
       {
         "subject_kind": "occupation",
         "subject_ref": "nov_occ_fish_weir_keeper",
         "reason": "Работа у запруды не доказывает место создания работника; на стартовой территории он не создаётся."
-      },
-      {
-        "subject_kind": "occupation",
-        "subject_ref": "nov_occ_fisher",
-        "reason": "Рыбак приходит к месту промысла."
       }
     ],
-    "empty_reason": "Берег не задаёт постоянное жильё или рабочий двор.",
+    "empty_reason": null,
     "status": "approved",
-    "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -454,7 +473,7 @@
     "empty_reason": "Дорога транзитная.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -465,7 +484,31 @@
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "place_family_id": "pf_rural_yard",
     "place_family_version": 1,
-    "population_groups": [],
+    "population_groups": [
+      {
+        "group_id": "pf_rural_yard.householder",
+        "group_kind": "residents",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "social_role",
+            "subject_ref": "nov_role_smerd_householder",
+            "profile_ref": null,
+            "household_member_class": "adult",
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_resident_role_v1",
+        "no_source": "",
+        "confidence": "C"
+      }
+    ],
     "scheduled_absences": [
       {
         "subject_kind": "occupation",
@@ -491,17 +534,12 @@
         "subject_kind": "occupation",
         "subject_ref": "occ_netmaker",
         "reason": "Рабочий маршрут не задаёт место создания изготовителя сетей; на стартовой территории он не создаётся."
-      },
-      {
-        "subject_kind": "social_role",
-        "subject_ref": "nov_role_smerd_householder",
-        "reason": "Домохозяин привязан к конкретной усадьбе, не к общему типу двора."
       }
     ],
-    "empty_reason": "Общий сельский двор не задаёт конкретного домохозяйства; численность здесь не подтверждена.",
+    "empty_reason": null,
     "status": "approved",
-    "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -512,18 +550,36 @@
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "place_family_id": "pf_village_lane",
     "place_family_version": 1,
-    "population_groups": [],
-    "scheduled_absences": [
+    "population_groups": [
       {
-        "subject_kind": "social_role",
-        "subject_ref": "nov_role_smerd_householder",
-        "reason": "Домохозяин выходит на улицу из усадьбы."
+        "group_id": "pf_village_lane.householder",
+        "group_kind": "residents",
+        "min_count": 1,
+        "max_count": 1,
+        "count_weights": [
+          1
+        ],
+        "weighted_subjects": [
+          {
+            "subject_kind": "social_role",
+            "subject_ref": "nov_role_smerd_householder",
+            "profile_ref": null,
+            "household_member_class": "adult",
+            "weight": 1
+          }
+        ],
+        "household_profile_ref": null,
+        "source_refs": "",
+        "rule_ref": "rule:one_per_resident_role_v1",
+        "no_source": "",
+        "confidence": "C"
       }
     ],
-    "empty_reason": "Деревенская улица транзитная.",
+    "scheduled_absences": [],
+    "empty_reason": null,
     "status": "approved",
-    "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }
@@ -555,7 +611,7 @@
     "empty_reason": "Ледовая переправа сезонная, постоянного жителя или работника не создаёт.",
     "status": "approved",
     "confidence": "unknown",
-    "provenance_ref": "game_base_v1_m2c_people_27bd6134",
+    "provenance_ref": "game_base_v1_m2c_people_c79852e7",
     "authoring_payload": {
       "slot_relationships": []
     }

@@ -246,3 +246,4 @@ counts['sources/sources.csv'] = writeCsv(out('sources/sources.csv'), Object.keys
 L.fs.writeFileSync(out('build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts, archive_inclusions: archiveInclusions.summary, matcult_checked: !!matcultIds, warnings }, null, 2) + '\n');
 console.log(JSON.stringify({ counts, archive_inclusions: archiveInclusions.summary, warnings: warnings.length, matcult_checked: !!matcultIds }, null, 2));
 if (warnings.length) { console.log(warnings.join('\n')); process.exitCode = 1; }
+require('node:child_process').execFileSync(process.execPath, [path.resolve(__dirname, '../../scripts/check-needs-check.mjs'), '--check'], { stdio: 'inherit' });

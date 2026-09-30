@@ -8,7 +8,13 @@
       "confidence": "C",
       "reason": "Не установлены региональная культура и канал поступления сливы около 1230 г.",
       "source_request": "Датированный региональный археоботанический источник или торговый документ о сливе.",
-      "status": "needs_check"
+      "status": "needs_check",
+      "block_pattern_ru": "Слива",
+      "block_pattern_lat": "",
+      "block_exception": [],
+      "doubt_kind": "regional_presence",
+      "block_region": "",
+      "block_period": ""
     },
     {
       "check_id": "food_imported_spices",
@@ -17,7 +23,15 @@
       "confidence": "D",
       "reason": "Конкретные виды пряностей в Новгороде не определены; общий импортный статус не подтверждает отдельный ингредиент.",
       "source_request": "Торговый/археологический источник по каждой конкретной пряности в Новгороде или на северном торговом пути XIII века.",
-      "status": "needs_check"
+      "status": "needs_check",
+      "block_pattern_ru": "Пряность|Пряности",
+      "block_pattern_lat": "",
+      "block_exception": [
+        "Пряности — GAP"
+      ],
+      "doubt_kind": "regional_presence",
+      "block_region": "",
+      "block_period": ""
     },
     {
       "check_id": "food_herring",
@@ -26,7 +40,13 @@
       "confidence": "C",
       "reason": "Вернадский (book:877660 §244) и Казакова (book:605072; x-food.csv:166–173) называют сельдь среди товаров ганзейских купцов в Новгороде, но обе работы о XIV–XV вв. («до половины XV века»; «конец XIV — начало XVI в.»); для XIII в. свидетельство не собрано.",
       "source_request": "Письменный или археологический источник о сельди в новгородской торговле XIII в. (договоры с немецкими и готландскими купцами, находки костей и тары).",
-      "status": "needs_check"
+      "status": "needs_check",
+      "block_pattern_ru": "Сельдь",
+      "block_pattern_lat": "",
+      "block_exception": [],
+      "doubt_kind": "regional_presence",
+      "block_region": "",
+      "block_period": ""
     }
   ]
 }

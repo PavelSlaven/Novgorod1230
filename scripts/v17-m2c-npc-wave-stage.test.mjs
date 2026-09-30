@@ -118,6 +118,6 @@ test('stage: a row count different from the pinned readback throws after the com
   const request = await readWaveRequest(root);
   const world = fakeWorld(request, { extraRows: { presence_rules: 1 } });
   await assert.rejects(runWaveImportStage({ world, root, requireAttestation: approving(request) }),
-    /V17_M2C_WAVE_READBACK_MISMATCH:presence_rules:5741!=5740/u);
+    /V17_M2C_WAVE_READBACK_MISMATCH:presence_rules:5738!=5737/u);
   assert.deepEqual(world.log, ['ROLLBACK', 'COMMIT']);
 });

@@ -10,7 +10,7 @@
     {
       "table": "source_records",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/source_records.json",
-      "sha256": "7e02f3612f1aac5244f52bc48874e103e30acd29a7f20d75ba66df6e68f1ed27",
+      "sha256": "0c3fb84ce1c08f1d2b2395c497128d9b2fbfb480131f3d550680df530124c489",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -19,7 +19,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_authoring_versions.json",
-      "sha256": "0ad14528df706883a46e8439a718cd17e15e59aa4cce83066f338ec3bfc74f84",
+      "sha256": "99475b2291a55c1b1f2406c55039f83068a3bbab2bc3e2ed24928cf3ff78dfe2",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -185,7 +185,7 @@
     {
       "table": "spatial_v3_g4_npc_composition_bindings",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_g4_npc_composition_bindings.json",
-      "sha256": "c4b434e721fa57b3cef9c9bca6161b13648a79a636c3ddb01c566bd4c886a23e",
+      "sha256": "ac3b9162ee486bc4caa1a2ede73b38c2980a6a9167e7d1765954a503c0fa004e",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -196,7 +196,7 @@
     {
       "table": "spatial_v3_npc_runtime_profiles",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_npc_runtime_profiles.json",
-      "sha256": "234ee5e94ad55c1624d06db62cf635a8a60fddaf764c863eea9fad9990b061e0",
+      "sha256": "139724bd1a703c1776c7c3d4ce2806aade781484f3248821b2a89d706be86968",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",
@@ -207,7 +207,7 @@
     {
       "table": "spatial_v3_npc_regional_context_profiles",
       "file": "m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_npc_regional_context_profiles.json",
-      "sha256": "4698500f236536528900c5dd14c5d7f04483c7b847f725f0cadaa67e8e37c0a2",
+      "sha256": "ba706872588179a60f5caf4c9d34734eca4f0cddcd57d1ff5d1ac6e419cca89a",
       "status": "approved",
       "provenance_ref": "m2c_open_capacity_v2_approved",
       "delete_policy": "forbid",

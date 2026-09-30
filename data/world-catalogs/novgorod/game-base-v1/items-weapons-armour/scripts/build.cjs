@@ -12,6 +12,10 @@ const mil = readJson(P.authoring('military.json'));
 const deny = readJson(P.authoring('denylist.json'));
 const archiveManifest = readJson(P.authoring('archive_inclusion_manifest.json'));
 const master = readCsv(P.authoring('master_military_snapshot.csv'));
+const needsCheck = readCsv(path.join(ROOT, '..', 'crafts-tools-processes', 'authoring', 'needs_check.csv'));
+const nameBlockersById = new Map(needsCheck
+  .filter(row => row.doubt_kind === 'anachronism')
+  .map(row => [row.archive_id, { queue_id: `crafts-tools-processes/authoring/needs_check.csv#${row.archive_id}`, reason: row.note || row.block_pattern_ru }]));
 const masterById = Object.fromEntries(master.map(r => [r.item_id, r]));
 const costume = readCsv(path.join(P.costume, 'catalog_items.csv'));
 const costumeById = Object.fromEntries(costume.map(r => [r.item_id, r]));
@@ -113,6 +117,11 @@ for (const r of costume.filter(r => r.category === 'armor_and_weapons' || ['AC01
   const target = mapC[r.item_id] ? { t: 'wp', v: mapC[r.item_id] } : oos.costume[r.item_id] ? { t: 'out_of_scope', v: [oos.costume[r.item_id]] } : pending ? { t: 'needs_check', v: [] } : { t: 'UNMAPPED', v: [] };
   cw.push({ source_kind: 'costume_catalog', source_id: r.item_id, source_name_ru: r.name_ru, source_category: r.category + '/' + r.subcategory, source_confidence: r.historical_confidence, period: '', mapping: target.t, target: target.v });
 }
+const needsCheckGaps = cw.filter(row => nameBlockersById.has(row.source_id)).map(row => ({
+  ...nameBlockersById.get(row.source_id), row_id: row.source_id
+}));
+const admittedCrosswalk = cw.filter(row => !nameBlockersById.has(row.source_id));
+fs.mkdirSync(path.join(ROOT, 'reports'), { recursive: true });
 
 // --- items/weapon_denylist.csv
 const denyRows = deny.entries.map(d => ({ deny_id: d.id, term_ru: d.term_ru, match_terms: d.match, kind: d.kind, reason: d.reason, source_refs: d.source_refs, confidence: d.confidence, status: 'candidate' }));
@@ -187,7 +196,8 @@ const W = (rel, cols, rows) => { counts[rel] = writeCsv(path.join(ROOT, rel), co
 W('items/weapons_armour.csv', Object.keys(wpRows[0]), wpRows);
 W('items/weapon_status_access.csv', Object.keys(accRows[0]), accRows);
 W('items/weapon_equipment_profiles.csv', Object.keys(eqRows[0]), eqRows);
-W('items/weapon_source_crosswalk.csv', Object.keys(cw[0]), cw);
+W('items/weapon_source_crosswalk.csv', Object.keys(cw[0]), admittedCrosswalk);
+W('reports/needs_check_gaps.csv', ['queue_id', 'reason', 'row_id'], needsCheckGaps);
 W('items/weapon_denylist.csv', Object.keys(denyRows[0]), denyRows);
 W('items/archive_inclusion_ledger.csv', Object.keys(archiveInclusionRows[0]), archiveInclusionRows);
 W('military/security.csv', Object.keys(secRows[0]), secRows);
@@ -197,8 +207,9 @@ const tally = (rows, f) => rows.reduce((a, r) => (a[r[f]] = (a[r[f]] || 0) + 1, 
 const summary = { files: counts,
   weapons_armour: { by_kind: tally(wpRows, 'kind'), by_tier: tally(wpRows, 'effective_tier'), by_confidence: tally(wpRows, 'confidence'), by_priority: tally(wpRows, 'priority'), by_category_status: tally(wpRows, 'category_status') },
   archive_inclusion: { total: archiveInclusionRows.length, by_decision: tally(archiveInclusionRows, 'decision'), by_match_type: tally(archiveInclusionRows, 'match_type') },
-  crosswalk: tally(cw, 'mapping'), access_levels: tally(accRows, 'access_level'),
+  crosswalk: tally(admittedCrosswalk, 'mapping'), access_levels: tally(accRows, 'access_level'),
   security: { by_kind: tally(secRows, 'unit_or_post_kind'), by_confidence: tally(secRows, 'confidence') }, events: { by_kind: tally(evRows, 'kind'), by_confidence: tally(evRows, 'confidence') },
   combat_likelihood: tally(clRows, 'combat_likelihood') };
 fs.writeFileSync(path.join(ROOT, 'counts.json'), JSON.stringify(summary, null, 2) + '\n');
 console.log(JSON.stringify(summary, null, 1));
+require('node:child_process').execFileSync(process.execPath, [path.join(__dirname, '../../scripts/check-needs-check.mjs'), '--check'], { stdio: 'inherit' });

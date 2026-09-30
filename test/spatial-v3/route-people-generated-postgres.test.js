@@ -6,8 +6,8 @@ import { PRESENCE_E2E_MOVE_TEXT, bootstrapV17PresenceE2e, createPresenceProducti
 import { createRouteWalker, peopleAt } from './route-people-helpers.js';
 
 /**
- * D49 / TASK p.3: the first generated place beyond Vikhtuy. Its people come from the G4 composition (0-2 today, the
- * data floor is the people-data task), never from the place-family composition of the canonical places, and a restart
+ * D49: the first generated place beyond Vikhtuy. Its people come from the G4 composition (1-2 for Vikhtuy locality since
+ * people-d49, the G4 lower bound; other G4 keep 0-2), never from the place-family composition of the canonical places, and a restart
  * of the runtime neither adds nor changes them.
  */
 test('first generated place beyond Vikhtuy: people come from the G4 composition only and stay across a restart',
@@ -27,7 +27,7 @@ test('first generated place beyond Vikhtuy: people come from the G4 composition 
     for (let step = 0; step < 14 && generated == null; step += 1) {
       await root.runtime.submitTurn(partyId, { raw_text: PRESENCE_E2E_MOVE_TEXT, request_id: `gen-${partyId}-${step}` });
       generated = (await env.partyPool.query(
-        `SELECT id FROM party_runtime.party_g5_sites WHERE party_id=$1 AND origin='generated' LIMIT 1`, [partyId])).rows[0] ?? null;
+        `SELECT id, parent_g4_id FROM party_runtime.party_g5_sites WHERE party_id=$1 AND origin='generated' LIMIT 1`, [partyId])).rows[0] ?? null;
     }
     assert.ok(generated, 'a generated place is reached within 14 movement turns');
     const people = async () => (await env.partyPool.query(
@@ -44,6 +44,7 @@ test('first generated place beyond Vikhtuy: people come from the G4 composition 
       [partyId, JSON.stringify([{ table: 'party_g5_sites', id: generated.id }])])).rows[0];
     t.diagnostic(`generated place: people=${first.length} g4 composition count=${run.first_entry.selection.count}`);
     assert.ok(first.length <= 2, 'the G4 composition places at most two people');
+    if (generated.parent_g4_id.endsWith('_vikhtuy_locality')) assert.ok(first.length >= 1, 'D49: a generated place of Vikhtuy locality is never empty');
     assert.equal(first.length, run.first_entry.selection.count, 'the people are the G4 composition draw');
     assert.equal(run.first_entry.people, undefined, 'the place-people mechanism is for canonical places only');
     for (const npc of first) {

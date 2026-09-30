@@ -47,7 +47,7 @@ test('approval is per (pool, people): only ordinary Novgorod entries become appr
     && row.people_ref === 'pp_novgorod_rus' && row.sex_category === 'female');
   assert.ok(novgorodFemale.length >= 10 && novgorodFemale.every((row) => row.selection_class === 'ordinary'));
   assert.deepEqual(rowsOf(tables, 'npc_regional_context_name_bindings').map((row) => row.regional_context_id),
-    ['m2c_npc_regional_novgorod_land_v1', 'm2c_npc_regional_novgorod_canonical_initial_v1']);
+    ['m2c_npc_regional_novgorod_land_v1', 'm2c_npc_regional_novgorod_canonical_initial_v1', 'm2c_npc_regional_novgorod_land_d2_v1']);
   const scales = rowsOf(tables, 'npc_psychology_scale_entries');
   assert.equal(scales.filter((row) => row.scale_kind === 'trait').length, 6);
   assert.equal(scales.filter((row) => row.scale_kind === 'value').length, 7);

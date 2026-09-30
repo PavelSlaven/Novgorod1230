@@ -15,6 +15,66 @@ const json = async (path) => JSON.parse(await readFile(resolve(root, path)));
 const version = (row, field = 'scene_template_version') => ({ ...row, [field]: 2 });
 const digest = (row) => ({ ...row, canonical_digest: computeSpatialV3CanonicalDigest(row).slice(7) });
 
+const fresh = ({ canonical_digest: _old, ...row }) => digest(row);
+
+/**
+ * D49 people successor rows (candidate: m2c-npc/people-d49/candidate.json): three npc_binding profiles cloned from the
+ * approved household-servant profile, one clothing profile, one canonical regional context and version-3 successors of
+ * the fisher and servant profiles. Every value comes from the candidate or from existing approved rows.
+ */
+function peopleD49Rows(candidate, v1Profiles, v1Regional, v2Bindings, subjectApplicability) {
+  const profile = (id) => v1Profiles.find((row) => row.id === id);
+  const template = profile(candidate.template_profile);
+  const clothingTemplate = profile(candidate.clothing_profile.template);
+  const context = candidate.regional_context;
+  const contextRef = (row) => ({ version: row.version, weight_basis: 'editorial_equal_choice_not_historical_frequency',
+    gameplay_weight: 1, id: row.id });
+  const clothing = fresh({ ...clothingTemplate, id: candidate.clothing_profile.id, version: candidate.clothing_profile.version,
+    provenance_ref: candidate.provenance_ref,
+    payload: { ...clothingTemplate.payload, id: candidate.clothing_profile.id, version: candidate.clothing_profile.version,
+      allowed_role_refs: candidate.profiles.map((row) => row.role_ref).sort(),
+      allowed_occupation_refs: candidate.profiles.map((row) => row.occupation_ref).sort() },
+    });
+  const regionalTemplate = v1Regional.find((row) => row.id === context.template);
+  const regional = fresh({ ...regionalTemplate, id: context.id, version: context.version, provenance_ref: candidate.provenance_ref,
+    payload: { ...regionalTemplate.payload, id: context.id, version: context.version,
+      allowed_role_refs: [...new Set([...candidate.profiles.map((row) => row.role_ref), ...context.extra_role_refs])].sort(),
+      allowed_occupation_refs: [...new Set([...candidate.profiles.map((row) => row.occupation_ref),
+        ...context.extra_occupation_refs])].sort(),
+      applicability: context.g4_ids.map((id) => ({ g4_ref: { world_revision_id: candidate.world_revision_id, id, version: 1 } })) },
+    });
+  const ctxRef = contextRef(regional);
+  const profiles = candidate.profiles.map((spec) => {
+    const activity = profile(spec.activity_profile_ref.id);
+    const sex = spec.sex_category.map((id) => id.split('_').at(-1));
+    const applicability = subjectApplicability.filter((entry) => [spec.role_ref, spec.occupation_ref].includes(entry.subject_id)
+      && JSON.stringify(entry.actor_applicability.sex_category) === JSON.stringify(spec.sex_category)).map((entry) => entry.actor_applicability);
+    assert.equal(applicability.length, 1, `${spec.id}: exactly one game-base subject_applicability with this sex`);
+    const [{ sex_basis: sexBasis, confidence: sexConfidence }] = applicability;
+    const refs = [...template.payload.runtime_profile_refs
+      .filter((ref) => ref.id !== template.payload.activity_profile_ref.id && ref.id !== template.payload.clothing_profile_ref.id),
+    spec.activity_profile_ref, { id: clothing.id, version: clothing.version }].sort((a, b) => a.id.localeCompare(b.id));
+    return fresh({ ...template, id: spec.id, version: spec.version, role_ref: spec.role_ref, occupation_ref: spec.occupation_ref,
+      provenance_ref: candidate.provenance_ref, 
+      payload: { ...template.payload, profile_id: spec.id, actor_profile_rule_ref: spec.id, role_ref: spec.role_ref,
+        occupation_ref: spec.occupation_ref, activity_profile_ref: spec.activity_profile_ref,
+        clothing_profile_ref: { id: clothing.id, version: clothing.version }, runtime_profile_refs: refs,
+        regional_context_refs: [ctxRef],
+        actor_applicability: { sex_category: spec.sex_category, sex_basis: sexBasis, confidence: sexConfidence,
+          source_refs: spec.source_refs },
+        clothing_variant_requirements: template.payload.clothing_variant_requirements
+          .filter((variant) => variant.sex_categories.every((category) => sex.includes(category))),
+        observable_activity: { value: activity.payload.payload.editorial_reconstruction.task_focus,
+          source_ref: activity.payload.record_id } } });
+  });
+  const successors = candidate.profile_successors.map((spec) => {
+    const base = v2Bindings.find((row) => row.id === spec.id && row.version === spec.from_version);
+    return fresh({ ...base, version: spec.version, 
+      payload: { ...base.payload, regional_context_refs: [...base.payload.regional_context_refs, ctxRef] } });
+  });
+  return { profiles: [...profiles, clothing, ...successors], regional };
+}
+
 export async function promoteM2cOpenCapacity({ check = false } = {}) {
   const candidatePath = `${source}/open-capacity-v2-candidate.json`;
   const candidateBytes = await readFile(resolve(root, candidatePath));
@@ -47,7 +107,8 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
     .map((row) => version(row, 'template_version'));
   const successors = (await old('spatial_v3_g5_successor_frontier_rules'))
     .map((row) => version(row, 'g5_template_version'));
-  const npcRegional = (await json(`${catalog}/m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json`))
+  const v1Regional = await json(`${catalog}/m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json`);
+  const npcRegionalV2 = v1Regional
     .map((row) => {
       const next = { ...row, version: 2, payload: { ...row.payload, version: 2,
         applicability: row.payload.applicability.map((item) => item.generation_template_ref
@@ -56,7 +117,8 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
       delete next.canonical_digest;
       return digest(next);
     });
-  const npcBindings = (await json(`${catalog}/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json`))
+  const v1Profiles = await json(`${catalog}/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json`);
+  const npcBindingsV2 = v1Profiles
     .filter((row) => row.profile_kind === 'npc_binding')
     .map((row) => {
       const next = { ...row, version: 2, payload: { ...row.payload,
@@ -65,11 +127,29 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
       delete next.canonical_digest;
       return digest(next);
     });
+  const peopleCandidatePath = `${catalog}/m2c-npc/people-d49/candidate.json`;
+  const peopleBytes = await readFile(resolve(root, peopleCandidatePath));
+  const people = JSON.parse(peopleBytes);
+  const peopleApprovalPath = `${catalog}/m2c-npc/people-d49/approval.json`;
+  const peopleApproval = await json(peopleApprovalPath);
+  assert.ok(['APPROVE', 'APPROVE_WITH_LIMITS'].includes(peopleApproval.verdict));
+  assert.ok(peopleApproval.approved_by);
+  assert.equal(peopleApproval.exact_candidate.sha256, sha(peopleBytes));
+  const { subject_applicability: subjectApplicability } = await json(
+    `${catalog}/game-base-v1/occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json`);
+  const peopleRows = peopleD49Rows(people, v1Profiles, v1Regional, npcBindingsV2, subjectApplicability);
+  const npcBindings = [...npcBindingsV2, ...peopleRows.profiles];
+  const npcRegional = [...npcRegionalV2, peopleRows.regional];
+  const overrides = new Map(people.g4_overrides.map((entry) => [entry.g4_id, entry]));
   const npcCompositions = (await json(`${catalog}/m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json`))
     .map((row) => {
+      const floor = overrides.get(row.g4_id);
+      if (floor) assert.equal(floor.count_weights.length, floor.max_count - floor.min_count + 1);
       const next = { ...row, version: 2, generation_template_version: 2,
-        payload: { ...row.payload, weighted_profile_refs: row.payload.weighted_profile_refs
-          .map((entry) => ({ ...entry, profile_ref: { ...entry.profile_ref, version: 2 } })) } };
+        ...(floor ? { min_count: floor.min_count, max_count: floor.max_count } : {}),
+        payload: { ...row.payload, ...(floor ? { count_weights: floor.count_weights } : {}),
+          weighted_profile_refs: row.payload.weighted_profile_refs
+            .map((entry) => ({ ...entry, profile_ref: { ...entry.profile_ref, version: 2 } })) } };
       delete next.canonical_digest;
       return digest(next);
     });
@@ -100,7 +180,7 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
       version: 2, world_revision_id: row.world_revision_id, status: row.status,
       canonical_digest: row.canonical_digest, provenance_ref: row.provenance_ref })),
     ...[...npcBindings, ...npcRegional].map((row) => ({ entity_kind: row.entity_kind,
-      entity_id: row.id, version: 2, world_revision_id: row.world_revision_id,
+      entity_id: row.id, version: row.version, world_revision_id: row.world_revision_id,
       status: row.status, canonical_digest: row.canonical_digest,
       provenance_ref: row.provenance_ref })),
     ...acoustics.map((row) => ({ entity_kind: row.entity_kind, entity_id: row.id,
@@ -139,6 +219,10 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
     summary: 'Approved open G6 positions and nonportal local edges with mechanical capacity successor.',
     limitations: 'No historical occupancy claim or committed scene migration.',
     status: 'approved', confidence: 'high', checked_by: approval.reviewer }];
+  sourceRecord.push({ id: people.provenance_ref, title: 'M2c D49 people: profiles, canonical regional context, G4 lower bound',
+    source_type: 'project_note', file_reference: peopleCandidatePath, page_or_section: `candidate_sha256:${sha(peopleBytes)}`,
+    summary: people.decision, limitations: 'Gameplay authoring; no historical frequency, origin or language claim. Awaits independent approval (people-d49/approval.json).',
+    status: 'approved', confidence: 'low', checked_by: peopleApproval.approved_by });
   replacements.set('source_records', sourceRecord);
   const sourceEntry = new Map(sourceManifest.datasets.map((row) => [row.table, row]));
   const manifest = { ...sourceManifest, bundle_id: 'novgorod_m2c_open_capacity_v2_import',

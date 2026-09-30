@@ -1204,3 +1204,29 @@
 - **Ограничения:**
   - строки ладожской нерпы (подрегион) валидатор окружения теперь считает наличием во всём регионе; ссылок на неё в окружении нет, учёт подрегиона — вместе с #158 R-2a;
   - полный `npm test` не запускался.
+
+## Пороги D49 в составе D-2 (`pf_riverbank`, `pf_rural_yard`, `pf_village_lane`)
+
+- **Кто:** исполнитель fleet people-data (Claude Sonnet 5.5), не утверждающий; утверждение — независимый проход Opus.
+- **Что:** три группы min=max=1 в `people_composition_authoring.json`; 4 строки `people_presence_authoring.csv` (`pf_riverbank|fisher`, `pf_village_lane|householder`, `pf_rural_yard|householder` день и вечер) переведены `presence_rule` → `composition`; `presence_rules.csv` 6976 → 6973 строки (убраны 3 правила, остальные побайтно прежние); отчёты пересобраны.
+- **Основание:** решение владельца D49 (минимум один человек на месте маршрута среза после старта); подтверждения численности в источниках нет, confidence C.
+- **Проверено скриптами:** `check-people-composition.mjs --self-test` (17 PF, 8 групп, 41 проба) PASS; `validate.mjs` без FAIL; `npm run test:game-base` 57/57, включая «committed generated files match a fresh rebuild».
+- **Ограничения:** порог на уровне PF действует на всех канонических узлах PF стартовой территории (`pf_riverbank` — 70 узлов); более узкой гранулярности в D-2 нет.
+
+## Независимая проверка порогов D49 (Claude Opus 5.5, 2026-09-30)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор (автор — исполнитель fleet people-data, Claude Sonnet 5.5). Проверен коммит `c79852e7` против базы `068b5a03`; прогоны шли на копии `git archive`.
+- **Изменилось ровно заявленное (скрипт ревьюера):** в game-base 8 файлов, все в `places-binding`. `people_composition_authoring.json` — меняются только `pf_riverbank`, `pf_rural_yard`, `pf_village_lane`: по одной группе min=max=1, снят `empty_reason`, из `scheduled_absences` убран только совпавший субъект; `never_created_gaps` и остальные 14 PF побайтно прежние. `people_presence_authoring.csv` — 4 строки (3, 16, 17, 18), изменено только `creation_owner`. `presence_rules.csv` — 6976→6973, убраны ровно `pr_3350f0641f59045e`, `pr_0bc3c2be8d8a6870`, `pr_b067191b1b9858d6`, остальные строки и их порядок прежние.
+- **Прогоны на копии:** `check-people-composition.mjs --self-test` — PASS (17 PF, 8 групп, 41 проба); `npm run test:game-base` — 57/57, включая «committed generated files match a fresh rebuild».
+- **Правдоподобие:** рыбак на берегу низовий Двины около 1230 г. и домохозяин на сельском дворе и деревенской улице правдоподобны. Численность — редакционное правило D49 (confidence C), а не свидетельство источника. В README правило записано честно: минимум один человек при первом входе на каноническое место PF.
+- **Ограничения:**
+  - порог `pf_riverbank` действует на всех 70 канонических узлах берега стартовой территории, из них на срезе только 2; на дальних отмелях и открытых плёсах «рыбак при первом входе» — игровая плотность, а не историческая;
+  - в `pf_rural_yard` осталось отсутствие `nov_occ_haymaker` («косец не создаётся»), а профиль домохозяина в пакете m2c несёт занятие haymaker. Противоречия в данных нет, отсутствие касается отдельного работника, но формулировку стоит уточнить при следующей правке;
+  - у групп домохозяина `profile_ref` = null: каталог профилей game-base не знает id пакета m2c. Разрешение по роли сейчас однозначно.
+- presence/people_composition_authoring.json — approve_with_limits: три порога D49, основание D49, confidence C
+- presence/people_presence_authoring.csv — approve_with_limits: 4 строки переведены в composition
+- presence/presence_rules.csv — approve_with_limits: сгенерирован, пересобран, минус 3 правила
+- reports/presence-rules-report.json — approve_with_limits: сгенерирован, пересобран
+- reports/validation.json — approve_with_limits: сгенерирован, пересобран
+
+Вердикт группы: **approve_with_limits**.

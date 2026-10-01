@@ -436,3 +436,18 @@ test('the canonical connections of the current place reach the visible context, 
   hidden.scene.site = scene.site;
   assert.deepEqual(await hidden.provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
 });
+
+test('an approved local line uses its world_base line_name as the player label', async () => {
+  const line = { binding: { id: 'cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4' },
+    line_name: 'травяным проходом', line_discriminator: null };
+  const worldBaseReader = {
+    async readG4ExpansionBinding() { return { ok: true, value: { g4: { id: g4, version: 1 } } }; },
+    async readApprovedCanonicalG5Connections() { return { ok: true, value: [line] }; } };
+  const { provider, scene } = fixture({ worldBaseReader });
+  scene.site = { id: 'site', origin: 'canonical', parent_g4_id: g4,
+    canonical_g5_ref: { entity_id: 'g5', authoring_version: '1' } };
+
+  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), [{
+    connection_binding_id: line.binding.id, knowledge_state: 'visible', display_label: line.line_name,
+  }]);
+});

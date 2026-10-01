@@ -93,6 +93,54 @@ test('P19 traversal controls retain six outcomes while rejecting unsealed source
   assert.equal(engine.resolveTraversalInterval(intervalInput({ clock_commit_mode: 'clockish' })).ok, false);
 });
 
+test('P19 turn_back mirrors mid-segment progress atomically and returns to departure on mirrored completion', () => {
+  const engine = createSpatialV3ExecutionEngine();
+  const pausedState = state({ progress_ppm: 400_000, status: 'paused_in_transit', mirrored: false });
+  const turnBack = intervalInput({ idempotency_key: 'turn-back', interval_ordinal: 1,
+    travel_state: pausedState, turn_back: true, progress_before_ppm: 600_000,
+    planned_progress_after_ppm: 800_000, actual_progress_after_ppm: 800_000,
+    planned_time: rational('3'), actual_time: rational('2'), cumulative_before: rational('4'),
+    source_signals: signals() });
+  const progressed = engine.resolveTraversalInterval(turnBack);
+  assert.equal(progressed.ok, true, JSON.stringify(progressed));
+  assert.equal(progressed.result.turn_back, true);
+  assert.equal(progressed.result.progress_before_ppm, 600_000);
+  assert.equal(progressed.travel_state.mirrored, true);
+  assert.equal(progressed.travel_state.progress_ppm, 800_000);
+  assert.equal(progressed.travel_state.status, 'active');
+  const replay = engine.resolveTraversalInterval(turnBack);
+  assert.equal(replay.replayed, true);
+  assert.equal(replay.travel_state.progress_ppm, 800_000, 'retry must not mirror progress twice');
+
+  const departureState = state({ progress_ppm: 999_999, status: 'paused_in_transit', mirrored: false,
+    next_interval_ordinal: 2, cumulative_actual_time: rational('6') });
+  const returned = engine.resolveTraversalInterval(intervalInput({ idempotency_key: 'return-home',
+    interval_ordinal: 2, travel_state: departureState, turn_back: true,
+    progress_before_ppm: 1, planned_progress_after_ppm: 1_000_000,
+    actual_progress_after_ppm: 1_000_000, planned_time: rational('1'), actual_time: rational('1'),
+    cumulative_before: rational('6'), source_signals: signals() }));
+  assert.equal(returned.ok, true, JSON.stringify(returned));
+  assert.equal(returned.result.result_kind, 'returned_to_departure');
+  assert.equal(returned.travel_state.mirrored, true);
+  assert.equal(returned.travel_state.closed_result, 'returned_to_departure');
+  assert.equal(returned.travel_state.progress_ppm, 1_000_000);
+});
+
+test('P19 repeated turn_back terminal outcome follows direction after commit', () => {
+  const engine = createSpatialV3ExecutionEngine();
+  const stateOnMirroredSide = state({ progress_ppm: 999_999, status: 'paused_in_transit',
+    mirrored: true, next_interval_ordinal: 3, cumulative_actual_time: rational('8') });
+  const completed = engine.resolveTraversalInterval(intervalInput({ idempotency_key: 'turn-forward-again',
+    interval_ordinal: 3, travel_state: stateOnMirroredSide, turn_back: true,
+    progress_before_ppm: 1, planned_progress_after_ppm: 1_000_000,
+    actual_progress_after_ppm: 1_000_000, planned_time: rational('2'), actual_time: rational('2'),
+    cumulative_before: rational('8'), source_signals: signals() }));
+  assert.equal(completed.ok, true, JSON.stringify(completed));
+  assert.equal(completed.result.result_kind, 'segment_completed');
+  assert.equal(completed.travel_state.mirrored, false);
+  assert.equal(completed.travel_state.closed_result, 'completed');
+});
+
 test('P19 synchronized slice is a complete atomic root/local trace', () => {
   const engine = createSpatialV3ExecutionEngine();
   const root = seal({ id: 'root', party_id: 'party', route_plan_execution_id: 'exec', actual_time: rational('1'), result_kind: 'progressed' });

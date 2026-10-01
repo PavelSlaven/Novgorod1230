@@ -144,6 +144,36 @@ test('availability and destination projection owner are required before movement
   assert.equal(commitCheck.ok, false);
 });
 
+test('approved local line traverses one timed step with exact D49 rational factors', async () => {
+  const localConnection = { ...connection, cost_kind: 'time', action_units: null,
+    base_minutes: 20, line_name: 'лесной тропой', line_discriminator: null,
+    line_kind_profile_ref: versioned('line.path') };
+  const localProfile = { ...profile, cost_kind: 'time', action_units: null,
+    base_minutes: 20, line_kind_profile_ref: 'line.path@1' };
+  const localContext = { ...context, closure: { connection_profiles: [localProfile] },
+    snapshot: { ...context.snapshot, line_bindings: [{ site_connection_id: 'connection',
+      authoring_version: 3, line_name: 'лесной тропой', line_discriminator: null,
+      line_kind_profile_ref: 'line.path@1', base_minutes: 20,
+      movement_method_id: 'movement.walk', method_factor: { numerator: '3', denominator: '2' },
+      environment_factor: { numerator: '3', denominator: '1' } }] } };
+  const prepare = createSpatialV3SiteTraversalRuntime({
+    pool: { query: async () => ({ rowCount: 1, rows: [{ units: 0 }] }) },
+    assessAvailability: async () => ({ ok: true, status: 'open', connection_id: 'connection',
+      condition_set_ref: localProfile.availability_condition_set_ref }),
+    assessMovementCapability: async () => ({ ok: true, actor_id: 'actor', capability_context: capability }),
+    projectDestination: async () => ({ ok: true, position_id: 'position:target',
+      site_id: 'site:target', visible_context: visible })
+  });
+  const consequence = await prepare({ partyId: party_id, actorId: 'actor', requestId: 'line-request',
+    state, playerInput: { idempotency_key: 'line-idem' }, inputDigest: 'line-input',
+    context: localContext, connection: localConnection });
+  assert.equal(consequence.duration_minutes, 90, '20 × 3/2 method × 3/1 single worst environment factor');
+  assert.equal(consequence.spatial_v3_traversal.plan.steps[0].step_kind, 'timed_traversal');
+  assert.deepEqual(consequence.spatial_v3_traversal.result.planned_time,
+    { numerator: '90', denominator: '1' });
+  assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'segment_completed');
+});
+
 test('known movement denial is a player-safe refusal without traversal', async () => {
   const prepare = createSpatialV3SiteTraversalRuntime({
     pool: { query: async () => ({ rowCount: 1, rows: [{ units: 0 }] }) },

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -12,6 +13,10 @@ import { createRedactor, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '.
 
 const SECRET_KEY = 'sk-test-secret-key-0123456789';
 const SECRET_URL = 'https://llm.internal.example:8443/v1';
+const LOCAL_LINE = JSON.parse(readFileSync(new URL(
+  '../../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json',
+  import.meta.url))).find(({ id }) => id === 'cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4');
+assert.ok(LOCAL_LINE, 'the Vikhtuy work-storage line exists in the approved candidate data');
 
 // ---------- argument parsing and exit ----------
 
@@ -127,7 +132,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, makeWorks = true, takeWor
     placements_here: w.site === 'B' && !hidePeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
     items: items(), party_items: w.made, npc_statements: w.statements,
     resource_nodes: w.site === 'B' ? [{ resource_node_id: 'm2c_finite_deadwood_v1:x', quantity_numerator: String(w.node) }] : [] });
-  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа'] : ['Назад'],
+  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? [LOCAL_LINE.line_name] : ['Назад'],
     panels: { people: { data: { people: w.site === 'B' && !hidePeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
@@ -140,7 +145,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, makeWorks = true, takeWor
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
-      if (text === 'Тропа') { w.site = 'B'; w.sv += 1; w.prose = 'Лесная тропа.'; }
+      if (text === LOCAL_LINE.line_name) { w.site = 'B'; w.sv += 1; w.prose = 'Лесная тропа.'; }
       else if (text === 'Назад') { w.site = 'A'; w.sv += 1; }
       else if (/^Здоров|^Здравств/u.test(text)) { w.sv += 1; if (talkWorks) w.statements = [...w.statements, { speaker_ref: { entity_kind: 'npc' }, text: 'Я Милонег.' }]; }
       else if (/^Беру/u.test(text)) { w.sv += 1; if (takeWorks) { w.node -= 1; w.held = [...w.held, { item_id: 'ordinary_item_1', holder: 'c', position: 'hands' }]; } }
@@ -162,7 +167,9 @@ test('legs: a working world passes every leg with the exact phrases of the plan'
   const world = fakeWorld();
   const result = await runFake(world);
   assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'pass', take: 'pass', make: 'pass' });
-  assert.deepEqual(world.w.turns, ['Тропа', 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
+  assert.deepEqual(world.w.turns, [LOCAL_LINE.line_name, 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
+  assert.equal(result.turns[0].input, LOCAL_LINE.line_name, 'the harness chooses the actual approved line name');
+  assert.doesNotMatch(result.turns[0].input, /Проход\s+\d|выход\s+\d|\b(?:первый|второй|третий)\b/iu);
   assert.equal(result.turns.every(({ ms }) => Number.isFinite(ms)), true);
   assert.equal(exitCodeOf(result.legs), EXIT.PASS);
 });

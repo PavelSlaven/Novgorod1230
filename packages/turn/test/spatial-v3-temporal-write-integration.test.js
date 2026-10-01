@@ -135,6 +135,49 @@ test('ordered transitions compose one committed version only with the actual pre
   assert.equal(first.write_set.updates[0].record.causal_state_ref.activity, 'break');
 });
 
+test('same-turn NPC knowledge merges share one merge-state write at one version', () => {
+  const stateId = 'party-1:npc-1';
+  const transition = (proposalId, mode, stateVersion) => seal({
+    proposal_id: `perception:${proposalId}`,
+    write_set: { appends: [], inserts: mode === 'inserts' ? [{
+      target_table: 'party_npc_knowledge_merge_states', id: stateId,
+      record: { party_id: 'party-1', npc_id: 'npc-1',
+        state_version: stateVersion, last_proposal_id: proposalId,
+        last_result_digest: `digest:${proposalId}` }
+    }] : [], updates: mode === 'updates' ? [{
+      target_table: 'party_npc_knowledge_merge_states', id: stateId,
+      record: { party_id: 'party-1', npc_id: 'npc-1',
+        state_version: stateVersion, last_proposal_id: proposalId,
+        last_result_digest: `digest:${proposalId}` }
+    }] : [] },
+    expected_state_versions: mode === 'updates' ? [{
+      target_table: 'party_npc_knowledge_merge_states', id: stateId,
+      state_version: stateVersion
+    }] : [],
+    physical_keys: [`party_runtime.party_npc_knowledge_merge_states:${stateId}`]
+  });
+  const integrate = (mode, stateVersions) => integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: base,
+    temporal_result: seal({ combined_change_set: { proposals: [
+      transition('event-1', mode, stateVersions[0]),
+      transition('event-2', mode, stateVersions[1])
+    ] } })
+  });
+
+  for (const mode of ['inserts', 'updates']) {
+    const result = integrate(mode, mode === 'inserts' ? [1, 1] : [4, 4]);
+    assert.equal(result.ok, true, JSON.stringify(result));
+    const writes = result.input.approved_write_sets.flatMap((writeSet) =>
+      writeSet[mode]);
+    assert.equal(writes.length, 1);
+    assert.equal(writes[0].record.last_proposal_id, 'event-2');
+    assert.equal(writes[0].record.last_result_digest, 'digest:event-2');
+  }
+  assert.equal(integrate('updates', [4, 4])
+    .input.expected_state_versions.length, 1);
+  assert.equal(integrate('updates', [4, 5]).ok, false);
+});
+
 test('temporal fragment integration fails closed on duplicate writes or conflicting versions', () => {
   const duplicate = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: base,

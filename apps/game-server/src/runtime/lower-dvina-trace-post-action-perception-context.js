@@ -2,7 +2,22 @@ import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 
 export function perceptionContext({ state, npc, source, profile,
-  worldEnvironment = null }) {
+  environmentPort, eventTime }) {
+  const environment = environmentPort?.({
+    committed_environment: structuredClone(state.environment_snapshot),
+    event_time: structuredClone(eventTime)
+  }) ?? null;
+  if (!validEnvironmentSnapshot(environment)) {
+    gap('TRACE_POST_ACTION_ENVIRONMENT_STATE_GAP');
+  }
+  return buildPerceptionContext({ state, npc, source, profile, environment,
+    transientModifierDependencyPins:
+      environment.transient_modifier_dependency_pins,
+    visibilityModifiers: environment.visibility_modifiers });
+}
+
+export function buildPerceptionContext({ state, npc, source, profile,
+  environment, transientModifierDependencyPins, visibilityModifiers }) {
   const runtimeStatus = npc.machine_state?.runtime_status;
   const sleeping = profile.runtime_attention.sleeping_statuses
     .includes(runtimeStatus);
@@ -15,11 +30,6 @@ export function perceptionContext({ state, npc, source, profile,
       || !source.attention_state_ref || !source.knowledge_state_ref) {
     gap('TRACE_POST_ACTION_PERCEPTION_CONTEXT_GAP');
   }
-  const generalProfile = profile.schema
-    === 'rus.live_world_runtime.post_action_perception_profile.v1';
-  const environment = generalProfile
-    ? currentEnvironment(state, worldEnvironment)
-    : historicalEnvironment(profile);
   const policy = profile.perception_policy;
   const pins = seal({ pins: [
     authoringPin('profile', policy.recognition_policy_ref),
@@ -27,18 +37,17 @@ export function perceptionContext({ state, npc, source, profile,
     authoringPin('condition', policy.acoustic_policy_ref),
     authoringPin('source_dependency', policy.provenance_ref)
   ] });
+  const transientPins = transientModifierDependencyPins ?? pins;
+  const modifiers = visibilityModifiers ?? [];
   const scope = { entity_kind: 'canonical_spatial_node',
     entity_id: source.current_position_node_id };
-  const version = Number(state.party_state.state_version);
   return { channel: 'acoustic', dependency_pins: pins,
     propagation_snapshot: seal({ source_scope_ref: scope,
       target_scope_ref: scope, edges: [] }),
     environment_snapshot: seal({
       light_state_id: environment.light_state_id,
-      environment_state_ref: {
-        entity_kind: 'environment_overlay_state',
-        entity_id: state.environment_snapshot?.environment_profile_id },
-      environment_state_version: version,
+      environment_state_ref: structuredClone(environment.environment_state_ref),
+      environment_state_version: environment.environment_state_version,
       weather_state_ref: environment.weather_state_ref,
       weather_state_version: environment.weather_state_version,
       weather_visibility_result: environment.weather_visibility_result,
@@ -49,7 +58,9 @@ export function perceptionContext({ state, npc, source, profile,
       target_ambient_noise: String(source.ambient_noise),
       transient_visibility_result: environment.transient_visibility_result,
       transient_acoustic_loss: environment.transient_acoustic_loss,
-      transient_modifier_dependency_pins: pins, visibility_modifiers: [] }),
+      transient_modifier_dependency_pins:
+        structuredClone(transientPins),
+      visibility_modifiers: structuredClone(modifiers) }),
     attention_snapshot: seal({
       attention_state_ref: structuredClone(source.attention_state_ref),
       status: sleeping ? 'sleeping' : 'awake',
@@ -70,50 +81,21 @@ export function perceptionContext({ state, npc, source, profile,
       outcome: profile.recognition_outcome }),
     perception_profile: seal(structuredClone(policy)) };
 }
-function currentEnvironment(state, value) {
-  const weather = value?.weather_state;
-  const weatherRef = weather?.weather_state_id;
-  const weatherVersion = value?.weather_record_ref?.version;
-  const light = value?.light_state;
-  const lightState = ({ daylight: 'bright', civil_dawn: 'dim',
-    civil_dusk: 'dim', night: 'dark' })[light];
-  const weatherVisibility = ({ normal: 'clear', reduced: 'partial',
-    normal_or_reduced: 'partial', poor: 'blocked' })[weather?.visibility];
-  const version = Number(state.party_state?.state_version);
-  if (value?.schema !== 'rus.approved_initial_environment.v1'
-      || !text(state.environment_snapshot?.environment_profile_id)
-      || !text(weatherRef)
-      || !text(String(weatherVersion ?? ''))
-      || !Number.isSafeInteger(Number(weatherVersion))
-      || Number(weatherVersion) < 1
-      || !Number.isSafeInteger(version) || version < 0
-      || !lightState || !weatherVisibility) {
-    gap('TRACE_POST_ACTION_ENVIRONMENT_STATE_GAP');
-  }
-  return {
-    light_state_id: lightState,
-    weather_state_ref: { entity_kind: 'weather_state', entity_id: weatherRef },
-    weather_state_version: Number(weatherVersion),
-    weather_visibility_result: weatherVisibility,
-    // D66 carries M22's absence of weather and transient acoustic modifiers.
-    weather_acoustic_loss: '0',
-    transient_visibility_result: 'clear',
-    transient_acoustic_loss: '0'
-  };
-}
-function historicalEnvironment(profile) {
-  return {
-    light_state_id: profile.environment.light_state_id,
-    environment_state_ref: null,
-    environment_state_version: null,
-    weather_state_ref: { entity_kind: 'weather_state',
-      entity_id: `${profile.profile_id}:weather` },
-    weather_state_version: profile.revision,
-    weather_visibility_result: profile.environment.weather_visibility_result,
-    weather_acoustic_loss: profile.environment.weather_acoustic_loss,
-    transient_visibility_result: profile.environment.transient_visibility_result,
-    transient_acoustic_loss: profile.environment.transient_acoustic_loss
-  };
+
+function validEnvironmentSnapshot(value) {
+  return value?.light_state_id != null
+    && value.environment_state_ref?.entity_kind != null
+    && value.environment_state_ref?.entity_id != null
+    && Number.isSafeInteger(value.environment_state_version)
+    && value.weather_state_ref?.entity_kind != null
+    && value.weather_state_ref?.entity_id != null
+    && Number.isSafeInteger(value.weather_state_version)
+    && value.weather_visibility_result != null
+    && value.weather_acoustic_loss != null
+    && value.transient_visibility_result != null
+    && value.transient_acoustic_loss != null
+    && value.transient_modifier_dependency_pins != null
+    && Array.isArray(value.visibility_modifiers);
 }
 function seal(value) {
   return { ...value, canonical_digest: computeSpatialV3CanonicalDigest(value) };

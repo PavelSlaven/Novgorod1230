@@ -1,10 +1,16 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { computeSpatialV3CanonicalDigest } from
+  '@rus/contracts/spatial-v3/registry';
 import { createLowerDvinaTracePostAppliedActorStepOwner } from
   '../src/runtime/lower-dvina-trace-post-applied-actor-step.js';
 import { perceptionContext } from
   '../src/runtime/lower-dvina-trace-post-action-perception-context.js';
+import { validPostActionPerceptionProfile } from
+  '../src/internal/post-action-perception-profile.js';
+import { legacyPostActionPerceptionAdapter } from
+  '../src/internal/lower-dvina-trace-post-action-perception-legacy.js';
 
 const at = { whole_minutes: '10', subminute_numerator: '0',
   subminute_denominator: '1' };
@@ -75,7 +81,8 @@ function event(channel = 'acoustic', eventId = 'event-1', position = 'position:a
 test('co-located loud speech persists perception, first knowledge and exact summary', async () => {
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state(), idempotencyKey: 'idem-1',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
   const result = await owner({
     working_projection: {}, factual_events: [event()],
@@ -100,10 +107,32 @@ test('co-located loud speech persists perception, first knowledge and exact summ
     .turn_step_post_applied_perception_window, {
       kind: 'post_applied_perception_window', status: 'pending_npc_decision',
       observable_response_event_refs: [],
-      npc_decision_boundaries: [assertBoundary(result)],
+      moments: [{ occurred_at: at,
+        event_refs: [ref('sound_event', 'event-1')],
+        pending_npc_decision_refs: ['npc-1'] }],
       pending_npc_decision_refs: ['npc-1']
     });
 });
+
+function environmentSnapshot({ weather = 'weather-rain', light = 'dim' } = {}) {
+  const transientPins = { pins: [{ dependency_role: 'source_dependency',
+    entity_ref: ref('source_record', 'environment-transient-policy'),
+    version_pin: { pin_kind: 'authoring_version', authoring_version: '1' } }] };
+  transientPins.canonical_digest = computeSpatialV3CanonicalDigest(transientPins);
+  return {
+    light_state_id: light,
+    environment_state_ref: ref('environment_overlay_state', 'environment-1'),
+    environment_state_version: 4,
+    weather_state_ref: ref('weather_state', weather),
+    weather_state_version: 2,
+    weather_visibility_result: 'partial',
+    weather_acoustic_loss: 0,
+    transient_visibility_result: 'clear',
+    transient_acoustic_loss: 0,
+    transient_modifier_dependency_pins: transientPins,
+    visibility_modifiers: []
+  };
+}
 
 test('general perception uses committed environment at the event timestamp', async () => {
   const committed = await state();
@@ -111,42 +140,36 @@ test('general perception uses committed environment at the event timestamp', asy
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: committed, idempotencyKey: 'idem-environment',
     perceptionProfile: await generalPerceptionPolicy(),
-    environmentProjector: ({ clock }) => ({
-      schema: 'rus.approved_initial_environment.v1',
-      environment_profile_id: 'environment-1',
-      weather_record_ref: { version: '2' },
-      weather_state: { weather_state_id: 'weather-rain',
-        visibility: 'reduced' },
-      light_state: 'civil_dusk',
-      observed_at: (projected = clock)
-    })
+    environmentPort: ({ committed_environment, event_time }) => {
+      assert.deepEqual(committed_environment,
+        committed.environment_snapshot);
+      projected = event_time;
+      return environmentSnapshot({ light: 'dim' });
+    }
   });
   const result = await owner({ working_projection: {}, factual_events: [event()] });
-  assertBoundary(result);
+  assert.deepEqual(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window.pending_npc_decision_refs,
+  ['npc-1']);
   assert.equal(result.temporal_results[0].combined_change_set.proposals
     .some(({ perception_reaction_result: value }) =>
       value?.perception_result?.result === 'perceived_unidentified'), true);
   const perception = perceptionContext({ state: committed,
     npc: committed.npcs[0], source: committed.post_action_perception_sources[0],
-    profile: await generalPerceptionPolicy(), worldEnvironment: {
-      schema: 'rus.approved_initial_environment.v1',
-      environment_profile_id: 'environment-1',
-      weather_record_ref: { version: '2' },
-      weather_state: { weather_state_id: 'weather-rain',
-        visibility: 'reduced' },
-      light_state: 'civil_dusk'
-    } });
+    profile: await generalPerceptionPolicy(), eventTime: at,
+    environmentPort: () => environmentSnapshot() });
 
   assert.deepEqual(projected, at);
   assert.deepEqual(perception.environment_snapshot.environment_state_ref,
     ref('environment_overlay_state', 'environment-1'));
+  assert.equal(perception.environment_snapshot.environment_state_version, 4);
   assert.equal(perception.environment_snapshot.light_state_id, 'dim');
   assert.equal(perception.environment_snapshot.weather_state_ref.entity_id,
     'weather-rain');
   assert.equal(perception.environment_snapshot.weather_state_version, 2);
   assert.equal(perception.environment_snapshot.weather_visibility_result,
     'partial');
-  assert.equal(perception.environment_snapshot.weather_acoustic_loss, '0');
+  assert.equal(perception.environment_snapshot.weather_acoustic_loss, 0);
 });
 
 test('general profile mechanically matches the approved M22 source', async () => {
@@ -161,6 +184,53 @@ test('general profile mechanically matches the approved M22 source', async () =>
   assert.deepEqual(mechanics(profile), mechanics(source));
 });
 
+test('general validator uses binding profile id and treats provenance as descriptive',
+  async () => {
+    const profile = await generalPerceptionPolicy();
+    profile.profile_id = 'another-neutral-perception-profile-v1';
+    profile.provenance.transfer_basis = 'approved by another source';
+
+    assert.equal(validPostActionPerceptionProfile(profile, {
+      expectedProfileId: 'another-neutral-perception-profile-v1'
+    }), true);
+    assert.equal(validPostActionPerceptionProfile(profile, {
+      expectedProfileId: 'live_world_post_action_perception_v1'
+    }), false);
+  });
+
+test('common perception modules exclude scenario identifiers and legacy revision',
+  async () => {
+    const paths = [
+      new URL('../src/internal/post-action-perception-profile.js', import.meta.url),
+      new URL('../src/runtime/lower-dvina-trace-post-action-perception-context.js', import.meta.url),
+      new URL('../src/runtime/lower-dvina-trace-post-applied-actor-step.js', import.meta.url)
+    ];
+    const source = (await Promise.all(paths.map((path) =>
+      readFile(path, 'utf8')))).join('\n');
+    assert.doesNotMatch(source, /lower_dvina_trace_v1|scenario_definition_revision\s*===\s*34/);
+    assert.equal(validPostActionPerceptionProfile(await perceptionPolicy()), false);
+    assert.equal(legacyPostActionPerceptionAdapter.validProfile(
+      await perceptionPolicy()), true);
+  });
+
+test('legacy adapter preserves M22 environment without general-profile routing',
+  async () => {
+    const committed = await state();
+    const legacy = await perceptionPolicy();
+    const context = legacyPostActionPerceptionAdapter.context({
+      state: committed, npc: committed.npcs[0],
+      source: committed.post_action_perception_sources[0], profile: legacy
+    });
+    assert.equal(context.environment_snapshot.light_state_id, 'bright');
+    assert.equal(context.environment_snapshot.weather_visibility_result,
+      'clear');
+    assert.equal(context.environment_snapshot.weather_acoustic_loss, '0');
+    assert.equal(context.environment_snapshot.environment_state_ref, null);
+    assert.equal(context.environment_snapshot.environment_state_version, null);
+    assert.equal(context.environment_snapshot.weather_state_ref.entity_id,
+      'lower_dvina_trace_post_action_perception_v1:weather');
+  });
+
 test('approved general profile excludes sleeping listeners and other positions',
   async () => {
     const profile = await generalPerceptionPolicy();
@@ -173,13 +243,8 @@ test('approved general profile excludes sleeping listeners and other positions',
         committedState: committed,
         idempotencyKey: `idem-general-${name}`,
         perceptionProfile: profile,
-        environmentProjector: () => ({
-          schema: 'rus.approved_initial_environment.v1',
-          weather_record_ref: { version: '1' },
-          weather_state: { weather_state_id: 'weather-clear',
-            visibility: 'normal' },
-          light_state: 'daylight'
-        })
+        environmentPort: () => environmentSnapshot({ weather: 'weather-clear',
+          light: 'bright' })
       });
       const result = await owner({ working_projection: {},
         factual_events: [event('acoustic', `event-${name}`, position)] });
@@ -192,12 +257,12 @@ test('approved general profile excludes sleeping listeners and other positions',
         assert.deepEqual(outcomes, [], name);
       }
       assert.deepEqual(result.consequence_fragment.visible_seed
-        .turn_step_post_applied_perception_window.npc_decision_boundaries,
+        .turn_step_post_applied_perception_window.pending_npc_decision_refs ?? [],
       [], name);
     }
   });
 
-test('12 deterministic cases preserve M22 outcomes after generalization', async () => {
+test('12 deterministic cases cover general profile outcomes and M22 parity', async () => {
   const cases = [
     { name: 'co-located acoustic event', make: () => ({}) },
     { name: 'ambient noise 1', make: () => ({ noise: 1 }) },
@@ -215,7 +280,6 @@ test('12 deterministic cases preserve M22 outcomes after generalization', async 
       visibility: 'poor' }) },
     { name: 'unwired v17 null profile', make: () => ({ profile: null }) }
   ];
-  const historical = await perceptionPolicy();
   const generalized = await generalPerceptionPolicy();
 
   for (const [index, probe] of cases.entries()) {
@@ -244,19 +308,16 @@ test('12 deterministic cases preserve M22 outcomes after generalization', async 
       }
       return item;
     });
-    const projectEnvironment = ({ clock }) => ({
-      schema: 'rus.approved_initial_environment.v1',
-      weather_record_ref: { version: '1' },
-      weather_state: { weather_state_id: `weather-${index}`,
-        visibility: options.visibility ?? 'normal' },
-      light_state: options.light === 'night' ? 'night' : 'daylight',
-      observed_at: clock
+    const projectEnvironment = ({ event_time }) => ({
+      ...environmentSnapshot({ weather: `weather-${index}`,
+        light: options.light === 'night' ? 'dark' : 'bright' }),
+      observed_at: event_time
     });
     const run = async (profile) => {
       const result = await createLowerDvinaTracePostAppliedActorStepOwner({
         committedState: structuredClone(committed),
         idempotencyKey: `case-${index}`, perceptionProfile: profile,
-        environmentProjector: projectEnvironment
+        environmentPort: projectEnvironment
       })({ working_projection: {}, factual_events: events });
       const window = result.consequence_fragment?.visible_seed
         ?.turn_step_post_applied_perception_window;
@@ -264,16 +325,29 @@ test('12 deterministic cases preserve M22 outcomes after generalization', async 
         outcomes: result.temporal_results[0].combined_change_set.proposals
           .flatMap(({ perception_reaction_result: reaction }) =>
             reaction == null ? [] : [reaction.perception_result.result]),
-        boundaries: window?.npc_decision_boundaries ?? []
+        pending: window?.pending_npc_decision_refs ?? [],
+        moments: window?.moments ?? []
       };
     };
 
     if (options.profile === null) {
       const negativeControl = await run(null);
-      assert.deepEqual(negativeControl, { outcomes: [], boundaries: [] }, probe.name);
+      assert.deepEqual(negativeControl, { outcomes: [], pending: [], moments: [] }, probe.name);
       continue;
     }
-    assert.deepEqual(await run(generalized), await run(historical), probe.name);
+    const result = await run(generalized);
+    if (options.runtimeStatus === 'sleeping') {
+      assert.deepEqual(result.outcomes, ['not_perceived'], probe.name);
+    } else if (options.runtimeStatus === 'unavailable'
+        || options.position === 'position:elsewhere'
+        || options.channel === 'visual') {
+      assert.deepEqual(result.outcomes, [], probe.name);
+    } else if (options.listenerCount === 2) {
+      assert.equal(result.outcomes.length, 2, probe.name);
+    } else {
+      assert.equal(result.outcomes.length, options.eventCount ?? 1, probe.name);
+    }
+    if (options.distinctTimes) assert.equal(result.moments.length, 2, probe.name);
   }
 });
 
@@ -287,21 +361,11 @@ test('general profile fails closed when environment projection is missing', asyn
     ({ code }) => code === 'TRACE_POST_ACTION_ENVIRONMENT_STATE_GAP');
 });
 
-function assertBoundary(result) {
-  const boundary = result.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries[0];
-  assert.equal(boundary.schema, 'npc_decision_boundary_v1');
-  assert.equal(boundary.decision_mode, 'autonomous');
-  assert.equal(boundary.npc_ref.entity_id, 'npc-1');
-  assert.equal(boundary.same_time_batch_ref.entity_id,
-    'temporal-batch:party-1:10:0/1:1');
-  return boundary;
-}
-
-test('same-time perceived events aggregate into one stable formal boundary', async () => {
+test('same-time perceived events create only pending references for wave 2', async () => {
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state(), idempotencyKey: 'idem-batch',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
   const input = { working_projection: {},
     factual_events: [event('acoustic', 'event-1'),
@@ -309,18 +373,12 @@ test('same-time perceived events aggregate into one stable formal boundary', asy
 
   const first = await owner(input);
   const second = await owner(input);
-  const boundary = assertBoundary(first);
-
-  assert.equal(first.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries.length,
-  1);
-  assert.deepEqual(boundary.signal_refs.map(({ entity_id }) => entity_id), [
-    'decision-signal:source_record:event-1:npc-1:communication',
-    'decision-signal:source_record:event-2:npc-1:communication'
-  ]);
+  assert.deepEqual(first.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window.pending_npc_decision_refs,
+  ['npc-1']);
   assert.deepEqual(second.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries[0],
-  boundary);
+    .turn_step_post_applied_perception_window.pending_npc_decision_refs,
+  ['npc-1']);
 });
 
 test('one event gives every co-located listener a distinct idempotency identity', async () => {
@@ -337,7 +395,8 @@ test('one event gives every co-located listener a distinct idempotency identity'
     npc_id: 'npc-2' });
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: committed, idempotencyKey: 'idem-multi',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
 
   const result = await owner({ working_projection: {},
@@ -354,15 +413,15 @@ test('one event gives every co-located listener a distinct idempotency identity'
   assert.deepEqual(result.consequence_fragment.visible_seed
     .turn_step_post_applied_perception_window.pending_npc_decision_refs,
   ['npc-1', 'npc-2']);
-  assert.equal(result.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries.length,
-  2);
+  assert.equal(Object.hasOwn(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window, 'npc_decision_boundaries'), false);
 });
 
 test('sleeping co-located NPC persists not-perceived without signal or knowledge', async () => {
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state('sleeping'), idempotencyKey: 'idem-2',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
   const result = await owner({
     working_projection: {}, factual_events: [event()]
@@ -377,28 +436,30 @@ test('sleeping co-located NPC persists not-perceived without signal or knowledge
     target_table === 'party_npc_knowledge'), false);
   assert.equal(result.consequence_fragment.visible_seed
     .turn_step_post_applied_perception_window.status, 'completed');
-  assert.deepEqual(result.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries, []);
+  assert.equal(Object.hasOwn(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window, 'npc_decision_boundaries'), false);
 });
 
 test('unavailable co-located NPC gets no perception, knowledge, signal or boundary', async () => {
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state('unavailable'), idempotencyKey: 'idem-unavailable',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
   const result = await owner({ working_projection: {}, factual_events: [event()] });
 
   assert.equal(result.temporal_results[0].combined_change_set.proposals.length, 1);
   assert.equal(result.working_projection.npc_decision_signal_descriptors,
     undefined);
-  assert.deepEqual(result.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries, []);
+  assert.equal(Object.hasOwn(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window, 'npc_decision_boundaries'), false);
 });
 
 test('acoustic event at another position creates no perception or knowledge', async () => {
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state(), idempotencyKey: 'idem-other-position',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
 
   const result = await owner({
@@ -411,14 +472,15 @@ test('acoustic event at another position creates no perception or knowledge', as
     'party_temporal_events');
   assert.equal(result.working_projection.npc_decision_signal_descriptors,
     undefined);
-  assert.deepEqual(result.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries, []);
+  assert.equal(Object.hasOwn(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window, 'npc_decision_boundaries'), false);
 });
 
 test('unsupported visual channel at the same position creates no perception', async () => {
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state(), idempotencyKey: 'idem-visual-channel',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
   const result = await owner({ working_projection: {},
     factual_events: [event('visual')] });
@@ -426,8 +488,8 @@ test('unsupported visual channel at the same position creates no perception', as
   assert.equal(result.temporal_results[0].combined_change_set.proposals.length, 1);
   assert.equal(result.working_projection.npc_decision_signal_descriptors,
     undefined);
-  assert.deepEqual(result.consequence_fragment.visible_seed
-    .turn_step_post_applied_perception_window.npc_decision_boundaries, []);
+  assert.equal(Object.hasOwn(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window, 'npc_decision_boundaries'), false);
 });
 
 test('v17 null profile is negative control and creates no perception window', async () => {
@@ -447,7 +509,8 @@ test('co-located NPC without committed acoustic context fails closed', async () 
   committed.post_action_perception_sources[0].g6_instance_id = null;
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: committed, idempotencyKey: 'idem-4',
-    perceptionProfile: await perceptionPolicy()
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
   });
 
   await assert.rejects(owner({

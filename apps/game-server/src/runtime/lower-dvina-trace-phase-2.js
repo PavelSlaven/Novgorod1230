@@ -10,6 +10,12 @@ import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
+import { validPostActionPerceptionProfile } from
+  '../internal/post-action-perception-profile.js';
+import { legacyPostActionPerceptionAdapter } from
+  '../internal/lower-dvina-trace-post-action-perception-legacy.js';
+import { perceptionContext } from
+  './lower-dvina-trace-post-action-perception-context.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
@@ -134,6 +140,13 @@ export function createLowerDvinaTracePhase2Runtime({
             postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
+        const postActionPerceptionProfile =
+          bundle.post_action_perception_profile ?? null;
+        const postActionPerceptionAdapter = postActionPerceptionProfile?.schema
+          === 'rus.lower_dvina_trace_post_action_perception_profile.v1'
+          ? legacyPostActionPerceptionAdapter
+          : { validProfile: validPostActionPerceptionProfile,
+            context: perceptionContext };
         const contracts = authored
           ? liveWorldTurnContracts(authoredTurnProfile)
           : resolveTracePhase2Contracts({ state, bundle, phase2Bundle });
@@ -334,9 +347,8 @@ export function createLowerDvinaTracePhase2Runtime({
           requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
           turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           postActionPerceptionProfile:
-            bundle.post_action_perception_profile ?? null,
-          postActionEnvironmentProjector:
-            repository.projectEnvironmentAtClock ?? null,
+            postActionPerceptionProfile,
+          postActionPerceptionAdapter,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,

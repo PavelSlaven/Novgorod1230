@@ -77,6 +77,8 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
 
 const POST_ACTION_PERCEPTION_PROFILE_PATH =
   'data/world-catalogs/novgorod/live-world-runtime-v17/post-action-perception-profile.json';
+const TARGET_POST_ACTION_PERCEPTION_PROFILE_ID =
+  'live_world_post_action_perception_v1';
 
 async function loadTargetPostActionPerceptionProfile({ rootDir, worldRevisionId }) {
   const bytes = await readFile(resolve(rootDir,
@@ -89,7 +91,7 @@ async function loadTargetPostActionPerceptionProfile({ rootDir, worldRevisionId 
   try {
     profile = JSON.parse(bytes);
   } catch {
-    perceptionProfileGap();
+    return null;
   }
   return readApprovedPostActionPerceptionProfile(profile, worldRevisionId);
 }
@@ -99,7 +101,9 @@ export function readApprovedPostActionPerceptionProfile(profile, worldRevisionId
       || profile.world_revision_id !== worldRevisionId
       || !APPROVAL_FIELDS.every((key) => typeof profile.approval?.[key]
         === 'string' && profile.approval[key].length > 0)) return null;
-  if (!validPostActionPerceptionProfile(profile)) perceptionProfileGap();
+  if (!validPostActionPerceptionProfile(profile, {
+    expectedProfileId: TARGET_POST_ACTION_PERCEPTION_PROFILE_ID
+  })) perceptionProfileGap();
   return freeze(profile);
 }
 

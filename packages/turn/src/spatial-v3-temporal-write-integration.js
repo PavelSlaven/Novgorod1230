@@ -163,6 +163,16 @@ export function integrateSpatialV3TemporalWriteFragments({
       for (const row of fragmentWrites) {
         const rowKey = key(row);
         const prior = seenRows.get(rowKey);
+        if (prior && row?.target_table
+            === 'party_npc_knowledge_merge_states'
+            && prior.mode === mode && ['inserts', 'updates'].includes(mode)
+            && record(prior.row.record) && record(row.record)
+            && row.record.party_id === prior.row.record.party_id
+            && row.record.npc_id === prior.row.record.npc_id
+            && prior.row.record?.state_version === row.record?.state_version) {
+          Object.assign(prior.row.record, clone(row.record));
+          continue;
+        }
         if (prior && mode === 'updates' && prior.mode === mode
             && record(row.previous_record)
             && Object.keys(row.previous_record).length > 0

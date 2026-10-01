@@ -1,16 +1,16 @@
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
-import {
-  buildNpcDecisionSignal,
-  evaluateNpcDecisionSignals,
-  orderNpcDecisionBoundaries
-} from '@rus/npc-runtime';
 import { createSpatialV3PerceptionBoundaryParticipant } from '@rus/turn';
 import { validPostActionPerceptionProfile } from
   '../internal/post-action-perception-profile.js';
 import { perceptionContext } from
   './lower-dvina-trace-post-action-perception-context.js';
+
+const generalPostActionPerceptionAdapter = Object.freeze({
+  validProfile: validPostActionPerceptionProfile,
+  context: perceptionContext
+});
 
 const seal = (value) => ({
   ...value,
@@ -19,7 +19,7 @@ const seal = (value) => ({
 
 export function createLowerDvinaTracePostAppliedActorStepOwner({
   committedState, idempotencyKey, perceptionProfile = null,
-  environmentProjector = null
+  environmentPort = null, perceptionAdapter = generalPostActionPerceptionAdapter
 } = {}) {
   const participant = createSpatialV3PerceptionBoundaryParticipant();
   return async ({ working_projection: projection, factual_events: events,
@@ -36,9 +36,10 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
     const proposals = events.map((event) => eventWriteProposal({ event,
       partyId, changeSetId, idempotencyKey }));
     let workingProjection = structuredClone(projection);
-    const decisionSignalDescriptors = [];
+    const perceivedMoments = [];
     const listeners = perceptionListeners(
-      committedState, events, perceptionProfile, environmentProjector
+      committedState, events, perceptionProfile, environmentPort,
+      perceptionAdapter
     );
     for (const { event, npc, schedule, knowledge, context } of listeners) {
       const candidate = perceptionCandidate({
@@ -68,17 +69,16 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
         .npc_decision_signal_descriptors ?? [];
       const resolvedSignals = resolved.state_projection
         ?.npc_decision_signal_descriptors ?? [];
-      decisionSignalDescriptors.push(...resolvedSignals.slice(
-        previousSignals.length
-      ));
+      if (resolvedSignals.length > previousSignals.length) {
+        perceivedMoments.push({ occurred_at: structuredClone(event.occurred_at),
+          event_ref: structuredClone(event.event_ref),
+          npc_ref: { entity_kind: 'npc', entity_id: npc.instance_id } });
+      }
       workingProjection = resolved.state_projection;
     }
-    const npcDecisionBoundaries = formalDecisionBoundaries({
-      descriptors: decisionSignalDescriptors, partyId, committedState
-    });
-    const pendingNpcDecisionRefs = [...new Set(npcDecisionBoundaries.map(
-      ({ npc_ref: npcRef }) => npcRef.entity_id
-    ))].sort();
+    const pendingNpcDecisionRefs = [...new Set((workingProjection
+      .npc_decision_signal_descriptors ?? []).map(({ subject_ref: subjectRef }) =>
+      subjectRef?.entity_id).filter(text))].sort();
     const temporal = {
       version: 1, schema: 'turn_step_factual_event_persistence_result_v1',
       clock_before: structuredClone(events[0].occurred_at),
@@ -96,7 +96,7 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
             status: pendingNpcDecisionRefs.length === 0
               ? 'completed' : 'pending_npc_decision',
             observable_response_event_refs: [],
-            npc_decision_boundaries: npcDecisionBoundaries,
+            moments: collapsePerceivedMoments(perceivedMoments),
             ...(pendingNpcDecisionRefs.length === 0 ? {} : {
               pending_npc_decision_refs: pendingNpcDecisionRefs
             })
@@ -106,56 +106,29 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
   };
 }
 
-function formalDecisionBoundaries({ descriptors, partyId, committedState }) {
-  if (descriptors.length === 0) return [];
-  const version = committedState?.party_state?.state_version;
-  if (!Number.isSafeInteger(version) || version < 0) {
-    gap('TRACE_POST_ACTION_DECISION_STATE_GAP');
-  }
-  const groups = new Map();
-  for (const descriptor of descriptors) {
-    const signal = buildNpcDecisionSignal(descriptor);
-    const timeKey = signal.occurred_at.whole_minutes + ':'
-      + signal.occurred_at.subminute_numerator + '/'
-      + signal.occurred_at.subminute_denominator;
-    const key = timeKey + '\u0000' + signal.subject_ref.entity_id;
-    const group = groups.get(key) ?? {
-      timestamp: signal.occurred_at,
-      npcRef: signal.subject_ref,
-      signals: []
-    };
-    group.signals.push(signal);
-    groups.set(key, group);
-  }
-  const boundaries = [];
-  for (const group of groups.values()) {
-    const timeKey = group.timestamp.whole_minutes + ':'
-      + group.timestamp.subminute_numerator + '/'
-      + group.timestamp.subminute_denominator;
-    const sameTimeBatchRef = {
-      entity_kind: 'temporal_batch',
-      entity_id: 'temporal-batch:' + partyId + ':' + timeKey + ':1'
-    };
-    const evaluation = evaluateNpcDecisionSignals({
-      npc_ref: group.npcRef,
-      active_mode: 'autonomous',
-      current_intent: null,
-      decision_capability: true,
-      resolved_signals: group.signals,
-      consumed_signal_ids: [],
-      same_time_batch_ref: sameTimeBatchRef,
-      state_version: String(version)
-    });
-    if (evaluation.boundary !== null) {
-      boundaries.push(evaluation.boundary);
+function collapsePerceivedMoments(entries) {
+  const moments = new Map();
+  for (const { occurred_at: occurredAt, event_ref: eventRef,
+    npc_ref: npcRef } of entries) {
+    const key = `${occurredAt.whole_minutes}:${occurredAt.subminute_numerator}/${occurredAt.subminute_denominator}`;
+    const moment = moments.get(key) ?? { occurred_at: structuredClone(occurredAt),
+      event_refs: [], pending_npc_decision_refs: [] };
+    if (!moment.event_refs.some((value) => value.entity_kind === eventRef.entity_kind
+        && value.entity_id === eventRef.entity_id)) {
+      moment.event_refs.push(structuredClone(eventRef));
     }
+    if (!moment.pending_npc_decision_refs.includes(npcRef.entity_id)) {
+      moment.pending_npc_decision_refs.push(npcRef.entity_id);
+    }
+    moments.set(key, moment);
   }
-  return orderNpcDecisionBoundaries(boundaries);
+  return [...moments.values()];
 }
 
-function perceptionListeners(state, events, profile, environmentProjector) {
+function perceptionListeners(state, events, profile, environmentPort,
+  perceptionAdapter) {
   if (profile == null) return [];
-  if (!validPostActionPerceptionProfile(profile)) {
+  if (!perceptionAdapter.validProfile(profile)) {
     gap('TRACE_POST_ACTION_PERCEPTION_PROFILE_GAP');
   }
   const schedules = state?.npc_schedule_runtime ?? [];
@@ -176,12 +149,8 @@ function perceptionListeners(state, events, profile, environmentProjector) {
     const runtimeStatus = npc.machine_state?.runtime_status;
     if (profile.runtime_attention.unavailable_statuses
       .includes(runtimeStatus)) return [];
-    const environment = profile.schema
-      === 'rus.live_world_runtime.post_action_perception_profile.v1'
-      ? environmentProjector?.({ state, clock: event.occurred_at }) ?? null
-      : null;
-    const context = perceptionContext({ state, npc, source, profile,
-      worldEnvironment: environment });
+    const context = perceptionAdapter.context({ state, npc, source, profile,
+      environmentPort, eventTime: event.occurred_at });
     if (knowledge == null) gap('TRACE_POST_ACTION_KNOWLEDGE_STATE_GAP');
     return [{ event, npc, schedule, knowledge, context }];
   }));

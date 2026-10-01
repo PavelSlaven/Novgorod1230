@@ -1,9 +1,6 @@
-export function validPostActionPerceptionProfile(value) {
-  const general = value?.schema
-    === 'rus.live_world_runtime.post_action_perception_profile.v1';
-  const historical = value?.schema
-    === 'rus.lower_dvina_trace_post_action_perception_profile.v1';
-  return (general || historical)
+export function validPostActionPerceptionProfile(value, { expectedProfileId } = {}) {
+  return value?.schema
+      === 'rus.live_world_runtime.post_action_perception_profile.v1'
     && value.revision === 1
     && value.status === 'approved' && value.owner === '@rus/turn'
     && value.fallback_policy === 'forbidden'
@@ -15,18 +12,14 @@ export function validPostActionPerceptionProfile(value) {
     && Array.isArray(value.attention?.awake_channels)
     && Array.isArray(value.attention?.sleeping_channels)
     && value.recognition_outcome === 'unidentified'
-    && (!general || (value.profile_id === 'live_world_post_action_perception_v1'
-      && value.provenance?.transfer_basis
-        === 'approved in M22 post-action-perception-profile, generalized by D66'
-      && value.provenance?.source_path
-        === 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/post-action-perception-profile.json'
+    && typeof value.profile_id === 'string' && value.profile_id.length > 0
+    && (expectedProfileId === undefined
+      || value.profile_id === expectedProfileId)
+    && (value.provenance?.transfer_basis === undefined
+      || (typeof value.provenance.transfer_basis === 'string'
+        && value.provenance.transfer_basis.trim().length > 0))
       && !Object.hasOwn(value, 'scenario_id')
       && !Object.hasOwn(value, 'scenario_definition_revision')
-      && !Object.hasOwn(value, 'environment')))
-    && (!historical || (value.profile_id
-      === 'lower_dvina_trace_post_action_perception_v1'
-      && value.scenario_id === 'lower_dvina_trace_v1'
-      && value.scenario_definition_revision === 34
-      && value.environment != null))
+      && !Object.hasOwn(value, 'environment')
     && value.perception_policy?.status === 'approved';
 }

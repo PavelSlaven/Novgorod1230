@@ -1,0 +1,200 @@
+{
+  "schema": "rus.a1_physics_wk_wave1_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "packet": {
+    "path": "servak:/srv/novgorod-work/fleet/tasks/a1-physics/out/bench/step3e-wk/review-packet.md",
+    "sha256": "a374d37b2efea250d2e350e4b4716925765456c8e1fcc9d8e00101a66f4f7e1e",
+    "bytes": 9683,
+    "checkout": "servak:/srv/novgorod-work/worktrees/a1-physics @ dcb84c5dc15cf9e82411ca24a2afd24d5bc3554f",
+    "wk_bundle_read": "data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json (sources, evidence, concepts, claims, predicate_registry)"
+  },
+  "items": {
+    "1_HLP-01_leather_cutting": {
+      "verdict": "APPROVE_WITH_LIMITS",
+      "verified": [
+        "source:ha-firesteel is defined in production-v2/household-agriculture.json:3-19 as B. A. Kolchin, 'Чёрная металлургия и металлообработка в Древней Руси (домонгольский период)', МИА 32 (1953), citation https://archaeolog.ru/media/series/mia/MIA_32.pdf, review_status approved, rights redistribution 'Original short factual paraphrases only.' Reusing it as the source record is correct.",
+        "The quote «Резак, применявшийся также для раскройки кожи…» exists in research/population-hide-processing.md line 56.",
+        "Concept wk:craft_technology:leather-cutting does not exist yet; wk:craft_technology:leatherworking exists (approved). craft_technology supported_fact is registered (literal object, contextual applicability).",
+        "HLP-01..03 were never reviewed: verification/verification-hide-processing.md covers HLP-04..05 only."
+      ],
+      "findings": [
+        "Wrong quote for this claim: the quote the packet cites is the HLP-02 evidence (research file line 56). It is about a different tool, a cutter (резак) with a vertical wooden handle, and it does not mention a board. HLP-01 itself (knife plus board) rests only on the research file's paraphrase in line 55: 'the palm-supported cutting knife lets a shoemaker cut a leather figure lying on a board'.",
+        "Kolchin 1953 is not in the book index, and no local copy of MIA 32 was found on servak or on the local machine. The approver could not open printed pp. 124–125 independently. Independent corroboration of the knife part only: book:188839 ¶262 (Завьялов/Розанова/Терехова) identifies a raskroechnyi knife as a leather-and-shoemaking tool, citing Kolchin 1953: 128. book:254935 ¶61 (Янин) mentions special shoemaker's knives among Novgorod finds. Nothing in the index corroborates the board."
+      ],
+      "approved_text_if_board_confirmed": {
+        "ru": "Уже выделанную кожу раскраивали режущим ножом; кусок кожи при этом лежал на доске. Доска здесь — описанная рабочая опора, а не обязательный инструмент; это не создаёт кожу, нож, доску или мастерскую в сцене и не задаёт умение, выкройку, время или результат.",
+        "en": "Already prepared leather was cut with a cutting knife, the piece lying on a board. The board is the described work surface, not a required tool; this creates no leather, knife, board or workshop in a scene and sets no skill, pattern, time or result."
+      },
+      "approved_text_if_board_not_confirmed": {
+        "ru": "Уже выделанную кожу раскраивали специальным режущим ножом. Это не создаёт кожу, нож или мастерскую в сцене и не задаёт умение, выкройку, время или результат.",
+        "en": "Already prepared leather was cut with a dedicated cutting knife. This creates no leather, knife or workshop in a scene and sets no skill, pattern, time or result."
+      },
+      "canonical_form": {
+        "domain": "craft_technology",
+        "subject_ref": "wk:craft_technology:leather-cutting (new concept; broader_refs [wk:craft_technology:leatherworking]; separate from tanning per the separation rule in verification-hide-processing.md)",
+        "predicate": "supported_fact",
+        "object": "literal, e.g. prepared_leather_was_cut_with_a_cutting_knife_on_a_board (drop _on_a_board if not confirmed)",
+        "applicability": "time 1100–1300, region_novgorod_land used_in; qualifiers typicality attested, confidence medium, directness inferred (broad pre-Mongol Rus corpus)",
+        "knowledge_access": "domain_internal_only",
+        "hard_exclusion": null,
+        "evidence": "new evidence record on source:ha-firesteel, anchor page '124–125', section 'Технология производства инструмента разных ремесел'; note = short own paraphrase of the knife-and-board passage, no verbatim quote (source rights: paraphrase only)"
+      },
+      "not_approved": "HLP-02 and HLP-03 (not requested in this wave)."
+    },
+    "2_powder_causal_claim": {
+      "verdict": "APPROVE_WITH_LIMITS",
+      "verified": [
+        "book:410676 is Хогг О., 'История артиллерии. Вооружение. Тактика. Крупнейшие сражения. Начало XIV века — начало XX', 2014, ru, scholarly. Paragraph 83 contains the packet quote verbatim as a substring («…метательный снаряд выталкивается газами, выделяющимися при сжигании порохового заряда»). The same paragraph also states the closed-vessel principle (expanding gas from combustion; a closed vessel whose weakest wall can give way under pressure), so it supports the 'confined system' wording.",
+        "The proposition has no recipe, ingredients, ratios or procedure.",
+        "chemistry_process supported_fact is registered with universal applicability, and its subject domain is chemistry_process. wk:chemistry_process:combustion-fuel-oxidizer exists, is approved and fits the subject. The existing claim on it, claim:foundations-thm-02-combustion-fuel-oxidizer, does not conflict."
+      ],
+      "approved_proposition": "Burning a suitable powder charge can generate expanding gas that exerts force within a confined space.",
+      "canonical_form": {
+        "domain": "chemistry_process",
+        "subject_ref": "wk:chemistry_process:combustion-fuel-oxidizer",
+        "predicate": "supported_fact",
+        "object": "literal: burning_a_suitable_powder_charge_can_generate_expanding_gas_that_exerts_force_within_a_confined_space",
+        "polarity": "support",
+        "applicability": {"context_scope": "universal"},
+        "qualifiers": "typicality unknown, confidence high, directness direct",
+        "knowledge_access": "domain_internal_only",
+        "hard_exclusion": null,
+        "conflict_group_ref": null
+      },
+      "suggested_runtime_text": {
+        "ru": "Сгорание подходящего порохового заряда может давать расширяющиеся газы, которые в замкнутом объёме создают давление и толкающую силу. Это не рецепт, не состав и не пропорции; отсюда не следует, что такой заряд есть в мире, что кто-то о нём знает или что попытка удастся.",
+        "en": "Burning a suitable powder charge can generate expanding gas that builds pressure and pushing force within a confined space. This is no recipe, composition or ratio; it does not imply that such a charge exists in the world, that anyone knows of it, or that an attempt succeeds."
+      },
+      "required": "Add a new source record for book:410676 (rights like other owner fb2 books: metadata_and_single_sentence_quotes) and a new evidence record anchored to ¶83."
+    },
+    "3_localization_v2-g3-no-firearms-gunpowder": {
+      "verdict": "APPROVE_WITH_EDITS",
+      "verified": [
+        "The packet's 'existing approved text' (RU/EN) matches the bundle exactly. The claim is domain material_culture, supported_fact, editorial/medium, applicability 1200–1300 region_novgorod_land, hard_exclusion null. The evidence note on evidence:v2-g3-no-firearms-editorial is scoped to 'firearms and gunpowder-in-battle'.",
+        "Of the claims in the bundle, only this one carries 'быть не может' wording."
+      ],
+      "edits_vs_packet_and_why": [
+        "'В мире' / 'in this world' -> 'в Новгородской земле' / 'in the Novgorod Land'. This matches the claim's place applicability (region_novgorod_land). The unscoped wording can be read as a global historical statement, which is false: gunpowder was known in China and used in Jin–Mongol warfare around 1232. It can also be read as a statement about physical possibility, which D59 forbids.",
+        "Restored 'для боя' / 'for battle' to keep the text faithful to the canonical object literal and to the evidence scope (gunpowder in battle). Dropping it widened the statement beyond its evidence.",
+        "Accepted the removal of the sentence 'Воюют мечом, копьём, луком да самострелом' / 'War is fought with…'. It is not part of the exclusion and the editorial evidence note does not cover it. Removing it adds nothing false."
+      ],
+      "approved_text": {
+        "ru": "Около 1230 года в Новгородской земле огнестрельного оружия и пороха для боя не встречается: на Торгу их не продают, в дружине не носят.",
+        "en": "Around 1230 in the Novgorod Land, firearms and gunpowder for battle are not encountered: they are not sold at the market or carried by the retinue."
+      },
+      "unchanged": "canonical object literal, applicability, qualifiers, knowledge_access, hard_exclusion null, evidence, search_aliases, concept localizations (the concept short_definition states only absence, which is consistent with D59)",
+      "d59_check": "The approved text states only that the item is absent from the world's own stock (market, retinue). It makes no claim about physical impossibility or about invention. It must not share a conflict_group with the item-2 universal claim."
+    },
+    "4_reuse_decisions": {
+      "verdict": "CONFIRMED_WITH_NOTES",
+      "tanning": {
+        "verdict": "CONFIRMED",
+        "checked": "claim:vegetable-tanning-prepared-hide (chemistry_process, requires_condition) and claim:vegetable-tanning-collagen-stabilization (responds_to) exist in leather-plant-fibre-water.json. Both are universal/high/direct, domain_internal_only, Falcão & Araújo 2018 §1, and match verification-hide-processing.md. book:622242 ¶1834 contains «корой дуба, ольхи, ивы» verbatim. The packet's limits are correct: no times, concentration, temperature or universal schedule; no proof of a hide, installation or batch.",
+        "note": "The packet underuses its own source. ¶1836 (Kolchin, ch. 'Ремесло') directly attests many Novgorod tanners' workshops of the XI–XIV c. (large ash-lime deposits mixed with hair; liming vats made as log troughs or thick-stave tubs). ¶1834 gives the Rus process with bark tanning. This would close the gap verification-hide-processing.md left open ('a separate historical source is required for any 1100–1300 Novgorod compatibility claim'). Recommended as a separate historical claim in a later wave; not required here."
+      },
+      "birch_tar": {
+        "verdict": "CONFIRMED",
+        "checked": "Both claim:place-thermal-birch-tar-* claims are craft_technology supported_fact, 1200–1300 Novgorod Land, inferred/medium, from source:place-thermal-birch-tar-schmidt-2023 ('Production method of the Königsaue birch tar documents cumulative culture in Neanderthals'). They state only a heating/collection relation and oxygen/collection conditions. book:804890 ¶136 contains «перегонялось на огне без доступа воздуха» verbatim (late ethnography). The limits are correct.",
+        "note": "The packet missed two things. (a) The existing claim:household-tar-pot (ceramic pots with tar in an excavation; 1100–1300 Novgorod, inferred). (b) book:622242 ¶848 (Kuza), which lists 'производство дегтя' among Old Rus peasant trades. Both are broad historical context, not Novgorod-specific birch-tar production, method, installation or yield. The packet's 'do not strengthen local production' still holds. A broad Old Rus historical_availability claim from ¶848 could be drafted later."
+      },
+      "ash_leachate_soap": {
+        "verdict": "CONFIRMED",
+        "checked": "claim:static-wood-ash-water-can-produce-alkaline-runoff and claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap are universal and domain_internal_only and say exactly what the packet relies on. They do not chain ash to soap. book:804890 ¶139 contains «золу, предварительно смочив, засыпали в чаны… заливали водой» (late potash industry). The limits are correct, and the ash-to-soap historical bridge stays a gap.",
+        "note": "book:622242 ¶1834/¶1836 attests ash-and-lime liming vats in Rus/Novgorod tanning. That is a medieval use of ash in wet processing, but it is not lye for soap and does not close the soap gap."
+      },
+      "iron": {
+        "verdict": "CONFIRMED_WITH_CORRECTION",
+        "checked": "The smithing-scope claims are correctly scoped: claim:occupation-smith-iron-input (smithing requires_input iron; 'iron was supplied by rural metallurgists; the urban smithy worked already obtained metal'; 1100–1300, inferred/medium); occupation-smith-anvil/hammer/tongs (attested_use); claim:reconstructed-place-work-smithy-… (editorial work context); claim:ordinary-life-smith-needs-iron-and-fuel; the universal static-forge-welding-* claims. book:622242 ¶1559 contains «мелко раздробленную железную руду с большим количеством древесного угля» verbatim. The ¶¶1559–1584 and ¶¶1597–1605 descriptions in the packet are accurate; the cited smithy and anvils are mostly outside Novgorod, and one anvil is from early XIV c. Novgorod.",
+        "correction": "The packet's limit says this source 'does not establish … Novgorod primary smelting'. That is too coarse. Use instead: ¶1584 directly attests commodity blooms in Novgorod layers of the XIII–early XIV c. (rough semi-products that smiths had to forge further). ¶1555 says Rus iron was produced by village metallurgists, separate from smithing. The existing approved claim:occupation-smith-iron-input already gives rural metallurgists supplying Novgorod (inferred/medium). What stays unproven: specific smelting sites, bog-ore deposits or furnaces in Novgorod Land (the sites in ¶1562 are outside it), stock, charge, yield, duration and a finished knife."
+      }
+    },
+    "5_bloomery_drafting": {
+      "verdict": "DRAFT_YES",
+      "rationale": "Under D59, a player's attempt to make iron from real inputs is judged causally, so the A1 owner needs atomic causal premises. book:622242 ¶¶1555–1585 (Kolchin, ch. 'Ремесло') is a solid scholarly source. Ore reduction is not smithing and must not be put under wk:craft_technology:smithing. Every record below is a draft candidate requiring independent approval before import.",
+      "new_concepts": [
+        {"ref": "wk:craft_technology:bloomery-iron-smelting", "ru": "Сыродутное получение железа («варка железа»)", "en": "Bloomery iron smelting", "relations": "related_refs [wk:material_culture:iron, wk:material_culture:charcoal, wk:craft_technology:smithing]; not broader or narrower than smithing; not under metalworking-broad-context (that concept is urban)"},
+        {"ref": "wk:craft_technology:bloom-consolidation", "ru": "Обжатие и проковка крицы", "en": "Bloom consolidation (hot compaction and forging)"},
+        {"ref": "wk:material_culture:iron-ore", "ru": "Железная руда (болотная, луговая, озёрная; бурый железняк)", "en": "Iron ore (bog, meadow, lake ore; limonite)"},
+        {"ref": "wk:material_culture:iron-bloom", "ru": "Крица", "en": "Iron bloom"},
+        {"ref": "wk:material_culture:iron-smelting-slag", "ru": "Железный шлак", "en": "Iron-smelting slag"},
+        {"ref": "wk:material_culture:bellows", "ru": "Воздуходувные меха", "en": "Bellows", "relations": "shared with smithing; no bellows concept exists yet"},
+        {"ref": "wk:material_culture:tuyere", "ru": "Сопло (фурма)", "en": "Tuyere (blast nozzle)"},
+        {"ref": "wk:architecture_settlement:bloomery-furnace", "ru": "Сыродутный горн (домница)", "en": "Bloomery furnace", "relations": "architecture_settlement, because craft_technology requires_tool only accepts material_culture objects; linked through architecture_settlement supports_known_process"},
+        {"ref": "wk:physics_material_science:iron-oxide-reduction", "ru": "Восстановление оксидов железа", "en": "Reduction of iron oxides"}
+      ],
+      "universal_claims": [
+        {"id": "U1", "domain": "physics_material_science", "subject": "wk:physics_material_science:iron-oxide-reduction", "predicate": "can_produce", "proposition": "In a charcoal-fired column, hot carbon monoxide from burning charcoal can reduce iron oxide in ore to solid metallic iron grains without melting the iron.", "anchor": "¶¶1557–1559, 1573"},
+        {"id": "U2", "domain": "physics_material_science", "subject": "wk:physics_material_science:iron-oxide-reduction", "predicate": "requires_condition", "proposition": "Separating the ore's waste rock as liquid slag needs a substantially higher temperature throughout the furnace than reduction alone; if it is too low, the reduced iron grains stay trapped in unmelted rock.", "anchor": "¶¶1558, 1573"},
+        {"id": "U3", "domain": "physics_material_science", "subject": "wk:physics_material_science:iron-oxide-reduction", "predicate": "depends_on", "proposition": "Reaching and holding those temperatures through a column of ore and charcoal depends on continuous forced air supply.", "anchor": "¶¶1573–1574"},
+        {"id": "U4", "domain": "physics_material_science", "subject": "wk:physics_material_science:iron-oxide-reduction", "predicate": "can_produce", "proposition": "The reduced grains collect low in the furnace and weld into a porous spongy mass (bloom) still impregnated with slag; slag is a separate by-product.", "anchor": "¶¶1559, 1581"},
+        {"id": "U5", "domain": "physics_material_science", "subject": "wk:material_culture:iron-ore", "predicate": "requires_condition", "proposition": "Because slagging the waste rock consumes iron oxide, this process needs iron-rich ore; lean ore loses much of its iron to slag.", "anchor": "¶1578"},
+        {"id": "U6", "domain": "physics_material_science", "subject": "wk:material_culture:iron-bloom", "predicate": "requires_condition", "proposition": "A raw bloom is not yet solid workable metal; it must be compressed while still hot to expel slag and weld it into one piece.", "anchor": "¶¶1581, 1584", "note": "Reuse the existing static-forge-welding-* claims for the heat-plus-pressure joining physics; do not duplicate them."}
+      ],
+      "historical_claims": [
+        {"id": "H1", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "requires_input", "object": "wk:material_culture:iron-ore", "proposition": "Old Rus bloomery smelting charged finely crushed iron ore, most often bog or meadow ore.", "anchor": "¶¶1559, 1577"},
+        {"id": "H2", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "requires_input", "object": "wk:material_culture:charcoal", "proposition": "…mixed with a large amount of charcoal, the fuel of Rus metallurgy, burned in forest charcoal pits.", "anchor": "¶¶1559, 1580"},
+        {"id": "H3", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "requires_tool", "object": "wk:material_culture:bellows (+ separate claim for wk:material_culture:tuyere)", "proposition": "Rus bloomery furnaces worked on forced draught from bellows through clay tuyeres.", "anchor": "¶¶1567, 1574–1576"},
+        {"id": "H4", "domain": "architecture_settlement", "subject": "wk:architecture_settlement:bloomery-furnace", "predicate": "supports_known_process", "object": "wk:craft_technology:bloomery-iron-smelting", "proposition": "A stationary free-standing shaft furnace of stone and clay, with a front opening for the tuyere and for extracting the bloom.", "anchor": "¶¶1565–1572"},
+        {"id": "H5", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "produces_form", "object": "wk:material_culture:iron-bloom", "anchor": "¶1559"},
+        {"id": "H6", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "produces_form", "object": "wk:material_culture:iron-smelting-slag", "proposition": "Liquid slag was let out of the furnace periodically.", "anchor": "¶1559"},
+        {"id": "H7", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "historical_availability", "proposition": "In Old Rus, iron was produced by village metallurgists, separately from smithing, where bog or meadow ore and forest for charcoal were at hand, usually away from dwellings.", "anchor": "¶1555; corroboration ¶848", "applicability": "Old Rus; Novgorod Land inferred/medium; must stay consistent with claim:occupation-smith-iron-input; no site in Novgorod Land asserted"},
+        {"id": "H8", "domain": "material_culture", "subject": "wk:material_culture:iron-bloom", "predicate": "historically_compatible", "proposition": "Commodity blooms, rough spongy semi-products forged further by town and village smiths, are attested in Novgorod layers of the XIII–early XIV c.", "anchor": "¶1584", "applicability": "region_novgorod_land, c.1200–1330, direct", "note": "The typical flat round form of about 3–6 kg (¶1582) may go only into the evidence note as non-binding context."},
+        {"id": "H9", "domain": "craft_technology", "subject": "wk:craft_technology:bloom-consolidation", "predicate": "supported_fact", "proposition": "Right after smelting, while still hot, the bloom was compressed with large wooden mallets or a stone-faced hammer on a wooden block or flat stone.", "anchor": "¶1581"},
+        {"id": "H10", "domain": "craft_technology", "subject": "wk:craft_technology:smithing", "predicate": "requires_input", "object": "wk:material_culture:iron-bloom", "proposition": "Town smiths further forged commodity blooms into dense, slag-poor iron before making objects.", "anchor": "¶¶1584–1585", "note": "This is a smithing input and is allowed on smithing. Ore reduction is not."},
+        {"id": "H11", "domain": "craft_technology", "subject": "wk:craft_technology:bloomery-iron-smelting", "predicate": "supported_fact", "proposition": "Rus metallurgists enriched ore before smelting by drying (weathering), roasting, crushing and winnowing.", "anchor": "¶1579"}
+      ],
+      "drafting_limits": [
+        "U* are universal (context_scope universal) with no Novgorod time or place. H* are contextual (Old Rus X–XIV; Novgorod Land compatibility inferred/medium unless marked direct, as H8 is) and never universal.",
+        "No durations (the source gives none; time owner unchanged). No charge ratio, quantity, yield or success rate.",
+        "Temperatures (¶1573, ¶1602) and furnace, tuyere and bloom dimensions (¶¶1572, 1576, 1582) are not mechanics. They may appear only in evidence notes as non-binding context, not in canonical objects or runtime text.",
+        "No local ore deposit, smelting site, furnace, bellows, charcoal stock or metallurgist in any scene. No actor knowledge or skill. No finished item (knife, tool).",
+        "knowledge_access domain_internal_only by default (role facets only if the owner WK workflow already defines a metallurgist role). hard_exclusion null. No conflict groups.",
+        "Evidence on the existing source:book-622242, anchors in the existing style ('Глава шестая Ремесло Б.А. Колчин ¶<n>'); rights metadata_and_single_sentence_quotes, so at most one sentence quoted per note.",
+        "Do not treat XVIII–XIX c. ethnographic analogies (¶1576 tuyere length, ¶1600 Tula forges) as medieval facts.",
+        "Steel by carburization (¶¶1589–1590) is out of this wave and gets a separate concept later.",
+        "These records need independent approval before import (author does not approve self)."
+      ]
+    },
+    "6_d59_audit": {
+      "verdict": "CONFIRMED_WITH_NOTE",
+      "spot_checked": [
+        "packages/world-knowledge/src/world-knowledge.js:206 (hardConstraints = exclude && hard_exclusion.eligible && not disputed) and :236 (hard_constraints: selectedHard) — accurate.",
+        "apps/game-server/src/runtime/ordinary-materialization-plan.js:102–108 (materialize -> worldKnowledgeConstraintVerdict -> negativePlan 'world_knowledge_hard_constraint') and ordinary-materialization-llm-support.js:68 (hard constraints evaluated before materializing) — accurate.",
+        "packages/turn/src/turn-step-contracts/plan-validator.js:406–416, packages/turn/src/turn-step-domain-owner-resolution.js:54–58, apps/game-server/src/runtime/lower-dvina-trace-phase-7-domain-owners.js:47–55 — accurate. packages/items-property/src/action-produced-transition.js and action-produced-result.js have 0 occurrences of hard_constraint or world_knowledge; validateHandoff at :179–202 has no such field.",
+        "tools/world-catalog-workflow/src/world-knowledge-pack.js:170 (claim must be approved) and :311–314 (production verification must APPROVE) — accurate."
+      ],
+      "note": "The code gate is materialization-only, as claimed. hard_constraints also reach turn-planning LLM prompts as data: lower-dvina-trace-phase-2-llm.js:95,114 (support refs), lower-dvina-trace-turn-step-plan-assembly.js:103, lower-dvina-trace-turn-step-plan-corrections.js:107, and packages/turn/src/world-knowledge-prompt.js:33–39 ('Use only applicable facts and hard constraints', used by the NPC and spatial remainders). There are currently 3 eligible hard exclusions: claim:technology-newcomen-boundary, claim:technology-motor-boundary, claim:later-novgorod-judicial-charter. The texts of the two technology claims already say they do not forbid attempts. This soft LLM-level path is not an A1 code gate and does not block this packet. Recommended: a D41 bench check of whether the planner refuses a player's manufacture attempt when such a constraint is in the slice; the decision belongs to the turn/A1 owner."
+    }
+  },
+  "required_corrections": [
+    "RC1 (item 1): Do not use the HLP-02 quote «Резак, применявшийся также для раскройки кожи…» as HLP-01 evidence. The HLP-01 evidence note must be a short paraphrase of the knife-and-board passage, pp. 124–125; source:ha-firesteel rights allow paraphrase only.",
+    "RC2 (item 1): Before import, open MIA 32 printed pp. 124–125 (official IA RAS PDF) and confirm the board passage. If it is confirmed, import approved_text_if_board_confirmed; otherwise import approved_text_if_board_not_confirmed and drop the board from the canonical object.",
+    "RC3 (item 1): The new concept wk:craft_technology:leather-cutting gets broader_refs [wk:craft_technology:leatherworking]. The claim is contextual (1100–1300 Novgorod Land, inferred/medium), not universal.",
+    "RC4 (item 3): Use the approved_text in item 3 (regional scope, 'для боя'/'for battle' restored), not the packet's proposed text.",
+    "RC5 (item 2): New source record for book:410676 plus evidence anchored to ¶83. No shared conflict_group with claim:v2-g3-no-firearms-gunpowder.",
+    "RC6 (item 4, iron): Replace the 'does not establish Novgorod primary smelting' limit with the precise wording in items.4_reuse_decisions.iron.correction.",
+    "RC7 (all): Per-claim production verification records must carry verdict 'APPROVE' (world-knowledge-pack.js:311–314 rejects anything else), with the limits in this attestation copied into the limits field."
+  ],
+  "recommendations_non_blocking": [
+    "Historical Novgorod tanning claim from book:622242 ¶¶1834/1836 (workshops XI–XIV, liming vats, bark of oak/alder/willow). This closes the gap left by verification-hide-processing.md.",
+    "A broad Old Rus tar-production historical_availability claim from book:622242 ¶848; account for the existing claim:household-tar-pot.",
+    "A D41 bench check of the soft hard_constraints path in turn planning (item 6 note).",
+    "A later wave: steel by carburization (¶¶1589–1590) as its own concept."
+  ],
+  "limits": [
+    "This attestation approves only the propositions, texts and canonical forms above. Candidate records were not yet written, so they were not schema-validated. The WK workflow builds them and runs the standard compile.",
+    "Nothing here establishes stock, presence, actor knowledge, access, skill, quantity, duration or outcome. Code and state own exact mechanics and time.",
+    "Universal physical claims and historical applicability stay separate records. The powder universal claim never implies 1230 availability, and the item-3 text never implies physical impossibility (D59).",
+    "Item 5 is a drafting instruction, not an approval of bloomery claim texts."
+  ],
+  "not_verified": [
+    "Kolchin 1953 MIA 32 pp. 124–125 primary text: not in the book index and no local copy; not downloaded. Covered by RC2.",
+    "compile-world-knowledge was not re-run by the approver (read-only on servak). The builder-boundary claim was checked by reading world-knowledge-pack.js lines only.",
+    "Cited books were read only at the cited paragraphs plus neighbouring context (410676 ¶81–85; 622242 ¶845–848, ¶1555–1606, ¶1833–1836; 804890 ¶136, ¶139).",
+    "Falcão & Araújo 2018 and Schmidt 2023 were not reopened; the existing approved verifications were relied on."
+  ],
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+  "approved_on": "2026-10-01",
+  "import_authorized": false,
+  "activation_authorized": false
+}

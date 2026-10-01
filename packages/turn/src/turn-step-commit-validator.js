@@ -4,7 +4,6 @@ import {
   validateTurnStepRequest
 } from './turn-step-contracts.js';
 import { requireFactualEvents } from './post-applied-actor-step.js';
-import { DIRECT_RESULT_KINDS } from './turn-step-contracts/plan-schema.js';
 
 export function validateTurnStepCommitChecks(errors, checks) {
   exactKeys(errors, checks, ['version', 'schema', 'requests', 'results'],
@@ -239,11 +238,9 @@ function validRealityLimitedNoOpCanonicalizations(entries, plan) {
     previousOrder = order;
     if (entry.path === '$.direct_result_kind') {
       if (!hasExact(entry, ['attempt', 'path', 'old_value', 'new_value'])
-          || typeof entry.old_value !== 'string' || !entry.old_value
+          || !(entry.old_value === null
+            || typeof entry.old_value === 'string')
           || entry.new_value !== null) return false;
-      // Known kinds share the plan schema's exported closed enum. Other
-      // non-empty strings are retained only as evidence of repaired bad input.
-      if (DIRECT_RESULT_KINDS.includes(entry.old_value)) continue;
     } else {
       const field = entry.path.slice(2);
       if (!hasExact(entry, ['attempt', 'path', 'removed_fields'])

@@ -81,10 +81,26 @@ test('all no-op direct-result kinds receive one repair; repeated combo canonical
     }
   });
 
+test('invalid direct-result diagnostics on one path still receive no-op repair',
+  async () => {
+    const input = request();
+    for (const kind of ['', 'bad_kind', 'player_safe_body_observation']) {
+      let calls = 0;
+      const candidate = achievedNoop({ direct_result_kind: kind,
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } });
+      const result = await requestTurnStepPlanWithRepair({ request: input,
+        turnStepModel: async () => { calls += 1; return candidate; } });
+      assert.equal(calls, 2, kind);
+      assert.equal(result.plan.goal_result, 'not_achieved', kind);
+      assert.equal(result.plan.direct_result_kind, null, kind);
+      assert.equal(result.canonicalizations[1].old_value, kind, kind);
+    }
+  });
+
 test('commit trace accepts repeated no-op canonicalizations for all result kinds',
   () => {
     const input = request();
-    const kinds = [null, 'bad_kind', 'player_safe_observation',
+    const kinds = [null, '', 'bad_kind', 'player_safe_observation',
       'player_safe_item_observation', 'player_safe_body_observation',
       'no_state_gesture', 'player_utterance'];
     for (const kind of kinds) {
@@ -132,6 +148,32 @@ test('commit trace accepts repeated no-op canonicalizations for all result kinds
       const unrepairedErrors = [];
       validateTurnStepLoopTrace(unrepairedErrors, loopTrace, envelope);
       assert.ok(unrepairedErrors.length > 0, `unrepaired kind ${kind}`);
+      if (kind === 'bad_kind') {
+        const entryIndex = stepTrace.canonicalizations.findIndex(({ path }) =>
+          path === '$.direct_result_kind');
+        const invalidMutations = [
+          (entry) => { entry.old_value = 7; },
+          (entry) => { entry.new_value = 'not-null'; },
+          (entry) => { entry.attempt = 1; },
+          (entry) => { entry.path = '$.unsupported'; },
+          (entry, candidate) => {
+            candidate.canonicalizations.push({ ...entry });
+          }
+        ];
+        for (const mutate of invalidMutations) {
+          const candidate = structuredClone(stepTrace);
+          mutate(candidate.canonicalizations[entryIndex], candidate);
+          const candidateEnvelope = structuredClone(envelope);
+          candidateEnvelope.mode_resolution.decision_trace.step_traces =
+            [candidate];
+          const candidateLoopTrace = { ...structuredClone(loopTrace),
+            step_traces: [candidate] };
+          const invalidErrors = [];
+          validateTurnStepLoopTrace(invalidErrors, candidateLoopTrace,
+            candidateEnvelope);
+          assert.ok(invalidErrors.length > 0, 'malformed trace must reject');
+        }
+      }
     }
   });
 
@@ -167,7 +209,7 @@ test('repair-selected not_achieved clears retained forbidden fields with trace',
 
 test('malformed direct_result_kind types remain fail-closed', async () => {
   const input = request();
-  for (const value of ['', 7, undefined]) {
+  for (const value of [7, undefined]) {
     const candidate = achievedNoop({ direct_result_kind: value });
     if (value === undefined) delete candidate.direct_result_kind;
     let calls = 0;
@@ -182,7 +224,7 @@ test('malformed direct_result_kind types remain fail-closed', async () => {
 test('repair cleanup leaves malformed or missing not_achieved kind fail-closed',
   async () => {
     const input = request();
-    for (const value of ['', 7, undefined]) {
+    for (const value of [7, undefined]) {
       let calls = 0;
       await assert.rejects(() => requestTurnStepPlanWithRepair({ request: input,
         turnStepModel: async () => {
@@ -196,6 +238,42 @@ test('repair cleanup leaves malformed or missing not_achieved kind fail-closed',
       (error) => error.code === 'TURN_STEP_PLAN_INVALID'
         && error.details.repair_attempted === true);
       assert.equal(calls, 2);
+    }
+
+    let calls = 0;
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: async () => {
+        calls += 1;
+        return calls === 1 ? achievedNoop() : achievedNoop({
+          goal_result: 'not_achieved', direct_result_kind: ''
+        });
+      } });
+    assert.equal(calls, 2);
+    assert.equal(result.plan.direct_result_kind, null);
+    assert.equal(result.canonicalizations[0].old_value, '');
+  });
+
+test('repair cleanup leaves malformed assessment and utterance fail-closed',
+  async () => {
+    const input = request({ remaining_intent: 'Не получилось.' });
+    const malformed = [null, 'x', 42, { garbage: true }];
+    for (const field of ['assessment', 'utterance']) {
+      for (const value of malformed) {
+        let calls = 0;
+        await assert.rejects(() => requestTurnStepPlanWithRepair({
+          request: input,
+          turnStepModel: async () => {
+            calls += 1;
+            return calls === 1 ? achievedNoop() : achievedNoop({
+              goal_result: 'not_achieved', direct_result_kind: null,
+              [field]: value
+            });
+          }
+        }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+          && error.details.repair_attempted === true,
+        `${field} ${String(value)}`);
+        assert.equal(calls, 2, `${field} ${String(value)}`);
+      }
     }
   });
 

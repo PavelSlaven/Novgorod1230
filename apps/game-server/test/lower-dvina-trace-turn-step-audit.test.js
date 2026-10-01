@@ -146,6 +146,11 @@ test('turn-step commit preserves reality-limited no-op canonicalization values',
   trace.canonicalizations[1].old_value = '';
   envelope.mode_resolution.decision_trace.step_traces[0] =
     structuredClone(trace);
+  assert.equal(validateTurnStepCommitEnvelope(envelope).ok, true);
+
+  trace.canonicalizations[1].old_value = 7;
+  envelope.mode_resolution.decision_trace.step_traces[0] =
+    structuredClone(trace);
   assert.equal(validateTurnStepCommitEnvelope(envelope).ok, false);
 });
 

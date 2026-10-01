@@ -54,6 +54,11 @@ test('repeated reality-limited no-op bypasses production semantic audit',
     const cases = [
       { name: 'null kind with brief activity', kind: null,
         activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
+      { name: 'invalid kind with brief activity', kind: 'bad_kind',
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
+      { name: 'body observation without supplied body',
+        kind: 'player_safe_body_observation',
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
       { name: 'unfaithful player utterance', kind: 'player_utterance',
         activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
         utterance: { speaker_ref: 'actor_mikula', utterance_text: intent,
@@ -95,6 +100,50 @@ test('repeated reality-limited no-op bypasses production semantic audit',
       assert.ok(result.canonicalizations.every(({ attempt }) => attempt === 2),
         fixture.name);
     }
+  });
+
+test('repair adapter merges not_achieved choice and cleanup removes retained fields',
+  async () => {
+    const intent = 'Делаю меч из рубахи';
+    const input = request({ request_id: 'noop-adapter-merge',
+      root_player_action: intent, remaining_intent: intent });
+    const original = { ...output(), interpretation: { player_goal: intent,
+      grounded_attempt: 'Пробую изготовить меч.', adaptation: 'reality_limited' },
+      goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      direct_result_kind: 'player_utterance',
+      utterance: { speaker_ref: 'actor_mikula', utterance_text: intent,
+        input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'brief' } } };
+    const roles = [];
+    let repairPayload;
+    const roleRunner = { async run(call) {
+      roles.push(call.role_id);
+      if (call.role_id === 'turn_step_planner') return { output: original };
+      if (call.role_id === 'turn_step_planner_repair') {
+        repairPayload = JSON.parse(call.messages[1].content);
+        return { output: { goal_result: 'not_achieved',
+          direct_result_kind: 'player_utterance' } };
+      }
+      assert.fail(`unexpected semantic audit role ${call.role_id}`);
+    } };
+    const semanticPlanValidator = async () => {
+      assert.fail('cleanup must skip semantic audit');
+    };
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+      semanticPlanValidator });
+    assert.deepEqual(roles, ['turn_step_planner', 'turn_step_planner_repair']);
+    assert.equal(repairPayload.original_output.utterance.utterance_text,
+      original.utterance.utterance_text);
+    assert.equal(result.plan.goal_result, 'not_achieved');
+    assert.equal(result.plan.direct_result_kind, null);
+    assert.equal(Object.hasOwn(result.plan, 'assessment'), false);
+    assert.deepEqual(result.canonicalizations, [
+      { attempt: 2, path: '$.direct_result_kind',
+        old_value: 'player_utterance', new_value: null },
+      { attempt: 2, path: '$.utterance', removed_fields: ['utterance'] }
+    ]);
   });
 
 test('copied authored discovery is semantically rejected before its one repair',

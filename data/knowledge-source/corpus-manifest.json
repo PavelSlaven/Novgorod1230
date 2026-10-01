@@ -416,8 +416,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "8605de6bab2e3fe03fb6294d30d8c22d8fe95c06c20b66c34210bfdee8b0d45e",
-      "bytes": 116327,
+      "sha256": "c559c09359fe9f3600962c9161bf6d32677f354bf4e26eb209b53f4222d4dbaf",
+      "bytes": 116562,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

@@ -7794,13 +7794,13 @@
       "verification_ref": "wk-verification:v2-v2-g3-no-firearms-gunpowder",
       "claim_ref": "claim:v2-g3-no-firearms-gunpowder",
       "claim_digest": "8e131d4a6065afecbf03f9e483f46b839882505b0c36ecf7a2afe401b39a3c22",
-      "candidate_ref": "git:87d6cc2a865a0f63ce69005c5a155e73f7a1fd4d:data/world-catalogs/novgorod/world-knowledge/production-v2/v2-g3-daily-life.json#claim:v2-g3-no-firearms-gunpowder",
-      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/C-02",
-      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "candidate_ref": "git:099eb2a6f2c0864276f94dd653001bcd79704a45:data/world-catalogs/novgorod/world-knowledge/production-v2/v2-g3-daily-life.json#claim:v2-g3-no-firearms-gunpowder",
+      "auditor_ref": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+      "independence_basis": "Independent Opus review attestation out/opus-wk-review-1.json, item 3; project-lead authorization in REVIEW-a1-physics-9. The authoring agent was not the approver.",
       "evidence_checked": [
         "evidence:v2-g3-no-firearms-editorial"
       ],
-      "review_ref": "verification/verification-production-v2-C-02.md#C-02",
+      "review_ref": "verification/verification-a1-physics-wk2-opus.md#gunpowder-localization",
       "verdict": "APPROVE",
       "limits": "Editorial-щит анахронизма, только внутренний; не описывает конкретное вооружение сцены и не открыт речи NPC."
     },
@@ -8096,13 +8096,13 @@
       "verification_ref": "wk-verification:a1-physics-powder-causal",
       "claim_ref": "claim:a1-powder-charge-confined-force",
       "claim_digest": "d21b6c3778e8b9894068bec4ca903dac83908716649820fe836ed0b6522a79f5",
-      "candidate_ref": "git:8cc29ffa3450b96349f14ed1b8826664de5d0fd6:data/world-catalogs/novgorod/world-knowledge/production-v2/foundations-physical.json#claim:a1-powder-charge-confined-force",
+      "candidate_ref": "git:099eb2a6f2c0864276f94dd653001bcd79704a45:data/world-catalogs/novgorod/world-knowledge/production-v2/foundations-physical.json#claim:a1-powder-charge-confined-force",
       "auditor_ref": "claude-opus-5-5/wk-v2-review-2026-10-01/powder-causal",
-      "independence_basis": "Separate independent Opus review attestation out/opus-wk-review-1.json; project-lead authorization in REVIEW-a1-physics-9. The authoring agent was not the approver.",
+      "independence_basis": "Independent Opus review attestation out/opus-wk-review-1.json, item 2; project-lead authorization in REVIEW-a1-physics-9. The authoring agent was not the approver.",
       "evidence_checked": [
         "evidence:a1-powder-confined-pressure"
       ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
+      "review_ref": "verification/verification-a1-physics-wk2-opus.md#powder-causal-claim",
       "verdict": "APPROVE",
       "limits": "Only that burning a suitable powder charge can produce expanding gases exerting force in a confined space. No recipe, composition, ratio, stock, availability, actor knowledge or successful outcome."
     },
@@ -8111,14 +8111,14 @@
       "verification_ref": "wk-verification:a1-physics-leather-cutting",
       "claim_ref": "claim:a1-leather-cutting-knife",
       "claim_digest": "04bac81a84c87342ce0311e768706f172b127d440c17714ac008d40e7dfd0019",
-      "candidate_ref": "git:8cc29ffa3450b96349f14ed1b8826664de5d0fd6:data/world-catalogs/novgorod/world-knowledge/production-v2/reconstructed-practical-world-v1.json#claim:a1-leather-cutting-knife",
+      "candidate_ref": "git:099eb2a6f2c0864276f94dd653001bcd79704a45:data/world-catalogs/novgorod/world-knowledge/production-v2/reconstructed-practical-world-v1.json#claim:a1-leather-cutting-knife",
       "auditor_ref": "claude-opus-5-5/wk-v2-review-2026-10-01/leather-cutting",
-      "independence_basis": "Separate independent Opus review attestation out/opus-wk-review-1.json; project-lead authorization in REVIEW-a1-physics-9. The authoring agent was not the approver.",
+      "independence_basis": "Independent Opus review attestation out/opus-wk-review-1.json, item 1; project-lead authorization in REVIEW-a1-physics-9. The authoring agent was not the approver.",
       "evidence_checked": [
         "evidence:a1-leather-cutting-knife-188839",
         "evidence:a1-leather-cutting-knife-254935"
       ],
-      "review_ref": "verification/verification-production-v2-A-04.md#A-04",
+      "review_ref": "verification/verification-a1-physics-wk2-opus.md#leather-cutting-claim",
       "verdict": "APPROVE",
       "limits": "Prepared leather was cut with a dedicated knife. No board is asserted; the claim creates no leather, knife or workshop and sets no skill, pattern, time or result."
     }

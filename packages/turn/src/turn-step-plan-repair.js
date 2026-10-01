@@ -1,6 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import { requestTurnStepPlan, validateTurnStepPlan } from './turn-step-contracts.js';
-import { contractError } from './turn-step-contracts/validation.js';
+import { contractError, plain } from './turn-step-contracts/validation.js';
 import { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
 import { EFFORTS } from './turn-step-contracts/constants.js';
 
@@ -117,14 +117,6 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
               ...normalized.diagnostics];
             return { plan: normalized.plan, skipSemanticValidation: true };
           }
-          if (isRealityLimitedNotAchievedNoOp(plan)
-              && hasForbiddenNoOpFields(plan)) {
-            const normalized = realityLimitedNotAchievedCleanup(plan,
-              request, 2);
-            canonicalizations = [...canonicalizations,
-              ...normalized.diagnostics];
-            return { plan: normalized.plan, skipSemanticValidation: true };
-          }
         }
       });
       const finalPlan = repairedPlan;
@@ -153,6 +145,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
           && isRealityLimitedNotAchievedNoOp(repairedOutput)
           && hasForbiddenNoOpFields(repairedOutput)
+          && wellFormedForbiddenNoOpValues(repairedOutput)
           && onlyForbiddenNoOpFieldErrors(repairError.details?.errors ?? [])) {
         const normalized = realityLimitedNotAchievedCleanup(repairedOutput,
           request, 2);
@@ -240,8 +233,7 @@ function isRealityLimitedNotAchievedNoOp(plan) {
 function hasForbiddenNoOpFields(plan) {
   if (!Object.hasOwn(plan ?? {}, 'direct_result_kind')
       || !(plan.direct_result_kind === null
-        || typeof plan.direct_result_kind === 'string'
-          && plan.direct_result_kind.length > 0)) return false;
+        || typeof plan.direct_result_kind === 'string')) return false;
   return plan.direct_result_kind !== null
     || Object.hasOwn(plan ?? {}, 'assessment')
     || Object.hasOwn(plan ?? {}, 'utterance');
@@ -249,14 +241,45 @@ function hasForbiddenNoOpFields(plan) {
 
 function onlyInvalidDirectResultKindError(plan, errors) {
   return (plan?.direct_result_kind === null
-      || typeof plan?.direct_result_kind === 'string'
-        && plan.direct_result_kind.length > 0) && errors.length === 1
-    && errors[0].path === '$.direct_result_kind';
+      || typeof plan?.direct_result_kind === 'string') && errors.length > 0
+    && errors.every(({ path }) => path === '$.direct_result_kind');
 }
 
 function onlyForbiddenNoOpFieldErrors(errors) {
   const paths = new Set(['$.direct_result_kind', '$.assessment', '$.utterance']);
-  return errors.length > 0 && errors.every(({ path }) => paths.has(path));
+  return errors.length > 0 && errors.every(({ path, code }) =>
+    paths.has(path) && code !== 'type');
+}
+
+function wellFormedForbiddenNoOpValues(plan) {
+  return (plan.assessment === undefined || (plain(plan.assessment)
+    && exactKeys(plan.assessment, ['text', 'support_refs'])
+    && nonemptyText(plan.assessment.text)
+    && Array.isArray(plan.assessment.support_refs)
+    && plan.assessment.support_refs.length > 0
+    && plan.assessment.support_refs.every(nonemptyText)))
+    && (plan.utterance === undefined || (plain(plan.utterance)
+      && exactKeys(plan.utterance, ['speaker_ref', 'utterance_text',
+        'input_mode', 'delivery'])
+      && nonemptyText(plan.utterance.speaker_ref)
+      && nonemptyText(plan.utterance.utterance_text)
+      && ['verbatim', 'intent_paraphrase'].includes(plan.utterance.input_mode)
+      && plain(plan.utterance.delivery)
+      && exactKeys(plan.utterance.delivery, ['loudness', 'duration_class'])
+      && Number.isInteger(plan.utterance.delivery.loudness)
+      && plan.utterance.delivery.loudness >= 1
+      && plan.utterance.delivery.loudness <= 4
+      && ['instant', 'brief', 'sustained'].includes(
+        plan.utterance.delivery.duration_class)));
+}
+
+function exactKeys(value, keys) {
+  return Object.keys(value).length === keys.length
+    && keys.every((key) => Object.hasOwn(value, key));
+}
+
+function nonemptyText(value) {
+  return typeof value === 'string' && value.trim().length > 0;
 }
 
 function realityLimitedAchievedNoOpError() {

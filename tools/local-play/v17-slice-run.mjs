@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { LEG_IDS, createRedactor, exitCodeOf, playtestFileName, renderPlaytestMarkdown,
+import { LEG_IDS, createRedactor, d49MinimumOf, exitCodeOf, playtestFileName, renderPlaytestMarkdown,
   secretsOfLlmSettings } from './v17-slice-report.js';
 import { RESERVE_MAKE_TURNS, runLegs } from './v17-slice-legs.js';
 
@@ -94,13 +94,14 @@ export async function readLlmSettingsRecord(path, { load }) {
 
 const SNAPSHOT_SQL = `
 WITH me AS (
-  SELECT n.id AS node_id, n.template_slot_key AS slot, n.g6_instance_id AS g6
+  SELECT n.id AS node_id, n.template_slot_key AS slot, n.g6_instance_id AS g6, a.character_id AS player_character_id
     FROM party_runtime.party_journey_locations l
     JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
     JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
    WHERE l.party_id=$1 AND l.owner_kind='actor')
 SELECT
   (SELECT state_version FROM party_runtime.parties WHERE party_id=$1) AS state_version,
+  (SELECT jsonb_build_object('entity_kind', 'player_character', 'entity_id', me.player_character_id) FROM me) AS player_character_ref,
   (SELECT jsonb_build_object('slot', me.slot, 'site_id', s.id, 'origin', s.origin,
       'canonical_g5', COALESCE(s.canonical_g5_ref->>'entity_id', s.canonical_g5_ref->>'id'),
       'generated_template', s.generated_template_ref)
@@ -126,10 +127,15 @@ SELECT
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('item_id', i.item_id, 'state_version', i.state_version,
       'action_production', i.state::text LIKE '%action_production%') ORDER BY i.item_id), '[]'::jsonb)
      FROM party_runtime.party_items i WHERE i.party_id=$1) AS party_items,
-  (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
-      'quantity_numerator', quantity_numerator, 'quantity_denominator', quantity_denominator,
-      'lifecycle_state', lifecycle_state, 'state_version', state_version) ORDER BY resource_node_id), '[]'::jsonb)
-     FROM party_runtime.party_resource_nodes WHERE party_id=$1) AS resource_nodes,
+  (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', r.resource_node_id,
+      'site_id', s.id, 'quantity_numerator', r.quantity_numerator, 'quantity_denominator', r.quantity_denominator,
+      'lifecycle_state', r.lifecycle_state, 'state_version', r.state_version) ORDER BY r.resource_node_id), '[]'::jsonb)
+     FROM party_runtime.party_resource_nodes r
+     JOIN party_runtime.scene_position_nodes pos ON pos.party_id=r.party_id AND pos.id=r.position_node_id
+     JOIN party_runtime.party_g6_instances g ON g.party_id=pos.party_id AND g.id=pos.g6_instance_id
+     JOIN party_runtime.party_scene_baselines b ON b.party_id=g.party_id AND b.id=g.scene_baseline_id AND b.host_kind='g5_site'
+     JOIN party_runtime.party_g5_sites s ON s.party_id=b.party_id AND s.id=b.host_id
+    WHERE r.party_id=$1) AS resource_nodes,
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
       'before_numerator', before_numerator, 'decrement_numerator', decrement_numerator,
       'after_numerator', after_numerator) ORDER BY resource_node_id, causal_transition_identity), '[]'::jsonb)
@@ -290,7 +296,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   let queue = Promise.resolve();
   const write = async () => {
     await mkdir(options.outDir, { recursive: true });
-    const summary = { ...report, llm: summarizeLlm(meter?.calls ?? []) };
+    const summary = { ...report, d49_minimum: d49MinimumOf(report.legs, report.turns), llm: summarizeLlm(meter?.calls ?? []) };
     await writeFile(join(options.outDir, 'report.json'), redact(JSON.stringify(summary, null, 1)));
   };
   const persist = () => { queue = queue.then(write, write); return queue; }; // serialized: no interleaved writes
@@ -345,6 +351,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
       await writeFile(join(options.outDir, 'playtest.md'), renderPlaytestMarkdown(report, redact));
     }
   } catch (error) { report.infra_error ??= `report: ${error.message}`; if (code === EXIT.PASS) code = EXIT.STAND; }
+  report.d49_minimum = d49MinimumOf(report.legs, report.turns);
   report.cleanup_errors = await finalizers.run();
   return { code, report };
 }

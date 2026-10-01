@@ -58,7 +58,7 @@ const overlapErrors = [
   ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard),
   // Spatial 4.7 F.1.1 extends the frozen Temporal A.6 identity with per-state interval lineage (M3).
   ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard,
-    'party_traversal_interval_result', ['  - Existing six traversal outcomes'], true)
+    'party_traversal_interval_result', ['  - Existing six traversal outcomes'], ['travel_state_id', 'interval_ordinal'])
 ];
 if (overlapErrors.length) throw new Error(`Appendix F does not mirror the temporal preparation_snapshot_member / party_traversal_interval_result blocks:\n${overlapErrors.join('\n')}`);
 const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat(), ...spatialAmendmentContracts]);

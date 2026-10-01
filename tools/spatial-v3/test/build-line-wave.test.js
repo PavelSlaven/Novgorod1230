@@ -350,9 +350,13 @@ test('a4: own datasets are the candidate files, closure datasets are the unchang
   assert.deepEqual(manifest.datasets.filter((entry) => entry.file.includes('m2c-g4-expansion-v1')).map((entry) => entry.table), ['spatial_v3_nodes', 'spatial_v3_external_dependency_versions']);
 });
 
-test('a4: the bootstrap declares the wave manifest pin (b1 imports it) and does not import it yet', async () => {
+test('b1: the bootstrap pins and imports the line wave before the reader runs', async () => {
   assert.equal(LINES_WAVE_MANIFEST.path, LINES_MANIFEST_PATH);
   assert.equal(LINES_WAVE_MANIFEST.sha256, sha256(LINES_MANIFEST_PATH), 'repin the constant in bootstrap-live-world-v17.mjs when the wave changes');
   const source = readFileSync(resolve(root, 'scripts/bootstrap-live-world-v17.mjs'), 'utf8');
-  assert.equal(source.match(/LINES_WAVE_MANIFEST/g).length, 1, 'declared once, used by no import step before b1');
+  assert.equal(source.match(/LINES_WAVE_MANIFEST/g).length, 3, 'declaration plus manifest path and digest passed to importer');
+  const importAt = source.indexOf('const linesImport = await runLinesImportStage');
+  const followingImportAt = source.indexOf('const waveImport = await runWaveImportStage');
+  assert.ok(importAt > 0 && followingImportAt > importAt, 'line wave import is in the production bootstrap');
+  assert.match(source.slice(importAt, followingImportAt), /approval-attestation\.json/u);
 });

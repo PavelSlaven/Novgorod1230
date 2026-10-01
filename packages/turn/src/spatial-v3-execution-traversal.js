@@ -150,7 +150,7 @@ export function createSpatialV3TraversalExecution(replays) {
     if (outcome === 'blocked_before_progress') { actual = zero(); actualAfter = input.progress_before_ppm; }
     if (outcome === 'paused_in_transit' && actualAfter === 0) outcome = 'interrupted_at_anchor';
     if (input.result_code === 'turn_back_refused'
-      && (outcome !== 'blocked_before_progress' || turnBack)) {
+      && (state.status !== 'paused_in_transit' || outcome !== 'blocked_before_progress' || turnBack)) {
       return typedError('travel_interval_conflict', { execution_id: input.execution_id });
     }
     if (outcome === 'interrupted_at_anchor') {
@@ -172,7 +172,8 @@ export function createSpatialV3TraversalExecution(replays) {
     const cumulativeBefore = normalized(input.cumulative_before);
     const cumulativeAfter = addRationalMinutes(cumulativeBefore, actual);
     const result = sealed({
-      id: input.id || `${input.execution_id}:${input.step_ordinal}:${input.interval_ordinal}`,
+      id: input.id || `${input.execution_id}:${input.step_ordinal}:${state.id}:${input.interval_ordinal}`,
+      travel_state_id: state.id,
       route_plan_execution_id: input.execution_id, plan_step_ordinal: input.step_ordinal, interval_ordinal: input.interval_ordinal,
       progress_before_ppm: input.progress_before_ppm, planned_progress_after_ppm: input.planned_progress_after_ppm, actual_progress_after_ppm: actualAfter,
       planned_time: normalized(input.planned_time), actual_time: actual, cumulative_time_before: cumulativeBefore, cumulative_time_after: cumulativeAfter,

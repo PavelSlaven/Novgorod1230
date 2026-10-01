@@ -77,6 +77,33 @@ test('P19 traversal start has no implicit persistence identifiers', () => {
   assert.equal(engine.startTraversal({ ...input, change_set_id: undefined }).ok, false);
 });
 
+test('P19 resumed traversal interval zero is identified by its new travel state', () => {
+  const engine = createSpatialV3ExecutionEngine();
+  const oldInterval = engine.resolveTraversalInterval(intervalInput({
+    idempotency_key: 'old-travel-state-interval',
+    travel_state: state({ id: 'closed-state' })
+  }));
+  const started = engine.startTraversal({ departure_valid: true, travel_state_id: 'resumed-state',
+    execution_id: 'exec', party_id: 'party', idempotency_key: 'resume',
+    idempotency_record_id: 'resume-record', change_set_id: 'resume-change',
+    occurred_at_turn: 1, step_ordinal: 0, departure_endpoint: endpoint('departure'),
+    arrival_endpoint: endpoint('arrival'), segment_id: 'segment', method_id: 'walk',
+    capacity_units: 1, context_snapshot: context(), dependency_pins: pins });
+  const resumedInterval = engine.resolveTraversalInterval(intervalInput({
+    idempotency_key: 'resumed-travel-state-interval',
+    travel_state: started.travel_state,
+    interval_ordinal: 0
+  }));
+
+  assert.equal(oldInterval.ok, true, JSON.stringify(oldInterval));
+  assert.equal(started.ok, true, JSON.stringify(started));
+  assert.equal(resumedInterval.ok, true, JSON.stringify(resumedInterval));
+  assert.equal(resumedInterval.result.interval_ordinal, 0);
+  assert.equal(resumedInterval.result.travel_state_id, 'resumed-state');
+  assert.equal(resumedInterval.result.id, 'exec:0:resumed-state:0');
+  assert.notEqual(resumedInterval.result.id, oldInterval.result.id);
+});
+
 test('P19 traversal resolved factors/delays require sealed pins and history linkage', () => {
   const engine = createSpatialV3ExecutionEngine();
   const factor = seal({ factor_kind: 'pace', numerator: '1', denominator: '1', source_dependency_pins: pins });
@@ -251,6 +278,16 @@ test('P19 refused turn_back is retryable and leaves direction and progress uncha
   }));
   assert.equal(arbitraryOutcome.ok, false);
   assert.equal(arbitraryOutcome.error.code, 'travel_interval_conflict');
+
+  const activeStateRefusal = engine.resolveTraversalInterval(intervalInput({
+    idempotency_key: 'turn-back-refused-while-active',
+    result_code: 'turn_back_refused',
+    actual_progress_after_ppm: 0,
+    actual_time: rational('0'),
+    source_signals: signals({ blocked: true })
+  }));
+  assert.equal(activeStateRefusal.ok, false);
+  assert.equal(activeStateRefusal.error.code, 'travel_interval_conflict');
 });
 
 test('P19 turn_back mirrors mid-segment progress atomically and returns to departure on mirrored completion', () => {

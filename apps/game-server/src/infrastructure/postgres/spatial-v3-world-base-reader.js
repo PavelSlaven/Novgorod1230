@@ -799,18 +799,23 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
       return failure('authoring_dependency_pin_missing', 'node', g4?.id,
         { reason: 'exact_g4_and_canonical_g5_pins_and_read_only_query_required' });
     }
-    const result = await query(`SELECT b.id AS binding_id,b.version AS binding_version,b.parent_g4_id,b.parent_g4_version,b.from_canonical_g5_id,b.from_canonical_g5_version,b.to_canonical_g5_id,b.to_canonical_g5_version,b.connection_profile_id,b.connection_profile_version,b.from_scene_endpoint_slot_key,b.to_scene_endpoint_slot_key,b.status AS binding_status,p.id AS profile_id,p.version AS profile_version,p.profile_scope,p.passage_type_id,p.transition_environment_profile_id,p.transition_environment_profile_version,p.movement_orientation_profile_id,p.movement_orientation_profile_version,p.cost_kind,p.action_units,p.baseline_movement_method_id,p.movement_method_cost_profile_id,p.movement_method_cost_profile_version,p.base_minutes,p.dynamic_recheck_policy_id,p.dynamic_recheck_policy_version,p.capacity,p.capacity_semantics_ref,p.risk_profile_ref,p.availability_condition_set_ref,p.status AS profile_status,p.canonical_digest AS profile_digest,pav.canonical_digest AS profile_authoring_digest
+    const result = await query(`SELECT b.id AS binding_id,b.version AS binding_version,b.canonical_digest AS binding_digest,b.parent_g4_id,b.parent_g4_version,b.from_canonical_g5_id,b.from_canonical_g5_version,b.to_canonical_g5_id,b.to_canonical_g5_version,b.connection_profile_id,b.connection_profile_version,b.line_kind_profile_id,b.line_kind_profile_version,b.line_name,b.line_discriminator,b.line_direction_id,b.base_minutes AS binding_base_minutes,b.capacity AS binding_capacity,b.capacity_semantics_ref AS binding_capacity_semantics_ref,b.risk_profile_ref AS binding_risk_profile_ref,b.availability_condition_set_ref AS binding_availability_condition_set_ref,b.from_scene_endpoint_slot_key,b.to_scene_endpoint_slot_key,b.status AS binding_status,coalesce(p.id,lp.id) AS profile_id,coalesce(p.version,lp.version) AS profile_version,coalesce(p.profile_scope,'site_connection') AS profile_scope,p.passage_type_id,coalesce(p.transition_environment_profile_id,lp.transition_environment_profile_id) AS transition_environment_profile_id,coalesce(p.transition_environment_profile_version,lp.transition_environment_profile_version) AS transition_environment_profile_version,p.movement_orientation_profile_id,p.movement_orientation_profile_version,CASE WHEN lp.id IS NOT NULL THEN 'time' ELSE p.cost_kind END AS cost_kind,CASE WHEN lp.id IS NOT NULL THEN NULL ELSE p.action_units END AS action_units,coalesce(p.baseline_movement_method_id,lp.baseline_movement_method_id) AS baseline_movement_method_id,coalesce(p.movement_method_cost_profile_id,lp.movement_method_cost_profile_id) AS movement_method_cost_profile_id,coalesce(p.movement_method_cost_profile_version,lp.movement_method_cost_profile_version) AS movement_method_cost_profile_version,coalesce(b.base_minutes,p.base_minutes) AS base_minutes,coalesce(p.dynamic_recheck_policy_id,lp.dynamic_recheck_policy_id) AS dynamic_recheck_policy_id,coalesce(p.dynamic_recheck_policy_version,lp.dynamic_recheck_policy_version) AS dynamic_recheck_policy_version,coalesce(p.capacity,b.capacity) AS capacity,coalesce(p.capacity_semantics_ref,b.capacity_semantics_ref) AS capacity_semantics_ref,coalesce(p.risk_profile_ref,b.risk_profile_ref) AS risk_profile_ref,coalesce(p.availability_condition_set_ref,b.availability_condition_set_ref) AS availability_condition_set_ref,coalesce(p.status,lp.status) AS profile_status,coalesce(p.canonical_digest,lp.canonical_digest) AS profile_digest,coalesce(pav.canonical_digest,lpav.canonical_digest) AS profile_authoring_digest,bav_exact.canonical_digest AS binding_authoring_digest,lp.line_kind_id,lp.topological_orientation_profile_id,lp.topological_orientation_profile_version,lp.route_kind_id
       FROM world_base.spatial_v3_canonical_g5_connection_bindings b
       JOIN world_base.spatial_v3_authoring_versions bav ON bav.entity_kind='canonical_g5_connection_binding' AND bav.entity_id=b.id AND bav.version=b.version AND bav.world_revision_id=$3 AND bav.status='approved'
-      JOIN world_base.spatial_v3_canonical_g5_connection_profiles p ON p.id=b.connection_profile_id AND p.version=b.connection_profile_version
-      JOIN world_base.spatial_v3_authoring_versions pav ON pav.entity_kind='canonical_g5_connection_profile' AND pav.entity_id=p.id AND pav.version=p.version AND pav.world_revision_id=$3 AND pav.status='approved'
+      LEFT JOIN world_base.spatial_v3_authoring_versions bav_exact ON bav_exact.entity_kind='canonical_g5_connection_binding' AND bav_exact.entity_id=b.id AND bav_exact.version=b.version AND bav_exact.world_revision_id=$3 AND bav_exact.status='approved' AND bav_exact.canonical_digest=b.canonical_digest
+      LEFT JOIN world_base.spatial_v3_canonical_g5_connection_profiles p ON p.id=b.connection_profile_id AND p.version=b.connection_profile_version
+      LEFT JOIN world_base.spatial_v3_authoring_versions pav ON pav.entity_kind='canonical_g5_connection_profile' AND pav.entity_id=p.id AND pav.version=p.version AND pav.world_revision_id=$3 AND pav.status='approved'
+      LEFT JOIN world_base.spatial_v3_line_kind_profiles lp ON lp.id=b.line_kind_profile_id AND lp.version=b.line_kind_profile_version AND lp.world_revision_id=$3
+      LEFT JOIN world_base.spatial_v3_authoring_versions lpav ON lpav.entity_kind='line_kind_profile' AND lpav.entity_id=lp.id AND lpav.version=lp.version AND lpav.world_revision_id=$3 AND lpav.status='approved'
       WHERE b.parent_g4_id=$1 AND b.parent_g4_version=$2 AND b.from_canonical_g5_id=$4 AND b.from_canonical_g5_version=$5 AND b.status='approved'
       ORDER BY b.id,b.version DESC`, [g4.id, g4.version, g4.world_revision_id, canonical_g5.id, canonical_g5.version]);
     if (!Array.isArray(result?.rows)) {
       return failure('route_plan_snapshot_missing', 'node', g4.id, { reason: 'canonical_connections_unreadable' });
     }
     const usable = (row) => row.profile_status === 'approved' && row.profile_scope === 'site_connection'
-      && row.availability_condition_set_ref == null && row.profile_digest === row.profile_authoring_digest;
+      && row.availability_condition_set_ref == null && row.profile_digest === row.profile_authoring_digest
+      && row.binding_authoring_digest === row.binding_digest
+      && (row.line_kind_profile_id == null || (row.line_kind_id && row.route_kind_id));
     // Only the highest approved version of a binding is a candidate: an unusable one is a typed gap
     // of that binding alone, never a silent fall back to an older version.
     const highest = new Map();
@@ -818,20 +823,134 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
       const known = highest.get(row.binding_id);
       if (known === undefined || row.binding_version > known.binding_version) highest.set(row.binding_id, row);
     }
-    const chosen = [...highest.values()].filter(usable);
+    let chosen = [...highest.values()].filter(usable);
     const gaps = [...highest.values()].filter((row) => !usable(row)).map((row) => ({
       binding_id: row.binding_id, binding_version: row.binding_version,
       reason: 'canonical_connection_profile_unusable' }));
+
+    const lineRefs = [...new Map(chosen.filter((row) => row.line_kind_profile_id != null)
+      .map((row) => [`${row.line_kind_profile_id}@${row.line_kind_profile_version}`, row])).values()];
+    const lineDetails = new Map();
+    const lineAlternatives = new Map();
+    if (lineRefs.length) {
+      const details = await query(`SELECT lp.id AS line_kind_profile_id,lp.version AS line_kind_profile_version,
+        lp.line_kind_id,lp.baseline_movement_method_id,lp.movement_method_cost_profile_id,
+        lp.movement_method_cost_profile_version,lp.dynamic_recheck_policy_id,lp.dynamic_recheck_policy_version,
+        lp.transition_environment_profile_id,lp.transition_environment_profile_version,
+        lpav.canonical_digest AS line_kind_authoring_digest,
+        cp.canonical_digest AS movement_cost_profile_digest,cpav.canonical_digest AS movement_cost_authoring_digest,
+        cost_option.movement_method_id,cost_option.cost_mode,cost_option.factor_numerator,cost_option.factor_denominator,
+        policy.policy_kind,policy.interval_minutes,policy.canonical_digest AS policy_digest,
+        policyav.canonical_digest AS policy_authoring_digest,
+        environment.environment_class_id,environment.dynamic_environment_rule_set_id,
+        environment.dynamic_environment_rule_set_version,
+        environment.canonical_digest AS environment_digest,environmentav.canonical_digest AS environment_authoring_digest
+        FROM unnest($1::text[],$2::int[]) AS wanted(id,version)
+        JOIN world_base.spatial_v3_line_kind_profiles lp ON lp.id=wanted.id AND lp.version=wanted.version
+          AND lp.world_revision_id=$3 AND lp.status='approved'
+        JOIN world_base.spatial_v3_authoring_versions lpav ON lpav.entity_kind='line_kind_profile'
+          AND lpav.entity_id=lp.id AND lpav.version=lp.version AND lpav.world_revision_id=lp.world_revision_id
+          AND lpav.status='approved' AND lpav.canonical_digest=lp.canonical_digest
+        JOIN world_base.spatial_v3_movement_method_cost_profiles cp ON cp.id=lp.movement_method_cost_profile_id
+          AND cp.version=lp.movement_method_cost_profile_version AND cp.world_revision_id=lp.world_revision_id
+          AND cp.status='approved'
+        JOIN world_base.spatial_v3_authoring_versions cpav ON cpav.entity_kind='movement_method_cost_profile'
+          AND cpav.entity_id=cp.id AND cpav.version=cp.version AND cpav.world_revision_id=cp.world_revision_id
+          AND cpav.status='approved' AND cpav.canonical_digest=cp.canonical_digest
+        JOIN world_base.spatial_v3_movement_method_cost_options cost_option
+          ON cost_option.profile_id=cp.id AND cost_option.profile_version=cp.version
+        JOIN world_base.spatial_v3_dynamic_recheck_policies policy ON policy.id=lp.dynamic_recheck_policy_id
+          AND policy.version=lp.dynamic_recheck_policy_version AND policy.world_revision_id=lp.world_revision_id
+          AND policy.status='approved'
+        JOIN world_base.spatial_v3_authoring_versions policyav ON policyav.entity_kind='dynamic_recheck_policy'
+          AND policyav.entity_id=policy.id AND policyav.version=policy.version
+          AND policyav.world_revision_id=policy.world_revision_id AND policyav.status='approved'
+          AND policyav.canonical_digest=policy.canonical_digest
+        JOIN world_base.spatial_v3_transition_environment_profiles environment
+          ON environment.id=lp.transition_environment_profile_id
+          AND environment.version=lp.transition_environment_profile_version
+          AND environment.world_revision_id=lp.world_revision_id AND environment.status='approved'
+        JOIN world_base.spatial_v3_authoring_versions environmentav
+          ON environmentav.entity_kind='transition_environment_profile'
+          AND environmentav.entity_id=environment.id AND environmentav.version=environment.version
+          AND environmentav.world_revision_id=environment.world_revision_id
+          AND environmentav.status='approved' AND environmentav.canonical_digest=environment.canonical_digest
+        ORDER BY lp.id,lp.version,cost_option.movement_method_id`,
+      [lineRefs.map((row) => row.line_kind_profile_id), lineRefs.map((row) => row.line_kind_profile_version), g4.world_revision_id]);
+      if (Array.isArray(details?.rows)) for (const detail of details.rows) {
+        const key = `${detail.line_kind_profile_id}@${detail.line_kind_profile_version}`;
+        const record = lineDetails.get(key) ?? { profile: detail, options: [] };
+        const factor = detail.cost_mode === 'baseline'
+          ? { numerator: '1', denominator: '1' }
+          : { numerator: String(detail.factor_numerator), denominator: String(detail.factor_denominator) };
+        record.options.push({ movement_method_id: detail.movement_method_id,
+          cost_mode: detail.cost_mode, factor });
+        lineDetails.set(key, record);
+      }
+      const alternatives = await query(`SELECT alternative.profile_id,alternative.profile_version,
+        alternative.movement_method_id,alternative.risk_class,alternative.hazard_rule_ref
+        FROM unnest($1::text[],$2::int[]) AS wanted(id,version)
+        JOIN world_base.spatial_v3_line_kind_alternative_methods alternative
+          ON alternative.profile_id=wanted.id AND alternative.profile_version=wanted.version
+        ORDER BY alternative.profile_id,alternative.profile_version,alternative.movement_method_id`,
+      [lineRefs.map((row) => row.line_kind_profile_id), lineRefs.map((row) => row.line_kind_profile_version)]);
+      if (Array.isArray(alternatives?.rows)) for (const alternative of alternatives.rows) {
+        const key = `${alternative.profile_id}@${alternative.profile_version}`;
+        const methods = lineAlternatives.get(key) ?? [];
+        methods.push({ movement_method_id: alternative.movement_method_id,
+          risk_class: alternative.risk_class, hazard_rule_ref: alternative.hazard_rule_ref });
+        lineAlternatives.set(key, methods);
+      }
+    }
+    const lineGaps = chosen.filter((row) => row.line_kind_profile_id != null
+      && !lineDetails.has(`${row.line_kind_profile_id}@${row.line_kind_profile_version}`));
+    if (lineGaps.length) {
+      gaps.push(...lineGaps.map((row) => ({ binding_id: row.binding_id,
+        binding_version: row.binding_version, reason: 'line_kind_dependency_unusable' })));
+      const gapIds = new Set(lineGaps.map((row) => row.binding_id));
+      chosen = chosen.filter((row) => !gapIds.has(row.binding_id));
+    }
     return Object.freeze({ ok: true, gaps: deepFreeze(gaps), value: deepFreeze(chosen.map((row) => ({
-      binding: { id: row.binding_id, version: row.binding_version, parent_g4_id: row.parent_g4_id,
+      binding: { id: row.binding_id, version: row.binding_version, canonical_digest: row.binding_digest,
+        authoring_version_digest: row.binding_authoring_digest, parent_g4_id: row.parent_g4_id,
         parent_g4_version: row.parent_g4_version, from_canonical_g5_id: row.from_canonical_g5_id,
         from_canonical_g5_version: row.from_canonical_g5_version, to_canonical_g5_id: row.to_canonical_g5_id,
         to_canonical_g5_version: row.to_canonical_g5_version, connection_profile_id: row.connection_profile_id,
         connection_profile_version: row.connection_profile_version,
+        line_kind_profile_id: row.line_kind_profile_id, line_kind_profile_version: row.line_kind_profile_version,
+        ...(row.line_kind_profile_id ? { line_kind_id: row.line_kind_id,
+          line_kind_profile_ref: { entity_id: row.line_kind_profile_id,
+            authoring_version: String(row.line_kind_profile_version), canonical_digest: row.profile_digest },
+          movement_method_cost_profile_ref: { entity_id: row.movement_method_cost_profile_id,
+            authoring_version: String(row.movement_method_cost_profile_version) },
+          transition_environment_profile_ref: { entity_id: row.transition_environment_profile_id,
+            authoring_version: String(row.transition_environment_profile_version) },
+          dynamic_recheck_policy_ref: { entity_id: row.dynamic_recheck_policy_id,
+            authoring_version: String(row.dynamic_recheck_policy_version) },
+          movement_orientation_profile_ref: { entity_id: row.topological_orientation_profile_id,
+            authoring_version: String(row.topological_orientation_profile_version) } } : {}),
+        line_name: row.line_name, line_discriminator: row.line_discriminator,
+        line_direction_id: row.line_direction_id, base_minutes: row.binding_base_minutes,
         from_scene_endpoint_slot_key: row.from_scene_endpoint_slot_key,
         to_scene_endpoint_slot_key: row.to_scene_endpoint_slot_key, status: row.binding_status },
       profile: { id: row.profile_id, version: row.profile_version, world_revision_id: g4.world_revision_id,
         profile_scope: row.profile_scope, passage_type_id: row.passage_type_id,
+        ...(row.line_kind_profile_id ? { line_kind_id: row.line_kind_id,
+          line_kind_profile_id: row.line_kind_profile_id,
+          line_kind_profile_version: row.line_kind_profile_version,
+          line_kind_profile_ref: { entity_id: row.line_kind_profile_id,
+            authoring_version: String(row.line_kind_profile_version), canonical_digest: row.profile_digest },
+          movement_method_cost_profile_ref: { entity_id: row.movement_method_cost_profile_id,
+            authoring_version: String(row.movement_method_cost_profile_version) },
+          transition_environment_profile_ref: { entity_id: row.transition_environment_profile_id,
+            authoring_version: String(row.transition_environment_profile_version) },
+          dynamic_recheck_policy_ref: { entity_id: row.dynamic_recheck_policy_id,
+            authoring_version: String(row.dynamic_recheck_policy_version) },
+          movement_orientation_profile_ref: { entity_id: row.topological_orientation_profile_id,
+            authoring_version: String(row.topological_orientation_profile_version) },
+          topological_orientation_profile_id: row.topological_orientation_profile_id,
+          topological_orientation_profile_version: row.topological_orientation_profile_version,
+          route_kind_id: row.route_kind_id } : {}),
         transition_environment_profile_id: row.transition_environment_profile_id,
         transition_environment_profile_version: row.transition_environment_profile_version,
         movement_orientation_profile_id: row.movement_orientation_profile_id,
@@ -844,7 +963,40 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
         dynamic_recheck_policy_version: row.dynamic_recheck_policy_version, capacity: row.capacity,
         capacity_semantics_ref: row.capacity_semantics_ref, risk_profile_ref: row.risk_profile_ref,
         availability_condition_set_ref: row.availability_condition_set_ref, status: row.profile_status,
-        canonical_digest: row.profile_digest } }))) });
+        canonical_digest: row.profile_digest },
+      ...(row.line_kind_profile_id ? (() => {
+        const detail = lineDetails.get(`${row.line_kind_profile_id}@${row.line_kind_profile_version}`);
+        const baseline = detail.options.find((option) => option.movement_method_id === detail.profile.baseline_movement_method_id);
+        return { line_binding: {
+          site_connection_id: row.binding_id, authoring_version: row.binding_version,
+          canonical_digest: row.binding_digest, line_name: row.line_name,
+          line_discriminator: row.line_discriminator,
+          line_kind_profile_ref: `${row.line_kind_profile_id}@${row.line_kind_profile_version}`,
+          base_minutes: row.binding_base_minutes,
+          movement_method_id: detail.profile.baseline_movement_method_id,
+          method_factor: baseline?.factor,
+          environment_factor: { numerator: '1', denominator: '1' },
+          movement_method_options: detail.options,
+          alternative_methods: lineAlternatives.get(`${row.line_kind_profile_id}@${row.line_kind_profile_version}`) ?? [],
+          dynamic_recheck_policy: { id: row.dynamic_recheck_policy_id,
+            version: row.dynamic_recheck_policy_version, policy_kind: detail.profile.policy_kind,
+            interval_minutes: detail.profile.interval_minutes,
+            canonical_digest: detail.profile.policy_digest },
+          line_kind_profile: { id: row.line_kind_profile_id,
+            version: row.line_kind_profile_version, line_kind_id: row.line_kind_id,
+            canonical_digest: detail.profile.line_kind_authoring_digest },
+          movement_method_cost_profile: { id: row.movement_method_cost_profile_id,
+            version: row.movement_method_cost_profile_version,
+            canonical_digest: detail.profile.movement_cost_profile_digest },
+          transition_environment_profile: { id: row.transition_environment_profile_id,
+            version: row.transition_environment_profile_version,
+            environment_class_id: detail.profile.environment_class_id,
+            dynamic_environment_rule_set_id: detail.profile.dynamic_environment_rule_set_id,
+            dynamic_environment_rule_set_version: detail.profile.dynamic_environment_rule_set_version,
+            canonical_digest: detail.profile.environment_digest }
+        } };
+      })() : {})
+    }))) });
   }
   async function readPinnedG4ExpansionClosure({ g4, profile } = {}) {
     const validPin = (ref) => ref && typeof ref.id === 'string' && ref.id.trim()

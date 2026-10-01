@@ -19,6 +19,7 @@ test('party_runtime reference covers the current ordered migration chain and com
   assert.match(committed, /party_runtime\.party_spatial_semantic_resolutions/u);
   assert.match(committed, /party_runtime\.visibility_modifiers/u);
   assert.match(committed, /party_runtime\.party_environment_transition_log/u);
+  assert.match(committed, /038_party_runtime_local_lines\.sql/u);
   assert.match(committed, /037_party_runtime_m2c_presence_routines\.sql/u);
   assert.match(committed, /029_party_runtime_spatial_semantic_remainder\.sql/u);
   assert.match(committed, /ADD COLUMN IF NOT EXISTS delivery_mode text NOT NULL DEFAULT 'narrated'/u);

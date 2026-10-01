@@ -1,6 +1,6 @@
 import { serverError } from '../../errors.js';
 
-/** Current, same-baseline scene edges for the actor's committed root position. */
+/** Admitted same-scene edges from a committed or virtually reached position. */
 export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovementEligibility = null } = {}) {
   if (!pool?.query) throw new TypeError('Spatial v3 local movement requires a PostgreSQL pool.');
   return Object.freeze({
@@ -51,8 +51,11 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
               AND occupant.occupies_capacity_units>0) AS destination_placements
         FROM party_runtime.party_journey_locations l
         JOIN party_runtime.parties party ON party.party_id=l.party_id
+        JOIN party_runtime.scene_position_nodes current_position
+          ON current_position.party_id=l.party_id AND current_position.id=l.scene_position_id AND current_position.status='active'
         JOIN party_runtime.scene_position_nodes source
-          ON source.party_id=l.party_id AND source.id=l.scene_position_id AND source.status='active'
+          ON source.party_id=l.party_id AND source.id=$3 AND source.g6_instance_id=current_position.g6_instance_id
+            AND source.status='active'
         JOIN party_runtime.party_g6_instances g6
           ON g6.party_id=l.party_id AND g6.id=source.g6_instance_id AND g6.status='active'
         JOIN party_runtime.party_scene_baselines baseline
@@ -81,7 +84,7 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
           ON destination_g6.party_id=e.party_id AND destination_g6.id=destination.g6_instance_id
             AND destination_g6.scene_baseline_id=baseline.id AND destination_g6.status='active'
         WHERE l.party_id=$1 AND l.owner_kind='actor' AND l.owner_id=$2
-          AND l.location_kind='scene' AND l.scene_position_id=$3
+          AND l.location_kind='scene'
           AND e.cost_kind='action' AND e.action_units > 0 AND e.base_minutes IS NULL
           AND e.portal_entity_id IS NULL AND e.availability_condition_set_ref IS NULL
         ORDER BY e.id`, [partyId, actorId, positionId, readLocalMovementEligibility != null]);

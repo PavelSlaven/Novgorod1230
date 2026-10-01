@@ -133,6 +133,26 @@ test('local action movement keeps exact clock; route traversal owns its elapsed 
     }
   } };
   assert.deepEqual((await advance(directional)).clock_after, clock);
+  await assert.rejects(advance({ ...directional, consequence: {
+    ...directional.consequence, movement: { ...directional.consequence.movement,
+      cost_kind: 'time' }
+  } }), { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
+  const timedClock = { ...clock, whole_minutes: '18' };
+  const timedAdvance = createTracePhase3TemporalAdvance({ async phase2Advance(input) {
+    return { clock_after: timedClock, exact_elapsed: input.exact_elapsed };
+  } });
+  const timed = await timedAdvance({ ...local, exact_elapsed: {
+    exact_minutes: { numerator: '8', denominator: '1' } }, consequence: {
+    phase3_kind: 'movement', duration_minutes: 8,
+    movement: { status: 'completed', cost_kind: 'time' },
+    position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal'
+    }, spatial_v3_traversal: { clock_update: {
+      actual_elapsed: { numerator: '8', denominator: '1' },
+      world_time_before: clock, world_time_after: timedClock
+    } }
+  } });
+  assert.deepEqual(timed.clock_after, timedClock);
   await assert.rejects(advance({ ...local, exact_elapsed: {
     exact_minutes: { numerator: '1', denominator: '1' } } }),
   { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });

@@ -3,13 +3,14 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { runSpatialV3TargetMigrations } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input = null) => spawnSync(
   'docker', args, { input, encoding: 'utf8', timeout: 60_000 }
 );
 
-test('038 adds local-line party schema without rewriting legacy connections', async (t) => {
+test('038 local-line party schema preflights legacy history and reapplies through the production chain', async (t) => {
   const migrationPath = new URL(
     '../../schemas/party-db/038_party_runtime_local_lines.sql', import.meta.url
   );
@@ -54,6 +55,37 @@ test('038 adds local-line party schema without rewriting legacy connections', as
       new URL(`../../schemas/party-db/${file}`, import.meta.url), 'utf8'
     ));
   }
+
+  await assertLegacyPreflight(pool, migration);
+  await pool.query(`
+    CREATE TABLE party_runtime.schema_migrations(
+      migration_id text PRIMARY KEY, migration_digest text NOT NULL,
+      target_schema_fingerprint text NOT NULL
+    );
+    INSERT INTO party_runtime.schema_migrations(
+      migration_id,migration_digest,target_schema_fingerprint
+    ) VALUES ('fixture-012','${'a'.repeat(64)}','${'b'.repeat(64)}');
+  `);
+  const appliedMigration = {
+    migration_id: 'fixture-012',
+    migration_digest: 'a'.repeat(64),
+    target_schema_fingerprint: 'b'.repeat(64)
+  };
+  const firstApply = await runSpatialV3TargetMigrations(pool, {
+    exactAppliedMigration: appliedMigration
+  });
+  assert.equal(firstApply.newly_applied, 27,
+    'production runner must apply chain 012–038 for an existing catalog schema');
+  const secondApply = await runSpatialV3TargetMigrations(pool, {
+    exactAppliedMigration: appliedMigration
+  });
+  assert.equal(secondApply.newly_applied, 27,
+    'production runner must safely reapply chain 012–038');
+  assert.deepEqual((await pool.query(`
+    SELECT (SELECT count(*)::integer FROM party_runtime.traveller_travel_states) AS states,
+      (SELECT count(*)::integer FROM party_runtime.party_traversal_interval_results) AS intervals
+  `)).rows[0], { states: 0, intervals: 0 },
+  '038 must apply twice to an empty 001–037 database');
 
   await pool.query(`
     INSERT INTO party_runtime.parties(
@@ -130,7 +162,7 @@ test('038 adds local-line party schema without rewriting legacy connections', as
       'closed','completed','legacy-travel-change','legacy-travel-close'
     );
     INSERT INTO party_runtime.party_traversal_interval_results(
-      id,route_plan_execution_id,plan_step_ordinal,interval_ordinal,
+      id,travel_state_id,route_plan_execution_id,plan_step_ordinal,interval_ordinal,
       progress_before_ppm,planned_progress_after_ppm,actual_progress_after_ppm,
       planned_time_numerator,planned_time_denominator,actual_time_numerator,
       actual_time_denominator,cumulative_time_before_numerator,
@@ -140,7 +172,7 @@ test('038 adds local-line party schema without rewriting legacy connections', as
       outcome_composition_policy_version,outcome_composition_trace_digest,
       result_change_set_id,idempotency_record_id,occurred_at_turn
     ) VALUES (
-      'legacy-interval','legacy-execution',0,0,999999,1000000,1000000,
+      'legacy-interval','legacy-travel','legacy-execution',0,0,999999,1000000,1000000,
       1,1,1,1,0,1,1,1,1,'direct_party_clock','{}',
       'segment_completed','legacy-completed','legacy-policy','legacy-trace',
       'legacy-interval-change','legacy-interval-idem',0
@@ -152,8 +184,7 @@ test('038 adds local-line party schema without rewriting legacy connections', as
       coalesce(jsonb_agg(to_jsonb(c) ORDER BY c.id), '[]'::jsonb) AS rows
     FROM party_runtime.g5_site_connections c
   `);
-  const legacyBefore = baseline.rows[0];
-  assert.equal(legacyBefore.count, 1);
+  assert.equal(baseline.rows[0].count, 1);
   const travelBefore = await pool.query(`
     SELECT count(*)::integer AS count,
       coalesce(jsonb_agg(to_jsonb(s) ORDER BY s.id), '[]'::jsonb) AS rows
@@ -177,49 +208,10 @@ test('038 adds local-line party schema without rewriting legacy connections', as
   assert.deepEqual(preflight.rows[0], { total: 1, legacy_action: 1, legacy_timed: 0 },
     'fixture preflight counts must be exact before changing constraints');
 
-  await pool.query(migration);
-
-  const legacyAfter = await pool.query(`
-    SELECT count(*)::integer AS count,
-      coalesce(jsonb_agg(to_jsonb(c) - ARRAY[
-        'line_kind_id','line_kind_profile_ref','line_name','line_discriminator',
-        'line_direction_id','line_toponym','source_canonical_connection_ref'
-      ]::text[] ORDER BY c.id), '[]'::jsonb) AS rows
-    FROM party_runtime.g5_site_connections c
-  `);
-  assert.deepEqual(legacyAfter.rows[0], legacyBefore,
-    '038 must preserve legacy action-cost rows and row count exactly');
-  const travelAfter = await pool.query(`
-    SELECT count(*)::integer AS count,
-      coalesce(jsonb_agg(to_jsonb(s) - 'mirrored' ORDER BY s.id), '[]'::jsonb) AS rows
-    FROM party_runtime.traveller_travel_states s
-  `);
-  const intervalsAfter = await pool.query(`
-    SELECT count(*)::integer AS count,
-      coalesce(jsonb_agg(to_jsonb(r) - ARRAY['travel_state_id','turn_back']::text[]
-        ORDER BY r.id), '[]'::jsonb) AS rows
-    FROM party_runtime.party_traversal_interval_results r
-  `);
-  assert.deepEqual(travelAfter.rows[0], {
-    count: travelBefore.rows[0].count,
-    rows: travelBefore.rows[0].rows.map((row) => Object.fromEntries(
-      Object.entries(row).filter(([key]) => key !== 'mirrored')
-    ))
-  }, '038 must preserve existing travel state payload and count');
-  assert.deepEqual(intervalsAfter.rows[0], {
-    count: intervalsBefore.rows[0].count,
-    rows: intervalsBefore.rows[0].rows.map((row) => row)
-  }, '038 must preserve existing interval payload and count');
-  assert.equal((await pool.query(`
-    SELECT travel_state_id FROM party_runtime.party_traversal_interval_results
-    WHERE id='legacy-interval'
-  `)).rows[0].travel_state_id, 'legacy-travel',
-  'legacy interval must be linked to its existing travel state');
-
-  await pool.query(migration);
-  assert.equal((await pool.query(`
-    SELECT count(*)::integer AS count FROM party_runtime.party_traversal_interval_results
-  `)).rows[0].count, 1, '038 must be safe to apply twice');
+  assert.equal(travelBefore.rows[0].count, 1,
+    'the fixture contains one existing travel state');
+  assert.equal(intervalsBefore.rows[0].count, 1,
+    'the fixture contains one existing interval result');
 
   // A terminal row and its interval share a plan step with the legacy
   // completed state. This also proves that closed states no longer reserve
@@ -236,6 +228,65 @@ test('038 adds local-line party schema without rewriting legacy connections', as
     progressBefore: 500_000, plannedProgress: 1_000_000,
     actualProgress: 1_000_000, turnBack: true, changeSet: 'returned-interval'
   });
+  await insertTravelState(pool, {
+    id: 'mirrored-ordinary-travel', executionId: 'legacy-execution',
+    status: 'closed', progress: 600_000, closedResult: 'interrupted_to_anchor',
+    mirrored: true, changeSet: 'mirrored-ordinary-state'
+  });
+  await insertInterval(pool, {
+    id: 'mirrored-ordinary-interval', travelStateId: 'mirrored-ordinary-travel',
+    executionId: 'legacy-execution', resultKind: 'progressed',
+    progressBefore: 500_000, plannedProgress: 700_000,
+    actualProgress: 600_000, changeSet: 'mirrored-ordinary-interval'
+  });
+  await pool.query(`
+    INSERT INTO party_runtime.party_route_plans(
+      id,party_id,journey_owner_ref,journey_scope,request_kind,
+      planning_request_id,path_query_digest,option_id,knowledge_scope,
+      source_endpoint_snapshot,target_request,resolved_factual_target_ref,
+      target_resolution_dependency_pins,world_revision_id,catalog_digest,
+      planning_algorithm_version,planning_state_version,
+      planning_context_dependency_pins,canonical_serialization_digest,
+      created_change_set_id,lifecycle_change_set_id,created_at_turn
+    ) VALUES (
+      'other-plan','legacy-party','{"entity_kind":"actor","entity_id":"legacy-actor"}',
+      'world_travel','ordinary','other-request','other-query','other-option','factual',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+      '{"target":"legacy-to"}',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+      '{}','world','catalog','test-algorithm',1,'{}','other-digest','seed','seed',0
+    );
+    INSERT INTO party_runtime.party_route_plan_steps(
+      route_plan_id,ordinal,step_kind,departure_endpoint_snapshot,
+      arrival_endpoint_snapshot,static_contract_snapshot
+    ) VALUES (
+      'other-plan',0,'timed_traversal',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+      '{"snapshot_kind":"timed_traversal"}'
+    );
+    INSERT INTO party_runtime.party_route_plan_executions(
+      id,party_id,route_plan_id,journey_owner_ref,journey_scope,status,
+      current_step_ordinal,current_endpoint_ref,updated_change_set_id
+    ) VALUES (
+      'other-execution','legacy-party','other-plan',
+      '{"entity_kind":"actor","entity_id":"legacy-actor"}',
+      'world_travel','planned',0,
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}','seed'
+    );
+    INSERT INTO party_runtime.party_route_plan_execution_events(
+      execution_id,event_ordinal,event_kind,to_status,step_ordinal,
+      location_snapshot,change_set_id,idempotency_record_id,occurred_at_turn
+    ) VALUES ('other-execution',0,'planned','planned',0,'{}','seed','seed',0)
+  `);
+  await assert.rejects(insertInterval(pool, {
+    id: 'wrong-travel-state-scope', travelStateId: 'mirrored-ordinary-travel',
+    executionId: 'other-execution', resultKind: 'progressed',
+    progressBefore: 500_000, plannedProgress: 700_000,
+    actualProgress: 600_000, intervalOrdinal: 1,
+    changeSet: 'wrong-travel-state-scope'
+  }), (error) => error?.code === '23503',
+  'interval state FK must pin matching execution and step');
   await insertTravelState(pool, {
     id: 'zero-progress-interruption', executionId: 'legacy-execution',
     status: 'closed', progress: 0, closedResult: 'interrupted_to_anchor',
@@ -297,10 +348,17 @@ test('038 adds local-line party schema without rewriting legacy connections', as
   ]) {
     await assert.rejects(insertTravelState(pool, {
       id: `duplicate-live-${suffix}`, executionId: 'legacy-execution', status,
-      progress: 0, strandedReason, changeSet: `duplicate-${suffix}`
+      progress: status === 'paused_in_transit' ? 100_000 : 0,
+      strandedReason, changeSet: `duplicate-${suffix}`
     }), (error) => error?.code === '23505',
     `${status} must conflict with the existing open travel state`);
   }
+  await assert.rejects(insertTravelState(pool, {
+    id: 'bad-paused-zero-state', executionId: 'legacy-execution',
+    status: 'paused_in_transit', progress: 0,
+    changeSet: 'bad-paused-zero-state'
+  }), (error) => error?.code === '23514',
+  'paused travel state must have progress strictly between endpoints');
 
   for (const invalid of [
     {
@@ -453,6 +511,27 @@ test('038 adds local-line party schema without rewriting legacy connections', as
     SET result_code='rewritten' WHERE id='legacy-interval'
   `), (error) => error?.code === 'P0001',
   'the temporary travel_state_id backfill exception must not remain after 038');
+
+  const gameDataBeforeRerun = await pool.query(`
+    SELECT
+      (SELECT count(*)::integer FROM party_runtime.g5_site_connections) AS connections,
+      (SELECT count(*)::integer FROM party_runtime.traveller_travel_states) AS states,
+      (SELECT count(*)::integer FROM party_runtime.party_traversal_interval_results) AS intervals,
+      (SELECT count(*)::integer FROM party_runtime.party_route_plan_executions) AS executions
+  `);
+  const postDataRerun = await runSpatialV3TargetMigrations(pool, {
+    exactAppliedMigration: appliedMigration
+  });
+  assert.equal(postDataRerun.newly_applied, 27,
+    'production chain must reapply 012–038 after game data exists');
+  assert.deepEqual((await pool.query(`
+    SELECT
+      (SELECT count(*)::integer FROM party_runtime.g5_site_connections) AS connections,
+      (SELECT count(*)::integer FROM party_runtime.traveller_travel_states) AS states,
+      (SELECT count(*)::integer FROM party_runtime.party_traversal_interval_results) AS intervals,
+      (SELECT count(*)::integer FROM party_runtime.party_route_plan_executions) AS executions
+  `)).rows[0], gameDataBeforeRerun.rows[0],
+  'production chain rerun must preserve existing party game data');
 });
 
 async function waitForPostgres(name) {
@@ -467,6 +546,111 @@ async function waitForPostgres(name) {
     }
   }
   assert.equal(ready, true, 'isolated PostgreSQL did not become ready');
+}
+
+async function assertLegacyPreflight(pool, migration) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(`
+      INSERT INTO party_runtime.parties(
+        party_id,schema_version,world_revision_id,world_catalog_digest,
+        materializer_version,rng_version,command_catalog_digest,profile_bundle_digest
+      ) VALUES ('preflight-party',3,'world','catalog','materializer','rng','commands','profiles');
+      INSERT INTO party_runtime.party_route_plans(
+        id,party_id,journey_owner_ref,journey_scope,request_kind,
+        planning_request_id,path_query_digest,option_id,knowledge_scope,
+        source_endpoint_snapshot,target_request,resolved_factual_target_ref,
+        target_resolution_dependency_pins,world_revision_id,catalog_digest,
+        planning_algorithm_version,planning_state_version,
+        planning_context_dependency_pins,canonical_serialization_digest,
+        created_change_set_id,lifecycle_change_set_id,created_at_turn
+      ) VALUES (
+        'preflight-plan','preflight-party','{"entity_kind":"actor","entity_id":"a"}',
+        'world_travel','ordinary','request','query','option','factual',
+        '{"endpoint_kind":"scene_position","endpoint_id":"from"}',
+        '{"target":"to"}','{"endpoint_kind":"scene_position","endpoint_id":"to"}',
+        '{}','world','catalog','test-algorithm',1,'{}','digest','seed','seed',0
+      );
+      INSERT INTO party_runtime.party_route_plan_steps(
+        route_plan_id,ordinal,step_kind,departure_endpoint_snapshot,
+        arrival_endpoint_snapshot,static_contract_snapshot
+      ) VALUES (
+        'preflight-plan',0,'timed_traversal',
+        '{"endpoint_kind":"scene_position","endpoint_id":"from"}',
+        '{"endpoint_kind":"scene_position","endpoint_id":"to"}',
+        '{"snapshot_kind":"timed_traversal"}'
+      );
+      INSERT INTO party_runtime.party_route_plan_executions(
+        id,party_id,route_plan_id,journey_owner_ref,journey_scope,status,
+        current_step_ordinal,current_endpoint_ref,updated_change_set_id
+      ) VALUES (
+        'preflight-execution','preflight-party','preflight-plan',
+        '{"entity_kind":"actor","entity_id":"a"}',
+        'world_travel','planned',0,
+        '{"endpoint_kind":"scene_position","endpoint_id":"from"}','seed'
+      );
+      INSERT INTO party_runtime.traveller_travel_states(
+        id,party_id,route_plan_execution_id,plan_step_ordinal,movement_carrier_ref,
+        segment_progress_ppm,cumulative_actual_time_numerator,
+        cumulative_actual_time_denominator,navigation_state,last_confirmed_endpoint_ref,
+        status,closed_result,updated_change_set_id,closed_change_set_id
+      ) VALUES (
+        'preflight-travel','preflight-party','preflight-execution',0,
+        '{"entity_kind":"actor","entity_id":"a"}',1000000,1,1,'on_course',
+        '{"endpoint_kind":"scene_position","endpoint_id":"to"}',
+        'closed','completed','seed','seed'
+      );
+      INSERT INTO party_runtime.party_traversal_interval_results(
+        id,route_plan_execution_id,plan_step_ordinal,interval_ordinal,
+        progress_before_ppm,planned_progress_after_ppm,actual_progress_after_ppm,
+        planned_time_numerator,planned_time_denominator,actual_time_numerator,
+        actual_time_denominator,cumulative_time_before_numerator,
+        cumulative_time_before_denominator,cumulative_time_after_numerator,
+        cumulative_time_after_denominator,crossed_whole_minute_boundaries,
+        clock_commit_mode,dynamic_snapshot,result_kind,result_code,
+        outcome_composition_policy_version,outcome_composition_trace_digest,
+        result_change_set_id,idempotency_record_id,occurred_at_turn
+      ) VALUES (
+        'preflight-interval','preflight-execution',0,0,999999,1000000,1000000,
+        1,1,1,1,0,1,1,1,1,'direct_party_clock','{}','segment_completed',
+        'complete','policy','trace','seed','idem',0
+      );
+    `);
+    const before = await client.query(`
+      SELECT
+        (SELECT coalesce(jsonb_agg(to_jsonb(s) ORDER BY s.id),'[]'::jsonb)
+          FROM party_runtime.traveller_travel_states s) AS states,
+        (SELECT coalesce(jsonb_agg(to_jsonb(r) ORDER BY r.id),'[]'::jsonb)
+          FROM party_runtime.party_traversal_interval_results r) AS intervals
+    `);
+    await client.query('SAVEPOINT before_038');
+    await assert.rejects(client.query(migration), (error) => (
+      error?.code === '55000'
+      && error?.message.includes('PARTY_DATABASE_REBUILD_REQUIRED')
+      && error?.detail.includes('traveller_travel_states=1')
+      && error?.detail.includes('party_traversal_interval_results=1')
+    ), 'legacy path rows must produce the typed D51 rebuild error');
+    await client.query('ROLLBACK TO SAVEPOINT before_038');
+    const after = await client.query(`
+      SELECT
+        (SELECT coalesce(jsonb_agg(to_jsonb(s) ORDER BY s.id),'[]'::jsonb)
+          FROM party_runtime.traveller_travel_states s) AS states,
+        (SELECT coalesce(jsonb_agg(to_jsonb(r) ORDER BY r.id),'[]'::jsonb)
+          FROM party_runtime.party_traversal_interval_results r) AS intervals
+    `);
+    assert.deepEqual(after.rows[0], before.rows[0],
+      'failed 038 preflight must leave both legacy histories unchanged');
+    assert.deepEqual(await tableColumns(client, 'traveller_travel_states').then((columns) => [
+      columns.has('mirrored'), columns.has('travel_state_id')
+    ]), [false, false], 'failed preflight must leave schema unchanged');
+    await client.query('ROLLBACK');
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 async function tableColumns(pool, table) {
@@ -510,7 +694,7 @@ async function insertTravelState(pool, {
 async function insertInterval(pool, {
   id, travelStateId, executionId, resultKind, progressBefore,
   plannedProgress, actualProgress, resultCode = resultKind,
-  turnBack = false, changeSet
+  turnBack = false, changeSet, intervalOrdinal = 0
 }) {
   return pool.query(`
     INSERT INTO party_runtime.party_traversal_interval_results(
@@ -525,14 +709,15 @@ async function insertInterval(pool, {
       interruption_anchor_id,turn_back,result_change_set_id,idempotency_record_id,
       occurred_at_turn
     ) VALUES (
-      $1,$2,$3,0,0,$4,$5,$6,1,1,1,1,0,1,1,1,1,
+      $1,$2,$3,0,$12,$4,$5,$6,1,1,1,1,0,1,1,1,1,
       'direct_party_clock','{}',$7,$8,'test-policy','test-trace',
       CASE WHEN $7='interrupted_at_anchor' THEN 'legacy-from' ELSE NULL END,
       $9,$10,$11,1
     )
   `, [
     id, travelStateId, executionId, progressBefore, plannedProgress,
-    actualProgress, resultKind, resultCode, turnBack, changeSet, `${id}-idem`
+    actualProgress, resultKind, resultCode, turnBack, changeSet, `${id}-idem`,
+    intervalOrdinal
   ]);
 }
 

@@ -398,7 +398,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         const approved = connections.value.find((row) => row.binding.id === binding_id);
         if (!approved) return reject(connections.gaps?.find((gap) => gap.binding_id === binding_id)?.reason
           ?? 'approved_canonical_connection_required');
-        const { binding, profile: connectionProfile } = approved;
+        const { binding, profile: connectionProfile, line_binding } = approved;
         // The pin vocabulary has no connection kinds: the source place is pinned, the binding and its
         // profile are traced (their catalog is the one pinned world revision).
         book.append('canonical_spatial_node', [{ id: binding.from_canonical_g5_id, version: binding.from_canonical_g5_version }]);
@@ -421,7 +421,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
           canonical_g5: selection.target_canonical_g5, change_set_id, materializer_version, book, authoring_refs });
         if (!target.ok) return target;
         const prepared = materializeSpatialV3CanonicalConnection({ party_id, change_set_id, snapshot,
-          binding, profile: connectionProfile, terminal_target: target.terminal_target,
+          binding, profile: connectionProfile, line_binding, terminal_target: target.terminal_target,
           terminal_writes: target.terminal_writes, dependency_pins: book.pins(),
           materialization_trace_id: `trace:${change_set_id}`,
           source: { site_id: source_site_id, position_id: source_position_id,

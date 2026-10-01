@@ -1,5 +1,28 @@
 -- Additive party-side schema for approved local line connections and F.1.1 traversal.
--- Existing connection, travel-state, and interval payloads are retained.
+-- Committed traversal history is not migrated in place (D51): recreate party DB.
+DO $$
+DECLARE travel_state_count bigint; interval_count bigint;
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'party_runtime'
+      AND table_name = 'party_traversal_interval_results'
+      AND column_name = 'travel_state_id'
+  ) THEN
+    SELECT count(*) INTO travel_state_count FROM party_runtime.traveller_travel_states;
+    SELECT count(*) INTO interval_count FROM party_runtime.party_traversal_interval_results;
+    IF travel_state_count > 0 OR interval_count > 0 THEN
+      RAISE EXCEPTION USING
+        ERRCODE = '55000',
+        MESSAGE = 'PARTY_DATABASE_REBUILD_REQUIRED',
+        DETAIL = format('D51: traveller_travel_states=%s, party_traversal_interval_results=%s',
+          travel_state_count, interval_count);
+    END IF;
+  END IF;
+END
+$$;
+
 ALTER TABLE party_runtime.g5_site_connections
   ADD COLUMN IF NOT EXISTS line_kind_id text,
   ADD COLUMN IF NOT EXISTS line_kind_profile_ref jsonb,
@@ -51,8 +74,12 @@ $$;
 
 ALTER TABLE party_runtime.traveller_travel_states
   DROP CONSTRAINT IF EXISTS traveller_travel_states_terminal_state_check,
+  DROP CONSTRAINT IF EXISTS traveller_travel_states_paused_progress_ck,
   ADD CONSTRAINT traveller_travel_states_closed_result_check
     CHECK (closed_result IN ('completed','interrupted_to_anchor','returned_to_departure','superseded')),
+  ADD CONSTRAINT traveller_travel_states_paused_progress_ck CHECK (
+    status <> 'paused_in_transit' OR segment_progress_ppm BETWEEN 1 AND 999999
+  ),
   ADD CONSTRAINT traveller_travel_states_terminal_state_check CHECK (
     status <> 'closed'
     OR (closed_result = 'completed' AND segment_progress_ppm = 1000000 AND mirrored = false)
@@ -84,49 +111,19 @@ ALTER TABLE party_runtime.party_traversal_interval_results
   ADD COLUMN IF NOT EXISTS travel_state_id text,
   ADD COLUMN IF NOT EXISTS turn_back boolean NOT NULL DEFAULT false;
 
--- The immutable interval has no state FK in 001–037. Permit only this one
--- metadata backfill while ALTER TABLE holds its migration lock; every payload
--- field remains byte-for-byte equal, and the strict append-only guard is
--- restored before this migration can commit.
-CREATE OR REPLACE FUNCTION party_runtime.v3_append_only() RETURNS trigger LANGUAGE plpgsql AS $$
-BEGIN
-  IF TG_TABLE_NAME = 'party_traversal_interval_results'
-    AND OLD.travel_state_id IS NULL
-    AND NEW.travel_state_id IS NOT NULL
-    AND (to_jsonb(NEW) - 'travel_state_id') = (to_jsonb(OLD) - 'travel_state_id') THEN
-    RETURN NEW;
-  END IF;
-  RAISE EXCEPTION 'spatial_append_only_history_violation: %', TG_TABLE_NAME;
-END $$;
-
-UPDATE party_runtime.party_traversal_interval_results r
-SET travel_state_id = s.id
-FROM party_runtime.traveller_travel_states s
-WHERE r.travel_state_id IS NULL
-  AND s.route_plan_execution_id = r.route_plan_execution_id
-  AND s.plan_step_ordinal = r.plan_step_ordinal;
-
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM party_runtime.party_traversal_interval_results WHERE travel_state_id IS NULL) THEN
-    RAISE EXCEPTION 'spatial_interval_travel_state_backfill_missing';
-  END IF;
-END
-$$;
-
-CREATE OR REPLACE FUNCTION party_runtime.v3_append_only() RETURNS trigger LANGUAGE plpgsql AS $$
-BEGIN
-  RAISE EXCEPTION 'spatial_append_only_history_violation: %', TG_TABLE_NAME;
-END $$;
+CREATE UNIQUE INDEX IF NOT EXISTS traveller_travel_states_scope_identity_uq
+  ON party_runtime.traveller_travel_states(id, route_plan_execution_id, plan_step_ordinal);
 
 ALTER TABLE party_runtime.party_traversal_interval_results
   ALTER COLUMN travel_state_id SET NOT NULL,
   DROP CONSTRAINT IF EXISTS party_traversal_interval_results_travel_state_id_fkey,
   ADD CONSTRAINT party_traversal_interval_results_travel_state_id_fkey
-    FOREIGN KEY(travel_state_id) REFERENCES party_runtime.traveller_travel_states(id) ON DELETE RESTRICT,
+    FOREIGN KEY(travel_state_id, route_plan_execution_id, plan_step_ordinal)
+    REFERENCES party_runtime.traveller_travel_states(id, route_plan_execution_id, plan_step_ordinal)
+    ON DELETE RESTRICT,
   DROP CONSTRAINT IF EXISTS party_traversal_interval_results_result_kind_check,
   DROP CONSTRAINT IF EXISTS party_traversal_interval_results_turn_back_ck,
-  DROP CONSTRAINT IF EXISTS party_traversal_interval_results_state_identity_uq;
+  DROP CONSTRAINT IF EXISTS party_traversal_interval_results_terminal_result_ck;
 
 DO $$
 DECLARE constraint_name text;
@@ -240,7 +237,10 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'spatial_execution_event_causal_invalid: waiting result';
   END IF;
-  IF NEW.event_kind='suspended' AND actual_kind<>'interrupted_at_anchor' THEN
+  IF NEW.event_kind='suspended' AND (actual_kind<>'interrupted_at_anchor'
+    OR (causal_kind='party_traversal_interval_result'
+      AND EXISTS (SELECT 1 FROM party_runtime.party_traversal_interval_results r
+        WHERE r.id=causal_id AND r.actual_progress_after_ppm=0))) THEN
     RAISE EXCEPTION 'spatial_execution_event_causal_invalid: suspension result';
   END IF;
   IF NEW.event_kind='stranded' AND actual_kind<>'stranded' THEN

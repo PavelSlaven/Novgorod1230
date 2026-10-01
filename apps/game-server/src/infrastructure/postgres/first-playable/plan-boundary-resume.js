@@ -31,6 +31,7 @@ export function boundaryResumeWrites({
     intervals: segment.intervals,
     partyId,
     executionId: paused.execution_id,
+    travelStateId: paused.travel_state_id,
     stepOrdinal: paused.step_ordinal,
     suffix,
     segment,

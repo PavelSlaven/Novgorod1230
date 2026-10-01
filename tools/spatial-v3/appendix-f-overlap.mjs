@@ -10,13 +10,24 @@ const enumValues = (type) => type.match(/^enum\[(.+)\]$/)?.[1].split(',').map((v
 // invariants of A.7 that F extends (a stem match is enough)
 const extendedInvariantStems = ['  - endpoint requires', '  - transfer_scene requires'];
 
-export function preparationSnapshotMemberOverlapErrors(temporalText, standardText, name = 'preparation_snapshot_member', extraStems = [], allowIdentityOverride = false) {
+export function preparationSnapshotMemberOverlapErrors(temporalText, standardText, name = 'preparation_snapshot_member', extraStems = [], expectedIdentityOverride = null) {
   const temporal = blockOf(temporalText, name);
   const amended = blockOf(standardText.slice(standardText.indexOf('# Приложение F.')), name);
   if (!temporal) return [`${name}: block is missing in the temporal amendment`];
   if (!amended) return [`${name}: block is missing in Appendix F`];
   const errors = [];
   const amendedLines = lines(amended);
+  if (expectedIdentityOverride) {
+    const identityStart = amendedLines.indexOf('identity:') + 1;
+    const identityEnd = amendedLines.findIndex((line, index) => index >= identityStart && /^[a-z_]+:$/.test(line));
+    const amendedIdentity = amendedLines.slice(identityStart, identityEnd < 0 ? undefined : identityEnd)
+      .filter((line) => line.startsWith('  - '));
+    const expected = expectedIdentityOverride.map((field) => `  - ${field}`);
+    if (amendedIdentity.length !== expected.length
+      || expected.some((line, index) => amendedIdentity[index] !== line)) {
+      errors.push(`${name}: identity override must be exactly ${expected.map((line) => line.trim()).join(', ')}`);
+    }
+  }
   const amendedFields = new Map(amendedLines.map(fieldOf).filter(Boolean).map((match) => [match[1], match]));
   let section = null;
   for (const line of lines(temporal)) {
@@ -36,7 +47,7 @@ export function preparationSnapshotMemberOverlapErrors(temporalText, standardTex
       } else if (found[2] !== field[2] || found[3] !== field[3]) errors.push(`${name}: field ${field[1]} differs (${field[2]} ${field[3]} vs ${found[2]} ${found[3]})`);
     } else if (line.startsWith('  - ')) {
       if (section === 'identity') {
-        if (!allowIdentityOverride && !amendedLines.includes(line)) errors.push(`${name}: identity differs: ${line.trim()}`);
+        if (!expectedIdentityOverride && !amendedLines.includes(line)) errors.push(`${name}: identity differs: ${line.trim()}`);
         continue;
       }
       if (section !== 'invariants') continue;

@@ -4,17 +4,16 @@ import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog } f
 import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibility.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { spatialV3LocalEdgeLabel } from '../../runtime/spatial-v3-local-edge-label.js';
 import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
 import { approvedNaturalStableCover } from './g4-natural-perception-reader.js';
 import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlayerKnowledge } from
   './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
-import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
 import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 
 const labels = loadLabels('m2c-exit-labels');
-const localLabels = loadApprovedLocalEdgeLabels();
 const gap = () => { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
   'Complete proposed player-visible facts are required.',
   { status: 409, details: { reason: 'place_visible_context_source_required' } }); };
@@ -41,7 +40,7 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     if (typeof transaction?.query !== 'function' || !partyId || !actorId
       || sourceLocation?.party_id !== partyId || sourceLocation.owner_id !== actorId
       || !position || !baseline || !Array.isArray(directionalExits)
-      || !labels || !localLabels || typeof readCurrentEnvironment !== 'function'
+      || !labels || typeof readCurrentEnvironment !== 'function'
       || typeof readTargetConditions !== 'function'
       || typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function') gap();
     const inScene = (rows) => rows.filter((row) => row.party_id === partyId
@@ -167,12 +166,10 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
             || (target.placement.entity_kind === 'npc' ? 'человек' : 'предмет'),
           ...(known?.display_name?.trim() ? { display_name: known.display_name } : {}) });
       } else if (target.edge) {
-        const matches = localLabels.filter((label) => label.scene_template_ref.id
-          === target.edge.source_scene_template_ref?.entity_id
-          && label.scene_template_ref.version === Number(target.edge.source_scene_template_ref?.authoring_version)
-          && label.edge_slot_key === target.edge.source_edge_slot_key);
-        if (matches.length !== 1) gap();
-        localEdges.push({ edge_id: target.edge.id, display_label: matches[0].display_label });
+        const displayLabel = spatialV3LocalEdgeLabel(positions,
+          target.edge.from_position_id, target.edge.to_position_id);
+        if (displayLabel == null) gap();
+        localEdges.push({ edge_id: target.edge.id, display_label: displayLabel });
       } else {
         const exit = target.exit;
         const matches = labels.filter((label) => label.world_revision_id === pin.compatible_world_revision_id

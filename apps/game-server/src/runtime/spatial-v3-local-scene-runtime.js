@@ -42,6 +42,31 @@ export function createSpatialV3LocalSceneRuntime({ pool,
         display_label: edge.display_label,
         destination_status: edge.disclosed_status }));
     },
+    /** Resolve every hidden approach edge through the same admission reader as a local move. */
+    async prepareLocalLineApproach({ partyId, actorId, state, orderedLocalEdgePath }) {
+      if (state?.party_id !== partyId || state.actor_id !== actorId
+        || !text(state.position?.position_id)
+        || state.journey_location?.scene_position_id !== state.position.position_id
+        || !Array.isArray(orderedLocalEdgePath) || orderedLocalEdgePath.length === 0) {
+        gap('SPATIAL_V3_LOCAL_LINE_APPROACH_INVALID');
+      }
+      let positionId = state.position.position_id;
+      const path = [];
+      for (const item of orderedLocalEdgePath) {
+        if (!text(item?.edge_id) || item.from_position_id !== positionId
+          || !text(item.to_position_id)) gap('SPATIAL_V3_LOCAL_LINE_APPROACH_STALE');
+        const matches = (await reader.list({ partyId, actorId, positionId }))
+          .filter(({ movement_admission: admission }) => admission.edge_id === item.edge_id
+            && admission.to_position_ref === item.to_position_id);
+        if (matches.length !== 1) gap('SPATIAL_V3_LOCAL_LINE_APPROACH_EDGE_UNAVAILABLE');
+        const admission = matches[0].movement_admission;
+        if (admission.destination_status !== 'open') gap('SPATIAL_V3_LOCAL_EDGE_OCCUPIED');
+        path.push({ edge_id: admission.edge_id, from_position_id: admission.from_position_ref,
+          to_position_id: admission.to_position_ref, movement_admission: admission });
+        positionId = admission.to_position_ref;
+      }
+      return path;
+    },
     /** The full-occupancy verdict of the movement owner for one listed edge, the same one
      * `prepareLocalMovement` enforces. Server-side only: it may name occupants the actor
      * cannot perceive, so it is never shown - it only lets the turn refuse before executing. */

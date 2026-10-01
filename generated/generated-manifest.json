@@ -14,12 +14,12 @@
     {
       "bytes": 41736,
       "path": "generated/schema-reference.json",
-      "sha256": "37d19639ada1ece592476c08c6e84cedbeac528800937aacb9b1ee809d9079a5"
+      "sha256": "94d6f48c94c8cc9c22d851fc6e9bd4568ae794242ddc474c4035970c3adfcf50"
     },
     {
       "bytes": 28751,
       "path": "generated/schema-reference.md",
-      "sha256": "dbc4ec1b0ad9ec0d3c241722fe3684a2c281abbe11fa8fddab88d34f78c559ad"
+      "sha256": "0c0e4f21c64a8e23feacb009559cdf33c4418856ab2c8bb0bc4a2e0ef9e4527f"
     },
     {
       "bytes": 15914,
@@ -28,7 +28,7 @@
     }
   ],
   "generator": "tools/docs-tools/src/cli.js",
-  "input_digest": "64b1d25bfc59893a726dd6237cdc6766c2afd5a72c9d2850eb2101b509a9f48e",
+  "input_digest": "e08f6554a9b716ac5b453a99223b11a0b4ddfbd369ee10e43643499b7b255737",
   "release": "0.23.0-migration.24",
   "schema_version": "rus.generated_manifest.v1"
 }

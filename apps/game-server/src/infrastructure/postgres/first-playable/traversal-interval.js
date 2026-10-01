@@ -2,8 +2,8 @@ import { hash, json } from '../../../runtime/first-playable/shared.js';
 
 export async function persistLocalTraversalInterval(tx, context) {
   const {
-    state, traversal, partyId, intervalId, executionId, changeSet,
-    turnNumber, idemId
+    state, traversal, partyId, intervalId, executionId, travelStateId,
+    changeSet, turnNumber, idemId
   } = context;
   const actualProgress = traversal.success ? 1_000_000 : 0;
   const actualElapsed = traversal.elapsed_minutes;
@@ -35,9 +35,9 @@ export async function persistLocalTraversalInterval(tx, context) {
       clock_commit_mode,dynamic_snapshot,result_kind,result_code,
       hazard_resolution,outcome_composition_policy_version,
       outcome_composition_trace_digest,result_change_set_id,
-      idempotency_record_id,occurred_at_turn)
+      idempotency_record_id,occurred_at_turn,travel_state_id)
      VALUES ($1,$2,0,0,0,1000000,$3,0,1,$4,1,0,1,$4,1,$4,
-      'direct_party_clock',$5::jsonb,$6,$7,$8::jsonb,$9,$10,$11,$12,$13)`,
+      'direct_party_clock',$5::jsonb,$6,$7,$8::jsonb,$9,$10,$11,$12,$13,$14)`,
     [
       intervalId,
       executionId,
@@ -52,7 +52,8 @@ export async function persistLocalTraversalInterval(tx, context) {
       traceDigest,
       changeSet,
       idemId,
-      turnNumber
+      turnNumber,
+      travelStateId
     ]
   );
   if (traversal.roll) {

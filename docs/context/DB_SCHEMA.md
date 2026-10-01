@@ -15,7 +15,7 @@
 | Схема | Назначение | Где лежит DDL | Кто пишет |
 |---|---|---|---|
 | `world_base` | утверждённые справочные данные мира, read-only для runtime | [schema.sql](../../infra/world-base/schema.sql) + части `infra/world-base/schema/01.sql`–`26.sql` | только утверждённый импорт (`world-db:import:*`), не runtime |
-| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–037; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
+| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–038; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
 | `operator_control` | append-only журнал событий operator cutover | [001_lower_dvina_v3_cutover_events.sql](../../infra/operator-control/001_lower_dvina_v3_cutover_events.sql) | только operator tooling |
 
 Подключение: `RUS_WORLD_DATABASE_URL` (или `DATABASE_URL`) и `RUS_PARTY_DATABASE_URL` (или `PARTY_DATABASE_URL`),
@@ -73,17 +73,17 @@ Generated-файл (`npm run world-db:schema-doc`, проверка — `world-d
 ## 3. `party_runtime`
 
 - **Файлы:** `schemas/party-db/` — от [001_party_runtime.sql](../../schemas/party-db/001_party_runtime.sql)
-  до `037_party_runtime_m2c_presence_routines.sql` (**37** SQL-файлов на диске).
+  до `038_party_runtime_local_lines.sql` (**38** SQL-файлов на диске).
 - **Порядок и состав цепочки** задаёт массив `files` в
   [spatial-v3-target-migrations.js](../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js).
-  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 37`; хвост `033`–`037`:
-  `033_party_runtime_initial_semantic_decision.sql`,
+  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 38`; хвост `034`–`038`:
   `034_party_runtime_actor_base_attributes.sql`,
   `035_party_runtime_nonportal_availability.sql`,
   `036_party_runtime_visibility_modifiers.sql`,
-  `037_party_runtime_m2c_presence_routines.sql`.
+  `037_party_runtime_m2c_presence_routines.sql`,
+  `038_party_runtime_local_lines.sql`.
   Digest цепочки — `SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST`.
-- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–037», **133** таблицы
+- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–038», **133** таблицы
   (generated header на HEAD).
 - **Когда применяется.** При каждом старте production composition
   ([production-spatial-v3.js](../../apps/game-server/src/composition/production-spatial-v3.js)). Если в

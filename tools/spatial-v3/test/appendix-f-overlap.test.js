@@ -32,17 +32,23 @@ const interval = { name: 'party_traversal_interval_result', stems: ['  - Existin
 
 test('the repository keeps the temporal A.6 interval fields and invariants in Appendix F', () => {
   assert.deepEqual(preparationSnapshotMemberOverlapErrors(
-    temporal, standard, interval.name, interval.stems, true
+    temporal, standard, interval.name, interval.stems, ['travel_state_id', 'interval_ordinal']
   ), []);
 });
 
 test('the repository allows Spatial F.1.1 to override interval identity while A.6 stays frozen', () => {
   assert.deepEqual(preparationSnapshotMemberOverlapErrors(
-    temporal, standard, interval.name, interval.stems, true
+    temporal, standard, interval.name, interval.stems, ['travel_state_id', 'interval_ordinal']
   ), []);
   assert.ok(preparationSnapshotMemberOverlapErrors(
     temporal, standard, interval.name, interval.stems
   ).some((error) => error.includes('identity differs')));
+  const split = standard.indexOf('# Приложение F.');
+  const wrongIdentity = standard.slice(0, split) + standard.slice(split)
+    .replace('  - travel_state_id\n  - interval_ordinal', '  - route_plan_execution_id\n  - plan_step_ordinal\n  - interval_ordinal');
+  assert.ok(preparationSnapshotMemberOverlapErrors(
+    temporal, wrongIdentity, interval.name, interval.stems, ['travel_state_id', 'interval_ordinal']
+  ).some((error) => error.includes('identity override must be exactly')));
 });
 
 test('a field of the temporal interval result dropped from Appendix F, or a lost enum value, is reported', () => {

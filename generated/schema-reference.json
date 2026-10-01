@@ -1110,9 +1110,9 @@
       "type": "sql"
     },
     {
-      "bytes": 12505,
+      "bytes": 12632,
       "path": "schemas/party-db/038_party_runtime_local_lines.sql",
-      "sha256": "2eb88ba9ea5fd2a74786399c50b779dca4a40556e5f49e417e52b66c5503487f",
+      "sha256": "3cae28e5c1d1fc49f3dc34b45ae3cafa64571c8fe8ca7a1dcf2a9e59984e17c1",
       "type": "sql"
     },
     {

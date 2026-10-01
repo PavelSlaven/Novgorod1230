@@ -143,6 +143,8 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
   const plan = committed.plan;
   assert.equal(plan.operation_kind, 'trace_phase_6_carry');
   assert.equal(rows(plan, 'party_traversal_interval_results').length, 1);
+  assert.equal(rows(plan, 'party_traversal_interval_results')[0].record
+    .travel_state_id, rows(plan, 'traveller_travel_states')[0].record.id);
   assert.equal(rows(plan, 'party_timed_activity_attempts').length, 1);
   assert.equal(rows(plan, 'party_body_temporal_history').length, 1);
   assert.equal(rows(plan, 'party_actor_active_conditions').length, 1);
@@ -215,6 +217,9 @@ test('Phase 6 P16 preserves an interrupted owner traversal and resumes the same 
   assert.equal(rows(partial.plan,
     'party_traversal_interval_results')[0].record.result_kind,
   'paused_in_transit');
+  assert.equal(rows(partial.plan,
+    'party_traversal_interval_results')[0].record.travel_state_id,
+  rows(partial.plan, 'traveller_travel_states')[0].record.id);
   const restarted = structuredClone(rows(partial.plan,
     'party_state_snapshots')[0].record.state_payload);
   restarted.temporal_boundary_candidates = [];

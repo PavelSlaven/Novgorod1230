@@ -7,6 +7,7 @@ const g4 = { id: 'g4', version: 1, world_revision_id: 'target', canonical_digest
 const canonical_g5 = { id: 'g5a', version: 1 };
 // One joined row: the binding version, its profile, and the authoring digests of both.
 const row = (id, version, profileVersion, overrides = {}) => ({ binding_id: id, binding_version: version,
+  binding_digest: digest, binding_authoring_digest: digest,
   parent_g4_id: 'g4', parent_g4_version: 1, from_canonical_g5_id: 'g5a', from_canonical_g5_version: 1,
   to_canonical_g5_id: `to_${id}`, to_canonical_g5_version: 1, connection_profile_id: 'prof',
   connection_profile_version: profileVersion, from_scene_endpoint_slot_key: 'departure',
@@ -14,11 +15,12 @@ const row = (id, version, profileVersion, overrides = {}) => ({ binding_id: id, 
   profile_scope: 'site_connection', passage_type_id: 'passage.local', profile_status: 'approved',
   availability_condition_set_ref: profileVersion === 1 ? 'availability.local_state_conditional@1' : null,
   profile_digest: digest, profile_authoring_digest: digest, ...overrides });
-const readerWith = (rows) => {
+const readerWith = (rows, lineDetails = rows, lineAlternatives = []) => {
   const calls = [];
   const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
     calls.push({ sql, params });
-    return { rows };
+    return { rows: sql.includes('spatial_v3_line_kind_alternative_methods') ? lineAlternatives
+      : sql.includes('FROM unnest($1::text[],$2::int[])') ? lineDetails : rows };
   } });
   return { reader, calls };
 };
@@ -35,6 +37,71 @@ test('the highest approved version wins per binding id, whatever the row order',
   assert.deepEqual(calls[0].params, ['g4', 1, 'target', 'g5a', 1]);
   assert.match(calls[0].sql, /spatial_v3_canonical_g5_connection_bindings/u);
   assert.equal(Object.isFrozen(result.value), true);
+});
+
+test('binding@3 line rows are read from line profile and binding metadata', async () => {
+  const lineDetail = { line_kind_profile_id: 'lkp__path', line_kind_profile_version: 1,
+    line_kind_id: 'line.path', baseline_movement_method_id: 'movement_method.walk',
+    movement_method_cost_profile_id: 'cost.line_path', movement_method_cost_profile_version: 1,
+    dynamic_recheck_policy_id: 'recheck.land_30m', dynamic_recheck_policy_version: 1,
+    transition_environment_profile_id: 'env.land_path', transition_environment_profile_version: 1,
+    line_kind_authoring_digest: digest, movement_cost_profile_digest: digest,
+    movement_cost_authoring_digest: digest, movement_method_id: 'movement_method.walk',
+    cost_mode: 'baseline', factor_numerator: null, factor_denominator: null,
+    policy_kind: 'fixed_time_interval', interval_minutes: 30, policy_digest: digest,
+    policy_authoring_digest: digest, environment_class_id: 'environment.land',
+    dynamic_environment_rule_set_id: null, dynamic_environment_rule_set_version: null,
+    environment_digest: digest, environment_authoring_digest: digest };
+  const { reader, calls } = readerWith([row('line-1', 3, 1, {
+    connection_profile_id: null, connection_profile_version: null,
+    line_kind_profile_id: 'lkp__path', line_kind_profile_version: 1,
+    line_name: 'лесной тропой', line_discriminator: 'у старого дуба', line_direction_id: null,
+    binding_base_minutes: 32, binding_capacity: null, binding_capacity_semantics_ref: 'capacity.local@1',
+    binding_risk_profile_ref: 'risk.land_path@1', binding_availability_condition_set_ref: null,
+    availability_condition_set_ref: null,
+    profile_id: 'lkp__path', profile_version: 1, profile_digest: digest,
+    profile_authoring_digest: digest, profile_status: 'approved', profile_scope: 'site_connection',
+    cost_kind: 'time', action_units: null, base_minutes: 32,
+    baseline_movement_method_id: 'movement_method.walk', dynamic_recheck_policy_id: 'recheck.land_30m',
+    dynamic_recheck_policy_version: 1, transition_environment_profile_id: 'env.forest_path',
+    transition_environment_profile_version: 1, movement_method_cost_profile_id: 'cost.line_path',
+    movement_method_cost_profile_version: 1, line_kind_id: 'line.path',
+    topological_orientation_profile_id: 'orientation.land', topological_orientation_profile_version: 1,
+    route_kind_id: 'route.local'
+  })], [lineDetail, { ...lineDetail, movement_method_id: 'movement_method.swim',
+    cost_mode: 'rational_factor', factor_numerator: 4, factor_denominator: 1 }],
+  [{ profile_id: 'lkp__path', profile_version: 1, movement_method_id: 'movement_method.swim',
+    risk_class: 'high', hazard_rule_ref: 'hazard.swim_river_channel@1' }]);
+  const result = await reader.readApprovedCanonicalG5Connections({ g4, canonical_g5 });
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.equal(result.gaps.length, 0);
+  assert.deepEqual({ ...result.value[0].binding }, { ...result.value[0].binding,
+    line_kind_profile_id: 'lkp__path', line_kind_profile_version: 1,
+    line_name: 'лесной тропой', line_discriminator: 'у старого дуба', base_minutes: 32 });
+  assert.deepEqual({ ...result.value[0].profile }, { ...result.value[0].profile,
+    cost_kind: 'time', action_units: null, base_minutes: 32,
+    line_kind_id: 'line.path', route_kind_id: 'route.local' });
+  assert.match(calls[0].sql, /b\.line_kind_profile_id/u);
+  assert.match(calls[0].sql, /spatial_v3_line_kind_profiles/u);
+  assert.equal(calls[1].params[0][0], 'lkp__path');
+  assert.deepEqual(result.value[0].line_binding.movement_method_options.find(({ cost_mode }) => cost_mode === 'baseline').factor,
+    { numerator: '1', denominator: '1' });
+  assert.deepEqual(result.value[0].line_binding.movement_method_options.find(({ cost_mode }) => cost_mode === 'rational_factor').factor,
+    { numerator: '4', denominator: '1' });
+  assert.equal(result.value[0].line_binding.dynamic_recheck_policy.interval_minutes, 30);
+  assert.equal(result.value[0].line_binding.canonical_digest, digest);
+  assert.deepEqual(result.value[0].line_binding.alternative_methods, [{ movement_method_id: 'movement_method.swim',
+    risk_class: 'high', hazard_rule_ref: 'hazard.swim_river_channel@1' }]);
+  assert.match(calls[2].sql, /spatial_v3_line_kind_alternative_methods/u);
+  assert.deepEqual(calls[2].params, [['lkp__path'], [1]]);
+});
+
+test('an approved higher binding with digest drift gaps instead of falling back to @2', async () => {
+  const { reader } = readerWith([row('b1', 3, 2, { binding_digest: 'b'.repeat(64) }), row('b1', 2, 2)]);
+  const result = await reader.readApprovedCanonicalG5Connections({ g4, canonical_g5 });
+  assert.deepEqual(result.value, []);
+  assert.deepEqual(result.gaps, [{ binding_id: 'b1', binding_version: 3,
+    reason: 'canonical_connection_profile_unusable' }]);
 });
 
 test('the highest approved version is the only candidate: unusable is a typed gap for that binding alone', async () => {

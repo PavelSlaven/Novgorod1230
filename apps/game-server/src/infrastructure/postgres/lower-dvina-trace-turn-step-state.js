@@ -252,14 +252,20 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
       }));
   }
   const transition = envelope.consequence?.position_transition;
-  if (['@rus/movement-routes', SITE_TRAVERSAL_OWNER].includes(transition?.owner)) writes.updates.push(row(
-    'party_journey_locations', state.journey_location.id, {
+  if (['@rus/movement-routes', SITE_TRAVERSAL_OWNER].includes(transition?.owner)) {
+    const siteJourney = transition.owner === SITE_TRAVERSAL_OWNER
+      ? snapshot.journey_location : null;
+    writes.updates.push(row('party_journey_locations', state.journey_location.id, {
       id: state.journey_location.id, party_id: partyId, owner_kind: 'actor',
-      owner_id: state.actor_id, location_kind: 'scene',
-      scene_position_id: snapshot.position.position_id, transit_anchor_id: null,
-      travel_state_id: null, updated_change_set_id: changeSetId
-    }
-  ));
+      owner_id: state.actor_id,
+      location_kind: siteJourney?.location_kind ?? 'scene',
+      scene_position_id: siteJourney == null
+        ? snapshot.position.position_id : siteJourney.scene_position_id,
+      transit_anchor_id: siteJourney?.transit_anchor_id ?? null,
+      travel_state_id: siteJourney?.travel_state_id ?? null,
+      updated_change_set_id: changeSetId
+    }));
+  }
   return writes;
 }
 

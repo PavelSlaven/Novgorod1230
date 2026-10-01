@@ -5,10 +5,10 @@ import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } f
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
-import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
+import { spatialV3LocalEdgeLabel } from '../../runtime/spatial-v3-local-edge-label.js';
 import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
-import { loadApprovedConnectionLabels } from '../../../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/approved-labels.mjs';
+import { spatialV3LineLabel } from '../../runtime/spatial-v3-line-label.js';
 
 const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
 const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
@@ -18,9 +18,9 @@ const labelApproval = JSON.parse(readFileSync(approvalPath));
 const approvedLabels = labelApproval.decision === 'APPROVE_DATA_ONLY'
   && labelApproval.candidate_ref === `${labelCatalog.candidate_id}@${labelCatalog.version}`
   && labelApproval.candidate_sha256 === createHash('sha256').update(labelBytes).digest('hex');
-const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
+const text = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
 
 /** Caller supplies current target conditions, committed exterior, and knowledge owners.
  * All reads use one repeatable-read snapshot. No label grants visibility or movement.
@@ -31,7 +31,6 @@ const visibility = new Set(['clear', 'partial', 'none']);
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
-  readConnectionLabels = loadApprovedConnectionLabels,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
@@ -123,12 +122,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           ? 'open' : 'occupied']));
       return edges.flatMap((edge) => {
         if (!visible.has(edge.id)) return [];
-        const labels = localLabels.filter((row) =>
-          row.scene_template_ref.id === (edge.source_scene_template_ref?.entity_id
-            ?? edge.source_scene_template_ref?.entity_ref?.entity_id)
-          && row.scene_template_ref.version === Number(edge.source_scene_template_ref?.authoring_version)
-          && row.edge_slot_key === edge.source_edge_slot_key);
-        if (labels.length !== 1) gap('approved_local_edge_label_required');
+        const displayLabel = spatialV3LocalEdgeLabel(current.scene.positions,
+          edge.from_position_id, edge.to_position_id);
+        if (displayLabel == null) gap('approved_local_edge_label_required');
         // The admission owner answers only for the actor's committed position; an edge it
         // has no row for (destination projection before commit, or an edge it does not
         // admit) is disclosed without a status - never guessed and never a data gap.
@@ -136,26 +132,25 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         if (destinationStatus !== undefined && !['open', 'occupied'].includes(destinationStatus)) {
           gap('current_local_edge_admission_required');
         }
-        return [{ edge_id: edge.id, display_label: labels[0].display_label,
+        return [{ edge_id: edge.id, display_label: displayLabel,
           ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
     }, transaction, observedPositionId);
   }
-  let connectionLabels = null;
-  const labelsOfConnections = () => {
-    try { return connectionLabels ??= readConnectionLabels(); } catch { gap('approved_connection_label_required'); }
-  };
   async function discloseConnections(current, connections) {
     const here = current.scene.location.scene_position_id;
     const admitted = await admit(current, connections.map(({ binding }) => ({
       target_id: binding.id, position_id: here, entity_kind: 'site_connection' })));
     const revealed = new Set(admitted.map((row) => row.target_id));
-    return connections.flatMap(({ binding }) => {
+    return connections.flatMap((connection) => {
+      const { binding } = connection;
       if (!revealed.has(binding.id)) return [];
-      const label = labelsOfConnections().get(binding.id);
-      if (label == null) gap('approved_connection_label_required');
+      const display_label = spatialV3LineLabel(binding.line_name, binding.line_discriminator);
+      if (!display_label) {
+        gap('approved_connection_label_required');
+      }
       return [{ connection_binding_id: binding.id, knowledge_state: 'visible',
-        display_label: label.display_label, editorial_choice_ordinal: label.editorial_choice_ordinal }];
+        display_label }];
     });
   }
   const provider = Object.freeze({

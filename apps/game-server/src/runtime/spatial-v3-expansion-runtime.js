@@ -1,6 +1,7 @@
 import { selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { serverError } from '../errors.js';
 import { slotByExitOf } from './spatial-v3-pass-target-disclosure.js';
+import { spatialV3LineLabel } from './spatial-v3-line-label.js';
 
 const pin = (row) => ({ id: row.id, version: row.version });
 const sameRef = (ref, row) => ref?.entity_id === row?.id
@@ -118,16 +119,20 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       const matches = disclosed.filter((row) => row.connection_binding_id === option.binding.id);
       if (!matches.length) return [];
       const disclosure = one(matches, 'ambiguous_connection_disclosure');
-      if (!['visible', 'known'].includes(disclosure.knowledge_state)
-        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) gap('approved_connection_disclosure_required');
-      return [{ ...option, display_label: disclosure.display_label }];
+      if (!['visible', 'known'].includes(disclosure.knowledge_state)) gap('approved_connection_disclosure_required');
+      const display_label = spatialV3LineLabel(option.binding.line_name, option.binding.line_discriminator);
+      if (!display_label) gap('approved_connection_line_label_required');
+      return [{ ...option, display_label }];
     });
   }
-  async function selectedConnection({ partyId, actorId, connectionBindingId }) {
+  async function selectedConnection({ partyId, actorId, connectionBindingId,
+    ordered_local_edge_path = [] }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
     const context = await readContext({ partyId, actorId });
-    const visible = await revealedConnections(context, eligibleCanonicalConnections(context));
-    return { context, selected: one(visible.filter((row) => row.binding.id === connectionBindingId),
+    const approach = resolveLocalApproachPath(context, ordered_local_edge_path);
+    const selectionContext = approach == null ? context : { ...context, position: approach.position };
+    const visible = await revealedConnections(context, eligibleCanonicalConnections(selectionContext));
+    return { context, approach, selected: one(visible.filter((row) => row.binding.id === connectionBindingId),
       'selected_connection_unavailable') };
   }
   return Object.freeze({
@@ -147,27 +152,35 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       if (reachable == null || reachable.path.length === 0) return [];
       const eligible = eligibleCanonicalConnections({ ...context, position: reachable.position });
       return (await revealedConnections(context, eligible)).map(({ binding, display_label }) => ({
-        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable.path[0], display_label }));
+        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable.path[0],
+        ordered_local_edge_path: describeLocalEdgePath(context, reachable.path), display_label }));
     },
     async prepareConnection(input) {
-      const { context, selected } = await selectedConnection(input);
+      const { context, approach, selected } = await selectedConnection(input);
       if (selected.connection) return Object.freeze({ ok: true, replay: true,
         topology_status: 'committed', connection_id: selected.connection.id,
-        source_position_id: context.position.id, moves_traveller: false, advances_time: false });
+        source_position_id: approach?.position.id ?? context.position.id,
+        moves_traveller: false, advances_time: false });
       if (typeof generatedExpansionAdapter?.prepareCanonicalConnection !== 'function') gap('p16_expansion_owner_required');
       return generatedExpansionAdapter.prepareCanonicalConnection({ party_id: input.partyId,
         actor_id: input.actorId, g4: context.g4, profile: context.profile, binding_id: selected.binding.id,
-        source_site_id: context.site.id, source_position_id: context.position.id,
+        source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
         materializer_version: materializerVersion });
     },
     async prepareConnectionTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
-      const { context, selected } = await selectedConnection(input);
+      const { context, approach, selected } = await selectedConnection(input);
+      const sourcePositionId = approach?.position.id ?? context.position.id;
       if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
-        || context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
+        || sourcePositionId !== input.expansion.source_position_id) gap('committed_site_connection_required');
       // The binding names its own profile; the expansion profile pins only one of them.
       return prepareSiteTraversal({ ...input, connection: selected.connection,
-        context: { ...context, closure: { ...context.closure, connection_profiles: [selected.profile] } } });
+        ...(approach ? { ordered_local_edge_path: input.local_edge_path_proofs
+          ?? approach.edges } : {}),
+        context: { ...context,
+          ...(approach ? { approach_departure_position: approach.position } : {}),
+          snapshot: { ...context.snapshot, line_bindings: [selected.line_binding] },
+          closure: { ...context.closure, connection_profiles: [selected.profile] } } });
     },
     async listExpansionOptions(input) {
       const { options } = await selectedContext({ partyId: input.partyId, actorId: input.actorId });
@@ -269,6 +282,42 @@ export function eligibleCanonicalConnections(context) {
     if (!here.includes(binding.from_scene_endpoint_slot_key)) return [];
     const committed = snapshot.site_connections.find((row) => row.id === canonicalConnectionId(partyId, binding.id));
     return committed && committed.status !== 'active' ? [] : [{ binding, profile, connection: committed }];
+  });
+}
+
+function resolveLocalApproachPath(context, edgePath) {
+  if (edgePath == null || !Array.isArray(edgePath)) gap('local_approach_path_invalid');
+  if (edgePath.length === 0) return null;
+  let positionId = context.position?.id;
+  const edges = [];
+  for (const item of edgePath) {
+    const edgeId = typeof item === 'string' ? item : item?.edge_id;
+    const edge = (context.scene?.movement_edges ?? []).filter((row) => row.id === edgeId
+      && row.status === 'active' && row.from_position_id === positionId);
+    if (edge.length !== 1) gap('local_approach_path_stale');
+    const selected = edge[0];
+    if (typeof item === 'object' && item != null
+      && (item.from_position_id !== selected.from_position_id
+        || item.to_position_id !== selected.to_position_id)) gap('local_approach_path_stale');
+    const position = context.scene?.positions?.find((row) => row.id === selected.to_position_id);
+    if (!position) gap('local_approach_path_stale');
+    edges.push({ edge_id: selected.id, from_position_id: selected.from_position_id,
+      to_position_id: selected.to_position_id });
+    positionId = selected.to_position_id;
+  }
+  const position = context.scene?.positions?.find((row) => row.id === positionId);
+  if (!position || !atDepartureSlot(context.scene, position)) gap('local_approach_path_not_at_departure');
+  return { position, edges };
+}
+
+function describeLocalEdgePath(context, path) {
+  let positionId = context.position.id;
+  return path.map((edgeId) => {
+    const edge = one((context.scene?.movement_edges ?? []).filter((row) => row.id === edgeId
+      && row.status === 'active' && row.from_position_id === positionId), 'local_approach_path_stale');
+    positionId = edge.to_position_id;
+    return { edge_id: edge.id, from_position_id: edge.from_position_id,
+      to_position_id: edge.to_position_id };
   });
 }
 

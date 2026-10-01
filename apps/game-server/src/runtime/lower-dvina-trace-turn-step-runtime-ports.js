@@ -209,11 +209,22 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
   if (typeof temporalAdvance !== 'function') {
     throw new TypeError('temporalAdvance is required for prepared effects.');
   }
+  const lineElapsed = input.consequence?.spatial_v3_traversal?.clock_update?.actual_elapsed;
   const duration = Number(input.consequence?.duration_minutes);
-  if (!Number.isSafeInteger(duration) || duration < 0) {
+  const lineDecimal = /^\d+$/u.test(String(lineElapsed?.numerator))
+    && /^\d+$/u.test(String(lineElapsed?.denominator));
+  const lineNumerator = lineDecimal ? BigInt(lineElapsed.numerator) : 0n;
+  const lineDenominator = lineDecimal ? BigInt(lineElapsed.denominator) : 1n;
+  const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
+  const validLineElapsed = lineDecimal && lineNumerator > 0n
+    && lineDenominator > 0n && gcd(lineNumerator, lineDenominator) === 1n;
+  if (lineElapsed != null ? !validLineElapsed
+    : !Number.isSafeInteger(duration) || duration < 0) {
     throw new TypeError('Prepared effect duration must be integral.');
   }
-  const exactElapsed = { exact_minutes: { numerator: String(duration), denominator: '1' } };
+  const exactElapsed = { exact_minutes: lineElapsed == null
+    ? { numerator: String(duration), denominator: '1' }
+    : { numerator: String(lineNumerator), denominator: String(lineDenominator) } };
   const result = await temporalAdvance({
     clock_before: structuredClone(
       input.prepared_chain_context.current_clock),

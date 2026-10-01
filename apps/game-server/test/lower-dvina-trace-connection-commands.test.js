@@ -6,15 +6,17 @@ import { packageBase } from '../src/runtime/lower-dvina-trace-phase-3-command-sh
 
 const state = { party_id: 'party:walk', actor_id: 'actor:walker', party_state: { state_version: 4 },
   position: { g5_anchor_id: 'site:yard', location_ref: 'yard' } };
-const localOption = (edge_id, destination_status = 'open') => ({ edge_id, display_label: 'Проход 1',
+const localOption = (edge_id, destination_status = 'open') => ({ edge_id, display_label: 'Дальше',
   action_units: 1, destination_status });
 const localScene = (extra = {}) => ({ listLocalOptions: async () => [localOption('edge:1')],
   prepareLocalMovement: async () => packageBase({ inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' }), ...extra });
 const commands = (runtime, scene = localScene()) => createTraceExpansionCommands({ state, requestId: 'r',
   inputDigest: 'd', spatialExpansionRuntime: { listExpansionOptions: async () => [],
     listApproachOptions: async () => [], ...runtime }, spatialLocalSceneRuntime: scene });
-const crossing = { kind: 'connection', connection_binding_id: 'binding:water', display_label: 'Проход 3' };
-const approach = { kind: 'approach', connection_binding_id: 'binding:water', edge_id: 'edge:1', display_label: 'Проход 3' };
+const crossing = { kind: 'connection', connection_binding_id: 'binding:water', display_label: 'бродом' };
+const approach = { kind: 'approach', connection_binding_id: 'binding:water', edge_id: 'edge:1',
+  ordered_local_edge_path: [{ edge_id: 'edge:1', from_position_id: 'p0', to_position_id: 'p1' }],
+  display_label: 'бродом' };
 
 test('a runtime without connections yields exactly the exit commands as before', async () => {
   assert.deepEqual(await commands({}), []);
@@ -25,9 +27,9 @@ test('a canonical connection is one exact route operation named by its approved 
     assert.deepEqual(input, { partyId: state.party_id, actorId: state.actor_id });
     return [crossing]; } });
   assert.equal(command.command_id, 'live_world.follow_canonical_connection:binding:water');
-  assert.equal(command.label, 'Проход 3');
+  assert.equal(command.label, 'бродом');
   assert.deepEqual(command.semantic_binding.operation_dto, { op: 'request_movement', actor_ref: state.actor_id,
-    target_ref: 'binding:water', movement_kind: 'route', route_ref: 'binding:water', description: 'Проход 3' });
+    target_ref: 'binding:water', movement_kind: 'route', route_ref: 'binding:water', description: 'бродом' });
   assert.equal(command.semantic_binding.matches({ operation: { ...command.semantic_binding.operation_dto,
     description: 'echoed differently' } }), true);
   assert.equal(command.semantic_binding.matches({ operation: { ...command.semantic_binding.operation_dto,
@@ -54,27 +56,43 @@ test('the connection commits its topology first, then travels, and a refused tra
     playerInput: {} }), { code: 'LIVE_WORLD_EXPANSION_SOURCE_STALE' });
 });
 
-test('the approach to a connection is the first local hop, worded by the label and one neutral phrase', async () => {
-  let asked = null; let prepared = null;
-  const [command] = await commands({ listConnectionApproachOptions: async (input) => { asked = input; return [approach]; } },
-    localScene({ async prepareLocalMovement(input) { prepared = input; return 'consequence'; } }));
-  assert.deepEqual(asked.firstStepEdgeIds, ['edge:1']);
-  assert.equal(command.command_id, 'live_world.approach_canonical_connection:binding:water');
-  assert.equal(command.label, 'Проход 3 — подход');
+test('an off-departure line remains one route request and carries hidden ordered approach path', async () => {
+  const path = [{ edge_id: 'edge:1', from_position_id: 'p0', to_position_id: 'p1' },
+    { edge_id: 'edge:2', from_position_id: 'p1', to_position_id: 'p2' }];
+  const calls = [];
+  const scene = localScene({ prepareLocalLineApproach: async (_input) => ['verified-path'] });
+  const [command] = await commands({ listConnectionOptions: async () => [],
+    listConnectionApproachOptions: async (input) => {
+      assert.deepEqual(input.firstStepEdgeIds, ['edge:1']);
+      return [{ ...approach, ordered_local_edge_path: path }];
+    },
+    async prepareConnection(input) { calls.push(['prepare', input]); return { ok: true,
+      connection_id: 'connection:water', source_position_id: 'p2' }; },
+    async prepareConnectionTraversal(input) { calls.push(['traverse', input]);
+      return packageBase({ inputDigest: 'a'.repeat(64), duration: 1, kind: 'movement' }); }
+  }, scene);
+  assert.equal(command.command_id, 'live_world.follow_canonical_connection:binding:water');
+  assert.equal(command.label, 'бродом');
   const operation = command.semantic_binding.operation_dto;
-  assert.deepEqual([operation.movement_kind, operation.target_ref, operation.route_ref], ['local', 'edge:1', 'binding:water']);
-  assert.equal(await command.consequence({ retrievedState: state, playerInput: 'p' }), 'consequence');
-  assert.equal(prepared.edgeId, 'edge:1');
+  assert.deepEqual([operation.movement_kind, operation.target_ref, operation.route_ref],
+    ['route', 'binding:water', 'binding:water']);
+  const result = await command.consequence({ retrievedState: state, playerInput: 'p' });
+  assert.equal(result.duration_minutes, 1);
+  assert.deepEqual(calls.map(([name]) => name), ['prepare', 'traverse']);
+  assert.deepEqual(calls[0][1].ordered_local_edge_path, path);
+  assert.deepEqual(calls[1][1].ordered_local_edge_path, path);
+  assert.deepEqual(calls[1][1].local_edge_path_proofs, ['verified-path']);
+  assert.equal(calls[1][1].expansion.connection_id, 'connection:water');
 });
 
-test('approach, crossing, exit and the plain local edge never claim one another\'s operation', async () => {
+test('line, exit and plain local edge never claim one another\'s operation', async () => {
   const scene = localScene();
   const list = [...await commands({ listConnectionApproachOptions: async () => [approach],
-    listConnectionOptions: async () => [crossing],
+    listConnectionOptions: async () => [],
     listExpansionOptions: async () => [{ directional_exit_id: 'exit:x', display_label: 'к руслу' }],
     listApproachOptions: async () => [{ directional_exit_id: 'exit:x', edge_id: 'edge:1', display_label: 'к руслу' }] }, scene),
   ...await createTraceLocalSceneCommands({ state, inputDigest: 'd', spatialLocalSceneRuntime: scene })];
-  assert.equal(list.length, 5);
+  assert.equal(list.length, 4);
   const bindings = list.map((command) => command.semantic_binding);
   for (const own of bindings) {
     const claiming = bindings.filter((binding) => binding.matches({ operation: own.operation_dto }));

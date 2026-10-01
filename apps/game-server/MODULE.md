@@ -64,9 +64,10 @@ only one of them).
 `eligibleCanonicalConnections` offers them at the departure position the binding
 names; away from it the first local hop toward that position is the approach
 (same rule as exits: only an edge the local-scene owner offers). Disclosure is the
-exit visibility rule (no sight, no passage) with the label from the attested
-`m2c-canonical-connection-labels` catalog by binding id; a revealed connection
-without an approved label is a typed data gap. `prepareCanonicalConnection` of the
+exit visibility rule (no sight, no passage) with `line_name` and optional
+`line_discriminator` from the `world_base` binding; both runtime projections use
+the shared line-label formatter. A revealed connection without a valid label is a
+typed data gap. `prepareCanonicalConnection` of the
 generated expansion adapter shares the terminal preparation and the plan tail
 with frontier resolution (first entry of a created place goes through the same
 `prepareFirstEntry`, i.e. the R-2a presence resolver) and commits

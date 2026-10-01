@@ -130,17 +130,50 @@ const versionedString = (value) => {
 
 /** The site connection and its two endpoint bindings, one shape for every kind of connection.
  * Null when the profile carries a risk or condition reference that is not id@version. */
-function connectionRows({ party_id, change_set_id, connectionId, mechanics, from, to }) {
+function connectionRows({ party_id, change_set_id, connectionId, mechanics, binding, lineBinding, from, to }) {
   if ([mechanics.risk_profile_ref, mechanics.availability_condition_set_ref]
     .some((value) => value != null && versionedString(value) == null)) return null;
   const write = (target_table, id, record) => ({ target_table, id, record: { party_id, ...record } });
+  if (!binding) return null;
+  const lineKindProfileRef = mechanics.line_kind_profile_ref
+    ?? (binding.line_kind_profile_id == null ? null : ref(binding.line_kind_profile_id, binding.line_kind_profile_version));
+  const movementOrientationRef = mechanics.movement_orientation_profile_ref
+    ?? optionalRef(mechanics, 'movement_orientation_profile');
+  const movementCostRef = mechanics.movement_method_cost_profile_ref
+    ?? optionalRef(mechanics, 'movement_method_cost_profile');
+  const recheckRef = mechanics.dynamic_recheck_policy_ref
+    ?? optionalRef(mechanics, 'dynamic_recheck_policy');
+  const validRef = (value) => text(value?.entity_id) && text(String(value?.authoring_version ?? ''));
+  if (!lineBinding || lineBinding.site_connection_id !== binding.id
+    || String(lineBinding.authoring_version) !== String(binding.version)
+    || !text(lineBinding.canonical_digest) || lineBinding.canonical_digest !== binding.canonical_digest
+    || !text(binding.line_name) || lineBinding.line_name !== binding.line_name
+    || (lineBinding.line_discriminator ?? null) !== (binding.line_discriminator ?? null)
+    || Number(lineBinding.base_minutes) !== Number(binding.base_minutes)
+    || mechanics.cost_kind !== 'time' || mechanics.action_units != null
+    || !Number.isSafeInteger(Number(binding.base_minutes)) || Number(binding.base_minutes) < 1
+    || !text(mechanics.line_kind_id) || !lineKindProfileRef
+    || mechanics.line_kind_profile_ref?.entity_id !== binding.line_kind_profile_id
+    || String(mechanics.line_kind_profile_ref?.authoring_version) !== String(binding.line_kind_profile_version)
+    || lineBinding.line_kind_profile_ref !== `${binding.line_kind_profile_id}@${binding.line_kind_profile_version}`
+    || lineBinding.movement_method_id !== mechanics.baseline_movement_method_id
+    || !text(mechanics.baseline_movement_method_id)
+    || !validRef(lineKindProfileRef) || !validRef(movementOrientationRef)
+    || !validRef(movementCostRef) || !validRef(recheckRef)
+    || !validRef(mechanics.transition_environment_profile_ref
+      ?? optionalRef(mechanics, 'transition_environment_profile'))) return null;
   return [write('g5_site_connections', connectionId, { id: connectionId,
     from_site_id: from.site_id, to_site_id: to.site_id,
-    ...clean(mechanics, ['passage_type_id', 'cost_kind', 'action_units', 'baseline_movement_method_id', 'base_minutes', 'capacity']),
+    ...clean(mechanics, ['passage_type_id', 'baseline_movement_method_id', 'capacity']),
+    cost_kind: 'time', action_units: null, base_minutes: Number(binding.base_minutes),
+    line_kind_id: mechanics.line_kind_id, line_kind_profile_ref: lineKindProfileRef,
+    line_name: binding.line_name, line_discriminator: binding.line_discriminator ?? null,
+    line_direction_id: binding.line_direction_id ?? null, line_toponym: binding.line_toponym ?? null,
+    source_canonical_connection_ref: ref(binding.id, binding.version),
     transition_environment_profile_ref: optionalRef(mechanics, 'transition_environment_profile'),
-    movement_orientation_profile_ref: optionalRef(mechanics, 'movement_orientation_profile'),
-    movement_method_cost_profile_ref: optionalRef(mechanics, 'movement_method_cost_profile'),
-    dynamic_recheck_policy_ref: optionalRef(mechanics, 'dynamic_recheck_policy'),
+    movement_orientation_profile_ref: movementOrientationRef,
+    movement_method_cost_profile_ref: movementCostRef,
+    dynamic_recheck_policy_ref: recheckRef,
     risk_profile_ref: versionedString(mechanics.risk_profile_ref),
     availability_condition_set_ref: versionedString(mechanics.availability_condition_set_ref),
     status: 'active', state_version: 1, created_change_set_id: change_set_id,
@@ -155,7 +188,7 @@ function connectionRows({ party_id, change_set_id, connectionId, mechanics, from
  * Like the terminal of an expansion, the target place is either already committed or prepared
  * in `terminal_writes`; no frontier, chain, ledger or reservation is involved. */
 export function materializeSpatialV3CanonicalConnection({ party_id, change_set_id, snapshot, source,
-  binding, profile, terminal_target, terminal_writes = [], dependency_pins,
+  binding, profile, line_binding, terminal_target, terminal_writes = [], dependency_pins,
   materialization_trace_id } = {}) {
   const reject = (reason) => failure('authoring_dependency_pin_missing',
     { dependency_pins, world_revision_id: profile?.world_revision_id },
@@ -184,12 +217,14 @@ export function materializeSpatialV3CanonicalConnection({ party_id, change_set_i
     || target.parent_g4_id !== binding.parent_g4_id) return reject('prepared_canonical_terminal_endpoint_required');
   if (profile.status !== 'approved' || profile.profile_scope !== 'site_connection'
     || profile.id !== binding.connection_profile_id || profile.version !== binding.connection_profile_version
-    || profile.availability_condition_set_ref != null || profile.cost_kind !== 'action') {
+    || profile.availability_condition_set_ref != null || profile.cost_kind !== 'time'
+    || profile.action_units != null) {
     return reject('exact_connection_profile_required');
   }
   const connectionId = `canconn:${party_id}:${binding.id}`;
   if (snapshot.site_connections.some((row) => row.id === connectionId)) return reject('connection_already_committed');
   const connection = connectionRows({ party_id, change_set_id, connectionId, mechanics: profile,
+    binding, lineBinding: line_binding,
     from: { site_id: site.id, position_id: position.id, slot_key: source.departure_endpoint_slot_key },
     to: { site_id: target.id, position_id: terminal_target.position_id, slot_key: terminal_target.slot_key } });
   if (!connection) return reject('versioned_connection_condition_required');
@@ -302,7 +337,7 @@ export function materializeSpatialV3Expansion({ party_id, change_set_id, closure
   const connection = connectionRows({ party_id, change_set_id, connectionId, mechanics,
     from: { site_id: site.id, position_id: position.id, slot_key: source.departure_endpoint_slot_key },
     to: { site_id: targetSite, position_id: arrival.position_id, slot_key: arrival.slot_key } });
-  if (!connection) return reject('versioned_connection_condition_required');
+  if (!connection) return reject('approved_generated_entry_line_binding_required');
   rows.push(...connection);
   if (!terminal) {
     const template = selection.selected_template;

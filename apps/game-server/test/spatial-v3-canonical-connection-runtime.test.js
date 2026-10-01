@@ -5,7 +5,8 @@ import { createSpatialV3ExpansionRuntime, eligibleCanonicalConnections } from '.
 const binding = (id, to) => ({ id, version: 2, parent_g4_id: 'g4', parent_g4_version: 4,
   from_canonical_g5_id: 'g5a', from_canonical_g5_version: 1, to_canonical_g5_id: to, to_canonical_g5_version: 1,
   connection_profile_id: 'prof', connection_profile_version: 2, from_scene_endpoint_slot_key: 'out',
-  to_scene_endpoint_slot_key: 'in', status: 'approved' });
+  to_scene_endpoint_slot_key: 'in', line_name: 'бродом', line_discriminator: id === 'b-yard' ? 'у мельницы' : null,
+  status: 'approved' });
 const profile = { id: 'prof', version: 2, profile_scope: 'site_connection', status: 'approved',
   availability_condition_set_ref: null, cost_kind: 'action', action_units: 1 };
 
@@ -20,7 +21,7 @@ function context() {
     closure: { slots: [], directional_exits: [], connection_profiles: [] },
     canonical_connections: [{ binding: binding('b-water', 'g5w'), profile }, { binding: binding('b-yard', 'g5y'), profile }] };
 }
-const labels = { 'b-water': 'Проход 3', 'b-yard': 'Проход 4' };
+const labels = { 'b-water': 'игнорируется', 'b-yard': 'игнорируется' };
 const disclose = async ({ connections }) => connections.map(({ binding: { id } }) => ({
   connection_binding_id: id, knowledge_state: 'visible', display_label: labels[id] }));
 const identity = { partyId: 'party', actorId: 'actor' };
@@ -38,29 +39,65 @@ test('a place offers its connections only at the departure position named by the
   assert.deepEqual(eligibleCanonicalConnections(moved), []);
 });
 
-test('listConnectionOptions keeps the connections the disclosure owner reveals, with its approved label', async () => {
+test('line options use the world-base line label after disclosure admits the connection', async () => {
   const current = context();
   const runtime = runtimeFor(current, { readConnectionDisclosure: async ({ connections }) => disclose({
     connections: connections.filter(({ binding: { id } }) => id === 'b-yard') }) });
   assert.deepEqual(await runtime.listConnectionOptions(identity),
-    [{ kind: 'connection', connection_binding_id: 'b-yard', display_label: 'Проход 4' }]);
-  const blank = runtimeFor(current, { readConnectionDisclosure: async () => [{
-    connection_binding_id: 'b-yard', knowledge_state: 'visible', display_label: ' ' }] });
-  await assert.rejects(blank.listConnectionOptions(identity), (e) => e.details.reason === 'approved_connection_disclosure_required');
+    [{ kind: 'connection', connection_binding_id: 'b-yard', display_label: 'бродом · у мельницы' }]);
+  const undisclosed = runtimeFor(current, { readConnectionDisclosure: async () => [] });
+  assert.deepEqual(await undisclosed.listConnectionOptions(identity), []);
 });
 
-test('away from departure the first local hop toward it is the approach, and only an offered edge counts', async () => {
+test('away from departure the selector returns the whole ordered path whose first edge was offered', async () => {
   const current = context();
   const departure = current.position;
-  current.position = { id: 'focus-position', template_slot_key: 'focus', template_instance_ordinal: 0 };
-  current.scene = { ...current.scene, positions: [current.position, departure],
-    movement_edges: [{ id: 'edge-1', from_position_id: 'focus-position', to_position_id: departure.id, status: 'active' }] };
+  const focus = { id: 'focus-position', template_slot_key: 'focus', template_instance_ordinal: 0 };
+  const middle = { id: 'middle-position', template_slot_key: 'middle', template_instance_ordinal: 0 };
+  current.position = focus;
+  current.scene = { ...current.scene, positions: [focus, middle, departure], movement_edges: [
+    { id: 'edge-1', from_position_id: focus.id, to_position_id: middle.id, status: 'active' },
+    { id: 'edge-2', from_position_id: middle.id, to_position_id: departure.id, status: 'active' }] };
   const runtime = runtimeFor(current);
   assert.deepEqual(await runtime.listConnectionOptions(identity), []);
   assert.deepEqual(await runtime.listConnectionApproachOptions({ ...identity, firstStepEdgeIds: [] }), []);
   assert.deepEqual(await runtime.listConnectionApproachOptions({ ...identity, firstStepEdgeIds: ['edge-1'] }), [
-    { kind: 'approach', connection_binding_id: 'b-water', edge_id: 'edge-1', display_label: 'Проход 3' },
-    { kind: 'approach', connection_binding_id: 'b-yard', edge_id: 'edge-1', display_label: 'Проход 4' }]);
+    { kind: 'approach', connection_binding_id: 'b-water', edge_id: 'edge-1',
+      ordered_local_edge_path: [
+        { edge_id: 'edge-1', from_position_id: focus.id, to_position_id: middle.id },
+        { edge_id: 'edge-2', from_position_id: middle.id, to_position_id: departure.id }
+      ], display_label: 'бродом' },
+    { kind: 'approach', connection_binding_id: 'b-yard', edge_id: 'edge-1',
+      ordered_local_edge_path: [
+        { edge_id: 'edge-1', from_position_id: focus.id, to_position_id: middle.id },
+        { edge_id: 'edge-2', from_position_id: middle.id, to_position_id: departure.id }
+      ], display_label: 'бродом · у мельницы' }]);
+});
+
+test('connection traversal resolves and forwards an ordered off-departure local path once', async () => {
+  const current = context();
+  const departure = current.position;
+  const focus = { id: 'focus-position', template_slot_key: 'focus', template_instance_ordinal: 0 };
+  current.position = focus;
+  current.scene = { ...current.scene, positions: [focus, departure], movement_edges: [
+    { id: 'edge-1', from_position_id: focus.id, to_position_id: departure.id, status: 'active' }] };
+  current.snapshot.site_connections = [{ id: 'canconn:party:b-water', status: 'active' }];
+  const path = [{ edge_id: 'edge-1', from_position_id: focus.id, to_position_id: departure.id }];
+  const calls = [];
+  const runtime = runtimeFor(current, { prepareSiteTraversal: async (input) => {
+    calls.push(input);
+    return { ok: true };
+  } });
+  const expansion = await runtime.prepareConnection({ ...identity, connectionBindingId: 'b-water',
+    ordered_local_edge_path: path });
+  assert.equal(expansion.source_position_id, departure.id);
+  const result = await runtime.prepareConnectionTraversal({ ...identity, connectionBindingId: 'b-water',
+    ordered_local_edge_path: path, expansion });
+  assert.deepEqual(result, { ok: true });
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0].ordered_local_edge_path, path);
+  assert.equal(calls[0].context.approach_departure_position.id, departure.id);
+  assert.equal(calls[0].context.position.id, focus.id);
 });
 
 test('preparing a connection asks the adapter once with the exact source; a committed connection replays without it', async () => {

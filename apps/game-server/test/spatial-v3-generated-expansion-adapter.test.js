@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSpatialV3GeneratedExpansionAdapter } from '../src/infrastructure/postgres/spatial-v3-generated-expansion-adapter.js';
-import { SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from '../src/runtime/spatial-v3-current-visible-context.js';
 
 test('generated expansion requires a committed party snapshot in its P16 transaction', async () => {
   const queries = [];
@@ -28,7 +27,7 @@ test('generated expansion requires a committed party snapshot in its P16 transac
   assert.deepEqual(queries[1].params, ['party']);
 });
 
-test('visible owner receives exact expansion facts and missing policy blocks P16', async () => {
+test('legacy action-only generated expansion fails closed before projection and P16', async () => {
   const g4 = { id: 'g4', version: 4, world_revision_id: 'world' };
   const profile = { id: 'profile', version: 7, world_revision_id: 'world', status: 'approved' };
   const expansion_rule_sets = [['adjacency_rule_set', 'adjacency', 'through_same_exit'],
@@ -57,8 +56,8 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
       departure_scene_endpoint_slot_key: 'out' }],
     entry_slot_rules: [{ entry_binding_id: 'entry', entry_binding_version: 1,
       slot_id: slot.id, slot_version: slot.version }],
-    connection_profiles: [{ status: 'approved', passage_type_id: 'path', cost_kind: 'time',
-      action_units: 1, baseline_movement_method_id: 'walk', base_minutes: 1, capacity: 1 }] };
+    connection_profiles: [{ status: 'approved', passage_type_id: 'path', cost_kind: 'action',
+      action_units: 1, baseline_movement_method_id: null, base_minutes: null, capacity: 1 }] };
   const snapshot = { ledgers: [], sites: [
     { id: 'source-site', parent_g4_id: g4.id, origin: 'canonical', status: 'active',
       canonical_g5_ref: { entity_id: 'source', authoring_version: '1' } },
@@ -80,8 +79,7 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
       template_slot_key: 'arrival', template_instance_ordinal: 0 }] };
   const transaction = { query: async (sql) => String(sql).includes('WITH sites')
     ? { rows: [snapshot] } : { rows: [{ state_version: '6', last_turn_id: 'turn-5' }] } };
-  let visibleInput;
-  let visibleEnvelope = {};
+  let visibleCalls = 0;
   const adapter = createSpatialV3GeneratedExpansionAdapter({
     worldBaseReader: {
       readPinnedG4ExpansionClosure: async () => ({ ok: true, value: closure }),
@@ -94,7 +92,7 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
     committer: { prepareExpansion: async ({ prepare }) => prepare({ transaction }) },
     admitGeneration: async () => ({ ok: true, validation_report: { status: 'pass' },
       commit_rechecks: [], recheck: async () => ({ ok: true }) }),
-    projectVisible: async (input) => { visibleInput = input; return { ok: true, envelope: visibleEnvelope }; }
+    projectVisible: async () => { visibleCalls += 1; return { ok: true, envelope: {} }; }
   });
   const result = await adapter.prepareExpansion({ party_id: 'party', g4, profile,
     slot_ref: { id: slot.id, version: slot.version },
@@ -102,30 +100,8 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
     entry_binding: { id: 'entry', version: 1 }, source_site_id: 'source-site',
     source_position_id: 'source-position', materializer_version: 'v1' });
   assert.equal(result.ok, false);
-  assert.equal(result.error.code, 'visible_package_persistence_gap', JSON.stringify(result.error));
-  assert.equal(result.error.diagnostics.reason, 'approved_projection_policy_ref_required');
-  assert.equal(visibleInput.transaction, transaction);
-  assert.equal(visibleInput.closure, closure);
-  assert.equal(visibleInput.current_state_version, '6');
-  assert.equal(visibleInput.current_turn_id, 'turn-5');
-  assert.equal(visibleInput.firstEntry.ok, true);
-  assert.equal(visibleInput.envelopeInput.turn_id, visibleInput.change_set_id);
-  assert.equal(visibleInput.envelopeInput.committed_state_version, '6');
-  assert.equal(visibleInput.envelopeInput.idempotency_record_id,
-    `idem:${visibleInput.change_set_id}`);
-  assert.deepEqual(visibleInput.envelopeInput.dependency_pins, visibleInput.dependency_pins);
-  assert.deepEqual(visibleInput.expected_state_versions, visibleInput.proposal.expected_state_versions);
-  assert.deepEqual(visibleInput.factual_writes,
-    [...visibleInput.proposal.inserts, ...visibleInput.proposal.updates]);
-  assert.ok(visibleInput.dependency_pins.pins.some((pin) =>
-    pin.entity_ref.entity_kind === 'expansion_terminal_policy'));
-  assert.equal(visibleInput.package_id, `visible:${visibleInput.change_set_id}`);
-  visibleEnvelope = { projection_policy_ref: SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF };
-  const malformed = await adapter.prepareExpansion({ party_id: 'party', g4, profile,
-    slot_ref: { id: slot.id, version: slot.version },
-    directional_exit: { id: exit.id, version: exit.version }, candidate_ordinal: 0,
-    entry_binding: { id: 'entry', version: 1 }, source_site_id: 'source-site',
-    source_position_id: 'source-position', materializer_version: 'v1' });
-  assert.equal(malformed.error.code, 'visible_package_persistence_gap');
-  assert.equal(malformed.error.diagnostics.reason, 'visible_envelope_identity_or_digest_mismatch');
+  assert.equal(result.error.code, 'authoring_dependency_pin_missing', JSON.stringify(result.error));
+  assert.equal(result.error.diagnostics.reason, 'approved_generated_entry_line_binding_required');
+  assert.equal(visibleCalls, 0, 'missing approved entry-line data blocks before visible projection');
+  assert.equal(result.proposal, undefined, 'no action-cost site connection reaches P16');
 });

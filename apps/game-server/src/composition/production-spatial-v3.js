@@ -243,7 +243,8 @@ export async function createSpatialV3ProductionCompositionRoot({
         readExitDisclosure: currentVisibility.readExitDisclosure,
         readConnectionDisclosure: currentVisibility.readConnectionDisclosure,
         prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
-          pool: pools.partyPool, ...siteTraversalCapability, projectDestination }),
+          pool: pools.partyPool, ...siteTraversalCapability, projectDestination,
+          projectEnvironmentAtClock: factualContext.projectEnvironmentAtClock }),
         materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
         generatedExpansionAdapter: createSpatialV3GeneratedExpansionAdapter({
           worldBaseReader: targetContext.runtime.worldBaseReader,

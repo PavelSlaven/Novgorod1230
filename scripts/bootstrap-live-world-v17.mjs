@@ -39,6 +39,7 @@ import { buildAdditionalStartOwnerRows } from
 import { ensureV17PartyProductionCatalogLedger } from './v17-party-production-catalog-ledger.mjs';
 import { assertWaveInputs, readWaveRequest, runWaveImportStage } from './v17-m2c-npc-wave-stage.mjs';
 import { runIdentityImportStage } from './v17-npc-identity-stage.mjs';
+import { runLinesImportStage } from './v17-m2c-lines-import-stage.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -47,9 +48,7 @@ const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1';
 const nature = 'data/world-catalogs/novgorod/m2c-natural';
 const capacityManifest = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
 const capacityManifestSha256 = '1e7afc2255a28e4c40c6e34901ea4f87ee24537f9621b8bcc3e74c6366f28dd2';
-// rt-lines a4 (Spatial 4.7.0 lines, LW-097): the pin of the line wave import manifest. Declared here so that the cutover (b1) imports
-// it from one place together with its reader; bootstrap does not import the wave yet, because the reader takes the highest
-// approved binding version and would meet binding@3 before it can read it.
+// rt-lines b1 (Spatial 4.7.0 lines, LW-097): import gate and reader cut over together because the reader takes highest approved version.
 export const LINES_WAVE_MANIFEST = Object.freeze({
   path: 'data/world-catalogs/novgorod/m2c-lines-v1-import-manifest.json',
   sha256: '169c6f14fff46e39e1c88535c68b5adc4406b6db76528ffd67381632eb5aba65'
@@ -457,6 +456,10 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     if (temporalAfter !== temporalBundle.record_count) {
       throw new Error(`V17_TEMPORAL_IMPORT_MISMATCH:${temporalAfter}!=${temporalBundle.record_count}`);
     }
+    const linesImport = await runLinesImportStage({ world, root,
+      manifestPath: LINES_WAVE_MANIFEST.path, manifestSha256: LINES_WAVE_MANIFEST.sha256,
+      approvalPath: 'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/approval-attestation.json',
+      requireAttestation: (stage, request) => requireAttestation(stage, request, attest, onRequest) });
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
     // D27: the m2c NPC wave (presence rules, bindings, routines, composition) after P12 and temporal-v4.
@@ -718,6 +721,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       itemApproval: { request: itemActivationRequest, attestation: itemActivationAttestation },
       actorImportApproval: { request: actorRequest, attestation: actorAttestation },
       actorApproval: { request: actorActivationRequest, attestation: actorActivationAttestation },
+      linesImportApproval: { request: linesImport.request, attestation: linesImport.attestation },
       waveImportApproval: { request: waveImport.request, attestation: waveImport.attestation },
       npcIdentityImportApproval: { request: identityImport.request, attestation: identityImport.attestation }
     };
@@ -733,6 +737,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },
       additional_start_owners: ownerImport,
+      m2c_lines: { request_id: linesImport.request_id, request_digest: linesImport.request_digest,
+        added_rows: Object.values(linesImport.added).reduce((sum, count) => sum + count, 0),
+        rollback: linesImport.rollback, readback: linesImport.readback },
       m2c_npc_wave: { request_id: waveImport.request_id, request_digest: waveImport.request_digest,
         added_rows: Object.values(waveImport.added).reduce((sum, count) => sum + count, 0),
         rollback: waveImport.rollback, readback: waveImport.readback },
@@ -844,9 +851,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const directory = process.env.V17_BOOTSTRAP_ATTESTATION_DIR;
     if (!directory) throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
     const stages = ['item_baseline', 'item_import', 'item_activation', 'actor_import',
-      'actor_activation', 'm2c_npc_wave_import', 'npc_identity_import'];
-    const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) =>
-      [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))])));
+      'actor_activation', 'm2c_lines_import', 'm2c_npc_wave_import', 'npc_identity_import'];
+    const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) => {
+      try { return [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))]; }
+      catch (error) {
+        if (stage === 'm2c_lines_import' && error.code === 'ENOENT') return [stage, undefined];
+        throw error;
+      }
+    })));
     result = await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL,
       activationApprovalsPath: process.env.V17_BOOTSTRAP_ACTIVATION_APPROVALS_PATH
         || localV17ApprovalsPath(),

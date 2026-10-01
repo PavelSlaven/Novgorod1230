@@ -11,38 +11,73 @@ export { planApprovedActorDestinationTransition } from
   './approved-destination-transition.js';
 
 /** Split exact traversal time at policy boundaries without rounding elapsed time. */
-export function planExactTraversalIntervals({ total_time, fixed_time_interval } = {}) {
+export function planExactTraversalIntervals({ total_time, base_minutes, factors = [],
+  fixed_time_interval, distance_remaining = { numerator: '1', denominator: '1' } } = {}) {
   let total;
+  let formulaTime;
   let interval;
+  let remainingDistance;
   try {
-    total = normalizeRationalMinutes(total_time);
+    formulaTime = total_time == null ? normalizeRationalMinutes(base_minutes) : null;
+    if (total_time == null) {
+      if (!Array.isArray(factors) || !factors.length) throw traversalIntervalDurationError();
+      for (const factor of factors) formulaTime = multiplyRationalMinutes(formulaTime,
+        normalizeRationalMinutes(factor));
+    }
     interval = normalizeRationalMinutes(fixed_time_interval);
+    remainingDistance = normalizeRationalMinutes(distance_remaining);
+    total = total_time == null ? multiplyRationalMinutes(formulaTime, remainingDistance)
+      : normalizeRationalMinutes(total_time);
   } catch {
     throw traversalIntervalDurationError();
   }
-  if (total.numerator === '0' || interval.numerator === '0') {
+  if (total.numerator === '0' || interval.numerator === '0'
+    || remainingDistance.numerator === '0'
+    || compareRationalMinutes(remainingDistance, { numerator: '1', denominator: '1' }) > 0) {
     throw traversalIntervalDurationError();
   }
 
   const intervals = [];
   let elapsed = { numerator: '0', denominator: '1' };
-  let progressBefore = 0;
+  let remainingTime = total;
   while (compareRationalMinutes(elapsed, total) < 0) {
-    const remaining = subtractRationalMinutes(total, elapsed);
-    const plannedTime = compareRationalMinutes(remaining, interval) <= 0 ? remaining : interval;
+    const plannedTime = compareRationalMinutes(remainingTime, interval) <= 0 ? remainingTime : interval;
+    const distanceBefore = remainingDistance;
+    remainingDistance = multiplyRationalMinutes(distanceBefore,
+      divideRationalMinutes(subtractRationalMinutes(remainingTime, plannedTime), remainingTime));
+    remainingTime = subtractRationalMinutes(remainingTime, plannedTime);
     elapsed = addRationalMinutes(elapsed, plannedTime);
     const terminal = compareRationalMinutes(elapsed, total) === 0;
-    // Intermediate ppm is floor(cumulative exact fraction); the exact endpoint is always 1,000,000.
-    const progressAfter = terminal ? 1_000_000 : Number(
-      (BigInt(elapsed.numerator) * BigInt(total.denominator) * 1_000_000n)
-      / (BigInt(elapsed.denominator) * BigInt(total.numerator))
-    );
+    const progressBefore = progressFromRemaining(distanceBefore);
+    const progressAfter = terminal ? 1_000_000 : progressFromRemaining(remainingDistance);
     intervals.push(deepFreeze({ interval_ordinal: intervals.length,
       planned_time: plannedTime, cumulative_progress_before_ppm: progressBefore,
-      cumulative_progress_after_ppm: progressAfter }));
-    progressBefore = progressAfter;
+      cumulative_progress_after_ppm: progressAfter, distance_remaining_after: remainingDistance }));
   }
   return deepFreeze({ intervals });
+}
+
+function multiplyRationalMinutes(left, right) {
+  return normalizeRationalMinutes({
+    numerator: String(BigInt(left.numerator) * BigInt(right.numerator)),
+    denominator: String(BigInt(left.denominator) * BigInt(right.denominator))
+  });
+}
+
+function divideRationalMinutes(left, right) {
+  return normalizeRationalMinutes({
+    numerator: String(BigInt(left.numerator) * BigInt(right.denominator)),
+    denominator: String(BigInt(left.denominator) * BigInt(right.numerator))
+  });
+}
+
+function floorPpm(value) {
+  return Number((BigInt(value.numerator) * 1_000_000n) / BigInt(value.denominator));
+}
+
+function progressFromRemaining(value) {
+  return floorPpm({ numerator: String(BigInt(value.denominator) - BigInt(value.numerator)),
+    denominator: value.denominator });
 }
 
 function traversalIntervalDurationError() {

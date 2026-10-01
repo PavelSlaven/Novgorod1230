@@ -116,6 +116,10 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             production_authorized: true, existing_party_migration_authorized: false,
             old_save_rematerialization_authorized: false }
         });
+        if (stage === 'm2c_lines_import') return fixtureApproval(stage, {
+          schema: 'rus.m2c_lines_v1_v17_import_approval.v1', decision: 'APPROVE',
+          request_digest: request.request_digest, independence_basis: 'Test-only approval fixture',
+          import_authorized: true, database_mutated: false });
         if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
           schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
           independence_basis: 'Test-only approval fixture', database_mutated: false });
@@ -135,6 +139,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(result.p12.inserted_rows, distinctPinnedRows);
     assert.deepEqual(result.additional_start_owners,
       { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
+    assert.equal(result.m2c_lines.readback, 'exact');
+    assert.equal(result.m2c_lines.added_rows, 2351);
     assert.equal(result.appearance_v3.inserted_rows, 129);
     assert.equal(result.capacity_v2.manifest_sha256,
       '1e7afc2255a28e4c40c6e34901ea4f87ee24537f9621b8bcc3e74c6366f28dd2');

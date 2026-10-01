@@ -65,6 +65,32 @@ test('S1 local turn updates journey position without rewriting G4/G5', () => {
     table === 'party_journey_locations').record.scene_position_id, 'inside');
 });
 
+test('site traversal root owner writes the projected journey row exactly once', () => {
+  const writes = buildLowerDvinaTraceTurnStepRootWrites({
+    partyId: 'party', state: { actor_id: 'actor', party_state: {},
+      journey_location: { id: 'journey', state_version: 3 },
+      body_state: { active_conditions: [] } },
+    snapshot: { position: { position_id: null },
+      journey_location: { location_kind: 'in_transit', scene_position_id: null,
+        transit_anchor_id: null, travel_state_id: 'travel', state_version: 4 },
+      body_state: { active_conditions: [] } },
+    envelope: { root_turn_id: 'turn', body_update: { applied: false,
+      proposal: null }, consequence: { position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal'
+    } } },
+    nextVersion: 4, turnNumber: 4, changeSetId: 'change', idemId: 'idem',
+    pendingScreen: {}, clockChanged: false
+  });
+  const journeyWrites = writes.updates.filter(({ target_table: table }) =>
+    table === 'party_journey_locations');
+  assert.equal(journeyWrites.length, 1);
+  assert.deepEqual(journeyWrites[0].record, {
+    id: 'journey', party_id: 'party', owner_kind: 'actor', owner_id: 'actor',
+    location_kind: 'in_transit', scene_position_id: null, transit_anchor_id: null,
+    travel_state_id: 'travel', updated_change_set_id: 'change'
+  });
+});
+
 test('direct-only semantic turn commits one P16 root with snapshot and pending presentation',
   async () => {
     const f = fixture({ direct: true });

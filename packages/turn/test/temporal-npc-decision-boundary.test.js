@@ -102,6 +102,30 @@ test('blocked O1 query and independent A1 output select ordinary NPC wait',
     }
   });
 
+test('NPC inspects an exact-name committed visible item before query preflight',
+  async () => {
+    const autonomous = { request: { npc_ref: 'npc-a', npc: {
+      available_resources: [{ resource_ref: 'wheel-1' }]
+    }, perception: { visible_objects: [{ object_ref: 'wheel-1',
+      source_perception_ref: 'sight:wheel-1', summary: 'Колёсная прялка' }] } },
+    proposal: { status: 'planned', plan: { schema: 'npc_step_plan_v1',
+      npc_ref: 'npc-a', resolution: 'domain_request', operations: [{
+        op: 'request_discovery', actor_ref: 'npc-a',
+        discovery_kind: 'inspect', target_refs: ['wheel-1'],
+        query: 'Колёсная прялка'
+      }] } } };
+    const prepared = await prepareNpcDecisionForActorStep({ autonomous,
+      committedState: { items: [{ item_id: 'wheel-1', name: 'Колёсная прялка',
+        semantic_type: 'household_tool' }] },
+      async assertNeedsCheckAllowed() {
+        assert.fail('an existing committed identity is not new materialization');
+      }
+    });
+
+    assert.equal(prepared, autonomous,
+      'known existing item inspection preserves the validated NPC plan');
+  });
+
 test('A1 inherited source facts reach the needs-check candidate baseline',
   async () => {
     const inherited = 'самопрялка';

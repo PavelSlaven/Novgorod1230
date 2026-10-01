@@ -5,6 +5,8 @@ import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
   '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { createTraceTurnRuntime } from
   '../src/runtime/releases/spatial-v3-production-trace-runtime.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 
 test('runtime injects owner adapters and handoffs', async () => {
   let captured;
@@ -98,6 +100,48 @@ test('adapters expose NPC-safe refs and call owner', async () => {
   assert.equal(calls[1][1].actor.actor_id, 'npc');
   assert.ok(!Object.hasOwn(calls[1][1], 'player_safe_state'));
 });
+
+test('NPC O1 inspect receives only its safe committed item identity for reuse',
+  async () => {
+    const state = stateWithNpc();
+    const wheel = { ...npcItem('wheel-1'), name: 'Колёсная прялка',
+      physical_facts: ['деревянная'] };
+    state.items.push(wheel);
+    addNpcEvidence(state, ['wheel-1']);
+    const inspected = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: state.party_id,
+      loadEnablement: async () => { throw new Error('reuse must precede loading'); },
+      ordinaryMaterializationModel: Object.assign(async () => {
+        throw new Error('reuse must not call O1 model');
+      }, { verifyStageBCutover: async () => {} }),
+      assertNeedsCheckAllowed: async () => {
+        throw new Error('known committed identity must bypass new-item guard');
+      }, inputDigest: () => 'digest'
+    });
+    const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
+      loadOrdinaryEnablement: async () => ({ execution_context: {
+        candidate_context: { target_ref: 'wheel-1' }
+      } }),
+      createOrdinaryDiscoveryResolver: () => inspected
+    });
+    const capabilities = await factory({ partyId: state.party_id,
+      requestId: 'npc-inspect-reuse', inputDigest: 'digest', state,
+      phase7Contracts: contracts(state),
+      assertNeedsCheckAllowed: async () => {
+        throw new Error('known committed identity must bypass preflight');
+      } });
+    const capability = capabilities.find(({ operation }) =>
+      operation === 'request_discovery');
+    const result = await capability.execute(execution({
+      op: 'request_discovery', actor_ref: 'npc', discovery_kind: 'inspect',
+      target_refs: ['wheel-1'], query: 'Колёсная прялка'
+    }));
+
+    assert.equal(result.summary,
+      'Available physical item observations inspected.');
+    assert.equal(result.consequence_fragment.visible_seed
+      .turn_step_item_inspection_1.target_ref, 'wheel-1');
+  });
 
 test('A1 capability needs no Strength probe', async () => {
   const state = stateWithNpc();

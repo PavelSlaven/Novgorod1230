@@ -184,6 +184,71 @@ test('standalone ordinary inspect no_change performs and persists its activity',
     }));
   });
 
+test('first ordinary search keeps its activity when the Stage B candidate is filtered',
+  async () => {
+    const input = request('Колёсная прялка');
+    input.request.step_index = 1;
+    input.request.actor = { actor_id: 'mikula', body: { health: 100,
+      satiety: 100, energy: 100, active_conditions: [], body_parts: {} } };
+    input.operation = { ...input.operation, op: 'request_discovery',
+      actor_ref: 'mikula', discovery_kind: 'search' };
+    input.plan = { resolution: 'domain_request', activity: { owner: 'domain' },
+      operations: [input.operation] };
+    input.working_projection = projection();
+    const privateTrace = [];
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'filtered-seed-search', verifyStageBCutover,
+      requestSubject: 'player', loadEnablement: async () => enabled(),
+      ordinaryMaterializationModel: async (modelRequest) =>
+        modelRequest.mode === 'seed_scope' ? {
+          schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'seeded',
+          density_band_proposal: 'ordinary', background_groups: [group()],
+          entities: [], presence_resolutions: [], reason_code: 'seed'
+        } : {
+          schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'materialize',
+          density_band_proposal: null, background_groups: [],
+          entities: [{ semantic_descriptor: {
+            semantic_type: 'household_tool', name: 'Колёсная прялка',
+            facts: ['Колёсная прялка'] }, authority_class: 'ordinary',
+            admission_class: 'common_mundane', availability_class: 'common',
+            functional_bucket: 'other_ordinary',
+            presence_expectation: 'plausible',
+            supporting_basis_ref:
+              modelRequest.authority_envelope.selected_supporting_basis_ref,
+            causal_basis: { basis_kind: 'household_use', basis_refs: [
+              modelRequest.authority_envelope.selected_supporting_basis_ref
+            ] },
+            property_basis_ref: modelRequest.authority_envelope.property_basis_ref,
+            placement_proposal: { scope_ref: 'shore', position_ref: 'bench' },
+            mechanics_proposal: { mass_grams: 100, external_hand_cost: 0,
+              carry_form: 'regular', packing_slot_cost: 1,
+              quantity: { value: 1, unit: 'item' }, container: null }
+          }], presence_resolutions: [], reason_code: 'materialize'
+        },
+      assertNeedsCheckAllowed: async ({ candidate }) =>
+        candidate.path === 'O1.proposed_entity.semantic_descriptor'
+          ? [{ queue_id: 'needs_check.csv#HNT0024' }] : [],
+      recordNeedsCheckFilter: async (record) => privateTrace.push(record)
+    });
+    const applied = await createPorts({ ordinaryDiscoveryResolver: resolver,
+      semanticActivityOwner: owners.semanticActivityOwner })
+      .ordinaryDiscoveryResolver(input);
+
+    assert.equal(applied.duration_minutes, 15);
+    assert.equal(applied.consequence_fragment.duration_minutes, 15);
+    assert.equal(applied.ordinary_materialization_atomic_write_plan.resolution,
+      'no_change');
+    assert.deepEqual(applied.ordinary_materialization_atomic_write_plan.transitions
+      .map(({ kind }) => kind), ['seed']);
+    assert.equal(Object.hasOwn(applied.consequence_fragment.visible_seed,
+      'ordinary_scene_seed'), false);
+    assert.deepEqual(privateTrace, [{ path:
+      'O1.proposed_entity.semantic_descriptor',
+      queue_ids: ['needs_check.csv#HNT0024'] }]);
+  });
+
 test('ordinary look remains free after a resolved discovery result', () => {
   assert.equal(ordinaryDiscoveryActivity({
     operation: { op: 'request_discovery', discovery_kind: 'look' },

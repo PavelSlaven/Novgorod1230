@@ -59,6 +59,10 @@ export function tracePhase7ScheduleHistoryEntry(execution, changeSetId) {
     status: execution.status,
     failure_code: execution.failure_code ?? null,
     semantic_operation: structuredClone(execution.semantic_operation),
+    ...(execution.additional_semantic_operations?.length > 0 ? {
+      additional_semantic_operations: structuredClone(
+        execution.additional_semantic_operations)
+    } : {}),
     execution_binding_ref: execution.execution_binding_ref,
     schedule_option_id: execution.schedule_option_id,
     activity_profile_ref: execution.activity_profile_ref,

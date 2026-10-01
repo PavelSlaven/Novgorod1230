@@ -210,7 +210,13 @@ function ownerInput(execution, state, npcRef, schema) {
 }
 
 function ordinaryOwnerInput(execution, state, npc, schema) {
-  return { ...ownerInput(execution, state, npc.instance_id, schema),
+  const safeItemRefs = new Set(npcSafeItemRefs(state, npc));
+  const safeState = { actor_id: npc.instance_id,
+    items: (state.items ?? []).filter((item) =>
+      safeItemRefs.has(item.item_id ?? item.instance_id)) };
+  const input = ownerInput(execution, state, npc.instance_id, schema);
+  return { ...input, player_safe_state: safeState,
+    request: { ...input.request, player_safe_state: safeState },
     committed_state: npcCommittedState(state, npc) };
 }
 

@@ -290,16 +290,25 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
   const projection = plan == null ? applied.working_projection
     : workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
       applied.working_projection, plan));
+  const visiblePresence = applied.consequence_fragment?.visible_seed
+    ?.ordinary_presence_seed;
+  const filteredSeedOnly = visiblePresence?.resolution === 'no_change'
+    && plan?.transitions?.some(({ kind }) => kind === 'seed')
+    && !Object.hasOwn(applied.consequence_fragment?.visible_seed ?? {},
+      'ordinary_scene_seed');
+  const knownResolution = applied.known_resolution
+    ?? (filteredSeedOnly
+      ? visiblePresence : null);
   const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
     request: execution.request, plan: execution.plan, ordinaryPlan: plan,
-    knownResolution: applied.known_resolution });
+    knownResolution });
   if (activity == null) return plan == null ? applied
     : { ...applied, working_projection: projection };
   const timed = await applySemanticActivity({ ...execution,
     working_projection: projection,
     operation: { op: 'apply_semantic_activity', activity }
   }, state, semanticActivityOwner);
-  const presence = applied.consequence_fragment?.visible_seed?.ordinary_presence_seed;
+  const presence = visiblePresence;
   const searchResult = ['no_change', 'authority_required'].includes(presence?.resolution)
     ? { resolution: presence.resolution, query: presence.query } : null;
   return { ...applied, ...timed, summary: applied.summary,

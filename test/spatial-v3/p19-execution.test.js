@@ -13,7 +13,7 @@ const signals = (value = {}) => seal({ dependency_pins: pins, ...value });
 const snapshot = (value = {}) => seal({ snapshot_id: 'snapshot', resolved_factors: [], resolved_delays: [], ...value });
 const rational = (numerator, denominator = '1') => ({ numerator, denominator });
 const timestamp = (wholeMinutes = '0', numerator = '0', denominator = '1') => ({ whole_minutes: wholeMinutes, subminute_numerator: numerator, subminute_denominator: denominator });
-const state = (value = {}) => seal({ id: 'state', party_id: 'party', execution_id: 'exec', step_ordinal: 0, next_interval_ordinal: 0, progress_ppm: 0, cumulative_actual_time: rational('0'), status: 'active', dependency_pins: pins, context_snapshot: context(), ...value });
+const state = (value = {}) => seal({ id: 'state', party_id: 'party', execution_id: 'exec', step_ordinal: 0, next_interval_ordinal: 0, progress_ppm: 0, cumulative_actual_time: rational('0'), last_confirmed_endpoint_ref: endpoint('departure'), status: 'active', dependency_pins: pins, context_snapshot: context(), ...value });
 const intervalInput = (value = {}) => ({
   party_id: 'party', execution_id: 'exec', idempotency_key: 'interval-key', change_set_id: 'change', idempotency_record_id: 'record', occurred_at_turn: 0,
   step_ordinal: 0, interval_ordinal: 0, clock_commit_mode: 'direct_party_clock', world_time_before: timestamp(),
@@ -71,7 +71,9 @@ test('P19 traversal requires sealed state lineage, exact cumulative and ordinal'
 test('P19 traversal start has no implicit persistence identifiers', () => {
   const engine = createSpatialV3ExecutionEngine();
   const input = { departure_valid: true, travel_state_id: 'state', execution_id: 'exec', party_id: 'party', idempotency_key: 'key', idempotency_record_id: 'record', change_set_id: 'change', occurred_at_turn: 0, step_ordinal: 0, departure_endpoint: endpoint('a'), arrival_endpoint: endpoint('b'), segment_id: 'segment', method_id: 'walk', capacity_units: 1, context_snapshot: context(), dependency_pins: pins };
-  assert.equal(engine.startTraversal(input).ok, true);
+  const started = engine.startTraversal(input);
+  assert.equal(started.ok, true);
+  assert.deepEqual(started.travel_state.last_confirmed_endpoint_ref, input.departure_endpoint);
   assert.equal(engine.startTraversal({ ...input, change_set_id: undefined }).ok, false);
 });
 
@@ -104,47 +106,96 @@ test('P19 pause or interruption before first progress closes at departure anchor
       travel_state: state({ last_confirmed_endpoint_ref: endpoint('departure-anchor') }),
       actual_progress_after_ppm: 0,
       actual_time: rational('0'),
-      source_signals: signals(sourceSignals)
+      source_signals: signals({ ...sourceSignals, interruption_anchor_id: 'policy-anchor' })
     }));
     assert.equal(result.ok, true, JSON.stringify(result));
     assert.equal(result.result.result_kind, 'interrupted_at_anchor');
     assert.equal(result.result.result_code, 'interrupted_at_anchor');
     assert.equal(result.result.actual_progress_after_ppm, 0);
+    assert.equal(result.result.interruption_anchor_id, 'departure-anchor',
+      'zero-progress closure uses departure regardless of policy anchor');
     assert.equal(result.travel_state.status, 'closed');
     assert.equal(result.travel_state.closed_result, 'interrupted_to_anchor');
     assert.equal(result.travel_state.progress_ppm, 0);
   }
 });
 
+test('P19 replay of zero-progress pause keeps one interrupted-at-departure result', () => {
+  const engine = createSpatialV3ExecutionEngine();
+  const input = intervalInput({ idempotency_key: 'zero-pause-replay', actual_progress_after_ppm: 0,
+    actual_time: rational('0'), source_signals: signals({ paused: true }) });
+  const first = engine.resolveTraversalInterval(input);
+  const replay = engine.resolveTraversalInterval(input);
+  assert.equal(first.ok, true, JSON.stringify(first));
+  assert.equal(first.result.result_kind, 'interrupted_at_anchor');
+  assert.equal(first.travel_state.status, 'closed');
+  assert.equal(replay.replayed, true);
+  assert.deepEqual(replay.result, first.result);
+  assert.deepEqual(replay.travel_state, first.travel_state);
+  assert.deepEqual(replay.clock_update, first.clock_update);
+  assert.equal(first.write_proposal.appends.length, 1);
+  assert.equal(replay.write_proposal.appends.length, 1);
+});
+
+test('P19 pause after positive progress remains paused, while unanchored interruption strands', () => {
+  const paused = createSpatialV3ExecutionEngine().resolveTraversalInterval(intervalInput({
+    idempotency_key: 'positive-progress-pause',
+    planned_progress_after_ppm: 333_333,
+    actual_progress_after_ppm: 333_333,
+    planned_time: rational('30'),
+    actual_time: rational('30'),
+    source_signals: signals({ paused: true })
+  }));
+  assert.equal(paused.ok, true, JSON.stringify(paused));
+  assert.equal(paused.result.result_kind, 'paused_in_transit');
+  assert.equal(paused.travel_state.status, 'paused_in_transit');
+  assert.equal(paused.travel_state.progress_ppm, 333_333);
+
+  const interrupted = createSpatialV3ExecutionEngine().resolveTraversalInterval(intervalInput({
+    idempotency_key: 'positive-progress-unanchored-interruption',
+    planned_progress_after_ppm: 333_333,
+    actual_progress_after_ppm: 333_333,
+    planned_time: rational('30'),
+    actual_time: rational('30'),
+    source_signals: signals({ interrupted: true })
+  }));
+  assert.equal(interrupted.ok, true, JSON.stringify(interrupted));
+  assert.equal(interrupted.result.result_kind, 'stranded');
+  assert.equal(interrupted.result.interruption_anchor_id, null);
+  assert.equal(interrupted.travel_state.status, 'stranded_in_transit');
+});
+
 test('P19 stranded and interrupted outcomes preserve the active segment side', () => {
   for (const mirrored of [false, true]) {
-    const strandedState = state({ progress_ppm: 400_000, mirrored, next_interval_ordinal: 1,
+    const strandedState = state({ progress_ppm: 400_000, status: 'paused_in_transit', mirrored, next_interval_ordinal: 1,
       cumulative_actual_time: rational('1') });
     const stranded = createSpatialV3ExecutionEngine().resolveTraversalInterval(intervalInput({
       idempotency_key: `stranded-side-${mirrored}`,
       interval_ordinal: 1,
       travel_state: strandedState,
-      progress_before_ppm: 400_000,
-      planned_progress_after_ppm: 500_000,
-      actual_progress_after_ppm: 450_000,
+      turn_back: true,
+      progress_before_ppm: 600_000,
+      planned_progress_after_ppm: 700_000,
+      actual_progress_after_ppm: 650_000,
       cumulative_before: rational('1'),
       source_signals: signals({ stranded: true })
     }));
     assert.equal(stranded.ok, true, JSON.stringify(stranded));
     assert.equal(stranded.result.result_kind, 'stranded');
     assert.equal(stranded.travel_state.status, 'stranded_in_transit');
-    assert.equal(stranded.travel_state.progress_ppm, 450_000);
-    assert.equal(stranded.travel_state.mirrored, mirrored);
+    assert.equal(stranded.travel_state.progress_ppm, 650_000);
+    assert.equal(stranded.travel_state.mirrored, !mirrored);
 
-    const interruptedState = state({ progress_ppm: 400_000, mirrored, next_interval_ordinal: 1,
+    const interruptedState = state({ progress_ppm: 400_000, status: 'paused_in_transit', mirrored, next_interval_ordinal: 1,
       cumulative_actual_time: rational('1') });
     const interrupted = createSpatialV3ExecutionEngine().resolveTraversalInterval(intervalInput({
       idempotency_key: `interrupted-side-${mirrored}`,
       interval_ordinal: 1,
       travel_state: interruptedState,
-      progress_before_ppm: 400_000,
-      planned_progress_after_ppm: 500_000,
-      actual_progress_after_ppm: 450_000,
+      turn_back: true,
+      progress_before_ppm: 600_000,
+      planned_progress_after_ppm: 700_000,
+      actual_progress_after_ppm: 650_000,
       cumulative_before: rational('1'),
       source_signals: signals({ interrupted: true, interruption_anchor_id: 'route-anchor' })
     }));
@@ -153,8 +204,8 @@ test('P19 stranded and interrupted outcomes preserve the active segment side', (
     assert.equal(interrupted.result.interruption_anchor_id, 'route-anchor');
     assert.equal(interrupted.travel_state.status, 'closed');
     assert.equal(interrupted.travel_state.closed_result, 'interrupted_to_anchor');
-    assert.equal(interrupted.travel_state.progress_ppm, 450_000);
-    assert.equal(interrupted.travel_state.mirrored, mirrored);
+    assert.equal(interrupted.travel_state.progress_ppm, 650_000);
+    assert.equal(interrupted.travel_state.mirrored, !mirrored);
   }
 });
 
@@ -189,6 +240,17 @@ test('P19 refused turn_back is retryable and leaves direction and progress uncha
   assert.equal(retry.travel_state.status, 'paused_in_transit');
   assert.equal(retry.travel_state.progress_ppm, 400_000);
   assert.equal(retry.travel_state.mirrored, false);
+
+  const arbitraryOutcome = engine.resolveTraversalInterval(intervalInput({
+    idempotency_key: 'turn-back-refused-arbitrary-outcome',
+    result_code: 'turn_back_refused',
+    planned_progress_after_ppm: 500_000,
+    actual_progress_after_ppm: 450_000,
+    actual_time: rational('1'),
+    source_signals: signals()
+  }));
+  assert.equal(arbitraryOutcome.ok, false);
+  assert.equal(arbitraryOutcome.error.code, 'travel_interval_conflict');
 });
 
 test('P19 turn_back mirrors mid-segment progress atomically and returns to departure on mirrored completion', () => {

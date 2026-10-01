@@ -12,10 +12,16 @@ export { planApprovedActorDestinationTransition } from
 
 /** Split exact traversal time at policy boundaries without rounding elapsed time. */
 export function planExactTraversalIntervals({ total_time, fixed_time_interval } = {}) {
-  const total = normalizeRationalMinutes(total_time);
-  const interval = normalizeRationalMinutes(fixed_time_interval);
+  let total;
+  let interval;
+  try {
+    total = normalizeRationalMinutes(total_time);
+    interval = normalizeRationalMinutes(fixed_time_interval);
+  } catch {
+    throw traversalIntervalDurationError();
+  }
   if (total.numerator === '0' || interval.numerator === '0') {
-    throw new RangeError('traversal total and fixed interval must be positive');
+    throw traversalIntervalDurationError();
   }
 
   const intervals = [];
@@ -31,12 +37,18 @@ export function planExactTraversalIntervals({ total_time, fixed_time_interval } 
       (BigInt(elapsed.numerator) * BigInt(total.denominator) * 1_000_000n)
       / (BigInt(elapsed.denominator) * BigInt(total.numerator))
     );
-    intervals.push(deepFreeze({ interval_ordinal: intervals.length, elapsed: plannedTime,
+    intervals.push(deepFreeze({ interval_ordinal: intervals.length,
       planned_time: plannedTime, cumulative_progress_before_ppm: progressBefore,
       cumulative_progress_after_ppm: progressAfter }));
     progressBefore = progressAfter;
   }
   return deepFreeze({ intervals });
+}
+
+function traversalIntervalDurationError() {
+  return Object.assign(new TypeError('traversal total and fixed interval must be positive rational minutes'), {
+    code: 'TRAVERSAL_INTERVAL_DURATION_INVALID'
+  });
 }
 
 export const TRAVEL_CONDITION_MULTIPLIERS = deepFreeze({ normal:1, poor:1.5, bad:2, severe:3 });

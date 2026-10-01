@@ -95,6 +95,7 @@ export function createSpatialV3TraversalExecution(replays) {
       id: input.travel_state_id, party_id: input.party_id, execution_id: input.execution_id, step_ordinal: input.step_ordinal,
       segment_id: input.segment_id, departure_endpoint: clone(input.departure_endpoint), arrival_endpoint: clone(input.arrival_endpoint),
       method_id: input.method_id, capacity_units: input.capacity_units, dependency_pins: clone(input.dependency_pins),
+      last_confirmed_endpoint_ref: clone(input.departure_endpoint),
       progress_ppm: 0, cumulative_actual_time: zero(), next_interval_ordinal: 0, mirrored: false, status: 'active', context_snapshot: clone(input.context_snapshot),
       idempotency_key: input.idempotency_key, idempotency_record_id: input.idempotency_record_id,
       start_change_set_id: input.change_set_id, occurred_at_turn: input.occurred_at_turn
@@ -144,13 +145,18 @@ export function createSpatialV3TraversalExecution(replays) {
     let outcome = intervalOutcome(signals, requestedActualAfter, mirroredAfter);
     if (turnBack && outcome === 'blocked_before_progress') return typedError('travel_interval_conflict', { execution_id: input.execution_id });
     let interruptionAnchorId = signals.interruption_anchor_id;
-    if (input.progress_before_ppm === 0 && ['paused_in_transit', 'interrupted_at_anchor'].includes(outcome)) {
-      outcome = 'interrupted_at_anchor';
-      interruptionAnchorId ??= state.last_confirmed_endpoint_ref?.endpoint_id;
-    }
     let actual = normalized(input.actual_time);
     let actualAfter = requestedActualAfter;
     if (outcome === 'blocked_before_progress') { actual = zero(); actualAfter = input.progress_before_ppm; }
+    if (outcome === 'paused_in_transit' && actualAfter === 0) outcome = 'interrupted_at_anchor';
+    if (input.result_code === 'turn_back_refused'
+      && (outcome !== 'blocked_before_progress' || turnBack)) {
+      return typedError('travel_interval_conflict', { execution_id: input.execution_id });
+    }
+    if (outcome === 'interrupted_at_anchor') {
+      if (actualAfter === 0) interruptionAnchorId = state.last_confirmed_endpoint_ref?.endpoint_id;
+      else if (!stableId(interruptionAnchorId)) outcome = 'stranded';
+    }
     if (!['segment_completed', 'returned_to_departure'].includes(outcome)
       && actualAfter === 1_000_000) return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });
     if (outcome === 'interrupted_at_anchor' && !stableId(interruptionAnchorId)) return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });

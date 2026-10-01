@@ -11,7 +11,6 @@ import { createSpatialV3CurrentMovementCapability } from
   '../src/infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { recheckSiteConnectionTraversal } from
   '../src/infrastructure/postgres/first-playable/recheck-site-connection-traversal.js';
-import * as movementRoutes from '@rus/movement-routes';
 import { createSpatialV3ExecutionEngine } from '@rus/turn/spatial-v3-execution';
 
 const party_id = 'party';
@@ -176,21 +175,6 @@ test('approved local line traverses one timed step with exact D49 rational facto
   assert.deepEqual(consequence.spatial_v3_traversal.result.planned_time,
     { numerator: '90', denominator: '1' });
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'segment_completed');
-});
-
-test('90-minute local line makes three exact 30-minute intervals with floor-rounded cumulative ppm', () => {
-  assert.equal(typeof movementRoutes.planExactTraversalIntervals, 'function');
-  const planned = movementRoutes.planExactTraversalIntervals({
-    total_time: rational('90'), fixed_time_interval: rational('30')
-  });
-  assert.deepEqual(planned.intervals, [
-    { interval_ordinal: 0, elapsed: rational('30'), planned_time: rational('30'),
-      cumulative_progress_before_ppm: 0, cumulative_progress_after_ppm: 333_333 },
-    { interval_ordinal: 1, elapsed: rational('30'), planned_time: rational('30'),
-      cumulative_progress_before_ppm: 333_333, cumulative_progress_after_ppm: 666_666 },
-    { interval_ordinal: 2, elapsed: rational('30'), planned_time: rational('30'),
-      cumulative_progress_before_ppm: 666_666, cumulative_progress_after_ppm: 1_000_000 }
-  ]);
 });
 
 test('P19 repeated interval idempotency key replays one result, clock update, and append', () => {

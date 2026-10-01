@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(governance): PC §4/§9.1 — anachronism is excluded only from world stock; an actor’s making and invention are decided causally (materials, tool, skill, workable process), not by an anachronism list (D59) (#PR)
 - docs(sprint, process): CURRENT_SPRINT and HOW_WE_WORK brought to owner decisions D51–D57 and the next step of the D49 slice (#217)
 - data(game-base): needs_check queues block generation — only anachronism doubts, per region and period; regional presence stays informational; fail-closed matcher in runtime-catalog, snapshot v2, Opus-approved classification 8/29 (D51 p.3) (#215)
 - data(game-base): separate personal-name pools per people (D51) — Gotland and German guests, Korela, Izhora, Chud/Estonians, Smolensk guests; the Novgorod pool keeps only pp_novgorod_rus; Valit (Korela, 1337/38, significant) added, Igoland a typed gap; Opus approve_with_limits (names-foreign)

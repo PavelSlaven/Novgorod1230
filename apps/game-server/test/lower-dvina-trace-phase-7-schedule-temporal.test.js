@@ -147,6 +147,93 @@ test('uninterrupted schedule advance still requires completed T+30 path', () => 
   assert.equal(ok.elapsed_after_decision, 5);
 });
 
+test('decision-time rest limit does not report fire-rest completion', () => {
+  const advanced = resolveTracePhase7ScheduleTemporalAdvance({
+    state: { party_id: 'party-1',
+      party_state: { turn_number: 7, state_version: 7 },
+      clock: at(100), temporal_boundary_candidates: [] },
+    temporal: baseTemporal(),
+    actorStep: baseActorStep(),
+    restLimitTimestamp: at(125),
+    temporalAdvanceOwner: { advance: ({ request }) => ({
+      result: { temporal_status: 'completed', clock_before: at(125),
+        clock_after: at(125), trace: { processed_boundary_ids: [] } },
+      state_projection: { ...structuredClone(request.relevant_state_projection),
+        cumulative_elapsed_minutes: 25 }
+    }) },
+    commandIdempotencyKey: 'idem-deferred-rest'
+  });
+  assert.equal(advanced.rest_completed, false);
+  assert.equal(advanced.result.temporal_status, 'completed');
+  assert.equal(advanced.elapsed_after_decision, 0);
+});
+
+test('needs-check refusal survives external interruption as an incomplete rest',
+  () => {
+    const refusal = { pass: false, errors: [{
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+    }] };
+    const advanced = resolveTracePhase7ScheduleTemporalAdvance({
+      state: { party_id: 'party-1',
+        party_state: { turn_number: 7, state_version: 7 },
+        clock: at(100), temporal_boundary_candidates: [{
+          boundary_id: 'external-interrupt', scheduled_at: at(127)
+        }] },
+      temporal: baseTemporal(),
+      actorStep: { domain_result: refusal,
+        working_projection: { cumulative_elapsed_minutes: 25,
+          active_npc_actor_steps: [] } },
+      temporalAdvanceOwner: { advance: () => ({
+        result: { temporal_status: 'paused', clock_before: at(125),
+          clock_after: at(127), trace: { processed_boundary_ids: [] } },
+        state_projection: { cumulative_elapsed_minutes: 27,
+          active_npc_actor_steps: [] }
+      }) },
+      commandIdempotencyKey: 'idem-needs-check-interrupt'
+    });
+    assert.equal(advanced.result.temporal_status, 'paused');
+    assert.equal(advanced.rest_completed, false);
+    assert.equal(advanced.elapsed_after_decision, 2);
+    assert.deepEqual(advanced.needs_check_refusal, refusal);
+  });
+
+test('needs-check refusal resumes from external pause without replaying elapsed time',
+  () => {
+    const refusal = { pass: false, errors: [{
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+    }] };
+    const advanced = resolveTracePhase7ScheduleTemporalAdvance({
+      state: { party_id: 'party-1',
+        party_state: { turn_number: 8, state_version: 8 },
+        clock: at(127), temporal_boundary_candidates: [] },
+      temporal: baseTemporal(),
+      actorStep: { result: { npc_ref: 'zhdanko-1', status: 'refused' },
+        domain_result: refusal,
+        working_projection: { cumulative_elapsed_minutes: 25,
+          active_npc_actor_steps: [] } },
+      priorScheduleTemporal: { rest_completed: false,
+        elapsed_after_decision: 2,
+        result: { temporal_status: 'paused', clock_before: at(125),
+          clock_after: at(127),
+          trace: { processed_boundary_ids: ['external-interrupt'] } },
+        projection: { cumulative_elapsed_minutes: 27,
+          active_npc_actor_steps: [] } },
+      temporalAdvanceOwner: { advance: ({ request }) => {
+        assert.deepEqual(request.clock_before, at(127));
+        return { result: { temporal_status: 'completed',
+          clock_before: at(127), clock_after: at(130),
+          trace: { processed_boundary_ids: [] } },
+        state_projection: { cumulative_elapsed_minutes: 30,
+          active_npc_actor_steps: [] } };
+      } },
+      commandIdempotencyKey: 'idem-needs-check-resume'
+    });
+    assert.equal(advanced.rest_completed, true);
+    assert.equal(advanced.elapsed_after_decision, 5);
+    assert.deepEqual(advanced.result.clock_before, at(125));
+    assert.deepEqual(advanced.result.clock_after, at(130));
+  });
+
 test('NPC affect replaces the committed fire candidate before remaining advance',
   ()=>{
     const start=firePlan({action:'start',process:null,item:'fuel-old',step:1});

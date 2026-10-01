@@ -256,9 +256,11 @@ test('A1 preflight checks independent output descriptor before admission',
     state.items.push(...detached(rows));
     const loadedProfile = await loadLowerDvinaTraceA1Profile();
     let guardedCandidate;
+    let guardCalls = 0;
     const owner = createLowerDvinaTraceA1ProductionResolverFactory({
       pool: a1Pool(state, rows), loadedProfile,
       assertNeedsCheckAllowed: async ({ candidate }) => {
+        guardCalls += 1;
         guardedCandidate = candidate;
         throw Object.assign(new Error('blocked'), {
           code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
@@ -292,6 +294,8 @@ test('A1 preflight checks independent output descriptor before admission',
     assert.equal(guardedCandidate.name, 'механизм');
     assert.ok(guardedCandidate.qualitative_facts.some((fact) =>
       fact.includes('павлина')));
+    assert.equal(guardCalls, 1,
+      'NPC A1 must continue to invoke the needs-check guard');
   });
 
 function genericOwners() {

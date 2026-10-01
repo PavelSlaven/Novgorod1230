@@ -62,6 +62,21 @@ test('create_entity returns a deterministic self-contained ordinary item draft',
     assert.equal(JSON.stringify(first).includes('must-not-reach-model'), false);
   });
 
+test('player create_entity does not consult the needs-check beingness filter',
+  async () => {
+    let checked = false;
+    const ports = createPorts({ assertNeedsCheckAllowed: async () => {
+      checked = true;
+      throw Object.assign(new Error('beingness filter must not block player action'),
+        { code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED' });
+    } });
+    const operation = createSand();
+    const result = await ports.executionRegistry.direct(operation)(
+      execution(operation));
+    assert.equal(result.write_fragments[0].target, 'party_items');
+    assert.equal(checked, false);
+  });
+
 test('legacy ambient direct action remains available without an O2a admission port', async () => {
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({
     ordinaryResultPolicy: testOrdinaryPolicy(),

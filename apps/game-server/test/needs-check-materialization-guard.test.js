@@ -67,6 +67,45 @@ test('guard blocks scoped anachronism and preserves queue ID only in typed detai
   });
 });
 
+test('guard can report a matching world-presence candidate for filtering without refusing the turn', async () => {
+  const guard = guardFor();
+  const result = await guard({ partyId:'party-1', committedState:committed,
+    candidate:{name:'Колёсная прялка',path:'O1.request.query'},
+    matchOnly:true });
+  assert.deepEqual(result, [{ queue_id:
+    'crafts-tools-processes/materials_registry/needs_check.csv#crafts_spinning_wheel',
+  path:'O1.request.query', region:'region_novgorod_land', year:1230 }]);
+  assert.deepEqual(await guard({ partyId:'party-1', committedState:committed,
+    candidate:{name:'самопрялка',path:'O1.request.query'},matchOnly:true }), [],
+  'D59 does not expand blocker names with synonyms');
+});
+
+test('NPC A1 source delta ignores blocker already present on source', async () => {
+  await guardFor()({ partyId:'party-1', committedState:committed,
+    candidate:{ name:'щепка', physical_description:'деревянная щепка',
+      source_fact_delta:{ physical_description:
+        'Колёсная прялка с отделённой щепкой', qualitative_facts:[],
+        removed_physical_fact_refs:[], physical_form:'regular' },
+      source_fact_delta_baseline:{ name:'Колёсная прялка',
+        display_name:'Колёсная прялка', qualitative_facts:[] },
+      path:'NPC.A1.result_descriptor' } });
+});
+
+test('NPC A1 source delta blocks a newly introduced forbidden concept', async () => {
+  await assert.rejects(guardFor()({ partyId:'party-1',
+    committedState:committed, candidate:{ name:'щепка',
+      physical_description:'деревянная щепка', source_fact_delta:{
+        physical_description:'рубаха стала Колёсной прялкой',
+        qualitative_facts:[], removed_physical_fact_refs:[],
+        physical_form:'regular' }, source_fact_delta_baseline:{
+        name:'нижняя рубаха', display_name:'нижняя рубаха',
+        qualitative_facts:[] }, path:'NPC.A1.result_descriptor' } }),
+  (error) => error.code === NEEDS_CHECK_MATERIALIZATION_BLOCKED
+    && error.details.queue_id ===
+      'crafts-tools-processes/materials_registry/needs_check.csv#crafts_spinning_wheel'
+    && error.details.path === 'NPC.A1.result_descriptor');
+});
+
 test('guard scopes known region and committed calendar year, while unknown region fails closed', async () => {
   const otherRegionSnapshot = NEEDS_CHECK_BLOCKER.createSnapshot(
     sourceSnapshot.entries, [...sourceSnapshot.regions,'region_other']);

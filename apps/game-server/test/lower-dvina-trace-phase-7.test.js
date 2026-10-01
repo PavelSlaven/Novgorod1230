@@ -134,6 +134,99 @@ test('Phase 7 executes a direct NPC step and continues the rest interval',
     assert.equal(snapshot.npcs[1].machine_state.status, 'idle');
   });
 
+test('needs-check declines only NPC operation and commits full player rest',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const queueId = 'needs_check.csv#HNT0024';
+    let npcOperationCalls = 0;
+    const capability = {
+      operation: 'request_activity',
+      capability: { owner: '@rus/turn', allowed: [{
+        activity_kind: 'wait', target_refs: []
+      }], factual_outcome_write: 'owner_only' },
+      supports: ({ operation }) => operation.op === 'request_activity'
+        && operation.activity_kind === 'wait',
+      async execute() {
+        npcOperationCalls += 1;
+        throw Object.assign(new Error('blocked NPC proposal'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+          details: { path: 'NPC.result_descriptor', queue_id: queueId,
+            queue_ids: [queueId] }
+        });
+      }
+    };
+    const consequence = await commandFor({ state, contracts,
+      npcOwnerCapabilities: [capability],
+      model: async (request) => autonomousPlan(request, 'wait')
+    }).consequence({ retrievedState: state,
+      playerInput: playerInput(state, 'needs-check-npc') });
+
+    assert.equal(npcOperationCalls, 1);
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.schedule_temporal.rest_completed, true);
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
+    assert.equal(consequence.phase7.actor_step.status, 'refused');
+    assert.equal(Object.hasOwn(consequence.phase7.actor_step, 'domain_result'),
+      false, 'private matcher details stay out of actor-step/player result');
+    assert.deepEqual(consequence.phase7.schedule_temporal
+      .needs_check_refusal.errors[0], {
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+      category: 'applicability', retryable: false,
+      path: 'NPC.result_descriptor', queue_id: queueId,
+      queue_ids: [queueId]
+    });
+    assert.deepEqual(consequence.phase7.actor_step_owner_outputs, {
+      write_fragments: [], consequence_fragment: null,
+      ordinary_materialization_atomic_write_plan: null,
+      action_production_atomic_write_plans: [], local_fire_atomic_write_plans: [],
+      spatial_semantic_atomic_write_plan: null
+    });
+
+    const update = timeUpdate(state, consequence, 30);
+    const bodyUpdate = createTracePhase7BodyEffect({ contracts,
+      fallback: { apply() { throw new Error('unexpected fallback'); } }
+    }).apply({ committed_state: state, consequence, time_update: update });
+    const commit = await buildLowerDvinaTracePhase7Commit({
+      partyId: state.party_id,
+      factual: factualTurn(state, consequence, update, bodyUpdate),
+      state, inputDigest: digest, visibleContext: visibleContext(),
+      phase7Contracts: contracts
+    });
+    const replay = await buildLowerDvinaTracePhase7Commit({
+      partyId: state.party_id,
+      factual: factualTurn(state, consequence, update, bodyUpdate),
+      state, inputDigest: digest, visibleContext: visibleContext(),
+      phase7Contracts: contracts
+    });
+    assert.equal(replay.plan.digest, commit.plan.digest,
+      'same-key refusal replay returns same persisted plan');
+    const next = rows(commit.plan, 'party_state_snapshots')[0]
+      .record.state_payload;
+    await assert.doesNotReject(() => assertPhase7NormalizedRows(
+      phase7ReadPool(commit.plan, next), next));
+    await assert.doesNotReject(() => assertPhase7NormalizedRows(
+      phase7ReadPool(replay.plan, next), next));
+    assert.equal(next.party_state.turn_number, state.party_state.turn_number + 1);
+    assert.equal(next.party_state.state_version, state.party_state.state_version + 1);
+    assert.equal(next.clock.whole_minutes, '130');
+    assert.equal(next.phase7_fire_rest.npc_domain_rejection.errors[0].queue_id,
+      queueId);
+    assert.equal(rows(commit.plan, 'party_items').length, 0,
+      'refused NPC operation creates no item rows');
+    const attemptTrace = rows(commit.plan, 'party_timed_activity_attempts')[0]
+      .record.trace.causality.npc_domain_rejection.errors[0];
+    assert.equal(attemptTrace.path, 'NPC.result_descriptor');
+    assert.equal(attemptTrace.queue_id, queueId);
+    assert.equal(rows(commit.plan, 'party_npc_actor_steps').length, 0,
+      'refused NPC operation creates no actor-step row');
+
+    assert.equal(next.party_state.turn_number, state.party_state.turn_number + 1,
+      'refused NPC operation still commits the player turn');
+  });
+
 test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
   async () => {
     const state = committedState();

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
-import { NEEDS_CHECK_BLOCKER } from '@rus/runtime-catalog';
 import {
   createItemOperationHandlers,
   initializeRuntimeState
@@ -61,42 +60,22 @@ test('ambient adapter preserves semantic intent for code-owned source selection'
   assert.equal(received.portion_profile_ref, 'committed');
 });
 
-test('needs-check guard rejects a new direct entity before runtime mutation', async () => {
-  const state = initializeRuntimeState(null);
-  const blockerSnapshot = NEEDS_CHECK_BLOCKER.createSnapshot([{
-    queue_id: 'fauna_peacock', doubt_kind: 'anachronism', block_by: 'name',
-    block_region: 'region_novgorod_land', block_period: '1230-1250',
-    source_ref: 'test#fauna_peacock', reason: 'Unverified historical form.',
-    patterns: [{ language: 'ru', value: 'Павлин' }], exceptions: []
-  }], ['region_novgorod_land']);
-  let checked;
+test('actor-neutral direct entity handler reaches ordinary admission without a guard', async () => {
+  const state = initializeRuntimeState({ actor_id: 'mikula' });
   const handlers = createItemOperationHandlers(state, {
     ordinaryResultPolicy: { ...ordinaryResultPolicy, candidates: [
       { ...ordinaryResultPolicy.candidates[0], name: 'механизм',
         approved_fact_texts: ['павлина'] }
-    ] },
-    assertNeedsCheckAllowed: async ({ candidate }) => {
-      checked = candidate;
-      assert.equal(NEEDS_CHECK_BLOCKER.matches({ snapshot: blockerSnapshot,
-        candidate: { ...candidate, region: 'region_novgorod_land', year: 1230 }
-      })?.queue_id, 'fauna_peacock');
-      const error = new Error('blocked');
-      error.code = 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
-      error.details = { queue_id: 'private-queue-id' };
-      throw error;
-    }
+    ] }
   });
-  await assert.rejects(handlers.create_entity(execution(createSand({
+  const result = await handlers.create_entity(execution(createSand({
     name: 'механизм', facts: [{ temp_ref: 'blocked_fact', text: 'павлина' }]
-  }))), {
-    code:'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
-    details:{queue_id:'private-queue-id'}
-  });
-  assert.equal(checked.name, 'механизм');
-  assert.deepEqual(checked.facts, ['павлина']);
-  assert.equal(state.entities.size, 0);
-  assert.equal(state.aliases.size, 0);
-  assert.equal(state.reservedRefs.size, 0);
+  })));
+  assert.equal(result.write_fragments[0].target, 'party_items');
+  assert.equal(state.entities.size, 1,
+    'the ordinary result is admitted to the runtime draft');
+  assert.equal(state.aliases.has('new_entity_1'), true);
+  assert.equal(state.aliases.has('blocked_fact'), true);
 });
 
 test('inside uses a visible open container and code-owned capacity', () => {

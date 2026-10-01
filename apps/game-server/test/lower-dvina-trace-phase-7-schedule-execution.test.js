@@ -11,7 +11,10 @@ test('needs-check rejects only the NPC actor operation through domain rejection'
       request_container_access: async () => {
         npcOperationWrites += 1;
         throw Object.assign(new Error('blocked proposal'), {
-          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+          details: { path: 'NPC.result_descriptor',
+            queue_id: 'needs_check.csv#HNT0024',
+            queue_ids: ['needs_check.csv#HNT0024'] }
         });
       }
     } });
@@ -38,7 +41,10 @@ test('needs-check rejects only the NPC actor operation through domain rejection'
     assert.deepEqual(result.working_projection, projection);
     assert.deepEqual(result.domain_result, { pass: false, errors: [{
       code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
-      category: 'applicability', retryable: false
+      category: 'applicability', retryable: false,
+      path: 'NPC.result_descriptor',
+      queue_id: 'needs_check.csv#HNT0024',
+      queue_ids: ['needs_check.csv#HNT0024']
     }] });
     assert.equal(npcOperationWrites, 1);
     assert.equal(Object.hasOwn(result, 'owner_outputs'), false);

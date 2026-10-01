@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest } from '@rus/materialization';
-import { validateTurnStepCommitEnvelope } from '@rus/turn';
+import { validateTurnStepCommitEnvelope, validateTurnStepPlan,
+  validateTurnStepRequest } from '@rus/turn';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { withCommittedRuntimeContainers } from
@@ -60,6 +61,56 @@ test('turn-step commit rejects extra nested player, completed-step and trace fie
       assert.equal(validateTurnStepCommitEnvelope(envelope).ok, false);
     }
   });
+
+test('turn-step commit preserves the exact A1 canonicalization diagnostic', () => {
+  const envelope = commitEnvelope({ clarification: false, check: false });
+  const trace = envelope.loop_trace.step_traces[0];
+  const operation = { op: 'request_item_use', actor_ref: 'actor-1',
+    item_ref: 'item:shirt', use_kind: 'other', target_refs: [],
+    action_production: { source_refs: ['item:shirt'], tool_refs: [],
+      requested_output_count: null, identity_mode: 'preserve_source',
+      origin: null, result_class: 'ordinary_physical_result',
+      material_extent: null, result_descriptor: {
+        display_name: null, physical_description: 'полоса ткани',
+        qualitative_facts: [], removed_physical_fact_refs: [],
+        inscription_text: null, physical_form: null, source_fact_delta: null
+      }, output_class: 'ordinary_mundane' } };
+  Object.assign(trace.plan_request, {
+    root_player_action: 'Отрываю полосу ткани от рубахи.',
+    remaining_intent: 'Отрываю полосу ткани от рубахи.'
+  });
+  trace.plan_request.player_safe_state.visible_entities = [{
+    entity_ref: 'item:shirt', kind: 'item', display_label: 'рубаха'
+  }];
+  trace.plan_request.player_safe_state.items = [{ item_id: 'item:shirt',
+    display_name: 'рубаха' }];
+  trace.approved_plan = { ...trace.approved_plan,
+    interpretation: { player_goal: 'Отрываю полосу ткани от рубахи.',
+      grounded_attempt: 'Отрываю полосу ткани от рубахи.',
+      adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [operation], continuation: null, clarification: null,
+    direct_result_kind: null, reason_code: 'action_production'
+  };
+  trace.resolution = 'domain_request';
+  trace.goal_result = 'pending';
+  trace.reason_code = 'action_production';
+  trace.canonicalizations = [{ path: '$.operations[0].description',
+    removed_fields: ['description'] }];
+  envelope.mode_resolution.decision_trace.step_traces[0] =
+    structuredClone(trace);
+  assert.deepEqual(validateTurnStepRequest(trace.plan_request).errors, []);
+  assert.deepEqual(validateTurnStepPlan(trace.approved_plan, {
+    request: trace.plan_request
+  }).errors, []);
+  assert.deepEqual(validateTurnStepCommitEnvelope(envelope).errors, []);
+
+  trace.canonicalizations[0].path = '$.operations[0].unexpected';
+  envelope.mode_resolution.decision_trace.step_traces[0] =
+    structuredClone(trace);
+  assert.equal(validateTurnStepCommitEnvelope(envelope).ok, false);
+});
 
 test('turn-step commit cross-binds every generic check to its loop plan', () => {
   const unmatched = commitEnvelope({ clarification: false, check: true });

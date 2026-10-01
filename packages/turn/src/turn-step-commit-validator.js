@@ -119,7 +119,15 @@ function validateStepTraces(errors, traces, envelope) {
       'repaired', 'applied', 'check_outcome', 'check_binding',
       'approved_plan', 'plan_request', 'player_response_boundary',
       'reason_code'
+    ]) || hasExact(trace, [
+      'step_index', 'working_revision', 'resolution', 'goal_result',
+      'repaired', 'applied', 'check_outcome', 'check_binding',
+      'approved_plan', 'plan_request', 'player_response_boundary',
+      'reason_code', 'canonicalizations'
     ]);
+    const canonicalizationsValid = !Object.hasOwn(trace ?? {},
+      'canonicalizations') || validCanonicalizations(trace.canonicalizations,
+      trace.approved_plan);
     const generic = trace?.resolution === 'generic_check';
     const binding = trace?.check_binding;
     const plan = trace?.approved_plan;
@@ -144,7 +152,7 @@ function validateStepTraces(errors, traces, envelope) {
       && trace.player_response_boundary === true
       && binding === null
       && trace.check_outcome === null;
-    if (!exact || trace.step_index !== index + 1
+    if (!exact || !canonicalizationsValid || trace.step_index !== index + 1
         || trace.working_revision !== index
         || typeof trace.repaired !== 'boolean'
         || typeof trace.applied !== 'boolean'
@@ -176,6 +184,23 @@ function validateStepTraces(errors, traces, envelope) {
   if (bound.size !== genericRequests.size) {
     errors.push('every generic check must bind to exactly one loop step');
   }
+}
+
+function validCanonicalizations(canonicalizations, plan) {
+  return Array.isArray(canonicalizations) && canonicalizations.length === 1
+    && canonicalizations.every((entry) => {
+      if (!hasExact(entry, ['path', 'removed_fields'])
+          || !Array.isArray(entry.removed_fields)
+          || entry.removed_fields.length !== 1
+          || entry.removed_fields[0] !== 'description') return false;
+      const match = /^\$\.operations(?:\.(\d+)|\[(\d+)\])\.description$/u
+        .exec(entry.path ?? '');
+      if (match == null) return false;
+      const operation = plan?.operations?.[Number(match[1] ?? match[2])];
+      return operation?.op === 'request_item_use'
+        && operation.action_production != null
+        && !Object.hasOwn(operation, 'description');
+    });
 }
 
 function validGenericCheckRequest(value) {

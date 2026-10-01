@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { requestTurnStepPlanWithRepair } from '../src/turn-step-plan-repair.js';
+import { traceFor } from '../src/turn-step-loop-support.js';
 
 const actor = 'actor_mikula';
 const action = 'Оторву полосу от подола рубахи.';
@@ -54,6 +55,67 @@ test('the repair is one: a second invalid form is a typed failure', async () => 
     turnStepModel: async () => { calls += 1; return partial('none'); } }),
   (error) => error.code === 'TURN_STEP_PLAN_INVALID' && error.details.repair_attempted === true);
   assert.equal(calls, 2);
+});
+
+test('one A1 operation description error is narrowly canonicalized and traced', async () => {
+  const invalid = partial('regular');
+  invalid.operations[0].description = 'Делаю полосу ткани.';
+  const seen = [];
+  let calls = 0;
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async (_safe, repairContext) => {
+      calls += 1;
+      assert.equal(repairContext, undefined);
+      return invalid;
+    }, semanticPlanValidator: async ({ plan }) => {
+      seen.push(structuredClone(plan));
+      return true;
+    } });
+  assert.equal(result.repaired, false);
+  assert.equal(calls, 1);
+  assert.equal(seen.length, 1);
+  assert.deepEqual(seen[0], partial('regular'));
+  assert.equal(Object.hasOwn(result.plan.operations[0], 'description'), false);
+  assert.deepEqual(result.plan.operations[0].action_production,
+    invalid.operations[0].action_production);
+  assert.deepEqual(result.canonicalizations, [{
+    path: '$.operations[0].description', removed_fields: ['description']
+  }]);
+});
+
+test('A1 description with another structural error is not canonicalized', async () => {
+  const invalid = partial('regular');
+  invalid.operations[0].description = 'Делаю полосу ткани.';
+  invalid.operations[0].unexpected = 'keep invalid';
+  let calls = 0;
+  await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async () => { calls += 1; return invalid; } }),
+  (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_suppressed === 'deterministic_structure_invalid');
+  assert.equal(calls, 1);
+});
+
+test('transient request_item_use description remains a valid field', async () => {
+  const plan = partial('regular');
+  plan.operations = [{ op: 'request_item_use', actor_ref: actor,
+    item_ref: 'shirt', use_kind: 'other', target_refs: [],
+    description: 'Ощупываю ткань.' }];
+  let calls = 0;
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async () => { calls += 1; return plan; } });
+  assert.equal(calls, 1);
+  assert.equal(result.canonicalizations, undefined);
+  assert.equal(result.plan.operations[0].description, 'Ощупываю ткань.');
+});
+
+test('turn-step trace carries canonicalization path and removed field', () => {
+  const plan = partial('regular');
+  const trace = traceFor({ plan, request, repaired: false, applied: false,
+    canonicalizations: [{ path: '$.operations[0].description',
+      removed_fields: ['description'] }] });
+  assert.deepEqual(trace.canonicalizations, [{
+    path: '$.operations[0].description', removed_fields: ['description']
+  }]);
 });
 
 test('other lone enum errors stay deterministic failures without repair', async () => {

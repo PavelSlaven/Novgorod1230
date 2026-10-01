@@ -38,13 +38,24 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     const structuralErrors = parseFailure ? [{ path: '$',
       code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
       : [...(error.details?.errors ?? [])];
+    const canonicalization = a1DescriptionCanonicalization(originalOutput,
+      structuralErrors);
+    if (canonicalization != null) {
+      return {
+        plan: await requestAndValidateTurnStepPlan({ request,
+          turnStepModel: async () => canonicalization.plan,
+          semanticPlanValidator, preparedChainContext, attempt: 1 }),
+        repaired: false,
+        canonicalizations: [canonicalization.diagnostic]
+      };
+    }
     const denialTrial = parseFailure ? null
       : literalDenialMetadataTrial(originalOutput, request, structuralErrors);
     const materialTrial = parseFailure ? null
       : missingMaterialTrial(originalOutput, request, structuralErrors);
     const projectionTrial = denialTrial ?? materialTrial;
     if (!parseFailure && originalOutput != null
-        && (!structuralErrors.some(requiresSemanticRepair)
+        && (!structuralErrors.some((item) => requiresSemanticRepair(item))
           || canAuditSpeechBeforeRepair(originalOutput, structuralErrors) || projectionTrial != null)
         && typeof semanticPlanValidator === 'function') {
       try {
@@ -64,7 +75,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         structuralErrors.push(...(semanticError.details?.errors ?? []));
       }
     }
-    if (!structuralErrors.some(requiresSemanticRepair)) {
+    if (!structuralErrors.some((item) => requiresSemanticRepair(item))) {
       const failure = parseFailure
         ? contractError('TURN_STEP_PLAN_INVALID', structuralErrors) : error;
       failure.details = deepFreeze({ ...failure.details,
@@ -145,6 +156,25 @@ function requiresSemanticRepair({ path, code } = {}) {
   return SEMANTIC_REPAIR_CODES.has(code)
     || code === 'additional_property' && path === '$.operation_choice'
     || code === 'enum' && ACTION_PRODUCTION_FORM_PATH.test(path);
+}
+
+function a1DescriptionCanonicalization(plan, errors) {
+  if (errors.length !== 1) return null;
+  const { path, code } = errors[0];
+  const match = code === 'additional_property'
+    ? /^\$\.operations(?:\.(\d+)|\[(\d+)\])\.description$/u.exec(path ?? '')
+    : null;
+  if (match == null) return null;
+  const index = Number(match[1] ?? match[2]);
+  const operation = plan?.operations?.[index];
+  if (operation?.op !== 'request_item_use'
+      || operation.action_production == null
+      || !Object.hasOwn(operation, 'description')) return null;
+  const normalized = structuredClone(plan);
+  delete normalized.operations[index].description;
+  return { plan: normalized, diagnostic: {
+    path, removed_fields: ['description']
+  } };
 }
 
 function singleTransientOperation(plan) {

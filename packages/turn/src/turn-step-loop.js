@@ -122,7 +122,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         revalidateCommittedState: ports.revalidateCommittedState,
         expectedVersion: identity.committedStateVersion,
         workingProjection, preparedChainContext }) : null;
-    const { plan, repaired } = pendingResult ?? (preparedPlan == null
+    const { plan, repaired, canonicalizations = [] } = pendingResult ?? (preparedPlan == null
       ? await requestTurnStepPlanWithRepair({ request,
           turnStepModel: ports.turnStepModel,
           semanticPlanValidator: ports.semanticPlanValidator,
@@ -147,7 +147,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       blockedPlanReasonCode = typeof blockReason === 'string' ? blockReason : null;
       stopReason = 'terminal';
       remainingIntent = '';
-      stepTraces.push(traceFor({ plan, request, repaired, applied: false }));
+      stepTraces.push(traceFor({ plan, request, repaired, canonicalizations,
+        applied: false }));
       break;
     }
     const preparedContinuationAllowed = preparedPlan != null
@@ -176,7 +177,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         ? 'clarification_required' : 'player_response';
       remainingIntent = request.remaining_intent;
       stepTraces.push(traceFor({
-        plan, request, repaired, applied: false, boundary: true
+        plan, request, repaired, canonicalizations, applied: false,
+        boundary: true
       }));
       break;
     }
@@ -184,7 +186,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       clarification = structuredClone(plan.clarification);
       stopReason = 'clarification_required';
       stepTraces.push(traceFor({
-        plan, request, repaired, applied: false
+        plan, request, repaired, canonicalizations, applied: false
       }));
       break;
     }
@@ -213,7 +215,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       stopReason = 'player_response';
       remainingIntent = request.remaining_intent;
       stepTraces.push(traceFor({
-        plan, request, repaired, applied: false, boundary: true
+        plan, request, repaired, canonicalizations, applied: false,
+        boundary: true
       }));
       break;
     }
@@ -271,6 +274,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       plan,
       request,
       repaired,
+      canonicalizations,
       applied: true,
       checkResult: execution.checkResult,
       checkRequest: execution.checkRequest,

@@ -12,7 +12,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - проверкой compatible full-world pin и runtime contract;
 - чистой projection по region/effective date после полной проверки.
 - единой загрузкой неперсистентных common catalog lookups до projection.
-- чистой проверкой кросс-доменного versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI.
+- чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner.
 
 ## Не делает
 
@@ -87,7 +87,7 @@ still applies.
 `rus.runtime_catalog_context.v2.needs_check_blocker_snapshot` — snapshot,
 загруженный из verified catalog context того же immutable pin. Обязательность
 определяет `needs_check_blocker_snapshot_required` по binding этого import.
-`rus.needs_check_blockers.v2` — immutable snapshot cross-domain queues с проверкой digest. Snapshot включает отсортированный список `regions` из approved G0 registry; digest покрывает schema, regions и entries. Каждая name-строка фиксирует `doubt_kind` (`anachronism` или `regional_presence`), `block_by` (`name`, `archive_id` или `none`), `block_region`, включительный `block_period` (`YYYY-YYYY`), исключения и нормализуемые шаблоны. Только `anachronism` блокирует по имени: совпадение действует в том же регионе и при candidate year внутри периода; другой известный регион или год вне периода пропускается. Отсутствующий или неизвестный регион проверяется по всем name-записям. `regional_presence` всегда информационный (`block_by=none`). Runtime получает year из committed clock и регион из committed G0 места; consumer решает только чистое совпадение, очередь и допуск действия принадлежат другим owners. Изменение активного указателя не меняет snapshot исторического party pin.
+`rus.needs_check_blockers.v2` — immutable snapshot cross-domain queues с проверкой digest. Snapshot включает отсортированный список `regions` из approved G0 registry; digest покрывает schema, regions и entries. Каждая name-строка фиксирует `doubt_kind` (`anachronism` или `regional_presence`), `block_by` (`name`, `archive_id` или `none`), `block_region`, включительный `block_period` (`YYYY-YYYY`), исключения и нормализуемые шаблоны. Только `anachronism` даёт совпадение по имени в том же регионе и внутри периода; другой известный регион или год вне периода пропускается. Отсутствующий или неизвестный регион проверяется по всем name-записям. `regional_presence` всегда информационный (`block_by=none`). Runtime получает year из committed clock и регион из committed G0 места. Matcher сообщает совпадение, но не задаёт admission policy: world-presence consumers фильтруют совпавшие новые факты, NPC owner отклоняет только совпавшую операцию, а действия игрока список не блокирует. Изменение активного указателя не меняет snapshot исторического party pin.
 
 `loadActivePin` возвращает immutable `rus.runtime_catalog_pin.v2`.
 `loadApprovedItemCatalog` возвращает полный immutable verified bundle только

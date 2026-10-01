@@ -3,7 +3,7 @@
 ## Unreleased
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
-- feat(materialization): immutable needs-check blocker pin, region/year guard across free materialization seams, typed player-safe 409 and D-018 contracts (#98)
+- fix(materialization): D59 filters needs_check only in O1/O2b/S1, preserves player actions and authored O2a, rejects matching NPC operations; LW-122 added (#98)
 
 - data(game-base): needs_check queues block generation — only anachronism doubts, per region and period; regional presence stays informational; fail-closed matcher in runtime-catalog, snapshot v2, Opus-approved classification 8/29 (D51 p.3) (#215)
 - fix(items): A1 make works at places reached by walking (rt-make) — result destination on the scene position when the party has no g5 anchor, planner rule names `partial_transformation` and an allowed form, one repair for an invalid `physical_form`; LW-100/LW-103 updated, LW-118 added

@@ -67,12 +67,18 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   Presence preflight с `decision: null` не создаёт resolve_presence; сохраняется
   только уже принятый seed. Нормальные модельные отрицательные решения
   сохраняют собственную presence identity, отличную от seed и replay.
-- O1 accepts an injected materialization guard owned by game-server. It checks
-  the normalized free-discovery query before any Stage A model call and checks a
-  genuinely new proposed semantic descriptor before admission/write; existing
-  inspection and equivalent visible items keep their existing owners. A typed
-  needs-check refusal is propagated without semantic repair or presence-ledger
-  transition; `@rus/turn` does not load catalogs or interpret blocker policy.
+- O1 accepts injected world-presence filter owned by game-server. A matching
+  normalized query or proposed descriptor returns ordinary `no_change` (never
+  `absent`, which would write a negative presence resolution), and proposed
+  descriptor is filtered before admission/write. The query check runs before
+  Stage A model call; the turn follows its normal path.
+  Existing inspection and equivalent visible items keep their owners. O2a remains
+  authored-only; O2b and S1 filter matching new candidates. Player A1 and direct
+  `create_entity` actions do not use this filter. Matching NPC O2b/S1 candidates
+  are filtered; matching NPC A1/direct `create_entity`/O1 operations use existing
+  domain rejection. `continueOnDomainRejection` consumes that rejection signal,
+  allowing the temporal NPC boundary to continue processing. `@rus/turn` does not
+  load catalogs or interpret blocker policy.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct

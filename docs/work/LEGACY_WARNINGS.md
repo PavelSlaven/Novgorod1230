@@ -102,6 +102,7 @@
 | 110 | `apps/game-server/src/infrastructure/postgres/generated-npc-first-entry.js` (`nameProfileSnapshot`) | вторая проекция снимка имени рядом с `projectNameProfileSnapshot` stage 24 (лимит API 8) | — |
 | 111 | `infra/world-base/schema/29.sql` (`occupation_character_items`, `npc_regional_context_name_bindings`) | нет FK на реестр занятий (33 занятия, 165 строк вне реестра); привязка контекста без версии | — |
 | 118 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, narration | результат A1 лежит на позиции сцены, рассказчик пишет «в руках» (расхождение narration и committed state); ёмкость позиции ограничивает число полос | — |
+| 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -640,4 +641,10 @@
 - **Где.** `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js` (`actionProducedOwnerOutputDestination`: `placement_kind ∈ {anchor, scene_position}`), `packages/items-property/src/action-produced-transition-entities.js`; рассказчик — `apps/game-server` narration (проекция committed-изменений).
 - **Что.** Независимый выход A1 попадает на позицию сцены (на старте — на якорь). Игрок «оторвал полосу» — вещь лежит под ногами, а рассказчик пишет «В твоих руках лежит отрезанный кусок». Это расхождение narration и committed state; владелец — narration (рассказчик не должен утверждать место, которого нет в committed). Сцена занята вещью: ёмкость позиции ограничена (7), при большом числе полос ход отвергается `ACTION_PRODUCED_DESTINATION_CAPACITY`.
 - **Как жить.** Не подменять место в обход владельца. Смена контракта («в руки» для частичного отделения от несомой вещи, `holder_ref` в owner-destination) — отдельное решение владельца items-property. Пока — правка narration: не называть руки, если результат на сцене.
+- **Issue.** —
+
+### LW-122 — A1 не проверяет вид материала и работоспособность результата (a1-physics)
+- **Где.** A1 physical admission в `packages/items-property` и planner/wiring в `apps/game-server`.
+- **Что.** A1 проверяет массу, доступ, количество, класс выхода, требование инструмента и режим идентичности, но не сохраняет и не проверяет вид материала и не устанавливает, может ли результат работать по своему назначению. Если модель предложит такой план, «прялка из рубахи» или «меч из рубахи» могут пройти A1. Снятие `needs_check` с действий игрока в D59 не создаёт этот пробел, но делает его видимым и для имён из прежнего списка.
+- **Как жить.** Не считать положительный A1 admission доказательством подходящего материала или работоспособности. Отдельная задача `a1-physics` должна использовать знания мира о технологии и сохранять/проверять вид материала.
 - **Issue.** —

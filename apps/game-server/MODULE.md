@@ -21,18 +21,25 @@ runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
-Свободная materialization получает `rus.needs_check_blockers.v2` только из
-verified immutable catalog snapshot из контекста того же turn pin. Каталог
-запрашивается лениво при первом guard-вызове; owner берёт год из committed clock
-и регион через runtime-catalog G0 reader для версии текущего G4. O1 проверяет
-запрос после replay/preflight и до model call, предложенный descriptor — до
-resolution-развилки; direct/O2b — до admission/write, A1 independent output — в
-preflight и перед записью. S1 проверяет после `admitSpatialSemanticRemainder` и
-до admission/write. Для NPC blocker отклоняет только его операцию через
-существующий domain-rejected путь. `TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED`
-сопоставляется только при подтверждённом `not_started` в player-safe
-`WORLD_ACTION_UNAVAILABLE`; очередь остаётся в private trace. Профили O2b/S1
-активируются только их существующими exact gates.
+Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
+`rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
+same turn pin; lookup is lazy. Guard uses year from committed clock and region
+from runtime-catalog G0 reader for current G4 version. O1 checks normalized query
+after replay/preflight and before model call: a match returns ordinary `no_change`
+and follows normal turn timing/commit without being reported as `absent`.
+Matching proposed O1 descriptors are filtered before admission/write with the same
+ordinary outcome. O2b/S1 filter only matching candidates; remaining candidates
+continue. O2a is authored-only and does not run this filter.
+
+For NPCs, matching O2b/S1 candidates are filtered; matching A1, direct
+`create_entity` or O1 operations are rejected through existing domain-rejected
+path without stopping player turn. NPC A1 checks only a newly forbidden name in
+`source_fact_delta`. Player A1 and direct `create_entity` are not blocked by this
+list. Place filling, NPC first-entry, inventory, equipment and trade use approved
+catalogs checked by `node data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs --check`; snapshot does
+not replace those checks. Queue IDs and check paths appear only in developer
+trace when diagnostics are enabled. Snapshot does not replace approved catalogs
+or world knowledge. O2b/S1 profiles activate only through existing exact gates.
 
 `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
 equipment and Stage 24 body/routine projections for an exact generated scene.

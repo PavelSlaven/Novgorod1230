@@ -54,8 +54,8 @@
       "document_id": "code-driven-world-materialization-architecture",
       "canonical_path": "corpus/DOCUMENTS/code_driven_world_materialization_architecture.md",
       "file_name": "code_driven_world_materialization_architecture.md",
-      "sha256": "250a5331b8feb63ac6d64c5b9cdcdb1b9019950febd4c84c5787021c8e7f8acd",
-      "bytes": 64959,
+      "sha256": "a26a9fc768680bb0373fe7c048361de44ea5a55089be8bb7ad20a163cbfe1cf2",
+      "bytes": 66063,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "537201ca45709e918f42ac400b1128597b2b9fae39cff087d84c237064c15115",
-      "bytes": 31559,
+      "sha256": "af6c3f61a48bdce9d85ddfff6bdf8568f09814f3e60b9c4f495fc8d823be126c",
+      "bytes": 31751,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -416,8 +416,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "2c7381e9320c0d2d47eae80e94a442f1a1cb9126a732922ac158899be7698390",
-      "bytes": 114871,
+      "sha256": "4bea3207266326e978daf7f8edb8098ecc48796300090076a9c934a43e1e1bb0",
+      "bytes": 115009,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

@@ -30,11 +30,11 @@ import {
   zero
 } from './spatial-v3-execution-support.js';
 
-function intervalOutcome(signals, actualAfter) {
+function intervalOutcome(signals, actualAfter, mirroredAfter) {
   // A prepared terminal endpoint wins over co-occurring control signals.  A data
   // gap can strand only a still in-transit state; it must never manufacture a
   // second terminal interpretation of a reached arrival endpoint.
-  if (actualAfter === 1_000_000) return 'segment_completed';
+  if (actualAfter === 1_000_000) return mirroredAfter ? 'returned_to_departure' : 'segment_completed';
   // §11.6: stranded/data gap, completed, interrupted, paused, blocked, progressed.
   if (signals.stranded || signals.data_gap) return 'stranded';
   if (signals.interrupted || signals.interrupt) return 'interrupted_at_anchor';
@@ -45,8 +45,10 @@ function intervalOutcome(signals, actualAfter) {
 
 function stateForOutcome(state, outcome) {
   if (outcome === 'segment_completed') return { status: 'closed', closed_result: 'completed' };
+  if (outcome === 'returned_to_departure') return { status: 'closed', closed_result: 'returned_to_departure' };
   if (outcome === 'interrupted_at_anchor') return { status: 'closed', closed_result: 'interrupted_to_anchor' };
   if (outcome === 'paused_in_transit') return { status: 'paused_in_transit' };
+  if (outcome === 'blocked_before_progress') return { status: state.status === 'paused_in_transit' ? 'paused_in_transit' : 'active' };
   if (outcome === 'stranded') return { status: 'stranded_in_transit' };
   return { status: 'active' };
 }
@@ -93,7 +95,7 @@ export function createSpatialV3TraversalExecution(replays) {
       id: input.travel_state_id, party_id: input.party_id, execution_id: input.execution_id, step_ordinal: input.step_ordinal,
       segment_id: input.segment_id, departure_endpoint: clone(input.departure_endpoint), arrival_endpoint: clone(input.arrival_endpoint),
       method_id: input.method_id, capacity_units: input.capacity_units, dependency_pins: clone(input.dependency_pins),
-      progress_ppm: 0, cumulative_actual_time: zero(), next_interval_ordinal: 0, status: 'active', context_snapshot: clone(input.context_snapshot),
+      progress_ppm: 0, cumulative_actual_time: zero(), next_interval_ordinal: 0, mirrored: false, status: 'active', context_snapshot: clone(input.context_snapshot),
       idempotency_key: input.idempotency_key, idempotency_record_id: input.idempotency_record_id,
       start_change_set_id: input.change_set_id, occurred_at_turn: input.occurred_at_turn
     }) });
@@ -114,11 +116,13 @@ export function createSpatialV3TraversalExecution(replays) {
     const replay = replayRecord(replays, 'traversal', input);
     if (replay?.ok === false || replay?.replayed) return replay;
     const state = input.travel_state;
+    const turnBack = input.turn_back === true;
     const sources = validateResolvedTimeSources(input);
     const signals = canonicalSignals(input);
     if (state.party_id !== input.party_id || state.execution_id !== input.execution_id ||
       state.step_ordinal !== input.step_ordinal || state.next_interval_ordinal !== input.interval_ordinal ||
-      state.progress_ppm !== input.progress_before_ppm || !Number.isInteger(input.progress_before_ppm) ||
+      (turnBack ? state.progress_ppm !== 1_000_000 - input.progress_before_ppm
+        : state.progress_ppm !== input.progress_before_ppm) || !Number.isInteger(input.progress_before_ppm) ||
       !Number.isInteger(input.planned_progress_after_ppm) || input.progress_before_ppm < 0 ||
       input.progress_before_ppm >= 1_000_000 || input.planned_progress_after_ppm <= input.progress_before_ppm ||
       input.planned_progress_after_ppm > 1_000_000 || !positiveRational(input.planned_time) || !isRational(input.actual_time) ||
@@ -127,19 +131,32 @@ export function createSpatialV3TraversalExecution(replays) {
     }
     if (!sources.ok) return typedError(sources.code, { execution_id: input.execution_id });
 
+    const mirroredBefore = state.mirrored === true;
+    const mirroredAfter = turnBack ? !mirroredBefore : mirroredBefore;
+    const expectedProgressBefore = turnBack ? 1_000_000 - state.progress_ppm : state.progress_ppm;
     const requestedActualAfter = input.actual_progress_after_ppm ?? input.planned_progress_after_ppm;
-    if (!Number.isInteger(requestedActualAfter) || requestedActualAfter < input.progress_before_ppm || requestedActualAfter > input.planned_progress_after_ppm) {
+    if ((turnBack && (state.status !== 'paused_in_transit' || typeof state.mirrored !== 'boolean'
+      || state.progress_ppm < 1 || state.progress_ppm >= 1_000_000 || input.progress_before_ppm !== expectedProgressBefore))
+      || (!turnBack && input.progress_before_ppm !== expectedProgressBefore)
+      || !Number.isInteger(requestedActualAfter) || requestedActualAfter < input.progress_before_ppm || requestedActualAfter > input.planned_progress_after_ppm) {
       return typedError('travel_interval_conflict', { execution_id: input.execution_id });
     }
-    let outcome = intervalOutcome(signals, requestedActualAfter);
+    let outcome = intervalOutcome(signals, requestedActualAfter, mirroredAfter);
+    if (turnBack && outcome === 'blocked_before_progress') return typedError('travel_interval_conflict', { execution_id: input.execution_id });
+    let interruptionAnchorId = signals.interruption_anchor_id;
+    if (input.progress_before_ppm === 0 && ['paused_in_transit', 'interrupted_at_anchor'].includes(outcome)) {
+      outcome = 'interrupted_at_anchor';
+      interruptionAnchorId ??= state.last_confirmed_endpoint_ref?.endpoint_id;
+    }
     let actual = normalized(input.actual_time);
     let actualAfter = requestedActualAfter;
     if (outcome === 'blocked_before_progress') { actual = zero(); actualAfter = input.progress_before_ppm; }
-    if (outcome !== 'segment_completed' && actualAfter === 1_000_000) return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });
-    if (outcome === 'interrupted_at_anchor' && !signals.interruption_anchor_id) return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });
+    if (!['segment_completed', 'returned_to_departure'].includes(outcome)
+      && actualAfter === 1_000_000) return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });
+    if (outcome === 'interrupted_at_anchor' && !stableId(interruptionAnchorId)) return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });
     if (compareRationalMinutes(actual, input.planned_time) > 0 ||
       (outcome === 'progressed' && (actual.numerator === '0' || actualAfter <= input.progress_before_ppm)) ||
-      (outcome === 'segment_completed' && (actual.numerator === '0' || actualAfter !== 1_000_000)) ||
+      (['segment_completed', 'returned_to_departure'].includes(outcome) && (actual.numerator === '0' || actualAfter !== 1_000_000)) ||
       (outcome === 'blocked_before_progress' && (actual.numerator !== '0' || actualAfter !== input.progress_before_ppm || sources.delays.length))) {
       return typedError('travel_interruption_unresolved', { execution_id: input.execution_id });
     }
@@ -160,17 +177,18 @@ export function createSpatialV3TraversalExecution(replays) {
       synchronized_time_slice_result_id: shared ? input.synchronized_time_slice_result_id : null,
       dynamic_snapshot: clone(input.dynamic_snapshot), resolved_factors: sources.factors, resolved_delays: sources.delays,
       dynamic_dependency_pins: clone(input.dynamic_dependency_pins), execution_context_snapshot: clone(input.execution_context_snapshot),
-      result_kind: outcome, result_code: input.result_code || outcome,
+      result_kind: outcome, result_code: input.result_code || outcome, turn_back: turnBack,
       navigation_resolution: input.navigation_resolution ? clone(input.navigation_resolution) : null,
       hazard_resolution: input.hazard_resolution ? clone(input.hazard_resolution) : null,
       outcome_composition_policy_version: input.outcome_composition_policy_version || 'p19-target-11.6',
       outcome_composition_trace_digest: input.outcome_composition_trace_digest || computeSpatialV3CanonicalDigest({ signals, outcome }),
-      interruption_anchor_id: outcome === 'interrupted_at_anchor' ? signals.interruption_anchor_id : null,
+      interruption_anchor_id: outcome === 'interrupted_at_anchor' ? interruptionAnchorId : null,
       result_change_set_id: input.change_set_id, idempotency_record_id: input.idempotency_record_id,
       occurred_at_turn: input.occurred_at_turn
     });
     const transition = stateForOutcome(state, outcome);
     const travelState = sealed({ ...clone(payloadOf(state)), progress_ppm: actualAfter, cumulative_actual_time: cumulativeAfter,
+      mirrored: mirroredAfter,
       next_interval_ordinal: input.interval_ordinal + 1, ...transition });
     const output = deepFreeze({ ok: true, result, clock_update: clock, travel_state: travelState,
       write_proposal: deepFreeze({ appends: [result], updates: [travelState] }) });

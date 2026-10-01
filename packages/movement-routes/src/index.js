@@ -1,8 +1,43 @@
 import { deepFreeze } from '@rus/kernel';
+import {
+  addRationalMinutes,
+  compareRationalMinutes,
+  normalizeRationalMinutes,
+  subtractRationalMinutes
+} from '@rus/time-events-history';
 export { createMovementPlanner, createRoutePlanActivationValidator } from './spatial-v3.js';
 export { planApprovedLocalZoneTransition } from './local-zone-transition.js';
 export { planApprovedActorDestinationTransition } from
   './approved-destination-transition.js';
+
+/** Split exact traversal time at policy boundaries without rounding elapsed time. */
+export function planExactTraversalIntervals({ total_time, fixed_time_interval } = {}) {
+  const total = normalizeRationalMinutes(total_time);
+  const interval = normalizeRationalMinutes(fixed_time_interval);
+  if (total.numerator === '0' || interval.numerator === '0') {
+    throw new RangeError('traversal total and fixed interval must be positive');
+  }
+
+  const intervals = [];
+  let elapsed = { numerator: '0', denominator: '1' };
+  let progressBefore = 0;
+  while (compareRationalMinutes(elapsed, total) < 0) {
+    const remaining = subtractRationalMinutes(total, elapsed);
+    const plannedTime = compareRationalMinutes(remaining, interval) <= 0 ? remaining : interval;
+    elapsed = addRationalMinutes(elapsed, plannedTime);
+    const terminal = compareRationalMinutes(elapsed, total) === 0;
+    // Intermediate ppm is floor(cumulative exact fraction); the exact endpoint is always 1,000,000.
+    const progressAfter = terminal ? 1_000_000 : Number(
+      (BigInt(elapsed.numerator) * BigInt(total.denominator) * 1_000_000n)
+      / (BigInt(elapsed.denominator) * BigInt(total.numerator))
+    );
+    intervals.push(deepFreeze({ interval_ordinal: intervals.length, elapsed: plannedTime,
+      planned_time: plannedTime, cumulative_progress_before_ppm: progressBefore,
+      cumulative_progress_after_ppm: progressAfter }));
+    progressBefore = progressAfter;
+  }
+  return deepFreeze({ intervals });
+}
 
 export const TRAVEL_CONDITION_MULTIPLIERS = deepFreeze({ normal:1, poor:1.5, bad:2, severe:3 });
 export const TRAVEL_LOAD_MULTIPLIERS = deepFreeze({ light:1, moderate:1.25, heavy:1.5, overloaded:2 });

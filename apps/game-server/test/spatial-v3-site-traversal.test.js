@@ -11,8 +11,12 @@ import { createSpatialV3CurrentMovementCapability } from
   '../src/infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { recheckSiteConnectionTraversal } from
   '../src/infrastructure/postgres/first-playable/recheck-site-connection-traversal.js';
+import * as movementRoutes from '@rus/movement-routes';
+import { createSpatialV3ExecutionEngine } from '@rus/turn/spatial-v3-execution';
 
 const party_id = 'party';
+const rational = (numerator, denominator = '1') => ({ numerator, denominator });
+const seal = (payload) => ({ ...payload, canonical_digest: digest(payload) });
 const active = (id, extra = {}) => ({ id, party_id, status: 'active', state_version: 1, ...extra });
 const versioned = (entity_id) => ({ entity_id, authoring_version: '1' });
 const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'За проходом видна новая поляна.',
@@ -172,6 +176,58 @@ test('approved local line traverses one timed step with exact D49 rational facto
   assert.deepEqual(consequence.spatial_v3_traversal.result.planned_time,
     { numerator: '90', denominator: '1' });
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'segment_completed');
+});
+
+test('90-minute local line makes three exact 30-minute intervals with floor-rounded cumulative ppm', () => {
+  assert.equal(typeof movementRoutes.planExactTraversalIntervals, 'function');
+  const planned = movementRoutes.planExactTraversalIntervals({
+    total_time: rational('90'), fixed_time_interval: rational('30')
+  });
+  assert.deepEqual(planned.intervals, [
+    { interval_ordinal: 0, elapsed: rational('30'), planned_time: rational('30'),
+      cumulative_progress_before_ppm: 0, cumulative_progress_after_ppm: 333_333 },
+    { interval_ordinal: 1, elapsed: rational('30'), planned_time: rational('30'),
+      cumulative_progress_before_ppm: 333_333, cumulative_progress_after_ppm: 666_666 },
+    { interval_ordinal: 2, elapsed: rational('30'), planned_time: rational('30'),
+      cumulative_progress_before_ppm: 666_666, cumulative_progress_after_ppm: 1_000_000 }
+  ]);
+});
+
+test('P19 repeated interval idempotency key replays one result, clock update, and append', () => {
+  const dependencyPins = seal({ pins: [{ dependency_role: 'traversal',
+    entity_ref: { entity_kind: 'world_revision', entity_id: 'revision' },
+    version_pin: { pin_kind: 'authoring_version', authoring_version: '1', state_version: null } }] });
+  const contextSnapshot = seal({ context_id: 'context' });
+  const travelState = seal({ id: 'travel', party_id: party_id, execution_id: 'execution',
+    step_ordinal: 0, next_interval_ordinal: 0, progress_ppm: 0,
+    cumulative_actual_time: rational('0'), status: 'active',
+    dependency_pins: dependencyPins, context_snapshot: contextSnapshot });
+  const dynamicSnapshot = seal({ snapshot_id: 'dynamic', resolved_factors: [], resolved_delays: [] });
+  const executionContext = seal({ context_id: 'execution-context' });
+  const intervalInput = {
+    party_id, execution_id: 'execution', idempotency_key: 'same-line-interval',
+    change_set_id: 'change', idempotency_record_id: 'record', occurred_at_turn: 1,
+    step_ordinal: 0, interval_ordinal: 0, clock_commit_mode: 'direct_party_clock',
+    world_time_before: { whole_minutes: '120', subminute_numerator: '0', subminute_denominator: '1' },
+    travel_state: travelState, progress_before_ppm: 0,
+    planned_progress_after_ppm: 333_333, actual_progress_after_ppm: 333_333,
+    planned_time: rational('30'), actual_time: rational('30'), cumulative_before: rational('0'),
+    dynamic_snapshot: dynamicSnapshot, dynamic_dependency_pins: dependencyPins,
+    execution_context_snapshot: executionContext,
+    delay_occurrence_history: seal({ id: 'delay-history', committed_occurrence_keys: [] }),
+    source_signals: seal({ dependency_pins: dependencyPins })
+  };
+  const engine = createSpatialV3ExecutionEngine();
+  const first = engine.resolveTraversalInterval(intervalInput);
+  const replay = engine.resolveTraversalInterval(intervalInput);
+  assert.equal(first.ok, true, JSON.stringify(first));
+  assert.equal(replay.replayed, true);
+  assert.deepEqual(replay.result, first.result);
+  assert.deepEqual(replay.clock_update, first.clock_update);
+  assert.deepEqual(replay.write_proposal, first.write_proposal);
+  assert.equal(first.write_proposal.appends.length, 1);
+  assert.equal(replay.write_proposal.appends.length, 1);
+  assert.equal(first.clock_update.world_time_after.whole_minutes, '150');
 });
 
 test('known movement denial is a player-safe refusal without traversal', async () => {

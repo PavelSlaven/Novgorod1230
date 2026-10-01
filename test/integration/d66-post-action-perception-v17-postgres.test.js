@@ -107,13 +107,72 @@ test('v17 perception persists with injected environment snapshot; projection not
       environmentPort: () => structuredClone(injectedEnvironmentSnapshot)
     });
     const result = await owner({ working_projection: {}, factual_events: events });
+    const changeSetId = `change:${partyId}:turn-step:4`;
+    const temporalResult = structuredClone(result.temporal_results[0]);
+    const actorMergeResult = temporalResult.combined_change_set.proposals
+      .flatMap(({ write_set }) => write_set?.appends ?? [])
+      .find(({ target_table }) =>
+        target_table === 'party_npc_knowledge_merge_results');
+    assert.ok(actorMergeResult);
+    const sourcePerceptionId = actorMergeResult.record.source_perception_id;
+    const mixedMergeCases = [
+      { npcId: 'npc:mixed-noop-first', order: ['no-op', 'changed'],
+        changedId: 'd66-npc:mixed-noop-first-changed' },
+      { npcId: 'npc:mixed-changed-first', order: ['changed', 'no-op'],
+        changedId: 'd66-npc:mixed-changed-first-changed' }
+    ];
+    for (const { npcId, order } of mixedMergeCases) {
+      for (const kind of order) {
+        const proposalId = `d66-${npcId}-${kind}`;
+        const changed = kind === 'changed';
+        const resultDigest = computeSpatialV3CanonicalDigest({ proposalId,
+          sourcePerceptionId, npcId, changed });
+        const mergeResult = structuredClone(actorMergeResult.record);
+        mergeResult.proposal_id = proposalId;
+        mergeResult.npc_id = npcId;
+        mergeResult.state_version_before = 1;
+        mergeResult.state_version_after = changed ? 2 : 1;
+        mergeResult.state_changed = changed;
+        mergeResult.result_digest = resultDigest;
+        mergeResult.change_set_id = changeSetId;
+        mergeResult.idempotency_key = `knowledge-merge:${proposalId}:${resultDigest}`;
+        const fragment = {
+          proposal_id: `perception:${proposalId}`,
+          write_target: `perception:${proposalId}`,
+          write_set: {
+            appends: [{ target_schema: 'party_runtime',
+              target_table: 'party_npc_knowledge_merge_results',
+              id: proposalId, record: mergeResult }],
+            inserts: [{ target_schema: 'party_runtime',
+              target_table: 'party_npc_knowledge_merge_states',
+              id: `${partyId}:${npcId}`,
+              record: { party_id: partyId, npc_id: npcId,
+                state_version: changed ? 2 : 1,
+                last_proposal_id: changed ? proposalId : null,
+                last_result_digest: changed ? resultDigest : null,
+                updated_change_set_id: changeSetId } }],
+            updates: [], deletes: []
+          },
+          expected_state_versions: [],
+          physical_keys: [
+            `party_runtime.party_npc_knowledge_merge_results:${proposalId}`,
+            `party_runtime.party_npc_knowledge_merge_states:${partyId}:${npcId}`
+          ]
+        };
+        fragment.canonical_digest = computeSpatialV3CanonicalDigest(fragment);
+        temporalResult.combined_change_set.proposals.push(fragment);
+      }
+    }
+    const temporalContent = { ...temporalResult };
+    delete temporalContent.canonical_digest;
+    temporalResult.canonical_digest = computeSpatialV3CanonicalDigest(temporalContent);
     const integrated = integrateSpatialV3TemporalWriteFragments({
       base_write_plan_input: { party_id: partyId,
         canonical_input_digest: computeSpatialV3CanonicalDigest({ input: 'd66' }),
         approved_write_sets: [{ appends: [], inserts: [], updates: [],
           deletes: [] }], expected_state_versions: [],
         lock_context: { physical_keys: [] } },
-      temporal_result: result.temporal_results[0]
+      temporal_result: temporalResult
     });
     assert.equal(integrated.ok, true, JSON.stringify(integrated));
     const flattened = { inserts: [], updates: [], appends: [] };
@@ -127,12 +186,14 @@ test('v17 perception persists with injected environment snapshot; projection not
     assert.equal(flattened.appends.filter(({ target_table }) =>
       target_table === 'party_perception_records').length, 2);
     assert.equal(flattened.inserts.filter(({ target_table }) =>
-      target_table === 'party_npc_knowledge_merge_states').length, 1);
+      target_table === 'party_npc_knowledge_merge_states').length, 3);
     const causalMergeResults = flattened.appends.filter(({ target_table }) =>
       target_table === 'party_npc_knowledge_merge_results')
       .map(({ record }) => record);
-    assert.equal(causalMergeResults.length, 2);
-    const finalChangedMerge = causalMergeResults.filter(({ state_changed }) =>
+    const actorCausalMergeResults = causalMergeResults.filter(({ npc_id }) =>
+      npc_id === 'npc:1');
+    assert.equal(actorCausalMergeResults.length, 2);
+    const finalChangedMerge = actorCausalMergeResults.filter(({ state_changed }) =>
       state_changed).at(-1);
     assert.ok(finalChangedMerge);
 
@@ -148,10 +209,11 @@ test('v17 perception persists with injected environment snapshot; projection not
        'result','run-key','committed')`, [partyId]);
     await pool.query(`INSERT INTO party_runtime.party_npcs
       (party_id,npc_id,run_id,profile_set_id,profile_level,machine_state)
-      VALUES ($1,'npc:1','run:1','npc-profile','scene',$2::jsonb)`,
+      VALUES ($1,'npc:1','run:1','npc-profile','scene',$2::jsonb),
+        ($1,'npc:mixed-noop-first','run:1','npc-profile','scene',$2::jsonb),
+        ($1,'npc:mixed-changed-first','run:1','npc-profile','scene',$2::jsonb)`,
     [partyId, JSON.stringify({ runtime_status: 'available' })]);
 
-    const changeSetId = `change:${partyId}:turn-step:4`;
     const visiblePayload = { schema: 'temporal_visible_package.v1',
       perceived_scene: 'События сохранены.', perceived_changes: [],
       sensory_details: [], visible_npcs: [], visible_objects: [],
@@ -205,7 +267,7 @@ test('v17 perception persists with injected environment snapshot; projection not
     [partyId])).rows[0].count, 2);
     assert.equal((await pool.query(`SELECT count(*)::int AS count
       FROM party_runtime.party_npc_knowledge_merge_states WHERE party_id=$1`,
-    [partyId])).rows[0].count, 1);
+    [partyId])).rows[0].count, 3);
     const knowledgeState = await pool.query(`SELECT state_version,
       last_proposal_id,last_result_digest
       FROM party_runtime.party_npc_knowledge_merge_states
@@ -223,6 +285,25 @@ test('v17 perception persists with injected environment snapshot; projection not
     assert.deepEqual(persistedMergeResults.rows.map(({ proposal_id }) =>
       proposal_id).sort(), causalMergeResults.map(({ proposal_id }) =>
       proposal_id).sort());
+    for (const { npcId, changedId, order } of mixedMergeCases) {
+      const stateRow = await pool.query(`SELECT state_version,
+        last_proposal_id,last_result_digest FROM
+        party_runtime.party_npc_knowledge_merge_states
+        WHERE party_id=$1 AND npc_id=$2`, [partyId, npcId]);
+      assert.equal(stateRow.rowCount, 1);
+      assert.equal(Number(stateRow.rows[0].state_version), 2);
+      assert.equal(stateRow.rows[0].last_proposal_id, changedId);
+      assert.equal(stateRow.rows[0].last_result_digest,
+        causalMergeResults.find(({ proposal_id }) => proposal_id === changedId)
+          .result_digest);
+      const expectedProposalIds = order.map((kind) =>
+        `d66-${npcId}-${kind}`).sort();
+      const readback = await pool.query(`SELECT proposal_id FROM
+        party_runtime.party_npc_knowledge_merge_results
+        WHERE party_id=$1 AND npc_id=$2 ORDER BY proposal_id`, [partyId, npcId]);
+      assert.deepEqual(readback.rows.map(({ proposal_id }) => proposal_id),
+        expectedProposalIds);
+    }
   });
 
 function docker(args, timeout = 30_000) {

@@ -1,0 +1,36 @@
+[
+  {
+    "id": "m2c_lines_v1_candidate",
+    "title": "M2c lines v1 candidate (local G5-G5 lines of the start cell)",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/generator-report.json",
+    "page_or_section": "inputs: see generator-report.json#inputs",
+    "summary": "Line fields of the local canonical connections: place-geo proposed minutes, line-names names and kinds, registry v5 methods.",
+    "limitations": "Candidate: imported only with the b1 stage, not before the cutover; minutes are an authored game map, not a measurement of 1230; long lines are sliced by the recheck policy of their kind (D56).",
+    "status": "approved",
+    "confidence": "medium",
+    "checked_by": "Opus a2, independent pass; author rt-lines"
+  },
+  {
+    "id": "m2c_world_routes_v1_candidate",
+    "title": "M2c world routes v1 candidate (cross-G4 routes)",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+    "page_or_section": "inputs: route-spec.json and generator-report.json#inputs",
+    "summary": "Cross-G4 world-route candidate based on place-geo traces/minutes, line-names, and wave-1 line-kind profiles.",
+    "limitations": "Candidate only; import only with the b2 runtime reader cutover; minutes and non-main waterbody profile mappings require independent Opus approval.",
+    "status": "approved",
+    "confidence": "medium",
+    "checked_by": "fleet/routes-b2 candidate author"
+  },
+  {
+    "id": "prov_p12_g1_r2_r3_v1",
+    "title": "P12 repository provenance for approved G1 revisions 002/003",
+    "source_type": "project_note",
+    "file_reference": "source-approval/p12_novgorod_source_approval_001",
+    "summary": "Repository provenance pointer; not a historical source.",
+    "limitations": "This record is not a historical source and does not expand approved facts.",
+    "status": "approved",
+    "confidence": "high"
+  }
+]

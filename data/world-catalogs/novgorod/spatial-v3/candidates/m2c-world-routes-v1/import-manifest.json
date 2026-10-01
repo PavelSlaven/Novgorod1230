@@ -1,0 +1,305 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_kind": "dependency_closure",
+  "bundle_id": "novgorod_m2c_world_routes_v1_candidate",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "draft",
+  "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+  "delete_policy": "forbid",
+  "data_gaps": [],
+  "datasets": [
+    {
+      "table": "spatial_v3_external_dependency_versions",
+      "file": "datasets/spatial_v3_external_dependency_versions.json",
+      "sha256": "c93ac471770370cb39201b46b469ff69a91f6cb3f482f0b403516c35e87bb99a",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "source_records",
+      "file": "datasets/source_records.json",
+      "sha256": "b7ec6ae7611c87047eaf172332b92fa1d73e2d6814bab9612927e2db489be307",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_authoring_versions",
+      "file": "datasets/spatial_v3_authoring_versions.json",
+      "sha256": "70f8242b343e7d40cdf201c8497dddec63cc99d3485c609a868ebd78bdcc9eb4",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "datasets/spatial_v3_nodes.json",
+      "sha256": "2e4a824aa2a87808475ad0b79e52b93905ae068f84f1f2d98a72f6eda9007020",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_node_parents",
+      "file": "datasets/spatial_v3_node_parents.json",
+      "sha256": "1325a8a7d267364744cbdd79595a7e171b9f63698c4213a81d316c3cf61f2d6a",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_approved_physical_source_pairs",
+      "file": "datasets/spatial_v3_approved_physical_source_pairs.json",
+      "sha256": "78bb8ffd88c827ff8a34751cee5fca561c1cf90df2e65da90edc45b803056d61",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_topological_movement_orientation_profiles",
+      "file": "datasets/spatial_v3_topological_movement_orientation_profiles.json",
+      "sha256": "194b11162a3382dd9cc84910127d878122b6329ad0f86b3b23a7c343b7a5d61d",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_topological_exit_orientation_rules",
+      "file": "datasets/spatial_v3_topological_exit_orientation_rules.json",
+      "sha256": "3bec03700ce6f43acc4ef553b07dec4af2434e9d946ebb230385bf55b280c23d",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_transition_environment_profiles",
+      "file": "datasets/spatial_v3_transition_environment_profiles.json",
+      "sha256": "91c7bc63108b2ad7fa2172df5eb8428560efebd5905bb204680f5314b18afed5",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_movement_method_cost_profiles",
+      "file": "datasets/spatial_v3_movement_method_cost_profiles.json",
+      "sha256": "71d33f9e997dc8a7ee5228050d32b995bed9f227a4d07a8cb5616dc290b26680",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_movement_method_cost_options",
+      "file": "datasets/spatial_v3_movement_method_cost_options.json",
+      "sha256": "41b72f5e0a7bc5eb9a6dd401b973f39b15239830db5d97015be11238060c9901",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_movement_method_cost_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_dynamic_recheck_policies",
+      "file": "datasets/spatial_v3_dynamic_recheck_policies.json",
+      "sha256": "b343d461228f8fe62e39495cd327c11146704e7c3facfa63d8e6f7015e291741",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_canonical_g5_connection_profiles",
+      "file": "datasets/spatial_v3_canonical_g5_connection_profiles.json",
+      "sha256": "b195b1509b85465ec2201179d3f67f07f279ff03a46895d7a850b9b18196d408",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions",
+        "spatial_v3_transition_environment_profiles",
+        "spatial_v3_movement_method_cost_profiles",
+        "spatial_v3_movement_method_cost_options",
+        "spatial_v3_dynamic_recheck_policies",
+        "spatial_v3_topological_movement_orientation_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_line_kind_profiles",
+      "file": "datasets/spatial_v3_line_kind_profiles.json",
+      "sha256": "2e408243e2ac3522fd498743e2220688c256cf13a25d57325dacc2effcbc2e94",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_authoring_versions",
+        "spatial_v3_transition_environment_profiles",
+        "spatial_v3_movement_method_cost_profiles",
+        "spatial_v3_dynamic_recheck_policies",
+        "spatial_v3_topological_movement_orientation_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_line_kind_alternative_methods",
+      "file": "datasets/spatial_v3_line_kind_alternative_methods.json",
+      "sha256": "afa1d3e90139c7ffd9271c97725a3a9dbee3fdd0ffa51f122e0f7a09e7865a89",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_line_kind_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_g4_directional_exits",
+      "file": "datasets/spatial_v3_g4_directional_exits.json",
+      "sha256": "5e6452161aaaa833eb4abdd6ce4801ea420e1883762fbb724f4888cf760e771a",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_routes",
+      "file": "datasets/spatial_v3_world_routes.json",
+      "sha256": "d8057e3795841ded11c9dd3a4dbb193a24078eec10bc4d1b43738c981e579de5",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_route_points",
+      "file": "datasets/spatial_v3_world_route_points.json",
+      "sha256": "642193e83fd77f61065216470c9afa5b3bc932b27c8f808433daf8513feb5935",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions",
+        "spatial_v3_world_routes"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_route_segments",
+      "file": "datasets/spatial_v3_world_route_segments.json",
+      "sha256": "12b8179544dbdd6f64112c4b753c3759352864c7ff5c1172004d138736a98157",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions",
+        "spatial_v3_world_routes",
+        "spatial_v3_world_route_points",
+        "spatial_v3_transition_environment_profiles",
+        "spatial_v3_movement_method_cost_profiles",
+        "spatial_v3_dynamic_recheck_policies",
+        "spatial_v3_line_kind_profiles"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_route_segment_spatial_contexts",
+      "file": "datasets/spatial_v3_world_route_segment_spatial_contexts.json",
+      "sha256": "0c63e3a2e5e55b229d0607558e6bd3b2d3165145ef2d717265bc9b89914d95b8",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_route_segments"
+      ]
+    },
+    {
+      "table": "spatial_v3_world_route_endpoint_bindings",
+      "file": "datasets/spatial_v3_world_route_endpoint_bindings.json",
+      "sha256": "bc233f133e0792799398b33fa0f623804ab3959162a9e8bdef94abf1faa09269",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions",
+        "spatial_v3_world_routes",
+        "spatial_v3_world_route_points",
+        "spatial_v3_nodes",
+        "spatial_v3_g4_directional_exits"
+      ]
+    },
+    {
+      "table": "spatial_v3_authoring_dependency_edges",
+      "file": "datasets/spatial_v3_authoring_dependency_edges.json",
+      "sha256": "026129348ff234f5eeee7c11fea29c469ced097fe84b4e9c71fbba4a082f5219",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_authoring_versions",
+        "spatial_v3_external_dependency_versions",
+        "spatial_v3_nodes"
+      ]
+    },
+    {
+      "table": "spatial_v3_canonical_g5_connection_bindings",
+      "file": "datasets/spatial_v3_canonical_g5_connection_bindings.json",
+      "sha256": "208be0d70de81eef9b7faf3f6536ce39ef7c5e87fe32406ba5bef292772e2b32",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_nodes",
+        "spatial_v3_line_kind_profiles",
+        "spatial_v3_canonical_g5_connection_profiles",
+        "spatial_v3_approved_physical_source_pairs"
+      ]
+    },
+    {
+      "table": "spatial_v3_topological_direction_contexts",
+      "file": "datasets/spatial_v3_topological_direction_contexts.json",
+      "sha256": "009e06cb74ee2e7d21539db440b9e83720ccadd04464ca363412544cf952f06a",
+      "status": "draft",
+      "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json#dependency-closure",
+      "delete_policy": "forbid",
+      "depends_on": []
+    }
+  ]
+}

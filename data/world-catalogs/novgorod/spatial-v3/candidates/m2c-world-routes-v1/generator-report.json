@@ -1,0 +1,57 @@
+{
+  "schema": "rus.m2c_world_route_wave_report.v1",
+  "status": "candidate_unapproved",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "import_policy": "Import only together with the b2 runtime reader cutover; no bootstrap import.",
+  "counts": {
+    "spatial_v3_world_routes": 48,
+    "spatial_v3_world_route_points": 108,
+    "spatial_v3_world_route_segments": 60,
+    "spatial_v3_world_route_segment_spatial_contexts": 60,
+    "spatial_v3_world_route_endpoint_bindings": 96,
+    "spatial_v3_authoring_versions": 649,
+    "spatial_v3_authoring_dependency_edges": 364,
+    "source_records": 3,
+    "spatial_v3_transition_environment_profiles": 8,
+    "spatial_v3_movement_method_cost_profiles": 7,
+    "spatial_v3_movement_method_cost_options": 9,
+    "spatial_v3_line_kind_profiles": 7,
+    "spatial_v3_line_kind_alternative_methods": 2,
+    "spatial_v3_external_dependency_versions": 12,
+    "spatial_v3_nodes": 101,
+    "spatial_v3_node_parents": 100,
+    "spatial_v3_g4_directional_exits": 48,
+    "spatial_v3_topological_movement_orientation_profiles": 4,
+    "spatial_v3_topological_direction_contexts": 48,
+    "spatial_v3_topological_exit_orientation_rules": 1,
+    "spatial_v3_dynamic_recheck_policies": 4,
+    "spatial_v3_canonical_g5_connection_bindings": 112,
+    "spatial_v3_approved_physical_source_pairs": 56,
+    "spatial_v3_canonical_g5_connection_profiles": 2
+  },
+  "scope": {
+    "pairs": 24,
+    "directed_routes": 48,
+    "directed_segments": 60,
+    "internal_points": 12,
+    "endpoints": 96
+  },
+  "minutes": {
+    "source": "place-geo proposed_minutes",
+    "sum_mismatch_routes": 0,
+    "largest_remainder": true
+  },
+  "assumptions_for_opus": [
+    "central_head_branch uses lkp__side_channel@1 by reviewer A-routes-b2-01 / wave-1 approval-attestation limit 7; line-names remains river_channel for cross_g4_06..08 and must be separately corrected by its owner.",
+    "All non-main authored waterbody refs map to side_channel; this is an editorial mapping in schematic place-geo geometry, not a historical claim about 1230.",
+    "Place-geo minutes are draft calibration values; cross_g4_10 (741 minutes each way) requires plausibility review.",
+    "Hazard swim_* refs have no underlying records; safe/passable is unresolved. Water routes lack winter ice data."
+  ],
+  "inputs": {
+    "route_spec": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/route-spec.json",
+    "place_geo_derived": "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json",
+    "line_names": "data/world-catalogs/novgorod/m2c-line-names/candidate.json",
+    "line_kind_spec": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/line-kind-spec.json"
+  }
+}

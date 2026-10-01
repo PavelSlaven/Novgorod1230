@@ -1,19 +1,18 @@
 {
   "schema": "novgorod.game_base.personal_name_pool_report.v2",
   "status": "candidate",
-  "total_entries": 349,
+  "total_entries": 337,
   "pool_count": 7,
   "counts_by_pool": {
     "novgorod_1230_1250_personal_names_v1": 310,
     "novgorod_1230_1250_gotland_guest_names_v1": 2,
     "novgorod_1230_1250_german_guest_names_v1": 19,
-    "novgorod_1230_1250_korela_names_v1": 13,
+    "novgorod_1230_1250_korela_names_v1": 1,
     "novgorod_1230_1250_izhora_names_v1": 3,
     "novgorod_1230_1250_chud_est_names_v1": 1,
     "novgorod_1230_1250_smolyane_names_v1": 1
   },
   "counts_by_sex_people_selection_class_derivation": {
-    "female|pp_korela|ordinary|calendar_name_gender": 8,
     "female|pp_novgorod_rus|monastic|explicit_source_gender": 3,
     "female|pp_novgorod_rus|ordinary|calendar_name_gender": 12,
     "female|pp_novgorod_rus|ordinary|compiled_candidate": 23,
@@ -25,7 +24,6 @@
     "male|pp_fg002|significant|explicit_source_gender": 3,
     "male|pp_izhora|ordinary|explicit_source_gender": 1,
     "male|pp_izhora|significant|explicit_source_gender": 2,
-    "male|pp_korela|ordinary|calendar_name_gender": 4,
     "male|pp_korela|significant|explicit_source_gender": 1,
     "male|pp_novgorod_rus|dynastic|compiled_candidate": 1,
     "male|pp_novgorod_rus|dynastic|explicit_source_gender": 6,
@@ -2459,10 +2457,13 @@
   },
   "additional_evidence_accounting": {
     "snapshot_rows": 40,
-    "included_entries": 13
+    "included_entries": 13,
+    "operational_entries": 1,
+    "candidate_entries": 12
   },
   "names_gaps_additions": {
     "candidate_entries": 12,
+    "candidate_output": "name_pool_entries_candidates.csv",
     "detailed_gap_overrides": 12,
     "selection_window": "about 1180-1260; existing pool validity dates are unchanged",
     "applicability_review": {
@@ -3276,9 +3277,9 @@
       "people_ref": "pp_korela",
       "sex_category": "female",
       "selection_class": "ordinary",
-      "current_count": 8,
+      "current_count": 0,
       "required_count": 10,
-      "reason": "Добавлены восемь женских календарных форм из русских записей XII–XIII вв. по D61: Мариамна, Анна, София, Федосия, Улияна, Пелагия, Оводокия, Мирофа. Это календарный перенос после массового крещения 1227, не прямая аттестация корельских носительниц; pool ниже 10.",
+      "reason": "Операционный пул остаётся пустым: восемь женских календарных форм из русских записей XII–XIII вв. по D61 хранятся отдельно в name_pool_entries_candidates.csv. Это календарный перенос после массового крещения 1227, не прямая аттестация корельских носительниц; для включения нужен отдельный шаг переутверждения pin.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
       "review_refs": [
         "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_korela_female",
@@ -3294,9 +3295,9 @@
       "people_ref": "pp_korela",
       "sex_category": "male",
       "selection_class": "ordinary",
-      "current_count": 4,
+      "current_count": 0,
       "required_count": 10,
-      "reason": "Добавлены четыре мужские календарные формы из русских записей XII–XIII вв. по D61: Петр, Феодор, Филипп, Павел. Это отдельный низкоуверенный календарный перенос после массового крещения 1227, не прямая аттестация этих носителей как корелы; именной pool по-прежнему ниже 10.",
+      "reason": "Операционный пул остаётся пустым: четыре мужские календарные формы из русских записей XII–XIII вв. по D61 хранятся отдельно в name_pool_entries_candidates.csv. Это низкоуверенный перенос после массового крещения 1227, не прямая аттестация носителей как корелы; для включения нужен отдельный шаг переутверждения pin.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
       "review_refs": [
         "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_korela_male",

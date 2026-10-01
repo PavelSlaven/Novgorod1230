@@ -14,6 +14,7 @@ const SOURCE_PATH = path.join(NAMES_DIR, "b2-name-pool-source.json");
 const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
 const NAMES_GAPS_PATH = path.join(NAMES_DIR, "names-gaps-additions.json");
 const REPORT_PATH = path.join(NAMES_DIR, "name-pool-report.json");
+const CANDIDATE_ENTRIES_PATH = path.join(NAMES_DIR, "name_pool_entries_candidates.csv");
 const SOCIAL_PATH = path.resolve(GROUP_DIR, "..", "social-strata-law", "social_strata_legal_status", "roles", "new_role_candidates.tsv");
 const CLASSES = new Set(["ordinary", "monastic", "dynastic", "significant"]);
 const SEXES = new Set(["female", "male"]);
@@ -60,13 +61,14 @@ function normalizedAlias(value) { return normalizedName(value).replace(/[ьъ]/g
 
 function sha256(value) { return crypto.createHash("sha256").update(value).digest("hex"); }
 
-export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, namesGaps, snapshotContents, poolHeader, entryHeader }) {
+export function validate({ pools, entries, candidateEntries = [], sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, namesGaps, snapshotContents, poolHeader, entryHeader, candidateEntryHeader = entryHeader }) {
   const errors = [];
   if (namesGaps.schema !== "novgorod.game_base.names_gaps_additions.v1" || namesGaps.status !== "candidate" || !Array.isArray(namesGaps.entries) || namesGaps.entries.length !== 0 || !Array.isArray(namesGaps.gap_overrides) || namesGaps.gap_overrides.length !== 12) errors.push("invalid names-gaps authoring scope");
   const expectedPoolHeader = importContract.tables["world_base.region_name_pools"].csv_columns;
   const expectedEntryHeader = importContract.tables["world_base.region_name_pool_entries"].csv_columns;
   if (!sameArray(poolHeader, expectedPoolHeader)) errors.push(`wrong pool header: ${poolHeader.join(",")}`);
   if (!sameArray(entryHeader, expectedEntryHeader)) errors.push(`wrong entry header: ${entryHeader.join(",")}`);
+  if (!sameArray(candidateEntryHeader, expectedEntryHeader)) errors.push(`wrong candidate entry header: ${candidateEntryHeader.join(",")}`);
   if (!importContract.required_parameters?.world_revision_id?.required || importContract.required_parameters.world_revision_id.closed_reference !== "world_base.world_revisions.id") errors.push("missing closed world_revision_id import parameter");
   if (!sameArray(importContract.tables["world_base.region_name_pool_entries"].unique_key ?? [], ["name_pool_id", "name_form", "sex_category", "people_ref"])) errors.push("wrong entry unique key contract");
   if (!importContract.selection_rule?.includes("selection_class=ordinary")) errors.push("missing ordinary-only selection contract");
@@ -98,6 +100,20 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   }
 
   const sourceIds = new Set(sourceRows.map((row) => row.nm_id));
+  const expectedD61CandidateIds = new Set((namesGaps.calendar_rule_review ?? [])
+    .filter((row) => row.status === "new_candidate").map((row) => row.candidate_entry_id));
+  const candidateEntriesById = new Map(candidateEntries.map((row) => [row.id, row]));
+  if (candidateEntriesById.size !== candidateEntries.length) errors.push("duplicate D61 candidate entry id");
+  if (candidateEntries.length !== expectedD61CandidateIds.size
+    || candidateEntries.some((row) => !expectedD61CandidateIds.has(row.id))
+    || entries.some((row) => expectedD61CandidateIds.has(row.id))) errors.push("D61 candidate rows must stay outside the operational pool");
+  for (const row of candidateEntries) {
+    if (row.people_ref !== "pp_korela" || row.sex_category !== "male" && row.sex_category !== "female"
+      || row.selection_class !== "ordinary" || row.derivation !== "calendar_name_gender"
+      || row.derivation_class !== "calendar_name_any_christian" || row.status !== "draft") {
+      errors.push(`${row.id}: invalid isolated D61 candidate row`);
+    }
+  }
   const d46Ids = new Set(d46.name_entries.map((row) => row.id));
   const evidenceLines = new Set(evidenceRows.map((row) => Number(row.source_line?.slice(1))));
   if (evidenceRows.some((row) => !/^L\d+$/.test(row.source_line)) || evidenceLines.size !== evidenceRows.length || evidenceRows.length !== source.evidence_snapshot.expected_rows) errors.push("invalid evidence snapshot source_line set");
@@ -166,7 +182,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     const snapshotRows = row.source_snapshot === "evidence" ? evidenceSnapshotByLine : additionalEvidenceLines;
     const snapshotPath = row.source_snapshot === "evidence" ? source.evidence_snapshot.path : source.additional_evidence_snapshot.path;
     const support = snapshotRows.get(row.source_line);
-    const entry = entries.find((item) => item.id === row.id);
+    const isD61Candidate = expectedD61CandidateIds.has(row.id);
+    const entry = (isD61Candidate ? candidateEntries : entries).find((item) => item.id === row.id);
     if (!support || !Object.values(support).join("\n").includes(row.source_form) || row.provenance_ref !== `game-base:names-peoples/${snapshotPath}#source_line=${row.source_line}`) errors.push(`${row.id}: unresolved additional evidence source`);
     if (!entry || ["name_form", "sex_category", "people_ref", "selection_class", "derivation", "people_derivation", "evidence_period"].some((key) => entry[key] !== row[key]) || !entry.provenance_ref.split(" | ").includes(row.provenance_ref)) errors.push(`${row.id}: additional evidence entry missing or changed`);
   }
@@ -367,9 +384,14 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   const reviewedCandidateIds = calendarCandidates.map((row) => row.candidate_entry_id);
   if (new Set(d61CandidateIds).size !== d61CandidateIds.length
     || new Set(reviewedCandidateIds).size !== reviewedCandidateIds.length
-    || !sameArray([...reviewedCandidateIds].sort(), d61CandidateIds)) errors.push("invalid D61 calendar candidate ID coverage");
+    || !sameArray([...reviewedCandidateIds].sort(), d61CandidateIds)
+    || !sameArray([...candidateEntriesById.keys()].sort(), d61CandidateIds)) errors.push("invalid D61 calendar candidate ID coverage");
   if (calendarCandidates.length !== 12 || calendarCandidates.filter((row) => row.sex_category === "male").length !== 4 || calendarCandidates.filter((row) => row.sex_category === "female").length !== 8
-    || report.names_gaps_additions?.candidate_entries !== calendarCandidates.length || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
+    || report.names_gaps_additions?.candidate_entries !== calendarCandidates.length
+    || report.names_gaps_additions?.candidate_output !== "name_pool_entries_candidates.csv"
+    || report.additional_evidence_accounting?.candidate_entries !== candidateEntries.length
+    || report.additional_evidence_accounting?.operational_entries !== (source.additional_entries ?? []).length - candidateEntries.length
+    || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
   return errors;
 }
 
@@ -408,6 +430,9 @@ function selfTest(base) {
     ["Igoland gap missing", (copy) => { copy.report.typed_gaps = copy.report.typed_gaps.filter((gap) => gap.gap_id !== "gap_personal_names_pp_fg005_igoland_origin"); }, /invalid typed exclusion/],
     ["additional source form absent", (copy) => { copy.source.additional_entries[0].source_form = "не засвидетельствовано"; }, /unresolved additional evidence source/],
     ["additional entry changed", (copy) => { copy.entries.find((row) => row.id === "nov_name_korela_valit_v1").name_form = "Валентин"; }, /additional evidence entry missing or changed/],
+    ["D61 candidate leaked into operational pool", (copy) => { copy.entries.push(copy.candidateEntries[0]); }, /D61 candidate rows must stay outside the operational pool/],
+    ["D61 candidate omitted from candidate CSV", (copy) => { copy.candidateEntries.pop(); }, /D61 candidate rows must stay outside the operational pool/],
+    ["D61 candidate duplicate", (copy) => { copy.candidateEntries.push({ ...copy.candidateEntries[0] }); }, /duplicate D61 candidate entry id/],
     ["names-gaps rationale missing", (copy) => { copy.namesGaps.gap_overrides[0].reason = ""; }, /invalid names-gaps rationale/],
     ["names-gaps applicability missing", (copy) => { copy.namesGaps.v17_applicability.pairs.pop(); }, /invalid names-gaps applicability matrix/],
     ["names-gaps calendar citation mismatch", (copy) => { copy.namesGaps.calendar_rule_review[0].source_ref = "book:641352 §1931"; }, /invalid names-gaps calendar-rule review/],
@@ -510,6 +535,7 @@ const snapshotContents = Object.fromEntries(Object.values(d46.snapshots).map((sn
 const base = {
   pools: rows(path.join(NAMES_DIR, "name_pools.csv")),
   entries: rows(path.join(NAMES_DIR, "name_pool_entries.csv")),
+  candidateEntries: rows(CANDIDATE_ENTRIES_PATH),
   sourceRows: rows(path.join(NAMES_DIR, "personal_names.csv")),
   derivationRows: parseTsv(fs.readFileSync(path.join(NAMES_DIR, source.evidence_derivations.path), "utf8")),
   evidenceRows: rows(path.join(GROUP_DIR, source.evidence_snapshot.path)),
@@ -524,6 +550,7 @@ const base = {
   snapshotContents,
   poolHeader: header(path.join(NAMES_DIR, "name_pools.csv")),
   entryHeader: header(path.join(NAMES_DIR, "name_pool_entries.csv")),
+  candidateEntryHeader: header(CANDIDATE_ENTRIES_PATH),
 };
 const errors = validate(base);
 if (errors.length) {

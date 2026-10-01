@@ -107,8 +107,9 @@ of a Korela bearer. Gotland and German guest female gaps are marked
 `data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/`; the
 approved `people-d49/candidate.json`, its approval, and operational promotion
 script remain unchanged. No broader
-historical absence is claimed. The resulting pool has 349 unique
-entries. Exact archive periods, regions, basis, confidence and
+historical absence is claimed. The operational pool has 337 unique
+entries; the 12 D61 rows live only in `name_pool_entries_candidates.csv` and
+are excluded from the pinned import file. Exact archive periods, regions, basis, confidence and
 source refs stay in the authoring delta; its two repo-local source snapshots
 are pinned by SHA-256. The B2 import schema is unchanged. Typed
 gaps include every people×sex ordinary pool below 10 rows, unresolved
@@ -291,10 +292,12 @@ SQLite book-index search found no resolving passage.
 
 ### Current D51 candidate after D61
 
-The B2 draft has 349 entries across 7 pools. D61 adds 12 Korela baptismal-name
-candidates by calendar rule: 4 male and 8 female. Current ordinary pool counts
-are Gotland 1/0, German 16/0, Korela 4/8, and Izhora 1/0 (male/female). Both
-Korela pools remain below the 10-name threshold. The 12 forms are draft,
+The operational B2 draft has 337 entries across 7 pools. D61 adds 12 Korela
+baptismal-name candidates by calendar rule in a separate candidate CSV: 4 male
+and 8 female. Current operational ordinary pool counts are Gotland 1/0,
+German 16/0, Korela 0/0, and Izhora 1/0 (male/female); the Korela candidate
+counts are 4/8 outside the operational pool. Both Korela pools remain below
+the 10-name threshold. The 12 forms are draft,
 confidence C calendar transfers, not direct attestations of Korela bearers;
 the name-pool package was accepted by Opus with limits but remains unbound and
 not import-authorized.
@@ -327,8 +330,8 @@ permits both sexes; import and activation remain unauthorized.
 | Gotland | female | no* | D61 @3 successor removes female applicability for these target contexts; this is a candidate profile constraint, not a historical absence claim. | `not_applicable` in draft; operational @2 still permits female guests until paired promotion. |
 | German trading circle | male | yes | Foreign-merchant composition on the same eight contexts; German merchant contact attested, target-scene transfer analogical. | Sixteen existing forms retained; no new form proposed. |
 | German trading circle | female | no* | D61 @3 successor removes female applicability for these target contexts; this is a candidate profile constraint, not a historical absence claim. | `not_applicable` in draft; operational @2 still permits female guests until paired promotion. |
-| Korela | male | yes | Traveler/guide profile on six river-route contexts. Karelians are attested near Ladoga/Neva; ordinary G5 travel is explicitly low-confidence analogy, not a resident cohort. | 4 draft calendar-rule forms; threshold gap remains. Confidence C, `period_cap=1260`; not direct Korela-bearer attestations. |
-| Korela | female | yes | Same guide contexts; profile permits female sex category. This is target authoring eligibility, not direct evidence of female guides. | 8 draft calendar-rule forms; threshold gap remains. Confidence C, `period_cap=1260`; not direct Korela-bearer attestations. |
+| Korela | male | yes | Traveler/guide profile on six river-route contexts. Karelians are attested near Ladoga/Neva; ordinary G5 travel is explicitly low-confidence analogy, not a resident cohort. | Operational pool 0; 4 draft calendar-rule candidates stay outside the pinned CSV. Confidence C, `period_cap=1260`; not direct Korela-bearer attestations. |
+| Korela | female | yes | Same guide contexts; profile permits female sex category. This is target authoring eligibility, not direct evidence of female guides. | Operational pool 0; 8 draft calendar-rule candidates stay outside the pinned CSV. Confidence C, `period_cap=1260`; not direct Korela-bearer attestations. |
 | Izhora | male | yes | Traveler/guide profile on six river-route contexts; Izhora presence near the Neva is source-backed, ordinary G5 travel analogical. | Existing `Филипп` retained, no duplicate. `book:857568 §733`: «один ижорянин – Пелгусий, во Святом Крещении Филипп»; event dated 1240 (`book:681281 §419`), `basis=calendar_rule`, `confidence=A`, `period_cap=1240`. |
 | Izhora | female | yes | Same guide contexts; profile permits female sex category. This is target authoring eligibility, not direct evidence of female guides. | No attributed female form; gap remains. |
 | Chud/Estonian | male | only outside slice | No Chud/Estonian origin profile or people composition group in target v17 contexts. Estonian Chud homeland lay outside the Novgorod oblast; exceptional tribute/war contact does not establish ordinary local generation (`book:751267 §649`). | No v17 name gap. Lembitu remains significant, outside ordinary pool. |

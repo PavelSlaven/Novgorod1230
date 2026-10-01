@@ -244,7 +244,6 @@
     "open_water: no open-water environment, orientation or route kind exists: env.open_water is authored here as a copy of env.main_river_channel; orientation, risk and route kind follow the river channel"
   ],
   "open_items": [
-    "D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover",
     "D56: the ceiling of 30 minutes and the profile field max_segment_minutes are removed from the norm by CORPUS_EDIT before the DDL (PLAN-OK-rt-lines-a3); slicing is the recheck policy of the kind, the slice step (30) is one rule of the world",
     "D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus",
     "D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)",

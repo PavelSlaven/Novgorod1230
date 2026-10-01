@@ -142,6 +142,27 @@ test('profile rows use the columns of the DDL-to-be: topological orientation, no
   }
 });
 
+test('profile edge roles are controlled_dependency_role values (route_kind excepted), 4 edges per profile, and the validator rejects ad-hoc roles', () => {
+  const wave = build();
+  const edges = wave.datasets.spatial_v3_authoring_dependency_edges.filter((edge) => edge.source_entity_kind === 'line_kind_profile');
+  assert.equal(edges.length, 32);
+  assert.deepEqual([...new Set(edges.map((edge) => edge.dependency_role))].sort(),
+    ['dynamic_recheck_policy', 'movement_method_cost_profile', 'route_kind', 'transition_environment_profile']);
+  assert.deepEqual(checkLineWaveData(wave.datasets, rules()), []);
+  for (const bad of ['transition_environment', 'dynamic_recheck', 'movement_method_cost']) {
+    const mutated = build();
+    mutated.datasets.spatial_v3_authoring_dependency_edges.find((edge) => edge.source_entity_kind === 'line_kind_profile' && edge.dependency_role === `${bad}${bad === 'movement_method_cost' ? '_profile' : bad === 'transition_environment' ? '_profile' : '_policy'}`).dependency_role = bad;
+    assert.match(checkLineWaveData(mutated.datasets, rules()).join(' | '), new RegExp(`dependency_role ${bad} is not a controlled_dependency_role value`), bad);
+  }
+});
+
+test('the source record names its approver and no longer claims the wave is unapproved', () => {
+  const record = build().datasets.source_records.find((row) => row.id === 'm2c_lines_v1_candidate');
+  assert.equal(record.checked_by, 'Opus a2, independent pass; author rt-lines');
+  assert.doesNotMatch(record.limitations, /not approved|pending/u);
+  assert.match(record.limitations, /imported only with the b1 stage/u);
+});
+
 test('an edge to an external dependency carries the full registry pin of that dependency (trigger spatial_v3_dependency_edge_target_guard)', () => {
   const wave = build();
   const external = wave.datasets.spatial_v3_authoring_dependency_edges.filter((edge) => edge.target_entity_kind === 'external_dependency');

@@ -6,9 +6,9 @@
     "file_reference": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/generator-report.json",
     "page_or_section": "inputs: see generator-report.json#inputs",
     "summary": "Line fields of the local canonical connections: place-geo proposed minutes, line-names names and kinds, registry v5 methods.",
-    "limitations": "Candidate: not approved, not imported; minutes are an authored game map, not a measurement of 1230; long lines are sliced by the recheck policy of their kind (D56).",
+    "limitations": "Candidate: imported only with the b1 stage, not before the cutover; minutes are an authored game map, not a measurement of 1230; long lines are sliced by the recheck policy of their kind (D56).",
     "status": "approved",
     "confidence": "medium",
-    "checked_by": "pending_opus_data_approval"
+    "checked_by": "Opus a2, independent pass; author rt-lines"
   }
 ]

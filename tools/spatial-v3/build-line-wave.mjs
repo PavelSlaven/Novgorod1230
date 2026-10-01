@@ -23,8 +23,11 @@ const MAX_SLICE_STEP_MINUTES = 30;
 const lineKindId = (kind) => `line.${kind}`;
 const kindOfLineKindId = (id) => String(id).replace(/^line\./u, '');
 const LINE_KIND_VOCABULARY_PATH = 'data/contracts/spatial-v3/controlled-vocabularies.v5.json';
-const controlledLineKindIds = () => new Set(JSON.parse(readFileSync(resolve(root, LINE_KIND_VOCABULARY_PATH), 'utf8'))
-  .vocabularies.find(({ pseudo_type }) => pseudo_type === 'controlled_line_kind').values.map(({ id }) => id));
+const controlledValueIds = (pseudoType) => new Set(JSON.parse(readFileSync(resolve(root, LINE_KIND_VOCABULARY_PATH), 'utf8'))
+  .vocabularies.find(({ pseudo_type }) => pseudo_type === pseudoType).values.map(({ id }) => id));
+const controlledLineKindIds = () => controlledValueIds('controlled_line_kind');
+// `route_kind` is not a controlled_dependency_role value of v5 (accepted limitation 9 of the a2 pass); every other profile edge role is.
+const PROFILE_EDGE_ROLE_EXCEPTIONS = new Set(['route_kind']);
 const integerIn = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
 /** The slice step: an integer of 1..30 minutes (null, NaN, strings, 0, 31 and more are not steps). */
 const sliceStepProblem = (step) => (integerIn(step, 1, MAX_SLICE_STEP_MINUTES) ? null : `slice step must be an integer of 1..${MAX_SLICE_STEP_MINUTES} minutes, got ${String(step)}`);
@@ -174,16 +177,16 @@ export function buildLineWave({ bindings, derivedLines, lineNames, spec, worldRe
   }
   for (const row of datasets[T.profiles]) {
     const source = { kind: 'line_kind_profile', id: row.id, version: 1 };
-    datasets[T.edges].push(edge(source, 'transition_environment', { kind: 'transition_environment_profile', id: row.transition_environment_profile_id, version: 1 }),
-      edge(source, 'movement_method_cost', { kind: 'movement_method_cost_profile', id: row.movement_method_cost_profile_id, version: 1 }),
-      edge(source, 'dynamic_recheck', { kind: 'dynamic_recheck_policy', id: row.dynamic_recheck_policy_id, version: 1 }),
+    datasets[T.edges].push(edge(source, 'transition_environment_profile', { kind: 'transition_environment_profile', id: row.transition_environment_profile_id, version: 1 }),
+      edge(source, 'movement_method_cost_profile', { kind: 'movement_method_cost_profile', id: row.movement_method_cost_profile_id, version: 1 }),
+      edge(source, 'dynamic_recheck_policy', { kind: 'dynamic_recheck_policy', id: row.dynamic_recheck_policy_id, version: 1 }),
       edge(source, 'route_kind', { kind: 'external_dependency', id: row.route_kind_id, version: 1 }));
   }
   datasets[T.sources].push({ id: provenanceRef, title: 'M2c lines v1 candidate (local G5-G5 lines of the start cell)', source_type: 'project_note',
     file_reference: `${LINE_WAVE_DIR}/generator-report.json`, page_or_section: 'inputs: see generator-report.json#inputs',
     summary: 'Line fields of the local canonical connections: place-geo proposed minutes, line-names names and kinds, registry v5 methods.',
-    limitations: 'Candidate: not approved, not imported; minutes are an authored game map, not a measurement of 1230; long lines are sliced by the recheck policy of their kind (D56).',
-    status: 'approved', confidence: 'medium', checked_by: 'pending_opus_data_approval' });
+    limitations: 'Candidate: imported only with the b1 stage, not before the cutover; minutes are an authored game map, not a measurement of 1230; long lines are sliced by the recheck policy of their kind (D56).',
+    status: 'approved', confidence: 'medium', checked_by: 'Opus a2, independent pass; author rt-lines' });
   const report = reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines, unresolved,
     sliceStepMinutes, usedKinds, datasets, lineNames, existing });
   return { datasets, report };
@@ -238,7 +241,7 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
     unresolved_refs: unresolved.sort(),
     editorial_values_for_opus: alternatives,
     assumptions_for_opus: Object.entries(spec.kinds).filter(([, value]) => value.assumption).map(([kind, value]) => `${kind}: ${value.assumption}`),
-    open_items: ['D3: availability_condition_set_ref is null on every binding; the norm (F binding block :7340) still says required, corrected by CORPUS_EDIT in the cutover',
+    open_items: [
       'D56: the ceiling of 30 minutes and the profile field max_segment_minutes are removed from the norm by CORPUS_EDIT before the DDL (PLAN-OK-rt-lines-a3); slicing is the recheck policy of the kind, the slice step (30) is one rule of the world',
       'D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus',
       'D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)',
@@ -249,7 +252,7 @@ function reportOf({ bindings, included, slotCounts, minutes, spec, derivedLines,
 }
 
 /** Independent rules of Appendix F (binding block :7340, line_kind_profile :7291, §4.7.2) over generated datasets. */
-export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES, lineKindIds = controlledLineKindIds() } = {}) {
+export function checkLineWaveData(datasets, { spec, recheckPolicies = null, sliceStepMinutes = DEFAULT_SLICE_STEP_MINUTES, lineKindIds = controlledLineKindIds(), dependencyRoles = controlledValueIds('controlled_dependency_role') } = {}) {
   const problems = [];
   const stepProblem = sliceStepProblem(sliceStepMinutes);
   if (stepProblem) return [stepProblem];
@@ -328,6 +331,14 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
     if (['target_registry_type', 'target_registry_id', 'target_registry_version', 'target_registry_digest', 'target_dependency_digest'].some((key) => !edge[key])) {
       problems.push(`${edge.source_entity_id}: external_dependency edge to ${edge.target_entity_id} lacks the registry pin`);
     }
+  }
+  for (const edge of datasets[T.edges]) {
+    if (edge.source_entity_kind !== 'line_kind_profile' || PROFILE_EDGE_ROLE_EXCEPTIONS.has(edge.dependency_role)) continue;
+    if (!dependencyRoles.has(edge.dependency_role)) problems.push(`${edge.source_entity_id}: dependency_role ${edge.dependency_role} is not a controlled_dependency_role value`);
+  }
+  for (const profile of datasets[T.profiles]) {
+    const roles = datasets[T.edges].filter((edge) => edge.source_entity_id === profile.id && edge.source_entity_kind === 'line_kind_profile').map((edge) => edge.dependency_role).sort().join();
+    if (roles !== 'dynamic_recheck_policy,movement_method_cost_profile,route_kind,transition_environment_profile') problems.push(`${profile.id}: dependency edges ${roles}`);
   }
   for (const row of rows) {
     const roles = datasets[T.edges].filter((edge) => edge.source_entity_id === row.id && edge.source_version === VERSION).map((edge) => edge.dependency_role).sort().join();

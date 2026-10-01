@@ -65,6 +65,7 @@ export function createLowerDvinaTracePhase2Runtime({
   }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
   authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
 } = {}) {
@@ -129,7 +130,8 @@ export function createLowerDvinaTracePhase2Runtime({
           npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
         const bundle = authored
-          ? liveWorldTurnBundle({ state, authoredTurnProfile })
+          ? liveWorldTurnBundle({ state, authoredTurnProfile,
+            postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
         const contracts = authored
@@ -333,6 +335,8 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           postActionPerceptionProfile:
             bundle.post_action_perception_profile ?? null,
+          postActionEnvironmentProjector:
+            repository.projectEnvironmentAtClock ?? null,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
@@ -354,7 +358,8 @@ export function createLowerDvinaTracePhase2Runtime({
   });
 }
 
-function liveWorldTurnBundle({ state, authoredTurnProfile }) {
+function liveWorldTurnBundle({ state, authoredTurnProfile,
+  postActionPerceptionProfile = null }) {
   if (authoredTurnProfile?.profile?.schema
       !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
     || authoredTurnProfile.profile.status !== 'approved'
@@ -377,7 +382,7 @@ function liveWorldTurnBundle({ state, authoredTurnProfile }) {
     }] },
     calendar_profile: null,
     scene_presentation: null,
-    post_action_perception_profile: null
+    post_action_perception_profile: postActionPerceptionProfile
   });
 }
 

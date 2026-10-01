@@ -320,10 +320,26 @@ test('production composition exposes O2b only for an exact loaded binding',
     const active = await capturedTraceRuntime(null,profile);
     assert.equal(typeof active.createTurnStepOrdinaryContainerContentsResolver({
       partyId:'party',inputDigest:'input'}),'function');
+});
+
+test('production composition forwards the approved post-action perception profile',
+  async () => {
+    const profile = JSON.parse(await readFile(new URL(
+      '../../../data/world-catalogs/novgorod/live-world-runtime-v17/post-action-perception-profile.json',
+      import.meta.url)));
+    Object.assign(profile, { status: 'approved', approval: {
+      approved_by: 'test-reviewer', approved_on: '2026-10-01',
+      approved_path: 'test/d66-perception', approved_commit: 'test-commit'
+    } });
+    const captured = await capturedTraceRuntime(null, null, {
+      post_action_perception_profile: profile
+    });
+
+    assert.deepEqual(captured.postActionPerceptionProfile, profile);
   });
 
 async function capturedTraceRuntime(ordinaryMaterializationProfile,
-  ordinaryContainerContentsProfile = null) {
+  ordinaryContainerContentsProfile = null, targetRuntimeProfiles = null) {
   let captured = null;
   const release = {
     release_id: 'test-release',
@@ -353,7 +369,8 @@ async function capturedTraceRuntime(ordinaryMaterializationProfile,
   const bindings = await createSpatialV3ProductionBindings({
     ports: { worldPool, partyPool }, release,
     config: { traceTurnDecisionSecret: 'test-secret' },
-    ordinaryMaterializationProfile,ordinaryContainerContentsProfile
+    ordinaryMaterializationProfile,ordinaryContainerContentsProfile,
+    targetRuntimeProfiles
   }, {
     createNpcRuntimePorts: () => ({}),
     actorBaseAttributesBindingLoader:

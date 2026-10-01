@@ -42,6 +42,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepAmbientPortionProfileRef,
     turnStepOrdinaryResultPolicy,
     postActionPerceptionProfile,
+    postActionEnvironmentProjector = repository?.projectEnvironmentAtClock ?? null,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     turnBudget,
@@ -113,6 +114,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     semanticActivityOwner: turnStepSemanticActivityOwner,
     idempotencyKey,
     postActionPerceptionProfile,
+    postActionEnvironmentProjector,
     projectCurrentScene,
     temporalAdvance,
     workingProjectionAuthority

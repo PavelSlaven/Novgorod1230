@@ -431,11 +431,11 @@
 - **§3A.2/3A.3 сезонное обновление.** Повторное прибытие в **новом сезоне** в уже созданное G5-место (пересчёт `by_year_season` без нового scope) в R-2a **не** подключено; отложено отдельным шагом CR #158 (решение ревьюера REVIEW-R2a-6 F6). Unit на `encodePresenceRulePeriodNumber` остаётся.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-074 — восприятие NPC в live world выключено
-- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`: `post_action_perception_profile: null`); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (`perceptionListeners` без профиля возвращает `[]`); профиль есть только в `apps/game-server/src/internal/lower-dvina-trace-revision-34-bundle.js`.
-- **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
-- **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
-- **Issue.** —
+### LW-074 — post-action perception profile требует отдельного approval
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle` получает только отдельно утверждённый target profile); `apps/game-server/src/internal/target-runtime-profiles.js` (читает `post-action-perception-profile.json` только с approval); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (factual perception и `npc_decision_boundary_v1` в turn snapshot).
+- **Что.** Общий путь post-action perception и formal pending boundary реализован без actor-step/LLM handoff. Профиль переносит M22-механику и ждёт независимого approval; пока его нет, production key остаётся `null`. D66 не вводит weather acoustic loss; общий NPC executor остаётся следующим шагом.
+- **Как жить.** До exact profile approval не считать, что NPC live world уже восприняли действие. После подключения считать только записанную perception и pending boundary; непосредственная реакция не выполняется.
+- **Issue.** #225
 
 ### LW-078 — R-2a: стартовое присутствие не повторяется при загрузке, если provisioning не выполнился
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-public-start.js` (вызов `provisionInitialOrdinary` после commit new_game); `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`, отдельная транзакция); путь загрузки партии (`getPartyScreen`) вызова не имеет.

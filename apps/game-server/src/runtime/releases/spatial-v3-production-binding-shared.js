@@ -229,6 +229,8 @@ export async function createSpatialV3ProductionBindings(
           spatialSemanticProfile,
           npcSemanticRemainderProfile,
           authoredTurnProfile: authoredStartCatalog.turn_profile,
+          postActionPerceptionProfile:
+            targetRuntimeProfiles?.post_action_perception_profile ?? null,
           authoredSpatialSemanticProfile:
             authoredStartCatalog.ordinary_profiles?.s1 ?? null,
           authoredNpcSemanticRemainderProfile:

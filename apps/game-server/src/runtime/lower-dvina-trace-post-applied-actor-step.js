@@ -1,7 +1,14 @@
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
+import {
+  buildNpcDecisionSignal,
+  evaluateNpcDecisionSignals,
+  orderNpcDecisionBoundaries
+} from '@rus/npc-runtime';
 import { createSpatialV3PerceptionBoundaryParticipant } from '@rus/turn';
+import { validPostActionPerceptionProfile } from
+  '../internal/post-action-perception-profile.js';
 import { perceptionContext } from
   './lower-dvina-trace-post-action-perception-context.js';
 
@@ -11,7 +18,8 @@ const seal = (value) => ({
 });
 
 export function createLowerDvinaTracePostAppliedActorStepOwner({
-  committedState, idempotencyKey, perceptionProfile = null
+  committedState, idempotencyKey, perceptionProfile = null,
+  environmentProjector = null
 } = {}) {
   const participant = createSpatialV3PerceptionBoundaryParticipant();
   return async ({ working_projection: projection, factual_events: events,
@@ -28,9 +36,9 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
     const proposals = events.map((event) => eventWriteProposal({ event,
       partyId, changeSetId, idempotencyKey }));
     let workingProjection = structuredClone(projection);
-    const pendingNpcDecisionRefs = [];
+    const decisionSignalDescriptors = [];
     const listeners = perceptionListeners(
-      committedState, events, perceptionProfile
+      committedState, events, perceptionProfile, environmentProjector
     );
     for (const { event, npc, schedule, knowledge, context } of listeners) {
       const candidate = perceptionCandidate({
@@ -56,12 +64,21 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
         gap(resolved.code ?? 'TRACE_POST_ACTION_PERCEPTION_GAP');
       }
       proposals.push(...resolved.proposals);
-      if (resolved.proposals[0]?.perception_reaction_result
-        ?.perception_result?.result !== 'not_perceived') {
-        pendingNpcDecisionRefs.push(npc.instance_id);
-      }
+      const previousSignals = workingProjection
+        .npc_decision_signal_descriptors ?? [];
+      const resolvedSignals = resolved.state_projection
+        ?.npc_decision_signal_descriptors ?? [];
+      decisionSignalDescriptors.push(...resolvedSignals.slice(
+        previousSignals.length
+      ));
       workingProjection = resolved.state_projection;
     }
+    const npcDecisionBoundaries = formalDecisionBoundaries({
+      descriptors: decisionSignalDescriptors, partyId, committedState
+    });
+    const pendingNpcDecisionRefs = [...new Set(npcDecisionBoundaries.map(
+      ({ npc_ref: npcRef }) => npcRef.entity_id
+    ))].sort();
     const temporal = {
       version: 1, schema: 'turn_step_factual_event_persistence_result_v1',
       clock_before: structuredClone(events[0].occurred_at),
@@ -79,9 +96,9 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
             status: pendingNpcDecisionRefs.length === 0
               ? 'completed' : 'pending_npc_decision',
             observable_response_event_refs: [],
+            npc_decision_boundaries: npcDecisionBoundaries,
             ...(pendingNpcDecisionRefs.length === 0 ? {} : {
-              pending_npc_decision_refs: [...new Set(pendingNpcDecisionRefs)]
-                .sort()
+              pending_npc_decision_refs: pendingNpcDecisionRefs
             })
           }
         } },
@@ -89,9 +106,58 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
   };
 }
 
-function perceptionListeners(state, events, profile) {
+function formalDecisionBoundaries({ descriptors, partyId, committedState }) {
+  if (descriptors.length === 0) return [];
+  const version = committedState?.party_state?.state_version;
+  if (!Number.isSafeInteger(version) || version < 0) {
+    gap('TRACE_POST_ACTION_DECISION_STATE_GAP');
+  }
+  const groups = new Map();
+  for (const descriptor of descriptors) {
+    const signal = buildNpcDecisionSignal(descriptor);
+    const timeKey = signal.occurred_at.whole_minutes + ':'
+      + signal.occurred_at.subminute_numerator + '/'
+      + signal.occurred_at.subminute_denominator;
+    const key = timeKey + '\u0000' + signal.subject_ref.entity_id;
+    const group = groups.get(key) ?? {
+      timestamp: signal.occurred_at,
+      npcRef: signal.subject_ref,
+      signals: []
+    };
+    group.signals.push(signal);
+    groups.set(key, group);
+  }
+  const boundaries = [];
+  for (const group of groups.values()) {
+    const timeKey = group.timestamp.whole_minutes + ':'
+      + group.timestamp.subminute_numerator + '/'
+      + group.timestamp.subminute_denominator;
+    const sameTimeBatchRef = {
+      entity_kind: 'temporal_batch',
+      entity_id: 'temporal-batch:' + partyId + ':' + timeKey + ':1'
+    };
+    const evaluation = evaluateNpcDecisionSignals({
+      npc_ref: group.npcRef,
+      active_mode: 'autonomous',
+      current_intent: null,
+      decision_capability: true,
+      resolved_signals: group.signals,
+      consumed_signal_ids: [],
+      same_time_batch_ref: sameTimeBatchRef,
+      state_version: String(version)
+    });
+    if (evaluation.boundary !== null) {
+      boundaries.push(evaluation.boundary);
+    }
+  }
+  return orderNpcDecisionBoundaries(boundaries);
+}
+
+function perceptionListeners(state, events, profile, environmentProjector) {
   if (profile == null) return [];
-  if (!validProfile(profile)) gap('TRACE_POST_ACTION_PERCEPTION_PROFILE_GAP');
+  if (!validPostActionPerceptionProfile(profile)) {
+    gap('TRACE_POST_ACTION_PERCEPTION_PROFILE_GAP');
+  }
   const schedules = state?.npc_schedule_runtime ?? [];
   const knowledgeStates = state?.post_action_knowledge_states ?? [];
   const sources = state?.post_action_perception_sources ?? [];
@@ -110,7 +176,12 @@ function perceptionListeners(state, events, profile) {
     const runtimeStatus = npc.machine_state?.runtime_status;
     if (profile.runtime_attention.unavailable_statuses
       .includes(runtimeStatus)) return [];
-    const context = perceptionContext({ state, npc, source, profile });
+    const environment = profile.schema
+      === 'rus.live_world_runtime.post_action_perception_profile.v1'
+      ? environmentProjector?.({ state, clock: event.occurred_at }) ?? null
+      : null;
+    const context = perceptionContext({ state, npc, source, profile,
+      worldEnvironment: environment });
     if (knowledge == null) gap('TRACE_POST_ACTION_KNOWLEDGE_STATE_GAP');
     return [{ event, npc, schedule, knowledge, context }];
   }));
@@ -214,25 +285,6 @@ function perceivedSummary(event, plan) {
   return event.perceptible_signal.channel === 'visual'
     ? 'Наблюдатель заметил физическое событие.'
     : 'Наблюдатель услышал акустическое событие.';
-}
-
-function validProfile(value) {
-  return value?.schema
-      === 'rus.lower_dvina_trace_post_action_perception_profile.v1'
-    && value.profile_id === 'lower_dvina_trace_post_action_perception_v1'
-    && value.revision === 1
-    && value.scenario_id === 'lower_dvina_trace_v1'
-    && value.scenario_definition_revision === 34
-    && value.status === 'approved' && value.owner === '@rus/turn'
-    && value.fallback_policy === 'forbidden'
-    && value.listener_scope_relation === 'same_scene_position'
-    && Array.isArray(value.channels)
-    && Array.isArray(value.runtime_attention?.awake_statuses)
-    && Array.isArray(value.runtime_attention?.sleeping_statuses)
-    && Array.isArray(value.runtime_attention?.unavailable_statuses)
-    && Array.isArray(value.attention?.awake_channels)
-    && Array.isArray(value.attention?.sleeping_channels)
-    && value.perception_policy?.status === 'approved';
 }
 
 function eventWriteProposal({ event, partyId, changeSetId, idempotencyKey }) {

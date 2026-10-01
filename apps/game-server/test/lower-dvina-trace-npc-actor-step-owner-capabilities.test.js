@@ -134,7 +134,7 @@ test('NPC O1 inspect receives only its safe committed item identity for reuse',
       operation === 'request_discovery');
     const result = await capability.execute(execution({
       op: 'request_discovery', actor_ref: 'npc', discovery_kind: 'inspect',
-      target_refs: ['wheel-1'], query: 'Колёсная прялка'
+      target_refs: ['wheel-1'], query: 'Как устроена эта колёсная прялка?'
     }));
 
     assert.equal(result.summary,

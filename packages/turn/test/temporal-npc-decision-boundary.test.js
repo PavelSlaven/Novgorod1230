@@ -102,28 +102,61 @@ test('blocked O1 query and independent A1 output select ordinary NPC wait',
     }
   });
 
-test('NPC inspects an exact-name committed visible item before query preflight',
+test('NPC inspect trusts a known ref; name lookup requires a unique visible item',
   async () => {
-    const autonomous = { request: { npc_ref: 'npc-a', npc: {
-      available_resources: [{ resource_ref: 'wheel-1' }]
-    }, perception: { visible_objects: [{ object_ref: 'wheel-1',
-      source_perception_ref: 'sight:wheel-1', summary: 'Колёсная прялка' }] } },
-    proposal: { status: 'planned', plan: { schema: 'npc_step_plan_v1',
-      npc_ref: 'npc-a', resolution: 'domain_request', operations: [{
-        op: 'request_discovery', actor_ref: 'npc-a',
-        discovery_kind: 'inspect', target_refs: ['wheel-1'],
-        query: 'Колёсная прялка'
-      }] } } };
-    const prepared = await prepareNpcDecisionForActorStep({ autonomous,
-      committedState: { items: [{ item_id: 'wheel-1', name: 'Колёсная прялка',
-        semantic_type: 'household_tool' }] },
-      async assertNeedsCheckAllowed() {
-        assert.fail('an existing committed identity is not new materialization');
-      }
-    });
+    const scenarios = [
+      { name: 'free-form question to a known ref', targetRefs: ['wheel-1'],
+        query: 'Как устроена эта колёсная прялка?', items: ['wheel-1'],
+        available: ['wheel-1'], blocked: false },
+      { name: 'chosen ref disambiguates duplicate names',
+        targetRefs: ['wheel-1'], query: 'Колёсная прялка: как устроена?',
+        items: ['wheel-1', 'wheel-2'], available: ['wheel-1', 'wheel-2'],
+        blocked: false },
+      { name: 'name lookup reuses one unique visible item', targetRefs: [],
+        query: 'Колёсная прялка', items: ['wheel-1'], available: ['wheel-1'],
+        blocked: false },
+      { name: 'name lookup remains ambiguous for duplicate names', targetRefs: [],
+        query: 'Колёсная прялка', items: ['wheel-1', 'wheel-2'],
+        available: ['wheel-1', 'wheel-2'], blocked: true },
+      { name: 'unknown ref does not fall back to a matching name',
+        targetRefs: ['wheel-missing'], query: 'Колёсная прялка',
+        items: ['wheel-1'], available: ['wheel-missing', 'wheel-1'],
+        blocked: true }
+    ];
 
-    assert.equal(prepared, autonomous,
-      'known existing item inspection preserves the validated NPC plan');
+    for (const scenario of scenarios) {
+      const autonomous = { request: { npc_ref: 'npc-a', npc: {
+        available_resources: scenario.available.map((resource_ref) =>
+          ({ resource_ref }))
+      } }, proposal: { status: 'planned', plan: { schema: 'npc_step_plan_v1',
+        npc_ref: 'npc-a', resolution: 'domain_request', operations: [{
+          op: 'request_discovery', actor_ref: 'npc-a',
+          discovery_kind: 'inspect', target_refs: scenario.targetRefs,
+          query: scenario.query
+        }] } } };
+      const committedState = { items: scenario.items.map((item_id) => ({
+        item_id, name: 'Колёсная прялка', semantic_type: 'household_tool'
+      })) };
+      let guardCalled = false;
+      const prepared = await prepareNpcDecisionForActorStep({ autonomous,
+        committedState, async assertNeedsCheckAllowed({ candidate }) {
+          guardCalled = true;
+          assert.equal(candidate.path, 'O1.request.query');
+          throw Object.assign(new Error('blocked'), { code:
+            'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', details: {
+              queue_ids: ['needs_check.csv#TEST003']
+            } });
+        }
+      });
+
+      assert.equal(guardCalled, scenario.blocked, scenario.name);
+      if (scenario.blocked) {
+        assert.equal(prepared.proposal.plan.operations[0].activity_kind,
+          'wait', scenario.name);
+      } else {
+        assert.equal(prepared, autonomous, scenario.name);
+      }
+    }
   });
 
 test('A1 inherited source facts reach the needs-check candidate baseline',

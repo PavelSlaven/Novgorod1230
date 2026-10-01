@@ -292,16 +292,10 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
       applied.working_projection, plan));
   const visiblePresence = applied.consequence_fragment?.visible_seed
     ?.ordinary_presence_seed;
-  const filteredSeedOnly = visiblePresence?.resolution === 'no_change'
-    && plan?.transitions?.some(({ kind }) => kind === 'seed')
-    && !Object.hasOwn(applied.consequence_fragment?.visible_seed ?? {},
-      'ordinary_scene_seed');
-  const knownResolution = applied.known_resolution
-    ?? (filteredSeedOnly
-      ? visiblePresence : null);
   const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
     request: execution.request, plan: execution.plan, ordinaryPlan: plan,
-    knownResolution });
+    knownResolution: applied.known_resolution,
+    visibleSeed: applied.consequence_fragment?.visible_seed });
   if (activity == null) return plan == null ? applied
     : { ...applied, working_projection: projection };
   const timed = await applySemanticActivity({ ...execution,

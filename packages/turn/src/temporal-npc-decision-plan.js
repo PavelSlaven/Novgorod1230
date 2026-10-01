@@ -77,19 +77,25 @@ function needsCheckCandidates(operation, request, committedState) {
 }
 
 function matchesNpcCommittedInspection(operation, request, committedState) {
-  const targetRef = operation.target_refs?.length === 1
-    ? operation.target_refs[0] : null;
-  if (typeof targetRef !== 'string') return false;
   const availableRefs = new Set((request?.npc?.available_resources ?? [])
     .map(({ resource_ref: ref }) => ref));
-  if (!availableRefs.has(targetRef)) return false;
+  const items = (committedState?.items ?? []).filter((item) =>
+    availableRefs.has(item?.item_id ?? item?.instance_id));
+  const targetRefs = operation.target_refs ?? [];
+  if (targetRefs.length > 1) return false;
+  if (targetRefs.length === 1) {
+    const [targetRef] = targetRefs;
+    if (typeof targetRef !== 'string' || !availableRefs.has(targetRef)) {
+      return false;
+    }
+    return items.filter((item) =>
+      (item?.item_id ?? item?.instance_id) === targetRef).length === 1;
+  }
   const query = normalizeVisibleName(operation.query);
   if (query == null) return false;
-  const matches = (committedState?.items ?? []).filter((item) =>
-    availableRefs.has(item?.item_id ?? item?.instance_id)
-      && normalizeVisibleName(item?.name ?? item?.state?.display_name) === query);
-  return matches.length === 1
-    && (matches[0]?.item_id ?? matches[0]?.instance_id) === targetRef;
+  return items.filter((item) =>
+    normalizeVisibleName(item?.name ?? item?.state?.display_name) === query
+  ).length === 1;
 }
 
 function normalizeVisibleName(value) {

@@ -238,6 +238,10 @@ test('first ordinary search keeps its activity when the Stage B candidate is fil
 
     assert.equal(applied.duration_minutes, 15);
     assert.equal(applied.consequence_fragment.duration_minutes, 15);
+    assert.equal(applied.write_fragments.length, 1,
+      'the filtered seed-only search binds exactly one activity slot');
+    assert.equal(applied.write_fragments[0].target, 'party_events');
+    assert.equal(applied.write_fragments[0].value.duration_minutes, 15);
     assert.equal(applied.ordinary_materialization_atomic_write_plan.resolution,
       'no_change');
     assert.deepEqual(applied.ordinary_materialization_atomic_write_plan.transitions
@@ -247,6 +251,15 @@ test('first ordinary search keeps its activity when the Stage B candidate is fil
     assert.deepEqual(privateTrace, [{ path:
       'O1.proposed_entity.semantic_descriptor',
       queue_ids: ['needs_check.csv#HNT0024'] }]);
+    const ordinaryPlan = applied.ordinary_materialization_atomic_write_plan;
+    assert.doesNotThrow(() => validateTurnStepBatchPlanBindings({
+      batch: { root_turn_id: input.request.root_turn_id,
+        operations: applied.write_fragments },
+      state: { actor_id: 'mikula', items: [] }, ordinaryPlan,
+      factual: { consequence: applied.consequence_fragment,
+        loop_trace: { step_traces: [{ applied: true, step_index: 1,
+          approved_plan: input.plan, plan_request: input.request }] } }
+    }));
   });
 
 test('ordinary look remains free after a resolved discovery result', () => {
@@ -319,6 +332,13 @@ test('missing supporting basis is preflight: first seed persists without search 
   assert.deepEqual(committed.next_aggregate.presence_resolutions, []);
   assert.ok(committed.transitions.every(transition => transition.kind !== 'resolve_presence'));
   assert.notEqual(committed.request_identity, `${input.request.root_turn_id}:ordinary:presence:step:1`);
+  assert.doesNotThrow(() => validateTurnStepBatchPlanBindings({
+    batch: { root_turn_id: input.request.root_turn_id, operations: first.write_fragments },
+    state: { actor_id: 'mikula', items: [] }, ordinaryPlan: committed,
+    factual: { consequence: first.consequence_fragment,
+      loop_trace: { step_traces: [{ applied: true, step_index: 1,
+        approved_plan: input.plan, plan_request: input.request }] } }
+  }), 'Stage A-only preflight adds no paid activity slot');
   const reloaded = await createPorts({ ordinaryDiscoveryResolver: resolver,
     semanticActivityOwner: owners.semanticActivityOwner }).ordinaryDiscoveryResolver(input);
   assert.equal(reloaded.duration_minutes, 0);

@@ -61,6 +61,8 @@ function fixture({
   beforeRandomSource = null,
   afterCommittedVisibleRead = null,
   afterNarration = null,
+  loadTurnRuntimeCatalogContext = null,
+  turnStepNeedsCheckGuard = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle,
@@ -571,6 +573,8 @@ function fixture({
     createTurnStepOrdinaryDiscoveryResolver,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
+    loadTurnRuntimeCatalogContext,
+    turnStepNeedsCheckGuard,
     actionProductionProfile,
     createTurnStepActionProductionOwner,
     localFireProfile,

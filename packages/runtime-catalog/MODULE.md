@@ -12,7 +12,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - проверкой compatible full-world pin и runtime contract;
 - чистой projection по region/effective date после полной проверки.
 - единой загрузкой неперсистентных common catalog lookups до projection.
-- чистой проверкой кросс-доменного versioned `needs_check` blocker snapshot по кандидату; чтение authoring queues и сборка snapshot остаются у game-base CLI.
+- чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner.
 
 ## Не делает
 
@@ -31,6 +31,10 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `createRuntimeCatalogLoader({ worldBaseReader, supportedRuntimeContractDigests })`;
 - `loadActivePin({ catalogScope })`;
 - `loadApprovedItemCatalog({ pin })`;
+- `loadApprovedNeedsCheckBlockerSnapshot({ verifiedCatalog, pin })` — exact
+  immutable `profile:needs_check_blockers` member, без latest fallback;
+- `needsCheckBlockerSnapshotRequired({ verifiedCatalog, pin })` — exact import
+  binding, требующий blocker snapshot;
 - `loadApprovedActorProfileCatalog({ worldPin, regionId, effectiveDate })`;
 - `loadScheduleRoutineRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, season, month? })` — D-1 routine rules из `world_base.npc_schedule_routine_rules` только после spatial pin и последнего runtime-catalog activation;
 - `loadPresenceRulesForPlaceFamilies({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyIds })` — M2c `world_base.presence_rules` для `place_family` после тех же gate;
@@ -80,7 +84,10 @@ placement candidate digest/reference. It approves no later-state fallback;
 the current-state owner must separately prove that the committed initial state
 still applies.
 
-`rus.needs_check_blockers.v2` — immutable snapshot cross-domain queues с проверкой digest. Snapshot включает отсортированный список `regions` из approved G0 registry; digest покрывает schema, regions и entries. Каждая name-строка фиксирует `doubt_kind` (`anachronism` или `regional_presence`), `block_by` (`name`, `archive_id` или `none`), `block_region`, `block_period`, исключения и нормализуемые шаблоны. Только `anachronism` блокирует по имени: известный совпадающий регион применяется, другой известный регион пропускается, отсутствующий или неизвестный регион проверяется по всем name-записям. `block_period` хранит границы формата `YYYY-YYYY`; game-base snapshot относится к 1230 г., дата кандидата пока не учитывается. `regional_presence` всегда информационный (`block_by=none`); активная name-строка без `doubt_kind` — ошибка сборки. Archive ID блокирует только включение сущности, не item-bearing references, и не зависит от региона, поскольку ID глобально уникален; archive name blocker также несёт ID-шаблон для entity inclusion. Однословный шаблон до 5 букв совпадает только с точной формой; `|` задаёт альтернативы. Matcher учитывает RU/Latin aliases и fail-closed на неизвестной схеме, битом digest, пустом после нормализации шаблоне или некорректной записи. Чтение очередей и сборка snapshot принадлежат game-base CLI; runtime передаёт кандидата и регион тому же чистому matcher.
+`rus.runtime_catalog_context.v2.needs_check_blocker_snapshot` — snapshot,
+загруженный из verified catalog context того же immutable pin. Обязательность
+определяет `needs_check_blocker_snapshot_required` по binding этого import.
+`rus.needs_check_blockers.v2` — immutable snapshot cross-domain queues с проверкой digest. Snapshot включает отсортированный список `regions` из approved G0 registry; digest покрывает schema, regions и entries. Каждая name-строка фиксирует `doubt_kind` (`anachronism` или `regional_presence`), `block_by` (`name`, `archive_id` или `none`), `block_region`, включительный `block_period` (`YYYY-YYYY`), исключения и нормализуемые шаблоны. Только `anachronism` даёт совпадение по имени в том же регионе и внутри периода; другой известный регион или год вне периода пропускается. Отсутствующий или неизвестный регион проверяется по всем name-записям. `regional_presence` всегда информационный (`block_by=none`). Runtime получает year из committed clock и регион из committed G0 места. Matcher сообщает совпадение, но не задаёт admission policy: world-presence consumers фильтруют совпавшие новые факты, NPC owner отклоняет только совпавшую операцию, а действия игрока список не блокирует. Изменение активного указателя не меняет snapshot исторического party pin.
 
 `loadActivePin` возвращает immutable `rus.runtime_catalog_pin.v2`.
 `loadApprovedItemCatalog` возвращает полный immutable verified bundle только

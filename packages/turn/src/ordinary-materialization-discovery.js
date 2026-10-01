@@ -14,6 +14,7 @@ import {
   resolveOrdinaryWorldPropertyPlacement
 } from '@rus/items-property';
 import { resolveOrdinaryMaterializationPresence,
+  preflightOrdinaryMaterializationPresence,
   selectOrdinaryMaterializationSupportingBasis } from
   './ordinary-materialization-presence.js';
 import { resolveOrdinaryMaterializationSeedScope } from
@@ -24,6 +25,9 @@ import { turnFailure } from './errors.js';
 export function createOrdinaryMaterializationDiscoveryOwner({
   loadDiscoveryContext, ordinaryMaterializationModel, verifyStageBCutover,
   inputDigest, buildSeedRequest, buildPresenceRequest, sealAtomicWritePlan,
+  requestSubject = 'npc',
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
   resolveFiniteResourceEffects = () => null, resolveExistingInspection = () => null
 } = {}) {
   const ports = { loadDiscoveryContext, ordinaryMaterializationModel,
@@ -62,6 +66,80 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
     let newBases = [];
+    const candidateContext = candidateForDiscovery({
+      candidateContext: execution.candidate_context,
+      query: request.operation.query,
+      quantity: request.operation.quantity ?? null });
+    let requestGuardedBeforeSeed = false;
+    const playerActorRef = request.actor?.actor_id ?? request.actor?.actor_ref;
+    const isPlayerRequest = requestSubject === 'player'
+      && typeof playerActorRef === 'string'
+      && request.operation?.actor_ref === playerActorRef;
+    const queryNamesVisibleEquivalent = isPlayerRequest
+      && uniqueVisibleItemByName(request, request.operation?.query) != null;
+    if (queryNamesVisibleEquivalent) requestGuardedBeforeSeed = true;
+    if (candidateContext != null
+        && request.operation?.discovery_kind !== 'look') {
+      const bases = enabled.expected_supporting_bases
+        ?? execution.supporting_bases;
+      const preflightObjective = { ...enabled.objective_context,
+        request_id: `${rootId}:ordinary:presence:step:${request.request.step_index}`,
+        policy_refs: presencePolicyRefs({
+          policyRefs: enabled.objective_context.policy_refs,
+          bases,
+          aggregate: projection.ordinary_materialization_aggregate,
+          currentSeedRequestId: null, currentPreparedRefs: new Set()
+        }),
+        ordinary_state_version:
+          projection.ordinary_materialization_aggregate.state_version,
+        ordinary_state: ordinaryState(
+          projection.ordinary_materialization_aggregate,
+          enabled.objective_context.technical_limits.max_new_entities),
+        property_placement_context: enabled.property_placement_context };
+      const selectedSupportingBasisRef =
+        selectOrdinaryMaterializationSupportingBasis({
+          request: { scope_ref: preflightObjective.scope_ref,
+            policy_refs: preflightObjective.policy_refs },
+          identity: candidateContext, basisCatalog: admissionBases(bases)
+        });
+      const preflightEnvelope = buildPresenceRequest({
+        objective_context: preflightObjective,
+        candidate_context: candidateContext,
+        selected_supporting_basis_ref: selectedSupportingBasisRef
+      });
+      const early = preflightOrdinaryMaterializationPresence({
+        envelope: preflightEnvelope, workingProjection: projection,
+        basisCatalog: admissionBases(bases),
+        codeOwnedResolution: enabled.code_owned_resolution ?? null
+      });
+      if (early?.status === 'already_resolved') {
+        return knownResolutionResult(request, early.known_resolution, {
+          displayName: knownMaterializedItemName({ request, partyId, scopeRef,
+            knownResolution: early.known_resolution })
+        });
+      }
+    }
+    if (candidateContext != null
+        && request.operation?.discovery_kind !== 'look'
+        && typeof assertNeedsCheckAllowed === 'function'
+        && !queryNamesVisibleEquivalent) {
+      const guardInput = { committedState: request.committed_state,
+        candidate: { name: request.operation?.query,
+          path: 'O1.request.query' } };
+      const matches = isPlayerRequest
+        ? await assertNeedsCheckAllowed({ ...guardInput, matchOnly: true })
+        : (await assertNeedsCheckAllowed(guardInput), null);
+      requestGuardedBeforeSeed = true;
+      if (isPlayerRequest && Array.isArray(matches) && matches.length > 0) {
+        if (typeof recordNeedsCheckFilter === 'function') {
+          await recordNeedsCheckFilter({
+            path: 'O1.request.query',
+            queue_ids: matches.map(({ queue_id: queueId }) => queueId)
+          });
+        }
+        return knownResolutionResult(request, { resolution: 'no_change' });
+      }
+    }
     if (!enabled.ordinary_aggregate.seeded && finiteOnlyScope(enabled)) {
       // A finite-source-only scope has zero background density: nothing for
       // Stage A to describe, so code seeds it before any model call.
@@ -138,10 +216,6 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate,
         enabled.objective_context.technical_limits.max_new_entities),
       property_placement_context: enabled.property_placement_context };
-    const candidateContext = candidateForDiscovery({
-      candidateContext: execution.candidate_context,
-      query: request.operation.query,
-      quantity: request.operation.quantity ?? null });
     if (candidateContext == null) return ordinaryNoop(request);
     const selectedSupportingBasisRef = selectOrdinaryMaterializationSupportingBasis({
       request: { scope_ref: presenceObjective.scope_ref,
@@ -153,21 +227,65 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       semanticContext: enabled.semantic_context ?? null,
       requiredQuantity: request.operation.quantity ?? null,
+      committedState: request.committed_state,
+      isEquivalentCandidate: (proposed) =>
+        equivalentVisibleItem(request, proposed) != null,
       partyClock,
       historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
+      filterCandidateAllowed: typeof assertNeedsCheckAllowed === 'function'
+        ? ({ committedState, candidate }) => assertNeedsCheckAllowed({
+            committedState, candidate, matchOnly: true }) : null,
+      assertCandidateAllowed: null,
       workingProjection: projection,
-      basisCatalog: admissionBases(bases), beforeModel: () =>
-        verifyStageBCutover({
+      basisCatalog: admissionBases(bases), beforeModel: async () => {
+        if (!requestGuardedBeforeSeed
+            && request.operation?.discovery_kind !== 'look'
+            && typeof assertNeedsCheckAllowed === 'function') {
+          await assertNeedsCheckAllowed({
+            committedState: request.committed_state,
+            candidate: { name: request.operation?.query,
+              path: 'O1.request.query' }
+          });
+        }
+        return verifyStageBCutover({
           eval_contract: execution.stage_b_classification_eval
-        }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
+        });
+      }, codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
+    if (presence.status !== 'candidate_filtered'
+        && Array.isArray(presence.filtered_needs_check_matches)
+        && presence.filtered_needs_check_matches.length > 0
+        && typeof recordNeedsCheckFilter === 'function') {
+      await recordNeedsCheckFilter({
+        path: 'O1.proposed_entity.semantic_descriptor',
+        queue_ids: presence.filtered_needs_check_matches
+          .map(({ queue_id: queueId }) => queueId)
+      });
+    }
     if (presence.status === 'already_resolved') {
       return knownResolutionResult(request, presence.known_resolution, {
         displayName: knownMaterializedItemName({ request, partyId, scopeRef,
           knownResolution: presence.known_resolution })
       });
+    }
+    if (presence.status === 'candidate_filtered') {
+      if (typeof recordNeedsCheckFilter === 'function') {
+        await recordNeedsCheckFilter({
+          path: 'O1.proposed_entity.semantic_descriptor',
+          queue_ids: (presence.needs_check_matches ?? [])
+            .map(({ queue_id: queueId }) => queueId)
+        });
+      }
+      if (transitions.length > 0) {
+        return resolvedPlan({ request, enabled, partyId, scopeRef,
+          inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
+          next: projection.ordinary_materialization_aggregate,
+          requestIdentity: objective.request_id, resolution: 'no_change',
+          suppressSceneSeed: true, visiblePresenceResolution: 'no_change' });
+      }
+      return knownResolutionResult(request, { resolution: 'no_change' });
     }
     if (presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
@@ -326,7 +444,8 @@ function semanticIdentityProfile(profile) {
 
 function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   sealAtomicWritePlan, transitions, newBases, bases, next, requestIdentity,
-  resolution, item = null, finiteResourceEffects = null }) {
+  resolution, item = null, finiteResourceEffects = null,
+  suppressSceneSeed = false, visiblePresenceResolution = null }) {
   const expected = enabled.version_pins;
   const plan = sealAtomicWritePlan({ party_id: partyId,
     scope_ref: structuredClone(scopeRef),
@@ -359,7 +478,7 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     && ['absent', 'no_change', 'authority_required'].includes(resolution)
     ? resolution : null;
   const visibleSeed = {
-    ...(sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
+    ...(suppressSceneSeed || sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
       kind: 'ordinary_scene_seed', sensory_details: sceneDetails
     } }),
     ...(item == null || resolution !== 'materialize' ? {} : { ordinary_presence_seed: {
@@ -368,6 +487,10 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,
+      query: request.operation.query
+    } }),
+    ...(visiblePresenceResolution == null ? {} : { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: visiblePresenceResolution,
       query: request.operation.query
     } })
   };
@@ -381,6 +504,26 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     } }),
     player_response_boundary: item == null || request.plan?.continuation == null,
     ordinary_materialization_atomic_write_plan: plan });
+}
+
+function uniqueVisibleItemByName(request, name) {
+  const normalizedName = normalizeVisibleText(name);
+  const items = request?.request?.player_safe_state?.items;
+  if (normalizedName == null || !Array.isArray(items)) return null;
+  const matches = items.filter((item) =>
+    normalizeVisibleText(item?.name ?? item?.state?.display_name)
+      === normalizedName);
+  if (matches.length !== 1) return null;
+  const item = matches[0], ref = item?.item_id ?? item?.instance_id;
+  return typeof ref === 'string' && ref.trim() === ref && ref.length > 0
+    ? item : null;
+}
+
+function normalizeVisibleText(value) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
+    .toLocaleLowerCase('ru-RU');
+  return normalized || null;
 }
 
 function presenceTransition({ envelope, presence, aggregate,

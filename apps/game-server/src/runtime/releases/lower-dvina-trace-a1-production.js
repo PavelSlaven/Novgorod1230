@@ -16,7 +16,7 @@ import { admitA1PreAttempt, contextForA1Operation,
 import { validNeutralActionProductionProfile } from '../../internal/lower-dvina-trace-a1-bundle.js';
 
 export function createLowerDvinaTraceA1ProductionResolverFactory({
-  pool, loadedProfile
+  pool, loadedProfile, assertNeedsCheckAllowed = null
 } = {}) {
   const profile = validateLoadedProfile(loadedProfile);
   if (!pool?.query) {
@@ -38,7 +38,8 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     allowed_result_classes: Object.freeze([...profile.allowed_result_classes]),
     allowed_output_classes: Object.freeze([...profile.allowed_output_classes])
   });
-  return ({ partyId, requestId, applyWorkingProjection }) => {
+  return ({ partyId, requestId, applyWorkingProjection,
+    assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed }) => {
     const load = async (rawEnvelope, requireEvidence) => {
       const envelope = snapshotA1ExecutionEnvelope(rawEnvelope);
       if (envelope === INVALID_ACTION_PRODUCED_DATA) {
@@ -122,8 +123,16 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         delete firstEnvelope.operations;
         const base = await load(firstEnvelope, false);
         for (const operation of operations) {
-          admitA1PreAttempt(contextForA1Operation(base, operation, profile),
-            profile, requestId);
+          const { semantic } = admitA1PreAttempt(
+            contextForA1Operation(base, operation, profile), profile, requestId);
+          if (semantic.identity_mode === 'independent_outputs'
+              && typeof turnGuard === 'function') {
+            await turnGuard({ partyId,
+              committedState: rawEnvelope?.committed_state,
+              candidate: a1DescriptorCandidate(semantic.result_descriptor,
+                'A1.preflight.result_descriptor',
+                sourceDescriptorFor(base.loaded, semantic.source_refs[0])) });
+          }
         }
         return true;
       },
@@ -137,6 +146,16 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           context;
         const { semantic, admission, mechanics } = admitA1PreAttempt(context,
           profile, requestId);
+        if (semantic.identity_mode === 'independent_outputs'
+            && typeof turnGuard === 'function') {
+          await turnGuard({
+            partyId,
+            committedState: rawEnvelope?.committed_state,
+            candidate: a1DescriptorCandidate(semantic.result_descriptor,
+              'A1.execute.result_descriptor',
+              sourceDescriptorFor(loaded, semantic.source_refs[0]))
+          });
+        }
         const planner = createActionProducedTransitionPlanner({
           resolveMechanics: (mechanicsRequest) => {
             if ([...mechanicsRequest.source_inputs,
@@ -198,6 +217,39 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         });
       }
     });
+  };
+}
+
+function a1DescriptorCandidate(descriptor, path, sourceFactDeltaBaseline) {
+  const delta = descriptor.source_fact_delta ?? null;
+  return { name: descriptor.display_name,
+    display_name: descriptor.display_name,
+    physical_description: descriptor.physical_description,
+    qualitative_facts: descriptor.qualitative_facts,
+    inscription_text: descriptor.inscription_text,
+    ...(delta == null ? {} : { source_fact_delta: delta,
+      source_fact_delta_baseline: sourceFactDeltaBaseline }), path };
+}
+
+function sourceDescriptorFor(loaded, sourceRef) {
+  const pin = loaded?.row_pins?.find(({ item_id, item }) =>
+    item_id === sourceRef || item?.item_id === sourceRef);
+  const item = pin?.item;
+  if (item == null) return null;
+  const metadata = item.state?.ordinary_metadata ?? {};
+  const facts = (metadata.semantic_facts ?? []).flatMap((fact) =>
+    typeof fact?.text === 'string' ? [fact.text]
+      : typeof fact?.summary === 'string' ? [fact.summary] : []);
+  const inscriptions = (metadata.physical_inscriptions ?? []).flatMap((fact) =>
+    typeof fact?.text === 'string' ? [fact.text]
+      : typeof fact?.summary === 'string' ? [fact.summary] : []);
+  return {
+    name: metadata.name ?? item.name ?? item.item_id,
+    display_name: metadata.name ?? item.name ?? null,
+    semantic_type: metadata.semantic_type ?? item.category_id ?? null,
+    physical_description: metadata.physical_description ?? null,
+    qualitative_facts: facts,
+    inscription_text: inscriptions.join(' ')
   };
 }
 

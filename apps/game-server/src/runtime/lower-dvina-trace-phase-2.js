@@ -44,6 +44,8 @@ export function createLowerDvinaTracePhase2Runtime({
   createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
+  turnStepNeedsCheckGuard = null,
+  loadTurnRuntimeCatalogContext = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
   requireTurnStepAmbientOrdinaryAdmission = false, turnStepAmbientPortionProfileRef = null,
   createTurnStepActionProductionOwner = null,
@@ -93,6 +95,26 @@ export function createLowerDvinaTracePhase2Runtime({
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
+        let runtimeCatalogContextPromise = null;
+        const getRuntimeCatalogContext = () => {
+          if (typeof loadTurnRuntimeCatalogContext !== 'function') return null;
+          runtimeCatalogContextPromise ??= runWithinTurnDeadline(turnBudget, () =>
+            loadTurnRuntimeCatalogContext({ partyId }));
+          return runtimeCatalogContextPromise;
+        };
+        const assertNeedsCheckAllowed =
+          typeof turnStepNeedsCheckGuard !== 'function' ? null
+            : async (input) => turnStepNeedsCheckGuard({ ...input,
+              catalogContext: await getRuntimeCatalogContext() });
+        const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'needs_check_candidate_filtered', path,
+              queue_id: queue_ids[0] ?? null,
+              queue_ids: structuredClone(queue_ids)
+            });
+          } catch { /* Diagnostics must not affect the turn. */ }
+        };
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
         const scenarioDefinitionRevision = authored ? null
@@ -153,6 +175,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcOwnerCapabilities =
           typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
             createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
+              assertNeedsCheckAllowed,
               bundle, phase7Contracts, npcCombatModel, revalidateStateVersion,
               ...boundary });
         const genericOwners = bundle.turn_step_owner_profiles
@@ -165,6 +188,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceNpcActorStepDirectOperations({
               state, phase7Contracts, ...boundary,
               ordinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+              assertNeedsCheckAllowed,
               packingCalculator: turnStepPackingCalculator, bodyEventOwner: genericOwners?.bodyEventOwner,
               createAmbientOrdinaryPortionAdmission: createTurnStepAmbientOrdinaryPortionAdmission
             });
@@ -233,6 +257,8 @@ export function createLowerDvinaTracePhase2Runtime({
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
           bundle,
+          turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
+          recordNeedsCheckFilter,
           combatCommand,
           contracts,
           createTurnStepWorldProcessResolver,
@@ -286,6 +312,7 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
+          turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
           ordinaryDiscoveryScopeBinding,
           createTurnStepActionProductionOwner: actionProductionEnabled
             ? createTurnStepActionProductionOwner : null,

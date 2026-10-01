@@ -117,6 +117,11 @@ Both natural presentation and placement builders consume the existing
 `rus.m2c_supplemental_data_approval.v1` verdict and its exact candidate hashes;
 they do not create another approval artifact.
 
+Target item import includes `profile:needs_check_blockers` and its explicit
+`profile:needs_check_blockers_binding` requirement record. Both belong to the
+immutable import; runtime rejects a missing snapshot only when that exact
+binding is present.
+
 Unknown table/column, missing dependency membership, changed parent row,
 invalid attestation или readback mismatch являются hard block. Apply работает
 одной явной transaction и не выполняет upsert.

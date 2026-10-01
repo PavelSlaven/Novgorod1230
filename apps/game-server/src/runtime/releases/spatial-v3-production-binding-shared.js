@@ -217,6 +217,7 @@ export async function createSpatialV3ProductionBindings(
         traceStartAdapter,
         traceTurnRuntime: createTraceTurnRuntime({
           partyPool: ports.partyPool,
+          worldPool: ports.worldPool,
           committer,
           env,
           config,

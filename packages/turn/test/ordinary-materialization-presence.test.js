@@ -367,3 +367,115 @@ test('restricted model entity records missing authority without inventing absenc
   assert.equal(replay.known_resolution.resolution, 'authority_required');
   assert.equal(calls, 0);
 });
+
+test('needs-check checks a valid restricted proposal before authority_required ledger transition',
+  async () => {
+    const admittedEnvelope = envelope();
+    admittedEnvelope.request.policy_refs.allowed_admission_classes.push(
+      'specialized_or_valuable');
+    const raw = materialize();
+    raw.entities[0].semantic_descriptor = { semantic_type: 'mechanism',
+      name: 'механизм', facts: ['Колёсная прялка'] };
+    raw.entities[0].admission_class = 'specialized_or_valuable';
+    const workingProjection = projection();
+    const before = structuredClone(workingProjection);
+    let modelCalls = 0;
+    let repairCalls = 0;
+    let checked = null;
+    await assert.rejects(resolveOrdinaryMaterializationPresence({
+      envelope: admittedEnvelope, workingProjection, basisCatalog,
+      ordinaryMaterializationModel: async () => { modelCalls += 1; return raw; },
+      repairAvailable: () => { repairCalls += 1; return true; },
+      assertCandidateAllowed: async ({ candidate }) => {
+        checked = candidate;
+        throw Object.assign(new Error('blocked'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+        });
+      }
+    }), { code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED' });
+    assert.deepEqual(checked, { semantic_type: 'mechanism', name: 'механизм',
+      facts: ['Колёсная прялка'], path: 'O1.proposed_entity.semantic_descriptor' });
+    assert.equal(modelCalls, 1);
+    assert.equal(repairCalls, 0);
+    assert.deepEqual(workingProjection, before,
+      'authority_required must not append a negative presence resolution');
+  });
+
+test('needs-check typed refusal from a seeded-area pre-model guard keeps private details',
+  async () => {
+    const blocked = Object.assign(new Error('blocked'), {
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+      details: { queue_id: 'needs_check.csv#HNT0024' }
+    });
+    await assert.rejects(resolveOrdinaryMaterializationPresence(input(
+      async () => { assert.fail('model must not run after request guard'); },
+      { beforeModel: async () => { throw blocked; } })), (error) => {
+      assert.equal(error, blocked);
+      assert.equal(error.code, 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED');
+      assert.equal(error.details.queue_id, 'needs_check.csv#HNT0024');
+      return true;
+  });
+});
+
+test('needs-check filters a player O1 descriptor without a negative presence record',
+  async () => {
+    const workingProjection = projection();
+    const before = structuredClone(workingProjection);
+    let filtered = null;
+    let assertCalls = 0;
+    const output = await resolveOrdinaryMaterializationPresence(input(async () => {
+      const plan = materialize();
+      plan.entities[0].semantic_descriptor = { semantic_type: 'mechanism',
+        name: 'обычный механизм', facts: ['Колёсная прялка'] };
+      return plan;
+    }, { workingProjection,
+      filterCandidateAllowed: async ({ candidate }) => {
+        filtered = candidate;
+        return [{ queue_id: 'needs_check.csv#HNT0024' }];
+      },
+      assertCandidateAllowed: async () => { assertCalls += 1; }
+    }));
+    assert.equal(output.status, 'candidate_filtered');
+    assert.equal(output.decision, null);
+    assert.deepEqual(output.needs_check_matches, [
+      { queue_id: 'needs_check.csv#HNT0024' }
+    ]);
+    assert.deepEqual(filtered, { semantic_type: 'mechanism',
+      name: 'обычный механизм', facts: ['Колёсная прялка'],
+      path: 'O1.proposed_entity.semantic_descriptor' });
+    assert.equal(assertCalls, 0);
+    assert.deepEqual(workingProjection, before,
+      'filtered candidate must not append a negative presence result');
+  });
+
+test('needs-check proposal guard receives committed turn state and skips equivalent visible item',
+  async () => {
+    const committedState = { position: { g0_id: 'g0-place' }, clock: {
+      whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1'
+    } };
+    const guarded = [];
+    const output = await resolveOrdinaryMaterializationPresence(input(
+      async () => materialize(), {
+        committedState,
+        isEquivalentCandidate: async ({ semantic_descriptor }) =>
+          semantic_descriptor.name === 'простая ложка',
+        assertCandidateAllowed: async (value) => { guarded.push(value); }
+      }));
+    assert.equal(output.status, 'pending_items_property_admission');
+    assert.deepEqual(guarded, [], 'existing equivalent item is not a new materialization');
+
+    const blocked = Object.assign(new Error('blocked'), {
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+      details: { queue_id: 'needs_check.csv#HNT0024' }
+    });
+    await assert.rejects(resolveOrdinaryMaterializationPresence(input(
+      async () => materialize(), { committedState,
+        assertCandidateAllowed: async (value) => { guarded.push(value); throw blocked; }
+      })), (error) => {
+      assert.equal(error, blocked);
+      assert.equal(guarded.at(-1).committedState, committedState);
+      assert.equal(guarded.at(-1).candidate.path,
+        'O1.proposed_entity.semantic_descriptor');
+      return true;
+    });
+  });

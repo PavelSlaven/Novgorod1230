@@ -46,6 +46,17 @@ export const RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST =
     .update(canonicalStringify(RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT))
     .digest('hex');
 
+/** Contract digests accepted by this loader for a release pin. */
+export function supportedRuntimeContractDigestsForPin(pin) {
+  if (typeof pin?.runtime_contract_digest !== 'string'
+      || !/^(?:sha256:)?[0-9a-f]{64}$/u.test(pin.runtime_contract_digest)) {
+    throw new TypeError('A pinned runtime contract digest is required.');
+  }
+  return [...new Set([RUNTIME_CATALOG_CONTRACT_DIGEST,
+    RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST,
+    pin.runtime_contract_digest])];
+}
+
 export const ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT = deepFreeze({
   schema: 'rus.actor_base_attributes_runtime_contract.v1',
   catalog_scope: 'actor_base_attributes_v1',

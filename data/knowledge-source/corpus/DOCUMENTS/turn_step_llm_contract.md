@@ -1360,13 +1360,24 @@ LLM не возвращает:
 `query`/`continuation`. Exact misplaced/duplicated continuation удаляется из
 `interpretation` только при совпадении с top-level continuation; отсутствующие
 пустые diagnostic `reason_code`/`reason` заполняются нейтральными code-owned
-значениями. Исходный later-continuation сохраняется за очередью без изменений.
-Неоднозначные случаи не угадываются.
+значениями. Для A1 `request_item_use` с `action_production` до общей строгой и
+семантической проверки удаляется лишнее поле `operations[].description`;
+остальные ошибки проходят общий путь проверки и repair. Исходный
+later-continuation сохраняется за очередью без изменений. Неоднозначные случаи
+не угадываются.
 
 LLM repair допускается один раз только для ошибки, требующей нового
 семантического выбора. Чисто структурная ошибка, которую deterministic
 canonicalizer не смог исправить однозначно, сразу возвращает typed technical
 failure. Prompt не является владельцем закрытых cardinality/schema invariants.
+Сочетание `resolution: direct`, пустых `operations`,
+`interpretation.adaptation: reality_limited` и `goal_result: achieved` требует
+этот один semantic repair независимо от `direct_result_kind`; repair выбирает
+`not_achieved` или `partially_achieved` по смыслу попытки. Если ответ repair
+повторяет то же сочетание, code-owned слой меняет только `goal_result` на
+`not_achieved`, очищая несовместимые `direct_result_kind`, `assessment` и
+`utterance`. Trace `canonicalizations` содержит путь, старое и новое значение
+для каждого изменённого поля. Другие значения не выводятся эвристикой.
 
 Если repair снова невалиден:
 

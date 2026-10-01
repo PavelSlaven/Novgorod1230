@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(turn): gate2 A1 plan normalization before shared validation, one semantic repair for reality-limited achieved empty direct plans and traced not_achieved fallback on repetition (LW-103 updated)
+
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - fix(spatial): rt-lines a5 — turn-back after a pause also allows interrupted_at_anchor/stranded and keys on travel-state status (refusal = turn_back_refused), no resume after returned_to_departure, zero-progress pause is no transit (Spatial 4.7.0 §4.10.1/§10.7.1/§10.8/A.4.1/F.1.1), A.4.1 gates synced in state-machines.js, line kinds are `line.*` with a vocabulary check, LINES_WAVE_MANIFEST repinned, gate test on attestation v6/224 tables.

@@ -10,6 +10,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   allowRepair = true
 }) {
   let originalOutput = null;
+  const canonicalizations = [];
   // Repair reuses this immutable snapshot and its existing grounding identity.
   let modelRequest = null;
   try {
@@ -17,17 +18,18 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       turnStepModel: async (safeRequest) => {
         modelRequest = safeRequest;
         const output = await turnStepModel(safeRequest);
-        originalOutput = structuredClone(output);
-        return output;
+        const normalized = a1DescriptionCanonicalization(output);
+        originalOutput = structuredClone(normalized?.plan ?? output);
+        if (normalized != null) canonicalizations.push(...normalized.diagnostics);
+        return normalized?.plan ?? output;
       }, semanticPlanValidator, preparedChainContext, attempt: 1 });
-    const noOpCanonicalization = realityLimitedNoOpCanonicalization(
-      initialPlan, request);
+    if (isRealityLimitedAchievedNoOp(initialPlan)) {
+      throw realityLimitedAchievedNoOpError();
+    }
     return {
-      plan: noOpCanonicalization?.plan ?? initialPlan,
+      plan: initialPlan,
       repaired: false,
-      ...(noOpCanonicalization == null ? {} : {
-        canonicalizations: noOpCanonicalization.diagnostics
-      })
+      ...(canonicalizations.length === 0 ? {} : { canonicalizations })
     };
   } catch (error) {
     const parseFailure = error?.code === 'json_parse_failed';
@@ -44,16 +46,12 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     const structuralErrors = parseFailure ? [{ path: '$',
       code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
       : [...(error.details?.errors ?? [])];
-    const canonicalization = a1DescriptionCanonicalization(originalOutput,
-      structuralErrors);
-    if (canonicalization != null) {
-      return {
-        plan: await requestAndValidateTurnStepPlan({ request,
-          turnStepModel: async () => canonicalization.plan,
-          semanticPlanValidator, preparedChainContext, attempt: 1 }),
-        repaired: false,
-        canonicalizations: [canonicalization.diagnostic]
-      };
+    if (!parseFailure && isRealityLimitedAchievedNoOp(originalOutput)
+        && structuralErrors.length === 1
+        && structuralErrors[0].path === '$.direct_result_kind'
+        && structuralErrors[0].code === 'direct_result_kind') {
+      structuralErrors.splice(0, structuralErrors.length,
+        realityLimitedAchievedNoOpError().details.errors[0]);
     }
     const denialTrial = parseFailure ? null
       : literalDenialMetadataTrial(originalOutput, request, structuralErrors);
@@ -101,8 +99,10 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         turnStepModel: async (safeRequest) => {
           const output = await turnStepModel(modelRequest ?? safeRequest,
             repairContext);
-          repairedOutput = structuredClone(output);
-          return output;
+          const normalized = a1DescriptionCanonicalization(output);
+          repairedOutput = structuredClone(normalized?.plan ?? output);
+          if (normalized != null) canonicalizations.push(...normalized.diagnostics);
+          return normalized?.plan ?? output;
         },
         semanticPlanValidator,
         preparedChainContext,
@@ -110,14 +110,32 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       });
       const noOpCanonicalization = realityLimitedNoOpCanonicalization(
         repairedPlan, request);
+      const finalPlan = noOpCanonicalization?.plan ?? repairedPlan;
+      const finalCanonicalizations = [
+        ...canonicalizationsForPlan(canonicalizations, finalPlan),
+        ...(noOpCanonicalization?.diagnostics ?? [])
+      ];
       return {
-        plan: noOpCanonicalization?.plan ?? repairedPlan,
+        plan: finalPlan,
         repaired: true,
-        ...(noOpCanonicalization == null ? {} : {
-          canonicalizations: noOpCanonicalization.diagnostics
+        ...(finalCanonicalizations.length === 0 ? {} : {
+          canonicalizations: finalCanonicalizations
         })
       };
     } catch (repairError) {
+      if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
+          && isRealityLimitedAchievedNoOp(repairedOutput)
+          && repairError.details?.errors?.length === 1
+          && repairError.details.errors[0].path === '$.direct_result_kind'
+          && repairError.details.errors[0].code === 'direct_result_kind') {
+        const noOpCanonicalization = realityLimitedNoOpCanonicalization(
+          repairedOutput, request);
+        const finalPlan = noOpCanonicalization.plan;
+        return { plan: finalPlan, repaired: true,
+          canonicalizations: [...canonicalizationsForPlan(canonicalizations,
+            finalPlan),
+            ...noOpCanonicalization.diagnostics] };
+      }
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
           && canAuditRepairedSpeechMetadata(repairedOutput, request)
           && typeof semanticPlanValidator === 'function') {
@@ -147,26 +165,35 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
 }
 
 function realityLimitedNoOpCanonicalization(plan, request) {
-  if (plan?.resolution !== 'direct' || plan.goal_result !== 'achieved'
-      || plan.interpretation?.adaptation !== 'reality_limited'
-      || !Array.isArray(plan.operations) || plan.operations.length !== 0
-      || plan.direct_result_kind !== 'player_safe_observation'
-      || plan.check !== null || plan.continuation !== null
-      || plan.clarification !== null || plan.utterance !== undefined) return null;
+  if (!isRealityLimitedAchievedNoOp(plan)) return null;
   const normalized = structuredClone(plan);
-  const diagnostics = [
-    { path: '$.goal_result', old_value: 'achieved', new_value: 'not_achieved' },
-    { path: '$.direct_result_kind', old_value: 'player_safe_observation',
-      new_value: null }
-  ];
-  if (Object.hasOwn(normalized, 'assessment')) {
-    diagnostics.push({ path: '$.assessment',
-      old_value: structuredClone(normalized.assessment), new_value: null });
-    delete normalized.assessment;
-  }
+  const diagnostics = [{ path: '$.goal_result', old_value: 'achieved',
+    new_value: 'not_achieved' }];
   normalized.goal_result = 'not_achieved';
+  if (normalized.direct_result_kind !== null) {
+    diagnostics.push({ path: '$.direct_result_kind',
+      old_value: normalized.direct_result_kind, new_value: null });
+  }
   normalized.direct_result_kind = null;
+  for (const path of ['assessment', 'utterance']) {
+    if (!Object.hasOwn(normalized, path)) continue;
+    diagnostics.push({ path: `$.${path}`,
+      old_value: structuredClone(normalized[path]), new_value: null });
+    delete normalized[path];
+  }
   return { plan: validateAndFreezePlan(normalized, request), diagnostics };
+}
+
+function isRealityLimitedAchievedNoOp(plan) {
+  return plan?.resolution === 'direct' && plan.goal_result === 'achieved'
+    && plan.interpretation?.adaptation === 'reality_limited'
+    && Array.isArray(plan.operations) && plan.operations.length === 0;
+}
+
+function realityLimitedAchievedNoOpError() {
+  return contractError('TURN_STEP_PLAN_INVALID', [{ path: '$.goal_result',
+    code: 'reality_limited_achieved_noop',
+    message: 'an impossible reality-limited attempt cannot be achieved; choose not_achieved or partially_achieved according to the attempt' }]);
 }
 
 const SEMANTIC_REPAIR_CODES = new Set([
@@ -179,6 +206,7 @@ const SEMANTIC_REPAIR_CODES = new Set([
   'material_transformation_grounding',
   'operation_semantic_grounding',
   'ordinary_discovery_query_identity',
+  'reality_limited_achieved_noop',
   'source_placement_grounding',
   'source_semantic_grounding'
 ]);
@@ -193,23 +221,31 @@ function requiresSemanticRepair({ path, code } = {}) {
     || code === 'enum' && ACTION_PRODUCTION_FORM_PATH.test(path);
 }
 
-function a1DescriptionCanonicalization(plan, errors) {
-  if (errors.length !== 1) return null;
-  const { path, code } = errors[0];
-  const match = code === 'additional_property'
-    ? /^\$\.operations(?:\.(\d+)|\[(\d+)\])\.description$/u.exec(path ?? '')
-    : null;
-  if (match == null) return null;
-  const index = Number(match[1] ?? match[2]);
-  const operation = plan?.operations?.[index];
-  if (operation?.op !== 'request_item_use'
-      || operation.action_production == null
-      || !Object.hasOwn(operation, 'description')) return null;
+function a1DescriptionCanonicalization(plan) {
+  if (!Array.isArray(plan?.operations)) return null;
   const normalized = structuredClone(plan);
-  delete normalized.operations[index].description;
-  return { plan: normalized, diagnostic: {
-    path, removed_fields: ['description']
-  } };
+  const diagnostics = [];
+  normalized.operations.forEach((operation, index) => {
+    if (operation?.op !== 'request_item_use'
+        || operation.action_production == null
+        || !Object.hasOwn(operation, 'description')) return;
+    delete operation.description;
+    diagnostics.push({ path: `$.operations[${index}].description`,
+      removed_fields: ['description'] });
+  });
+  if (diagnostics.length === 0) return null;
+  return { plan: normalized, diagnostics };
+}
+
+function canonicalizationsForPlan(entries, plan) {
+  return entries.filter(({ path }) => {
+    const match = /^\$\.operations\[(\d+)\]\.description$/u.exec(path ?? '');
+    if (match == null) return true;
+    const operation = plan?.operations?.[Number(match[1])];
+    return operation?.op === 'request_item_use'
+      && operation.action_production != null
+      && !Object.hasOwn(operation, 'description');
+  });
 }
 
 function singleTransientOperation(plan) {

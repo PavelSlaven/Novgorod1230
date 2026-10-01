@@ -7,15 +7,22 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const TYPE_KINDS = new Set(['land_use', 'place']);
 const CANDIDATE_ASSESSMENTS = new Set(['условно применим', 'правдоподобен, условно']);
 const GAP_ASSESSMENTS = new Set(['нет точного основания', 'не применим по имеющимся данным']);
-const SOURCE_LINE = /(?:^|;\s*)(?:pr98:)?(?:[A-Za-z0-9_./-]+\.[A-Za-z0-9_-]+):\d+(?:-\d+)?/u;
+const SOURCE_LINE = /(?:^|;\s*)(?:(?:pr98:)?(?:[A-Za-z0-9_./-]+\.[A-Za-z0-9_-]+):\d+(?:-\d+)?|research-evidence\.json#[A-Za-z0-9_-]+)/u;
 const sourceLineCounts = new Map();
 
-function hasResolvableSourceLine(value) {
+function hasResolvableSourceLine(value, evidenceById) {
   const refs = split(value);
   let fileRefs = 0;
   for (const rawRef of refs) {
     const ref = rawRef.trim();
     if (/^book:\d+ §\d+(?:[–-]\d+)?(?:\s+.*)?$/u.test(ref)) continue;
+    const evidenceMatch = /^research-evidence\.json#([A-Za-z0-9_-]+)$/u.exec(ref);
+    if (evidenceMatch) {
+      const evidence = evidenceById.get(evidenceMatch[1]);
+      if (!evidence || evidence.verification_status !== 'verified') return false;
+      fileRefs++;
+      continue;
+    }
     const match = /^(?:pr98:)?(.+?\.[A-Za-z0-9_-]+):(\d+)(?:-(\d+))?$/u.exec(ref);
     if (!match) return false;
     fileRefs++;
@@ -68,6 +75,7 @@ export function loadPackage() {
     nodes: readCsv(path.join(bindingRoot, 'places/node_binding.csv')),
     pfs: readCsv(path.join(bindingRoot, 'places/place_families.csv')),
     templates,
+    researchEvidence: readJson(path.join(HERE, 'research-evidence.json')).entries,
   };
 }
 
@@ -130,6 +138,8 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
   const gapIds = ids(data.gaps);
   const nodes = new Map(data.nodes.map((row) => [row.node_ref, row]));
   const pfs = new Set(data.pfs.map((row) => row.pf_id));
+  const evidenceIds = ids(data.researchEvidence ?? [], 'evidence_id');
+  const evidenceById = new Map((data.researchEvidence ?? []).map((row) => [row.evidence_id, row]));
   const templates = new Map((data.templates ?? []).map((row) => [row.id, row]));
   const selectors = new Map(Object.entries(data.source.selectors)
     .flatMap(([kind, typeIds]) => typeIds.map((typeId) => [typeId, kind])));
@@ -141,8 +151,21 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
       expected.size !== matrixIds.length || [...expected.keys()].some((id) => !matrixIds.includes(id))) {
     fail('MATRIX_INVENTORY', 'matrix must contain each pinned regional PF inventory id exactly once');
   }
-  if (data.candidates.length !== 38 || data.gaps.length !== 32 || !unique(candidateIds) || !unique(gapIds)) {
+  if (data.candidates.length !== 39 || data.gaps.length !== 31 || !unique(candidateIds) || !unique(gapIds)) {
     fail('PARTITION_COUNTS', `candidate=${data.candidates.length}, gap=${data.gaps.length}`);
+  }
+  const expectedEvidenceIds = ['bort-01', 'bort-02', 'bort-03', 'orchard-01', 'orchard-02', 'orchard-11', 'orchard-12', 'orchard-14', 'quarry-01', 'quarry-02', 'quarry-07', 'quarry-15'];
+  if (data.researchEvidence?.length !== expectedEvidenceIds.length || !unique(evidenceIds) ||
+      expectedEvidenceIds.some((id) => !evidenceById.has(id)) || evidenceIds.some((id) => !expectedEvidenceIds.includes(id))) {
+    fail('RESEARCH_EVIDENCE_SET', `expected ${expectedEvidenceIds.length} curated verified findings`);
+  }
+  for (const row of data.researchEvidence ?? []) {
+    const quoteWords = String(row.short_quote ?? '').trim().split(/\s+/u).filter(Boolean);
+    if (row.verification_status !== 'verified' || !row.assertion?.trim() || !row.note?.trim() ||
+        !Array.isArray(row.source) || !row.source.length || row.source.some((url) => !/^https:\/\//u.test(url)) ||
+        (row.short_quote && quoteWords.length > 25)) {
+      fail('RESEARCH_EVIDENCE_ENTRY', row.evidence_id);
+    }
   }
   if (candidateIds.some((id) => gapIds.includes(id)) || [...matrixIds].some((id) => !candidateIds.includes(id) && !gapIds.includes(id))) {
     fail('PARTITION_IDS', 'candidate and gap ids must partition matrix ids');
@@ -172,7 +195,7 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
 
   for (const row of data.matrix) {
     if (expected.get(row.type_id) !== row.kind) fail('TYPE_KIND', row.type_id);
-    if (!row.reason?.trim() || !SOURCE_LINE.test(row.source_refs ?? '') || !hasResolvableSourceLine(row.source_refs)) fail('MATRIX_EVIDENCE', row.type_id);
+    if (!row.reason?.trim() || !SOURCE_LINE.test(row.source_refs ?? '') || !hasResolvableSourceLine(row.source_refs, evidenceById)) fail('MATRIX_EVIDENCE', row.type_id);
     const selected = selectors.get(row.type_id) === row.kind;
     const expectedSelector = selected ? 'selected' : 'NOT_SELECTED: reconcile before treating as regional type';
     if (row.current_regional_environment_candidate_selector !== expectedSelector) fail('SELECTOR_STATUS', row.type_id);
@@ -182,7 +205,7 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
   for (const row of data.candidates) {
     if (!CANDIDATE_ASSESSMENTS.has(row.causal_assessment_not_approved)) fail('CANDIDATE_ASSESSMENT', row.type_id);
     if (expected.get(row.type_id) !== row.kind) fail('CANDIDATE_KIND', row.type_id);
-    if (!row.causal_reason?.trim() || !SOURCE_LINE.test(row.source_refs ?? '') || !hasResolvableSourceLine(row.source_refs)) fail('CANDIDATE_EVIDENCE', row.type_id);
+    if (!row.causal_reason?.trim() || !SOURCE_LINE.test(row.source_refs ?? '') || !hasResolvableSourceLine(row.source_refs, evidenceById)) fail('CANDIDATE_EVIDENCE', row.type_id);
     const actualRefs = [...new Set([...split(row.candidate_G4_refs), ...split(row.candidate_G5_refs)])];
     const g4Refs = split(row.candidate_G4_refs);
     const g5Refs = split(row.candidate_G5_refs);
@@ -228,7 +251,7 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
         exceptionKeys.add(key);
         if (!actualRefs.includes(exception.node_ref) ||
             !String(exception.reason ?? '').trim() ||
-            !SOURCE_LINE.test(exception.source_refs ?? '') || !hasResolvableSourceLine(exception.source_refs) ||
+            !SOURCE_LINE.test(exception.source_refs ?? '') || !hasResolvableSourceLine(exception.source_refs, evidenceById) ||
             !nodeBindingRefsMatch(exception.source_refs, exception.node_ref)) {
           fail('COMPATIBILITY_EXCEPTION_EVIDENCE', `${row.type_id} -> ${key}`);
         }
@@ -246,7 +269,7 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
       const allowed = template?.[allowedField] ?? [];
       const value = node?.[exception.dimension] || (node?.parent_node_ref ? nodes.get(node.parent_node_ref)?.[exception.dimension] : '');
       if (!node || !allowed.length || (value && allowed.includes(value))) fail('COMPATIBILITY_EXCEPTION_UNNEEDED', `${row.type_id} -> ${exception.node_ref} ${exception.dimension}`);
-      if (!String(exception.reason ?? '').trim() || !SOURCE_LINE.test(exception.source_refs ?? '') || !hasResolvableSourceLine(exception.source_refs) ||
+      if (!String(exception.reason ?? '').trim() || !SOURCE_LINE.test(exception.source_refs ?? '') || !hasResolvableSourceLine(exception.source_refs, evidenceById) ||
           !nodeBindingRefsMatch(exception.source_refs, exception.node_ref)) {
         fail('COMPATIBILITY_EXCEPTION_EVIDENCE', `${row.type_id} -> ${exception.node_ref} ${exception.dimension}`);
       }
@@ -263,7 +286,7 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
   for (const row of data.gaps) {
     if (!GAP_ASSESSMENTS.has(row.assessment)) fail('GAP_ASSESSMENT', row.type_id);
     if (expected.get(row.type_id) !== row.kind) fail('GAP_KIND', row.type_id);
-    if (!row.cause_gap?.trim() || !row.closure_evidence_or_decision?.trim() || !SOURCE_LINE.test(row.sources ?? '') || !hasResolvableSourceLine(row.sources)) fail('GAP_EVIDENCE', row.type_id);
+    if (!row.cause_gap?.trim() || !row.closure_evidence_or_decision?.trim() || !SOURCE_LINE.test(row.sources ?? '') || !hasResolvableSourceLine(row.sources, evidenceById)) fail('GAP_EVIDENCE', row.type_id);
     if (Object.values(row).some((value) => String(value).trim().toLocaleLowerCase('en') === 'false')) fail('GAP_FALSE', row.type_id);
     if (!row.direct_type_binding?.startsWith('NONE:')) fail('GAP_DIRECT_BINDING', row.type_id);
     const selected = selectors.get(row.type_id) === row.kind;
@@ -277,7 +300,7 @@ export function validateStartTerritoryTypes(data = loadPackage()) {
   if (recommendations.size !== 4 || expectedRecommendations.some((id) => !recommendations.has(id))) fail('SELECTOR_RECOMMENDATIONS', 'expected four unselected land-use types');
   for (const row of data.selectorRecommendations) {
     if (selectors.get(row.type_id) || exclusions.has(row.type_id) || row.current_selector_status !== 'not selected; not explicit exclusion') fail('RECOMMENDATION_SCOPE', row.type_id);
-    if (!row.proposed_action?.trim() || !row.reason?.trim() || !SOURCE_LINE.test(row.evidence_refs ?? '') || !hasResolvableSourceLine(row.evidence_refs)) fail('RECOMMENDATION_EVIDENCE', row.type_id);
+    if (!row.proposed_action?.trim() || !row.reason?.trim() || !SOURCE_LINE.test(row.evidence_refs ?? '') || !hasResolvableSourceLine(row.evidence_refs, evidenceById)) fail('RECOMMENDATION_EVIDENCE', row.type_id);
   }
 
   for (const row of data.nodes) {

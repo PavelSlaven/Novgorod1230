@@ -1,0 +1,199 @@
+{
+  "schema": "rus.start_territory_types_candidate_approval.v1",
+  "pass": 4,
+  "decision": "APPROVE_WITH_LIMITS",
+  "decision_summary": "Дельта-проход 4 по D62 (2026-10-01). Блокеров нет. По существу все четыре решения приняты. (1) У сада оценка «не применим по имеющимся данным» опирается только на verified-находки (F1, F2, F11, F12, F14). Строка прямо называет климат editorial-индикатором, а не реконструкцией 1230 г. и не доказательством невозможности. Условие переоткрытия есть. (2) У бортничества обе находки verified (Авдеев, Брандорф–Ивойлова), поправка про «до Урала» учтена. Но слово «independently» не доказано: обе работы вторичны и пересказывают стандартный ареал (Авдеев ссылается на Ruttner 1990 и Петрова 1992). Кроме того, в строке не упомянут verified контрдовод: энциклопедическая фраза о бортничестве в северо-восточных владениях Новгорода. (3) Каменоломня опирается только на verified Lavrova/Orlets (quarry-01, 02, 07, 15). Находки wrong_scope (Орлец/Панилово как выходы коренных пород) и wrong_quote («известны с XIV в.») не используются ни в CSV, ни в README, ни в research-evidence.json. Сбор валунов не исключён. Одна неточность: в CSV написано «Carboniferous limestone … on tributaries», а на притоках, по источнику, выходят палеозойские породы вообще, и расстояние от них до стартовых узлов не установлено. README это уже исправил, CSV — нет. (4) Песок совместим: у G4 tributary_mouth (nb:24) и G5 mouth_bar (nb:170) значения lt_low_alluvial_riverbank и wb_brook, оба входят в allowlists шаблона (seed:1565-1586), requires_water_nearby выполнено. Историческая добыча не утверждается. Однако рекомендация повысить selector неполна. Во-первых, по PF manifest (830-854) у типа coverage=gap и pf_refs=[], поэтому одно повышение selector не даёт присутствия. Во-вторых, аналогичная выемка глины выбрана с условными guards, а для песка guards не предложены. (5) Предложения README (ягодник, валуны) помечены как предложения, новых ID нет. Но в README неверные счётчики (24/7 вместо 21/10), а пункты помечены как «закрыто REVIEW-10» до утверждения. Остались и устаревшие фразы про каменоломню и верфь. (6) Скрипт проверил разбиение: 70 = 39 + 31, тест 13/13. Все обязательные правки — точные замены текста, они даны ниже. Нового прохода Opus не нужно, достаточно скриптовой проверки (см. required_corrections_procedure).",
+  "candidate_ref": "servak:/srv/novgorod-work/worktrees/start-types/data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/ (uncommitted delta on HEAD dd0619a70419813e48a17874633edf7fef3a7921)",
+  "reviewed_head": "dd0619a70419813e48a17874633edf7fef3a7921",
+  "reviewed_state_note": "Исполнитель правил worktree во время ревью: заменял ссылки на research-evidence.json#id, вставлял формулировку D62 и тест. Проверено состояние на 2026-10-01T18:42:09+03:00, копия лежит в servak:/tmp/opus-st4/snap. Хэши ниже относятся к этому состоянию. Сначала скрипт сравнил CSV ячейка за ячейкой с HEAD. Затем, после правок исполнителя, сравнение повторено. Изменились только source_refs/sources/evidence_refs (ссылки на lead-research-1.json:N заменены на research-evidence.json#id) и одно предложение у песка в selector-reconciliation reason («Owner decision is needed» → D62).",
+  "file_sha256": {
+    "matrix.csv": "4b515844b08f671581ade49420191bdff02a8c63a553417fddd408d20f1fb5ed",
+    "candidates.csv": "898e492c29048efb89cd0c6e446f76f5cba12d419c27690104ba07fd5e3cb815",
+    "typed-gaps.csv": "da7cd8e1ff97fd64bd2c8c56e967ea793c2b59ac3dbaeb8ad152760f30524d74",
+    "selector-reconciliation.csv": "2520299eb918fb7bacc21e995173d7943f58a1cd50dc1f35722b8b649b4784ca",
+    "validate.mjs": "214f128329158e05830512d9f11ace0ab7aa9839150231e2c2313cdd962846a1",
+    "README.md": "2f8e93c6fe9870f90160b11c52249f99c4c5150f9a8312a5500b2251d909feab",
+    "research-evidence.json": "70d086798ecd67bb7eddcf1b45b2dc16b20d74e06e2f05b678aae0fb1cf97762",
+    "extract-research-evidence.mjs": "71ae0f5211b51877d8af1d8efcf68040fd25b9de5d8ca9db06f0f08ac50b8393"
+  },
+  "file_sha256_informational": {
+    "../../scripts/start-territory-types.test.mjs": "8cf930855253008278a25dc8cfbbf8263d403f0d2632799678b6eb52407271d8",
+    "servak:/srv/novgorod-work/fleet/tasks/start-types/out/lead-research-1.json": "e02ace15e7a936c62351d2f0576d0f76dde744f4eb0feb623d7ca4848be4a1a5"
+  },
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+  "approved_on": "2026-10-01",
+  "binding_owner_decisions_applied": [
+    "D62-3a: региональное исключение верфи (pt_shipyard_boatyard) остаётся.",
+    "D62-3b: пробел по песку устраняется. Песок становится кандидатом и получает предложение для selector на ревью Opus.",
+    "D62-3c/d: по саду, бортничеству и каменоломне проведено исследование (lead-research-1.json), его итоги внесены в пакет."
+  ],
+  "delta_questions": {
+    "q1_orchard": {
+      "verdict": "accepted",
+      "note": "Ссылки orchard-01/02/11/12/14 соответствуют findings/checks 0/0, 1/1, 10/10, 11/11, 13/13 в lead-research-1.json, у всех статус verified. Находки not_found (F3–F8: Очерки 1969, Белоозеро, двинский «ягодник», allistoria) не используются, хотя вердикт исследования опирался на белозерские яблоки. Причина прямо называет основание editorial-индикатором и говорит, что это не реконструкция климата 1230 г. и не доказательство невозможности. Условие переоткрытия: verified-свидетельство с Нижней Двины до 1400 г. плюс климатическое и агротехническое основание. Вердикт исследования — not_attested, он слабее, чем unlikely_with_positive_reason у борти и камня. Поэтому «не применим» здесь — editorial-решение о scope, и строка так его и называет. Рекомендация по полноте основания — RC-4-08."
+    },
+    "q2_bort": {
+      "verdict": "accepted_with_required_text_fix",
+      "note": "bort-01 (Авдеев) и bort-02 (Брандорф–Ивойлова) имеют статус verified и соответствуют findings/checks 0/0 и 1/1. Поправка проверяющего учтена: Авдеев пишет «до Сибири», а не «до Урала». Формулировка не утверждает невозможность и называет решение решением о scope по ареалу. Два места утверждают больше, чем дают источники. Во-первых, слово «independently»: независимость не установлена (RC-4-01). Во-вторых, verified контрдовод (en.wikipedia, check 7) в строке не отражён (RC-4-02). Krivtsov 1895 (verified с оговоркой) и Очерки (not_found) правильно не используются."
+    },
+    "q3_quarry": {
+      "verdict": "accepted_with_required_text_fix",
+      "note": "Ссылки quarry-01/02/07/15 соответствуют findings/checks 0/0, 1/1, 6/6, 14/14, у всех статус verified. Check 2 (wrong_scope: Орлец/Панилово в списке морены) и check 5 (wrong_quote: «известны с XIV века») не используются нигде: ни в CSV, ни в selector-reconciliation, ни в research-evidence.json. README прямо запрещает эти формулировки. Сбор валунов явно не исключён, а closure отделяет его от каменоломни. Остаётся неточность: в CSV «Carboniferous limestone … on tributaries», а источник говорит о палеозойских породах на притоках, и расстояние от этих притоков до стартовых узлов не установлено (открытый вопрос исследования). Исправление — RC-4-03."
+    },
+    "q4_sand": {
+      "verdict": "candidate_accepted; selector_recommendation_accepted_with_required_completion",
+      "note": "Строка nb:24 — g4 tributary_mouth: lt_low_alluvial_riverbank, wb_brook, PF pf_river_channel + pf_riverbank;pf_road. Строка nb:170 — cg5 tributary_mouth_mouth_bar: те же значения, унаследованы от G4, для самого G5 не подтверждены. В seed (1565-1586) allowLS включает lt_low_alluvial_riverbank, allowWB включает wb_brook, requires_water_nearby=true выполнено. Исключения не нужны и не объявлены. Причина и рекомендация не утверждают ни залежи песка, ни исторической добычи, ни использования. Пустой candidate_PF_refs честен, потому что manifest не связывает тип ни с одним PF. Рекомендацию для selector нужно дополнить: какой PF нужен для присутствия и какие guards нужны по аналогии с глиной (RC-4-04)."
+    },
+    "q5_readme_proposals": {
+      "verdict": "accepted_as_proposals",
+      "note": "Ягодник и сбор валунов помечены как «Предложение на будущее» / «предложение для следующей редакции», в README сказано «сейчас нового ID не добавляю». Скрипт подтвердил: lu_kitchen_garden и lu_wild_food_gathering — кандидаты «условно применим»; типов «культурный ягодник» и «сбор валунов» среди 70 и в seed нет. Двинский «ягодник» верно помечен как not_found и в основание не взят. Прочие ошибки README — RC-4-05 и RC-4-06."
+    },
+    "q6_partition": {
+      "verdict": "passed",
+      "note": "Результат validate.mjs: «valid: 70 types, 39 candidates, 31 gaps; duplicate-cause share 8.6%». node --test: 13 tests, pass 13, fail 0. Скрипт посчитал оценки: gaps — 21 «нет точного основания» и 10 «не применим по имеющимся данным»; candidates — 29 «условно применим» и 10 «правдоподобен, условно»."
+    }
+  },
+  "known_mechanical_items": {
+    "fleet_refs_to_research_evidence": "Сделано в проверенном состоянии. В CSV и README ссылок ../../fleet/... и lead-research-1.json:N больше нет. Скрипт сверил 11 якорей research-evidence.json с исходником по индексам finding/check: все verified, ни одного wrong_scope/wrong_quote/not_found. Экстрактор при non-verified падает, validator требует verified и фиксированный набор id. На исходный fleet-файл всё ещё опираются два места: (a) DEFAULT_SOURCE в extract-research-evidence.mjs и команда --check в README. Исходник не в git, поэтому --check нельзя воспроизвести в CI (RC-4-10). (b) Тексты assertion/note в research-evidence.json — копии из исходника. Сверка с ним сделана один раз в этом проходе (sha256 исходника записан выше).",
+    "owner_decision_phrase_to_D62": "Сделано: в selector-reconciliation (sand reason) и в трёх местах README (Деноминаторы, Невыбранные LU, вопрос «Песок»). На старую рамку «нужен владелец» опирается ещё строка pt_shipyard_boatyard: в cause_gap «request regional owner review», в closure «Regional owner decision on explicit exclusion», и вопрос Shipyard в README. D62 это уже решил (RC-4-06)."
+  },
+  "findings": [
+    {
+      "id": "RC-4-01",
+      "row": "lu_tree_beekeeping_bortnichestvo (typed-gaps.cause_gap, matrix.reason)",
+      "severity": "required",
+      "issue": "«Brandorf and Ivoylova independently place the Russian range at 60°N» — независимость не установлена. Обе работы — вторичные изложения стандартного ареала. Авдеев ссылается на Ruttner 1990 и Петрова 1992, первоисточник Брандорф–Ивойловой не записан. В open_questions исследования сказано прямо: «I relied on a dissertation and a conference paper citing them». Вывод от этого не меняется: для editorial-решения о scope хватает одного verified-изложения стандартного ареала. Но слово утверждает больше, чем дают источники.",
+      "required_fix": "Вместе с RC-4-02 заменить cause_gap и matrix.reason на точный текст из RC-4-02."
+    },
+    {
+      "id": "RC-4-02",
+      "row": "lu_tree_beekeeping_bortnichestvo (typed-gaps.cause_gap, closure_evidence_or_decision, sources; matrix.reason, source_refs; research-evidence.json; extract-research-evidence.mjs; validate.mjs expectedEvidenceIds; test)",
+      "severity": "required",
+      "issue": "Оценка ужесточена до «не применим», но единственный verified контрдовод в записи не отражён. Это en.wikipedia «Foreign trade of medieval Novgorod», раздел Tribute collection, check 7 = verified: фраза «hunting, fishing and bee-keeping were also important economic activities in the northeastern dependencies» до XIV в. Источника и локализации у неё нет. У сада (Соловки) и у камня (Орлец 1342) контрдоводы в строках указаны, у борти — нет.",
+      "required_fix": "cause_gap и matrix.reason заменить целиком: «Verified biogeographic sources place the natural northern limit of the honeybee near 60°N, south of the Lower Dvina start at about 64.5°N. Avdeev describes the range from southern France to Siberia, reaching 60°N, citing Ruttner (1990) and Petrov (1992); Brandorf and Ivoylova separately state the 60°N limit for Russia, to the Urals. Both are secondary statements of the standard range and are not shown to be independent. A verified but unsourced encyclopedic sentence says bee-keeping was important in Novgorod's northeastern dependencies before the 14th century; it names no locality and is not taken as Lower Dvina evidence. This supports excluding wild-hive bortnichestvo from the 1230 starter baseline. It is a range-based scope decision, not proof that imported, managed, or exceptional colonies were physically impossible.» В конец closure_evidence_or_decision дописать: « A primary source that localizes the encyclopedic northeastern bee-keeping statement on the Lower Dvina also reopens this row.» Добавить якорь bort-03: в экстракторе {finding: 10, check: 7, evidenceId: 'bort-03', source: ['https://en.wikipedia.org/wiki/Foreign_trade_of_medieval_Novgorod'], locator: 'Section «Tribute collection»'}, assertion — из finding. Добавить research-evidence.json#bort-03 в sources и source_refs строки. Добавить 'bort-03' в expectedEvidenceIds validate.mjs и в список id в тесте."
+    },
+    {
+      "id": "RC-4-03",
+      "row": "lu_stone_quarrying (typed-gaps.cause_gap, matrix.reason)",
+      "severity": "required",
+      "issue": "«Carboniferous limestone is documented below Ust-Pinega and on tributaries» смешивает две находки. quarry-02: древнейшие каменноугольные горизонты отмечены ниже Усть-Пинеги. quarry-01: палеозойские породы (без уточнения) видны только на притоках Ладма, Кехта, Брусавица, Лая. Удалённость этих притоков от Вихтуя/Заостровья исследование не установило (open_question). README уже исправлен («известняковые горизонты отмечены ниже Усть-Пинеги»), CSV расходится с ним.",
+      "required_fix": "cause_gap и matrix.reason заменить целиком: «Verified Lavrova findings place the Palaeozoic base of the lower Dvina below river level at borehole depths of 55–93 m; the oldest Carboniferous horizons are noted below Ust-Pinega, and Palaeozoic rocks are exposed only on tributaries (Ladma, Kekhta, Brusavitsa, Lai) whose distance from the starter nodes is not established. The verified Orlets source says the 1342 fortress was built from nearby limestone, but does not date the start of quarrying. These findings do not support an accessible bedrock quarry in the 1230 Vikhtuy/Zaostrovye starter scope. Regional glacial erratic boulders are documented separately; their occurrence/density at exact starter nodes is not established, so this does not exclude loose-stone gathering.»"
+    },
+    {
+      "id": "RC-4-04",
+      "row": "lu_sand_gravel_extraction (selector-reconciliation.proposed_action, reason, evidence_refs)",
+      "severity": "required",
+      "issue": "Рекомендация неполна в двух местах. (a) По region_type_pf_manifest.json:830-854 у типа coverage=gap и pf_refs=[] (ближайший pf_riverbank, owner place-first-cartography.json). Присутствие задаётся через scope_kind=place_family, поэтому одно повышение selector не даёт песку присутствия в игре, и пробел по D62 фактически не закроется. (b) В regional selector аналогичная минеральная выемка lu_clay_extraction выбрана с ограничениями: source-authoring.json:50 даёт guards clay_resource_patch_ref и production_basis_ref, а :72 — approve_with_limits. Для песка guards не предложены, хотя сам пакет признаёт, что залежь песка не установлена.",
+      "required_fix": "proposed_action заменить на: «recommend promotion to selected with limits in the regional candidate selector after Opus/data-owner review, with conditional guards analogous to lu_clay_extraction (a local sediment resource-patch ref and a production/use-basis ref; guard names chosen by the regional-environment owner); PF land-use authoring for pf_riverbank at place-first-cartography is a separate required step; do not edit the selector or PF in this package». В конец reason дописать: « Promotion alone gives no presence: the regional PF manifest records coverage=gap with no PF refs (nearest pf_riverbank).» В evidence_refs добавить data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/source-authoring.json:50 и :72. README «Невыбранные LU» и вопрос «Песок» привести в соответствие одной фразой: «рекомендуется promotion с ограничениями (guards как у глины) и отдельным PF-шагом для pf_riverbank»."
+    },
+    {
+      "id": "RC-4-05",
+      "row": "README.md",
+      "severity": "required",
+      "issue": "(a) В «Состав» написано «24 «нет точного основания» и 7 «не применим»», а скрипт насчитал 21 и 10: сад, борть и камень перешли в «не применим», песок ушёл в candidates. Validator этот текст не проверяет. (b) В «Открытых вопросах» стоят «Сад и бортничество — закрыто REVIEW-10» и «Каменоломня — закрыто REVIEW-10». Это объявление о закрытии до утверждения, причём внутренней меткой. (c) В «Невыбранные LU» осталась устаревшая фраза: «Для каменоломни сохраняется невыбранный статус до источника о местной геологии и добыче/использовании».",
+      "required_fix": "(a) Заменить на «21 «нет точного основания» и 10 «не применим по имеющимся данным»». (b) Заменить «закрыто REVIEW-10» в обоих местах на «решено по исследованию D62, Opus pass 4 (APPROVE_WITH_LIMITS)». (c) Заменить на «Для каменоломни сохраняется невыбранный статус: проверенная геология не даёт доступной коренной породы в стартовом scope; условие переоткрытия — в typed-gaps.csv.» Перед «## Проверки и дальнейшая спецификация» добавить пустую строку."
+    },
+    {
+      "id": "RC-4-06",
+      "row": "pt_shipyard_boatyard (typed-gaps.cause_gap, closure_evidence_or_decision; matrix.reason; README «Shipyard»)",
+      "severity": "required",
+      "issue": "D62 решил, что исключение остаётся. А строка по-прежнему говорит «creates a causal conflict … request regional owner review … pending that decision», в closure стоит «Regional owner decision on explicit exclusion», и README держит Shipyard в открытых вопросах. При импорте объяснение запросит решение, которое уже принято. Строка не в дельте этого прохода, но выполнение D62 её затрагивает.",
+      "required_fix": "cause_gap и matrix.reason заменить целиком: «Existing G5 zaostrovye_landing_boat_drawing is a place for drawing up and servicing small boats, not a shipyard/boatyard. The active regional explicit exclusion stays per owner decision D62 (2026-10-01); keep typed gap.» closure_evidence_or_decision заменить на: «Reopen only on a source documenting vessel construction in the starter scope; any selector change requires a new owner decision.» Пункт README заменить на: «**Shipyard — решение D62 (2026-10-01):** региональное исключение остаётся; вытаскивание лодок и обслуживание малых судов (zaostrovye_landing_boat_drawing) не равны верфи. Переоткрытие — только при источнике о постройке судов.»"
+    },
+    {
+      "id": "RC-4-07",
+      "row": "lu_stone_quarrying (sources; closure_evidence_or_decision)",
+      "severity": "note",
+      "issue": "population-terrain-sources.md:10-12 и :35-50 описывают геологию Новгородского региона (Ильмень–Волхов), а не Двины. Полезна только общая оговорка: «geological occurrence is not evidence for a 1230 quarry». Closure требует сразу двух условий: доступной коренной породы и датированной добычи. Это строже, чем стандарт у песка, где достаточно физической совместимости. Обосновано такое требование только editorial-посылкой ведущего из pass 3: каменного строительства около 1230 г. нет, значит, нет и спроса.",
+      "required_fix": "Рекомендация: пометить ссылки на population-terrain-sources.md как общий контекст по ограничениям (Новгород, не Двина). В closure прямо назвать причину второго условия: «quarrying, unlike hand-gathering, needs a demand basis; no stone construction is evidenced in the region before 1342»."
+    },
+    {
+      "id": "RC-4-08",
+      "row": "lu_orchard_fruit_grove (typed-gaps.cause_gap, matrix.reason)",
+      "severity": "note",
+      "issue": "Климатический довод бьёт по яблоням и южным плодовым. Но шаблон включает «аналоги по региону», то есть выносливые плодовые деревья, а их климат не исключает. Против них в строке нет явного довода «нет свидетельств». Не названо и звено вывода: самое северное verified средневековое свидетельство садоводства — Новгород, около 58,5° с.ш. Verified F10 (первое упоминание Холмогор 1328–1340, check 9) и F16 (заголовок: «warmer modern than medieval climate», check 15) усилили бы основание, но не использованы. orchard-12 и строка CSV пишут «fruit-growing with heated greenhouses», а в источнике отдельно яблоки и отдельно отапливаемые теплицы.",
+      "required_fix": "Рекомендация: дописать «No verified source documents planted fruit trees of any kind on the Lower Dvina before the garden of Afanasy's tenure (1682–1702); the northernmost verified medieval orchard evidence is Novgorod (about 58.5°N).» При желании добавить якоря на F10/F16 (оба verified)."
+    },
+    {
+      "id": "RC-4-09",
+      "row": "lu_sand_gravel_extraction (candidates.causal_reason, scope_basis; matrix.reason)",
+      "severity": "note",
+      "issue": "Канонический G5 mouth_bar — «Устьевая мель»: spatial_function hazard_zone, function «мелководье», evidence_status regional_typology. Это отмель, а не берег. Его landscape/water унаследованы от G4 и для самого G5 не подтверждены (node_binding.gaps). В причине оба узла названы «alluvial-bank nodes».",
+      "required_fix": "Рекомендация: писать «G4 tributary_mouth (low alluvial bank) and its G5 mouth shoal, usable only when exposed at low water», а в scope_basis отметить, что значения G5 унаследованы. Шаблон это допускает: seasonal_pattern «обычно сухой сезон и низкая вода», в summary есть «отмелей»."
+    },
+    {
+      "id": "RC-4-10",
+      "row": "extract-research-evidence.mjs, research-evidence.json, validate.mjs, test",
+      "severity": "note",
+      "issue": "(a) DEFAULT_SOURCE и README-команда --check указывают на /srv/novgorod-work/fleet/... вне git: экстрактор нельзя воспроизвести в CI, а постоянный инструмент без воспроизводимого входа в репозитории сомнителен. (b) Validator не проверяет, что якорь относится к теме строки: если строка борти сошлётся на quarry-01, проверка пройдёт. (c) В тесте `/1895/u.test(row.evidence_id)` проверяется id, а не assertion, так что проверка ничего не ловит.",
+      "required_fix": "Рекомендация: записать sha256 исходника (e02ace15…a1a5) в research-evidence.json как source_sha256 либо не коммитить экстрактор. В validator проверять, что topic якоря совпадает с типом строки (orchard→lu_orchard_fruit_grove, bort→lu_tree_beekeeping_bortnichestvo, quarry→lu_stone_quarrying). В тесте проверять row.assertion."
+    },
+    {
+      "id": "RC-4-11",
+      "row": "README.md (удалён раздел «Источники и неопределённость после REVIEW-start-types-6»)",
+      "severity": "note",
+      "issue": "Раздел удалён, хотя D62 этого не требовал. Скрипт проверил, что оговорки сохранились в строках CSV: bog iron «No local ore deposit or extraction is asserted», ford «Actual depth, passability, and season are not guaranteed», peat «No verified XVIII-century cutoff is asserted», shipyard «Vessel service does not by itself prove a full shipyard». Данные не потеряны.",
+      "required_fix": "Ничего не требуется. Удаление допустимо, правка вне задания отмечена."
+    }
+  ],
+  "required_corrections_procedure": "RC-4-01…RC-4-06 — точный перенос текста из required_fix, а не новое authoring. Нового прохода Opus не нужно. Нужна детерминированная проверка. (1) Скрипт сравнивает ячейки CSV с хэшами этого attestation. Изменения допустимы только в таких местах: bort — cause_gap, closure, sources в typed-gaps и reason, source_refs в matrix; stone — cause_gap в typed-gaps и reason в matrix; shipyard — cause_gap, closure в typed-gaps и reason в matrix; sand — proposed_action, reason, evidence_refs в selector-reconciliation. Дополнительно разрешены перечисленные строки README, добавление bort-03 в экстрактор, research-evidence.json, validate.mjs expectedEvidenceIds и тест. Правки по рекомендациям RC-4-07…10 тоже допустимы, если текст взят дословно из required_fix. (2) `node extract-research-evidence.mjs --check --source <lead-research-1.json sha256 e02ace15…>` проходит, и bort-03 = finding 10/check 7 со статусом verified. (3) validate.mjs проходит с разбиением 70 = 39 + 31, тест зелёный. (4) Новые sha256 записываются рядом с этим attestation. Любое другое изменение делает approval недействительным.",
+  "limits": [
+    "Пакет остаётся кандидатным: это не import, не activation и не runtime presence. Regional selector, PF owner (place-first-cartography) и Spatial binding не меняются.",
+    "«Не применим по имеющимся данным» у сада, бортничества и каменоломни — решение о scope стартового baseline 1230 г. (Вихтуй/Заостровье), а не false и не доказательство невозможности. Строки переоткрываются по closure.",
+    "lu_orchard_fruit_grove и lu_tree_beekeeping_bortnichestvo остаются selected в regional selector Новгородской земли (у сада guard apple_orchard_basis_ref). Пакет не рекомендует региональное исключение и не должен читаться как таковое.",
+    "Исключение каменоломни не касается сбора валунов. Типы «сбор валунов» и «культурный ягодник» — только предложения, новых ID нет.",
+    "Песок: кандидат «условно применим» — это физическая совместимость двух узлов. Залежь, историческая добыча и использование не утверждаются. Promotion в selector — только рекомендация; чтобы песок появился в игре, нужны отдельное изменение regional-environment со своим утверждением и PF-шаг для pf_riverbank (RC-4-04).",
+    "В основании допустимы только 11 verified-якорей research-evidence.json, после RC-4-02 — 12. Находки not_found, wrong_scope и wrong_quote из lead-research-1.json не используются как доказательство.",
+    "Остаются в силе limits прошлых проходов, включая исключения совместимости и редакционный статус кандидатов."
+  ],
+  "checked_sources": [
+    "lead-research-1.json на servak (744 строки, sha256 e02ace15…a1a5) прочитан целиком. bort: research 6-132, verification 133-188 (checks 0-9 со статусами). orchard: research 190-345, verification 346-436 (checks F1-F16 + book index). quarry: research 438-631, verification 632-742 (checks 0-20).",
+    "Скриптом проверено соответствие якорей findings/checks: bort-01=0/0, bort-02=1/1, orchard-01=0/0, orchard-02=1/1, orchard-11=10/10, orchard-12=11/11, orchard-14=13/13, quarry-01=0/0, quarry-02=1/1, quarry-07=6/6, quarry-15=14/14. У всех статус verified. wrong_scope (quarry check 2) и wrong_quote (quarry check 5) не используются.",
+    "research-evidence.json прочитан целиком (11 записей), extract-research-evidence.mjs — целиком.",
+    "Скрипт (/tmp/opus-st4/celldiff.py) сравнил 4 CSV с HEAD dd0619a7 ячейка за ячейкой. Сравнение выполнено дважды, второй раз после правок исполнителя во время ревью.",
+    "Прочитаны README целиком и его diff, diff validate.mjs (якоря research-evidence, 38/32→39/31) и diff теста (2 новых теста, счётчики).",
+    "infra/world-base/land_use_templates.seed.json:1565-1592 (lu_sand_gravel_extraction: allowLS, allowWB, requires_water_nearby, seasonal_pattern) и :1530-1546 (lu_stone_quarrying).",
+    "places-binding/places/node_binding.csv: заголовок, строки 24 (g4 tributary_mouth) и 170 (cg5 tributary_mouth_mouth_bar).",
+    "spatial-v3/source-approval/p12_novgorod_source_approval_001/data/canonical-g5-inventory.json: запись cg5 tributary_mouth_mouth_bar («Устьевая мель», hazard_zone, «мелководье»).",
+    "places-binding/places/region_type_pf_manifest.json:830-854 (sand: coverage=gap, pf_refs=[], nearest pf_riverbank).",
+    "regional-environment/candidates/novgorod-1230-1250-v1/source-authoring.json:1-80, 93 (selectors land_use; conditional_guards, в том числе lu_clay_extraction:50 и lu_orchard_fruit_grove; approve_with_limits_ids:72; explicit_exclusions).",
+    "places-binding/scripts/pf-authoring.json:30-45 (sand, stone, clay: nearest PF и minimum_data_delta).",
+    "world-knowledge/research/population-household-agriculture.md:13-17 (HA-S4 Десятинный), verification/verification-household-agriculture.md:23-27, research/population-terrain-sources.md:8-13, 33-51.",
+    "Строки typed-gaps/matrix pt_shipyard_boatyard, lu_bog_iron_extraction, pt_ford_place, lu_clay_extraction, lu_peat_cutting: сохранность оговорок из удалённого раздела README.",
+    "Поправки pass 3 (RC-3-01…03) сохранились: «external marine» 0, «orchard context» 0, «волок» в README 0.",
+    "Запуски на servak (только чтение): validate.mjs → «valid: 70 types, 39 candidates, 31 gaps; duplicate-cause share 8.6%»; node --test start-territory-types.test.mjs → 13/13 pass. Скрипт подсчитал gaps 21/10 и candidates 29/10, mirrors matrix↔typed-gaps у orchard/bort/stone/shipyard совпадают. Изменения в tools/*/src/cli.js — только смена режима, 0 строк.",
+    "Решение владельца D62 (memory owner-decisions-d62.md, #133) и attestation pass 3 (st-approval-attestation.json)."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "mechanical_continuation": "После RC-4-01…06 и детерминированной проверки по required_corrections_procedure пакет можно коммитить как кандидат с этим attestation. Повышение песка в selector и PF-шаг — отдельные задачи у владельцев regional-environment и place-first-cartography, каждая со своим утверждением.",
+  "decision_scope_note": "Дельта D62 к pass 3 (approval-attestation.json, коммит 732cf989): три строки «не применим по имеющимся данным» (сад, бортничество, каменоломня), песок — кандидат с рекомендацией promotion с ограничениями и отдельным PF-шагом, верфь — исключение по D62, in-repo research-evidence.json.",
+  "final_mechanical_check": {
+    "by": "lead reviewer (Claude Opus 5.5), deterministic script, no further Opus pass required by RC-4 reverification rule",
+    "checked_on": "2026-10-01",
+    "executor_delivery": "DONE-start-types-12",
+    "result": "PASS 16/16: RC-4-02, RC-4-03, RC-4-06 cause_gap и matrix.reason совпадают с required_fix дословно; closure-дополнения, bort-03 в sources/source_refs, текст action/reason/refs песка, README 21/10, удаление «закрыто REVIEW-10», пункт Shipyard D62. Изменённые строки относительно утверждённого снимка — только lu_stone_quarrying, lu_tree_beekeeping_bortnichestvo, pt_shipyard_boatyard (typed-gaps, matrix) и lu_sand_gravel_extraction (selector-reconciliation); candidates.csv без изменений; validate.mjs — только expectedEvidenceIds + bort-03.",
+    "validate": "validate.mjs PASS 70 = 39 + 31; focused test 13/13 (pg-request 20261001T155149.980154Z-1); extractor --check PASS, 12 verified findings",
+    "final_sha256": {
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/README.md": "f74c8ca4d6bdef52a21aa50c4e5ae0e836b9681c059fc3422101465e1c44036a",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/candidates.csv": "898e492c29048efb89cd0c6e446f76f5cba12d419c27690104ba07fd5e3cb815",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/matrix.csv": "b4ad8a801b067f8d891339fe155eebb3c71401ca5a096ffe8ee194584086c88d",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/selector-reconciliation.csv": "90bd8c33a2d97e2afc1c3d288b606f9720aabfe674743e76141c66ed870b583b",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/typed-gaps.csv": "7e802b41b78c394de82e61bdb1d942ef9ed9dc5c62b826ae9a027fb4ba87b48f",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/validate.mjs": "9d9330a7b71ba52cf55a99d4891044392e192d5e87c76bb09a8d4962a4a02fb0",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/extract-research-evidence.mjs": "290334673407a25d9017b064c0d093c5a0f75f1c2cd88063ce56d89cf3359265",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/research-evidence.json": "d2e59352e7cf5d6bec97c49b12c401b6e1ccb14a35c0879804f63f74dc240c8d",
+      "data/world-catalogs/novgorod/game-base-v1/scripts/start-territory-types.test.mjs": "0d1f024f8a1beae3e2d12496e950b9dd0b63ee55fcae8e91909281f1b9fb2983"
+    }
+  },
+  "post_dot_mechanical_update": {
+    "on": "2026-10-01",
+    "by": "lead reviewer (Claude Opus 5.5), deterministic check",
+    "reason": "dot start-types-1 P2: extractor --check now binds every evidence row to its source finding/check; each evidence row gains a mechanical source_sha256 field. No value of research-evidence.json changed (verified by script after removing source_sha256); data CSVs and README unchanged.",
+    "final_sha256": {
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/research-evidence.json": "d2e59352e7cf5d6bec97c49b12c401b6e1ccb14a35c0879804f63f74dc240c8d",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/extract-research-evidence.mjs": "290334673407a25d9017b064c0d093c5a0f75f1c2cd88063ce56d89cf3359265",
+      "data/world-catalogs/novgorod/game-base-v1/scripts/start-territory-types.test.mjs": "0d1f024f8a1beae3e2d12496e950b9dd0b63ee55fcae8e91909281f1b9fb2983"
+    }
+  }
+}

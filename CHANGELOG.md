@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 - fix(test): orphan test-container reaper is PID-namespace aware — removes only dead owners from its own namespace; foreign-namespace, legacy pid-only and unreadable owner labels are kept (fail-closed), so parallel PG runs are no longer killed (#98)
+- data(start-types): D62 — сад, бортничество и каменоломня «не применим по имеющимся данным», песок — кандидат; evidence-tooling; только кандидат, без активации
 - fix(materialization): D59 filters needs_check only in O1/O2b/S1, preserves player actions and authored O2a, replaces matching NPC A1/create_entity/O1 proposals with wait; LW-122 added (#98)
 
 - data(game-base): names-gaps D61 follow-up — exact candidate coverage, authoring checks and current draft/gap status (#98)

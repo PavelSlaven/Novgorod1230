@@ -1,0 +1,19 @@
+{
+  "topics": [
+    {
+      "key": "synthetic",
+      "research": {
+        "findings": [
+          { "claim": "Claim alpha", "locator": "finding-alpha" },
+          { "claim": "Claim beta", "locator": "finding-beta" }
+        ]
+      },
+      "verification": {
+        "checks": [
+          { "claim": "Check alpha", "status": "verified", "note": "Note alpha" },
+          { "claim": "Check beta", "status": "verified", "note": "Note beta" }
+        ]
+      }
+    }
+  ]
+}

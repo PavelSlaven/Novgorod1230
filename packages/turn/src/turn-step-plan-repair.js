@@ -144,6 +144,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       }
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
           && isRealityLimitedNotAchievedNoOp(repairedOutput)
+          && isRealityLimitedAchievedNoOp(originalOutput)
           && hasForbiddenNoOpFields(repairedOutput)
           && wellFormedForbiddenNoOpValues(repairedOutput)
           && onlyForbiddenNoOpFieldErrors(repairError.details?.errors ?? [])) {

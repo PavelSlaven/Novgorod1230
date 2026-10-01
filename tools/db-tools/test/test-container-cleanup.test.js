@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  TEST_OWNER_LABEL, reapOrphanTestContainers, testContainerLabel
+  TEST_OWNER_LABEL, TEST_OWNER_PID_NAMESPACE, reapOrphanTestContainers, testContainerLabel
 } from '../../../test/helpers/test-containers.js';
 
 const repo = fileURLToPath(new URL('../../../', import.meta.url));
@@ -50,6 +50,7 @@ test('every docker run carries the owner-pid label', async () => {
 test('orphan reaper removes labelled containers of dead owners only', async (t) => {
   const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120_000 });
   if (docker(['version']).status !== 0) return t.skip('Docker required');
+  if (!TEST_OWNER_PID_NAMESPACE) return t.skip('PID namespace identity unavailable; reaper fails closed');
   const prefix = `reaper-${process.pid}-`;
   const start = (name, labelArgs) => {
     t.after(() => docker(['rm', '-fv', name]));
@@ -57,8 +58,12 @@ test('orphan reaper removes labelled containers of dead owners only', async (t) 
     assert.equal(run.status, 0, run.stderr);
   };
   start(`${prefix}live`, testContainerLabel());
-  start(`${prefix}dead`, ['--label', `${TEST_OWNER_LABEL}=${spawnSync(process.execPath, ['-e', '0']).pid}`]);
+  const deadPid = spawnSync(process.execPath, ['-e', '0']).pid;
+  start(`${prefix}dead`, ['--label', `${TEST_OWNER_LABEL}=${TEST_OWNER_PID_NAMESPACE}:${deadPid}`]);
+  start(`${prefix}foreign`, ['--label', `${TEST_OWNER_LABEL}=pid:[foreign]:${deadPid}`]);
+  start(`${prefix}unreadable`, ['--label', `${TEST_OWNER_LABEL}=unreadable`]);
   reapOrphanTestContainers();
   const left = docker(['ps', '-a', '--filter', `name=${prefix}`, '--format', '{{.Names}}']).stdout;
-  assert.deepEqual(left.split('\n').filter(Boolean), [`${prefix}live`]);
+  assert.deepEqual(left.split('\n').filter(Boolean).sort(),
+    [`${prefix}foreign`, `${prefix}live`, `${prefix}unreadable`].sort());
 });

@@ -48,6 +48,55 @@ test('explicit duration is removed from performed prose before narration',
       'turn_step_planner_repair', 'turn_step_grounding_auditor']);
   });
 
+test('repeated reality-limited no-op bypasses production semantic audit',
+  async () => {
+    const intent = 'Делаю меч из рубахи';
+    const cases = [
+      { name: 'null kind with brief activity', kind: null,
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
+      { name: 'unfaithful player utterance', kind: 'player_utterance',
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        utterance: { speaker_ref: 'actor_mikula', utterance_text: intent,
+          input_mode: 'intent_paraphrase',
+          delivery: { loudness: 2, duration_class: 'instant' } } }
+    ];
+    for (const [index, fixture] of cases.entries()) {
+      const input = request({ request_id: `noop-pre-audit:${index}`,
+        root_player_action: intent, remaining_intent: intent });
+      const candidate = { ...output(), interpretation: {
+        player_goal: intent, grounded_attempt: 'Пробую изготовить меч.',
+        adaptation: 'reality_limited' }, goal_result: 'achieved',
+        activity: fixture.activity, direct_result_kind: fixture.kind,
+        ...(fixture.utterance == null ? {} : { utterance: fixture.utterance }) };
+      const roles = [];
+      const roleRunner = { async run(call) {
+        roles.push(call.role_id);
+        if (call.role_id === 'turn_step_planner'
+            || call.role_id === 'turn_step_planner_repair') {
+          return { output: candidate };
+        }
+        if (call.role_id === 'turn_step_speech_auditor') {
+          return { output: { speech_faithful: false,
+            required_input_mode: 'verbatim', unexecuted_intent: intent } };
+        }
+        return { output: { pass: false,
+          concerns: [{ kind: 'operation_semantic_grounding' }] } };
+      } };
+      const result = await requestTurnStepPlanWithRepair({ request: input,
+        turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+        semanticPlanValidator:
+          createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner })
+      });
+      assert.equal(result.repaired, true, fixture.name);
+      assert.equal(result.plan.goal_result, 'not_achieved', fixture.name);
+      assert.equal(result.plan.direct_result_kind, null, fixture.name);
+      assert.deepEqual(roles, ['turn_step_planner',
+        'turn_step_planner_repair'], fixture.name);
+      assert.ok(result.canonicalizations.every(({ attempt }) => attempt === 2),
+        fixture.name);
+    }
+  });
+
 test('copied authored discovery is semantically rejected before its one repair',
   async () => {
     const intent = 'Осмотреть лёд в поисках безопасного места для саней.';

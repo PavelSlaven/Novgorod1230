@@ -1372,12 +1372,21 @@ canonicalizer не смог исправить однозначно, сразу 
 failure. Prompt не является владельцем закрытых cardinality/schema invariants.
 Сочетание `resolution: direct`, пустых `operations`,
 `interpretation.adaptation: reality_limited` и `goal_result: achieved` требует
-этот один semantic repair независимо от `direct_result_kind`; repair выбирает
-`not_achieved` или `partially_achieved` по смыслу попытки. Если ответ repair
-повторяет то же сочетание, code-owned слой меняет только `goal_result` на
-`not_achieved`, очищая несовместимые `direct_result_kind`, `assessment` и
-`utterance`. Trace `canonicalizations` содержит путь, старое и новое значение
-для каждого изменённого поля. Другие значения не выводятся эвристикой.
+этот один semantic repair независимо от `direct_result_kind`; код распознаёт
+сочетание после строгой проверки и до семантического аудита. Недопустимый
+`direct_result_kind` при этой же комбинации также направляется в этот repair;
+прочие структурные ошибки остаются fail-closed. Repair выбирает `not_achieved`
+или `partially_achieved` по смыслу попытки. Если ответ repair повторяет то же
+сочетание, code-owned слой меняет `goal_result` на `not_achieved`, очищает
+несовместимые `direct_result_kind`, `assessment` и `utterance`, затем повторно
+строго проверяет план без семантического аудита. Если repair уже выбрал
+`not_achieved`, но сохранил запрещённые поля, код очищает только эти поля.
+Подсказка repair требует для `not_achieved` `direct_result_kind: null` и
+удаления `assessment` и `utterance`. Trace `canonicalizations` содержит только
+канонизации принятой попытки, без повторяющихся путей и с номером попытки:
+`{attempt, path, old_value, new_value}` для изменённых значений и
+`{attempt, path, removed_fields}` для удалённых полей. Другие значения не
+выводятся эвристикой.
 
 Если repair снова невалиден:
 

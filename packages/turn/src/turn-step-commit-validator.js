@@ -4,6 +4,7 @@ import {
   validateTurnStepRequest
 } from './turn-step-contracts.js';
 import { requireFactualEvents } from './post-applied-actor-step.js';
+import { DIRECT_RESULT_KINDS } from './turn-step-contracts/plan-schema.js';
 
 export function validateTurnStepCommitChecks(errors, checks) {
   exactKeys(errors, checks, ['version', 'schema', 'requests', 'results'],
@@ -127,7 +128,7 @@ function validateStepTraces(errors, traces, envelope) {
     ]);
     const canonicalizationsValid = !Object.hasOwn(trace ?? {},
       'canonicalizations') || validCanonicalizations(trace.canonicalizations,
-      trace.approved_plan);
+      trace.approved_plan, trace.repaired);
     const generic = trace?.resolution === 'generic_check';
     const binding = trace?.check_binding;
     const plan = trace?.approved_plan;
@@ -186,7 +187,7 @@ function validateStepTraces(errors, traces, envelope) {
   }
 }
 
-function validCanonicalizations(canonicalizations, plan) {
+function validCanonicalizations(canonicalizations, plan, repaired) {
   if (!Array.isArray(canonicalizations) || canonicalizations.length === 0) {
     return false;
   }
@@ -194,14 +195,16 @@ function validCanonicalizations(canonicalizations, plan) {
     ['$.goal_result', '$.direct_result_kind',
       '$.assessment', '$.utterance'].includes(entry?.path));
   if (realityChanges.length > 0
-      && !validRealityLimitedNoOpCanonicalizations(realityChanges, plan)) {
+      && (repaired !== true
+        || !validRealityLimitedNoOpCanonicalizations(realityChanges, plan))) {
     return false;
   }
   const realitySet = new Set(realityChanges);
   const descriptions = canonicalizations.filter((entry) =>
     !realitySet.has(entry));
   return descriptions.every((entry) => {
-    if (!hasExact(entry, ['path', 'removed_fields'])
+    if (!hasExact(entry, ['attempt', 'path', 'removed_fields'])
+        || entry.attempt !== (repaired === true ? 2 : 1)
         || !Array.isArray(entry.removed_fields)
         || entry.removed_fields.length !== 1
         || entry.removed_fields[0] !== 'description') return false;
@@ -212,32 +215,42 @@ function validCanonicalizations(canonicalizations, plan) {
     return operation?.op === 'request_item_use'
       && operation.action_production != null
       && !Object.hasOwn(operation, 'description');
-  }) && (descriptions.length > 0 || realityChanges.length > 0);
+  }) && (descriptions.length > 0 || realityChanges.length > 0)
+    && new Set(canonicalizations.map(({ attempt }) => attempt)).size === 1
+    && new Set(canonicalizations.map(({ path }) => path)).size
+      === canonicalizations.length;
 }
 
 function validRealityLimitedNoOpCanonicalizations(entries, plan) {
-  const [goal, ...rest] = entries;
-  const allowedKinds = ['player_safe_observation',
-    'player_safe_item_observation', 'player_safe_body_observation',
-    'no_state_gesture', 'player_utterance'];
-  if (!hasExact(goal, ['path', 'old_value', 'new_value'])
-      || goal.path !== '$.goal_result' || goal.old_value !== 'achieved'
-      || goal.new_value !== 'not_achieved' || rest.length > 3) return false;
-  const order = new Map([['$.direct_result_kind', 1],
-    ['$.assessment', 2], ['$.utterance', 3]]);
+  const ordered = [...entries].sort((a, b) => realityOrder(a?.path)
+    - realityOrder(b?.path));
+  const goal = ordered[0]?.path === '$.goal_result' ? ordered.shift() : null;
+  const rest = ordered;
+  if (goal != null && (!hasExact(goal, ['attempt', 'path', 'old_value',
+      'new_value']) || goal.attempt !== 2
+      || goal.old_value !== 'achieved'
+      || goal.new_value !== 'not_achieved')) return false;
+  if (rest.length > 3 || rest.length === 0 && goal == null) return false;
   let previousOrder = 0;
   for (const entry of rest) {
-    if (!hasExact(entry, ['path', 'old_value', 'new_value'])
-        || entry.new_value !== null || !order.has(entry.path)
-        || order.get(entry.path) <= previousOrder) return false;
-    previousOrder = order.get(entry.path);
+    const order = realityOrder(entry?.path);
+    if (entry.attempt !== 2 || order < 1 || order > 3
+        || order <= previousOrder) return false;
+    previousOrder = order;
     if (entry.path === '$.direct_result_kind') {
-      if (!allowedKinds.includes(entry.old_value)) return false;
-    } else if (entry.path === '$.assessment') {
-      if (entry.old_value?.constructor !== Object) return false;
-    } else if (entry.path === '$.utterance') {
-      if (entry.old_value?.constructor !== Object) return false;
-    } else return false;
+      if (!hasExact(entry, ['attempt', 'path', 'old_value', 'new_value'])
+          || typeof entry.old_value !== 'string' || !entry.old_value
+          || entry.new_value !== null) return false;
+      // Known kinds share the plan schema's exported closed enum. Other
+      // non-empty strings are retained only as evidence of repaired bad input.
+      if (DIRECT_RESULT_KINDS.includes(entry.old_value)) continue;
+    } else {
+      const field = entry.path.slice(2);
+      if (!hasExact(entry, ['attempt', 'path', 'removed_fields'])
+          || !Array.isArray(entry.removed_fields)
+          || entry.removed_fields.length !== 1
+          || entry.removed_fields[0] !== field) return false;
+    }
   }
   return plan?.resolution === 'direct'
     && plan.interpretation?.adaptation === 'reality_limited'
@@ -246,6 +259,11 @@ function validRealityLimitedNoOpCanonicalizations(entries, plan) {
     && plan.direct_result_kind === null
     && !Object.hasOwn(plan ?? {}, 'assessment')
     && !Object.hasOwn(plan ?? {}, 'utterance');
+}
+
+function realityOrder(path) {
+  return new Map([['$.goal_result', 0], ['$.direct_result_kind', 1],
+    ['$.assessment', 2], ['$.utterance', 3]]).get(path) ?? 99;
 }
 
 function validGenericCheckRequest(value) {

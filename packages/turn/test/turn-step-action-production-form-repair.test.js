@@ -79,7 +79,8 @@ test('one A1 operation description error is narrowly canonicalized and traced', 
   assert.deepEqual(result.plan.operations[0].action_production,
     invalid.operations[0].action_production);
   assert.deepEqual(result.canonicalizations, [{
-    path: '$.operations[0].description', removed_fields: ['description']
+    attempt: 1, path: '$.operations[0].description',
+    removed_fields: ['description']
   }]);
 });
 
@@ -91,7 +92,10 @@ test('A1 description is normalized before other structural errors are classified
   await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
     turnStepModel: async () => { calls += 1; return invalid; } }),
   (error) => error.code === 'TURN_STEP_PLAN_INVALID'
-    && error.details.repair_suppressed === 'deterministic_structure_invalid');
+    && error.details.repair_suppressed === 'deterministic_structure_invalid'
+    && error.details.errors.some(({ path, code }) => code === 'additional_property'
+      && path.endsWith('.unexpected'))
+    && error.details.errors.every(({ path }) => !path.includes('description')));
   assert.equal(calls, 1);
 });
 
@@ -123,9 +127,30 @@ test('A1 description plus semantic error goes through the single common repair',
   assert.equal(calls, 2);
   assert.equal(audits, 2);
   assert.equal(result.repaired, true);
-  assert.deepEqual(result.canonicalizations, [{
-    path: '$.operations[0].description', removed_fields: ['description']
-  }]);
+  assert.equal(result.canonicalizations, undefined);
+});
+
+test('A1 description in accepted repair is traced only for attempt 2', async () => {
+  const initial = partial('regular');
+  initial.operations[0].description = 'Старое описание.';
+  const repaired = partial('regular');
+  repaired.operations[0].description = 'Новое описание.';
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async (_safe, repairContext) => repairContext == null
+      ? initial : repaired,
+    semanticPlanValidator: async ({ attempt }) => {
+      if (attempt === 1) {
+        const error = new Error('semantic mismatch');
+        error.code = 'TURN_STEP_PLAN_INVALID';
+        error.details = { errors: [{ path: '$.operations[0]',
+          code: 'material_transformation_grounding',
+          message: 'material choice is not grounded' }] };
+        throw error;
+      }
+      return true;
+    } });
+  assert.deepEqual(result.canonicalizations, [{ attempt: 2,
+    path: '$.operations[0].description', removed_fields: ['description'] }]);
 });
 
 test('an A1 description diagnostic from the failed plan does not attach to a different repaired no-op', async () => {
@@ -160,9 +185,9 @@ test('an A1 description diagnostic from the failed plan does not attach to a dif
   assert.equal(result.repaired, true);
   assert.equal(result.plan.goal_result, 'not_achieved');
   assert.deepEqual(result.canonicalizations, [
-    { path: '$.goal_result', old_value: 'achieved',
+    { attempt: 2, path: '$.goal_result', old_value: 'achieved',
       new_value: 'not_achieved' },
-    { path: '$.direct_result_kind',
+    { attempt: 2, path: '$.direct_result_kind',
       old_value: 'player_safe_observation', new_value: null }
   ]);
 });
@@ -183,10 +208,11 @@ test('transient request_item_use description remains a valid field', async () =>
 test('turn-step trace carries canonicalization path and removed field', () => {
   const plan = partial('regular');
   const trace = traceFor({ plan, request, repaired: false, applied: false,
-    canonicalizations: [{ path: '$.operations[0].description',
+    canonicalizations: [{ attempt: 1, path: '$.operations[0].description',
       removed_fields: ['description'] }] });
   assert.deepEqual(trace.canonicalizations, [{
-    path: '$.operations[0].description', removed_fields: ['description']
+    attempt: 1, path: '$.operations[0].description',
+    removed_fields: ['description']
   }]);
 });
 

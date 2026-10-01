@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- fix(turn): gate2 A1 plan normalization before shared validation, one semantic repair for reality-limited achieved empty direct plans and traced not_achieved fallback on repetition (LW-103 updated)
+- fix(turn): gate2-2 intercepts reality-limited achieved empty direct plans before semantic audit, cleans repair-selected not_achieved metadata and traces only accepted-attempt canonicalizations (LW-103 updated)
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 

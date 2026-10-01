@@ -10,7 +10,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   allowRepair = true
 }) {
   let originalOutput = null;
-  const canonicalizations = [];
+  let canonicalizations = [];
   // Repair reuses this immutable snapshot and its existing grounding identity.
   let modelRequest = null;
   try {
@@ -18,14 +18,16 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       turnStepModel: async (safeRequest) => {
         modelRequest = safeRequest;
         const output = await turnStepModel(safeRequest);
-        const normalized = a1DescriptionCanonicalization(output);
+        const normalized = a1DescriptionCanonicalization(output, 1);
         originalOutput = structuredClone(normalized?.plan ?? output);
-        if (normalized != null) canonicalizations.push(...normalized.diagnostics);
+        canonicalizations = normalized?.diagnostics ?? [];
         return normalized?.plan ?? output;
-      }, semanticPlanValidator, preparedChainContext, attempt: 1 });
-    if (isRealityLimitedAchievedNoOp(initialPlan)) {
-      throw realityLimitedAchievedNoOpError();
-    }
+      }, semanticPlanValidator, preparedChainContext, attempt: 1,
+      beforeSemanticValidation: (plan) => {
+        if (isRealityLimitedAchievedNoOp(plan)) {
+          throw realityLimitedAchievedNoOpError();
+        }
+      } });
     return {
       plan: initialPlan,
       repaired: false,
@@ -47,9 +49,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
       : [...(error.details?.errors ?? [])];
     if (!parseFailure && isRealityLimitedAchievedNoOp(originalOutput)
-        && structuralErrors.length === 1
-        && structuralErrors[0].path === '$.direct_result_kind'
-        && structuralErrors[0].code === 'direct_result_kind') {
+        && onlyInvalidDirectResultKindError(originalOutput,
+          structuralErrors)) {
       structuralErrors.splice(0, structuralErrors.length,
         realityLimitedAchievedNoOpError().details.errors[0]);
     }
@@ -59,6 +60,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       : missingMaterialTrial(originalOutput, request, structuralErrors);
     const projectionTrial = denialTrial ?? materialTrial;
     if (!parseFailure && originalOutput != null
+        && !isRealityLimitedAchievedNoOp(originalOutput)
         && (!structuralErrors.some((item) => requiresSemanticRepair(item))
           || canAuditSpeechBeforeRepair(originalOutput, structuralErrors) || projectionTrial != null)
         && typeof semanticPlanValidator === 'function') {
@@ -99,22 +101,35 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         turnStepModel: async (safeRequest) => {
           const output = await turnStepModel(modelRequest ?? safeRequest,
             repairContext);
-          const normalized = a1DescriptionCanonicalization(output);
+          const normalized = a1DescriptionCanonicalization(output, 2);
           repairedOutput = structuredClone(normalized?.plan ?? output);
-          if (normalized != null) canonicalizations.push(...normalized.diagnostics);
+          canonicalizations = normalized?.diagnostics ?? [];
           return normalized?.plan ?? output;
         },
         semanticPlanValidator,
         preparedChainContext,
-        attempt: 2
+        attempt: 2,
+        beforeSemanticValidation: (plan) => {
+          if (isRealityLimitedAchievedNoOp(plan)) {
+            const normalized = realityLimitedNoOpCanonicalization(plan,
+              request, 2);
+            canonicalizations = [...canonicalizations,
+              ...normalized.diagnostics];
+            return { plan: normalized.plan, skipSemanticValidation: true };
+          }
+          if (isRealityLimitedNotAchievedNoOp(plan)
+              && hasForbiddenNoOpFields(plan)) {
+            const normalized = realityLimitedNotAchievedCleanup(plan,
+              request, 2);
+            canonicalizations = [...canonicalizations,
+              ...normalized.diagnostics];
+            return { plan: normalized.plan, skipSemanticValidation: true };
+          }
+        }
       });
-      const noOpCanonicalization = realityLimitedNoOpCanonicalization(
-        repairedPlan, request);
-      const finalPlan = noOpCanonicalization?.plan ?? repairedPlan;
-      const finalCanonicalizations = [
-        ...canonicalizationsForPlan(canonicalizations, finalPlan),
-        ...(noOpCanonicalization?.diagnostics ?? [])
-      ];
+      const finalPlan = repairedPlan;
+      const finalCanonicalizations = canonicalizationsForPlan(
+        canonicalizations, finalPlan);
       return {
         plan: finalPlan,
         repaired: true,
@@ -125,16 +140,25 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     } catch (repairError) {
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
           && isRealityLimitedAchievedNoOp(repairedOutput)
-          && repairError.details?.errors?.length === 1
-          && repairError.details.errors[0].path === '$.direct_result_kind'
-          && repairError.details.errors[0].code === 'direct_result_kind') {
+          && onlyInvalidDirectResultKindError(repairedOutput,
+            repairError.details?.errors ?? [])) {
         const noOpCanonicalization = realityLimitedNoOpCanonicalization(
-          repairedOutput, request);
+          repairedOutput, request, 2);
         const finalPlan = noOpCanonicalization.plan;
         return { plan: finalPlan, repaired: true,
           canonicalizations: [...canonicalizationsForPlan(canonicalizations,
             finalPlan),
             ...noOpCanonicalization.diagnostics] };
+      }
+      if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
+          && isRealityLimitedNotAchievedNoOp(repairedOutput)
+          && hasForbiddenNoOpFields(repairedOutput)
+          && onlyForbiddenNoOpFieldErrors(repairError.details?.errors ?? [])) {
+        const normalized = realityLimitedNotAchievedCleanup(repairedOutput,
+          request, 2);
+        return { plan: normalized.plan, repaired: true,
+          canonicalizations: [...canonicalizationsForPlan(canonicalizations,
+            normalized.plan), ...normalized.diagnostics] };
       }
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
           && canAuditRepairedSpeechMetadata(repairedOutput, request)
@@ -164,21 +188,38 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   }
 }
 
-function realityLimitedNoOpCanonicalization(plan, request) {
+function realityLimitedNoOpCanonicalization(plan, request, attempt) {
   if (!isRealityLimitedAchievedNoOp(plan)) return null;
   const normalized = structuredClone(plan);
-  const diagnostics = [{ path: '$.goal_result', old_value: 'achieved',
+  const diagnostics = [{ attempt, path: '$.goal_result', old_value: 'achieved',
     new_value: 'not_achieved' }];
   normalized.goal_result = 'not_achieved';
   if (normalized.direct_result_kind !== null) {
-    diagnostics.push({ path: '$.direct_result_kind',
+    diagnostics.push({ attempt, path: '$.direct_result_kind',
       old_value: normalized.direct_result_kind, new_value: null });
   }
   normalized.direct_result_kind = null;
   for (const path of ['assessment', 'utterance']) {
     if (!Object.hasOwn(normalized, path)) continue;
-    diagnostics.push({ path: `$.${path}`,
-      old_value: structuredClone(normalized[path]), new_value: null });
+    diagnostics.push({ attempt, path: `$.${path}`,
+      removed_fields: [path] });
+    delete normalized[path];
+  }
+  return { plan: validateAndFreezePlan(normalized, request), diagnostics };
+}
+
+function realityLimitedNotAchievedCleanup(plan, request, attempt) {
+  const normalized = structuredClone(plan);
+  const diagnostics = [];
+  if (normalized.direct_result_kind !== null) {
+    diagnostics.push({ attempt, path: '$.direct_result_kind',
+      old_value: normalized.direct_result_kind, new_value: null });
+    normalized.direct_result_kind = null;
+  }
+  for (const path of ['assessment', 'utterance']) {
+    if (!Object.hasOwn(normalized, path)) continue;
+    diagnostics.push({ attempt, path: `$.${path}`,
+      removed_fields: [path] });
     delete normalized[path];
   }
   return { plan: validateAndFreezePlan(normalized, request), diagnostics };
@@ -190,10 +231,38 @@ function isRealityLimitedAchievedNoOp(plan) {
     && Array.isArray(plan.operations) && plan.operations.length === 0;
 }
 
+function isRealityLimitedNotAchievedNoOp(plan) {
+  return plan?.resolution === 'direct' && plan.goal_result === 'not_achieved'
+    && plan.interpretation?.adaptation === 'reality_limited'
+    && Array.isArray(plan.operations) && plan.operations.length === 0;
+}
+
+function hasForbiddenNoOpFields(plan) {
+  if (!Object.hasOwn(plan ?? {}, 'direct_result_kind')
+      || !(plan.direct_result_kind === null
+        || typeof plan.direct_result_kind === 'string'
+          && plan.direct_result_kind.length > 0)) return false;
+  return plan.direct_result_kind !== null
+    || Object.hasOwn(plan ?? {}, 'assessment')
+    || Object.hasOwn(plan ?? {}, 'utterance');
+}
+
+function onlyInvalidDirectResultKindError(plan, errors) {
+  return (plan?.direct_result_kind === null
+      || typeof plan?.direct_result_kind === 'string'
+        && plan.direct_result_kind.length > 0) && errors.length === 1
+    && errors[0].path === '$.direct_result_kind';
+}
+
+function onlyForbiddenNoOpFieldErrors(errors) {
+  const paths = new Set(['$.direct_result_kind', '$.assessment', '$.utterance']);
+  return errors.length > 0 && errors.every(({ path }) => paths.has(path));
+}
+
 function realityLimitedAchievedNoOpError() {
   return contractError('TURN_STEP_PLAN_INVALID', [{ path: '$.goal_result',
     code: 'reality_limited_achieved_noop',
-    message: 'an impossible reality-limited attempt cannot be achieved; choose not_achieved or partially_achieved according to the attempt' }]);
+    message: 'an impossible reality-limited attempt cannot be achieved; choose not_achieved or partially_achieved according to the attempt. For not_achieved, set direct_result_kind to null and remove assessment and utterance.' }]);
 }
 
 const SEMANTIC_REPAIR_CODES = new Set([
@@ -221,7 +290,7 @@ function requiresSemanticRepair({ path, code } = {}) {
     || code === 'enum' && ACTION_PRODUCTION_FORM_PATH.test(path);
 }
 
-function a1DescriptionCanonicalization(plan) {
+function a1DescriptionCanonicalization(plan, attempt) {
   if (!Array.isArray(plan?.operations)) return null;
   const normalized = structuredClone(plan);
   const diagnostics = [];
@@ -230,7 +299,7 @@ function a1DescriptionCanonicalization(plan) {
         || operation.action_production == null
         || !Object.hasOwn(operation, 'description')) return;
     delete operation.description;
-    diagnostics.push({ path: `$.operations[${index}].description`,
+    diagnostics.push({ attempt, path: `$.operations[${index}].description`,
       removed_fields: ['description'] });
   });
   if (diagnostics.length === 0) return null;
@@ -340,8 +409,16 @@ function validateAndFreezePlan(plan, request) {
 }
 
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,
-  semanticPlanValidator, preparedChainContext, attempt = 1 }) {
-  const plan = await requestTurnStepPlan({ request, turnStepModel });
+  semanticPlanValidator, preparedChainContext, attempt = 1,
+  beforeSemanticValidation = null }) {
+  let plan = await requestTurnStepPlan({ request, turnStepModel });
+  if (typeof beforeSemanticValidation === 'function') {
+    const normalized = beforeSemanticValidation(plan);
+    if (normalized?.plan != null) {
+      plan = validateAndFreezePlan(normalized.plan, request);
+      if (normalized.skipSemanticValidation === true) return plan;
+    }
+  }
   if (typeof semanticPlanValidator === 'function') {
     const result = await semanticPlanValidator(deepFreeze({ plan,
       request: structuredClone(request),

@@ -96,7 +96,8 @@ test('turn-step commit preserves the exact A1 canonicalization diagnostic', () =
   trace.resolution = 'domain_request';
   trace.goal_result = 'pending';
   trace.reason_code = 'action_production';
-  trace.canonicalizations = [{ path: '$.operations[0].description',
+  trace.canonicalizations = [{ attempt: 1,
+    path: '$.operations[0].description',
     removed_fields: ['description'] }];
   envelope.mode_resolution.decision_trace.step_traces[0] =
     structuredClone(trace);
@@ -115,8 +116,6 @@ test('turn-step commit preserves the exact A1 canonicalization diagnostic', () =
 test('turn-step commit preserves reality-limited no-op canonicalization values', () => {
   const envelope = commitEnvelope({ clarification: false, check: false });
   const trace = envelope.loop_trace.step_traces[0];
-  const oldAssessment = { text: 'Устройство не собрано.',
-    support_refs: ['item:shirt'] };
   Object.assign(trace.plan_request, {
     root_player_action: 'Пробую изготовить устройство из поданных вещей.',
     remaining_intent: 'изготовить устройство из поданных вещей'
@@ -133,17 +132,18 @@ test('turn-step commit preserves reality-limited no-op canonicalization values',
   trace.resolution = 'direct';
   trace.goal_result = 'not_achieved';
   trace.reason_code = 'reality_limited';
+  trace.repaired = true;
   trace.canonicalizations = [
-    { path: '$.goal_result', old_value: 'achieved', new_value: 'not_achieved' },
-    { path: '$.direct_result_kind', old_value: 'player_safe_observation',
+    { attempt: 2, path: '$.goal_result', old_value: 'achieved', new_value: 'not_achieved' },
+    { attempt: 2, path: '$.direct_result_kind', old_value: 'player_safe_observation',
       new_value: null },
-    { path: '$.assessment', old_value: oldAssessment, new_value: null }
+    { attempt: 2, path: '$.assessment', removed_fields: ['assessment'] }
   ];
   envelope.mode_resolution.decision_trace.step_traces[0] =
     structuredClone(trace);
   assert.deepEqual(validateTurnStepCommitEnvelope(envelope).errors, []);
 
-  trace.canonicalizations[1].old_value = 'player_utterance';
+  trace.canonicalizations[1].old_value = '';
   envelope.mode_resolution.decision_trace.step_traces[0] =
     structuredClone(trace);
   assert.equal(validateTurnStepCommitEnvelope(envelope).ok, false);

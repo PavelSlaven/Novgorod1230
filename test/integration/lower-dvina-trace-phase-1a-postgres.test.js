@@ -96,6 +96,28 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
     });
     return domainCatalogPin;
   };
+  let currentHistoricalEvents = [
+    {
+      id: 'nov_hist_news_neva_victory_lower_dvina',
+      phases: [{ id: 'outcome_news_reached_lower_dvina',
+        start_at_minutes: 5_785_920 }],
+      source_ref: { record_id: 'nov_hist_news_neva_victory_lower_dvina',
+        catalog_digest: 'c'.repeat(64) }
+    },
+    {
+      id: 'novgorod_famine_1230',
+      phases: [{ id: 'documented_famine_source_year', start_at_minutes: 368_640 }],
+      source_ref: {
+        record_id: 'record:historical_phase_local_effect_rules:novgorod_famine_1230_v2',
+        catalog_digest: 'd'.repeat(64)
+      }
+    }
+  ];
+  let historicalEventsLoadCount = 0;
+  const initialHistoricalEventsLoader = async () => {
+    historicalEventsLoadCount += 1;
+    return structuredClone(currentHistoricalEvents);
+  };
 
   const repository = createLowerDvinaTracePhase1ARepository({ query: pool.query.bind(pool) });
   const ports = createPostgresStage25Ports({
@@ -104,12 +126,19 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   });
   const request = phase1ARequest(bundle, 'trace-phase-1a-postgres');
   const [first, concurrentReplay] = await Promise.all([
-    materializeLowerDvinaTraceParty({ request, domainCatalogPinLoader, partyDatabaseSchema: schema, worldBaseReferenceSnapshot: world, repository, stage25Ports: ports }),
-    materializeLowerDvinaTraceParty({ request: structuredClone(request), domainCatalogPinLoader, partyDatabaseSchema: schema, worldBaseReferenceSnapshot: world, repository, stage25Ports: ports })
+    materializeLowerDvinaTraceParty({ request, domainCatalogPinLoader, initialHistoricalEventsLoader, partyDatabaseSchema: schema, worldBaseReferenceSnapshot: world, repository, stage25Ports: ports }),
+    materializeLowerDvinaTraceParty({ request: structuredClone(request), domainCatalogPinLoader, initialHistoricalEventsLoader, partyDatabaseSchema: schema, worldBaseReferenceSnapshot: world, repository, stage25Ports: ports })
   ]);
   assert.equal(first.status, 'committed');
   assert.equal(concurrentReplay.status, 'replayed');
   assert.deepEqual(first.instance, concurrentReplay.instance);
+  assert.deepEqual(first.instance.historical_events, currentHistoricalEvents);
+  assert.equal(historicalEventsLoadCount, 1);
+  const committedSnapshot = (await pool.query(
+    'SELECT state_payload FROM party_runtime.party_state_snapshots WHERE party_id=$1 AND state_version=0',
+    [request.party_id]
+  )).rows[0].state_payload;
+  assert.deepEqual(committedSnapshot.historical_events, currentHistoricalEvents);
   assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_materialization_runs WHERE party_id=$1', [request.party_id])).rows[0].count, 1);
   assert.equal((await pool.query('SELECT count(*)::int AS count FROM party_runtime.party_player_characters WHERE party_id=$1', [request.party_id])).rows[0].count, 1);
   assert.equal(first.instance.player.dossier.identity.name, 'Микула');
@@ -201,6 +230,22 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
 
   const recreated = createLowerDvinaTracePhase1ARepository({ query: pool.query.bind(pool) });
   const rehydrated = await recreated.loadInternal(request.party_id);
+  assert.deepEqual(rehydrated.historical_events, currentHistoricalEvents);
+  currentHistoricalEvents = [{
+    id: 'nov_hist_news_neva_victory_lower_dvina',
+    phases: [{ id: 'outcome_news_reached_lower_dvina',
+      start_at_minutes: 5_900_000 }],
+    source_ref: { record_id: 'changed-source', catalog_digest: 'e'.repeat(64) }
+  }];
+  const sourceChangedReplay = await materializeLowerDvinaTraceParty({
+    request: structuredClone(request), domainCatalogPinLoader,
+    initialHistoricalEventsLoader, partyDatabaseSchema: schema,
+    worldBaseReferenceSnapshot: world, repository: recreated, stage25Ports: ports
+  });
+  assert.equal(sourceChangedReplay.status, 'replayed');
+  assert.deepEqual(sourceChangedReplay.instance.historical_events,
+    committedSnapshot.historical_events);
+  assert.equal(historicalEventsLoadCount, 1);
   assert.equal(rehydrated.player.instance_id, first.instance.player.instance_id);
   assert.deepEqual(rehydrated.request_identity, first.instance.request_identity);
   assert.deepEqual(rehydrated.sealed_selections, first.instance.sealed_selections);

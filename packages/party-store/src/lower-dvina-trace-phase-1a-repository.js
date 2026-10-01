@@ -294,6 +294,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         environment_snapshot: payload.immediate.environment_snapshot,
         hidden_truth: payload.hidden_truth,
         sealed_selections: payload.sealed_selections,
+        historical_events: structuredClone(payload.historical_events ?? []),
         policy_profile_pins: payload.policy_profile_pins,
         materialization_trace: run.trace,
         choices,

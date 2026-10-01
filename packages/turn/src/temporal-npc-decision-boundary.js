@@ -58,6 +58,7 @@ export async function advanceTemporalNpcDecisionBoundary({
   resolveDecision,
   executeActorStep,
   continueAdvance,
+  continueOnDomainRejection = () => false,
   decisionSignalState = null,
   safety_limits = null
 } = {}) {
@@ -186,6 +187,9 @@ export async function advanceTemporalNpcDecisionBoundary({
         && actorStep?.working_projection != null
         && typeof actorStep.working_projection === 'object'
         && !Array.isArray(actorStep.working_projection);
+      const terminalDomainRejection = domainRejected
+        && continueOnDomainRejection(cloneFrozen({ decision,
+          actor_step: actorStep })) === true;
       if (!domainRejected
           && (!timestamp(actorStep?.started_at)
             || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
@@ -195,9 +199,10 @@ export async function advanceTemporalNpcDecisionBoundary({
         fail('temporal_change_set_conflict',
           'NPC actor-step must start on the decision timestamp and return working state.');
       }
-      if (!domainRejected) {
+      if (!domainRejected || terminalDomainRejection) {
         hadSuccessfulActorStep = true;
-      } else {
+      }
+      if (domainRejected && !terminalDomainRejection) {
         hadUnresolvedDomainRejection = true;
         unresolvedDomainRejection ??= {
           decision,
@@ -210,7 +215,7 @@ export async function advanceTemporalNpcDecisionBoundary({
       projection = cloneFrozen(actorStep.working_projection);
       const handledForThisAdvance = [
         ...(factualState.consumed_npc_decision_signal_ids ?? []),
-        ...(domainRejected ? [] : signalBatch.ordered_signals.map(
+        ...(domainRejected && !terminalDomainRejection ? [] : signalBatch.ordered_signals.map(
           ({ signal_id: id }) => id))
       ];
       const knownSignals = [

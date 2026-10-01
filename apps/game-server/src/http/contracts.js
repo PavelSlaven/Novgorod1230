@@ -20,7 +20,8 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
   const unresolvedOrdinary = error?.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED';
   const providerFailure = error?.llm_provider_failure === true
     ? publicProviderFailure(error?.code) : null;
-  const catalogFailure = error?.code === 'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED'
+  const catalogFailure = ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
+    'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(error?.code)
     ? { code: 'WORLD_CATALOG_PIN_INVALID',
         message: 'Данные мира этой партии недоступны.' } : null;
   const publicTurnFailure = publicTurnFailureFor(error);
@@ -66,10 +67,6 @@ function publicTurnFailureFor(error) {
   if (code === 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP') return {
     code: 'WORLD_ACTION_UNAVAILABLE',
     message: 'Ход не сохранён. Для этого действия не хватает данных мира.'
-  };
-  if (code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') return {
-    code: 'WORLD_ACTION_UNAVAILABLE',
-    message: 'Ход не сохранён. Здесь такой вещи не знают.'
   };
   return null;
 }

@@ -15,7 +15,6 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   genericCheckContextOwner = null,
   ordinaryDiscoveryResolver = null,
   ordinaryResultPolicy = null,
-  assertNeedsCheckAllowed = null,
   admitAmbientOrdinaryPortion = null,
   requireAmbientOrdinaryAdmission = false,
   ordinaryContainerContentsResolver = null,
@@ -51,7 +50,6 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   const handlers = {
     ...createItemOperationHandlers(state, {
       ordinaryResultPolicy,
-      assertNeedsCheckAllowed,
       ambientOrdinaryPortionAdmission: admitAmbientOrdinaryPortion,
       requireAmbientOrdinaryAdmission,
       ordinaryContainerContentsResolver,

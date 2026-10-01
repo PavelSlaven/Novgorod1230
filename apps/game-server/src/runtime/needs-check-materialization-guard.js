@@ -12,7 +12,7 @@ export function createNeedsCheckMaterializationGuard({ resolveRegion,
     throw new TypeError('Pinned needs-check materialization context is required.');
   }
   return async function assertAllowed({ committedState, candidate,
-    catalogContext } = {}) {
+    catalogContext, matchOnly = false } = {}) {
     const context = catalogContext;
     if (context == null || !validPin(context.pin)
         || !validWorldPin(context.world_pin)) {
@@ -52,11 +52,17 @@ export function createNeedsCheckMaterializationGuard({ resolveRegion,
     if (sameWorld && clock != null) {
       year = Number(projectCalendar(clock, calendarProfile).year);
     }
-    const hits = NEEDS_CHECK_BLOCKER.matchesAll({ snapshot: blockerSnapshot, candidate: {
+    const scopedCandidate = {
       ...candidate,
       ...(text(region) ? { region } : {}),
       ...(Number.isSafeInteger(year) ? { year } : {})
-    } });
+    };
+    const hits = candidateHits(blockerSnapshot, scopedCandidate);
+    if (matchOnly) return hits.map(({ queue_id }) => ({
+      queue_id, path: candidate?.path ?? 'undefined',
+      region: region ?? 'undefined', year: Number.isSafeInteger(year)
+        ? year : 'undefined'
+    }));
     if (hits.length > 0) throw new TurnWorkflowError(
       NEEDS_CHECK_MATERIALIZATION_BLOCKED,
       'Committed needs-check blocker matched a proposed materialization.',
@@ -67,6 +73,37 @@ export function createNeedsCheckMaterializationGuard({ resolveRegion,
           ? year : 'undefined', region_undefined: !text(region),
         year_undefined: !Number.isSafeInteger(year) });
   };
+}
+
+function candidateHits(snapshot, candidate) {
+  const { source_fact_delta: sourceDelta,
+    source_fact_delta_baseline: baseline, ...ordinaryCandidate } = candidate;
+  if (sourceDelta == null) {
+    return NEEDS_CHECK_BLOCKER.matchesAll({ snapshot,
+      candidate: ordinaryCandidate });
+  }
+  const direct = NEEDS_CHECK_BLOCKER.matchesAll({ snapshot,
+    candidate: ordinaryCandidate });
+  const deltaHits = NEEDS_CHECK_BLOCKER.matchesAll({ snapshot, candidate: {
+    source_fact_delta: sourceDelta,
+    ...(candidate.region == null ? {} : { region: candidate.region }),
+    ...(candidate.year == null ? {} : { year: candidate.year })
+  } });
+  const baselineCandidate = baseline == null ? null : {
+    ...baseline,
+    ...(candidate.region == null ? {} : { region: candidate.region }),
+    ...(candidate.year == null ? {} : { year: candidate.year })
+  };
+  const baselineIds = new Set(baselineCandidate == null ? []
+    : NEEDS_CHECK_BLOCKER.matchesAll({ snapshot,
+      candidate: baselineCandidate }).map(({ queue_id }) => queue_id));
+  const byId = new Map(direct.map((hit) => [hit.queue_id, hit]));
+  for (const hit of deltaHits) {
+    if (!baselineIds.has(hit.queue_id) && !byId.has(hit.queue_id)) {
+      byId.set(hit.queue_id, hit);
+    }
+  }
+  return [...byId.values()];
 }
 
 function text(value) {

@@ -56,6 +56,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
   let narrationAuthState = state;
   const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
     catch { /* Diagnostic capture must not affect gameplay. */ } };
+  const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => trace({
+    event: 'needs_check_candidate_filtered', path,
+    queue_id: queue_ids[0] ?? null,
+    queue_ids: structuredClone(queue_ids)
+  });
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
@@ -65,7 +70,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ? turnStepNeedsCheckGuard : null;
   const guardFactory = (factory) => typeof factory !== 'function'
     ? null : (input) => factory({ ...input,
-      assertNeedsCheckAllowed: needsCheckGuard });
+      assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter });
   const spatialSemanticResolverFactory =
     guardFactory(createTurnStepSpatialSemanticResolver);
   const randomSnapshot = randomSource?.snapshot?.();
@@ -94,13 +99,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
-        assertNeedsCheckAllowed: needsCheckGuard }),
+        assertNeedsCheckAllowed: needsCheckGuard,
+        recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
       createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest,
-        assertNeedsCheckAllowed: needsCheckGuard}),
+        assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter}),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
-    assertNeedsCheckAllowed: typeof needsCheckGuard === 'function'
-      ? (input) => needsCheckGuard({ ...input, partyId }) : null,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
@@ -118,7 +122,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
       createTurnStepActionProductionOwner:
-        guardFactory(createTurnStepActionProductionOwner),
+        createTurnStepActionProductionOwner,
       localFireProfile,
       createTurnStepWorldProcessResolver,
       createTurnStepSpatialSemanticResolver:
@@ -137,7 +141,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
   const actionProductionOwner =
     typeof createTurnStepActionProductionOwner === 'function'
       && actionProductionProfile?.profile?.status === 'approved'
-      ? guardFactory(createTurnStepActionProductionOwner)({
+      ? createTurnStepActionProductionOwner({
           partyId, requestId, inputDigest,
           applyWorkingProjection: turnStepPorts.applyActionProductionProjection
         })

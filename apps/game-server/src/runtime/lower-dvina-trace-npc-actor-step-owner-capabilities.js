@@ -47,7 +47,7 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     const ordinary = typeof createOrdinaryDiscoveryResolver === 'function'
       && discoveryTargets.length > 0
       ? createOrdinaryDiscoveryResolver({ partyId, inputDigest,
-        assertNeedsCheckAllowed }) : null;
+        assertNeedsCheckAllowed, requestSubject: 'npc' }) : null;
     if (typeof ordinary === 'function') {
       capabilities.push({
         operation: 'request_discovery',

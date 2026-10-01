@@ -26,6 +26,8 @@ import { resolveExistingItemInspection } from
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   partyId, loadEnablement, ordinaryMaterializationModel,
   assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
+  requestSubject = 'npc',
   scopeBinding = null,
   verifyStageBCutover = ordinaryMaterializationModel?.verifyStageBCutover,
   inputDigest
@@ -44,9 +46,11 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       ordinaryMaterializationModel, input),
     inputDigest,
     assertNeedsCheckAllowed: needsCheck,
+    recordNeedsCheckFilter,
     buildSeedRequest: buildOrdinaryMaterializationSeedScopeRequest,
     buildPresenceRequest: buildOrdinaryMaterializationPresenceRequest,
     sealAtomicWritePlan: createOrdinaryMaterializationAtomicWritePlan,
+    requestSubject,
     resolveFiniteResourceEffects({ enabled, item, envelope, presence }) {
       const profile = enabled.ordinary_authority?.finite_source_profile ?? null;
       if (profile == null) return null;

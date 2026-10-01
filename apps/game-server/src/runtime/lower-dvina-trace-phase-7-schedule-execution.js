@@ -79,11 +79,18 @@ export async function executeTracePhase7SchedulePlan({
     });
   } catch (error) {
     if (error?.code !== 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') throw error;
+    const privateDetails = error?.details ?? {};
     return Object.freeze({
       working_projection: structuredClone(temporal.projection),
       domain_result: Object.freeze({ pass: false, errors: Object.freeze([
         Object.freeze({ code: error.code, category: 'applicability',
-          retryable: false })
+          retryable: false,
+          ...(typeof privateDetails.path === 'string'
+            ? { path: privateDetails.path } : {}),
+          ...(typeof privateDetails.queue_id === 'string'
+            ? { queue_id: privateDetails.queue_id } : {}),
+          ...(Array.isArray(privateDetails.queue_ids)
+            ? { queue_ids: structuredClone(privateDetails.queue_ids) } : {}) })
       ]) })
     });
   }
@@ -263,6 +270,30 @@ export function finalizeTracePhase7ScheduleExecution({
     ...structuredClone(started),
     status: 'started',
     failure_code: null
+  });
+}
+
+export function needsCheckRefusalScheduleExecution({ actorStep, npcRef,
+  decisionTimestamp, stateVersion }) {
+  const error = actorStep?.domain_result?.errors?.find(({ code }) =>
+    code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED');
+  if (error == null) fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+  return Object.freeze({
+    npc_ref: npcRef,
+    status: 'declined',
+    failure_code: error.code,
+    semantic_operation: null,
+    execution_binding_ref: null,
+    schedule_option_id: null,
+    activity_profile_ref: null,
+    exact_elapsed: { exact_minutes: { numerator: '0', denominator: '1' } },
+    clock_before: structuredClone(decisionTimestamp),
+    clock_after: structuredClone(decisionTimestamp),
+    parent_state_version: stateVersion,
+    root_clock_write_count: 0,
+    factual_result_source: 'needs_check_refusal',
+    movement_proposal: null,
+    property_proposal: null
   });
 }
 

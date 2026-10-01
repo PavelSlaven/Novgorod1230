@@ -19,6 +19,8 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   const scheduleTemporal = phase7.schedule_temporal;
   const schedule = phase7.schedule_execution;
   const resumed = phase7.resumed === true;
+  const needsCheckRefusal = schedule?.status === 'declined'
+    && schedule?.failure_code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
   if ((!resumed && phase7.autonomous.request.root_turn_id
         !== factual.mode_resolution?.turn_id)
       || (resumed && !validResume({ phase7, factual, state, phase7Contracts }))
@@ -38,23 +40,25 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
         temporal.result.clock_after)
       || (!resumed
         && !sameClock(temporal.result.clock_before, state.clock))
-      || !['executed', 'started'].includes(schedule.status)
+      || !(needsCheckRefusal || ['executed', 'started'].includes(schedule.status))
       || schedule.exact_elapsed.exact_minutes.denominator !== '1'
       || schedule.root_clock_write_count !== 0
       || schedule.parent_state_version !== (resumed
         ? state.phase7_fire_rest.resume_state.schedule_execution
           .parent_state_version
         : state.party_state.state_version)
-      || !validActorStepCompletion(phase7)
-      || !validCausality(phase7)
-      || !validPhase7ScheduleExecution(schedule, phase7Contracts,
-        phase7.autonomous.request, phase7.autonomous.proposal.plan,
-        phase7.actor_step_check)
-      || (resumed
+      || (needsCheckRefusal
+        ? !validNeedsCheckRefusal(phase7, factual, state)
+        : !validActorStepCompletion(phase7)
+          || !validCausality(phase7)
+          || !validPhase7ScheduleExecution(schedule, phase7Contracts,
+            phase7.autonomous.request, phase7.autonomous.proposal.plan,
+            phase7.actor_step_check)
+          || (resumed
         ? !sameValue(phase7.actor_step_check,
           state.phase7_fire_rest.resume_state.actor_step_check)
         : !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
-          state))
+          state)))
       || (!resumed
         && temporal.result.combined_change_set.change_set_id !== changeSetId)
       || scheduleTemporal.result.combined_change_set.change_set_id
@@ -72,6 +76,67 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   }
 }
 
+function validNeedsCheckRefusal(phase7, factual, state) {
+  const { actor_step: actorStep, schedule_execution: schedule,
+    schedule_temporal: scheduleTemporal, autonomous } = phase7;
+  const domainResult = scheduleTemporal?.needs_check_refusal;
+  const error = domainResult?.errors?.[0];
+  const queueIds = error?.queue_ids ?? (error?.queue_id == null
+    ? [] : [error.queue_id]);
+  const signal = autonomous?.signal;
+  const candidate = phase7.temporal?.terminal_candidate;
+  const transition = phase7.temporal?.waiting_transition;
+  const boundary = autonomous?.boundary;
+  const decisionSignals = autonomous?.decision_records?.[0]?.orderedSignals;
+  return actorStep?.status === 'refused'
+    && actorStep.npc_ref === schedule.npc_ref
+    && actorStep.failure_code === schedule.failure_code
+    && domainResult?.pass === false
+    && domainResult.errors?.length === 1
+    && error?.code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+    && typeof error.path === 'string'
+    && error.path.length > 0
+    && queueIds.length > 0
+    && queueIds.every((id) => typeof id === 'string' && id.length > 0)
+    && schedule.semantic_operation === null
+    && schedule.execution_binding_ref === null
+    && schedule.schedule_option_id === null
+    && schedule.activity_profile_ref === null
+    && schedule.status === 'declined'
+    && schedule.factual_result_source === 'needs_check_refusal'
+    && schedule.clock_before.whole_minutes
+      === phase7.temporal.result.clock_after.whole_minutes
+    && schedule.clock_after.whole_minutes === schedule.clock_before.whole_minutes
+    && schedule.exact_elapsed.exact_minutes.numerator === '0'
+    && (scheduleTemporal.result.temporal_status === 'completed'
+      ? scheduleTemporal.rest_completed === true
+      : scheduleTemporal.result.temporal_status === 'paused'
+        && scheduleTemporal.rest_completed === false
+        && phase7.resumed !== true)
+    && scheduleTemporal.completion_candidate == null
+    && !scheduleTemporal.projection.active_npc_actor_steps?.some(({ npc_ref }) =>
+      npc_ref === schedule.npc_ref)
+    && sameClock(scheduleTemporal.result.clock_after,
+      factual.time_update.clock_after)
+    && sameClock(actorStep.clock_before, phase7.temporal.result.clock_after)
+    && sameClock(actorStep.clock_after, phase7.temporal.result.clock_after)
+    && candidate?.boundary_id != null
+    && sameClock(candidate.scheduled_at, phase7.temporal.result.clock_after)
+    && sameValue(transition?.source_candidate_ref, {
+      entity_kind: 'temporal_boundary_candidate',
+      entity_id: candidate.boundary_id
+    })
+    && sameValue(signal?.source_event_ref, {
+      entity_kind: 'npc_activity_factual_transition',
+      entity_id: transition?.transition_id
+    })
+    && Array.isArray(decisionSignals)
+    && decisionSignals.some(({ signal_id }) => signal_id === signal?.signal_id)
+    && (autonomous.consumed_signal_ids ?? []).includes(signal?.signal_id)
+    && (state.active_npc_actor_steps ?? []).every(({ npc_ref }) =>
+      npc_ref !== schedule.npc_ref);
+}
+
 function validResume({ phase7, factual, state, phase7Contracts }) {
   const rest = state.phase7_fire_rest;
   const prior = rest?.resume_state;
@@ -81,6 +146,27 @@ function validResume({ phase7, factual, state, phase7Contracts }) {
       || prior?.actor_step == null || prior?.actor_step_owner_outputs == null
       || prior?.schedule_temporal == null || before == null) return false;
   const changed = before?.status !== after?.status;
+  if (before?.status === 'declined'
+      && before?.failure_code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') {
+    return rest?.status === 'paused'
+      && rest.activity_execution_id === factual.consequence.activity_attempt_id
+      && Number.isSafeInteger(rest.exact_elapsed_minutes)
+      && rest.exact_elapsed_minutes >= 25
+      && rest.exact_elapsed_minutes < 30
+      && rest.approved_body_effect_ref
+        === phase7Contracts.bodyEffect.effect_profile_id
+      && phase7.approved_body_effect_ref
+        === phase7Contracts.bodyEffect.effect_profile_id
+      && sameValue(state.clock, prior?.schedule_temporal?.result?.clock_after)
+      && sameValue(phase7.temporal, prior?.temporal)
+      && sameValue(phase7.autonomous, prior?.autonomous)
+      && sameValue(phase7.actor_step, prior?.actor_step)
+      && sameValue(phase7.actor_step_owner_outputs,
+        prior?.actor_step_owner_outputs)
+      && after?.status === 'declined'
+      && after?.failure_code === before.failure_code
+      && phase7.schedule_applied_in_this_attempt === false;
+  }
   return rest?.status === 'paused'
     && rest.activity_execution_id === factual.consequence.activity_attempt_id
     && Number.isSafeInteger(rest.exact_elapsed_minutes)

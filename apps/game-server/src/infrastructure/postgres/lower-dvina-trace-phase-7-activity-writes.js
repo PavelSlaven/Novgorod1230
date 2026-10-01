@@ -16,6 +16,9 @@ export function appendPhase7Activities({ inserts, updates, appends, partyId, sta
   const after = before + segment;
   const ordinal = prior?.next_attempt_ordinal ?? 0;
   const completed = phase7.schedule_temporal.rest_completed === true;
+  const needsCheckRefusal = phase7.schedule_execution.status === 'declined'
+    && phase7.schedule_execution.failure_code
+      === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
   (first ? inserts : updates).push(row('party_timed_activity_executions', restId,
     activityExecution({
       id: restId,
@@ -75,18 +78,25 @@ export function appendPhase7Activities({ inserts, updates, appends, partyId, sta
             'npc_decision_boundary',
             phase7.autonomous.boundary.boundary_id
           ),
-          decision_trace_ref: structuredClone(
-            tracePhase7ActorStep(
-              phase7.schedule_temporal.projection,
-              phase7.actor_step).decision_trace_ref
-          ),
-          actor_step_completion_candidate_ref: ref(
-            'temporal_boundary_candidate',
-            phase7.schedule_temporal.completion_candidate.boundary_id
-          ),
-          actor_step_completion_candidate: structuredClone(
-            phase7.schedule_temporal.completion_candidate
-          )
+          ...(needsCheckRefusal ? {
+            decision_trace_ref: ref('npc_decision_trace',
+              phase7.autonomous.request.request_id),
+            npc_domain_rejection: structuredClone(
+              phase7.schedule_temporal.needs_check_refusal)
+          } : {
+            decision_trace_ref: structuredClone(
+              tracePhase7ActorStep(
+                phase7.schedule_temporal.projection,
+                phase7.actor_step).decision_trace_ref
+            ),
+            actor_step_completion_candidate_ref: ref(
+              'temporal_boundary_candidate',
+              phase7.schedule_temporal.completion_candidate.boundary_id
+            ),
+            actor_step_completion_candidate: structuredClone(
+              phase7.schedule_temporal.completion_candidate
+            )
+          })
         },
         npc_schedule_result: scheduleTrace(phase7.schedule_execution,
           changeSetId)

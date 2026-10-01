@@ -7,7 +7,9 @@ export function createLowerDvinaTraceO2bProductionResolverFactory({pool,
   loadedProfile,ordinaryMaterializationModel,assertNeedsCheckAllowed = null}) {
   const loadCommittedContainer =
     createPostgresOrdinaryContainerContentsLoader({pool});
-  return ({partyId,inputDigest,assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed}) => createLowerDvinaTraceO2bContainerResolver({
+  return ({partyId,inputDigest,assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed,
+    recordNeedsCheckFilter = null}) => createLowerDvinaTraceO2bContainerResolver({
     partyId,inputDigest,loadedProfile,loadCommittedContainer,
-    ordinaryMaterializationModel,assertNeedsCheckAllowed:turnGuard});
+    ordinaryMaterializationModel,assertNeedsCheckAllowed:turnGuard,
+    recordNeedsCheckFilter});
 }

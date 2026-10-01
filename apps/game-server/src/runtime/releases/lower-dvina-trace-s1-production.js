@@ -11,13 +11,15 @@ import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
 export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
   roleRunner, worldKnowledgeGrounder = null,
   assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
   resolveSpatialSemanticDescriptor = resolveTurnSpatialSemanticDescriptor } = {}) {
   if (!pool?.query || typeof resolveSpatialSemanticDescriptor !== 'function') {
     throw new TypeError('S1 PostgreSQL pool and turn semantic resolver are required.');
   }
   const authority = createSpatialSemanticAuthorityRepository({ pool });
   return ({ partyId,
-    assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed }) =>
+    assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed,
+    recordNeedsCheckFilter: turnRecord = recordNeedsCheckFilter }) =>
     async function resolveSpatialSemantic(input) {
     const value = strictSnapshot(input);
     const operation = value.operation;
@@ -60,8 +62,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
       causal_request_ref: actionRef, party_id: partyId, need: 'perception',
       envelope: preModel.envelope
     });
-    const resolution = admitSpatialSemanticRemainder({ prepared,
-      proposal: await resolveSpatialSemanticDescriptor({
+    const proposal = await resolveSpatialSemanticDescriptor({
         request: prepared.model_request, roleRunner,
         worldKnowledge: worldKnowledgeGrounder == null ? null
           : (await worldKnowledgeGrounder.ground(prepared.model_request,
@@ -75,13 +76,25 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
                   value.committed_state?.historical_events)
                   ? value.committed_state.historical_events : []
               })).world_knowledge
-      }) });
+      });
     if (typeof turnGuard === 'function') {
-      await turnGuard({ committedState: value.committed_state,
+      const matches = await turnGuard({ matchOnly: true,
+        committedState: value.committed_state,
         partyId,
-        candidate: { name: resolution.outcome.name,
-          context: resolution.outcome.description } });
+        candidate: { name: proposal?.name,
+          context: proposal?.description, path: 'S1.proposed_description' } });
+      if (Array.isArray(matches) && matches.length > 0) {
+        if (typeof turnRecord === 'function') {
+          await turnRecord({ path: 'S1.proposed_description',
+            queue_ids: matches.map(({ queue_id: queueId }) => queueId) });
+        }
+        return Object.freeze({ working_projection:
+          structuredClone(value.working_projection),
+        summary: 'spatial semantic detail filtered', write_fragments: [],
+        duration_minutes: 0, player_response_boundary: true });
+      }
     }
+    const resolution = admitSpatialSemanticRemainder({ prepared, proposal });
     const atomic = createSpatialSemanticAtomicWritePlan({
       schema: 'spatial_semantic_atomic_write_plan_v1', party_id: partyId,
       base_party_state_version: Number(request.committed_state_version),

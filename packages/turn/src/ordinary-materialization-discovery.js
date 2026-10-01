@@ -25,7 +25,9 @@ import { turnFailure } from './errors.js';
 export function createOrdinaryMaterializationDiscoveryOwner({
   loadDiscoveryContext, ordinaryMaterializationModel, verifyStageBCutover,
   inputDigest, buildSeedRequest, buildPresenceRequest, sealAtomicWritePlan,
+  requestSubject = 'npc',
   assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
   resolveFiniteResourceEffects = () => null, resolveExistingInspection = () => null
 } = {}) {
   const ports = { loadDiscoveryContext, ordinaryMaterializationModel,
@@ -69,9 +71,18 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       query: request.operation.query,
       quantity: request.operation.quantity ?? null });
     let requestGuardedBeforeSeed = false;
-    if (!enabled.ordinary_aggregate.seeded
-        && request.operation?.discovery_kind !== 'look'
-        && candidateContext != null) {
+    const playerActorRef = request.actor?.actor_id ?? request.actor?.actor_ref;
+    const isPlayerRequest = requestSubject === 'player'
+      && typeof playerActorRef === 'string'
+      && request.operation?.actor_ref === playerActorRef;
+    const queryNamesVisibleEquivalent = isPlayerRequest
+      && equivalentVisibleItem(request, { semantic_descriptor: {
+        name: request.operation?.query,
+        semantic_type: execution.candidate_context?.semantic_type
+      } }) != null;
+    if (queryNamesVisibleEquivalent) requestGuardedBeforeSeed = true;
+    if (candidateContext != null
+        && request.operation?.discovery_kind !== 'look') {
       const bases = enabled.expected_supporting_bases
         ?? execution.supporting_bases;
       const preflightObjective = { ...enabled.objective_context,
@@ -110,11 +121,26 @@ export function createOrdinaryMaterializationDiscoveryOwner({
             knownResolution: early.known_resolution })
         });
       }
-      if (early == null && typeof assertNeedsCheckAllowed === 'function') {
-        await assertNeedsCheckAllowed({ committedState: request.committed_state,
-          candidate: { name: request.operation?.query,
-            path: 'O1.request.query' } });
-        requestGuardedBeforeSeed = true;
+    }
+    if (candidateContext != null
+        && request.operation?.discovery_kind !== 'look'
+        && typeof assertNeedsCheckAllowed === 'function'
+        && !queryNamesVisibleEquivalent) {
+      const guardInput = { committedState: request.committed_state,
+        candidate: { name: request.operation?.query,
+          path: 'O1.request.query' } };
+      const matches = isPlayerRequest
+        ? await assertNeedsCheckAllowed({ ...guardInput, matchOnly: true })
+        : (await assertNeedsCheckAllowed(guardInput), null);
+      requestGuardedBeforeSeed = true;
+      if (isPlayerRequest && Array.isArray(matches) && matches.length > 0) {
+        if (typeof recordNeedsCheckFilter === 'function') {
+          await recordNeedsCheckFilter({
+            path: 'O1.request.query',
+            queue_ids: matches.map(({ queue_id: queueId }) => queueId)
+          });
+        }
+        return knownResolutionResult(request, { resolution: 'no_change' });
       }
     }
     if (!enabled.ordinary_aggregate.seeded && finiteOnlyScope(enabled)) {
@@ -204,11 +230,18 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       semanticContext: enabled.semantic_context ?? null,
       requiredQuantity: request.operation.quantity ?? null,
+      committedState: request.committed_state,
+      isEquivalentCandidate: (proposed) =>
+        equivalentVisibleItem(request, proposed) != null,
       partyClock,
       historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
-      assertCandidateAllowed: assertNeedsCheckAllowed,
+      filterCandidateAllowed: isPlayerRequest
+          && typeof assertNeedsCheckAllowed === 'function'
+        ? ({ committedState, candidate }) => assertNeedsCheckAllowed({
+            committedState, candidate, matchOnly: true }) : null,
+      assertCandidateAllowed: isPlayerRequest ? null : assertNeedsCheckAllowed,
       workingProjection: projection,
       basisCatalog: admissionBases(bases), beforeModel: async () => {
         if (!requestGuardedBeforeSeed
@@ -225,11 +258,31 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         });
       }, codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
+    if (presence.status !== 'candidate_filtered'
+        && Array.isArray(presence.filtered_needs_check_matches)
+        && presence.filtered_needs_check_matches.length > 0
+        && typeof recordNeedsCheckFilter === 'function') {
+      await recordNeedsCheckFilter({
+        path: 'O1.proposed_entity.semantic_descriptor',
+        queue_ids: presence.filtered_needs_check_matches
+          .map(({ queue_id: queueId }) => queueId)
+      });
+    }
     if (presence.status === 'already_resolved') {
       return knownResolutionResult(request, presence.known_resolution, {
         displayName: knownMaterializedItemName({ request, partyId, scopeRef,
           knownResolution: presence.known_resolution })
       });
+    }
+    if (presence.status === 'candidate_filtered') {
+      if (typeof recordNeedsCheckFilter === 'function') {
+        await recordNeedsCheckFilter({
+          path: 'O1.proposed_entity.semantic_descriptor',
+          queue_ids: (presence.needs_check_matches ?? [])
+            .map(({ queue_id: queueId }) => queueId)
+        });
+      }
+      return knownResolutionResult(request, { resolution: 'no_change' });
     }
     if (presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);

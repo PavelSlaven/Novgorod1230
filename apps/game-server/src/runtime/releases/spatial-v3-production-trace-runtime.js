@@ -240,11 +240,13 @@ export function createTraceTurnRuntime({
     loadTurnRuntimeCatalogContext: partyCatalogCoordinator == null ? null
       : ({ partyId }) => partyCatalogCoordinator.loadPartyContext({ partyId }),
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
-      assertNeedsCheckAllowed }) =>
+      assertNeedsCheckAllowed, recordNeedsCheckFilter }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel,
         assertNeedsCheckAllowed,
+        recordNeedsCheckFilter,
+        requestSubject: 'player',
         scopeBinding: ordinaryDiscoveryScopeBinding
       }),
     createTurnStepOrdinaryContainerContentsResolver:

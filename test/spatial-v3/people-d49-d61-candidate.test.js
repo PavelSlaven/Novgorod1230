@@ -18,6 +18,18 @@ const profiles = read(`${dir}/spatial_v3_npc_runtime_profiles.json`);
 const compositions = read(`${dir}/spatial_v3_g4_npc_composition_bindings.json`);
 const authoring = read(`${dir}/spatial_v3_authoring_versions.json`);
 
+function assertD61AuthoringRows(rows, successor, compositions) {
+  const keys = rows.map((row) => `${row.entity_kind}|${row.entity_id}|${row.version}`);
+  assert.equal(new Set(keys).size, rows.length, 'duplicate authoring key');
+  for (const target of [successor, ...compositions]) {
+    const matches = rows.filter((row) => row.entity_kind === target.entity_kind
+      && row.entity_id === target.id && row.version === target.version);
+    assert.equal(matches.length, 1, `expected exactly one authoring row for ${target.id}@${target.version}`);
+    assert.equal(matches[0].canonical_digest, target.canonical_digest);
+    assert.equal(matches[0].status, target.status);
+  }
+}
+
 test('D61 successor exists only as a pending local candidate; approved @2 stays intact', () => {
   const sourceBytes = readFileSync(resolve(root, `${dir}/candidate-source.json`));
   assert.equal(approval.exact_candidate.path, `${dir}/candidate-source.json`);
@@ -68,14 +80,8 @@ test('eight D61 composition successors preserve @2 and remain isolated from oper
     && row.payload.weighted_profile_refs.some((entry) => entry.profile_ref.id === source.successor.id
       && entry.profile_ref.version === 3)));
   assert.equal(authoring.length, 10);
-  assert.ok(authoring.filter((row) => row.entity_id === source.successor.id && row.version === 3)
-    .every((row) => row.status === 'candidate_approval_pending'));
-  for (const composition of compositions) {
-    const version = authoring.find((row) => row.entity_id === composition.id && row.version === composition.version);
-    assert.ok(version);
-    assert.equal(version.canonical_digest, composition.canonical_digest);
-    assert.equal(version.status, composition.status);
-  }
+  const successor = profiles.find((row) => row.id === source.successor.id && row.version === source.successor.version);
+  assertD61AuthoringRows(authoring, successor, compositions);
 
   const manifestText = readFileSync(resolve(root, `${catalog}/m2c-open-capacity-v2-import-manifest.json`), 'utf8');
   const bootstrapText = readFileSync(resolve(root, 'scripts/bootstrap-live-world-v17.mjs'), 'utf8');
@@ -84,4 +90,13 @@ test('eight D61 composition successors preserve @2 and remain isolated from oper
   assert.equal(bootstrapText.includes('d61-candidate'), false);
   assert.equal(bundle.base_operational_manifest_sha256, sourceBase.base_operational_manifest_sha256);
   assert.ok(bundle.limits.some((line) => line.includes('not referenced by the v17 bootstrap')));
+});
+
+test('D61 authoring guard rejects a missing successor row and duplicate keys', () => {
+  const successor = profiles.find((row) => row.id === source.successor.id && row.version === source.successor.version);
+  assert.throws(() => assertD61AuthoringRows(
+    authoring.filter((row) => row.entity_id !== successor.id || row.version !== successor.version), successor, compositions),
+  /expected exactly one authoring row/);
+  assert.throws(() => assertD61AuthoringRows([...authoring, structuredClone(authoring[0])], successor, compositions),
+    /duplicate authoring key/);
 });

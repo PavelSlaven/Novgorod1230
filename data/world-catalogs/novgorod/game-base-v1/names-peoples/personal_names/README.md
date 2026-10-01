@@ -267,28 +267,44 @@ keeps placeholder `name_kind=baptismal_or_vernacular`. Component forms and
 rules are now enumerated in the separate C016 tables; the remaining gap is
 runtime composition, not absence of candidate data.
 
-## D51 names-gap review (2026-10-01)
+## D51 names-gap review: initial search (historical, before D61; 2026-10-01)
 
-`names-gaps-additions.json` records the source review for the D51 per-people
-ordinary pools. It contains no new selectable forms: no newly found source
-closed first-name form, sex, people, ordinary class and the requested period
-at once. The B2 build imports its detailed gap rationales into
-`name-pool-report.json`; generated B2 tables and their schema stay unchanged.
+The first two review circles found no additional forms meeting all source,
+people, sex, ordinary-class and period checks. This is a historical search
+result, superseded for Korela by the later D61 calendar-rule candidate below.
+The B2 build imports detailed gap rationales into `name-pool-report.json`.
 
-| People | Ordinary male before → after | Ordinary female before → after | Result |
+| People | Ordinary male at initial search | Ordinary female at initial search | Historical result |
 |---|---:|---:|---|
-| Gotland (`pp_fg001`) | 1 → 1 | 0 → 0 | Хейльватр is attested in the 1160–1170s layer; no additional form in the target period. |
-| German trading circle (`pp_fg002`) | 16 → 16 | 0 → 0 | Sixteen male forms remain sourced to the 1229 trade-treaty context; no ordinary female evidence. |
-| Korela (`pp_korela`) | 0 → 0 | 0 → 0 | Валит remains significant; source dates bearer to 1337/38 and may use “валит” as a title. |
-| Izhora (`pp_izhora`) | 1 → 1 | 0 → 0 | Филипп remains ordinary under the Christian-calendar rule; Пелгусий/Пелугий remain significant for one named person. |
-| Chud/Estonian (`pp_chud_est`) | 0 → 0 | 0 → 0 | Лембито/Лембит remains significant for the named Sakala leader. |
-| Smolyane (`pp_smolyane`) | 0 → 0 | 0 → 0 | Ивор remains significant; Водмол is a by-name, and Михайлович is a patronymic. |
+| Gotland (`pp_fg001`) | 1 | 0 | Хейльватр is attested in the 1160–1170s layer; no additional form in the target period was found in that search. |
+| German trading circle (`pp_fg002`) | 16 | 0 | Sixteen male forms remain sourced to the 1229 trade-treaty context; no ordinary female form was found in that search. |
+| Korela (`pp_korela`) | 0 | 0 | Валит remains significant; source dates bearer to 1337/38 and may use “валит” as a title. |
+| Izhora (`pp_izhora`) | 1 | 0 | Филипп remains ordinary under the Christian-calendar rule; Пелгусий/Пелугий remain significant for one named person. |
+| Chud/Estonian (`pp_chud_est`) | 0 | 0 | Лембито/Лембит remains significant for the named Sakala leader. |
+| Smolyane (`pp_smolyane`) | 0 | 0 | Ивор remains significant; Водмол is a by-name, and Михайлович is a patronymic. |
 
-Novgorod control remains 204 male / 62 female. Counts include draft entries
-and are research coverage counts, not an approval or runtime-selection claim.
+Novgorod control remains 204 male / 62 female. These are initial-search counts,
+not current Korela counts and not an approval or runtime-selection claim.
 Igoland remains `people_ref_unresolved`: pp_fg005 is a mixed Finnic guest
 group and the collected source does not identify a single people. The local
 SQLite book-index search found no resolving passage.
+
+### Current D51 candidate after D61
+
+The B2 draft has 349 entries across 7 pools. D61 adds 12 Korela baptismal-name
+candidates by calendar rule: 4 male and 8 female. Current ordinary pool counts
+are Gotland 1/0, German 16/0, Korela 4/8, and Izhora 1/0 (male/female). Both
+Korela pools remain below the 10-name threshold. The 12 forms are draft,
+confidence C calendar transfers, not direct attestations of Korela bearers;
+the name-pool package was accepted by Opus with limits but remains unbound and
+not import-authorized.
+
+The German and Gotland female gaps are `not_applicable` in the D61 candidate
+because its foreign-merchant successor is male-only. This is not a historical
+absence claim. The operational @2 profile still permits female guests, so
+those gaps can be treated as closed only if the @3 successor and name-pool
+candidate are promoted together after operational re-approval. Until then,
+runtime behavior and the current pool bindings remain unchanged.
 
 The search started with the compiled names-peoples evidence, rus13 candidate,
 regional onomastic notes, WK, and read-only master archive, then checked the
@@ -297,29 +313,31 @@ bounded; an unlocated name is left as a gap rather than filled by analogy or
 Russian fallback. Exact per-gap reasons and inspected source refs are in
 `names-gaps-additions.json` and the generated report.
 
-### V17 applicability review (circle 2)
+### V17 applicability review (circle 2, updated for D61 candidate)
 
 `needed_in_v17` below means a people-origin can be materialized by the
-approved-data-only G4/G5 target authoring and its composition profile. It does
-not mean the candidate is executable: M2c activation remains unauthorized,
-and the live NPC identity bindings still contain only Novgorod-Rus pools. A
-pool gap can therefore matter to the target profile while names remain
-unselectable in current runtime.
+approved-data-only G4/G5 target authoring and its composition profile. This
+table reflects the D61 target successor: its Gotland/German female gaps are
+`not_applicable` because @3 is male-only. The current operational @2 still
+permits both sexes; import and activation remain unauthorized.
 
 | People | Sex | needed_in_v17 | Target context and causal basis | Name result |
 |---|---|---|---|---|
 | Gotland | male | yes | Foreign-merchant composition on eight Lower Dvina G4/G5 contexts; merchant contact attested, transfer to generated scenes analogical. | One older ordinary form; no new target-period form. |
-| Gotland | female | yes | Same transient guest contexts; target profile permits female sex category. No source establishes a male-only landing group or a directly attributed ordinary female form. | Gap remains. |
+| Gotland | female | no* | D61 @3 successor removes female applicability for these target contexts; this is a candidate profile constraint, not a historical absence claim. | `not_applicable` in draft; operational @2 still permits female guests until paired promotion. |
 | German trading circle | male | yes | Foreign-merchant composition on the same eight contexts; German merchant contact attested, target-scene transfer analogical. | Sixteen existing forms retained; no new form proposed. |
-| German trading circle | female | yes | Same transient guest contexts; target profile permits female sex category. No source establishes women absent there or gives an ordinary attributed name form. | Gap remains. |
-| Korela | male | yes | Traveler/guide profile on six river-route contexts. Karelians are attested near Ladoga/Neva; ordinary G5 travel is explicitly low-confidence analogy, not a resident cohort. | No attributed ordinary calendar form. Gap remains; 1227 mass baptism gives no name (`book:849577 §435`). |
-| Korela | female | yes | Same guide contexts; profile permits female sex category. This is target authoring eligibility, not direct evidence of female guides. | No attributed form; gap remains. |
+| German trading circle | female | no* | D61 @3 successor removes female applicability for these target contexts; this is a candidate profile constraint, not a historical absence claim. | `not_applicable` in draft; operational @2 still permits female guests until paired promotion. |
+| Korela | male | yes | Traveler/guide profile on six river-route contexts. Karelians are attested near Ladoga/Neva; ordinary G5 travel is explicitly low-confidence analogy, not a resident cohort. | 4 draft calendar-rule forms; threshold gap remains. Confidence C, `period_cap=1260`; not direct Korela-bearer attestations. |
+| Korela | female | yes | Same guide contexts; profile permits female sex category. This is target authoring eligibility, not direct evidence of female guides. | 8 draft calendar-rule forms; threshold gap remains. Confidence C, `period_cap=1260`; not direct Korela-bearer attestations. |
 | Izhora | male | yes | Traveler/guide profile on six river-route contexts; Izhora presence near the Neva is source-backed, ordinary G5 travel analogical. | Existing `Филипп` retained, no duplicate. `book:857568 §733`: «один ижорянин – Пелгусий, во Святом Крещении Филипп»; event dated 1240 (`book:681281 §419`), `basis=calendar_rule`, `confidence=A`, `period_cap=1240`. |
 | Izhora | female | yes | Same guide contexts; profile permits female sex category. This is target authoring eligibility, not direct evidence of female guides. | No attributed female form; gap remains. |
 | Chud/Estonian | male | only outside slice | No Chud/Estonian origin profile or people composition group in target v17 contexts. Estonian Chud homeland lay outside the Novgorod oblast; exceptional tribute/war contact does not establish ordinary local generation (`book:751267 §649`). | No v17 name gap. Lembitu remains significant, outside ordinary pool. |
 | Chud/Estonian | female | only outside slice | No Chud/Estonian origin profile or people composition group in target v17 contexts; this is scope, not a historical absence claim. | No v17 name gap. |
 | Smolyane | male | only outside slice | No Smolyane origin profile or composition group in Lower Dvina target contexts. Smolensk guests are attested in Novgorod (`book:301539 §884`), outside this materialized context set. | No v17 name gap; catalog coverage gap remains for a later context. |
 | Smolyane | female | only outside slice | No Smolyane origin profile or composition group in Lower Dvina target contexts; this is scope, not a historical absence claim. | No v17 name gap. |
+
+`no*` means not applicable under the pending D61 @3 target successor. Do not
+close these female gaps in an operational package that still uses @2.
 
 The eight Gotland/German target pairs are `zaostrovye_landing`,
 `sheltered_landing_terrace`, `central_navigation_reach`, `north_exposed_turn`,
@@ -328,11 +346,11 @@ The eight Gotland/German target pairs are `zaostrovye_landing`,
 `floodplain_ridge_route`, `central_current_split`, `east_flood_bypass`,
 `east_side_channel`, `west_side_channel`, and `tributary_mouth`.
 
-Female eligibility above describes the sex categories permitted by target
-NPC profiles, not proof that women commonly held each occupation. Chud and
-Smolyane are outside this generated slice, not historically absent. Gotland,
-German, Korela and Izhora pools remain unbound in current identity runtime;
-the circle-2 matrix and its exact references are retained in
+The Korela calendar forms derive from names attested in Novgorod records and
+the 1227 mass-baptism rule; they do not attest Korela bearers. Chud and Smolyane
+are outside this generated slice, not historically absent. Foreign pools remain
+unbound in current identity runtime; the D61 successor and paired female-gap
+disposition are candidates only. The matrix and exact references are in
 `names-gaps-additions.json` and `name-pool-report.json`.
 
 ## Sources

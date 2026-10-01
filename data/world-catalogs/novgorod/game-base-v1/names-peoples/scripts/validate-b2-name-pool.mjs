@@ -361,6 +361,13 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
       || candidate.source_line !== sourceLine?.[2] || !quote.includes(row.source_form);
   })) errors.push("invalid names-gaps calendar-rule review");
   const calendarCandidates = calendarRows.filter((row) => row.status === "new_candidate");
+  const d61CandidateIds = (source.additional_entries ?? [])
+    .filter((row) => row.people_ref === "pp_korela" && row.derivation_class === "calendar_name_any_christian")
+    .map((row) => row.id).sort();
+  const reviewedCandidateIds = calendarCandidates.map((row) => row.candidate_entry_id);
+  if (new Set(d61CandidateIds).size !== d61CandidateIds.length
+    || new Set(reviewedCandidateIds).size !== reviewedCandidateIds.length
+    || !sameArray([...reviewedCandidateIds].sort(), d61CandidateIds)) errors.push("invalid D61 calendar candidate ID coverage");
   if (calendarCandidates.length !== 12 || calendarCandidates.filter((row) => row.sex_category === "male").length !== 4 || calendarCandidates.filter((row) => row.sex_category === "female").length !== 8
     || report.names_gaps_additions?.candidate_entries !== calendarCandidates.length || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
   return errors;
@@ -405,6 +412,18 @@ function selfTest(base) {
     ["names-gaps applicability missing", (copy) => { copy.namesGaps.v17_applicability.pairs.pop(); }, /invalid names-gaps applicability matrix/],
     ["names-gaps calendar citation mismatch", (copy) => { copy.namesGaps.calendar_rule_review[0].source_ref = "book:641352 §1931"; }, /invalid names-gaps calendar-rule review/],
     ["names-gaps calendar candidate missing", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").candidate_entry_id = "missing"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps D61 candidate duplicate", (copy) => {
+      const rows = copy.namesGaps.calendar_rule_review;
+      const first = structuredClone(rows.find((row) => row.status === "new_candidate" && row.sex_category === "female"));
+      const duplicateIndex = rows.findIndex((row) => row.status === "new_candidate" && row.sex_category === "female" && row.candidate_entry_id !== first.candidate_entry_id);
+      rows[duplicateIndex] = first;
+      copy.report.names_gaps_additions.calendar_rule_review = structuredClone(rows);
+    }, /invalid D61 calendar candidate ID coverage/],
+    ["names-gaps D61 candidate omitted", (copy) => {
+      const row = copy.namesGaps.calendar_rule_review.find((item) => item.status === "new_candidate" && item.sex_category === "male");
+      row.candidate_entry_id = "nov_name_korela_valit_v1";
+      copy.report.names_gaps_additions.calendar_rule_review = structuredClone(copy.namesGaps.calendar_rule_review);
+    }, /invalid D61 calendar candidate ID coverage/],
     ["names-gaps calendar confidence drift", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").confidence = "A"; }, /invalid names-gaps calendar-rule review/],
     ["names-gaps calendar rule basis missing", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").rule_basis_refs.pop(); }, /invalid names-gaps calendar-rule review/],
     ["names-gaps v17 not-applicable report drift", (copy) => { delete copy.report.typed_gaps.find((row) => row.gap_id === "gap_personal_names_fg001_female").v17_status; }, /names-gaps rationale missing from report/],

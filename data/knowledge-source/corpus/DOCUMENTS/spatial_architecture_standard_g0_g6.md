@@ -809,7 +809,7 @@ Scene-level checkpoint/interruption использует отдельный rout
 Разворот — одно атомарное преобразование travel state в коммите результата этого интервала: `mirrored` переключается и прогресс p заменяется на 1 000 000 − p. `progress_before_ppm` первого обратного интервала равен зеркальному прогрессу, а не прежнему `actual_progress_after_ppm`; это единственное исключение из правила непрерывности (§11.5), все остальные интервалы начинаются с прежнего `actual_progress_after_ppm` своей стороны. `last_confirmed_endpoint_ref` не меняется: это departure endpoint исходного segment (для зеркального segment — его arrival endpoint).
 
 - **Повторный разворот.** Из `paused_in_transit` на зеркальной стороне «назад» снова зеркалит прогресс (`mirrored` возвращается в false) по тем же правилам; если интервал после такого разворота доходит до 1 000 000, он заканчивается `segment_completed` (прямая сторона, §10.7), а не `returned_to_departure`.
-- **Нулевой прогресс.** Пауза при прогрессе 0 — не транзит: `paused_in_transit` всегда имеет прогресс 1..999 999 (§10.8). Пауза до первого физического продвижения не создаёт travel state; путник остаётся на departure endpoint (`waiting_at_anchor`), разворот не нужен и тупика нет. Зеркало нуля (1 000 000) поэтому не возникает.
+- **Нулевой прогресс.** Пауза при прогрессе 0 — не транзит: `paused_in_transit` всегда имеет прогресс 1..999 999 (§10.8). Явная пауза или прерывание после коммита старта (§10.5, travel state уже создан с прогрессом 0), до первого физического продвижения, заканчивается исходом `interrupted_at_anchor` на якоре точки отправления (§10.9): путник не уходил, travel state закрывается с `closed_result` `interrupted_to_anchor` и прогрессом 0, execution переходит в `waiting_at_anchor` на departure endpoint. Разворот не нужен и тупика нет: зеркало нуля (1 000 000) не возникает.
 - **Отказ.** Если при исполнении dynamic access зеркального segment не пропускает, интервал заканчивается обычным `blocked_before_progress` с `turn_back` false и собственным `result_code` `turn_back_refused` (он отличает отказ разворота от блокировки прямого хода): `mirrored` и прогресс не меняются, travel state остаётся `paused_in_transit`, меняются только аудиторские поля; «назад» можно повторить.
 - **Исходы.** Интервал с `turn_back` true (тот же атомарный переворот в коммите) допускает исходы `progressed`, `paused_in_transit`, `interrupted_at_anchor` (прерывание; якорь — якорь маршрута стороны, которую интервал проходит, §4.10) и `stranded` (пробел данных, §11.6): у этих сигналов §11.6 есть законный исход и в первом интервале после разворота. Завершающий исход выводится из направления после коммита: если `mirrored` стало true — `returned_to_departure` на конце зеркального segment; если `mirrored` стало false (повторный разворот с зеркальной стороны) — `segment_completed` на конце исходного segment. Противоположный завершающий исход невозможен. `blocked_before_progress` при `turn_back` true невозможен: отказ — это выше.
 - **Replay.** Результат интервала — append-only запись под idempotency lease; зеркалирование входит в её коммит. Повтор того же запроса возвращает зафиксированный результат и не зеркалит второй раз.
@@ -1704,7 +1704,7 @@ At `actual_progress_after_ppm = 1_000_000` of a mirrored travel state (§4.10.1)
 - preserves exact cumulative time and last confirmed endpoint;
 - keeps execution `active` with null current endpoint and the same active travel-state ID;
 - resume creates a new interval and dynamic snapshot; turn back (§4.10.1) creates the first interval of the mirrored side;
-- `paused_in_transit` always has progress in 1..999 999: a pause requested before the first physical progress (progress zero) creates no travel state, the owner stays at the departure endpoint in `waiting_at_anchor`, as when the departure gate is blocked (§10.5).
+- `paused_in_transit` always has progress in 1..999 999: an explicit pause requested after the start commit of §10.5 but before the first physical progress (actual progress zero) is not a pause in transit; the interval ends `interrupted_at_anchor` at the departure endpoint (§10.9). A pause requested while the departure gate is blocked creates no travel state at all (§10.5).
 
 To avoid ambiguous execution status, target model uses:
 
@@ -1729,6 +1729,15 @@ until an anchor is actually reached. `waiting_at_anchor` always means a real end
 - appends exactly one `suspended` execution event linked to the terminal interval result and the same change set.
 
 If required interruption scene cannot be materialized, the outcome is `stranded`, not a guessed anchor.
+
+An explicit pause or an approved interruption request whose interval ends with actual progress zero (after the start commit of §10.5, before any physical advancement) uses the departure endpoint of the step segment as its anchor, whatever the interruption policy resolves: the traveller never left, so no route-anchor aggregate is created and no scene is materialized. The outcome is still `interrupted_at_anchor`, atomically:
+
+- closes the travel state as `interrupted_to_anchor` at progress zero, keeping its interval history;
+- returns the root location from `in_transit` to the departure endpoint (or leaves the attached passenger scene-located);
+- sets execution `waiting_at_anchor` on that endpoint with exactly one `wait_started` event (not `suspended`, because no `suspended_at_scene` anchor exists);
+- allows `resumed` (`waiting_at_anchor` → `active`, A.4.1): the same immutable plan dispatches its current step again from the departure endpoint and creates a new travel state at progress zero (§10.5). The closed state does not count against the one-active-state rule.
+
+A retried request after the start commit returns the committed result through the idempotency lease (§11.5); the same request never closes a second state or creates a second interval.
 
 ### 10.10. Stranded in transit
 
@@ -1901,8 +1910,8 @@ Exactly one outcome is persisted:
 |---|---|---|---|
 | `progressed` | positive progress; time per formula | active | active in transit |
 | `segment_completed` | progress = 1,000,000 | closed completed | arrival endpoint; advance step |
-| `paused_in_transit` | progress in 1..999 999 and zero or positive time as resolved; no hidden delay (a pause at progress zero creates no travel state, §10.8) | paused in transit | execution active; no anchor |
-| `interrupted_at_anchor` | zero or positive progress/time as resolved | closed interrupted | suspended at exact route-anchor scene |
+| `paused_in_transit` | progress in 1..999 999 and zero or positive time as resolved; no hidden delay (a pause at progress zero is `interrupted_at_anchor` at the departure endpoint, §10.9) | paused in transit | execution active; no anchor |
+| `interrupted_at_anchor` | zero or positive progress/time as resolved | closed interrupted | suspended at exact route-anchor scene; at progress zero (pause or interruption before physical advancement) `waiting_at_anchor` at the departure endpoint (§10.9) |
 | `stranded` | zero or positive progress/time as resolved | stranded | execution stranded in transit |
 | `returned_to_departure` | mirrored progress = 1_000_000; time per the mirrored segment | closed `returned_to_departure` | departure endpoint of the step segment; execution `waiting_at_anchor` (§4.10.1) |
 | `blocked_before_progress` | no progress; zero traversal time | unchanged at the same progress | execution remains active in transit; no location change |
@@ -1915,7 +1924,7 @@ When navigation, hazard and blocker signals coexist, one versioned composition p
 1. unresolved data gap before a valid arrival commit             → stranded below terminal progress;
 2. validated actual progress reaches 1_000_000                   → segment_completed (forward side) or returned_to_departure (mirrored side);
 3. approved interruption request with a resolved anchor          → interrupted_at_anchor;
-4. explicit pause request                                        → paused_in_transit;
+4. explicit pause request                                        → paused_in_transit (progress 1..999 999) or interrupted_at_anchor at the departure endpoint (progress zero, §10.9);
 5. blocker with zero committed progress                           → blocked_before_progress;
 6. otherwise                                                      → progressed.
 ```
@@ -2733,7 +2742,7 @@ Temporary closure of a physical relation uses conditions/blockers/portal state, 
 | `planned` | `active` | first step dispatch succeeds |
 | `planned` | `aborted` | explicit abort before first step |
 | `active` | `active` | step start/progress/pause or nonterminal step completion with immediate next-step activation |
-| `active` | `waiting_at_anchor` | current attempt blocks, or a completed step leaves the owner at an exact endpoint before next dispatch, or a mirrored traversal returns to the departure endpoint (`returned_to_departure`, §4.10.1), or a pause is requested before the first physical progress (departure endpoint, no travel state, §10.8) |
+| `active` | `waiting_at_anchor` | current attempt blocks, or a completed step leaves the owner at an exact endpoint before next dispatch, or a mirrored traversal returns to the departure endpoint (`returned_to_departure`, §4.10.1), or a pause or interruption before the first physical progress closes the travel state at progress zero as `interrupted_at_anchor` on the departure endpoint (§10.9) |
 | `active` | `suspended_at_scene` | interruption commits an approved route-anchor scene |
 | `active` | `stranded_in_transit` | exact in-transit state is preserved because an approved interruption anchor cannot be materialized |
 | `active` | `completed` | final plan step completes at a valid scene or transit endpoint |
@@ -7539,12 +7548,12 @@ invariants:
   - movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.
   - New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.
   - last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).
-  - active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id; paused_in_transit additionally requires progress in 1..999999 (a pause at progress zero is no transit, section 10.8).
+  - active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id; paused_in_transit additionally requires progress in 1..999999 (a pause at progress zero closes as interrupted_to_anchor, section 10.9).
   - stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.
   - closed requires closed_result and closed_change_set_id.
   - closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.
   - closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.
-  - closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.
+  - closed_result=interrupted_to_anchor requires progress below one million (zero allowed: a pause or interruption before physical advancement closes at the departure endpoint, section 10.9) and null stranded_reason_code.
   - closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.
   - segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.
   - mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.

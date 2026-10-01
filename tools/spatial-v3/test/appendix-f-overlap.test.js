@@ -108,3 +108,44 @@ test('the turn_back outcome check fails on the earlier text that forbade the sec
   assert.notEqual(old, standard);
   assert.throws(() => turnBackOutcomes(old, false).has('segment_completed') || assert.fail('no legal outcome'), /no legal outcome/u);
 });
+
+// rt-lines a7 (REVIEW rt-lines-7): start -> pause at progress zero -> interrupted_at_anchor -> resume and replay, read from the norm text.
+const section = (text, from, to) => text.slice(text.indexOf(from), text.indexOf(to, text.indexOf(from)));
+const zeroPauseNorm = (text) => {
+  const outcomes = section(text, '### 11.6.', '### 11.7.');
+  const interruption = section(text, '### 10.9.', '### 10.10.');
+  const f = text.slice(text.indexOf('# Приложение F.'));
+  const travelState = f.match(/```yaml\r?\ncontract_name: traveller_travel_state\r?\n[\s\S]*?```/)[0];
+  const a41 = text.split(/\r?\n/);
+  return {
+    pauseAtZero: /explicit pause request\s+→ paused_in_transit \(progress 1\.\.999 999\) or interrupted_at_anchor at the departure endpoint \(progress zero/.test(outcomes),
+    pausedNeedsProgress: /paused_in_transit additionally requires progress in 1\.\.999999/.test(travelState),
+    interruptedAllowsZero: /closed_result=interrupted_to_anchor requires progress below one million \(zero allowed/.test(travelState),
+    waitsAtDeparture: /sets execution `waiting_at_anchor` on that endpoint with exactly one `wait_started` event/.test(interruption),
+    resumable: /allows `resumed`[^\n]*new travel state at progress zero/.test(interruption),
+    replaySafe: /retried request after the start commit returns the committed result[^\n]*never closes a second state/.test(interruption),
+    gate: a41.some((line) => line.startsWith('| `active` | `waiting_at_anchor` |') && line.includes('interrupted_at_anchor') && line.includes('departure endpoint')),
+    resumeGate: a41.some((line) => line.startsWith('| `waiting_at_anchor` | `active` |') && line.includes('forbidden after `returned_to_departure`'))
+  };
+};
+
+test('start, pause at progress zero, interrupted_at_anchor, resume and replay are all legal by the norm text', () => {
+  assert.deepEqual(zeroPauseNorm(standard), {
+    pauseAtZero: true, pausedNeedsProgress: true, interruptedAllowsZero: true, waitsAtDeparture: true,
+    resumable: true, replaySafe: true, gate: true, resumeGate: true
+  });
+  // the scenario on those rules: the state committed at start has progress 0, a pause there cannot be paused_in_transit
+  const outcomeAt = (progress) => (progress === 0 ? 'interrupted_at_anchor' : 'paused_in_transit');
+  const state = { status: 'active', progress: 0 };
+  assert.equal(outcomeAt(state.progress), 'interrupted_at_anchor');
+  assert.equal(outcomeAt(1), 'paused_in_transit');
+});
+
+test('the earlier text (no travel state for a zero pause) fails the zero-progress scenario check', () => {
+  const old = standard.replace('or interrupted_at_anchor at the departure endpoint (progress zero, §10.9);', ';')
+    .replace(' (zero allowed: a pause or interruption before physical advancement closes at the departure endpoint, section 10.9)', '');
+  assert.notEqual(old, standard);
+  const norm = zeroPauseNorm(old);
+  assert.equal(norm.pauseAtZero, false);
+  assert.equal(norm.interruptedAllowsZero, false);
+});

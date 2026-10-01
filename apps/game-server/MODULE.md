@@ -27,19 +27,24 @@ same turn pin; lookup is lazy. Guard uses year from committed clock and region
 from runtime-catalog G0 reader for current G4 version. O1 checks normalized query
 after replay/preflight and before model call: a match returns ordinary `no_change`
 and follows normal turn timing/commit without being reported as `absent`.
-Matching proposed O1 descriptors are filtered before admission/write with the same
-ordinary outcome. O2b/S1 filter only matching candidates; remaining candidates
-continue. O2a is authored-only and does not run this filter.
+Proposed O1 descriptors are filtered per new entity before admission/write;
+matching entities are removed and remaining candidates continue. If none remain,
+the result is ordinary `no_change`, without a negative presence resolution.
+O2b/S1 filter only matching candidates; remaining candidates continue. O2a is
+authored-only and does not run this filter.
 
-For NPCs, matching O2b/S1 candidates are filtered; matching A1, direct
-`create_entity` or O1 operations are rejected through existing domain-rejected
-path without stopping player turn. NPC A1 checks only a newly forbidden name in
-`source_fact_delta`. Player A1 and direct `create_entity` are not blocked by this
-list. Place filling, NPC first-entry, inventory, equipment and trade use approved
-catalogs checked by `node data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs --check`; snapshot does
-not replace those checks. Queue IDs and check paths appear only in developer
-trace when diagnostics are enabled. Snapshot does not replace approved catalogs
-or world knowledge. O2b/S1 profiles activate only through existing exact gates.
+For NPCs, matching O1 inspect/search queries, A1 and direct `create_entity`
+proposals are replaced by normal wait before actor-step. A matching descriptor
+proposed inside O1 is filtered per candidate, like O2b/S1; remaining candidates
+continue. NPC A1 checks only a newly forbidden name in `source_fact_delta`.
+Player A1 and direct `create_entity` are
+not blocked by this list. Place filling, NPC first-entry, inventory, equipment
+and trade use approved catalogs checked by
+`node data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs --check`;
+snapshot does not replace those checks. Queue IDs and check paths appear only in
+developer trace when diagnostics are enabled. Snapshot does not replace approved
+catalogs or world knowledge. O2b/S1 profiles activate only through existing
+exact gates.
 
 `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
 equipment and Stage 24 body/routine projections for an exact generated scene.

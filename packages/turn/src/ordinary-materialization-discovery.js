@@ -76,10 +76,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       && typeof playerActorRef === 'string'
       && request.operation?.actor_ref === playerActorRef;
     const queryNamesVisibleEquivalent = isPlayerRequest
-      && equivalentVisibleItem(request, { semantic_descriptor: {
-        name: request.operation?.query,
-        semantic_type: execution.candidate_context?.semantic_type
-      } }) != null;
+      && uniqueVisibleItemByName(request, request.operation?.query) != null;
     if (queryNamesVisibleEquivalent) requestGuardedBeforeSeed = true;
     if (candidateContext != null
         && request.operation?.discovery_kind !== 'look') {
@@ -237,11 +234,10 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
-      filterCandidateAllowed: isPlayerRequest
-          && typeof assertNeedsCheckAllowed === 'function'
+      filterCandidateAllowed: typeof assertNeedsCheckAllowed === 'function'
         ? ({ committedState, candidate }) => assertNeedsCheckAllowed({
             committedState, candidate, matchOnly: true }) : null,
-      assertCandidateAllowed: isPlayerRequest ? null : assertNeedsCheckAllowed,
+      assertCandidateAllowed: null,
       workingProjection: projection,
       basisCatalog: admissionBases(bases), beforeModel: async () => {
         if (!requestGuardedBeforeSeed
@@ -281,6 +277,13 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           queue_ids: (presence.needs_check_matches ?? [])
             .map(({ queue_id: queueId }) => queueId)
         });
+      }
+      if (transitions.length > 0) {
+        return resolvedPlan({ request, enabled, partyId, scopeRef,
+          inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
+          next: projection.ordinary_materialization_aggregate,
+          requestIdentity: objective.request_id, resolution: 'no_change',
+          suppressSceneSeed: true, visiblePresenceResolution: 'no_change' });
       }
       return knownResolutionResult(request, { resolution: 'no_change' });
     }
@@ -441,7 +444,8 @@ function semanticIdentityProfile(profile) {
 
 function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   sealAtomicWritePlan, transitions, newBases, bases, next, requestIdentity,
-  resolution, item = null, finiteResourceEffects = null }) {
+  resolution, item = null, finiteResourceEffects = null,
+  suppressSceneSeed = false, visiblePresenceResolution = null }) {
   const expected = enabled.version_pins;
   const plan = sealAtomicWritePlan({ party_id: partyId,
     scope_ref: structuredClone(scopeRef),
@@ -474,7 +478,7 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     && ['absent', 'no_change', 'authority_required'].includes(resolution)
     ? resolution : null;
   const visibleSeed = {
-    ...(sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
+    ...(suppressSceneSeed || sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
       kind: 'ordinary_scene_seed', sensory_details: sceneDetails
     } }),
     ...(item == null || resolution !== 'materialize' ? {} : { ordinary_presence_seed: {
@@ -483,6 +487,10 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,
+      query: request.operation.query
+    } }),
+    ...(visiblePresenceResolution == null ? {} : { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: visiblePresenceResolution,
       query: request.operation.query
     } })
   };
@@ -496,6 +504,26 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     } }),
     player_response_boundary: item == null || request.plan?.continuation == null,
     ordinary_materialization_atomic_write_plan: plan });
+}
+
+function uniqueVisibleItemByName(request, name) {
+  const normalizedName = normalizeVisibleText(name);
+  const items = request?.request?.player_safe_state?.items;
+  if (normalizedName == null || !Array.isArray(items)) return null;
+  const matches = items.filter((item) =>
+    normalizeVisibleText(item?.name ?? item?.state?.display_name)
+      === normalizedName);
+  if (matches.length !== 1) return null;
+  const item = matches[0], ref = item?.item_id ?? item?.instance_id;
+  return typeof ref === 'string' && ref.trim() === ref && ref.length > 0
+    ? item : null;
+}
+
+function normalizeVisibleText(value) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
+    .toLocaleLowerCase('ru-RU');
+  return normalized || null;
 }
 
 function presenceTransition({ envelope, presence, aggregate,

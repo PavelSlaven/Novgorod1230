@@ -47,7 +47,9 @@ test('adapters expose NPC-safe refs and call owner', async () => {
     createOrdinaryDiscoveryResolver: () => async (input) => {
       calls.push(['o1', input]);
       return { working_projection: input.working_projection, summary: 'o1',
-        ordinary_materialization_atomic_write_plan: null };
+        consequence_fragment: { visible_seed: { ordinary_presence_seed: {
+          kind: 'ordinary_presence_seed', resolution: 'no_change' } } },
+        ordinary_materialization_atomic_write_plan: { kind: 'retained-seed-plan' } };
     },
     createActionProductionOwner: () => ({
       async execute(input) {
@@ -74,8 +76,12 @@ test('adapters expose NPC-safe refs and call owner', async () => {
   assert.ok(!matchesOperationContract({ op: 'request_discovery',
     actor_ref: 'npc', discovery_kind: 'look', target_refs: ['seen-second'] },
   discovery.capability));
-  await discovery.execute(execution({ op: 'request_discovery', actor_ref: 'npc',
+  const discoveryResult = await discovery.execute(execution({ op: 'request_discovery', actor_ref: 'npc',
     discovery_kind: 'inspect', target_refs: ['seen-second'], query: 'осмотреть' }));
+  assert.equal(Object.hasOwn(discoveryResult, 'consequence_fragment'), false,
+    'NPC no-change presence is not an empty actor-step consequence');
+  assert.deepEqual(discoveryResult.ordinary_materialization_atomic_write_plan,
+    { kind: 'retained-seed-plan' }, 'an independent ordinary seed plan is retained');
   const action = capabilities[1];
   await action.execute(execution({ op: 'request_item_use', actor_ref: 'npc',
     item_ref: 'safe-source', use_kind: 'other', target_refs: ['safe-tool'],

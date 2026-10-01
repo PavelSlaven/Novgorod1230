@@ -62,12 +62,12 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
           && (typeof ordinary === 'function'
             && ['inspect', 'search'].includes(operation.discovery_kind)
             && discoveryTargets.includes(operation.target_refs[0])),
-        execute: (execution) => typeof ordinary === 'function'
-          && ['inspect', 'search'].includes(execution.operation.discovery_kind)
-          && discoveryTargets.includes(execution.operation.target_refs[0])
-          ? ordinary(ordinaryOwnerInput(execution, state, npc,
-            'turn_step_ordinary_discovery_request_v1'))
-          : null
+        execute: async (execution) => typeof ordinary !== 'function'
+          || !['inspect', 'search'].includes(execution.operation.discovery_kind)
+          || !discoveryTargets.includes(execution.operation.target_refs[0])
+          ? null : omitNpcNoChangeDiscoveryPresentation(await ordinary(
+            ordinaryOwnerInput(execution, state, npc,
+              'turn_step_ordinary_discovery_request_v1')))
       });
     }
     const spatial = npcS1Capability({ state, npc,
@@ -212,6 +212,13 @@ function ownerInput(execution, state, npcRef, schema) {
 function ordinaryOwnerInput(execution, state, npc, schema) {
   return { ...ownerInput(execution, state, npc.instance_id, schema),
     committed_state: npcCommittedState(state, npc) };
+}
+
+function omitNpcNoChangeDiscoveryPresentation(result) {
+  if (result?.consequence_fragment?.visible_seed?.ordinary_presence_seed
+      ?.resolution !== 'no_change') return result;
+  const { consequence_fragment, ...ownerResult } = result;
+  return ownerResult;
 }
 
 async function enabledNpcDiscoveryTargets({ partyId, npc, loadOrdinaryEnablement }) {

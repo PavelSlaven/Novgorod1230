@@ -107,9 +107,8 @@ function assertNpcAndContainer(payload, phase7, zhdanko, bag, npc, container) {
       || npcRow.anchor_id !== expectedNpcAnchor
       || canonicalDigest(npcRow.machine_state)
         !== canonicalDigest(zhdanko.machine_state)
-      || (phase7.npc_domain_rejection == null
-        && canonicalDigest(npcRow.machine_state?.last_schedule_execution)
-          !== canonicalDigest(phase7.schedule_result))
+      || canonicalDigest(npcRow.machine_state?.last_schedule_execution)
+        !== canonicalDigest(phase7.schedule_result)
       || bagRow.container_id !== bag.container_id
       || bagRow.template_id !== bag.template_id
       || (bagChangedAfterPhase7

@@ -106,6 +106,15 @@ export function createLowerDvinaTracePhase2Runtime({
           typeof turnStepNeedsCheckGuard !== 'function' ? null
             : async (input) => turnStepNeedsCheckGuard({ ...input,
               catalogContext: await getRuntimeCatalogContext() });
+        const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'needs_check_candidate_filtered', path,
+              queue_id: queue_ids[0] ?? null,
+              queue_ids: structuredClone(queue_ids)
+            });
+          } catch { /* Diagnostics must not affect the turn. */ }
+        };
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
         const scenarioDefinitionRevision = authored ? null
@@ -248,6 +257,8 @@ export function createLowerDvinaTracePhase2Runtime({
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
           bundle,
+          turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
+          recordNeedsCheckFilter,
           combatCommand,
           contracts,
           createTurnStepWorldProcessResolver,

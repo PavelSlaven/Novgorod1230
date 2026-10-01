@@ -85,7 +85,6 @@ function validPersistedCausality(causality, phase7, decisionResult, partyId) {
   const candidate = causality?.waiting_terminal_candidate;
   const transition = causality?.waiting_transition;
   const decisionTraceRef = ref('npc_decision_trace', decision?.request_id);
-  const needsCheckRefusal = phase7.npc_domain_rejection != null;
   return causality?.waiting_terminal_candidate?.boundary_id
       === phase7.waiting_terminal_candidate_id
     && candidate?.boundary_id === tracePhase7WaitingTerminalCandidateId(partyId)
@@ -145,21 +144,15 @@ function validPersistedCausality(causality, phase7, decisionResult, partyId) {
         phase7.decision_boundary_id))
     && canonicalDigest(causality.decision_trace_ref)
       === canonicalDigest(decisionTraceRef)
-    && (needsCheckRefusal
-      ? phase7.actor_step_completion_candidate_id == null
-        && causality.actor_step_completion_candidate == null
-        && causality.actor_step_completion_candidate_ref == null
-        && canonicalDigest(causality.npc_domain_rejection)
-          === canonicalDigest(phase7.npc_domain_rejection)
-      : canonicalDigest(causality.actor_step_completion_candidate?.source_ref)
-        === canonicalDigest(decisionTraceRef)
-        && canonicalDigest(causality.actor_step_completion_candidate_ref)
-          === canonicalDigest(completionCandidateRef)
-        && causality.actor_step_completion_candidate?.boundary_id
-          === phase7.actor_step_completion_candidate_id
-        && canonicalDigest(
-          causality.actor_step_completion_candidate?.causal_parent_refs)
-          === canonicalDigest([decisionTraceRef]));
+    && canonicalDigest(causality.actor_step_completion_candidate?.source_ref)
+      === canonicalDigest(decisionTraceRef)
+    && canonicalDigest(causality.actor_step_completion_candidate_ref)
+      === canonicalDigest(completionCandidateRef)
+    && causality.actor_step_completion_candidate?.boundary_id
+      === phase7.actor_step_completion_candidate_id
+    && canonicalDigest(
+      causality.actor_step_completion_candidate?.causal_parent_refs)
+      === canonicalDigest([decisionTraceRef]);
 }
 
 const ref = (entityKind, entityId) => ({

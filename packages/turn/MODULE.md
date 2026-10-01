@@ -68,17 +68,18 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   только уже принятый seed. Нормальные модельные отрицательные решения
   сохраняют собственную presence identity, отличную от seed и replay.
 - O1 accepts injected world-presence filter owned by game-server. A matching
-  normalized query or proposed descriptor returns ordinary `no_change` (never
-  `absent`, which would write a negative presence resolution), and proposed
-  descriptor is filtered before admission/write. The query check runs before
-  Stage A model call; the turn follows its normal path.
-  Existing inspection and equivalent visible items keep their owners. O2a remains
-  authored-only; O2b and S1 filter matching new candidates. Player A1 and direct
-  `create_entity` actions do not use this filter. Matching NPC O2b/S1 candidates
-  are filtered; matching NPC A1/direct `create_entity`/O1 operations use existing
-  domain rejection. `continueOnDomainRejection` consumes that rejection signal,
-  allowing the temporal NPC boundary to continue processing. `@rus/turn` does not
-  load catalogs or interpret blocker policy.
+  normalized query before Stage A model call returns ordinary `no_change`.
+  NPC O1 inspect/search query hits become normal wait before the actor-step.
+  Proposed descriptors are filtered per new entity before admission/write;
+  remaining candidates continue, and none remaining returns ordinary `no_change`
+  without a negative presence resolution. Existing inspection and equivalent
+  visible items keep their owners. O2a remains authored-only; O2b and S1 filter
+  matching new candidates. Player A1 and direct `create_entity` actions do not
+  use this filter. For NPCs, matching O1 proposed descriptors and O2b/S1 entities
+  are filtered individually; matching A1/direct `create_entity` proposals become
+  normal wait before actor-step start. Queue IDs and check paths are exposed only through
+  developer trace when diagnostics are enabled. `@rus/turn` does not load catalogs
+  or interpret blocker policy.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct
@@ -153,7 +154,8 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   определяет только качество подачи и не выбирает ответ NPC.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
   `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
-  `createTemporalSourceResolver`, `createTemporalAdvanceOwner`, а также
+  `prepareNpcDecisionForActorStep`, `createTemporalSourceResolver`,
+  `createTemporalAdvanceOwner`, а также
   registration общего NPC schedule-terminal effect из `@rus/npc-runtime`;
   `startNpcActorStep` и `createNpcActorStepCompletionEffect` владеют общим
   lifecycle `started → completion candidate → completed` для автономного
@@ -172,8 +174,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   actor-step снова factual→signal protocol на том же timestamp до fixed point
   либо typed temporal safety error, затем `continueAdvance`; `domain_rejected`
   не consume-ит signals своей boundary: остальные same-time siblings получают
-  текущий working state, но `unresolved_domain_rejection` сохраняет rejected
-  result и unconsumed signal IDs, удерживая clock на timestamp;
+  текущий working state, а `unresolved_domain_rejection` сохраняет rejected
+  result и unconsumed signal IDs, удерживая clock на timestamp. Terminal callback
+  отсутствует: отказ не может перевести boundary в обработанное состояние;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.

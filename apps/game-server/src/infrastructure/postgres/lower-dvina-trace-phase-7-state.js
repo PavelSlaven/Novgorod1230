@@ -25,9 +25,6 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
   const autonomous = phase7.autonomous;
-  const needsCheckRefusal = phase7.schedule_execution.status === 'declined'
-    && phase7.schedule_execution.failure_code
-      === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED';
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   const restCompleted = phase7.schedule_temporal.rest_completed === true;
   next.party_state = {
@@ -64,8 +61,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     ...(next.consumed_npc_decision_signal_ids ?? []),
     ...autonomous.consumed_signal_ids
   ])].sort();
-  if (phase7.resumed !== true && autonomous.proposal.status === 'planned'
-      && !needsCheckRefusal) {
+  if (phase7.resumed !== true && autonomous.proposal.status === 'planned') {
     const trace = buildNpcSemanticDecisionTrace({
       request: autonomous.request,
       plan: autonomous.proposal.plan,
@@ -78,8 +74,8 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       'TRACE_PHASE_7_DECISION_TRACE_CONFLICT'
     );
   }
-  if (!needsCheckRefusal && (phase7.resumed !== true
-      || phase7.schedule_applied_in_this_attempt === true)) {
+  if (phase7.resumed !== true
+      || phase7.schedule_applied_in_this_attempt === true) {
     next = applyTracePhase7ScheduleState({
       state: next,
       execution: phase7.schedule_execution,
@@ -139,12 +135,8 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     decision_signal_id: autonomous.signal.signal_id,
     decision_request_id: autonomous.request.request_id,
     decision_boundary_id: autonomous.boundary.boundary_id,
-    actor_step_completion_candidate_id: needsCheckRefusal ? null
-      : phase7.schedule_temporal.completion_candidate.boundary_id,
-    ...(needsCheckRefusal ? {
-      npc_domain_rejection: structuredClone(
-        phase7.schedule_temporal.needs_check_refusal)
-    } : {}),
+    actor_step_completion_candidate_id:
+      phase7.schedule_temporal.completion_candidate.boundary_id,
     schedule_execution_binding_ref:
       phase7.schedule_execution.execution_binding_ref,
     schedule_option_id: phase7.schedule_execution.schedule_option_id,

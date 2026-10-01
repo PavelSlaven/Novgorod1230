@@ -5,8 +5,7 @@ import { advanceTemporalNpcDecisionBoundary } from
 import {
   createTracePhase7ActorStepRuntime,
   executeTracePhase7SchedulePlan,
-  finalizeTracePhase7ScheduleExecution,
-  needsCheckRefusalScheduleExecution
+  finalizeTracePhase7ScheduleExecution
 } from './lower-dvina-trace-phase-7-schedule-execution.js';
 import { resolveTracePhase7ScheduleTemporalAdvance } from
   './lower-dvina-trace-phase-7-schedule-temporal.js';
@@ -24,7 +23,8 @@ export async function resolveTracePhase7FireRestConsequence({
   createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
   createBoundaryNpcDirectOperations,
   revalidateStateVersion, runNpcConversationExchange,
-  conversationBindings, conversationActivity, admitted
+  conversationBindings, conversationActivity, admitted,
+  assertNeedsCheckAllowed = null, recordNeedsCheckFilter = null
 }) {
   if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
   const actualRootTurnId = modeResolution?.turn_id ?? rootTurnId;
@@ -90,7 +90,8 @@ export async function resolveTracePhase7FireRestConsequence({
       const autonomous = await resolveTracePhase7AutonomousDecision({
         state: currentBoundaryState, contracts, temporal, signalBatch,
         operationContract: actorStepRuntime.registry.operationContract(),
-        npcAutonomousModel, revalidateStateVersion, rootTurnId: actualRootTurnId
+        npcAutonomousModel, revalidateStateVersion, rootTurnId: actualRootTurnId,
+        assertNeedsCheckAllowed, recordNeedsCheckFilter
       });
       return { boundary: autonomous.boundary, autonomous };
     },
@@ -110,9 +111,7 @@ export async function resolveTracePhase7FireRestConsequence({
         commandIdempotencyKey: playerInput.idempotency_key,
         rootTurnId: actualRootTurnId,
         restLimitTimestamp: deferRestCompletion ? temporal.result.clock_after : null
-      }),
-    continueOnDomainRejection: ({ actor_step: actorStep }) =>
-      hasNeedsCheckRefusal(actorStep)
+      })
   });
   if (flow.unresolved_domain_rejection !== null) {
     return blockedDomainResult(
@@ -121,21 +120,9 @@ export async function resolveTracePhase7FireRestConsequence({
   }
   const temporal = flow.temporal;
   const scheduleTemporal = flow.continuation;
-  const needsCheckRefusal = hasNeedsCheckRefusal(flow.actor_step);
-  const scheduleExecution = needsCheckRefusal
-    ? needsCheckRefusalScheduleExecution({ actorStep: flow.actor_step,
-      npcRef: contracts.zhdanko.instance_id,
-      decisionTimestamp: temporal.result.clock_after,
-      stateVersion: state.party_state.state_version })
-    : finalizeTracePhase7ScheduleExecution({
-      actorStep: flow.actor_step, scheduleTemporal
-    });
-  const actorStepResult = needsCheckRefusal
-    ? { npc_ref: contracts.zhdanko.instance_id, status: 'refused',
-      failure_code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
-      clock_before: structuredClone(temporal.result.clock_after),
-      clock_after: structuredClone(temporal.result.clock_after) }
-    : flow.actor_step.result;
+  const scheduleExecution = finalizeTracePhase7ScheduleExecution({
+    actorStep: flow.actor_step, scheduleTemporal
+  });
   const restCompleted = scheduleTemporal.rest_completed === true;
   return {
     version: 1,
@@ -152,9 +139,8 @@ export async function resolveTracePhase7FireRestConsequence({
       input_digest: inputDigest,
       temporal,
       autonomous: flow.decision.autonomous,
-      actor_step: actorStepResult,
-      actor_step_owner_outputs: needsCheckRefusal
-        ? emptyActorStepOwnerOutputs() : flow.actor_step.owner_outputs,
+      actor_step: flow.actor_step.result,
+      actor_step_owner_outputs: flow.actor_step.owner_outputs,
       actor_step_check: flow.actor_step.check,
       schedule_temporal: scheduleTemporal,
       schedule_execution: scheduleExecution
@@ -169,19 +155,6 @@ export async function resolveTracePhase7FireRestConsequence({
   };
 }
 
-function hasNeedsCheckRefusal(actorStep) {
-  return actorStep?.domain_result?.pass === false
-    && actorStep.domain_result.errors?.some(({ code }) =>
-      code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') === true;
-}
-
-function emptyActorStepOwnerOutputs() {
-  return { write_fragments: [], consequence_fragment: null,
-    ordinary_materialization_atomic_write_plan: null,
-    action_production_atomic_write_plans: [], local_fire_atomic_write_plans: [],
-    spatial_semantic_atomic_write_plan: null };
-}
-
 function resumeFireRest({ state, playerInput, inputDigest,
   temporalAdvanceOwner, actualRootTurnId, contracts }) {
   const prior = state.phase7_fire_rest?.resume_state;
@@ -193,10 +166,6 @@ function resumeFireRest({ state, playerInput, inputDigest,
   }
   const actorStep = {
     result: structuredClone(prior.actor_step),
-    ...(prior.schedule_temporal.needs_check_refusal == null ? {} : {
-      domain_result: structuredClone(
-        prior.schedule_temporal.needs_check_refusal)
-    }),
     working_projection: structuredClone(prior.schedule_temporal.projection),
     owner_outputs: structuredClone(prior.actor_step_owner_outputs),
     check: structuredClone(prior.actor_step_check),
@@ -211,9 +180,7 @@ function resumeFireRest({ state, playerInput, inputDigest,
     rootTurnId: actualRootTurnId,
     priorScheduleTemporal: prior.schedule_temporal
   });
-  const scheduleExecution = prior.schedule_execution.status === 'declined'
-    ? structuredClone(prior.schedule_execution)
-    : finalizeTracePhase7ScheduleExecution({ actorStep, scheduleTemporal });
+  const scheduleExecution = finalizeTracePhase7ScheduleExecution({ actorStep, scheduleTemporal });
   const duration = Number(scheduleTemporal.result.clock_after.whole_minutes)
     - Number(state.clock.whole_minutes);
   if (!Number.isSafeInteger(duration) || duration <= 0 || duration > 5) {

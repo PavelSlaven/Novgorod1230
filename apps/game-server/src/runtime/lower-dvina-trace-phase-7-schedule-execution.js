@@ -273,30 +273,6 @@ export function finalizeTracePhase7ScheduleExecution({
   });
 }
 
-export function needsCheckRefusalScheduleExecution({ actorStep, npcRef,
-  decisionTimestamp, stateVersion }) {
-  const error = actorStep?.domain_result?.errors?.find(({ code }) =>
-    code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED');
-  if (error == null) fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
-  return Object.freeze({
-    npc_ref: npcRef,
-    status: 'declined',
-    failure_code: error.code,
-    semantic_operation: null,
-    execution_binding_ref: null,
-    schedule_option_id: null,
-    activity_profile_ref: null,
-    exact_elapsed: { exact_minutes: { numerator: '0', denominator: '1' } },
-    clock_before: structuredClone(decisionTimestamp),
-    clock_after: structuredClone(decisionTimestamp),
-    parent_state_version: stateVersion,
-    root_clock_write_count: 0,
-    factual_result_source: 'needs_check_refusal',
-    movement_proposal: null,
-    property_proposal: null
-  });
-}
-
 export function tracePhase7ActorStep(projection, started) {
   const matches = npcActorSteps(projection).filter((step) =>
     step?.npc_ref === started?.npc_ref

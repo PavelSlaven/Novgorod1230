@@ -25,11 +25,6 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   if (typeof temporalAdvanceOwner?.advance !== 'function') {
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
   }
-  if (needsCheckRefusal(actorStep)) {
-    return resolveNeedsCheckRefusalTemporalAdvance({ state, temporal,
-      actorStep, temporalAdvanceOwner, commandIdempotencyKey, rootTurnId,
-      restLimitTimestamp, priorScheduleTemporal });
-  }
   const composed = composedConversationAdvance({ state, actorStep, temporal });
   if (composed != null) return composed;
   const resumed = priorScheduleTemporal?.rest_completed === false;
@@ -145,105 +140,6 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     completion_candidate: structuredClone(completion),
     completion_effect: structuredClone(completionEffect)
   });
-}
-
-function resolveNeedsCheckRefusalTemporalAdvance({ state, temporal, actorStep,
-  temporalAdvanceOwner, commandIdempotencyKey, rootTurnId,
-  restLimitTimestamp, priorScheduleTemporal }) {
-  const resumed = priorScheduleTemporal?.rest_completed === false;
-  const priorResult = resumed ? priorScheduleTemporal.result : null;
-  const projectionBefore = resumed
-    ? priorScheduleTemporal.projection : actorStep.working_projection;
-  const processed = new Set([
-    ...(temporal.result.trace.processed_boundary_ids ?? []),
-    ...(priorResult?.trace?.processed_boundary_ids ?? [])
-  ]);
-  const committedCandidates = (state.temporal_boundary_candidates ?? []).filter(
-    ({ boundary_id: id }) => !processed.has(id)
-  );
-  const sourceCandidates = replaceNpcRoutineCandidates(
-    replaceLocalFireTemporalCandidates(committedCandidates, projectionBefore, []),
-    projectionBefore);
-  const request = buildTracePhase7TemporalRequest({
-    state,
-    executionId: temporal.execution_id,
-    limit: restLimitTimestamp ?? temporal.limit_timestamp,
-    commandIdempotencyKey,
-    rootTurnId,
-    clockBefore: resumed ? priorResult.clock_after : temporal.result.clock_after,
-    sourceCandidates,
-    projection: structuredClone(projectionBefore),
-    changeSetId: resumed ? undefined
-      : temporal.result.combined_change_set?.change_set_id,
-    segment: 'schedule'
-  });
-  const advanced = temporalAdvanceOwner.advance({
-    request,
-    engine_version: 'lower-dvina-trace-phase-7-temporal-adapter-v1',
-    temporal_resolution_policy_version: 'temporal-resolution-v1',
-    safety_limits: { max_slices: 20, max_candidates: 100,
-      max_iterations: 100 },
-    source_provider_ref: TRACE_PHASE7_EXTERNAL_PROVIDER,
-    source_candidates: sourceCandidates,
-    registered_provider_ref: TRACE_PHASE7_PROVIDER,
-    registered_effects: [],
-    continuous_effect: {
-      effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
-      input: { execution_id: temporal.execution_id }
-    },
-    finalization: {
-      visible_package_candidate: tracePhase7TemporalVisibleEnvelope(request),
-      validation_report: { ok: true }
-    },
-    stop_after_source_batch: false
-  });
-  const segmentElapsed = exactIntegerElapsed(request.clock_before,
-    advanced.result.clock_after);
-  const elapsed = (priorScheduleTemporal?.elapsed_after_decision ?? 0)
-    + segmentElapsed;
-  const result = resumed
-    ? cumulativeResult(priorResult, advanced.result)
-    : advanced.result;
-  if (advanced.result.temporal_status === 'paused') {
-    if (advanced.state_projection.active_npc_actor_steps?.some(({ npc_ref }) =>
-      npc_ref === actorStep.result.npc_ref)
-        || !Number.isSafeInteger(segmentElapsed)
-        || advanced.state_projection.cumulative_elapsed_minutes
-          !== projectionBefore.cumulative_elapsed_minutes + segmentElapsed) {
-      fail('TRACE_PHASE_7_SCHEDULE_TEMPORAL_INTERRUPTED');
-    }
-    return Object.freeze({
-      elapsed_after_decision: elapsed,
-      rest_completed: false,
-      result,
-      projection: structuredClone(advanced.state_projection),
-      needs_check_refusal: structuredClone(actorStep.domain_result)
-    });
-  }
-  const completed = advanced.result.temporal_status === 'completed'
-    && compareGameTimestamp(advanced.result.clock_after,
-      request.inclusive_limit_timestamp) === 0;
-  if (!completed || segmentElapsed !== exactIntegerElapsed(request.clock_before,
-    request.inclusive_limit_timestamp)
-      || advanced.state_projection.cumulative_elapsed_minutes
-        !== projectionBefore.cumulative_elapsed_minutes + segmentElapsed) {
-    fail('TRACE_PHASE_7_SCHEDULE_TEMPORAL_INTERRUPTED');
-  }
-  return Object.freeze({
-    elapsed_after_decision: elapsed,
-    rest_completed: restLimitTimestamp == null
-      && compareGameTimestamp(advanced.result.clock_after,
-        temporal.limit_timestamp) === 0,
-    result,
-    projection: structuredClone(advanced.state_projection),
-    needs_check_refusal: structuredClone(actorStep.domain_result)
-  });
-}
-
-function needsCheckRefusal(actorStep) {
-  return actorStep?.domain_result?.pass === false
-    && actorStep.domain_result.errors?.some(({ code }) =>
-      code === 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED') === true;
 }
 
 function cumulativeResult(prior, current) {

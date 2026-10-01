@@ -8,14 +8,11 @@ export function phase7AttemptTemporalResults(phase7) {
 
 export function phase7StateBeforeSchedule(state, phase7) {
   const results = phase7AttemptTemporalResults(phase7);
-  const scheduleEnd = phase7.schedule_execution.status === 'declined'
-    ? phase7.schedule_temporal.result.clock_after
-    : phase7.schedule_execution.clock_after;
   const transitions = results.flatMap((result) =>
     result.combined_change_set?.proposals ?? [])
     .map((proposal) => proposal.npc_routine_transition).filter(Boolean);
   if (transitions.some(({ occurred_at: at }) =>
-    compareGameTimestamp(at, scheduleEnd) > 0)) {
+    compareGameTimestamp(at, phase7.schedule_execution.clock_after) > 0)) {
     fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT');
   }
   return applyNpcRoutineTemporalResults(structuredClone(state), results);

@@ -78,6 +78,73 @@ test('038 adds local-line party schema without rewriting legacy connections', as
       'passage.path','{"entity_id":"environment"}',
       '{"entity_id":"orientation"}','action',1,'active',0,'seed','seed'
     );
+    INSERT INTO party_runtime.party_route_plans(
+      id,party_id,journey_owner_ref,journey_scope,request_kind,
+      planning_request_id,path_query_digest,option_id,knowledge_scope,
+      source_endpoint_snapshot,target_request,resolved_factual_target_ref,
+      target_resolution_dependency_pins,world_revision_id,catalog_digest,
+      planning_algorithm_version,planning_state_version,
+      planning_context_dependency_pins,canonical_serialization_digest,
+      created_change_set_id,lifecycle_change_set_id,created_at_turn
+    ) VALUES (
+      'legacy-plan','legacy-party','{"entity_kind":"actor","entity_id":"legacy-actor"}',
+      'world_travel','ordinary','legacy-request','legacy-query','legacy-option',
+      'factual','{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+      '{"target":"legacy-to"}','{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+      '{"pins":[]}','world','catalog','legacy-algorithm',1,'{"pins":[]}',
+      'legacy-plan-digest','seed','seed',0
+    );
+    INSERT INTO party_runtime.party_route_plan_steps(
+      route_plan_id,ordinal,step_kind,departure_endpoint_snapshot,
+      arrival_endpoint_snapshot,static_contract_snapshot
+    ) VALUES (
+      'legacy-plan',0,'timed_traversal',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+      '{"snapshot_kind":"timed_traversal"}'
+    );
+    INSERT INTO party_runtime.party_route_plan_executions(
+      id,party_id,route_plan_id,journey_owner_ref,journey_scope,status,
+      current_step_ordinal,current_endpoint_ref,updated_change_set_id
+    ) VALUES (
+      'legacy-execution','legacy-party','legacy-plan',
+      '{"entity_kind":"actor","entity_id":"legacy-actor"}',
+      'world_travel','planned',0,
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}','seed'
+    );
+    INSERT INTO party_runtime.party_route_plan_execution_events(
+      execution_id,event_ordinal,event_kind,to_status,step_ordinal,
+      location_snapshot,change_set_id,idempotency_record_id,occurred_at_turn
+    ) VALUES (
+      'legacy-execution',0,'planned','planned',0,'{}','seed','legacy-planned',0
+    );
+    INSERT INTO party_runtime.traveller_travel_states(
+      id,party_id,route_plan_execution_id,plan_step_ordinal,movement_carrier_ref,
+      segment_progress_ppm,cumulative_actual_time_numerator,
+      cumulative_actual_time_denominator,navigation_state,last_confirmed_endpoint_ref,
+      status,closed_result,updated_change_set_id,closed_change_set_id
+    ) VALUES (
+      'legacy-travel','legacy-party','legacy-execution',0,
+      '{"entity_kind":"actor","entity_id":"legacy-actor"}',1000000,1,1,
+      'on_course','{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+      'closed','completed','legacy-travel-change','legacy-travel-close'
+    );
+    INSERT INTO party_runtime.party_traversal_interval_results(
+      id,route_plan_execution_id,plan_step_ordinal,interval_ordinal,
+      progress_before_ppm,planned_progress_after_ppm,actual_progress_after_ppm,
+      planned_time_numerator,planned_time_denominator,actual_time_numerator,
+      actual_time_denominator,cumulative_time_before_numerator,
+      cumulative_time_before_denominator,cumulative_time_after_numerator,
+      cumulative_time_after_denominator,crossed_whole_minute_boundaries,
+      clock_commit_mode,dynamic_snapshot,result_kind,result_code,
+      outcome_composition_policy_version,outcome_composition_trace_digest,
+      result_change_set_id,idempotency_record_id,occurred_at_turn
+    ) VALUES (
+      'legacy-interval','legacy-execution',0,0,999999,1000000,1000000,
+      1,1,1,1,0,1,1,1,1,'direct_party_clock','{}',
+      'segment_completed','legacy-completed','legacy-policy','legacy-trace',
+      'legacy-interval-change','legacy-interval-idem',0
+    );
   `);
 
   const baseline = await pool.query(`
@@ -87,6 +154,20 @@ test('038 adds local-line party schema without rewriting legacy connections', as
   `);
   const legacyBefore = baseline.rows[0];
   assert.equal(legacyBefore.count, 1);
+  const travelBefore = await pool.query(`
+    SELECT count(*)::integer AS count,
+      coalesce(jsonb_agg(to_jsonb(s) ORDER BY s.id), '[]'::jsonb) AS rows
+    FROM party_runtime.traveller_travel_states s
+  `);
+  assert.equal(travelBefore.rows[0].count, 1,
+    'the 001–037 fixture contains one existing travel state');
+  const intervalsBefore = await pool.query(`
+    SELECT count(*)::integer AS count,
+      coalesce(jsonb_agg(to_jsonb(r) ORDER BY r.id), '[]'::jsonb) AS rows
+    FROM party_runtime.party_traversal_interval_results r
+  `);
+  assert.equal(intervalsBefore.rows[0].count, 1,
+    'the 001–037 fixture contains one existing interval result');
   const preflight = await pool.query(`
     SELECT count(*)::integer AS total,
       count(*) FILTER (WHERE cost_kind='action')::integer AS legacy_action,
@@ -108,6 +189,156 @@ test('038 adds local-line party schema without rewriting legacy connections', as
   `);
   assert.deepEqual(legacyAfter.rows[0], legacyBefore,
     '038 must preserve legacy action-cost rows and row count exactly');
+  const travelAfter = await pool.query(`
+    SELECT count(*)::integer AS count,
+      coalesce(jsonb_agg(to_jsonb(s) - 'mirrored' ORDER BY s.id), '[]'::jsonb) AS rows
+    FROM party_runtime.traveller_travel_states s
+  `);
+  const intervalsAfter = await pool.query(`
+    SELECT count(*)::integer AS count,
+      coalesce(jsonb_agg(to_jsonb(r) - ARRAY['travel_state_id','turn_back']::text[]
+        ORDER BY r.id), '[]'::jsonb) AS rows
+    FROM party_runtime.party_traversal_interval_results r
+  `);
+  assert.deepEqual(travelAfter.rows[0], {
+    count: travelBefore.rows[0].count,
+    rows: travelBefore.rows[0].rows.map((row) => Object.fromEntries(
+      Object.entries(row).filter(([key]) => key !== 'mirrored')
+    ))
+  }, '038 must preserve existing travel state payload and count');
+  assert.deepEqual(intervalsAfter.rows[0], {
+    count: intervalsBefore.rows[0].count,
+    rows: intervalsBefore.rows[0].rows.map((row) => row)
+  }, '038 must preserve existing interval payload and count');
+  assert.equal((await pool.query(`
+    SELECT travel_state_id FROM party_runtime.party_traversal_interval_results
+    WHERE id='legacy-interval'
+  `)).rows[0].travel_state_id, 'legacy-travel',
+  'legacy interval must be linked to its existing travel state');
+
+  await pool.query(migration);
+  assert.equal((await pool.query(`
+    SELECT count(*)::integer AS count FROM party_runtime.party_traversal_interval_results
+  `)).rows[0].count, 1, '038 must be safe to apply twice');
+
+  // A terminal row and its interval share a plan step with the legacy
+  // completed state. This also proves that closed states no longer reserve
+  // the step's single live-state slot and that interval ordinal 0 is local to
+  // each travel_state_id.
+  await insertTravelState(pool, {
+    id: 'returned-travel', executionId: 'legacy-execution', status: 'closed',
+    progress: 1_000_000, closedResult: 'returned_to_departure', mirrored: true,
+    changeSet: 'returned-state'
+  });
+  await insertInterval(pool, {
+    id: 'returned-interval', travelStateId: 'returned-travel',
+    executionId: 'legacy-execution', resultKind: 'returned_to_departure',
+    progressBefore: 500_000, plannedProgress: 1_000_000,
+    actualProgress: 1_000_000, turnBack: true, changeSet: 'returned-interval'
+  });
+  await insertTravelState(pool, {
+    id: 'zero-progress-interruption', executionId: 'legacy-execution',
+    status: 'closed', progress: 0, closedResult: 'interrupted_to_anchor',
+    changeSet: 'zero-progress-state'
+  });
+  await insertInterval(pool, {
+    id: 'zero-progress-interruption-interval',
+    travelStateId: 'zero-progress-interruption',
+    executionId: 'legacy-execution', resultKind: 'interrupted_at_anchor',
+    progressBefore: 0, plannedProgress: 333_333, actualProgress: 0,
+    changeSet: 'zero-progress-interval'
+  });
+  await insertTravelState(pool, {
+    id: 'resumed-travel', executionId: 'legacy-execution', status: 'active',
+    progress: 0, changeSet: 'resumed-state'
+  });
+  await insertInterval(pool, {
+    id: 'resumed-interval-zero', travelStateId: 'resumed-travel',
+    executionId: 'legacy-execution', resultKind: 'progressed',
+    progressBefore: 0, plannedProgress: 333_333,
+    actualProgress: 333_333, changeSet: 'resumed-interval'
+  });
+  await insertTravelState(pool, {
+    id: 'interval-check-travel', executionId: 'legacy-execution', status: 'closed',
+    progress: 400_000, closedResult: 'superseded', changeSet: 'interval-check-state'
+  });
+  for (const invalid of [
+    {
+      id: 'bad-turnback-blocked', resultKind: 'blocked_before_progress',
+      resultCode: 'blocked_before_progress', progressBefore: 100_000,
+      plannedProgress: 200_000, actualProgress: 100_000, turnBack: true
+    },
+    {
+      id: 'bad-turnback-zero', resultKind: 'progressed', resultCode: 'progressed',
+      progressBefore: 0, plannedProgress: 100_000,
+      actualProgress: 100_000, turnBack: true
+    },
+    {
+      id: 'bad-turnback-refusal', resultKind: 'progressed',
+      resultCode: 'turn_back_refused', progressBefore: 100_000,
+      plannedProgress: 200_000, actualProgress: 200_000, turnBack: false
+    },
+    {
+      id: 'bad-paused-zero', resultKind: 'paused_in_transit',
+      resultCode: 'paused_in_transit', progressBefore: 0,
+      plannedProgress: 200_000, actualProgress: 0, turnBack: false
+    }
+  ]) {
+    await assert.rejects(insertInterval(pool, {
+      ...invalid, travelStateId: 'interval-check-travel',
+      executionId: 'legacy-execution', changeSet: invalid.id
+    }), (error) => error?.code === '23514',
+    `${invalid.id} must violate the F.1.1 interval invariant`);
+  }
+  for (const [suffix, status, strandedReason] of [
+    ['active', 'active', null],
+    ['paused', 'paused_in_transit', null],
+    ['stranded', 'stranded_in_transit', 'lost']
+  ]) {
+    await assert.rejects(insertTravelState(pool, {
+      id: `duplicate-live-${suffix}`, executionId: 'legacy-execution', status,
+      progress: 0, strandedReason, changeSet: `duplicate-${suffix}`
+    }), (error) => error?.code === '23505',
+    `${status} must conflict with the existing open travel state`);
+  }
+
+  for (const invalid of [
+    {
+      id: 'bad-completed-mirrored', resultKind: 'completed',
+      progress: 1_000_000, mirrored: true
+    },
+    {
+      id: 'bad-return-unmirrored', resultKind: 'returned_to_departure',
+      progress: 1_000_000, mirrored: false
+    },
+    {
+      id: 'bad-return-short', resultKind: 'returned_to_departure',
+      progress: 999_999, mirrored: true
+    }
+  ]) {
+    await assert.rejects(insertTravelState(pool, {
+      id: invalid.id, executionId: 'legacy-execution', status: 'closed',
+      progress: invalid.progress, closedResult: invalid.resultKind,
+      mirrored: invalid.mirrored, changeSet: invalid.id
+    }), (error) => error?.code === '23514',
+    `${invalid.id} must violate the terminal mirrored/progress check`);
+  }
+
+  await assertWaitStartedScenario(pool, {
+    suffix: 'returned', resultKind: 'returned_to_departure',
+    progressBefore: 500_000, actualProgress: 1_000_000,
+    closedResult: 'returned_to_departure', expectAccepted: true
+  });
+  await assertWaitStartedScenario(pool, {
+    suffix: 'interrupted-zero', resultKind: 'interrupted_at_anchor',
+    progressBefore: 0, actualProgress: 0,
+    closedResult: 'interrupted_to_anchor', expectAccepted: true
+  });
+  await assertWaitStartedScenario(pool, {
+    suffix: 'interrupted-positive', resultKind: 'interrupted_at_anchor',
+    progressBefore: 333_333, actualProgress: 333_333,
+    closedResult: 'interrupted_to_anchor', expectAccepted: false
+  });
 
   const lineColumns = await pool.query(`
     SELECT column_name, is_nullable
@@ -217,6 +448,11 @@ test('038 adds local-line party schema without rewriting legacy connections', as
   `);
   assert.ok(appendOnly.rows.some((row) => row.fires_update && row.fires_delete),
     'interval history must reject UPDATE and DELETE');
+  await assert.rejects(pool.query(`
+    UPDATE party_runtime.party_traversal_interval_results
+    SET result_code='rewritten' WHERE id='legacy-interval'
+  `), (error) => error?.code === 'P0001',
+  'the temporary travel_state_id backfill exception must not remain after 038');
 });
 
 async function waitForPostgres(name) {
@@ -249,4 +485,184 @@ async function constraintDefinitions(pool, table) {
     WHERE conrelid=format('party_runtime.%I', $1::text)::regclass
   `, [table]);
   return result.rows.map((row) => row.definition).join('\n');
+}
+
+async function insertTravelState(pool, {
+  id, executionId, status, progress, closedResult = null, mirrored = false,
+  strandedReason = null, changeSet
+}) {
+  return pool.query(`
+    INSERT INTO party_runtime.traveller_travel_states(
+      id,party_id,route_plan_execution_id,plan_step_ordinal,movement_carrier_ref,
+      segment_progress_ppm,cumulative_actual_time_numerator,
+      cumulative_actual_time_denominator,navigation_state,last_confirmed_endpoint_ref,
+      status,stranded_reason_code,closed_result,mirrored,updated_change_set_id,
+      closed_change_set_id
+    ) VALUES (
+      $1,'legacy-party',$2,0,'{"entity_kind":"actor","entity_id":"legacy-actor"}',
+      $3,0,1,'on_course',
+      '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+      $4,$5,$6,$7,$8,CASE WHEN $4='closed' THEN $8 ELSE NULL END
+    )
+  `, [id, executionId, progress, status, strandedReason, closedResult, mirrored, changeSet]);
+}
+
+async function insertInterval(pool, {
+  id, travelStateId, executionId, resultKind, progressBefore,
+  plannedProgress, actualProgress, resultCode = resultKind,
+  turnBack = false, changeSet
+}) {
+  return pool.query(`
+    INSERT INTO party_runtime.party_traversal_interval_results(
+      id,travel_state_id,route_plan_execution_id,plan_step_ordinal,
+      interval_ordinal,progress_before_ppm,planned_progress_after_ppm,
+      actual_progress_after_ppm,planned_time_numerator,planned_time_denominator,
+      actual_time_numerator,actual_time_denominator,cumulative_time_before_numerator,
+      cumulative_time_before_denominator,cumulative_time_after_numerator,
+      cumulative_time_after_denominator,crossed_whole_minute_boundaries,
+      clock_commit_mode,dynamic_snapshot,result_kind,result_code,
+      outcome_composition_policy_version,outcome_composition_trace_digest,
+      interruption_anchor_id,turn_back,result_change_set_id,idempotency_record_id,
+      occurred_at_turn
+    ) VALUES (
+      $1,$2,$3,0,0,$4,$5,$6,1,1,1,1,0,1,1,1,1,
+      'direct_party_clock','{}',$7,$8,'test-policy','test-trace',
+      CASE WHEN $7='interrupted_at_anchor' THEN 'legacy-from' ELSE NULL END,
+      $9,$10,$11,1
+    )
+  `, [
+    id, travelStateId, executionId, progressBefore, plannedProgress,
+    actualProgress, resultKind, resultCode, turnBack, changeSet, `${id}-idem`
+  ]);
+}
+
+async function assertWaitStartedScenario(pool, {
+  suffix, resultKind, progressBefore, actualProgress, closedResult,
+  expectAccepted
+}) {
+  const executionId = `wait-${suffix}-execution`;
+  const planId = `wait-${suffix}-plan`;
+  const travelId = `wait-${suffix}-travel`;
+  const intervalId = `wait-${suffix}-interval`;
+  const stateChangeSet = `${suffix}-state`;
+  const activationChangeSet = `${suffix}-activation`;
+  const waitChangeSet = `${suffix}-wait`;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(`
+      INSERT INTO party_runtime.party_route_plans(
+        id,party_id,journey_owner_ref,journey_scope,request_kind,
+        planning_request_id,path_query_digest,option_id,knowledge_scope,
+        source_endpoint_snapshot,target_request,resolved_factual_target_ref,
+        target_resolution_dependency_pins,world_revision_id,catalog_digest,
+        planning_algorithm_version,planning_state_version,
+        planning_context_dependency_pins,canonical_serialization_digest,
+        created_change_set_id,lifecycle_change_set_id,created_at_turn
+      ) VALUES (
+        $1,'legacy-party','{"entity_kind":"actor","entity_id":"legacy-actor"}',
+        'world_travel','ordinary',$1,$1,$1,'factual',
+        '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+        '{"target":"legacy-to"}',
+        '{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+        '{}','world','catalog','test-algorithm',1,'{}',$1,$2,$2,0
+      );
+    `, [planId, 'seed']);
+    await client.query(`
+      INSERT INTO party_runtime.party_route_plan_steps(
+        route_plan_id,ordinal,step_kind,departure_endpoint_snapshot,
+        arrival_endpoint_snapshot,static_contract_snapshot
+      ) VALUES (
+        $1,0,'timed_traversal',
+        '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+        '{"endpoint_kind":"scene_position","endpoint_id":"legacy-to"}',
+        '{"snapshot_kind":"timed_traversal"}'
+      );
+    `, [planId]);
+    await client.query(`
+      INSERT INTO party_runtime.party_route_plan_executions(
+        id,party_id,route_plan_id,journey_owner_ref,journey_scope,status,
+        current_step_ordinal,current_endpoint_ref,updated_change_set_id
+      ) VALUES (
+        $3,'legacy-party',$1,
+        '{"entity_kind":"actor","entity_id":"legacy-actor"}',
+        'world_travel','planned',0,
+        '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',$2
+      );
+    `, [planId, 'seed', executionId]);
+    await client.query(`
+      INSERT INTO party_runtime.party_route_plan_execution_events(
+        execution_id,event_ordinal,event_kind,to_status,step_ordinal,
+        location_snapshot,change_set_id,idempotency_record_id,occurred_at_turn
+      ) VALUES ($1,0,'planned','planned',0,'{}',$2,$2,0)
+    `, [executionId, 'seed']);
+    await insertTravelState(client, {
+      id: travelId, executionId, status: 'active', progress: actualProgress,
+      changeSet: stateChangeSet
+    });
+    await client.query(`
+      UPDATE party_runtime.party_route_plan_executions
+      SET status='active',current_endpoint_ref=NULL,active_travel_state_id=$1,
+        started_at_turn=0,state_version=2,updated_change_set_id=$2
+      WHERE id=$3
+    `, [travelId, activationChangeSet, executionId]);
+    await client.query(`
+      INSERT INTO party_runtime.party_route_plan_execution_events(
+        execution_id,event_ordinal,event_kind,from_status,to_status,step_ordinal,
+        location_snapshot,change_set_id,idempotency_record_id,occurred_at_turn
+      ) VALUES (
+        $1,1,'activated','planned','active',0,'{}',$2,$2,0
+      )
+    `, [executionId, activationChangeSet]);
+    await insertInterval(client, {
+      id: intervalId, travelStateId: travelId, executionId, resultKind,
+      progressBefore, plannedProgress: 1_000_000, actualProgress,
+      changeSet: waitChangeSet
+    });
+    await client.query(`
+      UPDATE party_runtime.traveller_travel_states
+      SET status='closed',segment_progress_ppm=$1,closed_result=$2,
+        mirrored=($2='returned_to_departure'),closed_change_set_id=$3,
+        updated_change_set_id=$3,state_version=state_version+1
+      WHERE id=$4
+    `, [actualProgress, closedResult, waitChangeSet, travelId]);
+    await client.query(`
+      UPDATE party_runtime.party_route_plan_executions
+      SET status='waiting_at_anchor',current_endpoint_ref=
+        '{"endpoint_kind":"scene_position","endpoint_id":"legacy-from"}',
+        active_travel_state_id=NULL,state_version=3,updated_change_set_id=$1
+      WHERE id=$2
+    `, [waitChangeSet, executionId]);
+    await client.query(`
+      INSERT INTO party_runtime.party_route_plan_execution_events(
+        execution_id,event_ordinal,event_kind,from_status,to_status,step_ordinal,
+        location_snapshot,causal_result_ref,change_set_id,idempotency_record_id,
+        occurred_at_turn
+      ) VALUES (
+        $1,2,'wait_started','active','waiting_at_anchor',0,'{}',
+        jsonb_build_object('entity_kind','party_traversal_interval_result',
+          'entity_id',$2::text),$3,$4,1
+      )
+    `, [executionId, intervalId, waitChangeSet, `${intervalId}-idem`]);
+    let causalError = null;
+    try {
+      await client.query('SET CONSTRAINTS party_runtime.v3_execution_event_causal IMMEDIATE');
+    } catch (error) {
+      causalError = error;
+    }
+    if (expectAccepted) {
+      assert.equal(causalError, null,
+        `wait_started must accept ${resultKind} at progress ${actualProgress}`);
+      await client.query('COMMIT');
+    } else {
+      assert.equal(causalError?.code, 'P0001',
+        `wait_started must reject ${resultKind} at progress ${actualProgress}`);
+      await client.query('ROLLBACK');
+    }
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
 }

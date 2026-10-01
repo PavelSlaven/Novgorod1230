@@ -18,6 +18,7 @@
 | 6. Роль LLM | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 7. Роль кода | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 8. Самостоятельный мир, NPC и время | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
+| 8.1. Сценарии внутри свободного мира (добавлен после переноса) | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 9. Реализм и историческая рамка | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 9.1. Материализуемый мир (добавлен после переноса) | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 10. Материализация мира | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |

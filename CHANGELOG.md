@@ -2,9 +2,12 @@
 
 ## Unreleased
 
-- fix(turn): gate2-2 intercepts reality-limited achieved empty direct plans before semantic audit, cleans repair-selected not_achieved metadata and traces only accepted-attempt canonicalizations (LW-103 updated)
-
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
+
+- docs(governance): PC §8.1 — a scenario is a plot laid through the free world: it defines only plot NPCs, facts, scenes, items and completion; it owns no mechanics (time, body, combat, checks, perception, conversation, knowledge and lies, materialization, ownership, movement stay with their general owners and work the same inside and outside a scenario); finishing a plot does not end the game (owner decision D66) (#226)
+- docs(governance): PC §4/§9.1 — anachronism is excluded only from world stock; an actor’s making and invention are decided causally (materials, tool, skill, workable process), not by an anachronism list (D59) (#218)
+- docs(sprint, process): CURRENT_SPRINT and HOW_WE_WORK brought to owner decisions D51–D57 and the next step of the D49 slice (#217)
+- fix(turn): gate2-2 intercepts reality-limited achieved empty direct plans before semantic audit, cleans repair-selected not_achieved metadata and traces only accepted-attempt canonicalizations (LW-103 updated)
 - fix(test): PostgreSQL test containers are awaited over TCP (pg_isready -h 127.0.0.1) so the temporary initdb server is no longer taken for ready; fixes Stage24 line 92 and the same race in 26 fixtures (#98)
 - fix(test): orphan test-container reaper is PID-namespace aware — removes only dead owners from its own namespace; foreign-namespace, legacy pid-only and unreadable owner labels are kept (fail-closed), so parallel PG runs are no longer killed (#98)
 - data(start-types): D62 — сад, бортничество и каменоломня «не применим по имеющимся данным», песок — кандидат; evidence-tooling; только кандидат, без активации

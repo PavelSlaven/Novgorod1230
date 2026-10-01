@@ -38,6 +38,16 @@ export function exitCodeOf(legs) {
   return legs.every(({ status }) => status === 'pass') ? 0 : 1;
 }
 
+/** D49's minimum slice uses either material path while strict acceptance still requires all six legs. */
+export function d49MinimumOf(legs) {
+  const byId = new Map(legs.map(({ id, status }) => [id, status]));
+  const core = ['start', 'walk', 'meet', 'talk'];
+  const itemLeg = ['take', 'make'].find((id) => byId.get(id) === 'pass') ?? null;
+  const requiredPass = core.every((id) => byId.get(id) === 'pass');
+  const anyProgress = [...core, 'take', 'make'].some((id) => byId.get(id) === 'pass');
+  return { status: requiredPass && itemLeg ? 'PASS' : (anyProgress ? 'PARTIAL' : 'FAIL'), item_leg: itemLeg };
+}
+
 const fence = (value) => `\`\`\`\n${value}\n\`\`\``;
 const quote = (value) => String(value ?? '').split('\n').map((line) => `> ${line}`).join('\n');
 const json = (value) => JSON.stringify(value);
@@ -117,7 +127,9 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     if (leg.detail) out.push(`- **${LEG_TITLES[leg.id]}**: ${leg.detail}`);
   }
   if (infraError) out.push('', `- Сбой стенда: ${infraError}`);
-  out.push('', '## Result', '', `**${verdict}**: ${legs.map((leg) => `${LEG_TITLES[leg.id]} — ${leg.status}`).join('; ')}.`, '');
+  const d49 = d49MinimumOf(legs);
+  out.push('', '## Result', '', `D49 minimum (start, walk, meet, talk и take или make): **${d49.status}**${d49.item_leg ? `; путь предмета — ${LEG_TITLES[d49.item_leg]}` : '; путь предмета не пройден'}.`,
+    '', `Строгий результат: **${verdict}**: ${legs.map((leg) => `${LEG_TITLES[leg.id]} — ${leg.status}`).join('; ')}.`, '');
   return redact(out.join('\n'));
 }
 

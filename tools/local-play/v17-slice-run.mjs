@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { LEG_IDS, createRedactor, exitCodeOf, playtestFileName, renderPlaytestMarkdown,
+import { LEG_IDS, createRedactor, d49MinimumOf, exitCodeOf, playtestFileName, renderPlaytestMarkdown,
   secretsOfLlmSettings } from './v17-slice-report.js';
 import { RESERVE_MAKE_TURNS, runLegs } from './v17-slice-legs.js';
 
@@ -94,13 +94,14 @@ export async function readLlmSettingsRecord(path, { load }) {
 
 const SNAPSHOT_SQL = `
 WITH me AS (
-  SELECT n.id AS node_id, n.template_slot_key AS slot, n.g6_instance_id AS g6
+  SELECT n.id AS node_id, n.template_slot_key AS slot, n.g6_instance_id AS g6, a.character_id AS player_character_id
     FROM party_runtime.party_journey_locations l
     JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
     JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
    WHERE l.party_id=$1 AND l.owner_kind='actor')
 SELECT
   (SELECT state_version FROM party_runtime.parties WHERE party_id=$1) AS state_version,
+  (SELECT jsonb_build_object('entity_kind', 'player_character', 'entity_id', me.player_character_id) FROM me) AS player_character_ref,
   (SELECT jsonb_build_object('slot', me.slot, 'site_id', s.id, 'origin', s.origin,
       'canonical_g5', COALESCE(s.canonical_g5_ref->>'entity_id', s.canonical_g5_ref->>'id'),
       'generated_template', s.generated_template_ref)
@@ -290,7 +291,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   let queue = Promise.resolve();
   const write = async () => {
     await mkdir(options.outDir, { recursive: true });
-    const summary = { ...report, llm: summarizeLlm(meter?.calls ?? []) };
+    const summary = { ...report, d49_minimum: d49MinimumOf(report.legs), llm: summarizeLlm(meter?.calls ?? []) };
     await writeFile(join(options.outDir, 'report.json'), redact(JSON.stringify(summary, null, 1)));
   };
   const persist = () => { queue = queue.then(write, write); return queue; }; // serialized: no interleaved writes
@@ -345,6 +346,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
       await writeFile(join(options.outDir, 'playtest.md'), renderPlaytestMarkdown(report, redact));
     }
   } catch (error) { report.infra_error ??= `report: ${error.message}`; if (code === EXIT.PASS) code = EXIT.STAND; }
+  report.d49_minimum = d49MinimumOf(report.legs);
   report.cleanup_errors = await finalizers.run();
   return { code, report };
 }

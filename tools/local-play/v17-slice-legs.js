@@ -133,17 +133,24 @@ export async function runLegs({
   const visited = new Map(); // site_id -> place name
   const tried = new Map(); // positionKey -> Map(label -> count)
   const looked = new Map(); // positionKey -> looks done; a second look is cheap and shows whether the first was a fluke
-  const seen = { npc: null, source: null };
+  const seen = { npc: null, hiddenNpc: null, source: null };
   let stuck = 0;
+  let startSiteId = null;
+  let walkedOut = false;
   const exploreEnd = { reason: null };
 
   const noteHere = () => {
     const snap = last.snap;
     if (snap?.position?.site_id) visited.set(snap.position.site_id, placeName(snap));
+    if (snap?.position?.site_id && startSiteId != null && snap.position.site_id !== startSiteId) walkedOut = true;
+    if (!walkedOut) return;
     const people = npcsHere(snap);
-    if (seen.npc == null && (people.length > 0 || peopleOf(last.screen).length > 0)) {
-      seen.npc = { place: placeName(snap), labels: peopleOf(last.screen), sql_npcs: people.map((row) => row.entity_id) };
+    const visiblePeople = peopleOf(last.screen);
+    if (seen.npc == null && visiblePeople.length > 0) {
+      seen.npc = { place: placeName(snap), site_id: snap.position.site_id, labels: visiblePeople, sql_npcs: people.map((row) => row.entity_id) };
     }
+    if (seen.hiddenNpc == null && visiblePeople.length === 0 && people.length > 0)
+      seen.hiddenNpc = { place: placeName(snap), count: people.length };
     if (seen.source == null && liveNodes(snap).length > 0) seen.source = { place: placeName(snap), nodes: liveNodes(snap).map((row) => row.resource_node_id) };
   };
 
@@ -152,18 +159,30 @@ export async function runLegs({
     // the screen label is a nominative noun: quote it instead of inflecting it
     const phrases = [label && label !== 'человек' ? `Здороваюсь с человеком «${label}» и спрашиваю, как его зовут.`
       : 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Здравствуй! Кто ты, добрый человек?'];
-    let reason = 'ход закоммичен, реплики NPC нет';
+    let reason = 'ход закоммичен, сохранённого ответа NPC игроку нет';
     for (const text of phrases) {
       if (exploreBudget() <= 0) { reason = 'бюджет ходов исчерпан'; break; }
       if (npcsHere(last.snap).length === 0 && peopleOf(last.screen).length === 0) { reason = 'собеседник ушёл с места'; break; }
       const turn = await play('talk', text);
-      const gained = (turn.after?.npc_statements?.length ?? 0) - (turn.before?.npc_statements?.length ?? 0);
-      if (gained > 0) {
-        const reply = turn.after.npc_statements.at(-1);
-        set('talk', 'pass', `реплика NPC записана (+${gained})`, `последняя реплика NPC в снимке: ${JSON.stringify(reply).slice(0, 600)}`);
+      const priorIds = new Set((turn.before?.npc_statements ?? []).map((statement) => statement.statement_id).filter(Boolean));
+      const playerRef = turn.after?.player_character_ref;
+      const reply = (turn.after?.npc_statements ?? []).find((statement) => statement.statement_id
+        && !priorIds.has(statement.statement_id)
+        && statement.speaker_ref?.entity_kind === 'npc'
+        && statement.dominant_act === 'answer'
+        && typeof statement.utterance_text === 'string'
+        && statement.utterance_text.trim() !== ''
+        && playerRef?.entity_kind === 'player_character'
+        && typeof playerRef.entity_id === 'string'
+        && (statement.intended_addressee_refs ?? []).some((ref) =>
+          ref.entity_kind === 'player_character' && ref.entity_id === playerRef.entity_id));
+      if (reply) {
+        const utterance = reply.utterance_text.replace(/\s+/gu, ' ').slice(0, 600);
+        set('talk', 'pass', 'сохранённый ответ NPC адресован персонажу игрока',
+          `ответ NPC в снимке: «${utterance}»; оценка имени и характера остаётся наблюдением плейтеста`);
         return;
       }
-      reason = turn.error ? `ход не прошёл: ${turn.error.code}` : (turn.committed ? 'ход закоммичен, реплики NPC в снимке нет' : 'ход не закоммичен');
+      reason = turn.error ? `ход не прошёл: ${turn.error.code}` : (turn.committed ? 'ход закоммичен, ответа NPC игроку в снимке нет' : 'ход не закоммичен');
     }
     set('talk', 'fail', reason);
   }
@@ -188,6 +207,7 @@ export async function runLegs({
   const done = (id) => legs[id].status !== 'blocked' || legs[id].reason !== 'не достигнута';
   try {
     await refresh();
+    startSiteId = last.snap?.position?.site_id ?? null;
     for (;;) {
       noteHere();
       if (seen.npc && !done('talk')) { try { await attemptTalk(); } catch (error) { if (error instanceof Blocked) throw error; set('talk', 'fail', error.message); } noteHere(); }
@@ -221,8 +241,10 @@ export async function runLegs({
   if (visited.size >= 2) set('walk', 'pass', `места Вихтуя по ходу: ${places.join(' → ')}`, walkNote);
   else if (state.turns.some(({ leg }) => leg === 'walk')) set('walk', 'fail', `игрок не покинул стартовое место (${exploreEnd.reason ?? 'ходы без перехода'})`, walkNote);
   else set('walk', 'blocked', exploreEnd.reason ?? 'ходов движения не было');
-  if (seen.npc) set('meet', 'pass', `на месте ${seen.npc.place}: ${seen.npc.labels.join(', ') || `NPC по SQL ${seen.npc.sql_npcs.join(', ')}`}`,
+  if (seen.npc) set('meet', 'pass', `на месте ${seen.npc.place}: ${seen.npc.labels.join(', ')}`,
     `на экране: ${seen.npc.labels.map((label) => `«${label}»`).join(', ') || 'панель людей пуста'}; NPC в G6 игрока по SQL: ${seen.npc.sql_npcs.length}`);
+  else if (seen.hiddenNpc) set('meet', 'fail', `на месте ${seen.hiddenNpc.place} SQL видит NPC, но панель людей пуста`,
+    `NPC-размещений по SQL: ${seen.hiddenNpc.count}; на экране: панель людей пуста`);
   else set('meet', 'blocked', `ни одного видимого NPC на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`,
     `NPC-размещений во всей партии по SQL: ${last?.snap?.npc_placements_all?.length ?? '?'}`);
   if (!done('talk')) set('talk', 'blocked', seen.npc ? `собеседник виден, но разговор не начат (${exploreEnd.reason})` : 'нет видимого NPC: meet не пройден');

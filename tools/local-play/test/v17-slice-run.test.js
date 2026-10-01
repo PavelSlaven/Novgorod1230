@@ -152,7 +152,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : w.site === 'B' ? 'forest_path' : 'river_bank'}` },
     placements_here: npcHere() && !hideSqlPeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
     items: items(), party_items: w.made, npc_statements: w.statements,
-    resource_nodes: resourceSites.filter((site) => site === w.site).map((site) => ({
+    resource_nodes: resourceSites.map((site) => ({
       resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
     })) });
   const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']

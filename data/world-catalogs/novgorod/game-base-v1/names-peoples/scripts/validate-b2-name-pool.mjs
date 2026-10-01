@@ -12,6 +12,7 @@ const PEOPLE_PATH = path.join(GROUP_DIR, "peoples_origins", "peoples_origins.csv
 const IMPORT_CONTRACT_PATH = path.join(NAMES_DIR, "b2-import-contract.json");
 const SOURCE_PATH = path.join(NAMES_DIR, "b2-name-pool-source.json");
 const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
+const NAMES_GAPS_PATH = path.join(NAMES_DIR, "names-gaps-additions.json");
 const REPORT_PATH = path.join(NAMES_DIR, "name-pool-report.json");
 const SOCIAL_PATH = path.resolve(GROUP_DIR, "..", "social-strata-law", "social_strata_legal_status", "roles", "new_role_candidates.tsv");
 const CLASSES = new Set(["ordinary", "monastic", "dynastic", "significant"]);
@@ -59,8 +60,9 @@ function normalizedAlias(value) { return normalizedName(value).replace(/[ьъ]/g
 
 function sha256(value) { return crypto.createHash("sha256").update(value).digest("hex"); }
 
-export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, snapshotContents, poolHeader, entryHeader }) {
+export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, namesGaps, snapshotContents, poolHeader, entryHeader }) {
   const errors = [];
+  if (namesGaps.schema !== "novgorod.game_base.names_gaps_additions.v1" || namesGaps.status !== "candidate" || !Array.isArray(namesGaps.entries) || namesGaps.entries.length !== 0 || !Array.isArray(namesGaps.gap_overrides) || namesGaps.gap_overrides.length !== 12) errors.push("invalid names-gaps authoring scope");
   const expectedPoolHeader = importContract.tables["world_base.region_name_pools"].csv_columns;
   const expectedEntryHeader = importContract.tables["world_base.region_name_pool_entries"].csv_columns;
   if (!sameArray(poolHeader, expectedPoolHeader)) errors.push(`wrong pool header: ${poolHeader.join(",")}`);
@@ -194,7 +196,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     const exclusion = entryExclusions.get(row.id);
     if (exclusion) {
       const gap = report.typed_gaps.find((item) => item.gap_id === exclusion.gap_id);
-      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || exclusion.gap_type !== "people_ref_unresolved" || !gap || gap.reason !== exclusion.reason || gap.provenance_ref !== exclusion.provenance_ref) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
+      const reviewedGap = namesGaps.gap_overrides.find((item) => item.gap_id === exclusion.gap_id);
+      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || exclusion.gap_type !== "people_ref_unresolved" || !gap || gap.reason !== (reviewedGap?.reason ?? exclusion.reason) || gap.provenance_ref !== exclusion.provenance_ref) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
       continue;
     }
     if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${row.id}: D46 name missing from merged entry`);
@@ -303,6 +306,35 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   }
   const reportGapIds = new Set(report.typed_gaps.map((gap) => gap.gap_id));
   for (const gap of d46.name_gaps) if (!reportGapIds.has(gap.gap_id)) errors.push(`${gap.name_form}: D46 typed gap missing from report`);
+  const gapOverrideIds = new Set();
+  for (const gap of namesGaps.gap_overrides ?? []) {
+    if (!gap.gap_id || gapOverrideIds.has(gap.gap_id) || !gap.reason || !Array.isArray(gap.evidence_refs) || !gap.evidence_refs.length) errors.push(`${gap.gap_id ?? "unknown"}: invalid names-gaps rationale`);
+    gapOverrideIds.add(gap.gap_id);
+    const reportGap = report.typed_gaps.find((item) => item.gap_id === gap.gap_id);
+    if (!reportGap || reportGap.gap_type !== gap.gap_type || reportGap.people_ref !== gap.people_ref || reportGap.sex_category !== gap.sex_category || reportGap.selection_class !== gap.selection_class || reportGap.reason !== gap.reason || !reportGap.review_refs?.includes(`game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=${gap.gap_id}`)) errors.push(`${gap.gap_id}: names-gaps rationale missing from report`);
+    if (gap.gap_type === "ordinary_pool_below_10") {
+      const count = entries.filter((row) => row.people_ref === gap.people_ref && row.sex_category === gap.sex_category && row.selection_class === "ordinary").length;
+      if (gap.current_count !== count || gap.required_count !== 10 || count >= 10) errors.push(`${gap.gap_id}: names-gaps ordinary count mismatch`);
+    } else if (gap.gap_type !== "people_ref_unresolved" || gap.name_form !== "Иголанд" || gap.people_ref !== "pp_fg005") errors.push(`${gap.gap_id}: unknown names-gaps type`);
+  }
+  const applicability = namesGaps.v17_applicability;
+  const expectedPeople = ["pp_fg001", "pp_fg002", "pp_korela", "pp_izhora", "pp_chud_est", "pp_smolyane"];
+  const expectedPairs = new Set(expectedPeople.flatMap((peopleRef) => [...SEXES].map((sex) => `${peopleRef}|${sex}`)));
+  const applicabilityPairs = applicability?.pairs ?? [];
+  const applicabilityKeys = applicabilityPairs.map((row) => `${row.people_ref}|${row.sex_category}`);
+  if (!applicability?.scope || !applicability?.runtime_status || applicabilityPairs.length !== expectedPairs.size || new Set(applicabilityKeys).size !== applicabilityKeys.length || applicabilityKeys.some((key) => !expectedPairs.has(key)) || expectedPairs.size !== applicabilityKeys.length) errors.push("invalid names-gaps applicability matrix");
+  for (const row of applicabilityPairs) {
+    if (!['yes', 'no', 'only_outside_slice'].includes(row.needed_in_v17) || !row.basis || !Array.isArray(row.evidence_refs) || !row.evidence_refs.length || !Array.isArray(row.contexts) || (row.needed_in_v17 === "yes" ? !row.contexts.length : row.contexts.length > 0)) errors.push(`${row.people_ref}|${row.sex_category}: invalid names-gaps applicability rationale`);
+  }
+  const calendarRows = namesGaps.calendar_rule_review ?? [];
+  if (!Array.isArray(calendarRows) || !calendarRows.length || calendarRows.some((row) => {
+    const source = /^book:(\d+) §(\d+)$/.exec(row.source_ref ?? "");
+    const quote = String(row.quote ?? "").replace(/^…|…$/gu, "");
+    const citedEvidence = source && additionalEvidenceRows.some((evidenceRow) => evidenceRow.book_id === source[1] && evidenceRow.para_no === source[2] && evidenceRow.quote.includes(quote));
+    const existingEntry = entries.some((entry) => entry.name_form === row.name_form && entry.people_ref === row.people_ref && entry.sex_category === row.sex_category && entry.selection_class === "ordinary");
+    return row.status !== "existing_entry_not_new_proposal" || !row.name_form || !row.people_ref || !row.sex_category || row.basis !== "calendar_rule" || !row.confidence || !row.period_cap || !citedEvidence || !existingEntry;
+  })) errors.push("invalid names-gaps calendar-rule review");
+  if (report.names_gaps_additions?.candidate_entries !== namesGaps.entries.length || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
   return errors;
 }
 
@@ -341,6 +373,9 @@ function selfTest(base) {
     ["Igoland gap missing", (copy) => { copy.report.typed_gaps = copy.report.typed_gaps.filter((gap) => gap.gap_id !== "gap_personal_names_pp_fg005_igoland_origin"); }, /invalid typed exclusion/],
     ["additional source form absent", (copy) => { copy.source.additional_entries[0].source_form = "не засвидетельствовано"; }, /unresolved additional evidence source/],
     ["additional entry changed", (copy) => { copy.entries.find((row) => row.id === "nov_name_korela_valit_v1").name_form = "Валентин"; }, /additional evidence entry missing or changed/],
+    ["names-gaps rationale missing", (copy) => { copy.namesGaps.gap_overrides[0].reason = ""; }, /invalid names-gaps rationale/],
+    ["names-gaps applicability missing", (copy) => { copy.namesGaps.v17_applicability.pairs.pop(); }, /invalid names-gaps applicability matrix/],
+    ["names-gaps calendar citation mismatch", (copy) => { copy.namesGaps.calendar_rule_review[0].source_ref = "book:641352 §1931"; }, /invalid names-gaps calendar-rule review/],
     ["invalid pool date", (copy) => { copy.pools[0].valid_to = "1229-12-31"; }, /invalid validity interval/],
     ["unknown pool region", (copy) => { copy.pools[0].region_id = "region_unknown"; }, /unknown region_id/],
     ["missing pool provenance", (copy) => { copy.report.pool_provenance_ref = ""; }, /missing pool provenance_ref/],
@@ -419,6 +454,7 @@ function selfTest(base) {
 const importContract = JSON.parse(fs.readFileSync(IMPORT_CONTRACT_PATH, "utf8"));
 const source = JSON.parse(fs.readFileSync(SOURCE_PATH, "utf8"));
 const d46 = JSON.parse(fs.readFileSync(D46_PATH, "utf8"));
+const namesGaps = JSON.parse(fs.readFileSync(NAMES_GAPS_PATH, "utf8"));
 const snapshotContents = Object.fromEntries(Object.values(d46.snapshots).map((snapshot) => [snapshot.path, fs.readFileSync(path.join(GROUP_DIR, snapshot.path), "utf8")]));
 const base = {
   pools: rows(path.join(NAMES_DIR, "name_pools.csv")),
@@ -433,6 +469,7 @@ const base = {
   importContract,
   source,
   d46,
+  namesGaps,
   snapshotContents,
   poolHeader: header(path.join(NAMES_DIR, "name_pools.csv")),
   entryHeader: header(path.join(NAMES_DIR, "name_pool_entries.csv")),

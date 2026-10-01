@@ -7,6 +7,7 @@ const GROUP_DIR = path.resolve(SCRIPT_DIR, "..");
 const NAMES_DIR = path.join(GROUP_DIR, "personal_names");
 const SOURCE_PATH = path.join(NAMES_DIR, "b2-name-pool-source.json");
 const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
+const NAMES_GAPS_PATH = path.join(NAMES_DIR, "names-gaps-additions.json");
 const IMPORT_CONTRACT_PATH = path.join(NAMES_DIR, "b2-import-contract.json");
 const PEOPLE_PATH = path.join(GROUP_DIR, "peoples_origins", "peoples_origins.csv");
 const POOLS_OUT = path.join(NAMES_DIR, "name_pools.csv");
@@ -100,6 +101,7 @@ function orderedUnique(values, priority = []) {
 export function build() {
   const source = JSON.parse(fs.readFileSync(SOURCE_PATH, "utf8"));
   const d46 = JSON.parse(fs.readFileSync(D46_PATH, "utf8"));
+  const namesGaps = JSON.parse(fs.readFileSync(NAMES_GAPS_PATH, "utf8"));
   const importContract = JSON.parse(fs.readFileSync(IMPORT_CONTRACT_PATH, "utf8"));
   const input = parseCsv(fs.readFileSync(path.join(NAMES_DIR, source.input.path), "utf8"));
   const decisionRows = parseTsv(fs.readFileSync(path.join(NAMES_DIR, source.evidence_derivations.path), "utf8"));
@@ -294,6 +296,15 @@ export function build() {
     reason: row.gap_reason,
     provenance_ref: `game-base:names-peoples/personal_names/d46-name-additions.json#name-gap=${row.id}`,
   })));
+  for (const gap of namesGaps.gap_overrides) {
+    const generated = typedGaps.find((row) => row.gap_id === gap.gap_id);
+    if (!generated || generated.gap_type !== gap.gap_type) throw new Error(`${gap.gap_id}: no matching generated typed gap`);
+    generated.reason = gap.reason;
+    generated.review_refs = [
+      `game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=${gap.gap_id}`,
+      ...gap.evidence_refs,
+    ];
+  }
 
   const includedByLine = new Map();
   for (const row of derivations) {
@@ -359,6 +370,13 @@ export function build() {
     additional_evidence_accounting: {
       snapshot_rows: additionalEvidence.length,
       included_entries: (source.additional_entries ?? []).length,
+    },
+    names_gaps_additions: {
+      candidate_entries: namesGaps.entries.length,
+      detailed_gap_overrides: namesGaps.gap_overrides.length,
+      selection_window: namesGaps.selection_window,
+      applicability_review: namesGaps.v17_applicability,
+      calendar_rule_review: namesGaps.calendar_rule_review,
     },
     typed_gaps: typedGaps,
     evidence_review: source.evidence_review,

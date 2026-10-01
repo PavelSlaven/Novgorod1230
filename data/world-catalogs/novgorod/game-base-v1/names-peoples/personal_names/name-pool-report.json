@@ -2459,6 +2459,207 @@
     "snapshot_rows": 40,
     "included_entries": 1
   },
+  "names_gaps_additions": {
+    "candidate_entries": 0,
+    "detailed_gap_overrides": 12,
+    "selection_window": "about 1180-1260; existing pool validity dates are unchanged",
+    "applicability_review": {
+      "scope": "Target v17 G4/G5 scene-authoring contexts and composition, not current runtime activation. NPC M2c data is an approved data-only draft; foreign identity pools remain unbound and unselectable until separate activation.",
+      "pairs": [
+        {
+          "people_ref": "pp_fg001",
+          "sex_category": "male",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_gotland_guest_v1"
+          ],
+          "basis": "A target G4 foreign-merchant composition can select the Gotland guest origin; this is low-confidence analogical transfer from attested merchant contact, not a residency claim.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:137-188",
+            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:6198-6254",
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:410-523",
+            "m2c-npc/approval.json:24-42"
+          ]
+        },
+        {
+          "people_ref": "pp_fg001",
+          "sex_category": "female",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_gotland_guest_v1"
+          ],
+          "basis": "The same candidate composition can materialize either demographic sex category. No reviewed source establishes women absent from these landing contexts; this is not evidence of routine female trade.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:137-188",
+            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:6198-6254",
+            "live-world-runtime-v17/appearance-transfer-v3-datasets/region_demographic_profile_entries.json:1-19",
+            "m2c-npc/approval.json:24-33"
+          ]
+        },
+        {
+          "people_ref": "pp_fg002",
+          "sex_category": "male",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_german_baltic_guest_v1"
+          ],
+          "basis": "A target G4 foreign-merchant composition can select the German guest origin; direct Novgorod trade contacts support the origin, while transfer to these generated contexts is analogical.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:137-188",
+            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:6198-6254",
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:538-651",
+            "book:566839 §672",
+            "m2c-npc/approval.json:24-42"
+          ]
+        },
+        {
+          "people_ref": "pp_fg002",
+          "sex_category": "female",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_german_baltic_guest_v1"
+          ],
+          "basis": "The same candidate composition can materialize either demographic sex category. The collected material does not establish a male-only yard or absence of women in these transient landing contexts; this is not evidence of routine female trade.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:137-188",
+            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:6198-6254",
+            "live-world-runtime-v17/appearance-transfer-v3-datasets/region_demographic_profile_entries.json:1-19",
+            "m2c-npc/approval.json:24-33"
+          ]
+        },
+        {
+          "people_ref": "pp_korela",
+          "sex_category": "male",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_karelian_traveler_v1"
+          ],
+          "basis": "A route-guide composition can select a Karelia traveler-origin profile; the source anchors Karelians near Ladoga/Neva, while an ordinary G5 traveler is explicitly low-confidence analogy, not resident population.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:3-27",
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:664-762",
+            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:880-895",
+            "book:849577 §435",
+            "book:318333 §564"
+          ]
+        },
+        {
+          "people_ref": "pp_korela",
+          "sex_category": "female",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_karelian_traveler_v1"
+          ],
+          "basis": "The sex-neutral guide profile permits the female demographic category. This establishes target authoring eligibility, not direct historical evidence of female guides; their name remains unsupported.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:3-27",
+            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:880-895",
+            "live-world-runtime-v17/appearance-transfer-v3-datasets/region_demographic_profile_entries.json:1-19",
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:664-762"
+          ]
+        },
+        {
+          "people_ref": "pp_izhora",
+          "sex_category": "male",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_ingrian_traveler_v1"
+          ],
+          "basis": "A route-guide composition can select an Izhora traveler-origin profile. Izhora presence near the Neva is source-backed; the ordinary G5 traveler transfer is explicitly low-confidence analogy. Existing ordinary form Филипп is retained, not duplicated.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:3-27",
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:771-868",
+            "m2c-npc/runtime-bindings.json:504-640",
+            "book:681281 §399",
+            "book:681281 §419",
+            "book:857568 §733"
+          ]
+        },
+        {
+          "people_ref": "pp_izhora",
+          "sex_category": "female",
+          "needed_in_v17": "yes",
+          "contexts": [
+            "m2c_npc_regional_ingrian_traveler_v1"
+          ],
+          "basis": "The guide runtime profile supports female sex-category variants. That is target authoring eligibility, not historical evidence of female guides; no Izhora-attributed female name form was found.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:3-27",
+            "m2c-npc/runtime-bindings.json:504-640",
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:771-868",
+            "book:681281 §399"
+          ]
+        },
+        {
+          "people_ref": "pp_chud_est",
+          "sex_category": "male",
+          "needed_in_v17": "only_outside_slice",
+          "contexts": [],
+          "basis": "No Chud/Estonian people-origin profile or composition group exists in the target v17 authoring set. The homeland is outside the Novgorod oblast slice; exceptional tribute/war contact does not create an ordinary resident or guest cohort.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:4-868",
+            "game-base-v1/places-binding/presence/people_presence_authoring.csv:2-20",
+            "book:751267 §649",
+            "npc-identity-v17/v1/context-bindings.json:4-20"
+          ]
+        },
+        {
+          "people_ref": "pp_chud_est",
+          "sex_category": "female",
+          "needed_in_v17": "only_outside_slice",
+          "contexts": [],
+          "basis": "No Chud/Estonian people-origin profile or composition group exists in the target v17 authoring set. This is a scope limit, not a claim that Chud/Estonian women were historically absent.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:4-868",
+            "game-base-v1/places-binding/presence/people_presence_authoring.csv:2-20",
+            "book:751267 §649",
+            "npc-identity-v17/v1/context-bindings.json:4-20"
+          ]
+        },
+        {
+          "people_ref": "pp_smolyane",
+          "sex_category": "male",
+          "needed_in_v17": "only_outside_slice",
+          "contexts": [],
+          "basis": "Smolensk guests are source-attested in Novgorod, but no Smolyane-origin profile or composition group exists in the target G4/G5 slice; the current generic local profile binds only Novgorod-Rus names.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:4-868",
+            "game-base-v1/places-binding/presence/people_presence_authoring.csv:2-20",
+            "book:301539 §884",
+            "npc-identity-v17/v1/context-bindings.json:4-20"
+          ]
+        },
+        {
+          "people_ref": "pp_smolyane",
+          "sex_category": "female",
+          "needed_in_v17": "only_outside_slice",
+          "contexts": [],
+          "basis": "No Smolyane-origin profile or composition group exists in the target G4/G5 slice. This scope result does not infer that women were absent from Novgorod or Smolensk.",
+          "evidence_refs": [
+            "m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json:4-868",
+            "game-base-v1/places-binding/presence/people_presence_authoring.csv:2-20",
+            "book:301539 §884",
+            "npc-identity-v17/v1/context-bindings.json:4-20"
+          ]
+        }
+      ],
+      "runtime_status": "All non-Russian per-people pools remain unbound and unselectable in current runtime; M2c contexts/composition are approved data-only authoring with activation unauthorized."
+    },
+    "calendar_rule_review": [
+      {
+        "status": "existing_entry_not_new_proposal",
+        "name_form": "Филипп",
+        "people_ref": "pp_izhora",
+        "sex_category": "male",
+        "basis": "calendar_rule",
+        "confidence": "A",
+        "period_cap": "1240",
+        "source_ref": "book:857568 §733",
+        "quote": "…один ижорянин – Пелгусий, во Святом Крещении Филипп…",
+        "note": "Already present as the sole ordinary Izhora male form; no duplicate or broader date claim added."
+      }
+    ]
+  },
   "typed_gaps": [
     {
       "gap_id": "gap_personal_names_chud_est_female",
@@ -2468,8 +2669,14 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "В собранной evidence-выборке и индексированных источниках не найдено женских личных форм, прямо отнесённых к чудским/эстонским женщинам в заданный период. D46 оставляет эстонский именник для отдельного исследования; достраивать его по звучанию нельзя.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_chud_est_female",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§18-§19",
+        "book:601781 §838",
+        "book:681281 §419"
+      ]
     },
     {
       "gap_id": "gap_personal_names_chud_est_male",
@@ -2479,8 +2686,16 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "Единственная конкретная мужская форма — Лембито/Лембит, имя исторического старейшины и вождя Саккалы около 1210-х годов; она остаётся significant. Форму Лембит отдельно не добавляем: поздняя форма снята при проверке. Иные ordinary-формы в индексированных источниках не найдены.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_chud_est_male",
+        "book:601781 §612",
+        "book:601781 §838",
+        "book:566839 §338",
+        "book:566839 §342",
+        "game-base:names-peoples/VERIFICATION.md#Independent verification D46"
+      ]
     },
     {
       "gap_id": "gap_personal_names_fg001_female",
@@ -2490,8 +2705,13 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "В собранных именниках, рунических материалах и индексированных источниках не найдено женских личных имён, привязанных к готландкам около 1180–1260. Мужские рунические и договорные формы не доказывают женские имена.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_fg001_female",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.1-§9.2",
+        "master-archive-v1:normalized_source_tables/occupations/sources.csv#SRC048"
+      ]
     },
     {
       "gap_id": "gap_personal_names_fg001_male",
@@ -2501,8 +2721,15 @@
       "selection_class": "ordinary",
       "current_count": 1,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "В пуле одна обычная форма — Хейльватр. Единственная собранная готландская аттестация относится к слою Немецкого двора 1160–1170-х годов, до заданного окна; новых аттестаций около 1180–1260 в проверенных материалах не найдено. Более поздние готские послы — отдельные исторические лица и не добавлены как обычные имена.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_fg001_male",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.1",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§17.7",
+        "game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_250_v1",
+        "game-base:names-peoples/VERIFICATION.md#Opus data approval"
+      ]
     },
     {
       "gap_id": "gap_personal_names_fg002_female",
@@ -2512,8 +2739,15 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "Шестнадцать мужских обычных форм опираются на торгово-договорный круг 1229 года. Женских имён в этом собранном свидетельстве нет; ближайшие найденные формы — шведские и датские династические лица либо женщина из бременской церковной семьи без прямой атрибуции к немецкому торговому кругу, не ordinary-формы этого селектора.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_fg002_female",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.2",
+        "book:566839 §867",
+        "book:566839 §949",
+        "book:566840 §1536"
+      ]
     },
     {
       "gap_id": "gap_personal_names_fg003_female",
@@ -2699,8 +2933,14 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "В собранных источниках и индексированных книгах женских личных имён с прямой ижорской атрибуцией около 1180–1260 не найдено. Употребления Inkeri/Ingeri в проверенных результатах — этнонимы или топонимия, а не имя носительницы.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_izhora_female",
+        "book:857568 §733",
+        "book:681281 §399-§419",
+        "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L41-L42"
+      ]
     },
     {
       "gap_id": "gap_personal_names_izhora_male",
@@ -2710,8 +2950,15 @@
       "selection_class": "ordinary",
       "current_count": 1,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "Филипп остаётся единственной обычной формой по правилу проекта о христианских календарных именах: это имя при крещении исторического ижорского старейшины Пелгусия в 1240 году. Новых обычных мужских форм не найдено; Пелгусий и вариант Пелугий остаются significant как именования одного исторического человека.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_izhora_male",
+        "book:857568 §733",
+        "book:681281 §419",
+        "book:641352 §1931",
+        "game-base:names-peoples/personal_names/README.md:60-75"
+      ]
     },
     {
       "gap_id": "gap_personal_names_korela_female",
@@ -2721,8 +2968,15 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "В просмотренных собранных источниках и индексированных книгах не найдено женской личной формы с доказанной принадлежностью к кореле в заданном периоде. Поздние и неатрибутированные формы не дают основания для записи.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_korela_female",
+        "book:318333 §564",
+        "book:849577 §435",
+        "book:681281 §458",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.3-§19"
+      ]
     },
     {
       "gap_id": "gap_personal_names_korela_male",
@@ -2732,8 +2986,17 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "Валит — значимое историческое лицо вне периода: источник относит его к 1337/38 году, а более поздний источник допускает титульное значение слова. Упоминания корельских имён без конкретных форм и массовое крещение 1227 года не устанавливают обычное имя, пол и носителя; по ним нельзя переносить русский календарный пул.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_korela_male",
+        "book:318333 §564",
+        "book:318333 §573",
+        "book:849577 §312",
+        "book:849577 §435",
+        "book:681281 §458",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.3-§19"
+      ]
     },
     {
       "gap_id": "gap_personal_names_smolyane_female",
@@ -2743,8 +3006,14 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "В просмотренных собранных источниках и индексированных книгах нет женских личных форм, прямо связанных со смолянками около 1180–1260. Военная повесть называет отдельных мужчин и не даёт основания переносить их формы на женщин или обычный пул.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_smolyane_female",
+        "book:641352 §268",
+        "book:641352 §271",
+        "game-base:names-peoples/VERIFICATION.md#Independent verification D46"
+      ]
     },
     {
       "gap_id": "gap_personal_names_smolyane_male",
@@ -2754,8 +3023,16 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "No further reviewed evidence row closes first-name form, sex, people and ordinary class under the declared rules.",
-      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json"
+      "reason": "Ивор Михайлович — смоленский воевода и историческое лицо 1216 года, поэтому остаётся significant. Григор Водмол — названный знатный муж; Водмол — прозвище, а Михайлович — отчество. Иных ordinary-имён с прямой атрибуцией смолянам не найдено.",
+      "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_smolyane_male",
+        "book:641352 §268",
+        "book:641352 §271",
+        "book:641352 §231",
+        "game-base:names-peoples/personal_names/name_component_entries.csv#entry_id=nce_nick_vodmol",
+        "game-base:names-peoples/personal_names/name_component_entries.csv#entry_id=nce_pat_mikhailovich"
+      ]
     },
     {
       "gap_id": "gap_personal_names_ves_female",
@@ -2870,8 +3147,15 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 1,
-      "reason": "Источник относит имя к смешанному гостевому контексту pp_fg005, но не устанавливает конкретный народ; отдельного пула для pp_fg005 и русского fallback нет.",
-      "provenance_ref": "game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_093_v1 | game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#13-person:093"
+      "reason": "Собранный источник относит Иголанд к смешанному прибалтийско-финскому гостевому контексту pp_fg005, объединяющему водь, ижору, корелу и другие группы, но не устанавливает конкретный народ. В индексе книг отдельной атрибуции не найдено; pp_fg005 не является народом для пула D51, русского fallback нет.",
+      "provenance_ref": "game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_093_v1 | game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#13-person:093",
+      "review_refs": [
+        "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_pp_fg005_igoland_origin",
+        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.3",
+        "game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_093_v1",
+        "game-base:names-peoples/peoples_origins/peoples_origins.csv#pp_id=pp_fg005",
+        "game-base:names-peoples/personal_names/README.md#per-people-pools-d51-p2"
+      ]
     },
     {
       "gap_id": "gap_d46_lower_weight_07_044",

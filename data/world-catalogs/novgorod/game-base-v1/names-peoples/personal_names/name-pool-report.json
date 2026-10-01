@@ -1,18 +1,19 @@
 {
   "schema": "novgorod.game_base.personal_name_pool_report.v2",
   "status": "candidate",
-  "total_entries": 337,
+  "total_entries": 349,
   "pool_count": 7,
   "counts_by_pool": {
     "novgorod_1230_1250_personal_names_v1": 310,
     "novgorod_1230_1250_gotland_guest_names_v1": 2,
     "novgorod_1230_1250_german_guest_names_v1": 19,
-    "novgorod_1230_1250_korela_names_v1": 1,
+    "novgorod_1230_1250_korela_names_v1": 13,
     "novgorod_1230_1250_izhora_names_v1": 3,
     "novgorod_1230_1250_chud_est_names_v1": 1,
     "novgorod_1230_1250_smolyane_names_v1": 1
   },
   "counts_by_sex_people_selection_class_derivation": {
+    "female|pp_korela|ordinary|calendar_name_gender": 8,
     "female|pp_novgorod_rus|monastic|explicit_source_gender": 3,
     "female|pp_novgorod_rus|ordinary|calendar_name_gender": 12,
     "female|pp_novgorod_rus|ordinary|compiled_candidate": 23,
@@ -24,6 +25,7 @@
     "male|pp_fg002|significant|explicit_source_gender": 3,
     "male|pp_izhora|ordinary|explicit_source_gender": 1,
     "male|pp_izhora|significant|explicit_source_gender": 2,
+    "male|pp_korela|ordinary|calendar_name_gender": 4,
     "male|pp_korela|significant|explicit_source_gender": 1,
     "male|pp_novgorod_rus|dynastic|compiled_candidate": 1,
     "male|pp_novgorod_rus|dynastic|explicit_source_gender": 6,
@@ -2457,10 +2459,10 @@
   },
   "additional_evidence_accounting": {
     "snapshot_rows": 40,
-    "included_entries": 1
+    "included_entries": 13
   },
   "names_gaps_additions": {
-    "candidate_entries": 0,
+    "candidate_entries": 12,
     "detailed_gap_overrides": 12,
     "selection_window": "about 1180-1260; existing pool validity dates are unchanged",
     "applicability_review": {
@@ -2484,16 +2486,12 @@
         {
           "people_ref": "pp_fg001",
           "sex_category": "female",
-          "needed_in_v17": "yes",
-          "contexts": [
-            "m2c_npc_regional_gotland_guest_v1"
-          ],
-          "basis": "The same candidate composition can materialize either demographic sex category. No reviewed source establishes women absent from these landing contexts; this is not evidence of routine female trade.",
+          "needed_in_v17": "no",
+          "contexts": [],
+          "basis": "D61 successor foreign-merchant binding limits both Gotland and German guest contexts to male sex_category; no ordinary female guest need is present in this v17 slice. This is an authoring decision, not a claim of historical absence.",
           "evidence_refs": [
-            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:137-188",
-            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:6198-6254",
-            "live-world-runtime-v17/appearance-transfer-v3-datasets/region_demographic_profile_entries.json:1-19",
-            "m2c-npc/approval.json:24-33"
+            "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json#successor[m2c_npc_foreign_merchant_v1@3]",
+            "D61 (#133, comment 5931406104)"
           ]
         },
         {
@@ -2515,16 +2513,12 @@
         {
           "people_ref": "pp_fg002",
           "sex_category": "female",
-          "needed_in_v17": "yes",
-          "contexts": [
-            "m2c_npc_regional_german_baltic_guest_v1"
-          ],
-          "basis": "The same candidate composition can materialize either demographic sex category. The collected material does not establish a male-only yard or absence of women in these transient landing contexts; this is not evidence of routine female trade.",
+          "needed_in_v17": "no",
+          "contexts": [],
+          "basis": "D61 successor foreign-merchant binding limits both Gotland and German guest contexts to male sex_category; no ordinary female guest need is present in this v17 slice. This is an authoring decision, not a claim of historical absence.",
           "evidence_refs": [
-            "m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json:137-188",
-            "m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json:6198-6254",
-            "live-world-runtime-v17/appearance-transfer-v3-datasets/region_demographic_profile_entries.json:1-19",
-            "m2c-npc/approval.json:24-33"
+            "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json#successor[m2c_npc_foreign_merchant_v1@3]",
+            "D61 (#133, comment 5931406104)"
           ]
         },
         {
@@ -2657,6 +2651,322 @@
         "source_ref": "book:857568 §733",
         "quote": "…один ижорянин – Пелгусий, во Святом Крещении Филипп…",
         "note": "Already present as the sole ordinary Izhora male form; no duplicate or broader date claim added."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_petr_d61_v1",
+        "name_form": "Петр",
+        "source_form": "Петр",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L28",
+        "source_ref": "book:624953 §1362",
+        "quote": "Вот, к примеру, грамота № 506: «Петр — Иоанна; Мариамна, Анна — Георгия; Феодор — Прокопия и т. д.»",
+        "people_ref": "pp_korela",
+        "sex_category": "male",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_feodor_d61_v1",
+        "name_form": "Феодор",
+        "source_form": "Феодор",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L28",
+        "source_ref": "book:624953 §1362",
+        "quote": "Вот, к примеру, грамота № 506: «Петр — Иоанна; Мариамна, Анна — Георгия; Феодор — Прокопия и т. д.»",
+        "people_ref": "pp_korela",
+        "sex_category": "male",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_filipp_d61_v1",
+        "name_form": "Филипп",
+        "source_form": "Филипп",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L201",
+        "source_ref": "book:857568 §733",
+        "quote": "В войске благоверного Александра был один ижорянин – Пелгусий, во Святом Крещении Филипп, которому Александр Ярославич вручил ночную стражу, как опытному воину, хорошо знавшему местность.",
+        "people_ref": "pp_korela",
+        "sex_category": "male",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          },
+          {
+            "source_ref": "book:681281 §419",
+            "quote": "Имя его Пелгусий, он крестился (наречен был Филиппом)"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_pavelo_d61_v1",
+        "name_form": "Павел",
+        "source_form": "Павело",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "male",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_mariamna_d61_v1",
+        "name_form": "Мариамна",
+        "source_form": "Мариамна",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L28",
+        "source_ref": "book:624953 §1362",
+        "quote": "Вот, к примеру, грамота № 506: «Петр — Иоанна; Мариамна, Анна — Георгия; Феодор — Прокопия и т. д.»",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_anna_d61_v1",
+        "name_form": "Анна",
+        "source_form": "Анна",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L28",
+        "source_ref": "book:624953 §1362",
+        "quote": "Вот, к примеру, грамота № 506: «Петр — Иоанна; Мариамна, Анна — Георгия; Феодор — Прокопия и т. д.»",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_sofia_d61_v1",
+        "name_form": "София",
+        "source_form": "София",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_fedosia_d61_v1",
+        "name_form": "Федосия",
+        "source_form": "Федосия",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_uliyana_d61_v1",
+        "name_form": "Улияна",
+        "source_form": "Улияна",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_pelagia_d61_v1",
+        "name_form": "Пелагия",
+        "source_form": "Пелагия",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_ovodokia_d61_v1",
+        "name_form": "Оводокия",
+        "source_form": "Оводокия",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
+      },
+      {
+        "status": "new_candidate",
+        "candidate_entry_id": "nov_name_korela_calendar_mirofa_d61_v1",
+        "name_form": "Мирофа",
+        "source_form": "Мирофа",
+        "source_evidence_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L18",
+        "source_ref": "book:254935 §242",
+        "quote": "«Иосиф, Онуфрио, милостиви на сиа: София, Федосия, Улияна, Пелагия, Деметре, Павело, Оводокия, Офимию, Гюръги, Мирофа».",
+        "people_ref": "pp_korela",
+        "sex_category": "female",
+        "basis": "calendar_rule",
+        "confidence": "C",
+        "period": "c1230",
+        "period_cap": "1260",
+        "rule_basis_refs": [
+          {
+            "source_ref": "book:849577 §435",
+            "quote": "В 1227 г. было проведено массовое крещение карелов"
+          },
+          {
+            "source_ref": "book:857568 §733",
+            "quote": "один ижорянин – Пелгусий, во Святом Крещении Филипп"
+          }
+        ],
+        "note": "Форма засвидетельствована в русской записи XII–XIII вв., не как имя корельского носителя. Отдельное включение в пул корелы — календарный перенос D61 после массового крещения 1227; не русский fallback и не прямая этническая аттестация."
       }
     ]
   },
@@ -2705,12 +3015,13 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "В собранных именниках, рунических материалах и индексированных источниках не найдено женских личных имён, привязанных к готландкам около 1180–1260. Мужские рунические и договорные формы не доказывают женские имена.",
+      "reason": "D61: целевой гостевой binding будет только мужским; женская категория не материализуется в этих контекстах. Это не утверждение об историческом отсутствии женщин; нулевой каталоговый женский пул не является v17 игровым пробелом.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "v17_status": "not_applicable",
       "review_refs": [
         "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_fg001_female",
-        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.1-§9.2",
-        "master-archive-v1:normalized_source_tables/occupations/sources.csv#SRC048"
+        "D61 (#133, comment 5931406104)",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json#successor"
       ]
     },
     {
@@ -2739,14 +3050,13 @@
       "selection_class": "ordinary",
       "current_count": 0,
       "required_count": 10,
-      "reason": "Шестнадцать мужских обычных форм опираются на торгово-договорный круг 1229 года. Женских имён в этом собранном свидетельстве нет; ближайшие найденные формы — шведские и датские династические лица либо женщина из бременской церковной семьи без прямой атрибуции к немецкому торговому кругу, не ordinary-формы этого селектора.",
+      "reason": "D61: целевой гостевой binding будет только мужским; женская категория не материализуется в этих контекстах. Это не утверждение об историческом отсутствии женщин; нулевой каталоговый женский пул не является v17 игровым пробелом.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
+      "v17_status": "not_applicable",
       "review_refs": [
         "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_fg002_female",
-        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.2",
-        "book:566839 §867",
-        "book:566839 §949",
-        "book:566840 §1536"
+        "D61 (#133, comment 5931406104)",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json#successor"
       ]
     },
     {
@@ -2966,16 +3276,16 @@
       "people_ref": "pp_korela",
       "sex_category": "female",
       "selection_class": "ordinary",
-      "current_count": 0,
+      "current_count": 8,
       "required_count": 10,
-      "reason": "В просмотренных собранных источниках и индексированных книгах не найдено женской личной формы с доказанной принадлежностью к кореле в заданном периоде. Поздние и неатрибутированные формы не дают основания для записи.",
+      "reason": "Добавлены восемь женских календарных форм из русских записей XII–XIII вв. по D61: Мариамна, Анна, София, Федосия, Улияна, Пелагия, Оводокия, Мирофа. Это календарный перенос после массового крещения 1227, не прямая аттестация корельских носительниц; pool ниже 10.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
       "review_refs": [
         "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_korela_female",
-        "book:318333 §564",
         "book:849577 §435",
-        "book:681281 §458",
-        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.3-§19"
+        "book:857568 §733",
+        "book:624953 §1362",
+        "book:254935 §242"
       ]
     },
     {
@@ -2984,18 +3294,17 @@
       "people_ref": "pp_korela",
       "sex_category": "male",
       "selection_class": "ordinary",
-      "current_count": 0,
+      "current_count": 4,
       "required_count": 10,
-      "reason": "Валит — значимое историческое лицо вне периода: источник относит его к 1337/38 году, а более поздний источник допускает титульное значение слова. Упоминания корельских имён без конкретных форм и массовое крещение 1227 года не устанавливают обычное имя, пол и носителя; по ним нельзя переносить русский календарный пул.",
+      "reason": "Добавлены четыре мужские календарные формы из русских записей XII–XIII вв. по D61: Петр, Феодор, Филипп, Павел. Это отдельный низкоуверенный календарный перенос после массового крещения 1227, не прямая аттестация этих носителей как корелы; именной pool по-прежнему ниже 10.",
       "provenance_ref": "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv; game-base:names-peoples/personal_names/coverage-report.json",
       "review_refs": [
         "game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=gap_personal_names_korela_male",
-        "book:318333 §564",
-        "book:318333 §573",
-        "book:849577 §312",
         "book:849577 §435",
-        "book:681281 §458",
-        "game-base:names-peoples/sources/d46-onomastic-catalog-1230-1250.md#§9.3-§19"
+        "book:857568 §733",
+        "book:624953 §1362",
+        "book:254935 §242",
+        "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L201"
       ]
     },
     {

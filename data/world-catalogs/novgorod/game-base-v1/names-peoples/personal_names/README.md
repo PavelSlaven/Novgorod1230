@@ -23,7 +23,7 @@ Russian or guessed people pool. `pp_korela` has one significant male form,
 `Валит`, from the explicit attestation `book:318333 §564` («воевода Валит
 Корелянин»). The same source dates him to 1337/38 (§573, Sofia chronicle), i.e.
 the XIV century. The entry remains `medieval_general` and the report carries a
-temporal evidence gap; it does not establish a 1230–1250 ordinary pool.
+temporal evidence gap; it does not establish a 1230–1250 ordinary pool. D61 adds a separate pending calendar-rule candidate pool for Korela; these forms do not turn Valit into an ordinary name.
 
 ## B2 import projection (C013b)
 
@@ -98,8 +98,17 @@ a closed row-level reason. D46 adds `d46-name-additions.json` as a narrow
 archive-decision owner: 158 origin-bound or local first-name entries are
 projected, 19 variants remain attached to their existing targets, and ten
 forms remain non-selectable typed gaps (four §5.3 exclusions, two forms that
-require lower weight, and four unresolved Turkic origins). The resulting pool
-has 337 unique entries. Exact archive periods, regions, basis, confidence and
+require lower weight, and four unresolved Turkic origins). The D61 candidate
+adds twelve separate Korela calendar-rule forms (four male, eight female) from
+Russian records dated to the XII–XIII centuries; each stays `confidence=C`,
+`period_cap=1260`, and notes that it is a rule-based transfer, not an attestation
+of a Korela bearer. Gotland and German guest female gaps are marked
+`not_applicable` for v17 under the pending male-only binding successor kept in
+`data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/`; the
+approved `people-d49/candidate.json`, its approval, and operational promotion
+script remain unchanged. No broader
+historical absence is claimed. The resulting pool has 349 unique
+entries. Exact archive periods, regions, basis, confidence and
 source refs stay in the authoring delta; its two repo-local source snapshots
 are pinned by SHA-256. The B2 import schema is unchanged. Typed
 gaps include every people×sex ordinary pool below 10 rows, unresolved

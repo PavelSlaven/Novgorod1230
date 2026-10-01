@@ -103,6 +103,7 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   if (evidenceRows.some((row) => !/^L\d+$/.test(row.source_line)) || evidenceLines.size !== evidenceRows.length || evidenceRows.length !== source.evidence_snapshot.expected_rows) errors.push("invalid evidence snapshot source_line set");
   const additionalEvidenceLines = new Map((additionalEvidenceRows ?? []).map((row) => [row.source_line, row]));
   if (additionalEvidenceLines.size !== source.additional_evidence_snapshot.expected_rows || (additionalEvidenceRows ?? []).some((row) => !/^L\d+$/.test(row.source_line))) errors.push("invalid additional evidence snapshot source_line set");
+  const evidenceSnapshotByLine = new Map((evidenceRows ?? []).map((row) => [row.source_line, row]));
   const includedDerivations = derivationRows.filter((row) => !row.exclude_reason);
   const excludedDerivations = derivationRows.filter((row) => row.exclude_reason);
   const authoredDecisionLines = new Set(derivationRows.map((row) => Number(row.evidence_line)));
@@ -162,9 +163,11 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   const additionalEntriesById = new Map((source.additional_entries ?? []).map((row) => [row.id, row]));
   if (additionalEntriesById.size !== (source.additional_entries ?? []).length) errors.push("duplicate additional evidence entry id");
   for (const row of source.additional_entries ?? []) {
-    const support = additionalEvidenceLines.get(row.source_line);
+    const snapshotRows = row.source_snapshot === "evidence" ? evidenceSnapshotByLine : additionalEvidenceLines;
+    const snapshotPath = row.source_snapshot === "evidence" ? source.evidence_snapshot.path : source.additional_evidence_snapshot.path;
+    const support = snapshotRows.get(row.source_line);
     const entry = entries.find((item) => item.id === row.id);
-    if (!support || !Object.values(support).join("\n").includes(row.source_form) || row.provenance_ref !== `game-base:names-peoples/sources/book_evidence_m2c_name_components.csv#source_line=${row.source_line}`) errors.push(`${row.id}: unresolved additional evidence source`);
+    if (!support || !Object.values(support).join("\n").includes(row.source_form) || row.provenance_ref !== `game-base:names-peoples/${snapshotPath}#source_line=${row.source_line}`) errors.push(`${row.id}: unresolved additional evidence source`);
     if (!entry || ["name_form", "sex_category", "people_ref", "selection_class", "derivation", "people_derivation", "evidence_period"].some((key) => entry[key] !== row[key]) || !entry.provenance_ref.split(" | ").includes(row.provenance_ref)) errors.push(`${row.id}: additional evidence entry missing or changed`);
   }
   const d46All = [...d46.name_entries, ...d46.name_variants, ...d46.name_gaps, ...d46.component_entries, ...d46.component_updates];
@@ -311,7 +314,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (!gap.gap_id || gapOverrideIds.has(gap.gap_id) || !gap.reason || !Array.isArray(gap.evidence_refs) || !gap.evidence_refs.length) errors.push(`${gap.gap_id ?? "unknown"}: invalid names-gaps rationale`);
     gapOverrideIds.add(gap.gap_id);
     const reportGap = report.typed_gaps.find((item) => item.gap_id === gap.gap_id);
-    if (!reportGap || reportGap.gap_type !== gap.gap_type || reportGap.people_ref !== gap.people_ref || reportGap.sex_category !== gap.sex_category || reportGap.selection_class !== gap.selection_class || reportGap.reason !== gap.reason || !reportGap.review_refs?.includes(`game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=${gap.gap_id}`)) errors.push(`${gap.gap_id}: names-gaps rationale missing from report`);
+    if (!reportGap || reportGap.gap_type !== gap.gap_type || reportGap.people_ref !== gap.people_ref || reportGap.sex_category !== gap.sex_category || reportGap.selection_class !== gap.selection_class || reportGap.reason !== gap.reason || reportGap.v17_status !== gap.v17_status || !reportGap.review_refs?.includes(`game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=${gap.gap_id}`)) errors.push(`${gap.gap_id}: names-gaps rationale missing from report`);
+    if (gap.v17_status && (gap.v17_status !== "not_applicable" || !["gap_personal_names_fg001_female", "gap_personal_names_fg002_female"].includes(gap.gap_id))) errors.push(`${gap.gap_id}: invalid v17 gap disposition`);
     if (gap.gap_type === "ordinary_pool_below_10") {
       const count = entries.filter((row) => row.people_ref === gap.people_ref && row.sex_category === gap.sex_category && row.selection_class === "ordinary").length;
       if (gap.current_count !== count || gap.required_count !== 10 || count >= 10) errors.push(`${gap.gap_id}: names-gaps ordinary count mismatch`);
@@ -327,14 +331,38 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (!['yes', 'no', 'only_outside_slice'].includes(row.needed_in_v17) || !row.basis || !Array.isArray(row.evidence_refs) || !row.evidence_refs.length || !Array.isArray(row.contexts) || (row.needed_in_v17 === "yes" ? !row.contexts.length : row.contexts.length > 0)) errors.push(`${row.people_ref}|${row.sex_category}: invalid names-gaps applicability rationale`);
   }
   const calendarRows = namesGaps.calendar_rule_review ?? [];
+  const additionalEntryById = new Map((source.additional_entries ?? []).map((row) => [row.id, row]));
+  const expectedRuleRefs = ["book:849577 §435", "book:857568 §733"];
+  const bookEvidenceByPara = new Map([...evidenceRows, ...(additionalEvidenceRows ?? [])]
+    .map((row) => [`${row.book_id}|${row.para_no}`, row]));
   if (!Array.isArray(calendarRows) || !calendarRows.length || calendarRows.some((row) => {
-    const source = /^book:(\d+) §(\d+)$/.exec(row.source_ref ?? "");
+    const sourceRef = /^book:(\d+) §(\d+)$/.exec(row.source_ref ?? "");
     const quote = String(row.quote ?? "").replace(/^…|…$/gu, "");
-    const citedEvidence = source && additionalEvidenceRows.some((evidenceRow) => evidenceRow.book_id === source[1] && evidenceRow.para_no === source[2] && evidenceRow.quote.includes(quote));
+    const sourceEvidence = sourceRef && bookEvidenceByPara.get(`${sourceRef[1]}|${sourceRef[2]}`);
+    const citedEvidence = sourceEvidence && sourceEvidence.quote.includes(quote);
     const existingEntry = entries.some((entry) => entry.name_form === row.name_form && entry.people_ref === row.people_ref && entry.sex_category === row.sex_category && entry.selection_class === "ordinary");
-    return row.status !== "existing_entry_not_new_proposal" || !row.name_form || !row.people_ref || !row.sex_category || row.basis !== "calendar_rule" || !row.confidence || !row.period_cap || !citedEvidence || !existingEntry;
+    if (row.status === "existing_entry_not_new_proposal") return !row.name_form || !row.people_ref || !row.sex_category || row.basis !== "calendar_rule" || !row.confidence || !row.period_cap || !citedEvidence || !existingEntry;
+    if (row.status !== "new_candidate") return true;
+    const candidate = additionalEntryById.get(row.candidate_entry_id);
+    const sourceLine = /^game-base:names-peoples\/sources\/(book_evidence_m2c_names_b2|book_evidence_m2c_name_components)\.csv#source_line=(L\d+)$/.exec(row.source_evidence_ref ?? "");
+    const snapshotRows = sourceLine?.[1] === "book_evidence_m2c_names_b2" ? evidenceSnapshotByLine : additionalEvidenceLines;
+    const evidenceRow = sourceLine && snapshotRows.get(sourceLine[2]);
+    const expectedPath = candidate?.source_snapshot === "evidence" ? "book_evidence_m2c_names_b2" : "book_evidence_m2c_name_components";
+    return !candidate || candidate.name_form !== row.name_form || candidate.source_form !== row.source_form
+      || candidate.provenance_ref !== row.source_evidence_ref || expectedPath !== sourceLine?.[1]
+      || candidate.people_ref !== "pp_korela" || row.people_ref !== "pp_korela" || candidate.sex_category !== row.sex_category
+      || !["male", "female"].includes(row.sex_category) || candidate.selection_class !== "ordinary"
+      || candidate.derivation_class !== "calendar_name_any_christian" || candidate.derivation !== "calendar_name_gender"
+      || candidate.people_derivation !== "candidate_origin" || candidate.evidence_period !== "c1230"
+      || row.basis !== "calendar_rule" || row.confidence !== "C" || row.period !== "c1230" || row.period_cap !== "1260"
+      || !sameArray((row.rule_basis_refs ?? []).map((ref) => ref.source_ref).filter((ref) => expectedRuleRefs.includes(ref)), expectedRuleRefs)
+      || (row.source_ref === "book:857568 §733" && !row.rule_basis_refs?.some((ref) => ref.source_ref === "book:681281 §419"))
+      || !citedEvidence || !evidenceRow || !Object.values(evidenceRow).join("\n").includes(row.source_form)
+      || candidate.source_line !== sourceLine?.[2] || !quote.includes(row.source_form);
   })) errors.push("invalid names-gaps calendar-rule review");
-  if (report.names_gaps_additions?.candidate_entries !== namesGaps.entries.length || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
+  const calendarCandidates = calendarRows.filter((row) => row.status === "new_candidate");
+  if (calendarCandidates.length !== 12 || calendarCandidates.filter((row) => row.sex_category === "male").length !== 4 || calendarCandidates.filter((row) => row.sex_category === "female").length !== 8
+    || report.names_gaps_additions?.candidate_entries !== calendarCandidates.length || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
   return errors;
 }
 
@@ -376,6 +404,10 @@ function selfTest(base) {
     ["names-gaps rationale missing", (copy) => { copy.namesGaps.gap_overrides[0].reason = ""; }, /invalid names-gaps rationale/],
     ["names-gaps applicability missing", (copy) => { copy.namesGaps.v17_applicability.pairs.pop(); }, /invalid names-gaps applicability matrix/],
     ["names-gaps calendar citation mismatch", (copy) => { copy.namesGaps.calendar_rule_review[0].source_ref = "book:641352 §1931"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps calendar candidate missing", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").candidate_entry_id = "missing"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps calendar confidence drift", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").confidence = "A"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps calendar rule basis missing", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").rule_basis_refs.pop(); }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps v17 not-applicable report drift", (copy) => { delete copy.report.typed_gaps.find((row) => row.gap_id === "gap_personal_names_fg001_female").v17_status; }, /names-gaps rationale missing from report/],
     ["invalid pool date", (copy) => { copy.pools[0].valid_to = "1229-12-31"; }, /invalid validity interval/],
     ["unknown pool region", (copy) => { copy.pools[0].region_id = "region_unknown"; }, /unknown region_id/],
     ["missing pool provenance", (copy) => { copy.report.pool_provenance_ref = ""; }, /missing pool provenance_ref/],

@@ -166,9 +166,14 @@ export function build() {
     line_index: null,
   });
   const additionalEvidenceByLine = new Map(additionalEvidence.map((row) => [row.source_line, row]));
+  const evidenceByLine = new Map(evidence.map((row) => [row.source_line, row]));
   for (const row of source.additional_entries ?? []) {
-    const support = additionalEvidenceByLine.get(row.source_line);
+    const formSnapshot = row.source_snapshot === "evidence" ? evidenceByLine : additionalEvidenceByLine;
+    const formSnapshotPath = row.source_snapshot === "evidence" ? source.evidence_snapshot.path : source.additional_evidence_snapshot.path;
+    const support = formSnapshot.get(row.source_line);
+    const provenanceRef = `game-base:names-peoples/${formSnapshotPath}#source_line=${row.source_line}`;
     if (!support || !row.source_form || !Object.values(support).join("\n").includes(row.source_form)) throw new Error(`${row.id}: additional source form missing from ${row.source_line}`);
+    if (row.provenance_ref !== provenanceRef) throw new Error(`${row.id}: additional source ref does not match ${formSnapshotPath}`);
     records.push({
       id: row.id,
       name_form: row.name_form,
@@ -300,6 +305,7 @@ export function build() {
     const generated = typedGaps.find((row) => row.gap_id === gap.gap_id);
     if (!generated || generated.gap_type !== gap.gap_type) throw new Error(`${gap.gap_id}: no matching generated typed gap`);
     generated.reason = gap.reason;
+    if (gap.v17_status) generated.v17_status = gap.v17_status;
     generated.review_refs = [
       `game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=${gap.gap_id}`,
       ...gap.evidence_refs,
@@ -372,7 +378,7 @@ export function build() {
       included_entries: (source.additional_entries ?? []).length,
     },
     names_gaps_additions: {
-      candidate_entries: namesGaps.entries.length,
+      candidate_entries: namesGaps.calendar_rule_review.filter((row) => row.status === "new_candidate").length,
       detailed_gap_overrides: namesGaps.gap_overrides.length,
       selection_window: namesGaps.selection_window,
       applicability_review: namesGaps.v17_applicability,

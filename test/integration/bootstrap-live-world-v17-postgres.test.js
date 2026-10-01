@@ -263,7 +263,7 @@ async function waitForPostgres(name) {
     const initialized = `${logs.stdout}\n${logs.stderr}`.includes(
       'PostgreSQL init process complete; ready for start up.');
     if (initialized && docker(
-      ['exec', name, 'pg_isready', '-U', 'postgres', '-d', 'postgres']
+      ['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres', '-d', 'postgres']
     ).status === 0) return;
   }
   throw new Error(`${name} did not become ready.`);

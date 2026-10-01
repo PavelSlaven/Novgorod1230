@@ -29,9 +29,9 @@ test('P12 imports an approved G6 acoustic baseline and the reader returns its ex
     '-e', 'POSTGRES_DB=m2c', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 60; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'm2c']).status === 0) {
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'm2c']).status === 0) {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      if (docker(['exec', name, 'pg_isready', '-U', 'm2c']).status === 0) {
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'm2c']).status === 0) {
         ready = true;
         break;
       }

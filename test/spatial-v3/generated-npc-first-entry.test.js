@@ -179,7 +179,7 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
     '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc', '-e', 'POSTGRES_DB=npc',
     'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'npc']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'npc']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
   await new Promise((resolve) => setTimeout(resolve, 600));

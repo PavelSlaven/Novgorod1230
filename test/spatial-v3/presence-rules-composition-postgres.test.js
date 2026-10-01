@@ -386,7 +386,7 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
     docker(['rm', '-fv', name]);
   });
   for (let attempt = 0; attempt < 80; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'wave']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'wave']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
   await new Promise((resolve) => setTimeout(resolve, 600));

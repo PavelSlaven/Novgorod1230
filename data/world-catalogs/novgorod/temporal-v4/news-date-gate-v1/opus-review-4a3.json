@@ -1,0 +1,265 @@
+{
+  "schema": "opus_data_attestation_v1",
+  "task": "npc-epoch-guard / шаг 4a3 — датированные события 1237–1250 для знаний NPC (D60)",
+  "reviewer": "claude-opus-5-5 (независимый утверждающий данных, отдельная сессия; в authoring пакета не участвовал)",
+  "date": "2026-10-01",
+  "package": {
+    "path": "servak:/srv/novgorod-work/fleet/tasks/npc-epoch-guard/out/step4a3-wk-candidate/",
+    "sha256": {
+      "events-candidate.json": "9085a7045909cde2acc39982847e4f6c278a1482576c122fcd19a35437cf1586",
+      "event-date-map-candidate.json": "10e700e05826b51fbc6a7ec2e58b973ac1600d61c0b01ee4dd5c4a5f2500bd49",
+      "time-owner-event-proposals-candidate.json": "8c53066826a1a508e3e10ccd7c9b81369a4bd4f94eccff13558bbcb60df4119d",
+      "README.md": "fd7b76ae9986e4171a72ed6a816cd3c7758a5b34885a2f25f344b0ae76cb07dd",
+      "build-candidate.mjs": "31c07d7aebdb33297b76bc0336832a0bf010554b64742d5aff2bfa8dbe7ab989",
+      "prepare-validation.mjs": "1329326f38b70058336ad1d75e3194904c8097c6812c3807c78c89ca9da5b9dd",
+      "verify-applicability.mjs": "9bc81ab0ddbd8f28efe12114dec3c081b64a483999be8ee106d962ef7f9ce28e"
+    },
+    "sha256_unchanged_after_review": true
+  },
+  "decision": {
+    "verdict": "APPROVE_WITH_FIXES",
+    "summary": "Все блокеры 4a2 сняты: существующий словарь, годовой фильтр, голос мира в runtime_text и литералах, отдельные события «весть дошла», исходы Невы и Чудского, Торжок, мир 1242 без сезона, Горский §70, «того же лета» и приход Александра в 1250 сверены по книгам. 17/17 цитат дословно совпали (скрипт), 13 параграфов я прочитал сам. Шесть claims утверждены как есть. Четыре утверждены с точными правками: у Невы и Чудского в evidence нет параграфа, на котором держится часть литерала (§716 — год и устье Ижоры, §1948 — суббота); в русском runtime_text мира 1242 стоит позднее название «Латгалия»; «в Орде» в смерти Ярослава не подкреплено evidence этого claim. Отклонённых нет.",
+    "prior_to_fix_check": [
+      {"id": "package:vocabulary", "status": "done", "check": "domain social_law_economy, predicate supported_fact, polarity support у всех 10. В фрагменте нет predicate_registry и manifest.domains; prepare-validation их не трогает. Компиляция с production-манифестом прошла, exit 0."},
+      {"id": "package:year-gate", "status": "done", "check": "У каждого claim time {after, Y−1}, где Y — год предложенной первой фазы вести. Это строже моего правила 4a2, где Y считался от года события; допустимо. Мой скрипт прогнал годы 1225–1260 при всех ID в started: claim открывается ровно в год фазы, в 1230 закрыт; без event ID не открывается ни в один год."},
+      {"id": "package:model-facing-text", "status": "done_with_residuals", "check": "Имён историков, названий книг, слов «кандидат», «NPC» и «календарь» в runtime_text, object.value и short_definition нет. Префикс ref нейтральный: dated-events-1237-1250-v1. Остатки разобраны по claims: «В лето 1240» (Нева, гибрид), «Латгалию» (мир 1242). Имена историков есть в evidence_ref, а projectClaim передаёт evidence_refs в facts, но так же устроен production (v2-famine-karpov…, residual-…-halperin…). Это системный вопрос, не блокер пакета."},
+      {"id": "package:search-aliases", "status": "done", "check": "Алиасы заполнены у всех 40 локализаций. «Ледовое побоище», «Невская битва», «Александр Невский», «Батыево нашествие» встречаются только в search_aliases; это проверено regex-ом verify-applicability и моим чтением."},
+      {"id": "package:event-ids", "status": "done", "check": "10 новых ID nov_hist_news_*_lower_dvina с одной фазой outcome_news_reached_lower_dvina. Ни nov_hist_*, ни candidate_* не используются. В worktree коллизий нет, формат ID у владельца времени не ограничен (started-historical.js берёт id или event_id)."},
+      {"id": "package:sources", "status": "done", "check": "809427 §70 использован как второе подтверждение старейшинства, цитата дословная."},
+      {"id": "claim:neva", "status": "done_with_fix", "check": "Исход и §717 добавлены. В evidence потерян §716: год 1240 и «в устье Ижоры» есть только в нём."},
+      {"id": "claim:peipus", "status": "done_with_fix", "check": "Исход, §1949 и 566840 §1930 добавлены, позднего термина в runtime_text нет. «Суббота» стоит в литерале и тексте, но §1948, где она есть, в evidence не взят."},
+      {"id": "claim:torzhok", "status": "done", "check": "confidence medium, directness direct, без дня, литерал по образцу. Спор о дне вынесен в evidence: Янин — около 6 марта, НПЛ — 5 марта, сводка 23/15/5 марта у Мартынюка §165."},
+      {"id": "claim:peace-1242", "status": "done_with_fix", "check": "Сезона в факте нет. «Того же лета» сверено по 357048 §876: это цитата НПЛ в рассказе о 1242 г., «лето» здесь — летописный год. Условия мира подтверждены той же цитатой НПЛ («Водь, Лугу, Пльсков, Лотыголу… того ся всего отступаемъ»). Остаток — «Латгалию» в ru-тексте."},
+      {"id": "claim:alexander-1250", "status": "done", "check": "285469 §1310 (НПЛ младшего извода под 1250 г.: «Прииха князь Александр из Орды…») и 878751 §394 («Того же лета прииха…») — обе цитаты дословны."},
+      {"id": "report:coverage+historical_events", "status": "done", "check": "В report.md §«Обновление по REVIEW-4a3» описаны профиль 1220–1240 (COVERAGE out_of_scope и GAP, шаг через CA) и пустой historical_events без production writer."}
+    ]
+  },
+  "per_claim": [
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-batu-ryazan-1237",
+      "verdict": "approved",
+      "basis": "753671 §431 дословно, с летописной формулой «приидоша безвестно на Рязаньскую землю лесомъ, съ царемъ Батиемь». «Зимой» и «безбожные» — голос летописи. directness inferred соответствует реконструкции месяцев. Gate: after 1237, весть 1238-07-01."
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-torzhok-fall-1238",
+      "verdict": "approved",
+      "basis": "220871 §353 цитирует НПЛ «погании взяша град … месяца марта в 5» и считает «около 6 марта». 586325 §165 даёт осаду «по две недели» и сводку дат. Начало марта 1238 твёрдо, medium и direct обоснованы. 5.03.1238 по юлианскому календарю — пятница, как у Янина и Мартынюка."
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-neva-victory-1240",
+      "verdict": "approved_with_fix",
+      "basis": "393995 §717 дословно подтверждает победу, 15 июля, «на память святого Кирика и Улиты» и «в неделю» (15.07.1240 — воскресенье). Год 1240, «в силе великой» и «в устье Ижоры» стоят в §716, которого нет в evidence_refs.",
+      "fix": [
+        "Добавить evidence {schema: world_knowledge_evidence_v1, evidence_ref: 'evidence:dated-events-1237-1250-v1-neva-landing', source_ref: 'source:book-393995', anchor: {section: 'Часть III. Подвиги > Глава 2. Крестоносный змей §716', record_id: 'book:393995'}, note: '«И стали в Неве в устье Ижоры, желая взять Ладогу, проще же скажу — и всю область Новгородскую.» — Тот же параграф открывается датой прихода: 1240 год. Подтверждает год и место стоянки, не время прихода вести.', review_status: 'candidate'} и включить его в evidence_refs claim.",
+        "ru runtime_text: заменить «В лето 1240 пришли свеи…» на «Летом 1240 года пришли свеи в силе великой и стали на Неве, у устья Ижоры; князь Александр с новгородцами и ладожанами победил их 15 июля, на память Кирика и Улиты». Остальной текст не менять; en уже «In summer 1240»."
+      ],
+      "optional": "ru short_definition концепта: «шведов» → «свеев». Модель это поле не получает (projectClaim его не передаёт), поэтому правка не обязательна."
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-peipus-victory-1242",
+      "verdict": "approved_with_fix",
+      "basis": "641352 §1949 дословно: победа и «Божьими рыцарями». §3537 и 566840 §1930 дают 5 апреля 1242 г. и Чудское озеро. 05.04.1242 — суббота. «Суббота» и лёд стоят в литерале и runtime_text, но в evidence их подтверждает только §1948 («Была же тогда суббота…», «замерзшее озеро»), а он не взят. «Немцы» — общеизвестное ядро, допустимо при directness editorial.",
+      "fix": [
+        "Добавить evidence {schema: world_knowledge_evidence_v1, evidence_ref: 'evidence:dated-events-1237-1250-v1-ice-saturday-life', source_ref: 'source:book-641352', anchor: {section: 'Житие Александра Невского > Перевод §1948', record_id: 'book:641352'}, note: '«Была же тогда суббота, и когда взошло солнце, сошлись противники.» — Перевод жития подтверждает день недели и бой на замёрзшем озере; весть на Нижнюю Двину отсюда не следует.', review_status: 'candidate'} и включить его в evidence_refs claim. Литерал и тексты не менять."
+      ]
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-novgorod-german-peace-1242",
+      "verdict": "approved_with_fix",
+      "basis": "357048 §876 приводит НПЛ «Того же лета Немци прислаша с поклономь… Водь, Лугу, Пльсков, Лотыголу мечемь, того ся всего отступаемъ», 566840 §1932 — таблицу с теми же условиями. Сезон не утверждается, directness direct обоснован. В модельном ru-тексте стоит позднее название «Латгалия», а летописное слово — «Лотыгола».",
+      "fix": [
+        "ru runtime_text: «После битвы на Чудском озере Новгород заключил мир с немцами. Они отказались от притязаний на Водь, Лугу, Псков и Лотыголу.»",
+        "ru short_definition концепта: «…их притязания на Водь, Лугу, Псков и Лотыголу были оставлены.» Правка ради единообразия.",
+        "ru search_aliases (claim и concept): добавить «Лотыгола», «Латгалия» оставить. Литерал (…latgale) и en-локализации не менять."
+      ]
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-batu-journey-1243",
+      "verdict": "approved",
+      "basis": "753671 §932 дословно: «В 1243 г. первым из русских властителей в ставку Батыя отправился великий князь Ярослав.» Gate: after 1243, весть 1244-07-01."
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-seniority-1243",
+      "verdict": "approved",
+      "basis": "Два независимых подтверждения: летописная формула «буди ты стареи всем князем в Русском языце» (753671 §932) и «Батый пожаловал ему «старейшинство»» (809427 §70). Год 1243 — из контекста §70. Ярлык-документ и дань не утверждаются."
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-death-1246",
+      "verdict": "approved_with_fix",
+      "basis": "Дату 30.09.1246 603814 §269 даёт дословно, причина смерти исключена правильно. «в Орде» / in_the_horde единственным evidence claim не подкреплено: Кучкин места не называет. Подкрепление есть в 809427 §70 (поездка Ярослава к великоханскому двору в 1246 г.). «Орда» как общее название татарской державы — слово эпохи: та же НПЛ пишет «из Орды» о возвращении Александра.",
+      "fix": [
+        "Вариант по умолчанию: добавить evidence {schema: world_knowledge_evidence_v1, evidence_ref: 'evidence:dated-events-1237-1250-v1-yaroslav-death-journey-gorsky', source_ref: 'source:book-809427', anchor: {section: 'Часть I Князья > Глава 3 Ярослав Всеволодич и установление монгольской власти §70', record_id: 'book:809427'}, note: '«Самого Ярослава Батый направит к великоханскому двору тогда, когда вопрос о коронации Гуюка станет делом решенным, – в 1246 г.» — Поездка 1246 г. к великоханскому двору; «умер в Орде» — вывод из неё и даты смерти у Кучкина, не прямое указание места.', review_status: 'candidate'}, включить в evidence_refs, qualifiers.directness: 'inferred'. Литерал и тексты не менять.",
+        "Допустимая альтернатива: убрать место. Литерал 'grand_prince_yaroslav_vsevolodich_died_on_30_september_1246'; ru runtime_text и short_definition «Великий князь Ярослав умер 30 сентября 1246 года.»; en «Grand Prince Yaroslav died on 30 September 1246.»; directness оставить editorial."
+      ]
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-princes-return-rus-1249-1250",
+      "verdict": "approved",
+      "basis": "603814 §269 «в конце 1249 г. на Русь вернулись из Каракорума, Александр и Андрей» и 371635 §261 «Зимой 1249 года…» — обе дословно. Интервал в литерале честный, его согласует 878751 §394 («Зимою 1250 года»). «Каракорум» — современное событию название места, не будущее (в 4a2 я сам дал его как алиас эпохи). Если владелец захочет строже, можно взять «из Татар, от великого хана», но это не обязательно."
+    },
+    {
+      "claim_ref": "claim:dated-events-1237-1250-v1-alexander-novgorod-1250",
+      "verdict": "approved",
+      "basis": "Цитата НПЛ под 1250 г. есть у двух авторов дословно: 285469 §1310 «Прииха князь Александр из Орды, и бысть радость велика в Новегороде» и 878751 §394 «Того же лета прииха князь Александр Ярославич из Орды в Новгород и рады быша Новгородци». Точность годовая, directness direct."
+    }
+  ],
+  "verification_records": {
+    "digest_basis": "worldKnowledgeClaimDigest (tools/world-catalog-workflow/src/world-knowledge-pack.js:256, worktree npc-epoch-guard HEAD 384e34101a34ae504c2dcac885364be7fab40ff7) считался на временном pack, который собирает prepare-validation.mjs: production-v2 из ref-pr98 плюс строки кандидата, где review_status и rights.status подняты до 'approved'. Digest действителен, только если при включении в production-v2 строки claim, его локализации, concept, concept-локализации, evidence и sources совпадают с этим pack побайтно по смыслу JSON. Если отличаются хоть в чём-то, digest пересчитывается, а скрипт подтверждает, что различаются только lifecycle-поля.",
+    "production_fields_pending": "Схема world_knowledge_verification_v1 требует candidate_ref вида git:<sha40>:<path>.json#<claim_ref> и review_ref вида <path>.md[#section]. Их можно заполнить только при коммите фрагмента и этого отчёта, поэтому сейчас стоит PENDING.",
+    "records": [
+      {
+        "schema": "world_knowledge_verification_v1",
+        "verification_ref": "wk-verification:dated-events-1237-1250-v1-batu-ryazan-1237-opus-2026-10-01",
+        "claim_id": "claim:dated-events-1237-1250-v1-batu-ryazan-1237",
+        "claim_ref": "claim:dated-events-1237-1250-v1-batu-ryazan-1237",
+        "claim_digest": "c0a9a963bfda78991965bfc00713917d3e119f2a68f775b540fbf396b9e4367b",
+        "candidate_ref": "PENDING: git:<sha>:<path>#claim:dated-events-1237-1250-v1-batu-ryazan-1237",
+        "auditor_ref": "reviewer:claude-opus-5-5",
+        "reviewer": "claude-opus-5-5",
+        "independence_basis": "Пакет собрал исполнитель Codex (fleet, задача npc-epoch-guard); проверяющий — отдельная сессия Opus, в authoring не участвовал.",
+        "evidence_checked": ["evidence:dated-events-1237-1250-v1-batu-approach"],
+        "review_ref": "PENDING: <path>.md#batu-ryazan-1237",
+        "verdict": "APPROVE",
+        "date": "2026-10-01",
+        "limits": "Летопись проверена по цитате в научной книге (753671 §431), сам текст НПЛ не открывался. Месяцы — реконструкция исследователя (directness inferred)."
+      },
+      {
+        "schema": "world_knowledge_verification_v1",
+        "verification_ref": "wk-verification:dated-events-1237-1250-v1-torzhok-fall-1238-opus-2026-10-01",
+        "claim_id": "claim:dated-events-1237-1250-v1-torzhok-fall-1238",
+        "claim_ref": "claim:dated-events-1237-1250-v1-torzhok-fall-1238",
+        "claim_digest": "b88af022858fb48c9d58dc81ea4129074fd361208c4ed986aef2a2e0d4d6de30",
+        "candidate_ref": "PENDING: git:<sha>:<path>#claim:dated-events-1237-1250-v1-torzhok-fall-1238",
+        "auditor_ref": "reviewer:claude-opus-5-5",
+        "reviewer": "claude-opus-5-5",
+        "independence_basis": "Пакет собрал исполнитель Codex (fleet, задача npc-epoch-guard); проверяющий — отдельная сессия Opus, в authoring не участвовал.",
+        "evidence_checked": ["evidence:dated-events-1237-1250-v1-torzhok-chronicle", "evidence:dated-events-1237-1250-v1-torzhok-date-discussion"],
+        "review_ref": "PENDING: <path>.md#torzhok-fall-1238",
+        "verdict": "APPROVE",
+        "date": "2026-10-01",
+        "limits": "Точный день спорен (5/6/15/23 марта), в факт не входит. НПЛ проверена по цитатам у Янина и Мартынюка."
+      },
+      {
+        "schema": "world_knowledge_verification_v1",
+        "verification_ref": "wk-verification:dated-events-1237-1250-v1-yaroslav-batu-journey-1243-opus-2026-10-01",
+        "claim_id": "claim:dated-events-1237-1250-v1-yaroslav-batu-journey-1243",
+        "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-batu-journey-1243",
+        "claim_digest": "091f710462a7ca42d13ffa57ea012eefcc3bfae127855498c3dea391fdd555e7",
+        "candidate_ref": "PENDING: git:<sha>:<path>#claim:dated-events-1237-1250-v1-yaroslav-batu-journey-1243",
+        "auditor_ref": "reviewer:claude-opus-5-5",
+        "reviewer": "claude-opus-5-5",
+        "independence_basis": "Пакет собрал исполнитель Codex (fleet, задача npc-epoch-guard); проверяющий — отдельная сессия Opus, в authoring не участвовал.",
+        "evidence_checked": ["evidence:dated-events-1237-1250-v1-yaroslav-journey"],
+        "review_ref": "PENDING: <path>.md#yaroslav-batu-journey-1243",
+        "verdict": "APPROVE",
+        "date": "2026-10-01",
+        "limits": "Точность — год. Расхождение с nov_hist_1242_002 у владельца истории (1242 против 1243) остаётся владельцу."
+      },
+      {
+        "schema": "world_knowledge_verification_v1",
+        "verification_ref": "wk-verification:dated-events-1237-1250-v1-yaroslav-seniority-1243-opus-2026-10-01",
+        "claim_id": "claim:dated-events-1237-1250-v1-yaroslav-seniority-1243",
+        "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-seniority-1243",
+        "claim_digest": "1e6003aa49006e6a218aafc754d014982d05054254b8f0ace4482f2fd84ad687",
+        "candidate_ref": "PENDING: git:<sha>:<path>#claim:dated-events-1237-1250-v1-yaroslav-seniority-1243",
+        "auditor_ref": "reviewer:claude-opus-5-5",
+        "reviewer": "claude-opus-5-5",
+        "independence_basis": "Пакет собрал исполнитель Codex (fleet, задача npc-epoch-guard); проверяющий — отдельная сессия Opus, в authoring не участвовал.",
+        "evidence_checked": ["evidence:dated-events-1237-1250-v1-yaroslav-seniority-gorsky", "evidence:dated-events-1237-1250-v1-yaroslav-seniority-khrustalev"],
+        "review_ref": "PENDING: <path>.md#yaroslav-seniority-1243",
+        "verdict": "APPROVE",
+        "date": "2026-10-01",
+        "limits": "Ярлык-документ и дань не утверждаются. Летописная формула проверена по цитате у Хрусталёва."
+      },
+      {
+        "schema": "world_knowledge_verification_v1",
+        "verification_ref": "wk-verification:dated-events-1237-1250-v1-princes-return-rus-1249-1250-opus-2026-10-01",
+        "claim_id": "claim:dated-events-1237-1250-v1-princes-return-rus-1249-1250",
+        "claim_ref": "claim:dated-events-1237-1250-v1-princes-return-rus-1249-1250",
+        "claim_digest": "70cf0367768f691c0d78e1122330bd965886e5f687ea2498dbedd3a46541b041",
+        "candidate_ref": "PENDING: git:<sha>:<path>#claim:dated-events-1237-1250-v1-princes-return-rus-1249-1250",
+        "auditor_ref": "reviewer:claude-opus-5-5",
+        "reviewer": "claude-opus-5-5",
+        "independence_basis": "Пакет собрал исполнитель Codex (fleet, задача npc-epoch-guard); проверяющий — отдельная сессия Opus, в authoring не участвовал.",
+        "evidence_checked": ["evidence:dated-events-1237-1250-v1-princes-return-avdeenko", "evidence:dated-events-1237-1250-v1-princes-return-kuchkin"],
+        "review_ref": "PENDING: <path>.md#princes-return-rus-1249-1250",
+        "verdict": "APPROVE",
+        "date": "2026-10-01",
+        "limits": "Дата — интервал (конец 1249 / зима 1249–1250), точного дня нет."
+      },
+      {
+        "schema": "world_knowledge_verification_v1",
+        "verification_ref": "wk-verification:dated-events-1237-1250-v1-alexander-novgorod-1250-opus-2026-10-01",
+        "claim_id": "claim:dated-events-1237-1250-v1-alexander-novgorod-1250",
+        "claim_ref": "claim:dated-events-1237-1250-v1-alexander-novgorod-1250",
+        "claim_digest": "b7717c60ae35d44f39d9444f9829e4108ee7e43006ad170e50fc20e2bd297871",
+        "candidate_ref": "PENDING: git:<sha>:<path>#claim:dated-events-1237-1250-v1-alexander-novgorod-1250",
+        "auditor_ref": "reviewer:claude-opus-5-5",
+        "reviewer": "claude-opus-5-5",
+        "independence_basis": "Пакет собрал исполнитель Codex (fleet, задача npc-epoch-guard); проверяющий — отдельная сессия Opus, в authoring не участвовал.",
+        "evidence_checked": ["evidence:dated-events-1237-1250-v1-alexander-novgorod-arrival", "evidence:dated-events-1237-1250-v1-alexander-novgorod-arrival-parallel"],
+        "review_ref": "PENDING: <path>.md#alexander-novgorod-1250",
+        "verdict": "APPROVE",
+        "date": "2026-10-01",
+        "limits": "Точность — летописный год 6758; при мартовском стиле это март 1250 — февраль 1251. НПЛ проверена по цитатам у Рапова и Клепинина."
+      }
+    ],
+    "conditional_records_after_fix": {
+      "rule": "Для четырёх claims с approved_with_fix запись APPROVE выписывается только после точной правки из per_claim.fix. Перед этим скрипт должен показать diff: изменились лишь предписанные поля и строки evidence, всё остальное совпадает с пакетом sha256 9085a704…. После этого digest пересчитывается тем же worldKnowledgeClaimDigest. Это механическая проверка, повторного прохода Opus не нужно. Если правка уходит дальше предписанной (другой текст, другие evidence), нужен новый короткий проход Opus.",
+      "records": [
+        {"claim_id": "claim:dated-events-1237-1250-v1-neva-victory-1240", "claim_digest": "RECOMPUTE_AFTER_FIX (до правки d4f170fe80858c84819fb3a4bda0f9d66baf1d3c93ec353c9a8861ad81c291f7 — не действителен)", "verdict": "APPROVE (условно, после fix)", "evidence_checked": ["evidence:dated-events-1237-1250-v1-neva-landing", "evidence:dated-events-1237-1250-v1-neva-victory"], "reviewer": "claude-opus-5-5", "date": "2026-10-01"},
+        {"claim_id": "claim:dated-events-1237-1250-v1-peipus-victory-1242", "claim_digest": "RECOMPUTE_AFTER_FIX (до правки ef89b6840ee0a21677f7667174665f9f38ec68cd8ac0b9799842eb709649670f — не действителен)", "verdict": "APPROVE (условно, после fix)", "evidence_checked": ["evidence:dated-events-1237-1250-v1-ice-date-chronology", "evidence:dated-events-1237-1250-v1-ice-date-note", "evidence:dated-events-1237-1250-v1-ice-saturday-life", "evidence:dated-events-1237-1250-v1-ice-victory-life"], "reviewer": "claude-opus-5-5", "date": "2026-10-01"},
+        {"claim_id": "claim:dated-events-1237-1250-v1-novgorod-german-peace-1242", "claim_digest": "RECOMPUTE_AFTER_FIX (до правки 63381e2a404012df2618b58ee3b2d150a4f666cf90490e183b1c21baa978f914 — не действителен)", "verdict": "APPROVE (условно, после fix)", "evidence_checked": ["evidence:dated-events-1237-1250-v1-peace-1242", "evidence:dated-events-1237-1250-v1-peace-chronicle-formula"], "reviewer": "claude-opus-5-5", "date": "2026-10-01"},
+        {"claim_id": "claim:dated-events-1237-1250-v1-yaroslav-death-1246", "claim_digest": "RECOMPUTE_AFTER_FIX (до правки 8343b2c694d90a842391f8906a9efce8dc5daf934b779de41ef37aaddd25a758 — не действителен)", "verdict": "APPROVE (условно, после fix)", "evidence_checked_default_variant": ["evidence:dated-events-1237-1250-v1-yaroslav-death", "evidence:dated-events-1237-1250-v1-yaroslav-death-journey-gorsky"], "evidence_checked_alternative_variant": ["evidence:dated-events-1237-1250-v1-yaroslav-death"], "reviewer": "claude-opus-5-5", "date": "2026-10-01"}
+      ]
+    }
+  },
+  "time_owner_proposals_decision": {
+    "verdict": "approved_as_candidate_input",
+    "summary": "Все 10 дат прихода вести консервативны: каждая позже самой поздней возможной даты события, с учётом мартовского летописного года, и даёт запас в месяцы. Порядок вестей не противоречит хронологии. Ошибка возможна только в сторону «ещё не слышал», что по D60 безопасно. Утверждаю как вход для владельца времени, а не как регистрацию.",
+    "per_event": [
+      {"event_id": "nov_hist_news_batu_ryazan_lower_dvina", "start": "1238-07-01", "latest_event": "декабрь 1237", "margin": "не меньше 6 мес.", "verdict": "approved"},
+      {"event_id": "nov_hist_news_torzhok_fall_lower_dvina", "start": "1238-10-01", "latest_event": "март 1238 (крайний вариант — 23.03)", "margin": "не меньше 6 мес.", "verdict": "approved"},
+      {"event_id": "nov_hist_news_neva_victory_lower_dvina", "start": "1241-01-01", "latest_event": "15.07.1240", "margin": "5,5 мес.", "verdict": "approved"},
+      {"event_id": "nov_hist_news_peipus_victory_lower_dvina", "start": "1243-01-01", "latest_event": "05.04.1242", "margin": "около 9 мес.", "verdict": "approved"},
+      {"event_id": "nov_hist_news_novgorod_german_peace_lower_dvina", "start": "1244-01-01", "latest_event": "летописный год 6750, при мартовском стиле до февраля 1243", "margin": "не меньше 10 мес.; весть позже вести о битве", "verdict": "approved"},
+      {"event_id": "nov_hist_news_yaroslav_batu_journey_lower_dvina", "start": "1244-07-01", "latest_event": "летописный год 6751, крайний случай — февраль 1244", "margin": "не меньше 4 мес. в крайнем случае, обычно больше года", "verdict": "approved"},
+      {"event_id": "nov_hist_news_yaroslav_seniority_lower_dvina", "start": "1244-07-01", "latest_event": "как у поездки", "margin": "как у поездки", "verdict": "approved"},
+      {"event_id": "nov_hist_news_yaroslav_death_lower_dvina", "start": "1248-01-01", "latest_event": "30.09.1246 (далеко за пределами Руси)", "margin": "15 мес.", "verdict": "approved"},
+      {"event_id": "nov_hist_news_princes_return_rus_lower_dvina", "start": "1252-01-01", "latest_event": "«зимою 1250» (Клепинин), не позже начала 1251", "margin": "не меньше 10 мес.", "verdict": "approved"},
+      {"event_id": "nov_hist_news_alexander_novgorod_lower_dvina", "start": "1252-01-01", "latest_event": "летописный год 6758, до февраля 1251", "margin": "не меньше 10 мес.", "verdict": "approved"}
+    ],
+    "conditions": [
+      "Регистрирует владелец времени и истории (@rus/time-events-history) как approved sealed historical phases с provenance, policies, pins и digest. Файл предложений таким DTO не является, и в runtime его не читать.",
+      "Годовой фильтр WK и дата первой фазы связаны: applicability.time.year = год(first_phase_start) − 1. Если владелец времени меняет дату, time.year пересчитывается скриптом (verify-applicability), а digest и запись проверки обновляются механически. Если дата станет раньше года, на который открывает фильтр, claim останется закрытым до этого года: безопасно, но станет рассинхроном.",
+      "Фазы nov_hist_1238_002, nov_hist_1240_001, nov_hist_1242_001, nov_hist_1246_001 и другие существующие nov_hist_* с background/omens до исхода не использовать как gate этих claims.",
+      "event_world_summary в предложениях — служебный текст. Если владелец времени выведет его в повествование, нужен голос мира («шведов» → «свеев» и т.п.).",
+      "Реализм: одна глобальная граница по Нижней Двине делает задержку для самих новгородцев чрезмерной (Торжок — около 7 мес., приход Александра в 1250 г. — до 1252). По D60 это безопасно. Решение 4a2 в силе: региональное деление вводить только если плейтест покажет, что это мешает.",
+      "Пока historical_events партии пуст ([]) и профиль social_law_economy ограничен 1220–1240, gate фактически не работает: claims не видны ни в какой год, а после 1240 модель получает COVERAGE out_of_scope. Это отдельные шаги: writer historical_events у владельца времени вместе с npc-claims; расширение профиля — изменение активного pack, нужен Contract Auditor."
+    ]
+  },
+  "dating_style_decision": {
+    "decision": "В данных World Knowledge годы оставить от Р. Х. по юлианскому календарю; в год от сотворения мира не переводить. Гибридную формулу «в лето 1240» (летописное «лето» плюс номер от Р. Х.) в model-facing тексте не использовать, писать нейтрально: «летом 1240 года», «в 1240 году». Как NPC называет время в речи (праздник, «третьего лета», «в лето 6748»), решают владелец речи и epoch-guard, данные WK это не кодируют.",
+    "grounds": [
+      "Все машинные оси проекта считают годы от Р. Х. по юлианскому календарю: applicability.time (по нему открывается этот самый claim), игровой календарь novgorod_julian_lmst_1230_1233_v2, фазы владельца времени. Production-v2 тоже пишет годы от Р. Х. в runtime_text («около 1230 года», «1207 года»), а летописный год даёт только в evidence-якорях («6738 [1230]»). Один стиль на всех осях — один источник истины.",
+      "Перевод в год от сотворения мира неоднозначен: мартовский, сентябрьский и ультрамартовский стили дают ±1 год (6750 по мартовскому стилю — март 1242 — февраль 1243). Модель с этим ошибается чаще, чем с годом от Р. Х. Если нужен год от сотворения мира, его считает код, а не данные.",
+      "Анахронизм формы (NPC говорит «в 1240 году от Рождества Христова») относится к речи, а не к знанию. Его ловит владелец речи и страховка эпохи (D60). Факт вида «битва была 15 июля 1240» анахронизмом знания не является, если открыт после события.",
+      "Гибрид «в лето 1240» вреден: он выглядит как речь эпохи и подталкивает модель повторить его в реплике, хотя летописец написал бы «в лето 6748». Поэтому данные пишутся нейтрально, а приметы эпохи (праздник, память святых) даются там, где они есть в источнике.",
+      "Нормы о счёте лет в корпусе и данных нет: поиск «сотворения», «от Рождества», «anno mundi» по docs, data/knowledge-source, packages, apps ничего не нашёл. Если нужен единый стиль речи NPC, это вход в дизайн gate и речи (npc-claims / epoch-guard), а не правка этого пакета."
+    ],
+    "applies_to_this_package": "Затронут только ru runtime_text Невы («В лето 1240» → «Летом 1240 года») — это входит в fix claim neva-victory-1240. Остальные тексты уже нейтральны."
+  },
+  "limits": [
+    "Цитаты: скрипт сверил все 17 evidence-цитат с указанными параграфами index.sqlite (режим ro) — 17/17 дословно, после нормализации ё/е, кавычек и пробелов. Сам прочитал 13 параграфов: 393995 §716–718; 641352 §1948–1950 и §3537; 357048 §876; 566840 §1932; 603814 §269; 809427 §70; 285469 §1310; 878751 §394; 586325 §165; 220871 §353; 753671 §431. 753671 §932 подтверждён скриптом и моим чтением на проходе 4a2.",
+    "Якорь 285469 §1310: заголовок раздела в anchor пересказан («Земельные владения Всеволодичей…»), а в индексе он «…(потомков великого киевского князя Всеволода Ярославича)…». Параграф и цитата верны; при включении лучше взять заголовок из индекса. Для 393995, 641352 и 371635 расходится только регистр.",
+    "Первичные тексты (НПЛ, Лаврентьевская, Житие в оригинале) напрямую не открывались, только через цитаты в научных изданиях и в переводе 641352. «Того же лета» и приход Александра под 1250 г. подтверждены таким путём двумя независимыми авторами.",
+    "Юлианские дни недели пересчитаны скриптом по JDN: 15.07.1240 — воскресенье, 05.04.1242 — суббота, 05.03.1238 — пятница, 30.09.1246 — воскресенье.",
+    "Повтор проверок во временной папке /srv/novgorod-work/tmp/lead-tmp/opus-dated-2: build-candidate --check OK; prepare (копия скрипта с выводом в мою папку) OK; compile-world-knowledge exit 0; verify-applicability — 10 claims и 60 assertions OK. Мой независимый прогон 1225–1260 показал, что каждый claim открывается ровно в год фазы, закрыт в 1230 при всех ID в started и без event ID не открывается никогда.",
+    "Digest зависит от формы включения (см. verification_records.digest_basis). В production-записи нужны commit-привязанные candidate_ref и review_ref, сейчас там PENDING.",
+    "evidence_refs с фамилиями историков (…-khrustalev, -gorsky, -kuchkin, -avdeenko) projectClaim передаёт в facts среза модели. Так же устроен production-v2 (v2-famine-karpov…, …-halperin…), это системный вопрос WK и сериализации промпта, не этого пакета. Проверять, сериализуются ли facts в промпт целиком, я не стал.",
+    "Не проверено: как владелец речи сейчас передаёт игровую дату и годы NPC. Интерфейс gate через npc-claims не проверялся.",
+    "Worktree npc-epoch-guard: git status показывает только смену mode 100644→100755 у пяти tools/*/src/cli.js, отметка времени 12:04, до моего прохода. Исполнитель в DONE-4a3 написал, что git status пуст: вероятно, он запускал с другим core.fileMode. Я в worktree ничего не менял.",
+    "codebase-memory-mcp не использовался: это read-only проверка данных на servak через ssh. Владельцы и пути установлены прямым чтением и grep.",
+    "Пакет исполнителя не изменён (sha256 до и после совпадают). Production-v2, реестры и ref-pr98 не трогались. Временная папка opus-dated-2 удалена в конце."
+  ]
+}

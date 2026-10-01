@@ -79,29 +79,35 @@ PostgreSQL-тесты: часть из них пропускается без п
 
 ## 3. Состав `npm test` и CI
 
-`npm test` = последовательно: `test:modules` → `test:domain` → `test:apps` → `test:tools` → `test:shadow` →
-`test:cutover` → `docs:check` → `test:integration` → `test:acceptance` → `test:browser-e2e` →
-`architecture:check` (package.json, скрипт `test`).
+`npm test` последовательно запускает `test:modules`, `test:domain`, `test:apps`, `test:tools`, `test:game-base`,
+`test:shadow`, `test:cutover`, `docs:check`, `test:integration`, `test:acceptance`, `test:browser-e2e` и
+`architecture:check` (скрипт `test` в [package.json](../../package.json)).
 
-CI ([test.yml](../../.github/workflows/test.yml)): матрица jobs `full-npm-test-${{ matrix.suite }}` с
-`suite: [fast, integration, acceptance, browser-architecture]`, `fail-fast: false`. Профиль `full` для
-`pull_request`. До/вместо полного suite (по suite):
+CI описан в [.github/workflows/test.yml](../../.github/workflows/test.yml). Для `pull_request` выбирается профиль
+`full`; job matrix `full-npm-test-${{ matrix.suite }}` включает `fast`, `integration`, `p12`, `acceptance` и
+`browser-architecture`, `fail-fast: false`. Все jobs требуют Node 22; полный профиль устанавливает зависимости через
+`npm ci`. Python 3.12 и проверка WK encoder нужны для `fast`, `acceptance` и `browser-architecture`.
 
-- общие: Node 22, `npm ci`; для `fast`/`acceptance`/`browser-architecture` — Python 3.12 и проверка WK encoder;
-- `fast`: dry-run импорта world_base и FK-аудит; `world-db:schema-check` / `world-db:schema-doc-check`;
-  контейнер `postgres:16`, DDL world_base с проверкой **208** таблиц и grants `world_reader`;
-  PostgreSQL-интеграции `world-db:import:stage3b1:integration` и
-  `character-appearance:test-world-v4-postgres` (**в suite `fast`**, не `integration` —
-  [.github/workflows/test.yml](../../.github/workflows/test.yml));
-  `knowledge:check-corpus`; `docs:generate` / `character-appearance:generate` + `git diff --exit-code` по
-  `MODULE_INDEX.md`, `generated/`, `infra/world-base/SCHEMA_REFERENCE.md` и каталогам lower-dvina;
-  затем `test:modules` … `docs:check` (как в package.json до integration);
-- `integration`: `world-db:schema-check` / `world-db:schema-doc-check` / DDL 208 (как в `fast`) и
-  `scripts/run-integration-tests.mjs`;
-- `acceptance`: `test:acceptance`;
+- `fast`: подготовка и dry-run импорта world_base с FK-аудитом; schema checks и DDL world_base в PostgreSQL 16 с
+  проверкой 224 таблиц и grants `world_reader`; интеграции `world-db:import:stage3b1:integration` и
+  `character-appearance:test-world-v4-postgres`; `knowledge:check-corpus`; `docs:generate` и
+  `character-appearance:generate` с проверкой generated-файлов на чистый diff; затем `test:modules`, `test:domain`,
+  `test:apps`, `test:tools`, `test:game-base`, `test:shadow`, `test:cutover` и `docs:check`.
+- `integration`: schema checks и DDL world_base в PostgreSQL 16, затем `test:integration` через
+  `scripts/run-integration-tests.mjs`.
+- `p12`: PostgreSQL 16 и `spatial-v3:test-p12-postgres`.
+- `acceptance`: `test:acceptance`.
 - `browser-architecture`: `test:browser-e2e` и `architecture:check`.
 
-Профиль `evidence_only` — отдельный job (P28 + `docs:check`). Незакоммиченный generated-артефакт роняет CI.
+Отдельный `evidence-only` job выбирает профиль `evidence_only` и запускает P28 checks с `docs:check`. В полном профиле
+CI также проверяет, что generated-файлы после генерации не имеют diff.
+
+На servak тесты, которым нужен PostgreSQL в Docker, запускают через `/srv/novgorod-work/fleet/bin/pg-slot`.
+Если тест передаётся исполнителю Codex, запрос можно отправить через
+`/srv/novgorod-work/fleet/bin/pg-request [--timeout-min N] path/to/test.js`; передаются только относительные пути
+тестовых файлов. На servak AppArmor блокирует unix-сокеты PostgreSQL в Docker, поэтому обвязка запускает тестовые
+контейнеры с `apparmor=unconfined` при `NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1`; переменную выставляют `fleet` и
+`pg-slot`. Это относится к тестам на servak; в CI PostgreSQL запускается отдельным Docker-контейнером в job.
 
 ## 4. Матрица «тип изменения → команды»
 

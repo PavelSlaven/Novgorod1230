@@ -179,8 +179,9 @@ Amendment вводит:
 5. `dynamic_recheck_policy` получила вид `fixed_time_interval` и поле `interval_minutes` (как в DDL `13.sql` и в утверждённых политиках `recheck.*`): норма отставала от DDL и данных (F.1.1).
 6. Приложение B и принятые temporal-блоки A.1–A.6 не менялись (исторические снимки `4.2.0-target.1` и `4.3.0-target.1` прежние): новые поля, исходы и инварианты живут только в F (`dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result`, F.1.1).
 7. Устаревшее описание видимости в «Применимости к v17» снято: линии при плохой видимости предлагаются (§7.1.1; rt-lines, фаза 0).
+8. Результаты traversal привязаны к точному `travel_state_id`; после закрытия состояния при нулевом прогрессе возобновление того же шага создаёт новое состояние с отдельной последовательностью интервалов (§10.9, F.1.1). При положительном прогрессе пауза сохраняет прежнее состояние и его ordinal (§10.8).
 
-Версия документа и machine contracts (`4.7.0`, `4.7.0-target.1`) не меняются: amendment ещё не реализован кодом (LW-097), у его machine contracts нет потребителей, кроме генераторов и тестов; изменённые блоки пересоздаются генераторами.
+Версия документа и machine contracts (`4.7.0`, `4.7.0-target.1`) не меняются. Работа по внедрению amendment продолжается в LW-097: до атомарного cutover v17 остаётся на прежнем production-поведении; при cutover синхронно включаются reader, execution, persistence и импорт.
 
 Пересечения Приложения F с temporal-приложениями — два блока: `preparation_snapshot_member` (F = Temporal World v4 A.7 + член `canonical_connection`) и `party_traversal_interval_result` (F = Temporal A.6 + `turn_back` и исход `returned_to_departure`, F.1.1); правка соответствующего блока temporal-приложения требует одновременной правки F (проверяет `check-p01.mjs`). Temporal §13 (исходы traversal) и A.6 «шесть исходов» относятся к редакции 4.3: седьмой исход добавляет эта редакция (Temporal §13 отсылает сюда).
 
@@ -1704,6 +1705,7 @@ At `actual_progress_after_ppm = 1_000_000` of a mirrored travel state (§4.10.1)
 - preserves exact cumulative time and last confirmed endpoint;
 - keeps execution `active` with null current endpoint and the same active travel-state ID;
 - resume creates a new interval and dynamic snapshot; turn back (§4.10.1) creates the first interval of the mirrored side;
+- resume after this pause reuses the same travel-state ID and next interval ordinal; it never resets interval identity;
 - `paused_in_transit` always has progress in 1..999 999: an explicit pause requested after the start commit of §10.5 but before the first physical progress (actual progress zero) is not a pause in transit; the interval ends `interrupted_at_anchor` at the departure endpoint (§10.9). A pause requested while the departure gate is blocked creates no travel state at all (§10.5).
 
 To avoid ambiguous execution status, target model uses:
@@ -1728,14 +1730,14 @@ until an anchor is actually reached. `waiting_at_anchor` always means a real end
 - sets execution `suspended_at_scene`;
 - appends exactly one `suspended` execution event linked to the terminal interval result and the same change set.
 
-If required interruption scene cannot be materialized, the outcome is `stranded`, not a guessed anchor.
+If required interruption scene cannot be materialized, or an interruption after positive progress has no approved usable route anchor, the outcome is `stranded`, not a guessed anchor.
 
 An explicit pause or an approved interruption request whose interval ends with actual progress zero (after the start commit of §10.5, before any physical advancement) uses the departure endpoint of the step segment as its anchor, whatever the interruption policy resolves: the traveller never left, so no route-anchor aggregate is created and no scene is materialized. The outcome is still `interrupted_at_anchor`, atomically:
 
-- closes the travel state as `interrupted_to_anchor` at progress zero, keeping its interval history;
+- closes the travel state as `interrupted_to_anchor` at actual progress zero, keeping its interval history; the departure endpoint is forced regardless of the interruption policy result;
 - returns the root location from `in_transit` to the departure endpoint (or leaves the attached passenger scene-located);
 - sets execution `waiting_at_anchor` on that endpoint with exactly one `wait_started` event (not `suspended`, because no `suspended_at_scene` anchor exists);
-- allows `resumed` (`waiting_at_anchor` → `active`, A.4.1): the same immutable plan dispatches its current step again from the departure endpoint and creates a new travel state at progress zero (§10.5). The closed state does not count against the one-active-state rule.
+- allows `resumed` (`waiting_at_anchor` → `active`, A.4.1): the same immutable plan dispatches its current step again from the departure endpoint and creates a new travel-state ID at progress zero with `next_interval_ordinal=0` (§10.5). The closed state and its interval history remain immutable and do not count against the one-active-state rule.
 
 A retried request after the start commit returns the committed result through the idempotency lease (§11.5); the same request never closes a second state or creates a second interval.
 
@@ -7490,9 +7492,9 @@ invariants:
   - unknown requires all numeric bounds null, is not executable and accompanies a blocking reason.
 ```
 
-### F.1.1. Recheck policy kinds and turn back mid-segment (revision 2026-09-30)
+### F.1.1. Recheck policy kinds, turn back mid-segment, and interval identity (revision 2026-10-01)
 
-These three blocks are copies of the effective blocks of the listed sources with the changes of the revision (§0.9, D56): `dynamic_recheck_policy` and `traveller_travel_state` copy Appendix B, which stays unchanged; `party_traversal_interval_result` copies Temporal World v4 Appendix A.6 (the effective block: Appendix B is already superseded there) and keeps its exact-time fields; Temporal A.6 and Appendix B are not edited, so the historical 4.2.0 and 4.3.0 snapshots stay as they were.
+These three blocks are copies of the effective blocks of the listed sources with the changes of the revision (§0.9, D56), plus the interval identity clarification recorded above: `dynamic_recheck_policy` and `traveller_travel_state` copy Appendix B, which stays unchanged; `party_traversal_interval_result` copies Temporal World v4 Appendix A.6 (the effective block: Appendix B is already superseded there) and keeps its exact-time fields; Temporal A.6 and Appendix B are not edited, so the historical 4.2.0 and 4.3.0 snapshots stay as they were.
 
 ```yaml
 contract_name: dynamic_recheck_policy
@@ -7565,9 +7567,11 @@ invariants:
 contract_name: party_traversal_interval_result
 storage: party_runtime_append_only
 identity:
-  - id
+  - travel_state_id
+  - interval_ordinal
 fields:
   id: required stable_id
+  travel_state_id: required stable_id
   route_plan_execution_id: required stable_id
   plan_step_ordinal: required non_negative_integer
   interval_ordinal: required non_negative_integer
@@ -7591,7 +7595,12 @@ fields:
 invariants:
   - Exact elapsed and cumulative state reconcile without float conversion.
   - direct_party_clock owns one clock update; shared_root_transport_clock owns none.
+  - travel_state_id references the exact traveller_travel_state; route_plan_execution_id and plan_step_ordinal equal that state's execution and step.
+  - interval_ordinal is contiguous from zero within travel_state_id and is unique with that state ID; a resumed state created after interrupted_at_anchor at actual progress zero begins a new ordinal sequence at zero. A later interval cannot collide with history from the closed state of the same step.
   - Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.
+  - paused_in_transit requires actual_progress_after_ppm in 1..999999; a pause at actual progress zero is interrupted_at_anchor.
+  - interrupted_at_anchor and stranded require actual progress below one million; equality with progress_before is allowed only when the outcome occurs before further physical advancement.
+  - interrupted_at_anchor at actual progress zero requires interruption_anchor_id to equal the departure endpoint, regardless of the interruption policy; at positive progress it requires an active usable route anchor. An interruption at positive progress without such an anchor is stranded. All other outcomes forbid interruption_anchor_id.
   - Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.
   - turn_back is true only for an interval started while the travel state status is paused_in_transit (also after a refused turn back, which leaves that status), requires a mirrored segment whose dynamic access passes at execution and a travel-state progress in 1..999999, and permits the outcomes progressed, paused_in_transit, interrupted_at_anchor and stranded, plus exactly one terminal outcome chosen by the direction after commit: travel-state mirrored true after commit permits returned_to_departure, mirrored false after commit (a repeated turn back from the mirrored side) permits segment_completed, and the other terminal outcome is invalid; blocked_before_progress with turn_back true is invalid. A refused turn back is an interval with result_kind blocked_before_progress, result_code turn_back_refused and turn_back false, and no change of travel state other than its audit fields.
   - Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.

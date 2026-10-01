@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "b4cf27c8812d5a54f58436c777ec921063ce8d7c516134ed35a4b80609481e6a",
-      "bytes": 31262,
+      "sha256": "c17d46b29f41a0b3f2364f13f31ecfa80f61c177c6a52f429e225493328ed6fe",
+      "bytes": 31273,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -343,8 +343,8 @@
       "document_id": "spatial-architecture-standard-g0-g6",
       "canonical_path": "corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
       "file_name": "spatial_architecture_standard_g0_g6.md",
-      "sha256": "ed9ae9dc4b5618fc889af96ec0ccebc0bbf6b1232ae2dcd8009aca6b096090aa",
-      "bytes": 411304,
+      "sha256": "e19e6dc85f9b48d753349b91b8966f7e7528c74486e52dc5f79c78af50cf702a",
+      "bytes": 413476,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

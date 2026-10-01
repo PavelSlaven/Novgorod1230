@@ -30,8 +30,19 @@ test('a changed temporal block that Appendix F does not mirror is reported', () 
 // rt-lines (D56): the second overlap - F.1.1 copies the Temporal A.6 result block and adds turn_back / returned_to_departure.
 const interval = { name: 'party_traversal_interval_result', stems: ['  - Existing six traversal outcomes'] };
 
-test('the repository keeps the temporal A.6 interval result block a subset of the Appendix F block', () => {
-  assert.deepEqual(preparationSnapshotMemberOverlapErrors(temporal, standard, interval.name, interval.stems), []);
+test('the repository keeps the temporal A.6 interval fields and invariants in Appendix F', () => {
+  assert.deepEqual(preparationSnapshotMemberOverlapErrors(
+    temporal, standard, interval.name, interval.stems, true
+  ), []);
+});
+
+test('the repository allows Spatial F.1.1 to override interval identity while A.6 stays frozen', () => {
+  assert.deepEqual(preparationSnapshotMemberOverlapErrors(
+    temporal, standard, interval.name, interval.stems, true
+  ), []);
+  assert.ok(preparationSnapshotMemberOverlapErrors(
+    temporal, standard, interval.name, interval.stems
+  ).some((error) => error.includes('identity differs')));
 });
 
 test('a field of the temporal interval result dropped from Appendix F, or a lost enum value, is reported', () => {
@@ -122,7 +133,7 @@ const zeroPauseNorm = (text) => {
     pausedNeedsProgress: /paused_in_transit additionally requires progress in 1\.\.999999/.test(travelState),
     interruptedAllowsZero: /closed_result=interrupted_to_anchor requires progress below one million \(zero allowed/.test(travelState),
     waitsAtDeparture: /sets execution `waiting_at_anchor` on that endpoint with exactly one `wait_started` event/.test(interruption),
-    resumable: /allows `resumed`[^\n]*new travel state at progress zero/.test(interruption),
+    resumable: /allows `resumed`[^\n]*new travel-state ID at progress zero/.test(interruption),
     replaySafe: /retried request after the start commit returns the committed result[^\n]*never closes a second state/.test(interruption),
     gate: a41.some((line) => line.startsWith('| `active` | `waiting_at_anchor` |') && line.includes('interrupted_at_anchor') && line.includes('departure endpoint')),
     resumeGate: a41.some((line) => line.startsWith('| `waiting_at_anchor` | `active` |') && line.includes('forbidden after `returned_to_departure`'))

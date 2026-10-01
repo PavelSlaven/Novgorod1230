@@ -56,7 +56,9 @@ const spatialAmendmentErrors = [...spatialAmendmentText.slice(spatialAmendmentTe
 if (spatialAmendmentContracts.length !== 17 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
 const overlapErrors = [
   ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard),
-  ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard, 'party_traversal_interval_result', ['  - Existing six traversal outcomes'])
+  // Spatial 4.7 F.1.1 extends the frozen Temporal A.6 identity with per-state interval lineage (M3).
+  ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard,
+    'party_traversal_interval_result', ['  - Existing six traversal outcomes'], true)
 ];
 if (overlapErrors.length) throw new Error(`Appendix F does not mirror the temporal preparation_snapshot_member / party_traversal_interval_result blocks:\n${overlapErrors.join('\n')}`);
 const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat(), ...spatialAmendmentContracts]);

@@ -20,7 +20,9 @@ class Blocked extends Error {}
 
 const labelOf = (entry) => entry?.display_label ?? entry?.label ?? entry?.name ?? entry?.title ?? null;
 const peopleOf = (screen) => {
-  const data = screen?.panels?.people?.data ?? {};
+  const panel = screen?.panels?.people;
+  if (!panel?.visible) return [];
+  const data = panel.data ?? {};
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
 const positionKey = (snap) => `${snap?.position?.site_id ?? '?'}|${snap?.position?.slot ?? '?'}`;
@@ -151,7 +153,8 @@ export async function runLegs({
     }
     if (seen.hiddenNpc == null && visiblePeople.length === 0 && people.length > 0)
       seen.hiddenNpc = { place: placeName(snap), count: people.length };
-    if (seen.source == null && liveNodes(snap).length > 0) seen.source = { place: placeName(snap), nodes: liveNodes(snap).map((row) => row.resource_node_id) };
+    if (seen.source == null && liveNodes(snap).length > 0)
+      seen.source = { place: placeName(snap), site_id: snap.position?.site_id, nodes: liveNodes(snap).map((row) => row.resource_node_id) };
   };
 
   async function attemptTalk() {
@@ -160,10 +163,20 @@ export async function runLegs({
     const phrases = [label && label !== 'человек' ? `Здороваюсь с человеком «${label}» и спрашиваю, как его зовут.`
       : 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Здравствуй! Кто ты, добрый человек?'];
     let reason = 'ход закоммичен, сохранённого ответа NPC игроку нет';
+    let snapshotUnavailable = false;
     for (const text of phrases) {
       if (exploreBudget() <= 0) { reason = 'бюджет ходов исчерпан'; break; }
       if (npcsHere(last.snap).length === 0 && peopleOf(last.screen).length === 0) { reason = 'собеседник ушёл с места'; break; }
       const turn = await play('talk', text);
+      if (turn.before?.error || turn.after?.error) {
+        snapshotUnavailable = true;
+        reason = 'снимок недоступен';
+        continue;
+      }
+      if (turn.committed !== true) {
+        reason = turn.error ? `ход не прошёл: ${turn.error.code}` : 'ход не закоммичен';
+        continue;
+      }
       const priorIds = new Set((turn.before?.npc_statements ?? []).map((statement) => statement.statement_id).filter(Boolean));
       const playerRef = turn.after?.player_character_ref;
       const reply = (turn.after?.npc_statements ?? []).find((statement) => statement.statement_id
@@ -178,13 +191,14 @@ export async function runLegs({
           ref.entity_kind === 'player_character' && ref.entity_id === playerRef.entity_id));
       if (reply) {
         const utterance = reply.utterance_text.replace(/\s+/gu, ' ').slice(0, 600);
+        turn.pass = true;
         set('talk', 'pass', 'сохранённый ответ NPC адресован персонажу игрока',
           `ответ NPC в снимке: «${utterance}»; оценка имени и характера остаётся наблюдением плейтеста`);
         return;
       }
-      reason = turn.error ? `ход не прошёл: ${turn.error.code}` : (turn.committed ? 'ход закоммичен, ответа NPC игроку в снимке нет' : 'ход не закоммичен');
+      reason = turn.error ? `ход не прошёл: ${turn.error.code}` : 'ход закоммичен, ответа NPC игроку в снимке нет';
     }
-    set('talk', 'fail', reason);
+    set('talk', 'fail', snapshotUnavailable ? 'снимок недоступен' : reason);
   }
 
   async function attemptTake() {
@@ -197,7 +211,7 @@ export async function runLegs({
       const was = Number(liveNodes(turn.before).find((row) => row.resource_node_id === node.resource_node_id)?.quantity_numerator ?? 0);
       const left = Number((turn.after?.resource_nodes ?? []).find((row) => row.resource_node_id === node.resource_node_id)?.quantity_numerator ?? was);
       const heldGain = heldItems(turn.after).length - heldItems(turn.before).length;
-      if (was - left > 0 && heldGain > 0) { set('take', 'pass', `запас ${node.resource_node_id}: ${was} → ${left}, предмет в руках`); return; }
+      if (was - left > 0 && heldGain > 0) { turn.pass = true; set('take', 'pass', `запас ${node.resource_node_id}: ${was} → ${left}, предмет в руках`); return; }
       if (was - left > 0) reason = `запас уменьшился (${was} → ${left}), но предмета в руках нет`;
       else reason = turn.error ? `ход не прошёл: ${turn.error.code}` : (turn.committed ? 'ход закоммичен, запас не изменился' : 'ход не закоммичен');
     }
@@ -205,14 +219,19 @@ export async function runLegs({
   }
 
   const done = (id) => legs[id].status !== 'blocked' || legs[id].reason !== 'не достигнута';
+  const talkDependencyReason = () => `talk не пройден${legs.talk.reason && legs.talk.reason !== 'не достигнута' ? `: ${legs.talk.reason}` : ''}`;
   try {
     await refresh();
     startSiteId = last.snap?.position?.site_id ?? null;
     for (;;) {
       noteHere();
       if (seen.npc && !done('talk')) { try { await attemptTalk(); } catch (error) { if (error instanceof Blocked) throw error; set('talk', 'fail', error.message); } noteHere(); }
-      if (seen.source && !done('take')) { try { await attemptTake(); } catch (error) { if (error instanceof Blocked) throw error; set('take', 'fail', error.message); } noteHere(); }
-      if (done('talk') && done('take')) break;
+      if (done('talk') && legs.talk.status !== 'pass') { exploreEnd.reason = 'talk не пройден'; break; }
+      if (legs.talk.status === 'pass' && seen.source?.site_id === last.snap?.position?.site_id && !done('take')) {
+        try { await attemptTake(); } catch (error) { if (error instanceof Blocked) throw error; set('take', 'fail', error.message); }
+        noteHere();
+      }
+      if (legs.talk.status === 'pass' && done('take')) break;
       // a step: the first least-tried passage label of this spot, or a look when the spot offers none yet
       const key = positionKey(last.snap);
       const labels = routeLabels(last.screen);
@@ -247,16 +266,19 @@ export async function runLegs({
     `NPC-размещений по SQL: ${seen.hiddenNpc.count}; на экране: панель людей пуста`);
   else set('meet', 'blocked', `ни одного видимого NPC на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`,
     `NPC-размещений во всей партии по SQL: ${last?.snap?.npc_placements_all?.length ?? '?'}`);
-  if (!done('talk')) set('talk', 'blocked', seen.npc ? `собеседник виден, но разговор не начат (${exploreEnd.reason})` : 'нет видимого NPC: meet не пройден');
-  if (!done('take')) set('take', 'blocked', `ни на одном месте (${places.join(', ') || '—'}) нет непустого источника в party_resource_nodes (${exploreEnd.reason ?? 'бюджет ходов'})`);
+  if (!done('talk')) set('talk', 'blocked', seen.npc ? `собеседник виден, но разговор не начат (${exploreEnd.reason})`
+    : `нет видимого NPC: meet не пройден (${exploreEnd.reason ?? 'поиск завершён'})`);
+  if (!done('take')) set('take', 'blocked', legs.talk.status !== 'pass' ? talkDependencyReason() :
+    `ни на одном месте (${places.join(', ') || '—'}) нет непустого источника в party_resource_nodes (${exploreEnd.reason ?? 'бюджет ходов'})`);
 
   // --- make (reserved turns) ---
-  try {
+  if (legs.talk.status !== 'pass') set('make', 'blocked', talkDependencyReason());
+  else try {
     let reason = 'план отвергнут / предмета нет';
     const isMade = (snap) => (snap?.party_items ?? []).filter((row) => row.action_production).length;
     for (const text of MAKE_PHRASES) {
       const turn = await play('make', text, { reserved: true });
-      if (isMade(turn.after) > isMade(turn.before)) { set('make', 'pass', `создано предметов A1: ${isMade(turn.after) - isMade(turn.before)}`); reason = null; break; }
+      if (isMade(turn.after) > isMade(turn.before)) { turn.pass = true; set('make', 'pass', `создано предметов A1: ${isMade(turn.after) - isMade(turn.before)}`); reason = null; break; }
       reason = turn.error ? `ход не прошёл: ${turn.error.code}` : (turn.committed ? 'ход закоммичен, предмета A1 нет' : 'ход не закоммичен');
     }
     if (reason != null) set('make', 'fail', `все ${MAKE_PHRASES.length} фразы без предмета; последняя причина: ${reason}`);

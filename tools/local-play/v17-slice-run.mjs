@@ -291,7 +291,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   let queue = Promise.resolve();
   const write = async () => {
     await mkdir(options.outDir, { recursive: true });
-    const summary = { ...report, d49_minimum: d49MinimumOf(report.legs), llm: summarizeLlm(meter?.calls ?? []) };
+    const summary = { ...report, d49_minimum: d49MinimumOf(report.legs, report.turns), llm: summarizeLlm(meter?.calls ?? []) };
     await writeFile(join(options.outDir, 'report.json'), redact(JSON.stringify(summary, null, 1)));
   };
   const persist = () => { queue = queue.then(write, write); return queue; }; // serialized: no interleaved writes
@@ -346,7 +346,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
       await writeFile(join(options.outDir, 'playtest.md'), renderPlaytestMarkdown(report, redact));
     }
   } catch (error) { report.infra_error ??= `report: ${error.message}`; if (code === EXIT.PASS) code = EXIT.STAND; }
-  report.d49_minimum = d49MinimumOf(report.legs);
+  report.d49_minimum = d49MinimumOf(report.legs, report.turns);
   report.cleanup_errors = await finalizers.run();
   return { code, report };
 }

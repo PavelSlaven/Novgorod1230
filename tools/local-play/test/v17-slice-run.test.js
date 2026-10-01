@@ -67,10 +67,13 @@ test('D49 minimum accepts either item path while strict acceptance remains all s
     ({ id: ['start', 'walk', 'meet', 'talk', 'take', 'make'][i], status }));
   for (const [statuses, itemLeg] of [[['pass', 'fail'], 'take'], [['fail', 'pass'], 'make']]) {
     const result = legs(...statuses);
-    assert.deepEqual(d49MinimumOf(result), { status: 'PASS', item_leg: itemLeg });
+    const turns = [{ n: 4, leg: 'talk', pass: true }, { n: 5, leg: itemLeg, pass: true }];
+    assert.deepEqual(d49MinimumOf(result, turns), { status: 'PASS', item_leg: itemLeg });
     assert.equal(exitCodeOf(result), EXIT.LEGS);
   }
   assert.deepEqual(d49MinimumOf(legs('fail', 'fail')), { status: 'PARTIAL', item_leg: null });
+  assert.deepEqual(d49MinimumOf(legs('pass', 'fail'), [{ n: 5, leg: 'talk', pass: true }, { n: 4, leg: 'take', pass: true }]),
+    { status: 'PARTIAL', item_leg: null }, 'a passing item turn before talk does not satisfy the minimum');
 });
 
 // ---------- report ----------
@@ -135,8 +138,12 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
 /** A small world: A (start, shirt) —«Тропа»→ B (a person, deadwood). Talk/take/make behave as configured. */
 function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player', talkAct = 'answer', makeWorks = true, takeWorks = true,
   hidePeople = false, hidePanelPeople = hidePeople, hideSqlPeople = hidePeople, npcAtStart = false, npcAtDestination = true,
-  hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true, openingRejections = 0, emptyProse = false } = {}) {
-  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: [], node: 60, held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
+  peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
+  priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false } = {}) {
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
+    statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
+    intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
+  }] : [], node: 60, held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
   const items = () => [{ item_id: 'shirt', holder: 'c', position: 'worn' }, ...w.held];
   const npcHere = () => w.site === 'A' ? npcAtStart : npcAtDestination;
   const snap = () => ({ state_version: w.sv, player_character_ref: { entity_kind: 'player_character', entity_id: 'c' },
@@ -145,7 +152,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     items: items(), party_items: w.made, npc_statements: w.statements,
     resource_nodes: w.site === 'B' ? [{ resource_node_id: 'm2c_finite_deadwood_v1:x', quantity_numerator: String(w.node) }] : [] });
   const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа'] : (hideReturnPassage ? [] : ['Назад']),
-    panels: { people: { data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
+    panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
     async newGame() { w.newGames += 1; return w.newGames <= openingRejections
@@ -173,10 +180,16 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
         w.sv += 1; w.made = [{ item_id: 'a1-result:1', action_production: true }];
       } else w.sv += 1;
       if (emptyProse) w.prose = '';
+      if (/^Здоров|^Здравств/u.test(text) && !talkCommitted)
+        return { status: 422, ok: false, data: null, error: { code: 'TURN_NOT_SAVED' } };
       return env({ screen: screen() });
     }
   };
-  return { w, api, sql: { snapshot: async () => snap() }, routeLabels: (s) => s?.labels ?? [] };
+  let snapshotCount = 0;
+  return { w, api, sql: { snapshot: async () => {
+    snapshotCount += 1;
+    return snapshotCount === snapshotErrorAt ? { error: 'snapshot failed: injected' } : snap();
+  } }, routeLabels: (s) => s?.labels ?? [] };
 }
 const meter = () => { let n = 0; return { count: () => (n += 1) }; };
 const runFake = (world, extra = {}) => runLegs({ ...world, llm: meter(), scenarioId: 's', runId: 'r', maxTurns: 24, ...extra });
@@ -204,9 +217,10 @@ test('legs: a spot that shows no passages is looked at twice, then walk fails wi
 
 test('legs: a failing talk fails only talk; others still run', async () => {
   const result = await runFake(fakeWorld({ talkWorks: false }));
-  assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'fail', take: 'pass', make: 'pass' });
+  assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'fail', take: 'blocked', make: 'blocked' });
   assert.match(result.legs.find(({ id }) => id === 'talk').reason, /ответа NPC игроку/u);
   assert.equal(result.turns.filter(({ leg }) => leg === 'talk').length, 2, 'the second greeting was tried');
+  assert.equal(result.turns.some(({ leg }) => ['take', 'make'].includes(leg)), false, 'item turns wait for talk PASS');
 });
 
 test('legs: SQL placement with an empty player panel fails meet; a screen-only person passes meet', async () => {
@@ -215,6 +229,10 @@ test('legs: SQL placement with an empty player panel fails meet; a screen-only p
   assert.match(hidden.legs.find(({ id }) => id === 'meet').reason, /панель людей пуста/u);
   const screenOnly = await runFake(fakeWorld({ hideSqlPeople: true, hidePanelPeople: false }));
   assert.equal(statusOf(screenOnly).meet, 'pass');
+  const hiddenData = await runFake(fakeWorld({ peoplePanelVisible: false, hidePanelPeople: false, hideSqlPeople: false }));
+  assert.equal(statusOf(hiddenData).meet, 'fail');
+  assert.equal(hiddenData.turns.some(({ leg }) => leg === 'talk'), false);
+  assert.equal(hiddenData.turns.every(({ people_labels }) => people_labels.length === 0), true);
 });
 
 test('legs: a person visible only at start does not count as a meeting or permit talk before walk', async () => {
@@ -236,6 +254,16 @@ test('legs: a visible person on a previously visited place can be met after retu
   assert.ok(world.w.turns.findIndex((text) => /^Здоров/u.test(text)) > world.w.turns.indexOf('Назад'));
 });
 
+test('legs: a resource found before NPC is only taken after a later talk PASS', async () => {
+  const world = fakeWorld({ npcAtStart: true, npcAtDestination: false, makeWorks: false });
+  const result = await runFake(world);
+  const talkPass = result.turns.find(({ leg, pass }) => leg === 'talk' && pass)?.n;
+  const takePass = result.turns.find(({ leg, pass }) => leg === 'take' && pass)?.n;
+  assert.ok(talkPass != null && takePass > talkPass);
+  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf('Тропа'));
+  assert.deepEqual(d49MinimumOf(result.legs, result.turns), { status: 'PASS', item_leg: 'take' });
+});
+
 test('legs: talk requires a persisted NPC answer addressed to the player', async () => {
   for (const options of [{ talkRecipient: 'other' }, { talkRecipient: 'missing' }, { talkAct: 'inform' }]) {
     const result = await runFake(fakeWorld(options));
@@ -247,6 +275,13 @@ test('legs: talk requires a persisted NPC answer addressed to the player', async
   assert.match(valid.legs.find(({ id }) => id === 'talk').detail, /Я Милонег/u, 'the report keeps the NPC reply as an observation');
 });
 
+test('legs: an errored snapshot cannot make an old NPC answer pass after an uncommitted turn', async () => {
+  const result = await runFake(fakeWorld({ priorNpcReply: true, snapshotErrorAt: 4, talkCommitted: false, talkWorks: false }));
+  assert.equal(statusOf(result).talk, 'fail');
+  assert.match(result.legs.find(({ id }) => id === 'talk').reason, /снимок недоступен/u);
+  assert.equal(result.turns.filter(({ leg }) => leg === 'talk').some(({ pass }) => pass), false);
+});
+
 test('legs: committed walks without a site change stay visible in the walk detail', async () => {
   const result = await runFake(fakeWorld({ samePlaceWalks: 2 }));
   const walk = result.legs.find(({ id }) => id === 'walk');
@@ -256,14 +291,14 @@ test('legs: committed walks without a site change stay visible in the walk detai
 
 test('D49 harness minimum passes with take alone, make alone, and fails the item requirement without either', async () => {
   const takeOnly = await runFake(fakeWorld({ makeWorks: false }));
-  assert.deepEqual(d49MinimumOf(takeOnly.legs), { status: 'PASS', item_leg: 'take' });
+  assert.deepEqual(d49MinimumOf(takeOnly.legs, takeOnly.turns), { status: 'PASS', item_leg: 'take' });
   assert.equal(exitCodeOf(takeOnly.legs), EXIT.LEGS);
   const makeOnly = await runFake(fakeWorld({ takeWorks: false }));
-  assert.deepEqual(d49MinimumOf(makeOnly.legs), { status: 'PASS', item_leg: 'make' });
+  assert.deepEqual(d49MinimumOf(makeOnly.legs, makeOnly.turns), { status: 'PASS', item_leg: 'make' });
   assert.equal(exitCodeOf(makeOnly.legs), EXIT.LEGS);
   const neither = await runFake(fakeWorld({ takeWorks: false, makeWorks: false }));
-  assert.notEqual(d49MinimumOf(neither.legs).status, 'PASS');
-  assert.deepEqual(d49MinimumOf(neither.legs), { status: 'PARTIAL', item_leg: null });
+  assert.notEqual(d49MinimumOf(neither.legs, neither.turns).status, 'PASS');
+  assert.deepEqual(d49MinimumOf(neither.legs, neither.turns), { status: 'PARTIAL', item_leg: null });
 });
 
 test('legs: rejected make plans are a fail with the API code, take without effect is a fail', async () => {

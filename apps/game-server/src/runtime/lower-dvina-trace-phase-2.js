@@ -140,9 +140,9 @@ export function createLowerDvinaTracePhase2Runtime({
             postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
-        const postActionPerceptionProfile =
+        const selectedPostActionPerceptionProfile =
           bundle.post_action_perception_profile ?? null;
-        const postActionPerceptionAdapter = postActionPerceptionProfile?.schema
+        const postActionPerceptionAdapter = selectedPostActionPerceptionProfile?.schema
           === 'rus.lower_dvina_trace_post_action_perception_profile.v1'
           ? legacyPostActionPerceptionAdapter
           : { validProfile: validPostActionPerceptionProfile,
@@ -347,7 +347,7 @@ export function createLowerDvinaTracePhase2Runtime({
           requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
           turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           postActionPerceptionProfile:
-            postActionPerceptionProfile,
+            selectedPostActionPerceptionProfile,
           postActionPerceptionAdapter,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,

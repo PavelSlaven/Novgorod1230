@@ -128,6 +128,13 @@ test('v17 perception persists with injected environment snapshot; projection not
       target_table === 'party_perception_records').length, 2);
     assert.equal(flattened.inserts.filter(({ target_table }) =>
       target_table === 'party_npc_knowledge_merge_states').length, 1);
+    const causalMergeResults = flattened.appends.filter(({ target_table }) =>
+      target_table === 'party_npc_knowledge_merge_results')
+      .map(({ record }) => record);
+    assert.equal(causalMergeResults.length, 2);
+    const finalChangedMerge = causalMergeResults.filter(({ state_changed }) =>
+      state_changed).at(-1);
+    assert.ok(finalChangedMerge);
 
     await pool.query(`INSERT INTO party_runtime.parties
       (party_id,schema_version,world_revision_id,world_catalog_digest,
@@ -199,6 +206,23 @@ test('v17 perception persists with injected environment snapshot; projection not
     assert.equal((await pool.query(`SELECT count(*)::int AS count
       FROM party_runtime.party_npc_knowledge_merge_states WHERE party_id=$1`,
     [partyId])).rows[0].count, 1);
+    const knowledgeState = await pool.query(`SELECT state_version,
+      last_proposal_id,last_result_digest
+      FROM party_runtime.party_npc_knowledge_merge_states
+      WHERE party_id=$1 AND npc_id='npc:1'`, [partyId]);
+    assert.deepEqual({ ...knowledgeState.rows[0],
+      state_version: Number(knowledgeState.rows[0].state_version) }, {
+      state_version: Number(finalChangedMerge.state_version_after),
+      last_proposal_id: finalChangedMerge.proposal_id,
+      last_result_digest: finalChangedMerge.result_digest
+    });
+    const persistedMergeResults = await pool.query(`SELECT proposal_id,
+      state_changed,state_version_after,result_digest
+      FROM party_runtime.party_npc_knowledge_merge_results
+      WHERE party_id=$1 ORDER BY proposal_id`, [partyId]);
+    assert.deepEqual(persistedMergeResults.rows.map(({ proposal_id }) =>
+      proposal_id).sort(), causalMergeResults.map(({ proposal_id }) =>
+      proposal_id).sort());
   });
 
 function docker(args, timeout = 30_000) {

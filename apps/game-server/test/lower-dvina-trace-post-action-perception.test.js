@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { mergeTurnStepDraftConsequence } from '@rus/turn';
+import { integrateSpatialV3TemporalWriteFragments } from
+  '@rus/turn/spatial-v3-temporal-write-integration';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { createLowerDvinaTracePostAppliedActorStepOwner } from
@@ -79,13 +82,20 @@ function event(channel = 'acoustic', eventId = 'event-1', position = 'position:a
 }
 
 test('co-located loud speech persists perception, first knowledge and exact summary', async () => {
+  const routineSignal = { occurred_at: at, category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('npc_activity_factual_transition', 'routine-1'),
+    subject_ref: ref('npc', 'npc-schedule-only'), scope_refs: [],
+    perception_required: false, source_perception_ref: null,
+    causal_parent_refs: [], perceived_change_summary: 'NPC начал работу.' };
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state(), idempotencyKey: 'idem-1',
     perceptionProfile: await generalPerceptionPolicy(),
     environmentPort: () => environmentSnapshot()
   });
   const result = await owner({
-    working_projection: {}, factual_events: [event()],
+    working_projection: { npc_decision_signal_descriptors: [routineSignal] },
+    factual_events: [event()],
     actor_step_plan: { direct_result_kind: 'player_utterance', utterance: {
       speaker_ref: 'player-1', utterance_text: 'Эй, отзовитесь!',
       input_mode: 'verbatim'
@@ -102,6 +112,8 @@ test('co-located loud speech persists perception, first knowledge and exact summ
   assert.equal(writes.some(({ target_table }) =>
     target_table === 'party_npc_knowledge_merge_states'), true);
   assert.equal(result.working_projection.npc_decision_signal_descriptors[0]
+    .perceived_change_summary, 'NPC начал работу.');
+  assert.equal(result.working_projection.npc_decision_signal_descriptors[1]
     .perceived_change_summary, 'Игрок произнёс: Эй, отзовитесь!');
   assert.deepEqual(result.consequence_fragment.visible_seed
     .turn_step_post_applied_perception_window, {
@@ -114,7 +126,8 @@ test('co-located loud speech persists perception, first knowledge and exact summ
     });
 });
 
-function environmentSnapshot({ weather = 'weather-rain', light = 'dim' } = {}) {
+function environmentSnapshot({ weather = 'weather-rain', light = 'dim',
+  visibility = 'partial' } = {}) {
   const transientPins = { pins: [{ dependency_role: 'source_dependency',
     entity_ref: ref('source_record', 'environment-transient-policy'),
     version_pin: { pin_kind: 'authoring_version', authoring_version: '1' } }] };
@@ -125,7 +138,7 @@ function environmentSnapshot({ weather = 'weather-rain', light = 'dim' } = {}) {
     environment_state_version: 4,
     weather_state_ref: ref('weather_state', weather),
     weather_state_version: 2,
-    weather_visibility_result: 'partial',
+    weather_visibility_result: visibility,
     weather_acoustic_loss: 0,
     transient_visibility_result: 'clear',
     transient_acoustic_loss: 0,
@@ -225,10 +238,37 @@ test('legacy adapter preserves M22 environment without general-profile routing',
     assert.equal(context.environment_snapshot.weather_visibility_result,
       'clear');
     assert.equal(context.environment_snapshot.weather_acoustic_loss, '0');
-    assert.equal(context.environment_snapshot.environment_state_ref, null);
-    assert.equal(context.environment_snapshot.environment_state_version, null);
+    assert.deepEqual(context.environment_snapshot.environment_state_ref,
+      ref('environment_overlay_state', 'environment-1'));
+    assert.equal(context.environment_snapshot.environment_state_version, 3);
     assert.equal(context.environment_snapshot.weather_state_ref.entity_id,
       'lower_dvina_trace_post_action_perception_v1:weather');
+  });
+
+test('legacy M22 adapter still perceives a loud co-located sound', async () => {
+  const owner = createLowerDvinaTracePostAppliedActorStepOwner({
+    committedState: await state(), idempotencyKey: 'idem-m22-regression',
+    perceptionProfile: await perceptionPolicy(),
+    perceptionAdapter: legacyPostActionPerceptionAdapter
+  });
+  const result = await owner({ working_projection: {}, factual_events: [event()] });
+  const outcomes = result.temporal_results[0].combined_change_set.proposals
+    .flatMap(({ perception_reaction_result: reaction }) =>
+      reaction == null ? [] : [reaction.perception_result.result]);
+
+  assert.deepEqual(outcomes, ['perceived_unidentified']);
+});
+
+test('legacy M22 adapter fails closed without committed environment reference',
+  async () => {
+    const committed = await state();
+    const profile = await perceptionPolicy();
+    delete committed.environment_snapshot.environment_profile_id;
+    assert.throws(() => legacyPostActionPerceptionAdapter.context({
+      state: committed, npc: committed.npcs[0],
+      source: committed.post_action_perception_sources[0],
+      profile
+    }), ({ code }) => code === 'TRACE_POST_ACTION_ENVIRONMENT_STATE_GAP');
   });
 
 test('approved general profile excludes sleeping listeners and other positions',
@@ -262,7 +302,7 @@ test('approved general profile excludes sleeping listeners and other positions',
     }
   });
 
-test('12 deterministic cases cover general profile outcomes and M22 parity', async () => {
+test('12 deterministic cases compare outcomes with the actual M22 profile', async () => {
   const cases = [
     { name: 'co-located acoustic event', make: () => ({}) },
     { name: 'ambient noise 1', make: () => ({ noise: 1 }) },
@@ -281,6 +321,7 @@ test('12 deterministic cases cover general profile outcomes and M22 parity', asy
     { name: 'unwired v17 null profile', make: () => ({ profile: null }) }
   ];
   const generalized = await generalPerceptionPolicy();
+  const historical = await perceptionPolicy();
 
   for (const [index, probe] of cases.entries()) {
     const options = probe.make();
@@ -310,14 +351,16 @@ test('12 deterministic cases cover general profile outcomes and M22 parity', asy
     });
     const projectEnvironment = ({ event_time }) => ({
       ...environmentSnapshot({ weather: `weather-${index}`,
-        light: options.light === 'night' ? 'dark' : 'bright' }),
+        light: options.light === 'night' ? 'dark' : 'bright',
+        visibility: options.visibility === 'poor' ? 'blocked' : 'clear' }),
       observed_at: event_time
     });
-    const run = async (profile) => {
+    const run = async (profile, adapter = null) => {
       const result = await createLowerDvinaTracePostAppliedActorStepOwner({
         committedState: structuredClone(committed),
         idempotencyKey: `case-${index}`, perceptionProfile: profile,
-        environmentPort: projectEnvironment
+        environmentPort: projectEnvironment,
+        ...(adapter == null ? {} : { perceptionAdapter: adapter })
       })({ working_projection: {}, factual_events: events });
       const window = result.consequence_fragment?.visible_seed
         ?.turn_step_post_applied_perception_window;
@@ -336,16 +379,19 @@ test('12 deterministic cases cover general profile outcomes and M22 parity', asy
       continue;
     }
     const result = await run(generalized);
+    const legacyResult = await run(historical,
+      legacyPostActionPerceptionAdapter);
+    assert.deepEqual(result.outcomes, legacyResult.outcomes, probe.name);
     if (options.runtimeStatus === 'sleeping') {
       assert.deepEqual(result.outcomes, ['not_perceived'], probe.name);
     } else if (options.runtimeStatus === 'unavailable'
         || options.position === 'position:elsewhere'
         || options.channel === 'visual') {
       assert.deepEqual(result.outcomes, [], probe.name);
-    } else if (options.listenerCount === 2) {
-      assert.equal(result.outcomes.length, 2, probe.name);
     } else {
-      assert.equal(result.outcomes.length, options.eventCount ?? 1, probe.name);
+      assert.deepEqual(result.outcomes,
+        Array(options.listenerCount === 2 ? 2 : options.eventCount ?? 1)
+          .fill('perceived_unidentified'), probe.name);
     }
     if (options.distinctTimes) assert.equal(result.moments.length, 2, probe.name);
   }
@@ -379,6 +425,64 @@ test('same-time perceived events create only pending references for wave 2', asy
   assert.deepEqual(second.consequence_fragment.visible_seed
     .turn_step_post_applied_perception_window.pending_npc_decision_refs,
   ['npc-1']);
+});
+
+test('two actor steps merge one perception window and one write plan', async () => {
+  const routineSignal = { occurred_at: at, category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('npc_activity_factual_transition', 'routine-root'),
+    subject_ref: ref('npc', 'npc-schedule-only'), scope_refs: [],
+    perception_required: false, source_perception_ref: null,
+    causal_parent_refs: [], perceived_change_summary: 'NPC начал работу.' };
+  const owner = createLowerDvinaTracePostAppliedActorStepOwner({
+    committedState: await state(), idempotencyKey: 'idem-root-window',
+    perceptionProfile: await generalPerceptionPolicy(),
+    environmentPort: () => environmentSnapshot()
+  });
+  const first = await owner({
+    working_projection: { npc_decision_signal_descriptors: [routineSignal] },
+    factual_events: [event('acoustic', 'root-event-1')]
+  });
+  const second = await owner({
+    working_projection: first.working_projection,
+    factual_events: [event('acoustic', 'root-event-2')]
+  });
+  const consequence = mergeTurnStepDraftConsequence({
+    duration_minutes: 0, visible_seed: {}, hidden_update: {}, state_changes: []
+  }, { loop_result: { status: 'resolved', completed_steps: [],
+    clarification: null,
+    consequence_fragments: [first.consequence_fragment,
+      second.consequence_fragment] } });
+  const window = consequence.visible_seed
+    .turn_step_post_applied_perception_window;
+
+  assert.deepEqual(window.pending_npc_decision_refs, ['npc-1']);
+  assert.equal(window.moments.length, 1);
+  assert.deepEqual(window.moments[0].event_refs, [
+    ref('sound_event', 'root-event-1'), ref('sound_event', 'root-event-2')
+  ]);
+  assert.deepEqual(second.working_projection.npc_decision_signal_descriptors
+    .map(({ subject_ref }) => subject_ref.entity_id),
+  ['npc-schedule-only', 'npc-1', 'npc-1']);
+
+  const proposals = [first, second].flatMap((result) =>
+    result.temporal_results.flatMap(({ combined_change_set }) =>
+      combined_change_set.proposals));
+  const temporalResult = { combined_change_set: { proposals } };
+  temporalResult.canonical_digest = computeSpatialV3CanonicalDigest(temporalResult);
+  const integrated = integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: { party_id: 'party-1',
+      canonical_input_digest: computeSpatialV3CanonicalDigest({ root: true }),
+      approved_write_sets: [{ appends: [], inserts: [], updates: [], deletes: [] }],
+      expected_state_versions: [], lock_context: { physical_keys: [] } },
+    temporal_result: temporalResult
+  });
+
+  assert.equal(integrated.ok, true, JSON.stringify(integrated));
+  const writes = integrated.input.approved_write_sets.flatMap(({ inserts }) =>
+    inserts.filter(({ target_table }) =>
+      target_table === 'party_npc_knowledge_merge_states'));
+  assert.equal(writes.length, 1);
 });
 
 test('one event gives every co-located listener a distinct idempotency identity', async () => {
@@ -456,6 +560,12 @@ test('unavailable co-located NPC gets no perception, knowledge, signal or bounda
 });
 
 test('acoustic event at another position creates no perception or knowledge', async () => {
+  const routineSignal = { occurred_at: at, category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('npc_activity_factual_transition', 'routine-no-listener'),
+    subject_ref: ref('npc', 'npc-schedule-only'), scope_refs: [],
+    perception_required: false, source_perception_ref: null,
+    causal_parent_refs: [], perceived_change_summary: 'NPC продолжил работу.' };
   const owner = createLowerDvinaTracePostAppliedActorStepOwner({
     committedState: await state(), idempotencyKey: 'idem-other-position',
     perceptionProfile: await generalPerceptionPolicy(),
@@ -463,15 +573,21 @@ test('acoustic event at another position creates no perception or knowledge', as
   });
 
   const result = await owner({
-    working_projection: {}, factual_events: [event('acoustic', 'event-1', 'position:elsewhere')]
+    working_projection: { npc_decision_signal_descriptors: [routineSignal] },
+    factual_events: [event('acoustic', 'event-1', 'position:elsewhere')]
   });
   const proposals = result.temporal_results[0].combined_change_set.proposals;
 
   assert.equal(proposals.length, 1);
   assert.equal(proposals[0].write_set.inserts[0].target_table,
     'party_temporal_events');
-  assert.equal(result.working_projection.npc_decision_signal_descriptors,
-    undefined);
+  assert.deepEqual(result.working_projection.npc_decision_signal_descriptors,
+    [routineSignal]);
+  assert.deepEqual(result.consequence_fragment.visible_seed
+    .turn_step_post_applied_perception_window, {
+      kind: 'post_applied_perception_window', status: 'completed',
+      observable_response_event_refs: [], moments: []
+    });
   assert.equal(Object.hasOwn(result.consequence_fragment.visible_seed
     .turn_step_post_applied_perception_window, 'npc_decision_boundaries'), false);
 });

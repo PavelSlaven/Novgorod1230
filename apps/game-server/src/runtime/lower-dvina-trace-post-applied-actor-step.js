@@ -69,16 +69,19 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
         .npc_decision_signal_descriptors ?? [];
       const resolvedSignals = resolved.state_projection
         ?.npc_decision_signal_descriptors ?? [];
-      if (resolvedSignals.length > previousSignals.length) {
-        perceivedMoments.push({ occurred_at: structuredClone(event.occurred_at),
-          event_ref: structuredClone(event.event_ref),
-          npc_ref: { entity_kind: 'npc', entity_id: npc.instance_id } });
+      for (const signal of resolvedSignals.slice(previousSignals.length)) {
+        if (signal.perception_required === true
+            && signal.source_perception_ref?.entity_kind === 'perception_result') {
+          perceivedMoments.push({ occurred_at: structuredClone(signal.occurred_at),
+            event_ref: structuredClone(event.event_ref),
+            npc_ref: structuredClone(signal.subject_ref) });
+        }
       }
       workingProjection = resolved.state_projection;
     }
-    const pendingNpcDecisionRefs = [...new Set((workingProjection
-      .npc_decision_signal_descriptors ?? []).map(({ subject_ref: subjectRef }) =>
-      subjectRef?.entity_id).filter(text))].sort();
+    const moments = collapsePerceivedMoments(perceivedMoments);
+    const pendingNpcDecisionRefs = [...new Set(moments.flatMap((moment) =>
+      moment.pending_npc_decision_refs))].sort();
     const temporal = {
       version: 1, schema: 'turn_step_factual_event_persistence_result_v1',
       clock_before: structuredClone(events[0].occurred_at),
@@ -96,7 +99,7 @@ export function createLowerDvinaTracePostAppliedActorStepOwner({
             status: pendingNpcDecisionRefs.length === 0
               ? 'completed' : 'pending_npc_decision',
             observable_response_event_refs: [],
-            moments: collapsePerceivedMoments(perceivedMoments),
+            moments,
             ...(pendingNpcDecisionRefs.length === 0 ? {} : {
               pending_npc_decision_refs: pendingNpcDecisionRefs
             })

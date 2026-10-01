@@ -178,6 +178,62 @@ test('same-turn NPC knowledge merges share one merge-state write at one version'
   assert.equal(integrate('updates', [4, 5]).ok, false);
 });
 
+test('initial no-op and changed NPC knowledge inserts coalesce to final state', () => {
+  const stateId = 'party-1:npc-1';
+  const fragment = (proposalId, stateVersion, changed) => seal({
+    proposal_id: `perception:${proposalId}`,
+    write_set: {
+      appends: [{ target_schema: 'party_runtime',
+        target_table: 'party_npc_knowledge_merge_results',
+        id: proposalId,
+        record: { proposal_id: proposalId, party_id: 'party-1',
+          npc_id: 'npc-1', state_changed: changed,
+          state_version_after: stateVersion } }],
+      inserts: [{ target_schema: 'party_runtime',
+        target_table: 'party_npc_knowledge_merge_states', id: stateId,
+        record: { party_id: 'party-1', npc_id: 'npc-1', state_version: stateVersion,
+          last_proposal_id: changed ? proposalId : null,
+          last_result_digest: changed ? `digest:${proposalId}` : null,
+          updated_change_set_id: 'change-1' } }],
+      updates: []
+    },
+    expected_state_versions: [],
+    physical_keys: [`party_runtime.party_npc_knowledge_merge_states:${stateId}`]
+  });
+  const noOp = fragment('no-op', 1, false);
+  const changed = fragment('changed', 2, true);
+
+  for (const proposals of [[noOp, changed], [changed, noOp]]) {
+    const result = integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: base,
+      temporal_result: seal({ combined_change_set: { proposals } })
+    });
+    assert.equal(result.ok, true, JSON.stringify(result));
+    const writes = result.input.approved_write_sets.flatMap(({ inserts }) =>
+      inserts.filter(({ target_table }) =>
+        target_table === 'party_npc_knowledge_merge_states'));
+    assert.deepEqual(writes, [{ target_schema: 'party_runtime',
+      target_table: 'party_npc_knowledge_merge_states', id: stateId,
+      record: { party_id: 'party-1', npc_id: 'npc-1', state_version: 2,
+        last_proposal_id: 'changed', last_result_digest: 'digest:changed',
+        updated_change_set_id: 'change-1' } }]);
+    const causalResults = result.input.approved_write_sets.flatMap(({ appends }) =>
+      appends.filter(({ target_table }) =>
+        target_table === 'party_npc_knowledge_merge_results'));
+    assert.deepEqual(causalResults.map(({ id }) => id).sort(),
+      ['changed', 'no-op']);
+  }
+
+  const backwards = fragment('changed', 1, true);
+  const laterNoOp = fragment('no-op', 2, false);
+  assert.equal(integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: base,
+    temporal_result: seal({ combined_change_set: {
+      proposals: [backwards, laterNoOp]
+    } })
+  }).ok, false);
+});
+
 test('temporal fragment integration fails closed on duplicate writes or conflicting versions', () => {
   const duplicate = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: base,

@@ -48,7 +48,7 @@ export function validLegacyPostActionPerceptionProfile(value) {
 export function legacyPostActionPerceptionContext({ state, npc, source,
   profile }) {
   return buildPerceptionContext({ state, npc, source, profile,
-    environment: historicalEnvironment(profile) });
+    environment: historicalEnvironment(state, profile) });
 }
 
 export const legacyPostActionPerceptionAdapter = Object.freeze({
@@ -56,11 +56,20 @@ export const legacyPostActionPerceptionAdapter = Object.freeze({
   context: legacyPostActionPerceptionContext
 });
 
-function historicalEnvironment(profile) {
+function historicalEnvironment(state, profile) {
+  const environmentProfileId = state?.environment_snapshot
+    ?.environment_profile_id;
+  const environmentStateVersion = Number(state?.party_state?.state_version);
+  if (!text(environmentProfileId)
+      || !Number.isSafeInteger(environmentStateVersion)
+      || environmentStateVersion < 0) {
+    gap('TRACE_POST_ACTION_ENVIRONMENT_STATE_GAP');
+  }
   return {
     light_state_id: profile.environment.light_state_id,
-    environment_state_ref: null,
-    environment_state_version: null,
+    environment_state_ref: { entity_kind: 'environment_overlay_state',
+      entity_id: environmentProfileId },
+    environment_state_version: environmentStateVersion,
     weather_state_ref: { entity_kind: 'weather_state',
       entity_id: `${profile.profile_id}:weather` },
     weather_state_version: profile.revision,
@@ -83,3 +92,4 @@ function text(value) {
   return typeof value === 'string' && value.trim() === value
     && value.length > 0;
 }
+function gap(code) { throw Object.assign(new Error(code), { code }); }

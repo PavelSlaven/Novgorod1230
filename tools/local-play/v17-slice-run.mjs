@@ -127,10 +127,15 @@ SELECT
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('item_id', i.item_id, 'state_version', i.state_version,
       'action_production', i.state::text LIKE '%action_production%') ORDER BY i.item_id), '[]'::jsonb)
      FROM party_runtime.party_items i WHERE i.party_id=$1) AS party_items,
-  (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
-      'quantity_numerator', quantity_numerator, 'quantity_denominator', quantity_denominator,
-      'lifecycle_state', lifecycle_state, 'state_version', state_version) ORDER BY resource_node_id), '[]'::jsonb)
-     FROM party_runtime.party_resource_nodes WHERE party_id=$1) AS resource_nodes,
+  (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', r.resource_node_id,
+      'site_id', s.id, 'quantity_numerator', r.quantity_numerator, 'quantity_denominator', r.quantity_denominator,
+      'lifecycle_state', r.lifecycle_state, 'state_version', r.state_version) ORDER BY r.resource_node_id), '[]'::jsonb)
+     FROM party_runtime.party_resource_nodes r
+     JOIN party_runtime.scene_position_nodes pos ON pos.party_id=r.party_id AND pos.id=r.position_node_id
+     JOIN party_runtime.party_g6_instances g ON g.party_id=pos.party_id AND g.id=pos.g6_instance_id
+     JOIN party_runtime.party_scene_baselines b ON b.party_id=g.party_id AND b.id=g.scene_baseline_id AND b.host_kind='g5_site'
+     JOIN party_runtime.party_g5_sites s ON s.party_id=b.party_id AND s.id=b.host_id
+    WHERE r.party_id=$1) AS resource_nodes,
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
       'before_numerator', before_numerator, 'decrement_numerator', decrement_numerator,
       'after_numerator', after_numerator) ORDER BY resource_node_id, causal_transition_identity), '[]'::jsonb)

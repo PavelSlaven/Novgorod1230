@@ -28,6 +28,7 @@ const peopleOf = (screen) => {
 const positionKey = (snap) => `${snap?.position?.site_id ?? '?'}|${snap?.position?.slot ?? '?'}`;
 const npcsHere = (snap) => (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc');
 const liveNodes = (snap) => (snap?.resource_nodes ?? []).filter((row) => Number(row.quantity_numerator) > 0);
+const liveNodesHere = (snap) => liveNodes(snap).filter((row) => row.site_id === snap?.position?.site_id);
 const heldItems = (snap) => (snap?.items ?? []).filter((row) => row.holder != null);
 const placeName = (snap) => snap?.position?.canonical_g5?.replace(/^.*_r2_/u, '') ?? snap?.position?.generated_template ?? snap?.position?.site_id ?? '?';
 
@@ -135,7 +136,8 @@ export async function runLegs({
   const visited = new Map(); // site_id -> place name
   const tried = new Map(); // positionKey -> Map(label -> count)
   const looked = new Map(); // positionKey -> looks done; a second look is cheap and shows whether the first was a fluke
-  const seen = { npc: null, hiddenNpc: null, source: null };
+  const seen = { npc: null, hiddenNpc: null };
+  const placesAfterTalk = new Map();
   let stuck = 0;
   let startSiteId = null;
   let walkedOut = false;
@@ -153,8 +155,9 @@ export async function runLegs({
     }
     if (seen.hiddenNpc == null && visiblePeople.length === 0 && people.length > 0)
       seen.hiddenNpc = { place: placeName(snap), count: people.length };
-    if (seen.source == null && liveNodes(snap).length > 0)
-      seen.source = { place: placeName(snap), site_id: snap.position?.site_id, nodes: liveNodes(snap).map((row) => row.resource_node_id) };
+    if (legs.talk.status === 'pass' && snap?.position?.site_id) {
+      placesAfterTalk.set(snap.position.site_id, placeName(snap));
+    }
   };
 
   async function attemptTalk() {
@@ -202,7 +205,7 @@ export async function runLegs({
   }
 
   async function attemptTake() {
-    const node = liveNodes(last.snap)[0];
+    const node = liveNodesHere(last.snap)[0];
     const texts = TAKE_PHRASES.find(({ match }) => match.test(node.resource_node_id)).texts;
     let reason = 'запас не изменился';
     for (const text of texts) {
@@ -227,7 +230,7 @@ export async function runLegs({
       noteHere();
       if (seen.npc && !done('talk')) { try { await attemptTalk(); } catch (error) { if (error instanceof Blocked) throw error; set('talk', 'fail', error.message); } noteHere(); }
       if (done('talk') && legs.talk.status !== 'pass') { exploreEnd.reason = 'talk не пройден'; break; }
-      if (legs.talk.status === 'pass' && seen.source?.site_id === last.snap?.position?.site_id && !done('take')) {
+      if (legs.talk.status === 'pass' && liveNodesHere(last.snap).length > 0 && !done('take')) {
         try { await attemptTake(); } catch (error) { if (error instanceof Blocked) throw error; set('take', 'fail', error.message); }
         noteHere();
       }
@@ -269,7 +272,7 @@ export async function runLegs({
   if (!done('talk')) set('talk', 'blocked', seen.npc ? `собеседник виден, но разговор не начат (${exploreEnd.reason})`
     : `нет видимого NPC: meet не пройден (${exploreEnd.reason ?? 'поиск завершён'})`);
   if (!done('take')) set('take', 'blocked', legs.talk.status !== 'pass' ? talkDependencyReason() :
-    `ни на одном месте (${places.join(', ') || '—'}) нет непустого источника в party_resource_nodes (${exploreEnd.reason ?? 'бюджет ходов'})`);
+    `на посещённых местах после разговора (${[...placesAfterTalk.values()].join(', ') || '—'}) нет доступного узла в party_resource_nodes (${exploreEnd.reason ?? 'бюджет ходов'})`);
 
   // --- make (reserved turns) ---
   if (legs.talk.status !== 'pass') set('make', 'blocked', talkDependencyReason());

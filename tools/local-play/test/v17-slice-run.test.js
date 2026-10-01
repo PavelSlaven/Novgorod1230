@@ -139,19 +139,24 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
 function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player', talkAct = 'answer', makeWorks = true, takeWorks = true,
   hidePeople = false, hidePanelPeople = hidePeople, hideSqlPeople = hidePeople, npcAtStart = false, npcAtDestination = true,
   peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
-  priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false } = {}) {
+  priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
+  npcSite = null, resourceSites = ['B'], routeThroughC = false } = {}) {
   const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
-  }] : [], node: 60, held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
+  }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
   const items = () => [{ item_id: 'shirt', holder: 'c', position: 'worn' }, ...w.held];
-  const npcHere = () => w.site === 'A' ? npcAtStart : npcAtDestination;
+  const effectiveNpcSite = npcSite ?? (npcAtStart ? 'A' : npcAtDestination ? 'B' : null);
+  const npcHere = () => w.site === effectiveNpcSite;
   const snap = () => ({ state_version: w.sv, player_character_ref: { entity_kind: 'player_character', entity_id: 'c' },
-    position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : 'forest_path'}` },
+    position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : w.site === 'B' ? 'forest_path' : 'river_bank'}` },
     placements_here: npcHere() && !hideSqlPeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
     items: items(), party_items: w.made, npc_statements: w.statements,
-    resource_nodes: w.site === 'B' ? [{ resource_node_id: 'm2c_finite_deadwood_v1:x', quantity_numerator: String(w.node) }] : [] });
-  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа'] : (hideReturnPassage ? [] : ['Назад']),
+    resource_nodes: resourceSites.filter((site) => site === w.site).map((site) => ({
+      resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
+    })) });
+  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']
+    : w.site === 'B' && routeThroughC ? ['Дальше'] : (hideReturnPassage ? [] : ['Назад']),
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
@@ -165,16 +170,17 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
       w.turns.push(text);
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
       if (text === 'Тропа') {
-        if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = 'B';
+        if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
         w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
       }
-      else if (text === 'Назад') { w.site = 'A'; w.sv += 1; }
+      else if (text === 'Дальше') { w.site = 'C'; w.sv += 1; }
+      else if (text === 'Назад') { w.site = routeThroughC && w.site === 'C' ? 'B' : 'A'; w.sv += 1; }
       else if (/^Здоров|^Здравств/u.test(text)) { if (talkCommitted) w.sv += 1; if (talkWorks && talkCommitted) w.statements = [...w.statements, {
         statement_id: `statement-${w.statements.length + 1}`, speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: talkAct,
         intended_addressee_refs: talkRecipient === 'missing' ? [] : [{ entity_kind: 'player_character', entity_id: talkRecipient === 'player' ? 'c' : 'other' }],
         utterance_text: 'Я Милонег.'
       }]; }
-      else if (/^Беру/u.test(text)) { w.sv += 1; if (takeWorks) { w.node -= 1; w.held = [...w.held, { item_id: 'ordinary_item_1', holder: 'c', position: 'hands' }]; } }
+      else if (/^Беру/u.test(text)) { w.sv += 1; if (takeWorks) { w.nodeQuantities[w.site] -= 1; w.held = [...w.held, { item_id: 'ordinary_item_1', holder: 'c', position: 'hands' }]; } }
       else if (/^Ото|^Отр/u.test(text)) {
         if (!makeWorks) return { status: 422, ok: false, data: null, error: { code: 'TURN_STEP_PLAN_INVALID' } };
         w.sv += 1; w.made = [{ item_id: 'a1-result:1', action_production: true }];
@@ -261,6 +267,19 @@ test('legs: a resource found before NPC is only taken after a later talk PASS', 
   const takePass = result.turns.find(({ leg, pass }) => leg === 'take' && pass)?.n;
   assert.ok(talkPass != null && takePass > talkPass);
   assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf('Тропа'));
+  assert.deepEqual(d49MinimumOf(result.legs, result.turns), { status: 'PASS', item_leg: 'take' });
+});
+
+test('legs: a source seen before meeting does not pin take to its site', async () => {
+  const world = fakeWorld({ npcSite: 'C', resourceSites: ['B', 'C'], routeThroughC: true, makeWorks: false });
+  const result = await runFake(world);
+  const talkAt = world.w.turns.findIndex((text) => /^Здоров|^Здравств/u.test(text));
+  const takeAt = world.w.turns.findIndex((text) => /^Беру/u.test(text));
+  assert.ok(talkAt > world.w.turns.indexOf('Дальше'), 'talk happens at C after the resource was seen at B');
+  assert.ok(takeAt > talkAt, 'take happens after talk');
+  assert.equal(world.w.nodeQuantities.B, 60, 'the earlier source remains untouched');
+  assert.equal(world.w.nodeQuantities.C, 59, 'the source at the current post-talk place is taken');
+  assert.equal(statusOf(result).take, 'pass');
   assert.deepEqual(d49MinimumOf(result.legs, result.turns), { status: 'PASS', item_leg: 'take' });
 });
 

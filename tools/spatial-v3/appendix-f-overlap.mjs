@@ -1,6 +1,7 @@
-// The only overlap of Appendix F (Spatial standard 4.7.0) with an amendment of another document is
-// `preparation_snapshot_member`: F = Temporal World v4 Appendix A.7 + the `canonical_connection` member.
-// A change of the A.7 block must be mirrored in F; this check keeps the A.7 block a subset of the F block.
+// The overlaps of Appendix F (Spatial standard 4.7.0) with an amendment of another document are two blocks:
+// `preparation_snapshot_member` (F = Temporal World v4 Appendix A.7 + the `canonical_connection` member) and
+// `party_traversal_interval_result` (F = Temporal A.6 + `turn_back` and the outcome `returned_to_departure`, F.1.1).
+// A change of the temporal block must be mirrored in F; this check keeps the temporal block a subset of the F block.
 
 const blockOf = (text, name) => text.match(new RegExp(`\`\`\`yaml\\r?\\ncontract_name: ${name}\\r?\\n[\\s\\S]*?\`\`\``))?.[0] ?? null;
 const lines = (block) => block.split(/\r?\n/);
@@ -9,7 +10,7 @@ const enumValues = (type) => type.match(/^enum\[(.+)\]$/)?.[1].split(',').map((v
 // invariants of A.7 that F extends (a stem match is enough)
 const extendedInvariantStems = ['  - endpoint requires', '  - transfer_scene requires'];
 
-export function preparationSnapshotMemberOverlapErrors(temporalText, standardText, name = 'preparation_snapshot_member') {
+export function preparationSnapshotMemberOverlapErrors(temporalText, standardText, name = 'preparation_snapshot_member', extraStems = []) {
   const temporal = blockOf(temporalText, name);
   const amended = blockOf(standardText.slice(standardText.indexOf('# Приложение F.')), name);
   if (!temporal) return [`${name}: block is missing in the temporal amendment`];
@@ -27,7 +28,7 @@ export function preparationSnapshotMemberOverlapErrors(temporalText, standardTex
         for (const value of temporalValues) if (!amendedValues.includes(value)) errors.push(`${name}: ${field[1]} lost enum value ${value}`);
       } else if (found[2] !== field[2] || found[3] !== field[3]) errors.push(`${name}: field ${field[1]} differs (${field[2]} ${field[3]} vs ${found[2]} ${found[3]})`);
     } else if (line.startsWith('  - ')) {
-      const stem = extendedInvariantStems.find((prefix) => line.startsWith(prefix));
+      const stem = [...extendedInvariantStems, ...extraStems].find((prefix) => line.startsWith(prefix));
       const present = stem ? amendedLines.some((candidate) => candidate.startsWith(stem)) : amendedLines.includes(line);
       if (!present) errors.push(`${name}: invariant of the temporal block is missing in Appendix F: ${line.trim().slice(0, 80)}`);
     } else if (/^(contract_name|storage|identity|  - )/.test(line) && !amendedLines.includes(line)) {

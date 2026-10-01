@@ -47,6 +47,13 @@ const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-walk-acoustics-v1';
 const nature = 'data/world-catalogs/novgorod/m2c-natural';
 const capacityManifest = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
 const capacityManifestSha256 = '1e7afc2255a28e4c40c6e34901ea4f87ee24537f9621b8bcc3e74c6366f28dd2';
+// rt-lines a4 (Spatial 4.7.0 lines, LW-097): the pin of the line wave import manifest. Declared here so that the cutover (b1) imports
+// it from one place together with its reader; bootstrap does not import the wave yet, because the reader takes the highest
+// approved binding version and would meet binding@3 before it can read it.
+export const LINES_WAVE_MANIFEST = Object.freeze({
+  path: 'data/world-catalogs/novgorod/m2c-lines-v1-import-manifest.json',
+  sha256: '169c6f14fff46e39e1c88535c68b5adc4406b6db76528ffd67381632eb5aba65'
+});
 const generatedNpcIndexMigration = 'scripts/live-world-v17-generated-npc-versioned-index.sql';
 const generatedNpcIndexMigrationSha256 = '27d527784f11a512cea2863b719dc416bcccbc3a483bcfac3145e05e1761538f';
 const naturePins = {
@@ -721,7 +728,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       await rename(pendingPath, activationApprovalsPath);
     } finally { await rm(pendingPath, { force: true }); }
     return { database: worldName, party_database: partyName,
-      schema: { world_tables: 222, party_migrations: partyMigration.applied },
+      schema: { world_tables: 224, party_migrations: partyMigration.applied },
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },

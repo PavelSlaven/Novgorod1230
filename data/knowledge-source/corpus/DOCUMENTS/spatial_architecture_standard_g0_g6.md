@@ -2,7 +2,7 @@
 
 **Статус:** `active production`; release `spatial-v3-production-v1`<br>
 **Версия:** `4.7.0`<br>
-**Дата:** `2026-09-29`<br>
+**Дата:** `2026-09-30`<br>
 **Проект:** «Русь XIII век»<br>
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`, ветка `main`<br>
 **Базовая ревизия:** `520c0ea8cc366fc16c949a874c710f3547a322f6`<br>
@@ -162,15 +162,27 @@ Amendment вводит:
 - линию как общую идентичность перехода между двумя G5 и сегмента world route (§4.7.2): вид, описательное имя, различитель, направление, топоним, минуты;
 - каноническую связь G5–G5 в `world_base` и её проекцию в party runtime (§4.7.1, §6.6.1);
 - обязательное game time для любого перехода между местами (§1.4, A.16);
-- определение развилки (§4.5.1), предел сегмента (§4.5.2) и разворот в точке маршрута (§4.10);
+- определение развилки (§4.5.1), срезы recheck длинного сегмента вместо предела длины (§4.5.2) и разворот в точке маршрута и посреди segment (§4.10, §4.10.1);
 - ближний порог и ступени плохой видимости (§7.1.1);
 - проекцию хода игроку без позиций и порядковых подписей, с грубой длительностью (§14.4);
 - реестр контролируемых словарей версии 5 (B.0.1);
 - Приложение F: machine contracts и typed errors amendment. Блоки Приложения F заменяют одноимённые блоки Приложения B и добавляют новые; при конфликте приоритет у Приложения F (по образцу §0.8). Yaml-блоки Приложения B и таблица Приложения C остаются неизменными.
 
-**Применимость к v17.** Machine contracts этой редакции — `4.7.0-target.1`. Production runtime v17 до код-этапа расходится с нормой: переход между местами исполняется как action-cost без времени (`spatial-v3-site-traversal-runtime.js:33,155`); слой раскрытия видимости прячет ходы при `none` (`spatial-v3-current-visibility.js:31`); подготовка канонической связи в rt-walk (`prepareCanonicalConnection`, `b77663a3`, fleet/rt-walk) — отдельный P16-коммит `resolve_frontier:canconn:<party>:<binding>` без члена `preparation_snapshot` и с trigger `frontier_resolution`, тогда как по норме проекция — член `PrepareTargetSnapshot` с trigger `canonical_connection`; подписи переходов порядковые («Проход N», «— выход N»). Эти расхождения — долг реализации (LW-097), они не делают норму proposed и не допускают частичной активации (§0.4).
+**Применимость к v17.** Machine contracts этой редакции — `4.7.0-target.1`. Production runtime v17 до код-этапа расходится с нормой: переход между местами исполняется как action-cost без времени (`spatial-v3-site-traversal-runtime.js:33,155`); подготовка канонической связи в rt-walk (`prepareCanonicalConnection`, `b77663a3`, fleet/rt-walk) — отдельный P16-коммит `resolve_frontier:canconn:<party>:<binding>` без члена `preparation_snapshot` и с trigger `frontier_resolution`, тогда как по норме проекция — член `PrepareTargetSnapshot` с trigger `canonical_connection`; подписи переходов порядковые («Проход N», «— выход N»). Эти расхождения — долг реализации (LW-097), они не делают норму proposed и не допускают частичной активации (§0.4).
 
-Единственное пересечение Приложения F с temporal-приложениями — `preparation_snapshot_member`: F = Temporal World v4 A.7 + член `canonical_connection`; правка A.7 требует одновременной правки F (проверяет `check-p01.mjs`).
+**Правка 2026-09-30 (решения владельца D3, D56; rt-lines, LW-097).** Внутри amendment 4.7.0, до его код-этапа:
+
+1. Потолок «сегмент ≤ 30 минут» и поле `max_segment_minutes` профиля вида убраны; длинный сегмент режется политикой recheck, правило срезов одно на мир (§4.5.2); typed error `route_segment_too_long` заменён на `line_recheck_slicing_missing` (F.2).
+2. `availability_condition_set_ref` у `canonical_g5_connection_binding` необязателен (`null` для связи без портала; F binding).
+3. Разворот посреди segment разрешён (§4.10.1) с исходом `returned_to_departure` (§11.6, F.1.1); прежний запрет «не посреди segment» снят.
+4. Точки маршрута вводятся только на реальных приметах, развилках и границах контекста, не по длине и не по таймеру (§4.5.2).
+5. `dynamic_recheck_policy` получила вид `fixed_time_interval` и поле `interval_minutes` (как в DDL `13.sql` и в утверждённых политиках `recheck.*`): норма отставала от DDL и данных (F.1.1).
+6. Приложение B и принятые temporal-блоки A.1–A.6 не менялись (исторические снимки `4.2.0-target.1` и `4.3.0-target.1` прежние): новые поля, исходы и инварианты живут только в F (`dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result`, F.1.1).
+7. Устаревшее описание видимости в «Применимости к v17» снято: линии при плохой видимости предлагаются (§7.1.1; rt-lines, фаза 0).
+
+Версия документа и machine contracts (`4.7.0`, `4.7.0-target.1`) не меняются: amendment ещё не реализован кодом (LW-097), у его machine contracts нет потребителей, кроме генераторов и тестов; изменённые блоки пересоздаются генераторами.
+
+Пересечения Приложения F с temporal-приложениями — два блока: `preparation_snapshot_member` (F = Temporal World v4 A.7 + член `canonical_connection`) и `party_traversal_interval_result` (F = Temporal A.6 + `turn_back` и исход `returned_to_departure`, F.1.1); правка соответствующего блока temporal-приложения требует одновременной правки F (проверяет `check-p01.mjs`). Temporal §13 (исходы traversal) и A.6 «шесть исходов» относятся к редакции 4.3: седьмой исход добавляет эта редакция (Temporal §13 отсылает сюда).
 
 Ссылки на action-cost `site_connection` в `action_step_static_snapshot` и `party_route_plan_step` (Приложение B) после этой редакции неприменимы: `site_connection` имеет только `cost_kind=time` (§1.4), а action-cost `relation_ref` допустим только для `scene_movement_edge`.
 
@@ -661,9 +673,15 @@ point[n] = endpoint_to
 
 Любая точка, где можно свернуть вперёд на другую линию или где остановка — место со сценой и действиями (перекрёсток, пристань, брод с отходящей тропой), является canonical G5 и endpoint своих routes. G5 вводится только при реальной примете или реальном выборе. Ожидание на внутренней точке маршрута (`waiting_at_anchor`, §4.10) G5 не требует. Internal route point (`waypoint`, `boundary`, `checkpoint`) выбора вперёд не даёт: `ordinary_waypoint` pin-ит ровно одно authored forward continuation, а единственная альтернатива на нём — разворот (§4.10), кроме утверждённых checkpoint departures на `shared_checkpoint` (`checkpoint_departure_template`): это route-anchor scene существующего механизма, а не развилка; новые развилки авторятся как canonical G5 junction. Один `g4_directional_exit` может обслуживать несколько routes (§4.4).
 
-### 4.5.2. Предел сегмента
+### 4.5.2. Срезы длинного сегмента
 
-Segment не длиннее `max_segment_minutes` своего `line_kind_profile`; предел профиля не превышает 30 минут (профиль может задать меньше, не больше). Более длинный путь делится internal points `waypoint` — точками остановки без сцены; reverse route делится теми же точками зеркально. Превышение предела — data gap `route_segment_too_long`.
+Потолка длины сегмента нет (решение владельца D56): сегмент может занимать любое число минут, топология от его длины не зависит. Правило мира: у сегмента (`site_connection`, `canonical_g5_connection_binding`, `world_route_segment`) с `base_minutes` больше 30 политика `dynamic_recheck_policy` его `line_kind_profile` режет его на срезы не длиннее 30 минут: для `fixed_time_interval` — игрового времени, для прогрессивных видов — минут прогресса (доли `base_minutes`):
+
+- `fixed_time_interval` с `interval_minutes` (игровое время) не больше 30; или
+- `fixed_progress_slices`, у которой `base_minutes` × `progress_slice_ppm` (минуты прогресса) не больше 30 × 1 000 000; или
+- `explicit_progress_points`, у которых любые два соседних среза, включая концы сегмента, не длиннее 30 минут прогресса (`base_minutes`).
+
+Нарушение — data gap `line_recheck_slicing_missing`. Срез — граница пересчёта условий (§10.6, §11), а не остановка и не место: внутри segment ничего не появляется. Internal route point (`waypoint`, `boundary`, `checkpoint`) вводится только там, где есть реальная примета, развилка или граница контекста (§4.5.1, §4.11), а не по длине и не по таймеру: длинный путь без примет остаётся одним segment со срезами. Reverse route делится теми же точками зеркально.
 
 ### 4.6. Physical segment
 
@@ -773,12 +791,30 @@ Transit anchor:
 - хранит arrival/departure side contexts and one authored switch phase;
 - хранит active side для любого internal point; при равных side contexts переключение является no-op;
 - может иметь checkpoint departures только из approved templates;
-- имеет ход «дальше» (единственное authored forward continuation) и, если у маршрута есть обратный (`reverse_route_ref`), ход «назад» (разворот). Разворот доступен на каждой внутренней точке такого маршрута любого вида (`ordinary_waypoint`, `boundary_wait`, `shared_checkpoint`), но не посреди segment; на одностороннем маршруте (без reverse route) хода «назад» нет. Физически односторонний участок авторы моделируют обратным маршрутом с недоступным зеркальным сегментом (§4.13), а не отсутствием обратного маршрута;
+- имеет ход «дальше» (единственное authored forward continuation) и, если у маршрута есть обратный (`reverse_route_ref`), ход «назад» (разворот). Разворот доступен на каждой внутренней точке такого маршрута любого вида (`ordinary_waypoint`, `boundary_wait`, `shared_checkpoint`); разворот посреди segment — §4.10.1; на одностороннем маршруте (без reverse route) хода «назад» нет. Физически односторонний участок авторы моделируют обратным маршрутом с недоступным зеркальным сегментом (§4.13), а не отсутствием обратного маршрута;
 - ход «назад» — departure зеркальной точки `(R′, n−k)` обратного маршрута: anchor точки k route R и anchor зеркальной точки обратного route R′ обозначают одно физическое место. При исполнении такого departure anchor перепривязывается к R′ без отдельного шага и без времени (технический endpoint rebinding, §1.4, последний абзац); новый вид шага не вводится, следующий шаг — обычный `timed_traversal` reverse segment с учётом его доступности (A.9);
 - для `boundary_wait` ход «назад» не пересекает границу: стороны границы для обратного маршрута инвертированы; для `shared_checkpoint` действует то же правило;
 - ветвление вперёд на anchor невозможно: оно только в canonical G5 (§4.5.1); исключение — утверждённые checkpoint departures на `shared_checkpoint` (`checkpoint_departure_template`): это route-anchor scene существующего механизма, а не развилка; новые развилки авторятся как canonical G5 junction.
 
 Scene-level checkpoint/interruption использует отдельный route-anchor aggregate.
+
+### 4.10.1. Разворот посреди segment
+
+Пока travel state в статусе `paused_in_transit` (§10.8), игрок вместо «дальше» может выбрать «назад»: путь от текущего прогресса назад по той же линии. Условие разворота — статус travel state, а не вид предыдущего результата: после отказа (`blocked_before_progress`) состояние остаётся `paused_in_transit`, и «назад» можно повторить. Путь назад не является relocation: место не меняется.
+
+Предложение игроку и исполнение разведены. Предлагается «назад» (проекция §14.4), когда у segment есть зеркальный segment (reverse route, reverse binding или reverse connection, §4.5, §4.7.1) и его последний известный dynamic access (A.9) пропускает; если зеркального segment нет, хода «назад» нет (физически односторонний участок — недоступный зеркальный segment, §4.13). При исполнении dynamic access проверяется заново; отказ описан ниже («Отказ»).
+
+Прогресс зеркалится по доле пути: прогресс p на segment S становится 1 000 000 − p на зеркальном segment S′. Минуты, способ, факторы и доступность берутся у S′ (минуты сторон независимы, §4.7.2): оставшееся время равно `base_minutes(S′)` × факторы × (p / 1 000 000) по §11.2. Разворот не имеет собственного времени: он входит в первый интервал обратного хода (`turn_back`, F.1.1), который может закончиться и `paused_in_transit` при нулевом времени.
+
+Разворот — одно атомарное преобразование travel state в коммите результата этого интервала: `mirrored` переключается и прогресс p заменяется на 1 000 000 − p. `progress_before_ppm` первого обратного интервала равен зеркальному прогрессу, а не прежнему `actual_progress_after_ppm`; это единственное исключение из правила непрерывности (§11.5), все остальные интервалы начинаются с прежнего `actual_progress_after_ppm` своей стороны. `last_confirmed_endpoint_ref` не меняется: это departure endpoint исходного segment (для зеркального segment — его arrival endpoint).
+
+- **Повторный разворот.** Из `paused_in_transit` на зеркальной стороне «назад» снова зеркалит прогресс (`mirrored` возвращается в false) по тем же правилам; если интервал после такого разворота доходит до 1 000 000, он заканчивается `segment_completed` (прямая сторона, §10.7), а не `returned_to_departure`.
+- **Нулевой прогресс.** Пауза при прогрессе 0 — не транзит: `paused_in_transit` всегда имеет прогресс 1..999 999 (§10.8). Явная пауза или прерывание после коммита старта (§10.5, travel state уже создан с прогрессом 0), до первого физического продвижения, заканчивается исходом `interrupted_at_anchor` на якоре точки отправления (§10.9): путник не уходил, travel state закрывается с `closed_result` `interrupted_to_anchor` и прогрессом 0, execution переходит в `waiting_at_anchor` на departure endpoint. Разворот не нужен и тупика нет: зеркало нуля (1 000 000) не возникает.
+- **Отказ.** Если при исполнении dynamic access зеркального segment не пропускает, интервал заканчивается обычным `blocked_before_progress` с `turn_back` false и собственным `result_code` `turn_back_refused` (он отличает отказ разворота от блокировки прямого хода): `mirrored` и прогресс не меняются, travel state остаётся `paused_in_transit`, меняются только аудиторские поля; «назад» можно повторить.
+- **Исходы.** Интервал с `turn_back` true (тот же атомарный переворот в коммите) допускает исходы `progressed`, `paused_in_transit`, `interrupted_at_anchor` (прерывание; якорь — якорь маршрута стороны, которую интервал проходит, §4.10) и `stranded` (пробел данных, §11.6): у этих сигналов §11.6 есть законный исход и в первом интервале после разворота. Завершающий исход выводится из направления после коммита: если `mirrored` стало true — `returned_to_departure` на конце зеркального segment; если `mirrored` стало false (повторный разворот с зеркальной стороны) — `segment_completed` на конце исходного segment. Противоположный завершающий исход невозможен. `blocked_before_progress` при `turn_back` true невозможен: отказ — это выше.
+- **Replay.** Результат интервала — append-only запись под idempotency lease; зеркалирование входит в её коммит. Повтор того же запроса возвращает зафиксированный результат и не зеркалит второй раз.
+
+Обратный ход заканчивается исходом `returned_to_departure` на departure endpoint исходного segment (§10.7.1, §11.6); execution переходит в `waiting_at_anchor` на этом endpoint, оставшиеся шаги плана не диспатчатся (новый план строится от endpoint). Срезы (§4.5.2) действуют на обеих сторонах.
 
 ### 4.11. Boundary crossing
 
@@ -1639,7 +1675,7 @@ There is no persistent `result_kind=active` interval row. Crash before commit le
 
 At `actual_progress_after_ppm = 1_000_000`:
 
-- interval outcome must be `segment_completed`;
+- interval outcome must be `segment_completed` (forward side, travel-state `mirrored` false; the mirrored side ends with `returned_to_departure`, §10.7.1);
 - travel state closes as `completed`;
 - root carrier is placed at exact arrival endpoint;
 - execution step advances or completes;
@@ -1647,6 +1683,17 @@ At `actual_progress_after_ppm = 1_000_000`:
 - one execution event records location snapshot.
 
 Dispatch of next step is a deterministic child operation. If it fails after arrival, execution becomes `waiting_at_anchor`; completed segment remains committed.
+
+### 10.7.1. Return to departure (turn back completed)
+
+At `actual_progress_after_ppm = 1_000_000` of a mirrored travel state (§4.10.1):
+
+- interval outcome must be `returned_to_departure`;
+- travel state closes as `returned_to_departure`;
+- root carrier is placed at the exact departure endpoint of the step segment;
+- execution becomes `waiting_at_anchor` on that endpoint; the remaining plan steps are not dispatched and a new plan is built from the endpoint;
+- one execution event (`wait_started`) records the location snapshot; there is no `segment_completed` and no arrival on the step segment's arrival endpoint;
+- the plan is not resumed: `resumed` (`waiting_at_anchor` → `active`, A.4.1) is forbidden after `returned_to_departure`, because it would dispatch the same step again; the execution stays `waiting_at_anchor` only as the source of a successor plan built from the departure endpoint (`superseded`) or of an explicit abort.
 
 ### 10.8. Pause
 
@@ -1656,7 +1703,8 @@ Dispatch of next step is a deterministic child operation. If it fails after arri
 - keeps travel state active with status `paused_in_transit`;
 - preserves exact cumulative time and last confirmed endpoint;
 - keeps execution `active` with null current endpoint and the same active travel-state ID;
-- resume creates a new interval and dynamic snapshot.
+- resume creates a new interval and dynamic snapshot; turn back (§4.10.1) creates the first interval of the mirrored side;
+- `paused_in_transit` always has progress in 1..999 999: an explicit pause requested after the start commit of §10.5 but before the first physical progress (actual progress zero) is not a pause in transit; the interval ends `interrupted_at_anchor` at the departure endpoint (§10.9). A pause requested while the departure gate is blocked creates no travel state at all (§10.5).
 
 To avoid ambiguous execution status, target model uses:
 
@@ -1681,6 +1729,15 @@ until an anchor is actually reached. `waiting_at_anchor` always means a real end
 - appends exactly one `suspended` execution event linked to the terminal interval result and the same change set.
 
 If required interruption scene cannot be materialized, the outcome is `stranded`, not a guessed anchor.
+
+An explicit pause or an approved interruption request whose interval ends with actual progress zero (after the start commit of §10.5, before any physical advancement) uses the departure endpoint of the step segment as its anchor, whatever the interruption policy resolves: the traveller never left, so no route-anchor aggregate is created and no scene is materialized. The outcome is still `interrupted_at_anchor`, atomically:
+
+- closes the travel state as `interrupted_to_anchor` at progress zero, keeping its interval history;
+- returns the root location from `in_transit` to the departure endpoint (or leaves the attached passenger scene-located);
+- sets execution `waiting_at_anchor` on that endpoint with exactly one `wait_started` event (not `suspended`, because no `suspended_at_scene` anchor exists);
+- allows `resumed` (`waiting_at_anchor` → `active`, A.4.1): the same immutable plan dispatches its current step again from the departure endpoint and creates a new travel state at progress zero (§10.5). The closed state does not count against the one-active-state rule.
+
+A retried request after the start commit returns the committed result through the idempotency lease (§11.5); the same request never closes a second state or creates a second interval.
 
 ### 10.10. Stranded in transit
 
@@ -1828,7 +1885,7 @@ For every interval result:
 0 <= progress_before < 1_000_000
 progress_before <= actual_progress_after <= planned_progress_after <= 1_000_000
 
-progressed or segment_completed
+progressed, segment_completed or returned_to_departure
 → actual_progress_after > progress_before;
 
 paused_in_transit, interrupted_at_anchor or stranded
@@ -1841,9 +1898,9 @@ blocked_before_progress
 → travel/execution/location state remains otherwise unchanged.
 ```
 
-A zero-exact-time result with unchanged progress is allowed only for explicit pause/interruption/stranded control semantics above or `blocked_before_progress`; it crosses no minute boundary. A positive sub-minute physical-progress result advances the exact timestamp even when it crosses zero whole-minute boundaries. `actual_progress_after=1_000_000` is legal only for `segment_completed`; every other outcome is committed below the terminal progress value.
+A zero-exact-time result with unchanged progress is allowed only for explicit pause/interruption/stranded control semantics above or `blocked_before_progress`; it crosses no minute boundary. A positive sub-minute physical-progress result advances the exact timestamp even when it crosses zero whole-minute boundaries. `actual_progress_after=1_000_000` is legal only for `segment_completed` (forward side) and `returned_to_departure` (mirrored side); every other outcome is committed below the terminal progress value.
 
-Next interval starts exactly at previous actual progress. `interval_ordinal` increases only after a committed result. Technical retries reuse the same pending ordinal through the idempotency lease and create no separate domain attempt ordinal.
+Progress is measured along the side the interval traverses: the step segment, or its mirrored segment after a turn back (§4.10.1). Next interval starts exactly at previous actual progress of the same side; the only exception is the `turn_back` interval (F.1.1), which starts at `1_000_000` minus the previous actual progress, in the same commit that flips the side (section 4.10.1). A refused turn back is an ordinary `blocked_before_progress` without any flip. `interval_ordinal` increases only after a committed result. Technical retries reuse the same pending ordinal through the idempotency lease and create no separate domain attempt ordinal.
 
 ### 11.6. Exhaustive interval outcomes
 
@@ -1853,9 +1910,10 @@ Exactly one outcome is persisted:
 |---|---|---|---|
 | `progressed` | positive progress; time per formula | active | active in transit |
 | `segment_completed` | progress = 1,000,000 | closed completed | arrival endpoint; advance step |
-| `paused_in_transit` | zero or positive progress/time as resolved; no hidden delay | paused in transit | execution active; no anchor |
-| `interrupted_at_anchor` | zero or positive progress/time as resolved | closed interrupted | suspended at exact route-anchor scene |
+| `paused_in_transit` | progress in 1..999 999 and zero or positive time as resolved; no hidden delay (a pause at progress zero is `interrupted_at_anchor` at the departure endpoint, §10.9) | paused in transit | execution active; no anchor |
+| `interrupted_at_anchor` | zero or positive progress/time as resolved | closed interrupted | suspended at exact route-anchor scene; at progress zero (pause or interruption before physical advancement) `waiting_at_anchor` at the departure endpoint (§10.9) |
 | `stranded` | zero or positive progress/time as resolved | stranded | execution stranded in transit |
+| `returned_to_departure` | mirrored progress = 1_000_000; time per the mirrored segment | closed `returned_to_departure` | departure endpoint of the step segment; execution `waiting_at_anchor` (§4.10.1) |
 | `blocked_before_progress` | no progress; zero traversal time | unchanged at the same progress | execution remains active in transit; no location change |
 
 There are no alternatives such as “in transit or anchor” inside one row. A failure that cannot safely preserve the current in-transit state maps to `stranded` or `interrupted_at_anchor`; a failure before travel-state creation produces no interval result and leaves the owner at the departure endpoint.
@@ -1864,9 +1922,9 @@ When navigation, hazard and blocker signals coexist, one versioned composition p
 
 ```text
 1. unresolved data gap before a valid arrival commit             → stranded below terminal progress;
-2. validated actual progress reaches 1_000_000                   → segment_completed;
+2. validated actual progress reaches 1_000_000                   → segment_completed (forward side) or returned_to_departure (mirrored side);
 3. approved interruption request with a resolved anchor          → interrupted_at_anchor;
-4. explicit pause request                                        → paused_in_transit;
+4. explicit pause request                                        → paused_in_transit (progress 1..999 999) or interrupted_at_anchor at the departure endpoint (progress zero, §10.9);
 5. blocker with zero committed progress                           → blocked_before_progress;
 6. otherwise                                                      → progressed.
 ```
@@ -2684,13 +2742,13 @@ Temporary closure of a physical relation uses conditions/blockers/portal state, 
 | `planned` | `active` | first step dispatch succeeds |
 | `planned` | `aborted` | explicit abort before first step |
 | `active` | `active` | step start/progress/pause or nonterminal step completion with immediate next-step activation |
-| `active` | `waiting_at_anchor` | current attempt blocks or a completed step leaves the owner at an exact endpoint before next dispatch |
+| `active` | `waiting_at_anchor` | current attempt blocks, or a completed step leaves the owner at an exact endpoint before next dispatch, or a mirrored traversal returns to the departure endpoint (`returned_to_departure`, §4.10.1), or a pause or interruption before the first physical progress closes the travel state at progress zero as `interrupted_at_anchor` on the departure endpoint (§10.9) |
 | `active` | `suspended_at_scene` | interruption commits an approved route-anchor scene |
 | `active` | `stranded_in_transit` | exact in-transit state is preserved because an approved interruption anchor cannot be materialized |
 | `active` | `completed` | final plan step completes at a valid scene or transit endpoint |
 | `active` | `aborted` | current step is action/activity at an exact endpoint and the pinned failure/abort contract preserves that endpoint; active traversal must first interrupt or strand |
 | `active` | `superseded` | replan starts from an exact location-bearing endpoint; raw non-stranded in-transit supersession is forbidden |
-| `waiting_at_anchor` | `active` | same immutable plan dispatches its current step from the stored endpoint |
+| `waiting_at_anchor` | `active` | same immutable plan dispatches its current step from the stored endpoint; forbidden after `returned_to_departure` (§10.7.1) |
 | `waiting_at_anchor` | `aborted` | explicit abort at the stored endpoint |
 | `waiting_at_anchor` | `superseded` | successor plan source equals the stored endpoint snapshot |
 | `suspended_at_scene` | `aborted` | explicit abort at the suspension scene |
@@ -2734,6 +2792,7 @@ closed
 ```text
 completed
 interrupted_to_anchor
+returned_to_departure
 superseded
 ```
 
@@ -2810,13 +2869,14 @@ stranded_state
 ```text
 progressed
 segment_completed
+returned_to_departure
 paused_in_transit
 interrupted_at_anchor
 stranded
 blocked_before_progress
 ```
 
-No other interval outcome is valid. Navigation/hazard/data-gap classifications are separate reason fields.
+`returned_to_departure` is the seventh outcome of amendment 4.7.0 (§4.10.1, §10.7.1, F.1.1); the other six are the outcomes of Temporal World v4 §13. No other interval outcome is valid. Navigation/hazard/data-gap classifications are separate reason fields.
 
 ## A.13. Frontier status and resolution
 
@@ -7000,7 +7060,7 @@ unresolved_document_findings: 0
 
 Blocks of this appendix supersede the same-named contract blocks of Appendix B and add new ones; each block is the sole logical declaration of its `contract_name` from amendment 4.7.0 (§0.9). Appendix C is extended by the typed errors listed below. Until the generated registry is synchronized with this appendix, an operation that depends on it is blocked as `normative_contract_conflict`.
 
-Superseded blocks (copies of the Appendix B blocks with the changes listed in the amendment): `g5_site_connection`, `party_site_connection_endpoint_binding`, `world_route`, `world_route_segment`, `preparation_member_proposal`, `spatial_materialization_input`, `materialization_trace`, `expansion_slot`, `party_transit_anchor`, `preparation_snapshot_member`, `movement_cost_summary`. New blocks: `line_kind_profile`, `line_kind_alternative_method`, `canonical_g5_connection_binding`. Typed errors: `line_label_duplicate`, `line_label_invalid`, `route_segment_too_long`, `canonical_connection_projection_gap`.
+Superseded blocks (copies of the Appendix B blocks with the changes listed in the amendment): `g5_site_connection`, `party_site_connection_endpoint_binding`, `world_route`, `world_route_segment`, `preparation_member_proposal`, `spatial_materialization_input`, `materialization_trace`, `expansion_slot`, `party_transit_anchor`, `preparation_snapshot_member`, `movement_cost_summary`, `dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result` (the last three: F.1.1). New blocks: `line_kind_profile`, `line_kind_alternative_method`, `canonical_g5_connection_binding`. Typed errors: `line_label_duplicate`, `line_label_invalid`, `line_recheck_slicing_missing`, `canonical_connection_projection_gap`.
 
 ## F.1. Amended and new contract blocks
 
@@ -7068,7 +7128,7 @@ invariants:
   - line_kind_profile_ref is an explicit versioned reference (a bare line_kind_id selects no version); line_kind_id equals the line kind of that profile version.
   - baseline_movement_method_id, movement_method_cost_profile_ref, dynamic_recheck_policy_ref and transition_environment_profile_ref equal those of the referenced line_kind_profile version (one movement-method id space).
   - A segment incident to an internal route point has a non-null line_direction_id.
-  - base_minutes does not exceed max_segment_minutes of that line_kind_profile (itself at most 30); violation is route_segment_too_long.
+  - base_minutes above 30 requires the dynamic_recheck_policy of that line_kind_profile to slice the segment into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.
   - Active outgoing lines of one place (§4.7.2) have distinct (line_name, line_discriminator, line_direction_id); the line of a multi-segment route for this purpose is its first segment.
 ```
 
@@ -7303,14 +7363,13 @@ fields:
   movement_method_cost_profile_ref: required versioned_ref
   dynamic_recheck_policy_ref: required versioned_ref
   route_kind_id: required stable_id
-  max_segment_minutes: required positive_integer
   status: required enum[approved, deprecated, retired]
   provenance_ref: required stable_id
 relations:
   alternative_methods: relation_set[line_kind_alternative_method]
 invariants:
   - UNIQUE one approved profile per line_kind_id.
-  - max_segment_minutes is at most 30 (the hard ceiling of section 4.5.2); a profile may set less, never more.
+  - A segment of this line kind longer than 30 minutes is sliced by dynamic_recheck_policy_ref into parts of at most 30 minutes (section 4.5.2); the 30-minute slice step is one rule of the world, not a profile field.
   - route_kind_id is the route kind of every world route whose first segment has this line kind; it is the only line-kind to route-kind mapping.
   - cost is time only; there is no action-cost profile for a line (§1.4).
   - A water line kind (line.river_channel, line.side_channel, line.open_water, line.ford, line.ferry) has at least one alternative method that needs no transport; a physical boundary, not a missing transport, is the only reason a water line is closed.
@@ -7357,7 +7416,7 @@ fields:
   capacity: optional positive_integer
   capacity_semantics_ref: required stable_id
   risk_profile_ref: required versioned_ref
-  availability_condition_set_ref: required versioned_ref
+  availability_condition_set_ref: optional versioned_ref
   from_scene_endpoint_slot_key: required stable_id
   to_scene_endpoint_slot_key: required stable_id
   reverse_binding_ref: required versioned_ref
@@ -7369,6 +7428,8 @@ invariants:
   - Reverse binding is distinct, points back reciprocally, has swapped from/to G5, belongs to the same source pair and the same line_kind_profile kind, has equal line_name and inverse line_direction_id; its line_discriminator, base_minutes, risk and availability may differ.
   - Paired-slot rule: reverse.from_scene_endpoint_slot_key equals this to_scene_endpoint_slot_key and reverse.to_scene_endpoint_slot_key equals this from_scene_endpoint_slot_key; the slots exist in the approved scene materialization profiles of their G5; slot-role compatibility is not required for this pair.
   - line fields satisfy §4.7.2; the set of active outgoing lines of one canonical G5 has distinct (line_name, line_discriminator, line_direction_id).
+  - availability_condition_set_ref is null for a connection without a portal or another availability record; a reader never infers availability from its absence, it applies the dynamic access of the profile (A.9).
+  - base_minutes above 30 requires the dynamic_recheck_policy of the line_kind_profile to slice the connection into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.
   - Binding version changes when a profile, line field, minutes, slot or reverse/pair link changes; minutes change only by a new version.
 ```
 
@@ -7429,11 +7490,120 @@ invariants:
   - unknown requires all numeric bounds null, is not executable and accompanies a blocking reason.
 ```
 
+### F.1.1. Recheck policy kinds and turn back mid-segment (revision 2026-09-30)
+
+These three blocks are copies of the effective blocks of the listed sources with the changes of the revision (§0.9, D56): `dynamic_recheck_policy` and `traveller_travel_state` copy Appendix B, which stays unchanged; `party_traversal_interval_result` copies Temporal World v4 Appendix A.6 (the effective block: Appendix B is already superseded there) and keeps its exact-time fields; Temporal A.6 and Appendix B are not edited, so the historical 4.2.0 and 4.3.0 snapshots stay as they were.
+
+```yaml
+contract_name: dynamic_recheck_policy
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  policy_kind: required enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]
+  progress_slice_ppm: optional positive_integer
+  interval_minutes: optional positive_integer
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+relations:
+  explicit_progress_points: relation_set[controlled_progress_point]
+invariants:
+  - segment_once forbids slice, interval and explicit points.
+  - fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.
+  - explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.
+  - fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.
+  - Slicing policy cannot change final duration under identical factor sequence.
+```
+
+```yaml
+contract_name: traveller_travel_state
+storage: party_runtime_mutable_history_preserving
+identity:
+  - id
+fields:
+  id: required stable_id
+  party_id: required stable_id
+  route_plan_execution_id: required stable_id
+  plan_step_ordinal: required non_negative_integer
+  movement_carrier_ref: required entity_ref
+  segment_progress_ppm: required ppm
+  cumulative_actual_time_numerator: required non_negative_integer
+  cumulative_actual_time_denominator: required positive_integer
+  next_interval_ordinal: required non_negative_integer
+  intended_direction_id: optional stable_id
+  navigation_state: required enum[on_course, deviating, lost]
+  last_confirmed_endpoint_ref: required movement_endpoint_ref
+  last_dynamic_snapshot_digest: optional sha256_hex
+  mirrored: required boolean
+  status: required enum[active, paused_in_transit, stranded_in_transit, closed]
+  stranded_reason_code: optional stable_id
+  closed_result: optional enum[completed, interrupted_to_anchor, returned_to_departure, superseded]
+  state_version: required state_version
+  updated_change_set_id: required stable_id
+  closed_change_set_id: optional stable_id
+invariants:
+  - movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.
+  - New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.
+  - last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).
+  - active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id; paused_in_transit additionally requires progress in 1..999999 (a pause at progress zero closes as interrupted_to_anchor, section 10.9).
+  - stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.
+  - closed requires closed_result and closed_change_set_id.
+  - closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.
+  - closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.
+  - closed_result=interrupted_to_anchor requires progress below one million (zero allowed: a pause or interruption before physical advancement closes at the departure endpoint, section 10.9) and null stranded_reason_code.
+  - closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.
+  - segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.
+  - mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.
+  - closed state cannot be reactivated.
+  - UNIQUE one active, paused or stranded state per execution step.
+```
+
+```yaml
+contract_name: party_traversal_interval_result
+storage: party_runtime_append_only
+identity:
+  - id
+fields:
+  id: required stable_id
+  route_plan_execution_id: required stable_id
+  plan_step_ordinal: required non_negative_integer
+  interval_ordinal: required non_negative_integer
+  progress_before_ppm: required ppm
+  planned_progress_after_ppm: required ppm
+  actual_progress_after_ppm: required ppm
+  planned_elapsed: required rational_minutes
+  actual_elapsed: required rational_minutes
+  cumulative_elapsed_before: required rational_minutes
+  cumulative_elapsed_after: required rational_minutes
+  crossed_whole_minute_boundaries: required non_negative_decimal_string
+  clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]
+  synchronized_time_slice_result_id: optional stable_id
+  execution_context_snapshot: required factual_spatial_context_snapshot
+  turn_back: required boolean
+  result_kind: required enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]
+  result_code: required stable_id
+  dynamic_dependency_pins: required dependency_pin_set
+  result_change_set_id: required stable_id
+  idempotency_record_id: required stable_id
+invariants:
+  - Exact elapsed and cumulative state reconcile without float conversion.
+  - direct_party_clock owns one clock update; shared_root_transport_clock owns none.
+  - Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.
+  - Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.
+  - turn_back is true only for an interval started while the travel state status is paused_in_transit (also after a refused turn back, which leaves that status), requires a mirrored segment whose dynamic access passes at execution and a travel-state progress in 1..999999, and permits the outcomes progressed, paused_in_transit, interrupted_at_anchor and stranded, plus exactly one terminal outcome chosen by the direction after commit: travel-state mirrored true after commit permits returned_to_departure, mirrored false after commit (a repeated turn back from the mirrored side) permits segment_completed, and the other terminal outcome is invalid; blocked_before_progress with turn_back true is invalid. A refused turn back is an interval with result_kind blocked_before_progress, result_code turn_back_refused and turn_back false, and no change of travel state other than its audit fields.
+  - Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.
+  - segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit; no other outcome permits actual progress one million.
+  - A retried request reuses idempotency_record_id and returns the committed result: the mirroring is part of that commit and never applies twice.
+```
+
 ## F.2. Typed errors
 
 | Error code | Meaning | Required reaction |
 |---|---|---|
 | `line_label_duplicate` | Two active outgoing lines of one place share (`line_name`, `line_discriminator`, `line_direction_id`) | Hard block authoring/materialization; no ordinal is added |
 | `line_label_invalid` | `line_name` or `line_discriminator` is empty, contains a decimal digit, an ordinal stop-list word or the stem of the target place name | Reject authoring |
-| `route_segment_too_long` | Segment `base_minutes` exceeds `max_segment_minutes` of its line kind profile | Hard block authoring; split by waypoint |
+| `line_recheck_slicing_missing` | A segment with `base_minutes` above 30 has a recheck policy (of its line kind profile) that does not slice it into parts of at most 30 minutes (section 4.5.2) | Hard block authoring; repair the recheck policy, the segment is not shortened or split by length |
 | `canonical_connection_projection_gap` | Authored connection cannot be projected: endpoint slot missing/ambiguous, broken reverse pair or foreign G4 | Roll back the whole projection transaction |

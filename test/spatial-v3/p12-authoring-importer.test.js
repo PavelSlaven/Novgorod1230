@@ -316,3 +316,33 @@ test('P12 emits domain readiness failures for route endpoints without canonical 
   const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest)); const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
   assert.ok(result.errors.some((error) => error.code === 'CANONICAL_G5_INVENTORY_INCOMPLETE')); assert.ok(result.errors.some((error) => error.code === 'DIRECTIONAL_EXIT_READINESS_GAP'));
 });
+
+// rt-lines a3.2/a3.4: the schema reference must see `ALTER COLUMN ... DROP NOT NULL` (30.sql), otherwise the strict row check asks
+// a binding of the new style for the connection profile it no longer has. The rows are the real m2c-lines-v1 candidate rows.
+test('P12 strict rows: a line-style binding and the line tables pass the importer row check of the DDL-derived schema (30.sql)', async (t) => {
+  const source = 'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets';
+  const tables = ['source_records', 'spatial_v3_line_kind_profiles', 'spatial_v3_line_kind_alternative_methods', 'spatial_v3_movement_method_cost_profiles',
+    'spatial_v3_movement_method_cost_options', 'spatial_v3_transition_environment_profiles', 'spatial_v3_canonical_g5_connection_bindings',
+    'spatial_v3_authoring_versions', 'spatial_v3_authoring_dependency_edges'];
+  const dir = await mkdtemp(join(tmpdir(), 'p12-lines-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const datasets = [];
+  for (const table of tables) {
+    const rows = await readFile(`${source}/${table}.json`, 'utf8');
+    await writeFile(join(dir, `datasets/${table}.json`), rows);
+    datasets.push({ table, file: `datasets/${table}.json`, sha256: createHash('sha256').update(rows).digest('hex'), status: 'draft', provenance_ref: 'catalog', delete_policy: 'forbid', depends_on: [] });
+  }
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_id: 'lines', world_revision_id: 'r', status: 'draft', provenance_ref: 'catalog', delete_policy: 'forbid', data_gaps: [], datasets };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  const rowErrors = result.errors.filter((error) => ['UNKNOWN_ROW_FIELD', 'MISSING_REQUIRED_FIELD', 'UNPINNED_VERSIONED_REFERENCE', 'INVALID_PROVENANCE', 'INVALID_DATASET_ROW'].includes(error.code));
+  assert.deepEqual(rowErrors, []);
+  assert.equal(result.dataset_counts.spatial_v3_canonical_g5_connection_bindings, 454);
+  assert.equal(result.errors.some((error) => error.code === 'MISSING_REQUIRED_FIELD'), false, 'no binding lacks connection_profile_* as a required field');
+  // the check is live: a row without a column that is NOT NULL is still reported
+  const broken = JSON.parse(await readFile(`${source}/spatial_v3_line_kind_profiles.json`, 'utf8')).map(({ route_kind_id: _omit, ...row }) => row);
+  const brokenBytes = JSON.stringify(broken); await writeFile(join(dir, 'datasets/spatial_v3_line_kind_profiles.json'), brokenBytes);
+  manifest.datasets[tables.indexOf('spatial_v3_line_kind_profiles')].sha256 = createHash('sha256').update(brokenBytes).digest('hex'); await writeFile(file, JSON.stringify(manifest));
+  const after = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(after.errors.some((error) => error.code === 'MISSING_REQUIRED_FIELD' && /route_kind_id/u.test(error.subject_ref)));
+});

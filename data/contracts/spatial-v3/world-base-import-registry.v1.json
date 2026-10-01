@@ -43,6 +43,7 @@
     [
       "spatial_v3_orientation_reference_frames",
       "spatial_v3_movement_orientation_profiles",
+      "spatial_v3_line_kind_profiles",
       "spatial_v3_g4_directional_exits",
       "spatial_v3_world_routes",
       "spatial_v3_world_route_points",
@@ -120,6 +121,8 @@
     "spatial_v3_transition_environment_profiles",
     "spatial_v3_movement_method_cost_profiles",
     "spatial_v3_movement_method_cost_options",
+    "spatial_v3_line_kind_profiles",
+    "spatial_v3_line_kind_alternative_methods",
     "spatial_v3_dynamic_recheck_policies",
     "spatial_v3_dynamic_recheck_policy_points",
     "spatial_v3_world_route_segments",

@@ -1171,7 +1171,7 @@
         "line_kind_profile_ref is an explicit versioned reference (a bare line_kind_id selects no version); line_kind_id equals the line kind of that profile version.",
         "baseline_movement_method_id, movement_method_cost_profile_ref, dynamic_recheck_policy_ref and transition_environment_profile_ref equal those of the referenced line_kind_profile version (one movement-method id space).",
         "A segment incident to an internal route point has a non-null line_direction_id.",
-        "base_minutes does not exceed max_segment_minutes of that line_kind_profile (itself at most 30); violation is route_segment_too_long.",
+        "base_minutes above 30 requires the dynamic_recheck_policy of that line_kind_profile to slice the segment into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.",
         "Active outgoing lines of one place (§4.7.2) have distinct (line_name, line_discriminator, line_direction_id); the line of a multi-segment route for this purpose is its first segment."
       ]
     },
@@ -5977,10 +5977,15 @@
         {
           "name": "policy_kind",
           "required": true,
-          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points]"
+          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]"
         },
         {
           "name": "progress_slice_ppm",
+          "required": false,
+          "type": "positive_integer"
+        },
+        {
+          "name": "interval_minutes",
           "required": false,
           "type": "positive_integer"
         },
@@ -6002,9 +6007,10 @@
         }
       ],
       "invariants": [
-        "segment_once forbids slice and explicit points.",
-        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids explicit points.",
-        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice.",
+        "segment_once forbids slice, interval and explicit points.",
+        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.",
+        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.",
+        "fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.",
         "Slicing policy cannot change final duration under identical factor sequence."
       ]
     },
@@ -6883,6 +6889,11 @@
           "type": "sha256_hex"
         },
         {
+          "name": "mirrored",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "status",
           "required": true,
           "type": "enum[active, paused_in_transit, stranded_in_transit, closed]"
@@ -6895,7 +6906,7 @@
         {
           "name": "closed_result",
           "required": false,
-          "type": "enum[completed, interrupted_to_anchor, superseded]"
+          "type": "enum[completed, interrupted_to_anchor, returned_to_departure, superseded]"
         },
         {
           "name": "state_version",
@@ -6916,14 +6927,17 @@
       "relations": [],
       "invariants": [
         "movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.",
-        "New state starts with progress zero, exact cumulative time zero and next_interval_ordinal zero.",
-        "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state.",
-        "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.",
+        "New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.",
+        "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).",
+        "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id; paused_in_transit additionally requires progress in 1..999999 (a pause at progress zero closes as interrupted_to_anchor, section 10.9).",
         "stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.",
         "closed requires closed_result and closed_change_set_id.",
-        "closed_result=completed requires progress one million and null stranded_reason_code.",
-        "closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.",
+        "closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.",
+        "closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.",
+        "closed_result=interrupted_to_anchor requires progress below one million (zero allowed: a pause or interruption before physical advancement closes at the departure endpoint, section 10.9) and null stranded_reason_code.",
         "closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.",
+        "segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.",
+        "mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.",
         "closed state cannot be reactivated.",
         "UNIQUE one active, paused or stranded state per execution step."
       ]
@@ -7203,9 +7217,14 @@
           "type": "factual_spatial_context_snapshot"
         },
         {
+          "name": "turn_back",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "result_kind",
           "required": true,
-          "type": "enum[progressed, segment_completed, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
+          "type": "enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
         },
         {
           "name": "result_code",
@@ -7232,7 +7251,12 @@
       "invariants": [
         "Exact elapsed and cumulative state reconcile without float conversion.",
         "direct_party_clock owns one clock update; shared_root_transport_clock owns none.",
-        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged."
+        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.",
+        "Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.",
+        "turn_back is true only for an interval started while the travel state status is paused_in_transit (also after a refused turn back, which leaves that status), requires a mirrored segment whose dynamic access passes at execution and a travel-state progress in 1..999999, and permits the outcomes progressed, paused_in_transit, interrupted_at_anchor and stranded, plus exactly one terminal outcome chosen by the direction after commit: travel-state mirrored true after commit permits returned_to_departure, mirrored false after commit (a repeated turn back from the mirrored side) permits segment_completed, and the other terminal outcome is invalid; blocked_before_progress with turn_back true is invalid. A refused turn back is an interval with result_kind blocked_before_progress, result_code turn_back_refused and turn_back false, and no change of travel state other than its audit fields.",
+        "Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.",
+        "segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit; no other outcome permits actual progress one million.",
+        "A retried request reuses idempotency_record_id and returns the committed result: the mirroring is part of that commit and never applies twice."
       ]
     },
     {
@@ -14517,11 +14541,6 @@
           "type": "stable_id"
         },
         {
-          "name": "max_segment_minutes",
-          "required": true,
-          "type": "positive_integer"
-        },
-        {
           "name": "status",
           "required": true,
           "type": "enum[approved, deprecated, retired]"
@@ -14540,7 +14559,7 @@
       ],
       "invariants": [
         "UNIQUE one approved profile per line_kind_id.",
-        "max_segment_minutes is at most 30 (the hard ceiling of section 4.5.2); a profile may set less, never more.",
+        "A segment of this line kind longer than 30 minutes is sliced by dynamic_recheck_policy_ref into parts of at most 30 minutes (section 4.5.2); the 30-minute slice step is one rule of the world, not a profile field.",
         "route_kind_id is the route kind of every world route whose first segment has this line kind; it is the only line-kind to route-kind mapping.",
         "cost is time only; there is no action-cost profile for a line (§1.4).",
         "A water line kind (line.river_channel, line.side_channel, line.open_water, line.ford, line.ferry) has at least one alternative method that needs no transport; a physical boundary, not a missing transport, is the only reason a water line is closed.",
@@ -14669,7 +14688,7 @@
         },
         {
           "name": "availability_condition_set_ref",
-          "required": true,
+          "required": false,
           "type": "versioned_ref"
         },
         {
@@ -14709,6 +14728,8 @@
         "Reverse binding is distinct, points back reciprocally, has swapped from/to G5, belongs to the same source pair and the same line_kind_profile kind, has equal line_name and inverse line_direction_id; its line_discriminator, base_minutes, risk and availability may differ.",
         "Paired-slot rule: reverse.from_scene_endpoint_slot_key equals this to_scene_endpoint_slot_key and reverse.to_scene_endpoint_slot_key equals this from_scene_endpoint_slot_key; the slots exist in the approved scene materialization profiles of their G5; slot-role compatibility is not required for this pair.",
         "line fields satisfy §4.7.2; the set of active outgoing lines of one canonical G5 has distinct (line_name, line_discriminator, line_direction_id).",
+        "availability_condition_set_ref is null for a connection without a portal or another availability record; a reader never infers availability from its absence, it applies the dynamic access of the profile (A.9).",
+        "base_minutes above 30 requires the dynamic_recheck_policy of the line_kind_profile to slice the connection into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.",
         "Binding version changes when a profile, line field, minutes, slot or reverse/pair link changes; minutes change only by a new version."
       ]
     }

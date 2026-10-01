@@ -1,0 +1,45 @@
+{
+  "schema": "rus.m2c_lines_v1_authoring_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "candidate_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1",
+  "import_manifest_ref": "data/world-catalogs/novgorod/m2c-lines-v1-import-manifest.json",
+  "branch": "fleet/rt-lines",
+  "reviewed_commit": "bc621a3d",
+  "reviewed_import_manifest_sha256": "df4233fb3fd567ba31f8b3b7c9b42b5e806fa41fda4463e289d4464fc4041e6a",
+  "line_kind_spec_sha256": "33a1d921e071389225fd0a05e1a143052992ef8c43f62c2ee5b21e91810dccfb",
+  "import_manifest_sha256": "169c6f14fff46e39e1c88535c68b5adc4406b6db76528ffd67381632eb5aba65",
+  "approved_by": "claude-opus-5-5 (Opus, independent data approver, pass a2; author: Claude Sonnet 5.5, fleet task rt-lines)",
+  "approved_on": "2026-10-01",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "8 line_kind_profile, their alternative methods and cost.line_* profiles, and binding@3 of the 454 directed local G5-G5 lines (227 pairs) of start cell gn_nov_g1_xp017_yp026: kinds line.*, methods, minutes from place-geo proposed_minutes (D56), names from the approved line-names catalog (ffea92ed...), slots, risk/capacity refs, availability null on non-portal bindings (D3).",
+  "checks": [
+    "Approver: profiles 1:1 with the active world_route_segment profiles (env, orientation, recheck, route kind, risk); D5 method table; swim alternatives required by the F invariant; cost.line_* one baseline option each; 454 bindings sampled for risk/capacity/availability/slots; 14 long lines (31-48 min) sliced at <=30 min by wetland_15m/land_30m; minutes recomputed by hand for flooded_interior_basin_cycle 48, forest_stream_route_cross 40, vikhtuy_resource_edge_1 32, central_current_split_cycle 22/13.",
+    "build-line-wave --check ok; build-line-wave.test 20/20 at the reviewed commit, 22/22 after the continuation."
+  ],
+  "mechanical_continuation": {
+    "required": "M1: dependency roles of line_kind_profile edges from controlled_dependency_role v5 (transition_environment_profile, movement_method_cost_profile, dynamic_recheck_policy; route_kind kept, limit 9) plus a validator check; M2: source record checked_by and limitations; stale D3 open item removed from the generator report.",
+    "applied_commit": "3ac5b1d1",
+    "accepted_by": "claude-opus-5-5 (lead reviewer; deterministic acceptance script accept-m12.py: only dependency_edges roles of 24 profile edges and 2 source-record fields changed; 454 bindings, minutes, names, slots, profile fields and authoring_versions byte-identical; PROBLEMS 0)",
+    "accepted_on": "2026-10-01",
+    "orientation_edge": "Not added: rejected by the 19.sql guard; the approver accepted its absence as limit 14 without a new pass.",
+    "pg": "m2c-lines-import-postgres 1/1, bootstrap-live-world-v17-postgres 1/1, fresh-schema gate 2/2 (executor, pg-slot)"
+  },
+  "limits": [
+    "1. 454 значения минут — авторская игровая калибровка, а не измерения 1230 года. Продолжают действовать лимиты 1–3 и 6–12 аттестации place-geo. Утверждение покрывает только локальные линии G5–G5; мировые маршруты cross_g4_* (волна 2) — нет. Смена минут — только новой версией binding и новым проходом Opus.",
+    "2. Коэффициент плавания 4/1 и классы риска — редакционные. Множитель не учитывает направление течения: против течения занижает время, по течению завышает. Менять — только новой версией профиля.",
+    "3. Ссылки hazard.swim_*@1 и risk.*@1 не имеют записей (LW-097). Рантайм б1 не должен считать неразрешённый hazard отсутствием опасности: интервал вплавь по §11.7 даёт data gap (strand или pause).",
+    "4. Зимы в данных нет: водным видам нечем пройти по льду. Перед игрой в ледовый сезон нужен отдельный CR (зимний вариант или availability), иначе водные линии зимой фактически закрыты.",
+    "5. env.open_water@1 — заглушка, тождественная env.main_river_channel (у всех активных env поля класса и правил тоже null — старый разрыв с Приложением B). Это не отдельная модель открытой воды.",
+    "6. Риск yard (risk.land_path@1) и route.local — заглушки для 4 линий vikhtuy_locality_3/4. Когда появятся записи риска, рассмотреть risk.local_conditional@1.",
+    "7. large_island_head_1/_2/_cycle (river_channel) и _5 (side_channel) лежат на одном стоячем рукаве. Исправлять должен владелец line-names; рекомендуется side_channel для всех четырёх, затем binding@4.",
+    "8. Сосуществуют два пространства id способов движения: movement_method.* в новых строках и movement.* в активных @1 и world_route_segment (LW-095). Таблица D5 живёт только в line-kind-spec.json; выровнять в волне 2 или в cutover.",
+    "9. Роли route_kind нет в реестре v5 (у активных world_route её тоже нет). Принято по прецеденту; занести в следующую версию реестра или в LW.",
+    "10. Это утверждение не разрешает импорт и активацию. Import-аттестация — отдельная. Импорт — только в б1 вместе с читателем: код сейчас предполагает from=departure, а читатель берёт наивысшую версию.",
+    "11. Длинные линии держатся на recheck.wetland_15m и recheck.land_30m @1. Тест валидатора на срез ≤ 30 минут не снимать.",
+    "12. Различие passage type из @2 (local_passage, cross_link, alternate и их risk.local_*) в @3 не переносится. Принято.",
+    "13. improvised_float из v5 не заведён. Рекомендуется в будущей версии профиля (дельта с обилием плавника); сейчас не требуется.",
+    "14. У line_kind_profile нет ребра зависимости movement_orientation_profile: существующие профили ориентации не имеют строк authoring_versions в ревизии волны, и охрана 19.sql отклоняет такое ребро. Ссылку на ориентацию держат явные topological_orientation_profile_id/version с FK (30.sql:25); по инварианту authoring_dependency_edge ребро для явной версионной ссылки не обязательно. Рёбра env, cost и recheck остаются избыточными, но допустимыми. Если читателю б1 или волне 2 понадобятся рёбра ориентации, их добавляют вместе со строками authoring_versions для профилей ориентации новой версией волны и новым проходом Opus, не механически."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false
+}

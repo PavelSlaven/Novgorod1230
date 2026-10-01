@@ -159,9 +159,9 @@ test('v17 bootstrap owner migration rejects another schema fingerprint', () => {
   }), { code: 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN' });
 });
 
-test('v17 bootstrap forward migrations pin chain matches the 29-part world schema checkpoint (rt-names)', () => {
+test('v17 bootstrap forward migrations pin chain matches the 30-part world schema checkpoint (rt-lines 30.sql)', () => {
   const bootstrapFailureWorldPre =
-    '31bcd49e1a0d196d7283f1c25b0df404f7105cbc82ae86efae4ae9f30c465a41';
+    '34fb081a453053175c95900ac6cdb239f74bfcaf35184d5614eda93ea8638849';
   assert.equal(
     WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
     bootstrapFailureWorldPre

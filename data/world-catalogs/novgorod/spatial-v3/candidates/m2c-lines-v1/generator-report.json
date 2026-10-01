@@ -1,0 +1,261 @@
+{
+  "schema": "rus.m2c_lines_v1_generator_report.v1",
+  "status": "candidate_unapproved",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "parameters": {
+    "slice_step_minutes": 30
+  },
+  "counts": {
+    "base_bindings": 454,
+    "pairs": 227,
+    "bindings_at_v3": 454,
+    "long_lines": 14,
+    "line_kinds_with_profile": 8,
+    "line_kinds_used": 8,
+    "alternative_methods": 3,
+    "authoring_versions": 471,
+    "dependency_edges": 1394
+  },
+  "long_lines": [
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_3",
+      "line_kind": "wetland_path",
+      "line_name": "по мокрой траве",
+      "minutes": 31,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.wetland_15m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_3",
+      "line_kind": "wetland_path",
+      "line_name": "по мокрой траве",
+      "minutes": 31,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.wetland_15m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
+      "line_kind": "wetland_path",
+      "line_name": "через мокрую траву и осоку",
+      "minutes": 48,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.wetland_15m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 4
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_flooded_interior_basin_cycle",
+      "line_kind": "wetland_path",
+      "line_name": "через мокрую траву и осоку",
+      "minutes": 48,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.wetland_15m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 4
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
+      "line_kind": "wetland_path",
+      "line_name": "по листве у воды",
+      "minutes": 40,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.wetland_15m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_forest_stream_route_cross",
+      "line_kind": "wetland_path",
+      "line_name": "по листве у воды",
+      "minutes": 40,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.wetland_15m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 15,
+      "recheck_progress_slice_ppm": null,
+      "slices": 3
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "line_kind": "forest_track",
+      "line_name": "тропой между корнями по мягкой земле",
+      "minutes": 32,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "line_kind": "forest_track",
+      "line_name": "тропой между корнями по мягкой земле",
+      "minutes": 32,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "line_kind": "forest_track",
+      "line_name": "лесным ходом по сырому краю",
+      "minutes": 35,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "line_kind": "forest_track",
+      "line_name": "лесным ходом по сырому краю",
+      "minutes": 35,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
+      "line_kind": "forest_track",
+      "line_name": "по мягкой земле под кронами",
+      "minutes": 34,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_1",
+      "line_kind": "forest_track",
+      "line_name": "по мягкой земле под кронами",
+      "minutes": 34,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
+      "line_kind": "forest_track",
+      "line_name": "тропой по влажному краю",
+      "minutes": 37,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    },
+    {
+      "id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_wet_conifer_tract_cycle",
+      "line_kind": "forest_track",
+      "line_name": "тропой по влажному краю",
+      "minutes": 37,
+      "slice_step_minutes": 30,
+      "recheck_policy_id": "recheck.land_30m",
+      "recheck_policy_kind": "fixed_time_interval",
+      "recheck_interval_minutes": 30,
+      "recheck_progress_slice_ppm": null,
+      "slices": 2
+    }
+  ],
+  "connectivity": {
+    "components_before": 32,
+    "components_after": 32,
+    "places_without_local_line": []
+  },
+  "matches": {
+    "minutes_from_place_geo": 454,
+    "slot_changes": {
+      "forward_kept": 227,
+      "reverse_swapped": 227
+    },
+    "line_kind_equals_place_geo_movement_class": 227,
+    "line_name_unique_per_place": "checked by checkLineWaveData; 0 digits, 0 ordinal words, 0 duplicate (name, discriminator, direction) and 0 identical content-word sets per place",
+    "similar_but_distinct_names_at_one_place": 16
+  },
+  "differences": {
+    "line_kind_differs_from_place_geo_movement_class": 0,
+    "forward_slots_departure_to_arrival_in_source": "all 454 (both directions): the source violates the paired-slot rule (F :7371); binding@3 swaps the reverse side",
+    "line_names_minutes_vs_place_geo": {
+      "lines": 227,
+      "differ_at_least_2x": 134,
+      "differ_10_minutes_or_more": 39,
+      "note": "informational: D1 takes the place-geo minutes; line-names minutes are not approved (their attestation, D56)"
+    }
+  },
+  "unresolved_refs": [],
+  "editorial_values_for_opus": [
+    {
+      "kind": "river_channel",
+      "method": "movement_method.swim",
+      "factor": "4/1",
+      "risk_class": "high",
+      "hazard_rule_ref": "hazard.swim_river_channel@1",
+      "basis": "editorial: no source in the repository for swimming pace; rowing 4.0 km/h (travel-calibration.json) against an assumed swim of about 1 km/h"
+    },
+    {
+      "kind": "side_channel",
+      "method": "movement_method.swim",
+      "factor": "4/1",
+      "risk_class": "high",
+      "hazard_rule_ref": "hazard.swim_side_channel@1",
+      "basis": "editorial: same assumption as river_channel"
+    },
+    {
+      "kind": "open_water",
+      "method": "movement_method.swim",
+      "factor": "4/1",
+      "risk_class": "extreme",
+      "hazard_rule_ref": "hazard.swim_open_water@1",
+      "basis": "editorial: same assumption as river_channel; risk class extreme for open water"
+    }
+  ],
+  "assumptions_for_opus": [
+    "yard: risk and route kind of a yard line follow the land path and local route kinds; no yard-specific record exists",
+    "open_water: no open-water environment, orientation or route kind exists: env.open_water is authored here as a copy of env.main_river_channel; orientation, risk and route kind follow the river channel"
+  ],
+  "open_items": [
+    "D56: the ceiling of 30 minutes and the profile field max_segment_minutes are removed from the norm by CORPUS_EDIT before the DDL (PLAN-OK-rt-lines-a3); slicing is the recheck policy of the kind, the slice step (30) is one rule of the world",
+    "D5: method ids are registry v5 values; movement_method_map in line-kind-spec.json is the table movement.* -> movement_method.* for Opus",
+    "D6: hazard_rule_ref values are references without records; the external pin needs a registry version (owner question, no record exists)",
+    "rows carry status approved (the importer requires it); approval is the a2 data attestation, none exists yet",
+    "new tables and columns (line_kind_profile, alternatives, binding line fields) do not exist in world_base DDL yet (phase a3); no import manifest is produced in a1",
+    "risk_profile_ref: refs of the route-segment profiles by kind; yard and open_water are assumptions",
+    "line-names attestation limits: the loader needs the near-duplicate check (done in checkLineWaveData); line_kind of large_island_head_1/_2/_cycle (river_channel) vs _5 (side_channel) on one still body is inconsistent (place-geo limit 7); names depend on the place-geo geometry of 86977f99 (owner_findings.spatial)"
+  ],
+  "inputs": {
+    "base_bindings": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
+    "place_geo_derived_report": "cb9c87db6969ffa376893be2cb28ff748e4a0848605991ac0c2b987aeb9bd82c",
+    "line_names_candidate": "ffea92ed07f96b6a027d0bbd947318a9eb796bf7d93493bdff88fa8acd7e180f",
+    "line_kind_spec": "33a1d921e071389225fd0a05e1a143052992ef8c43f62c2ee5b21e91810dccfb"
+  }
+}

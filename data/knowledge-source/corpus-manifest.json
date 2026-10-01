@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "ff8365c0da9727d6b4ea9237e68d33cb6436249a39accfce842cfaca0036b9ca",
-      "bytes": 31303,
+      "sha256": "b4cf27c8812d5a54f58436c777ec921063ce8d7c516134ed35a4b80609481e6a",
+      "bytes": 31262,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -343,8 +343,8 @@
       "document_id": "spatial-architecture-standard-g0-g6",
       "canonical_path": "corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
       "file_name": "spatial_architecture_standard_g0_g6.md",
-      "sha256": "936ab8d761bc71bbc424d0a486f717b9f472a7ef36135e84ae36d0a3a4c11c98",
-      "bytes": 386747,
+      "sha256": "ed9ae9dc4b5618fc889af96ec0ccebc0bbf6b1232ae2dcd8009aca6b096090aa",
+      "bytes": 411304,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -393,8 +393,8 @@
       "document_id": "temporal-world-and-interruptible-activities",
       "canonical_path": "corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
       "file_name": "temporal_world_and_interruptible_activities.md",
-      "sha256": "e5b081a508f12495e4a481e9d4d6c966effa57f15097d4f80276820db333c1dd",
-      "bytes": 146858,
+      "sha256": "b085c7c8f0bf7c07f8fa7241d92fe2b56d164bd960d5c0cbfa42d922c7a4ad6f",
+      "bytes": 147483,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

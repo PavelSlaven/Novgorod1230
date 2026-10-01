@@ -181,9 +181,19 @@
       "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/selector-reconciliation.csv": "90bd8c33a2d97e2afc1c3d288b606f9720aabfe674743e76141c66ed870b583b",
       "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/typed-gaps.csv": "7e802b41b78c394de82e61bdb1d942ef9ed9dc5c62b826ae9a027fb4ba87b48f",
       "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/validate.mjs": "9d9330a7b71ba52cf55a99d4891044392e192d5e87c76bb09a8d4962a4a02fb0",
-      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/extract-research-evidence.mjs": "59b858ab333ff73c1d36773a1ce208b8f4fe8a83337f1cef25ca399a0becea15",
-      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/research-evidence.json": "6f1e3f406e0f9611dff274a51b9a5646f91fbaaf36df7e9f1a3264805de5cf98",
-      "data/world-catalogs/novgorod/game-base-v1/scripts/start-territory-types.test.mjs": "d019b776ba3a7e5603f2f013f129617e74f415b42f17dc5accb4a467a7327fb6"
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/extract-research-evidence.mjs": "290334673407a25d9017b064c0d093c5a0f75f1c2cd88063ce56d89cf3359265",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/research-evidence.json": "d2e59352e7cf5d6bec97c49b12c401b6e1ccb14a35c0879804f63f74dc240c8d",
+      "data/world-catalogs/novgorod/game-base-v1/scripts/start-territory-types.test.mjs": "0d1f024f8a1beae3e2d12496e950b9dd0b63ee55fcae8e91909281f1b9fb2983"
+    }
+  },
+  "post_dot_mechanical_update": {
+    "on": "2026-10-01",
+    "by": "lead reviewer (Claude Opus 5.5), deterministic check",
+    "reason": "dot start-types-1 P2: extractor --check now binds every evidence row to its source finding/check; each evidence row gains a mechanical source_sha256 field. No value of research-evidence.json changed (verified by script after removing source_sha256); data CSVs and README unchanged.",
+    "final_sha256": {
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/research-evidence.json": "d2e59352e7cf5d6bec97c49b12c401b6e1ccb14a35c0879804f63f74dc240c8d",
+      "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/extract-research-evidence.mjs": "290334673407a25d9017b064c0d093c5a0f75f1c2cd88063ce56d89cf3359265",
+      "data/world-catalogs/novgorod/game-base-v1/scripts/start-territory-types.test.mjs": "0d1f024f8a1beae3e2d12496e950b9dd0b63ee55fcae8e91909281f1b9fb2983"
     }
   }
 }

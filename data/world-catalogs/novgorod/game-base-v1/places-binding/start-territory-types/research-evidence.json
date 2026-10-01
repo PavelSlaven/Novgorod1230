@@ -11,6 +11,7 @@
       ],
       "locator": "Введение; северная граница ареала",
       "note": "Цитата подтверждена; исследователь отдельно сверил, что в этом источнике восточная граница указана как Сибирь, а не Урал.",
+      "source_sha256": "7090c21ac23fcbcff95d4a111c700346b39c54de82466be6659a6e7d50f9d9e1",
       "short_quote": "достигая 60° с. ш."
     },
     {
@@ -23,6 +24,7 @@
       ],
       "locator": "Введение",
       "note": "Страница проверена; найденный текст подтверждает естественную границу ареала около 60° с. ш. и до Урала.",
+      "source_sha256": "4fd9637cec192db34c647ae8e6723af269711f91b0037c5f0cc36fe8abac8912",
       "short_quote": "Естественный ареал обитания медоносных пчел в России достигает 60º с.ш., вплоть до Урала"
     },
     {
@@ -35,6 +37,7 @@
       ],
       "locator": "Section «Tribute collection»",
       "note": "Страница содержит это обобщение о северо-восточных зависимостях, но оно не снабжено источником и не локализует пчеловодство на Нижней Двине.",
+      "source_sha256": "0847899a9a6f4d3bb523cab5991c158a1883da6f2ad48da89e8b369d5d25132a",
       "short_quote": "hunting, fishing and bee-keeping were also important economic activities"
     },
     {
@@ -47,6 +50,7 @@
       ],
       "locator": "Абзац о раскопках Десятинного раскопа, вторая половина XI века",
       "note": "Quote is present in the archaeolog.ru page, in the paragraph about the 2nd half of the 11th c.",
+      "source_sha256": "42fecd5c31cb94128e0b0028f48fbc4c8e9489c8481c3df9abd57eb6d0d10139",
       "short_quote": "Обнаружено несколько десятков яблоневых пней."
     },
     {
@@ -59,6 +63,7 @@
       ],
       "locator": "Абзац о запустении участка в начале XIII века",
       "note": "Both quotes are present and the paragraph is about early 13th c., Novgorod.",
+      "source_sha256": "e4db039bf128adbdbac0c7719d139e86a8c5bd37f3099b05c65e2f03eb6ed3f9",
       "short_quote": "а свободную территорию заняли огороды"
     },
     {
@@ -71,6 +76,7 @@
       ],
       "locator": "Раздел о служении в Холмогорах; вид посадок не указан",
       "note": "Quote is present; the article gives his tenure as 1682-1702 and does not say what was planted. The 1690 seedling order is absent from the page, so it is rightly treated as unverified.",
+      "source_sha256": "bfd4f80d19a75967b6e700006dd91a349bc4fa08a0eb76aa68a5f01a50ad8bd4",
       "short_quote": "под руководством владыки в Холмогорах были построены сад и ветряная мельница"
     },
     {
@@ -83,6 +89,7 @@
       ],
       "locator": "Раздел «Райский сад»; позднее журналистское свидетельство",
       "note": "The article has the quote, Buganov, apples, heated greenhouses, the 1822 botanical garden and poor barley. It is journalistic, as stated.",
+      "source_sha256": "99292e11b7a74dac921686c7479c987f3934c086cd9c010aa796fff677e62eef",
       "short_quote": "Соловецкие огородники выращивали на 65 градусах северной широты практически все"
     },
     {
@@ -94,7 +101,8 @@
         "https://pogodaiklimat.ru/climate/22550.htm"
       ],
       "locator": "Таблица температуры; период норм на странице не указан",
-      "note": "Values match: July 16.5, January -11.6, annual 1.9, precipitation 633 mm, minimum -45.2 (1885), June -3.9 (1930), August -4.1 (1966). The normals period is still not stated."
+      "note": "Values match: July 16.5, January -11.6, annual 1.9, precipitation 633 mm, minimum -45.2 (1885), June -3.9 (1930), August -4.1 (1966). The normals period is still not stated.",
+      "source_sha256": "03ab43026586a7c20fa6efecb35193fae56745221bc6ac113f05038dd0e364b3"
     },
     {
       "evidence_id": "quarry-01",
@@ -106,6 +114,7 @@
       ],
       "locator": "Раздел «Общий рельеф», сводка скважин нижней Двины",
       "note": "evgengusev.narod.ru/moreyu/lavrova-1937.html; quote and depths 55, 76.5, 77.15, 93.15 m match. Mirror has no page numbers.",
+      "source_sha256": "b4c5f0c00cbdf47871d0b72274046718870374667d8195cb513f80eb34c7977b",
       "short_quote": "уходят под уровень воды"
     },
     {
@@ -118,6 +127,7 @@
       ],
       "locator": "Раздел «Дочетвертичные отложения»",
       "note": "Quote found. The Khavrogory Permian claim was not checked.",
+      "source_sha256": "0856221a5ae33e4b2fbd11e220ab1b4b667cdfcb23d5bdfae3da2ccca652c986",
       "short_quote": "ниже с. Усть-Пинеги"
     },
     {
@@ -131,6 +141,7 @@
       ],
       "locator": "Овсянников, описание Орлецкой крепости; статья «Орлец (город)», раздел «Городище»",
       "note": "Проверяющий сверил датировку 1342 года и строительство из местного известняка; это не дата начала добычи. Цитата Овсянникова подтверждена.",
+      "source_sha256": "f2a84b8b690908bd39508e9309707c6b82e7fc9db610bf66b9671d91d84b8d85",
       "short_quote": "входит в десятку древнейших русских каменных крепостей"
     },
     {
@@ -143,6 +154,7 @@
       ],
       "locator": "Разделы о нижней и верхней морене",
       "note": "Quote found, with the added note that boulders are often large in the west. Gneiss/granite/diabase and the local limestone-and-flint boulders of the lower moraine were not checked.",
+      "source_sha256": "b1c77963c9a6cd82d84a30afd2e7493d3746fe5e91f04e2f4b8fe702b0f6bf63",
       "short_quote": "эрратических валунов кристаллических пород"
     }
   ]

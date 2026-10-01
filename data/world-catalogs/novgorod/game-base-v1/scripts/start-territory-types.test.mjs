@@ -1,6 +1,42 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { loadPackage, validateStartTerritoryTypes } from '../places-binding/start-territory-types/validate.mjs';
+import { assertEvidenceSourceMatches, buildResearchEvidence } from '../places-binding/start-territory-types/extract-research-evidence.mjs';
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const extractorFixture = JSON.parse(fs.readFileSync(path.join(HERE, 'start-territory-types-extractor.fixture.json'), 'utf8'));
+const extractorSpec = [{
+  topic: 'synthetic',
+  items: [
+    { findingLocator: 'finding-alpha', checkClaim: 'Check alpha', evidenceId: 'synthetic-alpha', source: ['https://example.test/alpha'], locator: 'alpha' },
+    { findingLocator: 'finding-beta', checkClaim: 'Check beta', evidenceId: 'synthetic-beta', source: ['https://example.test/beta'], locator: 'beta' },
+  ],
+}];
+
+test('research extractor binds evidence to claims and verifier notes by stable IDs', () => {
+  const evidence = buildResearchEvidence(extractorFixture, extractorSpec);
+  assertEvidenceSourceMatches(extractorFixture, evidence, extractorSpec);
+
+  const shuffledRecords = structuredClone(extractorFixture);
+  shuffledRecords.topics[0].research.findings.reverse();
+  shuffledRecords.topics[0].verification.checks.reverse();
+  assert.deepEqual(buildResearchEvidence(shuffledRecords, extractorSpec), evidence);
+
+  const shuffledEvidence = structuredClone(evidence);
+  shuffledEvidence.entries.reverse();
+  assert.doesNotThrow(() => assertEvidenceSourceMatches(extractorFixture, shuffledEvidence, extractorSpec));
+
+  const changedClaim = structuredClone(extractorFixture);
+  changedClaim.topics[0].research.findings[0].claim = 'Changed claim';
+  assert.throws(() => assertEvidenceSourceMatches(changedClaim, evidence, extractorSpec), /source drift requires review/u);
+
+  const changedNote = structuredClone(extractorFixture);
+  changedNote.topics[0].verification.checks[0].note = 'Changed verifier note';
+  assert.throws(() => assertEvidenceSourceMatches(changedNote, evidence, extractorSpec), /source drift requires review/u);
+});
 
 test('candidate start-territory type matrix covers catalog and exact G4/G5/PF references', () => {
   const result = validateStartTerritoryTypes();

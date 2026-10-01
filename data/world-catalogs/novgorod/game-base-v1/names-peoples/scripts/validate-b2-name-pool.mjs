@@ -131,7 +131,8 @@ export function validate({ pools, entries, candidateEntries = [], sourceRows, de
   const includedLines = new Set(includedDerivations.map((row) => Number(row.evidence_line)));
   if (includedLines.size !== evidenceLines.size || [...includedLines].some((line) => !evidenceLines.has(line)) || [...evidenceLines].some((line) => !includedLines.has(line))) errors.push("snapshot does not exactly match included evidence lines");
   const ids = new Set(), keys = new Set(), entriesByKey = new Map();
-  for (const row of entries) {
+  const operationalEntryIds = new Set(entries.map((row) => row.id));
+  for (const row of [...entries, ...candidateEntries]) {
     if (!row.id || ids.has(row.id)) errors.push(`duplicate or empty id: ${row.id}`);
     ids.add(row.id);
     if (!poolIds.has(row.name_pool_id)) errors.push(`${row.id}: unknown name_pool_id ${row.name_pool_id}`);
@@ -166,7 +167,7 @@ export function validate({ pools, entries, candidateEntries = [], sourceRows, de
     const key = selectionKey(row);
     if (keys.has(key)) errors.push(`${row.id}: duplicate selection key ${key}`);
     keys.add(key);
-    entriesByKey.set(key, row);
+    if (operationalEntryIds.has(row.id)) entriesByKey.set(key, row);
   }
 
   for (const sourceRow of sourceRows) {
@@ -250,7 +251,7 @@ export function validate({ pools, entries, candidateEntries = [], sourceRows, de
     if (!row.target_refs?.length || !row.archive_refs?.length) errors.push(`${row.variant_form}: incomplete D46 variant`);
     for (const target of row.target_refs ?? []) {
       const [targetPath, targetId] = target.split("#");
-      if (!targetId || (targetPath.endsWith("personal_names.csv") ? !sourceIds.has(targetId) : targetPath.endsWith("name_pool_entries.csv") ? !ids.has(targetId) : targetPath.endsWith("d46-name-additions.json") ? !d46Ids.has(targetId.replace(/^name-entry=/, "")) : true)) errors.push(`${row.variant_form}: unresolved D46 variant target ${target}`);
+      if (!targetId || (targetPath.endsWith("personal_names.csv") ? !sourceIds.has(targetId) : targetPath.endsWith("name_pool_entries.csv") ? !operationalEntryIds.has(targetId) : targetPath.endsWith("d46-name-additions.json") ? !d46Ids.has(targetId.replace(/^name-entry=/, "")) : true)) errors.push(`${row.variant_form}: unresolved D46 variant target ${target}`);
     }
   }
   const evidenceByLine = new Map(evidenceRows.map((row) => [Number(row.source_line.slice(1)), row]));
@@ -433,6 +434,11 @@ function selfTest(base) {
     ["D61 candidate leaked into operational pool", (copy) => { copy.entries.push(copy.candidateEntries[0]); }, /D61 candidate rows must stay outside the operational pool/],
     ["D61 candidate omitted from candidate CSV", (copy) => { copy.candidateEntries.pop(); }, /D61 candidate rows must stay outside the operational pool/],
     ["D61 candidate duplicate", (copy) => { copy.candidateEntries.push({ ...copy.candidateEntries[0] }); }, /duplicate D61 candidate entry id/],
+    ["D61 candidate unknown pool", (copy) => { copy.candidateEntries[0].name_pool_id = "missing_pool"; }, /unknown name_pool_id/],
+    ["D61 candidate wrong people pool", (copy) => { copy.candidateEntries[0].name_pool_id = "novgorod_1230_1250_personal_names_v1"; }, /name_pool_id does not match people_ref/],
+    ["D61 candidate weight is not equal", (copy) => { copy.candidateEntries[0].weight = "-1"; }, /weight must be equal to 1/],
+    ["D61 candidate unknown social position", (copy) => { copy.candidateEntries[0].social_position_archetype_id = "social_position_unknown"; }, /unknown social_position_archetype_id/],
+    ["D61 candidate unresolved provenance", (copy) => { copy.candidateEntries[0].provenance_ref = "garbage"; }, /unresolved provenance_ref/],
     ["names-gaps rationale missing", (copy) => { copy.namesGaps.gap_overrides[0].reason = ""; }, /invalid names-gaps rationale/],
     ["names-gaps applicability missing", (copy) => { copy.namesGaps.v17_applicability.pairs.pop(); }, /invalid names-gaps applicability matrix/],
     ["names-gaps calendar citation mismatch", (copy) => { copy.namesGaps.calendar_rule_review[0].source_ref = "book:641352 §1931"; }, /invalid names-gaps calendar-rule review/],

@@ -400,6 +400,54 @@
         "redistribution": "metadata_and_single_sentence_quotes"
       },
       "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-410676",
+      "title": "История артиллерии. Вооружение. Тактика. Крупнейшие сражения. Начало XIV века — начало XX",
+      "authors": [
+        "Хогг Оливер"
+      ],
+      "publication": "История артиллерии. Вооружение. Тактика. Крупнейшие сражения. Начало XIV века — начало XX, 2014",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 410676, 2014; ссылка на строку: book:410676 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-188839",
+      "title": "Русское кузнечное ремесло в золотоордынский период и эпоху Московского государства",
+      "authors": [
+        "Завьялов Владимир Игоревич; Розанова Людмила Семёновна; Терехова Наталья Николаевна"
+      ],
+      "publication": "Русское кузнечное ремесло в золотоордынский период и эпоху Московского государства",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 188839; ссылка на строку: book:188839 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-254935",
+      "title": "Берестяная почта столетий",
+      "authors": [
+        "Янин Валентин Лаврентьевич"
+      ],
+      "publication": "Берестяная почта столетий, 1979",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 254935, 1979; ссылка на строку: book:254935 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
     }
   ]
 }

@@ -1,6 +1,11 @@
 import { deepFreeze } from '@rus/kernel';
 import { ADAPTATIONS, DIFFICULTIES, DURATION_CLASSES, EFFORTS, GOAL_RESULTS, OUTCOME_BANDS, RESOLUTIONS } from './constants.js';
 
+export const DIRECT_RESULT_KINDS = deepFreeze([
+  'player_safe_observation', 'player_safe_item_observation',
+  'player_safe_body_observation', 'no_state_gesture', 'player_utterance'
+]);
+
 const textSchema = { type: 'string', minLength: 1 };
 const refSchema = { type: 'string', minLength: 1 };
 const nullableRefSchema = { anyOf: [refSchema, { type: 'null' }] };
@@ -95,8 +100,7 @@ export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
     continuation: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/continuation' }] },
     clarification: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/clarification' }] },
     direct_result_kind: { anyOf: [{ type: 'null' }, {
-      enum: ['player_safe_observation', 'player_safe_item_observation',
-        'player_safe_body_observation', 'no_state_gesture', 'player_utterance'] }] },
+      enum: DIRECT_RESULT_KINDS }] },
     assessment: { $ref: '#/$defs/assessment' },
     utterance: strictObject([
       'speaker_ref', 'utterance_text', 'input_mode', 'delivery'

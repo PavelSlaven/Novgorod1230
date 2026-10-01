@@ -580,6 +580,17 @@
       "anchor": {"section": "Abstract", "record_id": "replica bronze-knife operations on bone and red-deer antler"},
       "note": "Independently approved experiment classification only; no general tool capability.",
       "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:a1-powder-confined-pressure",
+      "source_ref": "source:book-410676",
+      "anchor": {
+        "section": "Глава 2. Артиллерия в целом ¶83",
+        "record_id": "book:410676"
+      },
+      "note": "«Снаряд выталкивается силой расширяющегося газа, возникающего за счет сгорания взрывчатого материала.» Поддерживает только возможность расширяющихся газов при горении и силовое действие в замкнутом объёме; не рецепт, не доступность заряда, не знание или исход попытки.",
+      "review_status": "approved"
     }
   ],
   "concepts": [
@@ -3288,6 +3299,36 @@
       "evidence_refs": ["evidence:foundations-physical-material3-04"],
       "review_status": "approved",
       "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:a1-powder-charge-confined-force",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:combustion-fuel-oxidizer",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "burning_a_suitable_powder_charge_can_generate_expanding_gas_that_exerts_force_within_a_confined_space"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:a1-powder-confined-pressure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
     }
   ],
   "concept_localizations": [
@@ -5667,6 +5708,20 @@
       "claim_ref": "claim:foundations-physical-material3-04-osseous-shaping-operations",
       "locale": "en",
       "runtime_text": "In an experiment using a replica bronze knife, blank division, surface cutting/whittling, and finishing by scraping or drilling bone and red-deer antler were performed as distinct operations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:a1-powder-charge-confined-force",
+      "locale": "ru",
+      "runtime_text": "Сгорание подходящего порохового заряда может давать расширяющиеся газы, которые в замкнутом объёме создают давление и толкающую силу. Это не рецепт, не состав и не пропорции; отсюда не следует, что такой заряд есть в мире, что кто-то о нём знает или что попытка удастся.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:a1-powder-charge-confined-force",
+      "locale": "en",
+      "runtime_text": "Burning a suitable powder charge can generate expanding gas that builds pressure and pushing force within a confined space. This is no recipe, composition or ratio; it does not imply that such a charge exists in the world, that anyone knows of it, or that an attempt succeeds.",
       "search_aliases": []
     }
   ]

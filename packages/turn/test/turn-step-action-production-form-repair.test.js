@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { requestTurnStepPlanWithRepair } from '../src/turn-step-plan-repair.js';
+import { traceFor } from '../src/turn-step-loop-support.js';
 
 const actor = 'actor_mikula';
 const action = 'Оторву полосу от подола рубахи.';
@@ -54,6 +55,165 @@ test('the repair is one: a second invalid form is a typed failure', async () => 
     turnStepModel: async () => { calls += 1; return partial('none'); } }),
   (error) => error.code === 'TURN_STEP_PLAN_INVALID' && error.details.repair_attempted === true);
   assert.equal(calls, 2);
+});
+
+test('one A1 operation description error is narrowly canonicalized and traced', async () => {
+  const invalid = partial('regular');
+  invalid.operations[0].description = 'Делаю полосу ткани.';
+  const seen = [];
+  let calls = 0;
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async (_safe, repairContext) => {
+      calls += 1;
+      assert.equal(repairContext, undefined);
+      return invalid;
+    }, semanticPlanValidator: async ({ plan }) => {
+      seen.push(structuredClone(plan));
+      return true;
+    } });
+  assert.equal(result.repaired, false);
+  assert.equal(calls, 1);
+  assert.equal(seen.length, 1);
+  assert.deepEqual(seen[0], partial('regular'));
+  assert.equal(Object.hasOwn(result.plan.operations[0], 'description'), false);
+  assert.deepEqual(result.plan.operations[0].action_production,
+    invalid.operations[0].action_production);
+  assert.deepEqual(result.canonicalizations, [{
+    attempt: 1, path: '$.operations[0].description',
+    removed_fields: ['description']
+  }]);
+});
+
+test('A1 description is normalized before other structural errors are classified', async () => {
+  const invalid = partial('regular');
+  invalid.operations[0].description = 'Делаю полосу ткани.';
+  invalid.operations[0].unexpected = 'keep invalid';
+  let calls = 0;
+  await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async () => { calls += 1; return invalid; } }),
+  (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_suppressed === 'deterministic_structure_invalid'
+    && error.details.errors.some(({ path, code }) => code === 'additional_property'
+      && path.endsWith('.unexpected'))
+    && error.details.errors.every(({ path }) => !path.includes('description')));
+  assert.equal(calls, 1);
+});
+
+test('A1 description plus semantic error goes through the single common repair', async () => {
+  const invalid = partial('regular');
+  invalid.operations[0].description = 'Делаю полосу ткани.';
+  let calls = 0;
+  let audits = 0;
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async (_safe, repairContext) => {
+      calls += 1;
+      if (repairContext == null) return invalid;
+      assert.deepEqual(repairContext.structural_errors.map(({ code }) => code),
+        ['material_transformation_grounding']);
+      return partial('regular');
+    }, semanticPlanValidator: async ({ attempt, plan }) => {
+      audits += 1;
+      assert.equal(Object.hasOwn(plan.operations[0], 'description'), false);
+      if (attempt === 1) {
+        const error = new Error('semantic mismatch');
+        error.code = 'TURN_STEP_PLAN_INVALID';
+        error.details = { errors: [{ path: '$.operations[0]',
+          code: 'material_transformation_grounding',
+          message: 'material choice is not grounded' }] };
+        throw error;
+      }
+      return true;
+    } });
+  assert.equal(calls, 2);
+  assert.equal(audits, 2);
+  assert.equal(result.repaired, true);
+  assert.equal(result.canonicalizations, undefined);
+});
+
+test('A1 description in accepted repair is traced only for attempt 2', async () => {
+  const initial = partial('regular');
+  initial.operations[0].description = 'Старое описание.';
+  const repaired = partial('regular');
+  repaired.operations[0].description = 'Новое описание.';
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async (_safe, repairContext) => repairContext == null
+      ? initial : repaired,
+    semanticPlanValidator: async ({ attempt }) => {
+      if (attempt === 1) {
+        const error = new Error('semantic mismatch');
+        error.code = 'TURN_STEP_PLAN_INVALID';
+        error.details = { errors: [{ path: '$.operations[0]',
+          code: 'material_transformation_grounding',
+          message: 'material choice is not grounded' }] };
+        throw error;
+      }
+      return true;
+    } });
+  assert.deepEqual(result.canonicalizations, [{ attempt: 2,
+    path: '$.operations[0].description', removed_fields: ['description'] }]);
+});
+
+test('an A1 description diagnostic from the failed plan does not attach to a different repaired no-op', async () => {
+  const initial = partial('regular');
+  initial.operations[0].description = 'Делаю полосу ткани.';
+  const repeatedNoop = {
+    schema: 'turn_step_plan_v1', request_id: 'request',
+    committed_state_version: 1, working_revision: 0, step_index: 1,
+    interpretation: { player_goal: action, grounded_attempt: action,
+      adaptation: 'reality_limited' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_safe_observation',
+    reason_code: 'direct_step', reason: 'Попытка результата не дала.'
+  };
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async (_safe, repairContext) => repairContext == null
+      ? initial : repeatedNoop,
+    semanticPlanValidator: async ({ attempt, plan }) => {
+      if (attempt === 1) {
+        assert.equal(Object.hasOwn(plan.operations[0], 'description'), false);
+        const error = new Error('semantic mismatch');
+        error.code = 'TURN_STEP_PLAN_INVALID';
+        error.details = { errors: [{ path: '$.operations[0]',
+          code: 'material_transformation_grounding',
+          message: 'material choice is not grounded' }] };
+        throw error;
+      }
+      return true;
+    } });
+  assert.equal(result.repaired, true);
+  assert.equal(result.plan.goal_result, 'not_achieved');
+  assert.deepEqual(result.canonicalizations, [
+    { attempt: 2, path: '$.goal_result', old_value: 'achieved',
+      new_value: 'not_achieved' },
+    { attempt: 2, path: '$.direct_result_kind',
+      old_value: 'player_safe_observation', new_value: null }
+  ]);
+});
+
+test('transient request_item_use description remains a valid field', async () => {
+  const plan = partial('regular');
+  plan.operations = [{ op: 'request_item_use', actor_ref: actor,
+    item_ref: 'shirt', use_kind: 'other', target_refs: [],
+    description: 'Ощупываю ткань.' }];
+  let calls = 0;
+  const result = await requestTurnStepPlanWithRepair({ request,
+    turnStepModel: async () => { calls += 1; return plan; } });
+  assert.equal(calls, 1);
+  assert.equal(result.canonicalizations, undefined);
+  assert.equal(result.plan.operations[0].description, 'Ощупываю ткань.');
+});
+
+test('turn-step trace carries canonicalization path and removed field', () => {
+  const plan = partial('regular');
+  const trace = traceFor({ plan, request, repaired: false, applied: false,
+    canonicalizations: [{ attempt: 1, path: '$.operations[0].description',
+      removed_fields: ['description'] }] });
+  assert.deepEqual(trace.canonicalizations, [{
+    attempt: 1, path: '$.operations[0].description',
+    removed_fields: ['description']
+  }]);
 });
 
 test('other lone enum errors stay deterministic failures without repair', async () => {

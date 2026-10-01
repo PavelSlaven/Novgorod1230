@@ -1,0 +1,125 @@
+{
+  "schema": "rus.m2c_lines_v1_v17_import_request.v1",
+  "request_id": "novgorod_m2c_lines_v1_v17_import_001",
+  "status": "pending_independent_review",
+  "operation": "insert_only",
+  "transaction": "single_world_base_transaction",
+  "target": {
+    "database": "novgorod_world_v17",
+    "schema": "world_base",
+    "created_by": "scripts/bootstrap-live-world-v17.mjs (fresh pair only)"
+  },
+  "approved_data": {
+    "manifest_path": "data/world-catalogs/novgorod/m2c-lines-v1-import-manifest.json",
+    "manifest_sha256": "169c6f14fff46e39e1c88535c68b5adc4406b6db76528ffd67381632eb5aba65",
+    "manifest_status_in_repository": "draft",
+    "authoring_approval_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/approval-attestation.json",
+    "authoring_approval_sha256": "2339224ba7b912e12055b3122db2d31a0a237b86458435f3ca1443caa540e7a8",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "datasets": [
+      {
+        "table": "source_records",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/source_records.json",
+        "sha256": "4e70e1d8c0d4ee436c45c7fa2f4e6213434d933578d4296b92e291407c7a0b56",
+        "rows": 1
+      },
+      {
+        "table": "spatial_v3_authoring_versions",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_authoring_versions.json",
+        "sha256": "318d86062b97c0c8259ff748c7fc3a86a5b8df6cd281b4c9a6bc25122294d1ba",
+        "rows": 471
+      },
+      {
+        "table": "spatial_v3_nodes",
+        "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_nodes.json",
+        "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+        "rows": 276
+      },
+      {
+        "table": "spatial_v3_external_dependency_versions",
+        "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_external_dependency_versions.json",
+        "sha256": "43de895c4c714cac2e9b9fb9cdcf8d54a80ad643d0067676c27a786d447932a3",
+        "rows": 99
+      },
+      {
+        "table": "spatial_v3_transition_environment_profiles",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_transition_environment_profiles.json",
+        "sha256": "62e785e6c423dbc0b819e1bc56eded8ae765143f71c8b9a062b12c6c2acfff58",
+        "rows": 1
+      },
+      {
+        "table": "spatial_v3_movement_method_cost_profiles",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_movement_method_cost_profiles.json",
+        "sha256": "aa05a345d0c6a90436eb47eb460dbe1bff2263d1c5ac9ddf9700958e79380f08",
+        "rows": 8
+      },
+      {
+        "table": "spatial_v3_movement_method_cost_options",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_movement_method_cost_options.json",
+        "sha256": "4090b346ae7ab3d78865cd2b18bf7e9ca6f686e65c10b8371acf30124cd0c301",
+        "rows": 11
+      },
+      {
+        "table": "spatial_v3_line_kind_profiles",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_line_kind_profiles.json",
+        "sha256": "ee3be32db3d0529d1d86cb96507b4adf04673b3b8cf3a55eac3470f0c5984da9",
+        "rows": 8
+      },
+      {
+        "table": "spatial_v3_line_kind_alternative_methods",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_line_kind_alternative_methods.json",
+        "sha256": "79463f0c163e2cea1c5c1066b18913ca27570ae444817fe543f18e7138a9adbd",
+        "rows": 3
+      },
+      {
+        "table": "spatial_v3_canonical_g5_connection_bindings",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json",
+        "sha256": "3500af6577b3b8f7f1880b2159f94c437d253cc191705c26fcbfce8a41418ceb",
+        "rows": 454
+      },
+      {
+        "table": "spatial_v3_authoring_dependency_edges",
+        "file": "spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_authoring_dependency_edges.json",
+        "sha256": "4e262b40c374f75e1b2e23cb5cfe7876e22c5a0b5522c11029de71b17b09c0c7",
+        "rows": 1394
+      }
+    ]
+  },
+  "sql": {
+    "builder_path": "scripts/v17-m2c-lines-import-stage.mjs",
+    "importer_path": "tools/spatial-v3/p12-authoring-importer.mjs",
+    "wrapper": "buildImportWithReadbackSql; repository manifest remains draft",
+    "commit_sha256": "3f3aaef02a833748b558a4693b787348db151fd8f8acc8d6579b79f463d85150",
+    "commit_bytes": 8631470,
+    "rollback_sha256": "b3cdb34951d2cc9d1be1b552b4d4263121bde699d0bf7ab1cbc93fd59484779b",
+    "rollback_bytes": 8631472
+  },
+  "expected_readback": {
+    "scope": "rows added by line-wave import after P12 and temporal-v4",
+    "by_table": {
+      "source_records": 1,
+      "spatial_v3_authoring_versions": 471,
+      "spatial_v3_transition_environment_profiles": 1,
+      "spatial_v3_movement_method_cost_profiles": 8,
+      "spatial_v3_movement_method_cost_options": 11,
+      "spatial_v3_line_kind_profiles": 8,
+      "spatial_v3_line_kind_alternative_methods": 3,
+      "spatial_v3_canonical_g5_connection_bindings": 454,
+      "spatial_v3_authoring_dependency_edges": 1394
+    }
+  },
+  "stage": {
+    "name": "m2c_lines_import",
+    "order": [
+      "rollback probe",
+      "independent import attestation",
+      "commit",
+      "exact readback",
+      "idempotent re-import (rollback)"
+    ]
+  },
+  "activation": "none",
+  "authority": "approved line data availability only; authoring approval does not authorize this import",
+  "independent_import_attestation": null,
+  "request_digest": "245690ec6b52fba52aab19041529df119f062a72dbfb58e530ff325315bb27d3"
+}

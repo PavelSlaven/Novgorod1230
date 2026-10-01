@@ -1,0 +1,19 @@
+{
+  "schema": "rus.m2c_lines_v1_v17_import_approval.v1",
+  "decision": "APPROVE",
+  "request_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-request.json",
+  "request_digest": "245690ec6b52fba52aab19041529df119f062a72dbfb58e530ff325315bb27d3",
+  "attested_by": "claude-opus-5-5 (lead reviewer, 2026-10-01)",
+  "independence_basis": "The lead reviewer did not author the line wave data (rt-lines executor), its import stage (scripts/v17-m2c-lines-import-stage.mjs, lines-b1 executor, Codex gpt-6-luna) or the P12 importer. The data itself has an independent Opus authoring approval (approval-attestation.json, APPROVE_WITH_LIMITS, import_authorized false) whose sha256 is pinned in this request; this attestation only authorizes the insert-only import of exactly those approved rows into a fresh v17 world_base after P12 and temporal-v4, now that the b1 reader cutover (1114da73) exists.",
+  "reviewed_repository_head": "20a0978bb1d3375250898cea838fb62b9b149482",
+  "checks": [
+    "Request rebuilt twice by buildLinesImportRequest at the reviewed head: identical digest and SQL; 11 datasets, manifest sha256 equals LINES_WAVE_MANIFEST and the authoring approval's import_manifest_sha256; manifest status draft in the repository.",
+    "expected_readback.by_table equals the dataset row counts for the 9 tables that receive new rows (spatial_v3_nodes 276 and external dependency versions 99 already exist after P12, re-inserted idempotently).",
+    "test/spatial-v3/m2c-lines-v17-import-stage.test.js 2/2; test/spatial-v3/m2c-lines-import-postgres.test.js 1/1 through pg-slot (P12 on top of the active bundle, idempotent re-import, versions 1 and 2 untouched, changed rows refused).",
+    "The stage runs a rollback probe, commits once, checks exact readback and re-imports in a rolled-back transaction (stage order in the request)."
+  ],
+  "limits": "The authoring approval's 14 limits stay in force (approval-attestation.json). Import only; no catalog activation, no runtime default change.",
+  "import_authorized": true,
+  "activation_authorized": false,
+  "database_mutated": false
+}

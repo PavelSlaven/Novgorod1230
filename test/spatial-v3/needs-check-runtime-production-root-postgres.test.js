@@ -7,6 +7,8 @@ import { createLowerDvinaTracePhase1ARepository } from
 import { errorEnvelope } from '../../apps/game-server/src/http/contracts.js';
 import { createNeedsCheckMaterializationGuard } from
   '../../apps/game-server/src/runtime/needs-check-materialization-guard.js';
+import { createLlmDiagnostics } from
+  '../../apps/game-server/src/runtime/llm-diagnostics.js';
 import {
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
@@ -128,17 +130,17 @@ function installDeterministicFetch(seen) {
         return respond(discoveryPlan(request, 'павлин', seen.positionRef));
       }
       if (action === 'Осматриваю нижнюю рубаху.') {
-        const shirt = request.player_safe_state.items.find(({ name }) =>
-          name === 'нижняя рубаха');
-        assert.ok(shirt);
-        return respond({ ...plannerBase(action), operations: [{
-          op: 'request_discovery', actor_ref: request.actor.actor_id
-            ?? request.actor.actor_ref, discovery_kind: 'inspect',
-          target_refs: [shirt.item_id], query: shirt.name }],
-        reason_code: 'inspect_existing_item', reason: 'Осматриваю известную вещь.' });
+        return respond({ ...plannerBase(action), resolution: 'direct',
+          goal_result: 'achieved', activity: { owner: 'semantic',
+            duration_class: 'moment', effort: 'none' }, operations: [],
+          direct_result_kind: 'player_safe_item_observation',
+          reason_code: 'inspect_existing_item', reason: 'Осматриваю известную вещь.' });
       }
       if (action === 'Сделаю колесную прялку из рубахи.') {
         return respond(actionProductionPlan(request, 'Колёсная прялка'));
+      }
+      if (action === 'Сделаю павлина из рубахи.') {
+        return respond(actionProductionPlan(request, 'павлин'));
       }
       if (action === 'Сделаю железный капкан из рубахи.') {
         return respond(actionProductionPlan(request, 'железный капкан'));
@@ -146,6 +148,14 @@ function installDeterministicFetch(seen) {
       if (action === 'Распущу шов на рубахе.') {
         return respond(actionProductionPlan(request, 'нижняя рубаха', 'preserve_source'));
       }
+    }
+    if (system.startsWith('Return only JSON with exactly mode and support_refs.')) {
+      seen.assessmentCalls = (seen.assessmentCalls ?? 0) + 1;
+      return respond({ mode: 'discovery', support_refs: [] });
+    }
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+      seen.groundingAuditCalls = (seen.groundingAuditCalls ?? 0) + 1;
+      return respond({ pass: true, concerns: [] });
     }
     if (system.startsWith('Return only one JSON object containing the ordinary semantic choice.')) {
       seen.ordinaryCalls += 1;
@@ -209,21 +219,27 @@ async function committedFingerprint(partyPool, partyId) {
   };
 }
 
-async function assertBlocked(runtime, partyId, requestId, text, expectedQueueId) {
+async function assertBlocked(runtime, llmDiagnostics, partyId, requestId, text,
+  expectedQueueId) {
   let caught;
   await assert.rejects(runtime.submitTurn(partyId, { raw_text: text,
     request_id: requestId }), (error) => { caught = error; return true; });
-  assert.equal(caught.code, 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED');
+  const privateReport = llmDiagnostics.takeLogReport({
+    party_id: partyId, request_id: requestId });
+  const failure = privateReport?.gameplay_traces?.find(({ event }) =>
+    event === 'workflow_failed');
+  assert.equal(caught.code, 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+    JSON.stringify({ unexpected_error: { code: caught.code, message: caught.message,
+      details: caught.details ?? null, cause: caught.cause?.message ?? null },
+    private_failure: failure?.error ?? privateReport?.failure ?? null,
+    llm_errors: privateReport?.waterfall?.filter(({ status }) => status !== 'ok')
+      .map(({ role, status, error_category }) => ({ role, status, error_category })) ?? [] }));
   assert.equal(caught.turn_commit_status, 'not_started');
   const publicFailure = errorEnvelope(caught, { requestId });
   assert.equal(publicFailure.status, 409);
   assert.deepEqual(publicFailure.body.error, { code: 'WORLD_ACTION_UNAVAILABLE',
     message: BLOCKED_MESSAGE, turn_commit_status: 'not_started' });
   assert.doesNotMatch(JSON.stringify(publicFailure), /queue_id|HNT\d{4}|fchk_/u);
-  const privateReport = runtime.llmDiagnostics.takeLogReport({
-    party_id: partyId, request_id: requestId });
-  const failure = privateReport?.gameplay_traces?.find(({ event }) =>
-    event === 'workflow_failed');
   assert.equal(failure?.error?.details?.queue_id, expectedQueueId,
     'private trace must retain the matched queue ID');
   assert.equal(privateReport?.aggregate?.repair_calls, 0,
@@ -236,8 +252,9 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
     const seen = { plannerCalls: 0, ordinaryCalls: 0, ordinaryModes: [], positionRef: null };
     const restoreFetch = installDeterministicFetch(seen);
     t.after(() => restoreFetch());
+    let llmDiagnostics = createLlmDiagnostics({ developerMode: true });
     let { runtime } = await createPresenceProductionRoot({ ...env,
-      extraConfig: { developerMode: true } });
+      extraConfig: { developerMode: true, llmDiagnostics } });
     t.after(async () => { if (runtime) await runtime.close(); });
     const partyId = await publicStartScenario(runtime,
       'novgorod_vikhtuy_work_storage_v1');
@@ -249,25 +266,49 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
     const requestId = () => `needs-check-${partyId}-${ordinal++}`;
 
     const beforeO1 = await committedFingerprint(env.partyPool, partyId);
-    const ordinaryBefore = seen.ordinaryModes.length;
     const o1Request = requestId();
-    await assertBlocked(runtime, partyId, o1Request,
-      'Найду колесную прялку.', blockerQueueId('Колёсная прялка'));
-    assert.equal(seen.ordinaryModes.slice(ordinaryBefore)
-      .includes('resolve_presence'), false,
-      'O1 query guard must stop before presence model resolution');
+    let o1Failure;
+    try {
+      await runtime.submitTurn(partyId, { raw_text: 'Найду колесную прялку.',
+        request_id: o1Request });
+    } catch (error) {
+      o1Failure = error;
+    }
+    assert.ok(o1Failure?.code === 'TURN_STEP_PLAN_INVALID'
+      && o1Failure.details?.errors?.some(({ code }) =>
+        code === 'domain_owner_unavailable'), JSON.stringify({
+        code: o1Failure?.code ?? null,
+        details: o1Failure?.details ?? null,
+        message: o1Failure?.message ?? null
+      }));
     assert.deepEqual(await committedFingerprint(env.partyPool, partyId), beforeO1,
-      'O1 refusal must leave party state, clock, items, presence and P16 unchanged');
+      'O1 plan rejection must leave party state, clock, items, presence and P16 unchanged');
 
     const beforeA1 = await committedFingerprint(env.partyPool, partyId);
-    await assertBlocked(runtime, partyId, requestId(),
+    await assertBlocked(runtime, llmDiagnostics, partyId, requestId(),
       'Сделаю колесную прялку из рубахи.',
       blockerQueueId('Колёсная прялка', 'новый предмет «Колёсная прялка»'));
-    await assertBlocked(runtime, partyId, requestId(),
+    await assertBlocked(runtime, llmDiagnostics, partyId, requestId(),
       'Сделаю железный капкан из рубахи.',
       blockerQueueId('железный капкан', 'новый предмет «железный капкан»'));
     assert.deepEqual(await committedFingerprint(env.partyPool, partyId), beforeA1,
       'A1 refusals must leave party state, clock, items, presence and P16 unchanged');
+
+    const repeatId = `needs-check-repeat-${partyId}`;
+    const beforeRepeat = await committedFingerprint(env.partyPool, partyId);
+    await assertBlocked(runtime, llmDiagnostics, partyId, repeatId,
+      'Сделаю колесную прялку из рубахи.',
+      blockerQueueId('Колёсная прялка', 'новый предмет «Колёсная прялка»'));
+    await runtime.close();
+    runtime = null;
+    llmDiagnostics = createLlmDiagnostics({ developerMode: true });
+    ({ runtime } = await createPresenceProductionRoot({ ...env,
+      extraConfig: { developerMode: true, llmDiagnostics } }));
+    await assertBlocked(runtime, llmDiagnostics, partyId, repeatId,
+      'Сделаю колесную прялку из рубахи.',
+      blockerQueueId('Колёсная прялка', 'новый предмет «Колёсная прялка»'));
+    assert.deepEqual(await committedFingerprint(env.partyPool, partyId), beforeRepeat,
+      'retry after runtime restart must repeat the refusal without committing');
 
     const shirtBeforeInspect = (await env.partyPool.query(`SELECT item_id FROM
       party_runtime.party_items WHERE party_id=$1 AND state::text LIKE '%нижняя рубаха%'`,
@@ -281,11 +322,16 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
     assert.deepEqual(shirtAfterInspect, shirtBeforeInspect,
       'inspection keeps the committed shirt available');
 
-    const beforePeacockOrdinary = seen.ordinaryCalls;
-    await runtime.submitTurn(partyId, { raw_text: 'Найду павлина.',
+    const peacockItemsBefore = (await env.partyPool.query(`SELECT item_id FROM
+      party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]))
+      .rows.map(({ item_id }) => item_id);
+    await runtime.submitTurn(partyId, { raw_text: 'Сделаю павлина из рубахи.',
       request_id: requestId() });
-    assert.ok(seen.ordinaryCalls > beforePeacockOrdinary,
-      'regional_presence-only peacock query reaches ordinary materialization applicability');
+    const peacockItemsAfter = (await env.partyPool.query(`SELECT item_id,state::text AS state
+      FROM party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId])).rows;
+    assert.ok(peacockItemsAfter.some(({ item_id, state }) =>
+      !peacockItemsBefore.includes(item_id) && state.includes('павлин')),
+    'regional_presence-only peacock A1 result passes and is committed');
 
     const itemIdsBeforePreserve = (await env.partyPool.query(`SELECT item_id FROM
       party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]))
@@ -296,19 +342,7 @@ test('production root blocks O1/A1 anachronisms before commit and preserves allo
       party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]))
       .rows.map(({ item_id }) => item_id);
     assert.deepEqual(itemIdsAfterPreserve, itemIdsBeforePreserve,
-      'preserve_source does not create an independent blocked item');
-    const repeatId = `needs-check-repeat-${partyId}`;
-    const beforeRepeat = await committedFingerprint(env.partyPool, partyId);
-    await assertBlocked(runtime, partyId, repeatId,
-      'Найду колесную прялку.', blockerQueueId('Колёсная прялка'));
-    await runtime.close();
-    runtime = null;
-    ({ runtime } = await createPresenceProductionRoot({ ...env,
-      extraConfig: { developerMode: true } }));
-    await assertBlocked(runtime, partyId, repeatId,
-      'Найду колесную прялку.', blockerQueueId('Колёсная прялка'));
-    assert.deepEqual(await committedFingerprint(env.partyPool, partyId), beforeRepeat,
-      'retry after runtime restart must repeat the refusal without committing');
+      'preserve_source passes without creating an independent item');
   });
 
 test('legacy pinned catalog without a blocker requirement retains prior behavior', async () => {

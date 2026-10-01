@@ -13026,7 +13026,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_east_side_channel_5",
-      "line_name": "под кустами вдоль течения",
+      "line_name": "под кустами поперёк протоки",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -13096,7 +13096,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_east_side_channel_5",
-      "line_name": "под кустами вдоль течения",
+      "line_name": "под кустами поперёк протоки",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -16073,7 +16073,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route_cross",
-      "line_name": "меж травами по плотной земле",
+      "line_name": "напрямик по луговине",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -16140,7 +16140,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route_cross",
-      "line_name": "меж травами по плотной земле",
+      "line_name": "напрямик по луговине",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -17422,7 +17422,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_2",
-      "line_name": "меж речных струй",
+      "line_name": "по стоячей воде",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -17492,7 +17492,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_large_island_head_2",
-      "line_name": "меж речных струй",
+      "line_name": "по стоячей воде",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -20856,7 +20856,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_north_outflow_reach_cross",
-      "line_name": "руслом под древесными кронами",
+      "line_name": "поперёк струи",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -20926,7 +20926,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_north_outflow_reach_cross",
-      "line_name": "руслом под древесными кронами",
+      "line_name": "поперёк струи",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -24214,7 +24214,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_cross",
-      "line_name": "лодкой у осоки",
+      "line_name": "мелкой водой у бережка",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -24284,7 +24284,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_cross",
-      "line_name": "лодкой у осоки",
+      "line_name": "мелкой водой у бережка",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -24905,7 +24905,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach_4",
-      "line_name": "травяным берегом у воды",
+      "line_name": "через прибрежную осоку",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -24972,7 +24972,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach_4",
-      "line_name": "травяным берегом у воды",
+      "line_name": "через прибрежную осоку",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -26928,7 +26928,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_shifting_shoal_field_3",
-      "line_name": "водой над подводными наносами",
+      "line_name": "перекатом",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -26998,7 +26998,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_shifting_shoal_field_3",
-      "line_name": "водой над подводными наносами",
+      "line_name": "перекатом",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -27905,7 +27905,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_3",
-      "line_name": "берегом среди трав",
+      "line_name": "через осоку по илу",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -27972,7 +27972,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_3",
-      "line_name": "берегом среди трав",
+      "line_name": "через осоку по илу",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -33724,7 +33724,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_2",
-      "line_name": "по боковому течению",
+      "line_name": "по струе меж осок",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -33794,7 +33794,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_2",
-      "line_name": "по боковому течению",
+      "line_name": "по струе меж осок",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -33861,7 +33861,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_3",
-      "line_name": "берегом по вязкой земле",
+      "line_name": "через прибрежную топь",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -33928,7 +33928,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_3",
-      "line_name": "берегом по вязкой земле",
+      "line_name": "через прибрежную топь",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -34129,7 +34129,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_5",
-      "line_name": "берегом у пойменной травы",
+      "line_name": "сквозь прибрежный кустарник",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -34196,7 +34196,7 @@
       },
       "shore_to_water_link": true,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_5",
-      "line_name": "берегом у пойменной травы",
+      "line_name": "сквозь прибрежный кустарник",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -34400,7 +34400,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_cycle",
-      "line_name": "между берегами по боковой воде",
+      "line_name": "протокой мимо кустов",
       "line_qualifier": null,
       "name_findings": []
     },
@@ -34470,7 +34470,7 @@
       },
       "shore_to_water_link": false,
       "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_west_side_channel_cycle",
-      "line_name": "между берегами по боковой воде",
+      "line_name": "протокой мимо кустов",
       "line_qualifier": null,
       "name_findings": []
     },

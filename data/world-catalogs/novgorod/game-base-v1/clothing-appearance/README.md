@@ -18,7 +18,7 @@ python scripts/build.py   # regenerates every CSV/JSON from sources + rule table
 python scripts/check.py   # acceptance checks; prints PASS/FAIL and row counts
 ```
 
-`build.py` uses the Python standard library. `check.py` also invokes the shared Node.js archive-ownership checker when Node is available; without Node that cross-group check is skipped. The inputs are read-only:
+`build.py` and `check.py` need Python and Node.js: both call the shared Node.js archive-ownership checker, and without Node the check fails rather than skipping it. The inputs are read-only:
 - `../../sources/costume-dataset-v1/data/*.csv`: 180 items, 46 combinations, 10 foreign profiles, palette, 20 anti-patterns, 50 sources. Status candidate, validation PASS.
 - `data/novgorod-region/novgorod_social_roles_v1_enriched.tsv` (71 roles) and `novgorod_occupations_v1_enriched.tsv` (68 occupations).
 - `build.py` and `check.py` read age categories from `packages/actors/src/actor-age-categories.json` in the current checkout. A missing or invalid file is an error; there is no age-category fallback.

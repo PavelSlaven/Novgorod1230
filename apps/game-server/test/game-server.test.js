@@ -75,7 +75,7 @@ test('known turn failures use safe public categories and never expose internal d
     assert.equal(response.status, 409);
     assert.deepEqual(response.body.error, { code: publicCode, message: publicMessage,
       turn_commit_status: 'not_started' });
-    assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID|M2C_TARGET_A1|\/srv\/|sk-secret|internal-host|schema\.sql/u);
+    assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID|M2C_TARGET_A1|TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED|\/srv\/|sk-secret|internal-host|schema\.sql/u);
   }
   const unconfirmed = errorEnvelope(Object.assign(new Error('x'), {
     code: 'TURN_STEP_PLAN_INVALID', status: 500 }));
@@ -86,6 +86,28 @@ test('known turn failures use safe public categories and never expose internal d
   }));
   assert.equal(unknown.status, 500);
   assert.equal(unknown.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  const needsCheck = errorEnvelope(Object.assign(new Error('private queue id'), {
+    code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', status: 500,
+    details: { queue_id: 'private-queue' }, turn_commit_status: 'not_started'
+  }));
+  assert.equal(needsCheck.status, 500);
+  assert.equal(needsCheck.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.doesNotMatch(JSON.stringify(needsCheck), /private-queue|NEEDS_CHECK/u);
+});
+
+test('immutable blocker catalog failures are permanent and player-safe', () => {
+  for (const code of ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
+    'NEEDS_CHECK_BLOCKER_CATALOG_INVALID']) {
+    const response = errorEnvelope(Object.assign(new Error('private catalog detail'), {
+      code, status: 503, details: { import_id: 'private-import' },
+      turn_commit_status: 'not_started'
+    }));
+    assert.equal(response.status, 503);
+    assert.deepEqual(response.body.error, { code: 'WORLD_CATALOG_PIN_INVALID',
+      message: 'Данные мира этой партии недоступны.',
+      turn_commit_status: 'not_started' });
+    assert.doesNotMatch(JSON.stringify(response), /NEEDS_CHECK_BLOCKER|private-import|private catalog/u);
+  }
 });
 
 test('provider failures have safe typed public errors', () => {

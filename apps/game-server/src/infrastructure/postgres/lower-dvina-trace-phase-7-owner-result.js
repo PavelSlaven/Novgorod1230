@@ -28,9 +28,13 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
         scheduleTemporal?.result?.temporal_status
       )
       || (scheduleTemporal.result.temporal_status === 'completed'
-        && (scheduleTemporal.elapsed_after_decision !== 5
-          || !sameClock(scheduleTemporal.result.clock_after,
-            factual.time_update.clock_after)))
+        && (scheduleTemporal.rest_completed === true
+          ? scheduleTemporal.elapsed_after_decision !== 5
+          : scheduleTemporal.elapsed_after_decision !== 0
+            || !sameClock(scheduleTemporal.result.clock_before,
+              scheduleTemporal.result.clock_after)))
+      || !sameClock(scheduleTemporal.result.clock_after,
+        factual.time_update.clock_after)
       || (scheduleTemporal.result.temporal_status === 'paused'
         && !sameClock(scheduleTemporal.result.clock_after,
           factual.time_update.clock_after))
@@ -60,9 +64,10 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId
       || (scheduleTemporal.result.temporal_status === 'completed'
-        ? factual.body_update.applied !== true
-          || factual.body_update.proposal.profile_ref
-            !== phase7Contracts.bodyEffect.effect_profile_id
+        ? factual.body_update.applied !== (scheduleTemporal.rest_completed === true)
+          || (scheduleTemporal.rest_completed === true
+            && factual.body_update.proposal.profile_ref
+              !== phase7Contracts.bodyEffect.effect_profile_id)
         : factual.body_update.applied !== false)) {
     throw serverError(
       'TRACE_PHASE_7_OWNER_RESULT_INVALID',

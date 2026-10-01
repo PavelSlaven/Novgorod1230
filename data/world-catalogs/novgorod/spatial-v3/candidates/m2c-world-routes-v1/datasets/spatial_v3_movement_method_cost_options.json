@@ -1,0 +1,74 @@
+[
+  {
+    "profile_id": "cost.line_river_channel",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.boat_rowed",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  },
+  {
+    "profile_id": "cost.line_river_channel",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.swim",
+    "cost_mode": "rational_factor",
+    "factor_numerator": 4,
+    "factor_denominator": 1
+  },
+  {
+    "profile_id": "cost.line_side_channel",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.boat_rowed",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  },
+  {
+    "profile_id": "cost.line_side_channel",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.swim",
+    "cost_mode": "rational_factor",
+    "factor_numerator": 4,
+    "factor_denominator": 1
+  },
+  {
+    "profile_id": "cost.line_shore",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.walk",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  },
+  {
+    "profile_id": "cost.line_wetland_path",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.walk",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  },
+  {
+    "profile_id": "cost.line_path",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.walk",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  },
+  {
+    "profile_id": "cost.line_forest_track",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.walk",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  },
+  {
+    "profile_id": "cost.line_offroad",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.walk",
+    "cost_mode": "baseline",
+    "factor_numerator": null,
+    "factor_denominator": null
+  }
+]

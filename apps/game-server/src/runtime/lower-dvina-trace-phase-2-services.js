@@ -26,6 +26,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
+    turnStepNeedsCheckGuard = null,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner,
@@ -55,11 +56,23 @@ export function buildLowerDvinaTracePhase2Services(context) {
   let narrationAuthState = state;
   const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
     catch { /* Diagnostic capture must not affect gameplay. */ } };
+  const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => trace({
+    event: 'needs_check_candidate_filtered', path,
+    queue_id: queue_ids[0] ?? null,
+    queue_ids: structuredClone(queue_ids)
+  });
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
     idempotency_key: idempotencyKey
   });
+  const needsCheckGuard = typeof turnStepNeedsCheckGuard === 'function'
+    ? turnStepNeedsCheckGuard : null;
+  const guardFactory = (factory) => typeof factory !== 'function'
+    ? null : (input) => factory({ ...input,
+      assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter });
+  const spatialSemanticResolverFactory =
+    guardFactory(createTurnStepSpatialSemanticResolver);
   const randomSnapshot = randomSource?.snapshot?.();
   if (!randomSnapshot?.algorithm
       || randomSnapshot.algorithm !== state.materialization_trace?.rng_version) {
@@ -85,9 +98,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     committedState: state,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
-      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
+      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard,
+        recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
-      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest}),
+      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter}),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
@@ -105,10 +121,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createLowerDvinaTraceTurnStepPlayerSafeProjector({
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
-      createTurnStepActionProductionOwner,
+      createTurnStepActionProductionOwner:
+        createTurnStepActionProductionOwner,
       localFireProfile,
       createTurnStepWorldProcessResolver,
-      createTurnStepSpatialSemanticResolver,
+      createTurnStepSpatialSemanticResolver:
+        spatialSemanticResolverFactory,
       spatialSemanticProfile,
       createTurnStepBackgroundNpcResolver,
       npcSemanticRemainderProfile,
@@ -194,8 +212,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         applyWorkingProjection: turnStepPorts.applyLocalFireProjection
       })
     } : {}),
-    ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
-      turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
+    ...(typeof spatialSemanticResolverFactory === 'function' ? {
+      turnStepSpatialSemanticResolver: spatialSemanticResolverFactory({ partyId })
     } : {}),
     ...(typeof createTurnStepBackgroundNpcResolver === 'function'
         && npcSemanticRemainderProfile?.profile?.status === 'approved' ? {

@@ -16,7 +16,8 @@ import { validLowerDvinaTraceO2bPhysicalAttestation } from
 
 export function createLowerDvinaTraceO2bContainerResolver({ partyId,
   inputDigest, loadedProfile, loadCommittedContainer,
-  ordinaryMaterializationModel } = {}) {
+  ordinaryMaterializationModel, assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null } = {}) {
   if (loadedProfile == null) return null;
   if (!validLowerDvinaTraceO2bLoadedProfile(loadedProfile)) {
     throw coded('TRACE_O2B_PROFILE_INVALID');
@@ -72,7 +73,7 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
           'TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID');
       }
     } catch { return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID'); }
-    const raw = descriptorSafeJsonSnapshot(rawValue);
+    let raw = descriptorSafeJsonSnapshot(rawValue);
     const noChange = raw?.resolution === 'no_change';
     if (raw == null || !['seeded','no_change'].includes(raw.resolution)
         || raw.background_groups?.length !== 0
@@ -84,6 +85,34 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
           : raw.density_band_proposal
             !== committed.objective.identity_budget.density_band)) {
       return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID');
+    }
+    if (typeof assertNeedsCheckAllowed === 'function') {
+      const filtered = [];
+      const queueIds = new Set();
+      for (const entity of raw.entities) {
+        const matches = await assertNeedsCheckAllowed({
+          partyId, matchOnly: true,
+          committedState: { world_identity: committed.value.world_identity,
+            position: { g4_id: committed.value.container.actor_g4_id },
+            clock: committed.partyClock },
+          candidate: { ...entity.semantic_descriptor,
+            path: 'O2b.proposed_entity.semantic_descriptor' }
+        });
+        if (Array.isArray(matches) && matches.length > 0) {
+          filtered.push(entity);
+          for (const { queue_id: queueId } of matches) queueIds.add(queueId);
+        }
+      }
+      if (filtered.length > 0) {
+        if (typeof recordNeedsCheckFilter === 'function') {
+          await recordNeedsCheckFilter({
+            path: 'O2b.proposed_entity.semantic_descriptor',
+            queue_ids: [...queueIds]
+          });
+        }
+        raw = { ...raw, entities: raw.entities.filter((entity) =>
+          !filtered.includes(entity)) };
+      }
     }
     try { return buildO2bContainerResolution({ committed, raw, operation,
       partyId, inputDigest }); }

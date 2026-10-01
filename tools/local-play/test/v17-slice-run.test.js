@@ -8,7 +8,7 @@ import test from 'node:test';
 import { EXIT, PreflightError, UsageError, createFinalizers, describeServerError, installLlmMeter, parseArgs,
   readLlmSettingsRecord, runHarness } from '../v17-slice-run.mjs';
 import { RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
-import { createRedactor, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '../v17-slice-report.js';
+import { createRedactor, d49MinimumOf, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '../v17-slice-report.js';
 
 const SECRET_KEY = 'sk-test-secret-key-0123456789';
 const SECRET_URL = 'https://llm.internal.example:8443/v1';
@@ -62,6 +62,20 @@ test('exit code and verdict follow the legs', () => {
     ['PASS', 'PARTIAL', 'FAIL']);
 });
 
+test('D49 minimum accepts either item path while strict acceptance remains all six legs', () => {
+  const legs = (take, make) => ['pass', 'pass', 'pass', 'pass', take, make].map((status, i) =>
+    ({ id: ['start', 'walk', 'meet', 'talk', 'take', 'make'][i], status }));
+  for (const [statuses, itemLeg] of [[['pass', 'fail'], 'take'], [['fail', 'pass'], 'make']]) {
+    const result = legs(...statuses);
+    const turns = [{ n: 4, leg: 'talk', pass: true }, { n: 5, leg: itemLeg, pass: true }];
+    assert.deepEqual(d49MinimumOf(result, turns), { status: 'PASS', item_leg: itemLeg });
+    assert.equal(exitCodeOf(result), EXIT.LEGS);
+  }
+  assert.deepEqual(d49MinimumOf(legs('fail', 'fail')), { status: 'PARTIAL', item_leg: null });
+  assert.deepEqual(d49MinimumOf(legs('pass', 'fail'), [{ n: 5, leg: 'talk', pass: true }, { n: 4, leg: 'take', pass: true }]),
+    { status: 'PARTIAL', item_leg: null }, 'a passing item turn before talk does not satisfy the minimum');
+});
+
 // ---------- report ----------
 
 test('redactor strips secret values, hosts and bearer shapes', () => {
@@ -112,6 +126,8 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
   assert.equal(refused.includes(PROSE), false, 'a refused turn does not repeat the previous screen');
   assert.equal(md.includes('скрыта за TEMPORARY_ACTION_UNAVAILABLE'), false);
   assert.ok(md.includes('**PARTIAL**'));
+  assert.ok(md.includes('D49 minimum (start, walk, meet, talk и take или make): **PARTIAL**'));
+  assert.ok(md.includes('Строгий результат: **PARTIAL**'));
   assert.ok(md.includes('позиция s1') === false && md.includes('@arrival → cg5v3__x_r2_work_storage@departure'));
   assert.equal(md.includes(SECRET_KEY), false);
   assert.ok(md.includes('/srv/x/llm-settings.json'), 'the settings path is allowed in the report');
@@ -120,15 +136,28 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
 // ---------- legs against a fake world ----------
 
 /** A small world: A (start, shirt) —«Тропа»→ B (a person, deadwood). Talk/take/make behave as configured. */
-function fakeWorld({ blindLooks = 0, talkWorks = true, makeWorks = true, takeWorks = true, hidePeople = false, openingRejections = 0, emptyProse = false } = {}) {
-  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: [], node: 60, held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
+function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player', talkAct = 'answer', makeWorks = true, takeWorks = true,
+  hidePeople = false, hidePanelPeople = hidePeople, hideSqlPeople = hidePeople, npcAtStart = false, npcAtDestination = true,
+  peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
+  priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
+  npcSite = null, resourceSites = ['B'], routeThroughC = false } = {}) {
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
+    statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
+    intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
+  }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
   const items = () => [{ item_id: 'shirt', holder: 'c', position: 'worn' }, ...w.held];
-  const snap = () => ({ state_version: w.sv, position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : 'forest_path'}` },
-    placements_here: w.site === 'B' && !hidePeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
+  const effectiveNpcSite = npcSite ?? (npcAtStart ? 'A' : npcAtDestination ? 'B' : null);
+  const npcHere = () => w.site === effectiveNpcSite;
+  const snap = () => ({ state_version: w.sv, player_character_ref: { entity_kind: 'player_character', entity_id: 'c' },
+    position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : w.site === 'B' ? 'forest_path' : 'river_bank'}` },
+    placements_here: npcHere() && !hideSqlPeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
     items: items(), party_items: w.made, npc_statements: w.statements,
-    resource_nodes: w.site === 'B' ? [{ resource_node_id: 'm2c_finite_deadwood_v1:x', quantity_numerator: String(w.node) }] : [] });
-  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа'] : ['Назад'],
-    panels: { people: { data: { people: w.site === 'B' && !hidePeople ? [{ display_label: 'человек (1)' }] : [] } } } });
+    resource_nodes: resourceSites.map((site) => ({
+      resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
+    })) });
+  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']
+    : w.site === 'B' && routeThroughC ? ['Дальше'] : (hideReturnPassage ? [] : ['Назад']),
+    panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
     async newGame() { w.newGames += 1; return w.newGames <= openingRejections
@@ -140,19 +169,33 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, makeWorks = true, takeWor
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
-      if (text === 'Тропа') { w.site = 'B'; w.sv += 1; w.prose = 'Лесная тропа.'; }
-      else if (text === 'Назад') { w.site = 'A'; w.sv += 1; }
-      else if (/^Здоров|^Здравств/u.test(text)) { w.sv += 1; if (talkWorks) w.statements = [...w.statements, { speaker_ref: { entity_kind: 'npc' }, text: 'Я Милонег.' }]; }
-      else if (/^Беру/u.test(text)) { w.sv += 1; if (takeWorks) { w.node -= 1; w.held = [...w.held, { item_id: 'ordinary_item_1', holder: 'c', position: 'hands' }]; } }
+      if (text === 'Тропа') {
+        if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
+        w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
+      }
+      else if (text === 'Дальше') { w.site = 'C'; w.sv += 1; }
+      else if (text === 'Назад') { w.site = routeThroughC && w.site === 'C' ? 'B' : 'A'; w.sv += 1; }
+      else if (/^Здоров|^Здравств/u.test(text)) { if (talkCommitted) w.sv += 1; if (talkWorks && talkCommitted) w.statements = [...w.statements, {
+        statement_id: `statement-${w.statements.length + 1}`, speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: talkAct,
+        intended_addressee_refs: talkRecipient === 'missing' ? [] : [{ entity_kind: 'player_character', entity_id: talkRecipient === 'player' ? 'c' : 'other' }],
+        utterance_text: 'Я Милонег.'
+      }]; }
+      else if (/^Беру/u.test(text)) { w.sv += 1; if (takeWorks) { w.nodeQuantities[w.site] -= 1; w.held = [...w.held, { item_id: 'ordinary_item_1', holder: 'c', position: 'hands' }]; } }
       else if (/^Ото|^Отр/u.test(text)) {
         if (!makeWorks) return { status: 422, ok: false, data: null, error: { code: 'TURN_STEP_PLAN_INVALID' } };
         w.sv += 1; w.made = [{ item_id: 'a1-result:1', action_production: true }];
       } else w.sv += 1;
       if (emptyProse) w.prose = '';
+      if (/^Здоров|^Здравств/u.test(text) && !talkCommitted)
+        return { status: 422, ok: false, data: null, error: { code: 'TURN_NOT_SAVED' } };
       return env({ screen: screen() });
     }
   };
-  return { w, api, sql: { snapshot: async () => snap() }, routeLabels: (s) => s?.labels ?? [] };
+  let snapshotCount = 0;
+  return { w, api, sql: { snapshot: async () => {
+    snapshotCount += 1;
+    return snapshotCount === snapshotErrorAt ? { error: 'snapshot failed: injected' } : snap();
+  } }, routeLabels: (s) => s?.labels ?? [] };
 }
 const meter = () => { let n = 0; return { count: () => (n += 1) }; };
 const runFake = (world, extra = {}) => runLegs({ ...world, llm: meter(), scenarioId: 's', runId: 'r', maxTurns: 24, ...extra });
@@ -163,6 +206,7 @@ test('legs: a working world passes every leg with the exact phrases of the plan'
   const result = await runFake(world);
   assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'pass', take: 'pass', make: 'pass' });
   assert.deepEqual(world.w.turns, ['Тропа', 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
+  assert.ok(world.w.turns.indexOf('Тропа') < world.w.turns.findIndex((text) => /^Здоров/u.test(text)));
   assert.equal(result.turns.every(({ ms }) => Number.isFinite(ms)), true);
   assert.equal(exitCodeOf(result.legs), EXIT.PASS);
 });
@@ -179,9 +223,101 @@ test('legs: a spot that shows no passages is looked at twice, then walk fails wi
 
 test('legs: a failing talk fails only talk; others still run', async () => {
   const result = await runFake(fakeWorld({ talkWorks: false }));
-  assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'fail', take: 'pass', make: 'pass' });
-  assert.match(result.legs.find(({ id }) => id === 'talk').reason, /реплики NPC/u);
+  assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'fail', take: 'blocked', make: 'blocked' });
+  assert.match(result.legs.find(({ id }) => id === 'talk').reason, /ответа NPC игроку/u);
   assert.equal(result.turns.filter(({ leg }) => leg === 'talk').length, 2, 'the second greeting was tried');
+  assert.equal(result.turns.some(({ leg }) => ['take', 'make'].includes(leg)), false, 'item turns wait for talk PASS');
+});
+
+test('legs: SQL placement with an empty player panel fails meet; a screen-only person passes meet', async () => {
+  const hidden = await runFake(fakeWorld({ hidePanelPeople: true, hideSqlPeople: false }));
+  assert.equal(statusOf(hidden).meet, 'fail');
+  assert.match(hidden.legs.find(({ id }) => id === 'meet').reason, /панель людей пуста/u);
+  const screenOnly = await runFake(fakeWorld({ hideSqlPeople: true, hidePanelPeople: false }));
+  assert.equal(statusOf(screenOnly).meet, 'pass');
+  const hiddenData = await runFake(fakeWorld({ peoplePanelVisible: false, hidePanelPeople: false, hideSqlPeople: false }));
+  assert.equal(statusOf(hiddenData).meet, 'fail');
+  assert.equal(hiddenData.turns.some(({ leg }) => leg === 'talk'), false);
+  assert.equal(hiddenData.turns.every(({ people_labels }) => people_labels.length === 0), true);
+});
+
+test('legs: a person visible only at start does not count as a meeting or permit talk before walk', async () => {
+  const world = fakeWorld({ npcAtStart: true, npcAtDestination: false, hideReturnPassage: true });
+  const result = await runFake(world);
+  assert.equal(statusOf(result).meet, 'blocked');
+  assert.equal(statusOf(result).talk, 'blocked');
+  assert.equal(world.w.turns.some((text) => /^Здоров|^Здравств/u.test(text)), false);
+  assert.ok(world.w.turns.indexOf('Тропа') === 0, 'the player leaves start before later legs can run');
+});
+
+test('legs: a visible person on a previously visited place can be met after returning there', async () => {
+  const world = fakeWorld({ npcAtStart: true, npcAtDestination: false });
+  const result = await runFake(world);
+  assert.equal(statusOf(result).walk, 'pass');
+  assert.equal(statusOf(result).meet, 'pass');
+  assert.equal(statusOf(result).talk, 'pass');
+  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf('Тропа'));
+  assert.ok(world.w.turns.findIndex((text) => /^Здоров/u.test(text)) > world.w.turns.indexOf('Назад'));
+});
+
+test('legs: a resource found before NPC is only taken after a later talk PASS', async () => {
+  const world = fakeWorld({ npcAtStart: true, npcAtDestination: false, makeWorks: false });
+  const result = await runFake(world);
+  const talkPass = result.turns.find(({ leg, pass }) => leg === 'talk' && pass)?.n;
+  const takePass = result.turns.find(({ leg, pass }) => leg === 'take' && pass)?.n;
+  assert.ok(talkPass != null && takePass > talkPass);
+  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf('Тропа'));
+  assert.deepEqual(d49MinimumOf(result.legs, result.turns), { status: 'PASS', item_leg: 'take' });
+});
+
+test('legs: a source seen before meeting does not pin take to its site', async () => {
+  const world = fakeWorld({ npcSite: 'C', resourceSites: ['B', 'C'], routeThroughC: true, makeWorks: false });
+  const result = await runFake(world);
+  const talkAt = world.w.turns.findIndex((text) => /^Здоров|^Здравств/u.test(text));
+  const takeAt = world.w.turns.findIndex((text) => /^Беру/u.test(text));
+  assert.ok(talkAt > world.w.turns.indexOf('Дальше'), 'talk happens at C after the resource was seen at B');
+  assert.ok(takeAt > talkAt, 'take happens after talk');
+  assert.equal(world.w.nodeQuantities.B, 60, 'the earlier source remains untouched');
+  assert.equal(world.w.nodeQuantities.C, 59, 'the source at the current post-talk place is taken');
+  assert.equal(statusOf(result).take, 'pass');
+  assert.deepEqual(d49MinimumOf(result.legs, result.turns), { status: 'PASS', item_leg: 'take' });
+});
+
+test('legs: talk requires a persisted NPC answer addressed to the player', async () => {
+  for (const options of [{ talkRecipient: 'other' }, { talkRecipient: 'missing' }, { talkAct: 'inform' }]) {
+    const result = await runFake(fakeWorld(options));
+    assert.equal(statusOf(result).talk, 'fail', JSON.stringify(options));
+  }
+  assert.equal(statusOf(await runFake(fakeWorld({ talkCommitted: false }))).talk, 'fail', 'an uncommitted answer is absent from the snapshot');
+  const valid = await runFake(fakeWorld({ talkRecipient: 'player', talkAct: 'answer' }));
+  assert.equal(statusOf(valid).talk, 'pass');
+  assert.match(valid.legs.find(({ id }) => id === 'talk').detail, /Я Милонег/u, 'the report keeps the NPC reply as an observation');
+});
+
+test('legs: an errored snapshot cannot make an old NPC answer pass after an uncommitted turn', async () => {
+  const result = await runFake(fakeWorld({ priorNpcReply: true, snapshotErrorAt: 4, talkCommitted: false, talkWorks: false }));
+  assert.equal(statusOf(result).talk, 'fail');
+  assert.match(result.legs.find(({ id }) => id === 'talk').reason, /снимок недоступен/u);
+  assert.equal(result.turns.filter(({ leg }) => leg === 'talk').some(({ pass }) => pass), false);
+});
+
+test('legs: committed walks without a site change stay visible in the walk detail', async () => {
+  const result = await runFake(fakeWorld({ samePlaceWalks: 2 }));
+  const walk = result.legs.find(({ id }) => id === 'walk');
+  assert.equal(walk.status, 'pass');
+  assert.match(walk.detail, /ходов движения: 3, из них без смены места: 2/u);
+});
+
+test('D49 harness minimum passes with take alone, make alone, and fails the item requirement without either', async () => {
+  const takeOnly = await runFake(fakeWorld({ makeWorks: false }));
+  assert.deepEqual(d49MinimumOf(takeOnly.legs, takeOnly.turns), { status: 'PASS', item_leg: 'take' });
+  assert.equal(exitCodeOf(takeOnly.legs), EXIT.LEGS);
+  const makeOnly = await runFake(fakeWorld({ takeWorks: false }));
+  assert.deepEqual(d49MinimumOf(makeOnly.legs, makeOnly.turns), { status: 'PASS', item_leg: 'make' });
+  assert.equal(exitCodeOf(makeOnly.legs), EXIT.LEGS);
+  const neither = await runFake(fakeWorld({ takeWorks: false, makeWorks: false }));
+  assert.notEqual(d49MinimumOf(neither.legs, neither.turns).status, 'PASS');
+  assert.deepEqual(d49MinimumOf(neither.legs, neither.turns), { status: 'PARTIAL', item_leg: null });
 });
 
 test('legs: rejected make plans are a fail with the API code, take without effect is a fail', async () => {
@@ -297,9 +433,11 @@ test('runHarness: happy path writes report.json and playtest, then cleans in rev
     const options = parseArgs(['--out-dir', dir, '--playtest-dir', join(dir, 'pt'), '--run-id', 'happy'], {});
     const { code, report } = await runHarness(options, fakeDeps(order), { env: { RUS_LLM_SETTINGS_PATH: '/srv/x/llm-settings.json' } });
     assert.equal(code, EXIT.PASS);
+    assert.deepEqual(report.d49_minimum, { status: 'PASS', item_leg: 'take' });
     assert.deepEqual(order, ['server', 'root', 'dispose']);
     assert.equal(report.legs.every(({ status }) => status === 'pass'), true);
     const json = await readFile(join(dir, 'report.json'), 'utf8');
+    assert.deepEqual(JSON.parse(json).d49_minimum, { status: 'PASS', item_leg: 'take' });
     assert.equal(json.includes(SECRET_KEY) || json.includes(SECRET_URL), false);
     const [file] = await readdir(join(dir, 'pt'));
     assert.match(file, /^\d{4}-\d{2}-\d{2}_rt-harness_[0-9a-f]{8}_v17-slice-happy\.md$/u);

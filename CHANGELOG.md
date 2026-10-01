@@ -3,7 +3,10 @@
 ## Unreleased
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
+- fix(materialization): D59 filters needs_check only in O1/O2b/S1, preserves player actions and authored O2a, replaces matching NPC A1/create_entity/O1 proposals with wait; LW-122 added (#98)
 
+- data(game-base): names-gaps D61 follow-up — exact candidate coverage, authoring checks and current draft/gap status (#98)
+- docs(changelog): восстановлена запись о ранее выполненном закрытии LW-112: исходы людей первого прибытия теперь фиксируются в агрегате присутствия; LW-112 closed
 - fix(spatial): rt-lines a5 — turn-back after a pause also allows interrupted_at_anchor/stranded and keys on travel-state status (refusal = turn_back_refused), no resume after returned_to_departure, zero-progress pause is no transit (Spatial 4.7.0 §4.10.1/§10.7.1/§10.8/A.4.1/F.1.1), A.4.1 gates synced in state-machines.js, line kinds are `line.*` with a vocabulary check, LINES_WAVE_MANIFEST repinned, gate test on attestation v6/224 tables.
 - fix(spatial): rt-lines a6 — outcomes of a turn_back interval follow the direction after commit (mirrored true: returned_to_departure; mirrored false after a repeated turn back: segment_completed; interrupted_at_anchor/stranded on both sides), Spatial 4.7.0 §4.10.1/F.1.1, specifications regenerated, norm-text tests.
 - fix(spatial): rt-lines a7 — a pause or interruption at progress zero after the start commit closes as interrupted_at_anchor at the departure endpoint (execution waiting_at_anchor, resumable, replay-safe), Spatial 4.7.0 §4.10.1/§10.8/§10.9/§11.6/A.4.1/F.1.1, A.4.1 gate synced in state-machines.js, norm-text tests.

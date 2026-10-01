@@ -48,19 +48,20 @@ export function versioned(entityKind, entityId) {
     authoring_version: '1' };
 }
 
-export function externalBoundary(partyId, ruleRef, policyRef, wholeMinutes) {
-  return { boundary_id: 'phase7-external-pause',
+export function externalBoundary(partyId, ruleRef, policyRef, wholeMinutes,
+  boundaryId = 'phase7-external-pause') {
+  return { boundary_id: boundaryId,
     boundary_kind: 'exact_timer', scheduled_at: { whole_minutes: wholeMinutes,
       subminute_numerator: '0', subminute_denominator: '1' },
     source_ref: { entity_kind: 'party_route_plan_execution_event',
-      entity_id: 'phase7-external-event' },
+      entity_id: `${boundaryId}-event` },
     primary_subject_ref: { entity_kind: 'party', entity_id: partyId },
     subject_refs: [], scope_ref: { entity_kind: 'party', entity_id: partyId },
     rule_ref: ruleRef, policy_ref: policyRef,
     preconditions_digest: 'b'.repeat(64),
     resolution_class: 'execution_outcome', interrupt_effect: 'background',
     visibility_policy_ref: versioned('visibility_modifier', 'hidden'),
-    idempotency_key: 'phase7-external-pause', causal_parent_refs: [] };
+    idempotency_key: boundaryId, causal_parent_refs: [] };
 }
 
 export function visibleContext() {

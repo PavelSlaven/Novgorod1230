@@ -32,7 +32,7 @@ const integerIn = (value, min, max) => Number.isInteger(value) && value >= min &
 /** The slice step: an integer of 1..30 minutes (null, NaN, strings, 0, 31 and more are not steps). */
 const sliceStepProblem = (step) => (integerIn(step, 1, MAX_SLICE_STEP_MINUTES) ? null : `slice step must be an integer of 1..${MAX_SLICE_STEP_MINUTES} minutes, got ${String(step)}`);
 /** Why a recheck policy cannot slice a line, or null. The two slicing kinds exclude each other, as in DDL 13.sql (interval_minutes / progress_slice_ppm). */
-function policyProblem(policy) {
+export function policyProblem(policy) {
   if (policy?.policy_kind === 'fixed_time_interval') {
     if (!integerIn(policy.interval_minutes, 1, Number.MAX_SAFE_INTEGER)) return `fixed_time_interval needs interval_minutes as an integer >= 1, got ${String(policy.interval_minutes)}`;
     return policy.progress_slice_ppm == null ? null : `fixed_time_interval forbids progress_slice_ppm, got ${String(policy.progress_slice_ppm)}`;
@@ -76,6 +76,23 @@ function similarNamesPerPlace(rows) {
     else if (jaccard(a, b) >= 0.34) similar += 1;
   }
   return { identical, similar };
+}
+/** Apply the wave-1 label rules to any outgoing line rows, including route candidate rows. */
+export function lineNameProblems(rows) {
+  const problems = []; const outgoing = new Map();
+  for (const row of rows) {
+    const name = row.line_name;
+    if (typeof name !== 'string' || name.trim() === '') problems.push(`${row.id}: line_label_invalid empty`);
+    else {
+      if (/\d/u.test(name)) problems.push(`${row.id}: line_label_invalid digit in "${name}"`);
+      if (ORDINAL.test(name)) problems.push(`${row.id}: line_label_invalid ordinal word in "${name}"`);
+    }
+    const key = [row.from_canonical_g5_id, name, row.line_discriminator ?? '', row.line_direction_id ?? ''].join('|');
+    outgoing.set(key, (outgoing.get(key) ?? 0) + 1);
+  }
+  for (const [key, count] of outgoing) if (count > 1) problems.push(`line_label_duplicate ${key}`);
+  for (const pair of similarNamesPerPlace(rows).identical) problems.push(`line_label_near_duplicate ${pair}`);
+  return problems;
 }
 const sealed = (row) => ({ ...row, canonical_digest: digest(row) });
 const version = (entity_kind, row, worldRevisionId) => ({ entity_kind, entity_id: row.id, version: row.version ?? VERSION,
@@ -274,17 +291,11 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
       if (!datasets[T.costOptions].some((option) => option.profile_id === profile.movement_method_cost_profile_id && option.movement_method_id === alt.movement_method_id && option.cost_mode === 'rational_factor')) problems.push(`${profile.id}: alternative ${alt.movement_method_id} is not a rational_factor option`);
     }
   }
-  const outgoing = new Map();
   for (const row of rows) {
     const profile = profiles.get(row.line_kind_profile_id);
     if (!profile) problems.push(`${row.id}: line_kind_profile ${row.line_kind_profile_id} missing`);
     if (row.version !== VERSION) problems.push(`${row.id}: version ${row.version}`);
     const name = row.line_name;
-    if (typeof name !== 'string' || name.trim() === '') problems.push(`${row.id}: line_label_invalid empty`);
-    else {
-      if (/\d/u.test(name)) problems.push(`${row.id}: line_label_invalid digit in "${name}"`);
-      if (ORDINAL.test(name)) problems.push(`${row.id}: line_label_invalid ordinal word in "${name}"`);
-    }
     if (!Number.isInteger(row.base_minutes) || row.base_minutes < 1) problems.push(`${row.id}: base_minutes ${row.base_minutes} is not a positive integer`);
     else if (profile && row.base_minutes > sliceStepMinutes) {
       // D56: no length ceiling; a line longer than the slice step needs a policy that slices it.
@@ -297,8 +308,6 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
       else if (!sliced) problems.push(`line_recheck_slicing_missing ${row.id}: ${row.base_minutes} min over the ${sliceStepMinutes}-minute step, recheck ${profile.dynamic_recheck_policy_id}: ${bad ?? `slices of more than ${sliceStepMinutes} minutes`}`);
     }
     if (row.availability_condition_set_ref !== null) problems.push(`${row.id}: availability_condition_set_ref must be null on a non-portal connection (D3)`);
-    const key = [row.from_canonical_g5_id, row.line_name, row.line_discriminator ?? '', row.line_direction_id ?? ''].join('|');
-    outgoing.set(key, (outgoing.get(key) ?? 0) + 1);
     const reverse = byId.get(row.reverse_binding_id);
     if (!reverse) { problems.push(`${row.id}: reverse binding ${row.reverse_binding_id} missing`); continue; }
     if (row.reverse_binding_version !== reverse.version || reverse.version !== VERSION) problems.push(`${row.id}: reverse_binding_version must be @3 (the reverse row)`);
@@ -309,8 +318,7 @@ export function checkLineWaveData(datasets, { spec, recheckPolicies = null, slic
     if (reverse.from_scene_endpoint_slot_key !== row.to_scene_endpoint_slot_key || reverse.to_scene_endpoint_slot_key !== row.from_scene_endpoint_slot_key) problems.push(`${row.id}: paired-slot rule (reverse.from = forward.to) violated`);
     if (reverse.source_pair_id !== row.source_pair_id) problems.push(`${row.id}: reverse belongs to another pair`);
   }
-  for (const [key, count] of outgoing) if (count > 1) problems.push(`line_label_duplicate ${key}`);
-  for (const pair of similarNamesPerPlace(rows).identical) problems.push(`line_label_near_duplicate ${pair}`);
+  problems.push(...lineNameProblems(rows));
   const versions = new Map(datasets[T.versions].map((row) => [`${row.entity_kind}|${row.entity_id}|${row.version}`, row]));
   if (recheckPolicies) {
     for (const profile of datasets[T.profiles]) {

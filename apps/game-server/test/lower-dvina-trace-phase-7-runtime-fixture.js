@@ -30,6 +30,8 @@ export function phase7Command({
   runNpcConversationExchange = null,
   conversationBindings = null,
   conversationActivity = null,
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
@@ -70,6 +72,8 @@ export function phase7Command({
     runNpcConversationExchange,
     conversationBindings,
     conversationActivity,
+    assertNeedsCheckAllowed,
+    recordNeedsCheckFilter,
     randomSource,
     temporalAdvanceOwner,
     revalidateStateVersion

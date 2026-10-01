@@ -84,7 +84,10 @@ export async function resolveOrdinaryContents({ canonical, revealContents,
         resolution_mode:revealContents ? 'reveal' : 'concealed'
       }
     }));
-  } catch {
+  } catch (error) {
+    if (['TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+      'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
+      'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(error?.code)) throw error;
     fail('TRACE_TURN_STEP_CONTAINER_ORDINARY_RESOLUTION_FAILED');
   }
   if (!exact(resolved, ['pass','materialized_items',

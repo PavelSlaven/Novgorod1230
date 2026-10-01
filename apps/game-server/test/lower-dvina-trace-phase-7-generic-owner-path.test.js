@@ -150,18 +150,25 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
           entity_ref: { entity_id: item_id }, source_perception_ref: `p:${item_id}`
         })) };
       const contracts = approvedPhase7Contracts(state);
+      const guardedA1Candidates = [];
       contracts.npcSemanticProfile = n1Profile();
       contracts.genericCheckContext.attributes.push({ attribute_ref: 'strength',
         label: 'сила', value: 10 });
       const loadedA1Profile = await loadLowerDvinaTraceA1Profile();
       const npcActorStep = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
         createActionProductionOwner: createLowerDvinaTraceA1ProductionResolverFactory({
-          pool: a1Pool(state, rows), loadedProfile: loadedA1Profile
+          pool: a1Pool(state, rows), loadedProfile: loadedA1Profile,
+          assertNeedsCheckAllowed: async ({ candidate }) => {
+            guardedA1Candidates.push(candidate);
+          }
         })
       });
       const npcOwnerCapabilities = await npcActorStep({ partyId: state.party_id,
         requestId: 'phase7-generic-owner-request', inputDigest: 'a'.repeat(64),
-        state, phase7Contracts: contracts });
+        state, phase7Contracts: contracts,
+        assertNeedsCheckAllowed: async ({ candidate }) => {
+          guardedA1Candidates.push(candidate);
+        } });
       const actionCapability = npcOwnerCapabilities.find(({ operation: name }) =>
         name === 'request_item_use');
       const projectedA1 = actionCapability?.capability.action_production;
@@ -184,6 +191,8 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
         return checkedA1Plan(request, operation.makeOperation(request.npc_ref));
       } });
       const phase7 = consequence.phase7;
+      assert.deepEqual(guardedA1Candidates, [],
+        'preserve_source keeps the existing item and bypasses the blocker');
       assert.equal(rngCalls, 1);
       assert.equal(phase7.actor_step_check.result.outcome.band,
         changed ? 'clean_success' : 'failure_with_consequence');
@@ -239,6 +248,55 @@ test('Phase 7 checked A1 preflights owner before RNG', async () => {
   { code: 'TRACE_A1_PREFLIGHT_DENIED' });
   assert.deepEqual({ preflight, rng }, { preflight: 1, rng: 0 });
 });
+
+test('A1 preflight checks independent output descriptor before admission',
+  async () => {
+    const state = phase7CommittedState();
+    const rows = a1Rows();
+    state.items.push(...detached(rows));
+    const loadedProfile = await loadLowerDvinaTraceA1Profile();
+    let guardedCandidate;
+    let guardCalls = 0;
+    const owner = createLowerDvinaTraceA1ProductionResolverFactory({
+      pool: a1Pool(state, rows), loadedProfile,
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        guardCalls += 1;
+        guardedCandidate = candidate;
+        throw Object.assign(new Error('blocked'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+        });
+      }
+    })({ partyId: state.party_id, requestId: 'a1-blocked-preflight' });
+    const operation = genericOwners()[1].makeOperation('zhdanko-1');
+    operation.action_production = { ...operation.action_production,
+      identity_mode: 'independent_outputs', origin: 'crafted',
+      result_class: 'partial_transformation', material_extent: 'minor',
+      result_descriptor: { display_name: 'механизм',
+        physical_description: 'новый предмет с признаками павлина',
+        qualitative_facts: ['павлина можно узнать по хвосту'],
+        removed_physical_fact_refs: [], inscription_text: null,
+        physical_form: 'regular', source_fact_delta: {
+          physical_description: 'источник без выделенной части',
+          qualitative_facts: [], removed_physical_fact_refs: [],
+          physical_form: 'regular'
+        } }
+    };
+    const envelope = { actor: { actor_id: 'zhdanko-1' }, operation,
+      committed_state: state, request: { root_turn_id:
+        `turn:${state.party_id}:${state.party_state.turn_number + 1}`,
+        step_index: 1,
+        committed_state_version: state.party_state.state_version },
+      plan: { interpretation: { grounded_attempt: 'сделать новый предмет' } } };
+    await assert.rejects(() => owner.preflight(envelope), {
+      code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED'
+    });
+    assert.equal(guardedCandidate.path, 'A1.preflight.result_descriptor');
+    assert.equal(guardedCandidate.name, 'механизм');
+    assert.ok(guardedCandidate.qualitative_facts.some((fact) =>
+      fact.includes('павлина')));
+    assert.equal(guardCalls, 1,
+      'NPC A1 must continue to invoke the needs-check guard');
+  });
 
 function genericOwners() {
   return [{ operation: 'request_discovery', activity_owner: 'domain',

@@ -84,7 +84,7 @@ test('Stage24 canonical batches persist full approved scene in PostgreSQL withou
     '-e', 'POSTGRES_USER=test', '-e', 'POSTGRES_PASSWORD=test', '-e', 'POSTGRES_DB=test', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   for (let attempt = 0; attempt < 60; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'test']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'test']).status === 0) break;
     await new Promise((done) => setTimeout(done, 300));
   }
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)/)[1]);

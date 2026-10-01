@@ -55,7 +55,7 @@ async function startContainer(name) {
   let ready = false;
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 350));
-    if (docker(['exec', name, 'pg_isready', '-U', 'ledger', '-d', 'ledger']).status === 0) {
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'ledger', '-d', 'ledger']).status === 0) {
       ready = true;
       break;
     }

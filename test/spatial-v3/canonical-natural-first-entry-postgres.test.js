@@ -41,7 +41,7 @@ test('PostgreSQL: a canonical commons G5 gets its approved finite source, and a 
   let ready = false;
   for (let attempt = 0; attempt < 60; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 250));
-    if (docker(['exec', container, 'pg_isready', '-U', 'ordinary']).status === 0) { ready = true; break; }
+    if (docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'ordinary']).status === 0) { ready = true; break; }
   }
   assert.equal(ready, true);
   await new Promise((resolve) => setTimeout(resolve, 500));

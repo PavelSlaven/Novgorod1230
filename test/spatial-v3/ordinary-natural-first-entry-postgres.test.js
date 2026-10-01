@@ -72,7 +72,7 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   let ready = false;
   for (let attempt = 0; attempt < 60; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 250));
-    if (docker(['exec', container, 'pg_isready', '-U', 'ordinary']).status === 0) {
+    if (docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'ordinary']).status === 0) {
       ready = true; break;
     }
   }

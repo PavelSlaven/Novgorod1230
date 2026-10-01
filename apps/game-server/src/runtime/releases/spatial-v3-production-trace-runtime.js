@@ -69,10 +69,12 @@ import { createNeedsCheckMaterializationGuard } from
   '../needs-check-materialization-guard.js';
 import { createNeedsCheckRegionResolver } from
   '../../infrastructure/postgres/needs-check-region-resolver.js';
+import { createPostgresWorldBaseReader } from
+  '../../infrastructure/postgres/world-base.js';
 import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
 
 export function createTraceTurnRuntime({
-  partyPool, committer, env, config, ordinaryMaterializationProfile,
+  partyPool, worldPool, committer, env, config, ordinaryMaterializationProfile,
   ordinaryContainerContentsProfile, ordinaryStageBApproval,
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
@@ -129,15 +131,15 @@ export function createTraceTurnRuntime({
     worldKnowledgeGrounder
   });
   const materializationInputs = targetStartRuntime?.materialization_inputs;
+  const runtimeCatalogWorldBaseReader = worldPool == null ? null
+    : createPostgresWorldBaseReader({ pool: worldPool });
   const partyCatalogCoordinator = targetStartRuntime == null ? null
-    : createRuntimeCatalogCoordinator({ worldBaseReader: {
-        read: targetStartRuntime.worldBaseReader.read.bind(
-          targetStartRuntime.worldBaseReader)
-      }, partyPool, itemPin: targetStartRuntime.itemPin });
+    : createRuntimeCatalogCoordinator({ worldBaseReader: runtimeCatalogWorldBaseReader,
+        partyPool, itemPin: targetStartRuntime.itemPin });
   const needsCheckGuard = targetStartRuntime == null ? null
     : createNeedsCheckMaterializationGuard({
         resolveRegion: createNeedsCheckRegionResolver({
-          worldBaseReader: targetStartRuntime.worldBaseReader }),
+          worldBaseReader: runtimeCatalogWorldBaseReader }),
         calendarProfile: materializationInputs?.calendar_profile
       });
   const ordinaryDiscoveryScopeBinding =

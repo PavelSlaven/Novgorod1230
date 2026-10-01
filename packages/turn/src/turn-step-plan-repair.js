@@ -13,15 +13,21 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   // Repair reuses this immutable snapshot and its existing grounding identity.
   let modelRequest = null;
   try {
+    const initialPlan = await requestAndValidateTurnStepPlan({ request,
+      turnStepModel: async (safeRequest) => {
+        modelRequest = safeRequest;
+        const output = await turnStepModel(safeRequest);
+        originalOutput = structuredClone(output);
+        return output;
+      }, semanticPlanValidator, preparedChainContext, attempt: 1 });
+    const noOpCanonicalization = realityLimitedNoOpCanonicalization(
+      initialPlan, request);
     return {
-      plan: await requestAndValidateTurnStepPlan({ request,
-        turnStepModel: async (safeRequest) => {
-          modelRequest = safeRequest;
-          const output = await turnStepModel(safeRequest);
-          originalOutput = structuredClone(output);
-          return output;
-        }, semanticPlanValidator, preparedChainContext, attempt: 1 }),
-      repaired: false
+      plan: noOpCanonicalization?.plan ?? initialPlan,
+      repaired: false,
+      ...(noOpCanonicalization == null ? {} : {
+        canonicalizations: noOpCanonicalization.diagnostics
+      })
     };
   } catch (error) {
     const parseFailure = error?.code === 'json_parse_failed';
@@ -90,20 +96,26 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     });
     let repairedOutput = null;
     try {
+      const repairedPlan = await requestAndValidateTurnStepPlan({
+        request,
+        turnStepModel: async (safeRequest) => {
+          const output = await turnStepModel(modelRequest ?? safeRequest,
+            repairContext);
+          repairedOutput = structuredClone(output);
+          return output;
+        },
+        semanticPlanValidator,
+        preparedChainContext,
+        attempt: 2
+      });
+      const noOpCanonicalization = realityLimitedNoOpCanonicalization(
+        repairedPlan, request);
       return {
-        plan: await requestAndValidateTurnStepPlan({
-          request,
-          turnStepModel: async (safeRequest) => {
-            const output = await turnStepModel(modelRequest ?? safeRequest,
-              repairContext);
-            repairedOutput = structuredClone(output);
-            return output;
-          },
-          semanticPlanValidator,
-          preparedChainContext,
-          attempt: 2
-        }),
-        repaired: true
+        plan: noOpCanonicalization?.plan ?? repairedPlan,
+        repaired: true,
+        ...(noOpCanonicalization == null ? {} : {
+          canonicalizations: noOpCanonicalization.diagnostics
+        })
       };
     } catch (repairError) {
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
@@ -132,6 +144,29 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw normalizedError;
     }
   }
+}
+
+function realityLimitedNoOpCanonicalization(plan, request) {
+  if (plan?.resolution !== 'direct' || plan.goal_result !== 'achieved'
+      || plan.interpretation?.adaptation !== 'reality_limited'
+      || !Array.isArray(plan.operations) || plan.operations.length !== 0
+      || plan.direct_result_kind !== 'player_safe_observation'
+      || plan.check !== null || plan.continuation !== null
+      || plan.clarification !== null || plan.utterance !== undefined) return null;
+  const normalized = structuredClone(plan);
+  const diagnostics = [
+    { path: '$.goal_result', old_value: 'achieved', new_value: 'not_achieved' },
+    { path: '$.direct_result_kind', old_value: 'player_safe_observation',
+      new_value: null }
+  ];
+  if (Object.hasOwn(normalized, 'assessment')) {
+    diagnostics.push({ path: '$.assessment',
+      old_value: structuredClone(normalized.assessment), new_value: null });
+    delete normalized.assessment;
+  }
+  normalized.goal_result = 'not_achieved';
+  normalized.direct_result_kind = null;
+  return { plan: validateAndFreezePlan(normalized, request), diagnostics };
 }
 
 const SEMANTIC_REPAIR_CODES = new Set([

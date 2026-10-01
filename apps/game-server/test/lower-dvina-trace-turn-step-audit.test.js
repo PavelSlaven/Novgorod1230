@@ -112,6 +112,43 @@ test('turn-step commit preserves the exact A1 canonicalization diagnostic', () =
   assert.equal(validateTurnStepCommitEnvelope(envelope).ok, false);
 });
 
+test('turn-step commit preserves reality-limited no-op canonicalization values', () => {
+  const envelope = commitEnvelope({ clarification: false, check: false });
+  const trace = envelope.loop_trace.step_traces[0];
+  const oldAssessment = { text: 'Устройство не собрано.',
+    support_refs: ['item:shirt'] };
+  Object.assign(trace.plan_request, {
+    root_player_action: 'Пробую изготовить устройство из поданных вещей.',
+    remaining_intent: 'изготовить устройство из поданных вещей'
+  });
+  trace.approved_plan = { ...trace.approved_plan,
+    interpretation: { player_goal: trace.plan_request.root_player_action,
+      grounded_attempt: trace.plan_request.remaining_intent,
+      adaptation: 'reality_limited' },
+    resolution: 'direct', goal_result: 'not_achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: null, reason_code: 'reality_limited' };
+  delete trace.approved_plan.assessment;
+  trace.resolution = 'direct';
+  trace.goal_result = 'not_achieved';
+  trace.reason_code = 'reality_limited';
+  trace.canonicalizations = [
+    { path: '$.goal_result', old_value: 'achieved', new_value: 'not_achieved' },
+    { path: '$.direct_result_kind', old_value: 'player_safe_observation',
+      new_value: null },
+    { path: '$.assessment', old_value: oldAssessment, new_value: null }
+  ];
+  envelope.mode_resolution.decision_trace.step_traces[0] =
+    structuredClone(trace);
+  assert.deepEqual(validateTurnStepCommitEnvelope(envelope).errors, []);
+
+  trace.canonicalizations[1].old_value = 'player_utterance';
+  envelope.mode_resolution.decision_trace.step_traces[0] =
+    structuredClone(trace);
+  assert.equal(validateTurnStepCommitEnvelope(envelope).ok, false);
+});
+
 test('turn-step commit cross-binds every generic check to its loop plan', () => {
   const unmatched = commitEnvelope({ clarification: false, check: true });
   unmatched.checks.results = [];

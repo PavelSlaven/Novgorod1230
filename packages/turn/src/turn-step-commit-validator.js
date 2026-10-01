@@ -187,12 +187,13 @@ function validateStepTraces(errors, traces, envelope) {
 }
 
 function validCanonicalizations(canonicalizations, plan) {
-  return Array.isArray(canonicalizations) && canonicalizations.length === 1
-    && canonicalizations.every((entry) => {
-      if (!hasExact(entry, ['path', 'removed_fields'])
-          || !Array.isArray(entry.removed_fields)
-          || entry.removed_fields.length !== 1
-          || entry.removed_fields[0] !== 'description') return false;
+  if (!Array.isArray(canonicalizations)) return false;
+  if (canonicalizations.length === 1) {
+    const [entry] = canonicalizations;
+    if (hasExact(entry, ['path', 'removed_fields'])
+        && Array.isArray(entry.removed_fields)
+        && entry.removed_fields.length === 1
+        && entry.removed_fields[0] === 'description') {
       const match = /^\$\.operations(?:\.(\d+)|\[(\d+)\])\.description$/u
         .exec(entry.path ?? '');
       if (match == null) return false;
@@ -200,7 +201,35 @@ function validCanonicalizations(canonicalizations, plan) {
       return operation?.op === 'request_item_use'
         && operation.action_production != null
         && !Object.hasOwn(operation, 'description');
-    });
+    }
+  }
+  return validRealityLimitedNoOpCanonicalizations(canonicalizations, plan);
+}
+
+function validRealityLimitedNoOpCanonicalizations(entries, plan) {
+  if (entries.length < 2 || entries.length > 3
+      || !hasExact(entries[0], ['path', 'old_value', 'new_value'])
+      || entries[0].path !== '$.goal_result'
+      || entries[0].old_value !== 'achieved'
+      || entries[0].new_value !== 'not_achieved'
+      || !hasExact(entries[1], ['path', 'old_value', 'new_value'])
+      || entries[1].path !== '$.direct_result_kind'
+      || entries[1].old_value !== 'player_safe_observation'
+      || entries[1].new_value !== null) return false;
+  if (entries.length === 3) {
+    const assessment = entries[2];
+    if (!hasExact(assessment, ['path', 'old_value', 'new_value'])
+        || assessment.path !== '$.assessment'
+        || assessment.old_value?.constructor !== Object
+        || assessment.new_value !== null
+        || Object.hasOwn(plan ?? {}, 'assessment')) return false;
+  }
+  return plan?.resolution === 'direct'
+    && plan.interpretation?.adaptation === 'reality_limited'
+    && plan.goal_result === 'not_achieved'
+    && Array.isArray(plan.operations) && plan.operations.length === 0
+    && plan.direct_result_kind === null
+    && !Object.hasOwn(plan, 'assessment');
 }
 
 function validGenericCheckRequest(value) {

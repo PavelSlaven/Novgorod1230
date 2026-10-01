@@ -63,7 +63,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             `${JSON.stringify(request, null, 2)}\n`);
         }
       },
-      attest: ({ stage, request }) => {
+      attest: async ({ stage, request }) => {
         if (stage === 'item_baseline') return fixtureApproval(stage, {
           schema: 'rus.baseline_registration_attestation.v2',
           registration_request_digest: request.registration_request_digest,
@@ -116,10 +116,9 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             production_authorized: true, existing_party_migration_authorized: false,
             old_save_rematerialization_authorized: false }
         });
-        if (stage === 'm2c_lines_import') return fixtureApproval(stage, {
-          schema: 'rus.m2c_lines_v1_v17_import_approval.v1', decision: 'APPROVE',
-          request_digest: request.request_digest, independence_basis: 'Test-only approval fixture',
-          import_authorized: true, database_mutated: false });
+        if (stage === 'm2c_lines_import') return JSON.parse(await readFile(
+          'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-attestation.json',
+          'utf8'));
         if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
           schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
           independence_basis: 'Test-only approval fixture', database_mutated: false });
@@ -129,7 +128,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 224);
-    assert.equal(result.schema.party_migrations, 37);
+    assert.equal(result.schema.party_migrations, 38);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     // Distinct across five bundles; independent of the request field the bootstrap returns.
     const p12Readback = JSON.parse(await readFile(

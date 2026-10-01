@@ -24,6 +24,9 @@ END
 $$;
 
 ALTER TABLE party_runtime.g5_site_connections
+  ALTER COLUMN passage_type_id DROP NOT NULL;
+
+ALTER TABLE party_runtime.g5_site_connections
   ADD COLUMN IF NOT EXISTS line_kind_id text,
   ADD COLUMN IF NOT EXISTS line_kind_profile_ref jsonb,
   ADD COLUMN IF NOT EXISTS line_name text,
@@ -35,7 +38,8 @@ ALTER TABLE party_runtime.g5_site_connections
 ALTER TABLE party_runtime.g5_site_connections
   DROP CONSTRAINT IF EXISTS g5_site_connections_line_binding_ck,
   ADD CONSTRAINT g5_site_connections_line_binding_ck CHECK (
-    (line_kind_id IS NULL AND line_kind_profile_ref IS NULL AND line_name IS NULL
+    (line_kind_id IS NULL AND passage_type_id IS NOT NULL
+      AND line_kind_profile_ref IS NULL AND line_name IS NULL
       AND line_discriminator IS NULL AND line_direction_id IS NULL AND line_toponym IS NULL)
     OR
     (line_kind_id IS NOT NULL AND line_kind_profile_ref IS NOT NULL

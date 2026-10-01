@@ -3,9 +3,6 @@ import { validateConsequencePackage } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
-import { localEdgeOccupiedLabel } from './local-edge-occupancy.js';
-import { passagePhrases } from
-  '../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 
 export async function createTraceExpansionCommands({ state, requestId,
   inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
@@ -44,16 +41,21 @@ export async function createTraceExpansionCommands({ state, requestId,
         && row.ordered_local_edge_path.every((edge) => text(edge?.edge_id)
           && text(edge?.from_position_id) && text(edge?.to_position_id)))
       && ['open', 'occupied'].includes(localByEdge.get(row.edge_id)?.destination_status));
-  if (!approachValid(exitApproaches, 'directional_exit_id')
+  if (!approachValid(exitApproaches, 'directional_exit_id', true)
       || !approachValid(connectionApproaches, 'connection_binding_id', true)
       || !Array.isArray(connections)
       || connections.some((row) => !text(row?.connection_binding_id) || !text(row.display_label))
       || new Set(connections.map((row) => row.connection_binding_id)).size !== connections.length) {
     fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
   }
-  const approaches = [
-    ...exitApproaches.map(({ directional_exit_id: routeId, ...row }) => ({ ...row, routeId,
-      commandKey: 'approach_directional_exit', optionKey: 'directional_exit_approach' }))];
+  const selectedExits = [
+    ...candidates.map(({ directional_exit_id, display_label }) => ({ directional_exit_id,
+      display_label, ordered_local_edge_path: [] })),
+    ...exitApproaches.map(({ directional_exit_id, display_label, ordered_local_edge_path }) => ({
+      directional_exit_id, display_label, ordered_local_edge_path }))];
+  if (new Set(selectedExits.map((row) => row.directional_exit_id)).size !== selectedExits.length) {
+    fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
+  }
   const selectedConnections = [
     ...connections.map((row) => ({ ...row, ordered_local_edge_path: [] })),
     ...connectionApproaches
@@ -66,64 +68,6 @@ export async function createTraceExpansionCommands({ state, requestId,
     && current.actor_id === identity.actorId
     && current.party_state?.state_version === sourceVersion
     && isDeepStrictEqual(current.position, sourcePosition);
-  const approachCommands = approaches.length === 0
-    || typeof spatialLocalSceneRuntime?.prepareLocalMovement !== 'function' ? [] : approaches.map(
-    ({ routeId: exitId, edge_id: edgeId, display_label: exitLabel, commandKey, optionKey }) => {
-      const { destination_status: status } = localByEdge.get(edgeId);
-      // One neutral approved phrase for every exit: the target class is already in the exit
-      // label, the way of going (foot, boat) is not the label's business.
-      const approach = `${exitLabel} — ${passagePhrases.approach}`;
-      const label = status === 'occupied' ? localEdgeOccupiedLabel(approach) : approach;
-      // route_ref (the exit) keeps this structurally distinct from the plain local-scene
-      // operation for the same edge: bindings match structurally, so without it both commands
-      // would claim the same chosen operation (TURN_STEP_DOMAIN_BINDING_AMBIGUOUS).
-      const operation = { op: 'request_movement', actor_ref: identity.actorId,
-        target_ref: edgeId, movement_kind: 'local', route_ref: exitId, description: label };
-      return {
-        command_id: `live_world.${commandKey}:${exitId}`,
-        option_id: `${optionKey}:${exitId}`,
-        label, target_id: edgeId,
-        // Same structural signal as the plain local edge: the first step's own admission
-        // status, read from the local-scene owner, never from the text above.
-        semantic_grounding: { destination_status: status },
-        approved_record: null, preconditions: [],
-        expected_cost: { kind: 'owner_resolved' }, known_risks: [],
-        reason_visible_to_actor: label,
-        mode: mode('movement_route', ['movement']),
-        matches: () => false,
-        semantic_binding: {
-          binding_id: `${optionKey}:${exitId}`,
-          operation: 'request_movement', operation_dto: operation,
-          matches: ({ operation: selected }) => selected != null
-            && isDeepStrictEqual({ ...selected, description: label }, operation)
-        },
-        // Structural refusal, checked by turnStepBlockPlan before the attempt runs: the movement
-        // owner's full-occupancy verdict, which may cover occupants the actor cannot perceive.
-        async attemptRefusal({ committed_state: current }) {
-          if (typeof spatialLocalSceneRuntime.localEdgeAttemptStatus !== 'function') return null;
-          return await spatialLocalSceneRuntime.localEdgeAttemptStatus({ ...identity,
-            state: current, edgeId }) === 'occupied' ? 'destination_occupied' : null;
-        },
-        availability({ committed_state: current, retrievedState }) {
-          const state = current ?? retrievedState;
-          const sourceReady = currentSource(state);
-          const blocked = sourceReady && actorMovementBlocked(state);
-          return available(sourceReady && !blocked, [], !sourceReady
-            ? ['directional_exit_stale'] : blocked ? ['actor_movement_blocked'] : []);
-        },
-        // Same local-scene movement owner and the same edge a plain local-scene command
-        // would offer for this edge (A-B1-06) - only the description differs, naming the
-        // reachable exit so a "переправлюсь"/"иду к руслу" intent can name the approach
-        // directly; the framework's own multi-step turn plans the crossing as step 2 once
-        // this hop commits and the actor is genuinely at departure.
-        async consequence({ retrievedState: current, playerInput }) {
-          if (!currentSource(current)) fail('LIVE_WORLD_EXPANSION_SOURCE_STALE');
-          return spatialLocalSceneRuntime.prepareLocalMovement({ ...identity,
-            state: current, edgeId, playerInput, inputDigest });
-        },
-        writeTargets: () => []
-      };
-    });
   /** One crossing command: the route operation, its stale/blocked availability, and the two-stage
    * consequence (topology first, then the shared site traversal). `owner` names the runtime entry
    * points of the kind of passage: an exit of the G4 or a canonical connection inside it. */
@@ -162,20 +106,41 @@ export async function createTraceExpansionCommands({ state, requestId,
         if (!currentSource(current)) fail('LIVE_WORLD_EXPANSION_SOURCE_STALE');
         if (typeof traverse !== 'function') fail('LIVE_WORLD_TRAVERSAL_OWNER_MISSING');
         if (typeof prepare !== 'function') fail(ownerMissing);
+        let orderedPath = orderedLocalEdgePath;
+        if (commandKey === 'follow_directional_exit' && orderedPath.length === 0) {
+          const currentLocalOptions = typeof spatialLocalSceneRuntime?.listLocalOptions === 'function'
+            ? await spatialLocalSceneRuntime.listLocalOptions({ ...identity, state: current }) : [];
+          if (!Array.isArray(currentLocalOptions)) fail('SPATIAL_V3_LOCAL_OPTIONS_INVALID');
+          const currentApproaches = await runtime.listApproachOptions({ ...identity,
+            firstStepEdgeIds: currentLocalOptions.map((row) => row?.edge_id) });
+          if (!Array.isArray(currentApproaches)) fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
+          const currentApproach = currentApproaches.find((row) => row.directional_exit_id === routeId);
+          if (currentApproach) {
+            if (currentApproach.display_label !== label || !Array.isArray(currentApproach.ordered_local_edge_path)
+              || currentApproach.ordered_local_edge_path.length === 0
+              || currentApproach.ordered_local_edge_path[0]?.edge_id !== currentApproach.edge_id
+              || !currentApproach.ordered_local_edge_path.every((edge) => text(edge?.edge_id)
+                && text(edge?.from_position_id) && text(edge?.to_position_id))) {
+              fail('LIVE_WORLD_EXPANSION_OPTIONS_INVALID');
+            }
+            orderedPath = currentApproach.ordered_local_edge_path;
+          }
+        }
         const selected = { ...identity, [selectedKey]: routeId, requestId,
-          ...(orderedLocalEdgePath.length ? { ordered_local_edge_path: orderedLocalEdgePath } : {}) };
-        const expansion = await prepare(selected);
+          ...(orderedPath.length ? { ordered_local_edge_path: orderedPath } : {}) };
+        if (orderedPath.length
+          && typeof spatialLocalSceneRuntime.prepareLocalLineApproach !== 'function') {
+          fail('SPATIAL_V3_LOCAL_LINE_APPROACH_OWNER_MISSING');
+        }
+        const localEdgePathProofs = orderedPath.length
+          ? await spatialLocalSceneRuntime.prepareLocalLineApproach({
+            ...identity, state: current, orderedLocalEdgePath: orderedPath }) : [];
+        const expansion = await prepare({ ...selected,
+          ...(localEdgePathProofs.length ? { local_edge_path_proofs: localEdgePathProofs } : {}) });
         if (expansion?.ok !== true) {
           fail('LIVE_WORLD_EXPANSION_PREPARATION_FAILED', expansion?.error ?? null);
         }
         try {
-          if (orderedLocalEdgePath.length
-            && typeof spatialLocalSceneRuntime.prepareLocalLineApproach !== 'function') {
-            fail('SPATIAL_V3_LOCAL_LINE_APPROACH_OWNER_MISSING');
-          }
-          const localEdgePathProofs = orderedLocalEdgePath.length
-            ? await spatialLocalSceneRuntime.prepareLocalLineApproach({
-              ...identity, state: current, orderedLocalEdgePath }) : [];
           const consequence = await traverse({
             ...selected, state: current, playerInput, inputDigest, expansion,
             local_edge_path_proofs: localEdgePathProofs });
@@ -199,11 +164,12 @@ export async function createTraceExpansionCommands({ state, requestId,
     };
   };
   const runtime = spatialExpansionRuntime;
-  return [...approachCommands,
-    ...candidates.map(({ directional_exit_id: exitId, display_label: label }) => crossingCommand({
+  return [...selectedExits.map(({ directional_exit_id: exitId, display_label: label,
+    ordered_local_edge_path: orderedLocalEdgePath }) => crossingCommand({
       routeId: exitId, label, commandKey: 'follow_directional_exit', optionKey: 'directional_exit',
       selectedKey: 'directionalExitId', ownerMissing: 'LIVE_WORLD_EXPANSION_OWNER_MISSING',
-      prepare: runtime.prepareExpansion?.bind(runtime), traverse: runtime.prepareTraversal?.bind(runtime) })),
+      prepare: runtime.prepareExpansion?.bind(runtime), traverse: runtime.prepareTraversal?.bind(runtime),
+      orderedLocalEdgePath })),
     ...selectedConnections.map(({ connection_binding_id: bindingId, display_label: label,
       ordered_local_edge_path: orderedLocalEdgePath }) => crossingCommand({
       routeId: bindingId, label, commandKey: 'follow_canonical_connection', optionKey: 'canonical_connection',

@@ -36,6 +36,8 @@ test('the highest approved version wins per binding id, whatever the row order',
   assert.equal(result.value[0].profile.canonical_digest, digest, 'the traversal owner needs the profile digest');
   assert.deepEqual(calls[0].params, ['g4', 1, 'target', 'g5a', 1]);
   assert.match(calls[0].sql, /spatial_v3_canonical_g5_connection_bindings/u);
+  assert.match(calls[0].sql, /bav\.canonical_digest AS binding_digest/u);
+  assert.doesNotMatch(calls[0].sql, /b\.canonical_digest/u);
   assert.equal(Object.isFrozen(result.value), true);
 });
 

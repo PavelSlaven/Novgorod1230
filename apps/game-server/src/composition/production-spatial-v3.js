@@ -72,7 +72,7 @@ import { readCurrentNaturalSourceState } from
   '../infrastructure/postgres/g4-current-natural-source-state.js';
 import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from
   '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
-import { createTargetCurrentFactualContext } from
+import { createTargetCurrentFactualContext, requestCurrentPositionId } from
   '../infrastructure/postgres/target-current-factual-context.js';
 import { createTargetAuthoredStartCatalog } from '../internal/target-authored-start-catalog.js';
 import {
@@ -519,7 +519,7 @@ export async function readDestinationDirectionalExits({ context, current, worldB
 export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transaction, request,
   closure, envelopeInput, readCurrentSources } = {}) {
   const partyId = request.party_id; const actorId = request.actor_id;
-  const positionId = request.source_position_id;
+  const positionId = requestCurrentPositionId(request);
   const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
     state: { party_id: partyId, actor_id: actorId,
       journey_location: { scene_position_id: positionId } },

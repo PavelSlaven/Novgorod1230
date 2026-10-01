@@ -406,6 +406,8 @@ test('038 local-line party schema preflights legacy history and reapplies throug
   const lineColumnMap = new Map(lineColumns.rows.map((row) => [
     row.column_name, row.is_nullable
   ]));
+  assert.equal(lineColumnMap.get('passage_type_id'), 'YES',
+    'line rows may omit passage mechanics');
   for (const column of [
     'line_kind_id', 'line_kind_profile_ref', 'line_name', 'line_discriminator',
     'line_direction_id', 'line_toponym', 'source_canonical_connection_ref'
@@ -448,13 +450,25 @@ test('038 local-line party schema preflights legacy history and reapplies throug
       base_minutes,dynamic_recheck_policy_ref,status,state_version,
       created_change_set_id,updated_change_set_id
     ) VALUES (
-      'new-timed-line','legacy-party','legacy-from','legacy-to','passage.path',
+      'new-timed-line','legacy-party','legacy-from','legacy-to',NULL,
       'line_kind.path','{"entity_id":"line-kind-profile"}','Forest path',
       '{"entity_id":"environment"}','{"entity_id":"orientation"}',
       'time','movement.foot','{"entity_id":"movement-cost"}',20,
       '{"entity_id":"recheck-policy"}','active',0,'seed','seed'
     )
   `);
+  await assert.rejects(pool.query(`
+    INSERT INTO party_runtime.g5_site_connections(
+      id,party_id,from_site_id,to_site_id,passage_type_id,
+      transition_environment_profile_ref,movement_orientation_profile_ref,
+      cost_kind,action_units,status,state_version,created_change_set_id,
+      updated_change_set_id
+    ) VALUES (
+      'non-line-without-passage','legacy-party','legacy-from','legacy-to',NULL,
+      '{"entity_id":"environment"}','{"entity_id":"orientation"}',
+      'action',1,'active',0,'seed','seed'
+    )
+  `), (error) => error?.code === '23514');
   await assert.rejects(pool.query(`
     INSERT INTO party_runtime.g5_site_connections(
       id,party_id,from_site_id,to_site_id,passage_type_id,

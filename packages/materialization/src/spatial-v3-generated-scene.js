@@ -134,7 +134,24 @@ function connectionRows({ party_id, change_set_id, connectionId, mechanics, bind
   if ([mechanics.risk_profile_ref, mechanics.availability_condition_set_ref]
     .some((value) => value != null && versionedString(value) == null)) return null;
   const write = (target_table, id, record) => ({ target_table, id, record: { party_id, ...record } });
-  if (!binding) return null;
+  // Legacy generated connections stay valid until their expansion slot has an entry-line binding.
+  if (!binding) return [write('g5_site_connections', connectionId, { id: connectionId,
+    from_site_id: from.site_id, to_site_id: to.site_id,
+    ...clean(mechanics, ['passage_type_id', 'cost_kind', 'action_units', 'baseline_movement_method_id', 'base_minutes', 'capacity']),
+    transition_environment_profile_ref: optionalRef(mechanics, 'transition_environment_profile'),
+    movement_orientation_profile_ref: optionalRef(mechanics, 'movement_orientation_profile'),
+    movement_method_cost_profile_ref: optionalRef(mechanics, 'movement_method_cost_profile'),
+    dynamic_recheck_policy_ref: optionalRef(mechanics, 'dynamic_recheck_policy'),
+    line_kind_id: null, line_kind_profile_ref: null, line_name: null, line_discriminator: null,
+    line_direction_id: null, line_toponym: null, source_canonical_connection_ref: null,
+    risk_profile_ref: versionedString(mechanics.risk_profile_ref),
+    availability_condition_set_ref: versionedString(mechanics.availability_condition_set_ref),
+    status: 'active', state_version: 1, created_change_set_id: change_set_id,
+    updated_change_set_id: change_set_id }),
+  ...[['from', from], ['to', to]].map(([role, end]) => write('party_site_connection_endpoint_bindings',
+    `${connectionId}:${role}`, { id: `${connectionId}:${role}`, site_connection_id: connectionId,
+      endpoint_role: role, g5_site_id: end.site_id, position_id: end.position_id, source_slot_key: end.slot_key,
+      status: 'active', state_version: 1, activated_change_set_id: change_set_id }))];
   const lineKindProfileRef = mechanics.line_kind_profile_ref
     ?? (binding.line_kind_profile_id == null ? null : ref(binding.line_kind_profile_id, binding.line_kind_profile_version));
   const movementOrientationRef = mechanics.movement_orientation_profile_ref
@@ -165,6 +182,7 @@ function connectionRows({ party_id, change_set_id, connectionId, mechanics, bind
   return [write('g5_site_connections', connectionId, { id: connectionId,
     from_site_id: from.site_id, to_site_id: to.site_id,
     ...clean(mechanics, ['passage_type_id', 'baseline_movement_method_id', 'capacity']),
+    passage_type_id: null,
     cost_kind: 'time', action_units: null, base_minutes: Number(binding.base_minutes),
     line_kind_id: mechanics.line_kind_id, line_kind_profile_ref: lineKindProfileRef,
     line_name: binding.line_name, line_discriminator: binding.line_discriminator ?? null,
@@ -215,8 +233,10 @@ export function materializeSpatialV3CanonicalConnection({ party_id, change_set_i
     || terminal_target.slot_key !== binding.to_scene_endpoint_slot_key || !text(terminal_target.position_id)
     || !sameCanonical(target, binding.to_canonical_g5_id, binding.to_canonical_g5_version)
     || target.parent_g4_id !== binding.parent_g4_id) return reject('prepared_canonical_terminal_endpoint_required');
+  const expectedProfileId = binding.connection_profile_id ?? binding.line_kind_profile_id;
+  const expectedProfileVersion = binding.connection_profile_version ?? binding.line_kind_profile_version;
   if (profile.status !== 'approved' || profile.profile_scope !== 'site_connection'
-    || profile.id !== binding.connection_profile_id || profile.version !== binding.connection_profile_version
+    || profile.id !== expectedProfileId || profile.version !== expectedProfileVersion
     || profile.availability_condition_set_ref != null || profile.cost_kind !== 'time'
     || profile.action_units != null) {
     return reject('exact_connection_profile_required');
@@ -278,6 +298,17 @@ export function materializeSpatialV3Expansion({ party_id, change_set_id, closure
   const profiles = closure.connection_profiles ?? [];
   if (profiles.length !== 1 || profiles[0].status !== 'approved') return reject('exact_connection_profile_required');
   const mechanics = profiles[0];
+  const entryLineFields = Object.entries(slot).filter(([key, value]) => key.startsWith('entry_line_') && value != null);
+  const entryLineName = slot.entry_line_name;
+  const entryLineMinutes = slot.entry_line_minutes;
+  const incompleteEntryLine = slot.entry_line_kind_profile_ref == null
+    || typeof entryLineName !== 'string' || !entryLineName.trim()
+    || !Number.isSafeInteger(entryLineMinutes) || entryLineMinutes < 1
+    || slot.continuation_role === 'through'
+      && (typeof slot.entry_line_direction_id !== 'string' || !slot.entry_line_direction_id.trim());
+  if (entryLineFields.length && incompleteEntryLine) {
+    return reject('approved_generated_entry_line_binding_required');
+  }
   const terminal = selection.status === 'terminal';
   const arrival = terminal ? terminal_target : scene?.endpoints?.find((row) => ['arrival', 'both'].includes(row.endpoint_role));
   if (terminal && (!arrival || arrival.canonical_g5_id !== exit.exit_canonical_g5_id

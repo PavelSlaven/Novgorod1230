@@ -2,7 +2,7 @@
 
 Review [fresh-schema-request.json](fresh-schema-request.json) at source commit
 `1114da73aaa60b1b0d941a20d28bca9b004a3476`. Request SHA-256:
-`cc76fa8b0e1a4c05faccf697cb58ee139e9ee9ba284f010653e541bad542f6db` (16171 bytes).
+`0d344476fdf56008fc000322dd457a9db9c62a7cd7cc396a63597623e7844661` (16171 bytes).
 This is a pending request, not an approval or execution record.
 
 Requested target is two **new** databases in the existing managed local-play
@@ -11,7 +11,7 @@ PostgreSQL cluster: `novgorod_world_v17` owned by `world_operator`, and
 `novgorod_party` must remain unchanged. Independent Sol high review must verify
 the exact request, source commit, all 30 world DDL parts, the world entrypoint,
 the ordered 38 party migrations and chain digest
-`2945088ee52a94fef28dd40b5009d64d0eff5f16a49dfee0e1d06d4d37759d02` before any write.
+`91f177ac5899f49400c8b4bf8d381aeff30ae20c155d4c196021f0311be52e0b` before any write.
 
 The operator must confirm cluster identity, database absence, roles, and a
 verified backup before creating either database. Stop if either v17 name exists.

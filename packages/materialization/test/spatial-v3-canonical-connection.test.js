@@ -60,6 +60,7 @@ test('writes the connection and both endpoints beside the prepared terminal, and
   const [connection, from, to] = proposal.inserts.slice(1).map((row) => row.record);
   assert.equal(connection.from_site_id, 'siteA');
   assert.equal(connection.to_site_id, 'siteB');
+  assert.equal(connection.passage_type_id, null);
   assert.deepEqual({ cost_kind: connection.cost_kind, action_units: connection.action_units,
     base_minutes: connection.base_minutes, line_kind_id: connection.line_kind_id,
     line_kind_profile_ref: connection.line_kind_profile_ref, line_name: connection.line_name,
@@ -75,6 +76,22 @@ test('writes the connection and both endpoints beside the prepared terminal, and
     ['from', 'siteA', 'posA', 'departure']);
   assert.deepEqual([to.endpoint_role, to.g5_site_id, to.position_id, to.source_slot_key],
     ['to', 'siteB', 'posB', 'arrival']);
+});
+
+test('accepts a binding whose approved connection mechanics come from its line-kind profile', () => {
+  const base = input();
+  const binding = { ...base.binding, connection_profile_id: null, connection_profile_version: null };
+  const profile = { ...base.profile, id: 'line.path', version: 1,
+    line_kind_profile_id: 'line.path', line_kind_profile_version: 1 };
+  const result = materializeSpatialV3CanonicalConnection({ ...base, binding, profile });
+
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.proposal.inserts.find((row) => row.target_table === 'g5_site_connections')
+    .record.source_canonical_connection_ref.entity_id, binding.id);
+  const mismatched = materializeSpatialV3CanonicalConnection({ ...base, binding,
+    profile: { ...profile, line_kind_profile_id: 'other' },
+    line_binding: { ...base.line_binding, line_kind_profile_ref: 'other@1' } });
+  assert.equal(mismatched.ok, false, 'the line binding still must match the binding profile');
 });
 
 test('refuses inputs that do not match the approved binding', () => {
@@ -95,21 +112,21 @@ test('refuses inputs that do not match the approved binding', () => {
   assert.ok(rejected({ terminal_writes: [] }), 'target site neither committed nor prepared');
 });
 
-test('generated expansion without an approved entry line fails closed', () => {
+function materializeGeneratedExpansion(slotFields = {}) {
   const sourceSite = { id: 'source', origin: 'canonical', parent_g4_id: 'g4', status: 'active',
     canonical_g5_ref: ref('g5a', 1) };
   const targetSite = { id: 'target', origin: 'canonical', parent_g4_id: 'g4', status: 'active',
     canonical_g5_ref: ref('g5b', 1) };
   const profile = { id: 'expansion', version: 1 };
   const slot = { id: 'slot', version: 1, g4_id: 'g4', direction_context_id: 'direction',
-    continuation_length_rule_id: 'length', continuation_length_rule_version: 1 };
+    continuation_length_rule_id: 'length', continuation_length_rule_version: 1, ...slotFields };
   const pins = [{ dependency_role: 'source_authoring',
     entity_ref: { entity_kind: 'g4_expansion_profile', entity_id: 'expansion' },
     version_pin: { pin_kind: 'authoring_version', authoring_version: '1' } }];
   const actionConnection = { status: 'approved', passage_type_id: 'passage.local', cost_kind: 'action',
     action_units: 1, transition_environment_profile_id: 'environment',
     transition_environment_profile_version: 1 };
-  const result = materializeSpatialV3Expansion({ party_id: 'p', change_set_id: 'cs',
+  return materializeSpatialV3Expansion({ party_id: 'p', change_set_id: 'cs',
     closure: { profile, connection_profiles: [actionConnection],
       entry_endpoint_bindings: [{ id: 'entry', version: 1, canonical_g5_id: 'g5a', canonical_g5_version: 1,
         departure_scene_endpoint_slot_key: 'departure' }], continuation_length_candidates: [] },
@@ -125,8 +142,41 @@ test('generated expansion without an approved entry line fails closed', () => {
     candidate_ordinal: 0, dependency_pins: { pins, canonical_digest: canonicalDigest(pins) }, now: 0,
     terminal_target: { site_id: 'target', canonical_g5_id: 'g5b', canonical_g5_version: 1,
       position_id: 'target-position', slot_key: 'arrival' }, materialization_trace_id: 'trace' });
+}
+
+test('generated expansion without entry-line fields keeps legacy connection mechanics', () => {
+  const result = materializeGeneratedExpansion();
+  assert.equal(result.ok, true);
+  const connection = result.proposal.inserts.find((row) => row.target_table === 'g5_site_connections').record;
+  assert.equal(connection.cost_kind, 'action');
+  assert.equal(connection.action_units, 1);
+  assert.equal(connection.passage_type_id, 'passage.local');
+  assert.equal(connection.line_kind_id ?? null, null);
+  assert.equal(connection.line_kind_profile_ref ?? null, null);
+  assert.equal(connection.line_name ?? null, null);
+  assert.equal(connection.line_discriminator ?? null, null);
+  assert.equal(connection.line_direction_id ?? null, null);
+  assert.equal(connection.line_toponym ?? null, null);
+  assert.equal(connection.source_canonical_connection_ref ?? null, null);
+});
+
+test('partially populated generated entry-line binding fails closed', () => {
+  const result = materializeGeneratedExpansion({ entry_line_name: 'лесная дорога' });
   assert.equal(result.ok, false);
   assert.equal(result.error.code, 'authoring_dependency_pin_missing');
   assert.equal(result.error.diagnostics.reason, 'approved_generated_entry_line_binding_required');
   assert.equal(result.error.diagnostics.invalid_dependency_pins, undefined);
+
+  const missingThroughDirection = materializeGeneratedExpansion({ continuation_role: 'through',
+    entry_line_kind_profile_ref: ref('line.path.profile', 1), entry_line_name: 'лесная дорога',
+    entry_line_minutes: 12 });
+  assert.equal(missingThroughDirection.ok, false);
+  assert.equal(missingThroughDirection.error.diagnostics.reason, 'approved_generated_entry_line_binding_required');
+});
+
+test('branch entry-line binding may omit direction', () => {
+  const result = materializeGeneratedExpansion({ continuation_role: 'branch',
+    entry_line_kind_profile_ref: ref('line.path.profile', 1), entry_line_name: 'лесная дорога',
+    entry_line_minutes: 12 });
+  assert.equal(result.ok, true);
 });

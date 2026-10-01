@@ -219,14 +219,14 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     return true;
   });
 
-  // Party fresh: full 001-037 via runner.
+  // Party fresh: full 001-038 via runner.
   const partyFresh = new pg.Pool({
     host: '127.0.0.1', port, user: 'postgres', password: 'local_only',
     database: 'party_m2c_fresh', max: 2
   });
   pools.push(partyFresh);
   const applied = await runSpatialV3TargetMigrations(partyFresh);
-  assert.equal(applied.applied, 37);
+  assert.equal(applied.applied, 38);
 
   // Party v16-era: 001-036 then 037.
   const partyV16 = new pg.Pool({
@@ -323,7 +323,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
         ENABLE TRIGGER party_npc_schedule_party_reference_valid
     `);
 
-    // Server start re-runs 012-037 through the runner over an existing party DB
+    // Server start re-runs 012-038 through the runner over an existing party DB
     // that already holds rows (F13). Ledger row makes the runner reuse 001-011.
     await pool.query(await readFile(
       'tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql', 'utf8'));
@@ -340,7 +340,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
       exactAppliedMigration: ledger
     });
     assert.equal(restart.execution_mode, 'extended_existing');
-    assert.equal(restart.newly_applied, 26);
+    assert.equal(restart.newly_applied, 27);
     assert.equal((await pool.query(
       `SELECT count(*)::int AS n FROM party_runtime.party_npc_spatial_schedules`
     )).rows[0].n, 1);

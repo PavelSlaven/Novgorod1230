@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { bootstrapV17PresenceE2e, createPresenceProductionRoot,
-  installPresenceProductionE2eFetch, publicStartScenario } from './presence-rules-production-e2e-fixture.js';
+  installPresenceProductionE2eFetch, publicStartScenario, submitObserveTurn } from './presence-rules-production-e2e-fixture.js';
 import { createRouteWalker, peopleAt } from './route-people-helpers.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 /**
  * The people mechanism against a real v17 database with the approved people data (people-d49): a place whose composition
@@ -18,6 +19,7 @@ test('a composition floor puts a person on the place; coming back neither adds n
     let root = await createPresenceProductionRoot(env);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_household_cluster_v1');
+    await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
     const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
     assert.equal((await walker.where()).name, 'household_cluster', 'the start may hold nobody from the composition');
     const restart = async () => { await root.runtime.close(); root = await createPresenceProductionRoot(env); };

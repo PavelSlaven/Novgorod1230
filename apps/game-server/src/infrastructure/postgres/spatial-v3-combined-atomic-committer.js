@@ -147,6 +147,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         return Object.freeze({ ok: false, error: error(
           cause.spatialCode ?? 'generated_schema_mismatch', party_id, {
             reason: cause.message,
+            ...(diagnosticCause(cause) ? { cause: diagnosticCause(cause) } : {}),
             ...(cause.transaction_rollback_confirmed === true
               ? { turn_commit_status: 'not_started' } : {})
           }) });
@@ -341,6 +342,26 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
 }
 function rejectedBeforeCommit(code, partyId, diagnostics) { return Object.freeze({ ok: false, error: error(code, partyId, { ...diagnostics, turn_commit_status: 'not_started' }) }); }
 function markNotStarted(result) { return Object.freeze({ ...result, error: Object.freeze({ ...result.error, diagnostics: Object.freeze({ ...result.error?.diagnostics, turn_commit_status: 'not_started' }) }) }); }
+function diagnosticCause(cause, depth = 0) {
+  if (!cause || depth >= 8) return null;
+  const diagnostics = cause.details?.diagnostics ?? cause.diagnostics;
+  const nested = cause.cause ?? cause.details?.cause ?? diagnostics?.cause;
+  const reason = cause.details?.reason ?? diagnostics?.reason;
+  const context = cause.details?.diagnostic_context ?? diagnostics?.context;
+  const safeContext = context && typeof context === 'object' && !Array.isArray(context)
+    ? Object.fromEntries(Object.entries(context).filter(([key, value]) =>
+      typeof value === 'boolean' || Number.isSafeInteger(value)
+      || (['source_position_id', 'actor_scene_position_id'].includes(key)
+        && typeof value === 'string'))) : null;
+  const result = {
+    ...(typeof (cause.code ?? cause.spatialCode) === 'string'
+      ? { code: cause.code ?? cause.spatialCode } : {}),
+    ...(typeof reason === 'string' ? { reason } : {}),
+    ...(safeContext && Object.keys(safeContext).length ? { context: safeContext } : {}),
+    ...(nested ? { cause: diagnosticCause(nested, depth + 1) } : {})
+  };
+  return Object.keys(result).length ? result : null;
+}
 function ordinaryOwnedVersionDelta(plan, write) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   return write.target_table === 'party_containers'

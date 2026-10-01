@@ -122,6 +122,29 @@ test('preparing a connection asks the adapter once with the exact source; a comm
   assert.equal(seen.length, 1);
 });
 
+test('canonical connection forwards the ordered local approach and its proofs into P16 admission', async () => {
+  const current = context();
+  const focus = { id: 'focus-position', template_slot_key: 'focus', template_instance_ordinal: 0 };
+  const departure = current.position;
+  current.position = focus;
+  current.scene = { ...current.scene, positions: [focus, departure], movement_edges: [
+    { id: 'edge-1', from_position_id: focus.id, to_position_id: departure.id, status: 'active' }] };
+  const path = [{ edge_id: 'edge-1', from_position_id: focus.id, to_position_id: departure.id }];
+  const proofs = [{ ...path[0], snapshot_version: 'v6' }];
+  let received;
+  const runtime = runtimeFor(current, { generatedExpansionAdapter: {
+    prepareCanonicalConnection: async (request) => { received = request; return { ok: true }; }
+  } });
+
+  await runtime.prepareConnection({ ...identity, connectionBindingId: 'b-water',
+    ordered_local_edge_path: path, local_edge_path_proofs: proofs });
+
+  assert.equal(received.source_position_id, departure.id);
+  assert.equal(received.approach_origin_position_id, focus.id);
+  assert.deepEqual(received.ordered_local_edge_path, path);
+  assert.deepEqual(received.local_edge_path_proofs, proofs);
+});
+
 test('traversal runs the shared site traversal with the binding profile and the committed connection', async () => {
   const current = context();
   const connection = { id: 'canconn:party:b-water', status: 'active', from_site_id: 'site-a' };

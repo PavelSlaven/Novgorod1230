@@ -41,21 +41,41 @@ test('arrival with no local path to departure offers no expansion and neither mu
   assert.deepEqual(await runtime.listApproachOptions(identity), []);
   await assert.rejects(runtime.prepareExpansion(identity), (e) => e.details.reason === 'selected_exit_unavailable');
 });
-test('an arrival position from which departure is reachable by a local edge offers the approach, not the crossing (A-B1-06)', async () => {
+test('an arrival position carries the ordered local approach into one generated-exit request', async () => {
   const current = context();
   const departurePosition = current.position;
   current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
   current.scene = { ...current.scene, positions: [current.position, departurePosition],
     movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position',
       to_position_id: departurePosition.id, status: 'active' }] };
+  const path = [{ edge_id: 'local-edge-1', from_position_id: 'arrival-position',
+    to_position_id: 'departure-position' }];
+  const calls = [];
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
-    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
-  // No executable crossing from here - it would fail prepareTraversal's committed-position check.
-  assert.deepEqual(await runtime.listExpansionOptions(identity), []);
-  // Instead, the first local hop toward departure, labelled with the exit's own stable text -
-  // the same local-scene edge the local-scene movement owner would offer and execute.
+    materializerVersion: 'version', generatedExpansionAdapter: {
+      prepareExpansion: async (input) => { calls.push(['prepare', input]); return { ok: true,
+        connection_id: 'generated', source_position_id: 'departure-position' }; }
+    }, prepareSiteTraversal: async (input) => { calls.push(['traverse', input]); return input; } });
   assert.deepEqual(await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] }),
-    [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1', display_label: 'Продолжить путь' }]);
+    [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1',
+      ordered_local_edge_path: path, display_label: 'Продолжить путь' }]);
+  const expansion = await runtime.prepareExpansion({ ...identity, ordered_local_edge_path: path,
+    local_edge_path_proofs: ['verified'] });
+  assert.equal(calls[0][1].source_position_id, 'departure-position');
+  assert.equal(calls[0][1].approach_origin_position_id, 'arrival-position');
+  assert.deepEqual(calls[0][1].ordered_local_edge_path, path);
+  current.snapshot.frontiers = [{ id: 'frontier', source_g5_site_id: 'source-site',
+    slot_ref: { entity_id: 'slot', authoring_version: '3' }, continuation_ordinal: 0,
+    continuation_chain_id: 'chain', status: 'consumed', resolved_site_connection_id: 'generated' }];
+  current.snapshot.chains = [{ id: 'chain', terminal_ordinal: 0 }];
+  current.snapshot.bindings = [{ frontier_id: 'frontier', position_id: 'departure-position', status: 'inactive' }];
+  current.snapshot.site_connections = [{ id: 'generated', from_site_id: 'source-site', status: 'active' }];
+  current.snapshot.endpoint_bindings = [{ site_connection_id: 'generated', endpoint_role: 'from',
+    status: 'active', position_id: 'departure-position' }];
+  await runtime.prepareTraversal({ ...identity, ordered_local_edge_path: path,
+    local_edge_path_proofs: ['verified'], expansion });
+  assert.equal(calls[1][1].context.approach_departure_position.id, 'departure-position');
+  assert.deepEqual(calls[1][1].local_edge_path_proofs, ['verified']);
 });
 test('the first approach step is taken only from the edges the local-scene owner offered (F3)', async () => {
   const current = context();
@@ -190,6 +210,51 @@ test('generation admission checks all natural layers and rechecks exact actor/Te
   assert.equal((await result.recheck({ transaction: { query: async () => ({ rows: [{ location: { ...location, scene_position_id: 'moved' } }] }) } })).ok, false);
   environment = { ...environment, light_state: 'night' };
   assert.equal((await result.recheck({ transaction: { query: async () => ({ rows: [{ location }] }) } })).ok, false);
+  environment = input.currentFacts.current_environment;
+  const approachLocation = { ...location, scene_position_id: 'arrival' };
+  const movementAdmission = { edge_id: 'local', from_position_ref: 'arrival', to_position_ref: 'departure',
+    reverse_edge_id: 'reverse', cost_kind: 'action', action_units: 1, base_minutes: null,
+    edge_capacity: null, destination_capacity: 1, edge_state_version: 1,
+    reverse_edge_state_version: 1, source_node_state_version: 1, destination_node_state_version: 1,
+    transition_environment_profile_ref: null, movement_orientation_profile_ref: null,
+    baseline_movement_method_id: 'foot', movement_method_cost_profile_ref: null, dynamic_recheck_policy_ref: null };
+  const approachProof = { edge_id: 'local', from_position_id: 'arrival', to_position_id: 'departure',
+    movement_admission: movementAdmission };
+  const approachArgs = { ...args, request: { ...request, source_site_id: 'source-site', source_position_id: 'departure',
+    approach_origin_position_id: 'arrival', ordered_local_edge_path: [
+      { edge_id: 'local', from_position_id: 'arrival', to_position_id: 'departure' }
+    ], local_edge_path_proofs: [approachProof] }, transaction: { query: async (sql) => {
+      if (sql.includes('SELECT turn_number')) return { rows: [{ turn_number: 4 }] };
+      return { rowCount: 1, rows: [{ requested_edge_id: 'local', requested_from_position_id: 'arrival',
+        requested_to_position_id: 'departure', edge_id: 'local', from_position_id: 'arrival',
+        to_position_id: 'departure', edge_status: 'active', edge_state_version: 1, cost_kind: 'action',
+        action_units: 1, base_minutes: null, edge_capacity: null, reverse_status: 'active',
+        reverse_edge_id: 'reverse', reverse_state_version: 1, reverse_from_position_id: 'departure',
+        reverse_to_position_id: 'arrival', reverse_reverse_edge_id: 'local', reverse_cost_kind: 'action',
+        source_status: 'active', source_state_version: 1, source_g6_status: 'active',
+        source_g6_baseline_id: 'baseline', destination_status: 'active', destination_state_version: 1,
+        destination_capacity: 1, destination_g6_status: 'active', destination_g6_baseline_id: 'baseline',
+        destination_occupancy: 0, scene_baseline_id: 'baseline', baseline_status: 'active',
+        transition_environment_profile_ref: null,
+        movement_orientation_profile_ref: null, baseline_movement_method_id: 'foot',
+        movement_method_cost_profile_ref: null, dynamic_recheck_policy_ref: null }] };
+    } }, snapshot: { journey_locations: [approachLocation],
+      scene_positions: [
+        { id: 'arrival', g6_instance_id: 'g6', template_slot_key: 'arrival' },
+        { id: 'departure', g6_instance_id: 'g6', template_slot_key: 'departure' }
+      ], g6_instances: [{ id: 'g6', scene_baseline_id: 'baseline' }],
+      scene_baselines: [{ id: 'baseline', host_kind: 'g5_site', host_id: 'source-site', status: 'active' }],
+      movement_edges: [{ id: 'local', scene_baseline_id: 'baseline', status: 'active',
+        from_position_id: 'arrival', to_position_id: 'departure' }] } };
+  const approached = await admit(approachArgs);
+  assert.equal(approached.ok, true, 'P16 admission accepts actor at origin when snapshot proves ordered local path to source');
+  assert.equal(approached.commit_rechecks.length, 8);
+  assert.equal((await approached.recheck({ transaction: { query: async () => ({
+    rows: [{ location: structuredClone(approachLocation) }]
+  }) } })).ok, true);
+  await assert.rejects(admit({ ...approachArgs, request: { ...approachArgs.request,
+    ordered_local_edge_path: [{ edge_id: 'ghost', from_position_id: 'arrival', to_position_id: 'departure' }] } }),
+  (error) => error.details.reason === 'current_actor_at_source_required');
   const stale = { ...args, scene_candidates: [{ ...candidate, applicability_rule_version: 999 }] };
   await assert.rejects(admit(stale), (error) => error.details.reason === 'scene_policy_owner_required');
   await assert.rejects(admit({ ...args, closure: { ...args.closure, scene_rules: [] } }),

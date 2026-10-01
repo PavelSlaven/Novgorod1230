@@ -366,11 +366,11 @@
       },
       {
         "path": "schemas/party-db/038_party_runtime_local_lines.sql",
-        "bytes": 12632,
-        "sha256": "3cae28e5c1d1fc49f3dc34b45ae3cafa64571c8fe8ca7a1dcf2a9e59984e17c1"
+        "bytes": 12763,
+        "sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007"
       }
     ],
-    "chain_digest": "2945088ee52a94fef28dd40b5009d64d0eff5f16a49dfee0e1d06d4d37759d02"
+    "chain_digest": "91f177ac5899f49400c8b4bf8d381aeff30ae20c155d4c196021f0311be52e0b"
   },
   "preconditions": [
     "Independent Sol high approval binds this exact request and source hashes before any production write.",

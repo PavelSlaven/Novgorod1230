@@ -240,11 +240,19 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
 
   async function prepareExpansion(request) {
     const { party_id, g4, profile, slot_ref, directional_exit, candidate_ordinal,
-      source_site_id, source_position_id, entry_binding, materializer_version } = request ?? {};
+      source_site_id, source_position_id, approach_origin_position_id,
+      ordered_local_edge_path = [], local_edge_path_proofs = [], entry_binding, materializer_version } = request ?? {};
     const book = createPinBook(g4, profile);
     const reject = book.reject;
     if (![party_id, source_site_id, source_position_id, materializer_version].every((s) => typeof s === 'string' && s.trim())
       || !Number.isSafeInteger(candidate_ordinal) || candidate_ordinal < 0
+      || !Array.isArray(ordered_local_edge_path)
+      || !Array.isArray(local_edge_path_proofs)
+      || (ordered_local_edge_path.length > 0 && (typeof approach_origin_position_id !== 'string'
+        || !approach_origin_position_id.trim()
+        || local_edge_path_proofs.length !== ordered_local_edge_path.length))
+      || (ordered_local_edge_path.length === 0 && (approach_origin_position_id != null
+        || local_edge_path_proofs.length > 0))
       || !g4 || !profile || !slot_ref || !directional_exit) return reject('exact_expansion_request_required');
     if (typeof committer?.prepareExpansion !== 'function'
       || typeof admitGeneration !== 'function' || typeof projectVisible !== 'function') {
@@ -263,7 +271,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       expansion_slot_key: `${slot_ref.id}@${slot_ref.version}`, candidate_ordinal };
     const idempotency_key = `resolve_frontier:${canonicalDigest(identity)}`;
     const canonical_input_digest = digest({ ...identity, g4, profile, directional_exit,
-      source_site_id, source_position_id, entry_binding: entry_binding ?? null, materializer_version });
+      source_site_id, source_position_id, approach_origin_position_id: approach_origin_position_id ?? null,
+      ordered_local_edge_path, entry_binding: entry_binding ?? null, materializer_version });
     const change_set_id = `expansion:${canonicalDigest(identity)}`;
     const suffix = digest({ party_id, profile: ref(profile.id, profile.version),
       slot: ref(slot_ref.id, slot_ref.version) }).slice(7);

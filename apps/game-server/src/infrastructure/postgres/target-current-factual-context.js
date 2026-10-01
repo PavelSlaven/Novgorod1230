@@ -68,8 +68,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     async readFactualContext({ transaction, request }) {
       const args = { transaction, partyId: request.party_id };
       const current = await read(args);
-      if (current.state.actor_id !== request.actor_id
-        || current.state.position?.position_id !== request.source_position_id) gap();
+      if (!factualContextMatchesRequestOrigin(current.state, request)) gap();
       const digest = canonicalDigest(current);
       return { ok: true, party_id: request.party_id,
         world_revision_id: current.state.world_identity.world_revision_id,
@@ -81,6 +80,21 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
         } };
     }
   });
+}
+
+export function factualContextMatchesRequestOrigin(state, request) {
+  const expectedPositionId = requestCurrentPositionId(request);
+  if (expectedPositionId == null) return false;
+  return state?.actor_id === request.actor_id
+    && state.position?.position_id === expectedPositionId;
+}
+
+export function requestCurrentPositionId(request) {
+  const path = request?.ordered_local_edge_path ?? [];
+  if (!Array.isArray(path) || (path.length === 0 && request?.approach_origin_position_id != null)) return null;
+  const positionId = path.length > 0
+    ? request.approach_origin_position_id : request.source_position_id;
+  return typeof positionId === 'string' && positionId.trim() ? positionId : null;
 }
 
 function gap() { throw serverError('TARGET_CURRENT_FACTUAL_CONTEXT_DATA_GAP',

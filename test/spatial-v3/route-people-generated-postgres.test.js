@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { PRESENCE_E2E_MOVE_TEXT, bootstrapV17PresenceE2e, createPresenceProductionRoot,
-  installPresenceProductionE2eFetch, publicStartScenario } from './presence-rules-production-e2e-fixture.js';
+  installPresenceProductionE2eFetch, publicStartScenario, submitObserveTurn } from './presence-rules-production-e2e-fixture.js';
 import { createRouteWalker, peopleAt } from './route-people-helpers.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 /**
  * D49: the first generated place beyond Vikhtuy. Its people come from the G4 composition (1-2 for Vikhtuy locality since
@@ -19,13 +20,15 @@ test('first generated place beyond Vikhtuy: people come from the G4 composition 
     let root = await createPresenceProductionRoot(env);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_work_storage_v1');
+    await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
     const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
-    await walker.walkTo('water_access');
-    await walker.walkTo('forest_path');
+    await withCauseDiagnostic('walkTo water_access', () => walker.walkTo('water_access'));
+    await withCauseDiagnostic('walkTo forest_path', () => walker.walkTo('forest_path'));
     prefs.exactMovement = false;
     let generated = null;
     for (let step = 0; step < 14 && generated == null; step += 1) {
-      await root.runtime.submitTurn(partyId, { raw_text: PRESENCE_E2E_MOVE_TEXT, request_id: `gen-${partyId}-${step}` });
+      await withCauseDiagnostic(`generated movement ${step}`,
+        () => root.runtime.submitTurn(partyId, { raw_text: PRESENCE_E2E_MOVE_TEXT, request_id: `gen-${partyId}-${step}` }));
       generated = (await env.partyPool.query(
         `SELECT id, parent_g4_id FROM party_runtime.party_g5_sites WHERE party_id=$1 AND origin='generated' LIMIT 1`, [partyId])).rows[0] ?? null;
     }
@@ -58,3 +61,31 @@ test('first generated place beyond Vikhtuy: people come from the G4 composition 
     await root.runtime.getPartyScreen(partyId);
     assert.deepEqual(await people(), first, 'a restart neither adds nor changes the people of the place');
   });
+
+async function withCauseDiagnostic(label, work) {
+  try { return await work(); }
+  catch (error) {
+    const summary = safeCauseSummary(error?.details?.diagnostics?.cause);
+    if (summary) throw new Error(`${label}: ${error.message}; generated expansion cause=${JSON.stringify(summary)}`, { cause: error });
+    throw error;
+  }
+}
+
+function safeCauseSummary(value, depth = 0) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || depth >= 8) return null;
+  const summary = {};
+  for (const key of ['code', 'reason']) {
+    if (typeof value[key] === 'string') summary[key] = value[key];
+  }
+  const context = value.context;
+  if (context && typeof context === 'object' && !Array.isArray(context)) {
+    const safeContext = Object.fromEntries(Object.entries(context).filter(([key, field]) =>
+      typeof field === 'boolean' || Number.isSafeInteger(field)
+      || (['source_position_id', 'actor_scene_position_id'].includes(key)
+        && typeof field === 'string')));
+    if (Object.keys(safeContext).length) summary.context = safeContext;
+  }
+  const nested = safeCauseSummary(value.cause, depth + 1);
+  if (nested) summary.cause = nested;
+  return Object.keys(summary).length ? summary : null;
+}

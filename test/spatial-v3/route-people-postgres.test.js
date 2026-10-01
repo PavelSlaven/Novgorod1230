@@ -6,8 +6,10 @@ import {
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
   publicStartScenario,
+  submitObserveTurn,
 } from './presence-rules-production-e2e-fixture.js';
 import { createRouteWalker, peopleAt } from './route-people-helpers.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 /**
  * D49: every place of the Vikhtuy slice route after the start has at least one person, made from approved data
@@ -37,6 +39,7 @@ test('route of Vikhtuy: the start may be empty, every other place has at least o
     let root = await createPresenceProductionRoot(env);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_work_storage_v1');
+    await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
     const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
     const start = await walker.where();
     assert.equal(start.name, 'work_storage');

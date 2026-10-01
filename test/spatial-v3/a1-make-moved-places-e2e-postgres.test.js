@@ -7,15 +7,17 @@ import {
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
   publicStartScenario,
+  submitObserveTurn,
 } from './presence-rules-production-e2e-fixture.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
-const bindings = read('../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json');
-const labels = read('../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json').labels;
+const bindings = read('../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json');
 const g5 = (name) => `cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_${name}`;
 const passage = (from, to) => {
   const binding = bindings.find((row) => row.from_canonical_g5_id === g5(from) && row.to_canonical_g5_id === g5(to));
-  return labels.find((row) => row.binding_ref.id === binding.id).display_label;
+  assert.ok(binding, `approved line missing: ${from} -> ${to}`);
+  return binding.line_discriminator ? `${binding.line_name} · ${binding.line_discriminator}` : binding.line_name;
 };
 
 const PLANNER = 'Return only one JSON object containing the semantic choice for one turn step.';
@@ -92,6 +94,7 @@ test('A1 "tear a strip from the own shirt" works at the start and at places reac
     const { runtime } = await createPresenceProductionRoot(env);
     t.after(() => runtime.close());
     const partyId = await publicStartScenario(runtime, 'novgorod_vikhtuy_work_storage_v1');
+    await submitObserveTurn(runtime, partyId, TARGET_SMOKE_INPUT);
     let step = 0;
     const turn = (raw_text) => runtime.submitTurn(partyId, { raw_text, request_id: `make-${partyId}-${step++}` });
     const madeSql = `SELECT item_id, state_version FROM party_runtime.party_items
@@ -101,11 +104,7 @@ test('A1 "tear a strip from the own shirt" works at the start and at places reac
     async function walkTo(to) {
       const from = (await whereIs(env.partyPool, partyId)).name;
       const named = passage(from, to);
-      for (let attempt = 0; attempt < 4; attempt += 1) {
-        const at = await whereIs(env.partyPool, partyId);
-        if (at.name !== from) break;
-        await turn(at.slot === 'departure' ? named : `${named} — подход`);
-      }
+      await turn(named);
       assert.equal((await whereIs(env.partyPool, partyId)).name, to);
     }
 

@@ -85,14 +85,63 @@ test('an off-departure line remains one route request and carries hidden ordered
   assert.equal(calls[1][1].expansion.connection_id, 'connection:water');
 });
 
-test('line, exit and plain local edge never claim one another\'s operation', async () => {
+test('an off-departure generated exit is one named route request with local proof before P16', async () => {
+  const path = [{ edge_id: 'edge:1', from_position_id: 'p0', to_position_id: 'p1' }];
+  const calls = [];
+  const scene = localScene({
+    prepareLocalLineApproach: async () => { calls.push(['proof']); return ['verified-path']; },
+    prepareLocalMovement: async () => { calls.push(['local-move']); return null; }
+  });
+  const [command] = await commands({ listExpansionOptions: async () => [],
+    listApproachOptions: async () => [{ kind: 'approach', directional_exit_id: 'exit:wood', edge_id: 'edge:1',
+      ordered_local_edge_path: path, display_label: 'к лесной дороге' }],
+    async prepareExpansion(input) { calls.push(['prepare', input]);
+      return { ok: true, connection_id: 'generated:wood', source_position_id: 'p1' }; },
+    async prepareTraversal(input) { calls.push(['traverse', input]);
+      return packageBase({ inputDigest: 'a'.repeat(64), duration: 5, kind: 'movement' }); }
+  }, scene);
+  assert.equal(command.command_id, 'live_world.follow_directional_exit:exit:wood');
+  assert.equal(command.label, 'к лесной дороге');
+  assert.equal(command.semantic_binding.operation_dto.movement_kind, 'route');
+  await command.consequence({ retrievedState: state, playerInput: 'лесная дорога' });
+  assert.deepEqual(calls.map(([name]) => name), ['proof', 'prepare', 'traverse']);
+  assert.deepEqual(calls[1][1].ordered_local_edge_path, path);
+  assert.deepEqual(calls[2][1].ordered_local_edge_path, path);
+  assert.deepEqual(calls[2][1].local_edge_path_proofs, ['verified-path']);
+  assert.equal(calls.filter(([name]) => name === 'local-move').length, 0);
+});
+
+test('a stale direct generated-exit option resolves the current local approach before P16', async () => {
+  const path = [{ edge_id: 'edge:1', from_position_id: 'p0', to_position_id: 'p1' }];
+  const calls = [];
+  let approachReads = 0;
+  const scene = localScene({ prepareLocalLineApproach: async (_input) => ['verified-path'] });
+  const [command] = await commands({ listExpansionOptions: async () => [
+    { directional_exit_id: 'exit:wood', display_label: 'к лесной дороге' }
+  ], listApproachOptions: async ({ firstStepEdgeIds }) => {
+    assert.deepEqual(firstStepEdgeIds, ['edge:1']);
+    approachReads += 1;
+    return approachReads === 1 ? [] : [{ directional_exit_id: 'exit:wood', edge_id: 'edge:1',
+      ordered_local_edge_path: path, display_label: 'к лесной дороге' }];
+  }, async prepareExpansion(input) { calls.push(['prepare', input]); return { ok: true }; },
+  async prepareTraversal(input) { calls.push(['traverse', input]);
+    return packageBase({ inputDigest: 'a'.repeat(64), duration: 5, kind: 'movement' }); }
+  }, scene);
+  await command.consequence({ retrievedState: state, playerInput: 'лесная дорога' });
+  assert.equal(approachReads, 2);
+  assert.deepEqual(calls[0][1].ordered_local_edge_path, path);
+  assert.deepEqual(calls[1][1].local_edge_path_proofs, ['verified-path']);
+});
+
+test('line, generated exit approach and plain local edge never claim one another\'s operation', async () => {
   const scene = localScene();
   const list = [...await commands({ listConnectionApproachOptions: async () => [approach],
     listConnectionOptions: async () => [],
-    listExpansionOptions: async () => [{ directional_exit_id: 'exit:x', display_label: 'к руслу' }],
-    listApproachOptions: async () => [{ directional_exit_id: 'exit:x', edge_id: 'edge:1', display_label: 'к руслу' }] }, scene),
+    listExpansionOptions: async () => [],
+    listApproachOptions: async () => [{ directional_exit_id: 'exit:x', edge_id: 'edge:1',
+      ordered_local_edge_path: approach.ordered_local_edge_path, display_label: 'к руслу' }] }, scene),
   ...await createTraceLocalSceneCommands({ state, inputDigest: 'd', spatialLocalSceneRuntime: scene })];
-  assert.equal(list.length, 4);
+  assert.equal(list.length, 3);
   const bindings = list.map((command) => command.semantic_binding);
   for (const own of bindings) {
     const claiming = bindings.filter((binding) => binding.matches({ operation: own.operation_dto }));

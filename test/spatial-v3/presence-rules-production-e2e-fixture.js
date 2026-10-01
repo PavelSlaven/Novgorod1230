@@ -101,7 +101,7 @@ function buildFixtureApproval() {
 }
 
 function buildAttest(fixtureApproval) {
-  return ({ stage, request }) => {
+  return async ({ stage, request }) => {
     if (stage === 'item_baseline') {
       return fixtureApproval(stage, {
         schema: 'rus.baseline_registration_attestation.v2',
@@ -175,6 +175,14 @@ function buildAttest(fixtureApproval) {
     if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
       schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
       independence_basis: 'Test-only approval fixture', database_mutated: false });
+    if (stage === 'm2c_lines_import') {
+      const attestation = JSON.parse(await readFile(
+        resolve(import.meta.dirname, '../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-attestation.json'),
+        'utf8'));
+      assert.equal(attestation.request_digest, request.request_digest,
+        'published m2c-lines-v1 import attestation must match the generated request digest');
+      return attestation;
+    }
     if (stage === 'npc_identity_import') return fixtureApproval(stage, {
       schema: IDENTITY_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
       independence_basis: 'Test-only approval fixture', database_mutated: false });
@@ -207,7 +215,14 @@ export async function bootstrapV17PresenceE2e(t, {
     const adminUrl = adminDatabaseUrl(container);
     const fixtureApproval = buildFixtureApproval();
     const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
-    await bootstrapV17Imports({ adminUrl, activationApprovalsPath, attest: buildAttest(fixtureApproval) });
+    const bootstrap = await bootstrapV17Imports({ adminUrl, activationApprovalsPath,
+      attest: buildAttest(fixtureApproval) });
+    const lineAttestation = JSON.parse(await readFile(resolve(import.meta.dirname,
+      '../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-attestation.json'),
+    'utf8'));
+    assert.equal(bootstrap.m2c_lines.request_digest, lineAttestation.request_digest);
+    assert.equal(bootstrap.m2c_lines.rollback, 'pass');
+    assert.equal(bootstrap.m2c_lines.readback, 'exact');
     const approvals = JSON.parse(await readFile(activationApprovalsPath, 'utf8'));
     worldPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, WORLD_DB), max: 4 });
     partyPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, PARTY_DB), max: 4 });

@@ -15,13 +15,10 @@ function atDepartureSlot(scene, position) {
     && row.required_position_instance_ordinal === position.template_instance_ordinal);
 }
 
-/** Deterministic BFS over the scene's own local edges to the nearest position that
- * satisfies a departure/both endpoint slot - shortest path, ties broken by edge id.
- * `eligibleExpansions` keeps deciding purely by slot rule; the walk itself is a
- * separate, ordinary local movement, owned and applied by the local-scene movement
- * runtime, never duplicated here (A-B1-06: the crossing command only ever executes
- * from `departure`; a not-yet-there actor is offered the first local hop toward it,
- * labelled with the reachable exit's own stable identity, not a second owner).
+/** Deterministic BFS over local edges to the nearest departure/both endpoint
+ * (shortest path, ties broken by edge id). `eligibleExpansions` still decides from
+ * that endpoint. The local-scene owner admits and rechecks the ordered path; the
+ * crossing stays one named route request.
  * `firstStepEdgeIds` (F3) restricts the first hop to the edges the local-scene owner
  * itself offers from the current position - visible, eligible, admitted; the walk past
  * the first hop is only path-finding over raw topology and never executes anything. */
@@ -57,10 +54,12 @@ export function findReachableDeparturePosition(context, firstStepEdgeIds = null)
 export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansionAdapter,
   readExitDisclosure, readConnectionDisclosure, prepareSiteTraversal, materializerVersion,
   now = () => Date.now() } = {}) {
-  async function selectedContext({ partyId, actorId, directionalExitId }) {
+  async function selectedContext({ partyId, actorId, directionalExitId, ordered_local_edge_path = [] }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
     const context = await readContext({ partyId, actorId });
-    const options = eligibleExpansions(context, now());
+    const approach = resolveLocalApproachPath(context, ordered_local_edge_path);
+    const selectionContext = approach == null ? context : { ...context, position: approach.position };
+    const options = eligibleExpansions(selectionContext, now());
     if (!options.length) {
       if (directionalExitId != null) gap('selected_exit_unavailable');
       return { context, options: [], selected: null };
@@ -79,14 +78,11 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) gap('approved_exit_disclosure_required');
       return [{ ...option, display_label: disclosure.display_label }];
     });
-    return { context, options: visible, selected: directionalExitId == null ? null
+    return { context, approach, options: visible, selected: directionalExitId == null ? null
       : one(visible.filter((row) => row.exit.id === directionalExitId), 'selected_exit_unavailable') };
   }
-  /** A not-yet-at-departure actor never gets an executable crossing command (it would
-   * fail `prepareTraversal`'s committed-position check); instead, expose the first local
-   * hop of the deterministic path toward whichever departure position would make the
-   * crossing eligible, labelled with the reachable exit's own stable display text. The
-   * hop is executed by the local-scene movement owner, not duplicated here (A-B1-06). */
+  /** Expose a route at the actor's current position with its ordered local approach
+   * hidden in the request. The local-scene owner admits that path before P16. */
   async function approachOptions({ partyId, actorId, firstStepEdgeIds }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
     // No offered first step, no approach: the hop is the local-scene owner's, never a guess.
@@ -106,6 +102,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
         || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
       return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
+        ordered_local_edge_path: describeLocalEdgePath(context, reachable.path),
         display_label: disclosure.display_label }];
     });
   }
@@ -165,6 +162,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       return generatedExpansionAdapter.prepareCanonicalConnection({ party_id: input.partyId,
         actor_id: input.actorId, g4: context.g4, profile: context.profile, binding_id: selected.binding.id,
         source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
+        ...orderedApproachFields(input, context, approach),
         materializer_version: materializerVersion });
     },
     async prepareConnectionTraversal(input) {
@@ -175,7 +173,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         || sourcePositionId !== input.expansion.source_position_id) gap('committed_site_connection_required');
       // The binding names its own profile; the expansion profile pins only one of them.
       return prepareSiteTraversal({ ...input, connection: selected.connection,
-        ...(approach ? { ordered_local_edge_path: input.local_edge_path_proofs
+        ...(approach ? { local_edge_path_proofs: input.local_edge_path_proofs
           ?? approach.edges } : {}),
         context: { ...context,
           ...(approach ? { approach_departure_position: approach.position } : {}),
@@ -193,25 +191,30 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       return approaches.map((row) => ({ kind: 'approach', ...row }));
     },
     async prepareExpansion(input) {
-      const { context, selected } = await selectedContext(input);
+      const { context, approach, selected } = await selectedContext(input);
       if (selected.connection) return Object.freeze({ ok: true, replay: true,
         topology_status: 'committed', connection_id: selected.connection.id,
-        source_position_id: context.position.id, directional_exit: pin(selected.exit),
+        source_position_id: approach?.position.id ?? context.position.id, directional_exit: pin(selected.exit),
         moves_traveller: false, advances_time: false });
       if (typeof generatedExpansionAdapter?.prepareExpansion !== 'function') gap('p16_expansion_owner_required');
       return generatedExpansionAdapter.prepareExpansion({ party_id: input.partyId, actor_id: input.actorId,
         g4: context.g4, profile: context.profile, slot_ref: pin(selected.slot),
         directional_exit: pin(selected.exit), candidate_ordinal: selected.ordinal,
-        source_site_id: context.site.id, source_position_id: context.position.id,
+        source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
+        ...orderedApproachFields(input, context, approach),
         ...(selected.entry ? { entry_binding: pin(selected.entry) } : {}),
         materializer_version: materializerVersion });
     },
     async prepareTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
-      const { context, selected } = await selectedContext(input);
+      const { context, approach, selected } = await selectedContext(input);
       if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
-        || context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
-      return prepareSiteTraversal({ ...input, context, connection: selected.connection });
+        || (approach?.position.id ?? context.position.id) !== input.expansion.source_position_id) {
+        gap('committed_site_connection_required');
+      }
+      return prepareSiteTraversal({ ...input, connection: selected.connection,
+        local_edge_path_proofs: input.local_edge_path_proofs ?? approach?.edges ?? [],
+        context: { ...context, ...(approach ? { approach_departure_position: approach.position } : {}) } });
     }
   });
 }
@@ -221,7 +224,8 @@ export function eligibleExpansions(context, now) {
   const departures = scene.endpoint_slots.filter((row) => ['departure', 'both'].includes(row.endpoint_role)
     && row.required_position_slot_key === position.template_slot_key
     && row.required_position_instance_ordinal === position.template_instance_ordinal);
-  // Arrival/focus navigation is a separate ordinary local movement command.
+  // A crossing is eligible only at a departure endpoint; approach resolution composes
+  // the local path with this exact slot rule.
   if (!departures.length) return [];
   const departure = one(departures, 'ambiguous_departure_endpoint');
   const options = [];
@@ -319,6 +323,11 @@ function describeLocalEdgePath(context, path) {
     return { edge_id: edge.id, from_position_id: edge.from_position_id,
       to_position_id: edge.to_position_id };
   });
+}
+
+function orderedApproachFields(input, context, approach) {
+  return approach ? { approach_origin_position_id: context.position.id,
+    ordered_local_edge_path: approach.edges, local_edge_path_proofs: input.local_edge_path_proofs ?? [] } : {};
 }
 
 function gap(reason) { throw serverError('LIVE_WORLD_EXPANSION_DATA_GAP',

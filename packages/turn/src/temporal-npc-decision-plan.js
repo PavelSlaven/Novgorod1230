@@ -10,7 +10,7 @@ export async function prepareNpcDecisionForActorStep({ autonomous,
   }
   for (const operation of plannedOperations(plan)) {
     for (const candidate of needsCheckCandidates(operation,
-      autonomous.request)) {
+      autonomous.request, committedState)) {
       try {
         await assertNeedsCheckAllowed({ committedState, candidate });
       } catch (error) {
@@ -40,13 +40,18 @@ function plannedOperations(plan) {
     : plan.operations ?? [];
 }
 
-function needsCheckCandidates(operation, request) {
+function needsCheckCandidates(operation, request, committedState) {
   if (operation?.op === 'create_entity') return [{
     semantic_type: operation.semantic_type,
     name: operation.name,
     facts: (operation.facts ?? []).map(({ text }) => text),
     path: 'NPC.create_entity'
   }];
+  if (operation?.op === 'request_discovery'
+      && operation.discovery_kind === 'inspect'
+      && matchesNpcCommittedInspection(operation, request, committedState)) {
+    return [];
+  }
   if (operation?.op === 'request_discovery'
       && ['inspect', 'search', 'dig'].includes(operation.discovery_kind)) {
     return [{ name: operation.query, path: 'O1.request.query' }];
@@ -69,6 +74,35 @@ function needsCheckCandidates(operation, request) {
         source_fact_delta_baseline: sourceFactDeltaBaseline
       }) }),
     path: 'A1.preflight.result_descriptor' }];
+}
+
+function matchesNpcCommittedInspection(operation, request, committedState) {
+  const availableRefs = new Set((request?.npc?.available_resources ?? [])
+    .map(({ resource_ref: ref }) => ref));
+  const items = (committedState?.items ?? []).filter((item) =>
+    availableRefs.has(item?.item_id ?? item?.instance_id));
+  const targetRefs = operation.target_refs ?? [];
+  if (targetRefs.length > 1) return false;
+  if (targetRefs.length === 1) {
+    const [targetRef] = targetRefs;
+    if (typeof targetRef !== 'string' || !availableRefs.has(targetRef)) {
+      return false;
+    }
+    return items.filter((item) =>
+      (item?.item_id ?? item?.instance_id) === targetRef).length === 1;
+  }
+  const query = normalizeVisibleName(operation.query);
+  if (query == null) return false;
+  return items.filter((item) =>
+    normalizeVisibleName(item?.name ?? item?.state?.display_name) === query
+  ).length === 1;
+}
+
+function normalizeVisibleName(value) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
+    .toLocaleLowerCase('ru-RU');
+  return normalized || null;
 }
 
 function sourceDescriptorFor(request, sourceRef) {

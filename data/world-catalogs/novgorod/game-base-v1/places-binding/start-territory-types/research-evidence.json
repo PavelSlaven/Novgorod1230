@@ -1,0 +1,149 @@
+{
+  "schema": "start_territory_research_evidence_v1",
+  "entries": [
+    {
+      "evidence_id": "bort-01",
+      "topic": "bort",
+      "assertion": "Авдеев: естественный ареал Apis mellifera достигает примерно 60° с. ш.; в его формулировке он простирается от юга Франции до Сибири, не до Урала.",
+      "verification_status": "verified",
+      "source": [
+        "https://doc.dissercat.com/content/osobennosti-troficheskoi-spetsializatsii-raznykh-ekologicheskikh-grupp-evro-sibirskoi-pchely"
+      ],
+      "locator": "Введение; северная граница ареала",
+      "note": "Цитата подтверждена; исследователь отдельно сверил, что в этом источнике восточная граница указана как Сибирь, а не Урал.",
+      "short_quote": "достигая 60° с. ш."
+    },
+    {
+      "evidence_id": "bort-02",
+      "topic": "bort",
+      "assertion": "Брандорф и Ивойлова указывают естественную границу ареала медоносных пчёл в России около 60° с. ш., до Урала.",
+      "verification_status": "verified",
+      "source": [
+        "https://apiworld.ru/1396598060.html"
+      ],
+      "locator": "Введение",
+      "note": "Страница проверена; найденный текст подтверждает естественную границу ареала около 60° с. ш. и до Урала.",
+      "short_quote": "Естественный ареал обитания медоносных пчел в России достигает 60º с.ш., вплоть до Урала"
+    },
+    {
+      "evidence_id": "bort-03",
+      "topic": "bort",
+      "assertion": "Encyclopedic statement that Zavolochye supplied furs, honey and wax as tribute and that hunting, fishing and bee-keeping were important in the northeastern dependencies before 14th century agricultural expansion. No locator or primary source in the article text I could read; this conflicts with the botanical and zoological range evidence above.",
+      "verification_status": "verified",
+      "source": [
+        "https://en.wikipedia.org/wiki/Foreign_trade_of_medieval_Novgorod"
+      ],
+      "locator": "Section «Tribute collection»",
+      "note": "Страница содержит это обобщение о северо-восточных зависимостях, но оно не снабжено источником и не локализует пчеловодство на Нижней Двине.",
+      "short_quote": "hunting, fishing and bee-keeping were also important economic activities"
+    },
+    {
+      "evidence_id": "orchard-01",
+      "topic": "orchard",
+      "assertion": "Novgorod city had an apple-tree garden plot in the second half of the 11th c.: dozens of apple stumps with vegetable beds between the trees. Evidence is for the city, not the Dvina.",
+      "verification_status": "verified",
+      "source": [
+        "https://archaeolog.ru/press/articles/n167"
+      ],
+      "locator": "Абзац о раскопках Десятинного раскопа, вторая половина XI века",
+      "note": "Quote is present in the archaeolog.ru page, in the paragraph about the 2nd half of the 11th c.",
+      "short_quote": "Обнаружено несколько десятков яблоневых пней."
+    },
+    {
+      "evidence_id": "orchard-02",
+      "topic": "orchard",
+      "assertion": "On the same Novgorod plot the area was abandoned in the early 13th c. and then used only for vegetable plots. Even in Novgorod, an orchard did not persist there into 1230. This supports category compatibility only.",
+      "verification_status": "verified",
+      "source": [
+        "https://archaeolog.ru/press/articles/n167"
+      ],
+      "locator": "Абзац о запустении участка в начале XIII века",
+      "note": "Both quotes are present and the paragraph is about early 13th c., Novgorod.",
+      "short_quote": "а свободную территорию заняли огороды"
+    },
+    {
+      "evidence_id": "orchard-11",
+      "topic": "orchard",
+      "assertion": "Wikipedia сообщает о саде, устроенном при архиепископе Афанасии в Холмогорах в период его служения 1682–1702 годов; состав посадок не указан.",
+      "verification_status": "verified",
+      "source": [
+        "https://ru.wikipedia.org/wiki/Афанасий_(Любимов)"
+      ],
+      "locator": "Раздел о служении в Холмогорах; вид посадок не указан",
+      "note": "Quote is present; the article gives his tenure as 1682-1702 and does not say what was planted. The 1690 seedling order is absent from the page, so it is rightly treated as unverified.",
+      "short_quote": "под руководством владыки в Холмогорах были построены сад и ветряная мельница"
+    },
+    {
+      "evidence_id": "orchard-12",
+      "topic": "orchard",
+      "assertion": "Поздняя журналистская статья описывает выращивание фруктов на Соловках с использованием отапливаемых теплиц; это не свидетельство по нижней Двине или XIII веку.",
+      "verification_status": "verified",
+      "source": [
+        "https://vestnikapk.ru/articles/portret-regiona/arkticheskie-zemledeltsy/"
+      ],
+      "locator": "Раздел «Райский сад»; позднее журналистское свидетельство",
+      "note": "The article has the quote, Buganov, apples, heated greenhouses, the 1822 botanical garden and poor barley. It is journalistic, as stated.",
+      "short_quote": "Соловецкие огородники выращивали на 65 градусах северной широты практически все"
+    },
+    {
+      "evidence_id": "orchard-14",
+      "topic": "orchard",
+      "assertion": "Таблица современных климатических норм Архангельска указывает среднюю температуру июля 16,5°C и зарегистрированный минимум −45,2°C; период норм не указан.",
+      "verification_status": "verified",
+      "source": [
+        "https://pogodaiklimat.ru/climate/22550.htm"
+      ],
+      "locator": "Таблица температуры; период норм на странице не указан",
+      "note": "Values match: July 16.5, January -11.6, annual 1.9, precipitation 633 mm, minimum -45.2 (1885), June -3.9 (1930), August -4.1 (1966). The normals period is still not stated."
+    },
+    {
+      "evidence_id": "quarry-01",
+      "topic": "quarry",
+      "assertion": "Bedrock below the Pinega mouth goes under water level. In the lower Dvina depression Palaeozoic rocks are seen only on tributaries (Ladma, Kekhta, Brusavitsa, Lai), not on the Dvina banks. Bedrock lies 55 m below sea level at Isakogorka, 76.5-77 m in Arkhangelsk, and 93 m at Lapominka, filled by Quaternary deposits.",
+      "verification_status": "verified",
+      "source": [
+        "https://evgengusev.narod.ru/moreyu/lavrova-1937.html"
+      ],
+      "locator": "Раздел «Общий рельеф», сводка скважин нижней Двины",
+      "note": "evgengusev.narod.ru/moreyu/lavrova-1937.html; quote and depths 55, 76.5, 77.15, 93.15 m match. Mirror has no page numbers.",
+      "short_quote": "уходят под уровень воды"
+    },
+    {
+      "evidence_id": "quarry-02",
+      "topic": "quarry",
+      "assertion": "Лаврова указывает древнейшие каменноугольные горизонты ниже Усть-Пинеги; эта региональная локализация сама по себе не устанавливает доступный выход камня у Вихтуя или Заостровья.",
+      "verification_status": "verified",
+      "source": [
+        "https://evgengusev.narod.ru/moreyu/lavrova-1937.html"
+      ],
+      "locator": "Раздел «Дочетвертичные отложения»",
+      "note": "Quote found. The Khavrogory Permian claim was not checked.",
+      "short_quote": "ниже с. Усть-Пинеги"
+    },
+    {
+      "evidence_id": "quarry-07",
+      "topic": "quarry",
+      "assertion": "Материал об Орлеце сообщает, что крепость 1342 года построена из местного известняка; он не датирует начало добычи.",
+      "verification_status": "verified",
+      "source": [
+        "https://kenozerjelive.ru/orletz.htm",
+        "https://ru.wikipedia.org/wiki/Орлец_(город)"
+      ],
+      "locator": "Овсянников, описание Орлецкой крепости; статья «Орлец (город)», раздел «Городище»",
+      "note": "Проверяющий сверил датировку 1342 года и строительство из местного известняка; это не дата начала добычи. Цитата Овсянникова подтверждена.",
+      "short_quote": "входит в десятку древнейших русских каменных крепостей"
+    },
+    {
+      "evidence_id": "quarry-15",
+      "topic": "quarry",
+      "assertion": "Лаврова описывает эрратические валуны в моренах региона; эта находка не локализует их плотность у Вихтуя или Заостровья.",
+      "verification_status": "verified",
+      "source": [
+        "https://evgengusev.narod.ru/moreyu/lavrova-1937.html"
+      ],
+      "locator": "Разделы о нижней и верхней морене",
+      "note": "Quote found, with the added note that boulders are often large in the west. Gneiss/granite/diabase and the local limestone-and-flint boulders of the lower moraine were not checked.",
+      "short_quote": "эрратических валунов кристаллических пород"
+    }
+  ]
+}

@@ -6,9 +6,29 @@ test('candidate start-territory type matrix covers catalog and exact G4/G5/PF re
   const result = validateStartTerritoryTypes();
   assert.deepEqual(result.errors, []);
   assert.equal(result.counts.inventory, 70);
-  assert.equal(result.counts.candidates, 38);
-  assert.equal(result.counts.gaps, 32);
+  assert.equal(result.counts.candidates, 39);
+  assert.equal(result.counts.gaps, 31);
   assert.ok(result.counts.duplicateCauseShare <= 0.2);
+});
+
+test('research evidence contains only the curated verified findings with stable source anchors', () => {
+  const data = loadPackage();
+  assert.deepEqual(data.researchEvidence.map((row) => row.evidence_id), [
+    'bort-01', 'bort-02', 'bort-03', 'orchard-01', 'orchard-02', 'orchard-11', 'orchard-12', 'orchard-14',
+    'quarry-01', 'quarry-02', 'quarry-07', 'quarry-15',
+  ]);
+  assert.ok(data.researchEvidence.every((row) => row.verification_status === 'verified'));
+  assert.ok(data.researchEvidence.every((row) => row.source.length && row.source.every((url) => url.startsWith('https://'))));
+  assert.ok(data.researchEvidence.every((row) => !row.short_quote || row.short_quote.trim().split(/\s+/u).length <= 25));
+  assert.match(data.researchEvidence.find((row) => row.evidence_id === 'bort-01').note, /Сибирь, а не Урал/u);
+  assert.equal(data.researchEvidence.some((row) => /1895/u.test(row.evidence_id)), false);
+});
+
+test('rejects a research-evidence anchor that is absent or not verified', () => {
+  const data = loadPackage();
+  const row = data.matrix.find((item) => item.type_id === 'lu_orchard_fruit_grove');
+  row.source_refs = row.source_refs.replace('research-evidence.json#orchard-01', 'research-evidence.json#missing-id');
+  assert.ok(validateStartTerritoryTypes(data).errors.some((error) => error === `MATRIX_EVIDENCE: ${row.type_id}`));
 });
 
 test('rejects a dangling candidate node reference', () => {

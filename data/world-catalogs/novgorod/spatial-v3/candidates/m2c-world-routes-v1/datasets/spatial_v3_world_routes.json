@@ -113,11 +113,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "bd7b2f8489b07cac5003c2fa28dabdb90d77f3f5ef7ed71f8802115d47f0cb3e"
+    "canonical_digest": "7a5dc5e61d2423fd97169cde2fd44b2709d8799b8ee490fbb71f6879f1d5fe68"
   },
   {
     "id": "wrv3__g4dirv3f__cross_g4_05",
@@ -143,11 +143,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "00be715c96b8ccd82d6c76a0fdc435f92a248517d8496cf781f5fbaaea732a95"
+    "canonical_digest": "745ffd9d4fbff6496370597e6e0a4be8b667b702787600903a316a55ced1e3e6"
   },
   {
     "id": "wrv3__g4dirv3f__cross_g4_06",
@@ -158,11 +158,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "37e551cc31fd8497e6ee450999a059f44584abe4ebbaf0c59f67c46a5e28d9b8"
+    "canonical_digest": "b8374f5509ca1ea8a855b7fc02ecb2bdc9adefce7f65282758720c35e381eefe"
   },
   {
     "id": "wrv3__g4dirv3r__cross_g4_06",
@@ -173,11 +173,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "770fa6b331ea5a06a912cd4f24a2de26aee2ba5db785cc1a3338dbbec18d27b8"
+    "canonical_digest": "ad5f4e76330f0bb2607279de6248ce90da651b134c40e4f4840d96e7f0442b1b"
   },
   {
     "id": "wrv3__g4dirv3f__cross_g4_07",
@@ -188,11 +188,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "e5512045b4aea217b6c58af633c751a63a12eeac25dc3e962b61f6eb47c18619"
+    "canonical_digest": "3b66b5231c99b9421d8c2e74757964598caa7614f89fc65d4beed39b2be0eac7"
   },
   {
     "id": "wrv3__g4dirv3r__cross_g4_07",
@@ -203,11 +203,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "d400469f3128431f97e3826448778000564b484276bdf3e9b280f9eaa56c5906"
+    "canonical_digest": "45d7f76e66908b0ecf9127472c1ff2f8df3ed6ae040d33cd2a1ae9940a03e5ef"
   },
   {
     "id": "wrv3__g4dirv3f__cross_g4_08",
@@ -218,11 +218,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "62bc61775b69d01e87cdfe3d752ddd1c620c41ba21237cea70d5ee441c0ba945"
+    "canonical_digest": "3a7785df61e8771a6b1ba7fc3ac54ada58bfdd621958762589bf147ede8b9162"
   },
   {
     "id": "wrv3__g4dirv3r__cross_g4_08",
@@ -233,11 +233,11 @@
     "reverse_route_version": 2,
     "availability_condition_set_id": "availability.water_ice_conditional",
     "availability_condition_set_version": 1,
-    "risk_profile_id": "risk.river_variable",
+    "risk_profile_id": "risk.side_channel_variable",
     "risk_profile_version": 1,
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "canonical_digest": "76806cd1a48610a1e43a316b4de9578aa3c0a68cad49dca8ffc2ed9b5d599dc5"
+    "canonical_digest": "c8ff5b8be974d3af8785919a237867f7e4628201260bb2d27d6202b1fd83cf2e"
   },
   {
     "id": "wrv3__g4dirv3f__cross_g4_09",

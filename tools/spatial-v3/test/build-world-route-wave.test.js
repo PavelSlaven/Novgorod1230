@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { validateWorldRouteWave } from '../build-world-route-wave.mjs';
+import { collectInputs, validateWorldRouteDependencyEdges, validateWorldRouteWave } from '../build-world-route-wave.mjs';
 
 const json = (path) => JSON.parse(readFileSync(path, 'utf8'));
 
@@ -76,4 +76,78 @@ test('offroad adds only its profile/cost and reuses the existing environment', (
   assert.equal(offroad.baseline_movement_method_id, 'movement_method.walk');
   assert.equal(datasets.spatial_v3_transition_environment_profiles.filter((row) => row.id === 'env.offroad').length, 1);
   assert.equal(datasets.spatial_v3_movement_method_cost_profiles.filter((row) => row.id === 'cost.line_offroad').length, 1);
+});
+
+test('dependency edge validation rejects a missing route-kind edge and a mismatched method target', () => {
+  const { datasets } = validateWorldRouteWave();
+  const route = datasets.spatial_v3_world_routes[0];
+  const missingRouteKind = structuredClone(datasets);
+  missingRouteKind.spatial_v3_authoring_dependency_edges = missingRouteKind.spatial_v3_authoring_dependency_edges
+    .filter((edge) => !(edge.source_entity_kind === 'world_route' && edge.source_entity_id === route.id && edge.source_version === route.version));
+  assert.throws(() => validateWorldRouteDependencyEdges(missingRouteKind), /WORLD_ROUTE_KIND_EDGE_COUNT/u);
+
+  const segment = datasets.spatial_v3_world_route_segments[0];
+  const mismatchedMethod = structuredClone(datasets);
+  mismatchedMethod.spatial_v3_authoring_dependency_edges.push({
+    source_entity_kind: 'world_route_segment', source_entity_id: segment.id, source_version: segment.version,
+    dependency_role: 'baseline_movement_method', target_entity_kind: 'external_dependency',
+    target_entity_id: 'movement.foot', target_version: 1,
+  });
+  assert.throws(() => validateWorldRouteDependencyEdges(mismatchedMethod), /SEGMENT_METHOD_EDGE_TARGET_MISMATCH/u);
+});
+
+test('chord route applies line-name and source-kind checks', () => {
+  const mutate = (change) => {
+    const inputs = structuredClone(collectInputs());
+    const route = inputs.spec.routes.find((row) => row.route_pair_id === 'cross_g4_11');
+    change(route);
+    assert.throws(() => validateWorldRouteWave(inputs), /GROUP_LINE_NAME|GROUP_KIND_BASIS|SOURCE_LINE_KIND|CHORD_LINE_KIND/u);
+  };
+  mutate((route) => { route.segments[0].line_name = 'Проход 2'; });
+  mutate((route) => { route.segments[0].line_name = ''; });
+  mutate((route) => { route.segments[0].kind_basis = '  '; });
+  mutate((route) => { route.segments[0].kind_basis = 'reviewed from an unknown source'; });
+  mutate((route) => { route.source_line_kind = 'path'; route.segments[0].line_kind = 'path'; });
+});
+
+test('chord fallback cannot hide a reverse place-geo trace', () => {
+  const inputs = structuredClone(collectInputs());
+  const pair = inputs.spec.routes.find((row) => row.route_pair_id === 'cross_g4_11');
+  const reverseId = pair.world_route_ids[1];
+  inputs.derived.lines.find((row) => row.id === reverseId).route_trace_segments = [{ surface: 'land' }];
+  assert.throws(() => validateWorldRouteWave(inputs), /CHORD_HAS_REVERSE_TRACE/u);
+});
+
+test('route candidate line names are checked together with wave-1 bindings', () => {
+  const generated = validateWorldRouteWave();
+  const segment = generated.datasets.spatial_v3_world_route_segments.find((row) => row.world_route_id.includes('cross_g4_11'));
+  const endpoint = generated.datasets.spatial_v3_world_route_endpoint_bindings.find((row) => row.world_route_id === segment.world_route_id && row.endpoint_role === 'from');
+  const inputs = structuredClone(collectInputs());
+  inputs.lineDatasets.spatial_v3_canonical_g5_connection_bindings.push({
+    id: 'mutation_duplicate_wave1_label', from_canonical_g5_id: endpoint.canonical_g5_id, line_name: segment.line_name,
+    line_discriminator: segment.line_discriminator, line_direction_id: segment.line_direction_id,
+  });
+  assert.throws(() => validateWorldRouteWave(inputs), /LINE_NAME_SET_INVALID:line_label_duplicate/u);
+});
+
+test('long route segments require wave-1 recheck slices no longer than 30 minutes', () => {
+  const generated = validateWorldRouteWave();
+  const wetland = generated.datasets.spatial_v3_world_route_segments.filter((row) => row.world_route_id.includes('cross_g4_10'));
+  assert.equal(wetland.length, 2);
+  assert.deepEqual(wetland.map((row) => row.base_minutes), [741, 741]);
+  assert.equal(generated.report.minutes.long_segments_over_30_minutes, 53);
+  assert.equal(generated.report.minutes.recheck_slices, 475);
+
+  for (const mutate of [
+    (policy) => { policy.interval_minutes = 45; },
+    (policy) => { policy.policy_kind = 'segment_once'; policy.interval_minutes = null; },
+    (_policy, inputs) => { inputs.baseDatasets.spatial_v3_dynamic_recheck_policies = inputs.baseDatasets.spatial_v3_dynamic_recheck_policies
+      .filter((row) => row.id !== 'recheck.wetland_15m'); },
+  ]) {
+    const inputs = structuredClone(collectInputs());
+    const policy = inputs.baseDatasets.spatial_v3_dynamic_recheck_policies
+      .find((row) => row.id === 'recheck.wetland_15m');
+    mutate(policy, inputs);
+    assert.throws(() => validateWorldRouteWave(inputs), /RECHECK_POLICY_INVALID|RECHECK_SLICING_REQUIRED/u);
+  }
 });

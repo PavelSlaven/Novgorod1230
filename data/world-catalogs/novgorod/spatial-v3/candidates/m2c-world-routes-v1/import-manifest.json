@@ -20,7 +20,7 @@
     {
       "table": "source_records",
       "file": "datasets/source_records.json",
-      "sha256": "b7ec6ae7611c87047eaf172332b92fa1d73e2d6814bab9612927e2db489be307",
+      "sha256": "3af89c15b12f5f8f8854d248603807e24d31e702432947494e4a0f34a0aaadb5",
       "status": "draft",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
       "delete_policy": "forbid",
@@ -29,7 +29,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "datasets/spatial_v3_authoring_versions.json",
-      "sha256": "70f8242b343e7d40cdf201c8497dddec63cc99d3485c609a868ebd78bdcc9eb4",
+      "sha256": "32ea00ab7aaf8d840e12e6ad6abc9b117108ebd101d228b0f5be990fa1a99fed",
       "status": "draft",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
       "delete_policy": "forbid",
@@ -196,7 +196,7 @@
     {
       "table": "spatial_v3_world_routes",
       "file": "datasets/spatial_v3_world_routes.json",
-      "sha256": "d8057e3795841ded11c9dd3a4dbb193a24078eec10bc4d1b43738c981e579de5",
+      "sha256": "6e627f225d3b1d62f7bc1ea512ff15b4a3f9a0894deca9321949fbc14edce7d0",
       "status": "draft",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
       "delete_policy": "forbid",
@@ -267,7 +267,7 @@
     {
       "table": "spatial_v3_authoring_dependency_edges",
       "file": "datasets/spatial_v3_authoring_dependency_edges.json",
-      "sha256": "026129348ff234f5eeee7c11fea29c469ced097fe84b4e9c71fbba4a082f5219",
+      "sha256": "d269f573f3fb473a24499dc9e64baa0f300798fca5cee516cdbcf29c8692b62c",
       "status": "draft",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
       "delete_policy": "forbid",

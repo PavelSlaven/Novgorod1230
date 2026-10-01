@@ -18,10 +18,10 @@
     "file_reference": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
     "page_or_section": "inputs: route-spec.json and generator-report.json#inputs",
     "summary": "Cross-G4 world-route candidate based on place-geo traces/minutes, line-names, and wave-1 line-kind profiles.",
-    "limitations": "Candidate only; import only with the b2 runtime reader cutover; minutes and non-main waterbody profile mappings require independent Opus approval.",
+    "limitations": "Candidate only; import only with the b2 runtime reader cutover. Reviewer limits and unresolved assumptions are listed in README.md#review-assumptions-and-limits.",
     "status": "approved",
     "confidence": "medium",
-    "checked_by": "fleet/routes-b2 candidate author"
+    "checked_by": "Opus REVIEW-routes-b2-1 (2026-10-01), independent pass; author fleet/routes-b2"
   },
   {
     "id": "prov_p12_g1_r2_r3_v1",

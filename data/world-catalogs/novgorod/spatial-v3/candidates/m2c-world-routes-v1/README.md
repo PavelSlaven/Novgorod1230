@@ -6,7 +6,7 @@ Inputs: place-geo route traces and proposed minutes, `m2c-line-names/candidate.j
 
 ## Review assumptions and limits
 
-- `central_head_branch` in pairs 06–08 and 23 uses `lkp__side_channel@1` under reviewer decision `A-routes-b2-01` and wave-1 approval-attestation limit 7. This is an editorial hypothesis for independent Opus review. Existing line-names still labels 06–08 as `river_channel`; its owner must reconcile that mismatch separately.
+- `central_head_branch` in pairs 06–08 and 23 uses `lkp__side_channel@1` under reviewer decision `A-routes-b2-01` and wave-1 approval-attestation limit 7. This is an editorial hypothesis for independent Opus review. Existing line-names still labels 04–08 as `river_channel`; its owner must reconcile that mismatch separately.
 - Other non-main authored waterbody references map to `side_channel`. Trace `waterbody_ref` changes define route points with provenance, but those schematic transitions are not evidence of exact historical river boundaries near 1230. Internal points have no invented toponyms.
 - Direction totals equal place-geo `proposed_minutes`; multi-segment totals use largest-remainder allocation over unrounded trace-duration weights. These are draft calibration values, not measured historical durations. `cross_g4_10` at 741 minutes each way needs explicit plausibility review.
 - Chord fallbacks are used where place-geo has no trace: pairs 11, 15, 18, 19, and 20. No bend-only or travel-band-only route points are added.

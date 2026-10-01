@@ -1,20 +1,20 @@
 [
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_01__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_01",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -92,21 +92,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_01__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_01",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -184,21 +184,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_02__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_02",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -276,21 +276,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_02__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_02",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -368,21 +368,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_03__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_03",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -460,21 +460,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_03__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_03",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -552,21 +552,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_04__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_04",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -618,23 +618,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_04__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -712,21 +695,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_04__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_04",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -778,23 +761,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_04__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -872,21 +838,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_05__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_05",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -938,23 +904,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_05__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1032,21 +981,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_05__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_05",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1098,23 +1047,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_05__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1192,21 +1124,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_06__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_06",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1284,21 +1216,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_06__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_06",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1376,21 +1308,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_07__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_07",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1442,23 +1374,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_07__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1536,21 +1451,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_07__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_07",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1602,23 +1517,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_07__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1696,21 +1594,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_08__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_08",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1762,23 +1660,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_08__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1856,21 +1737,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_08__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_08",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -1922,23 +1803,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_08__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2016,21 +1880,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_09__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_09",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.water_land_transition",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "1dde60edae64166f7cb8c87b8bf073849e546dd82968cd89b896194d6c74e015"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2108,21 +1972,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_09__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_09",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.water_land_transition",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "1dde60edae64166f7cb8c87b8bf073849e546dd82968cd89b896194d6c74e015"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2200,21 +2064,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_10__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_10",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.wetland_path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "264ceb23569dc0fb021c92c6f515c56f6b270e439b3e7ab235d32b230784edd9"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2292,21 +2156,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_10__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_10",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.wetland_path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "264ceb23569dc0fb021c92c6f515c56f6b270e439b3e7ab235d32b230784edd9"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2384,21 +2248,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_11__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_11",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.offroad_crossing",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "214af75bb27e021818a8b8ccef1140be1c0a9d11966f15c5229490c638e2204c"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2476,21 +2340,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_11__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_11",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.offroad_crossing",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "214af75bb27e021818a8b8ccef1140be1c0a9d11966f15c5229490c638e2204c"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2568,21 +2432,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_12__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_12",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2660,21 +2524,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_12__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_12",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2752,21 +2616,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_13__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_13",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2844,21 +2708,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_13__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_13",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -2936,21 +2800,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_14__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_14",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.water_land_transition",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "1dde60edae64166f7cb8c87b8bf073849e546dd82968cd89b896194d6c74e015"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3028,21 +2892,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_14__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_14",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.water_land_transition",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "1dde60edae64166f7cb8c87b8bf073849e546dd82968cd89b896194d6c74e015"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3120,21 +2984,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_15__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_15",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3212,21 +3076,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_15__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_15",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3304,21 +3168,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_16__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_16",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3396,21 +3260,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_16__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_16",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3488,21 +3352,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_17__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_17",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3580,21 +3444,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_17__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_17",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.path",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "000941192a451c7e55b0aaac78a6197de980ae84b949f884b2b1e46b72bde67d"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3672,21 +3536,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_18__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_18",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.forest_track",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3764,21 +3628,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_18__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_18",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.forest_track",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3856,21 +3720,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_19__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_19",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.forest_track",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -3948,21 +3812,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_19__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_19",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.forest_track",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4040,21 +3904,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_20__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_20",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.forest_track",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4132,21 +3996,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_20__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_20",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.foot",
+    "target_entity_id": "route.forest_track",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "9ab8f5ba0e14e068fb5c024c5485f40db2757ed51063e078ec6f1be7936cbe8f"
+    "target_dependency_digest": "871a71d64ae50d1e7a4b06f1db70b082f39b46cca589f2c1d4edadecdf8acfdc"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4224,21 +4088,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_21__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_21",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4316,21 +4180,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_21__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_21",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4408,21 +4272,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_22__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_22",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4500,21 +4364,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_22__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_22",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4592,21 +4456,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_23__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_23",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4666,23 +4530,6 @@
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_23__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
     "dependency_role": "g0",
     "target_entity_kind": "external_dependency",
     "target_entity_id": "region_novgorod_land",
@@ -4726,23 +4573,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_23__add_02",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4820,21 +4650,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_23__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_23",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.side_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "45f669cdaf885192ee60421edaf5b655a617cd639de2024e8fa4ea225887c105"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -4894,23 +4724,6 @@
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_23__add_01",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
     "dependency_role": "g0",
     "target_entity_kind": "external_dependency",
     "target_entity_id": "region_novgorod_land",
@@ -4954,23 +4767,6 @@
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
     "target_dependency_digest": "534d7fa2aaff9fcb52b9761d09475e5b422dc7a015c9dc193fc3ace0da4cb0a3"
-  },
-  {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_23__add_02",
-    "source_version": 1,
-    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_ordinal": 0,
-    "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
-    "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
-    "target_version": 1,
-    "target_registry_type": "spatial_materialization",
-    "target_registry_id": "spatial_v3_external_dependencies",
-    "target_registry_version": "1",
-    "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -5048,21 +4844,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3f__cross_g4_24__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3f__cross_g4_24",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",
@@ -5140,21 +4936,21 @@
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
   {
-    "source_entity_kind": "world_route_segment",
-    "source_entity_id": "wrsegv3__g4dirv3r__cross_g4_24__00",
+    "source_entity_kind": "world_route",
+    "source_entity_id": "wrv3__g4dirv3r__cross_g4_24",
     "source_version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "canonical_ordinal": 0,
     "provenance_ref": "m2c_world_routes_v1_candidate",
-    "dependency_role": "baseline_movement_method",
+    "dependency_role": "route_kind",
     "target_entity_kind": "external_dependency",
-    "target_entity_id": "movement.small_river_craft",
+    "target_entity_id": "route.river_channel",
     "target_version": 1,
     "target_registry_type": "spatial_materialization",
     "target_registry_id": "spatial_v3_external_dependencies",
     "target_registry_version": "1",
     "target_registry_digest": "87768a1588f9a533af681d665bc86458c6e64d635b2575bb802704e82093a8ef",
-    "target_dependency_digest": "b5c9dae9ee2e009cc44ab511f9ea1b5a20e933b8573f72cc1b6199333b0a2d21"
+    "target_dependency_digest": "23f05456aeb9e113a4a47ee5294e56f229fbe7c17e7e15e24445f26d36152d4e"
   },
   {
     "source_entity_kind": "world_route_segment",

@@ -11,7 +11,7 @@
     "spatial_v3_world_route_segment_spatial_contexts": 60,
     "spatial_v3_world_route_endpoint_bindings": 96,
     "spatial_v3_authoring_versions": 649,
-    "spatial_v3_authoring_dependency_edges": 364,
+    "spatial_v3_authoring_dependency_edges": 352,
     "source_records": 3,
     "spatial_v3_transition_environment_profiles": 8,
     "spatial_v3_movement_method_cost_profiles": 7,
@@ -40,7 +40,9 @@
   "minutes": {
     "source": "place-geo proposed_minutes",
     "sum_mismatch_routes": 0,
-    "largest_remainder": true
+    "largest_remainder": true,
+    "long_segments_over_30_minutes": 53,
+    "recheck_slices": 475
   },
   "assumptions_for_opus": [
     "central_head_branch uses lkp__side_channel@1 by reviewer A-routes-b2-01 / wave-1 approval-attestation limit 7; line-names remains river_channel for cross_g4_06..08 and must be separately corrected by its owner.",

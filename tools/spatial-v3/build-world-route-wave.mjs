@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { computeSpatialV3CanonicalDigest } from '../../packages/contracts/src/spatial-v3/registry.js';
+import { lineNameProblems, policyProblem, policySlices } from './build-line-wave.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const CATALOG = 'data/world-catalogs/novgorod';
@@ -95,6 +96,7 @@ function routeMaps(spec, derived, names, source) {
     const namesRow = namesByPair.get(pair.route_pair_id);
     requireValue(namesRow && namesRow.world_route_ids?.[0] === forward.id && namesRow.world_route_ids?.[1] === reverse.id, `LINE_NAMES_SOURCE_MISMATCH:${pair.route_pair_id}`);
     requireValue(pair.forward_line_name === namesRow.name_ru && pair.reverse_line_name === namesRow.name_ru, `LINE_NAME_MISMATCH:${pair.route_pair_id}`);
+    requireValue(pair.source_line_kind === namesRow.line_kind, `SOURCE_LINE_KIND_MISMATCH:${pair.route_pair_id}`);
     const forwardGeo = derivedById.get(forward.id); const reverseGeo = derivedById.get(reverse.id);
     requireValue(forwardGeo && reverseGeo, `PLACE_GEO_ROUTE_MISSING:${pair.route_pair_id}`);
     const forwardSource = routeSource(forward, pointsByRoute, segmentsByRoute, endpointsByRoute);
@@ -103,7 +105,7 @@ function routeMaps(spec, derived, names, source) {
       `PAIR_ENDPOINTS:${pair.route_pair_id}`);
     requireValue(pair.direction_minutes?.forward === forwardGeo.proposed_minutes && pair.direction_minutes?.reverse === reverseGeo.proposed_minutes,
       `PAIR_MINUTES:${pair.route_pair_id}`);
-    const groups = validateGroups(pair, forwardGeo, reverseGeo);
+    const groups = validateGroups(pair, forwardGeo, reverseGeo, namesRow);
     result.push({ pair, forward, reverse, namesRow, forwardGeo, reverseGeo, forwardSource, reverseSource, groups });
   }
   requireValue(seen.size === 24, `PAIR_COUNT:${seen.size}`);
@@ -124,12 +126,29 @@ function routeSource(route, pointsByRoute, segmentsByRoute, endpointsByRoute) {
 }
 function legKey(leg) { return stableJson([leg.surface, leg.waterbody_ref ?? null, leg.movement_class, leg.movement_method_id]); }
 function closeNumber(left, right, tolerance = 1e-7) { return Number.isFinite(left) && Number.isFinite(right) && Math.abs(left - right) <= tolerance; }
-function validateGroups(pair, forward, reverse) {
+function validLineName(name) {
+  if (typeof name !== 'string' || name.trim() === '' || /\d/u.test(name)) return false;
+  return !/(^|[^а-яё])(перв|втор|трет|четв[её]рт|пят|шест|седьм|восьм|девят|десят)(ый|ой|ий|ая|ья|ое|ье|ые|ьи|ого|ьего|ому|ьему|ым|ьим|ом|ьем|ую|ью|ых|ьих|ыми|ьими|ьей|ей)($|[^а-яё])|№/iu.test(name);
+}
+function validateGroupLabelAndBasis(pair, item, index, expectedBasis) {
+  requireValue(validLineName(item.line_name), `GROUP_LINE_NAME_INVALID:${pair.route_pair_id}:${index}`);
+  requireValue(item.line_name === pair.forward_line_name, `GROUP_LINE_NAME:${pair.route_pair_id}:${index}`);
+  requireValue(item.kind_basis === expectedBasis, `GROUP_KIND_BASIS:${pair.route_pair_id}:${index}`);
+}
+function validateGroups(pair, forward, reverse, namesRow) {
   const traces = forward.route_trace_segments;
   const reverseTraces = reverse.route_trace_segments;
   if (pair.geometry_mode === 'chord_fallback') {
     requireValue(!Array.isArray(traces) || traces.length === 0, `CHORD_HAS_TRACE:${pair.route_pair_id}`);
+    requireValue(!Array.isArray(reverseTraces) || reverseTraces.length === 0, `CHORD_HAS_REVERSE_TRACE:${pair.route_pair_id}`);
     requireValue(pair.segments?.length === 1 && pair.segments[0].geometry_mode === 'chord_fallback', `CHORD_GROUP:${pair.route_pair_id}`);
+    const item = pair.segments[0];
+    validateGroupLabelAndBasis(pair, item, 0, `line-names movement_class ${item.movement_class} (chord fallback)`);
+    requireValue(item.line_kind === namesRow.line_kind && item.line_kind === LINE_KIND_FOR_CLASS[forward.movement_class],
+      `CHORD_LINE_KIND:${pair.route_pair_id}:${namesRow.line_kind}`);
+    requireValue(item.movement_class === forward.movement_class && item.movement_class === reverse.movement_class
+      && item.movement_method_id === forward.movement_method_id && item.movement_method_id === reverse.movement_method_id,
+    `CHORD_MOVEMENT_SOURCE:${pair.route_pair_id}`);
     return [{ spec: pair.segments[0], forwardLegs: [], reverseLegs: [] }];
   }
   requireValue(pair.geometry_mode === 'trace' && Array.isArray(traces) && traces.length > 0, `TRACE_MISSING:${pair.route_pair_id}`);
@@ -161,8 +180,11 @@ function validateGroups(pair, forward, reverse) {
       ? ((traces[first].waterbody_ref ?? 'main') === 'main' ? 'river_channel' : 'side_channel')
       : LINE_KIND_FOR_CLASS[traces[first].movement_class];
     requireValue(expectedKind && item.line_kind === expectedKind, `GROUP_LINE_KIND:${pair.route_pair_id}:${i}:${expectedKind}`);
-    requireValue(typeof item.kind_basis === 'string' && item.kind_basis.trim(), `GROUP_KIND_BASIS:${pair.route_pair_id}:${i}`);
-    requireValue(item.line_name === (i === 0 ? pair.forward_line_name : pair.forward_line_name), `GROUP_LINE_NAME:${pair.route_pair_id}:${i}`);
+    const expectedBasis = traces[first].surface === 'water'
+      ? ((traces[first].waterbody_ref ?? 'main') === 'main' ? 'waterbody_ref=main → river_channel'
+        : `waterbody_ref=${traces[first].waterbody_ref} → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)`)
+      : `movement_class=${traces[first].movement_class} on surface=land`;
+    validateGroupLabelAndBasis(pair, item, i, expectedBasis);
     const idxs = Array.from({ length: last - first + 1 }, (_, offset) => first + offset);
     requireValue(equalJson(item.trace_leg_indices, idxs), `GROUP_TRACE_INDICES:${pair.route_pair_id}:${i}`);
     if (i > 0) validateBoundary(pair, traces, item, i, first);
@@ -221,7 +243,11 @@ function traceEnds(group, routeTrace, isReverse) {
 }
 
 function buildCandidate(inputs) {
-  const { spec, pairs, lineSpec, lineDatasets, baseDatasets } = inputs;
+  const { spec, lineSpec, lineDatasets, baseDatasets } = inputs;
+  const pairs = routeMaps(spec, inputs.derived, inputs.names, {
+    routes: baseDatasets[TABLES.routes], points: baseDatasets[TABLES.points], segments: baseDatasets[TABLES.segments],
+    endpoints: baseDatasets[TABLES.endpoints],
+  });
   const out = Object.fromEntries(Object.values(TABLES).map((table) => [table, []]));
   const profilesByKind = new Map(lineDatasets[TABLES.lineProfiles].map((row) => [row.line_kind_id.replace(/^line\./u, ''), row]));
   const profileByKind = (kind) => {
@@ -232,6 +258,7 @@ function buildCandidate(inputs) {
   };
   const addVersion = (kind, row, provenance = CANDIDATE_SOURCE) => out[TABLES.versions].push(authoringVersion(kind, row, provenance));
   const allSegmentRows = [];
+  let longSegments = 0; let recheckSliceCount = 0;
   for (const pairInfo of pairs) {
     const { pair, forward, reverse, forwardGeo, reverseGeo, forwardSource, reverseSource, groups } = pairInfo;
     const directional = [
@@ -278,10 +305,14 @@ function buildCandidate(inputs) {
       }
       const profileList = groupParts.map((part) => profileByKind(part.groupSpec.line_kind));
       const firstProfile = profileList[0];
+      const firstSegmentRisk = parseRisk(inputs.lineSpec.kinds[groupParts[0].groupSpec.line_kind]?.risk) ?? src.segments[0].risk_profile_id;
+      const firstSegmentRiskVersion = parseRiskVersion(inputs.lineSpec.kinds[groupParts[0].groupSpec.line_kind]?.risk) ?? src.segments[0].risk_profile_version;
       const route = sealed({ ...baseRoute, version: routeVersion, world_revision_id: WORLD_REVISION,
-        route_kind_id: firstProfile.route_kind_id, reverse_route_id: dir.isReverse ? forward.id : reverse.id,
+        route_kind_id: firstProfile.route_kind_id, risk_profile_id: firstSegmentRisk, risk_profile_version: firstSegmentRiskVersion,
+        reverse_route_id: dir.isReverse ? forward.id : reverse.id,
         reverse_route_version: ROUTE_VERSION, status: 'approved', provenance_ref: CANDIDATE_SOURCE });
       out[TABLES.routes].push(route); addVersion('world_route', route);
+      addWorldRouteEdge(out, route, inputs.externalById);
 
       for (let segmentIndex = 0; segmentIndex < groupParts.length; segmentIndex += 1) {
         const part = groupParts[segmentIndex]; const profile = profileList[segmentIndex];
@@ -292,6 +323,20 @@ function buildCandidate(inputs) {
         const direction = bearing(ends.from, ends.to);
         const baseMethod = mappedMethod(inputs, part.groupSpec.movement_method_id);
         requireValue(baseMethod === profile.baseline_movement_method_id, `PROFILE_METHOD_MISMATCH:${pair.route_pair_id}:${part.groupSpec.line_kind}:${baseMethod}/${profile.baseline_movement_method_id}`);
+        const segmentMinutes = allocations[segmentIndex];
+        const policy = baseDatasets[TABLES.rechecks].find((row) => row.id === profile.dynamic_recheck_policy_id
+          && row.version === profile.dynamic_recheck_policy_version);
+        const problem = policyProblem(policy);
+        const slices = problem == null ? policySlices(segmentMinutes, policy) : null;
+        requireValue(problem == null && Number.isInteger(slices) && slices >= 1,
+          `RECHECK_POLICY_INVALID:${routeId}:${problem ?? profile.dynamic_recheck_policy_id}`);
+        recheckSliceCount += slices;
+        if (segmentMinutes > 30) {
+          const satisfiesStep = problem == null && (policy.policy_kind === 'fixed_time_interval'
+            ? policy.interval_minutes <= 30 : segmentMinutes * policy.progress_slice_ppm <= 30 * 1_000_000);
+          requireValue(satisfiesStep, `RECHECK_SLICING_REQUIRED:${routeId}:${segmentMinutes}:${problem ?? profile.dynamic_recheck_policy_id}`);
+          longSegments += 1;
+        }
         const segment = sealed({
           entity_kind: 'world_route_segment', id: segId, version: segVersion, world_revision_id: WORLD_REVISION,
           world_route_id: routeId, world_route_version: routeVersion, ordinal: segmentIndex,
@@ -305,14 +350,14 @@ function buildCandidate(inputs) {
           baseline_movement_method_id: baseMethod,
           movement_method_cost_profile_id: profile.movement_method_cost_profile_id,
           movement_method_cost_profile_version: profile.movement_method_cost_profile_version,
-          base_minutes: allocations[segmentIndex], dynamic_recheck_policy_id: profile.dynamic_recheck_policy_id,
+          base_minutes: segmentMinutes, dynamic_recheck_policy_id: profile.dynamic_recheck_policy_id,
           dynamic_recheck_policy_version: profile.dynamic_recheck_policy_version,
           capacity: oldSegment.capacity, risk_profile_id: parseRisk(inputs.lineSpec.kinds[part.groupSpec.line_kind]?.risk) ?? oldSegment.risk_profile_id,
           risk_profile_version: parseRiskVersion(inputs.lineSpec.kinds[part.groupSpec.line_kind]?.risk) ?? oldSegment.risk_profile_version,
           availability_condition_set_id: oldSegment.availability_condition_set_id,
           availability_condition_set_version: oldSegment.availability_condition_set_version,
           line_kind_id: profile.line_kind_id, line_kind_profile_id: profile.id, line_kind_profile_version: profile.version,
-          line_name: part.groupSpec.line_name ?? dir.name, line_discriminator: null, line_direction_id: direction, line_toponym: null,
+          line_name: part.groupSpec.line_name, line_discriminator: null, line_direction_id: direction, line_toponym: null,
           status: 'approved', provenance_ref: CANDIDATE_SOURCE,
         });
         out[TABLES.segments].push(segment); allSegmentRows.push(segment); addVersion('world_route_segment', segment);
@@ -320,7 +365,7 @@ function buildCandidate(inputs) {
         const contextSource = srcContext(inputs.baseDatasets[TABLES.contexts], oldSegment);
         const context = sealed({ ...contextSource, segment_id: segment.id, segment_version: segment.version, status: 'approved', provenance_ref: CANDIDATE_SOURCE });
         out[TABLES.contexts].push(context);
-        addSegmentEdges(out, segment, context, part.groupSpec.movement_method_id, inputs.externalById);
+        addSegmentEdges(out, segment, context, inputs.externalById);
       }
       for (const sourceEndpoint of [src.from, src.to]) {
         const role = sourceEndpoint.endpoint_role;
@@ -346,6 +391,21 @@ function buildCandidate(inputs) {
   }
   requireValue(out[TABLES.routes].length === 48 && out[TABLES.segments].length === 60
     && out[TABLES.points].length === 108 && out[TABLES.endpoints].length === 96, 'OUTPUT_COUNT_MISMATCH');
+  for (const route of out[TABLES.routes]) {
+    const expectedName = pairs.find(({ forward, reverse }) => forward.id === route.id || reverse.id === route.id)?.pair.forward_line_name;
+    const routeSegments = out[TABLES.segments].filter((segment) => segment.world_route_id === route.id && segment.world_route_version === route.version);
+    requireValue(typeof expectedName === 'string' && routeSegments.every((segment) => validLineName(segment.line_name)
+      && segment.line_name === expectedName && segment.line_kind_id === `line.${segment.line_kind_profile_id.replace(/^lkp__/u, '')}`),
+    `GENERATED_ROUTE_SEGMENT_LABEL_OR_KIND:${route.id}`);
+  }
+  const routeEndpoints = new Map(out[TABLES.endpoints].filter((endpoint) => endpoint.endpoint_role === 'from')
+    .map((endpoint) => [endpoint.world_route_id, endpoint.canonical_g5_id]));
+  const firstSegments = out[TABLES.segments].filter((segment) => segment.ordinal === 0).map((segment) => ({
+    id: segment.id, from_canonical_g5_id: routeEndpoints.get(segment.world_route_id), line_name: segment.line_name,
+    line_discriminator: segment.line_discriminator, line_direction_id: segment.line_direction_id,
+  }));
+  const labelProblems = lineNameProblems([...lineDatasets[TABLES.connections], ...firstSegments]);
+  requireValue(labelProblems.length === 0, `LINE_NAME_SET_INVALID:${labelProblems.join('; ')}`);
 
   // Carry the six wave-1 profiles and their direct immutable rows as closure snapshots.
   const usedKinds = new Set(pairs.flatMap(({ pair }) => pair.segments.map((s) => s.line_kind)));
@@ -401,24 +461,37 @@ function buildCandidate(inputs) {
     id: CANDIDATE_SOURCE, title: 'M2c world routes v1 candidate (cross-G4 routes)', source_type: 'project_note',
     file_reference: `${CANDIDATE}/generator-report.json`, page_or_section: 'inputs: route-spec.json and generator-report.json#inputs',
     summary: 'Cross-G4 world-route candidate based on place-geo traces/minutes, line-names, and wave-1 line-kind profiles.',
-    limitations: 'Candidate only; import only with the b2 runtime reader cutover; minutes and non-main waterbody profile mappings require independent Opus approval.',
-    status: 'approved', confidence: 'medium', checked_by: 'fleet/routes-b2 candidate author',
+    limitations: 'Candidate only; import only with the b2 runtime reader cutover. Reviewer limits and unresolved assumptions are listed in README.md#review-assumptions-and-limits.',
+    status: 'approved', confidence: 'medium', checked_by: 'Opus REVIEW-routes-b2-1 (2026-10-01), independent pass; author fleet/routes-b2',
   });
 
   addBaseClosures(out, inputs, pairs);
   const allExternalEdges = out[TABLES.edges].filter((edge) => edge.target_entity_kind === 'external_dependency');
   const externalKeys = new Set(allExternalEdges.map(externalKeyFromEdge));
-  for (const row of inputs.baseDatasets[TABLES.external]) if (externalKeys.has(externalKeyFromRow(row))) out[TABLES.external].push(row);
-  requireValue(out[TABLES.external].length === externalKeys.size, `EXTERNAL_PIN_CLOSURE:${out[TABLES.external].length}/${externalKeys.size}`);
+  const retainedSourceMethodPins = new Set(['movement.foot@1', 'movement.small_river_craft@1']);
+  for (const row of inputs.baseDatasets[TABLES.external]) {
+    if (externalKeys.has(externalKeyFromRow(row)) || retainedSourceMethodPins.has(`${row.dependency_id}@${row.dependency_version}`)) out[TABLES.external].push(row);
+  }
+  const externalRows = new Set(out[TABLES.external].map(externalKeyFromRow));
+  requireValue([...externalKeys].every((key) => externalRows.has(key)), `EXTERNAL_PIN_CLOSURE:${externalKeys.size}/${externalRows.size}`);
   for (const table of [TABLES.edges, TABLES.versions, TABLES.sources, TABLES.envs, TABLES.costs, TABLES.costOptions, TABLES.lineProfiles, TABLES.lineAlternatives, TABLES.external, TABLES.nodes, TABLES.parents, TABLES.exits, TABLES.topoOrientations, TABLES.directionContexts, TABLES.exitOrientationRules, TABLES.rechecks, TABLES.connections, TABLES.entries]) {
     out[table] = uniqueRows(out[table], table);
   }
+  validateWorldRouteDependencyEdges(out);
+  const proposedMinutes = new Map(inputs.derived.lines.map((line) => [line.id, line.proposed_minutes]));
+  const sumMismatchRoutes = out[TABLES.routes].filter((route) => {
+    const total = out[TABLES.segments]
+      .filter((segment) => segment.world_route_id === route.id && segment.world_route_version === route.version)
+      .reduce((sum, segment) => sum + segment.base_minutes, 0);
+    return total !== proposedMinutes.get(route.id);
+  }).length;
   const report = {
     schema: 'rus.m2c_world_route_wave_report.v1', status: 'candidate_unapproved', import_authorized: false, activation_authorized: false,
     import_policy: 'Import only together with the b2 runtime reader cutover; no bootstrap import.',
     counts: Object.fromEntries(Object.entries(out).filter(([, rows]) => rows.length).map(([table, rows]) => [table, rows.length])),
     scope: { pairs: pairs.length, directed_routes: out[TABLES.routes].length, directed_segments: out[TABLES.segments].length, internal_points: out[TABLES.points].length - 96, endpoints: out[TABLES.endpoints].length },
-    minutes: { source: 'place-geo proposed_minutes', sum_mismatch_routes: 0, largest_remainder: true },
+    minutes: { source: 'place-geo proposed_minutes', sum_mismatch_routes: sumMismatchRoutes, largest_remainder: true,
+      long_segments_over_30_minutes: longSegments, recheck_slices: recheckSliceCount },
     assumptions_for_opus: spec.decisions.assumptions_for_opus,
     inputs: { route_spec: SPEC_PATH, place_geo_derived: DERIVED_PATH, line_names: NAMES_PATH, line_kind_spec: LINE_SPEC_PATH },
   };
@@ -441,13 +514,16 @@ function externalTarget(edge, externalById, role, id, version) {
     target_registry_type: row.registry_type, target_registry_id: row.registry_id, target_registry_version: row.registry_version,
     target_registry_digest: row.registry_digest, target_dependency_digest: row.dependency_digest };
 }
-function addSegmentEdges(out, segment, context, sourceMovementMethodId, externalById) {
+function addSegmentEdges(out, segment, context, externalById) {
   const common = { source_entity_kind: 'world_route_segment', source_entity_id: segment.id, source_version: segment.version,
     world_revision_id: segment.world_revision_id, canonical_ordinal: 0, provenance_ref: CANDIDATE_SOURCE };
-  const deps = [
-    ['baseline_movement_method', sourceMovementMethodId], ['g0', context.g0_id], ['g1', context.g1_id], ['weather_scope', context.weather_scope_id],
-  ];
+  const deps = [['g0', context.g0_id], ['g1', context.g1_id], ['weather_scope', context.weather_scope_id]];
   for (const [role, id] of deps) out[TABLES.edges].push(externalTarget(common, externalById, role, id, 1));
+}
+function addWorldRouteEdge(out, route, externalById) {
+  const common = { source_entity_kind: 'world_route', source_entity_id: route.id, source_version: route.version,
+    world_revision_id: route.world_revision_id, canonical_ordinal: 0, provenance_ref: CANDIDATE_SOURCE };
+  out[TABLES.edges].push(externalTarget(common, externalById, 'route_kind', route.route_kind_id, 1));
 }
 function addG5EndpointEdge(out, endpoint) {
   out[TABLES.edges].push({ source_entity_kind: 'world_route_endpoint_binding', source_entity_id: endpoint.id, source_version: endpoint.version,
@@ -467,6 +543,31 @@ function addOffroadProfileEdges(out, offroad, externalById) {
   const routeKind = externalById.get(`${profile.route_kind_id}@1`);
   requireValue(routeKind, `EXTERNAL_PIN_MISSING:${profile.route_kind_id}`);
   out[TABLES.edges].push(externalTarget(common, externalById, 'route_kind', profile.route_kind_id, 1));
+}
+
+export function validateWorldRouteDependencyEdges(datasets) {
+  const routes = datasets[TABLES.routes] ?? [];
+  const segments = datasets[TABLES.segments] ?? [];
+  const edges = datasets[TABLES.edges] ?? [];
+  const routeEdges = edges.filter((edge) => edge.source_entity_kind === 'world_route');
+  requireValue(routeEdges.length === routes.length, `WORLD_ROUTE_KIND_EDGE_COUNT:${routeEdges.length}/${routes.length}`);
+  for (const route of routes) {
+    const matching = routeEdges.filter((edge) => edge.source_entity_id === route.id && edge.source_version === route.version);
+    requireValue(matching.length === 1, `WORLD_ROUTE_KIND_EDGE_MISSING:${route.id}@${route.version}`);
+    const edge = matching[0];
+    requireValue(edge.dependency_role === 'route_kind' && edge.target_entity_kind === 'external_dependency'
+      && edge.target_entity_id === route.route_kind_id && edge.target_version === 1,
+    `WORLD_ROUTE_KIND_EDGE_TARGET_MISMATCH:${route.id}@${route.version}`);
+  }
+  const segmentByRef = new Map(segments.map((segment) => [`${segment.id}@${segment.version}`, segment]));
+  for (const edge of edges.filter((item) => item.dependency_role === 'baseline_movement_method')) {
+    const segment = segmentByRef.get(`${edge.source_entity_id}@${edge.source_version}`);
+    requireValue(edge.source_entity_kind === 'world_route_segment' && segment,
+      `SEGMENT_METHOD_EDGE_SOURCE_MISSING:${edge.source_entity_id}@${edge.source_version}`);
+    requireValue(edge.target_entity_id === segment.baseline_movement_method_id,
+      `SEGMENT_METHOD_EDGE_TARGET_MISMATCH:${edge.source_entity_id}@${edge.source_version}`);
+  }
+  return true;
 }
 function offroadProfile(inputs) {
   const lineSpec = inputs.lineSpec;
@@ -657,7 +758,7 @@ function buildManifest(datasets) {
     provenance_ref: `${CANDIDATE}/generator-report.json`, delete_policy: 'forbid', data_gaps: [], datasets: entries };
 }
 
-function collectInputs() {
+export function collectInputs() {
   const spec = readJson(SPEC_PATH); const derived = readJson(DERIVED_PATH); const names = readJson(NAMES_PATH); const lineSpec = readJson(LINE_SPEC_PATH);
   const placeCandidate = readJson(`${PLACE_GEO}/candidate.json`);
   const baseManifest = readJson(`${BASE_CANDIDATE}/import-manifest.json`);

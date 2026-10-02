@@ -112,6 +112,7 @@
 | 120 | `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json` | approval-валидатор не проверяет `resign_required`; зелёная проверка может принять подпись старого пина | — |
 | 121 | `data/novgorod-region/novgorod_occupations_v1_enriched.tsv`, `data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/occupation_term_status.csv`, `game-base-v1/items-weapons-armour/military/security.csv` | недоказанный термин «сторож брода» и его занятие/снаряжение остаются; term-status помечен not_attested | — |
 | 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
+| 123 | D-1 `presence_state`/`location_ref`, D-2 `scheduled_absences`; `packages/npc-runtime` routine movement | сезонное местонахождение/отсутствие людей не исполняются | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -664,4 +665,10 @@
 - **Где.** A1 physical admission в `packages/items-property` и planner/wiring в `apps/game-server`.
 - **Что.** A1 проверяет массу, доступ, количество, класс выхода, требование инструмента и режим идентичности, но не сохраняет и не проверяет вид материала и не устанавливает, может ли результат работать по своему назначению. Если модель предложит такой план, «прялка из рубахи» или «меч из рубахи» могут пройти A1. Снятие `needs_check` с действий игрока в D59 не создаёт этот пробел, но делает его видимым и для имён из прежнего списка.
 - **Как жить.** Не считать положительный A1 admission доказательством подходящего материала или работоспособности. Отдельная задача `a1-physics` должна использовать знания мира о технологии и сохранять/проверять вид материала.
+- **Issue.** —
+
+### LW-123 — сезонные отсутствие и местонахождение из D-1 не исполняются NPC routine runtime (npc-runtime)
+- **Где.** `packages/runtime-catalog/src/m2c-npc-wave-readers.js` (D-1 `presence_state`/`location_ref` and D-2 `scheduled_absences`); `packages/npc-runtime/src/routine-schedule.js`; first-arrival composition in `apps/game-server/src/infrastructure/postgres/ordinary-materialization-presence-first-arrival.js` and `packages/materialization/src/place-people-first-arrival.js`.
+- **Что.** Runtime catalog отдаёт сезонные поля распорядка, но routine runtime игнорирует D-1 `presence_state`/`location_ref`; D-2 `scheduled_absences` не передаётся в first-arrival materialization. Поэтому субъект создаётся вместе с местом без учёта сезона, а сезонное перемещение возможно только через явный `movement_handoff`. Перехода по сезонной границе из D-1 данных нет.
+- **Как жить.** Не считать авторские поля отсутствия/места исполненным состоянием NPC. Существование остаётся за first-arrival composition, местонахождение — за `@rus/npc-runtime`; сезонное местонахождение требует отдельной задачи владельца со связью распорядка, перемещения и persistence, собственными PLAN и CA.
 - **Issue.** —

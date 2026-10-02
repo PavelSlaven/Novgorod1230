@@ -1,8 +1,8 @@
 # Fresh v17 database schema review request
 
 Review [fresh-schema-request.json](fresh-schema-request.json) at source commit
-`854881d774c6324138f7734656824eb4e1cd3750`. Request SHA-256:
-`9ceaa9fb49f36d8756d0e511fe508110ce51d6a32ef646b2781fb103b2cb70e1` (15975 bytes).
+`77ce16ed90c6d00a372271d49da6cfbbd965c478`. Request SHA-256:
+`1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a` (16181 bytes).
 This is a pending request, not an approval or execution record.
 
 Requested target is two **new** databases in the existing managed local-play
@@ -10,8 +10,8 @@ PostgreSQL cluster: `novgorod_world_v17` owned by `world_operator`, and
 `novgorod_party_v17` owned by `party_operator`. Existing `novgorod_world` and
 `novgorod_party` must remain unchanged. Independent Sol high review must verify
 the exact request, source commit, all 30 world DDL parts, the world entrypoint,
-the ordered 37 party migrations and chain digest
-`872412c5875e37896e3633caf300bbaff884ee6f99dba6e60c5f957fa66c9d01` before any write.
+the ordered 38 party migrations and chain digest
+`39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993` before any write.
 
 The operator must confirm cluster identity, database absence, roles, and a
 verified backup before creating either database. Stop if either v17 name exists.
@@ -24,7 +24,7 @@ repository root against that verified target. Apply party migrations through
 executes the complete ordered chain in one transaction.
 
 Read back 224 world tables, the world-reader grants, party migration result
-`applied: 37`, empty party count, and unchanged old-database row counts. Record
+`applied: 38`, empty party count, and unchanged old-database row counts. Record
 actual target identity, source hashes, execution results and exact readback in
 an independent execution attestation. Do not treat this request or its review
 as evidence that either database was created.

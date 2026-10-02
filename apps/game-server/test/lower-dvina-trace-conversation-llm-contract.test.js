@@ -341,6 +341,33 @@ test('NPC route prompt treats refs as opaque and excludes route context from ope
   }]);
 });
 
+test('NPC prompt shows complete grounded claim shape and personal-fact limits',
+  () => {
+    const request = npcRequest();
+    request.allowed_references.knowledge_refs.push(
+      ref('knowledge_scope', 'npc-profile-1'));
+    const prompt = npcConversationInstructions(null, request);
+
+    for (const field of ['claim_id', 'content_summary', 'form',
+      'speaker_posture', 'source_knowledge_refs', 'mentioned_entity_refs']) {
+      assert.match(prompt, new RegExp(`"${field}"`, 'u'));
+    }
+    for (const posture of ['believed_true', 'knowingly_false', 'mixed',
+      'uncertain', 'withheld']) {
+      assert.match(prompt, new RegExp(posture, 'u'));
+    }
+    assert.match(prompt,
+      /source_knowledge_refs contains only entity_id strings/u);
+    assert.match(prompt, /never emit entity_kind/u);
+    assert.match(prompt,
+      /server resolves a unique exact ID to its allowed type/u);
+    assert.match(prompt, /scope permits citing but does not prove a fact/u);
+    assert.match(prompt,
+      /Do not infer motive, values, fear, family or dependants/u);
+    assert.match(prompt, /A missing personal field means unknown/u);
+    assert.match(prompt, /does not change objective truth/u);
+  });
+
 test('NPC participation request states acceptance binding choice', async () => {
   const request = npcRequest();
   request.decision_scope.operation_contract = {

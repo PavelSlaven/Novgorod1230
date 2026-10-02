@@ -25,7 +25,12 @@ export const NPC_CONVERSATION_PLAN_SHAPE = JSON.stringify({
   intended_addressee_refs: [{ entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' }],
   affected_actor_refs: [],
   speech: { utterance_text: '<NPC speech>', dominant_act: '<one allowed act>',
-    interaction_tags: [], topic_refs: [], claims: [],
+    interaction_tags: [], topic_refs: [], claims: [{
+      claim_id: '<stable id>', content_summary: '<same fact as the utterance>',
+      form: 'assertion', speaker_posture: '<allowed posture>',
+      source_knowledge_refs: ['<copy entity_id from allowed_references.knowledge_refs>'],
+      mentioned_entity_refs: []
+    }],
     response_expectation: { kind: 'none', target_refs: [] } },
   interpretation: { intent: '<intent>', grounded_contribution: '<grounded contribution>',
     adaptation: 'literal' }, resolution: 'automatic',

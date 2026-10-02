@@ -358,7 +358,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
       break;
     }
     const boundary = queuedNpcBoundaries.shift();
-    const decision = normalizeNpcDecision(await callPort(
+    let decision = normalizeNpcDecision(await callPort(
       ports.buildNpcResponseDecision,
       {
         working_state: workingState,
@@ -377,6 +377,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       validatePlan: ports.validateNpcPlan ?? null,
       validateFreshPlan: ports.validateFreshNpcPlan ?? null
     });
+    decision = { ...decision,
+      request: proposal.decision_context?.request ?? decision.request };
     const npcCheck = await resolveNpcContributionSocialCheck({
       plan: proposal.plan,
       request: decision.request,

@@ -150,6 +150,41 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   let currentSignals = orderedSignals;
   let staleRebuilds = 0;
   decisionLoop: while (true) {
+    const requestBeforePreparation = currentRequest;
+    let preparedRequestContext = null;
+    if (typeof semanticModel.prepareRequest === 'function') {
+      let preparation;
+      try {
+        preparation = await semanticModel.prepareRequest(
+          immutable(currentRequest), immutable({ boundary: currentBoundary })
+        );
+      } catch (error) {
+        throw turnFailure('TURN_NPC_MODEL_FAILED',
+          'NPC semantic request preparation failed', {
+            request_id: currentRequest.request_id,
+            boundary_id: currentBoundary.boundary_id,
+            cause: error instanceof Error ? error.message : String(error)
+          });
+      }
+      if (preparation == null || typeof preparation.request !== 'object'
+          || preparation.request === null || Array.isArray(preparation.request)) {
+        fail('TURN_NPC_REQUEST_INVALID',
+          'NPC semantic request preparation must return a request object', {
+            request_id: currentRequest.request_id,
+            boundary_id: currentBoundary.boundary_id
+          });
+      }
+      currentRequest = immutable(preparation.request);
+      preparedRequestContext = preparation.context ?? null;
+      if (!validateRequestForMode(currentRequest, mode)) {
+        fail('TURN_NPC_REQUEST_INVALID',
+          'Prepared NPC semantic request must match its formal request contract', {
+            request_id: currentRequest.request_id,
+            boundary_id: currentBoundary.boundary_id
+          });
+      }
+      requireBoundaryRequestIdentity(currentBoundary, currentRequest, mode);
+    }
     const safeRequest = immutable(currentRequest);
     let repair = null;
     let structuralRepairUsed = false;
@@ -159,7 +194,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       try {
         rawPlan = await semanticModel(safeRequest, immutable({
           boundary: currentBoundary,
-          repair
+          repair,
+          prepared_request_context: preparedRequestContext
         }));
       } catch (error) {
         if (repair === null && error?.code === 'json_parse_failed') {
@@ -210,14 +246,14 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       if (currentStateVersion !== expectedStateVersion) {
         const rebuilt = await rebuildStaleDecision({
           boundary: currentBoundary,
-          request: currentRequest,
+          request: requestBeforePreparation,
           rawPlan,
           currentStateVersion,
           rebuildDecisionContext
         });
         if (rebuilt === null) {
           return staleDiscardedProposal(
-            currentBoundary, currentRequest, currentSignals);
+            currentBoundary, requestBeforePreparation, currentSignals);
         }
         staleRebuilds += 1;
         if (staleRebuilds > MAX_STALE_REBUILDS) {
@@ -238,7 +274,9 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         rawPlan, safeRequest, mode);
       const domainResult = structurallyValid
         ? await planDomainResult(rawPlan, safeRequest, validatePlan,
-          validateFreshPlan) : null;
+          validateFreshPlan, immutable({
+            prepared_request_context: preparedRequestContext
+          })) : null;
       if (structurallyValid && domainResult?.pass !== false) break;
       if (domainResult?.pass === false
           && domainResult.fresh_semantic_repair !== true) {
@@ -458,13 +496,14 @@ export async function requestNpcSemanticDecision({
 }
 
 async function planDomainResult(plan, request, validatePlan,
-  validateFreshPlan = null) {
+  validateFreshPlan = null, context = {}) {
   if (validatePlan !== null) {
     const rejected = domainValidationResult(await validatePlan(plan, request));
     if (rejected !== null) return rejected;
   }
   if (validateFreshPlan !== null) {
-    const rejected = domainValidationResult(await validateFreshPlan(plan, request));
+    const rejected = domainValidationResult(await validateFreshPlan(
+      plan, request, context));
     if (rejected !== null) {
       return rejected.errors.length > 0 && rejected.errors.every(
         ({ retryable }) => retryable === true)

@@ -178,6 +178,19 @@
       "version": "0.9.0"
     },
     {
+      "dependencies": [],
+      "name": "@rus/economy",
+      "owns": [
+        "exact approved currency rate lookup by region, date, and unit",
+        "rational two-leg conversion through BUE with one final approved-quantum rounding",
+        "safe rendering of confirmed local amounts with approved unit labels"
+      ],
+      "path": "packages/economy",
+      "public_entry": "./src/index.js",
+      "purpose": "Performs exact conversion of an already approved local amount through the caller-supplied, verified economy projection, then renders a complete local amount for a player-safe handoff.",
+      "version": "0.1.0"
+    },
+    {
       "dependencies": [
         "@rus/contracts",
         "@rus/kernel",

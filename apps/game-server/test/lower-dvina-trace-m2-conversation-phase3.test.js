@@ -351,6 +351,10 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     contracts.actors.find(({ ref: actorRef }) =>
       actorRef === 'eremey_fisher').knowledge_profile_snapshot
   );
+  assert.ok(disclosed.npcRequest.allowed_references.knowledge_refs.some(
+    (reference) => reference.entity_kind === 'knowledge_scope'
+      && reference.entity_id === disclosed.npcRequest.knowledge.profile_id
+  ));
   assert.equal(
     disclosed.npcRequest.knowledge.private_persistence_marker,
     persistenceMarker

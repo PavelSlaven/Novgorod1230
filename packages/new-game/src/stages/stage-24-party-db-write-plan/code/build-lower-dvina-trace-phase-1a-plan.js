@@ -415,6 +415,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     }),
     hidden_truth: result.hidden_truth,
     sealed_selections: result.sealed_selections,
+    historical_events: structuredClone(party_creation_context.historical_events ?? []),
     policy_profile_pins: result.policy_profile_pins,
     materialization_trace: result.trace,
     semantic_validation,

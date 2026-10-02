@@ -11,6 +11,7 @@ test('Stage 24 remains write-plan serializer, not item materializer', async () =
   const source = await readFile(new URL('build-lower-dvina-trace-phase-1a-plan.js',
     stage24), 'utf8');
   assert.doesNotMatch(source, /@rus\/items-property|allocationItemId|materialize.*item/iu);
+  assert.match(source, /historical_events:\s*structuredClone\(party_creation_context\.historical_events \?\? \[\]\)/u);
   await assert.rejects(readFile(new URL('procedural-actor-allocation.js', stage24)),
     { code: 'ENOENT' });
   const stage16 = await readFile(new URL('../src/stages/stage-16-item-placement/'

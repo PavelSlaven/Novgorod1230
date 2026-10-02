@@ -12,6 +12,7 @@ import {
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 import { createRuntimeCatalogLoader, loadApprovedProceduralCompiledCatalog } from '@rus/runtime-catalog';
 import { createPostgresWorldBaseReader } from './world-base.js';
+import { projectApprovedPartyHistoricalEvents } from '@rus/time-events-history';
 import { readCurrentNaturalPerceptionFacts } from './g4-natural-perception-reader.js';
 import { readInitialCanonicalNaturalSourceState } from './lower-dvina-trace-phase-2-initial-state.js';
 import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
@@ -101,6 +102,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         : null;
       return materializeLowerDvinaTraceParty({
         request,
+        initialHistoricalEventsLoader: () =>
+          loadApprovedInitialHistoricalEvents(worldPool.query.bind(worldPool)),
         domainCatalogPinLoader: async (identity) => {
           if (identity?.catalog_scope !== runtimeCatalogPin.catalog_scope
             || identity.world_revision_id
@@ -250,6 +253,23 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
       }
     })
   });
+}
+
+export async function loadApprovedInitialHistoricalEvents(query) {
+  if (typeof query !== 'function') {
+    fail('TRACE_PHASE_1B_TEMPORAL_HISTORY_REQUIRED',
+      'The approved temporal record reader is required at party creation.');
+  }
+  const temporal = await query(`SELECT record_id,family_id,record_kind,
+    record_version AS version,status,payload,canonical_digest
+    FROM world_base.temporal_authoring_records
+    WHERE record_id=$1 AND status='approved'`,
+  ['record:historical_phase_local_effect_rules:novgorod_famine_1230_v2']);
+  if (temporal.rows?.length !== 1) {
+    fail('TRACE_PHASE_1B_TEMPORAL_HISTORY_REQUIRED',
+      'The approved Novgorod famine temporal record is required at party creation.');
+  }
+  return projectApprovedPartyHistoricalEvents({ temporalRecords: temporal.rows });
 }
 
 function assertActorBaseAttributesBinding(binding, release) {

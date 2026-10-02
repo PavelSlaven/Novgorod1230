@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "b156d18a624242f1436a64b97e65893a67a179b103383de7d23dc6e30c911fb0",
-      "bytes": 32774,
+      "sha256": "262d34f2cd0addaeb2e1cdabed526f88c20e3f365ae7a555290ad6158287dd49",
+      "bytes": 32970,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -172,13 +172,13 @@
       "document_id": "items-and-property",
       "canonical_path": "corpus/DOCUMENTS/items_and_property.txt",
       "file_name": "items_and_property.txt",
-      "sha256": "6b3a5a5f4bbb9b959ae5864be54cfe0c5eefb637e9f1814d8afb9eb7072e4dc6",
-      "bytes": 50945,
+      "sha256": "5ceb2f9029a6eff1c545856ac88fa7a8be743af73ce9e8b71e79057a4d59aea1",
+      "bytes": 54438,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
       "provenance_mode": "canonicalized_from_legacy",
-      "source_legacy_sha256": "6b3a5a5f4bbb9b959ae5864be54cfe0c5eefb637e9f1814d8afb9eb7072e4dc6",
-      "source_legacy_bytes": 50945,
+      "source_legacy_sha256": "5ceb2f9029a6eff1c545856ac88fa7a8be743af73ce9e8b71e79057a4d59aea1",
+      "source_legacy_bytes": 54438,
       "priority_tier": "technical_contract"
     },
     {

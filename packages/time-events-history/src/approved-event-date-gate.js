@@ -1,4 +1,5 @@
 import { sha256 } from '@rus/kernel';
+import { normalizeGameTimestamp } from './exact-time.js';
 
 const approvedBy = 'Opus approval pass (lead), out/opus-review-4a3.json + REVIEW-4a4';
 const proposalPath = 'data/world-catalogs/novgorod/temporal-v4/news-date-gate-v1/time-owner-event-proposals.json';
@@ -42,7 +43,13 @@ export function projectApprovedPartyHistoricalEvents({ temporalRecords } = {}) {
   const phaseIds = famine.payload?.phase_ids;
   const startBoundary = famine.payload?.source_backed_exact_boundaries_or_authored_ranges
     ?.formal_game_timestamp_range?.start_inclusive;
-  const start = startBoundary?.whole_minutes;
+  let normalizedStart;
+  try {
+    normalizedStart = normalizeGameTimestamp(startBoundary);
+  } catch {
+    throw new TypeError('the approved Novgorod famine temporal record is invalid.');
+  }
+  const start = BigInt(normalizedStart.whole_minutes);
   if (famine.family_id !== 'historical_phase_local_effect_rules'
     || famine.record_kind !== 'historical_phase_rule'
     || String(famine.version) !== '1' || famine.status !== 'approved'
@@ -51,9 +58,9 @@ export function projectApprovedPartyHistoricalEvents({ temporalRecords } = {}) {
       && ref.entity_ref.entity_id === 'novgorod_famine_1230')
     || !Array.isArray(phaseIds) || phaseIds.length !== 1
     || typeof phaseIds[0] !== 'string' || phaseIds[0].length === 0
-    || !Number.isSafeInteger(Number(start)) || Number(start) < 0
-    || Number(startBoundary.subminute_numerator) !== 0
-    || Number(startBoundary.subminute_denominator) !== 1) {
+    || start > BigInt(Number.MAX_SAFE_INTEGER)
+    || normalizedStart.subminute_numerator !== '0'
+    || normalizedStart.subminute_denominator !== '1') {
     throw new TypeError('the approved Novgorod famine temporal record is invalid.');
   }
 

@@ -30,6 +30,22 @@ test('party start rejects missing approved temporal source', async () => {
   );
 });
 
+for (const [field, value] of [
+  ['whole_minutes', null], ['whole_minutes', ''],
+  ['subminute_numerator', null], ['subminute_denominator', true]
+]) {
+  test(`party start rejects malformed famine ${field}=${JSON.stringify(value)}`,
+    async () => {
+      const record = await famineRecord();
+      record.payload.source_backed_exact_boundaries_or_authored_ranges
+        .formal_game_timestamp_range.start_inclusive[field] = value;
+      await assert.rejects(
+        loadApprovedInitialHistoricalEvents(async () => ({ rows: [record] })),
+        /approved Novgorod famine temporal record is invalid/u
+      );
+    });
+}
+
 async function famineRecord() {
   const [record] = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/temporal-v4/datasets/'

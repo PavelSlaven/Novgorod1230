@@ -19,6 +19,21 @@ const OPENING_REJECTED = 'AUTHORED_OPENING_AUDIT_REJECTED';
 class Blocked extends Error {}
 
 const labelOf = (entry) => entry?.display_label ?? entry?.label ?? entry?.name ?? entry?.title ?? null;
+export function capturePeoplePanel(screen, snap = null) {
+  const panel = screen?.panels?.people;
+  const data = panel?.data ?? {};
+  return {
+    panel_exists: panel != null,
+    visible: panel?.visible ?? null,
+    visible_npcs_count: Array.isArray(data.visible_npcs) ? data.visible_npcs.length : 0,
+    people_count: Array.isArray(data.people) ? data.people.length : 0,
+    active_interlocutor_exists: data.active_interlocutor != null,
+    placement_npc_ids: (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc')
+      .map((row) => row.entity_id).filter((id) => id != null),
+    visible_context_npc_ids: (screen?.visible_context?.visible_npc ?? [])
+      .map((row) => row?.entity_ref?.entity_id).filter((id) => id != null)
+  };
+}
 const peopleOf = (screen) => {
   const panel = screen?.panels?.people;
   if (!panel?.visible) return [];
@@ -43,11 +58,13 @@ const placeName = (snap) => snap?.position?.canonical_g5?.replace(/^.*_r2_/u, ''
  */
 export async function runLegs({
   api, sql, routeLabels, llm, scenarioId, runId, maxTurns = 24, reserveMake = RESERVE_MAKE_TURNS,
-  deadlineAt = Infinity, now = Date.now, persist = () => {}
+  deadlineAt = Infinity, now = Date.now, persist = () => {},
+  sceneProjectionDiagnostics = () => []
 }) {
   const legs = Object.fromEntries(['start', 'walk', 'meet', 'talk', 'take', 'make'].map((id) => [id,
     { id, status: 'blocked', reason: 'не достигнута', detail: null }]));
-  const state = { legs, turns: [], opening: null, party_id: null, final_snapshot: null };
+  const state = { legs, turns: [], opening: null, party_id: null, final_snapshot: null,
+    transport_errors: [] };
   const set = (id, status, reason, detail = null) => { Object.assign(legs[id], { status, reason, detail }); };
   const blockRest = (from, reason) => {
     for (const leg of Object.values(legs)) if (leg.status === 'blocked' && leg.reason === 'не достигнута' && from.includes(leg.id)) leg.reason = reason;
@@ -56,12 +73,20 @@ export async function runLegs({
   let partyId = null;
   let last = null; // { screen, snap }
   let turnNo = 0;
+  const apiCall = async (method, phase, leg, ...args) => {
+    try { return await api[method](...args); }
+    catch (error) {
+      if (error?.transport) state.transport_errors.push({ ...error.transport,
+        phase, turn: turnNo || null, leg: leg ?? null });
+      throw error;
+    }
+  };
 
   const total = () => state.turns.length;
   const exploreBudget = () => maxTurns - reserveMake - total();
 
-  async function refresh() {
-    const screen = await api.screen(partyId);
+  async function refresh(phase = 'screen_refresh', leg = null) {
+    const screen = await apiCall('screen', phase, leg, partyId);
     const snap = await sql.snapshot(partyId);
     last = { screen: screen.data?.screen ?? null, snap };
     state.final_snapshot = snap;
@@ -75,24 +100,39 @@ export async function runLegs({
     const n = ++turnNo;
     const requestId = `slice-${runId}-${n}`;
     const before = last?.snap ?? await sql.snapshot(partyId);
+    const visibleContextBefore = structuredClone(
+      last?.screen?.visible_context ?? null);
     const started = now();
     const calls = llm.count();
+    const roleCalls = llm.roleCalls?.length ?? 0;
     const errorsBefore = llm.serverErrorCount?.() ?? 0;
-    const response = await api.turn(partyId, { raw_text: text, request_id: requestId });
+    const response = await apiCall('turn', 'turn', leg, partyId,
+      { raw_text: text, request_id: requestId });
     let recovered = false;
-    let view = await refresh();
+    let view = await refresh('screen_after_turn', leg);
     let prose = view.screen?.main_prose ?? response.data?.screen?.main_prose ?? '';
     const committed = Number(view.snap?.state_version) > Number(before?.state_version);
     if (committed && !String(prose).trim()) {
-      await api.recover(partyId, { request_id: requestId });
+      await apiCall('recover', 'presentation_recovery', leg, partyId,
+        { request_id: requestId });
       recovered = true;
-      view = await refresh();
+      view = await refresh('screen_after_recovery', leg);
       prose = view.screen?.main_prose ?? '';
     }
     const turn = {
       n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
       committed, recovered, prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
-      llm_calls: llm.count() - calls, server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [], route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
+      llm_calls: llm.count() - calls,
+      llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
+      people_panel: capturePeoplePanel(view.screen, view.snap),
+      current_visible_context: {
+        before: visibleContextBefore,
+        response: structuredClone(response.data?.screen?.visible_context ?? null),
+        after: structuredClone(view.screen?.visible_context ?? null)
+      },
+      npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
+        .filter((event) => event?.request_id === requestId),
+      server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [], route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
     };
     state.turns.push(turn);
     persist(result());
@@ -107,19 +147,22 @@ export async function runLegs({
     const requestId = `slice-${runId}-start`;
     while (attempts < 3 && opening == null) {
       attempts += 1;
-      const response = await api.newGame({ scenario_id: scenarioId, request_id: requestId });
+      const response = await apiCall('newGame', 'new_game', 'start',
+        { scenario_id: scenarioId, request_id: requestId });
       if (response.ok) opening = response.data;
       else if (response.error?.code === OPENING_REJECTED) rejections += 1;
       else { state.opening = { attempts, rejections, party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
     }
     state.opening = { attempts, rejections, party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
-      route_labels: routeLabels(opening?.screen) };
+      route_labels: routeLabels(opening?.screen), people_panel_initial: capturePeoplePanel(opening?.screen) };
     if (opening == null) throw new Error(`${OPENING_REJECTED} ×${rejections}`);
     partyId = opening.party_id;
     state.party_id = partyId;
-    const ack = await api.ack(partyId, { client_ack_id: `slice-${runId}-ack` });
+    const ack = await apiCall('ack', 'opening_ack', 'start', partyId,
+      { client_ack_id: `slice-${runId}-ack` });
     if (!ack.ok) throw new Error(`opening-ack: ${ack.error?.code ?? ack.status}`);
-    await refresh();
+    await refresh('screen_after_ack', 'start');
+    state.opening.people_panel_after_ack = capturePeoplePanel(last.screen, last.snap);
     const prose = String(last.screen?.main_prose ?? state.opening.prose ?? '').trim();
     if (!prose) set('start', 'fail', 'после открытия на экране нет текста');
     else if (!last.snap?.position?.canonical_g5) set('start', 'fail', `позиция не прочитана из SQL (${last.snap?.error ?? 'нет position'})`);
@@ -224,7 +267,7 @@ export async function runLegs({
   const done = (id) => legs[id].status !== 'blocked' || legs[id].reason !== 'не достигнута';
   const talkDependencyReason = () => `talk не пройден${legs.talk.reason && legs.talk.reason !== 'не достигнута' ? `: ${legs.talk.reason}` : ''}`;
   try {
-    await refresh();
+    await refresh('screen_before_exploration', 'walk');
     startSiteId = last.snap?.position?.site_id ?? null;
     for (;;) {
       noteHere();

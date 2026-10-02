@@ -120,6 +120,8 @@ import { resolveOptionalProceduralSceneCatalog } from
   '../../apps/game-server/src/internal/procedural-scene-start-boundary.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
+import { buildApprovedTemporalImportSql } from
+  '../../tools/temporal-v4/import-approved-data.mjs';
 
 const docker = (args) => spawnSync(
   'docker',
@@ -1009,6 +1011,7 @@ async function installActivatedRuntimeCatalog({ worldPool, partyPool,
   for (const file of ['18.sql', '19.sql', '20.sql', '21.sql']) {
     await worldPool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
   }
+  await worldPool.query(await buildApprovedTemporalImportSql());
   await worldPool.query(await buildLowerDvinaV2ImportSql());
   await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql());
   await worldPool.query(await buildCharacterAppearanceV1ImportSql());

@@ -47,7 +47,7 @@ test('revision 12 free input stays on the historical bounded path', async () => 
   assert.equal(f.commitCount(), 1);
 });
 
-test('authored live-world turn uses neutral profile and common workflow',
+test('authored submitTurn uses common workflow with null perception profile',
   async () => {
     const seed = fixture({ scenarioBundle: bundle13,
       materializationBundle: bundle13 });
@@ -66,9 +66,11 @@ test('authored live-world turn uses neutral profile and common workflow',
         artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
         revision: LIVE_WORLD_TURN_PROFILE.revision,
         digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
-      } }, turnStepModel: observationPlan });
+      } }, postActionPerceptionProfile: null,
+      turnStepModel: observationPlan });
 
-    const result = await submit(f, turn('live-world-observe', 'Осматриваюсь.'));
+    const result = await f.runtime.submitTurn({ partyId: f.partyId,
+      input: turn('live-world-observe', 'Осматриваюсь.') });
 
     assert.equal(f.turnStepCount(), 1);
     assert.equal(f.commitCount(), 1);

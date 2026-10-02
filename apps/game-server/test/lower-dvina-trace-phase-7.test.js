@@ -472,7 +472,7 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
       'reaction_decision');
   });
 
-test('Phase 7 preserves an external pause and resumes without a second NPC decision',
+test('Phase 7 preserves repeated external pauses on the NPC wait path',
   async () => {
     const state = committedState();
     const contracts = approvedContracts(state);
@@ -499,11 +499,31 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
       ]
     });
     let modelCalls = 0;
+    const capability = {
+      operation: 'request_discovery',
+      capability: { owner: '@rus/turn', allowed: [{
+        discovery_kinds: ['inspect'], target_refs: ['storehouse_inside']
+      }] },
+      supports: ({ operation }) => operation.op === 'request_discovery',
+      async execute() { throw new Error('blocked proposal must not execute'); }
+    };
     const first = await commandFor({ state, contracts,
       temporalAdvanceOwner,
+      npcOwnerCapabilities: [capability],
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        assert.equal(candidate.path, 'O1.request.query');
+        throw Object.assign(new Error('blocked NPC query'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+          details: { queue_ids: ['needs_check.csv#HNT0024'] }
+        });
+      },
       model: async (request) => {
         modelCalls += 1;
-        return autonomousPlan(request, 'wait');
+        return { ...autonomousPlan(request, 'wait'), operations: [{
+          op: 'request_discovery', actor_ref: request.npc_ref,
+          discovery_kind: 'inspect', target_refs: ['storehouse_inside'],
+          query: 'Колёсная прялка'
+        }] };
       }
     }).consequence({
       retrievedState: state,
@@ -536,51 +556,69 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     assert.equal(rows(firstCommit.plan, 'party_body_temporal_history').length,
       0);
 
-    const resumedContracts = approvedContracts(paused);
-    const second = await commandFor({ state: paused,
+    const secondPauseState = structuredClone(paused);
+    secondPauseState.temporal_boundary_candidates = [externalBoundary(
+      paused.party_id, ruleRef, policyRef, '128', 'phase7-external-pause-second')];
+    const resumedContracts = approvedContracts(secondPauseState);
+    const second = await commandFor({ state: secondPauseState,
       contracts: resumedContracts, temporalAdvanceOwner,
       model: async () => {
         modelCalls += 1;
         throw new Error('resume must not ask the NPC model again');
       }
     }).consequence({
-      retrievedState: paused,
+      retrievedState: secondPauseState,
       playerInput: playerInput(paused, 'external-resume')
     });
-    assert.equal(second.duration_minutes, 3);
+    assert.equal(second.duration_minutes, 1);
     assert.equal(second.phase7.resumed, true);
-    assert.equal(second.phase7.schedule_temporal.rest_completed, true);
+    assert.equal(second.phase7.schedule_temporal.rest_completed, false);
     assert.equal(modelCalls, 1);
     assert.deepEqual(phase7StateBeforeSchedule(paused, second.phase7).npcs,
       paused.npcs, 'resume preserves the committed history and active step before its current result');
-    const { commit: secondCommit, snapshot: completed } = await commitReadReplay(
-      paused, resumedContracts, second, 'resumed final 3-minute segment',
+    const { commit: secondCommit, snapshot: pausedAgain } = await commitReadReplay(
+      secondPauseState, resumedContracts, second, 'repeated pause at 128',
       [firstCommit.plan]);
-    const completedExecution = rows(secondCommit.plan,
+    assert.equal(pausedAgain.clock.whole_minutes, '128');
+    assert.equal(pausedAgain.phase7_fire_rest.exact_elapsed_minutes, 28);
+    const finalState = structuredClone(pausedAgain);
+    finalState.temporal_boundary_candidates = [];
+    const finalContracts = approvedContracts(finalState);
+    const final = await commandFor({ state: finalState,
+      contracts: finalContracts, temporalAdvanceOwner,
+      model: async () => { throw new Error('completion must not rerun NPC'); }
+    }).consequence({ retrievedState: finalState,
+      playerInput: playerInput(finalState, 'external-resume-final') });
+    assert.equal(final.duration_minutes, 2);
+    assert.equal(final.phase7.schedule_temporal.rest_completed, true);
+    const { commit: finalCommit, snapshot: completed } = await commitReadReplay(
+      finalState, finalContracts, final, 'resumed final 2-minute segment',
+      [firstCommit.plan, secondCommit.plan]);
+    const completedExecution = rows(finalCommit.plan,
       'party_timed_activity_executions')[0].record;
-    const completedAttempt = rows(secondCommit.plan,
+    const completedAttempt = rows(finalCommit.plan,
       'party_timed_activity_attempts')[0].record;
     assert.equal(completed.phase7_fire_rest.status, 'completed');
     assert.equal(completed.clock.whole_minutes, '130');
     assert.equal(completedExecution.status, 'completed');
     assert.equal(completedExecution.cumulative_elapsed_numerator, 30);
     assert.equal(completedExecution.remaining_time_numerator, 0);
-    assert.equal(completedAttempt.attempt_ordinal, 1);
-    assert.equal(completedAttempt.actual_time_numerator, 3);
+    assert.equal(completedAttempt.attempt_ordinal, 2);
+    assert.equal(completedAttempt.actual_time_numerator, 2);
     const completedNpc = completed.npcs.find(({ instance_id: id }) => id === routineNpc.instance_id);
     assert.equal(completedNpc.machine_state.npc_schedule_history.length, 2);
     assert.deepEqual(completedNpc.machine_state.npc_schedule_history[0],
       pausedNpc.machine_state.npc_schedule_history[0]);
-    assert.equal(rows(secondCommit.plan, 'party_npc_runtime_transitions').length, 0);
-    assert.deepEqual(rows(secondCommit.plan, 'party_npcs')[0].record.machine_state,
+    assert.equal(rows(finalCommit.plan, 'party_npc_runtime_transitions').length, 0);
+    assert.deepEqual(rows(finalCommit.plan, 'party_npcs')[0].record.machine_state,
       completedNpc.machine_state);
-    assert.equal(rows(secondCommit.plan,
+    assert.equal(rows(finalCommit.plan,
       'party_npc_decision_traces').length, 0);
-    assert.equal(rows(secondCommit.plan,
+    assert.equal(rows(finalCommit.plan,
       'party_body_temporal_history').length, 1);
     await assert.doesNotReject(() => assertPhase7NormalizedRows(
-      phase7ReadPool([firstCommit.plan, secondCommit.plan], completed), completed),
-    'readback of the accumulated 27 + 3 minute rest lifecycle');
+      phase7ReadPool([firstCommit.plan, secondCommit.plan, finalCommit.plan], completed), completed),
+    'readback of the accumulated 27 + 1 + 2 minute rest lifecycle');
   });
 
 test('Phase 7 delegates an autonomous concealment attempt to the item owner',

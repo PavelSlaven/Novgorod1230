@@ -25,7 +25,7 @@ test('approved M2c open capacity successor imports through P12 without overwriti
   assert.equal(started.status, 0, started.stderr);
   let ready = false;
   for (let attempt = 0; attempt < 80; attempt += 1) {
-    if (docker(['exec', container, 'pg_isready', '-U', 'm2c']).status === 0) { ready = true; break; }
+    if (docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'm2c']).status === 0) { ready = true; break; }
     await new Promise((done) => setTimeout(done, 250));
   }
   assert.equal(ready, true);

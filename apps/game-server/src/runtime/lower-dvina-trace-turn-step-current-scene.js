@@ -18,7 +18,6 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   locationProfiles, scenePresentation = null }) {
   const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
-  delete projectionSource.current_visible_context;
   const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     scene_presentation: scenePresentation,
@@ -55,11 +54,22 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const sensoryDetails = unique([...(profile.player_visible_physical_facts ?? []),
     ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)
   ]);
-  const visibleLabels = new Map((initial?.visible_npc ?? []).map((npc) => [
+  const currentVisibleNpcs = playerSafe.current_visible_context?.visible_npc ?? [];
+  const visibleLabels = new Map(currentVisibleNpcs.map((npc) => [
     npc?.entity_ref?.entity_id, npc
   ]));
   const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
     playerSafe.position, visibleLabels)).filter(Boolean);
+  const sceneNpcIds = new Set(sceneNpcs.map((npc) => npc.entity_ref.entity_id));
+  for (const npc of currentVisibleNpcs) {
+    const id = npc?.entity_ref?.entity_id;
+    if (npc?.entity_ref?.entity_kind !== 'npc' || !text(id)
+        || sceneNpcIds.has(id) || !text(npc.display_label)) continue;
+    sceneNpcs.push({ entity_ref: structuredClone(npc.entity_ref),
+      display_label: npc.display_label,
+      recognition: npc.recognition ?? 'unrecognized' });
+    sceneNpcIds.add(id);
+  }
   const current = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',

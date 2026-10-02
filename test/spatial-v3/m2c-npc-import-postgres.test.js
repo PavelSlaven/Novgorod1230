@@ -27,7 +27,7 @@ test('approved NPC dataset imports through P12 and actual PG reader closures fee
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc', '-e', 'POSTGRES_DB=npc', 'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 80; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'npc']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'npc']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
   await new Promise((resolve) => setTimeout(resolve, 600));

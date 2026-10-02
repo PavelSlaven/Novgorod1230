@@ -10,6 +10,34 @@
   "pooling": "mean",
   "entries": [
     {
+      "entry_ref": "wk-retrieval:claim:a1-leather-cutting-knife:en",
+      "target_ref": "claim:a1-leather-cutting-knife",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Leather cutting A dedicated knife used to cut prepared leather. Already prepared leather was cut with a dedicated cutting knife. This creates no leather, knife or workshop in a scene and sets no skill, pattern, time or result. leather cutting knife"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:a1-leather-cutting-knife:ru",
+      "target_ref": "claim:a1-leather-cutting-knife",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Раскрой кожи Специальный нож для раскроя уже выделанной кожи. Уже выделанную кожу раскраивали специальным режущим ножом. Это не создаёт кожу, нож или мастерскую в сцене и не задаёт умение, выкройку, время или результат. раскроечный нож нож для раскроя кожи"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:a1-powder-charge-confined-force:en",
+      "target_ref": "claim:a1-powder-charge-confined-force",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fuel combustion with an oxidizer Qualified universal physical or chemical premise, not a fact about a particular object. Burning a suitable powder charge can generate expanding gas that builds pressure and pushing force within a confined space. This is no recipe, composition or ratio; it does not imply that such a charge exists in the world, that anyone knows of it, or that an attempt succeeds."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:a1-powder-charge-confined-force:ru",
+      "target_ref": "claim:a1-powder-charge-confined-force",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Горение топлива с окислителем Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте. Сгорание подходящего порохового заряда может давать расширяющиеся газы, которые в замкнутом объёме создают давление и толкающую силу. Это не рецепт, не состав и не пропорции; отсюда не следует, что такой заряд есть в мире, что кто-то о нём знает или что попытка удастся."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:activity-fluid-balance:en",
       "target_ref": "claim:activity-fluid-balance",
       "domain": "biology_physiology",
@@ -24164,14 +24192,14 @@
       "target_ref": "claim:v2-g3-no-firearms-gunpowder",
       "domain": "material_culture",
       "locale": "en",
-      "retrieval_text": "anachronism boundary: firearms Firearms and gunpowder in battle do not exist in Novgorod in 1230; mentioning them is an anachronism boundary, not a present good or weapon. Firearms and gunpowder for battle do not exist in 1230 and could not — nothing of the sort is sold at the market or carried by the retinue. War is fought with sword, spear, bow and crossbow. gunpowder firearm anachronism weapon"
+      "retrieval_text": "anachronism boundary: firearms Firearms and gunpowder in battle do not exist in Novgorod in 1230; mentioning them is an anachronism boundary, not a present good or weapon. Around 1230 in the Novgorod Land, firearms and gunpowder for battle are not encountered: they are not sold at the market or carried by the retinue. gunpowder firearm anachronism weapon"
     },
     {
       "entry_ref": "wk-retrieval:claim:v2-g3-no-firearms-gunpowder:ru",
       "target_ref": "claim:v2-g3-no-firearms-gunpowder",
       "domain": "material_culture",
       "locale": "ru",
-      "retrieval_text": "граница анахронизма: огнестрельное оружие Огнестрельного оружия и пороха в бою в Новгороде 1230 г. нет; это анахронизм, а не наличный товар или боевое средство. Огнестрельного оружия и пороха для боя в 1230 году нет и быть не может — такого на Торгу не продают и в дружине не носят. Воюют мечом, копьём, луком да самострелом. порох пищаль огнестрельное оружие пистоль на торгу"
+      "retrieval_text": "граница анахронизма: огнестрельное оружие Огнестрельного оружия и пороха в бою в Новгороде 1230 г. нет; это анахронизм, а не наличный товар или боевое средство. Около 1230 года в Новгородской земле огнестрельного оружия и пороха для боя не встречается: на Торгу их не продают, в дружине не носят. порох пищаль огнестрельное оружие пистоль на торгу"
     },
     {
       "entry_ref": "wk-retrieval:claim:v2-g3-no-paper-anachronism:en",
@@ -30318,6 +30346,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Кожаные предметы допустимы в широком средневековом новгородском контексте Кожаные предметы допустимы в широком средневековом новгородском контексте; эта связь не подтверждает локальное дубление или мгновенное изготовление кожи."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:leather-cutting:en",
+      "target_ref": "wk:craft_technology:leather-cutting",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Leather cutting A dedicated knife used to cut prepared leather. leather cutting knife"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:leather-cutting:ru",
+      "target_ref": "wk:craft_technology:leather-cutting",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Раскрой кожи Специальный нож для раскроя уже выделанной кожи. раскроечный нож"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:leatherworking:en",

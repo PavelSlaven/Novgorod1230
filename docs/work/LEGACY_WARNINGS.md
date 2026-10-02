@@ -70,7 +70,7 @@
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
+| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | post-action perception: реплики игрока, same-position listeners; без G6 propagation и reaction boundary — волна 2 (#225) | — |
 | 075 | `spatial-v3-current-visibility-provider.js`, `spatial-v3-proposed-visible-sources.js` | runtime читает `m2c-local-edge-labels`/`m2c-exit-labels`/`m2c-pass-target-labels` файлами напрямую, мимо `world_base` | [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) |
 | 076 | `tools/spatial-v3/p12-authoring-importer.mjs`, `m2c-npc-wave-bundle-validation.mjs`, `infra/world-base/schema/28.sql`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js` | m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; bootstrap импортирует волну этапом (D27) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 077 | `packages/materialization/src/presence-rules-first-arrival.js`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js`, PG-тесты presence | R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
@@ -354,7 +354,7 @@
 
 ### LW-062 — событийная точность WK только через условия событий
 - **Где.** `applicability.conditions.started_historical_events` в WK; события — `@rus/time-events-history` / импорт истории.
-- **Как жить.** WK не несёт день и месяц. Claim о событии внутри года закрывать условием события. При импорте истории завести `novgorod_famine_1230` (с 14.09.1230 по D19/D22), `novgorod_upheaval_december_1230` и поздние события голода отдельными id. Добавить скриптовую проверку, что event id из WK существует.
+- **Как жить.** WK не несёт день и месяц. Claim о событии внутри года закрывать условием события. При импорте истории завести `novgorod_famine_1230` (с 14.09.1230 по D19/D22), `novgorod_upheaval_december_1230` и поздние события голода отдельными id. Декабрьское событие пока ждёт утверждённой даты. Добавить скриптовую проверку, что event id из WK существует.
 - **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
 
 ### LW-063 — role_bound почти недостижим
@@ -431,11 +431,11 @@
 - **§3A.2/3A.3 сезонное обновление.** Повторное прибытие в **новом сезоне** в уже созданное G5-место (пересчёт `by_year_season` без нового scope) в R-2a **не** подключено; отложено отдельным шагом CR #158 (решение ревьюера REVIEW-R2a-6 F6). Unit на `encodePresenceRulePeriodNumber` остаётся.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-074 — восприятие NPC в live world выключено
-- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`: `post_action_perception_profile: null`); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (`perceptionListeners` без профиля возвращает `[]`); профиль есть только в `apps/game-server/src/internal/lower-dvina-trace-revision-34-bundle.js`.
-- **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
-- **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
-- **Issue.** —
+### LW-074 — post-action perception profile требует отдельного approval
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle` получает только отдельно утверждённый target profile); `apps/game-server/src/internal/target-runtime-profiles.js` (читает `post-action-perception-profile.json` только с approval); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (перцепция и knowledge после фактического события).
+- **Что.** Кандидат переносит M22-механику и ждёт независимого approval; пока его нет, production key остаётся `null`. Текущий production-путь формирует события только для реплики игрока. Слушатели проверяются только на той же позиции; распространения по G6 нет. В этой волне сохраняются perception, knowledge и `pending_npc_decision_refs`, но нет formal boundary, реакции NPC и отметки signal как обработанного. Погода не добавляет acoustic loss.
+- **Как жить.** До profile approval не считать, что NPC live world уже восприняли действие. После подключения учитывать только persisted perception и knowledge; решение NPC и последствия принадлежат волне 2.
+- **Issue.** #225
 
 ### LW-078 — R-2a: стартовое присутствие не повторяется при загрузке, если provisioning не выполнился
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-public-start.js` (вызов `provisionInitialOrdinary` после commit new_game); `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`, отдельная транзакция); путь загрузки партии (`getPartyScreen`) вызова не имеет.
@@ -569,10 +569,11 @@
 ### LW-103 — живой Qwen и форма A1-плана (rt-items, rt-make)
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-planner-instructions.js` (правила `action_production`), `packages/turn/src/turn-step-plan-repair.js` (`requiresSemanticRepair`), `packages/turn/src/turn-step-contracts/action-production-operation.js`, `apps/game-server/src/runtime/lower-dvina-trace-turn-step-grounding-audit.js`.
 - **Что.** Три разных источника отказа «сделать», не путать:
-  1. **Форма плана (исправлено).** Модель ставила `result_class: ordinary_physical_result` вместе с `source_fact_delta` и `material_extent: minor` и писала `source_fact_delta.physical_form: "none"`. Правило промпта теперь называет `partial_transformation` и `allowed_physical_forms`; одиночный `enum` на `physical_form` получает один LLM-ремонт (норма `turn_step_llm_contract.md` 1366–1369: ремонт допустим для ошибки, требующей нового семантического выбора). Стенд `benches/rt-make-a1` (реальная Qwen, water_access): без правки принято 15 из 28; с правилом 16 из 17 на общей партии; на свежей партии на фразу (26 ходов без ремонта, 22 с ремонтом): отказов по форме 3 → 0, принято 15/26 → 18/22 (p=0.12 по Fisher: улучшение направленное, не доказанное).
+  1. **Форма плана (исправлено).** Модель ставила `result_class: ordinary_physical_result` вместе с `source_fact_delta` и `material_extent: minor` и писала `source_fact_delta.physical_form: "none"`. Правило промпта теперь называет `partial_transformation` и `allowed_physical_forms`; одиночный `enum` на `physical_form` получает один LLM-ремонт (норма `turn_step_llm_contract.md:1369–1389`: ремонт допустим для ошибки, требующей нового семантического выбора). Стенд `benches/rt-make-a1` (реальная Qwen, water_access): без правки принято 15 из 28; с правилом 16 из 17 на общей партии; на свежей партии на фразу (26 ходов без ремонта, 22 с ремонтом): отказов по форме 3 → 0, принято 15/26 → 18/22 (p=0.12 по Fisher: улучшение направленное, не доказанное).
   2. **Код `ordinaryDenial` и «direct semantic activity» (не шум аудитора).** Планировщик сам выбирает буквальный отказ (`resolution: direct`, `not_achieved`) или расходящуюся активность; код отвергает («Literal physical denial must use the available grounded owner», `grounding-audit.js:66-70`; «Direct semantic activity is not grounded by the current intent»). На стенде это 8 из 26 и 4 из 22 ходов (0 до правки промпта на общей партии), в живом rtmake2 — ход 22.
   3. **Аудитор `pass:false`.** 11 из 62 вызовов аудитора (аудит rt-make); чаще всего он снимает ремонт, а не рвёт валидный план.
-- **Как жить.** Не подгонять валидатор под ошибку модели. Повтор пунктов 2–3 — отдельная задача на планировщик/аудитора со стендом, не правка этого правила.
+  4. **Контрактный no-op и путь description (gate2).** A1 `request_item_use` с `action_production` теряет лишний `description` до общей strict/semantic validation. Комбинация `direct` + пустые `operations` + `reality_limited` + `achieved` распознаётся до semantic audit, получает один обычный semantic repair и при повторе нормализуется в `not_achieved` с trace `canonicalizations`; прочие ошибки после repair остаются typed fail. D41 нейтрален: сочетание — 0/33 в обоих плечах A и C.
+- **Как жить.** Не подгонять валидатор под иные ошибки модели: repair остаётся один и разрешён только для semantic mismatch. Точная no-op комбинация из active-контракта и лишний A1 `description` имеют закрытые нормализации; повтор пунктов 2–3 — отдельная задача на планировщик/аудитора со стендом.
 - **Issue.** —
 
 ### LW-104 — применимость профилей v17 закреплена на шаблонах @1 (rt-items)

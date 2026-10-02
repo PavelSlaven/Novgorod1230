@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { LEG_IDS, createRedactor, exitCodeOf, playtestFileName, renderPlaytestMarkdown,
+import { LEG_IDS, createRedactor, d49MinimumOf, exitCodeOf, playtestFileName, renderPlaytestMarkdown,
   secretsOfLlmSettings } from './v17-slice-report.js';
 import { RESERVE_MAKE_TURNS, runLegs } from './v17-slice-legs.js';
 
@@ -94,14 +94,16 @@ export async function readLlmSettingsRecord(path, { load }) {
 
 const SNAPSHOT_SQL = `
 WITH me AS (
-  SELECT n.id AS node_id, n.template_slot_key AS slot, n.g6_instance_id AS g6
+  SELECT n.id AS node_id, n.template_slot_key AS slot, n.g6_instance_id AS g6, a.character_id AS player_character_id
     FROM party_runtime.party_journey_locations l
     JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
     JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
    WHERE l.party_id=$1 AND l.owner_kind='actor')
 SELECT
   (SELECT state_version FROM party_runtime.parties WHERE party_id=$1) AS state_version,
-  (SELECT jsonb_build_object('slot', me.slot, 'site_id', s.id, 'origin', s.origin,
+  (SELECT jsonb_build_object('entity_kind', 'player_character', 'entity_id', me.player_character_id) FROM me) AS player_character_ref,
+  (SELECT jsonb_build_object('slot', me.slot, 'site_id', s.id,
+      'position_id', me.node_id, 'g6_instance_id', me.g6, 'origin', s.origin,
       'canonical_g5', COALESCE(s.canonical_g5_ref->>'entity_id', s.canonical_g5_ref->>'id'),
       'generated_template', s.generated_template_ref)
      FROM me
@@ -115,7 +117,8 @@ SELECT
      JOIN party_runtime.scene_position_nodes pos ON pos.party_id=pl.party_id AND pos.id=pl.position_node_id
      JOIN me ON pos.g6_instance_id=me.g6
     WHERE pl.party_id=$1) AS placements_here,
-  (SELECT COALESCE(jsonb_agg(jsonb_build_object('entity_id', pl.entity_id, 'slot', pos.template_slot_key,
+  (SELECT COALESCE(jsonb_agg(jsonb_build_object('entity_id', pl.entity_id,
+      'position_id', pl.position_node_id, 'slot', pos.template_slot_key,
       'g6_instance_id', pos.g6_instance_id) ORDER BY pl.entity_id), '[]'::jsonb)
      FROM party_runtime.entity_placements pl
      JOIN party_runtime.scene_position_nodes pos ON pos.party_id=pl.party_id AND pos.id=pl.position_node_id
@@ -126,10 +129,15 @@ SELECT
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('item_id', i.item_id, 'state_version', i.state_version,
       'action_production', i.state::text LIKE '%action_production%') ORDER BY i.item_id), '[]'::jsonb)
      FROM party_runtime.party_items i WHERE i.party_id=$1) AS party_items,
-  (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
-      'quantity_numerator', quantity_numerator, 'quantity_denominator', quantity_denominator,
-      'lifecycle_state', lifecycle_state, 'state_version', state_version) ORDER BY resource_node_id), '[]'::jsonb)
-     FROM party_runtime.party_resource_nodes WHERE party_id=$1) AS resource_nodes,
+  (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', r.resource_node_id,
+      'site_id', s.id, 'quantity_numerator', r.quantity_numerator, 'quantity_denominator', r.quantity_denominator,
+      'lifecycle_state', r.lifecycle_state, 'state_version', r.state_version) ORDER BY r.resource_node_id), '[]'::jsonb)
+     FROM party_runtime.party_resource_nodes r
+     JOIN party_runtime.scene_position_nodes pos ON pos.party_id=r.party_id AND pos.id=r.position_node_id
+     JOIN party_runtime.party_g6_instances g ON g.party_id=pos.party_id AND g.id=pos.g6_instance_id
+     JOIN party_runtime.party_scene_baselines b ON b.party_id=g.party_id AND b.id=g.scene_baseline_id AND b.host_kind='g5_site'
+     JOIN party_runtime.party_g5_sites s ON s.party_id=b.party_id AND s.id=b.host_id
+    WHERE r.party_id=$1) AS resource_nodes,
   (SELECT COALESCE(jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
       'before_numerator', before_numerator, 'decrement_numerator', decrement_numerator,
       'after_numerator', after_numerator) ORDER BY resource_node_id, causal_transition_identity), '[]'::jsonb)
@@ -152,10 +160,33 @@ export function createSnapshotReader(partyPool) {
 /** HTTP client of the driver: real requests to the loopback server through the fetch captured before metering. */
 export function createHttpApi(baseUrl, httpFetch) {
   const call = async (method, path, body, timeoutMs = 60_000) => {
-    const response = await httpFetch(`${baseUrl}${path}`, {
-      method, signal: AbortSignal.timeout(timeoutMs),
-      ...(body === undefined ? {} : { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
-    });
+    const started = Date.now();
+    let response;
+    try {
+      response = await httpFetch(`${baseUrl}${path}`, {
+        method, signal: AbortSignal.timeout(timeoutMs),
+        ...(body === undefined ? {} : { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+      });
+    } catch (cause) {
+      const message = String(cause?.message ?? cause ?? 'fetch failed').slice(0, 300);
+      const error = new Error(message, { cause });
+      error.name = typeof cause?.name === 'string' ? cause.name : 'Error';
+      const causeMessage = String(cause?.cause?.message ?? '').slice(0, 300);
+      error.transport = {
+        method,
+        path: path.replace(/(\/parties\/)[^/]+/u, '$1:party_id'),
+        ...(typeof body?.request_id === 'string' ? { request_id: body.request_id } : {}),
+        elapsed_ms: Date.now() - started,
+        cause: {
+          name: error.name,
+          message,
+          ...(typeof cause?.code === 'string' ? { code: cause.code } : {}),
+          ...(causeMessage ? { cause_message: causeMessage } : {}),
+          ...(typeof cause?.cause?.code === 'string' ? { cause_code: cause.cause.code } : {})
+        }
+      };
+      throw error;
+    }
     const envelope = await response.json().catch(() => null);
     return { status: response.status, ok: envelope?.ok === true, data: envelope?.data ?? null,
       error: envelope?.ok === true ? null : (envelope?.error ?? { code: `HTTP_${response.status}`, message: 'unreadable response' }) };
@@ -183,6 +214,7 @@ export function installLlmMeter({ log = console } = {}) {
   const previous = globalThis.fetch;
   const previousError = log.error;
   const calls = [];
+  const roleCalls = [];
   const serverErrors = [];
   log.error = (...args) => {
     if (typeof args[0] === 'string' && /^\[game-server\] request \S+ failed/u.test(args[0]) && args[1] instanceof Error) {
@@ -193,29 +225,45 @@ export function installLlmMeter({ log = console } = {}) {
   };
   globalThis.fetch = async (url, init) => {
     const started = Date.now();
-    let role = 'unknown';
-    try {
-      const system = JSON.parse(init.body).messages?.[0]?.content ?? '';
-      role = system.replace(/^Return a valid json object\.\s*/u, '').slice(0, 60).replace(/\s+/gu, ' ');
-    } catch { /* not a chat call */ }
     try {
       const response = await previous(url, init);
-      calls.push({ role, ms: Date.now() - started, status: response.status });
+      calls.push({ ms: Date.now() - started, status: response.status });
       return response;
     } catch (error) {
-      calls.push({ role, ms: Date.now() - started, status: 'transport_error' });
+      calls.push({ ms: Date.now() - started, status: 'transport_error' });
       throw error;
     }
   };
-  return { calls, serverErrors, count: () => calls.length, serverErrorCount: () => serverErrors.length,
+  const telemetry = Object.freeze({ onCall(record = {}) {
+    roleCalls.push({ role_id: record.role_id ?? record.roleId ?? 'unknown',
+      ms: Number(record.duration_ms ?? record.durationMs) || 0, status: record.status ?? 'unknown' });
+  } });
+  return { calls, roleCalls, telemetry, serverErrors, count: () => calls.length, serverErrorCount: () => serverErrors.length,
     serverErrorsSince: (n) => serverErrors.slice(n), httpFetch: previous,
     restore() { globalThis.fetch = previous; log.error = previousError; } };
 }
 
-export function summarizeLlm(calls) {
+export function summarizeLlm(calls, roleCalls = [], turns = []) {
   const by_role = {};
-  for (const { role } of calls) by_role[role] = (by_role[role] ?? 0) + 1;
-  return { total: calls.length, failed: calls.filter(({ status }) => status !== 200).length, by_role };
+  const grouped = new Map();
+  const measuredRoleCalls = turns.length
+    ? turns.flatMap((turn) => turn.llm_role_calls ?? []) : roleCalls;
+  for (const call of measuredRoleCalls) {
+    const role = call.role_id || 'unknown';
+    by_role[role] = (by_role[role] ?? 0) + 1;
+    const durations = grouped.get(role) ?? [];
+    durations.push(call.ms);
+    grouped.set(role, durations);
+  }
+  const totalTurnMs = turns.reduce((sum, turn) => sum + (Number(turn.ms) || 0), 0);
+  const percentile = (values, fraction) => values.length
+    ? [...values].sort((a, b) => a - b)[Math.min(values.length - 1, Math.ceil(values.length * fraction) - 1)] : 0;
+  const by_role_timing = Object.fromEntries([...grouped].map(([role, durations]) => {
+    const sum_ms = durations.reduce((sum, value) => sum + value, 0);
+    return [role, { count: durations.length, sum_ms, p50_ms: percentile(durations, 0.5),
+      p95_ms: percentile(durations, 0.95), turn_time_share: totalTurnMs ? sum_ms / totalTurnMs : 0 }];
+  }));
+  return { total: calls.length, failed: calls.filter(({ status }) => status !== 200).length, by_role, by_role_timing };
 }
 
 function gitIdentity(cwd) {
@@ -256,8 +304,10 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
       await settingsModule.applyInitialLlmSettings(owner, record);
       return owner;
     },
-    createRoot: ({ bootstrapEnv, llmSettings }) => fixture.createPresenceProductionRoot({
+    createRoot: ({ bootstrapEnv, llmSettings, telemetry,
+      onNpcSceneProjection }) => fixture.createPresenceProductionRoot({
       ...bootstrapEnv, llmSettings,
+      extraConfig: { telemetry, onNpcSceneProjection },
       env: options.wkEncoder === 'giga'
         ? { RUS_WORLD_KNOWLEDGE_PYTHON: env.RUS_WORLD_KNOWLEDGE_PYTHON,
             ...(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: env.RUS_WORLD_KNOWLEDGE_MODEL_PATH } : {}),
@@ -282,15 +332,17 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   const started = now();
   const startedAt = new Date(started).toISOString();
   const report = { schema: 'v17_slice_run_v1', identity: null, preconditions: null, opening: null, legs: [], turns: [],
-    llm: { total: 0, failed: 0, by_role: {} }, readback: null, infra_error: null, cleanup_errors: [] };
+    transport_errors: [], llm: { total: 0, failed: 0, by_role: {} }, readback: null, infra_error: null, cleanup_errors: [] };
   const git = gitIdentity(deps.repoRoot ?? process.cwd());
   let redact = createRedactor([]);
   let meter = null;
+  const sceneProjectionDiagnostics = [];
   let code = EXIT.LEGS;
   let queue = Promise.resolve();
   const write = async () => {
     await mkdir(options.outDir, { recursive: true });
-    const summary = { ...report, llm: summarizeLlm(meter?.calls ?? []) };
+    const summary = { ...report, d49_minimum: d49MinimumOf(report.legs, report.turns),
+      llm: summarizeLlm(meter?.calls ?? [], meter?.roleCalls ?? [], report.turns) };
     await writeFile(join(options.outDir, 'report.json'), redact(JSON.stringify(summary, null, 1)));
   };
   const persist = () => { queue = queue.then(write, write); return queue; }; // serialized: no interleaved writes
@@ -310,21 +362,32 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
     finalizers.add('bootstrap dispose', () => bootstrapEnv.dispose?.());
     const llmSettings = await deps.createLlmOwner(record);
     report.preconditions.qualification = `выполнена, ${meter.count()} вызовов LLM`;
-    const { runtime } = await deps.createRoot({ bootstrapEnv, llmSettings });
+    const { runtime } = await deps.createRoot({ bootstrapEnv, llmSettings,
+      telemetry: meter.telemetry,
+      onNpcSceneProjection: (event) => sceneProjectionDiagnostics.push(event) });
     finalizers.add('composition root', () => runtime.close());
     const served = await deps.startServer(runtime);
     finalizers.add('http server', () => served.close());
     const api = (deps.createApi ?? createHttpApi)(served.url, meter.httpFetch);
-    const health = await api.health();
+    let health;
+    try { health = await api.health(); }
+    catch (error) {
+      if (error?.transport) report.transport_errors.push({ ...error.transport,
+        phase: 'health', turn: null, leg: null });
+      throw error;
+    }
     if (!health.ok) throw new Error(`health check failed: ${health.error?.code}`);
 
     const sql = (deps.createSql ?? createSnapshotReader)(bootstrapEnv.partyPool);
     const result = await runLegs({
       api, sql, routeLabels: deps.routeLabels, llm: meter, scenarioId: options.scenario, runId: options.runId,
       maxTurns: options.maxTurns, deadlineAt: now() + options.deadlineMin * 60_000, now, // the play window starts after bootstrap and qualification
-      persist: (state) => { Object.assign(report, { legs: state.legs, turns: state.turns, opening: state.opening }); persist().catch(() => {}); }
+      sceneProjectionDiagnostics: () => sceneProjectionDiagnostics,
+      persist: (state) => { Object.assign(report, { legs: state.legs, turns: state.turns,
+        opening: state.opening, transport_errors: state.transport_errors }); persist().catch(() => {}); }
     });
-    Object.assign(report, { legs: result.legs, turns: result.turns, opening: result.opening, readback: result.final_snapshot });
+    Object.assign(report, { legs: result.legs, turns: result.turns, opening: result.opening,
+      transport_errors: result.transport_errors, readback: result.final_snapshot });
     code = exitCodeOf(result.legs);
   } catch (error) {
     report.infra_error = error.message;
@@ -334,7 +397,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   const ended = now();
   if (report.identity) Object.assign(report.identity, { ended_at: new Date(ended).toISOString(), duration_ms: ended - started });
   try {
-    if (meter) report.llm = summarizeLlm(meter.calls);
+    if (meter) report.llm = summarizeLlm(meter.calls, meter.roleCalls, report.turns);
     await persist();
     if (report.identity && options.playtestDir && code !== EXIT.PREFLIGHT) {
       await mkdir(options.playtestDir, { recursive: true });
@@ -345,6 +408,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
       await writeFile(join(options.outDir, 'playtest.md'), renderPlaytestMarkdown(report, redact));
     }
   } catch (error) { report.infra_error ??= `report: ${error.message}`; if (code === EXIT.PASS) code = EXIT.STAND; }
+  report.d49_minimum = d49MinimumOf(report.legs, report.turns);
   report.cleanup_errors = await finalizers.run();
   return { code, report };
 }

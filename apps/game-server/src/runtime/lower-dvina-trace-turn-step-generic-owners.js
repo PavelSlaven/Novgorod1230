@@ -26,12 +26,17 @@ export const GENERIC_BODY_EFFECT_REF =
 
 /** A new admitted physical discovery uses the existing activity/time/body owner. */
 export function ordinaryDiscoveryActivity({ operation, request, plan = null,
-  ordinaryPlan, knownResolution = null }) {
+  ordinaryPlan, knownResolution = null, visibleSeed = null }) {
   const resolved = ['materialize', 'absent', 'no_change', 'authority_required'];
   const fresh = resolved.includes(ordinaryPlan?.resolution)
     && ordinaryPlan.request_identity ===
       `${request?.root_turn_id}:ordinary:presence:step:${request?.step_index}`;
-  if (!fresh && !resolved.includes(knownResolution?.resolution)) return null;
+  const presence = visibleSeed?.ordinary_presence_seed;
+  const filteredSeedOnly = presence?.resolution === 'no_change'
+    && ordinaryPlan?.transitions?.some(({ kind }) => kind === 'seed')
+    && !Object.hasOwn(visibleSeed, 'ordinary_scene_seed');
+  const resolvedKnown = knownResolution ?? (filteredSeedOnly ? presence : null);
+  if (!fresh && !resolved.includes(resolvedKnown?.resolution)) return null;
   return ordinarySearchActivity(operation, plan);
 }
 export function ordinarySearchActivity(operation, plan = null) {

@@ -38,6 +38,19 @@ export function exitCodeOf(legs) {
   return legs.every(({ status }) => status === 'pass') ? 0 : 1;
 }
 
+/** D49's minimum slice uses either material path while strict acceptance still requires all six legs. */
+export function d49MinimumOf(legs, turns = []) {
+  const byId = new Map(legs.map(({ id, status }) => [id, status]));
+  const core = ['start', 'walk', 'meet', 'talk'];
+  const passTurn = (id) => turns.find((turn) => turn.leg === id && turn.pass === true)?.n ?? null;
+  const talkPassTurn = passTurn('talk');
+  const itemLeg = ['take', 'make'].find((id) => byId.get(id) === 'pass'
+    && talkPassTurn != null && passTurn(id) != null && passTurn(id) > talkPassTurn) ?? null;
+  const requiredPass = core.every((id) => byId.get(id) === 'pass') && talkPassTurn != null;
+  const anyProgress = [...core, 'take', 'make'].some((id) => byId.get(id) === 'pass');
+  return { status: requiredPass && itemLeg ? 'PASS' : (anyProgress ? 'PARTIAL' : 'FAIL'), item_leg: itemLeg };
+}
+
 const fence = (value) => `\`\`\`\n${value}\n\`\`\``;
 const quote = (value) => String(value ?? '').split('\n').map((line) => `> ${line}`).join('\n');
 const json = (value) => JSON.stringify(value);
@@ -74,6 +87,7 @@ function turnSection(turn) {
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
+    ...(turn.people_panel ? [`- Снимок панели людей: \`${json(turn.people_panel)}\``] : []),
     'Что увидел игрок (дословно):', '',
     // A refused turn shows the error text of the response, not the screen left over from the previous turn.
     turn.error ? quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста') : turn.prose ? quote(turn.prose) : '> (текста нет)'];
@@ -83,7 +97,8 @@ function turnSection(turn) {
 }
 
 export function renderPlaytestMarkdown(report, redact = (text) => text) {
-  const { identity, preconditions, legs, turns, opening, readback, infra_error: infraError } = report;
+  const { identity, preconditions, legs, turns, opening, readback,
+    transport_errors: transportErrors = [], infra_error: infraError } = report;
   const verdict = verdictOf(legs);
   const out = [];
   out.push(`# rt-harness: живой прогон среза D49 на v17 (${identity.scenario_id})`, '');
@@ -106,9 +121,31 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     out.push(`Проходы на первом экране: ${opening.route_labels?.length > 0 ? opening.route_labels.map((label) => `«${label}»`).join(', ') : '(нет)'}`, '');
   }
   for (const turn of turns) out.push(turnSection(turn), '');
+  if (transportErrors.length > 0) {
+    out.push('## HTTP transport errors', '',
+      '| method | path | phase | leg | turn | cause |',
+      '|---|---|---|---|---:|---|');
+    for (const error of transportErrors) {
+      const cause = [error.cause?.name, error.cause?.code, error.cause?.message,
+        error.cause?.cause_code, error.cause?.cause_message].filter(Boolean).join(': ')
+        .replaceAll('|', '/');
+      out.push(`| ${error.method} | ${error.path} | ${error.phase} | ${error.leg ?? '—'} | ${error.turn ?? '—'} | ${cause} |`);
+    }
+    out.push('');
+  }
   out.push('## Persistence/readback', '',
     `LLM-вызовы за прогон: ${report.llm.total} (ошибок транспорта/статуса: ${report.llm.failed}); по ролям:`, '',
     fence(Object.entries(report.llm.by_role).map(([role, count]) => `${count}× ${role}`).join('\n') || '(нет)'), '');
+  if (report.llm.by_role_timing) {
+    out.push('### Время вызовов по каноническим ролям', '',
+      '| role_id | вызовы | сумма, мс | p50, мс | p95, мс | доля времени ходов |',
+      '|---|---:|---:|---:|---:|---:|');
+    for (const [role, timing] of Object.entries(report.llm.by_role_timing)) {
+      out.push(`| ${role} | ${timing.count} | ${timing.sum_ms} | ${timing.p50_ms} | ${timing.p95_ms} | ${(timing.turn_time_share * 100).toFixed(1)}% |`);
+    }
+    if (Object.keys(report.llm.by_role_timing).length === 0) out.push('| (нет данных) | 0 | 0 | 0 | 0 | 0% |');
+    out.push('');
+  }
   if (readback) out.push('Финальный SQL-снимок партии (позиция, размещения в G6 игрока, предметы, запасы):', '', fence(JSON.stringify(readback, null, 1)), '');
   out.push('## Findings', '', '| нога | итог | причина |', '|---|---|---|');
   for (const leg of legs) out.push(`| ${LEG_TITLES[leg.id]} | ${leg.status} | ${String(leg.reason ?? '').replaceAll('|', '/')} |`);
@@ -117,7 +154,9 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     if (leg.detail) out.push(`- **${LEG_TITLES[leg.id]}**: ${leg.detail}`);
   }
   if (infraError) out.push('', `- Сбой стенда: ${infraError}`);
-  out.push('', '## Result', '', `**${verdict}**: ${legs.map((leg) => `${LEG_TITLES[leg.id]} — ${leg.status}`).join('; ')}.`, '');
+  const d49 = d49MinimumOf(legs, turns);
+  out.push('', '## Result', '', `D49 minimum (start, walk, meet, talk и take или make): **${d49.status}**${d49.item_leg ? `; путь предмета — ${LEG_TITLES[d49.item_leg]}` : '; путь предмета не пройден'}.`,
+    '', `Строгий результат: **${verdict}**: ${legs.map((leg) => `${LEG_TITLES[leg.id]} — ${leg.status}`).join('; ')}.`, '');
   return redact(out.join('\n'));
 }
 

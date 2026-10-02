@@ -32,7 +32,29 @@
     {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-stitch","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: stitching or fastening can assemble leather components, and a worn join can need attention; no stitch, shoe, or durability result is asserted.","review_status":"approved"},
     {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-patch","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: a patch can be considered to prolong use of a worn leather article when compatible material and attachment are available; no repair success is guaranteed.","review_status":"approved"},
     {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-shoe","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: footwear condition can matter for walking and wet work, with fit, wear, and repair depending on its actual state; no shoes or movement outcome are asserted.","review_status":"approved"},
-    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-work-tradeoff","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boundary"},"note":"Editorial reconstruction: ordinary maintenance, food work, transport, and craft draw on limited time, material, access, and labour; no numeric mechanics or actor choices are set.","review_status":"approved"}
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-work-tradeoff","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boundary"},"note":"Editorial reconstruction: ordinary maintenance, food work, transport, and craft draw on limited time, material, access, and labour; no numeric mechanics or actor choices are set.","review_status":"approved"},
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:a1-leather-cutting-knife-188839",
+      "source_ref": "source:book-188839",
+      "anchor": {
+        "section": "Часть I. Особенности развития кузнечного производства в золотоордынский период (XIII–XV вв.) > Глава 2. Кузнечная продукция малых городов > Изборская крепость ¶262",
+        "record_id": "book:188839"
+      },
+      "note": "«является инструментом кожевенно-сапожного ремесла и принадлежит к типу раскроечных». Подтверждает специальный нож для раскроя кожи; не доказывает доску, навык, выкройку, срок или результат.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:a1-leather-cutting-knife-254935",
+      "source_ref": "source:book-254935",
+      "anchor": {
+        "section": "Новгород, открытый археологами ¶61",
+        "record_id": "book:254935"
+      },
+      "note": "«если только это не специальный сапожный, костерезный или боевой нож». Подтверждает отдельный тип сапожного ножа среди новгородских находок; не доказывает доску, навык, выкройку, срок или результат.",
+      "review_status": "approved"
+    }
   ],
   "concepts": [
     {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:reconstructed-practical-boat-work","domain":"material_culture","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
@@ -40,7 +62,18 @@
     {"schema":"world_knowledge_concept_v1","concept_ref":"wk:architecture_settlement:reconstructed-practical-dwelling-upkeep","domain":"architecture_settlement","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
     {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:reconstructed-practical-food-provision","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
     {"schema":"world_knowledge_concept_v1","concept_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","domain":"npc_daily_life","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
-    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:leather-cutting",
+      "domain": "craft_technology",
+      "broader_refs": [
+        "wk:craft_technology:leatherworking"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
   ],
   "claims": [
 {"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-boat-load","domain":"material_culture","subject_ref":"wk:material_culture:reconstructed-practical-boat-work","predicate":"supported_fact","object":{"kind":"literal","value":"cargo_is_best_kept_low_and_distributed_between_sides_so_that_a_small_boat_is_less_awkward_to_handle"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"role_bound","required_facets":["role_ref"],"required_values":{"role_ref":["nov_role_boatman","nov_role_ferryman","nov_role_helmsman"]}},"hard_exclusion":null,"evidence_refs":["evidence:practical-boat-load"],"review_status":"approved","conflict_group_ref":null},
@@ -72,7 +105,48 @@
 {"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-stitch","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"cut_leather_components_can_be_stitched_or_fastened_together_and_a_worn_join_can_need_renewed_attention"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-stitch"],"review_status":"approved","conflict_group_ref":null},
 {"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-patch","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"a_worn_leather_article_can_be_patched_to_prolong_use_when_compatible_material_and_an_attachment_method_are_available"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-patch"],"review_status":"approved","conflict_group_ref":null},
 {"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-shoe","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"wet_work_walking_and_repeated_flexing_make_footwear_condition_fit_and_repair_practically_relevant"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-shoe"],"review_status":"approved","conflict_group_ref":null},
-{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-work-tradeoff","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"ordinary_maintenance_food_work_transport_and_craft_compete_for_limited_time_material_access_and_labour"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-work-tradeoff"],"review_status":"approved","conflict_group_ref":null}
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-work-tradeoff","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"ordinary_maintenance_food_work_transport_and_craft_compete_for_limited_time_material_access_and_labour"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-work-tradeoff"],"review_status":"approved","conflict_group_ref":null},
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:a1-leather-cutting-knife",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:leather-cutting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "prepared_leather_was_cut_with_a_dedicated_cutting_knife"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:a1-leather-cutting-knife-188839",
+        "evidence:a1-leather-cutting-knife-254935"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
   ],
   "concept_localizations": [
     {
@@ -241,6 +315,30 @@
         "spinning",
         "sewing",
         "shoes"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:leather-cutting",
+      "locale": "ru",
+      "labels": [
+        "Раскрой кожи"
+      ],
+      "short_definition": "Специальный нож для раскроя уже выделанной кожи.",
+      "search_aliases": [
+        "раскроечный нож"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:leather-cutting",
+      "locale": "en",
+      "labels": [
+        "Leather cutting"
+      ],
+      "short_definition": "A dedicated knife used to cut prepared leather.",
+      "search_aliases": [
+        "leather cutting knife"
       ]
     }
   ],
@@ -664,6 +762,24 @@
       "locale": "en",
       "runtime_text": "Ordinary maintenance, food work, transport, and craft compete for limited time, material, access, and labor.",
       "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:a1-leather-cutting-knife",
+      "locale": "ru",
+      "runtime_text": "Уже выделанную кожу раскраивали специальным режущим ножом. Это не создаёт кожу, нож или мастерскую в сцене и не задаёт умение, выкройку, время или результат.",
+      "search_aliases": [
+        "нож для раскроя кожи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:a1-leather-cutting-knife",
+      "locale": "en",
+      "runtime_text": "Already prepared leather was cut with a dedicated cutting knife. This creates no leather, knife or workshop in a scene and sets no skill, pattern, time or result.",
+      "search_aliases": [
+        "leather cutting knife"
+      ]
     }
   ]
 }

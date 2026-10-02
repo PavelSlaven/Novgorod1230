@@ -7,30 +7,25 @@ import { distinctNpcLabels } from
   './lower-dvina-trace-visible-scene-items.js';
 
 export function projectLowerDvinaTraceVisibleNpcDetails({
-  visibleContext, projectedNpcs, committedNpcs, committedItems
+  visibleContext, committedNpcs, committedItems
 }) {
-  if (!Array.isArray(projectedNpcs)) return [];
   const labels = Array.isArray(visibleContext?.visible_npc)
     ? visibleContext.visible_npc : [];
-  return projectedNpcs.map((npc) => {
-    const ids = [npc?.instance_id, npc?.actor_id, npc?.npc_id].filter(Boolean);
-    const publicNames = labels.filter((visibleNpc) =>
-      visibleNpc?.entity_ref?.entity_kind === 'npc'
-        && ids.includes(visibleNpc.entity_ref.entity_id)
-        && typeof visibleNpc.display_label === 'string'
-        && visibleNpc.display_label.trim())
-      .map(({ display_label: displayLabel }) => displayLabel.trim());
-    if (publicNames.length !== 1) return null;
+  return labels.map((visibleNpc) => {
+    const id = visibleNpc?.entity_ref?.entity_kind === 'npc'
+      ? visibleNpc.entity_ref.entity_id : null;
+    if (typeof id !== 'string' || !id
+        || typeof visibleNpc.display_label !== 'string'
+        || !visibleNpc.display_label.trim()) return null;
+    const ids = [id];
     const committedMatches = (committedNpcs ?? []).filter((candidate) =>
       ids.some((id) => [candidate?.instance_id, candidate?.actor_id,
         candidate?.npc_id].includes(id)));
     const committed = committedMatches.length === 1 ? committedMatches[0] : null;
     return {
-      instance_id: npc.instance_id,
-      actor_id: npc.actor_id,
-      npc_id: npc.npc_id,
+      instance_id: id,
       identity_state: safeConversationIdentity(
-        committed?.identity_state, publicNames[0]),
+        committed?.identity_state, visibleNpc.display_label.trim()),
       visible_equipment: safeConversationEquipment(committedItems, ids),
       presentation: safeConversationPresentation(
         committed?.player_safe_presentation),

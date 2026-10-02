@@ -3,8 +3,18 @@
 ## Unreleased
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
+
+- docs(governance): PC §8.1 — a scenario is a plot laid through the free world: it defines only plot NPCs, facts, scenes, items and completion; it owns no mechanics (time, body, combat, checks, perception, conversation, knowledge and lies, materialization, ownership, movement stay with their general owners and work the same inside and outside a scenario); finishing a plot does not end the game (owner decision D66) (#226)
+- docs(governance): PC §4/§9.1 — anachronism is excluded only from world stock; an actor’s making and invention are decided causally (materials, tool, skill, workable process), not by an anachronism list (D59) (#218)
+- docs(sprint, process): CURRENT_SPRINT and HOW_WE_WORK brought to owner decisions D51–D57 and the next step of the D49 slice (#217)
+- fix(turn): gate2-2 intercepts reality-limited achieved empty direct plans before semantic audit, cleans repair-selected not_achieved metadata and traces only accepted-attempt canonicalizations (LW-103 updated)
+- feat(perception): D66 issue #225 v17 post-action perception path; profile approval pending (#98)
+- fix(test): PostgreSQL test containers are awaited over TCP (pg_isready -h 127.0.0.1) so the temporary initdb server is no longer taken for ready; fixes Stage24 line 92 and the same race in 26 fixtures (#98)
+- fix(test): orphan test-container reaper is PID-namespace aware — removes only dead owners from its own namespace; foreign-namespace, legacy pid-only and unreadable owner labels are kept (fail-closed), so parallel PG runs are no longer killed (#98)
+- data(start-types): D62 — сад, бортничество и каменоломня «не применим по имеющимся данным», песок — кандидат; evidence-tooling; только кандидат, без активации
 - fix(materialization): D59 filters needs_check only in O1/O2b/S1, preserves player actions and authored O2a, replaces matching NPC A1/create_entity/O1 proposals with wait; LW-122 added (#98)
 
+- data(game-base): names-gaps D61 follow-up — exact candidate coverage, authoring checks and current draft/gap status (#98)
 - docs(changelog): восстановлена запись о ранее выполненном закрытии LW-112: исходы людей первого прибытия теперь фиксируются в агрегате присутствия; LW-112 closed
 - fix(spatial): rt-lines a5 — turn-back after a pause also allows interrupted_at_anchor/stranded and keys on travel-state status (refusal = turn_back_refused), no resume after returned_to_departure, zero-progress pause is no transit (Spatial 4.7.0 §4.10.1/§10.7.1/§10.8/A.4.1/F.1.1), A.4.1 gates synced in state-machines.js, line kinds are `line.*` with a vocabulary check, LINES_WAVE_MANIFEST repinned, gate test on attestation v6/224 tables.
 - fix(spatial): rt-lines a6 — outcomes of a turn_back interval follow the direction after commit (mirrored true: returned_to_departure; mirrored false after a repeated turn back: segment_completed; interrupted_at_anchor/stranded on both sides), Spatial 4.7.0 §4.10.1/F.1.1, specifications regenerated, norm-text tests.

@@ -9,8 +9,10 @@ import { bindCommitEnvelopeToBatch, commitEnvelope } from
 export function fixture({ direct = false, speech = false,
   clarification = false, check = false,
   bodyEvent = false, authoredMove = false, envelopeOverride = null,
-  temporalResults = [], backgroundNpcSemanticPlan = null }) {
+  temporalResults = [], backgroundNpcSemanticPlan = null,
+  stateOverride = null, turnStepApprovedOwners = null }) {
   const state = baseState();
+  if (stateOverride != null) Object.assign(state, structuredClone(stateOverride));
   if (backgroundNpcSemanticPlan != null) state.npcs.push(backgroundNpc());
   if (authoredMove) state.items.push(authoredItem());
   const envelope = envelopeOverride ?? commitEnvelope({ clarification, check });
@@ -64,6 +66,7 @@ export function fixture({ direct = false, speech = false,
       turnStepAmbientPortionProfileRef, projectEnvironmentAtClock,
       inputDigest, contracts: {}, phase3Contracts: null, phase4Contracts: null,
       phase5Contracts: null, phase6Contracts: null,
+      turnStepApprovedOwners,
       loadState: async () => structuredClone(state),
       committer: { async commit({ plan }) {
         plans.push(plan);

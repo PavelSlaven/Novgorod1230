@@ -25,7 +25,7 @@ test('committed canonical scene edges move arrival→focus→departure with stal
       '-e', 'POSTGRES_DB=local', 'postgres:16-alpine']).status, 0);
     let ready = false;
     for (let attempt = 0; attempt < 40; attempt += 1) {
-      if (docker(['exec', name, 'pg_isready', '-U', 'local', '-d', 'local']).status === 0) {
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'local', '-d', 'local']).status === 0) {
         ready = true; break;
       }
       await new Promise((done) => setTimeout(done, 300));

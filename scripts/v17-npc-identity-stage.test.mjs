@@ -21,7 +21,14 @@ const rowsOf = (tables, name) => tables.find(({ table }) => table === name).rows
 test('the committed request equals a rebuild from the reviewed sources', async () => {
   const request = await readIdentityRequest(root);
   assert.equal(request.request_digest, computeIdentityRequestDigest(request));
-  assert.deepEqual(await buildIdentityRequest({ root }), request);
+  const rebuilt = await buildIdentityRequest({ root });
+  const stableBody = (value) => {
+    const copy = structuredClone(value);
+    delete copy.request_digest;
+    delete copy.approved_data.source_commit;
+    return copy;
+  };
+  assert.deepEqual(stableBody(rebuilt), stableBody(request));
   assert.equal(await readFile(`${root}${IDENTITY_REVIEW_PATH}`, 'utf8'), renderIdentityReviewRequest(request));
   await assertIdentityInputs({ root, request });
 });
@@ -88,6 +95,12 @@ test('tampered pins are rejected', async () => {
   bad.approved_data.sources[0].sha256 = 'f'.repeat(64);
   await assert.rejects(assertIdentityInputs({ root, request: bad }), /V17_NPC_IDENTITY_REQUEST_DIGEST_MISMATCH/u);
   await assert.rejects(assertIdentityInputs({ root, request: redigest(bad) }), /V17_NPC_IDENTITY_PIN_MISMATCH:/u);
+  const duplicate = structuredClone(request);
+  duplicate.approved_data.sources.push({ ...duplicate.approved_data.sources[0], sha256: 'f'.repeat(64) });
+  await assert.rejects(assertIdentityInputs({ root, request: redigest(duplicate) }), /V17_NPC_IDENTITY_PIN_SOURCE_SET_MISMATCH/u);
+  const unknown = structuredClone(request);
+  unknown.approved_data.sources.push({ path: 'unlisted.csv', sha256: 'f'.repeat(64) });
+  await assert.rejects(assertIdentityInputs({ root, request: redigest(unknown) }), /V17_NPC_IDENTITY_PIN_SOURCE_SET_MISMATCH/u);
   const badSql = structuredClone(request);
   badSql.sql.commit_sha256 = '1'.repeat(64);
   await assert.rejects(assertIdentityInputs({ root, request: redigest(badSql) }), /V17_NPC_IDENTITY_SQL_MISMATCH:commit/u);

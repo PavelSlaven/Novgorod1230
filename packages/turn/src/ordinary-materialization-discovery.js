@@ -75,8 +75,15 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const isPlayerRequest = requestSubject === 'player'
       && typeof playerActorRef === 'string'
       && request.operation?.actor_ref === playerActorRef;
-    const queryNamesVisibleEquivalent = isPlayerRequest
-      && uniqueVisibleItemByName(request, request.operation?.query) != null;
+    const visibleQueryItem = uniqueVisibleItemByName(request,
+      request.operation?.query);
+    const npcExistingInspection = requestSubject === 'npc'
+      && request.operation?.discovery_kind === 'inspect'
+      && visibleQueryItem != null
+      && request.operation.target_refs?.[0]
+        === (visibleQueryItem.item_id ?? visibleQueryItem.instance_id);
+    const queryNamesVisibleEquivalent = visibleQueryItem != null
+      && (isPlayerRequest || npcExistingInspection);
     if (queryNamesVisibleEquivalent) requestGuardedBeforeSeed = true;
     if (candidateContext != null
         && request.operation?.discovery_kind !== 'look') {

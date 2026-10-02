@@ -72,7 +72,7 @@ async function startPool(name) {
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=wave', '-e', 'POSTGRES_USER=wave', '-e', 'POSTGRES_DB=wave', 'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 80; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'wave']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'wave']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
   await new Promise((resolve) => setTimeout(resolve, 600));

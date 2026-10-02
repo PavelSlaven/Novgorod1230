@@ -5,7 +5,6 @@
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - feat(economy): pure @rus/economy owner — exact rational currency conversion by approved region/date/unit rates, one final half-up, unresolved/conflict/invalid outcomes, local-sum render without rates or metadata; no wiring yet (#184)
-- feat(materialization): the target presence caller passes the closure of the 12 approved O1 item-ref to Stage3C template mappings; other refs yield a fail-closed typed gap; O1 is not activated (#163)
 - docs(corpus): §9 adds exact scoped currency conversion and confirmed local-sum handoff (#184)
 - feat(materialization): O1 typed-gap seam — first-arrival item rules can require template-backed item refs; a rule without a template yields a fail-closed typed gap before seed and RNG; zero or missing discovery weights are a typed gap; the wave validator rejects non-array variants (#163)
 - docs(tech-debt): record seasonal NPC schedule handoff gap; LW-123 added (#98)

@@ -58,8 +58,7 @@ import { createSpatialV3GenerationAdmission } from
   '../infrastructure/postgres/spatial-v3-generation-admission.js';
 import { createTargetGeneratedFirstEntry } from
   '../infrastructure/postgres/target-generated-first-entry.js';
-import { createApprovedO1TemplateBackedItemRefs, createTargetPresenceRulesFirstArrivalResolver,
-  delegateToPresenceResolverPort } from
+import { createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { readTargetPartyPresenceCalendar as resolveTargetPartyPresenceCalendar } from
   '../infrastructure/postgres/target-party-presence-calendar.js';
@@ -305,9 +304,6 @@ export async function createSpatialV3ProductionCompositionRoot({
           bindingContext
         );
     if (targetProfiles != null && targetContext != null) {
-      const targetPresenceItemTemplateRefs = createApprovedO1TemplateBackedItemRefs(
-        targetContext.runtime.materialization_inputs.domain_catalog,
-      );
       const worldPin = Object.freeze({
         world_revision_id: release.world_revision_id,
         world_catalog_digest: release.world_catalog_digest,
@@ -322,8 +318,6 @@ export async function createSpatialV3ProductionCompositionRoot({
         worldPin,
         runtimeCatalogPin: bindings.runtimeCatalogPin,
         readPartyPresenceCalendar: readTargetPartyPresenceCalendar,
-        templateBackedItemRefs: targetPresenceItemTemplateRefs,
-        requireTemplateBackedItemRefs: true,
       });
       targetFiniteFirstEntry = createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry, {
         resolvePresenceRulesFirstArrival: targetPresenceResolverPort.resolve,

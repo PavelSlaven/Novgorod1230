@@ -15,45 +15,6 @@ export const PRESENCE_FIRST_ARRIVAL_GAP = Object.freeze({
   NO_MERGED_PRESENCE_RULES: 'no_merged_presence_rules',
 });
 
-const APPROVED_O1_ITEM_TEMPLATE_BY_REF = Object.freeze([
-  ['it_hh_awl', 'item_tpl_nov_awl_v1'],
-  ['it_hh_firesteel', 'item_tpl_nov_firesteel_v1'],
-  ['it_hh_flint', 'item_tpl_nov_striking_flint_v1'],
-  ['it_hh_hollowed_bowl', 'item_tpl_nov_wooden_bowl_v1'],
-  ['it_hh_kindling', 'item_tpl_nov_kindling_bundle_v1'],
-  ['it_hh_kitchen_knife', 'item_tpl_nov_utility_knife_v1'],
-  ['it_hh_pestle', 'item_tpl_nov_pestle_v1'],
-  ['it_hh_rope', 'item_tpl_nov_rope_v1'],
-  ['it_hh_tinder', 'item_tpl_nov_tinder_v1'],
-  ['it_hh_trough', 'item_tpl_nov_trough_v1'],
-  ['it_hh_wooden_spoon', 'item_tpl_nov_wooden_spoon_v1'],
-  ['it_ps_bark_sheet_blank', 'item_tpl_nov_birch_bark_sheet_v1'],
-].map((entry) => Object.freeze(entry)));
-
-export function createApprovedO1TemplateBackedItemRefs(verifiedItemCatalog) {
-  const templates = verifiedItemCatalog?.records_by_table?.item_templates;
-  if (verifiedItemCatalog?.schema !== 'rus.verified_item_catalog.v2'
-      || verifiedItemCatalog.verified !== true || !Array.isArray(templates)) {
-    presenceFirstArrivalError(
-      'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
-      'Approved O1 item templates require the pinned verified item catalog.',
-      { reason: 'verified_item_catalog_missing' },
-    );
-  }
-  const availableTemplateIds = new Set(templates.map((row) => row?.id));
-  const missingTemplateIds = APPROVED_O1_ITEM_TEMPLATE_BY_REF
-    .map(([, templateId]) => templateId)
-    .filter((templateId) => !availableTemplateIds.has(templateId));
-  if (missingTemplateIds.length > 0) {
-    presenceFirstArrivalError(
-      'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
-      'The verified item catalog does not cover the approved O1 item mappings.',
-      { reason: 'approved_template_missing', missing_template_ids: missingTemplateIds },
-    );
-  }
-  return new Set(APPROVED_O1_ITEM_TEMPLATE_BY_REF.map(([itemRef]) => itemRef));
-}
-
 function scopeInstanceRefForSite(siteId) {
   return siteId.startsWith('g5:') ? siteId : `g5:${siteId}`;
 }
@@ -280,21 +241,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
   worldPin,
   runtimeCatalogPin,
   readPartyPresenceCalendar,
-  templateBackedItemRefs = null,
-  requireTemplateBackedItemRefs = false,
 } = {}) {
-  if (requireTemplateBackedItemRefs
-      && (!(templateBackedItemRefs instanceof Set)
-        || [...templateBackedItemRefs].some((ref) => typeof ref !== 'string' || !ref.trim()))) {
-    presenceFirstArrivalError(
-      'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
-      'Target presence resolver requires an exact item template closure.',
-      { reason: 'template_closure_invalid' },
-    );
-  }
-  const withTemplateCoverage = (context) => requireTemplateBackedItemRefs
-    ? { ...context, templateBackedItemRefs, requireTemplateBackedItemRefs: true }
-    : context;
   return async function resolvePresenceRulesFirstArrival({
     transaction,
     request,
@@ -387,11 +334,11 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       spatialNodeVersion,
     });
     if (bindingRows.length === 0) {
-      return withTemplateCoverage(emptyPresenceFirstArrivalResult({
+      return emptyPresenceFirstArrivalResult({
         partyId: partyId ?? request?.party_id,
         siteId: resolvedSite.id,
         presence_gap: PRESENCE_FIRST_ARRIVAL_GAP.NO_PLACE_FAMILY_BINDING,
-      }));
+      });
     }
     const calendar = await readPartyPresenceCalendar?.({ transaction, partyId, request });
     if (!calendar?.season || calendar.periodNumber == null) {
@@ -410,7 +357,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         { spatialNodeId, spatialNodeVersion },
       );
     }
-    return withTemplateCoverage(await resolvePresenceRulesFirstArrivalForSite({
+    return resolvePresenceRulesFirstArrivalForSite({
       ...readerInput,
       spatialNodeId,
       spatialNodeVersion,
@@ -421,6 +368,6 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       periodNumber: calendar.periodNumber,
       bindingRows,
       withPlacePeople: withPlacePeople && useCanonicalG5Node,
-    }));
+    });
   };
 }

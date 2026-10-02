@@ -6,7 +6,7 @@ const path = require('path');
 const DOM = path.resolve(__dirname, '..');
 const GB = path.resolve(DOM, '..');
 const REPO = path.resolve(GB, '../../../..');
-const MAIN = process.env.NOVGOROD_MAIN || 'C:/Users/Slaven/Documents/Novgorod';
+const MAIN = process.env.NOVGOROD_MAIN || REPO;
 const { climbingNest } = require('./src/hunting.cjs');
 
 function readCsv(f) {
@@ -271,9 +271,26 @@ for (const r of mammals) for (const s of srcTok(r.pelt_qualitative_source_refs |
 // WK refs resolve against WK production-v1
 const wkDir = path.join(MAIN, 'data/world-catalogs/novgorod/world-knowledge/production-v1');
 const wk = new Set();
-if (fs.existsSync(wkDir)) for (const f of fs.readdirSync(wkDir).filter((x) => x.endsWith('.json'))) { try { const j = JSON.parse(fs.readFileSync(path.join(wkDir, f), 'utf8')); for (const c of j.concepts || []) wk.add(c.concept_ref); for (const c of j.claims || []) wk.add(c.claim_ref); } catch (e) { /* skip */ } }
-else warn('WK dir not found: ' + wkDir);
-for (const t of all) for (const r of (t.wk_refs || '').split(';').filter(Boolean)) if (wk.size && !wk.has(r)) err('WK ref not found ' + r + ' (' + t.fa_id + ')');
+let wkFiles = [];
+try {
+  if (!fs.statSync(wkDir).isDirectory()) throw new Error('not a directory');
+  wkFiles = fs.readdirSync(wkDir).filter((x) => x.endsWith('.json'));
+  if (!wkFiles.length) err('WK index has no JSON files: ' + wkDir);
+} catch (e) {
+  err('WK directory unavailable: ' + wkDir + ' (' + e.message + ')');
+}
+for (const f of wkFiles) {
+  try {
+    const j = JSON.parse(fs.readFileSync(path.join(wkDir, f), 'utf8'));
+    if (!j || typeof j !== 'object' || Array.isArray(j)) throw new Error('expected an object');
+    for (const c of j.concepts || []) if (c?.concept_ref) wk.add(c.concept_ref);
+    for (const c of j.claims || []) if (c?.claim_ref) wk.add(c.claim_ref);
+  } catch (e) {
+    err('WK file unreadable or invalid: ' + f + ' (' + e.message + ')');
+  }
+}
+if (!wk.size) err('WK index has no concept or claim refs: ' + wkDir);
+for (const t of all) for (const r of (t.wk_refs || '').split(';').filter(Boolean)) if (!wk.has(r)) err('WK ref not found ' + r + ' (' + t.fa_id + ')');
 // MASTER hunting refs resolve
 for (const t of mammals) for (const r of (t.hunting_method_refs || '').split(';').filter(Boolean)) if (!MASTER_ITEMS.includes(r + ',')) err('MASTER item not found ' + r);
 for (const t of mammals) for (const r of (t.hunting_method_refs || '').split(';').filter(Boolean)) if (/hnt00(22|24|28)/.test(r)) err('D-rated MASTER hunting item used ' + r);
@@ -333,9 +350,16 @@ const report = {
   acceptance: { mammal_signs_min_per_forest_riparian_pf_season: Math.min(...Object.values(accM)), audible_birds_min_per_open_pf_season: Math.min(...Object.values(accB)), mammals_without_recorded_products: mammals.filter((row) => !row.products).length },
   errors, warnings,
 };
-fs.writeFileSync(path.join(DOM, 'validation-report.json'), JSON.stringify(report, null, 1) + '\n');
+const reportPath = path.join(DOM, 'validation-report.json');
+const reportText = JSON.stringify(report, null, 1) + '\n';
+const stale = process.argv.includes('--check')
+  && (!fs.existsSync(reportPath) || fs.readFileSync(reportPath, 'utf8') !== reportText);
+if (!process.argv.includes('--check')) {
+  fs.writeFileSync(reportPath, reportText);
+}
 console.log(JSON.stringify({ ok: report.ok, counts: report.counts, acceptance: report.acceptance, errors: errors.length, warnings: warnings.length }, null, 1));
 if (errors.length) { console.log(errors.slice(0, 40).join('\n')); process.exit(1); }
+if (stale) { console.log('validation-report.json is stale; run scripts/validate.cjs to regenerate it'); process.exit(1); }
 if (warnings.length) console.log(warnings.join('\n'));
 // Post-check (warning): Мальчевский species heading epithet vs bird latin epithet (catches wrong mp numbers).
 {

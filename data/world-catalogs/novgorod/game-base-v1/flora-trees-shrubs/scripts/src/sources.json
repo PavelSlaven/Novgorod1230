@@ -8,8 +8,8 @@
    "kind": "scholarly_monograph_archaeology",
    "reliability": "A (wood identifications of excavated artefacts, analysis by V. E. Vikhrov, n=909) / B (forest composition statements)",
    "title": "Колчин Б. А. Новгородские древности. Деревянные изделия. САИ Е1-55. М.: Наука, 1968. Гл. 1: Леса Новгородской земли; Породы древесины (с. 11-13, табл. I на с. 12); Берестяная и плетёная посуда (с. 49-50)",
-   "url": "file:C:/Users/Slaven/Downloads/Е1-55_Колчин_дерев_1968.pdf",
-   "locator_note": "PDF page index = printed page + 1 (p.11 -> idx 12, табл. I p.12 -> idx 13, p.13 -> idx 14, p.49 -> idx 50). Read visually by the collector 2026-09-26 (scan without text layer)."
+   "url": "bibliography:kolchin-1968-e1-55",
+   "locator_note": "Bibliographic locator; the scan is not bundled in this checkout. Earlier collector visual check (2026-09-26): PDF page index = printed page + 1 (p.11 -> idx 12, tab. I p.12 -> idx 13, p.13 -> idx 14, p.49 -> idx 50)."
   },
   {
    "src_id": "src_brisbane_hather_2007",
@@ -435,7 +435,7 @@
    "kind": "project_candidate",
    "reliability": "C (candidate_approval_pending)",
    "title": "pr98:data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json (Pinus, Picea, Betula, Salix, Alnus, Sphagnum, Phragmites; weights 8/4/2/1)",
-   "url": "file:C:/Users/Slaven/Documents/Novgorod-runtime/data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json"
+   "url": "file:data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json"
   },
   {
    "src_id": "src_wiki_sambucus_racemosa",

@@ -86,6 +86,8 @@ export async function loadPlacePopulationComposition({
   if (!rows.length) return null;
   const row = rows[0];
   return deepFreeze({
+    place_family_id: row.place_family_id,
+    place_family_version: row.place_family_version,
     population_groups: structuredClone(row.population_groups ?? []),
     scheduled_absences: structuredClone(row.scheduled_absences ?? []),
     empty_reason: row.empty_reason ?? null,

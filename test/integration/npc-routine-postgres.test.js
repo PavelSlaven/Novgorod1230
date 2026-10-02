@@ -1,8 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import pg from 'pg';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { createNpcRoutineState, npcRoutineActivity,
+  selectNpcRoutineSchedule } from '@rus/npc-runtime';
+import { nextCalendarSeasonBoundary } from '@rus/time-events-history/calendar';
+import { subtractGameTimestamp } from '@rus/time-events-history';
 import { buildCombinedWritePlan } from '@rus/turn/spatial-v3-write-plan';
 import { integrateSpatialV3TemporalWriteFragments } from '@rus/turn/spatial-v3-temporal-write-integration';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
@@ -23,16 +28,38 @@ import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-act
 import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { resolveFirstEntry } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-3-first-entry.js';
 import { loadLowerDvinaTraceRevision33Publication } from '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 test('new game persists canonical offscene routines atomically and replays', async (t) => {
-  const adminUrl = process.env.RUS_TEST_POSTGRES_ADMIN_URL;
-  if (!adminUrl) return t.skip('RUS_TEST_POSTGRES_ADMIN_URL is required for an isolated database');
+  let adminUrl = process.env.RUS_TEST_POSTGRES_ADMIN_URL;
+  let ownedContainer = null;
+  const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
+  if (!adminUrl) {
+    if (docker(['version']).status !== 0) return t.skip('PostgreSQL test container is unavailable');
+    const name = `npc-routine-test-${process.pid}`;
+    const started = docker(['run', ...testContainerLabel(), '-d', '--name', name,
+      '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc',
+      '-e', 'POSTGRES_DB=npc', 'postgres:16-alpine']);
+    if (started.status !== 0) return t.skip(`PostgreSQL test container did not start: ${started.stderr}`);
+    ownedContainer = name;
+    for (let attempt = 0; attempt < 60; attempt += 1) {
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'npc']).status === 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+    const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)/)?.[1]);
+    if (!Number.isInteger(port) || port < 1) {
+      docker(['rm', '-fv', name]);
+      return t.skip('PostgreSQL test container did not expose a port');
+    }
+    adminUrl = `postgresql://npc:npc@127.0.0.1:${port}/npc`;
+  }
   const admin = new pg.Pool({ connectionString: adminUrl });
   const database = `npc_routine_test_${process.pid}_${Date.now()}`;
   await admin.query(`CREATE DATABASE ${database}`);
   const url = new URL(adminUrl); url.pathname = `/${database}`;
   const pool = new pg.Pool({ connectionString: url.href });
-  t.after(async () => { await pool.end(); await admin.query(`DROP DATABASE ${database}`); await admin.end(); });
+  t.after(async () => { await pool.end(); await admin.query(`DROP DATABASE ${database}`);
+    await admin.end(); if (ownedContainer) docker(['rm', '-fv', ownedContainer]); });
   for (const file of (await readdir('schemas/party-db')).filter((name) => /^\d+.*\.sql$/u.test(name)).sort()) {
     if (file.startsWith('012_')) await runPartyRuntimeCatalogMigration(pool);
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
@@ -85,8 +112,8 @@ test('new game persists canonical offscene routines atomically and replays', asy
   assert.equal(before.temporal_results[0].trace.processed_boundary_ids.length, 0);
   const crossed = await advance({ clock_before: state.clock, relevant_state: state,
     change_set_id: 'npc-routine-turn1',
-    exact_elapsed: { exact_minutes: { numerator: '135', denominator: '1' } } });
-  assert.equal(crossed.temporal_results[0].trace.processed_boundary_ids.length, 10);
+    exact_elapsed: { exact_minutes: { numerator: '125', denominator: '1' } } });
+  assert.equal(crossed.temporal_results[0].trace.processed_boundary_ids.length, 5);
   const plan = await routineCommitPlan(state, crossed);
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck: async () => ({ ok: true }) });
   const applied = await committer.commit({ plan, created_at_turn: 1 });
@@ -94,14 +121,16 @@ test('new game persists canonical offscene routines atomically and replays', asy
   const reloaded = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
   const running = reloaded.npc_schedule_runtime.filter((row) => row.status === 'active');
   assert.ok(running.every((row) => Number(row.state_version) === 2));
-  assert.ok(running.every((row) => row.causal_state_ref.routine_state.phase_index === 2));
-  assert.ok(running.every((row) => row.next_transition_at_whole_minutes === '333900'));
-  assert.ok(running.every((row) => row.npc_snapshot.machine_state.current_activity.summary
-    === row.causal_state_ref.routine_state.work_activity.summary));
+  assert.ok(running.every((row) => row.causal_state_ref.routine_state.phase_index === 1));
+  assert.ok(running.every((row) => row.next_transition_at_whole_minutes === '333195'));
+  assert.ok(running.every((row) => row.npc_snapshot.machine_state.current_activity.activity_ref
+    === row.causal_state_ref.routine_state.profile.phases[
+      row.causal_state_ref.routine_state.phase_index].activity_ref));
   assert.equal((await committer.commit({ plan, created_at_turn: 1 })).ok, true);
-  assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_runtime_transitions WHERE party_id=$1', [request.party_id])).rows[0].n, 10);
+  assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_runtime_transitions WHERE party_id=$1', [request.party_id])).rows[0].n, 5);
   assert.deepEqual(await loadTracePhase2TemporalSourceProof(pool, request.party_id), reloaded);
-  const deferred = running.find(row => row.causal_state_ref.deferred_placement.kind === 'prepared_scene');
+  const deferred = running.find(row => row.causal_state_ref.deferred_placement?.kind === 'prepared_scene');
+  assert.ok(deferred, 'one on-site routine retains its exact prepared-scene binding');
   await assert.rejects(pool.query(`UPDATE party_runtime.party_npc_spatial_schedules
     SET causal_state_ref=jsonb_set(causal_state_ref,'{deferred_placement,snapshot_id}',to_jsonb($2::text)),
       state_version=state_version+1 WHERE id=$1`, [deferred.id, 'missing-prepared-scope']),
@@ -123,6 +152,11 @@ test('new game persists canonical offscene routines atomically and replays', asy
     position: initial.position };
   const prepared = enteredState.first_entry_preparation;
   const spatial = prepared.spatial_v3;
+  const targetDeferred = reloaded.npc_schedule_runtime.find((row) =>
+    row.causal_state_ref.deferred_placement?.snapshot_id === spatial.preparation_snapshot_id
+      && row.causal_state_ref.deferred_placement?.member_ordinal
+        === spatial.preparation_member_ordinal);
+  assert.ok(targetDeferred, 'the routine member is selected by exact preparation ordinal');
   const extension = resolveFirstEntry({ partyId: request.party_id, state: enteredState,
     changeSetId: 'npc-routine-turn2', scenarioRevision: 33,
     phase3Contracts: { route: { route_id: prepared.binding.route_ref },
@@ -135,11 +169,11 @@ test('new game persists canonical offscene routines atomically and replays', asy
   const entered = await committer.commit({ plan: entryPlan, created_at_turn: 2 });
   assert.equal(entered.ok, true, JSON.stringify(entered.error));
   const arrived = (await loadTracePhase2TemporalSourceProof(pool, request.party_id))
-    .npc_schedule_runtime.find(row => row.id === deferred.id);
+    .npc_schedule_runtime.find(row => row.id === targetDeferred.id);
   assert.equal(arrived.current_position_node_id, spatial.target.position_id);
-  assert.deepEqual(arrived.causal_state_ref, deferred.causal_state_ref);
-  assert.equal(arrived.next_transition_at_whole_minutes, deferred.next_transition_at_whole_minutes);
-  assert.deepEqual(arrived.npc_snapshot.machine_state, deferred.npc_snapshot.machine_state);
+  assert.deepEqual(arrived.causal_state_ref, targetDeferred.causal_state_ref);
+  assert.equal(arrived.next_transition_at_whole_minutes, targetDeferred.next_transition_at_whole_minutes);
+  assert.deepEqual(arrived.npc_snapshot.machine_state, targetDeferred.npc_snapshot.machine_state);
   const afterEntryProof = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
   const afterEntryState = { ...enteredState, clock: crossed.clock_after,
     party_state: { state_version: 2, turn_number: 2 },
@@ -153,14 +187,218 @@ test('new game persists canonical offscene routines atomically and replays', asy
   assert.equal((await committer.commit({ plan: nightPlan, created_at_turn: 3 })).ok, true);
   const atNight = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
   assert.ok(atNight.npc_schedule_runtime.filter(row => row.status === 'active')
-    .every(row => row.npc_snapshot.machine_state.runtime_status === 'sleeping'
-      && row.next_transition_at_whole_minutes === '334500'));
-  assert.equal(atNight.npc_schedule_runtime.find(row => row.id === deferred.id).current_position_node_id,
-    spatial.target.position_id);
+    .every(row => row.npc_snapshot.machine_state.runtime_status === 'available'
+      && row.next_transition_at_whole_minutes === '333900'));
+  const atNightDeferred = atNight.npc_schedule_runtime.find(row => row.id === targetDeferred.id);
+  assert.equal(atNightDeferred.current_position_node_id, null);
+  assert.equal(atNightDeferred.causal_state_ref.routine_state.presence_state, 'location_gap');
+  assert.equal(atNightDeferred.npc_placement, null,
+    'the first-entry gap had no physical position fact to preserve');
   assert.equal((await committer.commit({ plan: nightPlan, created_at_turn: 3 })).ok, true);
   assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_runtime_transitions WHERE party_id=$1',
-    [request.party_id])).rows[0].n, 15);
+    [request.party_id])).rows[0].n, 10);
+
+  // Re-seed one persisted routine with a test-only pinned D-1 bundle, then
+  // exercise the exact season-boundary candidate and a fresh DB readback.
+  const targetSchedule = atNight.npc_schedule_runtime.find((row) => row.id !== targetDeferred.id
+    && row.status === 'active' && row.current_position_node_id == null
+    && row.npc_placement == null);
+  assert.ok(targetSchedule, 'an off-scene active schedule is available for the readback case');
+  const clockBeforeSeason = night.clock_after;
+  const calendarProfile = seasonalTestCalendar(clockBeforeSeason);
+  const profiles = ['cold', 'warm'].map((season) => ({
+    schedule_id: `schedule-${season}`, schedule_version: 1,
+    world_revision_id: 'seasonal-test-world', scope_kind: 'place_family',
+    scope_ref: 'pf-season-test', subject_kind: 'occupation', subject_ref: 'nov_occ_test',
+    season, months: null, day_type: 'normal', status: 'approved',
+    routine_profile: seasonalTestRoutine(`routine-${season}`)
+  }));
+  const scheduleContext = { home_scope_ref: 'pf-season-test', subject_kind: 'occupation',
+    subject_ref: 'nov_occ_test', day_type: 'normal', approved_rule_rows: profiles,
+    calendar_profile: calendarProfile };
+  const initialRule = selectNpcRoutineSchedule({ schedule_context: scheduleContext,
+    scheduled_at: clockBeforeSeason });
+  assert.equal(initialRule.season, 'warm');
+  const runtime = structuredClone(createNpcRoutineState({
+    profile: initialRule.rule.routine_profile, started_at: clockBeforeSeason,
+    calendar_profile: calendarProfile, schedule_context: initialRule.schedule_context,
+    current_activity: targetSchedule.npc_snapshot.machine_state.current_activity
+  }));
+  runtime.presence_state = 'location_gap';
+  runtime.schedule_gap_reason = 'npc_location_gap';
+  const causalState = { ...targetSchedule.causal_state_ref, routine_state: runtime };
+  delete causalState.deferred_placement;
+  delete causalState.canonical_digest;
+  causalState.canonical_digest = digest(causalState);
+  const currentActivity = npcRoutineActivity(runtime);
+  const machineState = { ...targetSchedule.npc_snapshot.machine_state,
+    current_activity: currentActivity, current_activity_ref: currentActivity.activity_ref,
+    schedule_state: runtime.profile.phases[runtime.phase_index].state_id,
+    runtime_status: runtime.runtime_status };
+  const profileRef = routineProfileRef(runtime.profile);
+  const profilePins = routineProfilePins(profileRef);
+  const positionSeedClient = await pool.connect();
+  try {
+    await positionSeedClient.query('BEGIN');
+    await positionSeedClient.query(`UPDATE party_runtime.party_npc_spatial_schedules
+      SET causal_state_ref=$2::jsonb,status=$3,schedule_profile_ref=$4::jsonb,
+          dependency_pins=$5::jsonb,
+          current_position_node_id=$10,
+          next_transition_at_whole_minutes=$6,
+          next_transition_at_subminute_numerator=$7,
+          next_transition_at_subminute_denominator=$8,
+          state_version=state_version+1,updated_change_set_id=$9 WHERE id=$1`,
+    [targetSchedule.id, causalState, runtime.status, profileRef, profilePins,
+      runtime.next_transition_at.whole_minutes, runtime.next_transition_at.subminute_numerator,
+      runtime.next_transition_at.subminute_denominator, 'seasonal-test-seed', spatial.target.position_id]);
+    await positionSeedClient.query(`INSERT INTO party_runtime.entity_placements (
+        party_id,entity_kind,entity_id,placement_kind,position_node_id,host_entity_ref,
+        occupies_capacity_units,visibility_modifier_ref,interaction_profile_ref,
+        state_version,updated_change_set_id)
+      VALUES ($1,'npc',$2,'scene_position',$3,NULL,1,NULL,NULL,1,$4)`,
+    [request.party_id, targetSchedule.npc_id, spatial.target.position_id, 'seasonal-test-placement-seed']);
+    await positionSeedClient.query('COMMIT');
+  } catch (error) {
+    await positionSeedClient.query('ROLLBACK');
+    throw error;
+  } finally {
+    positionSeedClient.release();
+  }
+  await pool.query(`UPDATE party_runtime.party_npcs SET machine_state=$2::jsonb
+      WHERE party_id=$1 AND npc_id=$3`,
+    [request.party_id, machineState, targetSchedule.npc_id]);
+  const seasonalProof = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
+  const seasonalRow = seasonalProof.npc_schedule_runtime.find((row) => row.id === targetSchedule.id);
+  const seasonBoundary = nextCalendarSeasonBoundary(clockBeforeSeason, calendarProfile);
+  assert.equal(seasonBoundary.season_id, 'cold');
+  const seasonCandidate = seasonalProof.candidates.find((candidate) =>
+    candidate.primary_subject_ref?.entity_id === seasonalRow.npc_id
+      && candidate.resolution_class === 'npc_schedule');
+  assert.deepEqual(seasonCandidate.scheduled_at, seasonBoundary.scheduled_at);
+  const seasonalState = { ...afterEntryState, clock: clockBeforeSeason,
+    party_state: { state_version: 3, turn_number: 3 },
+    npc_schedule_runtime: seasonalProof.npc_schedule_runtime,
+    temporal_boundary_candidates: seasonalProof.candidates,
+    temporal_source_proof: seasonalProof };
+  const seasonAdvance = await advance({ clock_before: clockBeforeSeason,
+    relevant_state: seasonalState, change_set_id: 'npc-routine-season-turn4',
+    exact_elapsed: { exact_minutes: subtractGameTimestamp(
+      seasonBoundary.scheduled_at, clockBeforeSeason) } });
+  assert.ok(seasonAdvance.temporal_results[0].trace.processed_boundary_ids
+    .includes(seasonCandidate.boundary_id));
+  const seasonPlan = await routineCommitPlan(seasonalState, seasonAdvance);
+  assert.equal((await committer.commit({ plan: seasonPlan, created_at_turn: 4 })).ok, true);
+  const seasonReadback = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
+  const persistedSeasonal = seasonReadback.npc_schedule_runtime.find((row) => row.id === targetSchedule.id);
+  assert.equal(persistedSeasonal.causal_state_ref.routine_state.profile.profile_id, 'routine-cold');
+  assert.equal(persistedSeasonal.causal_state_ref.routine_state.schedule_context
+    .selected_rule_ref.schedule_id, 'schedule-cold');
+  assert.equal(persistedSeasonal.schedule_profile_ref.authoring_version, '2');
+  assert.equal(persistedSeasonal.dependency_pins.pins[0].version_pin.authoring_version, '2');
+  assert.equal(persistedSeasonal.current_position_node_id, spatial.target.position_id);
+  assert.equal(persistedSeasonal.causal_state_ref.routine_state.presence_state, 'location_gap');
+  assert.equal(persistedSeasonal.npc_placement.position_node_id, spatial.target.position_id);
+  const seasonalPlacement = await pool.query(`SELECT position_node_id FROM party_runtime.entity_placements
+    WHERE party_id=$1 AND entity_kind='npc' AND entity_id=$2`,
+  [request.party_id, targetSchedule.npc_id]);
+  assert.equal(seasonalPlacement.rows[0].position_node_id, spatial.target.position_id);
+  const otherPosition = await pool.query(`SELECT id FROM party_runtime.scene_position_nodes
+    WHERE party_id=$1 AND id<>$2 ORDER BY id LIMIT 1`,
+  [request.party_id, spatial.target.position_id]);
+  assert.ok(otherPosition.rows[0]);
+  await assert.rejects(pool.query(`UPDATE party_runtime.party_npc_spatial_schedules
+    SET current_position_node_id=$2,state_version=state_version+1,updated_change_set_id=$3
+    WHERE id=$1`, [targetSchedule.id, otherPosition.rows[0].id, 'invalid-gap-position']),
+  /NPC location gap position must match existing entity placement/u);
+  await assert.rejects(pool.query(`UPDATE party_runtime.party_npc_spatial_schedules
+    SET current_position_node_id=$2,state_version=state_version+1,updated_change_set_id=$3
+    WHERE id=$1`, [targetDeferred.id, spatial.source.position_id, 'invalid-placement-mismatch']),
+  /NPC location gap position must match existing entity placement/u);
+  assert.equal((await committer.commit({ plan: seasonPlan, created_at_turn: 4 })).replay, true);
+  const afterReplay = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
+  assert.deepEqual(afterReplay, seasonReadback);
+  assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_spatial_schedules WHERE party_id=$1',
+    [request.party_id])).rows[0].n, 6);
+
+  const movementExecution = { owner: '@rus/movement-routes', status: 'active',
+    route_ref: 'route-season-readback', source_endpoint_ref: 'endpoint-source',
+    destination_endpoint_ref: 'endpoint-destination',
+    destination_location_ref: 'pf-winter-crossing',
+    started_at: { whole_minutes: '42110', subminute_numerator: '0',
+      subminute_denominator: '1' },
+    ends_at: { whole_minutes: '42122', subminute_numerator: '0',
+      subminute_denominator: '1' } };
+  const movementCausalState = structuredClone(persistedSeasonal.causal_state_ref);
+  movementCausalState.routine_state.movement_execution = movementExecution;
+  delete movementCausalState.canonical_digest;
+  movementCausalState.canonical_digest = digest(movementCausalState);
+  await pool.query(`UPDATE party_runtime.party_npc_spatial_schedules
+      SET causal_state_ref=$2::jsonb,state_version=state_version+1,
+          updated_change_set_id=$3 WHERE id=$1`,
+  [targetSchedule.id, movementCausalState, 'movement-execution-readback-seed']);
+  await pool.query(`INSERT INTO party_runtime.party_npc_runtime_transitions (
+      transition_id,party_id,npc_id,transition_kind,event_id,change_set_id,
+      idempotency_record_id,occurred_at_whole_minutes,
+      occurred_at_subminute_numerator,occurred_at_subminute_denominator,trace)
+    VALUES ($1,$2,$3,'routine_transition',NULL,$4,$5,42122,0,1,$6::jsonb)`,
+  [`last-route-${targetSchedule.npc_id}`, request.party_id, targetSchedule.npc_id,
+    'last-route-change', `last-route-idempotency-${targetSchedule.npc_id}`,
+    { movement: { status: 'completed', destination_position_node_id: spatial.target.position_id,
+      destination_location_ref: 'pf-test-yard' } }]);
+  const afterMovementReadback = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
+  const movementRow = afterMovementReadback.npc_schedule_runtime
+    .find((row) => row.id === targetSchedule.id);
+  assert.deepEqual(movementRow.causal_state_ref.routine_state.movement_execution,
+    movementExecution, 'nested active route interval survives JSONB readback');
+  assert.deepEqual(movementRow.last_completed_movement, {
+    destination_position_node_id: spatial.target.position_id,
+    destination_location_ref: 'pf-test-yard',
+    completed_at: { whole_minutes: '42122', subminute_numerator: '0',
+      subminute_denominator: '1' }
+  }, 'latest completed route semantic location survives temporal source readback');
+  assert.equal((await committer.commit({ plan: seasonPlan, created_at_turn: 4 })).replay, true);
+  const afterMovementReplay = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
+  assert.deepEqual(afterMovementReplay, afterMovementReadback,
+    'idempotent replay does not replace the persisted nested route interval');
+  await assert.rejects(pool.query(`UPDATE party_runtime.party_npc_spatial_schedules
+      SET schedule_profile_ref=$2::jsonb,state_version=state_version+1,
+          updated_change_set_id=$3 WHERE id=$1`,
+  [targetSchedule.id, JSON.stringify({ entity_ref: { entity_kind: 'activity_profile',
+    entity_id: 'unselected-profile' }, authoring_version: '9' }),
+    'invalid-profile-with-movement-execution']),
+  /npc schedule profile may change only with a pinned seasonal rule selection/u);
 });
+
+function seasonalTestCalendar(clock) {
+  const epoch = { ...clock,
+    whole_minutes: (BigInt(clock.whole_minutes) - 1439n).toString() };
+  return { profile_id: 'npc-season-pg-test', version: '1', status: 'approved',
+    provenance: { source_id: 'npc-season-pg-test', source_version: '1' },
+    epoch: { game_timestamp: epoch, year: '1230', month: '1', day: '1' },
+    calendar_system: 'npc-season-pg-test', month_rules: { month_lengths: ['1', '1'] },
+    leap_rules: { cycle_years: '1', leap_year_indexes: [], leap_month: '1', leap_days: '0' },
+    day_start_rule: { local_minute: '0' }, local_offset_rule: { offset_minutes: '0' },
+    daypart_rule: { ranges: [{ id: 'day', start_minute: '0', end_minute: '1440' }] },
+    season_rule: { ranges: [{ id: 'cold', start_day: '1', end_day: '1' },
+      { id: 'warm', start_day: '2', end_day: '2' }], months_by_id: { cold: ['1'], warm: ['2'] } },
+    daylight_rule: { ranges: [{ id: 'light', start_day: '1', end_day: '2' }] } };
+}
+function seasonalTestRoutine(profile_id) {
+  return { schema: 'npc_routine_profile_v1', profile_id, revision: 2, status: 'approved',
+    phases: ['work', 'rest'].map((state_id) => ({ state_id, duration_minutes: 5000,
+      activity_ref: state_id, summary: state_id, activity_status: 'active',
+      runtime_status: 'available', can_continue_automatically: true,
+      decision_required: false, presence_state: 'on_site', location_ref: 'pf-season-test' })) };
+}
+function routineProfileRef(profile) {
+  return { entity_ref: { entity_kind: 'activity_profile', entity_id: profile.profile_id },
+    authoring_version: String(profile.revision) };
+}
+function routineProfilePins(profileRef) {
+  const value = { pins: [{ dependency_role: 'profile', entity_ref: profileRef.entity_ref,
+    version_pin: { pin_kind: 'authoring_version', authoring_version: profileRef.authoring_version } }] };
+  return { ...value, canonical_digest: digest(value) };
+}
 
 async function routineCommitPlan(state, advance, extension = null) {
   const number = state.party_state.turn_number + 1;

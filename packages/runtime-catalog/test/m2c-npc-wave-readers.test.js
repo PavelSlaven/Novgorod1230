@@ -48,10 +48,11 @@ function gateReader() {
       }
       if (sql.includes('place_population_composition_rules')) {
         return { rows: [{
-          composition_id: 'pf_x',
+          composition_id: 'composition-x',
           composition_version: 1,
           world_revision_id: spatialWorldPin.world_revision_id,
           place_family_id: 'pf_x',
+          place_family_version: 2,
           population_groups: [{ group_id: 'g1' }],
           scheduled_absences: [{ subject_ref: 'nov_occ_ferryman', seasons: ['winter'] }],
           authoring_payload: { slot_relationships: [] },
@@ -145,6 +146,10 @@ test('loadPlacePopulationComposition returns structured composition or null', as
   });
   assert.deepEqual(composition.population_groups, [{ group_id: 'g1' }]);
   assert.equal(composition.scheduled_absences[0].seasons[0], 'winter');
+  assert.equal(composition.place_family_id, 'pf_x');
+  assert.equal(composition.place_family_version, 2);
+  assert.deepEqual(composition.composition_ref, { id: 'composition-x', version: 1,
+    world_revision_id: spatialWorldPin.world_revision_id });
 });
 
 test('loadPresenceRulesForPlaceFamilies returns frozen rows after gate', async () => {

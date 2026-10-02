@@ -54,11 +54,23 @@ export function createSpatialV3DomainPlacementIntegrator() {
     return cloneFreeze({ ok: true, placements: [...byEntity.values()] });
   }
 
-  function validateNpcSchedule({ npc_ref, placement, schedule_endpoint_ref, schedule_profile_ref, dependency_pins } = {}) {
-    if (!validRef(npc_ref, new Set(['npc'])) || !validPlacement(placement) || entityKey(npc_ref) !== entityKey(placement.entity_ref)
-      || !schedule_endpoint_ref || !stableText(schedule_endpoint_ref.endpoint_kind) || !stableText(schedule_endpoint_ref.endpoint_id)
+  function validateNpcSchedule({ npc_ref, placement, schedule_endpoint_ref, schedule_profile_ref,
+    dependency_pins, presence_state = null } = {}) {
+    const offstage = presence_state === 'offstage_away';
+    const gap = presence_state === 'location_gap';
+    const noLocation = placement == null && schedule_endpoint_ref == null;
+    const hasScheduleLocation = validPlacement(placement) && entityKey(npc_ref) === entityKey(placement.entity_ref)
+      && schedule_endpoint_ref && stableText(schedule_endpoint_ref.endpoint_kind)
+      && stableText(schedule_endpoint_ref.endpoint_id);
+    const matchingLocation = validPlacement(placement) && entityKey(npc_ref) === entityKey(placement.entity_ref)
+      && schedule_endpoint_ref?.endpoint_kind === 'scene_position'
+      && schedule_endpoint_ref.endpoint_id === placement.position_node_id;
+    if (!validRef(npc_ref, new Set(['npc']))
+      || (offstage ? !noLocation
+        : gap ? !(noLocation || matchingLocation)
+          : !hasScheduleLocation)
       || !schedule_profile_ref?.entity_ref || !stableText(schedule_profile_ref.authoring_version) || !dependency_pins?.canonical_digest) {
-      return error('route_plan_version_pin_missing', { reason: 'NPC schedule requires exact placement, endpoint, profile and pins' });
+      return error('route_plan_version_pin_missing', { reason: 'NPC schedule requires a matching exact location, an empty location gap, or an offstage state, plus profile and pins' });
     }
     return cloneFreeze({ ok: true, npc_ref, placement, schedule_endpoint_ref, schedule_profile_ref, dependency_pins });
   }
@@ -114,8 +126,21 @@ function validatePersistedDomainSnapshot(snapshot, request) {
   }
   for (const schedule of snapshot.npc_schedules) {
     const placement = placements.get(entityKey(schedule.npc_ref));
-    if (!placement || !schedule.active || !schedule.schedule_profile_ref?.entity_ref || !stableText(schedule.schedule_profile_ref.authoring_version) || !schedule.dependency_pins?.canonical_digest || !schedule.causal_state_ref?.entity_ref || schedule.current_endpoint_ref?.endpoint_kind !== 'scene_position' || schedule.current_endpoint_ref?.endpoint_id !== placement.position_node_id) return 'NPC schedule endpoint does not equal its current active placement';
-    if (!snapshot.active_route_endpoint_ids?.includes(schedule.current_endpoint_ref.endpoint_id)) return 'NPC schedule endpoint is not active on its exact route/scene binding';
+    const offstage = schedule.presence_state === 'offstage_away';
+    const gap = schedule.presence_state === 'location_gap';
+    const noLocation = placement == null && schedule.current_endpoint_ref == null;
+    const matchingLocation = placement != null && entityKey(schedule.npc_ref) === entityKey(placement.entity_ref)
+      && schedule.current_endpoint_ref?.endpoint_kind === 'scene_position'
+      && schedule.current_endpoint_ref.endpoint_id === placement.position_node_id;
+    if (!schedule.active || !schedule.schedule_profile_ref?.entity_ref || !stableText(schedule.schedule_profile_ref.authoring_version)
+      || !schedule.dependency_pins?.canonical_digest || !schedule.causal_state_ref?.entity_ref
+      || (offstage ? !noLocation
+        : gap ? !(noLocation || matchingLocation)
+          : !matchingLocation)
+      || ((offstage || gap) && schedule.causal_state_ref?.routine_state?.presence_state !== schedule.presence_state)) {
+      return 'NPC schedule endpoint does not equal its current active placement';
+    }
+    if (matchingLocation && !snapshot.active_route_endpoint_ids?.includes(schedule.current_endpoint_ref.endpoint_id)) return 'NPC schedule endpoint is not active on its exact route/scene binding';
   }
   const used = new Map();
   for (const placement of snapshot.placements) {

@@ -1,4 +1,4 @@
-import { createRandomSource, deriveSeed, RNG_VERSION } from './core.js';
+import { createRandomSource, deriveSeed, MaterializationError, RNG_VERSION } from './core.js';
 
 const VERSION = 'place_people_first_arrival_v1';
 const PEOPLE_SUBJECT_KINDS = new Set(['occupation', 'social_role']);
@@ -14,7 +14,7 @@ function weighted(entries, draw) {
  * groups (rolled here, they are not presence rules) and the outcomes the R-2a engine already stored in the presence
  * aggregate for occupation/social_role rules (§3A.1; read here, never rolled again). A subject the composition names
  * is not taken from a rule. Pure and deterministic by party, place and group.
- * `compositions`: [{ composition_ref: {id, version, world_revision_id}, population_groups }].
+ * `compositions`: [{ place_family_id, composition_ref: {id, version, world_revision_id}, population_groups }].
  * `rule_outcomes`: [{ rule_id, rule_version, scope_ref, subject_kind, subject_ref, count }].
  */
 export function wantPlacePeople({ party_id: partyId, scope_instance_ref: scopeRef, compositions = [], rule_outcomes: outcomes = [] } = {}) {
@@ -22,9 +22,16 @@ export function wantPlacePeople({ party_id: partyId, scope_instance_ref: scopeRe
   const trace = { version: VERSION, groups: [], rules: [] };
   const owned = new Set();
   const groups = compositions.flatMap((composition) => (composition.population_groups ?? [])
-    .map((group) => ({ group, composition_ref: composition.composition_ref })))
+    .map((group) => ({ group, composition_ref: composition.composition_ref,
+      place_family_id: composition.place_family_id })))
     .sort((a, b) => a.group.group_id.localeCompare(b.group.group_id));
-  for (const { group, composition_ref: compositionRef } of groups) {
+  for (const { group, composition_ref: compositionRef, place_family_id: placeFamilyId } of groups) {
+    if (!text(placeFamilyId) || !text(compositionRef?.id)
+        || !Number.isSafeInteger(compositionRef.version) || compositionRef.version < 1
+        || !text(compositionRef.world_revision_id)) {
+      throw new MaterializationError('PROCEDURAL_NPC_SOURCE_BINDING_DATA_GAP',
+        'An approved place-family composition ref and its declared place family are required.');
+    }
     for (const subject of group.weighted_subjects ?? []) owned.add(`${subject.subject_kind}:${subject.subject_ref}`);
     const counts = (group.count_weights ?? []).map((weight, index) => ({ count: group.min_count + index, weight }));
     if (!counts.length || !(group.weighted_subjects ?? []).length) continue;
@@ -36,7 +43,7 @@ export function wantPlacePeople({ party_id: partyId, scope_instance_ref: scopeRe
     for (let i = 0; i < count; i += 1) {
       const subject = weighted(group.weighted_subjects, random.nextUint32());
       wanted.push({ origin: 'composition', group_id: group.group_id, subject_kind: subject.subject_kind,
-        subject_ref: subject.subject_ref, profile_id: subject.profile_ref ?? null, place_family_id: compositionRef.id,
+        subject_ref: subject.subject_ref, profile_id: subject.profile_ref ?? null, place_family_id: placeFamilyId,
         place_population_composition_ref: { id: compositionRef.id, version: compositionRef.version,
           world_revision_id: compositionRef.world_revision_id } });
     }
@@ -54,6 +61,8 @@ export function wantPlacePeople({ party_id: partyId, scope_instance_ref: scopeRe
   }
   return { wanted, trace };
 }
+
+function text(value) { return typeof value === 'string' && value.trim().length > 0; }
 
 /**
  * Bind wanted subjects to approved profiles. A subject with no single approved profile (`profile_id` or the one

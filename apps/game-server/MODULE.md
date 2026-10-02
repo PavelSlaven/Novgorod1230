@@ -365,9 +365,25 @@ causal transitions и один CAS итогового состояния. Deferr
 допустим до первого входа; first-entry связывает точную позицию без сброса
 занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
 не расширяет историческую Phase-7 activation свободных решений NPC.
-Routine movement проходит существующий route owner с проверкой committed source
-и exact endpoints; adapter переносит NPC только при completed handoff, а blocked
-handoff сохраняет исходную позицию и следующий причинный schedule state.
+Routine movement проходит текущий `npc-routine-movement` path: adapter сверяет
+committed source, exact endpoints и доступ, а handoff duration задаёт обычное
+completion; это не sealed traversal proof. Blocked handoff сохраняет исходную
+позицию и следующий причинный schedule state. При seasonal profile switch
+persisted `movement_execution` сохраняет исходный interval и `ends_at`; новый
+профиль не перезапускает движение и не переносит NPC.
+Temporal and first-entry adapters collect current-position, completed-movement,
+active-execution and exact approved-binding facts for `resolveNpcRoutinePresence`;
+phase location is intent only. Adapters apply its presence/location result and
+do not authorize a planned destination from the phase.
+Temporal readback accepts exact current-node/source/scene proof for an unchanged
+initial placement; home schedule scope alone does not authorize that mapping.
+Seasonal D-1 rules reselect from the party clock at the exact calendar boundary.
+`location_gap` preserves any already-known physical placement; it does not
+create an endpoint or authorize a planned destination. An explicit away phase
+with a known placement resolves to a gap until an approved departure is
+established. On first-entry, an away phase with no physical placement remains
+`offstage_away` and unplaced; neither state creates a deferred first-entry
+placement.
 
 Semantic continuation без изменения тела использует existing prepared-effect
 chain уже с первого timed шага. Runtime передаёт advanced committed projection

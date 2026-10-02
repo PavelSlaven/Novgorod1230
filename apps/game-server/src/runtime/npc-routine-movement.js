@@ -8,6 +8,11 @@ export function routineRoute(runtime, currentPositionNodeId,
     (runtime.phase_index + 1) % runtime.profile.phases.length];
   const handoff = runtime.movement_execution == null
     ? next.movement_handoff : phase.movement_handoff;
+  return routineRouteForHandoff(handoff, currentPositionNodeId, endpointPositions);
+}
+
+export function routineRouteForHandoff(handoff, currentPositionNodeId,
+  endpointPositions = {}) {
   if (handoff == null) return null;
   const source = endpointPositions?.[handoff.source_endpoint_ref];
   const destination = endpointPositions?.[handoff.destination_endpoint_ref];

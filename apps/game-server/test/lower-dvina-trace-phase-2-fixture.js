@@ -56,6 +56,7 @@ function fixture({
   worldBaseReferenceSnapshot = undefined,
   llmDiagnostics = null,
   authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
   spatialExpansionRuntime = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
@@ -622,6 +623,7 @@ function fixture({
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),
     ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
+    postActionPerceptionProfile,
     ...(spatialExpansionRuntime ? { spatialExpansionRuntime } : {}),
   });
   return {

@@ -80,6 +80,7 @@ export function createTraceTurnRuntime({
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
   authoredTurnProfile,
+  postActionPerceptionProfile = null,
   authoredSpatialSemanticProfile = null,
   authoredNpcSemanticRemainderProfile = null,
   authoredRuntimeBindingResolver,
@@ -308,6 +309,7 @@ export function createTraceTurnRuntime({
     llmDiagnostics,
     onNpcSceneProjection: config.onNpcSceneProjection ?? null,
     authoredTurnProfile,
+    postActionPerceptionProfile,
     spatialExpansionRuntime,
     spatialLocalSceneRuntime
   });

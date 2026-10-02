@@ -340,6 +340,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   return Object.freeze({
     loadPhase2State,
     loadPreparedMovementScene,
+    projectEnvironmentAtClock,
     loadPhase2StateVersion: (partyId, options) =>
       loadPhase2StateVersion(partyPool, partyId, options),
     loadPhase2Replay,

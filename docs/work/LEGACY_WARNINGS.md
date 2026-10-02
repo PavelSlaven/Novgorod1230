@@ -70,7 +70,7 @@
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
+| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | post-action perception: реплики игрока, same-position listeners; без G6 propagation и reaction boundary — волна 2 (#225) | — |
 | 075 | `spatial-v3-current-visibility-provider.js`, `spatial-v3-proposed-visible-sources.js` | runtime читает `m2c-local-edge-labels`/`m2c-exit-labels`/`m2c-pass-target-labels` файлами напрямую, мимо `world_base` | [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) |
 | 076 | `tools/spatial-v3/p12-authoring-importer.mjs`, `m2c-npc-wave-bundle-validation.mjs`, `infra/world-base/schema/28.sql`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js` | m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; bootstrap импортирует волну этапом (D27) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 077 | `packages/materialization/src/presence-rules-first-arrival.js`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js`, PG-тесты presence | R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
@@ -431,11 +431,11 @@
 - **§3A.2/3A.3 сезонное обновление.** Повторное прибытие в **новом сезоне** в уже созданное G5-место (пересчёт `by_year_season` без нового scope) в R-2a **не** подключено; отложено отдельным шагом CR #158 (решение ревьюера REVIEW-R2a-6 F6). Unit на `encodePresenceRulePeriodNumber` остаётся.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-074 — восприятие NPC в live world выключено
-- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`: `post_action_perception_profile: null`); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (`perceptionListeners` без профиля возвращает `[]`); профиль есть только в `apps/game-server/src/internal/lower-dvina-trace-revision-34-bundle.js`.
-- **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
-- **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
-- **Issue.** —
+### LW-074 — post-action perception profile требует отдельного approval
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle` получает только отдельно утверждённый target profile); `apps/game-server/src/internal/target-runtime-profiles.js` (читает `post-action-perception-profile.json` только с approval); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (перцепция и knowledge после фактического события).
+- **Что.** Кандидат переносит M22-механику и ждёт независимого approval; пока его нет, production key остаётся `null`. Текущий production-путь формирует события только для реплики игрока. Слушатели проверяются только на той же позиции; распространения по G6 нет. В этой волне сохраняются perception, knowledge и `pending_npc_decision_refs`, но нет formal boundary, реакции NPC и отметки signal как обработанного. Погода не добавляет acoustic loss.
+- **Как жить.** До profile approval не считать, что NPC live world уже восприняли действие. После подключения учитывать только persisted perception и knowledge; решение NPC и последствия принадлежат волне 2.
+- **Issue.** #225
 
 ### LW-078 — R-2a: стартовое присутствие не повторяется при загрузке, если provisioning не выполнился
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-public-start.js` (вызов `provisionInitialOrdinary` после commit new_game); `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`, отдельная транзакция); путь загрузки партии (`getPartyScreen`) вызова не имеет.

@@ -26,6 +26,8 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   temporalAdvance = null,
   bodyEffect = null, idempotencyKey = null,
   postActionPerceptionProfile = null,
+  postActionPerceptionAdapter,
+  postActionEnvironmentPort = null,
   projectCurrentScene = null,
   loadPreparedMovementScene = null,
   onNpcSceneProjection = null,
@@ -89,7 +91,9 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   return Object.freeze({
     postAppliedActorStep: createLowerDvinaTracePostAppliedActorStepOwner(
       { committedState: safeCommittedState, idempotencyKey,
-        perceptionProfile: postActionPerceptionProfile }),
+        perceptionProfile: postActionPerceptionProfile,
+        perceptionAdapter: postActionPerceptionAdapter,
+        environmentPort: postActionEnvironmentPort }),
     executionRegistry: createTurnStepExecutionRegistry({
       direct,
       domain: { ...domain, request_item_use: createTransientItemUseHandler() },

@@ -10,6 +10,12 @@ import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
+import { validPostActionPerceptionProfile } from
+  '../internal/post-action-perception-profile.js';
+import { legacyPostActionPerceptionAdapter } from
+  '../internal/lower-dvina-trace-post-action-perception-legacy.js';
+import { perceptionContext } from
+  './lower-dvina-trace-post-action-perception-context.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
@@ -66,6 +72,7 @@ export function createLowerDvinaTracePhase2Runtime({
   }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
   authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
 } = {}) {
@@ -130,9 +137,17 @@ export function createLowerDvinaTracePhase2Runtime({
           npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
         const bundle = authored
-          ? liveWorldTurnBundle({ state, authoredTurnProfile })
+          ? liveWorldTurnBundle({ state, authoredTurnProfile,
+            postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
+        const selectedPostActionPerceptionProfile =
+          bundle.post_action_perception_profile ?? null;
+        const postActionPerceptionAdapter = selectedPostActionPerceptionProfile?.schema
+          === 'rus.lower_dvina_trace_post_action_perception_profile.v1'
+          ? legacyPostActionPerceptionAdapter
+          : { validProfile: validPostActionPerceptionProfile,
+            context: perceptionContext };
         const contracts = authored
           ? liveWorldTurnContracts(authoredTurnProfile)
           : resolveTracePhase2Contracts({ state, bundle, phase2Bundle });
@@ -333,7 +348,8 @@ export function createLowerDvinaTracePhase2Runtime({
           requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
           turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           postActionPerceptionProfile:
-            bundle.post_action_perception_profile ?? null,
+            selectedPostActionPerceptionProfile,
+          postActionPerceptionAdapter,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
@@ -356,7 +372,8 @@ export function createLowerDvinaTracePhase2Runtime({
   });
 }
 
-function liveWorldTurnBundle({ state, authoredTurnProfile }) {
+function liveWorldTurnBundle({ state, authoredTurnProfile,
+  postActionPerceptionProfile = null }) {
   if (authoredTurnProfile?.profile?.schema
       !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
     || authoredTurnProfile.profile.status !== 'approved'
@@ -379,7 +396,7 @@ function liveWorldTurnBundle({ state, authoredTurnProfile }) {
     }] },
     calendar_profile: null,
     scene_presentation: null,
-    post_action_perception_profile: null
+    post_action_perception_profile: postActionPerceptionProfile
   });
 }
 

@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { loadTargetRuntimeProfiles, loadTargetFiniteFirstEntryProfile } from '../src/internal/target-runtime-profiles.js';
+import { loadTargetRuntimeProfiles, loadTargetFiniteFirstEntryProfile,
+  readApprovedPostActionPerceptionProfile } from
+  '../src/internal/target-runtime-profiles.js';
 import { createTargetFiniteFirstEntryPorts } from '../src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { targetFiniteProfileCatalogFixture } from '../../../test/spatial-v3/target-finite-profile-fixture.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from '../src/runtime/releases/lower-dvina-trace-a1-production.js';
@@ -50,6 +53,14 @@ test('target mapped approval admits generic mechanics and preserves explicit mis
   const loaded = await loadTargetRuntimeProfiles({ worldRevisionId });
   assert.equal(loaded.turn_profile.profile.status, 'approved');
   assert.equal(loaded.applicability.length, 33);
+  assert.equal(loaded.post_action_perception_profile, null);
+  const candidate = JSON.parse(await readFile(
+    'data/world-catalogs/novgorod/live-world-runtime-v17/post-action-perception-profile.json',
+    'utf8'));
+  assert.equal(candidate.status, 'candidate');
+  assert.deepEqual(candidate.approval, {});
+  assert.equal(readApprovedPostActionPerceptionProfile(candidate, worldRevisionId),
+    null);
   assert.equal(loaded.ordinary_profiles.s1, null);
   assert.equal(loaded.materialization_profiles.ordinaryMaterializationProfile, null);
   assert.equal(loaded.materialization_profiles.localFireProfile, null);
@@ -64,6 +75,36 @@ test('target mapped approval admits generic mechanics and preserves explicit mis
     pool: { query: async () => ({ rows: [] }) } }), /Exact loaded A1 profile/u);
   await assert.rejects(loadTargetRuntimeProfiles({ worldRevisionId: 'historical-world' }),
     { code: 'SPATIAL_V3_TARGET_RUNTIME_PROFILE_APPROVAL_REQUIRED' });
+});
+
+test('target post-action perception requires matching independent approval fields', async () => {
+  const candidate = JSON.parse(await readFile(
+    'data/world-catalogs/novgorod/live-world-runtime-v17/post-action-perception-profile.json',
+    'utf8'));
+  const approved = { ...candidate, status: 'approved', approval: {
+    approved_by: 'reviewer', approved_on: '2026-10-01',
+    approved_path: 'answers.md#REVIEW-d66-perception-2',
+    approved_commit: 'review-commit'
+  } };
+
+  assert.equal(readApprovedPostActionPerceptionProfile(null, worldRevisionId), null);
+  assert.equal(readApprovedPostActionPerceptionProfile(approved,
+    'another-world-revision'), null);
+  for (const field of Object.keys(approved.approval)) {
+    const missing = structuredClone(approved);
+    delete missing.approval[field];
+    assert.equal(readApprovedPostActionPerceptionProfile(missing,
+      worldRevisionId), null, field);
+  }
+  assert.deepEqual(readApprovedPostActionPerceptionProfile(approved,
+    worldRevisionId), approved);
+
+  const invalidSchema = structuredClone(approved);
+  invalidSchema.profile_id = 'wrong-profile';
+  assert.throws(() => readApprovedPostActionPerceptionProfile(invalidSchema,
+    worldRevisionId), {
+      code: 'SPATIAL_V3_TARGET_POST_ACTION_PERCEPTION_PROFILE_INVALID'
+    });
 });
 
 test('finite-only profile selects exactly approved Stage B without ambient', async () => {

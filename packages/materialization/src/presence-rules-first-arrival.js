@@ -1,4 +1,4 @@
-import { createRandomSource, deriveSeed, RNG_VERSION } from './core.js';
+import { createRandomSource, deriveSeed, MaterializationError, RNG_VERSION } from './core.js';
 import { applyOrdinaryAggregateTransition } from './ordinary-materialization-foundation.js';
 import { ruleAllowedInSeason } from './presence-rule-conflicts.js';
 import {
@@ -161,13 +161,92 @@ export function rollUniformPresenceCount(random, countLimit) {
   return 1 + (random.nextUint32() % countLimit);
 }
 
-export function choosePresenceDiscoveryMode(rule, random) {
+export function isPresenceRuleItemProducing(rule) {
+  return rule?.item_ref != null
+    || (Array.isArray(rule?.variants) && rule.variants.length > 0)
+    || (rule?.variants != null && !Array.isArray(rule.variants));
+}
+
+export function presenceDiscoveryModeConfiguration(rule) {
+  if (!isPresenceRuleItemProducing(rule)) {
+    const hasDiscoveryFields = [rule?.entry_visible_if, rule?.search_only_if,
+      rule?.entry_exposed_weight, rule?.search_concealed_weight].some((value) => value != null);
+    return hasDiscoveryFields
+      ? { ok: false, reason: 'non_item_fields' }
+      : { ok: true, mode: 'exposed', itemProducing: false };
+  }
+  const exposedAllowed = rule.entry_visible_if === 'placed_exposed';
+  const concealedAllowed = rule.search_only_if === 'placed_concealed';
+  if (!exposedAllowed && !concealedAllowed) return { ok: false, reason: 'modes' };
+  if (rule.entry_exposed_weight === 0 && rule.search_concealed_weight === 0) {
+    return { ok: false, reason: 'weights' };
+  }
+  if (exposedAllowed !== concealedAllowed) {
+    return { ok: true, mode: exposedAllowed ? 'exposed' : 'concealed', itemProducing: true };
+  }
+
   const exposed = rule.entry_exposed_weight ?? 1;
-  const concealed = rule.search_concealed_weight ?? 0;
+  const concealed = rule.search_concealed_weight ?? 1;
+  if (![exposed, concealed].every((weight) => Number.isInteger(weight) && weight >= 0)) {
+    return { ok: false, reason: 'weights' };
+  }
   const total = exposed + concealed;
-  if (total <= 0) return 'exposed';
-  const draw = random.nextUint32() % total;
-  return draw < exposed ? 'exposed' : 'concealed';
+  if (total === 0) return { ok: false, reason: 'weights' };
+  return { ok: true, exposed, concealed, total, itemProducing: true };
+}
+
+export function choosePresenceDiscoveryMode(rule, random) {
+  const config = presenceDiscoveryModeConfiguration(rule);
+  if (!config.ok) {
+    throw new MaterializationError('PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+      'Presence rule has no valid discovery-mode choice.', {
+        rule_ref: `${rule.rule_id}@${rule.rule_version}`,
+        reason: config.reason,
+      });
+  }
+  if (config.mode) return config.mode;
+  return random.nextUint32() % config.total < config.exposed ? 'exposed' : 'concealed';
+}
+
+function assertPresenceRuleTemplateCoverage(rule, templateBackedItemRefs, required) {
+  if (templateBackedItemRefs == null && !required) return;
+  const ruleRef = `${rule.rule_id}@${rule.rule_version}`;
+  if (!(templateBackedItemRefs instanceof Set)
+      || [...templateBackedItemRefs].some((ref) => typeof ref !== 'string' || !ref.trim())) {
+    throw new MaterializationError('PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+      'Presence rule item template coverage is invalid.', {
+        rule_ref: ruleRef,
+        reason: 'template_closure_invalid',
+      });
+  }
+  if (!isPresenceRuleItemProducing(rule)) return;
+
+  const itemRefs = [];
+  let malformed = false;
+  if (Array.isArray(rule.variants) && rule.variants.length > 0 && rule.item_ref == null) {
+    malformed = true;
+  }
+  if (rule.item_ref != null) {
+    if (typeof rule.item_ref === 'string' && rule.item_ref.trim()) itemRefs.push(rule.item_ref);
+    else malformed = true;
+  }
+  if (rule.variants != null && !Array.isArray(rule.variants)) {
+    malformed = true;
+  } else {
+    for (const variant of rule.variants ?? []) {
+      if (typeof variant?.item_ref === 'string' && variant.item_ref.trim()) itemRefs.push(variant.item_ref);
+      else malformed = true;
+    }
+  }
+  const missing = [...new Set(itemRefs.filter((ref) => !templateBackedItemRefs.has(ref)))].sort();
+  if (malformed || itemRefs.length === 0 || missing.length > 0) {
+    throw new MaterializationError('PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+      'Presence rule references an item without an exact approved template.', {
+        rule_ref: ruleRef,
+        reason: malformed || itemRefs.length === 0 ? 'item_refs_invalid' : 'template_missing',
+        missing_item_refs: missing,
+      });
+  }
 }
 
 export function applyPresenceRulesFirstArrival({
@@ -178,6 +257,8 @@ export function applyPresenceRulesFirstArrival({
   parentById = new Map(),
   periodNumber = null,
   requestIdentityPrefix = 'presence-first-arrival',
+  templateBackedItemRefs = null,
+  requireTemplateBackedItemRefs = false,
 }) {
   let current = aggregate;
   for (const rule of sortPresenceRulesForFirstArrival(rules, parentById)) {
@@ -205,6 +286,17 @@ export function applyPresenceRulesFirstArrival({
       })) {
       continue;
     }
+    // Target O1 callers pass the complete exact-ref closure from the approved item catalog.
+    // Validating every alternative prevents a seeded draw from hiding a missing template.
+    assertPresenceRuleTemplateCoverage(rule, templateBackedItemRefs, requireTemplateBackedItemRefs);
+    const discoveryModeConfig = presenceDiscoveryModeConfiguration(rule);
+    if (!discoveryModeConfig.ok) {
+      throw new MaterializationError('PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+        'Presence rule has no valid discovery-mode choice.', {
+          rule_ref: `${rule.rule_id}@${rule.rule_version}`,
+          reason: discoveryModeConfig.reason,
+        });
+    }
     const seed = deriveSeed(derivePresenceRuleSeedContext({
       party_id: partyId,
       scope_instance_ref: scopeInstanceRef,
@@ -215,7 +307,9 @@ export function applyPresenceRulesFirstArrival({
     const random = createRandomSource({ seed: seed.uint32, version: RNG_VERSION });
     const present = rollPresenceRulePpm(random, rule.presence_probability_ppm);
     const count = present ? rollUniformPresenceCount(random, rule.count_limit) : 0;
-    const discovery_mode = count === 0 ? 'exposed' : choosePresenceDiscoveryMode(rule, random);
+    const discovery_mode = count === 0 || !discoveryModeConfig.itemProducing
+      ? 'exposed'
+      : choosePresenceDiscoveryMode(rule, random);
     current = applyOrdinaryAggregateTransition({
       aggregate: current,
       transition: {

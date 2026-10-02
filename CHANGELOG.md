@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- feat(materialization): O1 typed-gap seam — first-arrival item rules can require template-backed item refs; a rule without a template yields a fail-closed typed gap before seed and RNG; zero or missing discovery weights are a typed gap; the wave validator rejects non-array variants (#163)
 - docs(tech-debt): record seasonal NPC schedule handoff gap; LW-123 added (#98)
 - docs(corpus): D72 — чистота служебной маркировки в model-facing и отображаемом тексте; правило публичной границы и ссылка Narration/UI в CONTRACT_INDEX (#98)
 - docs(governance): PC §8.1 — a scenario is a plot laid through the free world: it defines only plot NPCs, facts, scenes, items and completion; it owns no mechanics (time, body, combat, checks, perception, conversation, knowledge and lies, materialization, ownership, movement stay with their general owners and work the same inside and outside a scenario); finishing a plot does not end the game (owner decision D66) (#226)

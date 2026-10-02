@@ -16,6 +16,24 @@ import { manifestIncludesWaveTables, M2C_NPC_WAVE_TABLE_SET } from '../../tools/
 
 const gap = (code) => ({ code, subject_ref: 'novgorod:test', dependency_pins: ['catalog'], blocking: true });
 const approvedTarget = async () => ({ ok: true, materialization_authorized: false, p28_activation: 'not_authorized', errors: [] });
+const buildDraftWaveWithPresenceRule = async (t, index, overrides) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-wave-discovery-'));
+  const waveRoot = join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1');
+  await cp(waveRoot, dir, { recursive: true });
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const manifestFile = join(dir, 'manifest.json');
+  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+  manifest.status = 'draft';
+  const presenceDataset = manifest.datasets.find((dataset) => dataset.table === 'presence_rules');
+  const presencePath = join(dir, presenceDataset.file);
+  const rules = JSON.parse(await readFile(presencePath, 'utf8'));
+  Object.assign(rules[index], overrides);
+  const content = JSON.stringify(rules);
+  await writeFile(presencePath, content);
+  presenceDataset.sha256 = createHash('sha256').update(content).digest('hex');
+  await writeFile(manifestFile, JSON.stringify(manifest));
+  return buildTransactionalImportSql({ root: process.cwd(), manifestPath: manifestFile, rollback: true, allowTypedGaps: true });
+};
 test('P12 Novgorod bundle is the approved complete target compilation of the reviewed source package', async () => {
   const result = await validateAuthoringBundle({ root: process.cwd() });
   assert.equal(result.errors.length, 0); assert.equal(result.ok, true); assert.deepEqual(result.data_gaps, []);
@@ -258,6 +276,44 @@ test('P12 draft m2c-npc-wave import is refused without approved manifest', async
       manifestPath: 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json',
     }),
     /P12_WAVE_IMPORT_REQUIRES_APPROVED/u,
+  );
+});
+
+test('P12 rejects item-producing presence rule with absent discovery modes', async (t) => {
+  await assert.rejects(
+    () => buildDraftWaveWithPresenceRule(t, 0, {
+      entry_visible_if: null, search_only_if: null,
+      entry_exposed_weight: null, search_concealed_weight: null,
+    }),
+    /M2C_WAVE_PRESENCE_DISCOVERY_MODE_INVALID/u,
+  );
+});
+
+test('P12 accepts non-item presence rule with discovery fields absent', async (t) => {
+  const sql = await buildDraftWaveWithPresenceRule(t, 6, {
+    entry_visible_if: null, search_only_if: null,
+    entry_exposed_weight: null, search_concealed_weight: null,
+  });
+  assert.match(sql, /INSERT INTO world_base\.presence_rules/u);
+});
+
+test('P12 rejects discovery fields on non-item presence rule', async (t) => {
+  await assert.rejects(
+    () => buildDraftWaveWithPresenceRule(t, 6, {
+      entry_visible_if: 'placed_exposed', search_only_if: null,
+      entry_exposed_weight: null, search_concealed_weight: null,
+    }),
+    /M2C_WAVE_NON_ITEM_DISCOVERY_FIELDS_FORBIDDEN/u,
+  );
+});
+
+test('P12 refuses a presence rule with zero weight for both discovery modes', async (t) => {
+  await assert.rejects(
+    () => buildDraftWaveWithPresenceRule(t, 0, {
+      entry_visible_if: 'placed_exposed', search_only_if: 'placed_concealed',
+      entry_exposed_weight: 0, search_concealed_weight: 0,
+    }),
+    /M2C_WAVE_PRESENCE_DISCOVERY_WEIGHTS_INVALID/u,
   );
 });
 

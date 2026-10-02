@@ -106,6 +106,77 @@ test('revision 32 leaves active Phase9 container access to its authored owner', 
   }), 'function');
 });
 
+test('prepared movement hydrates the destination scene and captures IDs without mutating the projection', async () => {
+  const destinationNpc = { instance_id: 'npc:destination',
+    anchor_id: 'anchor:destination', position_id: 'position:destination',
+    g6_instance_id: 'g6:destination', runtime_source: 'party_db_scene_read' };
+  const diagnostics = [];
+  let loaderSite = null;
+  let loaderPartyId = null;
+  const state = {
+    actor_id: 'player', position: { location_ref: 'source', site_id: 'site:source',
+      g5_anchor_id: 'anchor:source', g5_node_id: 'node:source',
+      position_id: 'position:source', g6_id: 'g6:source' },
+    prepared_scenes: [{ location_profile_ref: 'destination',
+      node: { instance_id: 'node:destination' },
+      anchor: { instance_id: 'anchor:destination', state: { zone_ref: 'zone' } } }],
+    npcs: [], clock: { whole_minutes: '0', subminute_numerator: '0',
+      subminute_denominator: '1' }, clock_weather_light: { clock: {
+      whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' } },
+    body_state: {}
+  };
+  const ports = createLowerDvinaTraceTurnStepRuntimePorts({
+    committedState: state,
+    partyId: 'party:movement',
+    temporalAdvance: async () => ({}),
+    bodyEffect: { apply: async () => ({ state_after: {} }) },
+    projectCurrentScene: (committedState) => ({
+      current_visible_context: { schema: 'visible_context_package',
+        visible_npc: committedState.npcs.map((npc) => ({ entity_ref: {
+          entity_kind: 'npc', entity_id: npc.instance_id } })) }
+    }),
+    loadPreparedMovementScene: async ({ partyId, state: preparedState }) => {
+      loaderPartyId = partyId;
+      loaderSite = preparedState.position.site_id;
+      return { ...preparedState, npcs: [destinationNpc],
+        scene_position_g6: { 'position:destination': 'g6:destination' } };
+    },
+    onNpcSceneProjection: (event) => diagnostics.push(event),
+    requestId: 'request:move',
+    workingProjectionAuthority: createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
+  });
+  const projection = { position: { location_ref: 'source',
+    g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } };
+  const result = await ports.preparedEffectProjectionOwner({
+    working_projection: projection,
+    prepared_effect: { consequence: {
+      movement: { route_ref: 'route', source: { location_ref: 'source' },
+        destination: { location_ref: 'destination', g5_anchor_id: 'anchor:destination',
+          scene_position_id: 'position:destination' } },
+      position_transition: { destination_site_id: 'site:destination',
+        destination_g6_instance_id: 'g6:destination',
+        to_position_ref: 'position:destination' }
+    }, time_update: { clock_after: state.clock, temporal_results: [] },
+    body_update: { state_after: {} } }
+  });
+  assert.equal(loaderSite, 'site:destination');
+  assert.equal(loaderPartyId, 'party:movement');
+  assert.deepEqual(projection, { position: { location_ref: 'source',
+    g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } });
+  assert.deepEqual(ports.preparedDomainEffect.currentState().npcs,
+    [destinationNpc]);
+  assert.deepEqual(result.current_visible_context.visible_npc[0].entity_ref,
+    { entity_kind: 'npc', entity_id: 'npc:destination' });
+  assert.equal(diagnostics[0].request_id, 'request:move');
+  assert.deepEqual(diagnostics[0].after.projection_npc_ids,
+    ['npc:destination']);
+  assert.deepEqual(diagnostics[0].after.candidates[0], {
+    npc_id: 'npc:destination', source: 'party_db_scene_read',
+    position_id: 'position:destination', g6_instance_id: 'g6:destination',
+    same_scene_locus: true
+  });
+});
+
 test('an active O2a profile fails closed when its binding has drifted', () => {
   const ports = createPorts({ requireAmbientOrdinaryAdmission: true,
     admitAmbientOrdinaryPortion: null });

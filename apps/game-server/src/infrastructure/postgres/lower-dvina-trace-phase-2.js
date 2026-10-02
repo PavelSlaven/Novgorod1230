@@ -28,7 +28,7 @@ import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-comm
 import { loadPhase2JourneyLocation, withJourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
-import { withSceneNpcs } from './scene-npcs-readback.js';
+import { withSceneNpcs, withoutSceneNpcs } from './scene-npcs-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 import { serverError } from '../../errors.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
@@ -222,6 +222,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       loadState: (id, options) => loadPhase2State(id, { ...options, turnBudget })
     });
   }
+  async function loadPreparedMovementScene({ partyId, state, turnBudget = null }) {
+    const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
+    return withSceneNpcs(readPool, partyId, withoutSceneNpcs(state));
+  }
   async function replayPhase2Turn({ partyId, replay, narrator, turnBudget = null }) {
     return replayLowerDvinaTracePhase2Presentation({ partyPool, partyId, replay,
       narrator, turnBudget, persistPhase2Screen });
@@ -303,8 +307,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       narration.presentation?.output_digest
       ?? canonicalDigest(narration.approved_output);
     const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence);
+    const screenPayload = await withSceneNpcs(
+      withTurnDeadlineQueryPool(partyPool, turnBudget), partyId,
+      withoutSceneNpcs(payload));
     const screen = projectLowerDvinaTraceScreenPanels({
-      payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
+      payload: screenPayload,
+      presentation: await loadLowerDvinaTraceScreenPresentation(screenPayload),
       screen: {
         ...structuredClone(result.screen),
         schema: payload.scenario_id === 'lower_dvina_trace_v1'
@@ -331,6 +339,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   }
   return Object.freeze({
     loadPhase2State,
+    loadPreparedMovementScene,
     loadPhase2StateVersion: (partyId, options) =>
       loadPhase2StateVersion(partyPool, partyId, options),
     loadPhase2Replay,

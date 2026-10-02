@@ -59,6 +59,7 @@ export function createLowerDvinaTracePhase2Runtime({
   createTurnStepAuthoredBackgroundNpcResolver = null,
   authoredNpcSemanticRemainderProfile = null,
   llmTurnBudget = null, llmDiagnostics = null,
+  onNpcSceneProjection = null,
   temporalAdvanceOwner = undefined, now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
     scenarioDefinitionRevision,
@@ -337,6 +338,7 @@ export function createLowerDvinaTracePhase2Runtime({
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
           decisionNow: now, turnBudget, llmDiagnostics,
+          onNpcSceneProjection,
         });
         return runAndPersistTracePhase2Turn({
           workflowInput: buildTraceTurnWorkflowInput({

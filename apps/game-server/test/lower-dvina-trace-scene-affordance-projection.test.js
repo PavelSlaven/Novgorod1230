@@ -300,6 +300,46 @@ test('nearby NPC is listed without becoming an interlocutor', () => {
     projected.panels.people.data, 'active_interlocutor'), false);
 });
 
+test('player-safe visible context admits a scene NPC without legacy location scope', () => {
+  const context = visibleContext();
+  const state = payload({
+    position: { location_ref: 'camp', position_id: 'player-position',
+      g6_instance_id: 'g6-1' },
+    scene_position_g6: { 'player-position': 'g6-1', 'npc-position': 'g6-1' },
+    npcs: [{ instance_id: 'npc-eremey', location_ref: 'another-location',
+      position_id: 'npc-position', g6_instance_id: 'g6-1',
+      runtime_source: 'party_db_scene_read',
+      identity_state: { canonical_name: 'Еремей' } }]
+  });
+  const projected = projectLowerDvinaTraceScreenPanels({ payload: state,
+    screen: { panels: { people: { visible: false, data: {} } },
+      visible_context: context } });
+  assert.equal(projected.panels.people.visible, true);
+  assert.deepEqual(projected.panels.people.data.visible_npcs, [
+    { display_label: 'Еремей' }
+  ]);
+  assert.equal(projected.panels.people.data.active_interlocutor.display_label,
+    'Еремей');
+});
+
+test('player-safe state keeps a scene NPC outside the player G6 out of People', () => {
+  const context = visibleContext();
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({
+      position: { location_ref: 'camp', position_id: 'player-position',
+        g6_instance_id: 'g6-1' },
+      scene_position_g6: { 'player-position': 'g6-1', 'npc-position': 'g6-2' },
+      conversation_sessions: [],
+      npcs: [{ instance_id: 'npc-eremey', location_ref: 'another-location',
+        position_id: 'npc-position', g6_instance_id: 'g6-2',
+        runtime_source: 'party_db_scene_read',
+        identity_state: { canonical_name: 'Еремей' } }]
+    }),
+    screen: { panels: {}, visible_context: context }
+  });
+  assert.equal(projected.panels.people, undefined);
+});
+
 test('people panel distinguishes repeated player-safe NPC labels', () => {
   const context = { ...visibleContext(), visible_npc: [
     { entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },

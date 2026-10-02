@@ -9,9 +9,12 @@ import { createLowerDvinaTracePreparedDomainEffect } from './lower-dvina-trace-t
 import { refreshPreparedMovementScene } from './lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { prepareOrdinaryDiscoveryResult } from './lower-dvina-trace-ordinary-discovery.js';
 import { createLowerDvinaTracePostAppliedActorStepOwner } from './lower-dvina-trace-post-applied-actor-step.js';
+import { npcSharesPlayerScene, SCENE_NPC_SOURCE } from './lower-dvina-trace-scene-presence.js';
+import { projectNpcs } from './lower-dvina-trace-player-safe-entities.js';
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
+  partyId = null,
   genericCheckContextOwner = null,
   ordinaryDiscoveryResolver = null,
   ordinaryResultPolicy = null,
@@ -24,6 +27,9 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEffect = null, idempotencyKey = null,
   postActionPerceptionProfile = null,
   projectCurrentScene = null,
+  loadPreparedMovementScene = null,
+  onNpcSceneProjection = null,
+  requestId = null,
   workingProjectionAuthority
 } = {}) {
   if (typeof workingProjectionAuthority?.admit !== 'function') {
@@ -95,6 +101,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         supports: (input) => preparedDomainEffect.supports(input),
         assertContinuation: (input) => preparedDomainEffect.assertContinuation(input),
         currentState: (input) => preparedDomainEffect.currentState(input),
+        replaceCurrentState: (input) => preparedDomainEffect.replaceCurrentState(input),
         apply: (input) => admitResult(
           preparedDomainEffect.apply(input), workingProjectionAuthority)
       })
@@ -110,12 +117,33 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         input, preparedDomainEffect.currentState(), temporalAdvance),
       preparedEffectBodyOwner: (input) => prepareEffectBody(
         input, safeCommittedState, bodyEffect),
-      preparedEffectProjectionOwner: (input) => {
+      preparedEffectProjectionOwner: async (input) => {
+        const movement = input.prepared_effect.consequence?.movement;
+        const isMovement = movement?.destination?.location_ref != null;
+        const beforeState = preparedDomainEffect.currentState();
+        const beforeProjection = structuredClone(input.working_projection);
         preparedDomainEffect.advanceState(input);
         let projection = structuredClone(input.working_projection);
-        if (input.prepared_effect.consequence?.movement?.destination?.location_ref != null
-            && typeof projectCurrentScene === 'function') {
-          projection = refreshPreparedMovementScene({ projection, committedState: preparedDomainEffect.currentState(), projectCurrentScene });
+        if (isMovement) {
+          let committedState = preparedDomainEffect.currentState();
+          if (typeof loadPreparedMovementScene === 'function'
+              && typeof input.prepared_effect.consequence?.position_transition
+                ?.destination_site_id === 'string') {
+            committedState = await loadPreparedMovementScene({
+              partyId, state: committedState
+            });
+            preparedDomainEffect.replaceCurrentState(committedState);
+          }
+          if (typeof projectCurrentScene === 'function') {
+            projection = refreshPreparedMovementScene({ projection,
+              committedState, projectCurrentScene });
+          }
+          try {
+            onNpcSceneProjection?.({ request_id: requestId,
+              before: npcSceneProjectionDiagnostic(beforeState,
+                beforeProjection),
+              after: npcSceneProjectionDiagnostic(committedState, projection) });
+          } catch { /* Opt-in capture must never affect gameplay. */ }
         }
         if ((input.prepared_effect.time_update.temporal_results ?? []).some(
           (result) => result.combined_change_set?.proposals?.some(
@@ -160,6 +188,35 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         projection, actor, plan, state, resolveItemMechanics
       }))
   });
+}
+function npcSceneProjectionDiagnostic(state, projection) {
+  const position = state?.position ?? {};
+  const g6 = (npc) => state?.scene_position_g6?.[npc?.position_id]
+    ?? (npc?.position_id === position.position_id
+      ? position.g6_instance_id ?? position.g6_id ?? null : null);
+  const ids = (record) => [record?.instance_id, record?.npc_id,
+    record?.actor_id].find((id) => typeof id === 'string') ?? null;
+  const visibleIds = (state?.current_visible_context?.visible_npc ?? [])
+    .map((npc) => npc?.entity_ref?.entity_kind === 'npc'
+      ? npc.entity_ref.entity_id : null).filter(Boolean);
+  return {
+    player: {
+      site_id: position.site_id ?? null,
+      position_id: position.position_id ?? null,
+      g6_instance_id: position.g6_instance_id ?? position.g6_id ?? null
+    },
+    candidates: (state?.npcs ?? []).map((npc) => ({
+      npc_id: ids(npc),
+      source: npc?.runtime_source === SCENE_NPC_SOURCE
+        ? SCENE_NPC_SOURCE : 'committed',
+      position_id: npc?.position_id ?? null,
+      g6_instance_id: g6(npc),
+      same_scene_locus: npcSharesPlayerScene(state, npc)
+    })).filter(({ npc_id }) => npc_id != null),
+    projection_npc_ids: (projection?.npcs
+      ?? projectNpcs(state?.npcs, { position }))?.map(ids).filter(Boolean) ?? [],
+    current_visible_npc_ids: visibleIds
+  };
 }
 function applyLocalFireRuntimeProjection({ projection, actor, plan, state, resolveItemMechanics }) {
   let next = structuredClone(projection);

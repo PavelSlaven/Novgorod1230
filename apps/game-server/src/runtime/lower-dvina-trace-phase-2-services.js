@@ -83,6 +83,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
     );
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const loadPreparedMovementScene = typeof repository.loadPreparedMovementScene
+    === 'function' ? ({ partyId: preparedPartyId, state: preparedState }) =>
+      repository.loadPreparedMovementScene({
+        partyId: preparedPartyId, state: preparedState, turnBudget
+      }) : null;
   const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
     committedState, locationProfiles, scenePresentation
   });
@@ -96,6 +101,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     bodyEffect,
     bodyEventOwner: turnStepBodyEventOwner,
     committedState: state,
+    partyId,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
@@ -114,6 +120,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
     idempotencyKey,
     postActionPerceptionProfile,
     projectCurrentScene,
+    loadPreparedMovementScene,
+    onNpcSceneProjection: context.onNpcSceneProjection,
+    requestId,
     temporalAdvance,
     workingProjectionAuthority
   });
@@ -251,7 +260,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
-            ...turnStepApprovedOwners, scenePresentation
+            ...turnStepApprovedOwners, scenePresentation,
+            loadPreparedMovementScene
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {

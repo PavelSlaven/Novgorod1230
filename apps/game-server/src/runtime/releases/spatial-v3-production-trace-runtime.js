@@ -306,6 +306,7 @@ export function createTraceTurnRuntime({
     decisionSecret,
     llmTurnBudget: turnBudget,
     llmDiagnostics,
+    onNpcSceneProjection: config.onNpcSceneProjection ?? null,
     authoredTurnProfile,
     spatialExpansionRuntime,
     spatialLocalSceneRuntime

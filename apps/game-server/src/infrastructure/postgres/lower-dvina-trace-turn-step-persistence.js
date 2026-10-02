@@ -36,7 +36,8 @@ export { mergeLowerDvinaTraceTurnStepWrites };
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
   phase3Contracts = null, phase4Contracts = null, preparedFactual = factual,
-  turnStepApprovedOwners = null, turnStepAmbientPortionProfileRef = null
+  turnStepApprovedOwners = null, turnStepAmbientPortionProfileRef = null,
+  preparedMovementState = null
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
     envelope: writePlan?.turn_step_commit, idemId });
@@ -48,6 +49,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       envelope: writePlan?.turn_step_commit,
       factual,
       state, phase3Contracts, phase4Contracts, turnStepApprovedOwners,
+      preparedMovementState,
       localFirePlans: writePlan
         ?.local_fire_atomic_write_plans ?? []
     });
@@ -74,6 +76,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     envelope: commit,
     factual: preparedFactual,
     state, phase3Contracts, phase4Contracts, turnStepApprovedOwners,
+    preparedMovementState,
     localFirePlans: writePlan?.local_fire_atomic_write_plans ?? []
   });
   const next = structuredClone(committedSnapshot);

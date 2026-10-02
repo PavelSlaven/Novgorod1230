@@ -12,6 +12,7 @@ export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
   if (effect.consequence?.movement?.destination?.location_ref != null) {
     const movement = effect.consequence.movement;
+    const transition = effect.consequence.position_transition;
     projectFirstEntryArrivalState(next, movement);
     next = buildLowerDvinaTracePreparedRouteWorkingProjection({
       projection: next,
@@ -28,6 +29,13 @@ export function projectPreparedDomainState(state, effect) {
       delete next.position.g6_id;
     } else {
       next.position.g6_id = destinationG6Id;
+    }
+    if (typeof transition?.destination_site_id === 'string'
+        && transition.destination_site_id !== '') {
+      next.position.site_id = transition.destination_site_id;
+      next.position.position_id = transition.to_position_ref;
+      next.position.g6_id = transition.destination_g6_instance_id;
+      next.position.g6_instance_id = transition.destination_g6_instance_id;
     }
     for (const key of ['visible_context', 'visible_context_package',
       'current_visible_context']) delete next[key];

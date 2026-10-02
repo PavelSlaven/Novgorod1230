@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- docs(tech-debt): record Julian leap-day date-inverse gap; LW-124 added
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(tech-debt): record seasonal NPC schedule handoff gap; LW-123 added (#98)

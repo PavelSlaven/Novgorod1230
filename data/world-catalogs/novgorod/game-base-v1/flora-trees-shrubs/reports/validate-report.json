@@ -1,8 +1,11 @@
 {
   "generated_by": "scripts/validate.mjs",
   "ok": true,
-  "taxa": 37,
-  "presence_rows": 840,
+  "taxa": 38,
+  "presence_rows": 860,
+  "external_evidence_not_checked": [
+    "src_kolchin_1968"
+  ],
   "checks": [
     {
       "name": "presence_rows_valid",
@@ -27,7 +30,7 @@
       "ok": true,
       "failures": [],
       "failure_count": 0,
-      "refs_checked": 1423
+      "refs_checked": 1447
     },
     {
       "name": "no_denylist_taxa",
@@ -45,14 +48,14 @@
         "pf_conifer_woodland/spring": 15,
         "pf_conifer_woodland/summer": 15,
         "pf_conifer_woodland/autumn": 15,
-        "pf_mixed_woodland/winter": 26,
-        "pf_mixed_woodland/spring": 26,
-        "pf_mixed_woodland/summer": 26,
-        "pf_mixed_woodland/autumn": 26,
-        "pf_broadleaf_woodland/winter": 17,
-        "pf_broadleaf_woodland/spring": 17,
-        "pf_broadleaf_woodland/summer": 17,
-        "pf_broadleaf_woodland/autumn": 17
+        "pf_mixed_woodland/winter": 27,
+        "pf_mixed_woodland/spring": 27,
+        "pf_mixed_woodland/summer": 27,
+        "pf_mixed_woodland/autumn": 27,
+        "pf_broadleaf_woodland/winter": 18,
+        "pf_broadleaf_woodland/spring": 18,
+        "pf_broadleaf_woodland/summer": 18,
+        "pf_broadleaf_woodland/autumn": 18
       }
     },
     {

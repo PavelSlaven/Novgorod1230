@@ -209,21 +209,14 @@ node names-peoples/scripts/validate-b2-name-pool.mjs --self-test
 ## Method
 
 `../scripts/build-personal-names.mjs` reads:
-- `pr98:onomastics/candidates/novgorod-1230-1250-v1/candidate.json` (54
-  names, `status: candidate_not_approved`, `import_enabled: false`) —
-  read-only from the PR#98 runtime worktree.
+- `data/world-catalogs/novgorod/onomastics/candidates/novgorod-1230-1250-v1/candidate.json`
+  (54 names, `status: candidate_not_approved`, `import_enabled: false`) —
+  tracked candidate from this checkout, read-only to this builder.
 - `game-base:tools/rus13-novgorod-regional-templates/novgorod_npc_name_pools_v1.json`
-  is also read by the script, but **contributes nothing**: the script
-  reads `npcPools.pools_by_id || npcPools.pools`, and neither key exists
-  in that file (its top-level keys are `male_name_pool`,
-  `female_name_pool`, `monastic_name_pool`, …), so the lookup always
-  misses. Every pool value in the CSV (`russian_common_male/female`,
+  is not read: it is a `forbidden_promotion_source` in the candidate's
+  `AUDIT_CORRECTIONS.md` and `approval-request.json`. Every pool value in the CSV (`russian_common_male/female`,
   `monastic_male`, `dynastic_male`, `baltic_west_contextual`, …) comes
-  from the candidate's own `pools` map. This is the correct outcome: the
-  candidate's own `AUDIT_CORRECTIONS.md` and `approval-request.json`
-  name that npc_name_pools file as a `forbidden_promotion_source`. The
-  dead read should eventually be removed from the script; it is flagged
-  here rather than silently kept.
+  from the candidate's own `pools` map.
 
 It writes `personal_names.csv` (54 rows) and `coverage-report.json`
 (counts by origin×sex, and the candidate's own declared gap list).

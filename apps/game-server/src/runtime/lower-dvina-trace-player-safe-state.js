@@ -80,12 +80,11 @@ export function projectLowerDvinaTracePlayerSafeState({
     }
   }
   const currentSceneVisibleContext = plain(currentVisibleContext)
+      && Array.isArray(currentVisibleContext.visible_npc)
     ? { ...currentVisibleContext,
-      visible_npc: Array.isArray(currentVisibleContext.visible_npc)
-        ? currentVisibleContext.visible_npc.filter((npc) =>
-          npc?.entity_ref?.entity_kind === 'npc'
-            && visibleNpcIds.has(npc.entity_ref.entity_id))
-        : currentVisibleContext.visible_npc }
+      visible_npc: currentVisibleContext.visible_npc.filter((npc) =>
+        npc?.entity_ref?.entity_kind === 'npc'
+          && visibleNpcIds.has(npc.entity_ref.entity_id)) }
     : currentVisibleContext;
   const perceivedRoutes = perceivedRoutesForState({ scenePresentation, state: committedState });
   const playerVisibleNpcIds = new Set((currentSceneVisibleContext?.visible_npc ?? [])

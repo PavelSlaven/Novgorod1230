@@ -176,6 +176,7 @@ function errors(candidate, sourceMap, gaps, refs) {
   for (const item of candidate.existence_candidates) {
     badKeys(item, ITEM_KEYS, `${item.concept || '?'} item candidate`);
     if (!item.basis?.trim() || !Array.isArray(item.source_refs) || item.source_refs.length === 0) add(`${item.concept || '?'}: missing basis or source_refs`);
+    if (typeof item.candidate_property !== 'string' || item.candidate_property.trim().length === 0) add(`${item.concept || '?'}: candidate_property must be a nonempty string`);
     if (!['sourced_type_plus_logical_necessity_for_spark_source','logical_necessity_candidate','sourced_process_compatibility_plus_logical_necessity'].includes(item.basis)) add(`${item.concept || '?'}: unsupported basis`);
     if (item.source_refs.some(id => !sourceMap.sources.some(s => s.id === id))) add(`${item.concept || '?'}: unresolved item source ref`);
     if (item.candidate_catalog_ref !== EXPECTED_ITEM_REFS[item.concept]) add(`${item.concept || '?'}: candidate catalog ref mismatch`);
@@ -246,6 +247,24 @@ function errors(candidate, sourceMap, gaps, refs) {
   const sourceCheck = checkSourceRanges(sourceMap);
   for (const e of sourceCheck.errors) add(e);
   const sourceIds = sourceCheck.ids;
+  const targetGap = sourceMap.target_f1_gaps;
+  const targetGapKeys = ['source_gap_code','source_ref','scope','status'];
+  if (!exactKeys(targetGap, targetGapKeys)) {
+    add('target_f1_gaps has unknown, missing, or invalid fields');
+  } else {
+    const expectedTargetGap = {
+      source_gap_code: 'M2C_TARGET_F1_SOURCE_BINDING_DATA_GAP',
+      source_ref: 'SRC_TARGET_PROFILE',
+      scope: 'all33_authored_scopes',
+      status: 'remains_open'
+    };
+    if (stable(targetGap) !== stable(expectedTargetGap)) add('target_f1_gaps does not match the approved open F1 target gap');
+    if (typeof targetGap.source_ref !== 'string' || targetGap.source_ref.trim().length === 0 || !sourceIds.has(targetGap.source_ref)) add('target_f1_gaps source_ref is unresolved');
+    const targetGapMatches = (Array.isArray(refs.target.capability_gaps) ? refs.target.capability_gaps : []).filter(g =>
+      g.code === targetGap.source_gap_code && g.scope === targetGap.scope && g.profile === null);
+    if (targetGapMatches.length !== 1) add('target_f1_gaps does not resolve to exactly one approved target gap');
+    if (!sourceRangeContains(sourceMap, targetGap.source_ref, '"code": "M2C_TARGET_F1_SOURCE_BINDING_DATA_GAP"', [1902,1910])) add('target_f1_gaps source range does not contain its exact gap authority');
+  }
   if (sourceMap.sources.length !== 24) add('source map must contain 24 exact source records');
   const requiredSourceIds = ['SRC_TARGET_PROFILE','SRC_TARGET_START','SRC_GB_HOUSEHOLD_54','SRC_GB_HOUSEHOLD_55','SRC_GB_HOUSEHOLD_56','SRC_GB_HOUSEHOLD_57','SRC_WK_FIRESTEEL_89_97','SRC_WK_FIRESTEEL_CLAIM_474_511','SRC_DRAFT_ITEM_TYPES_453_486','SRC_NATURAL_MATERIALS_10','SRC_GB_NATURAL_MATERIALS_15_17','SRC_WK_COMBUSTION_58','SRC_WK_FUEL_PROCESS_8_20','SRC_WK_WATER_EXTINGUISHING_114_125','SRC_LD_PROFILE','SRC_HOUSEHOLD_KINDLING','SRC_TASK_DECISION','SRC_M2C_FINITE_SOURCE','SRC_M2C_PROPERTY_CONTEXT','SRC_M2C_SOL_DATA_APPROVAL','SRC_WR_FALLBACK','SRC_AI_AUTHORITY','SRC_PLAYER_ATTEMPT','SRC_LOCAL_FIRE_MECHANICS'];
   for (const id of requiredSourceIds) if (!sourceIds.has(id)) add(`missing required source ${id}`);
@@ -338,6 +357,9 @@ function selfTest() {
   };
   expectMutation('missing provenance path', (_c, sm) => { delete sm.candidate_value_provenance['/existence_candidates/0']; }, /missing provenance mapping/);
   expectMutation('missing provenance source id', c => { c.existence_candidates[0].source_refs.push('SRC_NOT_REAL'); }, /unresolved item source ref/);
+  expectMutation('null candidate property', c => { c.existence_candidates[0].candidate_property = null; }, /candidate_property must be a nonempty string/);
+  expectMutation('invalid target gap shape', (_c, sm) => { sm.target_f1_gaps = null; }, /target_f1_gaps has unknown, missing, or invalid fields/);
+  expectMutation('unresolved target gap source ref', (_c, sm) => { sm.target_f1_gaps.source_ref = 'SRC_NOT_REAL'; }, /target_f1_gaps source_ref is unresolved/);
   expectMutation('nonempty fake G4 id', c => { c.scope_profiles[0].selector.g4_ref.id = 'g4_fake_but_nonempty'; }, /not an exact approved target selector/);
   expectMutation('synchronized approved-selector substitution', (c, _sm, g) => {
     const first = c.scope_profiles.find(x => x.scope_id === 'f1_scope_01');
@@ -373,7 +395,7 @@ function selfTest() {
   expectMutation('selector provenance range omission', (_c, sm) => { sm.sources.find(x => x.id === 'SRC_TARGET_PROFILE').lines = '1-14, 1902-1910'; }, /target source range does not cover exact selector ref/);
   expectMutation('numeric mechanic in action policy', c => { c.action_policy_candidate.fuel_rate_per_tick = 2; }, /action policy: unknown or missing fields/);
   expectMutation('foreign profile mass', c => { c.existence_candidates[0].mass_grams = 180; }, /unknown or missing fields/);
-  console.log('PASS: baseline and 17 targeted negative self-tests (cardinality/status preserved where applicable)');
+  console.log('PASS: baseline and 20 targeted negative self-tests (cardinality/status preserved where applicable)');
 }
 if (process.argv.includes('--self-test')) selfTest();
 else if (process.argv.includes('--check')) check();

@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- feat(materialization): O1 v1 — approved applicability selector (75 rules, 4 tuples) makes template closure strict only for the selected tuple and rule; everything else keeps the generic presence path (#133)
 - feat(economy): pure @rus/economy owner — exact rational currency conversion by approved region/date/unit rates, one final half-up, unresolved/conflict/invalid outcomes, local-sum render without rates or metadata; no wiring yet (#184)
 - docs(corpus): §9 adds exact scoped currency conversion and confirmed local-sum handoff (#184)
 - feat(materialization): O1 typed-gap seam — first-arrival item rules can require template-backed item refs; a rule without a template yields a fail-closed typed gap before seed and RNG; zero or missing discovery weights are a typed gap; the wave validator rejects non-array variants (#163)

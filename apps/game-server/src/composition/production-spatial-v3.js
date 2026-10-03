@@ -46,6 +46,8 @@ import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { withTurnDeadlineTransaction } from
+  '../infrastructure/postgres/query-with-turn-deadline.js';
 import { createSpatialV3ExpansionContextReader } from
   '../infrastructure/postgres/spatial-v3-expansion-context.js';
 import { createSpatialV3ExpansionRuntime } from
@@ -205,6 +207,27 @@ export async function createSpatialV3ProductionCompositionRoot({
         readLocalMovementAdmission: createLocalMovementDisclosureReader({
           readLocalMovementEligibility })
       });
+    const readCurrentEntityObservations = currentVisibility == null ? null
+      : async ({ partyId, actorId, positionId, turnBudget } = {}) => {
+        const read = async (transaction) => {
+          await transaction.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          return currentVisibility.readEntityObservations({
+            transaction, partyId, actorId, observedPositionId: positionId
+          });
+        };
+        if (turnBudget != null) return withTurnDeadlineTransaction(
+          pools.partyPool, turnBudget, read);
+        const transaction = await pools.partyPool.connect();
+        try {
+          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          const visibleContext = await read(transaction);
+          await transaction.query('COMMIT');
+          return visibleContext;
+        } catch (error) {
+          await transaction.query('ROLLBACK').catch(() => {});
+          throw error;
+        } finally { transaction.release(); }
+      };
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
     const projectDestination = targetContext == null ? null : async ({ transaction,
@@ -284,6 +307,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
         spatialExpansionRuntime,
+        readCurrentEntityObservations,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
           readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
           readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,

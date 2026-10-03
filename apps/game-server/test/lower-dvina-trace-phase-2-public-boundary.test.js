@@ -254,6 +254,40 @@ test('canonical initial turn cannot fall back when its binding or perception cal
   }
 });
 
+test('post-commit movement readback refreshes current context through Spatial admission', async () => {
+  const calls = [];
+  const observation = { entity_kind: 'npc', entity_id: 'npc:seasonal',
+    visibility: 'clear', display_label: 'человек',
+    exterior: { appearance: { build: 'average' }, sex_category: 'male',
+      age_category: 'adult', visible_equipment: [] } };
+  const initialVisibleContext = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'Лесная тропа', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] };
+  const repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: { async query() { return { rows: [] }; }, async connect() {} },
+    committer: { async commit() {} },
+    readCurrentEntityObservations: async (input) => {
+      calls.push(input);
+      return [observation];
+    }
+  });
+  const state = await repository.loadPreparedMovementScene({ partyId: 'party:1',
+    state: { party_id: 'party:1', actor_id: 'player:1',
+      position: { site_id: 'site:1', position_id: 'position:1' },
+      npcs: [], current_visible_context: initialVisibleContext } });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].partyId, 'party:1');
+  assert.equal(calls[0].actorId, 'player:1');
+  assert.equal(calls[0].positionId, 'position:1');
+  assert.deepEqual(state.current_visible_context.visible_npc, [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc:seasonal' },
+    display_label: 'человек', recognition: 'unrecognized',
+    observable_cues: { identity: { sex_category: 'male', age_category: 'adult',
+      appearance: { build: 'average' } }, equipment: [] }
+  }]);
+});
+
 test('public Phase 2 check omits private RNG audit', () => {
   const payload = {
     party_id: 'party-1',

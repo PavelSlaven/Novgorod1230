@@ -5,6 +5,10 @@ import pg from 'pg';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createPostgresTestBackend } from '../../../test/fixtures/postgres-test-backend.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { createSpatialV3CurrentVisibilityProvider } from
+  '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { projectSpatialV3ProposedVisiblePackage } from
   '../src/runtime/spatial-v3-proposed-visible-context.js';
 
@@ -126,4 +130,132 @@ test('PostgreSQL committed destination has proposed visible package digest', asy
     await client.query('ROLLBACK').catch(() => {});
     throw error;
   } finally { client.release(); }
+});
+
+test('Phase 2 refresh reads committed NPCs through Spatial after arrival and restart', async (t) => {
+  const backend = await createPostgresTestBackend('visible_npc_refresh');
+  if (!backend) return t.skip('No supported PostgreSQL test backend');
+  const pool = new pg.Pool({ connectionString: backend.partyUrl, max: 2 });
+  t.after(async () => { await pool.end(); await backend.close(); });
+  for (const name of ['001_party_runtime.sql', '002_party_runtime_v3.sql']) {
+    await pool.query(await readFile(new URL(`../../../schemas/party-db/${name}`, import.meta.url), 'utf8'));
+  }
+  const fixture = await approvedNaturalPerceptionFixture({ canonical: true });
+  const partyId = 'party:npc-refresh';
+  const actorId = 'player:npc-refresh';
+  const positionId = 'position:shore';
+  const siteId = 'site:npc-refresh';
+  const g6Id = 'g6:npc-refresh';
+  const change = { created_change_set_id: 'change:npc-refresh',
+    updated_change_set_id: 'change:npc-refresh' };
+  await pool.query(`INSERT INTO party_runtime.parties
+    (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,
+     rng_version,command_catalog_digest,profile_bundle_digest)
+    VALUES ($1,3,$2,'catalog','test','test','commands','profiles')`,
+  [partyId, fixture.input.pin.compatible_world_revision_id]);
+  const insertRecord = (table, id, row) => pool.query(
+    `INSERT INTO party_runtime.${table}
+       SELECT * FROM jsonb_populate_record(NULL::party_runtime.${table},$1::jsonb)`,
+    [JSON.stringify({ party_id: partyId, status: 'active', state_version: 1, ...row, ...change })]);
+  await insertRecord('party_g5_sites', siteId, { id: siteId, origin: 'canonical',
+    parent_g4_id: fixture.perception.scene.g4_ref.id,
+    canonical_g5_ref: { entity_id: 'canonical:npc-refresh' } });
+  await insertRecord('party_scene_baselines', 'baseline:npc-refresh', { id: 'baseline:npc-refresh',
+    host_kind: 'g5_site', host_id: siteId, source_kind: 'canonical_template',
+    scene_template_ref: { entity_id: fixture.sceneClosure.header.id, authoring_version: '1' },
+    materialization_trace_id: 'trace:npc-refresh', materializer_version: 'test', catalog_digest: 'catalog' });
+  await insertRecord('party_g6_instances', g6Id, { id: g6Id, host_kind: 'g5_site', host_id: siteId,
+    scene_baseline_id: 'baseline:npc-refresh', scene_slot_key: 'main',
+    source_scene_template_ref: { entity_id: fixture.sceneClosure.header.id, authoring_version: '1' },
+    primary_scene_role_id: 'main', vertical_context_id: 'ground',
+    default_visibility_distance_band: 'near',
+    physical_class_id: 'spatial.g6.open', overhead_cover_id: 'none',
+    intra_g6_visibility_mode: 'default_clear', acoustic_uniformity: 'uniform' });
+  await insertRecord('scene_position_nodes', positionId, { id: positionId,
+    g6_instance_id: g6Id, template_slot_key: 'arrival', template_instance_ordinal: 0,
+    position_type_id: 'ground', capacity: 5, access_class_id: 'open' });
+  await pool.query(`INSERT INTO party_runtime.entity_placements
+    (party_id,entity_kind,entity_id,placement_kind,position_node_id,occupies_capacity_units,
+     state_version,updated_change_set_id)
+    VALUES ($1,'npc','npc:seasonal','scene_position',$2,1,1,'change:npc-refresh')`,
+  [partyId, positionId]);
+
+  const emptyVisibleContext = () => ({ version: 1, schema: 'visible_context_package',
+    visible_scene: 'Лесная тропа', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] });
+  const repositoryFor = (mode = 'default_clear', visualCapability = 'clear') => {
+    const provider = createSpatialV3CurrentVisibilityProvider({ pool,
+      verifiedCatalog: fixture.input.verifiedCatalog, pin: fixture.input.pin,
+      readScene: async ({ transaction, partyId: currentPartyId, actorId: currentActorId,
+        observedPositionId }) => ({
+        world_revision_id: fixture.perception.scene.g4_ref.world_revision_id,
+        location: { party_id: currentPartyId, owner_id: currentActorId,
+          scene_position_id: observedPositionId },
+        site: { id: siteId, parent_g4_id: fixture.perception.scene.g4_ref.id },
+        baseline: { id: 'baseline:npc-refresh' },
+        positions: [{ id: positionId, g6_instance_id: g6Id }],
+        g6: [{ id: g6Id, intra_g6_visibility_mode: mode }],
+        visibility_links: [], movement_edges: [], modifier_set: { complete: true, rows: [] },
+        placements: (await transaction.query(`SELECT entity_kind,entity_id,position_node_id
+          FROM party_runtime.entity_placements WHERE party_id=$1 AND placement_kind='scene_position'`,
+        [currentPartyId])).rows
+      }),
+      readNatural: async ({ partyId: currentPartyId, actorId: currentActorId,
+        observedPositionId }) => ({
+        observer: { party_id: currentPartyId, actor_id: currentActorId,
+          position_id: observedPositionId, visual_capability: visualCapability },
+        scene: { baseline_id: 'baseline:npc-refresh',
+          g4_ref: fixture.perception.scene.g4_ref, portals: {} },
+        ambient_visibility: { g6_instance_id: g6Id,
+          lighting: visualCapability === 'none' ? 'none' : 'clear',
+          weather: 'clear', stable_cover: 'clear' }
+      }),
+      readTargetConditions: async () => ({ stable_cover: 'clear',
+        dynamic_occlusion: 'clear', concealment: 'clear' }),
+      readEntityExterior: async () => ({ appearance: { build: 'average' },
+        visible_equipment: [] }),
+      readPlayerKnowledge: async () => null
+    });
+    return createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool,
+      committer: { async commit() {} },
+      readCurrentEntityObservations: async ({ partyId: currentPartyId, actorId: currentActorId,
+        positionId: currentPositionId }) => {
+        const transaction = await pool.connect();
+        try {
+          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          const observations = await provider.readEntityObservations({ transaction,
+            partyId: currentPartyId, actorId: currentActorId,
+            observedPositionId: currentPositionId });
+          await transaction.query('COMMIT');
+          return observations;
+        } catch (error) {
+          await transaction.query('ROLLBACK').catch(() => {});
+          throw error;
+        } finally { transaction.release(); }
+      }
+    });
+  };
+  const committedState = (activity) => ({ party_id: partyId, actor_id: actorId,
+    position: { position_id: positionId },
+    npcs: [{ instance_id: 'npc:seasonal', machine_state: {
+      current_activity: { activity_ref: activity, summary: activity } } },
+    { instance_id: 'npc:offstage', presence_state: 'offstage_away' }],
+    current_visible_context: emptyVisibleContext() });
+
+  for (const activity of ['sleeping', 'working']) {
+    const loaded = await repositoryFor().loadPreparedMovementScene({ partyId,
+      state: committedState(activity) });
+    assert.deepEqual(loaded.current_visible_context.visible_npc.map((row) =>
+      row.entity_ref.entity_id), ['npc:seasonal']);
+  }
+  const restartedReadback = await repositoryFor().loadPreparedMovementScene({ partyId,
+    state: committedState('sleeping') });
+  assert.deepEqual(restartedReadback.current_visible_context.visible_npc.map((row) =>
+    row.entity_ref.entity_id), ['npc:seasonal']);
+  for (const [mode, visualCapability] of [['explicit', 'clear'], ['default_clear', 'none']]) {
+    const hidden = await repositoryFor(mode, visualCapability).loadPreparedMovementScene({
+      partyId, state: committedState('working') });
+    assert.deepEqual(hidden.current_visible_context.visible_npc, []);
+  }
 });

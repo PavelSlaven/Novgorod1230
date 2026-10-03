@@ -98,8 +98,16 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
   const OPENING_AUDIT_OUTER_ATTEMPTS = 2;
   return Object.freeze({
     async run({ partyId, requestId, visibleContextPackage,
-      visibleContextApproval }) {
+      visibleContextApproval, initialMaterializationGaps = [] }) {
       const execute = async () => {
+        if (Array.isArray(initialMaterializationGaps) && initialMaterializationGaps.length > 0) {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'initial_materialization_presence_gaps',
+              presence_gaps: structuredClone(initialMaterializationGaps)
+            });
+          } catch { /* Diagnostics must not affect opening. */ }
+        }
         const repair = { spent: false };
         for (let attempt = 0; attempt < OPENING_AUDIT_OUTER_ATTEMPTS; attempt += 1) {
           try {

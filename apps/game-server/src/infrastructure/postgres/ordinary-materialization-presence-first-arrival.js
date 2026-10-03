@@ -5,6 +5,7 @@ import {
 import {
   loadCategoryParentMap,
   loadG0RegionIdForSpatialNode,
+  loadG1NodeIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
 } from '@rus/runtime-catalog';
@@ -14,6 +15,41 @@ export const PRESENCE_FIRST_ARRIVAL_GAP = Object.freeze({
   NO_PLACE_FAMILY_BINDING: 'no_place_family_binding',
   NO_MERGED_PRESENCE_RULES: 'no_merged_presence_rules',
 });
+
+const APPROVED_O1_ITEM_TEMPLATE_BY_REF = Object.freeze([
+  ['it_hh_awl', 'item_tpl_nov_awl_v1'],
+  ['it_hh_firesteel', 'item_tpl_nov_firesteel_v1'],
+  ['it_hh_flint', 'item_tpl_nov_striking_flint_v1'],
+  ['it_hh_hollowed_bowl', 'item_tpl_nov_wooden_bowl_v1'],
+  ['it_hh_kindling', 'item_tpl_nov_kindling_bundle_v1'],
+  ['it_hh_kitchen_knife', 'item_tpl_nov_utility_knife_v1'],
+  ['it_hh_pestle', 'item_tpl_nov_pestle_v1'],
+  ['it_hh_rope', 'item_tpl_nov_rope_v1'],
+  ['it_hh_tinder', 'item_tpl_nov_tinder_v1'],
+  ['it_hh_trough', 'item_tpl_nov_trough_v1'],
+  ['it_hh_wooden_spoon', 'item_tpl_nov_wooden_spoon_v1'],
+  ['it_ps_bark_sheet_blank', 'item_tpl_nov_birch_bark_sheet_v1'],
+].map((entry) => Object.freeze(entry)));
+
+export function createApprovedO1TemplateBackedItemRefs(verifiedItemCatalog) {
+  const templates = verifiedItemCatalog?.records_by_table?.item_templates;
+  if (verifiedItemCatalog?.schema !== 'rus.verified_item_catalog.v2'
+      || verifiedItemCatalog.verified !== true || !Array.isArray(templates)) {
+    presenceFirstArrivalError('PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+      'Approved O1 item templates require the pinned verified item catalog.',
+      { reason: 'verified_item_catalog_missing' });
+  }
+  const availableTemplateIds = new Set(templates.map((row) => row?.id));
+  const missingTemplateIds = APPROVED_O1_ITEM_TEMPLATE_BY_REF
+    .map(([, templateId]) => templateId)
+    .filter((templateId) => !availableTemplateIds.has(templateId));
+  if (missingTemplateIds.length > 0) {
+    presenceFirstArrivalError('PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+      'The verified item catalog does not cover the approved O1 item mappings.',
+      { reason: 'approved_template_missing', missing_template_ids: missingTemplateIds });
+  }
+  return new Set(APPROVED_O1_ITEM_TEMPLATE_BY_REF.map(([itemRef]) => itemRef));
+}
 
 function scopeInstanceRefForSite(siteId) {
   return siteId.startsWith('g5:') ? siteId : `g5:${siteId}`;
@@ -75,7 +111,7 @@ async function loadApprovedPlaceFamilyBindings({
 }) {
   const revisionId = spatialWorldPin.world_revision_id;
   const bindings = await worldBaseReader.read(
-    `SELECT place_family_id, binding_role
+    `SELECT place_family_id, place_family_version, binding_role
        FROM world_base.spatial_node_place_family_bindings
       WHERE world_revision_id = $1
         AND node_id = $2
@@ -220,8 +256,13 @@ async function loadPrimaryPlaceFamilyCompositions({ primaryIds, ...readerInput }
 }
 
 export function applyResolvedPresenceRulesFirstArrival({ aggregate, context }) {
-  if (!context?.rules?.length) return aggregate;
-  return applyPresenceRulesFirstArrival({ aggregate, ...context });
+  if (!context?.rules?.length) {
+    return Object.freeze({ aggregate, presence_gaps: Object.freeze([]) });
+  }
+  const presenceGaps = [];
+  const next = applyPresenceRulesFirstArrival({ aggregate, ...context,
+    onO1TemplateGap: (gap) => presenceGaps.push(gap) });
+  return Object.freeze({ aggregate: next, presence_gaps: Object.freeze(presenceGaps) });
 }
 
 /** The resolver is installed after the first-entry owners are built; an uninstalled port must not skip presence. */
@@ -241,6 +282,8 @@ export function createTargetPresenceRulesFirstArrivalResolver({
   worldPin,
   runtimeCatalogPin,
   readPartyPresenceCalendar,
+  o1Selector = null,
+  templateBackedItemRefs = null,
 } = {}) {
   return async function resolvePresenceRulesFirstArrival({
     transaction,
@@ -357,7 +400,7 @@ export function createTargetPresenceRulesFirstArrivalResolver({
         { spatialNodeId, spatialNodeVersion },
       );
     }
-    return resolvePresenceRulesFirstArrivalForSite({
+    const result = await resolvePresenceRulesFirstArrivalForSite({
       ...readerInput,
       spatialNodeId,
       spatialNodeVersion,
@@ -369,5 +412,42 @@ export function createTargetPresenceRulesFirstArrivalResolver({
       bindingRows,
       withPlacePeople: withPlacePeople && useCanonicalG5Node,
     });
+    if (!o1Selector || !useCanonicalG5Node) return result;
+    const canonicalG5Ref = `${canonicalNodeId}@${spatialNodeVersion}`;
+    const g4Ref = `${g4.id}@${g4.version}`;
+    const selectorEntries = o1Selector?.applicability?.selectors;
+    if (!Array.isArray(selectorEntries)) {
+      presenceFirstArrivalError('SPATIAL_V3_TARGET_O1_PROFILE_APPROVAL_REQUIRED',
+        'Release-pinned O1 applicability selector is malformed.');
+    }
+    const selectorEntry = selectorEntries.find((entry) =>
+      entry.g4_ref === g4Ref && entry.canonical_g5_ref === canonicalG5Ref);
+    if (!selectorEntry) return result;
+    if (!resolvedSite.parent_g4_id || resolvedSite.parent_g4_id !== g4.id) return result;
+    const canonicalParent = await worldBaseReader.read(
+      `SELECT parent_id, parent_version
+         FROM world_base.spatial_v3_node_parents
+        WHERE child_id=$1 AND child_version=$2 AND world_revision_id=$3
+        LIMIT 2`,
+      [canonicalNodeId, spatialNodeVersion, spatialWorldPin.world_revision_id],
+    );
+    if (canonicalParent.rows?.length !== 1
+        || canonicalParent.rows[0].parent_id !== g4.id
+        || Number(canonicalParent.rows[0].parent_version) !== g4.version) return result;
+    const pinnedParentG4 = await loadPinnedG4NodeRef({
+      worldBaseReader, spatialWorldPin, nodeId: resolvedSite.parent_g4_id,
+    });
+    if (!pinnedParentG4 || pinnedParentG4.version !== g4.version) return result;
+    const g1Id = await loadG1NodeIdForSpatialNode({
+      worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+      nodeId: canonicalNodeId, nodeVersion: spatialNodeVersion,
+    });
+    return { ...result, o1Applicability: {
+      selector: o1Selector,
+      templateBackedItemRefs,
+      tuple: { g1_ref: g1Id, g4_ref: g4Ref, canonical_g5_ref: canonicalG5Ref,
+        place_family_refs: bindingRows.map((row) => ({ source_pf_id: row.place_family_id,
+          place_family_ref: `${row.place_family_id}@${row.place_family_version}` })) },
+    } };
   };
 }

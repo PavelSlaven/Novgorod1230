@@ -630,3 +630,4 @@
 - Stage 26 first-screen behavior.
 - LLM provider transport.
 - UI и database schemas.
+- test(spatial): #199 — add v17 PG regression for first-action request_movement and commit/replay in two dense-fog starts; D41 prompt variants not integrated

@@ -2,6 +2,21 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
+import { createTargetCurrentFactualContext } from '../src/infrastructure/postgres/target-current-factual-context.js';
+import { createLocalMovementDisclosureReader } from '../src/infrastructure/postgres/spatial-v3-local-scene-movement.js';
+import { createSpatialV3LocalMovementEligibilityReader, loadApprovedLocalMovementEligibilityPins } from
+  '../src/infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
+import { createSpatialV3CurrentVisibilityProvider } from
+  '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } from
+  '../src/infrastructure/postgres/g4-natural-perception-reader.js';
+import { readCurrentNaturalSourceState } from
+  '../src/infrastructure/postgres/g4-current-natural-source-state.js';
+import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from
+  '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
+import { visibleCurrentTargets } from '../src/runtime/spatial-v3-current-visibility.js';
+import { loadSpatialV3TargetProductionRelease } from '../src/composition/production-spatial-v3-release-v17.js';
+import { createTargetAuthoredStartCatalog } from '../src/internal/target-authored-start-catalog.js';
 import { turnStepOperationChoices } from '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import {
   bootstrapV17PresenceE2e,
@@ -31,6 +46,8 @@ test('v17 dense-fog start offers first-action movement with committed retry',
     const fixtureFetch = globalThis.fetch;
     let activeMovementPartyId = null;
     const selectedMovementByParty = new Map();
+    let productionVisibility = null;
+    let visibilityCheckError = null;
     globalThis.fetch = async (url, init) => {
       const call = JSON.parse(init.body);
       const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
@@ -47,12 +64,37 @@ test('v17 dense-fog start offers first-action movement with committed retry',
             'first-action planner request must offer request_movement');
         }
       }
-      const response = await fixtureFetch(url, init);
+      let response = await fixtureFetch(url, init);
       if (movementChoices != null) {
         const body = await response.clone().json();
         const result = JSON.parse(body.choices[0].message.content);
-        const selected = movementChoices.find(({ choice_id }) =>
+        let selected = movementChoices.find(({ choice_id }) =>
           choice_id === result.operation_choice);
+        if (selected?.operation.movement_kind !== 'local') {
+          // This regression checks a local line; the shared fixture otherwise prefers a route.
+          selected = movementChoices.find(({ operation }) => operation.movement_kind === 'local');
+          assert.ok(selected, 'planner request must offer a local first-move line');
+          result.operation_choice = selected.choice_id;
+          result.interpretation.grounded_attempt = selected.operation.description;
+          body.choices[0].message.content = JSON.stringify(result);
+          response = new Response(JSON.stringify(body), {
+            status: response.status, statusText: response.statusText,
+            headers: response.headers,
+          });
+        }
+        assert.ok(selected?.operation?.target_ref,
+          'planner selected movement target must resolve to its local edge ID');
+        productionVisibility ??= await createFogVisibilityProvider(env);
+        try {
+          await assertProductionResolvedFogLine({
+            env, partyId: activeMovementPartyId, actorId: selected.operation.actor_ref,
+            edgeId: selected.operation.target_ref,
+            productionVisibility,
+          });
+        } catch (error) {
+          visibilityCheckError = error;
+          throw error;
+        }
         selectedMovementByParty.set(activeMovementPartyId, selected ?? null);
       }
       return response;
@@ -67,9 +109,6 @@ test('v17 dense-fog start offers first-action movement with committed retry',
     const repository = createLowerDvinaTracePhase1ARepository({
       query: env.partyPool.query.bind(env.partyPool),
     });
-    const policy = await loadActiveWeatherVisibilityPolicy(
-      env.worldPool, runtime.health().world_revision_id);
-    assert.equal(policy.weather_by_visibility.poor, 'none');
 
     const startsByScenario = new Map();
     for (const [index, start] of TARGET_STARTS.entries()) {
@@ -124,7 +163,7 @@ test('v17 dense-fog start offers first-action movement with committed retry',
     const fogStarts = [];
     for (const scenarioId of FOG_SCENARIOS) {
       let candidate = startsByScenario.get(scenarioId);
-      if (candidate && !isDenseFogNone(candidate.internal, policy)) candidate = null;
+      if (candidate && !isDenseFog(candidate.internal)) candidate = null;
       if (candidate == null) {
         for (let seed = 0; seed < FOG_START_ATTEMPTS; seed += 1) {
           const opening = await runtime.startNewGame({
@@ -132,7 +171,7 @@ test('v17 dense-fog start offers first-action movement with committed retry',
             request_id: `opening-route-${scenarioId}-${seed}`,
           });
           const internal = await repository.loadInternal(opening.party_id);
-          if (isDenseFogNone(internal, policy)) {
+          if (isDenseFog(internal)) {
             candidate = { opening, internal };
             await runtime.acknowledgeOpening(opening.party_id, {
               client_ack_id: `iss199-fog-ack-${opening.party_id}`,
@@ -144,7 +183,7 @@ test('v17 dense-fog start offers first-action movement with committed retry',
         }
       }
       assert.ok(candidate,
-        `${scenarioId}: no committed dense_fog with resolved none visibility in ${FOG_START_ATTEMPTS} request-id seeds`);
+        `${scenarioId}: no committed dense_fog start in ${FOG_START_ATTEMPTS} request-id seeds`);
       fogStarts.push(candidate);
     }
     assert.notEqual(fogStarts[0].internal.position.g5_node_id,
@@ -162,14 +201,19 @@ test('v17 dense-fog start offers first-action movement with committed retry',
 
       activeMovementPartyId = partyId;
       const moveRequestId = `iss199-fog-move-${partyId}`;
-      const firstMove = await runtime.submitTurn(partyId, {
-        raw_text: MOVE_TEXT,
-        request_id: moveRequestId,
-      });
+      let firstMove;
+      try {
+        firstMove = await runtime.submitTurn(partyId, {
+          raw_text: MOVE_TEXT,
+          request_id: moveRequestId,
+        });
+      } catch (error) {
+        throw visibilityCheckError ?? error;
+      }
       activeMovementPartyId = null;
       const selected = selectedMovementByParty.get(partyId);
       assert.ok(selected?.operation, 'planner selected a real request_movement operation');
-      assert.ok(['local', 'route'].includes(selected.operation.movement_kind));
+    assert.equal(selected.operation.movement_kind, 'local');
 
       const afterMove = (await env.partyPool.query(
         `SELECT scene_position_id, state_version
@@ -195,25 +239,92 @@ test('v17 dense-fog start offers first-action movement with committed retry',
     }
   });
 
-async function loadActiveWeatherVisibilityPolicy(worldPool, worldRevisionId) {
-  // Read the mapping from the compiled catalog pinned by the production root's active world revision.
-  const { rows } = await worldPool.query(
-    `SELECT payload FROM world_base.procedural_scene_compiled_records
-      WHERE record_kind='profile'
-        AND status='approved_authoring_not_runtime_selectable'
-        AND payload->>'schema'='rus.g4_natural_placement_catalog.v1'
-        AND payload->>'world_revision_id'=$1`, [worldRevisionId]);
-  assert.equal(rows.length, 1, 'read one exact active natural-placement catalog');
-  const policies = rows[0].payload.condition_policies ?? [];
-  const policy = policies.find(({ weather_record_ref }) =>
-    weather_record_ref?.id === 'record:weather_transition_profiles_processes:novgorod_weather_v2'
-    && Number(weather_record_ref.version) === 1);
-  assert.ok(policy?.weather_by_visibility, 'active policy pins the start weather record');
-  return policy;
+async function createFogVisibilityProvider(env) {
+  const context = await loadSpatialV3TargetProductionRelease({
+    worldPool: env.worldPool, itemApproval: env.approvals.itemApproval,
+    actorApproval: env.approvals.actorApproval, rootDir: env.rootDir,
+  });
+  const runtime = context.runtime;
+  const authoredStartCatalog = createTargetAuthoredStartCatalog({
+    runtime, release: context.release,
+  });
+  const factualContext = createTargetCurrentFactualContext({
+    partyPool: env.partyPool, runtime,
+    committer: { async commit() { assert.fail('read-only visibility check cannot commit'); } },
+    authoredRuntimeBindingResolver: authoredStartCatalog.resolveRuntimeBinding,
+  });
+  const readCurrentEnvironment = factualContext.readCurrentEnvironment;
+  const readCurrentSourceState = (args) => readCurrentNaturalSourceState({
+    ...args, readCurrentEnvironment,
+  });
+  const readLocalMovementEligibility = createSpatialV3LocalMovementEligibilityReader({
+    worldPool: env.worldPool,
+    pins: loadApprovedLocalMovementEligibilityPins(context.release.world_revision_id),
+  });
+  return {
+    pin: runtime.itemPin,
+    verifiedCatalog: runtime.materialization_inputs.domain_catalog,
+    worldBaseReader: runtime.worldBaseReader,
+    readCurrentEnvironment,
+    readCurrentSourceState,
+    provider: createSpatialV3CurrentVisibilityProvider({
+      pool: env.partyPool,
+      verifiedCatalog: runtime.materialization_inputs.domain_catalog,
+      pin: runtime.itemPin,
+      worldBaseReader: runtime.worldBaseReader,
+      readCurrentEnvironment,
+      readCurrentSourceState,
+      readTargetConditions: readCurrentTargetConditions,
+      readEntityExterior: readCommittedEntityExterior,
+      readPlayerKnowledge,
+      readLocalMovementAdmission: createLocalMovementDisclosureReader({
+        readLocalMovementEligibility,
+      }),
+    }),
+  };
 }
 
-function isDenseFogNone(internal, policy) {
+async function assertProductionResolvedFogLine({ env, partyId, actorId, edgeId,
+  productionVisibility }) {
+  const { pin, verifiedCatalog, worldBaseReader, readCurrentEnvironment,
+    readCurrentSourceState, provider } = productionVisibility;
+  const transaction = await env.partyPool.connect();
+  try {
+    await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+    const args = { transaction, partyId, actorId, pin, verifiedCatalog,
+      worldBaseReader, readCurrentEnvironment, readCurrentSourceState };
+    const scene = await readCurrentEntityVisibilityScene(args);
+    const natural = await readCurrentNaturalPerceptionFacts(args);
+    const edge = scene.movement_edges.find((row) => row.id === edgeId
+      && row.from_position_id === scene.location.scene_position_id);
+    assert.ok(edge, `${partyId}: selected movement target is a current local edge`);
+    const target = { target_id: edge.id, position_id: edge.to_position_id,
+      entity_kind: 'local_edge' };
+    const targetConditions = await readCurrentTargetConditions({ transaction,
+      partyId, actorId, scene, natural, target });
+    const resolved = visibleCurrentTargets({
+      observer_position_id: scene.location.scene_position_id,
+      observer_visual_capability: natural.observer.visual_capability,
+      positions: scene.positions, g6: scene.g6, visibility_links: scene.visibility_links,
+      portals: natural.scene.portals,
+      targets: [{ ...target, lighting: natural.ambient_visibility.lighting,
+        weather: natural.ambient_visibility.weather, ...targetConditions }],
+      modifier_set: scene.modifier_set,
+    });
+    assert.deepEqual(resolved, [{ target_id: edgeId, visibility: 'none' }],
+      `${partyId}: production visibility resolves selected first-move line to none`);
+    const disclosed = await provider.readLocalEdgeDisclosure({ transaction, partyId, actorId,
+      state: { party_id: partyId, actor_id: actorId,
+        journey_location: { scene_position_id: scene.location.scene_position_id } } });
+    assert.ok(disclosed.some((row) => row.edge_id === edgeId),
+      `${partyId}: the same production provider discloses the selected movement line`);
+  } finally {
+    await transaction.query('ROLLBACK');
+    transaction.release();
+  }
+}
+
+function isDenseFog(internal) {
   const weather = internal.environment_snapshot?.weather_state;
-  return weather?.weather_state_id === 'dense_fog'
-    && policy.weather_by_visibility[weather.visibility] === 'none';
+  return weather?.weather_state_id === 'dense_fog';
 }

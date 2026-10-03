@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - feat(materialization): O1 v1 — approved applicability selector (75 rules, 4 tuples) makes template closure strict only for the selected tuple and rule; everything else keeps the generic presence path (#133)

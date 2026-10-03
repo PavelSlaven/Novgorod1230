@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - feat(economy): pure @rus/economy owner — exact rational currency conversion by approved region/date/unit rates, one final half-up, unresolved/conflict/invalid outcomes, local-sum render without rates or metadata; no wiring yet (#184)

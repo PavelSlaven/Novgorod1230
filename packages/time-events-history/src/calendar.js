@@ -192,7 +192,7 @@ function calendarArithmetic(calendar) {
     if (baseMonthDays === undefined) gap();
     const monthDays = baseMonthDays + (month === calendar.leapMonth && isLeapYear(year) ? calendar.leapDays : 0n);
     if (day > monthDays) gap();
-    return total;
+    return total + (month > calendar.leapMonth && isLeapYear(year) ? calendar.leapDays : 0n);
   };
   return { cycleDays, daysBeforeYear, dayOfYear, daysInYear, daysWithinCycleBeforeYear, isLeapYear };
 }

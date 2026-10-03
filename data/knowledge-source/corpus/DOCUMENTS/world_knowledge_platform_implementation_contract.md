@@ -83,10 +83,10 @@ materialization, persistence, body, combat, NPC, narration или spatial рад
 из-за правдоподобия. Варианты и качественные диапазоны предпочтительнее
 ложной точности.
 
-В compact model-facing context эти различия сохраняются метками `FACT`,
-`INFERENCE`, `ANALOGY`, `EDITORIAL`, `UNCERTAIN`, соответствующими
-directness. Structured slice сохраняет прежние qualifiers. Нельзя описать
-editorial claim как `FACT` только потому, что он прошёл plausibility review.
+Model-facing consumers получают structured slice и сохраняют его
+`qualifiers.directness`; отдельного compact prose renderer и отображения в
+текстовые метки этот контракт не задаёт. Нельзя описать editorial claim как
+`FACT` только потому, что он прошёл plausibility review.
 `EDITORIAL` означает редакторскую посылку, включая реконструкцию или
 обобщение источника; это не метка происхождения источника. Аналогия и вывод
 могут опираться как на внешний источник, так и на редакторскую реконструкцию.
@@ -3135,7 +3135,6 @@ vector latency
 retrieval total latency
 facts returned
 hard constraints count
-slice size
 coverage/gaps
 cache hit/miss
 ```

@@ -559,6 +559,9 @@
       "dependencies": [],
       "name": "@rus/world-knowledge",
       "owns": [
+        "query/bundle validation и structured slices без prose context",
+        "применимость, доступ и ранжирование утверждений",
+        "coverage, sufficiency, gaps и deterministic claim packing",
         "query/bundle validation и structured slice construction; query budget содержит",
         "canonical empty six-field `semantic_resolution` query plan как",
         "bounded planner focus candidates из compiled lexical postings с теми же",

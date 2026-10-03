@@ -64,9 +64,12 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
     const input = await groundTurnRequest(worldKnowledgeGrounder, request, {
       historical_events: historicalEvents
     });
-    const wireInput = input?.world_knowledge == null ? input : {
-      ...input, world_knowledge: worldKnowledgePromptData(input.world_knowledge)
-    };
+    const worldKnowledge = input?.world_knowledge;
+    const wireInput = worldKnowledge == null
+      || (worldKnowledge.schema === 'world_knowledge_requirement_v1'
+        && worldKnowledge.sufficiency === 'NO_KNOWLEDGE_REQUIRED')
+      ? input
+      : { ...input, world_knowledge: worldKnowledgePromptData(worldKnowledge) };
     const repairing = repairContext != null;
     const payload = repairing
       ? {

@@ -5,13 +5,14 @@
 Pure read-only gameplay factual owner. Загружает caller-provided immutable compiled Knowledge Pack и детерминированно разрешает `world_knowledge_query_v1` в bounded `world_knowledge_slice_v1`.
 
 Pack может включать независимо проверенные игровые реконструкции (§0.2 WK
-контракта). Existing qualifiers и runtime text сохраняют отличие реконструкции
-от установленного факта; отдельного retrieval interface или генератора нет.
-Compact context помечает direct/inferred/analogical/editorial/unknown как
-FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
+контракта). Structured slice сохраняет qualifiers, чтобы отличать
+реконструкцию от установленного факта; prose renderer нет.
 
 ## Владеет
 
+- query/bundle validation и structured slices без prose context;
+- применимость, доступ и ранжирование утверждений;
+- coverage, sufficiency, gaps и deterministic claim packing;
 - query/bundle validation и structured slice construction; query budget содержит
   `max_facts` и `max_candidates`, slice не содержит prose `context_text`;
 - canonical empty six-field `semantic_resolution` query plan как

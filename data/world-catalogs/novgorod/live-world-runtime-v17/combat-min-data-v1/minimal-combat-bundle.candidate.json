@@ -1,0 +1,1074 @@
+{
+  "package_id": "combat-minimal-execution-candidate",
+  "version": "candidate-1",
+  "status": "candidate_not_approved",
+  "production_usable": false,
+  "owner": "@rus/combat-health + @rus/turn; approvals required from independent game-data approver",
+  "applicability": {
+    "required": [
+      "actor_ref",
+      "target_ref",
+      "actor_capabilities",
+      "target_state",
+      "action_class",
+      "profile_version",
+      "current_scene_ref",
+      "item_access_facts",
+      "perception_snapshot"
+    ],
+    "supported_action_classes": [
+      "melee_attack_step"
+    ],
+    "excluded_action_classes": [
+      "approach",
+      "retreat_movement",
+      "ranged_attack",
+      "grapple",
+      "injury_treatment",
+      "armor_zone_resolution"
+    ],
+    "fallback_to_scenario_profile": false,
+    "values": null,
+    "approval": "pending"
+  },
+  "execution": {
+    "check": {
+      "owner": "@rus/checks-rng",
+      "normative_rule": {
+        "attack": "d20 + floor((attribute_value - 10) / 2) + skill_bonus + state_modifier + equipment_modifier + circumstance_modifier",
+        "defense": "10 + defensive_bonus + active_defense + position_modifier",
+        "margin": "attack_total - target_defense",
+        "quality_bands": [
+          {
+            "min_margin": "-infinity",
+            "max_margin": -10,
+            "quality": 0,
+            "outcome": "severe_failure"
+          },
+          {
+            "min_margin": -9,
+            "max_margin": -5,
+            "quality": 0,
+            "outcome": "failure_with_consequence"
+          },
+          {
+            "min_margin": -4,
+            "max_margin": -1,
+            "quality": 0,
+            "outcome": "weak_result"
+          },
+          {
+            "min_margin": 0,
+            "max_margin": 4,
+            "quality": 1,
+            "outcome": "ordinary_hit"
+          },
+          {
+            "min_margin": 5,
+            "max_margin": 9,
+            "quality": 2,
+            "outcome": "good_hit"
+          },
+          {
+            "min_margin": 10,
+            "max_margin": 14,
+            "quality": 3,
+            "outcome": "strong_hit"
+          },
+          {
+            "min_margin": 15,
+            "max_margin": "infinity",
+            "quality": 4,
+            "outcome": "critical_hit"
+          }
+        ],
+        "source_ref": "src.combat_system.check.v-current",
+        "authority_status": "active_domain_norm; generic profile applicability pending"
+      },
+      "typed_inputs": [
+        "source-pinned actor attribute and combat skill",
+        "source-pinned current state/equipment/circumstance modifiers",
+        "source-pinned target defense and current position",
+        "one code-owned RNG result"
+      ],
+      "unknown_input_policy": "typed_gap_fail_closed_for_this_step",
+      "approval": "pending",
+      "owner_request_binding": {
+        "schema": "candidate.combat-check-request-binding.v1",
+        "status": "owner_dto_and_applicability_pending",
+        "owner_request_field": "combat_technical_step_proposal.check_request",
+        "actor_ref": "current saved intent actor_ref, revalidated against the acting participant before request construction",
+        "target_ref": "current target selected from owner-pinned combat preconditions and revalidated before request construction",
+        "inputs": [
+          {
+            "request_field": "attribute_value",
+            "source": "actor_base_attributes_v1.values.<selected_attribute>",
+            "required_binding": "same current actor_ref and validated complete source-pinned snapshot"
+          },
+          {
+            "request_field": "skill_bonus",
+            "source": "current actor skill record",
+            "required_binding": "same actor_ref and approved skill source"
+          },
+          {
+            "request_field": "state_modifier",
+            "source": "current actor body/effects owner readback",
+            "required_binding": "same actor_ref; unknown is a typed gap"
+          },
+          {
+            "request_field": "equipment_modifier",
+            "source": "current actor held-item capability owner readback",
+            "required_binding": "same actor_ref and item instance refs"
+          },
+          {
+            "request_field": "circumstance_modifier",
+            "source": "current source-pinned scene facts",
+            "required_binding": "same check event and actor/target refs"
+          },
+          {
+            "request_field": "target_defense",
+            "source": "current target defensive owner facts",
+            "required_binding": "same target_ref and rechecked position"
+          }
+        ],
+        "code_owned_rng": "one owner-produced RNG result; model supplies no roll or modifier",
+        "fail_closed": "missing, stale, ambiguous, cross-actor or cross-target source binding blocks this step and preserves its typed gap",
+        "source_refs": [
+          "src.combat-min-checklist.v1",
+          "src.combat-cr.v1",
+          "src.actor-base-attributes.v1"
+        ]
+      }
+    },
+    "harm": {
+      "owner": "@rus/combat-health",
+      "normative_rule": "raw_damage_score = hit_quality + weapon_danger + target_vulnerability - target_protection",
+      "health_loss_bands": [
+        {
+          "damage_score_min": 0,
+          "damage_score_max": 1,
+          "health_loss": 0
+        },
+        {
+          "damage_score_min": 2,
+          "damage_score_max": 3,
+          "health_loss": 5
+        },
+        {
+          "damage_score_min": 4,
+          "damage_score_max": 5,
+          "health_loss": 12
+        },
+        {
+          "damage_score_min": 6,
+          "damage_score_max": 7,
+          "health_loss": 25
+        },
+        {
+          "damage_score_min": 8,
+          "damage_score_max": null,
+          "health_loss": 45
+        }
+      ],
+      "zero_quality_policy": "no ordinary body harm; only a separately supported dangerous circumstance can alter this",
+      "unsupported_factors_policy": "do not default unknown vulnerability or protection to zero",
+      "source_ref": "src.combat_system.harm-health.v-current",
+      "authority_status": "active_domain_norm; generic input binding pending",
+      "approval": "pending",
+      "derived_normalization": {
+        "kind": "nonnegative_damage_score",
+        "rule": "damage_score = max(0, raw_damage_score)",
+        "source_ref": "src.combat-health-runtime-harm.v-current",
+        "scope": "implementation behavior used as a separate candidate normalization; it is not attributed verbatim to combat_system.md",
+        "rationale": "the health-loss table is defined for nonnegative integer damage scores; preserve the raw norm result and clamp only at the derived normalization boundary"
+      }
+    },
+    "health_transition": {
+      "owner": "@rus/body-state",
+      "rule": "next_health = max(0, current_health - committed_health_loss)",
+      "at_zero": "incapacitated; death is not inferred or emitted by this package",
+      "persistent_injuries_conditions_diagnosis_treatment": "excluded; no transition claimed",
+      "missing_or_unreadable_body": "if no persisted row exists and approved source inputs/profile are available, initialize by owner rule; a failed/unavailable readback is a typed gap for this actor, never an absence signal and never a health default",
+      "source_ref": "src.combat_system.body.v-current",
+      "authority_status": "active_domain_norm plus CR #224 scope; v17 body applicability/write handoff pending",
+      "approval": "pending",
+      "body_initialization": {
+        "owner": "@rus/body-state",
+        "rule": "if no persisted party_actor_body_states row exists, deterministically initialize this NPC on the first atomic P16 combat commit from approved actor_base_attributes_v1 plus identity under an approved body-state mapping; missing required inputs/profile are a typed gap for this NPC only",
+        "authoritative_readback": "persisted body row takes precedence and is rechecked before each later step; read failure does not trigger initialization",
+        "forbidden_fallback": "Never substitute an invented or unapproved value, including candidate health=100, and never load a scenario profile. The D71 profile above is only eligible after body-state owner and independent D67 approval.",
+        "approval": "candidate mapping proposal is not approved; exact runtime initialization stays fail-closed until body-state owner and D67 approval",
+        "source_ref": "src.body-initialization-owner-rule",
+        "attribute_source_ref": "src.actor-base-attributes.v1",
+        "readback_error_policy": "typed_gap_for_this_actor",
+        "profile_mapping": {
+          "mapping_id": "candidate.actor-base-attributes-identity-to-body-profile.v1",
+          "mapping_version": 1,
+          "status": "proposed_unapproved",
+          "inputs": {
+            "actor_attributes": {
+              "contract_version": "actor_base_attributes_v1",
+              "required_keys": [
+                "strength",
+                "dexterity",
+                "endurance",
+                "reason",
+                "attention",
+                "influence"
+              ],
+              "source_ref": "src.actor-base-attributes.v1",
+              "authority_status": "v17 production readback confirms actor profile activation for new production parties only; this does not approve body metric mapping",
+              "required_snapshot_fields": [
+                "contract_version",
+                "values",
+                "profile_ref",
+                "generation",
+                "trace"
+              ],
+              "snapshot_validation_source_ref": "src.actor-base-attributes-validator.combat-min.v-current"
+            },
+            "identity": {
+              "required": "versioned actor identity snapshot plus stable ref",
+              "source_ref": "src.character-parameters-guide.v-current",
+              "authority_status": "undeclared_domain_guide; no body mapping authority"
+            }
+          },
+          "output_profile": {
+            "schema": "candidate.body_state.profile_authoring.v1",
+            "metrics": {
+              "health": {
+                "candidate_value": 100,
+                "rule": {
+                  "kind": "constant",
+                  "value": 100
+                },
+                "range": [
+                  0,
+                  100
+                ],
+                "calibration_bounds": [
+                  80,
+                  100
+                ],
+                "calibration": {
+                  "kind": "game_calibration",
+                  "label_internal_only": "D71",
+                  "rationale": "upper ordinary starting-health proposal anchored by analogy to the scoped first-playable body_profile; not an injury-free historical claim and not a runtime fallback"
+                },
+                "source_refs": [
+                  "src.body-state-metric-bounds.v-current",
+                  "src.body-profile-first-playable-scope.v1"
+                ]
+              },
+              "energy": {
+                "candidate_value": 80,
+                "rule": {
+                  "kind": "affine_clamp",
+                  "attribute": "endurance",
+                  "base_value": 80,
+                  "center": 10,
+                  "slope": 2,
+                  "clamp_bounds": [
+                    60,
+                    100
+                  ],
+                  "formula": "clamp(80 + 2 * (endurance - 10), 60, 100)"
+                },
+                "range": [
+                  0,
+                  100
+                ],
+                "calibration_bounds": [
+                  60,
+                  100
+                ],
+                "calibration": {
+                  "kind": "game_calibration",
+                  "label_internal_only": "D71",
+                  "rationale": "at endurance 10, proposal 80 is anchored by analogy to the scoped first-playable body_profile; a +2 energy points per endurance point slope is an explicit gameplay hypothesis inspired by endurance semantics in the domain guide, not a source-derived coefficient"
+                },
+                "source_refs": [
+                  "src.body-state-metric-bounds.v-current",
+                  "src.body-profile-first-playable-scope.v1",
+                  "src.character-parameters-guide.v-current"
+                ]
+              },
+              "satiety": {
+                "candidate_value": 70,
+                "rule": {
+                  "kind": "constant",
+                  "value": 70
+                },
+                "range": [
+                  0,
+                  100
+                ],
+                "calibration_bounds": [
+                  60,
+                  100
+                ],
+                "calibration": {
+                  "kind": "game_calibration",
+                  "label_internal_only": "D71",
+                  "rationale": "ordinary initial satiety proposal anchored by analogy to the scoped first-playable body_profile; exact value is a gameplay calibration, not a generic approved profile"
+                },
+                "source_refs": [
+                  "src.body-state-metric-bounds.v-current",
+                  "src.body-profile-first-playable-scope.v1"
+                ]
+              }
+            },
+            "profile_id": "candidate.generic-npc-initial-body.v1",
+            "version": 1
+          },
+          "calibration_metadata": {
+            "kind": "game_calibration",
+            "label_internal_only": "D71",
+            "status": "proposed_unbenchmarked",
+            "candidate_variant": "B",
+            "analogy_source_ref": "src.body-profile-first-playable-scope.v1",
+            "analogy_scope": "candidate first-playable boatman profile only; its numbers are an analogy and are not loaded as a generic scenario fallback",
+            "reason": "provide a deterministic playable initial body candidate from existing metric vocabulary and one narrowly scoped body-profile anchor; no historical claim or source-derived attribute-to-metric coefficients",
+            "alternatives_to_compare": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "fail_closed": {
+            "when": "candidate has not received body-state owner and D67 approval, or source-pinned actor attributes/identity are missing or invalid",
+            "effect": "typed gap for this NPC only; preserve a persisted body row and never use this unapproved candidate as a fallback",
+            "approval_gate": "body-state owner + independent D67"
+          },
+          "approval": "candidate only; owner @rus/body-state and independent D67 approval required before runtime use",
+          "selection_rule": "For an actor with a complete source-pinned actor_base_attributes_v1 snapshot and versioned identity snapshot, select this candidate profile deterministically. Identity ref/version/digest bind the subject; sex, age and appearance do not alter metrics in this proposal. The actor attribute snapshot is validated; endurance is the sole attribute used by the candidate energy rule.",
+          "identity_dimensions_used": [
+            "stable_identity_ref",
+            "identity_schema_version",
+            "identity_digest"
+          ],
+          "identity_dimensions_not_used_as_metric_modifiers": [
+            "sex_category",
+            "age_category",
+            "appearance_build"
+          ],
+          "source_refs": [
+            "src.body-mapping-reviewer-addendum",
+            "src.actor-base-attributes.v1",
+            "src.actor-base-attributes-v17-activation-readback.v1",
+            "src.body-state-owner.v-current",
+            "src.body-state-metric-bounds.v-current",
+            "src.character-parameters-guide.v-current",
+            "src.contract-index.v-current",
+            "src.body-profile-first-playable-scope.v1"
+          ],
+          "calibration_alternatives": [
+            {
+              "id": "A",
+              "metrics": {
+                "health": 100,
+                "energy": 80,
+                "satiety": 70
+              },
+              "rule": "constant profile, no attribute adjustment",
+              "label_internal_only": "D71",
+              "status": "comparison_only",
+              "allowed_bounds": {
+                "health": [
+                  80,
+                  100
+                ],
+                "energy": [
+                  60,
+                  100
+                ],
+                "satiety": [
+                  60,
+                  100
+                ]
+              },
+              "calibration": {
+                "kind": "game_calibration",
+                "label_internal_only": "D71",
+                "rationale": "flat control to compare the scoped profile analogy without attribute adjustment"
+              }
+            },
+            {
+              "id": "C",
+              "metrics": {
+                "health": 100,
+                "energy": 60,
+                "satiety": 60
+              },
+              "rule": "lower-start sensitivity arm",
+              "label_internal_only": "D71",
+              "status": "comparison_only",
+              "allowed_bounds": {
+                "health": [
+                  80,
+                  100
+                ],
+                "energy": [
+                  60,
+                  100
+                ],
+                "satiety": [
+                  60,
+                  100
+                ]
+              },
+              "calibration": {
+                "kind": "game_calibration",
+                "label_internal_only": "D71",
+                "rationale": "lower-start sensitivity arm selected as an explicit game-balance comparison, not as historical evidence"
+              }
+            }
+          ]
+        },
+        "owner_initialization_profile_adapter": {
+          "adapter_id": "candidate.body-profile-authoring-to-owner-initialization.v1",
+          "status": "blocked_until_owner_and_D67_approval",
+          "authoring_profile_ref": "profile_mapping.output_profile",
+          "owner_initializer_source_ref": "src.body-state-initializer.combat-min.v-current",
+          "subject_binding": {
+            "actor_ref": "same current NPC actor_ref from saved combat intent and body-state owner operation",
+            "actor_attributes": "complete validateActorBaseAttributes-accepted actor_base_attributes_v1 snapshot; bind profile_ref, generation.seed_digest, trace and actor_ref to this NPC",
+            "identity": "versioned identity snapshot with stable identity_ref, schema_version and digest bound to the same NPC actor_ref",
+            "derived_initial_state_scope": "derived values are output only; keep source actor snapshot, identity snapshot, D71 calibration and resolution trace separate from the approved authored profile"
+          },
+          "candidate_emission": null,
+          "fail_closed_preconditions": [
+            "owner and D67 approval recorded for this profile version",
+            "all six actor base attribute values and full generation/trace/profile_ref validate",
+            "identity snapshot version/ref/digest binds to the same actor_ref",
+            "no persisted body row exists after authoritative readback; read failure never triggers initialization"
+          ],
+          "test_only_approved_dto_fixture": {
+            "approval_fixture_only": true,
+            "schema": "rus.body_state.initialization_profile.v1",
+            "status": "approved",
+            "profile_ref": {
+              "entity_ref": {
+                "entity_kind": "body_state_profile",
+                "entity_id": "fixture:approved-body-profile"
+              },
+              "authoring_version": "1"
+            },
+            "initial_state": {
+              "health": 100.0,
+              "satiety": 70.0,
+              "energy": 80.0
+            }
+          },
+          "approval": "the test fixture does not approve or emit the candidate profile",
+          "target_dto_mapping": {
+            "schema": "rus.body_state.initialization_profile.v1",
+            "status": "approved",
+            "profile_ref": {
+              "entity_ref": {
+                "entity_kind": "body_state_profile",
+                "entity_id": "profile_mapping.output_profile.profile_id"
+              },
+              "authoring_version": "String(profile_mapping.output_profile.version)"
+            },
+            "initial_state": {
+              "health": "resolved profile_mapping.output_profile.metrics.health.candidate_value after approved rule evaluation",
+              "satiety": "resolved profile_mapping.output_profile.metrics.satiety.candidate_value after approved rule evaluation",
+              "energy": "resolved profile_mapping.output_profile.metrics.energy rule using the bound actor snapshot endurance"
+            },
+            "emit_when": "only when owner and independent D67 approvals are recorded for this exact profile version"
+          },
+          "candidate_emission_policy": "null; candidate values cannot be sent to initializeBodyState until approval gate is satisfied"
+        }
+      },
+      "authoritative_readback_source_ref": "src.scene-npc-body-readback.v-current"
+    },
+    "weapon_capability_mapping": {
+      "owner": "@rus/items-property + @rus/combat-health",
+      "scope": "one held melee item at most; current accessible grip and condition must be source-pinned; no item may be created by the action text",
+      "rules": [
+        {
+          "input": "explicit bare-hand punch",
+          "result": {
+            "weapon_danger": 1
+          },
+          "mapping_kind": "existing_normative_category",
+          "source_ref": "src.combat_system.weapon-danger.v-current"
+        },
+        {
+          "input": "item with an exact owner-supplied combat mechanics capability and current condition snapshot",
+          "result": "use that exact profile; ordinary light serviceable/damaged map is 1/0 only while its existing capability ref is applicable and independently approved",
+          "mapping_kind": "existing_runtime_capability_candidate",
+          "source_ref": "src.ordinary-armament-mechanics.v1"
+        },
+        {
+          "input": "one held action-produced item without exact mechanics, with player-safe physical facts",
+          "result": {
+            "mapping_schema": "weapon_danger_mapping.v1",
+            "enum_mappings": [
+              {
+                "d47_enum": "not_weapon_capable",
+                "weapon_danger": 0
+              },
+              {
+                "d47_enum": "improvised_puncture_light",
+                "weapon_danger": 1
+              },
+              {
+                "d47_enum": "improvised_impact_light",
+                "weapon_danger": 1
+              },
+              {
+                "d47_enum": "improvised_cutting_light",
+                "weapon_danger": 1
+              },
+              {
+                "d47_enum": "improvised_two_hand_heavy",
+                "weapon_danger": 2
+              }
+            ]
+          },
+          "mapping_kind": "existing_code_owned_mapping_candidate",
+          "source_ref": "src.action-produced-weapon-mechanics.v1"
+        },
+        {
+          "input": "game-base catalog row without exact mechanics",
+          "result": "use wp_id/category/kind/material/condition/source refs only to resolve the actual item; separately source-pinned physical-form facts may be passed to D47; do not derive danger from category, military tier, mass, role, frequency, or access; otherwise typed gap",
+          "mapping_kind": "identity_and_fact_mapping_only",
+          "source_ref": "src.game-base-weapons-catalog.v1"
+        }
+      ],
+      "unknown_damaged_ambiguous_or_multiple_items": "typed_gap_fail_closed_for_this_step",
+      "approval": "pending",
+      "catalog_row_candidates": [
+        {
+          "wp_id": "wp_sword",
+          "category_id": "cat_item_object_sword_v1",
+          "weapon_danger": 3,
+          "basis": "catalog identity exactly matches normative example “sword”; candidate row only",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        },
+        {
+          "wp_id": "wp_spear",
+          "category_id": "cat_item_object_spear_v1",
+          "weapon_danger": 3,
+          "basis": "catalog identity exactly matches normative example “spear”; candidate row only",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        },
+        {
+          "wp_id": "wp_rogatina",
+          "category_id": "cat_item_object_rogatina_v1",
+          "weapon_danger": 3,
+          "basis": "catalog identity is explicitly a hunting/combat spear and matches normative example “spear”; candidate row only",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        },
+        {
+          "wp_id": "wp_battle_axe",
+          "category_id": "cat_item_object_combat_axe_v1",
+          "weapon_danger": 3,
+          "basis": "catalog identity exactly matches normative example “battle axe”; candidate row only",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        },
+        {
+          "wp_id": "wp_knife",
+          "category_id": "cat_item_object_utility_knife_v1",
+          "weapon_danger": 2,
+          "basis": "catalog identity exactly matches normative example “knife”; candidate row only",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        },
+        {
+          "wp_id": "wp_long_knife",
+          "category_id": "cat_item_object_long_knife_v1",
+          "weapon_danger": 2,
+          "basis": "candidate classification under normative “knife” term; distinct length class requires separate approval",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        },
+        {
+          "wp_id": "wp_club",
+          "category_id": "cat_item_object_mace_v1",
+          "weapon_danger": 2,
+          "basis": "catalog identity exactly matches normative example “club”; candidate row only",
+          "source_ref": "src.game-base-weapons-rows.v1"
+        }
+      ],
+      "catalog_row_mapping_conditions": [
+        "item_ref resolves to the same catalog row and current instance",
+        "kind is weapon and current access, holding, condition and physical capability are verified by their owners",
+        "danger is a candidate mapping from the active norm example, not from military tier, role, mass, frequency, or access",
+        "no attack is admitted from a candidate row until independent D67 approval"
+      ],
+      "unmapped_catalog_melee_rows": {
+        "typed_gap_wp_ids": [
+          "wp_sabre",
+          "wp_utility_axe",
+          "wp_mace",
+          "wp_flail",
+          "wp_staff"
+        ],
+        "out_of_minimal_melee_scope_wp_ids": [
+          "wp_lance",
+          "wp_sulitsa",
+          "wp_bow_self",
+          "wp_bow_composite",
+          "wp_crossbow",
+          "wp_sling"
+        ],
+        "reason": "normative example does not resolve the relevant variant or its size/use; ranged/mounted actions are excluded"
+      }
+    }
+  },
+  "durations": {
+    "clock_owner": "@rus/time-events-history",
+    "representation": "exact positive rational elapsed minutes, common GameTimestamp; no round clock",
+    "per_action_profiles": [
+      {
+        "profile_id": "candidate.melee-attack-step.v1",
+        "action_class": "melee_attack_step",
+        "duration_minutes": {
+          "numerator": 1,
+          "denominator": 10,
+          "calibration_ref": "src.duration.calibration.v1"
+        },
+        "equivalent_seconds": 6,
+        "calibration": {
+          "kind": "game_calibration",
+          "decision_rule": "one bounded resolved attack step per six-second gameplay slice, giving ten such slices per game minute; chosen for play pacing and exact sub-minute arithmetic, not derived from historical action measurements",
+          "label_internal_only": "D71",
+          "alternatives_to_compare_seconds": [
+            5,
+            6,
+            10
+          ],
+          "status": "proposed_unbenchmarked",
+          "candidate_value_seconds": 6,
+          "allowed_bounds_seconds": {
+            "min_inclusive": 5,
+            "max_inclusive": 10
+          },
+          "allowed_bounds_minutes": {
+            "min": {
+              "numerator": 1,
+              "denominator": 12
+            },
+            "max": {
+              "numerator": 1,
+              "denominator": 6
+            }
+          },
+          "rationale": "bounded play-pacing comparison; one resolved attack step in 5–10 seconds, with 6 seconds as initial proposal; not historical measurement"
+        },
+        "includes": [
+          "one attack check and its harm/health resolution"
+        ],
+        "does_not_include": [
+          "approach, retreat movement, treatment, delayed consequences"
+        ],
+        "automatic_defense_timing": "time-owner confirmation required whether folded into the attack step",
+        "source_and_version": "src.duration.calibration.v1",
+        "approval": "pending"
+      }
+    ],
+    "npc_boundary_and_intent_events": {
+      "time_bearing": false,
+      "elapsed_delta": {
+        "numerator": 0,
+        "denominator": 1
+      },
+      "rule": "a decision/signal projection alone advances no clock; any physical step it starts needs its own approved profile",
+      "source_ref": "src.temporal-control-outcome.v1",
+      "approval": "pending_time_owner_confirmation"
+    },
+    "retreat_movement": {
+      "status": "unsupported_typed_gap",
+      "reason": "no applicable generic movement speed/profile and current integration does not confirm a common rational-time handoff",
+      "must_not_claim": "successful exit or elapsed duration"
+    },
+    "round_clock": false,
+    "approval": "pending"
+  },
+  "npc_decision": {
+    "owner": "@rus/npc-runtime",
+    "permitted_context_owner": "@rus/visibility-knowledge-memory",
+    "movement_feasibility_owner": "@rus/space-map + @rus/movement-routes",
+    "meaningful_boundary": {
+      "profile_id": "candidate.npc-decision-boundary.v1",
+      "rule": "evaluate at initial combat intent and after an unconsumed material/critical signal changes the NPC's perceived facts, capability, or executable intent; aggregate same-time signals after temporal recheck",
+      "not_a_boundary_by_itself": [
+        "ordinary hit or miss",
+        "defense",
+        "unchanged technical step",
+        "clock tick",
+        "replay",
+        "unperceived hidden change"
+      ],
+      "source_ref": "src.npc-combat-boundary.v-current",
+      "approval": "pending_applicability_confirmation"
+    },
+    "decision_context_required": [
+      "current NPC intent and lifecycle status",
+      "unconsumed decision signals with causal refs",
+      "NPC body/capability facts known to that NPC",
+      "perception snapshot of visible participants, recognized threats, known positions, known exits, hazards and uncertainty",
+      "individual goals/fears/obligations/relationships only when source-pinned and applicable",
+      "allowlisted operation refs and code-owned feasibility results"
+    ],
+    "surrender_or_exit_facts": {
+      "candidate_options": [
+        "continue",
+        "surrender",
+        "break_contact"
+      ],
+      "surrender_basis": [
+        "perceived threat and recent material/critical events",
+        "individual courage/fear/values only when explicitly sourced for this NPC",
+        "decision occurs at the semantic boundary"
+      ],
+      "break_contact_basis": [
+        "NPC's intent to create distance or leave combat",
+        "only exits/paths known to NPC and included in operation contract",
+        "code-owned route, obstruction, movement capability and progress check"
+      ],
+      "physical_effect": "intent alone never commits a successful escape or changes another participant's reaction",
+      "prohibited_shortcuts": [
+        "universal health/HP threshold",
+        "invented courage/fear values or probabilities",
+        "occupation-derived motive",
+        "hidden opponent health or intent",
+        "invented exit/destination or model-asserted movement success"
+      ],
+      "approval": "pending"
+    },
+    "percentages_or_universal_hp_threshold": false,
+    "approval": "pending",
+    "body_state_qualitative_context": {
+      "profile_id": "candidate.npc-body-state-description.v1",
+      "version": 1,
+      "status": "candidate_not_approved",
+      "owner": "@rus/body-state + @rus/npc-runtime",
+      "purpose": "translate an authoritative current NPC body metric into one qualitative phrase for decision context; this context alone does not select an action",
+      "input_policy": {
+        "eligible_value": "current authoritative body-state owner readback for this NPC",
+        "unavailable_or_unreadable": "omit that metric and preserve a typed gap; never substitute zero or a candidate initialization value",
+        "unapproved_initialization": "do not consume the unapproved D71 initial-body proposal as an authoritative value"
+      },
+      "metrics": {
+        "health": {
+          "input_range_inclusive": [
+            0,
+            100
+          ],
+          "threshold_calibration": {
+            "kind": "game_calibration",
+            "label_internal_only": "D71",
+            "status": "proposed_unbenchmarked",
+            "source_refs": [
+              "src.body-state-metric-bounds.v-current",
+              "src.character-parameters-guide.v-current"
+            ],
+            "cut_points": [
+              {
+                "id": "low_to_moderate",
+                "value": 30,
+                "allowed_bounds_inclusive": [
+                  25,
+                  35
+                ],
+                "rationale": "Coarse low/moderate boundary proposed for readable NPC context; no approved cross-metric threshold is supplied by the descriptive guide."
+              },
+              {
+                "id": "moderate_to_high",
+                "value": 70,
+                "allowed_bounds_inclusive": [
+                  65,
+                  75
+                ],
+                "rationale": "Coarse moderate/high boundary proposed for readable NPC context; no approved cross-metric threshold is supplied by the descriptive guide."
+              }
+            ],
+            "rationale": "Game calibration for qualitative context only; integer cut points are not historical, medical, causal, or action thresholds."
+          },
+          "bands": [
+            {
+              "band_id": "low",
+              "min_value": 0,
+              "min_inclusive": true,
+              "max_value": 30,
+              "max_inclusive": false,
+              "npc_description": "Здоровье низкое."
+            },
+            {
+              "band_id": "moderate",
+              "min_value": 30,
+              "min_inclusive": true,
+              "max_value": 70,
+              "max_inclusive": false,
+              "npc_description": "Здоровье умеренное."
+            },
+            {
+              "band_id": "high",
+              "min_value": 70,
+              "min_inclusive": true,
+              "max_value": 100,
+              "max_inclusive": true,
+              "npc_description": "Здоровье высокое."
+            }
+          ],
+          "source_refs": [
+            "src.body-state-metric-bounds.v-current",
+            "src.character-parameters-guide.v-current",
+            "src.body-quality-bands-reviewer-addendum"
+          ]
+        },
+        "energy": {
+          "input_range_inclusive": [
+            0,
+            100
+          ],
+          "threshold_calibration": {
+            "kind": "game_calibration",
+            "label_internal_only": "D71",
+            "status": "proposed_unbenchmarked",
+            "source_refs": [
+              "src.body-state-metric-bounds.v-current",
+              "src.character-parameters-guide.v-current"
+            ],
+            "cut_points": [
+              {
+                "id": "low_to_moderate",
+                "value": 30,
+                "allowed_bounds_inclusive": [
+                  25,
+                  35
+                ],
+                "rationale": "Coarse low/moderate boundary proposed for readable NPC context; no approved cross-metric threshold is supplied by the descriptive guide."
+              },
+              {
+                "id": "moderate_to_high",
+                "value": 70,
+                "allowed_bounds_inclusive": [
+                  65,
+                  75
+                ],
+                "rationale": "Coarse moderate/high boundary proposed for readable NPC context; no approved cross-metric threshold is supplied by the descriptive guide."
+              }
+            ],
+            "rationale": "Game calibration for qualitative context only; integer cut points are not historical, medical, causal, or action thresholds."
+          },
+          "bands": [
+            {
+              "band_id": "low",
+              "min_value": 0,
+              "min_inclusive": true,
+              "max_value": 30,
+              "max_inclusive": false,
+              "npc_description": "Запас энергии низкий."
+            },
+            {
+              "band_id": "moderate",
+              "min_value": 30,
+              "min_inclusive": true,
+              "max_value": 70,
+              "max_inclusive": false,
+              "npc_description": "Запас энергии умеренный."
+            },
+            {
+              "band_id": "high",
+              "min_value": 70,
+              "min_inclusive": true,
+              "max_value": 100,
+              "max_inclusive": true,
+              "npc_description": "Запас энергии высокий."
+            }
+          ],
+          "source_refs": [
+            "src.body-state-metric-bounds.v-current",
+            "src.character-parameters-guide.v-current",
+            "src.body-quality-bands-reviewer-addendum"
+          ]
+        },
+        "satiety": {
+          "input_range_inclusive": [
+            0,
+            100
+          ],
+          "threshold_calibration": {
+            "kind": "game_calibration",
+            "label_internal_only": "D71",
+            "status": "proposed_unbenchmarked",
+            "source_refs": [
+              "src.body-state-metric-bounds.v-current",
+              "src.character-parameters-guide.v-current"
+            ],
+            "cut_points": [
+              {
+                "id": "low_to_moderate",
+                "value": 30,
+                "allowed_bounds_inclusive": [
+                  25,
+                  35
+                ],
+                "rationale": "Coarse low/moderate boundary proposed for readable NPC context; no approved cross-metric threshold is supplied by the descriptive guide."
+              },
+              {
+                "id": "moderate_to_high",
+                "value": 70,
+                "allowed_bounds_inclusive": [
+                  65,
+                  75
+                ],
+                "rationale": "Coarse moderate/high boundary proposed for readable NPC context; no approved cross-metric threshold is supplied by the descriptive guide."
+              }
+            ],
+            "rationale": "Game calibration for qualitative context only; integer cut points are not historical, medical, causal, or action thresholds."
+          },
+          "bands": [
+            {
+              "band_id": "low",
+              "min_value": 0,
+              "min_inclusive": true,
+              "max_value": 30,
+              "max_inclusive": false,
+              "npc_description": "Сытость низкая."
+            },
+            {
+              "band_id": "moderate",
+              "min_value": 30,
+              "min_inclusive": true,
+              "max_value": 70,
+              "max_inclusive": false,
+              "npc_description": "Сытость умеренная."
+            },
+            {
+              "band_id": "high",
+              "min_value": 70,
+              "min_inclusive": true,
+              "max_value": 100,
+              "max_inclusive": true,
+              "npc_description": "Сытость высокая."
+            }
+          ],
+          "source_refs": [
+            "src.body-state-metric-bounds.v-current",
+            "src.character-parameters-guide.v-current",
+            "src.body-quality-bands-reviewer-addendum"
+          ]
+        }
+      },
+      "context_projection": {
+        "field": "body_state_descriptions",
+        "include_only": [
+          "metric",
+          "npc_description"
+        ],
+        "omit": [
+          "numeric_value",
+          "band_id",
+          "band_bounds",
+          "thresholds",
+          "calibration_metadata",
+          "D71"
+        ],
+        "interpretation_limit": "description reports only the named current metric state; it does not assert a wound, symptom, cause, event, capability, or intended action"
+      },
+      "approval": "owner review and independent D67 approval required; no approved generic vocabulary or threshold is asserted",
+      "range_semantics": "finite numeric values without rounding; low=[0,30), moderate=[30,70), high=[70,100]"
+    }
+  },
+  "provenance": {
+    "candidate_numeric_values": [
+      {
+        "path": "execution.check.normative_rule.quality_bands",
+        "kind": "normative_existing",
+        "source_ref": "src.combat_system.check.v-current"
+      },
+      {
+        "path": "execution.harm.health_loss_bands",
+        "kind": "normative_existing",
+        "source_ref": "src.combat_system.harm-health.v-current"
+      },
+      {
+        "path": "execution.weapon_capability_mapping.rules",
+        "kind": "mixed_norm_and_runtime_candidate",
+        "source_ref": "src.combat_system.weapon-danger.v-current"
+      },
+      {
+        "path": "execution.weapon_capability_mapping.catalog_row_candidates",
+        "kind": "normative_example_matched_to_candidate_catalog_identity",
+        "source_ref": "src.combat_system.weapon-danger.v-current"
+      },
+      {
+        "path": "execution.health_transition.body_initialization.profile_mapping.output_profile.metrics.health.candidate_value",
+        "kind": "game_calibration",
+        "label_internal_only": "D71",
+        "source_refs": [
+          "src.body-state-metric-bounds.v-current",
+          "src.body-profile-first-playable-scope.v1"
+        ],
+        "rationale": "upper ordinary starting-health proposal anchored by analogy to the scoped first-playable body_profile; not an injury-free historical claim and not a runtime fallback",
+        "allowed_bounds": [
+          80,
+          100
+        ]
+      },
+      {
+        "path": "execution.health_transition.body_initialization.profile_mapping.output_profile.metrics.energy.candidate_value",
+        "kind": "game_calibration",
+        "label_internal_only": "D71",
+        "source_refs": [
+          "src.body-state-metric-bounds.v-current",
+          "src.body-profile-first-playable-scope.v1",
+          "src.character-parameters-guide.v-current"
+        ],
+        "rationale": "at endurance 10, proposal 80 is anchored by analogy to the scoped first-playable body_profile; a +2 energy points per endurance point slope is an explicit gameplay hypothesis inspired by endurance semantics in the domain guide, not a source-derived coefficient",
+        "allowed_bounds": [
+          60,
+          100
+        ]
+      },
+      {
+        "path": "execution.health_transition.body_initialization.profile_mapping.output_profile.metrics.satiety.candidate_value",
+        "kind": "game_calibration",
+        "label_internal_only": "D71",
+        "source_refs": [
+          "src.body-state-metric-bounds.v-current",
+          "src.body-profile-first-playable-scope.v1"
+        ],
+        "rationale": "ordinary initial satiety proposal anchored by analogy to the scoped first-playable body_profile; exact value is a gameplay calibration, not a generic approved profile",
+        "allowed_bounds": [
+          60,
+          100
+        ]
+      },
+      {
+        "path": "durations.per_action_profiles[0].duration_minutes",
+        "kind": "game_calibration",
+        "label_internal_only": "D71",
+        "source_ref": "src.duration.calibration.v1",
+        "bounds_seconds": [
+          5,
+          10
+        ],
+        "rationale": "bounded play-pacing comparison; one resolved attack step in 5–10 seconds, with 6 seconds as initial proposal; not historical measurement",
+        "allowed_bounds_seconds": [
+          5,
+          10
+        ]
+      }
+    ],
+    "rule": "No combat values are imported from Lower Dvina, catalog candidates, research measurements, or fixtures. Existing active norm/runtime rules are copied with scope caveats; new duration is an explicit unbenchmarked D71 gameplay calibration proposal.",
+    "calibration": "D71 required; internal metadata only, never model-facing or player-facing",
+    "author_is_approver": false,
+    "approval_record": null
+  },
+  "gates": [
+    "source/version per field",
+    "stable refs and applicability",
+    "no scenario fallback",
+    "exact duration per supported time-bearing action",
+    "rational sub-minute time-owner/DTO handoff",
+    "NPC perception and movement feasibility owner approval",
+    "independent D67 approval",
+    "D41 for model-facing calibration where applicable",
+    "Contract Auditor when triggered"
+  ]
+}

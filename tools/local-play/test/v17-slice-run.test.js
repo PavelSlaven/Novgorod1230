@@ -5,9 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { EXIT, PreflightError, UsageError, createFinalizers, describeServerError, installLlmMeter, parseArgs,
-  readLlmSettingsRecord, runHarness } from '../v17-slice-run.mjs';
-import { RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
+import { EXIT, PreflightError, UsageError, createFinalizers, describeServerError, installLlmMeter, parseArgs, summarizeLlm,
+  createHttpApi, readLlmSettingsRecord, runHarness } from '../v17-slice-run.mjs';
+import { capturePeoplePanel, RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
 import { createRedactor, d49MinimumOf, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '../v17-slice-report.js';
 
 const SECRET_KEY = 'sk-test-secret-key-0123456789';
@@ -111,7 +111,10 @@ function sampleReport(extra = {}) {
 
 test('markdown has the README sections, the screen verbatim, the WK stub note and no secrets', () => {
   const redact = createRedactor([SECRET_KEY, SECRET_URL]);
-  const md = renderPlaytestMarkdown(sampleReport({ infra_error: `boom ${SECRET_KEY}` }), redact);
+  const md = renderPlaytestMarkdown(sampleReport({ infra_error: `boom ${SECRET_KEY}`,
+    transport_errors: [{ method: 'GET', path: '/api/v1/parties/:party_id/screen',
+      phase: 'screen_after_turn', leg: 'walk', turn: 7,
+      cause: { name: 'TypeError', message: 'fetch failed', cause_code: 'ECONNREFUSED' } }] }), redact);
   for (const heading of ['## Identity', '## Preconditions', '## Gameplay transcript', '## Persistence/readback', '## Findings', '## Result']) {
     assert.ok(md.includes(heading), heading);
   }
@@ -128,6 +131,7 @@ test('markdown has the README sections, the screen verbatim, the WK stub note an
   assert.ok(md.includes('**PARTIAL**'));
   assert.ok(md.includes('D49 minimum (start, walk, meet, talk и take или make): **PARTIAL**'));
   assert.ok(md.includes('Строгий результат: **PARTIAL**'));
+  assert.match(md, /GET \| \/api\/v1\/parties\/:party_id\/screen \| screen_after_turn \| walk \| 7 \| TypeError: fetch failed: ECONNREFUSED/u);
   assert.ok(md.includes('позиция s1') === false && md.includes('@arrival → cg5v3__x_r2_work_storage@departure'));
   assert.equal(md.includes(SECRET_KEY), false);
   assert.ok(md.includes('/srv/x/llm-settings.json'), 'the settings path is allowed in the report');
@@ -149,14 +153,20 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   const effectiveNpcSite = npcSite ?? (npcAtStart ? 'A' : npcAtDestination ? 'B' : null);
   const npcHere = () => w.site === effectiveNpcSite;
   const snap = () => ({ state_version: w.sv, player_character_ref: { entity_kind: 'player_character', entity_id: 'c' },
-    position: { slot: w.slot, site_id: w.site, canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : w.site === 'B' ? 'forest_path' : 'river_bank'}` },
+    position: { slot: w.slot, site_id: w.site, position_id: `position:${w.site}`,
+      g6_instance_id: `g6:${w.site}`,
+      canonical_g5: `cg5v3__x_r2_${w.site === 'A' ? 'work_storage' : w.site === 'B' ? 'forest_path' : 'river_bank'}` },
     placements_here: npcHere() && !hideSqlPeople ? [{ entity_kind: 'npc', entity_id: 'npc1' }] : [],
+    npc_placements_all: effectiveNpcSite == null ? [] : [{ entity_id: 'npc1',
+      position_id: `position:${effectiveNpcSite}`, g6_instance_id: `g6:${effectiveNpcSite}` }],
     items: items(), party_items: w.made, npc_statements: w.statements,
     resource_nodes: resourceSites.map((site) => ({
       resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
     })) });
   const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']
     : w.site === 'B' && routeThroughC ? ['Дальше'] : (hideReturnPassage ? [] : ['Назад']),
+    visible_context: { schema: 'visible_context_package', visible_npc: npcHere()
+      ? [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc1' }, display_label: 'человек' }] : [] },
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
@@ -208,7 +218,49 @@ test('legs: a working world passes every leg with the exact phrases of the plan'
   assert.deepEqual(world.w.turns, ['Тропа', 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
   assert.ok(world.w.turns.indexOf('Тропа') < world.w.turns.findIndex((text) => /^Здоров/u.test(text)));
   assert.equal(result.turns.every(({ ms }) => Number.isFinite(ms)), true);
+  const movement = result.turns.find(({ input }) => input === 'Тропа');
+  assert.deepEqual(movement.current_visible_context.before.visible_npc, []);
+  assert.equal(movement.current_visible_context.after.visible_npc[0]
+    .entity_ref.entity_id, 'npc1');
   assert.equal(exitCodeOf(result.legs), EXIT.PASS);
+});
+
+test('legs: fetch failures record request and phase without changing the blocked turn', async () => {
+  const failure = () => new TypeError('fetch failed', {
+    cause: Object.assign(new Error('connect ECONNREFUSED'), { code: 'ECONNREFUSED' })
+  });
+  const rejectedApi = createHttpApi('http://127.0.0.1:1', async () => {
+    throw failure();
+  });
+
+  const turnWorld = fakeWorld();
+  turnWorld.api.turn = (...args) => rejectedApi.turn(...args);
+  const turnResult = await runFake(turnWorld);
+  assert.equal(turnResult.transport_errors[0].method, 'POST');
+  assert.equal(turnResult.transport_errors[0].path,
+    '/api/v1/parties/:party_id/turns');
+  assert.equal(turnResult.transport_errors[0].phase, 'turn');
+  assert.equal(turnResult.transport_errors[0].leg, 'walk');
+  assert.equal(turnResult.transport_errors[0].turn, 1);
+  assert.equal(turnResult.transport_errors[0].cause.cause_code, 'ECONNREFUSED');
+  assert.equal(turnResult.legs.find(({ id }) => id === 'walk').status, 'blocked');
+  assert.equal(turnResult.turns.length, 0, 'failed transport does not fabricate an HTTP turn');
+
+  const screenWorld = fakeWorld();
+  const screen = screenWorld.api.screen;
+  let screenCalls = 0;
+  screenWorld.api.screen = (...args) => {
+    screenCalls += 1;
+    return screenCalls === 3 ? rejectedApi.screen(...args) : screen(...args);
+  };
+  const screenResult = await runFake(screenWorld);
+  assert.equal(screenResult.transport_errors[0].method, 'GET');
+  assert.equal(screenResult.transport_errors[0].path,
+    '/api/v1/parties/:party_id/screen');
+  assert.equal(screenResult.transport_errors[0].phase, 'screen_after_turn');
+  assert.equal(screenResult.transport_errors[0].leg, 'walk');
+  assert.equal(screenResult.transport_errors[0].turn, 1);
+  assert.equal(screenResult.turns.length, 0, 'failed screen read does not fabricate a completed turn');
 });
 
 test('legs: a spot that shows no passages is looked at twice, then walk fails with the reason', async () => {
@@ -379,7 +431,9 @@ test('meter: counts LLM calls by role without content and turns the masked serve
   const meter = installLlmMeter({ log });
   try {
     await globalThis.fetch('http://x.invalid', { body: JSON.stringify({ messages: [{ role: 'system', content: 'Return a valid json object. Return only {"pass":true}' }] }) });
-    assert.deepEqual([meter.count(), meter.calls[0].role, meter.calls[0].status], [1, 'Return only {"pass":true}', 200]);
+    meter.telemetry.onCall({ roleId: 'turn_step_planner', durationMs: 123, status: 'ok' });
+    assert.deepEqual([meter.count(), meter.calls[0].status, meter.roleCalls[0]], [1, 200,
+      { role_id: 'turn_step_planner', ms: 123, status: 'ok' }]);
     assert.equal(JSON.stringify(meter.calls).includes('messages'), false);
     const error = Object.assign(new Error('Turn-step plan is invalid.'), { code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{ code: 'identity_shape' }, {}] } });
     log.error('[game-server] request abc failed', error);
@@ -391,6 +445,31 @@ test('meter: counts LLM calls by role without content and turns the masked serve
   assert.equal(globalThis.fetch, stub, 'restore puts fetch back');
   assert.equal(log.error, originalError, 'restore puts console.error back');
   globalThis.fetch = real;
+});
+
+test('people panel capture keeps raw visibility, counts and NPC ids only', () => {
+  const capture = capturePeoplePanel({ panels: { people: { visible: false, data: {
+    visible_npcs: [{ label: 'person' }, { label: 'second' }], people: [{ label: 'person' }, { label: 'second' }],
+    active_interlocutor: { entity_id: 'npc-2' }
+  } } }, visible_context: { visible_npc: [{ entity_ref: { entity_id: 'npc-2' } }] } },
+  { placements_here: [{ entity_kind: 'npc', entity_id: 'npc-2' }, { entity_kind: 'player_character', entity_id: 'pc' }] });
+  assert.deepEqual(capture, { panel_exists: true, visible: false, visible_npcs_count: 2, people_count: 2,
+    active_interlocutor_exists: true, placement_npc_ids: ['npc-2'], visible_context_npc_ids: ['npc-2'] });
+  assert.deepEqual(capturePeoplePanel(null), { panel_exists: false, visible: null, visible_npcs_count: 0,
+    people_count: 0, active_interlocutor_exists: false, placement_npc_ids: [], visible_context_npc_ids: [] });
+});
+
+test('LLM timing summary groups by canonical role_id and measures share of turn time', () => {
+  const summary = summarizeLlm([{ status: 200 }], [
+    { role_id: 'planner', ms: 20 }, { role_id: 'planner', ms: 40 }, { role_id: 'narrator', ms: 10 }
+  ], [{ ms: 100, llm_role_calls: [
+    { role_id: 'planner', ms: 20 }, { role_id: 'planner', ms: 40 }, { role_id: 'narrator', ms: 10 }
+  ] }]);
+  assert.deepEqual(summary.by_role, { planner: 2, narrator: 1 });
+  assert.deepEqual(summary.by_role_timing, {
+    planner: { count: 2, sum_ms: 60, p50_ms: 20, p95_ms: 40, turn_time_share: 0.6 },
+    narrator: { count: 1, sum_ms: 10, p50_ms: 10, p95_ms: 10, turn_time_share: 0.1 }
+  });
 });
 
 // ---------- cleanup ----------
@@ -407,21 +486,41 @@ test('finalizers all run in reverse order even when one throws, and only once', 
   assert.deepEqual(order, ['c', 'a']);
 });
 
-function fakeDeps(order, { rootFails = false, legsFail = false } = {}) {
+function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = false } = {}) {
   const world = fakeWorld();
+  let roleTelemetry = null;
+  let sceneProjectionCapture = null;
   return {
     postgresImage: 'postgres:16.14-alpine',
     routeLabels: world.routeLabels,
     loadSettings: async () => ({ version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible', base_url: SECRET_URL, model: 'qwen', api_key: SECRET_KEY } }),
     bootstrap: async () => ({ container: `v17-slice-test-none-${process.pid}`, partyPool: {}, dispose: async () => { order.push('dispose'); } }),
     createLlmOwner: async () => ({}),
-    createRoot: async () => {
+    createRoot: async ({ telemetry, onNpcSceneProjection }) => {
+      roleTelemetry = telemetry;
+      sceneProjectionCapture = onNpcSceneProjection;
       if (rootFails) throw new Error(`root broke ${SECRET_KEY}`);
       return { runtime: { close: async () => { order.push('root'); } } };
     },
     startServer: async () => ({ url: 'http://127.0.0.1:1', close: async () => { order.push('server'); } }),
-    createApi: () => ({ ...world.api, health: async () => ({ ok: true, status: 200 }),
-      ...(legsFail ? { newGame: async () => { throw new Error('leg exploded'); } } : {}) }),
+    createApi: () => {
+      const turn = world.api.turn;
+      return { ...world.api, health: async () => ({ ok: true, status: 200 }),
+        async turn(...args) {
+          roleTelemetry?.onCall({ roleId: 'turn_step_planner', durationMs: 125, status: 'ok' });
+          sceneProjectionCapture?.({ request_id: args[1]?.request_id,
+            before: { projection_npc_ids: ['npc-old'] },
+            after: { projection_npc_ids: ['npc-new'] } });
+          if (transportFail) {
+            const error = new Error('fetch failed');
+            error.transport = { method: 'POST', path: '/api/v1/parties/:party_id/turns',
+              request_id: 'slice-test-1', elapsed_ms: 3,
+              cause: { name: 'TypeError', message: 'fetch failed', cause_code: 'ECONNREFUSED' } };
+            throw error;
+          }
+          return turn(...args);
+        }, ...(legsFail ? { newGame: async () => { throw new Error('leg exploded'); } } : {}) };
+    },
     createSql: () => world.sql
   };
 }
@@ -436,8 +535,24 @@ test('runHarness: happy path writes report.json and playtest, then cleans in rev
     assert.deepEqual(report.d49_minimum, { status: 'PASS', item_leg: 'take' });
     assert.deepEqual(order, ['server', 'root', 'dispose']);
     assert.equal(report.legs.every(({ status }) => status === 'pass'), true);
+    const capturedTurn = report.turns.find(({ n }) => n === 1);
+    assert.equal(capturedTurn.current_visible_context.after.schema,
+      'visible_context_package');
+    assert.deepEqual(capturedTurn.npc_scene_projection_diagnostics[0]
+      .after.projection_npc_ids, ['npc-new']);
+    assert.equal(capturedTurn.after.position.position_id, 'position:B');
+    assert.equal(capturedTurn.after.position.g6_instance_id, 'g6:B');
+    assert.equal(capturedTurn.after.npc_placements_all[0].position_id,
+      'position:B');
     const json = await readFile(join(dir, 'report.json'), 'utf8');
-    assert.deepEqual(JSON.parse(json).d49_minimum, { status: 'PASS', item_leg: 'take' });
+    const saved = JSON.parse(json);
+    assert.deepEqual(saved.d49_minimum, { status: 'PASS', item_leg: 'take' });
+    assert.ok(saved.llm.by_role_timing['turn_step_planner'].count > 0);
+    assert.deepEqual(saved.turns.find(({ n }) => n === 1)
+      .npc_scene_projection_diagnostics[0].before.projection_npc_ids,
+    ['npc-old']);
+    assert.equal(saved.llm.by_role_timing['turn_step_planner'].sum_ms,
+      saved.llm.by_role_timing['turn_step_planner'].count * 125);
     assert.equal(json.includes(SECRET_KEY) || json.includes(SECRET_URL), false);
     const [file] = await readdir(join(dir, 'pt'));
     assert.match(file, /^\d{4}-\d{2}-\d{2}_rt-harness_[0-9a-f]{8}_v17-slice-happy\.md$/u);
@@ -467,6 +582,25 @@ test('runHarness: an exception inside a leg is contained, the run still cleans u
     assert.equal(code, EXIT.LEGS);
     assert.equal(report.legs.find(({ id }) => id === 'start').reason, 'leg exploded');
     assert.deepEqual(order, ['server', 'root', 'dispose']);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('runHarness: transport diagnostics reach JSON and playtest report', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'v17-slice-test-'));
+  try {
+    const order = [];
+    const options = parseArgs(['--out-dir', dir, '--playtest-dir', join(dir, 'pt'), '--run-id', 'transport'], {});
+    const { code, report } = await runHarness(options,
+      fakeDeps(order, { transportFail: true }),
+      { env: { RUS_LLM_SETTINGS_PATH: '/p' } });
+    assert.equal(code, EXIT.LEGS);
+    assert.equal(report.transport_errors[0].phase, 'turn');
+    assert.equal(report.transport_errors[0].turn, 1);
+    const json = await readFile(join(dir, 'report.json'), 'utf8');
+    assert.equal(JSON.parse(json).transport_errors[0].cause.cause_code, 'ECONNREFUSED');
+    const [file] = await readdir(join(dir, 'pt'));
+    const markdown = await readFile(join(dir, 'pt', file), 'utf8');
+    assert.match(markdown, /POST \| \/api\/v1\/parties\/:party_id\/turns \| turn \| walk \| 1 \| TypeError: fetch failed: ECONNREFUSED/u);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 

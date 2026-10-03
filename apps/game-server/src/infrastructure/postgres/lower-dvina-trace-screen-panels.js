@@ -25,11 +25,8 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     ? structuredClone(previousPeople.data) : {};
   delete peopleData.active_interlocutor;
   delete peopleData.visible_npcs;
-  const nearbyNpcIds = new Set((projection.npcs ?? []).map((npc) =>
-    npc.instance_id ?? npc.actor_id ?? npc.npc_id).filter(Boolean));
   const visibleNpcs = distinctNpcLabels(
-    (projection.current_visible_context?.visible_npc ?? [])
-      .filter((npc) => nearbyNpcIds.has(npc.entity_ref?.entity_id)));
+    projection.current_visible_context?.visible_npc ?? []);
   if (visibleNpcs.length > 0) {
     peopleData.visible_npcs = visibleNpcs.map((npc) => {
       const appearance = playerSafeAppearanceSummary(npc);
@@ -50,7 +47,7 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   }
   if (Object.keys(peopleData).length > 0) {
     panels.people = createPeoplePanel(peopleData, {
-      visible: activeInterlocutor !== null || previousPeople?.visible !== false
+      visible: visibleNpcs.length > 0 || activeInterlocutor !== null
     });
   } else {
     delete panels.people;

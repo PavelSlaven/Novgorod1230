@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { SCENE_NPC_SOURCE, withSceneNpcs, withoutSceneNpcs } from
   '../src/infrastructure/postgres/scene-npcs-readback.js';
+import { projectPreparedDomainState } from
+  '../src/runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { routineNpcSnapshot, withoutSceneRead } from '../src/runtime/lower-dvina-trace-scene-presence.js';
 import { bindLowerDvinaTraceTurnStepIdempotency } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-idempotency.js';
@@ -37,6 +39,58 @@ test('scene NPCs are read from the database for the current site with the G6', a
   assert.equal(loaded.location_profile_ref, 'loc');
   assert.equal(loaded.runtime_source, SCENE_NPC_SOURCE);
   assert.equal(state.npcs.length, 2);
+});
+
+test('prepared destination readback exposes scene NPCs on arrival and next-turn reload', async () => {
+  const transition = { destination_site_id: 'site:destination',
+    destination_g6_instance_id: 'g6:destination',
+    to_position_ref: 'pos:destination' };
+  const committed = {
+    actor_id: 'player',
+    position: { location_ref: 'source', site_id: 'site:source',
+      g5_anchor_id: 'anchor:source', g5_node_id: 'node:source',
+      position_id: 'pos:source', g6_id: 'g6:source' },
+    prepared_scenes: [{ location_profile_ref: 'destination',
+      node: { instance_id: 'node:destination' },
+      anchor: { instance_id: 'anchor:destination',
+        state: { zone_ref: 'zone:destination' } } }],
+    npcs: [],
+    clock: { whole_minutes: '0', subminute_numerator: '0',
+      subminute_denominator: '1' },
+    clock_weather_light: { clock: { whole_minutes: '0',
+      subminute_numerator: '0', subminute_denominator: '1' } },
+    body_state: {}
+  };
+  const effect = { consequence: { movement: { route_ref: 'route:destination',
+    source: { location_ref: 'source' }, destination: {
+      location_ref: 'destination', g5_anchor_id: 'anchor:destination',
+      scene_position_id: 'pos:destination' } }, position_transition: transition },
+  time_update: { clock_after: committed.clock, temporal_results: [] },
+  body_update: { state_after: {} } };
+  const destination = projectPreparedDomainState(committed, effect);
+  assert.deepEqual([destination.position.site_id,
+    destination.position.position_id, destination.position.g6_instance_id],
+  ['site:destination', 'pos:destination', 'g6:destination']);
+
+  const destinationPool = pool([row('npc_destination', {
+    position_id: 'pos:destination', g6_instance_id: 'g6:destination' })], [
+    { id: 'pos:destination', g6_instance_id: 'g6:destination' }
+  ]);
+  const arrival = await withSceneNpcs(destinationPool, 'party', destination);
+  const npc = arrival.npcs.find(({ instance_id: id }) =>
+    id === 'npc_destination');
+  assert.equal(npc.runtime_source, SCENE_NPC_SOURCE);
+  assert.equal(npc.g6_instance_id, 'g6:destination');
+  assert.deepEqual(destinationPool.calls.map(({ values }) => values), [
+    ['party', 'site:destination'], ['party', 'site:destination']
+  ]);
+
+  const nextTurn = await withSceneNpcs(destinationPool, 'party',
+    withoutSceneNpcs(arrival));
+  assert.equal(nextTurn.npcs.some(({ instance_id: id }) =>
+    id === 'npc_destination'), true);
+  assert.equal(nextTurn.scene_position_g6['pos:destination'],
+    'g6:destination');
 });
 
 test('existing records win by instance_id; no site or no rows leaves the state alone', async () => {

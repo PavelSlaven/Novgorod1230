@@ -2,13 +2,24 @@
 
 ## Unreleased
 
-- feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability deferred pending the leap-year calendar fix) (#227)
+- feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability remains deferred after calendar-leap fix) (#227)
+- docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
+- fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- feat(materialization): O1 v1 — approved applicability selector (75 rules, 4 tuples) makes template closure strict only for the selected tuple and rule; everything else keeps the generic presence path (#133)
+- feat(economy): pure @rus/economy owner — exact rational currency conversion by approved region/date/unit rates, one final half-up, unresolved/conflict/invalid outcomes, local-sum render without rates or metadata; no wiring yet (#184)
+- docs(corpus): §9 adds exact scoped currency conversion and confirmed local-sum handoff (#184)
+- feat(materialization): O1 typed-gap seam — first-arrival item rules can require template-backed item refs; a rule without a template yields a fail-closed typed gap before seed and RNG; zero or missing discovery weights are a typed gap; the wave validator rejects non-array variants (#163)
+- docs(tech-debt): record seasonal NPC schedule handoff gap; LW-123 added (#98)
+- docs(corpus): D72 — чистота служебной маркировки в model-facing и отображаемом тексте; правило публичной границы и ссылка Narration/UI в CONTRACT_INDEX (#98)
+- docs(docs): добавлены шаблоны ADR/MODULE, навигация каталога стендов и уточнения текущего среза (#112, #121, #181, #216, #228)
+- fix(game-base): make generators reproducible from tracked inputs and add read-only `--check` support (#201)
 - docs(governance): PC §8.1 — a scenario is a plot laid through the free world: it defines only plot NPCs, facts, scenes, items and completion; it owns no mechanics (time, body, combat, checks, perception, conversation, knowledge and lies, materialization, ownership, movement stay with their general owners and work the same inside and outside a scenario); finishing a plot does not end the game (owner decision D66) (#226)
 - docs(governance): PC §4/§9.1 — anachronism is excluded only from world stock; an actor’s making and invention are decided causally (materials, tool, skill, workable process), not by an anachronism list (D59) (#218)
 - docs(sprint, process): CURRENT_SPRINT and HOW_WE_WORK brought to owner decisions D51–D57 and the next step of the D49 slice (#217)
 - fix(turn): gate2-2 intercepts reality-limited achieved empty direct plans before semantic audit, cleans repair-selected not_achieved metadata and traces only accepted-attempt canonicalizations (LW-103 updated)
+- feat(perception): D66 issue #225 v17 post-action perception path; profile approval pending (#98)
 - fix(test): PostgreSQL test containers are awaited over TCP (pg_isready -h 127.0.0.1) so the temporary initdb server is no longer taken for ready; fixes Stage24 line 92 and the same race in 26 fixtures (#98)
 - fix(test): orphan test-container reaper is PID-namespace aware — removes only dead owners from its own namespace; foreign-namespace, legacy pid-only and unreadable owner labels are kept (fail-closed), so parallel PG runs are no longer killed (#98)
 - data(start-types): D62 — сад, бортничество и каменоломня «не применим по имеющимся данным», песок — кандидат; evidence-tooling; только кандидат, без активации

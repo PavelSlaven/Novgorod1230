@@ -1,13 +1,17 @@
 // Deterministic extraction: peoples_origins candidate table, combining
 // costume foreigner_profiles.csv (10 groups, candidate) and
 // rus13 novgorod_neighbor_regions_v1.json (6 neighbor regions, draft).
-// Both are read-only reference sources copied/available under sources_copied.
+// Both are read-only reference sources available in this checkout.
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const FOREIGNERS = "C:/Users/Slaven/Documents/Novgorod-game-base/data/world-catalogs/novgorod/sources/costume-dataset-v1/data/foreigner_profiles.csv";
-const NEIGHBORS = "C:/Users/Slaven/Documents/Одним ПРОМТОМ/data/rus13-base-staging/nov_region_audit/novgorod_neighbor_regions_v1.json";
-const OUT_DIR = path.resolve(new URL(".", import.meta.url).pathname.replace(/^\/([A-Za-z]):/, "$1:"), "../peoples_origins");
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(SCRIPT_DIR, "../../../../../../");
+const FOREIGNERS = path.resolve(REPO_ROOT, "data/world-catalogs/novgorod/sources/costume-dataset-v1/data/foreigner_profiles.csv");
+const NEIGHBORS = path.resolve(SCRIPT_DIR, "../../../sources/names-peoples-build-inputs-v1/novgorod_neighbor_regions_v1.json");
+const OUT_DIR = path.resolve(SCRIPT_DIR, "../peoples_origins");
+const CHECK_ONLY = process.argv.includes("--check");
 
 function parseCsv(text) {
   const rows = [];
@@ -234,8 +238,16 @@ for (const p of BOOK_ATTESTED_PEOPLES) {
   ]);
 }
 
-fs.mkdirSync(OUT_DIR, { recursive: true });
 const csv = [outHeader.join(","), ...rows.map((r) => r.map(csvEsc).join(","))].join("\n") + "\n";
-fs.writeFileSync(path.join(OUT_DIR, "peoples_origins.csv"), csv, "utf8");
+const outputPath = path.join(OUT_DIR, "peoples_origins.csv");
+if (CHECK_ONLY) {
+  if (!fs.existsSync(outputPath) || fs.readFileSync(outputPath, "utf8") !== csv) {
+    console.error("peoples_origins.csv is stale; run without --check to rebuild");
+    process.exitCode = 1;
+  }
+} else {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.writeFileSync(outputPath, csv, "utf8");
+}
 
 console.log(`peoples_origins.csv rows: ${rows.length} (foreigner groups: ${fRows.length}, neighbor lands: ${neighbors.length}, book-attested peoples: ${BOOK_ATTESTED_PEOPLES.length})`);

@@ -41,6 +41,7 @@ export async function materializeLowerDvinaTraceParty({
   actorBaseAttributesBinding = null,
   approvedActorCatalog = null,
   verified_procedural_compiled_catalog: verifiedProceduralCompiledCatalog = null,
+  initialHistoricalEventsLoader = async () => [],
   repository,
   stage25Ports,
   stage24Auditor = auditPartyDbWritePlanByCode,
@@ -69,6 +70,7 @@ export async function materializeLowerDvinaTraceParty({
     actorBaseAttributesBinding,
     approvedActorCatalog,
     verifiedProceduralCompiledCatalog,
+    initialHistoricalEventsLoader,
     repository,
     stage25Ports,
     stage24Auditor,
@@ -86,7 +88,7 @@ export async function materializeLowerDvinaTraceParty({
   }
 }
 
-async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, domainCatalog, actorBaseAttributesBinding, approvedActorCatalog, verifiedProceduralCompiledCatalog, repository, stage25Ports, stage24Auditor, worldKnowledge, scenarioBundleLoader, materializePartyInstance, validatePlayerDossier, rootDir }) {
+async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, domainCatalog, actorBaseAttributesBinding, approvedActorCatalog, verifiedProceduralCompiledCatalog, initialHistoricalEventsLoader, repository, stage25Ports, stage24Auditor, worldKnowledge, scenarioBundleLoader, materializePartyInstance, validatePlayerDossier, rootDir }) {
   if (typeof domainCatalogPinLoader !== 'function') {
     fail('TRACE_PHASE_1A_DOMAIN_CATALOG_PIN_MISSING', 'The active item/container domain catalog pin loader is required before materialization.');
   }
@@ -121,6 +123,14 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
   const materialization = materializeInitialActorEquipment(
     authoredMaterialization
   );
+  const historicalEvents = await initialHistoricalEventsLoader({
+    clock: materialization.immediate.timestamp,
+    request: structuredClone(request)
+  });
+  if (!Array.isArray(historicalEvents)) {
+    fail('TRACE_PHASE_1A_HISTORICAL_EVENTS_INVALID',
+      'Initial historical event projection must be an array.');
+  }
   const semantic = validatePlayerDossier(materialization, bundle);
   const sealedSelectionClosure = {
     version: 1,
@@ -147,6 +157,7 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     idempotency_key: request.idempotency_key,
     request_id: request.idempotency_key,
     commit_mode: 'internal_materialization',
+    historical_events: structuredClone(historicalEvents),
     domain_catalog_pin: structuredClone(domainCatalogPin),
     actor_base_attributes_catalog_pin:
       structuredClone(actorBaseAttributesBinding?.pin),

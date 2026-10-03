@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { canonicalDigest, isO1PresenceRecord } from '@rus/materialization';
 
@@ -62,7 +63,7 @@ async function loadG6AggregateAtCanonicalG5(partyPool, partyId, canonicalG5Id) {
 
 async function loadG6AggregateAtGeneratedSite(partyPool, partyId) {
   return (await partyPool.query(
-    `SELECT a.aggregate_payload, a.state_version
+    `SELECT a.aggregate_payload, a.state_version, g5.canonical_g5_ref, g5.origin
        FROM party_runtime.party_ordinary_materialization_aggregates a
        JOIN party_runtime.party_g6_instances g6
          ON g6.party_id=a.party_id AND g6.id=a.scope_id AND a.scope_kind='g6'
@@ -140,10 +141,18 @@ test('start site: presence at new game, reload and re-look without reroll',
 test('generated G5: cross-site movement commits presence rules on first entry', { timeout: 1_800_000 },
   async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    const restoreFetch = installPresenceProductionE2eFetch();
+    const movementLog = [];
+    const restoreFetch = installPresenceProductionE2eFetch({ movementLog });
     t.after(() => restoreFetch());
     const { runtime } = await createPresenceProductionRoot(env);
     try {
+      const selector = JSON.parse(await readFile(
+        'data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-applicability-selector-v1.json',
+        'utf8'));
+      const o1RuleRefs = new Set(selector.applicability.rule_refs.map(({ rule_id, rule_version }) =>
+        `${rule_id}@${rule_version}`));
+      const selectedG5Refs = new Set(selector.applicability.selectors
+        .map(({ canonical_g5_ref }) => canonical_g5_ref));
       const partyId = await publicStartScenario(runtime, 'novgorod_riverbank_approach_v1');
       await walkRouteUntil({
         runtime,
@@ -159,8 +168,17 @@ test('generated G5: cross-site movement commits presence rules on first entry', 
           return site?.origin === 'generated';
         },
       });
+      assert.ok(movementLog.some(({ movement_kind, route_ref }) =>
+        movement_kind === 'route' && typeof route_ref === 'string'),
+      'production-root path must traverse a directional exit');
       const generatedRow = await loadG6AggregateAtGeneratedSite(env.partyPool, partyId);
       assert.ok(generatedRow?.aggregate_payload, 'generated site must commit ordinary aggregate');
+      assert.equal(generatedRow.origin, 'generated');
+      const generatedG5Ref = generatedRow.canonical_g5_ref?.entity_id
+        ?? generatedRow.canonical_g5_ref?.id
+        ?? (typeof generatedRow.canonical_g5_ref === 'string' ? generatedRow.canonical_g5_ref : null);
+      assert.equal(selectedG5Refs.has(generatedG5Ref), false,
+        'directional destination must be outside the four O1 selector G5 tuples');
       const generatedRuleRefs = presenceRuleRows(generatedRow.aggregate_payload)
         .map((row) => row.rule_ref)
         .filter((ref) => typeof ref === 'string');
@@ -168,6 +186,8 @@ test('generated G5: cross-site movement commits presence rules on first entry', 
         generatedRuleRefs.length > 0,
         'generated site first entry should commit presence rule resolutions',
       );
+      assert.ok(generatedRuleRefs.every((ref) => !o1RuleRefs.has(ref)),
+        'outside-tuple generated G5 must keep generic presence rules outside the O1 selector');
     } finally {
       await runtime.close();
     }

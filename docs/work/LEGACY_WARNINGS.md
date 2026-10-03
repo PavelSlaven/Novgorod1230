@@ -70,7 +70,7 @@
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 073 | acceptance `revision 35 survives production restart` | лимит test1 450s — headroom от базы ~266s (`162a86b9`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | восприятие NPC вне разговора в live world выключено (`post_action_perception_profile: null`) — подключение в M4 | — |
+| 074 | `lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`), `lower-dvina-trace-post-applied-actor-step.js` | post-action perception: реплики игрока, same-position listeners; без G6 propagation и reaction boundary — волна 2 (#225) | — |
 | 075 | `spatial-v3-current-visibility-provider.js`, `spatial-v3-proposed-visible-sources.js` | runtime читает `m2c-local-edge-labels`/`m2c-exit-labels`/`m2c-pass-target-labels` файлами напрямую, мимо `world_base` | [#160](https://github.com/PavelSlaven/Novgorod1230/issues/160) |
 | 076 | `tools/spatial-v3/p12-authoring-importer.mjs`, `m2c-npc-wave-bundle-validation.mjs`, `infra/world-base/schema/28.sql`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js` | m2c-npc-wave: readback обязателен; D-1/D-2 в 28.sql; bootstrap импортирует волну этапом (D27) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 077 | `packages/materialization/src/presence-rules-first-arrival.js`, `packages/runtime-catalog/src/m2c-npc-wave-readers.js`, PG-тесты presence | R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
@@ -356,7 +356,7 @@
 
 ### LW-062 — событийная точность WK только через условия событий
 - **Где.** `applicability.conditions.started_historical_events` в WK; события — `@rus/time-events-history` / импорт истории.
-- **Как жить.** WK не несёт день и месяц. Claim о событии внутри года закрывать условием события. При импорте истории завести `novgorod_famine_1230` (с 14.09.1230 по D19/D22), `novgorod_upheaval_december_1230` и поздние события голода отдельными id. Добавить скриптовую проверку, что event id из WK существует.
+- **Как жить.** WK не несёт день и месяц. Claim о событии внутри года закрывать условием события. При импорте истории завести `novgorod_famine_1230` (с 14.09.1230 по D19/D22), `novgorod_upheaval_december_1230` и поздние события голода отдельными id. Декабрьское событие пока ждёт утверждённой даты. Добавить скриптовую проверку, что event id из WK существует.
 - **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
 
 ### LW-063 — role_bound почти недостижим
@@ -426,18 +426,18 @@
 
 ### LW-077 — R-2a presence consumer: discovery weights, subcategory, subregion, legacy region id в данных
 - **Где.** `packages/materialization/src/presence-rules-first-arrival.js` (`choosePresenceDiscoveryMode`, `resolve_presence_rule` → `subcategory_ref: null`); `pickRegionalPresenceRule` / `loadG0RegionIdForSpatialNode` (`packages/runtime-catalog/src/m2c-npc-wave-readers.js`); PG wave slice: `test/spatial-v3/presence-rules-first-arrival-postgres.test.js` (`setupWorldPool`, UPDATE после import), `test/spatial-v3/presence-rules-composition-postgres.test.js` (`setupWorldPool`, тот же UPDATE); счётчик `tools/spatial-v3/count-presence-rules-roll-sites.mjs` (регион `region_novgorod_land`).
-- **N8 / discovery.** Пустые `entry_exposed_weight` / `search_concealed_weight` при обоих режимах трактуются как **exposed** (null → 1 в draw, см. LW-068). Отдельный committed шаг «скрытое наличие» / concealed discovery не реализован в R-2a path — только явный `discovery_mode` в записи броска.
+- **N8 / discovery.** Для item-producing правил (`item_ref` или непустые `variants`) оба допустимых режима с пустыми `entry_exposed_weight` / `search_concealed_weight` дают weighted draw 1:1 по ACTIVE §8.1:234; нулевые оба веса или отсутствующие режимы — typed gap/fail-closed. Не-item правила (без `item_ref` и `variants`) не задают discovery-поля и фиксируют `discovery_mode=exposed` без chooser/RNG. Отдельный committed шаг «скрытое наличие» / concealed discovery по-прежнему не реализован вне сохранённого режима броска.
 - **§3A.4 `subcategory_ref`.** В `applyPresenceRulesFirstArrival` в aggregate всегда пишется `subcategory_ref: null`; сужение по подкатегории из правила не матчится.
 - **Подрегион.** Движок сравнивает только **G0 `region_id`** места со `presence_rules.region_id`. Колонка/поле `subregion_scope` в данных (планируется задачей `region-ids`) в R-2a не читается.
 - **Данные волны — закрыто D27.** Датасет волны пересобран на пине game-base 27bd6134: легаси-региона `novgorod_land` в нём нет (тест `m2c-npc-wave-v17-bootstrap-postgres.test.js`). Старые PG-тесты со своими копиями волны ещё содержат `UPDATE … novgorod_land → region_novgorod_land` — теперь без эффекта.
 - **§3A.2/3A.3 сезонное обновление.** Повторное прибытие в **новом сезоне** в уже созданное G5-место (пересчёт `by_year_season` без нового scope) в R-2a **не** подключено; отложено отдельным шагом CR #158 (решение ревьюера REVIEW-R2a-6 F6). Unit на `encodePresenceRulePeriodNumber` остаётся.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-074 — восприятие NPC в live world выключено
-- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle`: `post_action_perception_profile: null`); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (`perceptionListeners` без профиля возвращает `[]`); профиль есть только в `apps/game-server/src/internal/lower-dvina-trace-revision-34-bundle.js`.
-- **Что.** Код цепочки есть (`proposeNpcPerception` → perception-reaction cycle → boundary participant), но в v17 NPC не замечают событий вне разговора. LLM для NPC вызывается только в разговоре и в командах фазы 7.
-- **Как жить.** Не считать, что NPC видели действие игрока или другого NPC. Не писать второй путь восприятия и не включать профиль ревизии 34 в live world. Подключение — Runtime_Plan M4, «Восприятие NPC».
-- **Issue.** —
+### LW-074 — post-action perception profile требует отдельного approval
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`liveWorldTurnBundle` получает только отдельно утверждённый target profile); `apps/game-server/src/internal/target-runtime-profiles.js` (читает `post-action-perception-profile.json` только с approval); `apps/game-server/src/runtime/lower-dvina-trace-post-applied-actor-step.js` (перцепция и knowledge после фактического события).
+- **Что.** Кандидат переносит M22-механику и ждёт независимого approval; пока его нет, production key остаётся `null`. Текущий production-путь формирует события только для реплики игрока. Слушатели проверяются только на той же позиции; распространения по G6 нет. В этой волне сохраняются perception, knowledge и `pending_npc_decision_refs`, но нет formal boundary, реакции NPC и отметки signal как обработанного. Погода не добавляет acoustic loss.
+- **Как жить.** До profile approval не считать, что NPC live world уже восприняли действие. После подключения учитывать только persisted perception и knowledge; решение NPC и последствия принадлежат волне 2.
+- **Issue.** #225
 
 ### LW-078 — R-2a: стартовое присутствие не повторяется при загрузке, если provisioning не выполнился
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-public-start.js` (вызов `provisionInitialOrdinary` после commit new_game); `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js` (`provisionInitialOrdinary`, отдельная транзакция); путь загрузки партии (`getPartyScreen`) вызова не имеет.

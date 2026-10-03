@@ -2,7 +2,10 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import pg from 'pg';
-import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import {
+  SPATIAL_V3_TARGET_MIGRATION_FILES,
+  SPATIAL_V3_TARGET_MIGRATIONS
+} from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { createSpatialV3PartyRepository } from '../../packages/party-store/src/spatial-v3-repository.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
@@ -34,7 +37,11 @@ test('committed modifier read distinguishes complete empty set, active row, and 
     VALUES ('p',2,'w','d','m','r','c','b')`);
   const repository = createSpatialV3PartyRepository({ transaction: pool });
   await assert.rejects(repository.loadVisibilityModifiers({ party_id: 'p' }), { code: '42P01' });
-  await pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1));
+  const visibilityMigrationIndex = SPATIAL_V3_TARGET_MIGRATION_FILES
+    .indexOf('036_party_runtime_visibility_modifiers.sql');
+  assert.notEqual(visibilityMigrationIndex, -1,
+    'migration 036 must remain in the target manifest');
+  await pool.query(SPATIAL_V3_TARGET_MIGRATIONS[visibilityMigrationIndex]);
   assert.deepEqual(await repository.loadVisibilityModifiers({ party_id: 'p' }),
     { ok: true, complete: true, rows: [] });
   const pins = { pins: [{ dependency_role: 'source', entity_ref: { entity_kind: 'party_change_set', entity_id: 'c' }, version_pin: { pin_kind: 'party_state_version', state_version: 1 } }], canonical_digest: 'digest' };

@@ -13,6 +13,8 @@ export async function startNpcConversationContribution({ decision, normalized,
     validatePlan: ports.validateNpcPlan ?? null,
     validateFreshPlan: ports.validateFreshNpcPlan ?? null
   });
+  decision = { ...decision,
+    request: proposal.decision_context?.request ?? decision.request };
   const npcCheck = await resolveNpcContributionSocialCheck({
     plan: proposal.plan,
     request: decision.request,

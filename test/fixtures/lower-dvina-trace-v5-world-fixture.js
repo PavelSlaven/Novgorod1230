@@ -12,6 +12,8 @@ import { loadActiveRuntimeCatalogPin } from
 import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
 import { RUNTIME_CATALOG_CONTRACT_DIGEST } from
   '@rus/runtime-catalog/runtime-contract';
+import { installApprovedTemporalDataForTest } from
+  '../helpers/install-approved-temporal-data.js';
 
 const root = 'data/world-catalogs/novgorod/spatial-v3/candidates';
 const v5Path = `${root}/spatial-v3-production-v5`;
@@ -117,6 +119,7 @@ async function installLowerDvinaTraceWorld(pool, {
   path, world, lineagePaths: paths, categoryPathCount
 }) {
   await ensureRuntimeCatalogSchema(pool, world);
+  await installApprovedTemporalDataForTest({ worldPool: pool });
   const manifest = await readJson(`${path}/manifest.json`);
   assert.deepEqual({ revision: manifest.world_revision_id,
     digest: manifest.catalog_digest }, {

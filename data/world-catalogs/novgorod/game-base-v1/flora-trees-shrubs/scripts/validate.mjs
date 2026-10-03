@@ -1,5 +1,5 @@
 // Acceptance checks for flora-trees-shrubs (catalog.json domain flora_trees_shrubs.acceptance_ru). Exit 1 on failure.
-// Usage: node scripts/validate.mjs
+// Usage: node scripts/validate.mjs [--check]
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO, OUT, REPORTS, src, readJson, readCsv, months, SEASONS, SEASON_MONTHS, FOREST_PF } from './lib.mjs';
@@ -15,6 +15,9 @@ const freqRule = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-bas
 const bundle = readJson(path.join(REPO, 'data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json'));
 const claimIds = new Set(bundle.claims.map((c) => c.claim_ref));
 const woodyFoliage = readJson(path.join(REPO, 'data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/scripts/src/woody_foliage_state.json'));
+const args = process.argv.slice(2);
+if (args.some((arg) => arg !== '--check')) throw new Error(`unknown argument: ${args.find((arg) => arg !== '--check')}`);
+const checkOnly = args.includes('--check');
 
 const checks = [];
 const check = (name, failures) => checks.push({ name, ok: failures.length === 0, failures: failures.slice(0, 50), failure_count: failures.length });
@@ -97,7 +100,12 @@ function resolve(ref) {
     const s = sources.get(ref.slice(4)); if (!s) return `unknown src ${ref}`;
     if (/^https?:\/\/\S+\.\S+/.test(s.url)) return true;
     if (/^books\/index\.sqlite book:\d+$/.test(s.url)) return true; // local book index, cited as book:<id> §<para> in the title
-    if (s.url.startsWith('file:')) { const p = s.url.slice(5); const abs = path.isAbsolute(p) ? p : path.join(path.dirname(OUT), p); return fs.existsSync(abs) || `file missing ${p}`; }
+    if (s.url.startsWith('file:')) {
+      const p = s.url.slice(5);
+      const abs = path.isAbsolute(p) ? p : p.startsWith('data/') ? path.join(REPO, p) : path.join(path.dirname(OUT), p);
+      return fs.existsSync(abs) || `file missing ${p}`;
+    }
+    if (/^bibliography:[a-z0-9-]+$/.test(s.url)) return true;
     return `bad url for ${ref}`;
   }
   if (ref.startsWith('master:')) {
@@ -225,8 +233,17 @@ function resolve(ref) {
 }
 
 const ok = checks.every((c) => c.ok);
-const report = { generated_by: 'scripts/validate.mjs', ok, taxa: taxa.length, presence_rows: pres.length, checks };
-fs.mkdirSync(REPORTS, { recursive: true });
-fs.writeFileSync(path.join(REPORTS, 'validate-report.json'), JSON.stringify(report, null, 2) + '\n');
+const externalEvidenceNotChecked = [...sources.values()].filter((s) => s.url.startsWith('bibliography:')).map((s) => s.src_id).sort();
+const report = { generated_by: 'scripts/validate.mjs', ok, taxa: taxa.length, presence_rows: pres.length, external_evidence_not_checked: externalEvidenceNotChecked, checks };
+const reportPath = path.join(REPORTS, 'validate-report.json');
+const reportBytes = JSON.stringify(report, null, 2) + '\n';
+let reportFresh = true;
+if (checkOnly) {
+  reportFresh = fs.existsSync(reportPath) && Buffer.compare(fs.readFileSync(reportPath), Buffer.from(reportBytes, 'utf8')) === 0;
+  if (!reportFresh) console.error(`stale or missing generated report: ${path.relative(REPO, reportPath)}`);
+} else {
+  fs.mkdirSync(REPORTS, { recursive: true });
+  fs.writeFileSync(reportPath, reportBytes);
+}
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'} ${c.name}${c.failure_count ? ` (${c.failure_count})` : ''}${c.refs_checked ? ` refs=${c.refs_checked}` : ''}`);
-if (!ok) { for (const c of checks) if (!c.ok) console.log(c.name, c.failures); process.exit(1); }
+if (!ok || !reportFresh) { for (const c of checks) if (!c.ok) console.log(c.name, c.failures); process.exit(1); }

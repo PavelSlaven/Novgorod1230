@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { createNpcRoutineState, npcRoutineActivity,
   resolveNpcRoutinePresence, selectNpcRoutineSchedule } from '@rus/npc-runtime';
+import { projectCalendar } from '@rus/time-events-history/calendar';
 import { npcRoutineCandidate, npcRoutineTemporalRegistration } from
   '../src/runtime/npc-routine-temporal.js';
+import { buildCalendarProjectionProfile } from
+  '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
 
 const at = (whole_minutes) => ({ whole_minutes: String(whole_minutes),
   subminute_numerator: '0', subminute_denominator: '1' });
@@ -561,6 +565,35 @@ test('D-1 away intent preserves known placement until departure is completed', (
   assert.equal(returned.proposals[0].write_set.updates.some((write) =>
     write.target_table === 'entity_placements'), false);
   assert.equal(returned.proposals[0].write_set.deletes.length, 0);
+});
+
+test('approved winter ferryman D-1 schedule produces the 1006830 candidate from 1231-12-01', async () => {
+  const [calendarRecord] = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json',
+    import.meta.url), 'utf8'));
+  const calendarProfile = buildCalendarProjectionProfile(calendarRecord);
+  const now = at(1006560);
+  const projected = projectCalendar(now, calendarProfile);
+  assert.deepEqual([projected.year, projected.month, projected.day,
+    projected.local_time_of_day.numerator], ['1231', '12', '1', '0']);
+
+  const schedules = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_schedule_routine_rules.json',
+    import.meta.url), 'utf8'));
+  const d1 = schedules.find((row) => row.schedule_id
+    === 'sch_nov_occ_ferryman_pf_ferry_landing_normal_winter' && row.schedule_version === 2);
+  assert.ok(d1);
+  assert.equal(d1.routine_profile.local_start_minute, 0);
+  const routine = createNpcRoutineState({
+    profile: d1.routine_profile,
+    started_at: now,
+    calendar_profile: calendarProfile
+  });
+  const candidate = npcRoutineCandidate({
+    npc_id: 'ferryman', party_id: 'party', state_version: 1,
+    causal_state_ref: { routine_state: routine }
+  });
+  assert.deepEqual(candidate.scheduled_at, at(1006830));
 });
 
 function context(projection, id) {

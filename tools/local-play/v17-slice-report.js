@@ -87,6 +87,7 @@ function turnSection(turn) {
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
+    ...(turn.people_panel ? [`- Снимок панели людей: \`${json(turn.people_panel)}\``] : []),
     'Что увидел игрок (дословно):', '',
     // A refused turn shows the error text of the response, not the screen left over from the previous turn.
     turn.error ? quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста') : turn.prose ? quote(turn.prose) : '> (текста нет)'];
@@ -96,7 +97,8 @@ function turnSection(turn) {
 }
 
 export function renderPlaytestMarkdown(report, redact = (text) => text) {
-  const { identity, preconditions, legs, turns, opening, readback, infra_error: infraError } = report;
+  const { identity, preconditions, legs, turns, opening, readback,
+    transport_errors: transportErrors = [], infra_error: infraError } = report;
   const verdict = verdictOf(legs);
   const out = [];
   out.push(`# rt-harness: живой прогон среза D49 на v17 (${identity.scenario_id})`, '');
@@ -119,9 +121,31 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     out.push(`Проходы на первом экране: ${opening.route_labels?.length > 0 ? opening.route_labels.map((label) => `«${label}»`).join(', ') : '(нет)'}`, '');
   }
   for (const turn of turns) out.push(turnSection(turn), '');
+  if (transportErrors.length > 0) {
+    out.push('## HTTP transport errors', '',
+      '| method | path | phase | leg | turn | cause |',
+      '|---|---|---|---|---:|---|');
+    for (const error of transportErrors) {
+      const cause = [error.cause?.name, error.cause?.code, error.cause?.message,
+        error.cause?.cause_code, error.cause?.cause_message].filter(Boolean).join(': ')
+        .replaceAll('|', '/');
+      out.push(`| ${error.method} | ${error.path} | ${error.phase} | ${error.leg ?? '—'} | ${error.turn ?? '—'} | ${cause} |`);
+    }
+    out.push('');
+  }
   out.push('## Persistence/readback', '',
     `LLM-вызовы за прогон: ${report.llm.total} (ошибок транспорта/статуса: ${report.llm.failed}); по ролям:`, '',
     fence(Object.entries(report.llm.by_role).map(([role, count]) => `${count}× ${role}`).join('\n') || '(нет)'), '');
+  if (report.llm.by_role_timing) {
+    out.push('### Время вызовов по каноническим ролям', '',
+      '| role_id | вызовы | сумма, мс | p50, мс | p95, мс | доля времени ходов |',
+      '|---|---:|---:|---:|---:|---:|');
+    for (const [role, timing] of Object.entries(report.llm.by_role_timing)) {
+      out.push(`| ${role} | ${timing.count} | ${timing.sum_ms} | ${timing.p50_ms} | ${timing.p95_ms} | ${(timing.turn_time_share * 100).toFixed(1)}% |`);
+    }
+    if (Object.keys(report.llm.by_role_timing).length === 0) out.push('| (нет данных) | 0 | 0 | 0 | 0 | 0% |');
+    out.push('');
+  }
   if (readback) out.push('Финальный SQL-снимок партии (позиция, размещения в G6 игрока, предметы, запасы):', '', fence(JSON.stringify(readback, null, 1)), '');
   out.push('## Findings', '', '| нога | итог | причина |', '|---|---|---|');
   for (const leg of legs) out.push(`| ${LEG_TITLES[leg.id]} | ${leg.status} | ${String(leg.reason ?? '').replaceAll('|', '/')} |`);

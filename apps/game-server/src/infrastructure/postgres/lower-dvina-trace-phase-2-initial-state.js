@@ -202,7 +202,7 @@ export async function loadInitialTracePhase2State({
     sealed_selections: initial.sealed_selections,
     policy_pins: initial.policy_profile_pins,
     relevant_events: [],
-    historical_events: [],
+    historical_events: structuredClone(initial.historical_events ?? []),
     items: initial.items.map((item) => ({
       item_id: item.item_id,
       run_id: item.run_id,

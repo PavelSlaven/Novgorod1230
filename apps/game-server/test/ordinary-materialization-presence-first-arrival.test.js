@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GameServerError } from '../src/errors.js';
 import {
+  createApprovedO1TemplateBackedItemRefs,
   createTargetPresenceRulesFirstArrivalResolver,
   resolvePresenceRulesFirstArrivalForSite,
 } from '../src/infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
@@ -17,6 +18,24 @@ const runtimeCatalogPin = {
   compatible_world_revision_id: REV,
   compatible_world_catalog_digest: DIGEST,
 };
+
+test('approved O1 template closure admits only the explicit refs backed by the pinned catalog', () => {
+  const mappings = [
+    'item_tpl_nov_awl_v1', 'item_tpl_nov_firesteel_v1', 'item_tpl_nov_striking_flint_v1',
+    'item_tpl_nov_wooden_bowl_v1', 'item_tpl_nov_kindling_bundle_v1', 'item_tpl_nov_utility_knife_v1',
+    'item_tpl_nov_pestle_v1', 'item_tpl_nov_rope_v1', 'item_tpl_nov_tinder_v1',
+    'item_tpl_nov_trough_v1', 'item_tpl_nov_wooden_spoon_v1', 'item_tpl_nov_birch_bark_sheet_v1',
+  ];
+  const catalog = { schema: 'rus.verified_item_catalog.v2', verified: true,
+    records_by_table: { item_templates: mappings.map((id) => ({ id })) } };
+  const refs = createApprovedO1TemplateBackedItemRefs(catalog);
+  assert.equal(refs.size, 12);
+  assert.ok(refs.has('it_hh_awl'));
+  assert.ok(refs.has('it_ps_bark_sheet_blank'));
+  assert.throws(() => createApprovedO1TemplateBackedItemRefs({ ...catalog,
+    records_by_table: { item_templates: catalog.records_by_table.item_templates.slice(1) } }),
+  { code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP' });
+});
 
 function buildGateAwareReader({ bindingRows, presenceRuleRows = [], compositionRows = [],
   scheduleRuleRows = [], g0RegionId = 'region_novgorod_land' }) {

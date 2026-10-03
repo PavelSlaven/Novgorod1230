@@ -15,13 +15,19 @@ export function partyHistoricalEventsOf(committedState) {
  */
 export function withPartyHistoricalEvents(model, stateOf) {
   if (typeof model !== 'function') return model;
-  const wrapped = async (request, callContext = {}) => {
+  const withHistoricalEvents = (callContext = {}) => {
     const state = typeof stateOf === 'function' ? stateOf() : stateOf;
     const historicalEvents = Array.isArray(callContext?.historical_events)
       ? callContext.historical_events
       : partyHistoricalEventsOf(state);
-    return model(request, { ...callContext, historical_events: historicalEvents });
+    return { ...callContext, historical_events: historicalEvents };
   };
+  const wrapped = async (request, callContext = {}) =>
+    model(request, withHistoricalEvents(callContext));
+  if (typeof model.prepareRequest === 'function') {
+    wrapped.prepareRequest = (request, callContext = {}) =>
+      model.prepareRequest(request, withHistoricalEvents(callContext));
+  }
   if (typeof model.validateFreshPlan === 'function') {
     wrapped.validateFreshPlan = (...args) => model.validateFreshPlan(...args);
   }

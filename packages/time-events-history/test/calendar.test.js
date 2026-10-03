@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { nextCalendarSeasonBoundary, projectCalendar, resolveGameTimestampFromCalendarDate } from '../src/calendar.js';
 import { addElapsedTime } from '../src/index.js';
@@ -198,6 +199,66 @@ test('calendar resolves finite leap cycles and never iterates by elapsed day or 
   assert.deepEqual([leap.year, leap.month, leap.day], ['4', '1', '1']);
   const huge = projectCalendar(timestamp((10n ** 20n * 1440n + 360n).toString()), profile());
   assert.match(huge.year, /^\d+$/u); assert.doesNotThrow(() => JSON.stringify(huge));
+});
+
+test('calendar inverse counts leap days before later months and round-trips approved Julian dates', async () => {
+  const marchProfile = profile();
+  marchProfile.epoch.year = '4';
+  marchProfile.month_rules.month_lengths = ['31', '28', '31'];
+  marchProfile.leap_rules = { cycle_years: '4', leap_year_indexes: ['0'], leap_month: '2', leap_days: '1' };
+  marchProfile.season_rule.ranges = [{ id: 'year', start_day: '1', end_day: '91' }];
+  marchProfile.daylight_rule.ranges = [{ id: 'year', start_day: '1', end_day: '91' }];
+  marchProfile.day_start_rule.local_minute = '0';
+
+  const marchFirst = (year) => resolveGameTimestampFromCalendarDate({
+    calendar_system: 'source-backed', year: String(year), month: '3', day: '1',
+    local_minute_of_day: '0', subminute_numerator: '0', subminute_denominator: '1'
+  }, marchProfile);
+  assert.deepEqual(marchFirst(4), timestamp('86400'));
+  marchProfile.leap_rules.leap_days = '2';
+  marchProfile.season_rule.ranges[0].end_day = '92';
+  marchProfile.daylight_rule.ranges[0].end_day = '92';
+  assert.deepEqual(marchFirst(4), timestamp('87840'));
+
+  const [record] = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json',
+    import.meta.url), 'utf8'));
+  const catalog = record.payload;
+  const epoch = catalog.epoch_reference;
+  const approvedProfile = {
+    profile_id: catalog.calendar_profile_id,
+    version: catalog.calendar_version,
+    status: record.status,
+    provenance: { source_id: record.record_id, source_version: record.version },
+    epoch: {
+      game_timestamp: epoch.game_timestamp_zero,
+      year: epoch.calendar_date_at_zero.year,
+      month: epoch.calendar_date_at_zero.month,
+      day: epoch.calendar_date_at_zero.day
+    },
+    calendar_system: epoch.calendar_date_at_zero.calendar_system,
+    month_rules: { month_lengths: catalog.day_month_leap_rules.month_lengths_common },
+    leap_rules: { cycle_years: '4', leap_year_indexes: ['0'], leap_month: '2', leap_days: '1' },
+    day_start_rule: { local_minute: '0' },
+    local_offset_rule: { offset_minutes: '0' },
+    daypart_rule: { ranges: [{ id: 'projection', start_minute: '0', end_minute: '1440' }] },
+    season_rule: { ranges: [{ id: 'projection', start_day: '1', end_day: '366' }] },
+    daylight_rule: { ranges: [{ id: 'projection', start_day: '1', end_day: '366' }] }
+  };
+  assert.equal(catalog.day_month_leap_rules.leap_rule, 'Julian year divisible by 4');
+  for (const [year, month, day] of [
+    ['1231', '2', '28'], ['1231', '3', '1'],
+    ['1232', '2', '28'], ['1232', '2', '29'], ['1232', '3', '1'],
+    ['1244', '2', '28'], ['1244', '2', '29'], ['1244', '3', '1'], ['1244', '7', '1']
+  ]) {
+    const input = {
+      calendar_system: epoch.calendar_date_at_zero.calendar_system,
+      year, month, day, local_minute_of_day: '0', subminute_numerator: '0', subminute_denominator: '1'
+    };
+    const resolved = resolveGameTimestampFromCalendarDate(input, approvedProfile);
+    const projected = projectCalendar(resolved, approvedProfile);
+    assert.deepEqual([projected.year, projected.month, projected.day], [year, month, day]);
+  }
 });
 
 test('calendar projection is deterministic and slicing-consistent at exact subminute timestamps', () => {

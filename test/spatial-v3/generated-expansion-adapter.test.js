@@ -274,7 +274,10 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   assert.equal(traces[0].trace.first_entry.selection.count, 0);
   assert.equal(traces[0].trace.first_entry.selection.choices[0].selected_id, '0');
   assert.deepEqual(traces[0].trace.first_entry.attribute_traces, []);
-  assert.equal(traces[1].trace.first_entry, undefined);
+  assert.equal(traces[1].trace.first_entry.selection.count, 0);
+  assert.equal(traces[1].trace.first_entry.selection.choices[0].selected_id, '0');
+  assert.deepEqual(traces[1].trace.first_entry.choices, []);
+  assert.deepEqual(traces[1].trace.first_entry.attribute_traces, []);
   assert.equal(traces[1].trace.choice_ids.length, 0);
   assert.equal((await pool.query('SELECT count(*) FROM party_runtime.party_materialization_choices')).rows[0].count, '2');
   assert.equal(generated.scene_baselines.find((row) => row.source_kind === 'generated_template').materialization_trace_id, traces[0].run_id);

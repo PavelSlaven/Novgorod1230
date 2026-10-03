@@ -132,6 +132,14 @@ test('local evidence-slot recheck validates anchor state, slot capacity and writ
 });
 
 test('initial Phase 2 state rehydrates persisted container placements', async () => {
+  const historicalEvents = [{
+    id: 'nov_hist_news_neva_victory_lower_dvina',
+    phases: [{ id: 'outcome_news_reached_lower_dvina', start_at_minutes: 5_785_920 }],
+    source_ref: {
+      record_id: 'nov_hist_news_neva_victory_lower_dvina',
+      catalog_digest: 'c'.repeat(64)
+    }
+  }];
   const container = {
     container_id: 'container:zhdanko-road-bag',
     template_id: 'trace_ld_v1_container_road_bag',
@@ -153,7 +161,9 @@ test('initial Phase 2 state rehydrates persisted container placements', async ()
       turn_number: 0,
       stage26_result: { opening_screen_digest: 'b'.repeat(64) }
     },
-    phase1A: { loadInternal: async () => initialState(container) },
+    phase1A: { loadInternal: async () => ({
+      ...initialState(container), historical_events: historicalEvents
+    }) },
     partyPool: { query: async () => ({ rows: [] }) },
     temporalSourceProof: { candidates: [] }
   });
@@ -168,6 +178,7 @@ test('initial Phase 2 state rehydrates persisted container placements', async ()
     physical_position: null,
     equipment_slot_category_id: null
   }]);
+  assert.deepEqual(state.historical_events, historicalEvents);
   assert.equal(validateInventoryTopology(
     buildCommittedInventoryInput(state)).pass, true);
 });

@@ -156,11 +156,14 @@ def check_dark_onsite(rows):
             elapsed = end
 
 
-def binding_scopes():
-    with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
-        nodes = list(csv.DictReader(stream))
-    primary = {node["pf_id"] for node in nodes if node["pf_id"] in places}
-    accessible = primary | {scope for node in nodes for scope in node["pf_secondary"].split(";") if scope in places}
+def binding_scopes(nodes=None):
+    if nodes is None:
+        with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
+            nodes = list(csv.DictReader(stream))
+    primary = {node["pf_id"] for node in nodes
+               if node["status"] == "approved" and node["pf_id"] in places}
+    accessible = ({node["pf_id"] for node in nodes if node["pf_id"] in places}
+                  | {scope for node in nodes for scope in node["pf_secondary"].split(";") if scope in places})
     return primary, accessible
 
 
@@ -205,9 +208,16 @@ else:
     raise AssertionError("dark market probe was not rejected")
 check_coverage(rows, presence)
 primary, accessible = binding_scopes()
+assert "pf_burial_ground" not in primary, "candidate burial-ground binding must not require approved presence"
 assert scope_failures([*presence, {**presence[0], "scope_ref": "pf_off_node_probe"}], primary, accessible)[1] == {"pf_off_node_probe"}
-covered_primary = next(iter(primary))
-assert scope_failures([item for item in presence if item["scope_ref"] != covered_primary], primary, accessible)[0] == {covered_primary}
+with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
+    nodes = list(csv.DictReader(stream))
+approved_probe = next(node for node in nodes if node["pf_id"] == "pf_burial_ground")
+approved_probe = {**approved_probe, "status": "approved"}
+probe_primary, probe_accessible = binding_scopes([approved_probe])
+assert probe_primary == {approved_probe["pf_id"]}
+assert scope_failures([], probe_primary, probe_accessible) == ({approved_probe["pf_id"]}, set()), \
+    "missing presence for an approved primary binding must remain an error"
 
 
 for season, place in (("winter", "pf_winter_ice_crossing"), ("summer", "pf_ferry_landing")):

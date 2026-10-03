@@ -29,7 +29,8 @@ export function preparedPhase3RouteConversation(ledger) {
 }
 
 export function validatePreparedPhase3RouteConversation({ ledger, envelope,
-  factual, state, batch, phase3Contracts, turnStepApprovedOwners }) {
+  factual, state, batch, phase3Contracts, turnStepApprovedOwners,
+  preparedMovementState = null }) {
   const [route, conversation] = ledger.slices;
   const traces = envelope.loop_trace?.step_traces;
   const [routeTrace, conversationTrace] = traces ?? [];
@@ -91,7 +92,8 @@ export function validatePreparedPhase3RouteConversation({ ledger, envelope,
     route, routeTrace, directTrace: conversationTrace,
     loopTrace: envelope.loop_trace, envelope, state, phase3Contracts,
     routeOnly: false, intermediateTraces: [],
-    scenePresentation: turnStepApprovedOwners?.scenePresentation
+    scenePresentation: turnStepApprovedOwners?.scenePresentation,
+    preparedMovementState
   });
   validatePreparedBodyReplay({ route, direct: conversation,
     factual: envelope, state, phase3Contracts });

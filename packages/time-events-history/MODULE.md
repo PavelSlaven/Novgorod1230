@@ -8,6 +8,7 @@
 
 - Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade).
 - Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Принимаемая форма события: `{ id|event_id, phases[] }` (F7). Плоские v3-записи с одним `event_ref`/`start_at` без `phases[]` молча дают пустой результат. Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError.
+- Владеет узкими approved date-gate DTO для десяти консервативных вестей в Нижнюю Двину и pure projection в party `historical_events`. Голода 1230 в DTO нет: projection получает его event id/start/digest из переданной approved temporal record.
 
 ## Не владеет
 
@@ -18,6 +19,7 @@
 - `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports; `startedHistoricalEventsAndPhases`, `startedHistoricalEventIds`, `StartedHistoricalError`.
 - `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`, `nextCalendarSeasonBoundary(timestamp, approvedProfile)`. The last returns the next actual change of `season_id` strictly after the timestamp, at the approved calendar's local day start, with its exact timestamp and calendar date; calendars without season changes return `null`.
 - `./temporal-boundaries`: `TEMPORAL_RESOLUTION_POLICY_VERSION`, order, `TemporalBoundaryError`, normalization, earliest-batch selection и `resolveSameTimeCascade`.
+- `.`: `APPROVED_EVENT_DATE_GATE_RECORDS`, `projectApprovedPartyHistoricalEvents` — события в форме `startedHistoricalEventIds` с `source_ref`.
 - `./legacy`: compatibility-only clock/timer helpers; не является target temporal execution API.
 
 ## Формальные входы, выходы и ошибки

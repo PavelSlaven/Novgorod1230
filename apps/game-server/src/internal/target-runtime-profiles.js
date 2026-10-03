@@ -7,6 +7,9 @@ import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import { validNeutralActionProductionProfile } from './lower-dvina-trace-a1-bundle.js';
 import { validateLowerDvinaTraceOrdinaryStageBEval } from './lower-dvina-trace-ordinary-stage-b-eval.js';
+import { validPostActionPerceptionProfile } from
+  './post-action-perception-profile.js';
+import { TARGET_O1_PROFILE_ARTIFACT_PINS } from './target-o1-profile-pins.js';
 
 /** The separate mapped-data approval owns applicability; absent owners stay absent. */
 const A1_CLASS_FILE = 'data/world-catalogs/novgorod/live-world-runtime-v17/a1-applicability-class.json';
@@ -22,6 +25,7 @@ export function readApprovedA1ApplicabilityClass(file, worldRevisionId) {
 }
 
 export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog,
+  o1ArtifactPins = TARGET_O1_PROFILE_ARTIFACT_PINS,
   a1ApplicabilityClassPath = resolve(rootDir, A1_CLASS_FILE) } = {}) {
   const root = 'data/world-catalogs/novgorod/live-world-runtime-v17';
   const approval = JSON.parse(await readFile(resolve(rootDir,
@@ -42,15 +46,22 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
   if (data.status !== 'approved' || data.target?.world_revision_id !== worldRevisionId
     || data.profiles?.turn_step?.status !== 'approved'
     || !validNeutralActionProductionProfile(data.profiles.action_production)) gap();
+  const ordinaryMaterializationProfile = await loadTargetO1PresenceProfile({
+    rootDir, worldRevisionId, pins: o1ArtifactPins,
+  });
   const turn = data.profiles.turn_step;
   const turnPin = { artifact_id: turn.profile_set_id, revision: turn.revision, digest: canonicalDigest(turn) };
   const a1Class = readApprovedA1ApplicabilityClass(
     JSON.parse(await readFile(a1ApplicabilityClassPath, 'utf8').catch(() => 'null')), worldRevisionId);
   const finiteFirstEntry = verifiedCatalog == null ? null
     : await loadTargetFiniteFirstEntryProfile({ rootDir, worldRevisionId, verifiedCatalog });
+  const postActionPerceptionProfile = await loadTargetPostActionPerceptionProfile({
+    rootDir, worldRevisionId
+  });
   return freeze({ schema: 'rus.live_world_runtime.target_runtime_profiles_loaded.v1',
     world_revision_id: worldRevisionId, candidate_sha256: manifest.source_candidate_sha256,
     manifest_sha256: pin.manifest_sha256,
+    post_action_perception_profile: postActionPerceptionProfile,
     finite_first_entry: finiteFirstEntry,
     // Supplied only after the release-selected mapped approval has been checked.
     turn_profile: Object.freeze({ profile: turn, pin: turnPin, selected_profile_pin: { ...turnPin } }),
@@ -58,7 +69,7 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
       participant_binding_kind: 'approved_source_binding',
       target_applicability: { world_revision_id: worldRevisionId, applicability: data.applicability,
         n1_binding_basis: data.n1_binding_basis } } }),
-    materialization_profiles: Object.freeze({ ordinaryMaterializationProfile: null,
+    materialization_profiles: Object.freeze({ ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile: null, localFireProfile: null,
       actionProductionProfile: Object.freeze({ schema: 'rus.live_world_runtime.a1_loaded_profile.v1',
         artifact_digest: manifest.dataset.sha256, profile: data.profiles.action_production,
@@ -67,6 +78,122 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
     capability_gaps: [...data.capability_gaps, ...data.consumer_gaps.filter((entry) =>
       !['M2C_TARGET_A1_PROFILE_CONSUMER_GAP', 'M2C_TARGET_N1_PROFILE_BINDING_CONSUMER_GAP'].includes(entry.code))],
     applicability: data.applicability });
+}
+
+export function isUniqueTargetO1Applicability(applicability) {
+  const refs = applicability?.rule_refs;
+  const selectors = applicability?.selectors;
+  const uniqueRefs = Array.isArray(refs)
+    && new Set(refs.map((entry) => `${entry?.rule_id}@${entry?.rule_version}`)).size === 75
+    && refs.length === 75
+    && refs.every((entry) => typeof entry?.rule_id === 'string'
+      && Number.isInteger(entry.rule_version) && entry.rule_version >= 1);
+  const tupleKey = (entry) => [entry?.g1_ref, entry?.g4_ref,
+    entry?.canonical_g5_ref, entry?.place_family_ref, entry?.source_pf_id].join('|');
+  const siteKey = (entry) => [entry?.g4_ref, entry?.canonical_g5_ref].join('|');
+  const uniqueSelectors = Array.isArray(selectors) && selectors.length === 4
+    && new Set(selectors.map(tupleKey)).size === 4
+    && new Set(selectors.map(siteKey)).size === 4
+    && selectors.every((entry) => typeof entry?.g1_ref === 'string'
+      && typeof entry?.g4_ref === 'string'
+      && typeof entry?.canonical_g5_ref === 'string'
+      && typeof entry?.place_family_ref === 'string'
+      && typeof entry?.source_pf_id === 'string');
+  return uniqueRefs && uniqueSelectors;
+}
+
+async function loadTargetO1PresenceProfile({ rootDir, worldRevisionId, pins }) {
+  try {
+    if (!pins?.profile?.path || !pins.profile.sha256 || !pins?.selector?.path
+        || !pins.selector.sha256 || !pins?.approval?.path || !pins.approval.sha256
+        || !Array.isArray(pins.sources) || pins.sources.length !== 2) o1Gap();
+    const readPinnedJson = async (pin) => {
+      const bytes = await readFile(resolve(rootDir, pin.path));
+      if (hash(bytes) !== pin.sha256) o1Gap();
+      return JSON.parse(bytes);
+    };
+    const [profile, selector, approval] = await Promise.all([
+      readPinnedJson(pins.profile), readPinnedJson(pins.selector), readPinnedJson(pins.approval),
+    ]);
+    for (const sourcePin of pins.sources) {
+      const source = await readFile(resolve(rootDir, sourcePin.path));
+      if (hash(source) !== sourcePin.sha256) o1Gap();
+    }
+    const expectedSourcePins = pins.sources.map(({ path, sha256 }) => ({ path, sha256 }));
+    const approvedSourcePins = approval.required_source_pins;
+    if (profile.schema !== 'rus.live_world_runtime.ordinary_materialization_profile.v1'
+        || profile.profile_id !== 'novgorod_v17_o1_presence_profile_v1'
+        || profile.revision !== 1 || profile.status !== 'approved_with_limits'
+        || profile.world_revision_id !== worldRevisionId
+        || profile.fallback_policy !== 'forbidden'
+        || profile.o1_presence?.fallback_policy !== 'forbidden'
+        || profile.o1_presence?.selector_path !== pins.selector.path
+        || profile.o1_presence?.selector_sha256 !== pins.selector.sha256
+        || profile.o1_presence?.selector_id !== selector.selector_id
+        || profile.o2a_ambient !== null
+        || selector.schema !== 'rus.live_world_runtime.o1_applicability_selector_candidate.v1'
+        || selector.status !== 'candidate_only_pending_review'
+        || selector.approved !== false || selector.import_authorized !== false
+        || selector.activation_authorized !== false || selector.runtime_input !== false
+        || selector.target?.world_revision_id !== worldRevisionId
+        || !isUniqueTargetO1Applicability(selector.applicability)
+        || approval.schema !== 'rus.live_world_runtime.o1_applicability_selector_approval.v1'
+        || approval.decision !== 'APPROVE_WITH_LIMITS'
+        || approval.selector_id !== selector.selector_id
+        || approval.selector_path !== pins.selector.path
+        || approval.selector_sha256 !== pins.selector.sha256
+        || approval.independent_review?.path !== '/srv/novgorod-work/fleet/tasks/ap-o1-selector/out/ap-o1-selector.json'
+        || approval.independent_review?.sha256 !== 'b333fd1b0ab13ae160a393cb3d3c04b9a38aa10c7df39e2a61111395ce393a69'
+        || approval.independent_review?.reviewed_object_sha256 !== pins.selector.sha256
+        || approval.independent_review?.verdict !== 'CHANGES_REQUIRED'
+        || approval.lead_decision?.decision !== 'APPROVE_WITH_LIMITS'
+        || approval.lead_decision?.decision_id !== 'D67'
+        || !Array.isArray(approval.limits) || approval.limits.length === 0
+        || !Array.isArray(approval.excludes) || approval.excludes.length === 0
+        || JSON.stringify(approvedSourcePins) !== JSON.stringify(expectedSourcePins)) o1Gap();
+    return freeze({ ...profile, o1_presence: {
+      ...profile.o1_presence,
+      selector,
+      approval: { decision: approval.decision, lead_decision: approval.lead_decision,
+        limits: approval.limits, excludes: approval.excludes },
+    }, artifact_pin: { profile: pins.profile, selector: pins.selector, approval: pins.approval,
+      sources: pins.sources } });
+  } catch (error) {
+    if (error?.code === 'SPATIAL_V3_TARGET_O1_PROFILE_APPROVAL_REQUIRED') throw error;
+    o1Gap();
+  }
+}
+
+const POST_ACTION_PERCEPTION_PROFILE_PATH =
+  'data/world-catalogs/novgorod/live-world-runtime-v17/post-action-perception-profile.json';
+const TARGET_POST_ACTION_PERCEPTION_PROFILE_ID =
+  'live_world_post_action_perception_v1';
+
+async function loadTargetPostActionPerceptionProfile({ rootDir, worldRevisionId }) {
+  const bytes = await readFile(resolve(rootDir,
+    POST_ACTION_PERCEPTION_PROFILE_PATH)).catch((error) => {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  });
+  if (bytes === null) return null;
+  let profile;
+  try {
+    profile = JSON.parse(bytes);
+  } catch {
+    return null;
+  }
+  return readApprovedPostActionPerceptionProfile(profile, worldRevisionId);
+}
+
+export function readApprovedPostActionPerceptionProfile(profile, worldRevisionId) {
+  if (profile?.status !== 'approved'
+      || profile.world_revision_id !== worldRevisionId
+      || !APPROVAL_FIELDS.every((key) => typeof profile.approval?.[key]
+        === 'string' && profile.approval[key].length > 0)) return null;
+  if (!validPostActionPerceptionProfile(profile, {
+    expectedProfileId: TARGET_POST_ACTION_PERCEPTION_PROFILE_ID
+  })) perceptionProfileGap();
+  return freeze(profile);
 }
 
 /** Finite-only policy stays separate from generic ordinary/Stage B admission. */
@@ -181,6 +308,17 @@ async function loadTargetFiniteStageB({ read, worldRevisionId, baseProfile }) {
 
 function finiteGap() { throw serverError('SPATIAL_V3_TARGET_FINITE_PROFILE_APPROVAL_REQUIRED',
   'Exact separately approved finite-only policy and source authoring are required.', { status: 503 }); }
+
+function perceptionProfileGap() {
+  throw serverError('SPATIAL_V3_TARGET_POST_ACTION_PERCEPTION_PROFILE_INVALID',
+    'Exact approved D66 post-action perception profile is required.',
+    { status: 503 });
+}
+
+function o1Gap() {
+  throw serverError('SPATIAL_V3_TARGET_O1_PROFILE_APPROVAL_REQUIRED',
+    'Exact release-pinned O1 applicability and profile approvals are required.', { status: 503 });
+}
 
 function hash(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
 function freeze(value) {

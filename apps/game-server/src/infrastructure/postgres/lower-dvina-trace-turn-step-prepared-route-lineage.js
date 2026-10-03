@@ -17,6 +17,7 @@ import {
   preparedEffectFail,
   samePreparedValue
 } from './lower-dvina-trace-turn-step-prepared-effect-authority.js';
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 
 export function validatePreparedRouteTraceLineage({
   route,
@@ -28,6 +29,7 @@ export function validatePreparedRouteTraceLineage({
   phase3Contracts,
   routeOnly,
   scenePresentation = null,
+  preparedMovementState = null,
   intermediateTraces = []
 }) {
   const routeRequest = routeTrace.plan_request;
@@ -54,7 +56,13 @@ export function validatePreparedRouteTraceLineage({
       committedState: state,
       clockAfter: route.time_update.clock_after
     });
-    const stateAfterRoute = projectPreparedDomainState(state, route);
+    const projectedStateAfterRoute = projectPreparedDomainState(state, route);
+    const stateAfterRoute = preparedMovementState ?? projectedStateAfterRoute;
+    if (preparedMovementState != null
+        && !samePreparedValue(withoutSceneNpcs(preparedMovementState),
+          withoutSceneNpcs(projectedStateAfterRoute))) {
+      preparedEffectFail('destination scene readback changed prepared route state');
+    }
     const firstEntry = stateAfterRoute.first_entry_preparation;
     if (firstEntry?.scene?.location_profile_ref
         === route.consequence.movement.destination.location_ref

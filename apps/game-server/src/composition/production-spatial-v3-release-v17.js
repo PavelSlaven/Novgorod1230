@@ -7,6 +7,7 @@ import { loadTargetAuthoredStartRuntimes } from '../infrastructure/postgres/targ
 import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { TARGET_O1_PROFILE_ARTIFACT_PINS } from '../internal/target-o1-profile-pins.js';
 
 const { scenario_binding_id, scenario_profile_exact_pins,
   parent_release_exact_pins, ...sharedReleaseContract } = historicalRelease;
@@ -23,6 +24,7 @@ export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   world_catalog_manifest_sha256: '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e',
   // CR #153 step 7: v17 pins production-v2; v16 keeps revision:production-v1.
   world_knowledge_pack_revision: 'revision:production-v2',
+  target_o1_profile_artifact_pins: TARGET_O1_PROFILE_ARTIFACT_PINS,
   runtime_catalog_revision_id: 'item_container_spatial_v3_target_001',
   actor_base_attributes_catalog_revision_id: 'actor_base_attributes_spatial_v3_target_001'
 });

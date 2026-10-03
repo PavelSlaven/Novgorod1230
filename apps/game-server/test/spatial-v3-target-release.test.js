@@ -45,6 +45,10 @@ test('v17 cannot derive active status from an item pin alone; historical v16 sta
 });
 
 test('v17 pins World Knowledge production-v2; v16 keeps production-v1', async () => {
+  assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.target_o1_profile_artifact_pins.selector.sha256,
+    '9c055925be5f117c7dd89a1465875fdc90a9f8d028bd49020411506f5a223dc4');
+  assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.target_o1_profile_artifact_pins.approval.sha256,
+    '18c28ffeebc54df58c5b7a0271a1e6e1dc288b2a215f9b0727a42f9a94a9c32e');
   assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.world_knowledge_pack_ref,
     'wk-pack:novgorod-1230');
   assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.world_knowledge_pack_revision,

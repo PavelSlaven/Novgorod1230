@@ -25,6 +25,8 @@ import { commitEnvelope } from
   './lower-dvina-trace-turn-step-envelope-fixture.js';
 import { backgroundNpc, body, fixture, semanticActivity } from
   './lower-dvina-trace-turn-step-commit-fixture.js';
+import { SCENE_NPC_SOURCE } from
+  '../src/runtime/lower-dvina-trace-scene-presence.js';
 
 test('route turn keeps normalized party position with snapshot', () => {
   const writes = buildLowerDvinaTraceTurnStepRootWrites({
@@ -64,6 +66,61 @@ test('S1 local turn updates journey position without rewriting G4/G5', () => {
   assert.equal(writes.updates.find(({ target_table: table }) =>
     table === 'party_journey_locations').record.scene_position_id, 'inside');
 });
+
+test('position transition without prepared route loads destination NPCs for pending screen',
+  async () => {
+    const destinationNpc = {
+      instance_id: 'npc:destination', profile_id: 'profile:destination',
+      anchor_id: 'anchor-site', position_id: 'position:destination',
+      g6_instance_id: 'g6:site', runtime_source: SCENE_NPC_SOURCE
+    };
+    const sourceNpc = {
+      ...destinationNpc, instance_id: 'npc:source',
+      position_id: 'position:source'
+    };
+    const envelope = commitEnvelope({ clarification: false, check: false });
+    envelope.consequence.position_transition = {
+      owner: '@rus/movement-routes', actor_id: 'actor-1',
+      from_position_ref: 'position:source',
+      to_position_ref: 'position:destination'
+    };
+    envelope.visible_context.visible_npc = [{
+      entity_ref: { entity_kind: 'npc', entity_id: destinationNpc.instance_id },
+      display_label: 'человек', recognition: 'unrecognized'
+    }];
+    const loadedPositions = [];
+    const f = fixture({ direct: true, envelopeOverride: envelope,
+      stateOverride: {
+        journey_location: { id: 'journey', scene_position_id: 'position:source',
+          state_version: 3 },
+        position: { site_id: 'site', position_id: 'position:source',
+          location_ref: 'site', g6_instance_id: 'g6:site', g6_id: 'g6:site',
+          g5_anchor_id: 'anchor-site' },
+        npcs: [sourceNpc]
+      },
+      turnStepApprovedOwners: { async loadPreparedMovementScene({ partyId, state }) {
+        loadedPositions.push({ partyId, position: state.position.position_id,
+          sourceNpcPersisted: state.npcs.some(({ instance_id }) =>
+            instance_id === sourceNpc.instance_id) });
+        return { ...state, scene_position_g6: {
+          'position:source': 'g6:site', 'position:destination': 'g6:site'
+        }, npcs: [...state.npcs, destinationNpc] };
+      } }
+    });
+
+    await f.commit();
+
+    assert.deepEqual(loadedPositions, [{ partyId: 'p',
+      position: 'position:destination', sourceNpcPersisted: false }]);
+    const screen = f.plans[0].updates.find(({ target_table: table }) =>
+      table === 'party_server_sessions').record.screen;
+    assert.deepEqual(screen.panels.people.data.visible_npcs.map(
+      ({ display_label }) => display_label), ['человек']);
+    const snapshot = f.plans[0].inserts.find(({ target_table: table }) =>
+      table === 'party_state_snapshots').record.state_payload;
+    assert.equal(snapshot.npcs.some(({ runtime_source }) =>
+      runtime_source === SCENE_NPC_SOURCE), false);
+  });
 
 test('direct-only semantic turn commits one P16 root with snapshot and pending presentation',
   async () => {

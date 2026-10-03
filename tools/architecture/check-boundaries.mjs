@@ -424,7 +424,8 @@ const domainModuleNames = [
   'checks-rng',
   'combat-health',
   'social-law',
-  'visibility-knowledge-memory'
+  'visibility-knowledge-memory',
+  'economy'
 ];
 const baseApprovedDomainImports = new Set([
   '@rus/kernel',

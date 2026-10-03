@@ -14,6 +14,7 @@ import {
   RNG_VERSION,
 } from '../src/index.js';
 import { presenceRuleReplayKey } from '../src/ordinary-materialization-foundation-internal.js';
+import { choosePresenceDiscoveryMode } from '../src/presence-rules-first-arrival.js';
 
 const rule = (overrides = {}) => ({
   rule_id: 'pr_test',
@@ -24,10 +25,13 @@ const rule = (overrides = {}) => ({
   region_id: null,
   subject_kind: 'category',
   subject_ref: 'cat_child',
+  item_ref: 'it_test',
   presence_probability_ppm: 1_000_000,
   count_limit: 2,
   allowed_seasons: ['all'],
   refresh_class: 'none',
+  entry_visible_if: 'placed_exposed',
+  search_only_if: 'placed_concealed',
   entry_exposed_weight: 1,
   search_concealed_weight: 0,
   ...overrides,
@@ -64,6 +68,58 @@ test('presenceRuleSubjectKey and derivePresenceRuleSeedContext match §3A.1', ()
   ]);
 });
 
+test('presence discovery mode applies weighted defaults and fails closed on invalid rules', () => {
+  const choose = (overrides, value = 0) => {
+    let calls = 0;
+    const mode = choosePresenceDiscoveryMode({
+    item_ref: 'it_test',
+    entry_visible_if: 'placed_exposed',
+    search_only_if: 'placed_concealed',
+    entry_exposed_weight: null,
+    search_concealed_weight: null,
+    ...overrides,
+    }, { nextUint32: () => { calls += 1; return value; } });
+    return { mode, calls };
+  };
+
+  assert.deepEqual(choose({}, 0), { mode: 'exposed', calls: 1 });
+  assert.deepEqual(choose({}, 1), { mode: 'concealed', calls: 1 });
+  assert.deepEqual(choose({ entry_exposed_weight: 1, search_concealed_weight: 0 }), { mode: 'exposed', calls: 1 });
+  assert.deepEqual(choose({ entry_exposed_weight: 0, search_concealed_weight: 1 }), { mode: 'concealed', calls: 1 });
+  assert.deepEqual(choose({ entry_exposed_weight: null, search_concealed_weight: 4 }, 0), { mode: 'exposed', calls: 1 });
+  assert.deepEqual(choose({ entry_exposed_weight: null, search_concealed_weight: 4 }, 1), { mode: 'concealed', calls: 1 });
+  assert.deepEqual(choose({ entry_exposed_weight: 4, search_concealed_weight: null }, 4), { mode: 'concealed', calls: 1 });
+  assert.deepEqual(choose({ search_only_if: null, entry_exposed_weight: null,
+    search_concealed_weight: null }, 1), { mode: 'exposed', calls: 0 });
+  assert.deepEqual(choose({ entry_visible_if: null, entry_exposed_weight: null,
+    search_concealed_weight: null }, 1), { mode: 'concealed', calls: 0 });
+  assert.throws(() => choosePresenceDiscoveryMode({
+    rule_id: 'pr_invalid', rule_version: 2, item_ref: 'it_test', entry_visible_if: null, search_only_if: null,
+  }, { nextUint32: () => assert.fail('invalid rule must not draw') }), {
+    code: 'PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+    details: { rule_ref: 'pr_invalid@2', reason: 'modes' },
+  });
+  assert.throws(() => choosePresenceDiscoveryMode({
+    rule_id: 'pr_zero', rule_version: 1, item_ref: 'it_test', entry_visible_if: 'placed_exposed',
+    search_only_if: 'placed_concealed', entry_exposed_weight: 0, search_concealed_weight: 0,
+  }, { nextUint32: () => assert.fail('zero-weight rule must not draw') }), {
+    code: 'PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+    details: { rule_ref: 'pr_zero@1', reason: 'weights' },
+  });
+  for (const overrides of [
+    { entry_visible_if: 'placed_exposed', search_only_if: null },
+    { entry_visible_if: null, search_only_if: 'placed_concealed' },
+  ]) {
+    assert.throws(() => choosePresenceDiscoveryMode({
+      rule_id: 'pr_single_zero', rule_version: 1, item_ref: 'it_test',
+      entry_exposed_weight: 0, search_concealed_weight: 0, ...overrides,
+    }, { nextUint32: () => assert.fail('single-mode zero-weight rule must not draw') }), {
+      code: 'PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+      details: { rule_ref: 'pr_single_zero@1', reason: 'weights' },
+    });
+  }
+});
+
 test('applyPresenceRulesFirstArrival persists empty count and replays by presenceRuleReplayKey', () => {
   const parentById = new Map([['cat_child', 'cat_parent']]);
   const aggregate = applyOrdinaryAggregateTransition({
@@ -94,6 +150,272 @@ test('applyPresenceRulesFirstArrival persists empty count and replays by presenc
     rules: [alwaysMiss],
     parentById,
   }), afterMiss);
+});
+
+test('presence-rule mode gap is reported before draws, even when count would be zero', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-gap' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-gap',
+    scopeInstanceRef: 'g5:site-gap',
+    rules: [rule({ presence_probability_ppm: 0, entry_visible_if: null, search_only_if: null })],
+  }), {
+    code: 'PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+    details: { rule_ref: 'pr_test@1', reason: 'modes' },
+  });
+  assert.equal(aggregate.presence_resolutions.length, 0);
+});
+
+test('non-item presence rule resolves exposed without a discovery-mode choice', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-non-item' }, resolution_record_cap: 8 });
+  const after = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-non-item',
+    scopeInstanceRef: 'g5:site-non-item',
+    rules: [rule({ item_ref: null, variants: [], entry_visible_if: null, search_only_if: null,
+      entry_exposed_weight: null, search_concealed_weight: null, count_limit: 1 })],
+  });
+  assert.equal(after.presence_resolutions[0].count, 1);
+  assert.equal(after.presence_resolutions[0].discovery_mode, 'exposed');
+});
+
+test('non-item presence rule rejects any configured discovery field', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-non-item-invalid' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-non-item-invalid',
+    scopeInstanceRef: 'g5:site-non-item-invalid',
+    rules: [rule({ item_ref: null, variants: [], entry_visible_if: null, search_only_if: null,
+      entry_exposed_weight: 0, search_concealed_weight: null })],
+  }), {
+    code: 'PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+    details: { rule_ref: 'pr_test@1', reason: 'non_item_fields' },
+  });
+});
+
+test('positive presence-rule replay preserves saved discovery mode after rule drift', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-replay' }, resolution_record_cap: 8 });
+  const first = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-replay',
+    scopeInstanceRef: 'g5:site-replay',
+    rules: [rule({ presence_probability_ppm: 1_000_000, count_limit: 1,
+      entry_exposed_weight: 1, search_concealed_weight: 0 })],
+  });
+  const saved = first.presence_resolutions[0];
+  assert.equal(saved.count, 1);
+  assert.equal(saved.discovery_mode, 'exposed');
+  const replay = applyPresenceRulesFirstArrival({
+    aggregate: first,
+    partyId: 'party-replay',
+    scopeInstanceRef: 'g5:site-replay',
+    rules: [rule({ presence_probability_ppm: 1_000_000, count_limit: 1,
+      entry_exposed_weight: 0, search_concealed_weight: 0 })],
+  });
+  assert.strictEqual(replay, first);
+  assert.equal(replay.presence_resolutions[0].discovery_mode, saved.discovery_mode);
+});
+
+test('O1 template closure rejects a missing item_ref before recording presence', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-gap' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-template-gap',
+    scopeInstanceRef: 'g5:template-gap',
+    rules: [rule({ presence_probability_ppm: Symbol('roll_must_not_run'), item_ref: 'it_missing' })],
+    templateBackedItemRefs: new Set(['it_other']),
+    requireTemplateBackedItemRefs: true,
+  }), {
+    code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    details: { rule_ref: 'pr_test@1', reason: 'template_missing', missing_item_refs: ['it_missing'] },
+  });
+  assert.deepEqual(aggregate.presence_resolutions, []);
+});
+
+test('O1 template closure rejects an unmapped variant instead of filtering it', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-variant-gap' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-template-variant-gap',
+    scopeInstanceRef: 'g5:template-variant-gap',
+    rules: [rule({ presence_probability_ppm: Symbol('roll_must_not_run'), item_ref: 'it_base',
+      variants: [{ item_ref: 'it_mapped' }, { item_ref: 'it_missing' }] })],
+    templateBackedItemRefs: new Set(['it_base', 'it_mapped']),
+    requireTemplateBackedItemRefs: true,
+  }), {
+    code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    details: { rule_ref: 'pr_test@1', reason: 'template_missing', missing_item_refs: ['it_missing'] },
+  });
+  assert.deepEqual(aggregate.presence_resolutions, []);
+});
+
+test('O1 selector gaps only its exact rule while a same-tuple nonmember PF stays generic', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-o1-scoped' }, resolution_record_cap: 8 });
+  const o1Rule = rule({ rule_id: 'pr_o1_selected', scope_ref: 'pf_o1', item_ref: 'it_missing',
+    presence_probability_ppm: Symbol('selected gap must precede RNG') });
+  const unrelatedRule = rule({ rule_id: 'pr_pf_nonmember', scope_ref: 'pf_o1', item_ref: 'it_unlisted',
+    presence_probability_ppm: 0 });
+  const gaps = [];
+  const after = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-o1-scoped',
+    scopeInstanceRef: 'g5:o1-scoped',
+    rules: [o1Rule, unrelatedRule],
+    o1Applicability: {
+      templateBackedItemRefs: new Set(['it_approved']),
+      selector: { applicability: {
+        selectors: [{ g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+          place_family_ref: 'pf_o1@1', source_pf_id: 'pf_o1' }],
+        rule_refs: [{ rule_id: 'pr_o1_selected', rule_version: 1 }],
+      } },
+      tuple: { g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+        place_family_refs: [{ source_pf_id: 'pf_o1', place_family_ref: 'pf_o1@1' }] },
+    },
+    onO1TemplateGap: (entry) => gaps.push(entry),
+  });
+  assert.equal(gaps.length, 1);
+  assert.deepEqual(gaps[0], { code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    rule_ref: 'pr_o1_selected@1', reason: 'template_missing',
+    missing_item_refs: ['it_missing'] });
+  assert.deepEqual(after.presence_resolutions.map((entry) => entry.rule_ref), ['pr_pf_nonmember@1']);
+});
+
+test('selected O1 rejects a broken nested template closure before discovery RNG', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-o1-broken-closure' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-o1-broken-closure',
+    scopeInstanceRef: 'g5:o1-broken-closure',
+    rules: [rule({ rule_id: 'pr_o1_selected', scope_ref: 'pf_o1', item_ref: 'it_test',
+      presence_probability_ppm: Symbol('RNG must not run') })],
+    o1Applicability: {
+      selector: { applicability: {
+        selectors: [{ g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+          place_family_ref: 'pf_o1@1', source_pf_id: 'pf_o1' }],
+        rule_refs: [{ rule_id: 'pr_o1_selected', rule_version: 1 }],
+      } },
+      tuple: { g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+        place_family_refs: [{ source_pf_id: 'pf_o1', place_family_ref: 'pf_o1@1' }] },
+      templateBackedItemRefs: [],
+    },
+  }), {
+    code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    details: { rule_ref: 'pr_o1_selected@1', reason: 'template_closure_invalid' },
+  });
+  assert.deepEqual(aggregate.presence_resolutions, []);
+});
+
+test('O1 selector rule on a different tuple keeps the generic path', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-o1-wrong-tuple' }, resolution_record_cap: 8 });
+  const after = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-o1-wrong-tuple',
+    scopeInstanceRef: 'g5:o1-wrong-tuple',
+    rules: [rule({ rule_id: 'pr_o1_selected', scope_ref: 'pf_o1', item_ref: 'it_unlisted',
+      presence_probability_ppm: 0 })],
+    templateBackedItemRefs: new Set(['it_approved']),
+    o1Applicability: {
+      selector: { applicability: {
+        selectors: [{ g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+          place_family_ref: 'pf_o1@1', source_pf_id: 'pf_o1' }],
+        rule_refs: [{ rule_id: 'pr_o1_selected', rule_version: 1 }],
+      } },
+      tuple: { g1_ref: 'other-g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+        place_family_refs: [{ source_pf_id: 'pf_o1', place_family_ref: 'pf_o1@1' }] },
+    },
+    onO1TemplateGap: () => assert.fail('wrong tuple must not be strict O1'),
+  });
+  assert.equal(after.presence_resolutions.length, 1);
+});
+
+test('O1 template closure rejects malformed variant refs as a typed gap', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-malformed' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-template-malformed',
+    scopeInstanceRef: 'g5:template-malformed',
+    rules: [rule({ presence_probability_ppm: Symbol('roll_must_not_run'), variants: 'it_invalid' })],
+    templateBackedItemRefs: new Set(['it_test']),
+    requireTemplateBackedItemRefs: true,
+  }), {
+    code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    details: { rule_ref: 'pr_test@1', reason: 'item_refs_invalid', missing_item_refs: [] },
+  });
+  assert.deepEqual(aggregate.presence_resolutions, []);
+});
+
+test('O1 template closure is required only on target callers and does not invalidate non-item rules', () => {
+  const nonItem = rule({ item_ref: null, variants: [], entry_visible_if: null, search_only_if: null,
+    entry_exposed_weight: null, search_concealed_weight: null, count_limit: 1 });
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-non-item' }, resolution_record_cap: 8 });
+  const result = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-template-non-item',
+    scopeInstanceRef: 'g5:template-non-item',
+    rules: [nonItem],
+    templateBackedItemRefs: new Set(),
+    requireTemplateBackedItemRefs: true,
+  });
+  assert.equal(result.presence_resolutions[0].count, 1);
+  assert.equal(result.presence_resolutions[0].discovery_mode, 'exposed');
+});
+
+test('saved O1 presence replay survives later template-closure drift', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-replay' }, resolution_record_cap: 8 });
+  const first = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-template-replay',
+    scopeInstanceRef: 'g5:template-replay',
+    rules: [rule({ presence_probability_ppm: 1_000_000, count_limit: 1 })],
+    templateBackedItemRefs: new Set(['it_test']),
+    requireTemplateBackedItemRefs: true,
+  });
+  const replay = applyPresenceRulesFirstArrival({
+    aggregate: first,
+    partyId: 'party-template-replay',
+    scopeInstanceRef: 'g5:template-replay',
+    rules: [rule({ presence_probability_ppm: 1_000_000, count_limit: 1 })],
+    templateBackedItemRefs: new Set(),
+    requireTemplateBackedItemRefs: true,
+  });
+  assert.strictEqual(replay, first);
+});
+
+test('O1 callers fail closed when the exact template closure is omitted', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-closure-missing' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-template-closure-missing',
+    scopeInstanceRef: 'g5:template-closure-missing',
+    rules: [rule({ presence_probability_ppm: Symbol('roll_must_not_run') })],
+    requireTemplateBackedItemRefs: true,
+  }), {
+    code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    details: { rule_ref: 'pr_test@1', reason: 'template_closure_invalid' },
+  });
+  assert.deepEqual(aggregate.presence_resolutions, []);
+});
+
+test('single-mode 0/0 discovery weights fail before O1 seed or transition', () => {
+  for (const overrides of [
+    { entry_visible_if: 'placed_exposed', search_only_if: null },
+    { entry_visible_if: null, search_only_if: 'placed_concealed' },
+  ]) {
+    const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-single-zero' }, resolution_record_cap: 8 });
+    assert.throws(() => applyPresenceRulesFirstArrival({
+      aggregate,
+      partyId: 'party-single-zero',
+      scopeInstanceRef: 'g5:single-zero',
+      rules: [rule({ presence_probability_ppm: Symbol('seed_must_not_run'),
+        entry_exposed_weight: 0, search_concealed_weight: 0, ...overrides })],
+      templateBackedItemRefs: new Set(['it_test']),
+      requireTemplateBackedItemRefs: true,
+    }), {
+      code: 'PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',
+      details: { rule_ref: 'pr_test@1', reason: 'weights' },
+    });
+    assert.deepEqual(aggregate.presence_resolutions, []);
+  }
 });
 
 test('LW-071: resolved ancestor category skips descendant presence roll', () => {

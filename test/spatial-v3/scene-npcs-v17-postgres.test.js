@@ -31,14 +31,17 @@ const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
 const json = (output) => new Response(JSON.stringify({
   choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
 
-/** Deterministic LLM stub on top of the fixture stub: local approach then route, talk, conversation roles. */
-function installStub() {
+/** Deterministic LLM stub on top of the fixture stub: movement, talk and conversation roles. */
+function installStub({ onNarration = null } = {}) {
   const restore = installPresenceProductionE2eFetch();
   const base = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    if (system.startsWith('Return only {"prose"') && input.required_current_beat) {
+      await onNarration?.();
+    }
     if (system.includes('schema must equal world_knowledge_query_plan_v1.')
       && input.purpose !== 'semantic_resolution') {
       // only semantic_resolution may plan no domain
@@ -53,7 +56,8 @@ function installStub() {
       let pick = null;
       if (request.root_player_action === PRESENCE_E2E_MOVE_TEXT) {
         pick = pickOp((op) => op.op === 'request_movement' && op.movement_kind === 'route')
-          ?? pickOp((op) => op.op === 'request_movement' && String(op.description ?? '').includes('подход'))
+          ?? pickOp((op) => op.op === 'request_movement'
+            && String(op.description ?? '').includes('подход'))
           ?? pickOp((op) => op.op === 'request_movement');
       } else if (request.root_player_action === TALK_TEXT) {
         pick = pickOp((op) => op.op === 'emit_interaction');
@@ -115,17 +119,49 @@ async function snapshotNpcs(partyPool, partyId) {
   return { version: rows[0].state_version, payload: rows[0].state_payload };
 }
 
+function movementChannel(payload) {
+  const turn = payload?.last_turn?.turn_step_commit;
+  const preparedRoute = turn?.time_update?.prepared_effect_ledger?.slices?.some((slice) =>
+    slice.operation_ref === 'request_movement'
+      && slice.consequence?.position_transition?.destination_site_id != null);
+  if (preparedRoute) return 'prepared-route';
+  if (turn?.consequence?.position_transition != null) return 'position_transition';
+  return null;
+}
+
+async function persistedRow(pool, sql, values) {
+  const { rows } = await pool.query(sql, values);
+  return rows.map(({ row }) => row);
+}
+
 test('a generated site: its NPCs are loaded with G6, conversation is offered, the snapshot stays clean',
   { timeout: 1_780_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    const restore = installStub();
+    let observingPartyId = null;
+    let arrivalPendingScreen = null;
+    const sceneProjectionDiagnostics = [];
+    const restore = installStub({ onNarration: async () => {
+      if (observingPartyId == null) return;
+      const { rows } = await env.partyPool.query(
+        'SELECT screen FROM party_runtime.party_server_sessions WHERE party_id=$1',
+        [observingPartyId]);
+      if (rows[0]?.screen?.screen_status === 'committed_presentation_pending') {
+        arrivalPendingScreen = rows[0].screen;
+      }
+    } });
     t.after(() => restore());
-    const { runtime } = await createPresenceProductionRoot(env);
+    const { runtime } = await createPresenceProductionRoot({ ...env,
+      extraConfig: { onNpcSceneProjection: (event) =>
+        sceneProjectionDiagnostics.push(event) }
+    });
     try {
       let partyId = null;
+      let arrivalResponse = null;
+      let arrivalSnapshot = null;
       for (let attempt = 0; attempt < 6 && partyId == null; attempt += 1) {
         const opening = await runtime.startNewGame({ scenario_id: 'novgorod_riverbank_approach_v1',
           request_id: `scene-npcs-start-${attempt}` });
+        observingPartyId = opening.party_id;
         await runtime.acknowledgeOpening(opening.party_id, { client_ack_id: `scene-npcs-ack-${attempt}` });
         for (let step = 0; step < 8 && partyId == null; step += 1) {
           const generated = (await env.partyPool.query(
@@ -150,8 +186,32 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
               await runtime.submitTurn(opening.party_id, { raw_text: TARGET_SMOKE_INPUT,
                 request_id: `scene-npcs-look-${attempt}` });
             }
-            await runtime.submitTurn(opening.party_id, { raw_text: PRESENCE_E2E_MOVE_TEXT,
+            const response = await runtime.submitTurn(opening.party_id, { raw_text: PRESENCE_E2E_MOVE_TEXT,
               request_id: `scene-npcs-move-${attempt}-${step}` });
+            const current = await snapshotNpcs(env.partyPool, opening.party_id);
+            const siteId = current.payload.position?.site_id;
+            if (siteId != null) {
+              const location = await env.partyPool.query(
+                `SELECT site.origin, count(n.npc_id)::int AS people
+                   FROM party_runtime.party_g5_sites site
+                   LEFT JOIN party_runtime.party_g6_instances g6 ON g6.party_id=site.party_id
+                    AND g6.host_kind='g5_site' AND g6.host_id=site.id AND g6.status='active'
+                   LEFT JOIN party_runtime.scene_position_nodes pos ON pos.party_id=g6.party_id
+                    AND pos.g6_instance_id=g6.id AND pos.status='active'
+                   LEFT JOIN party_runtime.entity_placements pl ON pl.party_id=pos.party_id
+                    AND pl.placement_kind='scene_position' AND pl.position_node_id=pos.id
+                    AND pl.entity_kind='npc'
+                   LEFT JOIN party_runtime.party_npcs n ON n.party_id=pl.party_id
+                    AND n.npc_id=pl.entity_id
+                  WHERE site.party_id=$1 AND site.id=$2 GROUP BY site.origin`,
+                [opening.party_id, siteId]);
+              if (location.rows[0]?.origin === 'generated'
+                  && Number(location.rows[0].people) > 0) {
+                partyId = opening.party_id;
+                arrivalResponse = response;
+                arrivalSnapshot = current;
+              }
+            }
           } catch (error) { // ~1 in 4 parties: the planner offers no movement (B1 finding)
             console.log('SCENE-NPCS party skipped:', String(error.message).slice(0, 120));
             break;
@@ -159,6 +219,40 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         }
       }
       assert.ok(partyId, 'a generated site must be reached');
+      assert.equal(arrivalResponse?.screen?.turn_id, arrivalPendingScreen?.turn_id,
+        'the pending screen must be captured during narration for the arrival turn');
+      const readback = await runtime.getPartyScreen(partyId);
+      const pendingPeople = arrivalPendingScreen?.panels?.people;
+      const responsePeople = arrivalResponse?.screen?.panels?.people;
+      const readbackPeople = readback.screen?.panels?.people;
+      const visibleNpcIds = (arrivalPendingScreen?.visible_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean);
+      const arrivalProjection = sceneProjectionDiagnostics.find(({ after }) =>
+        visibleNpcIds.some((id) => after?.current_visible_npc_ids?.includes(id)))?.after;
+      const projectionEvents = sceneProjectionDiagnostics.map(({ request_id: id, after }) => ({
+        request_id: id, player: after?.player,
+        candidates: after?.candidates,
+        projection_npc_ids: after?.projection_npc_ids,
+        current_visible_npc_ids: after?.current_visible_npc_ids
+      }));
+      assert.equal(readbackPeople?.visible, true,
+        'the final screen readback must show its People panel');
+      assert.equal(readbackPeople?.data?.visible_npcs?.length > 0, true,
+        'the final screen readback must include the scene NPC');
+      assert.equal(pendingPeople?.visible, true,
+        `the pending arrival screen must show its People panel; visible NPC ids: ${
+          JSON.stringify(visibleNpcIds)}; prepared projection: ${
+          JSON.stringify(arrivalProjection ?? null)}; projection events: ${
+          JSON.stringify(projectionEvents)}`);
+      assert.equal(pendingPeople?.data?.visible_npcs?.length > 0, true,
+        'the pending arrival screen must include the scene NPC');
+      assert.deepEqual(responsePeople, readbackPeople,
+        'the completed turn response and screen readback must agree on People');
+      assert.deepEqual(pendingPeople, responsePeople,
+        'the pending screen and completed screen must agree on People');
+      // No known routes here: route-conversation covers prepared movement; commit unit covers this transition.
+      assert.equal(movementChannel(arrivalSnapshot?.payload), 'position_transition',
+        'the generated-site case must exercise the top-level position_transition path');
 
       const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
         committer: { async commit() { throw new Error('read-only'); } } });
@@ -219,6 +313,125 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       const reloaded = await repository.loadPhase2State(partyId);
       assert.equal(loaded.every(({ instance_id: id }) => reloaded.npcs.some(
         (npc) => npc.instance_id === id && npc.runtime_source === SCENE_NPC_SOURCE)), true);
+
+      const stateBeforeRace = await snapshotNpcs(env.partyPool, partyId);
+      const attemptRequestId = 'scene-npcs-stale-prepared-read';
+      const attemptTurn = Number(stateBeforeRace.payload.party_state.turn_number) + 1;
+      const attemptChangeSetId = `change:${partyId}:turn-step:${attemptTurn}`;
+      const attemptPackageId = `visible:${partyId}:turn-step:${attemptTurn}`;
+      const baseVersion = Number(stateBeforeRace.version);
+      const raceCheckpoint = async () => ({
+        party: (await persistedRow(env.partyPool,
+          'SELECT to_jsonb(p) AS row FROM party_runtime.parties p WHERE party_id=$1', [partyId]))[0],
+        snapshots: await persistedRow(env.partyPool,
+          `SELECT to_jsonb(s) AS row FROM party_runtime.party_state_snapshots s
+            WHERE party_id=$1 AND state_version IN ($2,$3) ORDER BY state_version`,
+          [partyId, baseVersion, baseVersion + 1]),
+        session: (await persistedRow(env.partyPool,
+          `SELECT to_jsonb(s) AS row FROM party_runtime.party_server_sessions s WHERE party_id=$1`,
+          [partyId]))[0],
+        committedIdempotency: await persistedRow(env.partyPool,
+          `SELECT to_jsonb(i) AS row FROM party_runtime.party_command_idempotency i
+            WHERE party_id=$1 AND idempotency_key=$2`,
+          [partyId, stateBeforeRace.payload.last_turn.idempotency_key]),
+        committedChangeSet: await persistedRow(env.partyPool,
+          'SELECT to_jsonb(c) AS row FROM party_runtime.party_v3_change_sets c WHERE id=$1',
+          [stateBeforeRace.payload.last_turn.visible_package.change_set_id]),
+        committedVisiblePackage: await persistedRow(env.partyPool,
+          'SELECT to_jsonb(v) AS row FROM party_runtime.party_visible_packages v WHERE package_id=$1',
+          [stateBeforeRace.payload.last_turn.visible_package.package_id]),
+        committedChecks: await persistedRow(env.partyPool,
+          `SELECT to_jsonb(c) AS row FROM party_runtime.party_check_resolutions c
+            WHERE party_id=$1 AND result_change_set_id=$2 ORDER BY check_resolution_id`,
+          [partyId, stateBeforeRace.payload.last_turn.visible_package.change_set_id])
+      });
+      const checkpointBeforeRace = await raceCheckpoint();
+      const originalPoolQuery = env.partyPool.query.bind(env.partyPool);
+      const originalConnect = env.partyPool.connect;
+      const hadOwnConnect = Object.hasOwn(env.partyPool, 'connect');
+      let changedAfterPreparedRead = false;
+      const instrumentClient = (client) => {
+        const originalClientQuery = client.query.bind(client);
+        client.query = async (...queryArgs) => {
+          const [statement, positionalValues] = queryArgs;
+          const sql = typeof statement === 'string' ? statement : statement?.text;
+          const values = positionalValues ?? statement?.values;
+          if (!changedAfterPreparedRead
+              && typeof sql === 'string'
+              && /SELECT\s+party_id\s+FROM\s+party_runtime\.parties\s+WHERE\s+party_id=\$1\s+FOR\s+UPDATE/iu.test(sql)
+              && values?.[0] === partyId) {
+            const changed = await originalPoolQuery(
+              'UPDATE party_runtime.parties SET state_version=state_version+1 WHERE party_id=$1',
+              [partyId]);
+            assert.equal(changed.rowCount, 1,
+              'the test must change party state before P16 locks the party row');
+            changedAfterPreparedRead = true;
+          }
+          return originalClientQuery(...queryArgs);
+        };
+        return client;
+      };
+      env.partyPool.connect = function (...args) {
+        if (typeof args[0] === 'function') {
+          return originalConnect.call(this, (error, client, release) => {
+            if (error) return args[0](error);
+            return args[0](null, instrumentClient(client), release);
+          });
+        }
+        return originalConnect.apply(this, args).then(instrumentClient);
+      };
+      try {
+        await assert.rejects(runtime.submitTurn(partyId, {
+          raw_text: PRESENCE_E2E_MOVE_TEXT, request_id: attemptRequestId
+        }), { code: 'TRACE_TURN_STEP_COMMIT_FAILED' });
+      } finally {
+        if (hadOwnConnect) env.partyPool.connect = originalConnect;
+        else delete env.partyPool.connect;
+      }
+      assert.equal(changedAfterPreparedRead, true,
+        'the party version must change before P16 locks and rechecks it');
+      const checkpointAfterRace = await raceCheckpoint();
+      assert.equal(Number(checkpointAfterRace.party.state_version), baseVersion + 1,
+        'only the intentional external version bump remains after the rejected commit');
+      const withoutVersion = (row) => {
+        const { state_version: _stateVersion, ...rest } = row;
+        return rest;
+      };
+      assert.deepEqual(withoutVersion(checkpointAfterRace.party),
+        withoutVersion(checkpointBeforeRace.party),
+        'the rejected commit must preserve party fields except the intentional version bump');
+      assert.deepEqual(checkpointAfterRace.snapshots, checkpointBeforeRace.snapshots,
+        'the rejected commit must preserve the base snapshot and add no bumped-version snapshot');
+      assert.deepEqual(checkpointAfterRace.session, checkpointBeforeRace.session,
+        'the rejected commit must preserve screen and turn/session anchors');
+      assert.deepEqual(checkpointAfterRace.committedIdempotency,
+        checkpointBeforeRace.committedIdempotency,
+        'the prior successful command idempotency row must remain unchanged');
+      assert.deepEqual(checkpointAfterRace.committedChangeSet,
+        checkpointBeforeRace.committedChangeSet,
+        'the prior committed turn change set must remain unchanged');
+      assert.deepEqual(checkpointAfterRace.committedVisiblePackage,
+        checkpointBeforeRace.committedVisiblePackage,
+        'the prior visible package must remain unchanged');
+      assert.deepEqual(checkpointAfterRace.committedChecks, checkpointBeforeRace.committedChecks,
+        'the prior turn checks must remain unchanged');
+      assert.deepEqual(await persistedRow(env.partyPool,
+        `SELECT to_jsonb(i) AS row FROM party_runtime.party_command_idempotency i
+          WHERE party_id=$1 AND idempotency_key=$2`, [partyId, attemptRequestId]), [],
+      'the rejected command must not write an idempotency/replay row');
+      assert.deepEqual(await persistedRow(env.partyPool,
+        'SELECT to_jsonb(c) AS row FROM party_runtime.party_v3_change_sets c WHERE id=$1',
+        [attemptChangeSetId]), [], 'the rejected command must not append a change set');
+      assert.deepEqual(await persistedRow(env.partyPool,
+        'SELECT to_jsonb(v) AS row FROM party_runtime.party_visible_packages v WHERE package_id=$1',
+        [attemptPackageId]), [], 'the rejected command must not append a visible package');
+      assert.deepEqual(await persistedRow(env.partyPool,
+        `SELECT to_jsonb(c) AS row FROM party_runtime.party_check_resolutions c
+          WHERE party_id=$1 AND result_change_set_id=$2`, [partyId, attemptChangeSetId]), [],
+      'the rejected command must not append check rows');
+      const rejectedReplay = await repository.loadPhase2Replay({ partyId,
+        idempotencyKey: attemptRequestId });
+      assert.equal(rejectedReplay, null, 'the rejected command must not become replayable');
     } finally {
       await runtime.close();
     }

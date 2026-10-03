@@ -62,6 +62,53 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
+  const groundedRequestsByRequest = new WeakMap();
+  const prepareRequest = async (request, context = {}) => {
+    const cached = groundedRequestsByRequest.get(request);
+    if (cached) return cached;
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'conversation', {
+        clock: request.requested_at
+          ?? request.player_safe_state?.clock
+          ?? null,
+        historical_events: historicalEvents
+      });
+    const slice = grounded.world_knowledge;
+    const claimRefs = [...(slice?.hard_constraints ?? []),
+      ...(slice?.facts ?? [])].flatMap(({ claim_ref: claimRef }) =>
+      typeof claimRef === 'string' && claimRef.trim() === claimRef
+        && claimRef.length > 0
+        ? [{ entity_kind: 'knowledge_record', entity_id: claimRef }]
+        : []);
+    const knowledgeRefs = new Map([
+      ...(request.allowed_references?.knowledge_refs ?? []),
+      ...claimRefs
+    ].map((reference) => [
+      `${reference.entity_kind}\u0000${reference.entity_id}`,
+      structuredClone(reference)
+    ]));
+    const preparedRequest = {
+      ...request,
+      allowed_references: {
+        ...request.allowed_references,
+        knowledge_refs: [...knowledgeRefs.values()].sort((left, right) =>
+          `${left.entity_kind}\u0000${left.entity_id}`
+            < `${right.entity_kind}\u0000${right.entity_id}` ? -1
+            : `${left.entity_kind}\u0000${left.entity_id}`
+              > `${right.entity_kind}\u0000${right.entity_id}` ? 1 : 0)
+      }
+    };
+    const promptRequest = { ...grounded,
+      allowed_references: preparedRequest.allowed_references };
+    const preparedContext = { grounded_request: promptRequest,
+      audit_request: omitWorldKnowledgeContextText(promptRequest) };
+    const prepared = { request: preparedRequest, context: preparedContext };
+    groundedRequestsByRequest.set(request, prepared);
+    groundedRequestsByRequest.set(preparedRequest, prepared);
+    return prepared;
+  };
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
     const semanticRepair = repair?.validation_errors?.some(
@@ -70,19 +117,16 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     if (semanticRepair && npcConversationCandidates(request).some(
       (candidate) => candidate.contribution_kind === 'speech'
         && candidate.supporting_operations.length === 0
-    )) return semanticGroundingFallback(repair.original_output, request);
-    // Explicit party events from model-call context / exchange wrap (F1).
-    const historicalEvents = Array.isArray(context.historical_events)
-      ? context.historical_events
-      : [];
-    const grounded = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'conversation', {
-        clock: request.requested_at
-          ?? request.player_safe_state?.clock
-          ?? null,
-        historical_events: historicalEvents
-      });
-    const modelRequest = omitWorldKnowledgeContextText(grounded);
+    )) {
+      return semanticGroundingFallback(repair.original_output, request);
+    }
+    const prepared = context.prepared_request_context
+      ? { request, context: context.prepared_request_context }
+      : await prepareRequest(request, context);
+    const requestForPlan = prepared.request;
+    const { grounded_request: promptRequest,
+      audit_request: modelRequest } =
+      prepared.context;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -91,8 +135,8 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: [npcConversationInstructions(repair, grounded),
-          ...worldKnowledgeFactualClosure(grounded)].join(' ')
+        content: [npcConversationInstructions(repair, promptRequest),
+          ...worldKnowledgeFactualClosure(promptRequest)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
@@ -105,13 +149,52 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assembleNpcConversationPlan(response.output, request);
+    const resolvedOutput = resolveNpcClaimReferenceIds(response.output,
+      requestForPlan);
+    const plan = assembleNpcConversationPlan(resolvedOutput, requestForPlan);
+    return plan;
   };
-  model.validateFreshPlan = async (plan, request) => {
+  model.prepareRequest = prepareRequest;
+  model.validateFreshPlan = async (plan, request, context = {}) => {
     const presentation = validateRequiredNpcPresentation(plan, request);
-    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
+    const preparedContext = context.prepared_request_context
+      ?? groundedRequestsByRequest.get(request);
+    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan,
+      request: preparedContext?.audit_request
+        ?? preparedContext?.context?.audit_request ?? request });
   };
   return model;
+}
+
+function resolveNpcClaimReferenceIds(output, request) {
+  const referencesById = new Map();
+  for (const reference of request.allowed_references?.knowledge_refs ?? []) {
+    if (typeof reference?.entity_id !== 'string') continue;
+    const matches = referencesById.get(reference.entity_id) ?? [];
+    matches.push(reference);
+    referencesById.set(reference.entity_id, matches);
+  }
+
+  const resolved = structuredClone(output);
+  const claims = resolved?.speech?.claims;
+  if (!Array.isArray(claims)) return resolved;
+  for (const claim of claims) {
+    if (claim === null || typeof claim !== 'object' || Array.isArray(claim)) {
+      continue;
+    }
+    if (!Array.isArray(claim.source_knowledge_refs)) {
+      claim.source_knowledge_refs = [null];
+      continue;
+    }
+    claim.source_knowledge_refs = claim.source_knowledge_refs.map((wireRef) => {
+      const id = typeof wireRef === 'string' ? wireRef
+        : typeof wireRef?.entity_id === 'string' ? wireRef.entity_id : null;
+      if (id === null) return wireRef;
+      const matches = referencesById.get(id) ?? [];
+      return matches.length === 1 ? structuredClone(matches[0]) : id;
+    });
+  }
+  return resolved;
 }
 
 function semanticGroundingFallback(original, request) {

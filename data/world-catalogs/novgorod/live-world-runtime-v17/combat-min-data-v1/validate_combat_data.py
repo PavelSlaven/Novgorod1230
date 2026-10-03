@@ -141,8 +141,14 @@ def validate_bundle(bundle, source_map, gaps):
                 elif hashlib.sha256(b"".join(source_lines[start - 1:end])).hexdigest() != excerpt_digest:
                     errors.append("SOURCE_EXCERPT_HASH_MISMATCH")
         elif pin_kind == "internal_candidate_locator":
+            locator_value = entry.get("path")
+            locator_relpath = Path(locator_value) if isinstance(locator_value, str) and locator_value else None
+            locator_path = ((HERE / locator_relpath).resolve()
+                            if locator_relpath is not None and not locator_relpath.is_absolute() else None)
             if (entry.get("id") != "src.duration.calibration.v1" or digest is not None
-                    or source_path != CANDIDATE_PATH or entry.get("json_pointer") != "/durations/per_action_profiles/0"):
+                    or locator_path != CANDIDATE_PATH.resolve()
+                    or locator_value != CANDIDATE_PATH.name
+                    or entry.get("json_pointer") != "/durations/per_action_profiles/0"):
                 errors.append("SELF_SOURCE_LOCATOR_INVALID")
             else:
                 duration = bundle.get("durations", {}).get("per_action_profiles", [])
@@ -151,7 +157,7 @@ def validate_bundle(bundle, source_map, gaps):
                         or duration[0].get("duration_minutes") != {"numerator": 1, "denominator": 10, "calibration_ref": "src.duration.calibration.v1"}):
                     errors.append("SELF_SOURCE_LOCATOR_TARGET_INVALID")
                 lines = entry.get("lines", [])
-                candidate_lines = CANDIDATE_PATH.read_text(encoding="utf-8").splitlines()
+                candidate_lines = locator_path.read_text(encoding="utf-8").splitlines()
                 if (not isinstance(lines, list) or len(lines) != 2
                         or not all(isinstance(x, int) and not isinstance(x, bool) for x in lines)
                         or lines[0] < 1 or lines[1] < lines[0] or lines[1] > len(candidate_lines)
@@ -716,6 +722,10 @@ def run_self_test(bundle, source_map, gaps):
            lambda b: b["execution"]["check"]["owner_request_binding"].update(target_ref=""))
     expect("append-only-excerpt-pin-tamper", "SOURCE_EXCERPT_HASH_MISMATCH",
            mutate_map=lambda m: next(s for s in m["sources"] if s.get("pin_kind")=="append_only_excerpt").update(excerpt_sha256="0"*64))
+    expect("self-source-absolute-path", "SELF_SOURCE_LOCATOR_INVALID",
+           mutate_map=lambda m: next(s for s in m["sources"] if s.get("pin_kind")=="internal_candidate_locator").update(path=str(CANDIDATE_PATH)))
+    expect("self-source-traversal-path", "SELF_SOURCE_LOCATOR_INVALID",
+           mutate_map=lambda m: next(s for s in m["sources"] if s.get("pin_kind")=="internal_candidate_locator").update(path="../minimal-combat-bundle.candidate.json"))
     failures = [f"{name}: expected {wanted}, received {actual}" for name, ok, wanted, actual in cases if not ok]
     return failures, len(cases)
 

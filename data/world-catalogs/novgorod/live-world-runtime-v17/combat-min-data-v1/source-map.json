@@ -130,7 +130,7 @@
     },
     {
       "id": "src.duration.calibration.v1",
-      "path": "/srv/novgorod-work/fleet/tasks/combat-data/out/minimal-combat-bundle.candidate.json",
+      "path": "minimal-combat-bundle.candidate.json",
       "lines": [
         619,
         667

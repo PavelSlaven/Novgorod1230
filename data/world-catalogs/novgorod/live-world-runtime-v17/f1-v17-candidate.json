@@ -1,0 +1,1069 @@
+{
+  "schema": "rus.live_world_runtime.local_fire_profile_authoring_candidate.v1",
+  "profile_id": "novgorod_target_f1_local_fire_candidate_v1",
+  "revision": 1,
+  "status": "candidate_unapproved",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "source_profile_set": "novgorod_target_runtime_profiles_v1",
+    "source_revision": 1,
+    "scope_rule": "Exact target G4 plus one exact generated G5 template or canonical G5 + scene template selector copied from target applicability; no scope widening."
+  },
+  "provenance": {
+    "directness": "candidate_semantic_transfer_and_logical_necessity",
+    "confidence": "bounded_by_each_value",
+    "historical_claim": false,
+    "authority": "DECISION #163 and owner decisions supplied in TASK.md; independent approval required",
+    "limits": "This package is authoring only. Item types/properties do not create target stock, successful ignition, ownership, access, water or initial fire."
+  },
+  "scope_profiles": [
+    {
+      "scope_id": "f1_scope_01",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_02",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_03",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_04",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [
+        "m2c_finite_reeds_v1"
+      ],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_05",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_06",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_07",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_08",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_09",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_10",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_11",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_12",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_13",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_14",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_15",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_16",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_17",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_18",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__channel_split",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_19",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_20",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_21",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_22",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_23",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_24",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_25",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_26",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_27",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_28",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_29",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_30",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_31",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [
+        "m2c_finite_driftwood_v1"
+      ],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_32",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "upstream_property_context_ref_role": "g4_policy_context_candidate_not_current_access"
+    },
+    {
+      "scope_id": "f1_scope_33",
+      "selector": {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1
+        },
+        "canonical_g5_ref": {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        }
+      },
+      "status": "typed_gap",
+      "gap_refs": [
+        "F1_IGNITION_BINDING",
+        "F1_FUEL_BINDING",
+        "F1_WATER_POLICY",
+        "F1_INITIAL_FIRE",
+        "F1_PROPERTY_ACCESS",
+        "F1_POSITION_TOPOLOGY",
+        "F1_QUANTITY_MASS_DEPLETION"
+      ],
+      "upstream_source_design_refs": [],
+      "upstream_property_context_ref": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "upstream_property_context_ref_role": "informational_g4_pointer_only_not_canonical_binding_or_current_access"
+    }
+  ],
+  "action_policy_candidate": {
+    "fire_is_basic_action": true,
+    "basis": "owner_decision",
+    "source_ref": "TASK.md § Решения владельца",
+    "actions": [
+      "start",
+      "add_fuel",
+      "extinguish"
+    ],
+    "action_meaning": "Action concepts only; availability of inputs and success remain state-dependent and unresolved.",
+    "provenance": "Owner decision makes fire a basic action; no profile mechanics or input availability inferred.",
+    "actions_basis": "Editorial decomposition of the owner-authorized basic fire action. Existing F1 mechanics define start/add_fuel/affect; extinguish is a conceptual physical outcome under affect, not an authored command whitelist or guarantee.",
+    "action_refs": [
+      "start",
+      "add_fuel",
+      "extinguish"
+    ],
+    "player_attempt_policy": "A player may freely attempt a fire-related action; missing authored inputs are not a command refusal. Causal and physical owners determine outcome.",
+    "authority_gap_policy": "No semantic fallback may invent required target source, access, quantity or fire state when authoritative data is missing; report the typed data gap.",
+    "fallback_policy": "forbidden_for_authority_substitution_only"
+  },
+  "existence_candidates": [
+    {
+      "concept": "firesteel",
+      "candidate_catalog_ref": "it_hh_firesteel",
+      "display_name": "кресало",
+      "candidate_property": "striking_fire",
+      "basis": "sourced_type_plus_logical_necessity_for_spark_source",
+      "source_refs": [
+        "SRC_GB_HOUSEHOLD_54",
+        "SRC_WK_FIRESTEEL_89_97",
+        "SRC_WK_FIRESTEEL_CLAIM_474_511"
+      ],
+      "limits": "WK supports a bounded Novgorod firesteel form and striking fire; no target instance, owner, access, quantity or guaranteed ignition."
+    },
+    {
+      "concept": "striking_flint",
+      "candidate_catalog_ref": "it_hh_flint",
+      "display_name": "кремень для высекания искр",
+      "candidate_property": "spark_striking_surface",
+      "basis": "logical_necessity_candidate",
+      "source_refs": [
+        "SRC_GB_HOUSEHOLD_55",
+        "SRC_DRAFT_ITEM_TYPES_453_486"
+      ],
+      "limits": "Draft item type and game-base candidate only; local geological source and target stock are not established."
+    },
+    {
+      "concept": "tinder",
+      "candidate_catalog_ref": "it_hh_tinder",
+      "display_name": "трут",
+      "candidate_property": "catches_spark_candidate",
+      "basis": "logical_necessity_candidate",
+      "source_refs": [
+        "SRC_GB_HOUSEHOLD_56",
+        "SRC_DRAFT_ITEM_TYPES_453_486"
+      ],
+      "limits": "Specific material and target presence are unresolved; no successful ignition follows."
+    },
+    {
+      "concept": "kindling",
+      "candidate_catalog_ref": "it_hh_kindling",
+      "display_name": "связка бересты и щепы",
+      "candidate_property": "combustible_starting_material_candidate",
+      "basis": "logical_necessity_candidate",
+      "source_refs": [
+        "SRC_GB_HOUSEHOLD_57",
+        "SRC_NATURAL_MATERIALS_10",
+        "SRC_WK_COMBUSTION_58"
+      ],
+      "limits": "Type-level candidate only; no target quantity, moisture, mass, placement or permission to gather."
+    },
+    {
+      "concept": "fuelwood",
+      "candidate_catalog_ref": null,
+      "display_name": "дрова / сухие ветви",
+      "candidate_property": "fuel_material_candidate",
+      "basis": "sourced_process_compatibility_plus_logical_necessity",
+      "source_refs": [
+        "SRC_WK_FUEL_PROCESS_8_20",
+        "SRC_GB_NATURAL_MATERIALS_15_17",
+        "SRC_WK_COMBUSTION_58"
+      ],
+      "limits": "Combustion compatibility depends on moisture, density, size and air; no target source/stock or fuel ratio."
+    }
+  ],
+  "quantities_masses_and_depletion": {
+    "status": "typed_gap",
+    "quantity": null,
+    "mass": null,
+    "consumption_rule": null,
+    "gap_refs": [
+      "F1_QUANTITY_MASS_DEPLETION"
+    ],
+    "reason": "Where a matching generated finite-source design exists, its authored budget/unit mass/extraction decrement are known upstream design inputs. The data-only approval excludes current resource nodes/quantities/property decisions, and the design is not an F1 fuel-use, burn, consumption or retirement policy. No such design applies to canonical scope.",
+    "known_upstream_designs_are_target_stock": false
+  },
+  "property_access": {
+    "status": "typed_gap",
+    "owner_ref": null,
+    "holder_ref": null,
+    "controller_ref": null,
+    "access_policy_ref": null,
+    "gap_refs": [
+      "F1_PROPERTY_ACCESS"
+    ],
+    "rule": "No property/access binding is synthesized from an item type, landscape, actor role, or free-materialization decision.",
+    "reason": "An exact G4 property-context candidate and natural-gathering policy may exist (see per-scope upstream_property_context_ref), but approval excludes current property decisions and explicit parcel rights prevail; exact source-node ownership/access readback is still missing.",
+    "known_policy_context_is_current_access": false
+  },
+  "water_and_extinguishing": {
+    "status": "typed_gap",
+    "water_source_ref": null,
+    "water_portion_ref": null,
+    "extinguishing_policy": null,
+    "qualitative_source_ref": "SRC_WK_WATER_EXTINGUISHING_114_125",
+    "qualitative_limit": "Water may cool ordinary solid fuel/flame; no successful extinguishing, quantity, water source, container, safety class or target availability is asserted.",
+    "gap_refs": [
+      "F1_WATER_POLICY"
+    ]
+  },
+  "initial_fire": {
+    "status": "typed_gap",
+    "initial_fire_ref": null,
+    "embers_ref": null,
+    "gap_refs": [
+      "F1_INITIAL_FIRE"
+    ],
+    "reason": "No initial fire/embers stock authority or target occurrence was found."
+  },
+  "position_topology": {
+    "status": "typed_gap",
+    "fire_position_ref": null,
+    "hearth_or_fire_site_ref": null,
+    "topology_refs": [],
+    "gap_refs": [
+      "F1_POSITION_TOPOLOGY"
+    ],
+    "rule": "F1 source/site placement must reference committed, scope-applicable position and topology; actor arrival and landscape do not create a hearth or fire site."
+  },
+  "scope_policy": {
+    "natural_material_candidates_are_stock": false,
+    "canonical_arrival_inherits_generated_stock_profile": false,
+    "cross_scope_transfer_allowed": false,
+    "fallback_policy": "forbidden_for_authority_substitution_only"
+  },
+  "promotion_rule": "Separate approver must resolve typed gaps and bind exact source/materialization owner inputs; author cannot self-approve. Runtime activation and release remain separate.",
+  "upstream_source_design_authority": {
+    "status": "upstream_authoring_designs_approved_data_only",
+    "approval_ref": "SRC_M2C_SOL_DATA_APPROVAL",
+    "finite_source_candidate_ref": "SRC_M2C_FINITE_SOURCE",
+    "candidate_sha256": "de2cee442d6f1eaf0c585a4b096b53367becfcd84c22f67aecb0a7f077fddff5",
+    "approved_scope": "Four source designs and 32 exact G4 family joins; five eligible generated G4 scopes, 27 explicit no-stock joins.",
+    "excluded_by_approval": [
+      "current resource nodes",
+      "current quantities",
+      "property decisions",
+      "mapped import",
+      "runtime use",
+      "release activation"
+    ],
+    "interpretation": "Per-scope source design refs record applicable upstream authoring data only. They are not F1 fuel classification, committed/current stock, current quantity or access."
+  },
+  "upstream_property_context_authority": {
+    "status": "upstream_property_authoring_approved_data_only",
+    "approval_ref": "SRC_M2C_SOL_DATA_APPROVAL",
+    "property_context_candidate_ref": "SRC_M2C_PROPERTY_CONTEXT",
+    "candidate_sha256": "7352d869d11fc1d903ba6a48b62f0a878500b3b54ece7f0c6b5336a11551f926",
+    "interpretation": "A G4 property-context candidate/policy join is not a committed parcel/current owner decision or source-node access readback; explicit parcel rights remain applicable."
+  }
+}

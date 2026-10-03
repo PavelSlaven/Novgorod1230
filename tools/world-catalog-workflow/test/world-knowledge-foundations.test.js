@@ -25,7 +25,7 @@ function query(refs, overrides = {}) {
     focus_refs: [...new Set(claims.map(value => value.subject_ref))],
     requested_predicates: [], search_hints: [],
     context: { time: { year: 1800 }, place_refs: ['outside_novgorod'], actor_facets: {} },
-    budget: { max_facts: 24, max_candidates: 24, max_context_chars: 9000 },
+    budget: { max_facts: 24, max_candidates: 24 },
     ...overrides
   });
 }

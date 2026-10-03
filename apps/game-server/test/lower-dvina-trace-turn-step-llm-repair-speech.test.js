@@ -252,7 +252,7 @@ test('captured V4/V5 and unseen speech project audited metadata; missing tails r
       worldKnowledgeGrounder: { async ground(safeRequest) {
         if (!grounded.has(safeRequest)) {
           retrievals += 1;
-          grounded.set(safeRequest, { ...safeRequest, world_knowledge: { context_text: 'same grounding' } });
+          grounded.set(safeRequest, { ...safeRequest, world_knowledge: { facts: [] } });
         }
         return grounded.get(safeRequest);
       } } });
@@ -374,7 +374,7 @@ test('one speech repair reuses the immutable request for existing WK grounding',
         if (!groundedRequests.has(safeRequest)) {
           retrievals += 1;
           groundedRequests.set(safeRequest, { ...safeRequest,
-            world_knowledge: { context_text: 'unchanged grounding' } });
+            world_knowledge: { facts: [] } });
         }
         return groundedRequests.get(safeRequest);
       } },

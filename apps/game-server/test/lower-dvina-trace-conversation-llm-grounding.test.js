@@ -75,8 +75,7 @@ async function runNpcConversationTurn({ batchId, responder, audit = () => ({
     pack_revision: 'revision:test', purpose: 'conversation', coverage: [],
     verdict: 'supported', sufficiency: 'PARTIAL_KNOWLEDGE',
     hard_constraints: [], facts: [{ claim_ref: knowledgeRef.entity_id,
-      text: 'Рыбацкая работа связана с сетями.' }], disputes: [], gaps: [],
-    context_text: 'Рыбацкая работа связана с сетями.' };
+      runtime_text: 'Рыбацкая работа связана с сетями.' }], disputes: [], gaps: [] };
   const calls = [];
   const roleRunner = { async run(call) {
     calls.push(structuredClone(call));
@@ -653,8 +652,7 @@ test('semantic fallback keeps the original responder World Knowledge for its aud
     const slice = { schema: 'world_knowledge_slice_v1', pack_ref: 'wk:test',
       pack_revision: 'revision:test', purpose: 'conversation', coverage: [],
       verdict: 'supported', sufficiency: 'PARTIAL_KNOWLEDGE',
-      hard_constraints: [], facts: [], disputes: [], gaps: [],
-      context_text: 'duplicate evidence text' };
+      hard_constraints: [], facts: [], disputes: [], gaps: [] };
     let groundCalls = 0;
     const grounder = { async ground(value) {
       groundCalls += 1;
@@ -842,11 +840,7 @@ function conversationWorldKnowledge(onQuery) {
       return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk:test',
         pack_revision: 'revision:test', purpose: value.purpose, coverage: [],
         verdict: 'supported', hard_constraints: [], disputes: [], gaps: [],
-        candidates: [], evidence_fragments: [], context_text: [
-          'Рыбацкая работа связана с сетями.',
-          'Рабочая одежда защищает при хозяйственной работе.',
-          'Рыбацкая стоянка — рабочее место.'
-        ].join('\n'), facts: concepts.map(({ concept_ref, domain }, index) => ({
+        candidates: [], evidence_fragments: [], facts: concepts.map(({ concept_ref, domain }, index) => ({
           claim_ref: `claim:${index}`, domain, predicate: 'supports_function',
           polarity: 'support', object: { kind: 'literal', value: 'supported' },
           runtime_text: [

@@ -188,8 +188,8 @@ and adds no second transaction owner.
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit
   shape/segment choices. Audit evidence краток, но сохраняет все разные findings.
-  Planner private wire опускает `context_text` через общий helper
-  `@rus/turn` `omitWorldKnowledgeContextText` / `worldKnowledgePromptData`;
+  Planner private wire передаёт структурированный WK slice через общий helper
+  `@rus/turn` `worldKnowledgePromptData`;
   facts/qualifiers/constraints/coverage/gaps/disputes, canonical grounding и
   telemetry сохраняются.
   Narration prompts проверяют также temporal/aspectual связи и конкретный
@@ -206,7 +206,7 @@ and adds no second transaction owner.
   Непустая factual need сохраняет прежний validated retrieval path.
   Slice несёт `sufficiency` рядом с `verdict`; diagnostic — `cache_hit`/`cache_miss`.
   Все восемь consumers (turn step/O1/S1/N1/autonomous/conversation/narration/
-  player conversation interpreter) используют один strip `context_text`.
+  player conversation interpreter) получают структурированный WK slice.
 
 - Narration adapter даёт auditor request-local sources
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
@@ -783,9 +783,9 @@ O1 prompts contain common rules and only the current seed/presence mode rules.
 Only the semantic response shape is shown; authoritative plan fields stay server-assembled.
 A grounded positive presence requires an exact supporting in-slice claim ref;
 empty or unsupported refs still fail admission.
-The private O1 wire omits only duplicate `world_knowledge.context_text` when
-the full structured factual slice is present. Facts, qualifiers, constraints,
-coverage, disputes and gaps remain; claim binding and telemetry use the full request.
+The private O1 wire carries the structured `world_knowledge` factual slice.
+Facts, qualifiers, constraints, coverage, disputes and gaps remain; claim
+binding and telemetry use the full request.
 The private WK planner wire sends each ranked focus ref once as a key in
 `available_knowledge_refs`, with its allowed claim domains as the value (including
 empty arrays). Native planner requests retain the complete ordered ref array for

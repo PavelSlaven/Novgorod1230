@@ -18,7 +18,7 @@ import { activeConversationChoiceExample, preparedFollowupPrompt,
   semanticTurnStepExample, visibleConversationChoiceExamples } from
   './lower-dvina-trace-turn-step-planner-prompt.js';
 import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
+import { worldKnowledgePromptData } from '@rus/turn';
 import { correctOrdinaryDiscoveryScope, correctSupportedAssessment,
   correctTemporalQualifierContinuation,
   correctVisibleNpcStatusObservation } from
@@ -64,7 +64,9 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
     const input = await groundTurnRequest(worldKnowledgeGrounder, request, {
       historical_events: historicalEvents
     });
-    const wireInput = plannerRequestWire(input);
+    const wireInput = input?.world_knowledge == null ? input : {
+      ...input, world_knowledge: worldKnowledgePromptData(input.world_knowledge)
+    };
     const repairing = repairContext != null;
     const payload = repairing
       ? {
@@ -202,10 +204,6 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
       input, roleRunner });
   };
   return model;
-}
-
-function plannerRequestWire(input) {
-  return omitWorldKnowledgeContextText(input);
 }
 
 function preserveUnrelatedOperationSelection(original, repaired, errors,

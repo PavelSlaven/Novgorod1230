@@ -107,7 +107,7 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(first.world_knowledge.pack_revision, 'revision:production-v2');
   assert.equal(first.world_knowledge.facts[0].claim_ref,
     'claim:regional-fish-exploitation');
-  assert.match(first.world_knowledge.context_text,
+  assert.match(first.world_knowledge.facts[0].runtime_text,
     /не устанавливает вид, запас, доступ, сезон или улов/u);
   assert.equal(diagnostics[0].planner_called, true);
   assert.deepEqual(diagnostics[0].focus_refs,
@@ -141,7 +141,7 @@ test('production grounding plans once and injects only an applicable bounded sli
   });
   assert.deepEqual(trace.planner_plan.search_hints, ['рыбные ресурсы']);
   assert.deepEqual(trace.query.search_hints, ['рыбные ресурсы']);
-  const { context_text, ...structured } = first.world_knowledge;
+  const structured = first.world_knowledge;
   assert.deepEqual(trace.core_result, structured);
   assert.deepEqual(trace.consumer, { purpose: 'semantic_resolution', input: {
     request_schema: null, request_identity: 'turn:1',
@@ -158,9 +158,8 @@ test('production grounding plans once and injects only an applicable bounded sli
     return { output: {} };
   } } })(first);
   assert.deepEqual(consumerWire, { ...first, world_knowledge: structured });
-  assert.ok(context_text.includes(first.world_knowledge.facts[0].runtime_text));
   assert.deepEqual(first, beforeConsumer);
-  t.diagnostic(`Production WK wire reduction: ${JSON.stringify(first).length - JSON.stringify(consumerWire).length} chars.`);
+  assert.deepEqual(consumerWire, first);
 });
 
 test('an empty semantic_resolution plan runs a default query before NO_KNOWLEDGE_REQUIRED', async () => {
@@ -187,7 +186,7 @@ test('an empty semantic_resolution plan runs a default query before NO_KNOWLEDGE
           coverage: query.domains.map((domain) => ({ domain, status: 'covered' })),
           verdict: 'unresolved',
           hard_constraints: [], facts: [], disputes: [], gaps: [],
-          context_text: '', search_hint_hits: [false]
+          search_hint_hits: [false]
         };
       } },
       encoder: { async encode() { encoderCalls += 1; return new Float32Array(1024); } },
@@ -241,7 +240,7 @@ test('empty plan that admits facts keeps a grounded slice with sufficiency', asy
           verdict: 'supported',
           hard_constraints: [],
           facts: [{ claim_ref: 'claim:test', runtime_text: 'Лён крутят.' }],
-          disputes: [], gaps: [], context_text: 'FACT claim:test: Лён крутят.',
+          disputes: [], gaps: [],
           search_hint_hits: [true]
         };
       } },
@@ -302,7 +301,7 @@ test('repeated ground of the same request reports cache_hit', async () => {
           verdict: 'supported',
           hard_constraints: [],
           facts: [{ claim_ref: 'claim:cache', runtime_text: 'Кеш.' }],
-          disputes: [], gaps: [], context_text: 'FACT claim:cache: Кеш.',
+          disputes: [], gaps: [],
           search_hint_hits: [true]
         };
       } },
@@ -341,7 +340,7 @@ test('NO_KNOWLEDGE after default query keeps domains coverage and query in diagn
           coverage: query.domains.map((domain) => ({ domain, status: 'covered' })),
           verdict: 'unresolved',
           hard_constraints: [], facts: [], disputes: [], gaps: [],
-          context_text: '', search_hint_hits: [false]
+          search_hint_hits: [false]
         };
       } },
       encoder: { async encode() { return new Float32Array(1024); } },
@@ -391,7 +390,7 @@ test('default query with only disputes stays PARTIAL not NO_KNOWLEDGE', async ()
           hard_constraints: [], facts: [],
           disputes: [{ conflict_group_ref: 'g1',
             claims: [{ claim_ref: 'c1', runtime_text: 'спор' }] }],
-          gaps: [], context_text: 'DISPUTE g1', search_hint_hits: [true]
+          gaps: [], search_hint_hits: [true]
         };
       } },
       encoder: { async encode() { return new Float32Array(1024); } },
@@ -426,7 +425,6 @@ test('unseen-equivalent plan yields PARTIAL when hints miss and vectors admit', 
           hard_constraints: [],
           facts: [{ claim_ref: 'claim:vector-only', runtime_text: 'Вектор.' }],
           disputes: [], gaps: [],
-          context_text: 'FACT claim:vector-only: Вектор.',
           search_hint_hits: [false, false]
         };
       } },
@@ -468,7 +466,7 @@ test('real Core: vector-only admit keeps search_hint_hits false → PARTIAL', as
     search_hints: ['zzzz-lexically-absent-probe-token'],
     context: { time: { year: 1230 },
       place_refs: ['region_novgorod_land'], actor_facets: {} },
-    budget: { max_facts: 4, max_candidates: 4, max_context_chars: 2000 }
+    budget: { max_facts: 4, max_candidates: 4 }
   }, { vectorScores: new Map([['claim:regional-fish-exploitation', 0.95]]) });
   assert.ok(slice.facts.some(({ claim_ref }) =>
     claim_ref === 'claim:regional-fish-exploitation'));

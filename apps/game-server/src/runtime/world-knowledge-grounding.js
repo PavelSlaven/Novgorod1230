@@ -128,8 +128,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         requested_predicates: [],
         search_hints: effectivePlan.search_hints,
         context,
-        budget: { max_facts: 12, max_candidates: 12,
-          max_context_chars: 5000 }
+        budget: { max_facts: 12, max_candidates: 12 }
       };
       const questionClasses = questionClassesOf(bundle, purpose,
         effectivePlan.domains);
@@ -261,7 +260,6 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         coverage: slice.coverage.map((entry) => ({ ...entry })),
         claimRefs: [...slice.hard_constraints, ...slice.facts]
           .map(({ claim_ref }) => claim_ref),
-        sliceChars: slice.context_text.length,
         vectorStatus: 'ok', embeddingMs, vectorMs,
         retrievalMs: coreResolutionMs, retrievalObservability,
         cacheHit: false });

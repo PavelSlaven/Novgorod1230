@@ -2336,8 +2336,7 @@ Authoritative context merge включает `year` (календарь парт
   },
   "budget": {
     "max_facts": 24,
-    "max_candidates": 12,
-    "max_context_chars": 7000
+    "max_candidates": 12
   }
 }
 ```
@@ -2454,12 +2453,11 @@ Applicability и actor access остаются обязательными фил
   "candidates": [],
   "disputes": [],
   "gaps": [],
-  "evidence_fragments": [],
-  "context_text": "..."
+  "evidence_fragments": []
 }
 ```
 
-`context_text` — deterministic compact projection returned records, не LLM summary.
+Model-facing World Knowledge состоит только из структурированных полей среза.
 
 `search_hint_hits` — не model-facing поле среза: массив bool длиной
 `search_hints`, `true` если hint нашёл допущенный claim (`strongest > 0` по
@@ -2485,13 +2483,10 @@ hard constraints
 → disputes/gaps
 ```
 
-Slice не растёт пропорционально corpus.
-
-`context_text` — deterministic compact projection тех же structured records.
-Один helper `@rus/turn` `worldKnowledgePromptData` /
-`omitWorldKnowledgeContextText` всегда опускает `context_text` на private wire
-всех шести потребителей (turn step, O1, S1, N1, NPC autonomous, conversation);
-structured-поля несут то же содержание. (CR #152 / REVIEW-033)
+Число claims ограничивается `max_candidates` и `max_facts` в query budget.
+Каждый consumer передаёт модели сам структурированный slice; отдельная prose
+проекция и лимит её символов отсутствуют. Facts, qualifiers, constraints,
+coverage, disputes и gaps остаются в своих структурированных полях.
 
 ---
 

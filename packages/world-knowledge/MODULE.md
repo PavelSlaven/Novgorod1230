@@ -12,7 +12,8 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 
 ## Владеет
 
-- query/bundle validation и slice construction;
+- query/bundle validation и structured slice construction; query budget содержит
+  `max_facts` и `max_candidates`, slice не содержит prose `context_text`;
 - canonical empty six-field `semantic_resolution` query plan как
   `NO_KNOWLEDGE_REQUIRED`; при пустом
   `domains` refs/predicates/hints тоже обязаны быть пустыми;
@@ -30,7 +31,7 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 - `admittedCandidateRefs(query, { vectorScores? })` — pure list of admitted
   claim refs before ranking/packing; grounding scores exactly this set for
   D17 so all-or-nothing rerank can apply (not vector top-k alone);
-- pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
+- pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic claim packing;
 - lexicographic ranking: hard constraints, exact focus, requested predicates,
   query relevance (lexical+vector, or rerank when supplied), context specificity, qualifiers, stable claim reference;
 - relative lexical admission per independent search hint; aggregate lexical

@@ -95,6 +95,17 @@ export async function runForwardMigration({
   sourceBridge = null,
   readSchemaFingerprint = readPostgresSchemaFingerprint
 }) {
+  const sealed = createForwardMigration({
+    migrationId: migration.migration_id,
+    schemaName: migration.schema_name,
+    sourceSchemaFingerprint: migration.source_schema_fingerprint,
+    targetSchemaFingerprint: migration.target_schema_fingerprint,
+    sql: migration.sql
+  });
+  if (sealed.migration_digest !== migration.migration_digest) {
+    fail('MIGRATION_DESCRIPTOR_TAMPERED',
+      'Migration SQL or descriptor differs from its recorded digest.');
+  }
   if (sourceBridge && (
     sourceBridge.schema_name !== migration.schema_name
     || sourceBridge.target_schema_fingerprint !== migration.source_schema_fingerprint
@@ -130,8 +141,11 @@ export async function runForwardMigration({
       return Object.freeze({
         status: state.status,
         migration_id: migration.migration_id,
+        migration_digest: migration.migration_digest,
         schema_name: migration.schema_name,
-        schema_fingerprint: actualSchemaFingerprint
+        schema_fingerprint: actualSchemaFingerprint,
+        source_schema_fingerprint: migration.source_schema_fingerprint,
+        target_schema_fingerprint: migration.target_schema_fingerprint
       });
     }
 
@@ -150,7 +164,9 @@ export async function runForwardMigration({
       migration_id: migration.migration_id,
       migration_digest: migration.migration_digest,
       schema_name: migration.schema_name,
-      schema_fingerprint: targetFingerprint
+      schema_fingerprint: targetFingerprint,
+      source_schema_fingerprint: migration.source_schema_fingerprint,
+      target_schema_fingerprint: migration.target_schema_fingerprint
     });
   } catch (error) {
     await client.query('ROLLBACK').catch(() => {});
@@ -247,6 +263,14 @@ export async function readPostgresSchemaFingerprint(client, schemaName) {
          ) AS definition
        FROM pg_catalog.pg_roles r
        WHERE r.rolname = ANY($2::text[])
+         AND EXISTS (
+           SELECT 1
+           FROM pg_catalog.pg_namespace local_namespace
+           CROSS JOIN LATERAL
+             pg_catalog.aclexplode(local_namespace.nspacl) local_acl
+           WHERE local_namespace.nspname = $1
+             AND local_acl.grantee = r.oid
+         )
        UNION ALL
        SELECT
          'schema_acl',

@@ -209,8 +209,8 @@ function selectedRows(rows, key, keys) { return Array.isArray(keys) && keys.leng
 function directedPair(rows, key, reverse, base, interior) { return Array.isArray(rows) && rows.length === 2 && rows.every(Boolean) && rows[0].from_position_slot_key === base && rows[0].to_position_slot_key === interior && rows[1].from_position_slot_key === interior && rows[1].to_position_slot_key === base && rows[0][reverse] === rows[1][key] && rows[1][reverse] === rows[0][key]; }
 function physicalRowsComplete(g6, position, baseG6, basePosition, movement, visibility) {
   const has = (row, keys) => keys.every((key) => Object.hasOwn(row, key));
-  const exactKeys = (row, keys) => Object.keys(row).length === keys.length
-    && Object.keys(row).every((key) => keys.includes(key));
+  const exactKeys = (row, keys, optional = []) => Object.keys(row).every((key) =>
+    keys.includes(key) || optional.includes(key));
   const g6Keys = ['scene_slot_key', 'physical_class_id', 'primary_scene_role_id',
     'vertical_context_id', 'overhead_cover_id', 'intra_g6_visibility_mode',
     'default_visibility_distance_band', 'acoustic_uniformity'];
@@ -231,8 +231,11 @@ function physicalRowsComplete(g6, position, baseG6, basePosition, movement, visi
     'condition_profile_version'];
   return has(g6, g6Keys) && has(baseG6, g6Keys)
     && has(position, positionKeys) && has(basePosition, positionKeys)
-    && [g6, baseG6].every((row) => exactKeys(row, g6Keys))
-    && [position, basePosition].every((row) => exactKeys(row, positionKeys))
+    && [g6, baseG6].every((row) => exactKeys(row, g6Keys, ['enclosing_structure_slot_key'])
+      && row.enclosing_structure_slot_key == null)
+    && [position, basePosition].every((row) => exactKeys(row, positionKeys, ['instance_count'])
+      && (!Object.hasOwn(row, 'instance_count')
+        || row.instance_count === 1))
     && movement.every((row) => has(row, movementKeys) && exactKeys(row, movementKeys)
       && row.passage_type_id === 'passage.local'
       && row.cost_kind === 'action' && row.action_units === 1 && row.capacity === 1

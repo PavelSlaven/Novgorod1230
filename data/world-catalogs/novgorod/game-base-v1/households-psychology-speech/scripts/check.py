@@ -576,8 +576,6 @@ for row in af_rows:
 
 ferry_pairs = {
     frozenset(("nov_occ_ferryman", "nov_occ_fisher")),
-    frozenset(("nov_occ_crossing_guard", "nov_occ_ferryman")),
-    frozenset(("nov_occ_crossing_guard", "nov_occ_fisher")),
 }
 
 
@@ -799,7 +797,7 @@ if "--probe" in sys.argv and start_pairs:
         errors.append("negative ferry/fisher probe failed to detect removed directed row")
     else:
         print("OK: negative ferry/fisher probe detected removed directed row")
-    winter_pair = ("nov_occ_crossing_guard", "nov_occ_winter_road_worker")
+    winter_pair = ("nov_occ_ferryman", "nov_occ_winter_road_worker")
     for speaker, addressee in (winter_pair, winter_pair[::-1]):
         reduced = [r for r in af_rows if not (r["speaker_role_ref"] == speaker and
                    r["addressee_role_ref"] == addressee and r["relationship_kind"] == "joint_work")]

@@ -5,6 +5,28 @@ import { admitOrdinaryWorldMaterialization,
 
 const scopeRef = { entity_kind: 'g6', entity_id: 'scope-a' };
 
+test('ordinary mechanics enforces an approved fixed mass per counted unit', () => {
+  const admission_context = context();
+  admission_context.mechanics_policy.mass_grams_per_quantity_unit = 50;
+  const pending = handoff();
+  pending.proposed_item.mechanics_proposal.quantity.value = 2;
+  pending.proposed_item.mechanics_proposal.mass_grams = 100;
+  const accepted = admitOrdinaryWorldMaterialization({ handoff: pending, admission_context });
+  assert.equal(accepted.pass, true);
+  assert.equal(accepted.runtime_instance_mechanics_snapshot.mechanics.mass_grams, 100);
+  assert.equal(accepted.proposal.property_basis_ref, 'property-a');
+  pending.proposed_item.mechanics_proposal.mass_grams = 99;
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context }).errors[0].code, 'ITEM_ORDINARY_WORLD_MECHANICS_INVALID');
+  for (const invalid of [0, -1, 1.5, null, 1001]) {
+    admission_context.mechanics_policy.mass_grams_per_quantity_unit = invalid;
+    assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+      admission_context }).errors[0].code, 'ITEM_ORDINARY_WORLD_MECHANICS_POLICY_INVALID');
+  }
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: handoff(),
+    admission_context: context() }).pass, true, 'legacy policies retain independent mass');
+});
+
 function handoff(overrides = {}) {
   const proposedItem = {
     semantic_descriptor: { semantic_type: 'spoon', name: 'простая деревянная ложка', facts: [] },

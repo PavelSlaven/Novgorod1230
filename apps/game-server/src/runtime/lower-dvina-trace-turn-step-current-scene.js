@@ -18,7 +18,6 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   locationProfiles, scenePresentation = null }) {
   const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
-  delete projectionSource.current_visible_context;
   const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     scene_presentation: scenePresentation,
@@ -55,11 +54,22 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const sensoryDetails = unique([...(profile.player_visible_physical_facts ?? []),
     ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)
   ]);
-  const visibleLabels = new Map((initial?.visible_npc ?? []).map((npc) => [
+  const currentVisibleNpcs = playerSafe.current_visible_context?.visible_npc ?? [];
+  const visibleLabels = new Map(currentVisibleNpcs.map((npc) => [
     npc?.entity_ref?.entity_id, npc
   ]));
   const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
     playerSafe.position, visibleLabels)).filter(Boolean);
+  const sceneNpcIds = new Set(sceneNpcs.map((npc) => npc.entity_ref.entity_id));
+  for (const npc of currentVisibleNpcs) {
+    const id = npc?.entity_ref?.entity_id;
+    if (npc?.entity_ref?.entity_kind !== 'npc' || !text(id)
+        || sceneNpcIds.has(id) || !text(npc.display_label)) continue;
+    sceneNpcs.push({ entity_ref: structuredClone(npc.entity_ref),
+      display_label: npc.display_label,
+      recognition: npc.recognition ?? 'unrecognized' });
+    sceneNpcIds.add(id);
+  }
   const current = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
@@ -67,7 +77,11 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     visible_changes: [],
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
-    visible_objects: sceneItems.map(({ visibleObject }) => visibleObject),
+    visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+      ...(initial?.visible_objects ?? []).filter((row) =>
+        ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection'].includes(
+          row?.entity_ref?.entity_kind)),
+      ...sceneItems.map(({ visibleObject }) => visibleObject)]),
     known_context: [profile.display_name, ...selfKnowledge],
     uncertainties: [],
     allowed_tensions: [],
@@ -146,6 +160,13 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     ? spokenChange(appliedPlan.utterance.utterance_text) : null;
   const observation = appliedPlan?.resolution === 'direct'
     && appliedPlan.direct_result_kind === 'player_safe_observation';
+  const activityCompleted = input?.time_update?.semantic_activity_resolutions
+    ?.some(({ execution }) => execution?.status === 'completed') === true;
+  const directActivity = appliedPlan?.resolution === 'direct'
+    && appliedPlan.direct_result_kind == null
+    && activityCompleted
+    && values.some((value) => value?.kind === 'semantic_activity')
+    ? appliedPlan.interpretation?.grounded_attempt : null;
   const attempts = values.filter(value => value?.kind === 'transient_item_use'
     && Object.keys(value).length === 2 && text(value.description));
   const changes = values.flatMap((value) => {
@@ -157,6 +178,7 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     return directSeedChange(value);
   }).filter(Boolean);
   if (speech != null) return [speech, ...changes];
+  if (text(directActivity)) return [sentence(directActivity), ...changes];
   if (observation) return [text(appliedPlan.assessment?.text)
     ? appliedPlan.assessment.text : 'Вы внимательно изучили обстановку.',
   ...changes];
@@ -174,6 +196,13 @@ export function materializedOrdinaryPresenceChange(value) {
   return `Обнаружено: «${value.display_name}».`;
 }
 function directSeedChange(value) {
+  if (value?.kind === 'background_npc_observation') {
+    if (!plain(value) || Object.keys(value).length !== 4
+        || !text(value.npc_ref) || !text(value.display_label)
+        || !text(value.ordinary_descriptor)) failCurrentScene();
+    return `Вы рассмотрели ${value.display_label}: ${sentence(
+      value.ordinary_descriptor)}`;
+  }
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
     return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
   if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);

@@ -11,13 +11,14 @@ export function initialNpcRoutineRecords({ result, partyId, changeSetId, npcs })
       ? { kind: 'prepared_scene', snapshot_id: `preparation:${partyId}:${result.run_id}:first-entry`,
           member_ordinal: memberIndex }
       : { kind: 'legacy_anchor', anchor_id: npc.anchor_id };
-    if (memberIndex < 0 && !npc.anchor_id) throw new Error('NPC_ROUTINE_PLACEMENT_GAP');
+    if (memberIndex < 0 && !npc.anchor_id && !npc.position_id) throw new Error('NPC_ROUTINE_PLACEMENT_GAP');
     const profileRef = versioned('activity_profile', profile.profile_id, profile.revision);
     const causal = { ...versioned('condition_set', 'npc-approved-routine', 1),
-      routine_state: structuredClone(runtime), deferred_placement: deferred };
+      routine_state: structuredClone(runtime),
+      ...(npc.position_id ? {} : { deferred_placement: deferred }) };
     const next = runtime.next_transition_at;
     return { id: `npc-schedule:${partyId}:${npc.instance_id}`, party_id: partyId,
-      npc_id: npc.instance_id, current_position_node_id: null,
+      npc_id: npc.instance_id, current_position_node_id: npc.position_id ?? null,
       schedule_profile_ref: profileRef,
       dependency_pins: seal({ pins: [{ dependency_role: 'profile',
         entity_ref: profileRef.entity_ref, version_pin: { pin_kind: 'authoring_version',

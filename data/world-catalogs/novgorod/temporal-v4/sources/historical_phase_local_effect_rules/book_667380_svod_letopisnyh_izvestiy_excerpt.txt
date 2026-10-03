@@ -1,0 +1,15 @@
+Source: Экземплярский А.В., «Великие князья Владимирские и Владимиро-Московские. Великие и удельные князья Северной Руси в татарский период с 1238 по 1505 г.», 2019, Приложение 2 «Свод летописных известий о Новгородской земле в хронологическом порядке за период времени от 1230 г. до пад[ения]», §486–§487
+Book id: 667380
+Cross-repository locator: Novgorod-game-base/data/world-catalogs/novgorod/sources/books-evidence-v1/history-events-knowledge.csv (external repository; rows book_id=667380, para_no=486 and para_no=487)
+Retrieved: 2026-09-26
+License: see canonical source catalog entry in Novgorod-game-base (books-evidence-v1)
+Evidence role: historical event, day-level source precision for famine onset (¶486) and year-level source basis for famine continuation/cessation (¶487)
+Owner decisions cited: D19 (issue #133, comment 5846311836); D22 (issue #133, comment 5848564249)
+
+Short exact excerpt, ¶486 (год 1230):
+«На Воздвижение мороз побил озими («обилие»), и на все необыкновенно поднялись цены.»
+
+Short exact excerpt, ¶487 (год 1231):
+«Услышав о голоде, из-за моря приехали в Новгород немцы.»
+
+Source-derived note: ¶486 dates the frost that struck the winter crops to the feast of the Exaltation of the Cross (Воздвижение), 14 September (Julian) 1230, and records the resulting sharp rise in prices; owner decision D19 treats this as the day-level start of the famine rule. ¶487 records that in 1231, having heard of the famine, Germans arrived in Novgorod from overseas (with bread); owner decision D22 treats this arrival as the practical cessation of the famine, but the exact month or day of the arrival is not given by this excerpt or by the surrounding chronology entries, so the rule's end boundary is authored at year precision (end_exclusive 1232-01-01), not day precision. No price, population, inventory or mortality number is inferred beyond the cited text.

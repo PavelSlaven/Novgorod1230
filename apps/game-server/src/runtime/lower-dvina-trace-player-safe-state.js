@@ -32,9 +32,12 @@ import {
   projectLowerDvinaTraceVisibleNpcDetails
 } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { npcSharesPlayerScene, SCENE_NPC_SOURCE } from
+  './lower-dvina-trace-scene-presence.js';
 import { inventoryItemIsCarried } from '@rus/items-property';
 import { getCommittedInventoryLoad } from
   './lower-dvina-trace-committed-inventory.js';
+import { projectG4NaturalPerception } from './g4-natural-perception.js';
 export { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -42,7 +45,8 @@ export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
   working_projection: workingProjection,
   working_projection_authority: workingProjectionAuthority,
-  actor_id: actorId, scene_presentation: scenePresentation = null
+  actor_id: actorId, scene_presentation: scenePresentation = null,
+  natural_scene_perception_input: naturalScenePerceptionInput = null
 } = {}) {
   assertProjectionInput(committedState, actorId);
   const profile = committedState.player_profile ?? {};
@@ -64,14 +68,31 @@ export function projectLowerDvinaTracePlayerSafeState({
     { path: 'visible_context_package' }
   );
   const npcs = projectNpcs(committedState.npcs, { position });
+  const visibleNpcIds = new Set((npcs ?? []).flatMap(npcIds));
+  const openNpcIds = new Set((projectNpcs(committedState.npcs, {
+    position, explicitlyVisible: true
+  }) ?? []).flatMap(npcIds));
+  for (const npc of committedState.npcs ?? []) {
+    const id = npcIds(npc)[0];
+    if (npc?.runtime_source === SCENE_NPC_SOURCE && id
+        && openNpcIds.has(id) && npcSharesPlayerScene(committedState, npc)) {
+      visibleNpcIds.add(id);
+    }
+  }
+  const currentSceneVisibleContext = plain(currentVisibleContext)
+      && Array.isArray(currentVisibleContext.visible_npc)
+    ? { ...currentVisibleContext,
+      visible_npc: currentVisibleContext.visible_npc.filter((npc) =>
+        npc?.entity_ref?.entity_kind === 'npc'
+          && visibleNpcIds.has(npc.entity_ref.entity_id)) }
+    : currentVisibleContext;
   const perceivedRoutes = perceivedRoutesForState({ scenePresentation, state: committedState });
-  const visibleNpcIds = new Set((currentVisibleContext?.visible_npc ?? [])
-    .flatMap(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
-      ? [ref.entity_id] : []).filter(Boolean));
+  const playerVisibleNpcIds = new Set((currentSceneVisibleContext?.visible_npc ?? [])
+    .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean));
   const items = projectItems([...(committedState.items ?? []),
     ...containerItems(committedState.containers,
       committedState.container_placements)], {
-    actorId, position: committedState.position, visibleNpcIds
+    actorId, position: committedState.position, visibleNpcIds: playerVisibleNpcIds
   });
   const activeInterlocutor = projectActiveConversationInterlocutor({
     conversation_sessions: committedState.conversation_sessions ?? [],
@@ -79,7 +100,7 @@ export function projectLowerDvinaTracePlayerSafeState({
     player_ref: { entity_kind: 'player_character', entity_id: actorId },
     current_location_ref: position?.location_ref,
     visible_npcs: projectLowerDvinaTraceVisibleNpcDetails({
-      visibleContext: currentVisibleContext ?? visibleContext ?? visibleContextPackage,
+      visibleContext: currentSceneVisibleContext ?? visibleContext ?? visibleContextPackage,
       projectedNpcs: npcs,
       committedNpcs: committedState.npcs,
       committedItems: committedState.items
@@ -118,7 +139,7 @@ export function projectLowerDvinaTracePlayerSafeState({
       ...(committedState.knowledge ?? [])]),
     visible_context: visibleContext,
     visible_context_package: visibleContextPackage,
-    current_visible_context: currentVisibleContext,
+    current_visible_context: currentSceneVisibleContext,
     active_interlocutor: activeInterlocutor ?? undefined,
     case_evidence_ref: typeof committedState.phase9?.case_evidence_ref
       === 'string' ? committedState.phase9.case_evidence_ref : undefined,
@@ -135,14 +156,24 @@ export function projectLowerDvinaTracePlayerSafeState({
   });
   const { active_interlocutor: _staleActiveInterlocutor,
     ...withoutStaleInterlocutor } = playerSafeState;
+  let currentPlayerSafeState = playerSafeState.position?.location_ref
+    === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor;
+  if (naturalScenePerceptionInput != null) {
+    const natural = projectG4NaturalPerception({ input: naturalScenePerceptionInput,
+      partyId: committedState.party_id, actorId, positionId: playerSafeState.position?.position_id });
+    const context = currentPlayerSafeState.current_visible_context
+      ?? natural.visible_context;
+    currentPlayerSafeState = { ...currentPlayerSafeState, current_visible_context: {
+      ...context, sensory_details: [...new Set([...(context.sensory_details ?? []),
+        ...natural.visible_context.sensory_details])] } };
+  }
   return freezeJson({
     actor: projectActor({
       profile,
       body: committedState.body_state ?? profile.body,
       actorId
     }),
-    player_safe_state: playerSafeState.position?.location_ref
-      === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
+    player_safe_state: currentPlayerSafeState
   });
 }
 
@@ -150,7 +181,8 @@ function committedInventory(state, fallback) {
   if (!plain(state.party_state)
       || !plain(state.player_profile?.attributes?.strength)
       || !plain(state.position)
-      || typeof state.position.g5_anchor_id !== 'string') return fallback;
+      || (typeof state.position.g5_anchor_id !== 'string'
+        && typeof state.position.site_id !== 'string')) return fallback;
   const current = getCommittedInventoryLoad(state);
   if (!current.mass.pass || !current.hands.pass || !current.load.pass) {
     return fallback;
@@ -249,6 +281,11 @@ function projectCombatSessions(sessions = []) {
         combat_status: participant.combat_status
       })), exchange_ordinal: session.exchange_ordinal,
       player_response_required: session.player_response_required }));
+}
+
+function npcIds(npc) {
+  return [npc?.instance_id, npc?.actor_id, npc?.npc_id]
+    .filter((id) => typeof id === 'string' && id !== '');
 }
 
 function assertProjectionInput(state, actorId) {

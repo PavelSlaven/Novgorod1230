@@ -5,6 +5,8 @@ import { validatePlayerSafeVisiblePayload } from
   '../../../packages/contracts/src/spatial-v3/player-safe-visible-payload.js';
 import { createTracePhase8VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-8-effects.js';
+import { projectVisibleContext } from
+  '../src/runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 const contracts = Object.freeze({
   actors: Object.freeze({
@@ -28,6 +30,38 @@ const contracts = Object.freeze({
       instance_id: 'npc-fisher',
       participant_slot_ref: 'background_fisher'
     })])
+});
+
+test('visible item profile keeps approved item vocabulary and rejects extra public fields', () => {
+  const visual = { schema: 'item_visual_profile_snapshot_v1', version: 1,
+    garment_kind: 'footwear', equipment_slot: 'footwear',
+    neckline: 'not_applicable', sleeve_form: 'not_applicable',
+    outer_form: 'low_leather_shoe', visible_fabric: 'leather', trim: 'none',
+    main_visible_color: 'brown', secondary_visible_color: 'brown',
+    headwear_kind: 'none' };
+  const item = { physical_position: 'equipped',
+    equipment_slot_category_id: 'footwear', visual_profile_snapshot: visual };
+  const npc = { entity_ref: { entity_kind: 'npc', entity_id: 'npc' },
+    display_label: 'путник', recognition: 'unrecognized',
+    observable_cues: { equipment: [item] } };
+  const payload = { schema: 'temporal_visible_package.v1',
+    perceived_scene: 'Путник рядом.', perceived_changes: [], sensory_details: [],
+    visible_npcs: [npc], visible_objects: [], known_context: [],
+    uncertainties: [], hypotheses: [], player_safe_interruption: null,
+    allowed_action_affordances: [] };
+  assert.deepEqual(validatePlayerSafeVisiblePayload(payload), []);
+  assert.deepEqual(projectVisibleContext({ visible_npc: [npc] },
+    { strict: true }).visible_npc[0].observable_cues.equipment[0]
+    .visual_profile_snapshot, visual);
+  const leaked = { ...visual, secret_origin: 'hidden' };
+  assert.ok(validatePlayerSafeVisiblePayload({ ...payload, visible_npcs: [{ ...npc,
+    observable_cues: { equipment: [{ ...item,
+      visual_profile_snapshot: leaked }] } }] }).some((error) =>
+    error.field.endsWith('secret_origin')));
+  assert.throws(() => projectVisibleContext({ visible_npc: [{ ...npc,
+    observable_cues: { equipment: [{ ...item,
+      visual_profile_snapshot: leaked }] } }] }, { strict: true }),
+  { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
 });
 
 test('Phase 8 projects NPCs through the player-safe entity contract',

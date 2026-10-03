@@ -1,0 +1,1382 @@
+[
+ {
+  "claim_ref": "claim:final-social-household-water-use-depends-on-access-vessels-and-labour",
+  "action": "revert_internal",
+  "reason": "«конкурируют за доступ» — аналитическая экономическая рамка, не речь 1230 года"
+ },
+ {
+  "claim_ref": "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
+  "action": "revert_internal",
+  "reason": "служебный игровой шаблон «контекст/перенаправление», не реплика персонажа"
+ },
+ {
+  "claim_ref": "claim:final-social-posadnik-role-can-frame-civic-administrative-contact",
+  "action": "revert_internal",
+  "reason": "тот же служебный шаблон «может задавать контекст обращения»"
+ },
+ {
+  "claim_ref": "claim:final-social-prince-role-can-frame-external-or-command-contact",
+  "action": "revert_internal",
+  "reason": "тот же служебный игровой шаблон framing, не речь персонажа"
+ },
+ {
+  "claim_ref": "claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
+  "action": "revert_internal",
+  "reason": "тот же служебный игровой шаблон framing, не речь персонажа"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-living-birch-limits",
+  "action": "keep_strip_prefix",
+  "reason": "наблюдение о коре и ране дерева, без современных понятий"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-textile-cues",
+  "action": "keep_strip_prefix",
+  "reason": "бытовое наблюдение о ткани, без научных терминов"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-textile-wet-limit",
+  "action": "keep_strip_prefix",
+  "reason": "бытовое наблюдение, оговорка в конце не мешает"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-wet-ground-goal",
+  "action": "keep_strip_prefix",
+  "reason": "практическая цель строителя, без научной терминологии"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-wet-ground-observation",
+  "action": "keep_strip_prefix",
+  "reason": "наблюдаемая примета грунта, бытовая речь"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-wet-ground-wood-limit",
+  "action": "keep_strip_prefix",
+  "reason": "народная примета про сырость и гниение дерева"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-willow-limits",
+  "action": "keep_strip_prefix",
+  "reason": "ремесленное наблюдение о пруте, без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-willow-preparation",
+  "action": "keep_strip_prefix",
+  "reason": "практика сушки ивы, бытовая ремесленная речь"
+ },
+ {
+  "claim_ref": "claim:final-static-b01-willow-selection",
+  "action": "keep_strip_prefix",
+  "reason": "наблюдение прута ремесленником, без модерн-терминов"
+ },
+ {
+  "claim_ref": "claim:fodder-healthy-horse-forage",
+  "action": "revert_internal",
+  "reason": "«биологическое отношение» и «средневековой практики» — научная рамка"
+ },
+ {
+  "claim_ref": "claim:foundations-earth-26-runoff-contaminant-transport",
+  "action": "revert_internal",
+  "reason": "«химические вещества» — современное научное понятие"
+ },
+ {
+  "claim_ref": "claim:fuel-charcoal-pit-sealing",
+  "action": "revert_internal",
+  "reason": "«в реконструкции» — явная ссылка на историографию/реконструкцию"
+ },
+ {
+  "claim_ref": "claim:fuel-pit-charcoal-burning-air-control",
+  "action": "revert_internal",
+  "reason": "«в реконструкции» — метаистория, не речь персонажа"
+ },
+ {
+  "claim_ref": "claim:fuel-pit-charcoal-burning-air-sequence",
+  "action": "revert_internal",
+  "reason": "«в реконструкции» — ссылка на современную реконструкцию"
+ },
+ {
+  "claim_ref": "claim:fuel-pit-charcoal-burning-wood-input",
+  "action": "revert_internal",
+  "reason": "«в описанной реконструкции» — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:healer-belief-and-bodily-attention",
+  "action": "revert_internal",
+  "reason": "«в игровой реконструкции» — служебная метаформулировка"
+ },
+ {
+  "claim_ref": "claim:healer-experience-and-reputation",
+  "action": "revert_internal",
+  "reason": "«в правдоподобной реконструкции» — метассылка на реконструкцию"
+ },
+ {
+  "claim_ref": "claim:healer-observation-and-questioning",
+  "action": "revert_internal",
+  "reason": "«реконструкция осмотра», «современная диагностика» — анахронизм"
+ },
+ {
+  "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+  "action": "revert_internal",
+  "reason": "«XIII века» и текстологическая ссылка на источник"
+ },
+ {
+  "claim_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
+  "action": "revert_internal",
+  "reason": "английское слово materialize в тексте"
+ },
+ {
+  "claim_ref": "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
+  "action": "revert_internal",
+  "reason": "английское «ordinary-реконструкция» в тексте"
+ },
+ {
+  "claim_ref": "claim:macro-gap-birth-needs-practical-support-and-time",
+  "action": "revert_internal",
+  "reason": "английские слова practical support, protocol"
+ },
+ {
+  "claim_ref": "claim:macro-gap-established-local-observance-can-change-availability",
+  "action": "revert_internal",
+  "reason": "английское слово observance в тексте"
+ },
+ {
+  "claim_ref": "claim:macro-gap-political-communication-needs-accepted-performance",
+  "action": "revert_internal",
+  "reason": "английские settlement, submission, duty, mandate"
+ },
+ {
+  "claim_ref": "claim:macro-gap-writing-carries-attributed-account-only",
+  "action": "revert_internal",
+  "reason": "английские attributed account, carrier"
+ },
+ {
+  "claim_ref": "claim:occupation-smith-heat-treatment",
+  "action": "revert_internal",
+  "reason": "«Источник не задаёт» — прямая ссылка на историографию"
+ },
+ {
+  "claim_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+  "action": "revert_internal",
+  "reason": "editorial reconstruction (англ.) и год 1200–1300"
+ },
+ {
+  "claim_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+  "action": "revert_internal",
+  "reason": "текст сам называет себя «современной хозяйственной аналогией»"
+ },
+ {
+  "claim_ref": "claim:place-dye-moving-submerged-textile-can-support-even-contact",
+  "action": "revert_internal",
+  "reason": "английское editorial reconstruction в тексте"
+ },
+ {
+  "claim_ref": "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
+  "action": "revert_internal",
+  "reason": "английское editorial reconstruction в тексте"
+ },
+ {
+  "claim_ref": "claim:place-outdoors-means-upkeep-and-environment",
+  "action": "revert_internal",
+  "reason": "«реконструкции» (мн.ч.) — метассылка на реконструкцию"
+ },
+ {
+  "claim_ref": "claim:place-outdoors-shore-working-edge-composition",
+  "action": "revert_internal",
+  "reason": "«рабочие зоны» — анахроничный технический термин зона"
+ },
+ {
+  "claim_ref": "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+  "action": "revert_internal",
+  "reason": "английское editorial reconstruction в тексте"
+ },
+ {
+  "claim_ref": "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+  "action": "revert_internal",
+  "reason": "текст сам называет себя «современной экологической связью»"
+ },
+ {
+  "claim_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+  "action": "revert_internal",
+  "reason": "«в реконструкции» — метассылка на реконструкцию"
+ },
+ {
+  "claim_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+  "action": "revert_internal",
+  "reason": "«органические остатки» — химическая классификация, не бытовая речь"
+ },
+ {
+  "claim_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+  "action": "revert_internal",
+  "reason": "английское editorial reconstruction в тексте"
+ },
+ {
+  "claim_ref": "claim:population-processes-fur-exchange",
+  "action": "revert_internal",
+  "reason": "датировка «XI веке» и служебное слово NPC"
+ },
+ {
+  "claim_ref": "claim:population-processes-weaving-device",
+  "action": "revert_internal",
+  "reason": "«реконструкция» и ссылка на археологические находки"
+ },
+ {
+  "claim_ref": "claim:population-processes-weaving-textile",
+  "action": "revert_internal",
+  "reason": "«в реконструкции» — метассылка на реконструкцию"
+ },
+ {
+  "claim_ref": "claim:population-processes-weaving-thread",
+  "action": "revert_internal",
+  "reason": "«в реконструкции» — метассылка на реконструкцию"
+ },
+ {
+  "claim_ref": "claim:r201-ice-1",
+  "action": "revert_internal",
+  "reason": "«изоляция» — технический анахроничный термин, не бытовой"
+ },
+ {
+  "claim_ref": "claim:r201-ice-2",
+  "action": "revert_internal",
+  "reason": "«исторической ледницы» — историографическая рамка"
+ },
+ {
+  "claim_ref": "claim:r201-leaves-1",
+  "action": "keep_strip_prefix",
+  "reason": "бытовое наблюдение налёта на листе, без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:r201-leaves-2",
+  "action": "keep_strip_prefix",
+  "reason": "простое наблюдение, бытовая речь садовода"
+ },
+ {
+  "claim_ref": "claim:r201-onion-1",
+  "action": "revert_internal",
+  "reason": "«водный стресс» — современный агрономический термин"
+ },
+ {
+  "claim_ref": "claim:r201-onion-2",
+  "action": "keep_strip_prefix",
+  "reason": "бытовое наблюдение о поливе и увядании"
+ },
+ {
+  "claim_ref": "claim:r201-porridge-2",
+  "action": "keep_strip_prefix",
+  "reason": "кухонная примета про огонь и пригорание"
+ },
+ {
+  "claim_ref": "claim:r201-roots-1",
+  "action": "revert_internal",
+  "reason": "«ткань» в биологическом смысле — научная терминология"
+ },
+ {
+  "claim_ref": "claim:r201-roots-2",
+  "action": "keep_strip_prefix",
+  "reason": "бытовая примета о признаках порчи запаса"
+ },
+ {
+  "claim_ref": "claim:r301-honeydew-ants",
+  "action": "keep_strip_prefix",
+  "reason": "наблюдаемая народная примета про муравьёв и медвяную росу"
+ },
+ {
+  "claim_ref": "claim:r301-new-growth",
+  "action": "revert_internal",
+  "reason": "«деформированными» — технический ботанический термин"
+ },
+ {
+  "claim_ref": "claim:r301-nondiagnostic",
+  "action": "revert_internal",
+  "reason": "«деформация» и клиническое «диагноза» — научная рамка"
+ },
+ {
+  "claim_ref": "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+  "action": "revert_internal",
+  "reason": "«жировые шарики» — научный термин молочной химии"
+ },
+ {
+  "claim_ref": "claim:r401-cracked-shell-compromises-egg-barrier",
+  "action": "revert_internal",
+  "reason": "«целостность», «косметический дефект» — научная формулировка"
+ },
+ {
+  "claim_ref": "claim:r401-cream-condition-and-working-affect-churning",
+  "action": "revert_internal",
+  "reason": "«температура» — современное научное понятие"
+ },
+ {
+  "claim_ref": "claim:r401-established-woody-plant-water-reaches-root-zone",
+  "action": "revert_internal",
+  "reason": "«корневую зону», «древесного растения» — ботанический жаргон"
+ },
+ {
+  "claim_ref": "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+  "action": "revert_internal",
+  "reason": "«оценки состояния» — клиническая рамка учёного, не наблюдение"
+ },
+ {
+  "claim_ref": "claim:r401-wheel-condition-needs-cause-distinction",
+  "action": "keep_strip_prefix",
+  "reason": "практическая оценка колеса ремесленником, без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:r401-wood-drying-can-loosen-wheel-fit",
+  "action": "revert_internal",
+  "reason": "«поперечное изменение размера» — материаловедческая формулировка"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+  "action": "revert_internal",
+  "reason": "«текстура», «сопротивление» — научно-инженерные термины"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+  "action": "revert_internal",
+  "reason": "«текстуры», «устойчивости» — научные термины грунтоведения"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+  "action": "keep",
+  "reason": "бытовая речь плотника, без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+  "action": "revert_internal",
+  "reason": "«люфт» (нем. заимств.), «диагностируется» — анахронизм"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+  "action": "revert_internal",
+  "reason": "«люфт», «нагрузке», «устойчивость» — технический анахронизм"
+ },
+ {
+  "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+  "action": "revert_internal",
+  "reason": "«не взаимозаменяемы», «пути обращения» — аналитика учёного"
+ },
+ {
+  "claim_ref": "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+  "action": "revert_internal",
+  "reason": "дата 1218–1219 и ссылка «источник различает»"
+ },
+ {
+  "claim_ref": "claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky",
+  "action": "revert_internal",
+  "reason": "дата 1228–1229 и ссылка на летописный эпизод"
+ },
+ {
+  "claim_ref": "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+  "action": "revert_internal",
+  "reason": "«засвидетельствованные», «практика корпуса» — источниковедение"
+ },
+ {
+  "claim_ref": "claim:social-daily-economic-activities",
+  "action": "revert_internal",
+  "reason": "«средневекового», «NPC», ссылка на сводку-источник"
+ },
+ {
+  "claim_ref": "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
+  "action": "revert_internal",
+  "reason": "«вентиляция», «тепловая нагрузка» — ветеринарный/технический жаргон"
+ },
+ {
+  "claim_ref": "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+  "action": "revert_internal",
+  "reason": "явная ссылка на «аляскинский источник»"
+ },
+ {
+  "claim_ref": "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+  "action": "revert_internal",
+  "reason": "абстрактная клиническая рамка «защитный контекст», не речь"
+ },
+ {
+  "claim_ref": "claim:streak01-splinter-assessment",
+  "action": "revert_internal",
+  "reason": "«ограниченной оценкой» — клиническая формулировка учёного"
+ },
+ {
+  "claim_ref": "claim:streak01-splinter-escalation",
+  "action": "keep_strip_prefix",
+  "reason": "народная примета когда искать помощь, оговорка в конце не мешает"
+ },
+ {
+  "claim_ref": "claim:streak01-wet-leather-limits",
+  "action": "revert_internal",
+  "reason": "«реакцию» — абстрактный научный термин, не ремесленная речь"
+ },
+ {
+  "claim_ref": "claim:streak01-wet-leather-support",
+  "action": "revert_internal",
+  "reason": "«деформацию» — технический анахроничный термин"
+ },
+ {
+  "claim_ref": "claim:practical-textile-weave",
+  "action": "keep",
+  "reason": "бытовая речь о ткачестве, без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
+  "action": "revert_internal",
+  "reason": "«ткани растения», «размножение» — экологическая научная рамка"
+ },
+ {
+  "claim_ref": "claim:animal-homeostasis-responds-to-internal-external-change",
+  "action": "revert_internal",
+  "reason": "«организм» — современный биологический термин"
+ },
+ {
+  "claim_ref": "claim:fauna-dragonfly-emergence",
+  "action": "revert_internal",
+  "reason": "«температура», «личиночная шкурка» — зоологическая терминология"
+ },
+ {
+  "claim_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+  "action": "keep",
+  "reason": "наблюдаемые следы использования берега, служебная оговорка не мешает"
+ },
+ {
+  "claim_ref": "claim:military-world-observation-is-bounded-by-conditions",
+  "action": "keep",
+  "reason": "практика наблюдателя, бытовая речь без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+  "action": "keep",
+  "reason": "простая бытовая практика сбора стеблей"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+  "action": "keep",
+  "reason": "бытовое наблюдение безопасности при срезке, без анахронизмов"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+  "action": "keep",
+  "reason": "бытовое наблюдение сухих и мокрых стеблей"
+ },
+ {
+  "claim_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+  "action": "revert_internal",
+  "reason": "дата 1215 и историографическая рамка «датированный выезд»"
+ },
+ {
+  "claim_ref": "claim:brittle-fracture-defects",
+  "action": "revert_internal",
+  "reason": "Академическая формулировка хрупкого разрушения, не речь человека 1230"
+ },
+ {
+  "claim_ref": "claim:buoyancy-pressure-phase-change",
+  "action": "revert_internal",
+  "reason": "Термины давление, фазовый переход — современная физика"
+ },
+ {
+  "claim_ref": "claim:candidate-v9-bare-iron-rust-humidity-salts",
+  "action": "keep",
+  "reason": "Наблюдаемая практика ржавления, без научных терминов"
+ },
+ {
+  "claim_ref": "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+  "action": "keep",
+  "reason": "Простое наблюдение мастера про масло и ржавление"
+ },
+ {
+  "claim_ref": "claim:clay-dried-replasticization",
+  "action": "revert_internal",
+  "reason": "«Керамическое превращение» — научный термин гончарной науки"
+ },
+ {
+  "claim_ref": "claim:clay-fired-no-replasticization",
+  "action": "revert_internal",
+  "reason": "«Керамическое превращение» — научная классификация, не речь мастера"
+ },
+ {
+  "claim_ref": "claim:dry-friction",
+  "action": "revert_internal",
+  "reason": "Нормальная сила — физический термин, не народная речь"
+ },
+ {
+  "claim_ref": "claim:fermentation-conditions",
+  "action": "revert_internal",
+  "reason": "Ферментация, субстрат, микроорганизмы — современные научные понятия"
+ },
+ {
+  "claim_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+  "action": "keep",
+  "reason": "Бытовое знание рыбака о починке сети"
+ },
+ {
+  "claim_ref": "claim:food-preservation-qualitative",
+  "action": "revert_internal",
+  "reason": "«Микробиологические риски» — современный научный термин"
+ },
+ {
+  "claim_ref": "claim:force-contact-geometry",
+  "action": "revert_internal",
+  "reason": "Направление силы, геометрия, механический результат — физика"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-01-wood-knot-strength-bonding",
+  "action": "keep",
+  "reason": "Практическое знание мастера про сучки и прочность"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-02-wood-drying-crack-strength",
+  "action": "revert_internal",
+  "reason": "«Механическая прочность», «рост трещины» — инженерная терминология"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-04-wood-transverse-tension-weakness",
+  "action": "revert_internal",
+  "reason": "Растяжение, геометрия — терминология испытания материалов"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-05-wood-grain-shear-vs-cut",
+  "action": "revert_internal",
+  "reason": "Сопротивление сдвигу, усилие резания — инженерные термины"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-07-wood-storage-biological-damage",
+  "action": "revert_internal",
+  "reason": "«Биологические повреждения» — научная классификация, не народная речь"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-08-abrasive-hardness-material-removal",
+  "action": "revert_internal",
+  "reason": "«Абразив», «абразивная обработка» — латинский технический термин"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-09-glass-brittle-thermal-stress",
+  "action": "revert_internal",
+  "reason": "Внутренние напряжения, тепловая история — научные термины"
+ },
+ {
+  "claim_ref": "claim:foundations-mat-11-stone-density-compressive-response",
+  "action": "revert_internal",
+  "reason": "Плотность, прочность при сжатии — научная терминология материалов"
+ },
+ {
+  "claim_ref": "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
+  "action": "keep",
+  "reason": "Простое наблюдение о пористой хрупкой кости"
+ },
+ {
+  "claim_ref": "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+  "action": "revert_internal",
+  "reason": "«Деформироваться» — инженерный термин, не речь человека 1230"
+ },
+ {
+  "claim_ref": "claim:grain-processing-bread-dough-before-baking",
+  "action": "revert_internal",
+  "reason": "«Пищевое сырьё» — современный промышленный термин"
+ },
+ {
+  "claim_ref": "claim:grain-processing-bread-ground-plant-base",
+  "action": "revert_internal",
+  "reason": "«Растительное сырьё» — современная агропромышленная классификация"
+ },
+ {
+  "claim_ref": "claim:grain-processing-bread-liquid",
+  "action": "revert_internal",
+  "reason": "«Растительное сырьё» — современный термин, не народная речь"
+ },
+ {
+  "claim_ref": "claim:grain-processing-bread-open-fire-baking",
+  "action": "keep",
+  "reason": "Простое бытовое знание о печении у огня"
+ },
+ {
+  "claim_ref": "claim:grain-processing-bread-optional-leaven",
+  "action": "revert_internal",
+  "reason": "«Разрыхляющее вещество» — абстрактная химическая классификация"
+ },
+ {
+  "claim_ref": "claim:grain-processing-bread-oven-baking",
+  "action": "keep",
+  "reason": "Простое бытовое знание о выпечке в печи"
+ },
+ {
+  "claim_ref": "claim:hard-stone-abrasive-sawing",
+  "action": "revert_internal",
+  "reason": "Абразив и ссылка на методы обработки — научная реконструкция"
+ },
+ {
+  "claim_ref": "claim:hard-stone-abrasive-shaping",
+  "action": "revert_internal",
+  "reason": "Абразив, зерно — латинский технический термин, вывод метода"
+ },
+ {
+  "claim_ref": "claim:iron-corrosion-moisture-oxygen",
+  "action": "revert_internal",
+  "reason": "Коррозия, электрохимия, кислород — прямо запрещённые термины"
+ },
+ {
+  "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+  "action": "keep",
+  "reason": "Простое ремесленное знание о распускании шнура"
+ },
+ {
+  "claim_ref": "claim:lime-transformations",
+  "action": "revert_internal",
+  "reason": "Карбонизация, экзотермично — химическая научная терминология"
+ },
+ {
+  "claim_ref": "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
+  "action": "keep",
+  "reason": "Практический совет про горящий жир, без научных терминов"
+ },
+ {
+  "claim_ref": "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
+  "action": "keep",
+  "reason": "Практическое знание возчика про уравновешивание вьюка"
+ },
+ {
+  "claim_ref": "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
+  "action": "keep",
+  "reason": "«Напор» — период-уместное слово мельника, без физики"
+ },
+ {
+  "claim_ref": "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling",
+  "action": "revert_internal",
+  "reason": "«Битумный материал» — латинский технический термин классификации"
+ },
+ {
+  "claim_ref": "claim:material-water-alum-skin-water",
+  "action": "revert_internal",
+  "reason": "«Соли обработки», «водостойкость» — химическая абстрактная терминология"
+ },
+ {
+  "claim_ref": "claim:material-water-leather-water-processing",
+  "action": "keep",
+  "reason": "Общее бытовое знание кожевника без научных терминов"
+ },
+ {
+  "claim_ref": "claim:material-water-linen-flax-origin",
+  "action": "revert_internal",
+  "reason": "Английские слова linen и flax прямо в тексте"
+ },
+ {
+  "claim_ref": "claim:material-water-natural-fibres-water-swelling",
+  "action": "keep",
+  "reason": "Простое наблюдение о разбухании волокон в воде"
+ },
+ {
+  "claim_ref": "claim:material-water-new-linen-water",
+  "action": "keep",
+  "reason": "Бытовое знание ткача о свойствах нового полотна"
+ },
+ {
+  "claim_ref": "claim:material-water-rawhide-wet-dry",
+  "action": "revert_internal",
+  "reason": "Английское слово rawhide прямо в тексте"
+ },
+ {
+  "claim_ref": "claim:material-water-textile-water-load",
+  "action": "revert_internal",
+  "reason": "Необратимость, порог нагрузки — абстрактная научная формулировка"
+ },
+ {
+  "claim_ref": "claim:measurement-net-excludes-tare",
+  "action": "revert_internal",
+  "reason": "«Масса» — физическое понятие вместо народного «вес»"
+ },
+ {
+  "claim_ref": "claim:measurement-units-must-be-identified",
+  "action": "revert_internal",
+  "reason": "Величина, единица, масса/объём — метрологическая научная терминология"
+ },
+ {
+  "claim_ref": "claim:metal-classes-composition",
+  "action": "revert_internal",
+  "reason": "«Классы материалов» — современная научная классификация"
+ },
+ {
+  "claim_ref": "claim:metal-properties-depend-on-state",
+  "action": "revert_internal",
+  "reason": "Свойства, состав, структура — материаловедческая терминология учёного"
+ },
+ {
+  "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+  "action": "keep",
+  "reason": "Практическое знание о верёвке без научных терминов"
+ },
+ {
+  "claim_ref": "claim:oil-fat-vegetable-leather-flexibility",
+  "action": "keep",
+  "reason": "Практическое знание кожевника о жировании кожи"
+ },
+ {
+  "claim_ref": "claim:oil-rawhide-moisture-resistance",
+  "action": "revert_internal",
+  "reason": "«Описана как» — ссылка на источник, не собственная речь"
+ },
+ {
+  "claim_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+  "action": "revert_internal",
+  "reason": "«Поглощение» — химический термин, не речь красильщика"
+ },
+ {
+  "claim_ref": "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+  "action": "revert_internal",
+  "reason": "«Поглощение красителя» — химическая терминология, флаг историографии"
+ },
+ {
+  "claim_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+  "action": "keep",
+  "reason": "Простое чувственное наблюдение рыбака о копчёной рыбе"
+ },
+ {
+  "claim_ref": "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+  "action": "revert_internal",
+  "reason": "«Компоненты молока» — современная научная классификация"
+ },
+ {
+  "claim_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+  "action": "keep",
+  "reason": "Практическое знание бочара про обруч и течь"
+ },
+ {
+  "claim_ref": "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+  "action": "revert_internal",
+  "reason": "«Взвесь», «частицы» — химическая/физическая научная терминология"
+ },
+ {
+  "claim_ref": "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+  "action": "revert_internal",
+  "reason": "«Капиллярно» — прямой современный физический термин"
+ },
+ {
+  "claim_ref": "claim:population-ceramic-fracture",
+  "action": "keep",
+  "reason": "Простое народное знание о хрупкости керамики"
+ },
+ {
+  "claim_ref": "claim:population-ceramic-joint",
+  "action": "keep",
+  "reason": "Простое наблюдение об отламывании ручек и носиков"
+ },
+ {
+  "claim_ref": "claim:population-ceramic-water",
+  "action": "revert_internal",
+  "reason": "«Растворённые примеси» — химическая абстрактная терминология"
+ },
+ {
+  "claim_ref": "claim:population-glass-fracture",
+  "action": "keep",
+  "reason": "Простое народное знание о хрупкости стекла"
+ },
+ {
+  "claim_ref": "claim:population-joining-bond-contact",
+  "action": "revert_internal",
+  "reason": "«Совместимого» — материаловедческий термин совместимости, не речь"
+ },
+ {
+  "claim_ref": "claim:population-joining-bond-contamination",
+  "action": "keep",
+  "reason": "Практическое знание мастера про загрязнение и склейку"
+ },
+ {
+  "claim_ref": "claim:population-joining-bond-cure",
+  "action": "revert_internal",
+  "reason": "Флаг modern_chem: затвердевание клея — химический термин"
+ },
+ {
+  "claim_ref": "claim:population-joining-bond-moisture",
+  "action": "revert_internal",
+  "reason": "Флаг modern_chem: абстрактная формулировка качества соединения"
+ },
+ {
+  "claim_ref": "claim:population-joining-bond-pressure",
+  "action": "revert_internal",
+  "reason": "«Давление» — прямо запрещённое физическое понятие силы"
+ },
+ {
+  "claim_ref": "claim:population-joining-bond-weak-link",
+  "action": "revert_internal",
+  "reason": "Флаг modern_chem: граница соединения — материаловедческий термин"
+ },
+ {
+  "claim_ref": "claim:population-joining-metal-anneal",
+  "action": "keep",
+  "reason": "Период-уместное знание кузнеца про отжиг металла"
+ },
+ {
+  "claim_ref": "claim:population-joining-metal-cold-work",
+  "action": "revert_internal",
+  "reason": "«Пластическая обработка», «деформация» — металловедческая терминология"
+ },
+ {
+  "claim_ref": "claim:population-joining-metal-melt",
+  "action": "revert_internal",
+  "reason": "«Соответствующего перехода» — абстрактная физика фазового перехода"
+ },
+ {
+  "claim_ref": "claim:population-joining-steel-quench",
+  "action": "keep",
+  "reason": "Период-уместное знание кузнеца про закалку стали"
+ },
+ {
+  "claim_ref": "claim:population-joining-steel-temper",
+  "action": "keep",
+  "reason": "Период-уместное знание кузнеца про отпуск стали"
+ },
+ {
+  "claim_ref": "claim:population-joining-wax-soften",
+  "action": "revert_internal",
+  "reason": "«Температурное поведение» — абстрактная материаловедческая формулировка"
+ },
+ {
+  "claim_ref": "claim:population-material-clay-drying",
+  "action": "keep",
+  "reason": "Практическое знание гончара о сушке глины"
+ },
+ {
+  "claim_ref": "claim:population-material-clay-plasticity",
+  "action": "revert_internal",
+  "reason": "Адсорбированная вода, пластинчатые частицы — научные термины"
+ },
+ {
+  "claim_ref": "claim:population-material-clay-steam",
+  "action": "revert_internal",
+  "reason": "«Поровая вода», «история нагрева» — материаловедческая терминология"
+ },
+ {
+  "claim_ref": "claim:population-material-iron-coating",
+  "action": "revert_internal",
+  "reason": "Кислород, коррозия — прямо запрещённые научные понятия"
+ },
+ {
+  "claim_ref": "claim:population-material-iron-rust",
+  "action": "revert_internal",
+  "reason": "«Кислород» — прямо запрещённое современное научное понятие"
+ },
+ {
+  "claim_ref": "claim:population-material-leather-dry",
+  "action": "keep",
+  "reason": "Практическое знание кожевника о сухости и гибкости"
+ },
+ {
+  "claim_ref": "claim:population-material-wet-silk",
+  "action": "keep",
+  "reason": "Простое наблюдение о слабости мокрого шёлка"
+ },
+ {
+  "claim_ref": "claim:population-material-wet-wool",
+  "action": "keep",
+  "reason": "Практическое ткацкое знание о мокрой шерсти"
+ },
+ {
+  "claim_ref": "claim:population-material-wood-combustion",
+  "action": "revert_internal",
+  "reason": "«Кислород», «газы» — современные научные химические понятия"
+ },
+ {
+  "claim_ref": "claim:population-material-wood-loading",
+  "action": "revert_internal",
+  "reason": "Плотность, геометрия, приложение нагрузки — инженерная терминология"
+ },
+ {
+  "claim_ref": "claim:population-material-wood-moisture",
+  "action": "revert_internal",
+  "reason": "«Направление и величина» — абстрактная физическая (векторная) формулировка"
+ },
+ {
+  "claim_ref": "claim:population-physics-conduction-gradient",
+  "action": "revert_internal",
+  "reason": "Теплопроводность, геометрия — прямо физические научные термины"
+ },
+ {
+  "claim_ref": "claim:population-physics-elastic-recovery",
+  "action": "revert_internal",
+  "reason": "Деформация, упругая область — материаловедческие научные термины"
+ },
+ {
+  "claim_ref": "claim:population-physics-evaporation-below-boiling",
+  "action": "keep",
+  "reason": "Простое бытовое знание об испарении без кипения"
+ },
+ {
+  "claim_ref": "claim:population-physics-evaporation-humidity",
+  "action": "revert_internal",
+  "reason": "«Испарительное удаление воды» — научная абстрактная формулировка"
+ },
+ {
+  "claim_ref": "claim:population-physics-floating-shape",
+  "action": "revert_internal",
+  "reason": "Объём вытесненной жидкости, грузоподъёмность — физические термины"
+ },
+ {
+  "claim_ref": "claim:population-physics-freezing-condensation-energy",
+  "action": "revert_internal",
+  "reason": "Состояние вещества, давление — прямо физические понятия"
+ },
+ {
+  "claim_ref": "claim:population-physics-immersion-buoyancy",
+  "action": "revert_internal",
+  "reason": "«Выталкивающая сила» — прямо физическое научное понятие"
+ },
+ {
+  "claim_ref": "claim:population-physics-load-deformation",
+  "action": "revert_internal",
+  "reason": "Твёрдое тело, геометрия, направление силы — физика"
+ },
+ {
+  "claim_ref": "claim:population-physics-melting-vaporization-energy",
+  "action": "revert_internal",
+  "reason": "научное понятие энергии фазового перехода"
+ },
+ {
+  "claim_ref": "claim:population-physics-point-pressure",
+  "action": "revert_internal",
+  "reason": "давление в физическом смысле — научное понятие"
+ },
+ {
+  "claim_ref": "claim:population-physics-section-response",
+  "action": "revert_internal",
+  "reason": "сечение и сила — инженерные понятия"
+ },
+ {
+  "claim_ref": "claim:population-physics-sliding-friction",
+  "action": "revert_internal",
+  "reason": "коэффициент трения — научный термин"
+ },
+ {
+  "claim_ref": "claim:population-physics-static-friction",
+  "action": "revert_internal",
+  "reason": "трение покоя — научное понятие, не речь"
+ },
+ {
+  "claim_ref": "claim:population-physics-stress-failure",
+  "action": "revert_internal",
+  "reason": "напряжение материала — инженерное понятие"
+ },
+ {
+  "claim_ref": "claim:r201-compost-1",
+  "action": "keep_strip_prefix",
+  "reason": "бытовое наблюдение о навозе, без научных слов"
+ },
+ {
+  "claim_ref": "claim:r201-lye-1",
+  "action": "keep_strip_prefix",
+  "reason": "практическая осторожность со щёлоком, без науки"
+ },
+ {
+  "claim_ref": "claim:r201-lye-2",
+  "action": "keep_strip_prefix",
+  "reason": "практика мыловарения, служебная оговорка не мешает"
+ },
+ {
+  "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+  "action": "keep",
+  "reason": "бытовая подготовка тростника перед плетением"
+ },
+ {
+  "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+  "action": "keep",
+  "reason": "практическое ремесленное наблюдение о циновке"
+ },
+ {
+  "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+  "action": "keep",
+  "reason": "ремесленная практика плетения циновки"
+ },
+ {
+  "claim_ref": "claim:r7-acidic-wet-food-in-unlined-copper-contact-can-change-the-contact-surface",
+  "action": "keep",
+  "reason": "бытовое наблюдение о меди и пище"
+ },
+ {
+  "claim_ref": "claim:r7-polished-metal-can-reflect-directional-sunlight-with-condition-bound-visibility",
+  "action": "keep",
+  "reason": "наблюдаемое отражение света от металла"
+ },
+ {
+  "claim_ref": "claim:r7-sealed-food-container-can-swell-when-gas-forms-or-warms",
+  "action": "revert_internal",
+  "reason": "внутреннее давление и газ — научные понятия"
+ },
+ {
+  "claim_ref": "claim:r7-unusual-flame-colour-or-fume-can-support-unidentified-material-exposure-caution",
+  "action": "keep",
+  "reason": "бытовая примета про цвет пламени и дым"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+  "action": "keep",
+  "reason": "практика осмотра узла перед нагрузкой"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+  "action": "keep",
+  "reason": "практика вязки грузового узла"
+ },
+ {
+  "claim_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+  "action": "keep",
+  "reason": "практика развязывания узла на судне"
+ },
+ {
+  "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+  "action": "keep",
+  "reason": "ремесленная переработка верёвки в шнур"
+ },
+ {
+  "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+  "action": "keep",
+  "reason": "бытовое наблюдение о разрыве шва"
+ },
+ {
+  "claim_ref": "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
+  "action": "revert_internal",
+  "reason": "концентрация соли — научный термин"
+ },
+ {
+  "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+  "action": "keep",
+  "reason": "ремесленная практика штопки ткани"
+ },
+ {
+  "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+  "action": "keep",
+  "reason": "практическое знание о леске из шнура"
+ },
+ {
+  "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+  "action": "revert_internal",
+  "reason": "частицы дыма — научное, не бытовое понятие"
+ },
+ {
+  "claim_ref": "claim:sound-background-noise-masks-speech",
+  "action": "keep",
+  "reason": "бытовое наблюдение про шум и речь"
+ },
+ {
+  "claim_ref": "claim:sound-reflections-arrive-after-direct-path",
+  "action": "keep",
+  "reason": "наблюдаемое эхо, без научных терминов"
+ },
+ {
+  "claim_ref": "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
+  "action": "keep",
+  "reason": "ремесленная практика формовки бересты"
+ },
+ {
+  "claim_ref": "claim:static-birch-bark-water-can-deform-layers",
+  "action": "keep",
+  "reason": "наблюдаемое свойство бересты от влаги"
+ },
+ {
+  "claim_ref": "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+  "action": "revert_internal",
+  "reason": "явная аналогия по римскому источнику"
+ },
+ {
+  "claim_ref": "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+  "action": "revert_internal",
+  "reason": "вывод из источника про свиное сало"
+ },
+ {
+  "claim_ref": "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
+  "action": "revert_internal",
+  "reason": "давление — физическое понятие, не речь"
+ },
+ {
+  "claim_ref": "claim:static-forge-welding-requires-heated-pressed-interface",
+  "action": "revert_internal",
+  "reason": "давление — физическое понятие, не речь"
+ },
+ {
+  "claim_ref": "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
+  "action": "revert_internal",
+  "reason": "фильтрация — технический термин, не речь"
+ },
+ {
+  "claim_ref": "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+  "action": "keep",
+  "reason": "бытовое наблюдение о грязи и колее"
+ },
+ {
+  "claim_ref": "claim:static-lubricant-film-can-separate-moving-surfaces",
+  "action": "keep",
+  "reason": "наблюдение о смазке между поверхностями"
+ },
+ {
+  "claim_ref": "claim:static-wood-ash-can-irritate-skin-and-eyes",
+  "action": "keep",
+  "reason": "бытовое знание о золе и коже"
+ },
+ {
+  "claim_ref": "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+  "action": "keep",
+  "reason": "народное знание о щёлоке из золы"
+ },
+ {
+  "claim_ref": "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+  "action": "keep",
+  "reason": "ремесленное знание о шерсти и щёлочи"
+ },
+ {
+  "claim_ref": "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+  "action": "revert_internal",
+  "reason": "чешуйки шерсти — научное, не наблюдаемое"
+ },
+ {
+  "claim_ref": "claim:static-yarn-strength-can-fall-after-excessive-twist",
+  "action": "keep",
+  "reason": "ремесленное знание о крутке пряжи"
+ },
+ {
+  "claim_ref": "claim:static-yarn-twist-can-increase-fibre-cohesion",
+  "action": "revert_internal",
+  "reason": "научное объяснение сопротивления волокон крутке"
+ },
+ {
+  "claim_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences",
+  "action": "keep",
+  "reason": "практическое знание о хранении зерна"
+ },
+ {
+  "claim_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+  "action": "revert_internal",
+  "reason": "научный механизм переноса влаги в зерне"
+ },
+ {
+  "claim_ref": "claim:streak01-lime-curing-limits",
+  "action": "keep_strip_prefix",
+  "reason": "ремесленное знание о твердении извести"
+ },
+ {
+  "claim_ref": "claim:streak01-lime-weather",
+  "action": "keep_strip_prefix",
+  "reason": "ремесленное знание о погоде и извести"
+ },
+ {
+  "claim_ref": "claim:textile-conditioning-matters",
+  "action": "revert_internal",
+  "reason": "испытание образца и стандарт — научная методика"
+ },
+ {
+  "claim_ref": "claim:textile-dye-application",
+  "action": "keep",
+  "reason": "ремесленное знание о красильной ванне"
+ },
+ {
+  "claim_ref": "claim:textile-dye-mordant-fixation",
+  "action": "keep",
+  "reason": "ремесленное знание о протраве для красителя"
+ },
+ {
+  "claim_ref": "claim:textile-fibres-twist-yarn",
+  "action": "keep",
+  "reason": "бытовое знание о скручивании пряжи"
+ },
+ {
+  "claim_ref": "claim:vegetable-tanning-prepared-hide",
+  "action": "keep",
+  "reason": "ремесленное знание о растительном дублении"
+ },
+ {
+  "claim_ref": "claim:wood-anisotropy-moisture",
+  "action": "revert_internal",
+  "reason": "числовая прочность — инженерное понятие"
+ },
+ {
+  "claim_ref": "claim:wood-liquid-moisture-change",
+  "action": "keep",
+  "reason": "бытовое знание о дереве и воде"
+ },
+ {
+  "claim_ref": "claim:agriculture-fauna-borts-honey",
+  "action": "revert_internal",
+  "reason": "ссылка на средневековую новгородскую сводку"
+ },
+ {
+  "claim_ref": "claim:agriculture-fauna-hemp-processing-tow",
+  "action": "revert_internal",
+  "reason": "ссылка на историко-русское описание практики"
+ },
+ {
+  "claim_ref": "claim:agriculture-fauna-hemp-stem-fibre",
+  "action": "revert_internal",
+  "reason": "ссылка на описанную историко-русскую практику"
+ },
+ {
+  "claim_ref": "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+  "action": "revert_internal",
+  "reason": "энергия — научное понятие, не речь"
+ },
+ {
+  "claim_ref": "claim:bathing-house-heating-before-washing",
+  "action": "revert_internal",
+  "reason": "ссылка на летописное описание"
+ },
+ {
+  "claim_ref": "claim:bathing-washing-water",
+  "action": "revert_internal",
+  "reason": "ссылка на легендарное летописное описание"
+ },
+ {
+  "claim_ref": "claim:bathing-wooden-bathhouse-wood",
+  "action": "revert_internal",
+  "reason": "ссылка на легендарное летописное описание"
+ },
+ {
+  "claim_ref": "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+  "action": "revert_internal",
+  "reason": "служебное слово actor прямо в тексте"
+ },
+ {
+  "claim_ref": "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+  "action": "revert_internal",
+  "reason": "служебное слово actor прямо в тексте"
+ },
+ {
+  "claim_ref": "claim:candidate-v7-npl-1222-kesi-campaign",
+  "action": "revert_internal",
+  "reason": "летопись под годом — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+  "action": "revert_internal",
+  "reason": "летопись под годом — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+  "action": "revert_internal",
+  "reason": "летопись под годом — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+  "action": "revert_internal",
+  "reason": "летопись под годом — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+  "action": "revert_internal",
+  "reason": "летопись под годом — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:candle-rolled-plate",
+  "action": "revert_internal",
+  "reason": "археологическое описание гнёздовских свечей"
+ },
+ {
+  "claim_ref": "claim:care-direct-pressure-bleeding",
+  "action": "revert_internal",
+  "reason": "ссылка на источник о диабетической стопе"
+ },
+ {
+  "claim_ref": "claim:civic-defence-clay-gaps",
+  "action": "revert_internal",
+  "reason": "исследователь объясняет — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:civic-defence-log-courses",
+  "action": "revert_internal",
+  "reason": "Рюриково городище IX века — историография"
+ },
+ {
+  "claim_ref": "claim:civic-defence-transverse-support",
+  "action": "revert_internal",
+  "reason": "Рюриково городище IX века — историография"
+ },
+ {
+  "claim_ref": "claim:clothing-porty-cut",
+  "action": "revert_internal",
+  "reason": "слово реконструкция — научный метод, не речь"
+ },
+ {
+  "claim_ref": "claim:clothing-silk-shirt",
+  "action": "revert_internal",
+  "reason": "источниковое описание — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:construction-forged-iron-nail-vessel-joint",
+  "action": "revert_internal",
+  "reason": "археологическая находка — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:construction-rjaz-bridge-support",
+  "action": "revert_internal",
+  "reason": "X века засвидетельствован — историографическая ссылка"
+ },
+ {
+  "claim_ref": "claim:domestic-animal-context",
+  "action": "revert_internal",
+  "reason": "метаописание свидетельств, не речь персонажа"
+ },
+ {
+  "claim_ref": "claim:fauna-chicken-foraging",
+  "action": "keep",
+  "reason": "бытовое наблюдение за поиском корма курицей"
+ },
+ {
+  "claim_ref": "claim:fauna-mammals-brown-bear-conditional-aggregation",
+  "action": "revert_internal",
+  "reason": "стрелочная нотация, не человеческая речь"
+ },
+ {
+  "claim_ref": "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
+  "action": "revert_internal",
+  "reason": "стрелочная нотация, не человеческая речь"
+ },
+ {
+  "claim_ref": "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+  "action": "revert_internal",
+  "reason": "стрелочная нотация, не человеческая речь"
+ },
+ {
+  "claim_ref": "claim:fauna-mammals-red-squirrel-seed-cache",
+  "action": "keep",
+  "reason": "бытовое наблюдение за белкой без нотации"
+ },
+ {
+  "claim_ref": "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
+  "action": "revert_internal",
+  "reason": "стрелочная нотация и слово энергия"
+ },
+ {
+  "claim_ref": "claim:fauna-mussel-filtration",
+  "action": "revert_internal",
+  "reason": "органические частицы — научный термин"
+ },
+ {
+  "claim_ref": "claim:fauna-tawny-owl-hearing",
+  "action": "revert_internal",
+  "reason": "научное объяснение направленного слуха, не примета"
+ },
+ {
+  "claim_ref": "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+  "action": "revert_internal",
+  "reason": "энергия потока — научное понятие"
+ },
+ {
+  "claim_ref": "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+  "action": "revert_internal",
+  "reason": "органический нанос — научная классификация"
+ },
+ {
+  "claim_ref": "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+  "action": "revert_internal",
+  "reason": "органические вещи — научная классификация"
+ },
+ {
+  "claim_ref": "claim:final-practical-uncertain-exposure-needs-route-and-source-details-preserved-for-help",
+  "action": "revert_internal",
+  "reason": "диагноз и путь воздействия — клиническая методика"
+ },
+ {
+  "claim_ref": "claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation",
+  "action": "revert_internal",
+  "reason": "токсичный, вещество, доза — научные термины"
+ },
+ {
+  "claim_ref": "claim:final-social-archbishop-role-can-frame-church-and-public-contact",
+  "action": "revert_internal",
+  "reason": "метаигровое правило про роль, не речь"
+ },
+ {
+  "claim_ref": "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+  "action": "keep",
+  "reason": "бытовое обычное знание о находке"
+ }
+]

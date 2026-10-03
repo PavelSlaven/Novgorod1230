@@ -104,6 +104,35 @@ function applyAddedColumns(tables, ddl) {
     const table = byName.get(match[1]);
     if (!table) throw new Error(`ALTER TABLE references unknown world_base.${match[1]}`);
     for (const action of splitTopLevel(match[2])) {
+      const dropped = /^DROP\s+CONSTRAINT\s+(IF\s+EXISTS\s+)?([a-z_][a-z0-9_]*)$/iu.exec(action);
+      if (dropped) {
+        // An inline UNIQUE (a, b) has the implicit name <table>_a_b_key; other dropped constraints
+        // (checks) are not listed in the reference. Dropping an unknown name without IF EXISTS is an error.
+        const before = table.constraints.length;
+        table.constraints = table.constraints.filter((item) => {
+          const unique = /^UNIQUE \(([^)]*)\)$/u.exec(item);
+          return !unique || `${table.name}_${unique[1].split(',').map((name) => name.trim()).join('_')}_key` !== dropped[2];
+        });
+        if (before === table.constraints.length && !dropped[1]) {
+          throw new Error(`DROP CONSTRAINT ${dropped[2]} on world_base.${match[1]} matches no known UNIQUE constraint`);
+        }
+        continue;
+      }
+      // `ALTER COLUMN c DROP|SET NOT NULL` changes what a row must carry (the strict importer row check reads `nullable`).
+      const notNull = /^ALTER\s+COLUMN\s+([a-z_][a-z0-9_]*)\s+(DROP|SET)\s+NOT\s+NULL$/iu.exec(action);
+      if (notNull) {
+        const column = table.columns.find((item) => item.name === notNull[1]);
+        if (!column) throw new Error(`ALTER COLUMN references unknown world_base.${match[1]}.${notNull[1]}`);
+        if (column.primary_key && notNull[2].toUpperCase() === 'DROP') throw new Error(`DROP NOT NULL on primary key column world_base.${match[1]}.${column.name}`);
+        column.nullable = notNull[2].toUpperCase() === 'DROP';
+        continue;
+      }
+      const uniqueKey = /^ADD\s+CONSTRAINT\s+[a-z_][a-z0-9_]*\s+(UNIQUE\s*\([\s\S]+\))$/iu.exec(action);
+      if (uniqueKey) {
+        const constraint = normalizeSql(uniqueKey[1]);
+        if (!table.constraints.includes(constraint)) table.constraints.push(constraint);
+        continue;
+      }
       const addition = /^ADD\s+COLUMN\s+(?:IF\s+NOT\s+EXISTS\s+)?([\s\S]+)$/iu.exec(action);
       if (!addition) continue;
       const column = parseColumn(addition[1], match[1]);

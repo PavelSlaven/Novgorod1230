@@ -23,6 +23,8 @@ const SAFE_NARRATION_CONCERN_KINDS = new Set([
   'unsupported_event', 'unsupported_world_state', 'unsupported_npc_state',
   'contradiction', 'hidden_knowledge'
 ]);
+const SAFE_NARRATION_CHECKS = new Set(['policy', 'artistic', 'technical']);
+const SAFE_NARRATION_COVERAGE_KINDS = new Set(['visible_changes', 'uncertainties']);
 const SAFE_NPC_VALIDATION_CODES = new Set([
   'npc_step_request_invalid', 'npc_step_envelope_invalid',
   'npc_step_interpretation_invalid', 'npc_step_resolution_invalid',
@@ -127,10 +129,29 @@ function safeNarrationFailure(value = {}) {
   const concernKinds = Array.isArray(details.concern_kinds)
     ? [...new Set(details.concern_kinds.map(text)
       .filter((kind) => SAFE_NARRATION_CONCERN_KINDS.has(kind)))] : [];
+  const auditAttempts = Array.isArray(details.audit_attempts)
+    ? details.audit_attempts.slice(0, 2).map((attempt, index) => Object.freeze({
+      ordinal: Number.isInteger(attempt?.ordinal) && attempt.ordinal === index + 1
+        ? attempt.ordinal : index + 1,
+      failed_checks: Object.freeze(Array.isArray(attempt?.failed_checks)
+        ? [...new Set(attempt.failed_checks.map(text)
+          .filter((check) => SAFE_NARRATION_CHECKS.has(check)))] : []),
+      coverage_refs: Object.freeze(Array.isArray(attempt?.coverage_refs)
+        ? attempt.coverage_refs.flatMap((ref) => {
+          const kind = text(ref?.kind), sourceIndex = Number(ref?.source_index);
+          return SAFE_NARRATION_COVERAGE_KINDS.has(kind)
+              && Number.isInteger(sourceIndex) && sourceIndex >= 0
+            ? [Object.freeze({ kind, source_index: sourceIndex,
+              covered: ref?.covered === true })] : [];
+        }) : [])
+    })) : [];
   return Object.freeze({
     code: 'TRACE_PHASE_2_NARRATION_REJECTED', phase, concern_kinds: Object.freeze(concernKinds),
     concern_count: Number.isInteger(concernCount) && concernCount >= 0
-      ? concernCount : 0
+      ? concernCount : 0,
+    ...(auditAttempts.length === 0 ? {} : {
+      audit_attempts: Object.freeze(auditAttempts)
+    })
   });
 }
 function text(value) { return String(value ?? '').trim(); }

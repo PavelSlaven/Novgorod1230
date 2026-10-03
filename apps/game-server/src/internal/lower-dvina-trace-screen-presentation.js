@@ -6,6 +6,8 @@ import { loadLowerDvinaTraceScenePresentation } from './lower-dvina-trace-scene-
 
 /** Read-only presentation data from the party's existing exact scenario pins. */
 export async function loadLowerDvinaTraceScreenPresentation(payload, rootDir = process.cwd()) {
+  if (payload?.scenario_id != null
+      && payload.scenario_id !== 'lower_dvina_trace_v1') return null;
   const scenarioDefinitionRevision = payload.materialization_trace?.seed_context?.scenario_definition_revision;
   if (!Number.isInteger(scenarioDefinitionRevision)) return null;
   const [bundle, scenePresentation] = await Promise.all([

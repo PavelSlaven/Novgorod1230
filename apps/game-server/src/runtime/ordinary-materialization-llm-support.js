@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
+import { normalizeGameTimestamp } from '@rus/time-events-history';
 import { serverError } from '../errors.js';
 import {
   snapshotLowerDvinaTraceOrdinaryStageBJson
@@ -59,6 +61,9 @@ export function buildOrdinaryMaterializationMessages(request, { repair = null,
       'semantic_admission_class is your independent classification of the fully qualified selected referent in complete candidate_hint, not a classification of an abbreviated output descriptor or an unrelated alternative: common_mundane, specialized_or_valuable, weapon_or_armament, currency_or_precious, document_like, or other_restricted. common_mundane applies only to an everyday non-special physical object; it is never a default. Do not ignore qualifiers, rename, or substitute a plainer ordinary object merely to fit common_mundane. If the fully qualified selected referent has a specialized, valuable, weapon, currency, document, evidentiary, significant, hidden, prohibited, or technical role, use its non-common class even when resolution is absent, no_change, or authority_required. Do not copy server candidate admission class when the fully qualified selected referent belongs to another class; server will fail closed.',
       'semantic_materialization_kind is your independent classification of the sought referent in complete candidate_hint, including every mandatory qualifier and relation of the selected alternative. candidate_hint may be a natural-language search phrase: classify its referent, never the act of asking or searching. standalone_item means a discrete physical thing or finite group of separable things with independent identity: it or its members can be moved without changing the surrounding location. Plural wording or several separable pieces remains standalone_item; quantity expresses the finite group. A separable thing remains standalone_item when it lies in, came from, or is described beside debris, sediment, vegetation, a surface, or another environmental accumulation. Classify the requested referent itself, not its surroundings, origin, a hypothetical portion, or a later transformation. An environmental accumulation or condition is non_item_detail only when the candidate_hint requests that inseparable accumulation, trace, surface condition, spatial state, phenomenon, observation, or other non-item detail as a whole. Do not use non_item_detail merely because an item is absent, restricted, plural, grouped, located in the environment, or mentioned in a search request. Do not convert non_item_detail into a portable object, item, resource, mechanics, ownership, route, person, history, or fact. For an ordinary non_item_detail without a mandatory unavailable authority requirement, return no_change with no entities. Being a physical trace does not remove an evidentiary, significant, or hidden requirement; retain authority_required when that requirement determines the answer. This is not a vocabulary test: judge the whole candidate meaning, not individual nouns.',
       'For materialize return one entity containing semantic_type, name, presence_expectation, and mechanics_proposal. semantic_type must be a specific nonempty ordinary semantic type for the actual proposed material or object, not null or a copied placeholder. It is a machine category, not a player-facing name or factual description. name is a concise natural Russian player-facing label for the concrete referent. It must identify the materialized object or finite group without copying an intended action, use, goal, hoped-for quality, origin, history, condition, ownership, or other unsupported property. Do not return facts or any other descriptive field. Classify and name the concrete referent; the generic authority candidate category does not supply its specific material semantics.',
+      ...(request.authority_envelope?.candidate?.coverage_kind === 'finite_source'
+        ? [`For this code-owned finite source, semantic_type must be exactly ${JSON.stringify(request.authority_envelope.candidate.semantic_type)}. Do not infer another material category from the query wording.`]
+        : []),
       ...(request.world_knowledge == null ? [] : [
         'World Knowledge constrains ordinary reconstruction; it is not a positive inventory whitelist. Before materializing, evaluate every supplied hard_constraint. Copy every hard-constraint claim_ref into world_knowledge_constraint_refs exactly once and return world_knowledge_constraint_verdict clear or blocked. If any constraint blocks the proposal, return no_change; never cite a hard constraint as positive support. For common_mundane materialization, causal scene basis plus ordinary physical and historical plausibility is sufficient when the constraint verdict is clear; world_knowledge_claim_refs may be empty. For every non-common admission class, positive materialization still requires one or more exact supporting claim_ref values copied only from supplied facts. Any returned positive claim ref must directly support the proposed name, material, kind, or restriction.'
       ]),
@@ -101,12 +106,7 @@ function ordinaryKnowledgeClosure(request) {
 }
 
 function ordinaryRequestWire(request) {
-  const knowledge = request.world_knowledge;
-  if (knowledge?.schema !== 'world_knowledge_slice_v1'
-      || !['coverage', 'hard_constraints', 'facts', 'disputes', 'gaps']
-        .every((field) => Array.isArray(knowledge[field]))) return request;
-  const { context_text, ...structured } = knowledge;
-  return { ...request, world_knowledge: structured };
+  return omitWorldKnowledgeContextText(request);
 }
 
 function ordinarySemanticShape(request) {
@@ -144,9 +144,10 @@ function ordinarySemanticShape(request) {
 function exactModelContext(context) {
   const snapshot = snapshotLowerDvinaTraceOrdinaryStageBJson(context);
   const keys = Object.keys(snapshot ?? {});
+  const allowed = ['repair', 'mechanics_policy', 'semantic_context',
+    'required_quantity', 'clock', 'historical_events'];
   if (snapshot == null || !Object.hasOwn(snapshot, 'repair')
-      || keys.some((key) => !['repair', 'mechanics_policy',
-        'semantic_context', 'required_quantity'].includes(key))) {
+      || keys.some((key) => !allowed.includes(key))) {
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   }
   const repair = snapshot.repair;
@@ -164,8 +165,19 @@ function exactModelContext(context) {
     ? requiredQuantityOf(snapshot.required_quantity) : null;
   if (Object.hasOwn(snapshot, 'required_quantity') && requiredQuantity == null)
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  const clock = Object.hasOwn(snapshot, 'clock') ? snapshot.clock : null;
+  if (Object.hasOwn(snapshot, 'clock') && clock != null
+      && !isPartyClock(clock)) {
+    throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  }
+  const historicalEvents = Object.hasOwn(snapshot, 'historical_events')
+    ? snapshot.historical_events : undefined;
+  if (Object.hasOwn(snapshot, 'historical_events')
+      && !Array.isArray(historicalEvents)) {
+    throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  }
   if (repair === null) return { repair: null, mechanicsPolicy,
-    semanticContext, requiredQuantity };
+    semanticContext, requiredQuantity, clock, historicalEvents };
   if (repair == null || typeof repair !== 'object' || Array.isArray(repair)
       || Object.keys(repair).length !== 3
       || repair.schema !== 'ordinary_materialization_repair_context_v1'
@@ -174,7 +186,29 @@ function exactModelContext(context) {
       || repair.validation_errors.length === 0) {
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   }
-  return { repair, mechanicsPolicy, semanticContext, requiredQuantity };
+  return { repair, mechanicsPolicy, semanticContext, requiredQuantity,
+    clock, historicalEvents };
+}
+
+/** Party clock: owner GameTimestamp / legacy total_minutes / non-neg int (N5). */
+function isPartyClock(value) {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) && value >= 0;
+  }
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  if (Object.hasOwn(value, 'total_minutes')) {
+    return Object.keys(value).length === 1
+      && Number.isInteger(value.total_minutes)
+      && value.total_minutes >= 0;
+  }
+  try {
+    normalizeGameTimestamp(value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function requiredQuantityOf(value) {
@@ -205,13 +239,21 @@ function mechanicsInstruction(policy) {
   const bounds = mechanicsPolicyOf(policy);
   if (bounds == null) throw cutoverError(
     'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
-  return `Code-owned mechanics bounds: mass_grams is an integer from 1 to ${bounds.max_mass_grams}; external_hand_cost is exactly one of ${JSON.stringify(bounds.allowed_external_hand_costs)}; carry_form is exactly one of ${JSON.stringify(bounds.allowed_carry_forms)}; packing_slot_cost is an integer from 0 to ${bounds.max_packing_slot_cost}; quantity.value is an integer from 1 to ${bounds.max_quantity}; quantity.unit is "item"; container is null. Never invent another carry_form or exceed these bounds.`;
+  const fixedMass = bounds.mass_grams_per_quantity_unit === undefined ? ''
+    : ` mass_grams must equal quantity.value * ${bounds.mass_grams_per_quantity_unit}.`;
+  return `Code-owned mechanics bounds: mass_grams is an integer from 1 to ${bounds.max_mass_grams}; external_hand_cost is exactly one of ${JSON.stringify(bounds.allowed_external_hand_costs)}; carry_form is exactly one of ${JSON.stringify(bounds.allowed_carry_forms)}; packing_slot_cost is an integer from 0 to ${bounds.max_packing_slot_cost}; quantity.value is an integer from 1 to ${bounds.max_quantity}; quantity.unit is "item"; container is null.${fixedMass} Never invent another carry_form or exceed these bounds.`;
 }
 
 function mechanicsPolicyOf(value) {
   const keys = ['policy_ref', 'max_mass_grams',
     'allowed_external_hand_costs', 'allowed_carry_forms',
     'max_packing_slot_cost', 'max_quantity'];
+  if (Object.hasOwn(value ?? {}, 'mass_grams_per_quantity_unit')) {
+    keys.push('mass_grams_per_quantity_unit');
+    if (!Number.isSafeInteger(value.mass_grams_per_quantity_unit)
+        || value.mass_grams_per_quantity_unit < 1
+        || value.mass_grams_per_quantity_unit > value.max_mass_grams) return null;
+  }
   if (value == null || typeof value !== 'object' || Array.isArray(value)
       || Object.keys(value).length !== keys.length
       || keys.some((key) => !Object.hasOwn(value, key))

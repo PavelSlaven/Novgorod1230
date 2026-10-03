@@ -79,10 +79,22 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   if (evidence.property_placement_context_digest !== propertyPlacement.property_placement_context_digest || evidence.property_catalog_version_ref !== propertyPlacement.property_catalog_version_ref || evidence.placement_catalog_version_ref !== propertyPlacement.placement_catalog_version_ref) return failed('ITEM_ORDINARY_WORLD_PROPERTY_INVALID');
   if (propertyPlacement.placement.scope_ref !== position.scope_ref
       || propertyPlacement.placement.position_ref !== position.position_ref) return failed('ITEM_ORDINARY_WORLD_PLACEMENT_INVALID');
-  const policy = record(context.mechanics_policy, POLICY);
+  const policy = record(context.mechanics_policy, POLICY)
+    ?? record(context.mechanics_policy, [...POLICY, 'mass_grams_per_quantity_unit']);
   if (!policy || policy.policy_ref !== evidence.runtime_item_mechanics_policy_ref) return failed('ITEM_ORDINARY_WORLD_MECHANICS_POLICY_INVALID');
+  if (Object.hasOwn(policy, 'mass_grams_per_quantity_unit')
+      && (!Number.isSafeInteger(policy.mass_grams_per_quantity_unit)
+        || policy.mass_grams_per_quantity_unit < 1
+        || policy.mass_grams_per_quantity_unit > policy.max_mass_grams)) {
+    return failed('ITEM_ORDINARY_WORLD_MECHANICS_POLICY_INVALID');
+  }
   const mechanics = mechanicsOf(item.mechanics_proposal, policy);
   if (!mechanics) return failed('ITEM_ORDINARY_WORLD_MECHANICS_INVALID');
+  if (policy.mass_grams_per_quantity_unit !== undefined
+      && mechanics.mass_grams !== mechanics.quantity.value
+        * policy.mass_grams_per_quantity_unit) {
+    return failed('ITEM_ORDINARY_WORLD_MECHANICS_INVALID');
+  }
   const causal = record(context.causal_identity, ['request_id','candidate_key','coverage_key','context_version','causal_ref','source_refs']);
   const expectedRefs = canonicalRefs([pending.candidate_key,pending.coverage_key,
     item.supporting_basis_ref,...causalBasis.basis_refs,item.property_basis_ref,

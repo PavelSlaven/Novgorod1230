@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { preparationSnapshotMemberOverlapErrors } from './appendix-f-overlap.mjs';
 
 const standard = await readFile('data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md', 'utf8');
 const temporalAmendment = await readFile('data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md', 'utf8');
@@ -12,18 +13,19 @@ const targetTypedErrors = JSON.parse(await readFile('packages/contracts/src/spat
 const matrix = JSON.parse(await readFile('docs/migration/spatial-v3/contract-implementation-matrix.json', 'utf8'));
 const conflicts = await readFile('docs/migration/spatial-v3/normative-conflicts.md', 'utf8');
 const count = (value) => new Set(value).size === value.length;
-const contracts = [...standard.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
+const historicalStandard = standard.includes('# Приложение F.') ? standard.slice(0, standard.indexOf('# Приложение F.')) : standard;
+const contracts = [...historicalStandard.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
 const errorSection = standard.slice(standard.indexOf('# Приложение C.'), standard.indexOf('# Приложение D.'));
 const errors = [...errorSection.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]).filter((x) => x !== 'code');
-if (!standard.includes('**Статус:** `active production`') || !standard.includes('**Версия:** `4.2.0`')) throw new Error('Historical standard metadata missing');
-if (targetSpecifications.source_version !== '4.5.0-target.1'
-  || targetTypedErrors.source_version !== '4.5.0-target.1'
-  || targetSpecifications.specifications?.length !== 225
-  || targetTypedErrors.errors?.length !== 82) throw new Error('Current target metadata is stale');
+if (!standard.includes('**Статус:** `active production`') || !standard.includes('**Версия:** `4.7.0`')) throw new Error('Historical standard metadata missing');
+if (targetSpecifications.source_version !== '4.7.0-target.1'
+  || targetTypedErrors.source_version !== '4.7.0-target.1'
+  || targetSpecifications.specifications?.length !== 228
+  || targetTypedErrors.errors?.length !== 86) throw new Error('Current target metadata is stale');
 if (!count(contracts) || contracts.length !== 160) throw new Error(`Contract audit failed: ${contracts.length}`);
 if (!count(errors) || errors.length !== 58) throw new Error(`Error audit failed: ${errors.length}`);
 if (standard.includes('TODO') || standard.includes('{{') || standard.includes('TBD')) throw new Error('Placeholder found');
-if (matrix.contracts.length !== 225 || matrix.errors.length !== 82) throw new Error('Current target matrix totals failed');
+if (matrix.contracts.length !== 228 || matrix.errors.length !== 86) throw new Error('Current target matrix totals failed');
 if (!matrix.contracts.every((x) => x.owner_package && x.json_schema_or_dto && x.ddl_table_or_value && x.validator && x.repository && x.tests && x.migration_step)) throw new Error('Unassigned contract matrix field');
 if (!matrix.errors.every((x) => x.owner_package && x.json_schema_or_dto && x.validator && x.tests && x.migration_step)) throw new Error('Unassigned error matrix field');
 const conflictRows = conflicts.split(/\r?\n/).filter((line) => /^\| NC-\d+ /.test(line));
@@ -48,7 +50,16 @@ if (
   || temporalErrors.length !== 24
 ) throw new Error('Current Temporal/PR8 amendment audit failed');
 if (npcContracts.map((entries) => entries.length).join(',') !== '2,3,7' || npcContracts.flat().length !== new Set(npcContracts.flat()).size) throw new Error('M2 NPC contract amendment audit failed');
-const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat()]);
-const currentErrors = new Set([...errors, ...temporalErrors]);
-if (currentContracts.size !== 225 || currentErrors.size !== 82) throw new Error('Current 4.5 target union audit failed');
-console.log('P01 checks passed: historical P05 160/58 and Temporal 4.3 188/82 are immutable; current 4.5 target union is 225 contracts/82 errors.');
+const spatialAmendmentText = standard.slice(standard.indexOf('# Приложение F.'));
+const spatialAmendmentContracts = [...spatialAmendmentText.matchAll(/```yaml\r?\ncontract_name:\s*([^\r\n]+)[\s\S]*?```/g)].map((m) => m[1].trim());
+const spatialAmendmentErrors = [...spatialAmendmentText.slice(spatialAmendmentText.indexOf('## F.2.')).matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map((m) => m[1]);
+if (spatialAmendmentContracts.length !== 17 || spatialAmendmentErrors.length !== 4 || !count(spatialAmendmentContracts)) throw new Error('Spatial 4.7 Appendix F audit failed');
+const overlapErrors = [
+  ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard),
+  ...preparationSnapshotMemberOverlapErrors(temporalAmendment, standard, 'party_traversal_interval_result', ['  - Existing six traversal outcomes'])
+];
+if (overlapErrors.length) throw new Error(`Appendix F does not mirror the temporal preparation_snapshot_member / party_traversal_interval_result blocks:\n${overlapErrors.join('\n')}`);
+const currentContracts = new Set([...contracts, ...temporalContracts, ...npcContracts.flat(), ...spatialAmendmentContracts]);
+const currentErrors = new Set([...errors, ...temporalErrors, ...spatialAmendmentErrors]);
+if (currentContracts.size !== 228 || currentErrors.size !== 86) throw new Error('Current 4.7 target union audit failed');
+console.log('P01 checks passed: historical P05 160/58 and Temporal 4.3 188/82 are immutable; current 4.7 target union is 228 contracts/86 errors.');

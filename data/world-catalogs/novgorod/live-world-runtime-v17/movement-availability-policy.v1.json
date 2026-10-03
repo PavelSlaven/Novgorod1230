@@ -1,0 +1,45 @@
+{
+  "schema": "rus.live_world_runtime.movement_availability_policy.v1",
+  "policy_id": "movement_availability_policy",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "authoring_policy": "The approved data names five availability condition sets but defines no predicate, and the party state holds no snow, flood or ice state; the environment owner yields movement factors, not open/closed. Until such state exists (owner decision: seasons are stage 3) every named set is evaluated as open. Light and visibility never close a passage. A set that is not listed here is a typed data gap, not open.",
+  "condition_sets": [
+    {
+      "condition_set_ref": "availability.local_state_conditional@1",
+      "used_by": "site_connection profiles @1 (superseded by @2 with no condition)"
+    },
+    {
+      "condition_set_ref": "availability.ground_flood_snow_conditional@1",
+      "used_by": "world route segments (52) and route profiles"
+    },
+    {
+      "condition_set_ref": "availability.water_ice_conditional@1",
+      "used_by": "world route segments (28) and route profiles"
+    },
+    {
+      "condition_set_ref": "availability.shore_conditional@1",
+      "used_by": "world route segments (4) and route profiles"
+    },
+    {
+      "condition_set_ref": "availability.wetland_conditional@1",
+      "used_by": "world route segments (2) and route profiles"
+    }
+  ],
+  "evaluation": "open_without_evaluable_state",
+  "reason_code": "availability_state_not_evaluable",
+  "ignores": ["light", "visibility"],
+  "provenance": {
+    "directness": "editorial",
+    "confidence": "medium",
+    "source_refs": [
+      "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_canonical_g5_connection_profiles.json",
+      "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_world_route_segments.json",
+      "data/world-catalogs/novgorod/m2c-nonportal-availability-data-approval.json"
+    ],
+    "limits": "Asserts no historical passability, season, weather or terrain fact; only that the runtime has nothing to evaluate."
+  }
+}

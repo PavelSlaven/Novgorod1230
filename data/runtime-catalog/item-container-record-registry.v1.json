@@ -1363,6 +1363,41 @@
       "writer_adapter_id": "record-sources-writer-v1"
     },
     {
+      "table_name": "procedural_scene_compiled_records",
+      "operation_domain": "catalog_membership",
+      "primary_key_fields": [
+        "record_id",
+        "version"
+      ],
+      "canonical_columns": [
+        "record_id",
+        "version",
+        "record_kind",
+        "family_candidate_ref",
+        "payload",
+        "payload_digest",
+        "source_pack_digest",
+        "status"
+      ],
+      "excluded_operational_columns": [
+        "created_at"
+      ],
+      "column_normalizers": {
+        "record_id": "text_nfc",
+        "version": "integer_decimal",
+        "record_kind": "text_nfc",
+        "family_candidate_ref": "text_nfc",
+        "payload": "jsonb",
+        "payload_digest": "text_nfc",
+        "source_pack_digest": "text_nfc",
+        "status": "text_nfc"
+      },
+      "canonical_row_schema_version": "rus.catalog_record_projection.v2",
+      "dependency_order": 39,
+      "reader_adapter_id": "procedural-scene-compiled-records-reader-v1",
+      "writer_adapter_id": "procedural-scene-compiled-records-writer-v1"
+    },
+    {
       "table_name": "graph_nodes",
       "operation_domain": "dependency_assertion",
       "primary_key_fields": [
@@ -1459,7 +1494,7 @@
         "audit_notes": "text_nfc"
       },
       "canonical_row_schema_version": "rus.catalog_record_projection.v2",
-      "dependency_order": 39,
+      "dependency_order": 40,
       "reader_adapter_id": "graph-nodes-reader-v1",
       "writer_adapter_id": "graph-nodes-assertion-v1"
     }

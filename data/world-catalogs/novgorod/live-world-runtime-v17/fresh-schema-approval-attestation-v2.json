@@ -1,0 +1,85 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "claude-opus-5.5-independent-approval-2026-09-27-schema-v2",
+  "independence_basis": "Independent senior-model pass (Claude Opus 5.5, high) separate from the executor: the approver did not author the request, the generator, any SQL part or migration, the migration runner, the bootstrap script, or the Contract Auditor reports REVIEW-065/067/069. Review was read-only on a detached scratch checkout at the reviewed head; hashes, chain digest and generator output were recomputed by script (generator output rendered to a temp path, never over tracked files); no database connection, bootstrap, import or activation was performed; scratch git status stayed clean.",
+  "reviewed_repository_head": "d416c0ea76e0f94c34c12d73eb0880bed30ca4fa",
+  "source_commit": "00ba1de301a3236ea3ba929651ea04026bcf2671",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "9a41e939e063524bb02923408096ca58137b9f6c58d24ee29d8b75de6d2bc78e",
+  "request_bytes": 15449,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation.json",
+    "sha256_at_reviewed_head": "51d872af978ffbe59f16023a2b4e2e050e53a7feaaf1fd5c2f7804b273d0e17a",
+    "auditor_ref": "/root/v17_schema_approval",
+    "request_digest": "b4c1f994a95ae3d50f0c3b410079b484011bebef364caacb7cce7824345529d6",
+    "reason": "Request changed after DONE-065/065b (world part 27.sql, party migration 037, 217 world tables, new chain digest); previous approval withdrawn per LW-069 and CR #158 C11. The previous attestation and its execution attestation are historical and authorize nothing further."
+  },
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "infra/world-base/schema.sql and its ordered 01.sql-27.sql parts, exactly as hashed in the request (applied either through the entrypoint with psql -X -v ON_ERROR_STOP=1 -1, or through applyV17WorldSchemaOrderedParts in one transaction followed by REVOKE CREATE ON SCHEMA world_base FROM PUBLIC; both apply byte-identical parts)",
+    "party_schema": "runSpatialV3TargetMigrations and its ordered 001-037 SQL files, exactly as hashed in the request",
+    "party_chain_digest": "872412c5875e37896e3633caf300bbaff884ee6f99dba6e60c5f957fa66c9d01",
+    "expected_world_base_tables": 217,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 37,
+    "d27_rename": {
+      "novgorod_world_v17": "novgorod_world_v17_bak_20260927",
+      "novgorod_party_v17": "novgorod_party_v17_bak_20260927"
+    }
+  },
+  "verified_by_approver": {
+    "generator_rebuild_json_byte_identical": true,
+    "generator_rebuild_review_md_byte_identical": true,
+    "resolved_source_commit_from_input_history": "00ba1de301a3236ea3ba929651ea04026bcf2671",
+    "schema_inputs_unchanged_00ba1de3_to_reviewed_head": true,
+    "source_files_verified": 66,
+    "source_hash_mismatches": 0,
+    "hash_basis": "git blobs at reviewed head and working-tree bytes, sha256 and byte length",
+    "party_chain_digest_recomputed_from_git_blobs": "872412c5875e37896e3633caf300bbaff884ee6f99dba6e60c5f957fa66c9d01",
+    "party_chain_digest_equals_SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST": true,
+    "party_migration_order_equals_SPATIAL_V3_TARGET_MIGRATION_FILES": true,
+    "world_create_table_statements_in_01_27": 217,
+    "world_create_table_schemas": ["world_base"],
+    "party_create_table_statements_in_001_037": 133,
+    "ddl_changes_since_previous_approval": [
+      "infra/world-base/schema.sql (+ \\ir schema/27.sql)",
+      "infra/world-base/schema/27.sql (9 new world_base tables, soft refs, primary-binding partial unique index)",
+      "schemas/party-db/037_party_runtime_m2c_presence_routines.sql (candidate_profile_refs, immutability trigger, g5 scope CHECKs, append-only weather transition log)",
+      "apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js (037 appended to the file list)"
+    ],
+    "cluster_level_statements": "Only 08.sql conditionally creates role world_reader when absent; 01.sql drops schema world_base CASCADE inside the target database only. No DROP DATABASE, ALTER DATABASE, ALTER ROLE, ALTER SYSTEM, extensions, dblink/fdw or COPY PROGRAM in any part or migration.",
+    "contract_auditor_conditions": {
+      "REVIEW-065": "DDL findings F1 (numeric game time), F5 (wild_arrival_cause TEXT), F7 (PG behavioural test) closed per REVIEW-067/069 and the reviewed tree.",
+      "REVIEW-067": "N2 (rebuild test in CI, chain_digest check in checkV17BootstrapInputs) and N3 (review md regenerated before approval) closed; N3 re-verified here byte-for-byte.",
+      "REVIEW-069": "N8 (explicit NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS instead of SELECT *), N9 (real immutability check with error text, positive control, 23505/23514 codes, 012-037 re-run through runner) and N10 (source_commit and review-md tests) are present at fb8db964, verified by reading the code; approver did not run the tests. REVIEW-069 condition 3 (validate.mjs green after C006d data) concerns data import, not this schema, and remains a precondition of any later import approval."
+    }
+  },
+  "approval": "Fresh creation of the v17 pair novgorod_world_v17 / novgorod_party_v17 in the existing managed local-play cluster and application of exactly the hashed world parts 01-27 and party migrations 001-037, only after the currently existing v17 pair has been renamed (never dropped) to *_bak_20260927 per owner decision D27 and after all execution preconditions pass. No existing database may be dropped, reused, or modified other than that rename.",
+  "execution_preconditions": [
+    "Before any write, the executor runs the full test:integration and test:acceptance suites at the execution head and they are green; record the commands, head and results. The execution head must carry byte-identical schema inputs (request_digest 9a41e939..., all 66 source hashes, party chain digest 872412c5...).",
+    "Verify the actual PostgreSQL cluster identity (system_identifier), server version 16.14, and the list of all existing databases with owners; record them.",
+    "Verify a CURRENT backup of the existing novgorod_world_v17 / novgorod_party_v17 pair (and of the cluster data it lives in) taken after the last write to that pair: record backup location, method, time, and a readback check (for pg_dump: archive lists both databases and restores to a disposable target; for a physical copy: control data system_identifier matches and the copy was taken with the cluster shut down). The 2026-09-24 backup-m2c-before-v17 does not satisfy this, as it predates the current v17 pair.",
+    "Record row counts per table of the existing novgorod_world_v17 and novgorod_party_v17, and of every other existing Novgorod database (including novgorod_world / novgorod_party if present), before any write.",
+    "Stop every game-server, tool or session connected to novgorod_world_v17 or novgorod_party_v17 (ALTER DATABASE ... RENAME requires no other connections) and do not start game-server against any existing party database during execution (LW-070: party 037 would be applied at server start).",
+    "Confirm that novgorod_world_v17_bak_20260927 and novgorod_party_v17_bak_20260927 do not exist; stop if either exists.",
+    "Rename (never drop) novgorod_world_v17 to novgorod_world_v17_bak_20260927 and novgorod_party_v17 to novgorod_party_v17_bak_20260927 by explicit ALTER DATABASE ... RENAME TO ... commands issued from the postgres maintenance database; report both commands and their results separately from the bootstrap output, and read back pg_database to show the bak names with unchanged owners.",
+    "Confirm that the new pair names novgorod_world_v17 and novgorod_party_v17 are now free; stop if either exists. Never use DROP DATABASE, and never reuse or overwrite an existing database.",
+    "Verify world_operator, party_operator and world_reader roles already exist (world DDL otherwise creates the cluster-wide world_reader role).",
+    "Create both databases with the requested owners, prove both empty before applying schema, apply the world parts in one transaction with stop-on-error, and apply the party chain through runSpatialV3TargetMigrations without exactAppliedMigration (the standard bootstrap-live-world-v17.mjs path satisfies this, including its rollback probes).",
+    "Read back 217 world_base tables, world_reader USAGE on world_base and SELECT on all 217 tables, 133 party_runtime tables, party result applied=37, newly_applied=37, execution_mode=applied, chain_digest 872412c5..., zero parties, and unchanged per-table row counts in both *_bak_20260927 databases and in every other pre-existing database. Record actual results, target identity, backup evidence and the rename commands in a separate execution attestation v2 that references this approval."
+  ],
+  "excludes": [
+    "P12 import or any other data import into the new pair (the standard bootstrap import stages need their own current approvals, including Gate1 amendment v3)",
+    "catalog registration or activation",
+    "runtime or default startup cutover",
+    "migration or mutation of existing databases other than the D27 rename",
+    "dropping the *_bak_20260927 pair (owner does this later manually)"
+  ],
+  "database_mutated_by_review": false
+}

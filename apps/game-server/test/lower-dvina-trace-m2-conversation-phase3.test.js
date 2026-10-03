@@ -249,6 +249,12 @@ test('supported semantic revisions bind exact semantic persistence to the root t
       semanticExchange
     });
   }
+  assert.deepEqual(phase3SemanticCommitContext({ scenarioRevision: null,
+    neutralConversation: true, factual, writePlan: {
+      turn_id: 'turn:party-1:3',
+      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+    } }), { rootTurnId: 'turn:party-1:3', workingRevision: 0,
+    semanticExchange });
   assert.throws(() => phase3SemanticCommitContext({
     scenarioRevision: 14,
     factual,
@@ -345,6 +351,10 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     contracts.actors.find(({ ref: actorRef }) =>
       actorRef === 'eremey_fisher').knowledge_profile_snapshot
   );
+  assert.ok(disclosed.npcRequest.allowed_references.knowledge_refs.some(
+    (reference) => reference.entity_kind === 'knowledge_scope'
+      && reference.entity_id === disclosed.npcRequest.knowledge.profile_id
+  ));
   assert.equal(
     disclosed.npcRequest.knowledge.private_persistence_marker,
     persistenceMarker

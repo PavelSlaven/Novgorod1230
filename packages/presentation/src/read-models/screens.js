@@ -311,7 +311,8 @@ function validFullFactualCarrier({
   openingScreenDigest, currentProjectionAnchor, presentationContext,
   sceneAssetId, combatState
 }) {
-  return scenarioId === 'lower_dvina_trace_v1' && screenKind === 'trace_turn'
+  return text(scenarioId)
+    && ['trace_turn', 'live_world_turn'].includes(screenKind)
     && validDeliveryState(deliveryState) && text(openingScreenDigest)
     && validProjectionAnchor(currentProjectionAnchor)
     && validPresentationContext(presentationContext)

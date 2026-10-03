@@ -1,0 +1,47 @@
+{
+  "schema": "rus.target_appearance_transfer_v17_import_approval_attestation.v1",
+  "decision": "APPROVE_CONDITIONAL",
+  "auditor_ref": "gpt-6-sol/high:/root/appearance_v3_import_approval",
+  "independence_basis": "Independent reviewer did not author the v3 candidate, mapping, import request or SQL builder and performed no database write. Recomputed request and input digests, source row refs, seven dataset hashes and counts, v2 row equality, and both generated SQL digests; inspected the import transaction, foreign-key order and readback assertions.",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "745b9c874d73f1411c1fec2669c0e4e1b8e10e9a",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-v17-import-request.json",
+  "request_digest": "6b6ea5ca5406b56263f88ee2138c5af6c453380c445da23aa5d13972018d6ccc",
+  "scope": {
+    "cluster_system_identifier": "7683141184713630856",
+    "database": "novgorod_world_v17",
+    "owner": "world_operator",
+    "schema": "world_base",
+    "operation": "insert_only",
+    "transaction": "single_world_base_transaction",
+    "candidate_sha256": "ec6e9386c0fdc1b4108bd932d4225c641e5164f9a7c06bae0bde2fca94723d56",
+    "data_approval_sha256": "7d21724911fc81c0ecdf83561eec4ff512c21af71487065028ff6ac1e3954a95",
+    "manifest_sha256": "26c0a900f75e5dca18aaa287ee2017dfdf20d169b87f61e3872cdb663ad21580",
+    "dataset_order": ["world_revisions", "universal_categories", "region_demographic_profiles", "region_appearance_profiles", "region_category_options", "region_demographic_profile_entries", "region_appearance_profile_entries"],
+    "rows": 129,
+    "commit_sql_bytes": 158278,
+    "commit_sql_sha256": "230b47315d516ee2034b1081314d12c2618de1f7e1bb0341e2f20fd0b133e432",
+    "rollback_sql_bytes": 158280,
+    "rollback_sql_sha256": "15ec53c4abdda8e9c4e093a225440fae3e49fc1e9c81e3b39f65fa0703244917"
+  },
+  "review_evidence": [
+    "All 44 carried v4 rows match their pinned source files and all 85 target rows match the v2 candidate; all 129 primary keys are unique within their datasets.",
+    "The generated SQL contains 129 inserts and 129 row readback assertions inside one transaction, with deferred constraints closed before COMMIT or ROLLBACK.",
+    "The reviewed request records live preflight as pending because its checkout pointed at another cluster. A separate operator reported a successful live 129-key absence check, P12 readback and rollback probe on the target cluster; this reviewer did not independently witness those live checks."
+  ],
+  "execution_preconditions": [
+    "Before any COMMIT, verify a new usable offline backup taken after the P12 import for cluster 7683141184713630856 and novgorod_world_v17; the older pre-v17 backup alone is insufficient.",
+    "Immediately before execution, reverify PostgreSQL 16.14, cluster and database identity, owner, all 208 world_base table counts against the committed P12 readback, all 129 candidate primary keys absent, and no preexisting row drift; stop on mismatch.",
+    "Regenerate and rehash the pinned COMMIT and ROLLBACK SQL from the pinned code and seven datasets; require the rollback transaction to complete with zero errors and unchanged counts in all 208 tables on this exact cluster.",
+    "Capture full-row snapshots and counts before import; execute only the pinned COMMIT SQL in novgorod_world_v17.world_base, then verify exact full-row readback of all 129 keys, preservation of every preexisting row, and unchanged novgorod_world and novgorod_party. Record separate execution attestation."
+  ],
+  "authority": {
+    "import_after_all_preconditions_authorized": true,
+    "import_before_new_backup_verified_authorized": false,
+    "activation_authorized": false,
+    "party_migration_authorized": false,
+    "old_database_operation_authorized": false,
+    "database_mutated_by_review": false
+  },
+  "exclusions": ["Runtime binding or release activation", "Party migration", "Writes to novgorod_world or novgorod_party", "Historical row update or v4 world revision import"]
+}

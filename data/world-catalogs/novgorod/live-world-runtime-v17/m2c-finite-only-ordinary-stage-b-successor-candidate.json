@@ -1,0 +1,30 @@
+{
+  "schema": "rus.live_world_runtime.m2c_finite_only_ordinary_stage_b_successor_candidate.v1",
+  "status": "qualification_pending",
+  "runtime_selectable": false,
+  "profile_id": "m2c_generated_g5_finite_only_ordinary_stage_b_v2",
+  "revision": 2,
+  "supersedes_profile_id": "m2c_generated_g5_finite_only_ordinary_base_v1",
+  "target_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "stage_b_classification_eval": {
+    "schema": "rus.ordinary_materialization_stage_b_eval.v1",
+    "version": 2,
+    "model_contract_ref": "ordinary_materialization_plan_v1",
+    "model_identity_policy": "single_exact_provider_model_config_role",
+    "cases": [
+      { "id": "reeds", "query": "срезать один стебель тростника из доступной куртины", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "reed_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 1, "carry_form": "regular", "packing_slot_cost": 2, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "reeds-kamysh", "query": "срезать один стебель камыша из той же доступной куртины", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "reed_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 1, "carry_form": "regular", "packing_slot_cost": 2, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "deadwood", "query": "подобрать одну порцию валежника из доступного запаса", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "deadwood_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 1, "carry_form": "regular", "packing_slot_cost": 4, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "deadwood-khvorost", "query": "подобрать одну порцию хвороста из того же доступного запаса", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "deadwood_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 1, "carry_form": "regular", "packing_slot_cost": 4, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "deadwood-sushnyak", "query": "подобрать одну порцию сушняка из того же доступного запаса", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "deadwood_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 1, "carry_form": "regular", "packing_slot_cost": 4, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "driftwood", "query": "подобрать одну порцию плавника из доступного речного наноса", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "driftwood_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 2, "carry_form": "long", "packing_slot_cost": 8, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "standing-wood", "query": "срубить разрешённую стоящую сосну и взять одну порцию свежей древесины", "allowed_resolutions": ["materialize"], "expected_entity": { "semantic_type": "fresh_wood_material_portion", "mechanics_proposal": { "mass_grams": 50, "external_hand_cost": 2, "carry_form": "long", "packing_slot_cost": 16, "quantity": { "value": 1, "unit": "item" } } } },
+      { "id": "berries-absent", "query": "взять ягоды: такого источника здесь нет", "allowed_resolutions": ["absent", "authority_required"], "expected_entity": null },
+      { "id": "fungi-absent", "query": "взять грибы: такого источника здесь нет", "allowed_resolutions": ["absent", "authority_required"], "expected_entity": null },
+      { "id": "stone-absent", "query": "взять камень: такого источника здесь нет", "allowed_resolutions": ["absent", "authority_required"], "expected_entity": null },
+      { "id": "exhausted-source", "query": "взять ещё валежника из уже исчерпанного источника", "allowed_resolutions": ["absent", "authority_required"], "expected_entity": null },
+      { "id": "exhausted-synonym", "query": "взять хворост из того же исчерпанного источника валежника", "allowed_resolutions": ["absent", "authority_required"], "expected_entity": null },
+      { "id": "owned-wood", "query": "взять дерево с чужого участка без разрешения владельца", "allowed_resolutions": ["authority_required"], "expected_entity": null }
+    ]
+  }
+}

@@ -61,15 +61,40 @@ import { createLlmDiagnostics } from '../llm-diagnostics.js';
 import { createLlmTurnBudget } from '../llm-turn-budget.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../world-knowledge-grounding.js';
+import { createAuthoredOpeningNarrationService } from
+  '../authored-opening-narration.js';
+import { createTargetCurrentFactualContext } from
+  '../../infrastructure/postgres/target-current-factual-context.js';
+import { createNeedsCheckMaterializationGuard } from
+  '../needs-check-materialization-guard.js';
+import { createNeedsCheckRegionResolver } from
+  '../../infrastructure/postgres/needs-check-region-resolver.js';
+import { createPostgresWorldBaseReader } from
+  '../../infrastructure/postgres/world-base.js';
+import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
 
 export function createTraceTurnRuntime({
-  partyPool, committer, env, config, ordinaryMaterializationProfile,
+  partyPool, worldPool, committer, env, config, ordinaryMaterializationProfile,
   ordinaryContainerContentsProfile, ordinaryStageBApproval,
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
+  authoredTurnProfile,
+  postActionPerceptionProfile = null,
+  authoredSpatialSemanticProfile = null,
+  authoredNpcSemanticRemainderProfile = null,
+  authoredRuntimeBindingResolver,
+  targetStartRuntime = null,
+  spatialExpansionRuntime = null,
+  spatialLocalSceneRuntime = null,
+  readLocalEdgeDisclosure = null,
+  readCurrentExitDisclosure = null,
+  readCurrentConnectionDisclosure = null,
+  loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
-  createPhase2RuntimeFactory, createNpcRuntimePorts
+  createPhase2RuntimeFactory, createNpcRuntimePorts,
+  // Test seam: production default is createLowerDvinaTraceNarrationService.
+  createNarrationService = createLowerDvinaTraceNarrationService
 }) {
   const decisionSecret = String(
     config.traceTurnDecisionSecret ?? env.RUS_TURN_DECISION_SECRET ?? ''
@@ -92,12 +117,32 @@ export function createTraceTurnRuntime({
         worldKnowledge, roleRunner, telemetry: llmDiagnostics.telemetry,
         year: 1230, placeRefs: ['region_novgorod_land']
       });
-  const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
-  const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
+  const narrationService = createNarrationService({
+    roleRunner, worldKnowledgeGrounder, telemetry: llmDiagnostics.telemetry
+  });
+  const authoredOpeningNarration = createAuthoredOpeningNarrationService({
+    roleRunner, llmDiagnostics
+  });
+  const ordinaryMaterializationModel = ordinaryStageBApproval == null
+    ? Object.assign(async () => { throw ordinaryStageBUnavailable(); }, {
+      verifyStageBCutover: async () => { throw ordinaryStageBUnavailable(); }
+    }) : createOrdinaryMaterializationModel({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity,
     worldKnowledgeGrounder
   });
+  const materializationInputs = targetStartRuntime?.materialization_inputs;
+  const runtimeCatalogWorldBaseReader = worldPool == null ? null
+    : createPostgresWorldBaseReader({ pool: worldPool });
+  const partyCatalogCoordinator = targetStartRuntime == null ? null
+    : createRuntimeCatalogCoordinator({ worldBaseReader: runtimeCatalogWorldBaseReader,
+        partyPool, itemPin: targetStartRuntime.itemPin });
+  const needsCheckGuard = targetStartRuntime == null ? null
+    : createNeedsCheckMaterializationGuard({
+        resolveRegion: createNeedsCheckRegionResolver({
+          worldBaseReader: runtimeCatalogWorldBaseReader }),
+        calendarProfile: materializationInputs?.calendar_profile
+      });
   const ordinaryDiscoveryScopeBinding =
     ordinaryMaterializationProfile?.o2a_ambient?.scope_binding ?? null;
   const ordinaryEnablements =
@@ -125,6 +170,12 @@ export function createTraceTurnRuntime({
     ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
         roleRunner, worldKnowledgeGrounder })
     : null;
+  const authoredSpatialSemanticResolverFactory =
+    authoredSpatialSemanticProfile?.schema
+      === 'rus.live_world_runtime.s1_loaded_profile.v1'
+      && authoredSpatialSemanticProfile.profile?.status === 'approved'
+      ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
+          roleRunner, worldKnowledgeGrounder }) : null;
   const backgroundNpcResolverFactory =
     npcSemanticRemainderProfile?.schema
       === 'rus.lower_dvina_trace_n1_loaded_profile.v1'
@@ -133,11 +184,21 @@ export function createTraceTurnRuntime({
           loadedProfile: npcSemanticRemainderProfile, roleRunner,
           worldKnowledgeGrounder
         }) : null;
+  const authoredBackgroundNpcResolverFactory =
+    authoredNpcSemanticRemainderProfile?.schema
+      === 'rus.live_world_runtime.n1_loaded_profile.v1'
+      && authoredNpcSemanticRemainderProfile.profile?.status === 'approved'
+      ? createLowerDvinaTraceN1ProductionResolverFactory({
+          loadedProfile: authoredNpcSemanticRemainderProfile, roleRunner,
+          worldKnowledgeGrounder
+        }) : null;
   const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
-    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
+      assertNeedsCheckAllowed }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
-        loadEnablement: (input) => ordinaryEnablements.load(input),
-        ordinaryMaterializationModel }),
+      loadEnablement: (input) => ordinaryEnablements.load(input),
+        ordinaryMaterializationModel,
+        assertNeedsCheckAllowed }),
     createActionProductionOwner: actionProductionResolverFactory,
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
     loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
@@ -164,7 +225,11 @@ export function createTraceTurnRuntime({
     worldKnowledgeGrounder });
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
-      partyPool, committer
+      partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
+      readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
+      projectEnvironmentAtClock: targetStartRuntime == null ? null
+        : createTargetCurrentFactualContext({ partyPool, committer,
+          runtime: targetStartRuntime, authoredRuntimeBindingResolver }).projectEnvironmentAtClock
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
@@ -173,10 +238,16 @@ export function createTraceTurnRuntime({
       createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner }),
     actionProducedWeaponClassifier:
       createLowerDvinaTraceActionProducedWeaponClassifier({ roleRunner }),
-    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+    loadTurnRuntimeCatalogContext: partyCatalogCoordinator == null ? null
+      : ({ partyId }) => partyCatalogCoordinator.loadPartyContext({ partyId }),
+    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
+      assertNeedsCheckAllowed, recordNeedsCheckFilter }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel,
+        assertNeedsCheckAllowed,
+        recordNeedsCheckFilter,
+        requestSubject: 'player',
         scopeBinding: ordinaryDiscoveryScopeBinding
       }),
     createTurnStepOrdinaryContainerContentsResolver:
@@ -197,14 +268,21 @@ export function createTraceTurnRuntime({
           disclosure_state:entry.disclosure_state }))) });
     },
     ordinaryDiscoveryScopeBinding,
+    turnStepNeedsCheckGuard: needsCheckGuard,
     createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,
     localFireProfile,
     createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
     spatialSemanticProfile: activeSpatialSemanticProfile,
+    createTurnStepAuthoredSpatialSemanticResolver:
+      authoredSpatialSemanticResolverFactory,
+    authoredSpatialSemanticProfile,
     createTurnStepBackgroundNpcResolver: backgroundNpcResolverFactory,
     npcSemanticRemainderProfile,
+    createTurnStepAuthoredBackgroundNpcResolver:
+      authoredBackgroundNpcResolverFactory,
+    authoredNpcSemanticRemainderProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState
@@ -228,9 +306,20 @@ export function createTraceTurnRuntime({
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
     llmTurnBudget: turnBudget,
-    llmDiagnostics
+    llmDiagnostics,
+    onNpcSceneProjection: config.onNpcSceneProjection ?? null,
+    authoredTurnProfile,
+    postActionPerceptionProfile,
+    spatialExpansionRuntime,
+    spatialLocalSceneRuntime
   });
-  return Object.freeze({ ...runtime, llmDiagnostics });
+  return Object.freeze({ ...runtime, llmDiagnostics,
+    authoredOpeningNarration });
+}
+
+function ordinaryStageBUnavailable() {
+  return serverError('TRACE_ORDINARY_STAGE_B_EVAL_INPUT_INVALID',
+    'A separate exact Stage B qualification is required for ordinary generation.', { status: 503 });
 }
 
 export function createTraceRandomSourceFactory({ env = {} } = {}) {

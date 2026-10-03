@@ -12,7 +12,9 @@ const PEOPLE_PATH = path.join(GROUP_DIR, "peoples_origins", "peoples_origins.csv
 const IMPORT_CONTRACT_PATH = path.join(NAMES_DIR, "b2-import-contract.json");
 const SOURCE_PATH = path.join(NAMES_DIR, "b2-name-pool-source.json");
 const D46_PATH = path.join(NAMES_DIR, "d46-name-additions.json");
+const NAMES_GAPS_PATH = path.join(NAMES_DIR, "names-gaps-additions.json");
 const REPORT_PATH = path.join(NAMES_DIR, "name-pool-report.json");
+const CANDIDATE_ENTRIES_PATH = path.join(NAMES_DIR, "name_pool_entries_candidates.csv");
 const SOCIAL_PATH = path.resolve(GROUP_DIR, "..", "social-strata-law", "social_strata_legal_status", "roles", "new_role_candidates.tsv");
 const CLASSES = new Set(["ordinary", "monastic", "dynastic", "significant"]);
 const SEXES = new Set(["female", "male"]);
@@ -59,12 +61,14 @@ function normalizedAlias(value) { return normalizedName(value).replace(/[ьъ]/g
 
 function sha256(value) { return crypto.createHash("sha256").update(value).digest("hex"); }
 
-export function validate({ pools, entries, sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, snapshotContents, poolHeader, entryHeader }) {
+export function validate({ pools, entries, candidateEntries = [], sourceRows, derivationRows, evidenceRows, additionalEvidenceRows, peopleRows, socialIds, report, importContract, source, d46, namesGaps, snapshotContents, poolHeader, entryHeader, candidateEntryHeader = entryHeader }) {
   const errors = [];
+  if (namesGaps.schema !== "novgorod.game_base.names_gaps_additions.v1" || namesGaps.status !== "candidate" || !Array.isArray(namesGaps.entries) || namesGaps.entries.length !== 0 || !Array.isArray(namesGaps.gap_overrides) || namesGaps.gap_overrides.length !== 12) errors.push("invalid names-gaps authoring scope");
   const expectedPoolHeader = importContract.tables["world_base.region_name_pools"].csv_columns;
   const expectedEntryHeader = importContract.tables["world_base.region_name_pool_entries"].csv_columns;
   if (!sameArray(poolHeader, expectedPoolHeader)) errors.push(`wrong pool header: ${poolHeader.join(",")}`);
   if (!sameArray(entryHeader, expectedEntryHeader)) errors.push(`wrong entry header: ${entryHeader.join(",")}`);
+  if (!sameArray(candidateEntryHeader, expectedEntryHeader)) errors.push(`wrong candidate entry header: ${candidateEntryHeader.join(",")}`);
   if (!importContract.required_parameters?.world_revision_id?.required || importContract.required_parameters.world_revision_id.closed_reference !== "world_base.world_revisions.id") errors.push("missing closed world_revision_id import parameter");
   if (!sameArray(importContract.tables["world_base.region_name_pool_entries"].unique_key ?? [], ["name_pool_id", "name_form", "sex_category", "people_ref"])) errors.push("wrong entry unique key contract");
   if (!importContract.selection_rule?.includes("selection_class=ordinary")) errors.push("missing ordinary-only selection contract");
@@ -96,11 +100,26 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   }
 
   const sourceIds = new Set(sourceRows.map((row) => row.nm_id));
+  const expectedD61CandidateIds = new Set((namesGaps.calendar_rule_review ?? [])
+    .filter((row) => row.status === "new_candidate").map((row) => row.candidate_entry_id));
+  const candidateEntriesById = new Map(candidateEntries.map((row) => [row.id, row]));
+  if (candidateEntriesById.size !== candidateEntries.length) errors.push("duplicate D61 candidate entry id");
+  if (candidateEntries.length !== expectedD61CandidateIds.size
+    || candidateEntries.some((row) => !expectedD61CandidateIds.has(row.id))
+    || entries.some((row) => expectedD61CandidateIds.has(row.id))) errors.push("D61 candidate rows must stay outside the operational pool");
+  for (const row of candidateEntries) {
+    if (row.people_ref !== "pp_korela" || row.sex_category !== "male" && row.sex_category !== "female"
+      || row.selection_class !== "ordinary" || row.derivation !== "calendar_name_gender"
+      || row.derivation_class !== "calendar_name_any_christian" || row.status !== "draft") {
+      errors.push(`${row.id}: invalid isolated D61 candidate row`);
+    }
+  }
   const d46Ids = new Set(d46.name_entries.map((row) => row.id));
   const evidenceLines = new Set(evidenceRows.map((row) => Number(row.source_line?.slice(1))));
   if (evidenceRows.some((row) => !/^L\d+$/.test(row.source_line)) || evidenceLines.size !== evidenceRows.length || evidenceRows.length !== source.evidence_snapshot.expected_rows) errors.push("invalid evidence snapshot source_line set");
   const additionalEvidenceLines = new Map((additionalEvidenceRows ?? []).map((row) => [row.source_line, row]));
   if (additionalEvidenceLines.size !== source.additional_evidence_snapshot.expected_rows || (additionalEvidenceRows ?? []).some((row) => !/^L\d+$/.test(row.source_line))) errors.push("invalid additional evidence snapshot source_line set");
+  const evidenceSnapshotByLine = new Map((evidenceRows ?? []).map((row) => [row.source_line, row]));
   const includedDerivations = derivationRows.filter((row) => !row.exclude_reason);
   const excludedDerivations = derivationRows.filter((row) => row.exclude_reason);
   const authoredDecisionLines = new Set(derivationRows.map((row) => Number(row.evidence_line)));
@@ -112,7 +131,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   const includedLines = new Set(includedDerivations.map((row) => Number(row.evidence_line)));
   if (includedLines.size !== evidenceLines.size || [...includedLines].some((line) => !evidenceLines.has(line)) || [...evidenceLines].some((line) => !includedLines.has(line))) errors.push("snapshot does not exactly match included evidence lines");
   const ids = new Set(), keys = new Set(), entriesByKey = new Map();
-  for (const row of entries) {
+  const operationalEntryIds = new Set(entries.map((row) => row.id));
+  for (const row of [...entries, ...candidateEntries]) {
     if (!row.id || ids.has(row.id)) errors.push(`duplicate or empty id: ${row.id}`);
     ids.add(row.id);
     if (!poolIds.has(row.name_pool_id)) errors.push(`${row.id}: unknown name_pool_id ${row.name_pool_id}`);
@@ -147,7 +167,7 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     const key = selectionKey(row);
     if (keys.has(key)) errors.push(`${row.id}: duplicate selection key ${key}`);
     keys.add(key);
-    entriesByKey.set(key, row);
+    if (operationalEntryIds.has(row.id)) entriesByKey.set(key, row);
   }
 
   for (const sourceRow of sourceRows) {
@@ -160,9 +180,12 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   const additionalEntriesById = new Map((source.additional_entries ?? []).map((row) => [row.id, row]));
   if (additionalEntriesById.size !== (source.additional_entries ?? []).length) errors.push("duplicate additional evidence entry id");
   for (const row of source.additional_entries ?? []) {
-    const support = additionalEvidenceLines.get(row.source_line);
-    const entry = entries.find((item) => item.id === row.id);
-    if (!support || !Object.values(support).join("\n").includes(row.source_form) || row.provenance_ref !== `game-base:names-peoples/sources/book_evidence_m2c_name_components.csv#source_line=${row.source_line}`) errors.push(`${row.id}: unresolved additional evidence source`);
+    const snapshotRows = row.source_snapshot === "evidence" ? evidenceSnapshotByLine : additionalEvidenceLines;
+    const snapshotPath = row.source_snapshot === "evidence" ? source.evidence_snapshot.path : source.additional_evidence_snapshot.path;
+    const support = snapshotRows.get(row.source_line);
+    const isD61Candidate = expectedD61CandidateIds.has(row.id);
+    const entry = (isD61Candidate ? candidateEntries : entries).find((item) => item.id === row.id);
+    if (!support || !Object.values(support).join("\n").includes(row.source_form) || row.provenance_ref !== `game-base:names-peoples/${snapshotPath}#source_line=${row.source_line}`) errors.push(`${row.id}: unresolved additional evidence source`);
     if (!entry || ["name_form", "sex_category", "people_ref", "selection_class", "derivation", "people_derivation", "evidence_period"].some((key) => entry[key] !== row[key]) || !entry.provenance_ref.split(" | ").includes(row.provenance_ref)) errors.push(`${row.id}: additional evidence entry missing or changed`);
   }
   const d46All = [...d46.name_entries, ...d46.name_variants, ...d46.name_gaps, ...d46.component_entries, ...d46.component_updates];
@@ -194,7 +217,8 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     const exclusion = entryExclusions.get(row.id);
     if (exclusion) {
       const gap = report.typed_gaps.find((item) => item.gap_id === exclusion.gap_id);
-      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || exclusion.gap_type !== "people_ref_unresolved" || !gap || gap.reason !== exclusion.reason || gap.provenance_ref !== exclusion.provenance_ref) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
+      const reviewedGap = namesGaps.gap_overrides.find((item) => item.gap_id === exclusion.gap_id);
+      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || exclusion.gap_type !== "people_ref_unresolved" || !gap || gap.reason !== (reviewedGap?.reason ?? exclusion.reason) || gap.provenance_ref !== exclusion.provenance_ref) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
       continue;
     }
     if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${row.id}: D46 name missing from merged entry`);
@@ -227,7 +251,7 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (!row.target_refs?.length || !row.archive_refs?.length) errors.push(`${row.variant_form}: incomplete D46 variant`);
     for (const target of row.target_refs ?? []) {
       const [targetPath, targetId] = target.split("#");
-      if (!targetId || (targetPath.endsWith("personal_names.csv") ? !sourceIds.has(targetId) : targetPath.endsWith("name_pool_entries.csv") ? !ids.has(targetId) : targetPath.endsWith("d46-name-additions.json") ? !d46Ids.has(targetId.replace(/^name-entry=/, "")) : true)) errors.push(`${row.variant_form}: unresolved D46 variant target ${target}`);
+      if (!targetId || (targetPath.endsWith("personal_names.csv") ? !sourceIds.has(targetId) : targetPath.endsWith("name_pool_entries.csv") ? !operationalEntryIds.has(targetId) : targetPath.endsWith("d46-name-additions.json") ? !d46Ids.has(targetId.replace(/^name-entry=/, "")) : true)) errors.push(`${row.variant_form}: unresolved D46 variant target ${target}`);
     }
   }
   const evidenceByLine = new Map(evidenceRows.map((row) => [Number(row.source_line.slice(1)), row]));
@@ -303,6 +327,72 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
   }
   const reportGapIds = new Set(report.typed_gaps.map((gap) => gap.gap_id));
   for (const gap of d46.name_gaps) if (!reportGapIds.has(gap.gap_id)) errors.push(`${gap.name_form}: D46 typed gap missing from report`);
+  const gapOverrideIds = new Set();
+  for (const gap of namesGaps.gap_overrides ?? []) {
+    if (!gap.gap_id || gapOverrideIds.has(gap.gap_id) || !gap.reason || !Array.isArray(gap.evidence_refs) || !gap.evidence_refs.length) errors.push(`${gap.gap_id ?? "unknown"}: invalid names-gaps rationale`);
+    gapOverrideIds.add(gap.gap_id);
+    const reportGap = report.typed_gaps.find((item) => item.gap_id === gap.gap_id);
+    if (!reportGap || reportGap.gap_type !== gap.gap_type || reportGap.people_ref !== gap.people_ref || reportGap.sex_category !== gap.sex_category || reportGap.selection_class !== gap.selection_class || reportGap.reason !== gap.reason || reportGap.v17_status !== gap.v17_status || !reportGap.review_refs?.includes(`game-base:names-peoples/personal_names/names-gaps-additions.json#gap_id=${gap.gap_id}`)) errors.push(`${gap.gap_id}: names-gaps rationale missing from report`);
+    if (gap.v17_status && (gap.v17_status !== "not_applicable" || !["gap_personal_names_fg001_female", "gap_personal_names_fg002_female"].includes(gap.gap_id))) errors.push(`${gap.gap_id}: invalid v17 gap disposition`);
+    if (gap.gap_type === "ordinary_pool_below_10") {
+      const count = entries.filter((row) => row.people_ref === gap.people_ref && row.sex_category === gap.sex_category && row.selection_class === "ordinary").length;
+      if (gap.current_count !== count || gap.required_count !== 10 || count >= 10) errors.push(`${gap.gap_id}: names-gaps ordinary count mismatch`);
+    } else if (gap.gap_type !== "people_ref_unresolved" || gap.name_form !== "Иголанд" || gap.people_ref !== "pp_fg005") errors.push(`${gap.gap_id}: unknown names-gaps type`);
+  }
+  const applicability = namesGaps.v17_applicability;
+  const expectedPeople = ["pp_fg001", "pp_fg002", "pp_korela", "pp_izhora", "pp_chud_est", "pp_smolyane"];
+  const expectedPairs = new Set(expectedPeople.flatMap((peopleRef) => [...SEXES].map((sex) => `${peopleRef}|${sex}`)));
+  const applicabilityPairs = applicability?.pairs ?? [];
+  const applicabilityKeys = applicabilityPairs.map((row) => `${row.people_ref}|${row.sex_category}`);
+  if (!applicability?.scope || !applicability?.runtime_status || applicabilityPairs.length !== expectedPairs.size || new Set(applicabilityKeys).size !== applicabilityKeys.length || applicabilityKeys.some((key) => !expectedPairs.has(key)) || expectedPairs.size !== applicabilityKeys.length) errors.push("invalid names-gaps applicability matrix");
+  for (const row of applicabilityPairs) {
+    if (!['yes', 'no', 'only_outside_slice'].includes(row.needed_in_v17) || !row.basis || !Array.isArray(row.evidence_refs) || !row.evidence_refs.length || !Array.isArray(row.contexts) || (row.needed_in_v17 === "yes" ? !row.contexts.length : row.contexts.length > 0)) errors.push(`${row.people_ref}|${row.sex_category}: invalid names-gaps applicability rationale`);
+  }
+  const calendarRows = namesGaps.calendar_rule_review ?? [];
+  const additionalEntryById = new Map((source.additional_entries ?? []).map((row) => [row.id, row]));
+  const expectedRuleRefs = ["book:849577 §435", "book:857568 §733"];
+  const bookEvidenceByPara = new Map([...evidenceRows, ...(additionalEvidenceRows ?? [])]
+    .map((row) => [`${row.book_id}|${row.para_no}`, row]));
+  if (!Array.isArray(calendarRows) || !calendarRows.length || calendarRows.some((row) => {
+    const sourceRef = /^book:(\d+) §(\d+)$/.exec(row.source_ref ?? "");
+    const quote = String(row.quote ?? "").replace(/^…|…$/gu, "");
+    const sourceEvidence = sourceRef && bookEvidenceByPara.get(`${sourceRef[1]}|${sourceRef[2]}`);
+    const citedEvidence = sourceEvidence && sourceEvidence.quote.includes(quote);
+    const existingEntry = entries.some((entry) => entry.name_form === row.name_form && entry.people_ref === row.people_ref && entry.sex_category === row.sex_category && entry.selection_class === "ordinary");
+    if (row.status === "existing_entry_not_new_proposal") return !row.name_form || !row.people_ref || !row.sex_category || row.basis !== "calendar_rule" || !row.confidence || !row.period_cap || !citedEvidence || !existingEntry;
+    if (row.status !== "new_candidate") return true;
+    const candidate = additionalEntryById.get(row.candidate_entry_id);
+    const sourceLine = /^game-base:names-peoples\/sources\/(book_evidence_m2c_names_b2|book_evidence_m2c_name_components)\.csv#source_line=(L\d+)$/.exec(row.source_evidence_ref ?? "");
+    const snapshotRows = sourceLine?.[1] === "book_evidence_m2c_names_b2" ? evidenceSnapshotByLine : additionalEvidenceLines;
+    const evidenceRow = sourceLine && snapshotRows.get(sourceLine[2]);
+    const expectedPath = candidate?.source_snapshot === "evidence" ? "book_evidence_m2c_names_b2" : "book_evidence_m2c_name_components";
+    return !candidate || candidate.name_form !== row.name_form || candidate.source_form !== row.source_form
+      || candidate.provenance_ref !== row.source_evidence_ref || expectedPath !== sourceLine?.[1]
+      || candidate.people_ref !== "pp_korela" || row.people_ref !== "pp_korela" || candidate.sex_category !== row.sex_category
+      || !["male", "female"].includes(row.sex_category) || candidate.selection_class !== "ordinary"
+      || candidate.derivation_class !== "calendar_name_any_christian" || candidate.derivation !== "calendar_name_gender"
+      || candidate.people_derivation !== "candidate_origin" || candidate.evidence_period !== "c1230"
+      || row.basis !== "calendar_rule" || row.confidence !== "C" || row.period !== "c1230" || row.period_cap !== "1260"
+      || !sameArray((row.rule_basis_refs ?? []).map((ref) => ref.source_ref).filter((ref) => expectedRuleRefs.includes(ref)), expectedRuleRefs)
+      || (row.source_ref === "book:857568 §733" && !row.rule_basis_refs?.some((ref) => ref.source_ref === "book:681281 §419"))
+      || !citedEvidence || !evidenceRow || !Object.values(evidenceRow).join("\n").includes(row.source_form)
+      || candidate.source_line !== sourceLine?.[2] || !quote.includes(row.source_form);
+  })) errors.push("invalid names-gaps calendar-rule review");
+  const calendarCandidates = calendarRows.filter((row) => row.status === "new_candidate");
+  const d61CandidateIds = (source.additional_entries ?? [])
+    .filter((row) => row.people_ref === "pp_korela" && row.derivation_class === "calendar_name_any_christian")
+    .map((row) => row.id).sort();
+  const reviewedCandidateIds = calendarCandidates.map((row) => row.candidate_entry_id);
+  if (new Set(d61CandidateIds).size !== d61CandidateIds.length
+    || new Set(reviewedCandidateIds).size !== reviewedCandidateIds.length
+    || !sameArray([...reviewedCandidateIds].sort(), d61CandidateIds)
+    || !sameArray([...candidateEntriesById.keys()].sort(), d61CandidateIds)) errors.push("invalid D61 calendar candidate ID coverage");
+  if (calendarCandidates.length !== 12 || calendarCandidates.filter((row) => row.sex_category === "male").length !== 4 || calendarCandidates.filter((row) => row.sex_category === "female").length !== 8
+    || report.names_gaps_additions?.candidate_entries !== calendarCandidates.length
+    || report.names_gaps_additions?.candidate_output !== "name_pool_entries_candidates.csv"
+    || report.additional_evidence_accounting?.candidate_entries !== candidateEntries.length
+    || report.additional_evidence_accounting?.operational_entries !== (source.additional_entries ?? []).length - candidateEntries.length
+    || report.names_gaps_additions?.detailed_gap_overrides !== namesGaps.gap_overrides.length || report.names_gaps_additions?.selection_window !== namesGaps.selection_window || JSON.stringify(report.names_gaps_additions?.applicability_review) !== JSON.stringify(applicability) || JSON.stringify(report.names_gaps_additions?.calendar_rule_review) !== JSON.stringify(calendarRows)) errors.push("names-gaps report drift");
   return errors;
 }
 
@@ -341,6 +431,33 @@ function selfTest(base) {
     ["Igoland gap missing", (copy) => { copy.report.typed_gaps = copy.report.typed_gaps.filter((gap) => gap.gap_id !== "gap_personal_names_pp_fg005_igoland_origin"); }, /invalid typed exclusion/],
     ["additional source form absent", (copy) => { copy.source.additional_entries[0].source_form = "не засвидетельствовано"; }, /unresolved additional evidence source/],
     ["additional entry changed", (copy) => { copy.entries.find((row) => row.id === "nov_name_korela_valit_v1").name_form = "Валентин"; }, /additional evidence entry missing or changed/],
+    ["D61 candidate leaked into operational pool", (copy) => { copy.entries.push(copy.candidateEntries[0]); }, /D61 candidate rows must stay outside the operational pool/],
+    ["D61 candidate omitted from candidate CSV", (copy) => { copy.candidateEntries.pop(); }, /D61 candidate rows must stay outside the operational pool/],
+    ["D61 candidate duplicate", (copy) => { copy.candidateEntries.push({ ...copy.candidateEntries[0] }); }, /duplicate D61 candidate entry id/],
+    ["D61 candidate unknown pool", (copy) => { copy.candidateEntries[0].name_pool_id = "missing_pool"; }, /unknown name_pool_id/],
+    ["D61 candidate wrong people pool", (copy) => { copy.candidateEntries[0].name_pool_id = "novgorod_1230_1250_personal_names_v1"; }, /name_pool_id does not match people_ref/],
+    ["D61 candidate weight is not equal", (copy) => { copy.candidateEntries[0].weight = "-1"; }, /weight must be equal to 1/],
+    ["D61 candidate unknown social position", (copy) => { copy.candidateEntries[0].social_position_archetype_id = "social_position_unknown"; }, /unknown social_position_archetype_id/],
+    ["D61 candidate unresolved provenance", (copy) => { copy.candidateEntries[0].provenance_ref = "garbage"; }, /unresolved provenance_ref/],
+    ["names-gaps rationale missing", (copy) => { copy.namesGaps.gap_overrides[0].reason = ""; }, /invalid names-gaps rationale/],
+    ["names-gaps applicability missing", (copy) => { copy.namesGaps.v17_applicability.pairs.pop(); }, /invalid names-gaps applicability matrix/],
+    ["names-gaps calendar citation mismatch", (copy) => { copy.namesGaps.calendar_rule_review[0].source_ref = "book:641352 §1931"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps calendar candidate missing", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").candidate_entry_id = "missing"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps D61 candidate duplicate", (copy) => {
+      const rows = copy.namesGaps.calendar_rule_review;
+      const first = structuredClone(rows.find((row) => row.status === "new_candidate" && row.sex_category === "female"));
+      const duplicateIndex = rows.findIndex((row) => row.status === "new_candidate" && row.sex_category === "female" && row.candidate_entry_id !== first.candidate_entry_id);
+      rows[duplicateIndex] = first;
+      copy.report.names_gaps_additions.calendar_rule_review = structuredClone(rows);
+    }, /invalid D61 calendar candidate ID coverage/],
+    ["names-gaps D61 candidate omitted", (copy) => {
+      const row = copy.namesGaps.calendar_rule_review.find((item) => item.status === "new_candidate" && item.sex_category === "male");
+      row.candidate_entry_id = "nov_name_korela_valit_v1";
+      copy.report.names_gaps_additions.calendar_rule_review = structuredClone(copy.namesGaps.calendar_rule_review);
+    }, /invalid D61 calendar candidate ID coverage/],
+    ["names-gaps calendar confidence drift", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").confidence = "A"; }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps calendar rule basis missing", (copy) => { copy.namesGaps.calendar_rule_review.find((row) => row.status === "new_candidate").rule_basis_refs.pop(); }, /invalid names-gaps calendar-rule review/],
+    ["names-gaps v17 not-applicable report drift", (copy) => { delete copy.report.typed_gaps.find((row) => row.gap_id === "gap_personal_names_fg001_female").v17_status; }, /names-gaps rationale missing from report/],
     ["invalid pool date", (copy) => { copy.pools[0].valid_to = "1229-12-31"; }, /invalid validity interval/],
     ["unknown pool region", (copy) => { copy.pools[0].region_id = "region_unknown"; }, /unknown region_id/],
     ["missing pool provenance", (copy) => { copy.report.pool_provenance_ref = ""; }, /missing pool provenance_ref/],
@@ -419,10 +536,12 @@ function selfTest(base) {
 const importContract = JSON.parse(fs.readFileSync(IMPORT_CONTRACT_PATH, "utf8"));
 const source = JSON.parse(fs.readFileSync(SOURCE_PATH, "utf8"));
 const d46 = JSON.parse(fs.readFileSync(D46_PATH, "utf8"));
+const namesGaps = JSON.parse(fs.readFileSync(NAMES_GAPS_PATH, "utf8"));
 const snapshotContents = Object.fromEntries(Object.values(d46.snapshots).map((snapshot) => [snapshot.path, fs.readFileSync(path.join(GROUP_DIR, snapshot.path), "utf8")]));
 const base = {
   pools: rows(path.join(NAMES_DIR, "name_pools.csv")),
   entries: rows(path.join(NAMES_DIR, "name_pool_entries.csv")),
+  candidateEntries: rows(CANDIDATE_ENTRIES_PATH),
   sourceRows: rows(path.join(NAMES_DIR, "personal_names.csv")),
   derivationRows: parseTsv(fs.readFileSync(path.join(NAMES_DIR, source.evidence_derivations.path), "utf8")),
   evidenceRows: rows(path.join(GROUP_DIR, source.evidence_snapshot.path)),
@@ -433,9 +552,11 @@ const base = {
   importContract,
   source,
   d46,
+  namesGaps,
   snapshotContents,
   poolHeader: header(path.join(NAMES_DIR, "name_pools.csv")),
   entryHeader: header(path.join(NAMES_DIR, "name_pool_entries.csv")),
+  candidateEntryHeader: header(CANDIDATE_ENTRIES_PATH),
 };
 const errors = validate(base);
 if (errors.length) {

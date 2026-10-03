@@ -1,0 +1,13 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data review",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "a0efbc8bc4b6126ded0fc294f34965dafcec1690",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
+  "candidate_sha256": "d6ba8f795f5a84434bc682b23122c77188596bda3e0e3714832c5000c3571dfd",
+  "scope": "All six starts: exact approved G3/G4 ancestry and canonical G5 arrival closure, matching scene template, arrival slot, landscape and candidate natural placement, approved region-period role/occupation pairs, and explicitly editorial free adult player premises. The first four arrivals remain route approaches. The two added Vykhtuy arrivals use distinct approved canonical work_storage and household_cluster G5 scenes with work/storage and habitation templates, respectively; they provide actual scene-family candidates for M2c section 12 tests. All 12 source pins match current bytes. No boat, tackle, active work, inhabitants, dwelling ownership, tools, rights, prior journey, specific knowledge, stock or initial perception is transferred.",
+  "exclusions": "No player body, attributes, appearance, skills, language or clothing applicability approval; no independent natural-placement activation or initial observer/source-state and entity-perception approval; no current scene, water, visibility, sound, stock, inhabitants, property or access assertion; no evidence yet that work or habitation scenes have full functional materialization under M2c section 12; no import, PostgreSQL readback, runtime or release activation.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

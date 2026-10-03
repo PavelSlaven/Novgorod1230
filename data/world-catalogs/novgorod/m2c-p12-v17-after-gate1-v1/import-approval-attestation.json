@@ -1,0 +1,64 @@
+{
+  "schema": "rus.m2c_p12_v17_after_gate1_import_approval_attestation.v1",
+  "status": "approved_transactional_import_readback_only",
+  "decision": "APPROVE_EXACT_P12_V17_IMPORT_AFTER_GATE1_READBACK",
+  "auditor_ref": "/root/p12_after_gate1_approval",
+  "independence_basis": "Independent Sol high review separate from request and data authoring. Recomputed the exact request, Gate1 readback, schema evidence, five manifest and approval, dataset, importer, schema generator, effective DDL, five SQL part, and combined SQL digests; validated all five bundles with zero errors and gaps; compared cross-bundle primary keys and full rows; checked every pinned key against the live post-Gate1 target; ran the exact SQL in one rollback-only transaction and confirmed unchanged counts across all 208 world_base tables. No committed database write.",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "afd13d8b14ab644e8971e96b8322e921df1f8893",
+  "source_head": "4d6a1c1bb67a12965a6874a8951f8ef19da8999c",
+  "request_ref": "data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/request.json",
+  "request_digest": "7967c195f7b88dd287a6309953d5a65648dd70ac5c6275ba5de8881f5d7c8e70",
+  "gate1_readback_ref": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/v17-bootstrap-import-readback-result.json",
+  "gate1_readback_digest": "3d91cee04f1e2b8005f7da490c6c42574e929dc9c398001b50cdcfa2835c942c",
+  "gate1_state_digest": "bffa6ed1ffd3082fb5d126740cc73666b43ee2ac77e517a21fe59801de04ec74",
+  "scope": {
+    "cluster_system_identifier": "7683141184713630856",
+    "database": "novgorod_world_v17",
+    "owner": "world_operator",
+    "schema": "world_base",
+    "operation": "insert_only",
+    "transaction": "single_world_base_transaction",
+    "bundle_order": ["expansion", "npc_mapped", "npc_canonical", "acoustic", "local_movement"],
+    "combined_sql_bytes": 109935306,
+    "combined_sql_sha256": "bfa0b6960fcf545a1ae637c3043f5c15e48f8b94b772a445108abb821974ba48",
+    "distinct_pinned_rows": 12359,
+    "pinned_tables": 53,
+    "current_pinned_keys": { "absent": 12359, "identical": 0, "conflicting": 0 },
+    "post_gate1_baseline": {
+      "world_tables": 208,
+      "seed_tables": 30,
+      "full_seed_table_rows": 42594,
+      "source_records": 200,
+      "world_revisions": 8
+    },
+    "activation": "none"
+  },
+  "review_evidence": [
+    "The Gate1 readback's 42577 seed rows, 183 source_records, and seven world_revisions are scoped closure counts; the same committed transaction added 17 source_records and one target revision outside that closure.",
+    "The live cluster, database, owner, PostgreSQL 16.14, 208 world_base tables, 30 seed table counts, 200 source_records, eight world_revisions, and backup control system identifier match the request. Only source_records exceeds its seed closure count, by 17; all source and revision rows have xmin 4878.",
+    "All 12359 distinct P12 primary keys are absent from the live target, including all 17 P12 source_records; zero identical or conflicting keys. Old world and party database table counts match the fresh-schema evidence, and novgorod_party_v17 has 132 tables and zero parties.",
+    "The five generated SQL parts and their combined 109935306-byte SQL match every pinned SHA-256. The SQL contains no world_base.world_revisions dataset. A rollback-only execution completed without error and preserved counts in all 208 world_base tables."
+  ],
+  "execution_preconditions": [
+    "Immediately before execution, recheck the actual cluster identifier, PostgreSQL version, target database and owner, all 208 world_base tables, exact post-Gate1 baseline, and usable offline backup; stop on drift.",
+    "Recheck every pinned input and exact SQL digest, and classify all 12359 pinned primary keys by full row; require 12359 absent, zero identical, zero conflicting, and no overlap with existing source_records, record_sources, or universal_categories.",
+    "Capture before counts and persisted payloads for every world_base table and old database; run the exact SQL with only final COMMIT changed to ROLLBACK and require zero errors and exact before/after equality.",
+    "Regenerate and rehash the same SQL, commit its single transaction against novgorod_world_v17 only, then read back all 12359 pinned primary keys and full rows, per-table counts, preservation of pre-existing Gate1 rows, and unchanged old databases. Record separate execution evidence."
+  ],
+  "authority": {
+    "import_and_exact_readback_authorized": true,
+    "party_database_operation_authorized": false,
+    "catalog_activation_authorized": false,
+    "runtime_cutover_authorized": false,
+    "production_composition_change_authorized": false,
+    "database_mutated_by_review": false
+  },
+  "excludes": [
+    "novgorod_party_v17 writes or migration",
+    "novgorod_world and novgorod_party writes",
+    "catalog registration or activation",
+    "runtime or release selection",
+    "production composition changes"
+  ]
+}

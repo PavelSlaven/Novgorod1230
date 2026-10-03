@@ -1,6 +1,12 @@
 import { planFiniteResourceDecrement, resolveFiniteSourceInitialAmount } from
   '@rus/items-property/finite-resource-transition';
 
+export function resolveFiniteSourceAvailability({ source, access_decision } = {}) {
+  if (access_decision !== 'allow') return 'authority_required';
+  if (source == null || source.quantity <= 0) return 'absent';
+  return null;
+}
+
 // Runtime adapter: policy proves source applicability; @rus/items-property
 // remains the sole owner of finite decrement arithmetic.
 export function finiteSourceTransition({ profile, item,

@@ -1,0 +1,421 @@
+{
+  "schema": "rus.live_world_runtime.o1_applicability_selector_candidate.v1",
+  "selector_id": "novgorod_v17_o1_applicability_4a5_candidate_001",
+  "status": "candidate_only_pending_review",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "runtime_input": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "release_profile_id": null,
+    "release_profile_pin": null,
+    "note": "Exact next-world release/profile pin is assigned to world-rev-next."
+  },
+  "applicability": {
+    "match_rule_ref_by": [
+      "rule_id",
+      "rule_version"
+    ],
+    "match_place_by": [
+      "g1_ref",
+      "g4_ref",
+      "canonical_g5_ref",
+      "place_family_ref"
+    ],
+    "selectors": [
+      {
+        "scope_kind": "canonical_place_family",
+        "g1_ref": "gn_nov_g1_xp017_yp026",
+        "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality@1",
+        "canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster@1",
+        "place_family_ref": "pf_peasant_homestead@1",
+        "source_pf_id": "peasant_homestead"
+      },
+      {
+        "scope_kind": "canonical_place_family",
+        "g1_ref": "gn_nov_g1_xp017_yp026",
+        "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality@1",
+        "canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace@1",
+        "place_family_ref": "pf_peasant_homestead@1",
+        "source_pf_id": "peasant_homestead"
+      },
+      {
+        "scope_kind": "canonical_place_family",
+        "g1_ref": "gn_nov_g1_xp017_yp026",
+        "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1",
+        "canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace@1",
+        "place_family_ref": "pf_peasant_homestead@1",
+        "source_pf_id": "peasant_homestead"
+      },
+      {
+        "scope_kind": "canonical_place_family",
+        "g1_ref": "gn_nov_g1_xp017_yp026",
+        "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center@1",
+        "canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone@1",
+        "place_family_ref": "pf_peasant_homestead@1",
+        "source_pf_id": "peasant_homestead"
+      }
+    ],
+    "rule_refs": [
+      {
+        "rule_id": "pr_0927952750dbb336",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_0e0be6c1a835a1fb",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_14e204ff07e8c848",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_1b1d2e6d1622a471",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_1cf90b782effc83f",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_1d74054e7a56924f",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_1ea1130e807a7799",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_2341bcd6a3d3d648",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_25618d5473c7f809",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_2a27ae2ff5d3547f",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_2e4554fa45e30249",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_31bb48d7e23237db",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_31c34bb0fbc2f973",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_324f66380a3ac4ef",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_33dbe944cad6306b",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_33fc66815e7b904e",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_3b69bc5d887f0d94",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_40ea882ed08e2986",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_483c287dd6e73c60",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_4a64ad3f8eeb5896",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_4e1460e1819958b4",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_51512b54d107a3d7",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_558f8a68fa018bb9",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_5988d9266ec840d2",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_5becd0d3b5f7b12b",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_5e1bd21d12ca9d93",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_5efb361215b9735c",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_60054a3a805e2024",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_6173d732a4eca347",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_64ea5a128fb29f3a",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_650b25fb4980c0d5",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_65284c79a14838f3",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_666699806d22311e",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_67ae629fa56a23b5",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_69db256e8e7cb2fe",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_69e8c51d0432bfc7",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_6a06468b0be2b770",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_6b3aed4a3cdde2cf",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_6cea9056b789d1db",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_736e1dcf90cf4be7",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_778a18a1b37b42b6",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_79a7d4683e48ff1c",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_804e4033a1f92cee",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_87c033bf7b55a054",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_8ac3452938c181e1",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_8e0e2155008ea409",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_913f0469648374bf",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_a0b29901788e92f3",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_a0fed4e417730a37",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_a28436900ad90167",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_a98fe1200ee65353",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_aa47aec36a9908dd",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_aaa1e44da2ef98bc",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_ad5c9bfa09dcaa25",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_b0d8aa39c8fedace",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_b65784224e5d6278",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_beebe70fcabd3fad",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_c5fced1141ce47ad",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_ca6485de01298c62",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_cbef94868112aa3b",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_d1a3c38146a9b158",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_d338024606323e30",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_d4b2f1f9bafb2b0f",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_dc29d7d9a216fc97",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_e4d8d21a896396de",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_e58d16429a35bc8d",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_ebc47f9329ad0665",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_ec8eb5b73cc1eefe",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_f1910c9dd6b9c22b",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_f3c9ea88351a712c",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_f45b8dbbdcc1f5d6",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_f67730487ca5b052",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_fa9527accf6d382b",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_fc067605af830d0c",
+        "rule_version": 1
+      },
+      {
+        "rule_id": "pr_fc849544932d1ecd",
+        "rule_version": 1
+      }
+    ],
+    "semantics": {
+      "require_both_exact_rule_ref_and_exact_place_tuple": true,
+      "pf_only_does_not_establish_o1_applicability": true,
+      "no_fallback_to_other_pf_rules": true,
+      "nonmember_rules_keep_existing_generic_presence_behavior": true,
+      "missing_ambiguous_stale_or_mismatched_o1_selector": "fail_closed_for_o1_without_broadening_generic_presence",
+      "out_of_scope_bindings": "do_not_globally_reject_generic_pf_presence; exact O1 behavior outside listed tuples requires reviewer decision"
+    }
+  },
+  "source_pins": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-4a5-candidate.json",
+      "sha256": "615f443f9aeac2e09de1c6ec803bcc591009818a4ab58af4572bd28d1207cbd3",
+      "use": "source of four exact G1/G4/canonical-G5/PF selector tuples; candidate source, not runtime approval"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-projection-4a5-candidate.json",
+      "sha256": "5f10be71175e190f9fb3f3fa455f97f54215cf23eea260ffaeab8ac2458aabc4",
+      "use": "source of proposed 75 O1 rule IDs; candidate-only rule membership"
+    },
+    {
+      "path": "o1-presence-rows.json",
+      "sha256": "98bbfab43118cee345d90a1ba6f86bb2aeaffe753ca978fdd0b4e45c9044b63b",
+      "use": "exact rule_id/rule_version join against current pinned M2c presence rows"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "47396ee6ce902caa0b26041275fb231d3dc6a0d74716c88aacf8bf7bdaa4aca8",
+      "use": "current candidate cohort identity only"
+    },
+    {
+      "path": "/srv/novgorod-work/fleet/tasks/ap-o1-fields/out/ap-o1-fields.json",
+      "sha256": "5f5a27d1f3d6ea453ad8598e4737d3e799760148e1e9516e47e2f71138d13b58",
+      "use": "ap-o1-fields APPROVED_WITH_LIMITS source; does not approve production applicability or 75-rule membership"
+    },
+    {
+      "path": "/srv/novgorod-work/fleet/tasks/ap-o1-map/out/ap-o1-map.json",
+      "sha256": "7dfbf4d95fc84aacd4f33bb4288a0f57a560c7cc7c30dc075fae8c0cb0a3462b",
+      "use": "ap-o1-map source; approves 12 item identity mappings only, not O1 applicability"
+    }
+  ],
+  "approval_basis": [
+    "The four source selector tuples were bounded in ap-o1-fields; production applicability still requires this separate release-profile selector approval.",
+    "The 75 rule refs are proposed membership from the 4a5 candidate projection. Their O1 membership and values are not approved by the selector artifact.",
+    "The current M2c presence rows are PF-scoped. This artifact does not alter, duplicate, or reclassify those rows."
+  ],
+  "unresolved_approvals": [
+    "Approve or edit exact O1 rule-ref membership and its relationship to final approved O1 values.",
+    "Approve the exact four-place applicability tuples, target revision, release profile schema/version, and final release pin.",
+    "Decide O1 behavior on same-PF places outside the four tuples without changing generic PF presence behavior.",
+    "Approve missing, ambiguous, stale, or mismatched selector behavior and its diagnostic contract before runtime wiring."
+  ],
+  "package_boundary": {
+    "p12_dataset": false,
+    "listed_in_manifest_datasets": false,
+    "listed_in_import_request_datasets": false,
+    "changes_to_existing_world_base_rows": false,
+    "candidate_only_for_world_rev_next": true
+  }
+}

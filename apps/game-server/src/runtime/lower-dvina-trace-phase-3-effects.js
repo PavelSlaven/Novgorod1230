@@ -21,10 +21,37 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
       );
     }
     if (input.consequence?.phase3_kind === 'movement') {
+      if (input.consequence.position_transition != null) {
+        if (!['@rus/movement-routes',
+          '@rus/turn/spatial-v3-site-connection-traversal']
+          .includes(input.consequence.position_transition.owner)
+            || input.consequence.movement?.traversal != null
+            || input.consequence.duration_minutes !== 0
+            || input.exact_elapsed?.exact_minutes?.numerator !== '0'
+            || input.exact_elapsed?.exact_minutes?.denominator !== '1') {
+          throw Object.assign(
+            new Error('Local movement must leave the party clock unchanged.'),
+            { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' }
+          );
+        }
+        return {
+          clock_before: structuredClone(input.clock_before),
+          clock_after: structuredClone(input.clock_before),
+          exact_elapsed: input.exact_elapsed,
+          nearest_boundary: null,
+          boundary_trace: {
+            owner: 'movement_route_owner',
+            policy: 'movement_route_owner',
+            evaluated_candidate_count: candidates.length,
+            processed_boundary_ids: []
+          }
+        };
+      }
       const traversal = input.consequence.movement?.traversal;
       const clockUpdate = traversal?.clock_update;
       const result = traversal?.interval_result;
-      if (result?.clock_commit_mode !== 'direct_party_clock'
+      if (clockUpdate?.world_time_after == null
+          || result?.clock_commit_mode !== 'direct_party_clock'
           || result?.actual_time_numerator
             !== input.exact_elapsed?.exact_minutes?.numerator
           || result?.actual_time_denominator
@@ -94,6 +121,9 @@ export function createTracePhase3VisibleProjector({
         return phase2Projector.project(input);
       }
       if (consequence.phase3_kind === 'movement') {
+        if (consequence.position_transition?.owner === '@rus/movement-routes') {
+          return structuredClone(input.retrieved_state.current_visible_context);
+        }
         if (scenePresentation == null) {
           return withPhase3Conversation({ input, contracts,
             movement: historicalMovementProjection(contracts,

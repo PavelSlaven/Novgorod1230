@@ -1,0 +1,113 @@
+{
+  "schema_version": "rus.pr17.item_container_stage3c_result.v2",
+  "status": "imported_exact_readback_verified",
+  "candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28",
+  "approval_request_digest": "06acf781d0a2c7eb3deba1884f4d1d004e50676ff1d95cd089498d87a79557d9",
+  "approval_attestation_digest": "67baf3e92a2aacde2566a60c13e5a3a2410e3544549f096684d473d8588f18f8",
+  "approval_amendment_attestation_digest": "a4800a5cd2d79ac66919e3d4a3c1c74346bf3911f7f433039b311dbe25e2de9e",
+  "promotion_manifest_digest": "2818932121b2b65baf3611bb33c15b8bb996bbd52dfa650fb0ff9f2984ce0293",
+  "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+  "target_catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+  "rollback": "pass",
+  "repeat_readback_status": "exact_match",
+  "first_state_digest": "bffa6ed1ffd3082fb5d126740cc73666b43ee2ac77e517a21fe59801de04ec74",
+  "repeated_state_digest": "bffa6ed1ffd3082fb5d126740cc73666b43ee2ac77e517a21fe59801de04ec74",
+  "first_state": {
+    "target_revision_status": "approved",
+    "target_catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+    "parent_revision_unchanged": true,
+    "approved_g4_count": 9,
+    "approved_item_template_count": 102,
+    "approved_container_template_count": 18,
+    "gate1_owner_readback": {
+      "request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3",
+      "authoring_attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061",
+      "source_archive_digest": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9",
+      "source_seed_digest": "69833f0a829dd8623dcc128f07f31a6101d2fa502c3b0ba6a6ccd02d22b9e731",
+      "seed_table_count": 30,
+      "seed_row_count": 42577,
+      "seed_table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434",
+      "seed_closure_attestation_digest": "19fa5e4ee8f7663bfc354b7d67498366f9d111021fb8d9b235645e7bfb474d89",
+      "table_counts": {
+        "place_templates": 64,
+        "region_place_templates": 39,
+        "region_social_roles": 71,
+        "graph_nodes": 11359,
+        "graph_edges": 30248
+      },
+      "world_revision_count": 7,
+      "world_revisions_digest": "539c7191d85397403566e3562c9ce6ff7086a685dc291d93507512cb8c61b932",
+      "approved_g4_topology_digest": "b07f487c44269adaf09ae0e60b541c1aec9f9187e7b2800dfd6664a2c010b3f6",
+      "approved_parent_source_digest": "254b3b0a864a1479c249129bf38d222bab3b0b684d79dd9e582ff6cc3524ead9",
+      "approved_parent_source_count": 2,
+      "reconciliation_attestation_digest": "d8fa62d4b7783c95ce3c6ebfede7f7e80ef1902fd8de57b1aee83adb3080d1f7",
+      "compatible_worlds": [
+        {
+          "release_id": "spatial-v3-production-v5",
+          "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+          "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad"
+        },
+        {
+          "release_id": "spatial-v3-production-v6",
+          "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+          "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+        }
+      ],
+      "activation_event_count": 0,
+      "runtime_item_creation_authorized": false
+    },
+    "activation_performed": false,
+    "existing_parties_rematerialized": false
+  },
+  "repeated_state": {
+    "target_revision_status": "approved",
+    "target_catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+    "parent_revision_unchanged": true,
+    "approved_g4_count": 9,
+    "approved_item_template_count": 102,
+    "approved_container_template_count": 18,
+    "gate1_owner_readback": {
+      "request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3",
+      "authoring_attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061",
+      "source_archive_digest": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9",
+      "source_seed_digest": "69833f0a829dd8623dcc128f07f31a6101d2fa502c3b0ba6a6ccd02d22b9e731",
+      "seed_table_count": 30,
+      "seed_row_count": 42577,
+      "seed_table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434",
+      "seed_closure_attestation_digest": "19fa5e4ee8f7663bfc354b7d67498366f9d111021fb8d9b235645e7bfb474d89",
+      "table_counts": {
+        "place_templates": 64,
+        "region_place_templates": 39,
+        "region_social_roles": 71,
+        "graph_nodes": 11359,
+        "graph_edges": 30248
+      },
+      "world_revision_count": 7,
+      "world_revisions_digest": "539c7191d85397403566e3562c9ce6ff7086a685dc291d93507512cb8c61b932",
+      "approved_g4_topology_digest": "b07f487c44269adaf09ae0e60b541c1aec9f9187e7b2800dfd6664a2c010b3f6",
+      "approved_parent_source_digest": "254b3b0a864a1479c249129bf38d222bab3b0b684d79dd9e582ff6cc3524ead9",
+      "approved_parent_source_count": 2,
+      "reconciliation_attestation_digest": "d8fa62d4b7783c95ce3c6ebfede7f7e80ef1902fd8de57b1aee83adb3080d1f7",
+      "compatible_worlds": [
+        {
+          "release_id": "spatial-v3-production-v5",
+          "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+          "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad"
+        },
+        {
+          "release_id": "spatial-v3-production-v6",
+          "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+          "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+        }
+      ],
+      "activation_event_count": 0,
+      "runtime_item_creation_authorized": false
+    },
+    "activation_performed": false,
+    "existing_parties_rematerialized": false
+  },
+  "activation_performed": false,
+  "production_activation": false,
+  "existing_parties_rematerialized": false,
+  "runtime_item_creation_authorized": false
+}

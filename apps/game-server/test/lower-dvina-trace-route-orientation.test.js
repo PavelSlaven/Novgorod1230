@@ -38,6 +38,24 @@ test('current initial route reaches safe context and panel without disclosing it
   }
 });
 
+test('occupied local edge in visible context carries its status onto the route panel entry', () => {
+  const state = fixture({ scenarioBundle: historical, materializationBundle: historical }).state;
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state, scenePresentation });
+  const visibleContext = { ...current.current_visible_context,
+    visible_objects: [...current.current_visible_context.visible_objects,
+      { entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge:occupied' },
+        display_label: 'Проход 1', recognition: 'known', visible_status: 'проход занят' }] };
+  const screen = projectLowerDvinaTraceScreenPanels({ payload: state,
+    screen: { visible_context: visibleContext }, presentation: { scenePresentation } });
+  const options = screen.panels.route.data.movement.options;
+  // Same text the actor would submit as the command's visible label — the panel
+  // and the operation must never disagree on what is "the exact displayed label".
+  assert.deepEqual(options.find((option) => option.label.startsWith('Проход 1')),
+    { label: 'Проход 1 (проход занят)', knowledge_state: 'known', status: 'occupied' });
+  assert.ok(options.some((option) => !('status' in option)),
+    'the scripted route option stays unaffected');
+});
+
 test('unseen route uses source perception, then remembered destination, with no stale route after movement', () => {
   const presentation = { route_presentations: [{ route_ref: 'route:unseen', from_ref: 'bank',
     to_ref: 'mill', label: 'Дорога к мельнице', perceived_label: 'Тропинка между кустами',

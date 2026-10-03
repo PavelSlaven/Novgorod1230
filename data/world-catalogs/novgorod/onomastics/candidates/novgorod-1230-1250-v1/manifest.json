@@ -1,0 +1,12 @@
+{
+  "schema_version": "rus.onomastics.candidate_manifest.v1",
+  "candidate_id": "novgorod-1230-1250-onomastics-v1",
+  "version": "1.0.0-candidate.1",
+  "status": "candidate_not_approved",
+  "import_enabled": false,
+  "activation_enabled": false,
+  "source_input": "external user research; corrections captured in AUDIT_CORRECTIONS.md",
+  "generated_files": ["candidate.json", "source-records.json", "record-sources.json", "approval-request.json", "independent-authoring-attestation.json"],
+  "commands": ["node generator.mjs", "node validate.mjs", "node test.mjs"],
+  "runtime_changes": []
+}

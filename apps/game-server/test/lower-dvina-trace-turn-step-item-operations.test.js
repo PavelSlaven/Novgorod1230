@@ -60,6 +60,24 @@ test('ambient adapter preserves semantic intent for code-owned source selection'
   assert.equal(received.portion_profile_ref, 'committed');
 });
 
+test('actor-neutral direct entity handler reaches ordinary admission without a guard', async () => {
+  const state = initializeRuntimeState({ actor_id: 'mikula' });
+  const handlers = createItemOperationHandlers(state, {
+    ordinaryResultPolicy: { ...ordinaryResultPolicy, candidates: [
+      { ...ordinaryResultPolicy.candidates[0], name: 'механизм',
+        approved_fact_texts: ['павлина'] }
+    ] }
+  });
+  const result = await handlers.create_entity(execution(createSand({
+    name: 'механизм', facts: [{ temp_ref: 'blocked_fact', text: 'павлина' }]
+  })));
+  assert.equal(result.write_fragments[0].target, 'party_items');
+  assert.equal(state.entities.size, 1,
+    'the ordinary result is admitted to the runtime draft');
+  assert.equal(state.aliases.has('new_entity_1'), true);
+  assert.equal(state.aliases.has('blocked_fact'), true);
+});
+
 test('inside uses a visible open container and code-owned capacity', () => {
   const options = {
     ordinaryResultPolicy,
@@ -238,6 +256,28 @@ test('attached topology rejects cycles and remote prepared destinations', async 
     entity_ref: 'new_entity_1',
     placement: { relation: 'located_at', target_ref: 'camp' }
   }, second.working_projection)), { code: 'ITEM_RUNTIME_LOCATION_NOT_CURRENT' });
+});
+
+test('ground placement uses exact current scene position', () => {
+  const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
+    ordinaryResultPolicy
+  });
+  const current = projection({
+    position: { location_ref: 'scene-template', position_id: 'position:arrival' }
+  });
+  const result = handlers.create_entity(execution(createSand({
+    origin: { kind: 'ambient_ordinary', source_refs: ['scene-template'] },
+    placement: { relation: 'located_at', target_ref: 'position:arrival' }
+  }), current));
+  assert.deepEqual(result.working_projection.items.at(-1).placement,
+    { scene_position_id: 'position:arrival' });
+  assert.deepEqual(result.write_fragments[0].value.payload.placement,
+    { scene_position_id: 'position:arrival' });
+  assert.throws(() => handlers.create_entity(execution(createSand({
+    temp_ref: 'new_entity_2',
+    origin: { kind: 'ambient_ordinary', source_refs: ['scene-template'] },
+    placement: { relation: 'located_at', target_ref: 'position:elsewhere' }
+  }), current)), { code: 'TRACE_TURN_STEP_REF_NOT_CURRENT' });
 });
 
 test('retired temp refs remain reserved for the submit-scoped step loop', () => {

@@ -1,0 +1,933 @@
+[
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "id": "m2c_npc_regional_novgorod_land_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "payload": {
+      "allowed_role_refs": [
+        "nov_role_boatman",
+        "nov_role_fisher",
+        "nov_role_forest_promyslovik",
+        "nov_role_guide",
+        "nov_role_hunter",
+        "nov_role_merchant_guest",
+        "nov_role_servant",
+        "nov_role_trader"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_boatman",
+        "nov_occ_fisher",
+        "nov_occ_forest_worker",
+        "nov_occ_household_servant",
+        "nov_occ_hunter_trapper",
+        "nov_occ_local_trader",
+        "nov_occ_long_distance_merchant",
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Новгородская земля",
+        "kind": "regional_affiliation",
+        "source_refs": [
+          "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Approved regional role basis; an individual affiliation is proposed gameplay reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "id": "m2c_npc_regional_novgorod_land_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "schema": "rus.npc_regional_context_profile.v1",
+      "status": "approved"
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "direct_source_context_with_explicit_analogical_gameplay_transfer",
+    "confidence": "low",
+    "canonical_digest": "451a94a7eae7dc017a0c80ce23e6c007396a1950026a63ca3f73f7a8bc076663"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "id": "m2c_npc_regional_gotland_guest_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "payload": {
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Готланд",
+        "kind": "guest_origin",
+        "source_refs": [
+          "m2c_npc_treaty_gotland_german_cities_1191_1192"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Gotland merchants are directly attested for Novgorod; presence in target generated G5 is analogical reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "id": "m2c_npc_regional_gotland_guest_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "schema": "rus.npc_regional_context_profile.v1",
+      "status": "approved"
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "direct_source_context_with_explicit_analogical_gameplay_transfer",
+    "confidence": "low",
+    "canonical_digest": "47e34eb548c99eba3694024fe10acaf16f91c52b1441dbe853257a3799bc7769"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "id": "m2c_npc_regional_german_baltic_guest_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "payload": {
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Немецкие города Балтийского торгового круга",
+        "kind": "guest_origin",
+        "source_refs": [
+          "m2c_npc_treaty_gotland_german_cities_1191_1192"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "German merchant contacts are directly attested; Baltic denotes trading geography, not Baltic ethnicity."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "id": "m2c_npc_regional_german_baltic_guest_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "schema": "rus.npc_regional_context_profile.v1",
+      "status": "approved"
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "direct_source_context_with_explicit_analogical_gameplay_transfer",
+    "confidence": "low",
+    "canonical_digest": "7f66bfc42b9afc8a5fdb9af9e8dc281aa155ca06f076339a1dd28afa8b9f8d84"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "id": "m2c_npc_regional_karelian_traveler_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "payload": {
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Корела",
+        "kind": "traveler_origin",
+        "source_refs": [
+          "m2c_npc_npl_younger_1228"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Karelians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "id": "m2c_npc_regional_karelian_traveler_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "schema": "rus.npc_regional_context_profile.v1",
+      "status": "approved"
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "direct_source_context_with_explicit_analogical_gameplay_transfer",
+    "confidence": "low",
+    "canonical_digest": "a5727281b00d16fa45c4653aabcc18bcaaaa0a2245866b6edf987ba067e07e94"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "id": "m2c_npc_regional_ingrian_traveler_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "payload": {
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Ижора",
+        "kind": "traveler_origin",
+        "source_refs": [
+          "m2c_npc_npl_younger_1228"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Izhorians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "id": "m2c_npc_regional_ingrian_traveler_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "schema": "rus.npc_regional_context_profile.v1",
+      "status": "approved"
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "direct_source_context_with_explicit_analogical_gameplay_transfer",
+    "confidence": "low",
+    "canonical_digest": "bbd782f2961f482b1625b4438c3ef7bf156af817529837e7eca4918bac6d4eec"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "payload": {
+      "allowed_role_refs": [
+        "nov_role_forest_promyslovik",
+        "nov_role_hunter",
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_forest_worker",
+        "nov_occ_hunter_trapper",
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+            "version": 1,
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+          },
+          "canonical_g5_ref": {
+            "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+            "version": 1,
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+          }
+        }
+      ],
+      "origin": {
+        "label": "Новгородская земля",
+        "kind": "regional_affiliation",
+        "source_refs": [
+          "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Approved regional role basis; an individual affiliation is proposed gameplay reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "schema": "rus.npc_regional_context_profile.v1",
+      "status": "approved",
+      "canonical_initial_snapshot_only": true
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "6b8a6a3bd5930d33a5ad04dc1ed92070278d7dac069488fab22dd272f95c67e1"
+  }
+]

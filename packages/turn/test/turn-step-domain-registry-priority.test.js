@@ -208,6 +208,19 @@ test('S1 scope admits visible refs', () => {
   const committed={...playerSafeState,visible_objects:[{entity_ref:{entity_kind:'spatial_local_reference',entity_id:'s1-local:resolved'},display_label:'Коряга',recognition:'recognized',visible_status:'замечен'}]};
   assert.equal(isSpatialSemanticRemainderInScope({ operation: { ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), true);
   assert.equal(isSpatialSemanticRemainderInScope({ operation: { ...operation, discovery_kind: 'inspect', target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), true);
+  const inside = structuredClone(committed);
+  inside.visible_objects[0].visible_status = 'внутри';
+  const localMovement = { op: 'request_movement', actor_ref: 'party-1',
+    movement_kind: 'local', target_ref: 's1-local:resolved' };
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: localMovement,
+    playerSafeState: inside }), true);
+  inside.visible_objects[0].visible_status = 'скрыт';
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: localMovement,
+    playerSafeState: inside }), false);
+  inside.visible_objects[0].visible_status = 'внутри';
+  inside.visible_objects[0].recognition = 'unrecognized';
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: localMovement,
+    playerSafeState: inside }), false);
   const hostileExtra = structuredClone(committed);
   hostileExtra.visible_objects[0].extra = true;
   assert.equal(isSpatialSemanticRemainderInScope({ operation: { ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: hostileExtra }), false);

@@ -30,7 +30,6 @@ test('factual presentation migration preserves predecessor checks and accepts on
   ]);
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);
-  await new Promise((resolve) => setTimeout(resolve, 700));
   const port = Number(
     docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
   );

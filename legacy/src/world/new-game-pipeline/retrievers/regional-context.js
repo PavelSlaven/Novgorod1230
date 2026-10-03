@@ -134,7 +134,8 @@ export async function retrieveRegionalContextPackage(input = {}, deps = {}) {
       LIMIT $3
     `, [frame.region_id, statuses, limit]),
     many(db, `
-      SELECT id, region_id, title, slug, occupation_group, summary, allowed_social_roles,
+      SELECT id, region_id, title, slug, occupation_group,
+             occupation_archetype_id, summary, allowed_social_roles,
              forbidden_social_roles, typical_status, typical_wealth, typical_gender_age_rules,
              required_location_types, required_economy_types, required_tools, required_materials,
              produced_goods, services_provided, seasonality, work_rhythm, income_logic,
@@ -952,6 +953,7 @@ function mapOccupation(row) {
     title: row.title,
     summary: row.summary,
     occupation_group: row.occupation_group,
+    occupation_archetype_id: row.occupation_archetype_id,
     required_social_role_ids: asArray(row.allowed_social_roles),
     allowed_social_roles: asArray(row.allowed_social_roles),
     typical_place_template_ids: asArray(row.required_location_types),

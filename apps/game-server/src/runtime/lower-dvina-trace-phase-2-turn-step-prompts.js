@@ -127,6 +127,15 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
       discovery_kind: 'look', target_refs: ['<copy spatial_semantic.position_ref from request>'],
       query: '<brief look query>' }], check: null
   },
+  local_spatial_movement: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_movement',
+      actor_ref: '<copy current actor ref from request>',
+      target_ref: '<copy one visible spatial_local_reference entity_id>',
+      movement_kind: 'local' }], check: null
+  },
   local_world_process_start: {
     resolution: 'domain_request',
     operation_choice: '<select matching supplied choice_id>', check: null

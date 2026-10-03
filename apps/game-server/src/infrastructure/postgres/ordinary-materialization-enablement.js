@@ -1,4 +1,4 @@
-import { canonicalDigest, assertAndNormalizeOrdinaryAggregate } from '@rus/materialization';
+import { canonicalDigest, assertAndNormalizeOrdinaryAggregate, isO1PresenceRecord } from '@rus/materialization';
 import { assertOrdinaryMaterializationRequestV1 } from '@rus/contracts/ordinary-materialization-v1';
 import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
 
@@ -77,7 +77,9 @@ function normalizeEnablement(row, scopeRef) {
     remaining_identity_budget: aggregate.seeded
       ? objective.technical_limits.max_new_entities : 0,
     background_groups: aggregate.background_groups.map(({ group_ref }) => group_ref),
-    presence_resolutions: aggregate.presence_resolutions.map(({ resolution_ref }) => resolution_ref),
+    presence_resolutions: aggregate.presence_resolutions
+      .filter(isO1PresenceRecord)
+      .map(({ resolution_ref }) => resolution_ref),
     closed_observation_scopes: aggregate.closed_observation_scopes.map(({ coverage_key }) => coverage_key)
   };
   try {

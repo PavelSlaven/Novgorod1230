@@ -20,14 +20,19 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
   const unresolvedOrdinary = error?.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED';
   const providerFailure = error?.llm_provider_failure === true
     ? publicProviderFailure(error?.code) : null;
-  const status = unresolvedOrdinary ? 409
-    : providerFailure ? 503
+  const catalogFailure = ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
+    'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(error?.code)
+    ? { code: 'WORLD_CATALOG_PIN_INVALID',
+        message: 'Данные мира этой партии недоступны.' } : null;
+  const publicTurnFailure = publicTurnFailureFor(error);
+  const status = unresolvedOrdinary || publicTurnFailure ? 409
+    : providerFailure || catalogFailure ? 503
       : Number.isInteger(error?.status) ? error.status : 500;
-  const internal = !providerFailure && (unresolvedOrdinary || status >= 500
+  const internal = !providerFailure && !catalogFailure && !publicTurnFailure && (unresolvedOrdinary || status >= 500
     || error?.public_exposure === 'internal');
-  const code = providerFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+  const code = publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
     : text(error?.code) || 'REQUEST_FAILED');
-  const message = providerFailure?.message ?? (internal
+  const message = publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
     ? 'Действие временно недоступно. Попробуйте ещё раз.'
     : text(error?.message) || 'Request failed.');
   return Object.freeze({
@@ -38,10 +43,32 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
       ok: false,
       request_id: requestId,
       error: Object.freeze({ code, message,
-        ...(error?.turn_commit_status === 'not_started'
-          ? { turn_commit_status: 'not_started' } : {}) })
+        ...(code === 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
+          && error?.details?.topology_status === 'topology_committed'
+          && error?.details?.movement_status === 'movement_denied'
+          ? { turn_commit_status: 'topology_committed',
+              topology_status: 'topology_committed',
+              movement_status: 'movement_denied',
+              actor_moved: false, time_advanced: false }
+          : error?.turn_commit_status === 'not_started'
+            ? { turn_commit_status: 'not_started' } : {}) })
     })
   });
+}
+
+// "Ход не сохранён" is true only when the turn owner reports nothing was committed.
+function publicTurnFailureFor(error) {
+  if (error?.turn_commit_status !== 'not_started') return null;
+  const code = error.code;
+  if (code === 'TURN_STEP_PLAN_INVALID') return {
+    code: 'TURN_NOT_SAVED',
+    message: 'Ход не сохранён. Попробуйте сформулировать действие иначе.'
+  };
+  if (code === 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP') return {
+    code: 'WORLD_ACTION_UNAVAILABLE',
+    message: 'Ход не сохранён. Для этого действия не хватает данных мира.'
+  };
+  return null;
 }
 
 function publicProviderFailure(code) {

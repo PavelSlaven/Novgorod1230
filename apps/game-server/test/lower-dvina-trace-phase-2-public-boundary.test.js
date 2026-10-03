@@ -13,6 +13,11 @@ import { phase4PendingScreen } from
 import { phase5PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-5-writes.js';
 import { createGameHttpServer, listen } from '../src/index.js';
+import { projectSharedSemanticExchange } from
+  '../src/infrastructure/postgres/lower-dvina-trace-conversation-shared-projection.js';
+import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { prepareG4NaturalScenePerceptionInput } from '../src/runtime/g4-natural-perception.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 
 test('HTTP error never exposes an internal partial workflow checkpoint', async (t) => {
   const root = { submitTurn: async () => {
@@ -98,6 +103,157 @@ test('revision 28 initial scene uses the authored presentation, not environment 
   assert.equal(JSON.stringify(current).match(/cold|wet|exposed/), null);
 });
 
+test('initial scene projects persisted items and NPC appearance/equipment', () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party-rich', main_prose: 'Старт.',
+    visible_context: { place: 'стан', calendar: 'утро',
+      environment: { facts: ['wet'] } } };
+  const appearance = { build: 'average', skin_tone: 'light',
+    face_shape: 'oval', hair: { color: 'dark_brown', length: 'short',
+      style: 'straight', facial_hair: 'none' }, eyes: { color: 'gray' } };
+  const current = phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState: {
+      actor_id: 'player', position: { g5_anchor_id: 'anchor' },
+      environment_snapshot: { schema: 'rus.approved_initial_environment.v1',
+        season: 'summer', day_part: 'daylight', light_state: 'daylight',
+        weather_state: { weather_state_id: 'clear' } },
+      npcs: [{ instance_id: 'npc', anchor_id: 'anchor', profile_level: 'background',
+        identity_state: { public_role_label: 'рыбак', sex_category: 'male',
+          age_category: 'adult', appearance }, machine_state: {
+          current_activity: { summary: 'чинит сеть' } } }],
+      items: [{ item_id: 'rope', template_id: 'rope-template',
+        condition_state: 'serviceable', state: { display_name: 'верёвка' },
+        placement: { holder_character_id: 'player', container_id: null } },
+      { item_id: 'shirt', template_id: 'shirt-template',
+        condition_state: 'serviceable', state: { display_name: 'рубаха' },
+        placement: { holder_npc_id: 'npc', container_id: null,
+          physical_position: 'equipped', equipment_slot_category_id: 'base_garment' } }]
+    } });
+  assert.equal(current.visible_objects[0].entity_ref.entity_id, 'rope');
+  assert.deepEqual(current.visible_npc[0].observable_cues.identity.appearance,
+    appearance);
+  assert.equal(current.visible_npc[0].observable_cues.equipment[0].item_ref,
+    'shirt');
+  assert.deepEqual(current.visible_changes[0], {
+    change_kind: 'environment_state', season: 'summer',
+    day_part: 'daylight', light_state: 'daylight',
+    weather_state_id: 'clear'
+  });
+});
+
+test('canonical initial turn uses current P22 without historical scene or raw entity disclosure', async () => {
+  const { perception } = await approvedNaturalPerceptionFixture({ canonical: true });
+  const screen = { version: 1, schema: 'first_game_screen', screen_status: 'ready',
+    party_id: 'party:1', main_prose: 'Старт.', visible_context: {
+      place: 'берег крушения', calendar: 'утро', environment: { facts: ['wet'] } } };
+  const initialState = { party_id: 'party:1', actor_id: 'player:1',
+    scenario_id: perception.canonical_source_binding.scenario_id,
+    position: { position_id: 'position:shore', g5_anchor_id: 'anchor', location_ref: 'shore' },
+    npcs: [{ instance_id: 'npc:raw', anchor_id: 'anchor', identity_state: { canonical_name: 'PRIVATE_NPC_NAME' } }],
+    items: [{ item_id: 'item:raw', placement: { anchor_id: 'anchor' }, state: { display_name: 'PRIVATE_ITEM_NAME' } }],
+    environment_snapshot: { schema: 'rus.approved_initial_environment.v1', season: 'summer',
+      light_state: 'daylight', weather_state: { weather_state_id: 'PRIVATE_WEATHER_STATE' } } };
+  const input = { screen, openingScreenDigest: canonicalDigest(screen), initialState,
+    canonicalInitialState: true, initialNaturalPerceptionRulePin: { key: 'initial-rule' },
+    naturalScenePerceptionInput: { ...perception,
+      entity_observations: [{ entity_kind: 'npc', entity_id: 'npc:raw',
+        visibility: 'clear', display_label: 'человек', exterior: {
+          sex_category: 'male', age_category: 'adult', appearance: { build: 'lean' },
+          visible_equipment: [] } }] },
+    scenePresentation: { locations: [{ location_ref: 'shore', display_name: 'берег крушения',
+      player_visible_physical_facts: ['PRIVATE_LEGACY_SCENE'] }] } };
+  const current = phase2InitialCurrentVisibleContext(input);
+  assert.equal(current.visible_scene, perception.scene.visible_scene);
+  assert.ok(current.sensory_details.length > 0);
+  assert.equal(current.visible_npc[0].display_label, 'человек');
+  assert.deepEqual(current.visible_npc[0].observable_cues.identity.appearance,
+    { build: 'lean' });
+  assert.equal(current.visible_npc[0].observable_cues.identity.display_name, undefined);
+  assert.equal(current.visible_npc.length, 1);
+  assert.deepEqual(current.visible_objects, []);
+  assert.deepEqual(current.visible_changes, []);
+  assert.equal(/PRIVATE_|крушения|canonical_source_binding|payload_digest/u.test(JSON.stringify(current)), false);
+  const dark = structuredClone(perception);
+  dark.observer.visual_capability = 'none';
+  assert.deepEqual(phase2InitialCurrentVisibleContext({ ...input,
+    naturalScenePerceptionInput: { ...dark, entity_observations: [] } }).sensory_details, []);
+  assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
+    naturalScenePerceptionInput: null }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  for (const key of ['party_id', 'actor_id', 'position_id', 'scenario_id']) {
+    const wrong = structuredClone(perception);
+    wrong.canonical_source_binding[key] = 'wrong';
+    assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
+      naturalScenePerceptionInput: wrong }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  }
+  const sceneSource = structuredClone(perception);
+  sceneSource.canonical_source_binding = { ...sceneSource.canonical_source_binding,
+    schema: 'rus.verified_canonical_scene_natural_source.v1',
+    g5_site_id: sceneSource.scene.site_id,
+    baseline_id: sceneSource.scene.baseline_id, source_slot_key: 'arrival' };
+  assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
+    naturalScenePerceptionInput: sceneSource }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+});
+
+test('canonical start without initial rule uses exact verified current scene source', async () => {
+  const { input } = await approvedNaturalPerceptionFixture({ canonical: true });
+  input.currentFacts.canonical_source_binding = {
+    schema: 'rus.verified_canonical_scene_natural_source.v1', verified: true,
+    party_id: 'party:1', actor_id: 'player:1', position_id: 'position:shore',
+    g5_site_id: 'site', baseline_id: 'baseline', source_slot_key: 'arrival'
+  };
+  const perception = prepareG4NaturalScenePerceptionInput(input);
+  const screen = { version: 1, schema: 'first_game_screen', screen_status: 'ready',
+    party_id: 'party:1', main_prose: 'Старт.', visible_context: {
+      place: 'старое место', calendar: 'утро', environment: { facts: [] } } };
+  const args = { screen, openingScreenDigest: canonicalDigest(screen),
+    initialState: { party_id: 'party:1', actor_id: 'player:1',
+      position: { position_id: 'position:shore' } },
+    canonicalInitialState: true, naturalScenePerceptionInput: { ...perception,
+      entity_observations: [] } };
+  const current = phase2InitialCurrentVisibleContext(args);
+  assert.equal(current.visible_scene, perception.scene.visible_scene);
+  assert.equal(JSON.stringify(current).includes('старое место'), false);
+  const initialSource = structuredClone(perception);
+  initialSource.canonical_source_binding = { ...initialSource.canonical_source_binding,
+    schema: 'rus.verified_canonical_initial_natural_source.v1',
+    scenario_id: 'scenario:other' };
+  assert.throws(() => phase2InitialCurrentVisibleContext({ ...args,
+    initialState: { ...args.initialState, scenario_id: 'scenario:other' },
+    naturalScenePerceptionInput: initialSource }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  for (const key of ['party_id', 'actor_id', 'position_id', 'g5_site_id',
+    'baseline_id', 'source_slot_key']) {
+    const wrong = structuredClone(perception);
+    wrong.canonical_source_binding[key] = key === 'source_slot_key' ? '' : 'wrong';
+    assert.throws(() => phase2InitialCurrentVisibleContext({ ...args,
+      naturalScenePerceptionInput: wrong }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  }
+  assert.throws(() => prepareG4NaturalScenePerceptionInput({ ...input,
+    currentFacts: { ...input.currentFacts, canonical_source_binding: {
+      ...input.currentFacts.canonical_source_binding, source_slot_key: 'wrong' } } }),
+  { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+});
+
+test('canonical initial turn cannot fall back when its binding or perception callback is absent', async () => {
+  const schema = 'rus.authored_start_initial_party_snapshot.v3';
+  const pin = { key: 'initial-natural-rule', revision: 1, digest: 'a'.repeat(64) };
+  for (const resolver of [null, () => ({ snapshot_schema: schema }),
+    () => ({ snapshot_schema: schema, initial_natural_perception_rule_pin: pin }),
+    () => ({ snapshot_schema: schema, initial_natural_perception_rule_pin: { ...pin, revision: 2 } })]) {
+    let reads = 0;
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: { async connect() { throw new Error('unexpected fallback'); },
+        async query() { reads += 1; return { rowCount: 1, rows: [{
+          delivery_ack_result: { pass: true }, party_state_version: 0,
+          state_payload: { schema, initial_spatial_v3: { canonical_scene_proposal: {} },
+            policy_profile_pins: [pin] }, stage26_result: {} }] }; } },
+      committer: { async commit() { throw new Error('unexpected write'); } },
+      authoredRuntimeBindingResolver: resolver
+    });
+    await assert.rejects(repository.loadPhase2State('party:1'), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+    assert.equal(reads, 1);
+  }
+});
+
 test('public Phase 2 check omits private RNG audit', () => {
   const payload = {
     party_id: 'party-1',
@@ -164,6 +320,46 @@ test('public conversation check omits private RNG audit', () => {
   assert.equal(Object.hasOwn(result.conversation, 'npc_ref'), false);
   assert.equal(Object.hasOwn(result.conversation, 'activity_ref'), false);
   assert.deepEqual(detectHiddenLeaks(result), []);
+});
+
+test('player leave lifecycle projects without inventing a statement reference', () => {
+  const semantic = projectSharedSemanticExchange({
+    exchange: { applied_contribution_count: 1,
+      time_budget: { status: 'completed' }, contributions: [{
+        conversation_id: 'conversation-1', exchange_id: 'exchange-1',
+        speaker_ref: { entity_kind: 'player_character', entity_id: 'player-1' },
+        contribution_kind: 'leave_conversation'
+      }] }, decision_request: null, decision_boundary: null,
+    decision_plan: null, resumed_npc_execution: null, statements: [],
+    terminal_npc_outcomes: []
+  });
+  assert.equal(semantic.player_contribution_kind, 'leave_conversation');
+  assert.deepEqual(semantic.statement_refs, []);
+  const payload = {
+    party_id: 'party-1', actor_id: 'player-1',
+    party_state: { turn_number: 1, state_version: 1 },
+    conversation_statements: [], conversation_audiences: [],
+    last_turn: { option_id: 'talk', check_result: null, time_update: null,
+      body_update: null, consequence: { conversation: {
+        semantic_exchange_projection: semantic
+      } } }
+  };
+  assert.deepEqual(phase2PublicResult({ payload,
+    screen: { schema: 'screen' } }).conversation.semantic_exchange, {
+    response_kind: 'leave_conversation', npc_utterance: null,
+    disclosed_route_ref: null
+  });
+  for (const mutate of [
+    (value) => value.statement_refs.push({
+      entity_kind: 'conversation_statement', entity_id: 'forged' }),
+    (value) => { value.player_contribution_kind = 'forged'; }
+  ]) {
+    const forged = structuredClone(payload);
+    mutate(forged.last_turn.consequence.conversation
+      .semantic_exchange_projection);
+    assert.throws(() => phase2PublicResult({ payload: forged,
+      screen: { schema: 'screen' } }), TypeError);
+  }
 });
 
 test('public conversation does not reveal an NPC lie classification', () => {

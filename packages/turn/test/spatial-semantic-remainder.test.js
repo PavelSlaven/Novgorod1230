@@ -69,11 +69,13 @@ test('S1 receives factual compatibility without turning it into presence', async
         semantic_requirements: ['interior_space'] } };
     } } });
   assert.equal(input.world_knowledge.pack_revision, 'revision:test');
+  assert.equal(Object.hasOwn(input.world_knowledge, 'context_text'), false);
   assert.match(prompt, /Compatibility does not prove current presence/u);
 });
 
 function knowledge() {
   return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk-pack:test',
     pack_revision: 'revision:test', coverage: [], hard_constraints: [],
-    facts: [], disputes: [], gaps: [] };
+    facts: [{ claim_ref: 'claim:t', runtime_text: 'обычный навес' }],
+    disputes: [], gaps: [], context_text: 'FACT claim:t: обычный навес' };
 }

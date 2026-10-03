@@ -52,14 +52,7 @@ export function createLlmSettingsController({ root, api, store, storage }) {
     }
   }
 
-  function selectMode(mode) {
-    if (mode !== 'local') return;
-    const preset = store.getState().llmSettings?.local_preset;
-    const baseUrl = root.querySelector('[data-llm-settings-form] input[name="base_url"]');
-    const model = root.querySelector('[data-llm-settings-form] input[name="model"]');
-    if (preset?.base_url && baseUrl) baseUrl.value = preset.base_url;
-    if (preset?.model && model) model.value = preset.model;
-  }
+  function selectMode() {}
 }
 
 export function llmSettingsCandidate(values) {

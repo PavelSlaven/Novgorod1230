@@ -21,7 +21,7 @@ export {
   projectPlayerSafeCompletionOutcome,
   resolveCompositeCompletionOutcome
 } from './completion-outcome.js';
-export const VISIBLE_PACKAGE_KEYS = deepFreeze(['version','schema','visible_scene','visible_changes','sensory_details','visible_npc','visible_objects','known_context','uncertainties','allowed_tensions','do_not_imply']);
+export const VISIBLE_PACKAGE_KEYS = deepFreeze(['version','schema','visible_scene','visible_changes','sensory_details','visible_npc','visible_objects','known_context','uncertainties','allowed_tensions','do_not_imply','current_light_phase']);
 const FORBIDDEN_KEYS = ['hidden_state','hidden','secret','sourceDossier','audit','state_delta','dossier','witnesses','objectiveMap','requestRaw','responseRaw','world'];
 
 export function detectHiddenLeaks(value) {
@@ -45,6 +45,7 @@ export function validateVisibleContext(data = {}) {
   if (data.version !== 1) errors.push('version must be 1');
   if (data.schema !== 'visible_context_package') errors.push('schema must be visible_context_package');
   if (!text(data.visible_scene)) errors.push('visible_scene is required');
+  if (data.current_light_phase != null && !['daylight', 'civil_dawn', 'civil_dusk', 'night'].includes(data.current_light_phase)) errors.push('current_light_phase is invalid');
   for (const key of Object.keys(data)) if (!VISIBLE_PACKAGE_KEYS.includes(key)) errors.push(`forbidden key: ${key}`);
   for (const leak of detectHiddenLeaks(data)) errors.push(`hidden leak: ${leak}`);
   return { ok:errors.length === 0, errors };
@@ -61,7 +62,7 @@ export function mergeKnowledgeFacts(current = [], updates = []) {
   return deepFreeze([...map.values()].sort((left, right) => text(left.id).localeCompare(text(right.id), 'en')));
 }
 
-export function validateMemoryFact(fact = {}) {
+function validateMemoryFact(fact = {}) {
   const errors = [];
   if (!text(fact.id)) errors.push('memory fact id is required');
   if (!text(fact.type)) errors.push('memory fact type is required');
@@ -70,6 +71,22 @@ export function validateMemoryFact(fact = {}) {
   if (detectHiddenLeaks(fact).length) errors.push('memory fact contains hidden data');
   return { ok:errors.length === 0, errors };
 }
+
+function selectBoundedActorContext(records = [], { limit = 24 } = {}) {
+  if (!Array.isArray(records) || !Number.isSafeInteger(limit) || limit < 1) {
+    throw new TypeError('Actor context records and a positive limit are required.');
+  }
+  if (records.length <= limit) return deepFreeze(structuredClone(records));
+  const selected = new Set(records.map((record, index) =>
+    record?.knowledge_status === 'obligation' ? index : null)
+    .filter((index) => index !== null).slice(0, limit));
+  selected.add(0);
+  for (let index = records.length - 1;
+    index >= 0 && selected.size < limit; index -= 1) selected.add(index);
+  return deepFreeze([...selected].sort((left, right) => left - right)
+    .slice(0, limit).map((index) => structuredClone(records[index])));
+}
+export { selectBoundedActorContext, validateMemoryFact };
 
 export function buildSafeNarratorPackage(visible = {}) {
   const safe = stripHiddenForNarrator(visible);

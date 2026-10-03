@@ -87,7 +87,8 @@ function validateFactualTurnDeliveryScreen(screen) {
     || !text(screen.committed_state_version) || !plain(screen.visible_context)
     || !textArray(screen.visible_changes) || !textArray(screen.uncertainties)
     || screen.presentation_quality !== 'degraded'
-    || screen.scenario_id !== 'lower_dvina_trace_v1' || screen.screen_kind !== 'trace_turn'
+    || !text(screen.scenario_id)
+    || !['trace_turn', 'live_world_turn'].includes(screen.screen_kind)
     || !plain(screen.presentation_context)
     || !plain(screen.action_panel) || !Array.isArray(screen.action_panel.suggested_actions)
     || !Array.isArray(screen.actions)

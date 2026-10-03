@@ -78,11 +78,14 @@ export async function commitLowerDvinaTracePhase3({
   phase3Contracts = resolveGenericKnownRouteContracts({ state,
     phase3Contracts, factual });
   assertPhase2CurrentStateVersion({ writePlan, factual, state });
-  const scenarioRevision = committedTraceScenarioDefinitionRevision(state);
+  const neutralConversation = phase3Contracts?.neutral_conversation === true;
+  const scenarioRevision = neutralConversation ? null
+    : committedTraceScenarioDefinitionRevision(state);
   const semanticContext = phase3SemanticCommitContext({
     writePlan,
     factual,
-    scenarioRevision
+    scenarioRevision,
+    neutralConversation
   });
   const nextVersion = state.party_state.state_version + 1;
   const turnNumber = state.party_state.turn_number + 1;

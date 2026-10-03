@@ -24,6 +24,8 @@ import {
 
 export { advanceTemporalNpcDecisionBoundary } from
   './temporal-npc-decision-boundary.js';
+export { prepareNpcDecisionForActorStep } from
+  './temporal-npc-decision-plan.js';
 export {
   createNpcActorStepCompletionEffect,
   createNpcScheduleDecisionTerminalEffect,

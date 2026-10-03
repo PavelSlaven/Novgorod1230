@@ -7,6 +7,7 @@ import {
   validateRegionalContextPackage
 } from '../src/world/new-game-pipeline/index.js';
 import { createNewGamePipelineContext } from '../src/world/new-game-pipeline/context.js';
+import { legacyStage2To8Services } from '../packages/new-game/src/legacy-adapter.js';
 import { buildNormalizedRequest } from './fixtures/new-game-pipeline-stage3.js';
 import {
   buildMinimalCandidateSet,
@@ -28,6 +29,23 @@ test('valid package from full world_base stub passes gate', async () => {
   });
   assert.equal(validation.pass, true);
   assert.equal(output.audit.pass, true);
+});
+
+test('production stage 4 returns approved occupation archetype', async () => {
+  const input = buildStage4LoadInput('req_occupation_archetype');
+  const fixture = buildStage4FakeQueryable();
+  let selected = false;
+  const output = await legacyStage2To8Services.retrieveRegionalContextPackage(input, {
+    queryable: { async query(sql, params) {
+      if (sql.includes('FROM world_base.region_occupations')) {
+        assert.match(sql, /\boccupation_archetype_id\b/u);
+        selected = true;
+      }
+      return fixture.query(sql, params);
+    } }
+  });
+  assert.equal(selected, true);
+  assert.equal(output.occupation_context.allowed_occupations[0].occupation_archetype_id, 'oa_merchant');
 });
 
 test('region_identity.region_id mismatch with historical_frame fails', async () => {

@@ -1,3 +1,4 @@
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../../errors.js';
@@ -50,13 +51,15 @@ export async function commitLowerDvinaTracePhase2({
   phase4Contracts, phase8Contracts, phase9Contracts, phase10Contracts,
   phase5Contracts, phase6Contracts, phase7Contracts, turn10Contracts,
   turnStepApprovedOwners,
+  projectEnvironmentAtClock = null,
   turnStepAmbientPortionProfileRef = null,
   loadState,
   committer
 }) {
   const routed = await routeLowerDvinaTraceTurnStepCommit({
     partyId, writePlan, inputDigest, contracts, loadState, committer,
-    turnStepAmbientPortionProfileRef, turnStepApprovedOwners
+    turnStepAmbientPortionProfileRef, turnStepApprovedOwners,
+    projectEnvironmentAtClock
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;
@@ -156,7 +159,9 @@ export async function commitLowerDvinaTracePhase2({
     changeSetId, idemId, phase3Contracts, turnStepApprovedOwners,
     turnStepAmbientPortionProfileRef
   });
-  const snapshot = turnStep.snapshot;
+  // Scene NPCs are read from the party tables each turn; the pending screen is built
+  // from what is persisted, like the final one.
+  const snapshot = withoutSceneNpcs(turnStep.snapshot);
   const pendingScreen = buildLowerDvinaTracePendingScreen({
     state: snapshot, presentation: await loadLowerDvinaTraceScreenPresentation(snapshot),
     turnId: factual.mode_resolution.turn_id,

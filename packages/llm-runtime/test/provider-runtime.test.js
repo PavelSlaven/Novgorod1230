@@ -3,7 +3,7 @@ import { createServer } from 'node:http';
 import test from 'node:test';
 
 import { TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
-import { buildProviderRequestPayload } from '../src/provider-request.js';
+import { buildProviderRequestPayload, normalizeExecutionLimits } from '../src/provider-request.js';
 import { describeRoleLlmCall, executeRoleLlmCall } from '../src/runtime.js';
 
 const roleId = TurnRuntimeRoles.WORLD_PROCESS_STEP;
@@ -68,9 +68,10 @@ test('plain-text transport leaves messages unchanged', () => {
   }
 });
 
-test('execution limits override environment, provider, and per-call values', () => {
+test('execution limits cap requestTimeoutMs at 120 s but honor smaller positive values', () => {
   for (const [value, expected] of [
-    [undefined, 120000], ['', 120000], ['invalid', 120000], ['0', 120000], ['-1', 120000], ['1.5', 120000], ['60000', 120000]
+    [undefined, 120000], ['', 120000], ['invalid', 120000], ['0', 120000], ['-1', 120000], ['1.5', 120000],
+    ['60000', 60000], ['500000', 120000]
   ]) {
     const resolution = resolveLlmExecutionConfig({
       scope: 'turn_runtime',
@@ -87,12 +88,23 @@ test('execution limits override environment, provider, and per-call values', () 
     overrides: { maxTokens: 1, requestTimeoutMs: 1 }
   });
   assert.equal(hostile.config.maxTokens, 1);
-  assert.equal(hostile.config.requestTimeoutMs, 120_000);
+  assert.equal(hostile.config.requestTimeoutMs, 1);
   assert.equal(resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId,
     env: { DEEPSEEK_API_KEY: 'test-key' },
     overrides: { maxTokens: 50_000 }
   }).config.maxTokens, 20_000);
+});
+
+test('normalizeExecutionLimits treats requestTimeoutMs as a ceiling, not a replacement', () => {
+  for (const [requestTimeoutMs, expected] of [
+    [30_000, 30_000], [500_000, 120_000], [undefined, 120_000],
+    [0, 120_000], [-5, 120_000], ['abc', 120_000]
+  ]) {
+    const config = { maxTokens: 100, requestTimeoutMs };
+    normalizeExecutionLimits(config);
+    assert.equal(config.requestTimeoutMs, expected);
+  }
 });
 
 test('portrait scope retains 120 s transport fallback', () => {
@@ -419,11 +431,11 @@ test('DeepSeek retains extensions and timeout precedence is per-call, provider, 
     runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 300 },
     overrides: { requestTimeoutMs: 400 }
   });
-  assert.equal(defaultResolution.config.requestTimeoutMs, 120000);
+  assert.equal(defaultResolution.config.requestTimeoutMs, 400);
   assert.equal(resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' },
     overrides: { requestTimeoutMs: 500 }
-  }).config.requestTimeoutMs, 120000);
+  }).config.requestTimeoutMs, 500);
 
   const originalFetch = globalThis.fetch;
   let payload;

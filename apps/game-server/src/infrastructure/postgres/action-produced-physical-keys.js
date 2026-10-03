@@ -1,8 +1,9 @@
 export function actionProducedPhysicalKeysForPlan(plan) {
   return [
     ...(plan.output_destination_pin == null ? [] : [
-      `party_runtime.party_g5_anchors:${plan.party_id}:${plan.output_destination_pin.anchor_id}`,
-      `party_runtime.party_positions:${plan.party_id}`,
+      ...(plan.output_destination_pin.anchor_id === null ? [] : [
+        `party_runtime.party_g5_anchors:${plan.party_id}:${plan.output_destination_pin.anchor_id}`,
+        `party_runtime.party_positions:${plan.party_id}`]),
       ...plan.output_destination_pin.used_item_ids.map((itemId) =>
         `party_runtime.party_item_placements:${itemId}`)
     ]),

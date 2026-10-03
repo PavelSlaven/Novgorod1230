@@ -9,7 +9,25 @@ export function worldKnowledgePromptData(value) {
       || !Array.isArray(value.disputes) || !Array.isArray(value.gaps)) {
     throw new TypeError('World Knowledge prompt slice is invalid');
   }
-  return structuredClone(value);
+  const clone = structuredClone(value);
+  // One strip rule for all six consumers: structured fields carry the content.
+  if (Object.hasOwn(clone, 'context_text')) delete clone.context_text;
+  return clone;
+}
+
+/** Strip duplicate context_text from a grounded request before the model wire. */
+export function omitWorldKnowledgeContextText(request) {
+  const knowledge = request?.world_knowledge;
+  if (knowledge == null || typeof knowledge !== 'object'
+      || Array.isArray(knowledge)) return request;
+  if (knowledge.schema !== 'world_knowledge_slice_v1') return request;
+  try {
+    return { ...request, world_knowledge: worldKnowledgePromptData(knowledge) };
+  } catch {
+    if (!Object.hasOwn(knowledge, 'context_text')) return request;
+    const { context_text, ...structured } = knowledge;
+    return { ...request, world_knowledge: structured };
+  }
 }
 
 export function worldKnowledgePromptInstructions(value) {

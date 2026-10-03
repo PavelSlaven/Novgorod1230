@@ -1,0 +1,851 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:philippova-wall-painting-2022",
+      "title": "Comprehensive study of 12th century wall painting fragments from the St. George Cathedral of the Yuryev Monastery in Veliky Novgorod (Russia) using complementary physico-chemical methods",
+      "authors": [
+        "O. S. Philippova",
+        "A. Yu. Dmitriev",
+        "T. I. Tsarevskaya",
+        "S. O. Dmitrieva"
+      ],
+      "publication": "Heritage Science 10, 49 (2022)",
+      "source_kind": "scholarship",
+      "citation": "https://www.nature.com/articles/s40494-022-00680-y",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:philippova-pigments",
+      "source_ref": "source:philippova-wall-painting-2022",
+      "anchor": {
+        "section": "Results: Investigation of unicolor archaeological samples; Stratigraphic analysis; Discussion: Plasters, Pigments, Painting technique; Tables 3–4, Figs. 3–5, 8"
+      },
+      "note": "Independently checked in verification-mineral-pigments.md. Twelfth-century specialist church-painting samples; inferred compatibility only for 1100–1300, not ordinary access or a local source. Organic binder identification remains unknown.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:lime",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:chemistry_process:lime-transformations"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:lime-wall-plaster",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:yellow-ochre",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:red-ochre",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:celadonite",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:lazurite",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:red-lead-pigment",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:lead"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:carbon-black-pigment",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:wall-painting",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:lime-wall-plaster"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-lime-plaster",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:lime",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:lime-wall-plaster"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-yellow-ochre",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:yellow-ochre",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:wall-painting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-red-ochre",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:red-ochre",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:wall-painting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-celadonite",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:celadonite",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:wall-painting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-lazurite",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:lazurite",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:wall-painting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-red-lead-pigment",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:red-lead-pigment",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:wall-painting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-carbon-black-pigment",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:carbon-black-pigment",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:wall-painting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-blue-lime-basis",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:wall-painting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "sampled_blue_and_carbon_black_layers_on_lime_basis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-blue-layer-order",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:wall-painting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "sampled_lazurite_layer_over_carbon_black_over_lime_plaster"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pigment-wet-dry-techniques",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:wall-painting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "combined_wet_and_dry_plaster_painting_interpretation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:philippova-pigments"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lime",
+      "locale": "ru",
+      "labels": [
+        "Известь"
+      ],
+      "short_definition": "Известь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lime",
+      "locale": "en",
+      "labels": [
+        "Lime"
+      ],
+      "short_definition": "Lime",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lime-wall-plaster",
+      "locale": "ru",
+      "labels": [
+        "Известковая настенная штукатурка"
+      ],
+      "short_definition": "Известковая настенная штукатурка",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lime-wall-plaster",
+      "locale": "en",
+      "labels": [
+        "Lime wall plaster"
+      ],
+      "short_definition": "Lime wall plaster",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:yellow-ochre",
+      "locale": "ru",
+      "labels": [
+        "Жёлтая охра"
+      ],
+      "short_definition": "Жёлтая охра",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:yellow-ochre",
+      "locale": "en",
+      "labels": [
+        "Yellow ochre"
+      ],
+      "short_definition": "Yellow ochre",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:red-ochre",
+      "locale": "ru",
+      "labels": [
+        "Красная охра"
+      ],
+      "short_definition": "Красная охра",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:red-ochre",
+      "locale": "en",
+      "labels": [
+        "Red ochre"
+      ],
+      "short_definition": "Red ochre",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:celadonite",
+      "locale": "ru",
+      "labels": [
+        "Селадонит"
+      ],
+      "short_definition": "Селадонит",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:celadonite",
+      "locale": "en",
+      "labels": [
+        "Celadonite"
+      ],
+      "short_definition": "Celadonite",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lazurite",
+      "locale": "ru",
+      "labels": [
+        "Лазурит"
+      ],
+      "short_definition": "Лазурит",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lazurite",
+      "locale": "en",
+      "labels": [
+        "Lazurite"
+      ],
+      "short_definition": "Lazurite",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:red-lead-pigment",
+      "locale": "ru",
+      "labels": [
+        "Свинцовый сурик"
+      ],
+      "short_definition": "Свинцовый сурик",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:red-lead-pigment",
+      "locale": "en",
+      "labels": [
+        "Red lead pigment"
+      ],
+      "short_definition": "Red lead pigment",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:carbon-black-pigment",
+      "locale": "ru",
+      "labels": [
+        "Углеродный чёрный пигмент"
+      ],
+      "short_definition": "Углеродный чёрный пигмент",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:carbon-black-pigment",
+      "locale": "en",
+      "labels": [
+        "Carbon black pigment"
+      ],
+      "short_definition": "Carbon black pigment",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:wall-painting",
+      "locale": "ru",
+      "labels": [
+        "Настенная живопись"
+      ],
+      "short_definition": "Настенная живопись",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:wall-painting",
+      "locale": "en",
+      "labels": [
+        "Wall painting"
+      ],
+      "short_definition": "Wall painting",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-lime-plaster",
+      "locale": "ru",
+      "runtime_text": "Исследованные штукатурки Георгиевского собора XII века почти целиком известковые.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-lime-plaster",
+      "locale": "en",
+      "runtime_text": "The analysed twelfth-century St George Cathedral plasters consist almost entirely of lime.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-yellow-ochre",
+      "locale": "ru",
+      "runtime_text": "Жёлтая охра: пигмент в жёлтом красочном слое исследованной живописи Георгиевского собора XII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-yellow-ochre",
+      "locale": "en",
+      "runtime_text": "Yellow ochre was identified in a yellow paint layer from the twelfth-century St George Cathedral paintings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-red-ochre",
+      "locale": "ru",
+      "runtime_text": "Красная охра: пигмент в красном красочном слое исследованной живописи Георгиевского собора XII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-red-ochre",
+      "locale": "en",
+      "runtime_text": "Red ochre was identified in a red paint layer from the twelfth-century St George Cathedral paintings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-celadonite",
+      "locale": "ru",
+      "runtime_text": "Селадонит: пигмент в зелёном красочном слое исследованной живописи Георгиевского собора XII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-celadonite",
+      "locale": "en",
+      "runtime_text": "Celadonite was identified in a green paint layer from the twelfth-century St George Cathedral paintings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-lazurite",
+      "locale": "ru",
+      "runtime_text": "Лазурит: пигмент в синем красочном слое исследованной живописи Георгиевского собора XII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-lazurite",
+      "locale": "en",
+      "runtime_text": "Lazurite was identified in a blue paint layer from the twelfth-century St George Cathedral paintings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-red-lead-pigment",
+      "locale": "ru",
+      "runtime_text": "Свинцовый сурик: пигмент в оранжевом красочном слое исследованной живописи Георгиевского собора XII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-red-lead-pigment",
+      "locale": "en",
+      "runtime_text": "Red lead was identified in a orange paint layer from the twelfth-century St George Cathedral paintings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-carbon-black-pigment",
+      "locale": "ru",
+      "runtime_text": "Углеродный чёрный пигмент: пигмент в чёрном красочном слое исследованной живописи Георгиевского собора XII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-carbon-black-pigment",
+      "locale": "en",
+      "runtime_text": "Carbon black was identified in a black paint layer from the twelfth-century St George Cathedral paintings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-blue-lime-basis",
+      "locale": "ru",
+      "runtime_text": "В исследованном синем образце слои лазурита и углеродного чёрного пигмента имели известковую основу; это не общее правило всех красок.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-blue-lime-basis",
+      "locale": "en",
+      "runtime_text": "In the analysed blue sample, lazurite and carbon-black layers had a lime basis; this is not a rule for every colour.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-blue-layer-order",
+      "locale": "ru",
+      "runtime_text": "В одном синем образце лазуритовый слой лежал над серо-чёрным углеродным слоем, а тот — над известковой штукатуркой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-blue-layer-order",
+      "locale": "en",
+      "runtime_text": "One blue sample has lazurite above a grey-black carbon layer above lime plaster.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-wet-dry-techniques",
+      "locale": "ru",
+      "runtime_text": "Исследователи объясняют слои живописи Георгиевского собора сочетанием письма по влажной и сухой штукатурке.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pigment-wet-dry-techniques",
+      "locale": "en",
+      "runtime_text": "The authors interpret the St George paint layers as combined wet-plaster and dry-plaster painting.",
+      "search_aliases": []
+    }
+  ]
+}

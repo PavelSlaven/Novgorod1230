@@ -1,0 +1,388 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:usgs-water-glossary",
+      "title": "Water Science Glossary",
+      "authors": [
+        "U.S. Geological Survey"
+      ],
+      "publication": "USGS Water Science School, 15 June 2018",
+      "source_kind": "technical_reference",
+      "citation": "https://www.usgs.gov/water-science-school/science/water-science-glossary",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:porous-water-openstax",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "11.8 Cohesion and Adhesion in Liquids: Surface Tension and Capillary Action; contact angle, capillary action, equation 11.51"
+      },
+      "note": "Independent verification/verification-porous-water.md PW-01–03. https://openstax.org/books/college-physics-2e/pages/11-8-cohesion-and-adhesion-in-liquids-surface-tension-and-capillary-action . Interface and narrow-tube conditions only, not a porous flow path or present water.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:porous-water-usgs",
+      "source_ref": "source:usgs-water-glossary",
+      "anchor": {
+        "section": "percolation; permeability; porosity"
+      },
+      "note": "Independent verification/verification-porous-water.md PW-04–06. Water movement depends on void size and interconnection, not total porosity alone; no object-specific flow or accessible source follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:liquid-surface-wetting",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:capillary-action",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:porous-medium-water-flow",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:water-wetting-forces",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:liquid-surface-wetting",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "relative_liquid_cohesion_and_liquid_surface_adhesion"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:porous-water-openstax"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:water-capillary-rise-depression",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:capillary-action",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "rise_or_depression_in_narrow_tube_depending_on_liquid_solid_contact_angle"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:porous-water-openstax"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:water-capillary-height",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:capillary-action",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "vertical_capillary_equilibrium_height_surface_tension_contact_angle_radius_density_gravity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:porous-water-openstax"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:water-percolation-openings",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:porous-medium-water-flow",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "water_and_actual_openings_in_rock_or_soil_for_percolation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:porous-water-usgs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:water-permeability-connected-pores",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:porous-medium-water-flow",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "liquid_transmission_depends_on_void_size_and_interconnection_not_total_porosity_alone"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:porous-water-usgs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:liquid-surface-wetting",
+      "locale": "ru",
+      "labels": [
+        "Смачивание поверхности жидкостью"
+      ],
+      "short_definition": "Поведение границы между жидкостью и поверхностью, не свойство сквозного течения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:liquid-surface-wetting",
+      "locale": "en",
+      "labels": [
+        "Liquid-surface wetting"
+      ],
+      "short_definition": "Behaviour of a liquid-surface interface, not through-flow.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:capillary-action",
+      "locale": "ru",
+      "labels": [
+        "Капиллярное действие"
+      ],
+      "short_definition": "Поведение жидкости в узкой трубке при заданном взаимодействии со стенками.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:capillary-action",
+      "locale": "en",
+      "labels": [
+        "Capillary action"
+      ],
+      "short_definition": "Liquid behaviour in a narrow tube for a given liquid-wall interaction.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:porous-medium-water-flow",
+      "locale": "ru",
+      "labels": [
+        "Вода в пористой среде"
+      ],
+      "short_definition": "Поровое пространство и пути движения воды рассматриваются отдельно.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:porous-medium-water-flow",
+      "locale": "en",
+      "labels": [
+        "Water in a porous medium"
+      ],
+      "short_definition": "Pore volume and pathways for water movement are distinct.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-wetting-forces",
+      "locale": "ru",
+      "runtime_text": "Растекание жидкости или образование капель на поверхности зависит от соотношения сил сцепления внутри жидкости и её сцепления с поверхностью; это соотношение выражается краевым углом. Смачиваемость не устанавливает пористость, проницаемость или результат трения.",
+      "search_aliases": [
+        "Смачивание",
+        "Капли на поверхности"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-wetting-forces",
+      "locale": "en",
+      "runtime_text": "Liquid spreading or beading depends on relative liquid cohesion and liquid-surface adhesion, expressed by contact angle. Wettability establishes neither porosity, permeability nor a friction result.",
+      "search_aliases": [
+        "Wetting",
+        "Beading on a surface"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-capillary-rise-depression",
+      "locale": "ru",
+      "runtime_text": "В узкой трубке капиллярное действие может поднимать или понижать уровень жидкости в зависимости от сочетания жидкости и твёрдой поверхности и краевого угла. Это не доказывает наличие капиллярного пути, воды или её поступления в конкретный предмет.",
+      "search_aliases": [
+        "Капиллярное поднятие",
+        "Капиллярное понижение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-capillary-rise-depression",
+      "locale": "en",
+      "runtime_text": "In a narrow tube, capillary action can raise or depress a liquid level depending on the liquid-solid combination and contact angle. This does not prove a capillary path, water presence or uptake in a particular object.",
+      "search_aliases": [
+        "Capillary rise",
+        "Capillary depression"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-capillary-height",
+      "locale": "ru",
+      "runtime_text": "В модели вертикального капилляра равновесная высота зависит от поверхностного натяжения, краевого угла, радиуса трубки, плотности жидкости и тяжести. При прочих равных там, где возникает поднятие, меньший радиус даёт большую высоту. Это не задаёт высоту, направление или расход в неизвестной сети пор.",
+      "search_aliases": [
+        "Высота капиллярного поднятия",
+        "Радиус капилляра"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-capillary-height",
+      "locale": "en",
+      "runtime_text": "In the vertical-capillary model, equilibrium height depends on surface tension, contact angle, tube radius, liquid density and gravity. Other factors equal, a smaller radius gives greater height where rise occurs. This supplies no height, direction or flow rate for an unspecified pore network.",
+      "search_aliases": [
+        "Capillary rise height",
+        "Capillary radius"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-percolation-openings",
+      "locale": "ru",
+      "runtime_text": "Перколяция — движение воды через отверстия в горной породе или почве. Нужны вода и реальные отверстия; определение не доказывает связный путь, скорость, доступный подземный источник или количество воды в сцене.",
+      "search_aliases": [
+        "Перколяция",
+        "Вода через почву"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-percolation-openings",
+      "locale": "en",
+      "runtime_text": "Percolation is movement of water through openings in rock or soil. Water and actual openings are needed; the definition proves no connected path, rate, accessible underground source or scene water quantity.",
+      "search_aliases": [
+        "Percolation",
+        "Water through soil"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-permeability-connected-pores",
+      "locale": "ru",
+      "runtime_text": "Проницаемость — способность пропускать жидкость; пористость описывает долю пустот. Движение воды зависит не только от этой доли, но и от размера пустот и того, сообщаются ли они. Изолированные поры не доказывают сквозной путь; большая пористость сама по себе не означает хорошее прохождение воды.",
+      "search_aliases": [
+        "Пористость и проницаемость",
+        "Сообщающиеся поры"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:water-permeability-connected-pores",
+      "locale": "en",
+      "runtime_text": "Permeability is capacity to transmit liquid; porosity describes the proportion of void space. Water movement depends not only on that proportion but on void size and interconnection. Isolated pores establish no through-path; high porosity alone does not mean ready water passage.",
+      "search_aliases": [
+        "Porosity and permeability",
+        "Interconnected pores"
+      ]
+    }
+  ]
+}

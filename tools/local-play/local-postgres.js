@@ -11,6 +11,9 @@ export const LOCAL_POSTGRES = Object.freeze({ version: '16.14.0',
   worldDatabase: 'novgorod_world', partyDatabase: 'novgorod_party',
   worldUser: 'world_operator', partyUser: 'party_operator',
   adminUser: 'postgres', password: 'local_only' });
+export const LOCAL_V17_DATABASES = Object.freeze({
+  worldDatabase: 'novgorod_world_v17', partyDatabase: 'novgorod_party_v17'
+});
 const WORLD_SENTINELS = Object.freeze([
   'world_base.spatial_v3_world_revisions',
   'world_base.runtime_catalog_activation_events',
@@ -30,6 +33,9 @@ export function localDataRoot(env = process.env) {
   const root = String(env.LOCALAPPDATA ?? env.XDG_DATA_HOME ?? '').trim()
     || homedir();
   return join(root, 'Novgorod1230');
+}
+export function localV17ApprovalsPath(env = process.env) {
+  return join(localDataRoot(env), 'runtime', 'v17-activation-approvals.json');
 }
 export async function classifyLocalDatabases({ worldQuery, partyQuery }) {
   const countSql = `SELECT count(*)::int AS count FROM information_schema.tables
@@ -71,11 +77,12 @@ export async function ensureLocalPostgres({ settings = LOCAL_POSTGRES,
     stdio: ['ignore', 'ignore', 'ignore'] });
   try {
     await waitForPostgres({ port, settings, process, createPool });
-    await ensureRolesAndDatabases({ port, settings, createPool });
+    const release = await selectLocalRelease({ port, settings, createPool });
+    await ensureRolesAndDatabases({ port, settings: { ...settings, ...release.databases }, createPool });
     const worldUrl = databaseUrl(settings.worldUser,
-      settings.worldDatabase, port, settings);
+      release.databases.worldDatabase, port, settings);
     const partyUrl = databaseUrl(settings.partyUser,
-      settings.partyDatabase, port, settings);
+      release.databases.partyDatabase, port, settings);
     const worldPool = createPool({ connectionString: worldUrl, max: 1 });
     const partyPool = createPool({ connectionString: partyUrl, max: 1 });
     try {
@@ -84,8 +91,10 @@ export async function ensureLocalPostgres({ settings = LOCAL_POSTGRES,
         partyQuery: (...args) => partyPool.query(...args) });
       if (state === 'partial') throw localPlayError('LOCAL_POSTGRES_PARTIAL',
         'Local PostgreSQL schema is partially initialized.');
+      if (release.version === 17 && state !== 'existing') throw localPlayError(
+        'LOCAL_POSTGRES_V17_NOT_READY', 'Local v17 PostgreSQL schema is not fully initialized.');
       let closed = false;
-      return Object.freeze({ worldUrl, partyUrl, state,
+      return Object.freeze({ worldUrl, partyUrl, state, releaseVersion: release.version,
         version: settings.version, databaseDir,
         async close() {
           if (closed) return; closed = true;
@@ -100,6 +109,22 @@ export async function ensureLocalPostgres({ settings = LOCAL_POSTGRES,
     throw localPlayError('LOCAL_POSTGRES_START_FAILED',
       `Could not start managed PostgreSQL: ${error?.message ?? 'unknown error'}`);
   }
+}
+
+export async function selectLocalRelease({ port, settings, createPool }) {
+  const client = createPool({ connectionString: databaseUrl(settings.adminUser,
+    'postgres', port, settings), max: 1 });
+  try {
+    const names = Object.values(LOCAL_V17_DATABASES);
+    const found = new Set((await client.query(
+      'SELECT datname FROM pg_database WHERE datname = ANY($1)', [names]))
+      .rows.map((row) => row.datname));
+    if (found.size === 1) throw localPlayError('LOCAL_POSTGRES_V17_PAIR_INCOMPLETE',
+      'Local v17 PostgreSQL database pair is incomplete.');
+    return found.size === 2
+      ? { version: 17, databases: LOCAL_V17_DATABASES }
+      : { version: 16, databases: settings };
+  } finally { await client.end(); }
 }
 
 async function defaultBinaries() {

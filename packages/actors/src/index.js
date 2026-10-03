@@ -1,10 +1,11 @@
 import { deepFreeze } from '@rus/kernel';
+import ageCategories from './actor-age-categories.json' with { type: 'json' };
 
 export const ACTOR_KINDS = deepFreeze(['player', 'npc']);
 
 export const ACTOR_BASE_APPEARANCE_VOCABULARY = deepFreeze({
   sex_category: ['male', 'female'],
-  age_category: ['young_adult', 'adult', 'middle_aged', 'old'],
+  age_category: ageCategories,
   build: ['slim', 'average', 'stocky'],
   skin_tone: ['pale', 'light', 'warm', 'brown'],
   face_shape: ['oval', 'round', 'broad', 'angular', 'long'],

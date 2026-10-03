@@ -1,0 +1,12 @@
+{
+  "schema": "rus.m2c_authoring_approval.v1",
+  "status": "approved",
+  "reviewer_role": "independent_data_approval",
+  "reviewer_model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "candidate_sha256": "0a1e2e91c0bd9c6a6b53e50d158c4349ec0ce79bca2d6b5ba7423481b2b08116",
+  "authoring_rows_sha256": "bca819aa73e5d8d9186f71bd4a030c1873196295622f7944247890a5085a86dd",
+  "scope": "25 exact generated-family scene/G6 acoustic baselines; mechanical promotion and authoring import permitted.",
+  "limitations": "Analogical low-confidence editorial masking penalties, not historical measurements. Inherited landscape/land-use/scene classifications keep the confidence and directness of expansion authoring evidence. This data approval does not activate production; separate Contract Audit is required.",
+  "authorization": "Issue #133 M2c authoring authorization; independent approval delivered to the coordinating agent and confirmed in the promotion task."
+}

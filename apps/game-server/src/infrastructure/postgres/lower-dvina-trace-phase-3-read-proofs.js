@@ -54,6 +54,7 @@ export function phase3NpcReadProof(payload, rows) {
   const preparedTarget = payload.first_entry_preparation?.spatial_v3?.target;
   const firstEntryAnchor = payload.first_entry_preparation?.scene?.anchor
     ?.instance_id;
+  const snapshotNpcIds = new Set((payload.npcs ?? []).map((npc) => npc.instance_id));
   const expected = (payload.npcs ?? []).map((npc) => ({
     npc_id: npc.instance_id,
     participant_slot_ref: npc.participant_slot_ref,
@@ -61,7 +62,7 @@ export function phase3NpcReadProof(payload, rows) {
     anchor_id: preparedTarget?.status === 'prepared'
         && npc.anchor_id === firstEntryAnchor ? null : npc.anchor_id
   })).sort((left, right) => left.npc_id.localeCompare(right.npc_id));
-  const actual = rows.map((npc) => ({
+  const actual = rows.filter((npc) => snapshotNpcIds.has(npc.npc_id)).map((npc) => ({
     npc_id: npc.npc_id,
     participant_slot_ref: npc.semantic_state?.participant_slot_ref,
     profile_level: npc.profile_level,

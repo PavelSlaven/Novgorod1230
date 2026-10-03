@@ -20,15 +20,16 @@ export function materializeApprovedActorEquipment({
   const players = [...actorByCandidate.values()].filter(
     ({ actor_kind: kind }) => kind === 'player_character'
   );
-  if (players.length !== 1) {
+  if (players.length > 1) {
     throw new MaterializationError(
       'INITIAL_ACTOR_EQUIPMENT_PLAYER_INVALID',
-      'Initial actor equipment requires exactly one materialized player.'
+      'Initial actor equipment permits at most one materialized player.'
     );
   }
   const itemProfileCandidates = [];
   const quantityRequirements = [];
   const equipmentCandidates = [];
+  const candidateIds = new Set();
   for (const candidate of [...(initialEquipmentCandidates ?? [])]
     .sort((left, right) => String(left.equipment_candidate_id)
       .localeCompare(String(right.equipment_candidate_id)))) {
@@ -39,21 +40,26 @@ export function materializeApprovedActorEquipment({
       itemInventoryProfiles, 'inventory_profile_id',
       candidate.inventory_profile_ref
     );
-    const visualProfile = exactApprovedRecord(
+    const equipped = candidate.physical_position === 'equipped';
+    const visualProfile = equipped ? exactApprovedRecord(
       itemVisualProfiles, 'visual_profile_id', candidate.visual_profile_ref
-    );
-    const visualProfileSnapshot = visualSnapshot(
+    ) : null;
+    const visualProfileSnapshot = equipped ? visualSnapshot(
       visualProfile, template, candidate
-    );
+    ) : null;
     const target = actorByCandidate.get(candidate.target_actor_slot_ref);
-    const targetsPlayer = target?.actor_kind === 'player_character';
     if (!target || candidate.status !== 'approved'
+      || !candidate.equipment_candidate_id
+      || candidateIds.has(candidate.equipment_candidate_id)
       || candidate.owner_ref !== candidate.target_actor_slot_ref
       || candidate.holder_ref !== candidate.target_actor_slot_ref
       || candidate.controller_ref !== candidate.target_actor_slot_ref
-      || candidate.physical_position !== 'equipped'
-      || !['base_garment', 'outer_garment', 'headwear']
-        .includes(candidate.equipment_slot_category_id)
+      || (equipped
+        ? typeof candidate.equipment_slot_category_id !== 'string'
+          || candidate.equipment_slot_category_id.trim() === ''
+        : !['hands', 'external', 'external_load'].includes(candidate.physical_position)
+          || candidate.equipment_slot_category_id != null
+          || candidate.visual_profile_ref != null)
       || candidate.visual_profile_snapshot != null
       || profile.item_template_ref !== template.item_template_id) {
       throw new MaterializationError(
@@ -61,6 +67,7 @@ export function materializeApprovedActorEquipment({
         `Initial equipment ${candidate.equipment_candidate_id} is incomplete.`
       );
     }
+    candidateIds.add(candidate.equipment_candidate_id);
     const itemProfileCandidateId =
       `${candidate.equipment_candidate_id}:item_profile`;
     const quantityRequirementId =
@@ -71,6 +78,7 @@ export function materializeApprovedActorEquipment({
       template,
       visualProfile,
       visualProfileSnapshot,
+      target,
       worldRevisionId,
       itemProfileCandidateId,
       quantityRequirementId
@@ -82,18 +90,19 @@ export function materializeApprovedActorEquipment({
       worldRevisionId,
       quantityRequirementId
     }));
-    equipmentCandidates.push(equipmentCandidate({
+    if (equipped) equipmentCandidates.push(equipmentCandidate({
       candidate,
       template,
       worldRevisionId,
       itemProfileCandidateId,
+      visualProfileSnapshot,
       target
     }));
   }
   const draft = materializeItemPlacement({
     request_id: requestId,
     selected_start_node: { selected_node_chain: { g4_node_id: g4Id } },
-    player_character: { character_id: players[0].actor_instance_id },
+    player_character: players.length ? { character_id: players[0].actor_instance_id } : null,
     g5_scene_graph: {
       item_materialization_slots: [],
       materialization_run: {
@@ -135,9 +144,11 @@ export function materializeApprovedActorEquipment({
   });
 }
 
-function itemProfileCandidate({ candidate, profile, template, visualProfile,
+function itemProfileCandidate({ candidate, profile, template, visualProfile, target,
   visualProfileSnapshot,
   worldRevisionId, itemProfileCandidateId, quantityRequirementId }) {
+  const carried = candidate.physical_position !== 'equipped';
+  const actorKind = target.actor_kind === 'npc' ? 'npc' : 'player';
   return {
     item_profile_candidate_id: itemProfileCandidateId,
     item_profile_id: profile.inventory_profile_id,
@@ -145,7 +156,19 @@ function itemProfileCandidate({ candidate, profile, template, visualProfile,
     ...(template.display_name ? { display_name: template.display_name } : {}),
     item_category_id: template.semantic_category,
     status: 'approved', world_revision_id: worldRevisionId,
-    required: false, quantity: 1,
+    required: carried, quantity: 1,
+    ...(carried ? {
+      slot_rule_id: candidate.instance_key ?? candidate.equipment_candidate_id,
+      placement: {
+        [actorKind === 'npc' ? 'holder_npc_instance_id' : 'holder_player_character_id']:
+          target.actor_instance_id,
+        physical_position: candidate.physical_position
+      },
+      causal_basis: {
+        causal_basis_type: 'approved_equipment_profile',
+        causal_basis_id: candidate.equipment_candidate_id
+      }
+    } : {}),
     quantity_requirement_id: quantityRequirementId,
     quantity_unit_id: 'piece',
     condition_state: candidate.condition_state,
@@ -157,9 +180,13 @@ function itemProfileCandidate({ candidate, profile, template, visualProfile,
       weight: profile.mass_grams / 1000
     },
     property_state: {
-      owner_model: 'pending_actor_binding',
-      holder_model: 'pending_actor_binding',
-      controller_model: 'pending_actor_binding',
+      owner_model: carried ? actorKind : 'pending_actor_binding',
+      holder_model: carried ? actorKind : 'pending_actor_binding',
+      controller_model: carried ? actorKind : 'pending_actor_binding',
+      ...(carried ? {
+        owner_id: target.actor_instance_id, holder_id: target.actor_instance_id,
+        controller_id: target.actor_instance_id
+      } : {}),
       legal_or_social_status: candidate.claim_state
     },
     visibility_state: {
@@ -168,16 +195,18 @@ function itemProfileCandidate({ candidate, profile, template, visualProfile,
     access_state: { access: 'actor_controlled' },
     risk_state: {},
     inventory_profile_snapshot: structuredClone(profile),
-    visual_profile_snapshot: structuredClone(visualProfileSnapshot),
+    ...(visualProfileSnapshot ? {
+      visual_profile_snapshot: structuredClone(visualProfileSnapshot)
+    } : {}),
     source_trace: [{
       source_id: candidate.equipment_candidate_id,
       source_kind: 'approved_initial_equipment_candidate',
       world_revision_id: worldRevisionId
-    }, {
+    }, ...(visualProfile ? [{
       source_id: visualProfile.visual_profile_id,
       source_kind: 'approved_item_visual_profile',
       world_revision_id: worldRevisionId
-    }]
+    }] : [])]
   };
 }
 
@@ -279,6 +308,8 @@ function projectActorEquipmentInstance(item) {
     state: {
       ...structuredClone(item.state ?? {}),
       source_equipment_candidate_ref: item.equipment_candidate_id
+        ?? item.source_trace.find(({ source_kind: kind }) =>
+          kind === 'approved_initial_equipment_candidate')?.source_id
     }
   };
 }

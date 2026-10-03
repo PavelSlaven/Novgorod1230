@@ -35,6 +35,7 @@ const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat';
 export function validatePreparedEffectCommit({
   batch, envelope, factual, state, phase3Contracts, phase4Contracts,
   turnStepApprovedOwners,
+  preparedMovementState = null,
   localFirePlans = []
 }) {
   const ledgerValue = envelope?.time_update?.prepared_effect_ledger;
@@ -99,7 +100,8 @@ export function validatePreparedEffectCommit({
   }
   if (preparedPhase3RouteConversation(ledger)) {
     return validatePreparedPhase3RouteConversation({ ledger, envelope,
-      factual, state, batch, phase3Contracts, turnStepApprovedOwners });
+      factual, state, batch, phase3Contracts, turnStepApprovedOwners,
+      preparedMovementState });
   }
   const [route, direct] = slices;
   const routeTrace = traces?.find(({step_index:step})=>step===route?.step_index);
@@ -142,7 +144,8 @@ export function validatePreparedEffectCommit({
   validatePreparedRouteTraceLineage({
     route, routeTrace, directTrace, loopTrace: envelope.loop_trace,
     envelope, state, phase3Contracts, routeOnly: !hasDirect,
-    intermediateTraces, scenePresentation: turnStepApprovedOwners?.scenePresentation
+    intermediateTraces, scenePresentation: turnStepApprovedOwners?.scenePresentation,
+    preparedMovementState
   });
   if (hasDirect) validatePreparedDirectSlice({
     batch, direct, directTrace, route, turnStepApprovedOwners

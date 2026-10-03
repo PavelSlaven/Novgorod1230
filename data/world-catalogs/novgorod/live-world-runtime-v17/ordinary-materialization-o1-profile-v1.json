@@ -1,0 +1,15 @@
+{
+  "schema": "rus.live_world_runtime.ordinary_materialization_profile.v1",
+  "profile_id": "novgorod_v17_o1_presence_profile_v1",
+  "revision": 1,
+  "status": "approved_with_limits",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "o1_presence": {
+    "selector_id": "novgorod_v17_o1_applicability_4a5_candidate_001",
+    "selector_path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-applicability-selector-v1.json",
+    "selector_sha256": "9c055925be5f117c7dd89a1465875fdc90a9f8d028bd49020411506f5a223dc4",
+    "fallback_policy": "forbidden"
+  },
+  "o2a_ambient": null,
+  "fallback_policy": "forbidden"
+}

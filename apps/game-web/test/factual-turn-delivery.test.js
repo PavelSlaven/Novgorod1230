@@ -62,6 +62,13 @@ test('degraded factual delivery reuses normal screen UI and replaces only prose'
   assert.match(renderScreen(screen, { activeOverlay: 'journal' }), /Осмотреть ось/u);
 });
 
+test('authored live-world factual delivery uses the same recovery UI', () => {
+  const screen = factual({ scenario_id: 'vikhtuy_fishing_camp_v1',
+    screen_kind: 'live_world_turn' });
+  assert.equal(validatePublicScreen(screen), screen);
+  assert.match(renderScreen(screen), /Восстановленное состояние/u);
+});
+
 test('factual delivery rejects prose, raw package metadata and private leaks', () => {
   for (const invalid of [
     factual({ main_prose: 'Запрещённая проза.' }),

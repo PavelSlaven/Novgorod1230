@@ -7,6 +7,8 @@ import { playerSilenceSignalRecords } from
   './lower-dvina-trace-m2-conversation-signals.js';
 import { compareRefs, npcRef, ref, sameRef } from
   './lower-dvina-trace-m2-conversation-shared.js';
+import { sameSceneLocus, sceneLocus } from
+  './lower-dvina-trace-scene-presence.js';
 
 export function projectSilencePerception(
   context,
@@ -81,11 +83,9 @@ function observerResult(context, contribution, observerRef, speaker) {
   );
   const machine = actor?.machine_state ?? {};
   const semantic = actor?.semantic_state ?? {};
-  const speakerAnchor = contribution.speaker_ref.entity_kind
-      === 'player_character'
-    ? context.state.position.g5_anchor_id : speaker?.anchor_id;
-  const sameAnchor = actor?.anchor_id && speakerAnchor
-    && actor.anchor_id === speakerAnchor;
+  const sameAnchor = sameSceneLocus(sceneLocus(context.state, actor),
+    sceneLocus(context.state, contribution.speaker_ref.entity_kind
+      === 'player_character' ? context.state.position : speaker));
   const perception = resolveConversationVisualPerception({
     observer_ref: observerRef,
     perception_result_ref: perceptionResultRef,

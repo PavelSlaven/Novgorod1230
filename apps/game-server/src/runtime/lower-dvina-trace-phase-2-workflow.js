@@ -2,11 +2,12 @@ import { runTurnWorkflow } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
 import { committedPendingReplayResult, completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
+import { resolveCommittedPhase2PresentationAfterFailure } from './lower-dvina-trace-phase-2-presentation-resolve.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 
 export async function runAndPersistTracePhase2Turn({ workflowInput, services,
   issuedAt, requestId, llmDiagnostics, repository, partyId, inputDigest,
-  turnBudget }) {
+  idempotencyKey, turnBudget }) {
   try {
     const result = await runTurnWorkflow(workflowInput, services, {
       now: issuedAt, requestId,
@@ -23,8 +24,29 @@ export async function runAndPersistTracePhase2Turn({ workflowInput, services,
       repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
   } catch (error) {
     if (isExpectedPostCommitPresentationFailure(error)
-        && services.committedPublicResult() != null) return services.committedPublicResult();
-    if (services.turnCommitStatus() === 'not_started') {
+        && services.committedPublicResult() != null) {
+      try {
+        return await resolveCommittedPhase2PresentationAfterFailure({
+          partyId,
+          idempotencyKey,
+          inputDigest,
+          repository,
+          narrator: services.narrator,
+          turnBudget,
+          fallback: services.committedPublicResult()
+        });
+      } catch (retryError) {
+        // The turn is committed: answer "saved, narration pending" (recovered by the next
+        // request) instead of a 500; the retry failure stays in the diagnostics.
+        try { llmDiagnostics?.recordFailure?.(retryError); } catch { /* diagnostics only */ }
+        trace(llmDiagnostics, { event: 'presentation_retry_failed', error: failureRecord(retryError) });
+        return services.committedPublicResult();
+      }
+    }
+    if (error?.code === 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
+        && error.details?.topology_status === 'topology_committed') {
+      error.turn_commit_status = 'topology_committed';
+    } else if (services.turnCommitStatus() === 'not_started') {
       error.turn_commit_status = 'not_started';
     }
     throw error;
@@ -48,8 +70,16 @@ export async function completeTracePhase2Replay({ partyId, requestId, idempotenc
       : replay.public_result;
   } catch (error) {
     if (!isExpectedPostCommitPresentationFailure(error)) throw error;
-    const pending = committedPendingReplayResult({ partyId, idempotencyKey, inputDigest, replay });
-    if (pending != null) return pending;
+    const resolved = await resolveCommittedPhase2PresentationAfterFailure({
+      partyId,
+      idempotencyKey,
+      inputDigest,
+      repository,
+      narrator,
+      turnBudget,
+      fallback: committedPendingReplayResult({ partyId, idempotencyKey, inputDigest, replay })
+    });
+    if (resolved != null) return resolved;
     throw error;
   }
 }

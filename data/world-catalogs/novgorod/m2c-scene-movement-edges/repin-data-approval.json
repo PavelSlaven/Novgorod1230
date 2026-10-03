@@ -1,0 +1,19 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_scene_movement_edge_mechanics_v1_repin",
+  "candidate_path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/candidate.json",
+  "candidate_sha256": "c4742a5b9642638b7e2ca3c440ffe344e724549abfa788ed39b8627314957356",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_perception_scene_repin",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independence_basis": "Independent reviewer; did not author or modify candidate bytes. Verified the sole source pin change, all seven current source SHA-256 digests, unchanged canonical start placement, and the 68 reciprocal rows across 17 templates against pinned sources and the focused test."
+  },
+  "scope": "Exact 68 reciprocal local action edges across 17 scene templates, editorial edge capacity one, unchanged position capacity one, 32 generated G4 NPC placement joins and canonical south-approach source with actual occupancy required at runtime.",
+  "excludes": "Historical capacity or actual NPC occupancy, G0-G4 topology or exits, scene-edge import, player visibility admission, runtime movement and release activation.",
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "release_activation_authorized": false,
+  "reviewed_on": "2026-09-24"
+}

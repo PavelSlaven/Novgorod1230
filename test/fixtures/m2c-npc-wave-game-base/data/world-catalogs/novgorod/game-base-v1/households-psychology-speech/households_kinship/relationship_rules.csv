@@ -1,0 +1,2 @@
+rel_rule_id,scope_kind,scope_ref,subject_role_ref,object_role_ref,relationship_kind,direction,materialization_guard,source_refs,rule_ref,no_source,confidence,status
+rel_test,role_pair,,nov_role_a,nov_role_b,unspecified,symmetric,guard,,, ,C,candidate

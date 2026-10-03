@@ -9,6 +9,7 @@ import {
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 const SCHEMA =
   'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1';
 const FIRE_SEED_PREFIX = 'turn_step_world_process_';
@@ -31,6 +32,14 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   return Object.freeze({
     async project(input) {
       const consequence = input?.consequence;
+      if (consequence?.position_transition?.owner
+          === '@rus/turn/spatial-v3-site-connection-traversal') {
+        // Arriving is what the narrator must tell: the destination's own approved scene text
+        // becomes the committed visible change, as the known place does for other arrivals.
+        const destination = structuredClone(consequence.visible_seed?.destination_visible_context);
+        return { ...destination,
+          visible_changes: unique([...destination.visible_changes, destination.visible_scene]) };
+      }
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {
@@ -57,10 +66,14 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   });
 }
 function finishVisibleProjection(base, input, calendarProfile) {
-  const enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
+  let enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
     committedState: input.retrieved_state, calendarProfile,
     bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after,
     temporalResults: input.time_update?.temporal_results });
+  // A local move changes the place's passages: the retrieved state still holds those of the position left.
+  const arrived = input.consequence?.visible_seed?.destination_movement_objects;
+  if (Array.isArray(arrived)) enriched = { ...enriched, visible_objects: [
+    ...enriched.visible_objects.filter((row) => !isMovementVisibleObject(row)), ...arrived] };
   const consequence = input.consequence;
   const arrival = consequence?.phase3_kind === 'movement'
     || (consequence?.phase6_kind === 'synchronized_carry'
@@ -110,14 +123,22 @@ function overlayTurnStepResults(base, input) {
       .sort((a, b) => Number(seeds[b]?.kind === 'semantic_activity') - Number(seeds[a]?.kind === 'semantic_activity'));
     orderedKeys.forEach(key => usedKeys.add(key));
     projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
-    const changes = projectDirectSeedChanges({ input, directSeedKeys: orderedKeys, appliedPlan: plan });
+    const localMovement = plan.operations?.some((operation) =>
+      operation?.op === 'request_movement'
+        && operation.movement_kind === 'local') === true
+      && input.consequence?.position_transition?.owner === '@rus/movement-routes';
+    const changes = [
+      ...(localMovement ? ['Вы переместились в пределах текущего места.'] : []),
+      ...projectDirectSeedChanges({ input, directSeedKeys: orderedKeys,
+        appliedPlan: plan })
+    ];
     if (plan.direct_result_kind === 'player_safe_observation') {
       components.add('Вы внимательно изучили обстановку.');
       components.add(text(plan.assessment?.text)
         ? plan.assessment.text : 'Вы внимательно изучили обстановку.');
     }
     if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
-      text(plan.interpretation?.player_goal) ? `Не удалось достичь цели «${plan.interpretation.player_goal}».` : 'Цель попытки не достигнута.');
+      text(plan.interpretation?.player_goal) ? `Цель «${plan.interpretation.player_goal}» не достигнута.` : 'Цель попытки не достигнута.');
     changes.forEach(change => components.add(change));
     return changes;
   });
@@ -165,7 +186,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   let base;
   if (ordinaryDetails.length > 0 || ordinaryPresence != null
       || seedEntries.some(([key, value]) => key.startsWith('turn_step_')
-        && ['semantic_activity', 'existing_item_inspection'].includes(value?.kind))
+        && ['semantic_activity', 'existing_item_inspection',
+          'background_npc_observation'].includes(value?.kind))
       || seedEntries.some(([key]) => key === 'observed_evidence_inspection_seed')) {
     const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)

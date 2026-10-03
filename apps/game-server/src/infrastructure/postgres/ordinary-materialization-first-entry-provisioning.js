@@ -5,6 +5,8 @@ import {
   createOrdinaryAggregate,
   validateOrdinaryBackgroundGroup
 } from '@rus/materialization';
+import { applyResolvedPresenceRulesFirstArrival } from
+  './ordinary-materialization-presence-first-arrival.js';
 import {
   ordinaryWorldPropertyPlacementContextDigest
 } from '@rus/items-property';
@@ -17,15 +19,157 @@ import {
   buildFirstEntryContextBoundCapability,
   insertFirstEntryFiniteSource
 } from './ordinary-materialization-first-entry-capability.js';
+import { buildFirstEntryNaturalCapabilities, readApprovedNaturalFirstEntryAuthoring }
+  from './ordinary-materialization-first-entry-natural.js';
+import { createApprovedGeneratedNaturalPropertyReader } from './ordinary-materialization-natural-property.js';
+import { canonicalFiniteProfilesFor, createCanonicalNaturalPropertyReader } from './ordinary-materialization-canonical-natural.js';
+
+export function createTargetFiniteFirstEntryPorts(loaded, { resolvePresenceRulesFirstArrival } = {}) {
+  if (loaded?.schema !== 'rus.live_world_runtime.target_finite_first_entry_profile.v1'
+    || loaded.catalog_pin?.schema !== 'rus.runtime_catalog_pin.v2'
+    || loaded.catalog_pin.catalog_scope !== 'item_container_materialization_v2'
+    || loaded.catalog_pin.compatible_world_revision_id !== loaded.world_revision_id) {
+    throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
+  }
+  const readGenerated = createApprovedGeneratedNaturalPropertyReader(loaded.propertySourceAuthoring);
+  const canonicalApplicability = loaded.canonicalNaturalApplicability ?? null;
+  const readCanonical = canonicalApplicability == null ? null
+    : createCanonicalNaturalPropertyReader({ applicability: canonicalApplicability,
+      authoring: readApprovedNaturalFirstEntryAuthoring(loaded.naturalSourceAuthoring) });
+  // Canonical sites read the approved applicability rows; generated sites the approved property context.
+  const readNaturalSourceProperty = async (input) => {
+    if (readCanonical == null) return readGenerated(input);
+    const site = input.spatialProposal != null
+      ? input.spatialProposal.inserts.find((row) => row.target_table === 'party_g5_sites'
+        && row.id === input.g5Id)?.record
+      : (await input.transaction.query(`SELECT origin FROM party_runtime.party_g5_sites
+        WHERE party_id=$1 AND id=$2`, [input.partyId, input.g5Id])).rows[0];
+    return site?.origin === 'canonical' ? readCanonical(input) : readGenerated(input);
+  };
+  const prepare = createOrdinaryGeneratedFirstEntryProposal({ profile: loaded.profile,
+    naturalSourceAuthoring: loaded.naturalSourceAuthoring, readNaturalSourceProperty,
+    resolvePresenceRulesFirstArrival, canonicalNaturalApplicability: canonicalApplicability });
+  return Object.freeze({ readNaturalSourceProperty,
+    async prepareFirstEntry(input) {
+      const pin = loaded.catalog_pin;
+      const rows = (await input.transaction.query(`SELECT * FROM party_runtime.party_catalog_pins
+        WHERE party_id=$1 AND catalog_scope=$2 FOR SHARE`, [input.request.party_id, pin.catalog_scope])).rows;
+      const fields = ['catalog_scope','catalog_revision_id','catalog_digest','activation_event_id',
+        'import_id','import_audit_digest','record_registry_digest','runtime_contract_digest',
+        'compatible_world_revision_id','compatible_world_catalog_digest','compatible_world_pin_manifest_digest'];
+      if (rows.length !== 1 || fields.some((field) => !pin[field] || rows[0][field] !== pin[field])) {
+        throw code('ORDINARY_FINITE_CATALOG_PIN_MISMATCH');
+      }
+      return prepare(input);
+    } });
+}
+
+/** The existing first-entry owner proposes rows; Spatial P16 remains the writer. */
+export function createOrdinaryGeneratedFirstEntryProposal({ profile,
+  naturalSourceAuthoring, readNaturalSourceProperty,
+  resolvePresenceRulesFirstArrival, canonicalNaturalApplicability = null } = {}) {
+  if (!profile) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
+  const authoring = readApprovedNaturalFirstEntryAuthoring(naturalSourceAuthoring);
+  return async function prepareFirstEntry({ transaction, request, proposal, change_set_id }) {
+    const partyId = request.party_id;
+    const inserts = proposal.inserts ?? [];
+    const site = inserts.find((write) => write.target_table === 'party_g5_sites'
+      && write.id === proposal.target_site_id)?.record;
+    const scenes = inserts.filter((write) => write.target_table === 'party_g6_instances'
+      && write.record.host_id === site?.id && write.record.scene_slot_key === 'main');
+    const positions = inserts.filter((write) => write.target_table === 'scene_position_nodes'
+      && write.record.g6_instance_id === scenes[0]?.id
+      && write.record.template_slot_key === 'focus');
+    if (scenes.length !== 1 || positions.length !== 1) {
+      throw code('ORDINARY_NATURAL_FIRST_ENTRY_BINDING_INVALID');
+    }
+    const scene = scenes[0].record;
+    const scope = { entity_kind: 'g6', entity_id: scenes[0].id };
+    const positionRef = positions[0].id;
+    const binding = { g5_id: site.id, world_revision_id: request.g4.world_revision_id,
+      g4_id: request.g4.id, g4_version: request.g4.version,
+      g5_generation_template_id: site.generated_template_ref?.entity_id,
+      g5_generation_template_version: Number(site.generated_template_ref?.authoring_version),
+      scene_template_id: scene.source_scene_template_ref?.entity_id,
+      scene_template_version: Number(scene.source_scene_template_ref?.authoring_version),
+      g6_slot_key: scene.scene_slot_key, position_slot_key: positions[0].record.template_slot_key };
+    const canonicalProfileIds = site.origin === 'canonical'
+      ? canonicalFiniteProfilesFor(canonicalNaturalApplicability, site, request.g4.id) : null;
+    if (canonicalProfileIds != null && canonicalProfileIds.length === 0) {
+      throw code('ORDINARY_NATURAL_FIRST_ENTRY_BINDING_INVALID');
+    }
+    const build = async (tx) => {
+      const naturalCapabilities = await buildFirstEntryNaturalCapabilities({ authoring,
+        binding, readProperty: readNaturalSourceProperty, transaction: tx, partyId,
+        scope, positionRef, profile, spatialProposal: proposal, canonicalProfileIds });
+      const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
+        ? await resolvePresenceRulesFirstArrival({
+          transaction: tx,
+          request,
+          site,
+          partyId,
+          scope,
+          proposal,
+          change_set_id,
+        })
+        : null;
+      return buildRows({ profile, partyId, scope, positionRef,
+        includeContextBoundCapabilities: false, initialSceneSeed: null, naturalCapabilities,
+        itemKind: 'natural_resource_portion', capabilityOnly: true, presenceContext });
+    };
+    const rows = await build(transaction);
+    const scopeKey = `${partyId}:${scope.entity_kind}:${scope.entity_id}`;
+    const scoped = { party_id: partyId, scope_kind: scope.entity_kind, scope_id: scope.entity_id };
+    const write = (target_table, record, id = scopeKey) => ({ target_table, id, record });
+    const writes = [
+      write('party_ordinary_materialization_aggregates', { ...scoped,
+        state_version: rows.aggregate.state_version, aggregate_payload: rows.aggregate }),
+      write('party_ordinary_materialization_contexts', { ...scoped,
+        catalog_version: profile.catalog_version, property_version: profile.property_version,
+        placement_version: profile.placement_version,
+        supporting_basis_catalog_version: rows.basis_catalog_version,
+        supporting_basis_catalog_digest: rows.basis_digest,
+        property_placement_context_digest: rows.property_digest,
+        property_placement_base_snapshot: rows.property_placement_context }),
+      ...rows.bases.map((basis) => write('party_ordinary_materialization_basis_catalog', {
+        ...scoped, basis_ref: basis.basis_ref, origin_request_identity: null,
+        basis_snapshot: basis }, `${scopeKey}:${basis.basis_ref}`)),
+      write('party_ordinary_materialization_enablements', { ...scoped,
+        objective_snapshot: rows.objective, objective_digest: rows.objective_digest, enabled: true }),
+      ...rows.finite_sources.map((source) => write('party_resource_nodes', {
+        resource_node_id: source.source_resource_node_id, party_id: partyId,
+        source_resource_ref: { entity_kind: 'ordinary_finite_source', entity_id: source.source_resource_node_id },
+        position_node_id: source.position_ref, quantity_numerator: source.initial_quantity,
+        quantity_denominator: 1, quantity_unit_ref: source.quantity_unit_ref,
+        quality_ref: source.quality_ref, access_policy_ref: source.access_policy_ref,
+        state_version: 1, created_change_set_id: change_set_id, updated_change_set_id: change_set_id,
+        lifecycle_state: 'active', initial_amount_bounds: source.initial_amount_bounds,
+        initialization_identity: change_set_id, initial_amount_evidence: null,
+        property_basis_ref: source.property_basis_ref }, source.source_resource_node_id))
+    ];
+    return { ok: true, approved_write_sets: [{ inserts: writes, updates: [], appends: [] }],
+      recheck: async ({ transaction: tx }) => {
+        if (canonicalDigest(await build(tx)) !== canonicalDigest(rows)) {
+          throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
+        }
+        return { ok: true };
+      } };
+  };
+}
 
 export function createOrdinaryMaterializationFirstEntryProvisioner({
   profile,
   ordinaryContainerContentsProfile = null,
   includeContextBoundCapabilities = true,
-  initialSceneSeed = null
+  initialSceneSeed = null,
+  resolvePresenceRulesFirstArrival = null,
+  partyStartPresenceOnly = false,
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
+  }
+  if (partyStartPresenceOnly && typeof resolvePresenceRulesFirstArrival !== 'function') {
+    throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
   }
   return Object.freeze({
     async provision({ transaction, partyId, firstEntryBinding, changeSetId }) {
@@ -34,9 +178,22 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
       }
       const scope = { entity_kind: 'g6', entity_id: firstEntryBinding.g6_instance_id };
+      const presenceContext = typeof resolvePresenceRulesFirstArrival === 'function'
+        ? await resolvePresenceRulesFirstArrival({
+          transaction,
+          partyId,
+          firstEntryBinding,
+          scope,
+        })
+        : null;
+      if (partyStartPresenceOnly) {
+        return provisionPartyStartPresenceOnly({
+          transaction, partyId, scope, profile, presenceContext,
+        });
+      }
       const rows = buildRows({ profile, partyId, scope,
         positionRef: firstEntryBinding.position_id,
-        includeContextBoundCapabilities, initialSceneSeed });
+        includeContextBoundCapabilities, initialSceneSeed, presenceContext });
       const existing = await transaction.query(
         `SELECT e.objective_snapshot,e.objective_digest,e.enabled,
                 a.aggregate_payload,a.state_version,c.catalog_version,
@@ -58,7 +215,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         if (!sameExisting(existing.rows[0], rows)) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
         await provisionInitialOrdinaryContainer({transaction,partyId,
           firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
-        return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
+        return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope),
+          ...(rows.presence_gaps?.length ? { presence_gaps: rows.presence_gaps } : {}) });
       }
       await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
         (party_id,scope_kind,scope_id,state_version,aggregate_payload)
@@ -85,19 +243,21 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
         VALUES ($1,$2,$3,$4::jsonb,$5,TRUE)`, [partyId, scope.entity_kind, scope.entity_id,
         JSON.stringify(rows.objective), rows.objective_digest]);
-      if (rows.finite_source != null) {
+      for (const source of rows.finite_sources) {
         await insertFirstEntryFiniteSource({ transaction, partyId, changeSetId,
-          source: rows.finite_source });
+          source });
       }
       await provisionInitialOrdinaryContainer({transaction,partyId,
         firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
-      return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
+      return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope),
+        ...(rows.presence_gaps?.length ? { presence_gaps: rows.presence_gaps } : {}) });
     }
   });
 }
 
 function buildRows({ profile, partyId, scope, positionRef,
-  includeContextBoundCapabilities, initialSceneSeed }) {
+  includeContextBoundCapabilities, initialSceneSeed, naturalCapabilities = [], itemKind = 'man_made',
+  capabilityOnly = false, presenceContext = null }) {
   const basisRef = `${profile.profile_id}:basis`;
   const propertyBasisRef = profile.context_refs?.property_context_ref;
   const placementContextRef = `${profile.profile_id}:placement`;
@@ -109,7 +269,8 @@ function buildRows({ profile, partyId, scope, positionRef,
       profile, partyId, scope, positionRef
     })
     : null;
-  const committedBases = [basis, ...(o2a == null ? [] : [o2a.basis])]
+  const capabilities = [...(o2a == null ? [] : [o2a]), ...naturalCapabilities];
+  const committedBases = [...(capabilityOnly ? [] : [basis]), ...capabilities.map((entry) => entry.basis)]
     .sort((left, right) =>
     left.basis_ref.localeCompare(right.basis_ref));
   const seedRequestIdentity = initialSceneSeed == null
@@ -119,21 +280,21 @@ function buildRows({ profile, partyId, scope, positionRef,
     allowed_supporting_bases: committedBases.map(({ basis_ref }) => ({ basis_ref,
       basis_state: 'committed' })) };
   const property = { schema: 'rus.items.ordinary_world_property_placement_context.v2',
-    version: 2, scope_ref: scope, item_kind: 'man_made',
+    version: 2, scope_ref: scope, item_kind: itemKind,
     property_catalog_version_ref: `${profile.profile_id}:property-catalog`,
     placement_catalog_version_ref: `${profile.profile_id}:placement-catalog`,
-    explicit_item_source_refs: o2a == null ? [] : [o2a.basis.basis_ref],
+    explicit_item_source_refs: capabilities.map((entry) => entry.basis.basis_ref),
     personal_possession_refs: [], communal_public_service_refs: [],
-    container_property_refs: [], occupied_site_refs: [basisRef], unowned_cause_refs: [],
-    placement_context_refs: [placementContextRef], property_catalog: [{
+    container_property_refs: [], occupied_site_refs: capabilityOnly ? [] : [basisRef], unowned_cause_refs: [],
+    placement_context_refs: [placementContextRef], property_catalog: [...(capabilityOnly ? [] : [{
       property_basis_ref: propertyBasisRef, state: 'committed', scope_ref: scope,
       basis_class: 'occupied_site_default', source_ref: basisRef,
       unowned_cause_ref: null, unowned_cause_kind: null
-    }, ...(o2a == null ? [] : [{
-      property_basis_ref: o2a.property_basis_ref, state: 'committed', scope_ref: scope,
-      basis_class: 'explicit_source_item', source_ref: o2a.basis.basis_ref,
+    }]), ...capabilities.map((entry) => ({
+      property_basis_ref: entry.property_basis_ref, state: 'committed', scope_ref: scope,
+      basis_class: 'explicit_source_item', source_ref: entry.basis.basis_ref,
       unowned_cause_ref: null, unowned_cause_kind: null
-    }])], placement_catalog: [{ position_ref: positionRef, state: 'committed',
+    }))], placement_catalog: [{ position_ref: positionRef, state: 'committed',
       scope_ref: scope, position_kind: 'scene_position', g6_ref: scope.entity_id,
       containment_depth: 1, placement_context_ref: placementContextRef }] };
   const contextRefs = structuredClone(profile.context_refs);
@@ -148,9 +309,15 @@ function buildRows({ profile, partyId, scope, positionRef,
   } catch { throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID'); }
   const initial = createOrdinaryAggregate({ scope_ref: scope,
     resolution_record_cap: profile.technical_limits.max_resolution_records });
+  const presenceResult = applyResolvedPresenceRulesFirstArrival({
+    aggregate: initial,
+    context: presenceContext,
+  });
+  const aggregateWithPresence = presenceResult.aggregate;
   const seeded = seedInitialScene({ profile, request: seedRequest,
-    initial, committedBasis: basis, committedBases, initialSceneSeed });
-  const bases = [...committedBases, ...seeded.committedSeedBases]
+    initial: aggregateWithPresence, committedBasis: basis, committedBases, initialSceneSeed });
+  const seededWithPresence = seeded;
+  const bases = [...committedBases, ...seededWithPresence.committedSeedBases]
     .sort((left, right) => left.basis_ref.localeCompare(right.basis_ref));
   const policyRefs = { ...seedPolicyRefs,
     allowed_supporting_bases: bases.map(({ basis_ref }) => ({ basis_ref,
@@ -159,15 +326,16 @@ function buildRows({ profile, partyId, scope, positionRef,
     scope_ref: scope, context_refs: contextRefs, policy_refs: policyRefs,
     technical_limits: structuredClone(profile.technical_limits), execution_context: {
       ...structuredClone(profile.execution), supporting_bases: bases,
-      context_bound_capabilities: o2a == null ? [] : [o2a.capability],
+      ...(capabilityOnly ? { scope_presence_enabled: false } : {}),
+      context_bound_capabilities: capabilities.map((entry) => entry.capability),
       stage_b_classification_eval:
         structuredClone(profile.stage_b_classification_eval),
       candidate_context: { ...structuredClone(profile.execution.candidate_context),
         target_ref: scope.entity_id }, source_refs: [basisRef, propertyBasisRef,
         positionRef, placementContextRef,
         ...bases.map(({ basis_ref }) => basis_ref)].sort() } };
-  return { aggregate: seeded.aggregate,
-  bases, finite_source: o2a?.finite_source ?? null,
+  return { aggregate: seededWithPresence.aggregate,
+  bases, finite_sources: capabilities.map((entry) => entry.finite_source),
   basis_catalog_version: seeded.committedSeedBases.length === 0 ? 0 : 1,
   basis_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1',
     supporting_bases: bases }), property_placement_context: property,
@@ -175,7 +343,7 @@ function buildRows({ profile, partyId, scope, positionRef,
     supporting_basis_ref: 'phase6_context_digest_only',
     causal_basis_refs: ['phase6_context_digest_only'],
     requested_position_ref: 'phase6_context_digest_only' }), objective,
-  objective_digest: canonicalDigest(objective) };
+  objective_digest: canonicalDigest(objective), presence_gaps: presenceResult.presence_gaps };
 }
 
 function sameExisting(row, expected) {
@@ -192,6 +360,44 @@ function sameExisting(row, expected) {
       === canonicalDigest(expected.property_placement_context)
     && canonicalDigest(row.bases) === canonicalDigest(expected.bases);
 }
+async function provisionPartyStartPresenceOnly({ transaction, partyId, scope, profile, presenceContext }) {
+  if (!presenceContext?.rules?.length) {
+    // Empty presence is legal (§3A.1: no rule = absent). The typed gap is diagnostic only and is not stored.
+    if (!text(presenceContext?.presence_gap)) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
+    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope),
+      presence_gap: presenceContext.presence_gap });
+  }
+  const initial = createOrdinaryAggregate({
+    scope_ref: scope,
+    resolution_record_cap: profile.technical_limits.max_resolution_records,
+  });
+  const presenceResult = applyResolvedPresenceRulesFirstArrival({
+    aggregate: initial,
+    context: presenceContext,
+  });
+  const aggregate = presenceResult.aggregate;
+  const existing = await transaction.query(
+    `SELECT aggregate_payload, state_version
+       FROM party_runtime.party_ordinary_materialization_aggregates
+      WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3
+      FOR UPDATE`,
+    [partyId, scope.entity_kind, scope.entity_id],
+  );
+  if (existing.rowCount === 1) {
+    if (canonicalDigest(existing.rows[0].aggregate_payload) !== canonicalDigest(aggregate)) {
+      throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
+    }
+    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope),
+      ...(presenceResult.presence_gaps.length ? { presence_gaps: presenceResult.presence_gaps } : {}) });
+  }
+  await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
+    (party_id,scope_kind,scope_id,state_version,aggregate_payload)
+    VALUES ($1,$2,$3,$4,$5::jsonb)`, [partyId, scope.entity_kind, scope.entity_id,
+    aggregate.state_version, JSON.stringify(aggregate)]);
+  return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope),
+    ...(presenceResult.presence_gaps.length ? { presence_gaps: presenceResult.presence_gaps } : {}) });
+}
+
 function seedInitialScene({ profile, request, initial, committedBasis,
   committedBases,
   initialSceneSeed }) {

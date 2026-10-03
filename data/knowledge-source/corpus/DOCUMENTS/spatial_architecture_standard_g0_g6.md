@@ -1,8 +1,8 @@
 # Архитектурный стандарт пространственной модели G0–G6 и сценической топологии
 
 **Статус:** `active production`; release `spatial-v3-production-v1`<br>
-**Версия:** `4.2.0`<br>
-**Дата:** `2026-07-23`<br>
+**Версия:** `4.7.0`<br>
+**Дата:** `2026-09-30`<br>
 **Проект:** «Русь XIII век»<br>
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`, ветка `main`<br>
 **Базовая ревизия:** `520c0ea8cc366fc16c949a874c710f3547a322f6`<br>
@@ -16,7 +16,7 @@
 
 ### 0.1. Назначение
 
-Документ определяет целевую пространственную архитектуру после materialization v2. Он устраняет смешение масштаба, сцены, позиции и маршрута и задаёт единую реализационную модель:
+Документ определяет действующую пространственную архитектуру после materialization v2 (формулировка «действующий» вместо «целевой»: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.11). Он устраняет смешение масштаба, сцены, позиции и маршрута и задаёт единую реализационную модель:
 
 ```text
 G0 → G1 → G2 → G3 → G4 → G5 → G6
@@ -64,11 +64,12 @@ G7 и G8 не вводятся.
 
 1. нормативная проза разделов 0–17 задаёт обязанности, инварианты и алгоритмы;
 2. приложение A задаёт закрытые словари и state machines;
-3. приложение B содержит единственное полное логическое определение каждого implementation contract;
-4. приложение C задаёт закрытый реестр typed errors;
-5. приложения D–E содержат release checklist и результат внутреннего аудита.
+3. приложение B содержит полное логическое определение каждого implementation contract; одноимённый блок приложения F заменяет блок B, а B остаётся исторической базой;
+4. приложение C задаёт закрытый реестр typed errors, дополняемый таблицей F.2;
+5. приложение F (amendment 4.7.0) задаёт заменяющие и новые machine contracts и typed errors и имеет приоритет над B и C для одноимённых объявлений;
+6. приложения D–E содержат release checklist и результат внутреннего аудита.
 
-Один `contract_name` объявляется в приложении B ровно один раз. Схемы, примеры и исторические варианты вне приложения B не являются альтернативными contracts. Любой пример обязан иметь явную метку `example_only: true`.
+Один `contract_name` объявляется в приложении B ровно один раз; блок приложения F с тем же именем заменяет это объявление (§0.9), поэтому действующее объявление всегда одно. Схемы, примеры и исторические варианты вне приложения B не являются альтернативными contracts. Любой пример обязан иметь явную метку `example_only: true`.
 
 При конфликте между нормативной прозой и contract schema реализация блокируется как `normative_contract_conflict`; разработчик не выбирает удобную трактовку.
 
@@ -121,8 +122,8 @@ boundary применяется release `spatial-v3-production-v1`.
 
 Внутренний цикл считается завершённым с нулём замечаний только если одновременно:
 
-- отсутствуют неразрешённые противоречия между разделами 0–17 и приложениями A–C;
-- каждый `contract_name` объявлен ровно один раз, а каждый contract type разрешается в primitive, canonical contract или явно зарегистрированный controlled vocabulary;
+- отсутствуют неразрешённые противоречия между разделами 0–17 и приложениями A–C и F;
+- каждый `contract_name` имеет ровно одно действующее объявление (в приложении B либо заменяющий его блок приложения F), а каждый contract type разрешается в primitive, canonical contract или явно зарегистрированный controlled vocabulary;
 - отсутствуют рабочие placeholders, незакрытые schema branches и альтернативные трактовки одного state transition;
 - historical target-правила не смешиваются с действующим v3 runtime и не
   возвращают materialization v2 как fallback после атомарной активации;
@@ -153,6 +154,39 @@ migration/rollback source.
 пространственной прозой §11 и соответствующими Appendix B temporal contracts;
 до синхронного изменения этих contracts операция блокируется как
 `normative_contract_conflict`.
+
+### 0.9. Amendment 4.7.0: линии, время перехода между местами, ближний порог видимости, развилки, разворот
+
+Amendment вводит:
+
+- линию как общую идентичность перехода между двумя G5 и сегмента world route (§4.7.2): вид, описательное имя, различитель, направление, топоним, минуты;
+- каноническую связь G5–G5 в `world_base` и её проекцию в party runtime (§4.7.1, §6.6.1);
+- обязательное game time для любого перехода между местами (§1.4, A.16);
+- определение развилки (§4.5.1), срезы recheck длинного сегмента вместо предела длины (§4.5.2) и разворот в точке маршрута и посреди segment (§4.10, §4.10.1);
+- ближний порог и ступени плохой видимости (§7.1.1);
+- проекцию хода игроку без позиций и порядковых подписей, с грубой длительностью (§14.4);
+- реестр контролируемых словарей версии 5 (B.0.1);
+- Приложение F: machine contracts и typed errors amendment. Блоки Приложения F заменяют одноимённые блоки Приложения B и добавляют новые; при конфликте приоритет у Приложения F (по образцу §0.8). Yaml-блоки Приложения B и таблица Приложения C остаются неизменными.
+
+**Применимость к v17.** Machine contracts этой редакции — `4.7.0-target.1`. Production runtime v17 до код-этапа расходится с нормой: переход между местами исполняется как action-cost без времени (`spatial-v3-site-traversal-runtime.js:33,155`); подготовка канонической связи в rt-walk (`prepareCanonicalConnection`, `b77663a3`, fleet/rt-walk) — отдельный P16-коммит `resolve_frontier:canconn:<party>:<binding>` без члена `preparation_snapshot` и с trigger `frontier_resolution`, тогда как по норме проекция — член `PrepareTargetSnapshot` с trigger `canonical_connection`; подписи переходов порядковые («Проход N», «— выход N»). Эти расхождения — долг реализации (LW-097), они не делают норму proposed и не допускают частичной активации (§0.4).
+
+**Правка 2026-09-30 (решения владельца D3, D56; rt-lines, LW-097).** Внутри amendment 4.7.0, до его код-этапа:
+
+1. Потолок «сегмент ≤ 30 минут» и поле `max_segment_minutes` профиля вида убраны; длинный сегмент режется политикой recheck, правило срезов одно на мир (§4.5.2); typed error `route_segment_too_long` заменён на `line_recheck_slicing_missing` (F.2).
+2. `availability_condition_set_ref` у `canonical_g5_connection_binding` необязателен (`null` для связи без портала; F binding).
+3. Разворот посреди segment разрешён (§4.10.1) с исходом `returned_to_departure` (§11.6, F.1.1); прежний запрет «не посреди segment» снят.
+4. Точки маршрута вводятся только на реальных приметах, развилках и границах контекста, не по длине и не по таймеру (§4.5.2).
+5. `dynamic_recheck_policy` получила вид `fixed_time_interval` и поле `interval_minutes` (как в DDL `13.sql` и в утверждённых политиках `recheck.*`): норма отставала от DDL и данных (F.1.1).
+6. Приложение B и принятые temporal-блоки A.1–A.6 не менялись (исторические снимки `4.2.0-target.1` и `4.3.0-target.1` прежние): новые поля, исходы и инварианты живут только в F (`dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result`, F.1.1).
+7. Устаревшее описание видимости в «Применимости к v17» снято: линии при плохой видимости предлагаются (§7.1.1; rt-lines, фаза 0).
+
+Версия документа и machine contracts (`4.7.0`, `4.7.0-target.1`) не меняются: amendment ещё не реализован кодом (LW-097), у его machine contracts нет потребителей, кроме генераторов и тестов; изменённые блоки пересоздаются генераторами.
+
+Пересечения Приложения F с temporal-приложениями — два блока: `preparation_snapshot_member` (F = Temporal World v4 A.7 + член `canonical_connection`) и `party_traversal_interval_result` (F = Temporal A.6 + `turn_back` и исход `returned_to_departure`, F.1.1); правка соответствующего блока temporal-приложения требует одновременной правки F (проверяет `check-p01.mjs`). Temporal §13 (исходы traversal) и A.6 «шесть исходов» относятся к редакции 4.3: седьмой исход добавляет эта редакция (Temporal §13 отсылает сюда).
+
+Ссылки на action-cost `site_connection` в `action_step_static_snapshot` и `party_route_plan_step` (Приложение B) после этой редакции неприменимы: `site_connection` имеет только `cost_kind=time` (§1.4), а action-cost `relation_ref` допустим только для `scene_movement_edge`.
+
+Amendment не меняет приоритет temporal-документа (§0.8), границу hidden information (§7.5, §14.2) и неизменяемость committed world (§1.7): линии, развилки, точки и минуты вводятся новыми версиями authoring-записей; уже записанные party facts не переписываются.
 
 ---
 
@@ -199,20 +233,23 @@ position — где именно внутри G6?
 ### 1.3. Containment не является movement
 
 ```text
-contains            = структурная вложенность;
-scene_edge          = переход между scene positions;
-site_connection     = переход между G5 одного G4;
-world_route_segment = физический участок дальнего маршрута;
-visibility_link     = устойчивая линия обзора;
-acoustic_edge       = путь передачи звука;
-visual_edge_path    = способ отрисовки уже существующей relation.
+contains             = структурная вложенность;
+scene_edge           = переход между scene positions внутри одной сцены;
+canonical_connection = авторский переход между двумя canonical G5 одного G4 (world_base);
+site_connection      = party-проекция canonical_connection либо связь generated G5 внутри одного G4;
+world_route_segment  = физический участок дальнего маршрута;
+visibility_link      = устойчивая линия обзора;
+acoustic_edge        = путь передачи звука;
+visual_edge_path     = способ отрисовки уже существующей relation.
 ```
 
 Общий parent, близость на canvas или совпадение названий не создают физический переход.
 
 ### 1.4. Стоимость принадлежит явному действию
 
-`immediate_action` расходует только action units и не продвигает game time. Он может атомарно изменить endpoint по action-cost `scene_edge` или `site_connection`, но не создаёт непрерывный segment progress и не имеет `traveller_travel_state`. Любое действие, которое должно продвинуть часы, моделируется как `timed_activity` или `timed_traversal`; скрыто добавлять минуты к immediate action запрещено.
+`immediate_action` расходует только action units и не продвигает game time. Он может атомарно изменить endpoint только по action-cost `scene_movement_edge` внутри одной сцены (одного scene host), но не создаёт непрерывный segment progress и не имеет `traveller_travel_state`. Любое действие, которое должно продвинуть часы, моделируется как `timed_activity` или `timed_traversal`; скрыто добавлять минуты к immediate action запрещено.
+
+Переход между местами никогда не является `immediate_action`. Каждая `site_connection` и каждый `world_route_segment` имеет `cost_kind=time` и исполняется как `timed_traversal` по одному physical segment. Вход в соседнее место без game time невозможен; без game time допустим только переход внутри одной сцены.
 
 Game time расходуется только на:
 
@@ -418,6 +455,8 @@ scene_position.hazard_boundary
 
 Позиции возле движимого предмета или NPC не являются устойчивыми и моделируются placement/relative relations.
 
+Позиции — технические вершины сцены. Игроку они не показываются: переход между местами проходит через исходную и целевую сцену как один шаг одной линии (§4.7.2, §14.4). Позиция попадает в player projection только если у неё есть механическое действие внутри сцены (доступ, укрытие, обзор, hazard, interaction), а не потому, что она входит в шаблон.
+
 ### 2.9. Spatial class и facets
 
 Каждая spatial entity имеет ровно один основной `spatial_class_id`. Независимые признаки хранятся как facets: function, landform, land cover, water context, route role, access, hazard, temporality, evidence и другие утверждённые dimensions.
@@ -573,7 +612,7 @@ factual bearing     = orientation approved physical segment at current progress;
 perceived bearing   = значение navigation_belief.
 ```
 
-`direction_context_id` обозначает approved semantic corridor: cardinal direction, upstream/downstream, along-road, along-shore, toward-landmark и другие controlled values. Semantic context преобразуется в factual bearing только через конкретный approved segment orientation profile. Ambiguous free text is resolved only by clarification or a finite player-safe option set; it never creates a new context and never authorizes LLM/first-row route selection.
+`direction_context_id` обозначает approved semantic corridor. Классифицирующее значение — `controlled_direction_context` (registry v5): восемь сторон света (`north`, `northeast`, `east`, `southeast`, `south`, `southwest`, `west`, `northwest`), `upstream`, `downstream`, `uphill`, `downhill`, `landward`, `waterward`, `inward`, `outward`, `forward`, `backward`, `left`, `right` и три значения версии 5: `along_road`, `along_shore`, `toward_landmark`. Других значений нет. Semantic context преобразуется в factual bearing только через конкретный approved segment orientation profile. Ambiguous free text is resolved only by clarification or a finite player-safe option set; it never creates a new context and never authorizes LLM/first-row route selection.
 
 ### 4.3. G4 traversal model
 
@@ -600,6 +639,8 @@ physical_boundary → реальная непроходимая природна
 
 Один gateway может обслуживать несколько direction contexts и routes. Один context может иметь несколько alternatives. Runtime возвращает конечный option set и не выбирает route по nearest/first/layout heuristic.
 
+Из любого G5 можно выйти в каждую сторону света, если выход физически не закрыт. Путь от G5 до exit G5 сектора — линии внутри G4, время суммируется. `physical_boundary` применяется только к реально непроходимому (отвесная скала без спуска, глухая стена); проходимое при условии — спуск с верёвкой или навыком, река лодкой, брод в межень, лёд зимой — является линией с `availability_condition_set_ref` (§4.13), а не границей. Водная линия (река, протока, озеро, брод, перевоз) никогда не закрывается из-за отсутствия транспорта или умения: если базовый метод недоступен, линия проходима альтернативным методом из `alternative_methods` своего `line_kind_profile` (вплавь, на подручном средстве), с более высоким классом риска и/или временем. Закрыта только физическая граница, то есть реально непроходимое. Причина закрытого выхода называется физически и доходит до игрока (§14.4).
+
 ### 4.5. World route
 
 `world_route` — directed authoring container ровно одного конечного пути от одного canonical G5 endpoint к одному canonical G5 endpoint. Route не является physical segment и не имеет единого terrain/time value.
@@ -621,9 +662,26 @@ point[n] = endpoint_to
 - ровно один `endpoint_to` с максимальным ordinal;
 - `segment[i]` соединяет `point[i]` с `point[i+1]`;
 - branch/cycle внутри route запрещены;
-- развилка моделируется несколькими route IDs через canonical junction;
-- reverse direction является отдельной route;
-- одна endpoint pair может иметь любое конечное число distinct routes.
+- развилка моделируется несколькими route IDs, начинающимися или сходящимися в одном canonical G5 (§4.5.1);
+- reverse direction является отдельной route, зеркальной прямой: точке k соответствует точка n−k, сегменту i — сегмент n−1−i; base_minutes, method и availability независимы от прямой (вверх и вниз по реке — разное время);
+- одна endpoint pair может иметь любое конечное число distinct routes;
+- route может проходить через несколько G4/G1 (internal points `waypoint`, `boundary`, `checkpoint`); её время равно сумме времён её segments.
+
+### 4.5.1. Развилка
+
+Развилка — canonical G5, в котором начинаются или сходятся не менее двух lines: world routes и/или canonical connections. Это производное свойство: отдельной записи оно не имеет.
+
+Любая точка, где можно свернуть вперёд на другую линию или где остановка — место со сценой и действиями (перекрёсток, пристань, брод с отходящей тропой), является canonical G5 и endpoint своих routes. G5 вводится только при реальной примете или реальном выборе. Ожидание на внутренней точке маршрута (`waiting_at_anchor`, §4.10) G5 не требует. Internal route point (`waypoint`, `boundary`, `checkpoint`) выбора вперёд не даёт: `ordinary_waypoint` pin-ит ровно одно authored forward continuation, а единственная альтернатива на нём — разворот (§4.10), кроме утверждённых checkpoint departures на `shared_checkpoint` (`checkpoint_departure_template`): это route-anchor scene существующего механизма, а не развилка; новые развилки авторятся как canonical G5 junction. Один `g4_directional_exit` может обслуживать несколько routes (§4.4).
+
+### 4.5.2. Срезы длинного сегмента
+
+Потолка длины сегмента нет (решение владельца D56): сегмент может занимать любое число минут, топология от его длины не зависит. Правило мира: у сегмента (`site_connection`, `canonical_g5_connection_binding`, `world_route_segment`) с `base_minutes` больше 30 политика `dynamic_recheck_policy` его `line_kind_profile` режет его на срезы не длиннее 30 минут: для `fixed_time_interval` — игрового времени, для прогрессивных видов — минут прогресса (доли `base_minutes`):
+
+- `fixed_time_interval` с `interval_minutes` (игровое время) не больше 30; или
+- `fixed_progress_slices`, у которой `base_minutes` × `progress_slice_ppm` (минуты прогресса) не больше 30 × 1 000 000; или
+- `explicit_progress_points`, у которых любые два соседних среза, включая концы сегмента, не длиннее 30 минут прогресса (`base_minutes`).
+
+Нарушение — data gap `line_recheck_slicing_missing`. Срез — граница пересчёта условий (§10.6, §11), а не остановка и не место: внутри segment ничего не появляется. Internal route point (`waypoint`, `boundary`, `checkpoint`) вводится только там, где есть реальная примета, развилка или граница контекста (§4.5.1, §4.11), а не по длине и не по таймеру: длинный путь без примет остаётся одним segment со срезами. Reverse route делится теми же точками зеркально.
 
 ### 4.6. Physical segment
 
@@ -636,7 +694,8 @@ point[n] = endpoint_to
 - base time;
 - dynamic recheck policy;
 - risk and availability conditions;
-- factual spatial context.
+- factual spatial context;
+- line identity: `line_kind_id`, `line_name`, `line_discriminator`, `line_direction_id`, `line_toponym` (§4.7.2).
 
 Physical segment kinds:
 
@@ -662,6 +721,39 @@ to   → position target site.
 ```
 
 Если физически существует несколько entrances, создаются distinct connections или routes, а не priority list одной связи.
+
+Обратная связь пары начинается со слота, куда пришла прямая, и заканчивается слотом, откуда вышла прямая: `reverse.from` = `forward.to`, `reverse.to` = `forward.from` (paired-slot rule, §6.5). Позиции игроку не показываются (§14.4), поэтому шаблоны сцен для этого не перевыпускаются.
+
+Переход через `site_connection` всегда time-cost (§1.4).
+
+### 4.7.1. Canonical G5 connection
+
+`canonical_g5_connection_binding` (world_base_authoring) — авторская направленная связь между двумя canonical G5 одного G4. Она ссылается на `line_kind_profile` (метод, cost profile, recheck policy, среда — по виду линии), несёт собственные `base_minutes`, risk и availability и принадлежит физической паре (`source_pair_ref`) с обратной binding (`reverse_binding_ref`). Пара — одна физическая линия в обе стороны.
+
+В party runtime связь появляется только как проекция: `g5_site_connection` + два `party_site_connection_endpoint_binding`, созданные trigger `canonical_connection` (§6.6.1). Проекция не является frontier resolution и не движет traveller.
+
+### 4.7.2. Линия
+
+Line — общее свойство `canonical_g5_connection_binding`, `g5_site_connection`, generated connection (через `expansion_slot`) и `world_route_segment`:
+
+```text
+line_kind_id       controlled_line_kind (registry v5);
+line_name          описательное имя по самой линии (не по месту назначения);
+line_discriminator различитель, optional;
+line_direction_id  направление линии, optional controlled_direction_context из подмножества ниже;
+line_toponym       собственный топоним линии, optional; в player projection только когда открыт знанием;
+base_minutes       время (§11.1) от края исходного места до края целевого.
+```
+
+Rules:
+
+- `line_kind_id` и `line_name` одинаковы у обеих сторон физической пары (`source_pair_ref` / `reverse_*`); `line_discriminator`, минуты, method и availability у сторон могут различаться;
+- `line_direction_id` — только абсолютные значения: восемь сторон света, `upstream`/`downstream`, `uphill`/`downhill`, `landward`/`waterward`. У обратной линии — инверсия: north↔south, northeast↔southwest, east↔west, southeast↔northwest, upstream↔downstream, uphill↔downhill, landward↔waterward; null допустим у обеих сторон пары. Направление задано явно данными (авторский источник; runtime координаты не читает; layout направления не создаёт, §14.1);
+- `base_minutes` считается от края исходного места до края целевого; проход через места (arrival/focus/departure) отдельного времени не добавляет;
+- порядковые подписи («Проход N», «— выход N», любой номер вместо имени) запрещены в player projection и в authoring; `line_name` и `line_discriminator` не пусты, не содержат десятичных цифр, порядковых слов из approved стоп-листа и основы названия целевого места (сверка по нормализованной форме: NFC, casefold, без пунктуации);
+- среди активных исходящих линий одного места (canonical connections, site connections, first segment каждой route от exit G5 и ходы anchor, §4.10) нет двух с одинаковым кортежем (`line_name`, `line_discriminator`, `line_direction_id`); совпадение — authoring/materialization data gap, а не повод добавить номер;
+- у многосегментной route подпись хода берётся из её first segment;
+- `line_name`, `line_discriminator`, `line_direction_id`, `line_toponym` — канонические семантические поля строки, входят в её digest и не являются layout-полями (A.1).
 
 ### 4.8. Scene edge
 
@@ -698,9 +790,31 @@ Transit anchor:
 - не раскрывает свободный выбор направления;
 - хранит arrival/departure side contexts and one authored switch phase;
 - хранит active side для любого internal point; при равных side contexts переключение является no-op;
-- может иметь checkpoint departures только из approved templates.
+- может иметь checkpoint departures только из approved templates;
+- имеет ход «дальше» (единственное authored forward continuation) и, если у маршрута есть обратный (`reverse_route_ref`), ход «назад» (разворот). Разворот доступен на каждой внутренней точке такого маршрута любого вида (`ordinary_waypoint`, `boundary_wait`, `shared_checkpoint`); разворот посреди segment — §4.10.1; на одностороннем маршруте (без reverse route) хода «назад» нет. Физически односторонний участок авторы моделируют обратным маршрутом с недоступным зеркальным сегментом (§4.13), а не отсутствием обратного маршрута;
+- ход «назад» — departure зеркальной точки `(R′, n−k)` обратного маршрута: anchor точки k route R и anchor зеркальной точки обратного route R′ обозначают одно физическое место. При исполнении такого departure anchor перепривязывается к R′ без отдельного шага и без времени (технический endpoint rebinding, §1.4, последний абзац); новый вид шага не вводится, следующий шаг — обычный `timed_traversal` reverse segment с учётом его доступности (A.9);
+- для `boundary_wait` ход «назад» не пересекает границу: стороны границы для обратного маршрута инвертированы; для `shared_checkpoint` действует то же правило;
+- ветвление вперёд на anchor невозможно: оно только в canonical G5 (§4.5.1); исключение — утверждённые checkpoint departures на `shared_checkpoint` (`checkpoint_departure_template`): это route-anchor scene существующего механизма, а не развилка; новые развилки авторятся как canonical G5 junction.
 
 Scene-level checkpoint/interruption использует отдельный route-anchor aggregate.
+
+### 4.10.1. Разворот посреди segment
+
+Пока travel state в статусе `paused_in_transit` (§10.8), игрок вместо «дальше» может выбрать «назад»: путь от текущего прогресса назад по той же линии. Условие разворота — статус travel state, а не вид предыдущего результата: после отказа (`blocked_before_progress`) состояние остаётся `paused_in_transit`, и «назад» можно повторить. Путь назад не является relocation: место не меняется.
+
+Предложение игроку и исполнение разведены. Предлагается «назад» (проекция §14.4), когда у segment есть зеркальный segment (reverse route, reverse binding или reverse connection, §4.5, §4.7.1) и его последний известный dynamic access (A.9) пропускает; если зеркального segment нет, хода «назад» нет (физически односторонний участок — недоступный зеркальный segment, §4.13). При исполнении dynamic access проверяется заново; отказ описан ниже («Отказ»).
+
+Прогресс зеркалится по доле пути: прогресс p на segment S становится 1 000 000 − p на зеркальном segment S′. Минуты, способ, факторы и доступность берутся у S′ (минуты сторон независимы, §4.7.2): оставшееся время равно `base_minutes(S′)` × факторы × (p / 1 000 000) по §11.2. Разворот не имеет собственного времени: он входит в первый интервал обратного хода (`turn_back`, F.1.1), который может закончиться и `paused_in_transit` при нулевом времени.
+
+Разворот — одно атомарное преобразование travel state в коммите результата этого интервала: `mirrored` переключается и прогресс p заменяется на 1 000 000 − p. `progress_before_ppm` первого обратного интервала равен зеркальному прогрессу, а не прежнему `actual_progress_after_ppm`; это единственное исключение из правила непрерывности (§11.5), все остальные интервалы начинаются с прежнего `actual_progress_after_ppm` своей стороны. `last_confirmed_endpoint_ref` не меняется: это departure endpoint исходного segment (для зеркального segment — его arrival endpoint).
+
+- **Повторный разворот.** Из `paused_in_transit` на зеркальной стороне «назад» снова зеркалит прогресс (`mirrored` возвращается в false) по тем же правилам; если интервал после такого разворота доходит до 1 000 000, он заканчивается `segment_completed` (прямая сторона, §10.7), а не `returned_to_departure`.
+- **Нулевой прогресс.** Пауза при прогрессе 0 — не транзит: `paused_in_transit` всегда имеет прогресс 1..999 999 (§10.8). Явная пауза или прерывание после коммита старта (§10.5, travel state уже создан с прогрессом 0), до первого физического продвижения, заканчивается исходом `interrupted_at_anchor` на якоре точки отправления (§10.9): путник не уходил, travel state закрывается с `closed_result` `interrupted_to_anchor` и прогрессом 0, execution переходит в `waiting_at_anchor` на departure endpoint. Разворот не нужен и тупика нет: зеркало нуля (1 000 000) не возникает.
+- **Отказ.** Если при исполнении dynamic access зеркального segment не пропускает, интервал заканчивается обычным `blocked_before_progress` с `turn_back` false и собственным `result_code` `turn_back_refused` (он отличает отказ разворота от блокировки прямого хода): `mirrored` и прогресс не меняются, travel state остаётся `paused_in_transit`, меняются только аудиторские поля; «назад» можно повторить.
+- **Исходы.** Интервал с `turn_back` true (тот же атомарный переворот в коммите) допускает исходы `progressed`, `paused_in_transit`, `interrupted_at_anchor` (прерывание; якорь — якорь маршрута стороны, которую интервал проходит, §4.10) и `stranded` (пробел данных, §11.6): у этих сигналов §11.6 есть законный исход и в первом интервале после разворота. Завершающий исход выводится из направления после коммита: если `mirrored` стало true — `returned_to_departure` на конце зеркального segment; если `mirrored` стало false (повторный разворот с зеркальной стороны) — `segment_completed` на конце исходного segment. Противоположный завершающий исход невозможен. `blocked_before_progress` при `turn_back` true невозможен: отказ — это выше.
+- **Replay.** Результат интервала — append-only запись под idempotency lease; зеркалирование входит в её коммит. Повтор того же запроса возвращает зафиксированный результат и не зеркалит второй раз.
+
+Обратный ход заканчивается исходом `returned_to_departure` на departure endpoint исходного segment (§10.7.1, §11.6); execution переходит в `waiting_at_anchor` на этом endpoint, оставшиеся шаги плана не диспатчатся (новый план строится от endpoint). Срезы (§4.5.2) действуют на обеих сторонах.
 
 ### 4.11. Boundary crossing
 
@@ -746,6 +860,8 @@ base relation lifecycle
 ```
 
 Любой применимый `full` blocker закрывает relation. Если действуют только `capacity_reduction`, effective capacity равна минимуму base capacity и всех declared reduced capacities; значения не суммируются и не выбираются по first-row order. Occupancy выводится под locks из active travel states, authoritative journey locations, actor carrier positions and entity placements с их pinned capacity units; отдельный неподтверждённый counter не является источником истины.
+
+Видимость и освещение в этот порядок не входят. Линия не закрывается из-за плохой видимости: ближний порог и класс плохой видимости — §7.1.1.
 
 ---
 
@@ -881,7 +997,7 @@ load frontier/profile and normalized capacity state under global locks
 → for connection terminal resolution, resolve the exact target party site
 → if world_route_exit lacks its canonical party projection, create that projection from the pinned canonical G5
 → materialize any missing mandatory target endpoint scene/position from the one approved pinned profile
-→ create the site connection and both exact role-aware endpoint bindings
+→ create the site connection pair (forward and reverse, paired-slot rule §6.5) and their exact role-aware endpoint bindings
 → consume source frontier
 → for generation, apply exactly one g5_successor_frontier_rule:
      through site = exactly one through_successor;
@@ -961,6 +1077,7 @@ G6 materialization запускается только:
 
 - при target preparation до activation plan;
 - вместе с creation generated G5;
+- при проекции canonical connection (§6.6.1);
 - при подготовке approved reusable checkpoint;
 - при interruption scene creation;
 - при explicit migration;
@@ -975,6 +1092,7 @@ Ordinary arrival к обязательному endpoint не является м
 ```text
 PrepareTargetSnapshot
 → materialize all mandatory endpoint/transfer scene members
+→ for a canonical_connection member: project the authored connection (§6.6.1) in this same transaction
 → resolve exact position bindings
 → pin dependencies and digests
 → persist immutable preparation_snapshot
@@ -1001,8 +1119,12 @@ endpoint
 — exact resolved endpoint snapshot;
 
 transfer_scene
-— exact scene baseline, G6 and position needed for multimodal transfer.
+— exact scene baseline, G6 and position needed for multimodal transfer;
+
+canonical_connection
+— exact authored canonical_g5_connection_binding version, которую нужно спроецировать в party runtime (§6.6.1).
 ```
+
 
 `share_mode`:
 
@@ -1026,6 +1148,8 @@ required_position_instance_ordinal
 
 Materialization обязана разрешить каждый required slot ровно в одну position. Ноль или несколько matches — typed hard error. First row, nearest position and generic threshold fallback запрещены.
 
+Обратная связь физической пары использует слоты прямой связи в обратных ролях: её `from` — слот, куда пришла прямая, её `to` — слот, откуда вышла прямая (§4.7). Проверка «slot role matches endpoint role» для такой пары не применяется. Шаблоны сцен не перевыпускаются. Соглашение «все связи departure→arrival» больше не является нормой.
+
 ### 6.6. Generated G5 transaction
 
 Creation generated G5 атомарно включает:
@@ -1041,7 +1165,22 @@ Creation generated G5 атомарно включает:
 
 Traveller movement не входит в эту transaction.
 
+Generated site connection создаётся парой строк (прямая и обратная). Поля линии берутся из `expansion_slot` (§4.7.2), направление обратной — инверсия; имя выводится из slot и direction context, не из номера и не из RNG. Отсутствие обратной строки — ошибка транзакции.
+
 Terminal `connect_existing`/`world_route_exit` transaction follows the same endpoint-completeness rule: both connection endpoints and active bindings exist at commit. It may create an absent target baseline with the exact mandatory endpoint scene and, only for `world_route_exit`, create the exact canonical party projection. An existing active baseline is immutable and must already resolve the required endpoint slot exactly once. It does not create generated content, choose a world route, move a traveller or advance time.
+
+### 6.6.1. Canonical connection projection
+
+Path query, которому нужна авторская связь G5–G5, ещё не имеющая party-проекции, возвращает option `requires_preparation` с member kind `canonical_connection` (§6.4). Не `requires_frontier_resolution`: frontier не расходуется.
+
+Исполнение — член `canonical_connection` той же idempotent transaction `PrepareTargetSnapshot` (§6.3): проекция и `preparation_snapshot` фиксируются вместе, materialization trigger `canonical_connection`. Проекция атомарно:
+
+- создаёт или переиспользует party-проекцию обоих canonical G5 (`party_g5_site`, origin `canonical`);
+- для отсутствующего active baseline материализует только обязательные endpoint scene/position из approved profile; существующий baseline не дополняется и обязан разрешать endpoint slot ровно один раз;
+- создаёт `g5_site_connection` (прямую и обратную) и `party_site_connection_endpoint_binding` обеих связей по paired-slot rule (§6.5);
+- записывает результат в член `canonical_connection` snapshot (`preparation_snapshot_member`, Приложение F).
+
+Ноль или несколько slot matches блокируют всю transaction, включая `preparation_snapshot`. Проекция не создаёт generated content, не потребляет frontier, не двигает traveller и не продвигает time. Записывать эту проекцию под trigger `frontier_resolution` запрещено.
 
 ### 6.7. Topological homogeneity of G6
 
@@ -1098,6 +1237,16 @@ base geometry
 ```
 
 Освещение не меняет geometry direction. Asymmetry требует physical basis: height, slit, one-way aperture, cover shape or directed opening.
+
+### 7.1.1. Ближний порог и плохая видимость
+
+Туман, темнота и метель — не отдельные механики и не отдельные источники modifier, а ступени внешних условий, которые считает владелец погоды и окружения из погоды и света; функция одна для персонажей и NPC, симметрично. Итог видимости (`clear | partial | none`, §7.1) по-прежнему собирает прежний владелец видимости из этой ступени, геометрии, портала и остальных входов §7.1. `modifier_kind` не расширяется; сущностный modifier `darkness` (`visibility_modifier`) не затронут — «туман = темнота» относится только к внешним условиям.
+
+- Видимость не входит в доступность (§4.13). Каждая не скрытая линия от текущего места предлагается всегда (ближний порог), в том числе при `none`. Скрытая линия (concealment, `knowledge_visibility=hidden`) остаётся скрытой по §9.2 и §14.2.
+- При `none` линия описывается по слуху и на ощупь; дальние ориентиры из описания пропадают.
+- Время: каждой ступени плохой видимости соответствует строка единой таблицы `environment_factor` (approved профиль, §11.2); значения задаёт профиль (данные), а не этот документ. Берётся единственный худший applicable factor, не произведение погоды и видимости.
+- При смене ступени видимости в пути пересчитывается только цена (снимок следующего интервала, §11.3); состав ходов не меняется.
+- «Потеряться» (`lost`) в этой редакции для плохой видимости не вводится.
 
 ### 7.2. Acoustic model
 
@@ -1273,7 +1422,7 @@ mechanical_readiness = ready
 knowledge_visibility = visible | hidden | misidentified
 ```
 
-A mechanically ready route may be hidden. A visible rumored route may be mechanically blocked or absent from factual topology.
+A mechanically ready route may be hidden. A visible rumored route may be mechanically blocked or absent from factual topology. Плохая видимость сама по себе не делает ближнюю линию `hidden` (§7.1.1).
 
 ### 9.3. Normative readiness matrix
 
@@ -1526,7 +1675,7 @@ There is no persistent `result_kind=active` interval row. Crash before commit le
 
 At `actual_progress_after_ppm = 1_000_000`:
 
-- interval outcome must be `segment_completed`;
+- interval outcome must be `segment_completed` (forward side, travel-state `mirrored` false; the mirrored side ends with `returned_to_departure`, §10.7.1);
 - travel state closes as `completed`;
 - root carrier is placed at exact arrival endpoint;
 - execution step advances or completes;
@@ -1534,6 +1683,17 @@ At `actual_progress_after_ppm = 1_000_000`:
 - one execution event records location snapshot.
 
 Dispatch of next step is a deterministic child operation. If it fails after arrival, execution becomes `waiting_at_anchor`; completed segment remains committed.
+
+### 10.7.1. Return to departure (turn back completed)
+
+At `actual_progress_after_ppm = 1_000_000` of a mirrored travel state (§4.10.1):
+
+- interval outcome must be `returned_to_departure`;
+- travel state closes as `returned_to_departure`;
+- root carrier is placed at the exact departure endpoint of the step segment;
+- execution becomes `waiting_at_anchor` on that endpoint; the remaining plan steps are not dispatched and a new plan is built from the endpoint;
+- one execution event (`wait_started`) records the location snapshot; there is no `segment_completed` and no arrival on the step segment's arrival endpoint;
+- the plan is not resumed: `resumed` (`waiting_at_anchor` → `active`, A.4.1) is forbidden after `returned_to_departure`, because it would dispatch the same step again; the execution stays `waiting_at_anchor` only as the source of a successor plan built from the departure endpoint (`superseded`) or of an explicit abort.
 
 ### 10.8. Pause
 
@@ -1543,7 +1703,8 @@ Dispatch of next step is a deterministic child operation. If it fails after arri
 - keeps travel state active with status `paused_in_transit`;
 - preserves exact cumulative time and last confirmed endpoint;
 - keeps execution `active` with null current endpoint and the same active travel-state ID;
-- resume creates a new interval and dynamic snapshot.
+- resume creates a new interval and dynamic snapshot; turn back (§4.10.1) creates the first interval of the mirrored side;
+- `paused_in_transit` always has progress in 1..999 999: an explicit pause requested after the start commit of §10.5 but before the first physical progress (actual progress zero) is not a pause in transit; the interval ends `interrupted_at_anchor` at the departure endpoint (§10.9). A pause requested while the departure gate is blocked creates no travel state at all (§10.5).
 
 To avoid ambiguous execution status, target model uses:
 
@@ -1568,6 +1729,15 @@ until an anchor is actually reached. `waiting_at_anchor` always means a real end
 - appends exactly one `suspended` execution event linked to the terminal interval result and the same change set.
 
 If required interruption scene cannot be materialized, the outcome is `stranded`, not a guessed anchor.
+
+An explicit pause or an approved interruption request whose interval ends with actual progress zero (after the start commit of §10.5, before any physical advancement) uses the departure endpoint of the step segment as its anchor, whatever the interruption policy resolves: the traveller never left, so no route-anchor aggregate is created and no scene is materialized. The outcome is still `interrupted_at_anchor`, atomically:
+
+- closes the travel state as `interrupted_to_anchor` at progress zero, keeping its interval history;
+- returns the root location from `in_transit` to the departure endpoint (or leaves the attached passenger scene-located);
+- sets execution `waiting_at_anchor` on that endpoint with exactly one `wait_started` event (not `suspended`, because no `suspended_at_scene` anchor exists);
+- allows `resumed` (`waiting_at_anchor` → `active`, A.4.1): the same immutable plan dispatches its current step again from the departure endpoint and creates a new travel state at progress zero (§10.5). The closed state does not count against the one-active-state rule.
+
+A retried request after the start commit returns the committed result through the idempotency lease (§11.5); the same request never closes a second state or creates a second interval.
 
 ### 10.10. Stranded in transit
 
@@ -1632,7 +1802,7 @@ source != target
 → exactly one executable action/activity/traversal step required.
 ```
 
-Free relocation is forbidden. Recovery target must be authored or materialized through approved preparation, never selected by nearest/safest heuristic.
+Free relocation is forbidden. Recovery target must be authored or materialized through approved preparation, never selected by nearest/safest heuristic. Разворот на anchor route point (§4.10) не является relocation: location не меняется, rebinding идентифицирует один и тот же location-bearing endpoint, а движение назад — обычный `timed_traversal`; mirror-departure не вводит нового вида шага (A.9).
 
 ---
 
@@ -1663,7 +1833,7 @@ Rules:
 
 - every multiplicative numerator and denominator is positive;
 - at most one resolved factor per kind;
-- `environment_factor` is one approved composite/worst applicable factor for weather, light and transient terrain state;
+- `environment_factor` is one approved composite/worst applicable factor for weather, light, poor visibility (§7.1.1) and transient terrain state;
 - mud, snow, darkness and similar conditions are not multiplied independently unless a higher-priority formula is explicitly changed by ADR;
 - legal waiting, ferry queue, lock operation and similar fixed additions are additive delays, not multiplicative factors;
 - every additive delay has a versioned `application_scope` and stable `occurrence_key`; the same occurrence is committed at most once under idempotency;
@@ -1715,7 +1885,7 @@ For every interval result:
 0 <= progress_before < 1_000_000
 progress_before <= actual_progress_after <= planned_progress_after <= 1_000_000
 
-progressed or segment_completed
+progressed, segment_completed or returned_to_departure
 → actual_progress_after > progress_before;
 
 paused_in_transit, interrupted_at_anchor or stranded
@@ -1728,9 +1898,9 @@ blocked_before_progress
 → travel/execution/location state remains otherwise unchanged.
 ```
 
-A zero-exact-time result with unchanged progress is allowed only for explicit pause/interruption/stranded control semantics above or `blocked_before_progress`; it crosses no minute boundary. A positive sub-minute physical-progress result advances the exact timestamp even when it crosses zero whole-minute boundaries. `actual_progress_after=1_000_000` is legal only for `segment_completed`; every other outcome is committed below the terminal progress value.
+A zero-exact-time result with unchanged progress is allowed only for explicit pause/interruption/stranded control semantics above or `blocked_before_progress`; it crosses no minute boundary. A positive sub-minute physical-progress result advances the exact timestamp even when it crosses zero whole-minute boundaries. `actual_progress_after=1_000_000` is legal only for `segment_completed` (forward side) and `returned_to_departure` (mirrored side); every other outcome is committed below the terminal progress value.
 
-Next interval starts exactly at previous actual progress. `interval_ordinal` increases only after a committed result. Technical retries reuse the same pending ordinal through the idempotency lease and create no separate domain attempt ordinal.
+Progress is measured along the side the interval traverses: the step segment, or its mirrored segment after a turn back (§4.10.1). Next interval starts exactly at previous actual progress of the same side; the only exception is the `turn_back` interval (F.1.1), which starts at `1_000_000` minus the previous actual progress, in the same commit that flips the side (section 4.10.1). A refused turn back is an ordinary `blocked_before_progress` without any flip. `interval_ordinal` increases only after a committed result. Technical retries reuse the same pending ordinal through the idempotency lease and create no separate domain attempt ordinal.
 
 ### 11.6. Exhaustive interval outcomes
 
@@ -1740,9 +1910,10 @@ Exactly one outcome is persisted:
 |---|---|---|---|
 | `progressed` | positive progress; time per formula | active | active in transit |
 | `segment_completed` | progress = 1,000,000 | closed completed | arrival endpoint; advance step |
-| `paused_in_transit` | zero or positive progress/time as resolved; no hidden delay | paused in transit | execution active; no anchor |
-| `interrupted_at_anchor` | zero or positive progress/time as resolved | closed interrupted | suspended at exact route-anchor scene |
+| `paused_in_transit` | progress in 1..999 999 and zero or positive time as resolved; no hidden delay (a pause at progress zero is `interrupted_at_anchor` at the departure endpoint, §10.9) | paused in transit | execution active; no anchor |
+| `interrupted_at_anchor` | zero or positive progress/time as resolved | closed interrupted | suspended at exact route-anchor scene; at progress zero (pause or interruption before physical advancement) `waiting_at_anchor` at the departure endpoint (§10.9) |
 | `stranded` | zero or positive progress/time as resolved | stranded | execution stranded in transit |
+| `returned_to_departure` | mirrored progress = 1_000_000; time per the mirrored segment | closed `returned_to_departure` | departure endpoint of the step segment; execution `waiting_at_anchor` (§4.10.1) |
 | `blocked_before_progress` | no progress; zero traversal time | unchanged at the same progress | execution remains active in transit; no location change |
 
 There are no alternatives such as “in transit or anchor” inside one row. A failure that cannot safely preserve the current in-transit state maps to `stranded` or `interrupted_at_anchor`; a failure before travel-state creation produces no interval result and leaves the owner at the departure endpoint.
@@ -1751,9 +1922,9 @@ When navigation, hazard and blocker signals coexist, one versioned composition p
 
 ```text
 1. unresolved data gap before a valid arrival commit             → stranded below terminal progress;
-2. validated actual progress reaches 1_000_000                   → segment_completed;
+2. validated actual progress reaches 1_000_000                   → segment_completed (forward side) or returned_to_departure (mirrored side);
 3. approved interruption request with a resolved anchor          → interrupted_at_anchor;
-4. explicit pause request                                        → paused_in_transit;
+4. explicit pause request                                        → paused_in_transit (progress 1..999 999) or interrupted_at_anchor at the departure endpoint (progress zero, §10.9);
 5. blocker with zero committed progress                           → blocked_before_progress;
 6. otherwise                                                      → progressed.
 ```
@@ -2133,6 +2304,21 @@ Player map is generated from character-known subgraph. It must not:
 
 Visual revision is excluded from semantic materialization digest. Layout change cannot rematerialize scene or invalidate route plan. `generated_preview` cannot become approved automatically.
 
+### 14.4. Проекция хода
+
+Player-facing ход к другому месту строится из линии (§4.7.2):
+
+- подпись = `line_name` + `line_discriminator` + слово направления по `line_direction_id`, если оно задано; вид линии — для фильтров и времени, а не для номера;
+- запрещены порядковые подписи, имя места назначения вместо имени линии и имена позиций (arrival/focus/departure);
+- при выборе показывается грубая длительность — одна ступень закрытой полосы `controlled_duration_band` (registry v5), выведенная из ожидаемого времени по текущему снимку и записанная в `movement_cost_summary.duration_band`; точное время игроку при выборе не показывается; границы полос задаёт approved профиль;
+- `line_toponym` показывается только когда открыт знанием;
+- проход через место — одним переходом; при многосегментной route подпись хода берётся из first segment, а рассказчику передаётся последовательность пройденных шагов (линии и `visible_changes`);
+- anchor route point не имеет G6: его проекция — фраза кода по `line_kind_id` и среде, а не сцена; два хода «дальше» и «назад» — слова кода по направлению маршрута (`line_direction_id` сегментов, §4.10), а не подписи из данных; направления обоих ходов различны, поэтому подписи различны по построению;
+- если линии доступно несколько методов (базовый и альтернативные, `alternative_methods`), ход предлагается отдельной опцией на каждый доступный метод; опция несёт выбранный `selected_movement_method_id` и класс риска (`movement_risk_summary.risk_class`), а подпись неосновного метода содержит слово метода («вплавь», «на бревне») — подписи остаются уникальными;
+- обратный ход к месту, откуда игрок пришёл, использует ту же линию (§4.7);
+- закрытый выход называется физической причиной (§4.4);
+- множество ходов одного места, включая ходы anchor, не содержит двух одинаковых подписей (§4.7.2).
+
 ---
 
 ## 15. Migration from active materialization v2
@@ -2502,11 +2688,12 @@ rational                = numerator >= 0, denominator >= 1, reduced form
 positive_rational       = numerator >= 1, denominator >= 1, reduced form
 state_version           = integer >= 1, increased on every mutable semantic change
 authoring_version       = immutable non-empty version string
+non_empty_text          = non-empty NFC UTF-8 string; `line_name` и `line_discriminator` дополнительно не содержат десятичных цифр
 relation_set<T>         = normalized child/binding rows, never in-row JSON array
 snapshot_list<T>        = ordered immutable serialized list allowed only inside snapshot
 ```
 
-All canonical serialization uses UTF-8, sorted object keys, declared relation ordering, no presentation fields and no floating-point numbers.
+All canonical serialization uses UTF-8, sorted object keys, declared relation ordering, no layout/visual presentation fields and no floating-point numbers. `line_name` and `line_discriminator` are canonical semantic fields.
 
 ## A.2. Authoring status
 
@@ -2555,13 +2742,13 @@ Temporary closure of a physical relation uses conditions/blockers/portal state, 
 | `planned` | `active` | first step dispatch succeeds |
 | `planned` | `aborted` | explicit abort before first step |
 | `active` | `active` | step start/progress/pause or nonterminal step completion with immediate next-step activation |
-| `active` | `waiting_at_anchor` | current attempt blocks or a completed step leaves the owner at an exact endpoint before next dispatch |
+| `active` | `waiting_at_anchor` | current attempt blocks, or a completed step leaves the owner at an exact endpoint before next dispatch, or a mirrored traversal returns to the departure endpoint (`returned_to_departure`, §4.10.1), or a pause or interruption before the first physical progress closes the travel state at progress zero as `interrupted_at_anchor` on the departure endpoint (§10.9) |
 | `active` | `suspended_at_scene` | interruption commits an approved route-anchor scene |
 | `active` | `stranded_in_transit` | exact in-transit state is preserved because an approved interruption anchor cannot be materialized |
 | `active` | `completed` | final plan step completes at a valid scene or transit endpoint |
 | `active` | `aborted` | current step is action/activity at an exact endpoint and the pinned failure/abort contract preserves that endpoint; active traversal must first interrupt or strand |
 | `active` | `superseded` | replan starts from an exact location-bearing endpoint; raw non-stranded in-transit supersession is forbidden |
-| `waiting_at_anchor` | `active` | same immutable plan dispatches its current step from the stored endpoint |
+| `waiting_at_anchor` | `active` | same immutable plan dispatches its current step from the stored endpoint; forbidden after `returned_to_departure` (§10.7.1) |
 | `waiting_at_anchor` | `aborted` | explicit abort at the stored endpoint |
 | `waiting_at_anchor` | `superseded` | successor plan source equals the stored endpoint snapshot |
 | `suspended_at_scene` | `aborted` | explicit abort at the suspension scene |
@@ -2605,6 +2792,7 @@ closed
 ```text
 completed
 interrupted_to_anchor
+returned_to_departure
 superseded
 ```
 
@@ -2652,7 +2840,7 @@ timed_activity
 timed_traversal
 ```
 
-One step has exactly one matching static snapshot payload.
+One step has exactly one matching static snapshot payload. A mirror-point departure of a transit anchor (§4.10) introduces no new step kind: it is an ordinary `timed_traversal` after a zero-time endpoint rebinding.
 
 ## A.10. Journey scopes
 
@@ -2681,13 +2869,14 @@ stranded_state
 ```text
 progressed
 segment_completed
+returned_to_departure
 paused_in_transit
 interrupted_at_anchor
 stranded
 blocked_before_progress
 ```
 
-No other interval outcome is valid. Navigation/hazard/data-gap classifications are separate reason fields.
+`returned_to_departure` is the seventh outcome of amendment 4.7.0 (§4.10.1, §10.7.1, F.1.1); the other six are the outcomes of Temporal World v4 §13. No other interval outcome is valid. Navigation/hazard/data-gap classifications are separate reason fields.
 
 ## A.13. Frontier status and resolution
 
@@ -2732,7 +2921,7 @@ action
 time
 ```
 
-`timed_traversal` always uses `time`. A short discrete spatial transition over an action-cost `scene_edge` or `site_connection` is an `immediate_action`: it may change endpoint atomically, but has no continuous segment progress or game-time cost. `timed_activity` uses `time` without physical segment progress.
+`timed_traversal` always uses `time`. Action-cost допустим только для `scene_movement_edge` внутри одной сцены: короткая дискретная transition между positions — `immediate_action`, она может изменить endpoint атомарно, но не имеет continuous segment progress и game-time cost. `g5_site_connection` и `world_route_segment` всегда `time`. `timed_activity` uses `time` without physical segment progress.
 
 ## A.17. Data-gap severity
 
@@ -2750,7 +2939,7 @@ No gap severity authorizes fallback. Severity selects only the allowed remediati
 
 ## B.0. Rules
 
-Every block below is the sole logical declaration of its `contract_name`.
+Every block below is the sole logical declaration of its `contract_name`, except blocks superseded by the same-named block of Appendix F (§0.9), which takes priority.
 
 Notation:
 
@@ -2797,6 +2986,18 @@ The following binding is normative for spatial architecture v4.2 contract activa
 | `controlled_scene_role` | `spatial.scene.role` | `data/contracts/spatial-v3/controlled-vocabularies.v1.json` | `1.0.0` | `d8e6f72a4dc3872a153e21eb0e04946271af2cc9ee36cc66fbd69473a8380503` |
 | `controlled_spatial_function` | `spatial.canonical.function` | `data/contracts/spatial-v3/controlled-vocabularies.v1.json` | `1.0.0` | `19f327f72b910f5fb892d779715209d565127fb8612f7b115b732b2fdaeb8381` |
 | `controlled_write_target` | `spatial.runtime.write_target` | `data/contracts/spatial-v3/controlled-vocabularies.v1.json` | `1.0.0` | `056482a5590e2715737435fa353c394c4bdebc9eb4c1932a13c143f594c07f44` |
+
+Amendment 4.7.0 переводит пять строк на реестр версии 5 (`data/contracts/spatial-v3/controlled-vocabularies.v5.json`, `5.0.0`, aggregate registry digest `a7dbe84290fb490cec216a096b22d7a2ebc82c21b8cc29c36872f5331d324b94`):
+
+| Pseudo-type | Registry ID | Registry path | Version | Digest |
+|---|---|---|---|---|
+| `controlled_direction_context` | `spatial.traversal.direction_context` | `data/contracts/spatial-v3/controlled-vocabularies.v5.json` | `5.0.0` | `e1a411a516c028dbd845bd8cf511b813c54287bfc29775144b89aa8d6392aa32` |
+| `controlled_line_kind` | `spatial.movement.line_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v5.json` | `5.0.0` | `bed2424e0d4cd3ca09b46e76211fe49560a0875eb14a7ee9afe0cc7ed75a8424` |
+| `controlled_duration_band` | `spatial.movement.duration_band` | `data/contracts/spatial-v3/controlled-vocabularies.v5.json` | `5.0.0` | `8e9b430afc646e9614f43401c672fa5382db2758aed4910aee843549dbdbb273` |
+| `controlled_entity_kind` | `spatial.contract.entity_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v5.json` | `5.0.0` | `5cf858411decedbbbee6fec54220bf15960c050682caf9965fe83427eb996113` |
+| `controlled_movement_method` | `spatial.movement.method` | `data/contracts/spatial-v3/controlled-vocabularies.v5.json` | `5.0.0` | `f2c1eca35f6bcc9a2c72435cf38363faf9ee8c79faa28b1928e3c01a4d44d847` |
+
+Остальные строки таблицы и версии v1–v4 не меняются и остаются читаемыми. Строки v1 для `controlled_direction_context`, `controlled_entity_kind` и `controlled_movement_method` остаются в основной таблице (тест `p07-controlled-vocabulary-integration.test.js` требует их дословно) и для этих трёх pseudo-type заменяются таблицей выше; `controlled_line_kind` и `controlled_duration_band` — новые. Так же temporal-документ держит свои строки v2/v3.
 
 The machine-readable value sets and consumer constraints are defined by the exact pinned registry file above. Missing file, digest mismatch, empty value set, unknown pseudo-type or unknown value remains `controlled_vocabulary_gap` and blocks activation.
 
@@ -6852,3 +7053,557 @@ unresolved_document_findings: 0
 ## E.3. Ограничение результата
 
 Внутренний документный аудит проверяет только непротиворечивость этой Markdown-редакции. Он не заменяет DDL generation, compiler/typecheck, runtime tests, PostgreSQL migration, Graphify regeneration или независимый project critic. Поэтому статус остаётся `target`.
+
+---
+
+# Приложение F. Amendment 4.7.0: machine contracts and typed errors
+
+Blocks of this appendix supersede the same-named contract blocks of Appendix B and add new ones; each block is the sole logical declaration of its `contract_name` from amendment 4.7.0 (§0.9). Appendix C is extended by the typed errors listed below. Until the generated registry is synchronized with this appendix, an operation that depends on it is blocked as `normative_contract_conflict`.
+
+Superseded blocks (copies of the Appendix B blocks with the changes listed in the amendment): `g5_site_connection`, `party_site_connection_endpoint_binding`, `world_route`, `world_route_segment`, `preparation_member_proposal`, `spatial_materialization_input`, `materialization_trace`, `expansion_slot`, `party_transit_anchor`, `preparation_snapshot_member`, `movement_cost_summary`, `dynamic_recheck_policy`, `traveller_travel_state`, `party_traversal_interval_result` (the last three: F.1.1). New blocks: `line_kind_profile`, `line_kind_alternative_method`, `canonical_g5_connection_binding`. Typed errors: `line_label_duplicate`, `line_label_invalid`, `line_recheck_slicing_missing`, `canonical_connection_projection_gap`.
+
+## F.1. Amended and new contract blocks
+
+The `preparation_snapshot_member` block below is the temporal current-target override of that contract (Temporal World v4 Appendix A.7) extended with the `canonical_connection` member.
+
+```yaml
+contract_name: world_route
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  route_kind_id: required stable_id
+  reverse_route_ref: optional versioned_ref
+  availability_condition_set_ref: optional versioned_ref
+  risk_profile_ref: optional versioned_ref
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+invariants:
+  - Route is directed, finite and contains exactly one endpoint_from, one endpoint_to and one continuous ordered segment chain with point_count=segment_count+1.
+  - No branch or cycle exists inside one route version.
+  - Exactly one approved from and to endpoint binding exists for an approved route version.
+  - Reverse route, when present, is distinct, independently valid, points back reciprocally and has reversed endpoint/segment order; absence declares a one-way route.
+  - Reverse route is the mirror of the forward route: point k corresponds to point n minus k, segment i to segment n minus 1 minus i; corresponding segments have equal line_kind_id and line_name and inverse line_direction_id; line_discriminator, base_minutes, method and availability may differ.
+  - route_kind_id equals the route_kind_id of the line_kind_profile of the first segment; it is not authored independently.
+  - Route version changes whenever point, segment, endpoint binding or mechanically relevant route-level dependency changes.
+```
+
+```yaml
+contract_name: world_route_segment
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  world_route_ref: required versioned_ref
+  ordinal: required non_negative_integer
+  from_route_point_ref: required versioned_ref
+  to_route_point_ref: required versioned_ref
+  transition_environment_profile_ref: required versioned_ref
+  movement_orientation_profile_ref: required versioned_ref
+  line_kind_id: required controlled_line_kind
+  line_kind_profile_ref: required versioned_ref
+  line_name: required non_empty_text
+  line_discriminator: optional non_empty_text
+  line_direction_id: optional controlled_direction_context
+  line_toponym: optional non_empty_text
+  baseline_movement_method_id: required stable_id
+  movement_method_cost_profile_ref: required versioned_ref
+  base_minutes: required positive_integer
+  dynamic_recheck_policy_ref: required versioned_ref
+  capacity: optional positive_integer
+  risk_profile_ref: optional versioned_ref
+  availability_condition_set_ref: optional versioned_ref
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+invariants:
+  - UNIQUE route version and ordinal.
+  - Segment ordinal i connects point ordinal i to i plus one.
+  - Segment has exactly one spatial context.
+  - line_kind_profile_ref is an explicit versioned reference (a bare line_kind_id selects no version); line_kind_id equals the line kind of that profile version.
+  - baseline_movement_method_id, movement_method_cost_profile_ref, dynamic_recheck_policy_ref and transition_environment_profile_ref equal those of the referenced line_kind_profile version (one movement-method id space).
+  - A segment incident to an internal route point has a non-null line_direction_id.
+  - base_minutes above 30 requires the dynamic_recheck_policy of that line_kind_profile to slice the segment into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.
+  - Active outgoing lines of one place (§4.7.2) have distinct (line_name, line_discriminator, line_direction_id); the line of a multi-segment route for this purpose is its first segment.
+```
+
+```yaml
+contract_name: g5_site_connection
+storage: party_runtime_mutable_lifecycle
+identity:
+  - id
+fields:
+  id: required stable_id
+  party_id: required stable_id
+  from_site_id: required stable_id
+  to_site_id: required stable_id
+  line_kind_id: required controlled_line_kind
+  line_kind_profile_ref: required versioned_ref
+  line_name: required non_empty_text
+  line_discriminator: optional non_empty_text
+  line_direction_id: optional controlled_direction_context
+  line_toponym: optional non_empty_text
+  source_canonical_connection_ref: optional versioned_ref
+  transition_environment_profile_ref: required versioned_ref
+  movement_orientation_profile_ref: required versioned_ref
+  cost_kind: required enum[time]
+  baseline_movement_method_id: required stable_id
+  movement_method_cost_profile_ref: required versioned_ref
+  base_minutes: required positive_integer
+  dynamic_recheck_policy_ref: required versioned_ref
+  capacity: optional positive_integer
+  risk_profile_ref: optional versioned_ref
+  portal_entity_id: optional stable_id
+  availability_condition_set_ref: optional versioned_ref
+  reverse_connection_id: optional stable_id
+  status: required enum[active, superseded, destroyed]
+  state_version: required state_version
+  created_change_set_id: required stable_id
+  updated_change_set_id: required stable_id
+  terminal_change_set_id: optional stable_id
+invariants:
+  - Source and target sites have the same parent G4.
+  - cost_kind is time (§1.4): method, cost profile, base_minutes and recheck policy are populated; there is no action_units field.
+  - source_canonical_connection_ref is populated exactly for a projection of a canonical_g5_connection_binding created by the canonical_connection trigger; its line fields, minutes and the method/cost/recheck of its line_kind_profile equal that authoring version; it is null for a generated connection, whose line fields and minutes come from the entry_line_* fields of the applicable expansion_slot (§4.7.2).
+  - portal_entity_id requires availability_condition_set_ref that exhaustively resolves movement for portal states open, closed, locked and destroyed; the portal belongs to one endpoint scene baseline and is compatible with both endpoint bindings.
+  - No portal permits availability_condition_set_ref only for non-portal conditions.
+  - Reverse connection, when present, is a distinct row in the same party with swapped sites, a reciprocal reverse_connection_id, equal line_kind_id and line_name, inverse line_direction_id, and endpoint positions swapped as in §4.7.
+  - Active outgoing lines of one site have distinct (line_name, line_discriminator, line_direction_id) (§4.7.2).
+  - capacity_reduction is permitted only when capacity is explicitly populated.
+  - active forbids terminal_change_set_id; superseded and destroyed require it.
+```
+
+```yaml
+contract_name: party_site_connection_endpoint_binding
+storage: party_runtime_mutable
+identity:
+  - id
+fields:
+  id: required stable_id
+  party_id: required stable_id
+  site_connection_id: required stable_id
+  endpoint_role: required enum[from, to]
+  g5_site_id: required stable_id
+  position_id: required stable_id
+  source_slot_key: required stable_id
+  status: required enum[active, inactive, superseded]
+  state_version: required state_version
+  activated_change_set_id: required stable_id
+  deactivated_change_set_id: optional stable_id
+invariants:
+  - UNIQUE one active binding per party, connection and role.
+  - from belongs to connection source site; to belongs to target site.
+  - Slot role matches endpoint role, except for the reverse connection of a pair, which uses the forward slots in reverse roles (paired-slot rule, §6.5).
+  - The from binding of a reverse connection resolves to the same position as the to binding of its forward connection, and vice versa.
+  - active forbids deactivated_change_set_id; inactive and superseded require it.
+```
+
+```yaml
+contract_name: expansion_slot
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  profile_ref: required versioned_ref
+  g4_id: required stable_id
+  continuation_role: required enum[through, branch]
+  direction_context_id: optional stable_id
+  directional_exit_ref: optional versioned_ref
+  max_instances: required positive_integer
+  continuation_length_rule_ref: optional versioned_ref
+  terminal_policy_ref: required versioned_ref
+  entry_line_kind_profile_ref: required versioned_ref
+  entry_line_name: required non_empty_text
+  entry_line_discriminator: optional non_empty_text
+  entry_line_direction_id: optional controlled_direction_context
+  entry_line_minutes: required positive_integer
+  status: required enum[approved, deprecated, retired]
+relations:
+  allowed_templates: relation_set[expansion_slot_template]
+invariants:
+  - through requires direction, directional exit and length rule and requires terminal policy kind world_route_exit or physical_boundary matching that exit.
+  - through requires a non-null entry_line_direction_id; entry_line_kind_profile_ref is an explicit versioned reference and the line kind of a generated connection is the kind of that profile version.
+  - branch forbids direction, directional exit and length rule and requires terminal policy kind connect_existing or physical_boundary.
+  - g4_id equals the owning profile G4 and every related authoring record belongs to the same world revision.
+  - allowed_templates is finite and non-empty.
+```
+
+```yaml
+contract_name: party_transit_anchor
+storage: party_runtime_mutable_lifecycle
+identity:
+  - id
+fields:
+  id: required stable_id
+  party_id: required stable_id
+  source_route_point_ref: required versioned_ref
+  anchor_role: required enum[ordinary_waypoint, boundary_wait, shared_checkpoint]
+  context_snapshot: required route_point_context_snapshot
+  active_side: required enum[arrival, departure]
+  allowed_departure_dependency_pins: required dependency_pin_set
+  status: required enum[active, superseded, retired]
+  state_version: required state_version
+  created_change_set_id: required stable_id
+  updated_change_set_id: required stable_id
+  terminal_change_set_id: optional stable_id
+invariants:
+  - UNIQUE one active anchor per party and route point version.
+  - anchor_role matches context_snapshot point_kind so that ordinary_waypoint maps to ordinary, boundary_wait maps to boundary and shared_checkpoint maps to checkpoint.
+  - On creation and on every committed arrival, active_side is set to context_snapshot.default_wait_side.
+  - ordinary_waypoint pins exactly one authored forward continuation departure and exposes no forward alternative.
+  - boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving; a turn-back does not cross the boundary and uses the mirror departure with inverted boundary sides.
+  - shared_checkpoint pins the default authored continuation; every additional forward departure is represented only by party_checkpoint_route_departure.
+  - Every allowed departure originates at source_route_point_ref or at its mirror point on the reciprocal route (the same physical point, §4.10) and is compatible with context_snapshot.departure_side_context (for a mirror departure, with the inverted side context).
+  - A turn-back exists only when the route has a reverse route (reverse_route_ref); it is the mirror departure followed by an ordinary timed_traversal of the reverse segment, subject to that segment's availability. On a one-way route the anchor exposes no turn-back. Executing a mirror departure rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).
+  - If switch_phase=outbound_dispatch, dispatch atomically changes active_side from arrival to departure before leaving; inbound_completion anchors are already on departure side. No role changes active_side by any other rule.
+  - active forbids terminal_change_set_id; superseded and retired require it.
+```
+
+```yaml
+contract_name: preparation_member_proposal
+storage: immutable_command_member
+fields:
+  ordinal: required non_negative_integer
+  member_kind: required enum[endpoint, transfer_scene, canonical_connection]
+  source_authoring_ref: required versioned_ref
+  share_mode: required enum[execution_exclusive, reusable]
+  dependency_pins: required dependency_pin_set
+  member_digest: required sha256_hex
+invariants:
+  - Ordinals are contiguous from zero within a proposal.
+  - Equal member_kind and dependency digest cannot appear twice.
+```
+
+```yaml
+contract_name: spatial_materialization_input
+storage: immutable_request
+fields:
+  request_id: required stable_id
+  party_id: required stable_id
+  world_revision_id: required stable_id
+  historical_frame: required historical_applicability_frame
+  stable_environment_context: required stable_environment_context_snapshot
+  g0_id: required stable_id
+  g1_id: required stable_id
+  g4_id: optional stable_id
+  target_host_ref: optional scene_host_ref
+  administrative_contract_ref: optional versioned_ref
+  trigger: required enum[new_game, target_preparation, frontier_resolution, canonical_connection, transport_scene_preparation, checkpoint_preparation, interruption, migration, repair]
+  approved_catalog_bundle_ref: required versioned_ref
+  catalog_digest: required sha256_hex
+  profile_rule_dependency_pins: required dependency_pin_set
+  existing_spatial_snapshot_digest: required sha256_hex
+  random_source: required random_source_descriptor
+  expected_state_versions: required expected_state_version_set
+  canonical_input_digest: required sha256_hex
+invariants:
+  - Input contains no current weather, body, load or temporary access state for permanent topology selection.
+  - stable_environment_context scope and pins match the exact trigger scope and world revision.
+  - new_game requires g4_id and a deterministically preallocated target_host_ref kind g5_site that is created in the same semantic write plan; it forbids administrative_contract_ref.
+  - target_preparation requires g4_id plus an existing active target_host_ref kind g5_site and forbids administrative_contract_ref.
+  - frontier_resolution requires g4_id, forbids target_host_ref and administrative_contract_ref, and pins the exact frontier/chain/profile state.
+  - canonical_connection requires g4_id, forbids target_host_ref and administrative_contract_ref, and pins the exact canonical_g5_connection_binding version and profile; its only permitted outputs are party_g5_site projections, endpoint scene baseline/G6/positions/relations of absent baselines, g5_site_connection and party_site_connection_endpoint_binding (§6.6.1).
+  - transport_scene_preparation requires target_host_ref kind transport and forbids g4_id and administrative_contract_ref.
+  - checkpoint_preparation and interruption require target_host_ref kind route_anchor_identity and forbid g4_id and administrative_contract_ref.
+  - migration and repair require an approved spatial_admin_mapping_contract of the matching remediation kind; scope_kind=g4 requires g4_id and null target_host_ref, while scope_kind=scene_host requires target_host_ref and null g4_id.
+  - g0_id and g1_id equal the pinned factual context of the required G4 or host scope.
+  - trigger scope determines the only permitted output entity kinds.
+```
+
+```yaml
+contract_name: materialization_trace
+storage: party_runtime_append_only
+identity:
+  - run_id
+fields:
+  run_id: required stable_id
+  request_id: required stable_id
+  party_id: required stable_id
+  trigger: required enum[new_game, target_preparation, frontier_resolution, canonical_connection, transport_scene_preparation, checkpoint_preparation, interruption, migration, repair]
+  world_revision_id: required stable_id
+  materializer_version: required authoring_version
+  catalog_digest: required sha256_hex
+  canonical_input_digest: required sha256_hex
+  canonical_output_digest: required sha256_hex
+  validation_report_digest: required sha256_hex
+  created_change_set_id: required stable_id
+  occurred_at_turn: required non_negative_integer
+relations:
+  dependency_pins: relation_set[dependency_pin]
+  choice_ids: relation_set[stable_id]
+invariants:
+  - Trace is append-only and sufficient to reproduce candidate filtering, sorting and selection.
+  - trigger equals the source materialization input trigger.
+  - canonical_output_digest covers the canonical semantic proposal payload and typed output refs while excluding trace fields, validation report, change-set IDs and digest fields, so no self-referential digest exists.
+  - validation_report_digest equals the exact report persisted in the same audit/semantic change set.
+  - Every choice_id belongs to this run and is persisted in created_change_set_id.
+```
+
+```yaml
+contract_name: line_kind_profile
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  line_kind_id: required controlled_line_kind
+  transition_environment_profile_ref: required versioned_ref
+  movement_orientation_profile_ref: required versioned_ref
+  baseline_movement_method_id: required controlled_movement_method
+  movement_method_cost_profile_ref: required versioned_ref
+  dynamic_recheck_policy_ref: required versioned_ref
+  route_kind_id: required stable_id
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+relations:
+  alternative_methods: relation_set[line_kind_alternative_method]
+invariants:
+  - UNIQUE one approved profile per line_kind_id.
+  - A segment of this line kind longer than 30 minutes is sliced by dynamic_recheck_policy_ref into parts of at most 30 minutes (section 4.5.2); the 30-minute slice step is one rule of the world, not a profile field.
+  - route_kind_id is the route kind of every world route whose first segment has this line kind; it is the only line-kind to route-kind mapping.
+  - cost is time only; there is no action-cost profile for a line (§1.4).
+  - A water line kind (line.river_channel, line.side_channel, line.open_water, line.ford, line.ferry) has at least one alternative method that needs no transport; a physical boundary, not a missing transport, is the only reason a water line is closed.
+  - The profile version changes when any field or alternative method changes; values change only by a new version, never in place.
+```
+
+```yaml
+contract_name: line_kind_alternative_method
+storage: world_base_relation
+identity:
+  - profile_id
+  - profile_version
+  - movement_method_id
+fields:
+  profile_id: required stable_id
+  profile_version: required authoring_version
+  movement_method_id: required controlled_movement_method
+  risk_class: required enum[low, moderate, high, extreme]
+  hazard_rule_ref: required versioned_ref
+invariants:
+  - movement_method_id differs from the profile baseline method and occurs as a rational_factor option of the profile movement_method_cost_profile (the time factor of the alternative is that option, §11.1).
+  - risk_class is the class shown in movement_risk_summary for an option that selects this method; hazard_rule_ref resolves the interval hazard (§11.7) for it.
+  - An alternative method needs no transport the baseline method needs.
+```
+
+```yaml
+contract_name: canonical_g5_connection_binding
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  parent_g4_id: required stable_id
+  from_canonical_g5_id: required stable_id
+  to_canonical_g5_id: required stable_id
+  line_kind_profile_ref: required versioned_ref
+  line_name: required non_empty_text
+  line_discriminator: optional non_empty_text
+  line_direction_id: optional controlled_direction_context
+  line_toponym: optional non_empty_text
+  base_minutes: required positive_integer
+  capacity: optional positive_integer
+  capacity_semantics_ref: required stable_id
+  risk_profile_ref: required versioned_ref
+  availability_condition_set_ref: optional versioned_ref
+  from_scene_endpoint_slot_key: required stable_id
+  to_scene_endpoint_slot_key: required stable_id
+  reverse_binding_ref: required versioned_ref
+  source_pair_ref: required versioned_ref
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+invariants:
+  - Both canonical G5 have parent_g4_id as immediate parent in the same world revision; exact G4/G5 versions are carried by authoring_dependency_edge rows of this version; from and to are distinct.
+  - Reverse binding is distinct, points back reciprocally, has swapped from/to G5, belongs to the same source pair and the same line_kind_profile kind, has equal line_name and inverse line_direction_id; its line_discriminator, base_minutes, risk and availability may differ.
+  - Paired-slot rule: reverse.from_scene_endpoint_slot_key equals this to_scene_endpoint_slot_key and reverse.to_scene_endpoint_slot_key equals this from_scene_endpoint_slot_key; the slots exist in the approved scene materialization profiles of their G5; slot-role compatibility is not required for this pair.
+  - line fields satisfy §4.7.2; the set of active outgoing lines of one canonical G5 has distinct (line_name, line_discriminator, line_direction_id).
+  - availability_condition_set_ref is null for a connection without a portal or another availability record; a reader never infers availability from its absence, it applies the dynamic access of the profile (A.9).
+  - base_minutes above 30 requires the dynamic_recheck_policy of the line_kind_profile to slice the connection into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.
+  - Binding version changes when a profile, line field, minutes, slot or reverse/pair link changes; minutes change only by a new version.
+```
+
+```yaml
+contract_name: preparation_snapshot_member
+storage: party_runtime_immutable_relation
+identity:
+  - preparation_snapshot_id
+  - ordinal
+fields:
+  preparation_snapshot_id: required stable_id
+  ordinal: required non_negative_integer
+  member_kind: required enum[endpoint, transfer_scene, canonical_connection]
+  source_authoring_ref: required versioned_ref
+  resolved_endpoint_snapshot: optional endpoint_contract_snapshot
+  resolved_scene_baseline_id: optional stable_id
+  resolved_g6_instance_id: optional stable_id
+  resolved_position_id: optional stable_id
+  prepared_scene_materialization: optional prepared_scene_materialization_snapshot
+  resolved_site_connection_id: optional stable_id
+  resolved_reverse_site_connection_id: optional stable_id
+  resolved_line_kind_profile_ref: optional versioned_ref
+  dependency_pins: required dependency_pin_set
+  share_mode: required enum[execution_exclusive, reusable]
+  member_digest: required sha256_hex
+relations:
+  resolved_endpoint_binding_ids: relation_set[stable_id]
+invariants:
+  - endpoint requires resolved_endpoint_snapshot and forbids every scene field and every connection field.
+  - canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.5), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).
+  - transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization, and forbids every connection field.
+  - A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.
+  - Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.
+  - Duplicate member_kind plus dependency-pin digest is forbidden within one snapshot.
+  - member_digest covers kind, source, resolved or prepared payload, share mode and dependency pins.
+```
+
+```yaml
+contract_name: movement_cost_summary
+storage: immutable_snapshot
+fields:
+  cost_kind: required enum[action, time, segmented]
+  action_units_min: optional positive_integer
+  action_units_max: optional positive_integer
+  minutes_min: optional rational
+  minutes_max: optional rational
+  precision: required enum[exact, bounded, unknown]
+  duration_band: optional controlled_duration_band
+  canonical_digest: required sha256_hex
+invariants:
+  - Every populated minimum is not greater than its maximum; populated minute bounds are positive reduced rationals and therefore support exact sub-minute costs.
+  - action requires action-unit bounds and null minute bounds.
+  - time requires minute bounds and null action-unit bounds.
+  - segmented requires at least one populated dimension and may populate both.
+  - exact requires equal min and max for every populated dimension.
+  - duration_band, when present, is the band of minutes_max under the approved band profile; it requires minute bounds, and the player projection shows the band, not the bounds (section 14.4).
+  - bounded requires both bounds for every populated dimension.
+  - unknown requires all numeric bounds null, is not executable and accompanies a blocking reason.
+```
+
+### F.1.1. Recheck policy kinds and turn back mid-segment (revision 2026-09-30)
+
+These three blocks are copies of the effective blocks of the listed sources with the changes of the revision (§0.9, D56): `dynamic_recheck_policy` and `traveller_travel_state` copy Appendix B, which stays unchanged; `party_traversal_interval_result` copies Temporal World v4 Appendix A.6 (the effective block: Appendix B is already superseded there) and keeps its exact-time fields; Temporal A.6 and Appendix B are not edited, so the historical 4.2.0 and 4.3.0 snapshots stay as they were.
+
+```yaml
+contract_name: dynamic_recheck_policy
+storage: world_base_authoring
+identity:
+  - id
+  - version
+fields:
+  id: required stable_id
+  version: required authoring_version
+  policy_kind: required enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]
+  progress_slice_ppm: optional positive_integer
+  interval_minutes: optional positive_integer
+  status: required enum[approved, deprecated, retired]
+  provenance_ref: required stable_id
+relations:
+  explicit_progress_points: relation_set[controlled_progress_point]
+invariants:
+  - segment_once forbids slice, interval and explicit points.
+  - fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.
+  - explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.
+  - fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.
+  - Slicing policy cannot change final duration under identical factor sequence.
+```
+
+```yaml
+contract_name: traveller_travel_state
+storage: party_runtime_mutable_history_preserving
+identity:
+  - id
+fields:
+  id: required stable_id
+  party_id: required stable_id
+  route_plan_execution_id: required stable_id
+  plan_step_ordinal: required non_negative_integer
+  movement_carrier_ref: required entity_ref
+  segment_progress_ppm: required ppm
+  cumulative_actual_time_numerator: required non_negative_integer
+  cumulative_actual_time_denominator: required positive_integer
+  next_interval_ordinal: required non_negative_integer
+  intended_direction_id: optional stable_id
+  navigation_state: required enum[on_course, deviating, lost]
+  last_confirmed_endpoint_ref: required movement_endpoint_ref
+  last_dynamic_snapshot_digest: optional sha256_hex
+  mirrored: required boolean
+  status: required enum[active, paused_in_transit, stranded_in_transit, closed]
+  stranded_reason_code: optional stable_id
+  closed_result: optional enum[completed, interrupted_to_anchor, returned_to_departure, superseded]
+  state_version: required state_version
+  updated_change_set_id: required stable_id
+  closed_change_set_id: optional stable_id
+invariants:
+  - movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.
+  - New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.
+  - last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).
+  - active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id; paused_in_transit additionally requires progress in 1..999999 (a pause at progress zero closes as interrupted_to_anchor, section 10.9).
+  - stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.
+  - closed requires closed_result and closed_change_set_id.
+  - closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.
+  - closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.
+  - closed_result=interrupted_to_anchor requires progress below one million (zero allowed: a pause or interruption before physical advancement closes at the departure endpoint, section 10.9) and null stranded_reason_code.
+  - closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.
+  - segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.
+  - mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.
+  - closed state cannot be reactivated.
+  - UNIQUE one active, paused or stranded state per execution step.
+```
+
+```yaml
+contract_name: party_traversal_interval_result
+storage: party_runtime_append_only
+identity:
+  - id
+fields:
+  id: required stable_id
+  route_plan_execution_id: required stable_id
+  plan_step_ordinal: required non_negative_integer
+  interval_ordinal: required non_negative_integer
+  progress_before_ppm: required ppm
+  planned_progress_after_ppm: required ppm
+  actual_progress_after_ppm: required ppm
+  planned_elapsed: required rational_minutes
+  actual_elapsed: required rational_minutes
+  cumulative_elapsed_before: required rational_minutes
+  cumulative_elapsed_after: required rational_minutes
+  crossed_whole_minute_boundaries: required non_negative_decimal_string
+  clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]
+  synchronized_time_slice_result_id: optional stable_id
+  execution_context_snapshot: required factual_spatial_context_snapshot
+  turn_back: required boolean
+  result_kind: required enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]
+  result_code: required stable_id
+  dynamic_dependency_pins: required dependency_pin_set
+  result_change_set_id: required stable_id
+  idempotency_record_id: required stable_id
+invariants:
+  - Exact elapsed and cumulative state reconcile without float conversion.
+  - direct_party_clock owns one clock update; shared_root_transport_clock owns none.
+  - Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.
+  - Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.
+  - turn_back is true only for an interval started while the travel state status is paused_in_transit (also after a refused turn back, which leaves that status), requires a mirrored segment whose dynamic access passes at execution and a travel-state progress in 1..999999, and permits the outcomes progressed, paused_in_transit, interrupted_at_anchor and stranded, plus exactly one terminal outcome chosen by the direction after commit: travel-state mirrored true after commit permits returned_to_departure, mirrored false after commit (a repeated turn back from the mirrored side) permits segment_completed, and the other terminal outcome is invalid; blocked_before_progress with turn_back true is invalid. A refused turn back is an interval with result_kind blocked_before_progress, result_code turn_back_refused and turn_back false, and no change of travel state other than its audit fields.
+  - Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.
+  - segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit; no other outcome permits actual progress one million.
+  - A retried request reuses idempotency_record_id and returns the committed result: the mirroring is part of that commit and never applies twice.
+```
+
+## F.2. Typed errors
+
+| Error code | Meaning | Required reaction |
+|---|---|---|
+| `line_label_duplicate` | Two active outgoing lines of one place share (`line_name`, `line_discriminator`, `line_direction_id`) | Hard block authoring/materialization; no ordinal is added |
+| `line_label_invalid` | `line_name` or `line_discriminator` is empty, contains a decimal digit, an ordinal stop-list word or the stem of the target place name | Reject authoring |
+| `line_recheck_slicing_missing` | A segment with `base_minutes` above 30 has a recheck policy (of its line kind profile) that does not slice it into parts of at most 30 minutes (section 4.5.2) | Hard block authoring; repair the recheck policy, the segment is not shortened or split by length |
+| `canonical_connection_projection_gap` | Authored connection cannot be projected: endpoint slot missing/ambiguous, broken reverse pair or foreign G4 | Roll back the whole projection transaction |

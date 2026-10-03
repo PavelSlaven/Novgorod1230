@@ -342,6 +342,19 @@ test('S1 catalog closure fails before physical rows on missing, ambiguous, or dr
   const slot = activeBundle.materialization_bindings.first_entry_preparation.destination.g6.s1_topology_slot;
   const call = (snapshot) => materializeS1OpenOneSpaceTopology({ party_id: 'p', baseline_ref: 'b', g5_ref: 'g', position_ref: 'working', base_position_slot_key: 'working_camp', scene_template_ref: 'trace_ld_v1_tpl_fishing_camp', slot, world_base_reference_snapshot: snapshot });
   assert.equal(call(worldSnapshot()).ok, true);
+  const expandedReaderSnapshot = structuredClone(worldSnapshot());
+  for (const closure of expandedReaderSnapshot.scene_template_closures) {
+    for (const row of closure.g6_slots) row.enclosing_structure_slot_key = null;
+    for (const row of closure.position_slots) row.instance_count = 1;
+  }
+  assert.equal(call(expandedReaderSnapshot).ok, true);
+  for (const invalidCount of [0, -1, 1.5, 2, null]) {
+    const snapshot = structuredClone(expandedReaderSnapshot);
+    snapshot.scene_template_closures[0].position_slots[0].instance_count = invalidCount;
+    assert.equal(call(snapshot).ok, false);
+  }
+  expandedReaderSnapshot.scene_template_closures[0].g6_slots[0].enclosing_structure_slot_key = 'unmaterialized-structure';
+  assert.equal(call(expandedReaderSnapshot).ok, false);
   for (const mutate of [
     (snapshot) => snapshot.scene_template_closures[0].movement_edges.pop(),
     (snapshot) => snapshot.scene_template_closures.push(structuredClone(snapshot.scene_template_closures[0])),

@@ -419,6 +419,76 @@ test('visible NPC routine transition reaches scene changes and current status', 
     'Прерывает работу для короткого отдыха.');
 });
 
+test('unobserved NPC routine transition does not refresh visible_status', () => {
+  const context = currentVisibleContext();
+  const before = {
+    ...context,
+    visible_npc: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-other' },
+      display_label: 'Сторож',
+      visible_status: 'Стоит у ворот.'
+    }]
+  };
+  const after = {
+    ...context,
+    visible_npc: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-other' },
+      display_label: 'Сторож',
+      visible_status: 'Стоит у ворот.'
+    }]
+  };
+  const result = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: after,
+    committedState: {
+      current_visible_context: before,
+      npcs: [{
+        instance_id: 'npc-1',
+        machine_state: { current_activity: { summary: 'Private schedule note.' } }
+      }],
+      items: []
+    },
+    temporalResults: [{ combined_change_set: { proposals: [{
+      npc_routine_transition: {
+        npc_id: 'npc-1',
+        proposal: { factual_transition: {
+          summary: 'Прерывает работу для короткого отдыха.'
+        } },
+        after: {
+          causal_state_ref: { routine_state: { status: 'inactive' } },
+          npc_snapshot: { machine_state: { current_activity: {
+            summary: 'Прерывает работу для короткого отдыха.'
+          } } }
+        }
+      }
+    }] } }]
+  });
+  assert.equal(result.visible_changes.includes(
+    'Еремей прерывает работу для короткого отдыха.'), false);
+  assert.equal(result.visible_npc[0].visible_status, 'Стоит у ворот.');
+  assert.equal(JSON.stringify(result).includes('Private schedule note.'), false);
+});
+
+test('machine_state schedule note never becomes visible_status without observed transition', () => {
+  const context = currentVisibleContext();
+  const result = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: context,
+    committedState: {
+      current_visible_context: context,
+      npcs: [{
+        instance_id: 'npc-1',
+        machine_state: {
+          current_activity: { summary: 'Private schedule instruction.' }
+        }
+      }],
+      items: []
+    },
+    temporalResults: []
+  });
+  assert.equal(Object.hasOwn(result.visible_npc[0], 'visible_status'), false);
+  assert.equal(JSON.stringify(result)
+    .includes('Private schedule instruction.'), false);
+});
+
 test('generic visible projector rejects malformed player F1 facts',
   async () => {
     let fallbackCalls = 0;

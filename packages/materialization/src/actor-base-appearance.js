@@ -1,5 +1,6 @@
 import {
   ACTOR_BASE_APPEARANCE_PATHS,
+  ACTOR_BASE_APPEARANCE_VOCABULARY,
   completeActorBaseAppearance,
   validateActorBaseAppearance
 } from '@rus/actors';
@@ -18,6 +19,36 @@ const FACET_BY_PATH = Object.freeze({
   'appearance.hair.facial_hair': 'facial_hair',
   'appearance.eyes.color': 'eye_color'
 });
+
+/** Compile exact approved regional rows into the actor owner's closed vocabulary. */
+export function compileApprovedActorAppearanceEntries({ records,
+  demographic_profile_ref, appearance_profile_ref } = {}) {
+  const exact = (rows, id) => {
+    const matches = rows?.filter((row) => row.id === id && row.status === 'approved') ?? [];
+    if (matches.length !== 1) throw new MaterializationError(
+      'ACTOR_APPEARANCE_SOURCE_DATA_GAP', 'Exact approved appearance source row is required.');
+    return matches[0];
+  };
+  exact(records?.region_demographic_profiles, demographic_profile_ref);
+  exact(records?.region_appearance_profiles, appearance_profile_ref);
+  return [...(records.region_demographic_profile_entries ?? []),
+    ...(records.region_appearance_profile_entries ?? [])].filter((entry) =>
+    entry.demographic_profile_id === demographic_profile_ref
+      || entry.appearance_profile_id === appearance_profile_ref).map((entry) => {
+    const option = exact(records.region_category_options, entry.option_id);
+    const category = exact(records.universal_categories, option.category_id);
+    const values = ACTOR_BASE_APPEARANCE_VOCABULARY[entry.facet] ?? [];
+    const value = values.find((value) => category.stable_code === value
+      || category.stable_code === `actor.${entry.facet}.${value}`);
+    if (entry.status !== 'approved' || category.facet !== entry.facet || !value) {
+      throw new MaterializationError('ACTOR_APPEARANCE_SOURCE_DATA_GAP',
+        'Approved appearance category does not match the actor vocabulary facet.');
+    }
+    return { entry_id: entry.id, facet: entry.facet, option_value: value,
+      weight: entry.weight, applicability: structuredClone(entry.applicability),
+      applicable: true, status: 'approved' };
+  });
+}
 
 export function materializeActorBaseAppearance({
   identity = {},

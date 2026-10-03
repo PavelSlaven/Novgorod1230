@@ -1,0 +1,2063 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:npl-older-winter-1220",
+      "title": "Новгородская первая летопись старшего и младшего изводов: старший извод, запись 6728 [1220]",
+      "authors": [],
+      "publication": "Москва–Ленинград, 1950, с. 59–72, л. 93–93 об.; электронное критическое издание",
+      "source_kind": "primary_text",
+      "citation": "http://litopys.org.ua/novglet/novg06.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:kudryashov-lukovets-fibre",
+      "title": "Деревянные орудия и приспособления для обработки прядильных растений с поселения Луковец (X–XII вв.)",
+      "authors": [
+        "A. V. Kudryashov"
+      ],
+      "publication": "Новгородский музейный вестник 21 (2007)",
+      "source_kind": "scholarship",
+      "citation": "https://bibliotekar.ru/rusNovgorod/164.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-processes-weaving",
+      "title": "Археологические вести 17: Реконструкция ткацкого устройства на горизонтальном стане",
+      "authors": [
+        "E. I. Savenkova"
+      ],
+      "publication": "Археологические вести 17 (2010)",
+      "source_kind": "scholarship",
+      "citation": "https://www.old.archeo.ru/izdaniya-1/archaeological-news/annotations-of-issues/arheologicheskie-vesti.-spb-2010.-vyp.-17.-annotacii",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-processes-bone-skates",
+      "title": "Bone ice skates in medieval Novgorod",
+      "authors": [
+        "O. V. Oleinikov"
+      ],
+      "publication": "Russian Archaeology (2021)",
+      "source_kind": "scholarship",
+      "citation": "https://rosarchras.ru/s086960630013891-9-1/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-processes-bread-ovens",
+      "title": "Раскопки мысовой части Новгородского Рюрикова городища",
+      "authors": [
+        "Institute for the History of Material Culture, RAS"
+      ],
+      "publication": "IIMK RAS field-research annotation",
+      "source_kind": "official_documentation",
+      "citation": "https://www.archeo.ru/field-research/annotations/raskopki-myisovoj-chasti-novgorodskgo-ryurik-12aee",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-processes-hemp",
+      "title": "Конопля и лён в хозяйстве Руси",
+      "authors": [],
+      "publication": "Краткие сообщения Института археологии 232",
+      "source_kind": "scholarship",
+      "citation": "https://www.archaeolog.ru/media/ksia/ksia-232.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-processes-fur-exchange",
+      "title": "Археология севернорусской деревни X–XIII веков. Том 3: Палеоэкологические условия, общество и культура",
+      "authors": [
+        "Н. А. Макаров (ред.)"
+      ],
+      "publication": "Москва: Наука, 2009",
+      "source_kind": "scholarship",
+      "citation": "https://www.archaeolog.ru/media/series/arch-northrus-village/Arch_northrus_village-3.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-processes-malt-974",
+      "title": "Новгородская берестяная грамота №974",
+      "authors": [
+        "National Research University Higher School of Economics",
+        "Institute of Slavic Studies, RAS"
+      ],
+      "publication": "Древнерусские берестяные грамоты corpus record",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/974/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:vasiliev-sledges-2006",
+      "title": "Функциональные типы средневековых новгородских упряжных саней: проблемы интерпретации",
+      "authors": [
+        "М. И. Васильев"
+      ],
+      "publication": "Новгород и Новгородская земля. История и археология, выпуск 20 (2006)",
+      "source_kind": "scholarship",
+      "citation": "https://bibliotekar.ru/rusNovgorod/140.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-letter-1054",
+      "title": "Новгородская берестяная грамота №1054",
+      "authors": [
+        "National Research University Higher School of Economics",
+        "Institute of Slavic Studies, RAS"
+      ],
+      "publication": "Древнерусские берестяные грамоты corpus record",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/1054/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-letter-1004",
+      "title": "Новгородская берестяная грамота №1004",
+      "authors": [
+        "National Research University Higher School of Economics",
+        "Institute of Slavic Studies, RAS"
+      ],
+      "publication": "Древнерусские берестяные грамоты corpus record",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/1004/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-letter-78",
+      "title": "Новгородская берестяная грамота №78",
+      "authors": [
+        "National Research University Higher School of Economics",
+        "Institute of Slavic Studies, RAS"
+      ],
+      "publication": "Древнерусские берестяные грамоты corpus record",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/78/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-letter-616-edition",
+      "title": "Новгородские грамоты на бересте (из раскопок 1984–1989 гг.). Том IX: грамота №616",
+      "authors": [
+        "В. Л. Янин",
+        "А. А. Зализняк"
+      ],
+      "publication": "Москва: Наука, 1993, pp. 22–23",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/thumbs/bibliography_file_supplement_ngb-9_novgorod_0616.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:transport-winter-sledge-1220",
+      "source_ref": "source:npl-older-winter-1220",
+      "anchor": {
+        "section": "6728 [1220], л. 93–93 об.; Тои же зиме; перевозка Твердислава на санках"
+      },
+      "note": "SW-05 independently APPROVE_WITH_LIMITS in verification-transport-operations.md. Direct/high only for named winter-1220 transport; regional 1100–1300 compatibility inferred/medium. No annual schedule, general medical/transport practice, equipment, route, present person or season.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:cci-textile-dye-application",
+      "source_ref": "source:population-textiles",
+      "anchor": {
+        "section": "Dyes, finishes and embellishments: application and mordants"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS FPD04–05 in verification/verification-fibre-preparation-dyeing.md. Universal technical relations only; no particular dye, mordant, bath conditions, local historical practice or output.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fibre-flax-breaker-shive",
+      "source_ref": "source:kudryashov-lukovets-fibre",
+      "anchor": {
+        "section": "Великолепной находкой…: myalka bilo and primary flax-stem processing"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-fibre-preparation-dyeing.md. Earlier Sheksna evidence supports inferred regional compatibility only; no dyeing or mandatory sequence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fibre-hackle-removes-shive",
+      "source_ref": "source:kudryashov-lukovets-fibre",
+      "anchor": {
+        "section": "Чесала…: removal of remaining shive; hand and fixed examples"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-fibre-preparation-dyeing.md. Earlier Sheksna evidence supports inferred regional compatibility only; no dyeing or mandatory sequence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-processes-weaving",
+      "source_ref": "source:population-processes-weaving",
+      "anchor": {
+        "section": "Savenkova annotation, lines 249–255; textile fragments and components of a reconstructed horizontal loom"
+      },
+      "note": "Independent disposition: verification/verification-historical-processes.md. The operational relations are medium-confidence reconstruction, not a universal loom specification.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-processes-bone-skates",
+      "source_ref": "source:population-processes-bone-skates",
+      "anchor": {
+        "section": "Abstract and introduction: long-bone blanks, trimmed ends and levelled sliding surface"
+      },
+      "note": "Independent disposition: verification/verification-historical-processes.md. Narrowly supports bone blanks and working for skates, not a generic bone workshop.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-processes-bread-ovens",
+      "source_ref": "source:population-processes-bread-ovens",
+      "anchor": {
+        "section": "Eight open bread ovens in the ditch slopes; IX–X context, filled by end of XI century"
+      },
+      "note": "Independent disposition: verification/verification-historical-processes.md. Later 1100–1300 applicability is historical compatibility, not evidence of a 1230 oven.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-processes-hemp",
+      "source_ref": "source:population-processes-hemp",
+      "anchor": {
+        "page": "192",
+        "section": "Hemp stem fibre; cordage, ropes, reins and fishing nets"
+      },
+      "note": "Independent disposition by root: historical-Rus compatibility only; not evidence of a current hemp stock or a particular Novgorod-1230 object.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-processes-fur-exchange",
+      "source_ref": "source:population-processes-fur-exchange",
+      "anchor": {
+        "page": "69",
+        "section": "XI-century fur arrivals in Novgorod from Poonezhye and Podvinye"
+      },
+      "note": "Independent disposition by root: exchange context only; no species, quantity, named actor or scene presence follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-processes-malt-974",
+      "source_ref": "source:population-processes-malt-974",
+      "anchor": {
+        "record_id": "Novgorod 974; date and translation lines 8–16, 27"
+      },
+      "note": "Independent disposition by root. The text records payment concerning malt; broad 1100–1300 scope is inferred compatibility, not an asserted recipe or brewing event.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:transport-sledge-summer-cargo",
+      "source_ref": "source:vasiliev-sledges-2006",
+      "anchor": {
+        "section": "Paragraph after figures 1–2 beginning «Факт широкого использования саней летом…»; indirect Novgorod interpretation"
+      },
+      "note": "Independent verification/verification-transport-operations.md: APPROVE_WITH_LIMITS, narrowed wording. Contextual evidence only; no party presence, route, permission, capacity or mandatory practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:transport-boat-cargo-dispatch",
+      "source_ref": "source:novgorod-letter-1054",
+      "anchor": {
+        "record_id": "Novgorod 1054",
+        "section": "Содержание; second half XIII century, conditional date 1260–1280"
+      },
+      "note": "Independent verification/verification-transport-operations.md: APPROVE_WITH_LIMITS, narrowed wording. Contextual evidence only; no party presence, route, permission, capacity or mandatory practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:transport-hired-boatman",
+      "source_ref": "source:novgorod-letter-1004",
+      "anchor": {
+        "record_id": "Novgorod 1004",
+        "section": "Содержание and manuscript; second quarter–mid XII century, conditional date 1140–1160"
+      },
+      "note": "Independent verification/verification-transport-operations.md: APPROVE_WITH_LIMITS, narrowed wording. Contextual evidence only; no party presence, route, permission, capacity or mandatory practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:transport-horse-sledge-equipment",
+      "source_ref": "source:novgorod-letter-78",
+      "anchor": {
+        "record_id": "Novgorod 78",
+        "section": "Manuscript and Содержание; stratigraphic 1160s–1170s, conditional date 1160–1180"
+      },
+      "note": "Independent verification/verification-transport-operations.md: APPROVE_WITH_LIMITS, narrowed wording. Contextual evidence only; no party presence, route, permission, capacity or mandatory practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:transport-private-boat-arrangement",
+      "source_ref": "source:novgorod-letter-616-edition",
+      "anchor": {
+        "page": "22–23",
+        "record_id": "Novgorod 616",
+        "section": "Critical reading and порозна/settlement glosses; expanded Russian translation and dating at https://gramoty.ru/birchbark/document/show/novgorod/616/"
+      },
+      "note": "Independent verification/verification-transport-operations.md: TO-03 APPROVE_WITH_LIMITS after independently opening the critical edition. Fragmentary private arrangement only, not general fares or vessel availability.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:kolchin-stone-abrasives",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "109–110",
+        "section": "Техника металлообработки: grinding wheels/bars and small whetstones"
+      },
+      "note": "Independent verification/verification-ordinary-mineral-use.md OMU01–02. Pre-Mongol Rus archaeological material/function interpretation; Novgorod Land 1100–1300 compatibility inferred, not a local find, mineral source or present implement.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:textile-dyeing",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:flax-stem-breaking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:spinning-fibre-cleaning",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:textile-thread",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:weaving"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:weaving-device-component",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:weaving"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:woven-textile",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:weaving"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:bone-skate-making",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:bone",
+        "wk:material_culture:bone-skate"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:oven-bread-baking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:architecture_settlement:domestic-oven"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:hemp-fibre",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:cordage",
+        "wk:material_culture:net"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:fur",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:malt",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:transport-winter-sledge-1220",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:sledge",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "chronicle_winter_1220_infirm_tverdislav_conveyed_on_sledges_to_boris_and_gleb"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:transport-winter-sledge-1220"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-dye-application",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:textile-dyeing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "textile_dye_application"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-textile-dye-application"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-dye-mordant-fixation",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:textile-dyeing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "textile_dye_mordant_fixation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-textile-dye-application"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fibre-flax-breaker-shive",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:flax-stem-breaking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A flax-breaker could serve primary processing of flax stems by breaking the woody stem core (shive). Kudryashov describes a Lukovets implement dated no later than the late twelfth century; compatibility with Novgorod Land in 1100–1300 is inferred, not local attestation. This does not establish a mandatory preparation sequence, retting, drying, fibre quality, current tool, skill or output."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fibre-flax-breaker-shive"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fibre-hackle-removes-shive",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:spinning-fibre-cleaning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A hackle could remove remaining shive from fibres of spinning plants. Kudryashov describes Lukovets hand and fixed hackles from mid-twelfth- and eleventh-century horizons; compatibility with Novgorod Land in 1100–1300 is inferred. This does not identify every comb as a hackle or establish a particular fibre, mandatory sequence, spinning readiness, current tool, access, skill or output."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fibre-hackle-removes-shive"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-weaving-thread",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:weaving",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:textile-thread"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-weaving"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-weaving-device",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:weaving",
+      "predicate": "requires_tool",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:weaving-device-component"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-weaving"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-weaving-textile",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:weaving",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:woven-textile"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-weaving"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-bone-skate-input",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:bone-skate-making",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:bone"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1150,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-bone-skates"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-bone-skate-output",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:bone-skate-making",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:bone-skate"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1150,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-bone-skates"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-oven-baking",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:domestic-oven",
+      "predicate": "supports_known_process",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:oven-bread-baking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-bread-ovens"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-hemp-cordage",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:hemp-fibre",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:cordage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-hemp"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-hemp-net",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:hemp-fibre",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:net"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-hemp"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-fur-exchange",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:fur",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "northern_novgorod_exchange_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "trade_available_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-fur-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-processes-malt-context",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:malt",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "novgorod_commodity_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-processes-malt-974"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:transport-sledge-summer-cargo",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:sledge",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "harnessed_sledge_compatible_with_nonwinter_overland_cargo"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:transport-sledge-summer-cargo"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:transport-boat-cargo-dispatch",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:boat",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "letter_1054_boat_dispatch_hides_box_wax"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:transport-boat-cargo-dispatch"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:transport-hired-boatman",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:boat-worker",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "letter_1004_hired_boatman_journey_goods_settlement"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:transport-hired-boatman"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:transport-horse-sledge-equipment",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:horse-tack",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "letter_78_horse_sledge_harness_recovery_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:transport-horse-sledge-equipment"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:transport-private-boat-arrangement",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:boat",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "letter_616_empty_free_boat_status_in_private_use_settlement_arrangement"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1210,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:transport-private-boat-arrangement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:stone-whetstone-edge-maintenance",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:stone",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "kolchin_premongol_rus_small_whetstones_used_to_sharpen_dulled_cutting_edges"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-stone-abrasives"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:stone-grinding-metal-use",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:stone",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "kolchin_premongol_rus_natural_stone_grinding_wheels_and_bars_used_for_metal_grinding"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-stone-abrasives"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:textile-dyeing",
+      "locale": "ru",
+      "labels": [
+        "Крашение текстиля"
+      ],
+      "short_definition": "Крашение текстиля",
+      "search_aliases": [
+        "Крашение текстиля"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:textile-dyeing",
+      "locale": "en",
+      "labels": [
+        "Textile dyeing"
+      ],
+      "short_definition": "Textile dyeing",
+      "search_aliases": [
+        "Textile dyeing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:flax-stem-breaking",
+      "locale": "ru",
+      "labels": [
+        "Обработка стеблей льна мялкой"
+      ],
+      "short_definition": "Обработка стеблей льна мялкой",
+      "search_aliases": [
+        "Обработка стеблей льна мялкой"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:flax-stem-breaking",
+      "locale": "en",
+      "labels": [
+        "Flax stem breaking"
+      ],
+      "short_definition": "Flax stem breaking",
+      "search_aliases": [
+        "Flax stem breaking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:spinning-fibre-cleaning",
+      "locale": "ru",
+      "labels": [
+        "Очистка волокон прядильных растений"
+      ],
+      "short_definition": "Очистка волокон прядильных растений",
+      "search_aliases": [
+        "Очистка волокон прядильных растений"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:spinning-fibre-cleaning",
+      "locale": "en",
+      "labels": [
+        "Cleaning fibres of spinning plants"
+      ],
+      "short_definition": "Cleaning fibres of spinning plants",
+      "search_aliases": [
+        "Cleaning fibres of spinning plants"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:textile-thread",
+      "locale": "ru",
+      "labels": [
+        "Текстильная нить"
+      ],
+      "short_definition": "Нить как материальный вход для ткачества",
+      "search_aliases": [
+        "Текстильная нить"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:textile-thread",
+      "locale": "en",
+      "labels": [
+        "Textile thread"
+      ],
+      "short_definition": "Thread as a material input for weaving",
+      "search_aliases": [
+        "Textile thread"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:weaving-device-component",
+      "locale": "ru",
+      "labels": [
+        "Деталь ткацкого устройства"
+      ],
+      "short_definition": "Деталь ткацкого устройства",
+      "search_aliases": [
+        "Челнок",
+        "Подножка",
+        "Деталь ткацкого устройства"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:weaving-device-component",
+      "locale": "en",
+      "labels": [
+        "Weaving-device component"
+      ],
+      "short_definition": "A component of a weaving device",
+      "search_aliases": [
+        "Shuttle",
+        "Treadle",
+        "Weaving-device component"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:woven-textile",
+      "locale": "ru",
+      "labels": [
+        "Тканое полотно"
+      ],
+      "short_definition": "Полотно, образованное ткачеством",
+      "search_aliases": [
+        "Тканое полотно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:woven-textile",
+      "locale": "en",
+      "labels": [
+        "Woven textile"
+      ],
+      "short_definition": "Textile formed by weaving",
+      "search_aliases": [
+        "Woven textile"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:bone-skate-making",
+      "locale": "ru",
+      "labels": [
+        "Изготовление костяного конька"
+      ],
+      "short_definition": "Обработка костяной заготовки для конька",
+      "search_aliases": [
+        "Изготовление костяного конька"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:bone-skate-making",
+      "locale": "en",
+      "labels": [
+        "Bone-skate making"
+      ],
+      "short_definition": "Working a bone blank into a skate",
+      "search_aliases": [
+        "Bone-skate making"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:oven-bread-baking",
+      "locale": "ru",
+      "labels": [
+        "Выпечка хлеба в печи"
+      ],
+      "short_definition": "Выпечка хлеба с использованием печи",
+      "search_aliases": [
+        "Выпечка хлеба в печи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:oven-bread-baking",
+      "locale": "en",
+      "labels": [
+        "Oven bread baking"
+      ],
+      "short_definition": "Baking bread using an oven",
+      "search_aliases": [
+        "Oven bread baking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hemp-fibre",
+      "locale": "ru",
+      "labels": [
+        "Пеньковое волокно"
+      ],
+      "short_definition": "Волокно из стебля конопли",
+      "search_aliases": [
+        "Пенька",
+        "Пеньковое волокно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hemp-fibre",
+      "locale": "en",
+      "labels": [
+        "Hemp fibre"
+      ],
+      "short_definition": "Fibre obtained from the hemp stem",
+      "search_aliases": [
+        "Hemp",
+        "Hemp fibre"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:fur",
+      "locale": "ru",
+      "labels": [
+        "Пушнина"
+      ],
+      "short_definition": "Меховое сырьё или товарная категория",
+      "search_aliases": [
+        "Пушнина",
+        "Мех"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:fur",
+      "locale": "en",
+      "labels": [
+        "Fur"
+      ],
+      "short_definition": "Fur as a material or trade category",
+      "search_aliases": [
+        "Fur"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:malt",
+      "locale": "ru",
+      "labels": [
+        "Солод"
+      ],
+      "short_definition": "Солод как товарная категория",
+      "search_aliases": [
+        "Солод"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:malt",
+      "locale": "en",
+      "labels": [
+        "Malt"
+      ],
+      "short_definition": "Malt as a commodity category",
+      "search_aliases": [
+        "Malt"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-winter-sledge-1220",
+      "locale": "ru",
+      "runtime_text": "В зимнем новгородском эпизоде 1220 года Новгородская первая летопись сообщает, что немощного Твердислава перевезли на санках к Борису и Глебу. Это прямое свидетельство одного именованного зимнего передвижения; совместимость с Новгородской землёй 1100–1300 гг. является выводом средней уверенности. Оно не задаёт ежегодный распорядок, обычную доступность саней, тягу, снаряжение, условия маршрута, медицинскую практику, нынешнее время года, человека, транспорт или право перевозки.",
+      "search_aliases": [
+        "зимние сани",
+        "Твердислав",
+        "1220"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-winter-sledge-1220",
+      "locale": "en",
+      "runtime_text": "In a winter Novgorod episode of 1220, the Novgorod First Chronicle reports that the infirm Tverdislav was conveyed on sledges to Boris and Gleb. This directly attests one named winter movement; compatibility with Novgorod Land in 1100–1300 is inferred with medium confidence. It establishes no annual routine, ordinary availability of sledges, traction, equipment, route conditions, medical practice, present season, person, vehicle or transport right.",
+      "search_aliases": [
+        "winter sledge transport",
+        "Tverdislav",
+        "1220"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-dye-application",
+      "locale": "ru",
+      "runtime_text": "Краситель может наноситься на волокна, пряжу, ткань или готовое текстильное изделие, обычно погружением в красильную ванну. Обычно не означает обязательно. Эта универсальная техническая связь не определяет конкретный краситель, цвет, состав ванны, температуру, длительность, последовательность, умение, поглощение или историческую/местную практику.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-dye-application",
+      "locale": "en",
+      "runtime_text": "A dye can be applied to fibres, yarns, fabrics or finished textile articles, usually by immersion in a dye bath. Usually does not mean necessarily. This universal technical relation identifies no particular dye, colour, bath contents, temperature, duration, sequence, skill, uptake or historical/local practice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-dye-mordant-fixation",
+      "locale": "ru",
+      "runtime_text": "Краситель может смешиваться с протравой, чтобы закрепить краситель на волокне. Это не делает протраву необходимой для всякого красителя, не определяет протраву или источник красителя и не устанавливает стойкость, цвет, наличные материалы, работника или историческую практику.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-dye-mordant-fixation",
+      "locale": "en",
+      "runtime_text": "A dye can be mixed with a mordant to fix the dye to the fibre. This does not make mordants necessary for every dye, identify a mordant or dye source, or establish durability, colour, current supplies, a worker or historical practice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fibre-flax-breaker-shive",
+      "locale": "ru",
+      "runtime_text": "Мялка могла служить первичной обработке стеблей льна, разрушая древесную часть стебля-кострику. Кудряшов описывает орудие из Луковца не позднее конца XII века; совместимость с Новгородской землёй 1100–1300 годов выводится, а не засвидетельствована локально. Это не устанавливает обязательную последовательность подготовки, мочение, сушку, качество волокна, наличный инструмент, умение или результат.",
+      "search_aliases": [
+        "Обработка стеблей льна мялкой"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fibre-flax-breaker-shive",
+      "locale": "en",
+      "runtime_text": "A flax-breaker could serve primary processing of flax stems by breaking the woody stem core (shive). Kudryashov describes a Lukovets implement dated no later than the late twelfth century; compatibility with Novgorod Land in 1100–1300 is inferred, not local attestation. This does not establish a mandatory preparation sequence, retting, drying, fibre quality, current tool, skill or output.",
+      "search_aliases": [
+        "Flax stem breaking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fibre-hackle-removes-shive",
+      "locale": "ru",
+      "runtime_text": "Чесало могло удалять остатки кострики с волокон прядильных растений. Кудряшов описывает ручное и стационарное чесала из слоёв Луковца середины XII и XI веков; совместимость с Новгородской землёй 1100–1300 годов выводится. Это не отождествляет всякий гребень с чесалом и не устанавливает конкретное волокно, обязательную последовательность, готовность к прядению, наличный инструмент, доступ, умение или результат.",
+      "search_aliases": [
+        "Очистка волокон прядильных растений"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fibre-hackle-removes-shive",
+      "locale": "en",
+      "runtime_text": "A hackle could remove remaining shive from fibres of spinning plants. Kudryashov describes Lukovets hand and fixed hackles from mid-twelfth- and eleventh-century horizons; compatibility with Novgorod Land in 1100–1300 is inferred. This does not identify every comb as a hackle or establish a particular fibre, mandatory sequence, spinning readiness, current tool, access, skill or output.",
+      "search_aliases": [
+        "Cleaning fibres of spinning plants"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-weaving-thread",
+      "locale": "ru",
+      "runtime_text": "В реконструкции новгородского горизонтального ткачества нити образуют основу и уток; это не задаёт единственное волокно или станок.",
+      "search_aliases": [
+        "Ткачество",
+        "Текстильная нить"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-weaving-thread",
+      "locale": "en",
+      "runtime_text": "In reconstructed Novgorod horizontal-loom weaving, thread forms warp and weft; this does not prescribe one fibre or loom.",
+      "search_aliases": [
+        "Weaving",
+        "Textile thread"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-weaving-device",
+      "locale": "ru",
+      "runtime_text": "Реконструкция горизонтального ткачества опирается на найденные детали ткацких устройств; это не полный список орудий для всякого ткачества.",
+      "search_aliases": [
+        "Ткачество",
+        "Деталь ткацкого устройства"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-weaving-device",
+      "locale": "en",
+      "runtime_text": "Horizontal-loom reconstruction draws on found weaving-device parts; this is not a complete tool list for all weaving.",
+      "search_aliases": [
+        "Weaving",
+        "Weaving-device component"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-weaving-textile",
+      "locale": "ru",
+      "runtime_text": "В реконструкции горизонтального стана нити образуют тканое полотно; переплетение, ширина и волокно требуют отдельных данных.",
+      "search_aliases": [
+        "Ткачество",
+        "Тканое полотно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-weaving-textile",
+      "locale": "en",
+      "runtime_text": "In horizontal-loom reconstruction, thread forms woven textile; weave, width and fibre need separate evidence.",
+      "search_aliases": [
+        "Weaving",
+        "Woven textile"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-bone-skate-input",
+      "locale": "ru",
+      "runtime_text": "Новгородский костяной конёк делали из реальной костяной заготовки; наличие животного не создаёт готовую вещь.",
+      "search_aliases": [
+        "Костяной конёк",
+        "Кость"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-bone-skate-input",
+      "locale": "en",
+      "runtime_text": "A Novgorod bone skate was made from a real bone blank; an animal's presence does not create a finished item.",
+      "search_aliases": [
+        "Bone skate",
+        "Bone"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-bone-skate-output",
+      "locale": "ru",
+      "runtime_text": "Обработка костяной заготовки могла дать костяной конёк; это не создаёт конёк без материала и работы.",
+      "search_aliases": [
+        "Изготовление костяного конька",
+        "Костяной конёк"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-bone-skate-output",
+      "locale": "en",
+      "runtime_text": "Working a bone blank could produce a bone skate; it does not create one without material and work.",
+      "search_aliases": [
+        "Bone-skate making",
+        "Bone skate"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-oven-baking",
+      "locale": "ru",
+      "runtime_text": "Хлебная печь исторически совместима с выпечкой хлеба; это не доказывает печь в сцене и не делает её обязательной для всякого хлеба.",
+      "search_aliases": [
+        "Хлебная печь",
+        "Выпечка хлеба"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-oven-baking",
+      "locale": "en",
+      "runtime_text": "A bread oven is historically compatible with bread baking; this neither proves an oven in a scene nor makes one mandatory for all bread.",
+      "search_aliases": [
+        "Bread oven",
+        "Oven bread baking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-hemp-cordage",
+      "locale": "ru",
+      "runtime_text": "Пеньковое волокно исторически засвидетельствовано для верёвок и канатов; это не создаёт пеньку в сцене.",
+      "search_aliases": [
+        "Пенька",
+        "Верёвка",
+        "Канат"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-hemp-cordage",
+      "locale": "en",
+      "runtime_text": "Hemp fibre is historically attested for cordage and ropes; this does not create hemp in a scene.",
+      "search_aliases": [
+        "Hemp fibre",
+        "Cordage"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-hemp-net",
+      "locale": "ru",
+      "runtime_text": "Пеньковое волокно исторически засвидетельствовано для рыболовных сетей; конкретная сеть требует реального материала и работы.",
+      "search_aliases": [
+        "Пенька",
+        "Рыболовная сеть"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-hemp-net",
+      "locale": "en",
+      "runtime_text": "Hemp fibre is historically attested for fishing nets; a particular net needs real material and work.",
+      "search_aliases": [
+        "Hemp fibre",
+        "Fishing net"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-fur-exchange",
+      "locale": "ru",
+      "runtime_text": "Пушнина поступала в Новгород из северных округов уже в XI веке; это контекст обмена, не мех конкретного NPC.",
+      "search_aliases": [
+        "Пушнина",
+        "Новгородский обмен"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-fur-exchange",
+      "locale": "en",
+      "runtime_text": "Fur reached Novgorod from northern districts already in the XI century; this is an exchange context, not fur owned by a particular NPC.",
+      "search_aliases": [
+        "Fur",
+        "Novgorod exchange"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-malt-context",
+      "locale": "ru",
+      "runtime_text": "Новгородская грамота рубежа XII–XIII веков фиксирует расчёт за солод; это не рецепт и не факт варки в сцене.",
+      "search_aliases": [
+        "Солод",
+        "Новгородская грамота"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-processes-malt-context",
+      "locale": "en",
+      "runtime_text": "A Novgorod record around the XII–XIII turn notes a payment concerning malt; it is neither a recipe nor brewing in a scene.",
+      "search_aliases": [
+        "Malt",
+        "Novgorod record"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-sledge-summer-cargo",
+      "locale": "ru",
+      "runtime_text": "Упряжные сани исторически совместимы с сухопутной перевозкой груза вне зимы: для Новгорода это косвенный вывод исследования средневековых находок. Он не устанавливает пригодность любых саней в любой сезон, состояние грунта, тягу, грузоподъёмность, маршрут или наличие саней.",
+      "search_aliases": [
+        "сани летом",
+        "перевозка груза вне зимы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-sledge-summer-cargo",
+      "locale": "en",
+      "runtime_text": "Harnessed sledges are historically compatible with overland cargo transport outside winter: for Novgorod this is an indirect interpretation of medieval finds. It establishes neither suitability of every sledge in every season nor ground conditions, traction, capacity, a route or a present sledge.",
+      "search_aliases": [
+        "summer sledges",
+        "nonwinter cargo transport"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-boat-cargo-dispatch",
+      "locale": "ru",
+      "runtime_text": "В новгородской грамоте № 1054 второй половины XIII века ладья прямо названа средством отправки связок кож, коробьи и круга воска. Применение этого более позднего примера к 1230 году — косвенная историческая совместимость; он не задаёт вместимость, тип судна, маршрут, экипаж, владельца или текущий груз.",
+      "search_aliases": [
+        "ладья отправка груза",
+        "кожи коробья воск"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-boat-cargo-dispatch",
+      "locale": "en",
+      "runtime_text": "Novgorod letter no. 1054, from the second half of the thirteenth century, directly names a boat as the means of dispatching bundles of hides, a box and a roll of wax. Applying this later example to 1230 is inferred historical compatibility; it supplies no capacity, vessel type, route, crew, owner or current cargo.",
+      "search_aliases": [
+        "boat cargo dispatch",
+        "hides box wax shipment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-hired-boatman",
+      "locale": "ru",
+      "runtime_text": "Новгородская грамота № 1004 XII века фиксирует наёмного лодейщика в частном письме, связанном с поездкой автора и расчётом за товар. Для 1230 года это косвенная историческая совместимость, не доказательство перевозки лодейщиком товара заказчика, обычной роли любого NPC, тарифа, долгового правила, судна или состоявшейся поездки в партии.",
+      "search_aliases": [
+        "наёмный лодейщик",
+        "найм лодейщика"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-hired-boatman",
+      "locale": "en",
+      "runtime_text": "Twelfth-century Novgorod letter no. 1004 records a hired boatman in a private letter connected with the author's journey and a settlement for goods. For 1230 this is inferred historical compatibility, not proof that the boatman carried a customer's goods, a default NPC role, a fare, a debt rule, a vessel or a voyage in the party.",
+      "search_aliases": [
+        "hired boatman",
+        "boatman journey goods settlement"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-horse-sledge-equipment",
+      "locale": "ru",
+      "runtime_text": "Новгородская грамота № 78 XII века совместно упоминает коня, сани, хомут, вожжи, оголовье и попону в одном распоряжении о возврате. Для 1230 года это косвенная совместимость контекста; перечень не доказывает, что этот конь тянул эти сани, не является обязательным набором сбруи и не создаёт животное, снаряжение, право или услугу.",
+      "search_aliases": [
+        "конь сани сбруя",
+        "хомут вожжи оголовье"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-horse-sledge-equipment",
+      "locale": "en",
+      "runtime_text": "Twelfth-century Novgorod letter no. 78 jointly mentions a horse, sledges, a collar, reins, headgear and a blanket in one recovery instruction. For 1230 this is inferred contextual compatibility; the list neither proves that this horse drew those sledges nor defines a mandatory harness set, and creates no animal, equipment, right or service.",
+      "search_aliases": [
+        "horse sledge harness",
+        "collar reins headgear"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-private-boat-arrangement",
+      "locale": "ru",
+      "runtime_text": "Фрагментарная новгородская грамота № 616, датируемая 1210-ми–1240-ми годами, связывает порожний/свободный статус ладьи с частной договорённостью об её использовании и расчёте. Она не задаёт общий тариф, вместимость, обязательный платёж, владельца, назначение поездки, безопасность плавания или наличие свободного судна в партии.",
+      "search_aliases": [
+        "порожняя ладья",
+        "свободная ладья частный расчёт"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:transport-private-boat-arrangement",
+      "locale": "en",
+      "runtime_text": "Fragmentary Novgorod letter no. 616, dated to the 1210s–1240s, links a boat's empty/free status with a private arrangement about its use and settlement. It supplies no general fare, capacity, compulsory payment, owner, destination, navigation safety or presently available vessel in the party.",
+      "search_aliases": [
+        "empty free boat",
+        "private boat arrangement settlement"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stone-whetstone-edge-maintenance",
+      "locale": "ru",
+      "runtime_text": "В описанном Колчиным домонгольском древнерусском археологическом контексте малый оселок мог служить для заточки затупившейся режущей кромки. Совместимость с Новгородской землёй 1100–1300 годов выведена косвенно; не установлены местная находка, пригодность любого камня, наличие инструмента или успешная заточка.",
+      "search_aliases": [
+        "Оселок заточка режущей кромки",
+        "Каменный точильный брусок"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stone-whetstone-edge-maintenance",
+      "locale": "en",
+      "runtime_text": "In Kolchin's described pre-Mongol Old Rus archaeological context, a small whetstone bar could serve to sharpen a dulled cutting edge. Compatibility with Novgorod Land in 1100–1300 is inferred; a local find, suitability of every stone, present implement or successful sharpening is not established.",
+      "search_aliases": [
+        "Whetstone dull edge sharpening",
+        "Small stone sharpening bar"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stone-grinding-metal-use",
+      "locale": "ru",
+      "runtime_text": "В описанном Колчиным домонгольском древнерусском археологическом материале точильные круги и бруски из натурального камня использовались для обточки металла. Новгородская совместимость 1100–1300 годов косвенная; это не означает пригодность каждого камня, местный запас минерала, наличие круга или мастерской и готовый результат.",
+      "search_aliases": [
+        "Натуральный камень обточка металла",
+        "Точильный круг брусок"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stone-grinding-metal-use",
+      "locale": "en",
+      "runtime_text": "In Kolchin's described pre-Mongol Old Rus archaeological material, natural-stone grinding wheels and bars were used for metal grinding. Novgorod compatibility in 1100–1300 is inferred; this does not establish suitability of every rock, a local mineral stock, a present wheel or workshop, or a finished result.",
+      "search_aliases": [
+        "Natural stone metal grinding",
+        "Grinding wheel and bar"
+      ]
+    }
+  ]
+}

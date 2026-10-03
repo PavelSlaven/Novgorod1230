@@ -77,8 +77,26 @@ def validate_conditional_appearance(option_sets):
     assert gray_shares["old"] > 0.5
 
 
+def term_status_failures(status_rows, pinned):
+    """A term marked not attested must still equal the pinned TSV value: the mark expires when the TSV is fixed."""
+    by_id = {row["occupation_id"]: row for row in pinned}
+    failures = []
+    for row in status_rows:
+        pinned_row = by_id.get(row["occupation_id"])
+        if pinned_row is None or row["field"] not in pinned_row:
+            failures.append(f"{row['occupation_id']}: unknown occupation or field {row['field']}")
+        elif pinned_row[row["field"]] != row["pinned_value"]:
+            failures.append(f"{row['occupation_id']}: pinned_value differs from the TSV; drop or update the mark")
+        if row["status"] != "not_attested" or not row["evidence_refs"] or not row["decision"]:
+            failures.append(f"{row['occupation_id']}: status, evidence_refs and decision are required")
+    return failures
+
+
 def main():
     pinned = csv_rows(ROOT_DATA / "novgorod-region/novgorod_occupations_v1_enriched.tsv", "\t")
+    term_status = csv_rows(HERE / "occupations/occupation_term_status.csv")
+    assert term_status and not term_status_failures(term_status, pinned)
+    assert term_status_failures([{**term_status[0], "pinned_value": "изменено"}], pinned), "term status negative probe"
     role_rows = {r["role_id"]: r for r in csv_rows(ROOT_DATA / "novgorod-region/novgorod_social_roles_v1_enriched.tsv", "\t")}
     roles = set(role_rows)
     occupations = csv_rows(HERE / "occupations/occupations_additions.csv")

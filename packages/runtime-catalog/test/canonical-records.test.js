@@ -149,7 +149,7 @@ test('canonical digests preserve array order and bind meaningful row/registry ch
   );
 });
 
-test('versioned item/container registry exactly covers PR17 tables and graph-node assertions', async () => {
+test('versioned registry covers PR17, procedural cache and graph assertions', async () => {
   const candidateRoot = new URL(
     'data/knowledge-source/imports/item-container-120-v5/candidate/',
     root
@@ -165,6 +165,7 @@ test('versioned item/container registry exactly covers PR17 tables and graph-nod
   );
   const expectedTables = [
     ...manifest.datasets.map(({ table }) => table),
+    'procedural_scene_compiled_records',
     'graph_nodes'
   ].sort();
 

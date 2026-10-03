@@ -10,7 +10,7 @@ import {
   validateNarrationOutput,
   validateNarrationSemanticRepair
 } from '@rus/narration';
-import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
+import { actionProducedWeaponClassificationFromModelOutput, resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
 import {
   validateConversationContributionPlan,
   validateNpcCombatIntentPlan,
@@ -398,7 +398,7 @@ function validateRoleOutput(fixture, output) {
     case 'npc_step_plan': return validateNpcStepPlan(output, request) ? [] : ['validator:npc_step_plan'];
     case 'npc_combat_plan': return validateNpcCombatPlanApplicability(output, request).pass ? [] : ['validator:npc_combat_plan'];
     case 'combat_weapon_classification':
-      try { resolveActionProducedCombatWeaponClass({ classification: output }); return []; }
+      try { resolveActionProducedCombatWeaponClass({ classification: actionProducedWeaponClassificationFromModelOutput(output, request?.request_id) }); return []; }
       catch { return ['validator:combat_weapon_classification']; }
     case 'narration_output': {
       const requestId = request?.request_id;

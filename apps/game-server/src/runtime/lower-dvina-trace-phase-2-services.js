@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   './lower-dvina-trace-turn-step-runtime-ports.js';
@@ -12,9 +13,12 @@ import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   './lower-dvina-trace-phase-2-player-safe.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
+import { actorMovementBlocked } from './lower-dvina-trace-phase-3-command-shared.js';
+import { partyHistoricalEventsOf, playerWorldKnowledgeAuthoritativeFromState } from
+  './world-knowledge-request-context.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
-    partyId, requestId, idempotencyKey, inputDigest, issuedAt,
+    partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation,
@@ -22,6 +26,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
+    turnStepNeedsCheckGuard = null,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner,
@@ -29,6 +34,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createTurnStepWorldProcessResolver,
     localFireProfile,
     createTurnStepSpatialSemanticResolver,
+    spatialSemanticProfile,
     createTurnStepBackgroundNpcResolver,
     npcSemanticRemainderProfile,
     admitAmbientOrdinaryPortion,
@@ -36,6 +42,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepAmbientPortionProfileRef,
     turnStepOrdinaryResultPolicy,
     postActionPerceptionProfile,
+    postActionPerceptionAdapter,
+    postActionEnvironmentPort = null,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     turnBudget,
@@ -46,13 +54,27 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
   let committedPublicResult = null, turnCommitStatus = 'not_started';
+  // F7: narration WK uses post-commit party state when available (same as replay).
+  let narrationAuthState = state;
   const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
     catch { /* Diagnostic capture must not affect gameplay. */ } };
+  const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => trace({
+    event: 'needs_check_candidate_filtered', path,
+    queue_id: queue_ids[0] ?? null,
+    queue_ids: structuredClone(queue_ids)
+  });
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
     idempotency_key: idempotencyKey
   });
+  const needsCheckGuard = typeof turnStepNeedsCheckGuard === 'function'
+    ? turnStepNeedsCheckGuard : null;
+  const guardFactory = (factory) => typeof factory !== 'function'
+    ? null : (input) => factory({ ...input,
+      assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter });
+  const spatialSemanticResolverFactory =
+    guardFactory(createTurnStepSpatialSemanticResolver);
   const randomSnapshot = randomSource?.snapshot?.();
   if (!randomSnapshot?.algorithm
       || randomSnapshot.algorithm !== state.materialization_trace?.rng_version) {
@@ -63,6 +85,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
     );
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const loadPreparedMovementScene = typeof repository.loadPreparedMovementScene
+    === 'function' ? ({ partyId: preparedPartyId, state: preparedState }) =>
+      repository.loadPreparedMovementScene({
+        partyId: preparedPartyId, state: preparedState, turnBudget
+      }) : null;
   const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
     committedState, locationProfiles, scenePresentation
   });
@@ -76,11 +103,15 @@ export function buildLowerDvinaTracePhase2Services(context) {
     bodyEffect,
     bodyEventOwner: turnStepBodyEventOwner,
     committedState: state,
+    partyId,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
-      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
+      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard,
+        recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
-      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest}),
+      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter}),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
@@ -90,7 +121,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     semanticActivityOwner: turnStepSemanticActivityOwner,
     idempotencyKey,
     postActionPerceptionProfile,
+    postActionPerceptionAdapter,
+    postActionEnvironmentPort,
     projectCurrentScene,
+    loadPreparedMovementScene,
+    onNpcSceneProjection: context.onNpcSceneProjection,
+    requestId,
     temporalAdvance,
     workingProjectionAuthority
   });
@@ -98,10 +134,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createLowerDvinaTraceTurnStepPlayerSafeProjector({
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
-      createTurnStepActionProductionOwner,
+      createTurnStepActionProductionOwner:
+        createTurnStepActionProductionOwner,
       localFireProfile,
       createTurnStepWorldProcessResolver,
-      createTurnStepSpatialSemanticResolver,
+      createTurnStepSpatialSemanticResolver:
+        spatialSemanticResolverFactory,
+      spatialSemanticProfile,
       createTurnStepBackgroundNpcResolver,
       npcSemanticRemainderProfile,
       ordinaryDiscoveryEnablementMarker,
@@ -125,7 +164,44 @@ export function buildLowerDvinaTracePhase2Services(context) {
     stateReader: createLowerDvinaTracePhase2StateReader({ repository, partyId,
       idempotencyKey, state, projectCurrentScene, turnBudget }),
     semanticResolver,
-    ...(turnStepModel ? { turnStepModel } : {}),
+    // N1: per-request wrap binds committed events; no mutable model property.
+    ...(turnStepModel ? {
+      turnStepModel: (req, repair) => turnStepModel(req, repair, {
+        historical_events: partyHistoricalEventsOf(state)
+      })
+    } : {}),
+    // The outcome comes from structure only - the committed body/combat state and the
+    // grounding of the chosen operation. The model's reason/reason_code is diagnostics
+    // (contract §15) and is never read here.
+    turnStepBlockPlan: async ({ plan, request }) => {
+      if (request.step_index !== 1) return false;
+      if (actorMovementBlocked(state) && plan.resolution === 'direct'
+        && plan.goal_result === 'not_achieved' && plan.operations.length === 0) {
+        return 'actor_movement_blocked';
+      }
+      if (plan.resolution !== 'domain_request') return false;
+      const chosen = plan.operations ?? [];
+      if (chosen.some((operation) => (request.player_safe_state
+        ?.available_domain_operation_grounding ?? []).some((entry) =>
+        entry.semantic_scope?.destination_status === 'occupied'
+        && isDeepStrictEqual(entry.operation, operation)))) {
+        return 'destination_occupied';
+      }
+      // The chosen command's own structural refusal (the movement owner's full-occupancy
+      // verdict, which may name occupants the actor cannot perceive and is never shown).
+      // The block carries no reason code: a code would disclose the unseen occupancy.
+      const commands = typeof registry?.registered === 'function' ? registry.registered() : [];
+      for (const operation of chosen) {
+        for (const command of commands) {
+          if (typeof command.attemptRefusal === 'function'
+            && command.semantic_binding?.matches?.({ operation }) === true
+            && await command.attemptRefusal({ committed_state: state }) != null) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
     ...(turnStepSemanticGroundingValidator ? {
       turnStepSemanticGroundingValidator
     } : {}),
@@ -149,8 +225,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         applyWorkingProjection: turnStepPorts.applyLocalFireProjection
       })
     } : {}),
-    ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
-      turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
+    ...(typeof spatialSemanticResolverFactory === 'function' ? {
+      turnStepSpatialSemanticResolver: spatialSemanticResolverFactory({ partyId })
     } : {}),
     ...(typeof createTurnStepBackgroundNpcResolver === 'function'
         && npcSemanticRemainderProfile?.profile?.status === 'approved' ? {
@@ -188,7 +264,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
-            ...turnStepApprovedOwners, scenePresentation
+            ...turnStepApprovedOwners, scenePresentation,
+            loadPreparedMovementScene
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {
@@ -203,6 +280,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
         if (authoritativeNotStarted(committed)) turnCommitStatus = 'not_started';
         else if (committed?.ok === true) turnCommitStatus = 'committed';
         committedPublicResult = committed.committed_public_result ?? null;
+        if (turnCommitStatus === 'committed'
+            && typeof repository.loadPhase2State === 'function') {
+          try {
+            const loaded = await repository.loadPhase2State(partyId, { turnBudget });
+            if (loaded != null) narrationAuthState = loaded;
+          } catch { /* keep pre-commit state; narration still degrades without WK */ }
+        }
         trace({ event: 'owner_commit_completed',
           turn_commit_status: turnCommitStatus, outcome: committed,
           committed_public_result: committedPublicResult });
@@ -221,10 +305,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
     narrator: {
       ...narrator,
       run(request) {
+        // F3/F7: authoritative via options port, not request body smuggling.
         return runWithinTurnDeadline(turnBudget, () => narrator.run({
           ...request, party_id: partyId,
           delivery_turn_number: committedPublicResult?.turn_number,
           turnBudget
+        }, {
+          worldKnowledgeAuthoritative:
+            playerWorldKnowledgeAuthoritativeFromState(narrationAuthState)
         }));
       }
     },
@@ -237,8 +325,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
             committedPublicResult?.screen?.checks ?? []
           ),
           delivery_state: { ...defaultScreen.delivery_state, generated_at: issuedAt },
-          scenario_id: 'lower_dvina_trace_v1',
-          screen_kind: 'trace_turn',
+          scenario_id: scenarioId ?? 'lower_dvina_trace_v1',
+          screen_kind: scenarioId === 'lower_dvina_trace_v1'
+            ? 'trace_turn' : 'live_world_turn',
           opening_screen_digest: state.opening_identity.opening_screen_digest
         };
         turnBudget?.assertWithinDeadline();

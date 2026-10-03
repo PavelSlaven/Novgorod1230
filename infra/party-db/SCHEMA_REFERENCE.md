@@ -1,8 +1,8 @@
-<!-- GENERATED FILE. Sources: schemas/party-db/001–033, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
+<!-- GENERATED FILE. Sources: schemas/party-db/001–037, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
 # Справочник схемы `party_runtime`
 
-- Исполняемый источник: 33 упорядоченных SQL-миграций в `schemas/party-db/`.
-- Таблиц: 131.
+- Исполняемый источник: 37 упорядоченных SQL-миграций в `schemas/party-db/`.
+- Таблиц: 133.
 - Для каждой таблицы приведены SQL-определения `CREATE TABLE`, `ALTER TABLE` и `CREATE INDEX` в порядке миграций. Полный SQL всех миграций, включая `DROP`, триггеры и условные блоки, приведён ниже. Исполняемые файлы остаются источником истины.
 
 ## Порядок миграций
@@ -40,6 +40,10 @@
 - [`031_party_runtime_deferred_npc_schedules.sql`](../../schemas/party-db/031_party_runtime_deferred_npc_schedules.sql)
 - [`032_party_runtime_factual_presentation_delivery.sql`](../../schemas/party-db/032_party_runtime_factual_presentation_delivery.sql)
 - [`033_party_runtime_initial_semantic_decision.sql`](../../schemas/party-db/033_party_runtime_initial_semantic_decision.sql)
+- [`034_party_runtime_actor_base_attributes.sql`](../../schemas/party-db/034_party_runtime_actor_base_attributes.sql)
+- [`035_party_runtime_nonportal_availability.sql`](../../schemas/party-db/035_party_runtime_nonportal_availability.sql)
+- [`036_party_runtime_visibility_modifiers.sql`](../../schemas/party-db/036_party_runtime_visibility_modifiers.sql)
+- [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
 
 ## `party_runtime.acoustic_edges`
 
@@ -521,6 +525,13 @@ CREATE TABLE party_runtime.party_actor_profile_bindings (
     REFERENCES party_runtime.party_v3_change_sets(party_id,id)
     ON DELETE RESTRICT
 );
+```
+
+Источник: [`034_party_runtime_actor_base_attributes.sql`](../../schemas/party-db/034_party_runtime_actor_base_attributes.sql)
+
+```sql
+ALTER TABLE party_runtime.party_actor_profile_bindings
+  ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb;
 ```
 
 ## `party_runtime.party_actor_relations`
@@ -1280,6 +1291,35 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_entity_controls (
 ```sql
 ALTER TABLE party_runtime.party_entity_controls
   DROP CONSTRAINT IF EXISTS party_entity_controls_party_id_entity_kind_entity_id_fkey;
+```
+
+## `party_runtime.party_environment_transition_log`
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+CREATE TABLE IF NOT EXISTS party_runtime.party_environment_transition_log (
+  party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  g0_zone_ref TEXT NOT NULL CHECK (length(btrim(g0_zone_ref)) > 0),
+  interval_index_6h numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(interval_index_6h) AND interval_index_6h >= 0),
+  recorded_at_whole_minutes numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(recorded_at_whole_minutes)),
+  recorded_at_subminute_numerator numeric NOT NULL DEFAULT 0
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_numerator)
+      AND recorded_at_subminute_numerator >= 0),
+  recorded_at_subminute_denominator numeric NOT NULL DEFAULT 1
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_denominator)
+      AND recorded_at_subminute_denominator > 0),
+  transition_kind TEXT NOT NULL CHECK (transition_kind = 'weather'),
+  payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
+  PRIMARY KEY (party_id, g0_zone_ref, interval_index_6h),
+  CHECK (party_runtime.game_timestamp_parts_valid(
+    recorded_at_whole_minutes,
+    recorded_at_subminute_numerator,
+    recorded_at_subminute_denominator
+  ))
+);
 ```
 
 ## `party_runtime.party_g4_expansion_ledgers`
@@ -2698,6 +2738,28 @@ ALTER TABLE party_runtime.party_npc_spatial_schedules
   ALTER COLUMN current_position_node_id DROP NOT NULL;
 ```
 
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_npc_spatial_schedules
+  ADD COLUMN IF NOT EXISTS candidate_profile_refs JSONB NOT NULL DEFAULT '[]'::jsonb;
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_npc_spatial_schedules
+  DROP CONSTRAINT IF EXISTS party_npc_spatial_schedules_candidate_profile_refs_is_array;
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_npc_spatial_schedules
+  ADD CONSTRAINT party_npc_spatial_schedules_candidate_profile_refs_is_array
+  CHECK (jsonb_typeof(candidate_profile_refs) = 'array');
+```
+
 ## `party_runtime.party_npc_traits`
 
 Источник: [`001_party_runtime.sql`](../../schemas/party-db/001_party_runtime.sql)
@@ -2870,6 +2932,21 @@ ALTER TABLE party_runtime.party_ordinary_materialization_aggregates
 ALTER TABLE party_runtime.party_ordinary_materialization_aggregates
   ADD CONSTRAINT party_ordinary_materialization_aggregates_state_version_check
   CHECK (state_version >= 0 AND state_version <= 9007199254740991);
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_ordinary_materialization_aggregates
+  DROP CONSTRAINT IF EXISTS party_ordinary_materialization_aggregates_scope_kind_check;
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_ordinary_materialization_aggregates
+  ADD CONSTRAINT party_ordinary_materialization_aggregates_scope_kind_check
+  CHECK (scope_kind IN ('g5', 'g6', 'scene_position', 'container', 'source'));
 ```
 
 ## `party_runtime.party_ordinary_materialization_basis_catalog`
@@ -3075,6 +3152,21 @@ ALTER TABLE party_runtime.party_ordinary_materialization_commits
   );
 ```
 
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_ordinary_materialization_commits
+  DROP CONSTRAINT IF EXISTS party_ordinary_materialization_commits_scope_kind_check;
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_ordinary_materialization_commits
+  ADD CONSTRAINT party_ordinary_materialization_commits_scope_kind_check
+  CHECK (scope_kind IN ('g5', 'g6', 'scene_position', 'container', 'source'));
+```
+
 ## `party_runtime.party_ordinary_materialization_contexts`
 
 Источник: [`022_party_runtime_ordinary_materialization_commit.sql`](../../schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql)
@@ -3096,6 +3188,21 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_contexts
     REFERENCES party_runtime.party_ordinary_materialization_aggregates(party_id,scope_kind,scope_id)
     ON DELETE CASCADE
 );
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_ordinary_materialization_contexts
+  DROP CONSTRAINT IF EXISTS party_ordinary_materialization_contexts_scope_kind_check;
+```
+
+Источник: [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+ALTER TABLE party_runtime.party_ordinary_materialization_contexts
+  ADD CONSTRAINT party_ordinary_materialization_contexts_scope_kind_check
+  CHECK (scope_kind IN ('g5', 'g6', 'scene_position', 'container', 'source'));
 ```
 
 ## `party_runtime.party_ordinary_materialization_enablements`
@@ -4925,6 +5032,36 @@ CREATE TABLE IF NOT EXISTS party_runtime.traveller_travel_states (
 
 ```sql
 CREATE TABLE IF NOT EXISTS party_runtime.visibility_links (id text PRIMARY KEY,party_id text NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,scene_baseline_id text NOT NULL REFERENCES party_runtime.party_scene_baselines(id) ON DELETE RESTRICT,source_scene_template_ref jsonb NOT NULL,source_link_slot_key text NOT NULL,from_position_id text NOT NULL REFERENCES party_runtime.scene_position_nodes(id) ON DELETE RESTRICT,to_position_id text NOT NULL REFERENCES party_runtime.scene_position_nodes(id) ON DELETE RESTRICT,quality text NOT NULL CHECK(quality IN ('clear','partial')),distance_band text NOT NULL,portal_entity_id text REFERENCES party_runtime.portal_entities(id) ON DELETE RESTRICT,condition_profile_ref jsonb,reverse_link_id text,status text NOT NULL CHECK(status IN ('active','superseded','destroyed')),state_version bigint NOT NULL CHECK(state_version>=0),created_change_set_id text NOT NULL,updated_change_set_id text NOT NULL,terminal_change_set_id text,UNIQUE(scene_baseline_id,source_link_slot_key),CHECK((portal_entity_id IS NULL) OR condition_profile_ref IS NOT NULL),CHECK(party_runtime.spatial_v3_lifecycle_valid(status,terminal_change_set_id)));
+```
+
+## `party_runtime.visibility_modifiers`
+
+Источник: [`036_party_runtime_visibility_modifiers.sql`](../../schemas/party-db/036_party_runtime_visibility_modifiers.sql)
+
+```sql
+CREATE TABLE IF NOT EXISTS party_runtime.visibility_modifiers (
+  id text PRIMARY KEY,
+  party_id text NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  source_entity_ref jsonb NOT NULL,
+  affected_scope_ref jsonb NOT NULL,
+  modifier_kind text NOT NULL CHECK (modifier_kind IN ('occlusion', 'concealment', 'smoke', 'glare', 'darkness')),
+  condition_ref jsonb NOT NULL,
+  source_dependency_pins jsonb NOT NULL,
+  state_version bigint NOT NULL CHECK (state_version >= 0),
+  updated_change_set_id text NOT NULL,
+  CHECK (jsonb_typeof(source_entity_ref) = 'object' AND source_entity_ref ? 'entity_kind' AND source_entity_ref ? 'entity_id'),
+  CHECK (jsonb_typeof(affected_scope_ref) = 'object' AND affected_scope_ref ? 'spatial_kind' AND affected_scope_ref ? 'spatial_id'),
+  CHECK (affected_scope_ref->>'spatial_kind' IN ('canonical_g0','canonical_g1','canonical_g2','canonical_g3','canonical_g4','canonical_g5','party_g5_site','party_g6','scene_position','transit_anchor','route_anchor_scene')),
+  CHECK (jsonb_typeof(condition_ref) = 'object' AND condition_ref ? 'entity_ref' AND condition_ref ? 'authoring_version'),
+  CHECK (jsonb_typeof(source_dependency_pins) = 'object' AND jsonb_typeof(source_dependency_pins->'pins') = 'array' AND source_dependency_pins ? 'canonical_digest')
+);
+```
+
+Источник: [`036_party_runtime_visibility_modifiers.sql`](../../schemas/party-db/036_party_runtime_visibility_modifiers.sql)
+
+```sql
+CREATE INDEX IF NOT EXISTS visibility_modifiers_party_scope_idx
+  ON party_runtime.visibility_modifiers (party_id, (affected_scope_ref->>'spatial_kind'), (affected_scope_ref->>'spatial_id'));
 ```
 
 ## `party_runtime.world_perception_signals`
@@ -10098,4 +10235,157 @@ ALTER TABLE party_runtime.party_npc_decision_traces
 ALTER TABLE party_runtime.party_npc_decision_traces
   ADD CONSTRAINT party_npc_decision_traces_state_version_check
   CHECK (state_version >= 0);
+```
+
+### [`034_party_runtime_actor_base_attributes.sql`](../../schemas/party-db/034_party_runtime_actor_base_attributes.sql)
+
+```sql
+ALTER TABLE party_runtime.party_actor_profile_bindings
+  ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb;
+```
+
+### [`035_party_runtime_nonportal_availability.sql`](../../schemas/party-db/035_party_runtime_nonportal_availability.sql)
+
+```sql
+-- Spatial v3 permits independent non-portal availability conditions.
+-- A portal still requires an availability condition set. Preserve existing rows.
+DO $$
+DECLARE
+  relation_name text;
+  constraint_name text;
+BEGIN
+  FOREACH relation_name IN ARRAY ARRAY['scene_movement_edges', 'g5_site_connections']
+  LOOP
+    FOR constraint_name IN
+      SELECT conname FROM pg_constraint
+      WHERE conrelid = format('party_runtime.%I', relation_name)::regclass
+        AND contype = 'c'
+        AND pg_get_constraintdef(oid) =
+          'CHECK (((portal_entity_id IS NOT NULL) = (availability_condition_set_ref IS NOT NULL)))'
+    LOOP
+      EXECUTE format('ALTER TABLE party_runtime.%I DROP CONSTRAINT %I',
+        relation_name, constraint_name);
+    END LOOP;
+    constraint_name := relation_name || '_portal_requires_availability_check';
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint
+      WHERE conrelid = format('party_runtime.%I', relation_name)::regclass
+        AND conname = constraint_name)
+    THEN
+      EXECUTE format('ALTER TABLE party_runtime.%I ADD CONSTRAINT %I CHECK
+        (portal_entity_id IS NULL OR availability_condition_set_ref IS NOT NULL)',
+        relation_name, constraint_name);
+    END IF;
+  END LOOP;
+END $$;
+```
+
+### [`036_party_runtime_visibility_modifiers.sql`](../../schemas/party-db/036_party_runtime_visibility_modifiers.sql)
+
+```sql
+-- Current mutable visibility modifiers; removal deletes the current row.
+CREATE TABLE IF NOT EXISTS party_runtime.visibility_modifiers (
+  id text PRIMARY KEY,
+  party_id text NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  source_entity_ref jsonb NOT NULL,
+  affected_scope_ref jsonb NOT NULL,
+  modifier_kind text NOT NULL CHECK (modifier_kind IN ('occlusion', 'concealment', 'smoke', 'glare', 'darkness')),
+  condition_ref jsonb NOT NULL,
+  source_dependency_pins jsonb NOT NULL,
+  state_version bigint NOT NULL CHECK (state_version >= 0),
+  updated_change_set_id text NOT NULL,
+  CHECK (jsonb_typeof(source_entity_ref) = 'object' AND source_entity_ref ? 'entity_kind' AND source_entity_ref ? 'entity_id'),
+  CHECK (jsonb_typeof(affected_scope_ref) = 'object' AND affected_scope_ref ? 'spatial_kind' AND affected_scope_ref ? 'spatial_id'),
+  CHECK (affected_scope_ref->>'spatial_kind' IN ('canonical_g0','canonical_g1','canonical_g2','canonical_g3','canonical_g4','canonical_g5','party_g5_site','party_g6','scene_position','transit_anchor','route_anchor_scene')),
+  CHECK (jsonb_typeof(condition_ref) = 'object' AND condition_ref ? 'entity_ref' AND condition_ref ? 'authoring_version'),
+  CHECK (jsonb_typeof(source_dependency_pins) = 'object' AND jsonb_typeof(source_dependency_pins->'pins') = 'array' AND source_dependency_pins ? 'canonical_digest')
+);
+CREATE INDEX IF NOT EXISTS visibility_modifiers_party_scope_idx
+  ON party_runtime.visibility_modifiers (party_id, (affected_scope_ref->>'spatial_kind'), (affected_scope_ref->>'spatial_id'));
+```
+
+### [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
+
+```sql
+-- CR #158 party DDL: candidate routine profiles, ordinary scope g5, weather log.
+-- C1: candidate_profile_refs immutable; schedule_profile_ref trigger not weakened.
+-- C2/C14: g5 CHECK with contracts enum; weather-only append-only log, PK without seq.
+
+ALTER TABLE party_runtime.party_npc_spatial_schedules
+  ADD COLUMN IF NOT EXISTS candidate_profile_refs JSONB NOT NULL DEFAULT '[]'::jsonb;
+
+ALTER TABLE party_runtime.party_npc_spatial_schedules
+  DROP CONSTRAINT IF EXISTS party_npc_spatial_schedules_candidate_profile_refs_is_array;
+ALTER TABLE party_runtime.party_npc_spatial_schedules
+  ADD CONSTRAINT party_npc_spatial_schedules_candidate_profile_refs_is_array
+  CHECK (jsonb_typeof(candidate_profile_refs) = 'array');
+
+CREATE OR REPLACE FUNCTION party_runtime.party_npc_schedule_lifecycle_valid() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF TG_OP='INSERT' THEN
+    IF NEW.state_version<1 THEN RAISE EXCEPTION 'npc schedule state version is invalid'; END IF;
+    RETURN NEW;
+  END IF;
+  IF NEW.state_version<>OLD.state_version+1
+    OR NEW.id<>OLD.id OR NEW.party_id<>OLD.party_id OR NEW.npc_id<>OLD.npc_id
+    OR NEW.schedule_profile_ref<>OLD.schedule_profile_ref
+    OR NEW.dependency_pins<>OLD.dependency_pins
+    OR NEW.candidate_profile_refs<>OLD.candidate_profile_refs THEN
+    RAISE EXCEPTION 'npc schedule identity, pins or state version changed';
+  END IF;
+  IF OLD.next_transition_at_whole_minutes IS NOT NULL AND NEW.next_transition_at_whole_minutes IS NOT NULL
+    AND (
+      NEW.next_transition_at_whole_minutes<OLD.next_transition_at_whole_minutes
+      OR (NEW.next_transition_at_whole_minutes=OLD.next_transition_at_whole_minutes
+        AND NEW.next_transition_at_subminute_numerator*OLD.next_transition_at_subminute_denominator
+          < OLD.next_transition_at_subminute_numerator*NEW.next_transition_at_subminute_denominator)
+    ) THEN RAISE EXCEPTION 'npc schedule transition time must be monotonic'; END IF;
+  RETURN NEW;
+END $$;
+
+ALTER TABLE party_runtime.party_ordinary_materialization_aggregates
+  DROP CONSTRAINT IF EXISTS party_ordinary_materialization_aggregates_scope_kind_check;
+ALTER TABLE party_runtime.party_ordinary_materialization_aggregates
+  ADD CONSTRAINT party_ordinary_materialization_aggregates_scope_kind_check
+  CHECK (scope_kind IN ('g5', 'g6', 'scene_position', 'container', 'source'));
+
+ALTER TABLE party_runtime.party_ordinary_materialization_contexts
+  DROP CONSTRAINT IF EXISTS party_ordinary_materialization_contexts_scope_kind_check;
+ALTER TABLE party_runtime.party_ordinary_materialization_contexts
+  ADD CONSTRAINT party_ordinary_materialization_contexts_scope_kind_check
+  CHECK (scope_kind IN ('g5', 'g6', 'scene_position', 'container', 'source'));
+
+ALTER TABLE party_runtime.party_ordinary_materialization_commits
+  DROP CONSTRAINT IF EXISTS party_ordinary_materialization_commits_scope_kind_check;
+ALTER TABLE party_runtime.party_ordinary_materialization_commits
+  ADD CONSTRAINT party_ordinary_materialization_commits_scope_kind_check
+  CHECK (scope_kind IN ('g5', 'g6', 'scene_position', 'container', 'source'));
+
+CREATE TABLE IF NOT EXISTS party_runtime.party_environment_transition_log (
+  party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
+  g0_zone_ref TEXT NOT NULL CHECK (length(btrim(g0_zone_ref)) > 0),
+  interval_index_6h numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(interval_index_6h) AND interval_index_6h >= 0),
+  recorded_at_whole_minutes numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(recorded_at_whole_minutes)),
+  recorded_at_subminute_numerator numeric NOT NULL DEFAULT 0
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_numerator)
+      AND recorded_at_subminute_numerator >= 0),
+  recorded_at_subminute_denominator numeric NOT NULL DEFAULT 1
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_denominator)
+      AND recorded_at_subminute_denominator > 0),
+  transition_kind TEXT NOT NULL CHECK (transition_kind = 'weather'),
+  payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
+  PRIMARY KEY (party_id, g0_zone_ref, interval_index_6h),
+  CHECK (party_runtime.game_timestamp_parts_valid(
+    recorded_at_whole_minutes,
+    recorded_at_subminute_numerator,
+    recorded_at_subminute_denominator
+  ))
+);
+
+DROP TRIGGER IF EXISTS temporal_append_only
+  ON party_runtime.party_environment_transition_log;
+CREATE TRIGGER temporal_append_only
+  BEFORE UPDATE OR DELETE ON party_runtime.party_environment_transition_log
+  FOR EACH ROW EXECUTE FUNCTION party_runtime.temporal_append_only();
 ```

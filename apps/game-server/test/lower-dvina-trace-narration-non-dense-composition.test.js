@@ -3,13 +3,13 @@ import test from 'node:test';
 import { createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-narration-llm.js';
 
-test('non-dense unseen workshop inspection requires a governed observation cluster', async (t) => {
+test('non-dense literary finding is recorded without blocking delivery', async (t) => {
   const changes = ['Вы подробно осмотрели мастерскую.',
     'На верстаке лежит резец.', 'Под окном темнеют стружки.'];
   const catalogue = changes.join(' ');
   const governed = 'Подробно осматривая мастерскую, вы видите резец на верстаке и замечаете стружки под окном.';
   for (const [prose, accepted] of [[catalogue, false], [governed, true]]) {
-    await t.test(accepted ? 'governed cluster passes' : 'action stub plus catalogue fails', async () => {
+    await t.test(accepted ? 'governed cluster keeps artistic pass' : 'catalogue records artistic fail', async () => {
       const calls = [];
       const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
         calls.push(call.role_id);
@@ -33,14 +33,15 @@ test('non-dense unseen workshop inspection requires a governed observation clust
           visible_changes: changes, uncertainties: [], sensory_details: [], visible_npc: [],
           visible_objects: [], known_context: [], allowed_tensions: [], do_not_imply: []
         }, context: {} });
-      assert.equal(result.status, accepted ? 'approved' : 'blocked');
-      assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
-        'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+      assert.equal(result.status, 'approved');
+      assert.equal(result.approved_output.prose, catalogue);
+      assert.equal(result.final_audit.artistic_verdict, 'fail');
+      assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
     });
   }
 });
 
-test('exact shore inspection shape rejects its former factual catalogue', async (t) => {
+test('exact shore catalogue keeps literary failure separate from factual delivery', async (t) => {
   const changes = ['Вы подробно осмотрели место крушения.',
     'На берегу лежат обломки разбитой лодки.', 'В мокром песке видны босые следы.',
     'Рядом заметен отдельный след сапога.', 'Одежда осталась мокрой, а дрожь усилилась.'];
@@ -48,7 +49,7 @@ test('exact shore inspection shape rejects its former factual catalogue', async 
   const former = `${changes.join(' ')} ${uncertainty}`;
   const repaired = 'Подробно осмотрев место крушения, вы заметили на берегу обломки разбитой лодки и в мокром песке — босые следы; рядом виден отдельный след сапога. Одежда осталась мокрой, а дрожь усилилась. Наблюдения сами по себе не устанавливают виновника или мотив.';
   for (const [prose, accepted] of [[former, false], [repaired, true]]) {
-    await t.test(accepted ? 'repaired focal inspection passes' : 'former approved catalogue fails', async () => {
+    await t.test(accepted ? 'focal inspection stays factual pass' : 'catalogue records artistic fail', async () => {
       const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
         const wire = JSON.parse(call.messages[1].content);
         if (call.role_id === 'gameplay_narrator') return { output: { prose: former } };
@@ -63,8 +64,9 @@ test('exact shore inspection shape rejects its former factual catalogue', async 
           visible_changes: changes, uncertainties: [uncertainty], sensory_details: [], visible_npc: [],
           visible_objects: [], known_context: [], allowed_tensions: [], do_not_imply: []
         }, context: {} });
-      assert.equal(result.status, accepted ? 'approved' : 'blocked');
-      if (accepted) assert.equal(result.approved_output.prose, repaired);
+      assert.equal(result.status, 'approved');
+      assert.equal(result.approved_output.prose, former);
+      assert.equal(result.final_audit.artistic_verdict, 'fail');
     });
   }
 });

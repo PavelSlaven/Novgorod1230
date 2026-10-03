@@ -16,7 +16,7 @@ const riskValue = { risk_class: 'none', knowledge_precision: 'exact', visible_ri
 const risk = { ...riskValue, canonical_digest: digest(riskValue) };
 const versioned = (kind) => ({ entity_ref: { entity_kind: kind, entity_id: `${kind}-id` }, authoring_version: '1' });
 const staticStep = (kind = 'immediate_action') => { const action = { action_contract_ref: versioned('action_contract'), relation_ref: { entity_kind: 'scene_edge', entity_id: 'edge' }, action_units: 1, movement_capacity_units: 1, mode_transition_contract_ref: null, completion_effect_contract_ref: null, dependency_pins: pins() }; action.canonical_digest = digest(action); const value = { snapshot_kind: kind, action_snapshot: kind === 'immediate_action' ? action : null, activity_snapshot: null, traversal_snapshot: null }; return { ...value, canonical_digest: digest(value) }; };
-const traversalStep = () => { const traversal = { physical_segment_ref: versioned('world_route_segment'), selected_movement_method_id: 'walk', movement_carrier_ref: { entity_kind: 'actor', entity_id: 'actor' }, movement_capacity_units: 1, environment_profile_ref: versioned('environment_profile'), orientation_profile_ref: versioned('movement_orientation_profile'), cost_profile_ref: versioned('movement_cost_profile'), recheck_policy_ref: versioned('dynamic_recheck_policy'), factual_context_snapshot: { context: 'pinned' }, dependency_pins: pins() }; traversal.canonical_digest = digest(traversal); const value = { snapshot_kind: 'timed_traversal', action_snapshot: null, activity_snapshot: null, traversal_snapshot: traversal }; return { ...value, canonical_digest: digest(value) }; };
+const traversalStep = (method = 'walk') => { const traversal = { physical_segment_ref: versioned('world_route_segment'), selected_movement_method_id: method, movement_carrier_ref: { entity_kind: 'actor', entity_id: 'actor' }, movement_capacity_units: 1, environment_profile_ref: versioned('environment_profile'), orientation_profile_ref: versioned('movement_orientation_profile'), cost_profile_ref: versioned('movement_cost_profile'), recheck_policy_ref: versioned('dynamic_recheck_policy'), factual_context_snapshot: { context: 'pinned' }, dependency_pins: pins() }; traversal.canonical_digest = digest(traversal); const value = { snapshot_kind: 'timed_traversal', action_snapshot: null, activity_snapshot: null, traversal_snapshot: traversal }; return { ...value, canonical_digest: digest(value) }; };
 const activityStep = (completion = null) => { const activity = { activity_contract_ref: versioned('activity_contract'), planned_total_minutes: 1, mode_transition_contract_ref: null, completion_effect_contract_ref: completion, dependency_pins: pins() }; activity.canonical_digest = digest(activity); const value = { snapshot_kind: 'timed_activity', action_snapshot: null, activity_snapshot: activity, traversal_snapshot: null }; return { ...value, canonical_digest: digest(value) }; };
 const activationValidator = () => createRoutePlanActivationValidator({ loadCurrentState: async ({ option }) => ({ ok: true, expected_state_versions: option.expected_state_versions }), validateCapability: async () => ({ ok: true }), recheckActivation: async () => ({ ok: true }) });
 const proposalVersions = () => ({ entries: [{ entity_ref: { entity_kind: 'expansion_frontier', entity_id: 'frontier' }, state_version: 1 }], canonical_digest: digest([{ entity_ref: { entity_kind: 'expansion_frontier', entity_id: 'frontier' }, state_version: 1 }]).replace('sha256:', '') });
@@ -256,13 +256,62 @@ test('P18 registered P08 traversal resolver reaches the real planner and remains
   assert.ok(unwired.error.code, 'unwired registered port must return a typed failure');
 });
 
-test('P18 requires a capability port and rejects a traversal method absent from the sealed context', async () => {
+test('P18 requires a capability port, and a traversal method absent from the sealed context is a blocked option, not a failed query', async () => {
   assert.throws(() => createMovementPlanner({ loadTopology: async () => ({ ok: true, edges: [] }), snapshotEndpoint: async () => snapshot(endpoint('scene_position', 'start')) }), /validateCapability/);
   const end = endpoint('world_route_endpoint', 'route-end', { spatial_kind: 'canonical_g5', spatial_id: 'site' });
-  const edge = { id: 'forbidden-method', edge_kind: 'world_route_segment', from_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), to_endpoint_ref: end, step_kind: 'timed_traversal', static_contract_snapshot: traversalStep(), cost_summary: { ...(() => { const value = { cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }; return value; })(), canonical_digest: digest({ cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }) }, risk_summary: risk };
+  const edge = { id: 'forbidden-method', edge_kind: 'world_route_segment', from_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), to_endpoint_ref: end, step_kind: 'timed_traversal', static_contract_snapshot: traversalStep('movement.small_river_craft'), cost_summary: { ...(() => { const value = { cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }; return value; })(), canonical_digest: digest({ cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }) }, risk_summary: risk };
+  // Contract change (rt-walk, PLAN-OK-rt-walk-2 A): a query with no usable method is answered, its option is blocked.
   const result = await planner([edge]).resolve(query({ start_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), capability_context: capabilityContext({ allowed_movement_methods: ['boat'] }) }));
-  assert.equal(result.ok, false);
-  assert.equal(result.error.code, 'movement_capability_missing');
+  assert.equal(result.ok, true);
+  assert.equal(result.options.length, 1);
+  const [option] = result.options;
+  assert.deepEqual([option.executable, option.mechanical_readiness, option.steps.length], [false, 'temporarily_blocked', 0]);
+  assert.deepEqual(option.blocking_reasons.map(({ reason_code, severity, diagnostic_message }) => [reason_code, severity, diagnostic_message]),
+    [['movement_capability_missing', 'temporary', 'requires_method:movement.small_river_craft']]);
+});
+
+test('P18 offers every path: the foot path is executable and the boat path is blocked with its method, in a stable order', async () => {
+  const end = endpoint('world_route_endpoint', 'route-end', { spatial_kind: 'canonical_g5', spatial_id: 'site' });
+  const start = endpoint('world_route_endpoint', 'start-route');
+  const boat = { id: 'by-boat', edge_kind: 'world_route_segment', from_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), to_endpoint_ref: end, step_kind: 'timed_traversal', static_contract_snapshot: traversalStep('movement.small_river_craft'), cost_summary: { ...(() => { const value = { cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }; return value; })(), canonical_digest: digest({ cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }) }, risk_summary: risk };
+  const foot = { id: 'on-foot', edge_kind: 'world_route_segment', from_endpoint_ref: endpoint('world_route_endpoint', 'start-route'), to_endpoint_ref: end, step_kind: 'timed_traversal', static_contract_snapshot: traversalStep('movement.foot'), cost_summary: { ...(() => { const value = { cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }; return value; })(), canonical_digest: digest({ cost_kind: 'time', action_units_min: null, action_units_max: null, minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }) }, risk_summary: risk };
+  const ask = () => planner([boat, foot]).resolve(query({ start_endpoint_ref: start, cost_mode: 'time', capability_context: capabilityContext({ allowed_movement_methods: ['movement.foot'] }) }));
+  const result = await ask();
+  assert.equal(result.ok, true);
+  assert.equal(result.options.length, 2, 'the blocked option stays in the menu');
+  const byReadiness = Object.fromEntries(result.options.map((option) => [option.mechanical_readiness, option]));
+  assert.equal(byReadiness.ready.executable, true);
+  assert.equal(byReadiness.ready.steps.length, 1);
+  assert.equal(byReadiness.temporarily_blocked.executable, false);
+  assert.deepEqual(byReadiness.temporarily_blocked.blocking_reasons.map((reason) => [reason.reason_code, reason.diagnostic_message]),
+    [['movement_capability_missing', 'requires_method:movement.small_river_craft']],
+    'the standard\'s Appendix C code; the missing method rides in the diagnostic');
+  assert.deepEqual((await ask()).options.map((option) => option.canonical_digest), result.options.map((option) => option.canonical_digest));
+  const activated = await activationValidator().activate({ plan_id: 'plan', option: byReadiness.temporarily_blocked,
+    world_revision_id: 'revision', catalog_digest: 'a'.repeat(64), planning_algorithm_version: 'test', planning_context_dependency_pins: pins(),
+    created_change_set_id: 'change', created_at_turn: 1 });
+  assert.equal(activated.ok, false, 'a blocked option never activates');
+  assert.equal(activated.error.code, 'route_plan_snapshot_missing', 'a typed refusal, not a crash or an unrelated cost failure');
+  assert.match(activated.error.diagnostics.reason, /only a ready option/u);
+});
+
+test('P18 keeps a hard data gap of a path over the missing-method reason, and adds the method to a temporary block', async () => {
+  const end = endpoint('world_route_endpoint', 'route-end', { spatial_kind: 'canonical_g5', spatial_id: 'site' });
+  const start = endpoint('world_route_endpoint', 'start-route');
+  const base = { edge_kind: 'world_route_segment', from_endpoint_ref: start, to_endpoint_ref: end, step_kind: 'timed_traversal',
+    static_contract_snapshot: traversalStep('movement.small_river_craft') };
+  const template = { id: 'template', ...base, cost_summary: { cost_kind: 'time', action_units_min: null, action_units_max: null,
+    minutes_min: { numerator: '1', denominator: '1' }, minutes_max: { numerator: '1', denominator: '1' }, precision: 'exact' }, risk_summary: risk };
+  const withDigest = (edge) => ({ ...edge, cost_summary: { ...edge.cost_summary, canonical_digest: digest(edge.cost_summary) } });
+  const reason = (severity) => [{ reason_code: 'route_contract_missing', severity, diagnostic_message: 'the edge itself is blocked' }];
+  const ask = (edge) => planner([withDigest(edge)]).resolve(query({ start_endpoint_ref: start, cost_mode: 'time',
+    capability_context: capabilityContext({ allowed_movement_methods: ['movement.foot'] }) }));
+  const hard = (await ask({ ...template, readiness: 'data_gap', blocking_reasons: reason('hard_block') })).options[0];
+  assert.deepEqual([hard.mechanical_readiness, hard.blocking_reasons.map((r) => [r.reason_code, r.severity])],
+    ['data_gap', [['route_contract_missing', 'hard_block']]], 'a hard block is not lost under the temporary method reason');
+  const soft = (await ask({ ...template, readiness: 'temporarily_blocked', blocking_reasons: reason('temporary') })).options[0];
+  assert.deepEqual([soft.mechanical_readiness, soft.blocking_reasons.map((r) => r.reason_code)],
+    ['temporarily_blocked', ['route_contract_missing', 'movement_capability_missing']]);
 });
 
 test('P18 seals capability dependency pins into query, option and activated plan', async () => {

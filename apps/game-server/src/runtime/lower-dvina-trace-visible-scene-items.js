@@ -1,4 +1,5 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
@@ -38,8 +39,8 @@ export function lowerDvinaTraceObservedSceneChanges(scene) {
         npc.observable_cues?.ordinary_remainder?.ordinary_activity]
         .filter(text).map((fact) => `${npc.display_label}: ${fact}`)
     ]),
-    ...(scene?.visible_objects ?? []).filter((object) =>
-      !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
+    ...(scene?.visible_objects ?? []).filter((object) => !isMovementVisibleObject(object)
+      && !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
   ])];
 }
 

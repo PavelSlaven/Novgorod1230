@@ -19,6 +19,8 @@ import { createSpatialSemanticAtomicWritePlan } from
   '../src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadApprovedActorBaseAttributesTestBinding } from
+  './support/actor-base-attributes-binding.js';
 
 test('S1 profile loads revision 24 bundle', async () => {
   const loaded = await loadLowerDvinaTraceSpatialSemanticProfile();
@@ -142,9 +144,15 @@ test('production binding activates S1 only for exact loaded revision 24 profile'
     const active = await capturedTraceRuntime(loadedProfile);
     assert.equal(typeof active.createTurnStepSpatialSemanticResolver, 'function');
     assert.equal(active.spatialSemanticProfile, loadedProfile);
+    assert.equal(typeof active.createTurnStepAuthoredSpatialSemanticResolver,
+      'function');
+    assert.equal(active.authoredSpatialSemanticProfile?.schema,
+      'rus.live_world_runtime.s1_loaded_profile.v1');
     const absent = await capturedTraceRuntime(null);
     assert.equal(absent.createTurnStepSpatialSemanticResolver, null);
     assert.equal(absent.spatialSemanticProfile, null);
+    assert.equal(typeof absent.createTurnStepAuthoredSpatialSemanticResolver,
+      'function');
     const historical = structuredClone(loadedProfile);
     historical.profile.revision = 1;
     historical.profile.scenario_definition_revision = 23;
@@ -214,6 +222,7 @@ test('S1 local ref stays visible inside open one-space without a creation marker
       }]
     } });
   assert.equal(projected.visible_objects[0].entity_ref.entity_id, 's1-local:structure');
+  assert.equal(projected.visible_objects[0].visible_status, 'внутри');
   assert.equal(projected.spatial_semantic, undefined);
   assert.equal(JSON.stringify(projected).includes('position:inside'), false);
 });
@@ -247,6 +256,46 @@ test('S1 initial authority rejects ambiguity and preserves zero or one eligible 
     position_ref: 'position:s1' }), { code: 'S1_SPATIAL_AUTHORITY_MISSING' });
 });
 
+test('S1 filters a blocked description without creating a spatial record',
+  async () => {
+    let writes = 0;
+    let modelCalls = 0;
+    const privateTrace = [];
+    const envelope = s1Envelope();
+    const pool = { query: async (sql) => {
+      if (!/^SELECT/u.test(sql.trim())) writes += 1;
+      if (sql.includes('party_spatial_semantic_resolutions')) {
+        return { rowCount: 0, rows: [] };
+      }
+      if (sql.includes('party_spatial_semantic_envelopes')) return {
+        rowCount: 1, rows: [{ envelope, capacity_total: 1,
+          consumed_count: 0, state_version: 1, status: 'committed' }]
+      };
+      assert.fail(`unexpected S1 query: ${sql}`);
+    } };
+    const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
+      recordNeedsCheckFilter: async (record) => privateTrace.push(record),
+      assertNeedsCheckAllowed: async ({ matchOnly }) => {
+        assert.equal(matchOnly, true);
+        return [{ queue_id: 'anachronism', path: 'S1.description' }];
+      },
+      resolveSpatialSemanticDescriptor: async ({ request: { request_id } }) => {
+        modelCalls += 1;
+        return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
+          name: 'Колёсная прялка', description: 'Стоит у воды.',
+          semantic_requirements: [] };
+      } })({ partyId: 'party:s1' });
+    const request = s1Request();
+    const filtered = await resolver(request);
+    assert.equal(modelCalls, 1);
+    assert.equal(writes, 0);
+    assert.deepEqual(filtered.working_projection, request.working_projection);
+    assert.equal(filtered.spatial_semantic_atomic_write_plan, undefined);
+    assert.equal(filtered.player_response_boundary, true);
+    assert.deepEqual(privateTrace, [{ path: 'S1.proposed_description',
+      queue_ids: ['anachronism'] }]);
+  });
+
 test('S1 ambiguous initial authority reaches neither descriptor model nor writes', async () => {
   let modelCalls = 0; let writes = 0;
   const envelopes = ['envelope:a', 'envelope:b'].map((envelope_ref) => ({
@@ -269,6 +318,7 @@ test('S1 ambiguous initial authority reaches neither descriptor model nor writes
 
 test('S1 resolver models one open result, then replays current visible local ref', async () => {
   let modelCalls = 0;
+  let guardedCandidate = null;
   const envelope = s1Envelope();
   const pool = { query: async (sql) => {
     if (sql.includes('party_spatial_semantic_resolutions')) {
@@ -280,6 +330,11 @@ test('S1 resolver models one open result, then replays current visible local ref
     assert.fail(`unexpected S1 query: ${sql}`);
   } };
   const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
+    assertNeedsCheckAllowed: async ({ candidate, matchOnly }) => {
+      assert.equal(matchOnly, true);
+      guardedCandidate = candidate;
+      return [];
+    },
     resolveSpatialSemanticDescriptor: async ({ request: { request_id } }) => {
       modelCalls += 1;
       return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
@@ -288,6 +343,9 @@ test('S1 resolver models one open result, then replays current visible local ref
     } })({ partyId: 'party:s1' });
   const planned = await resolver(s1Request());
   assert.equal(modelCalls, 1);
+  assert.deepEqual(guardedCandidate, { name:'Незнакомый выступ',
+    context:'Сырым камнем выдается у воды.',
+    path: 'S1.proposed_description' });
   assert.deepEqual(planned.spatial_semantic_atomic_write_plan.causal_identity, {
     request_id: 'request:s1', root_turn_id: 'turn:s1',
     action_ref: 's1:turn:s1:1', step_index: 1, actor_ref: 'actor:s1'
@@ -314,14 +372,20 @@ test('S1 resolver models one open result, then replays current visible local ref
     step_index: 1, semantics: { kind: 'local_natural_feature', name: 'Выступ',
       description: 'Камень у воды.', semantic_requirements: [] },
     formal_spatial_refs: formalRefs('s1-local:request:s1') };
+  let replayGuardCalls = 0;
   const replay = createLowerDvinaTraceS1ProductionResolverFactory({ pool: {
     query: async (sql) => sql.includes('party_spatial_semantic_resolutions')
       ? { rowCount: 1, rows: [committed] }
       : assert.fail(`unexpected replay write/read: ${sql}`)
-  }, resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
+  }, assertNeedsCheckAllowed: async () => {
+    replayGuardCalls += 1;
+    return [{ queue_id: 'blocked', path: 'S1.proposed_description' }];
+  }, recordNeedsCheckFilter: async () => assert.fail('replay must not record filter'),
+  resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
   const replayed = await replay(s1Request());
   assert.equal(replayed.spatial_semantic_atomic_write_plan, undefined);
   assert.equal(modelCalls, 2);
+  assert.equal(replayGuardCalls, 0);
   const localRequest = s1Request({ target: committed.local_ref, requestId: 'request:next',
     discoveryKind: 'inspect' });
   localRequest.request.player_safe_state.visible_objects = [{ entity_ref: {
@@ -330,6 +394,7 @@ test('S1 resolver models one open result, then replays current visible local ref
   const targeted = await replay(localRequest);
   assert.equal(targeted.summary, 'Камень у воды.');
   assert.equal(modelCalls, 2);
+  assert.equal(replayGuardCalls, 0);
   await assert.rejects(() => replay(s1Request({ discoveryKind: 'inspect' })),
     { code: 'TRACE_S1_SCOPE_INVALID' });
   assert.equal(modelCalls, 2);
@@ -348,15 +413,15 @@ async function capturedTraceRuntime(spatialSemanticProfile = null) {
   const release = {
     release_id: 'spatial-v3-production-v10',
     runtime_catalog_scope: 'item_container_materialization_v2',
-    runtime_catalog_contract_digest: 'runtime-digest',
-    world_revision_id: 'world-revision', world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    runtime_catalog_contract_digest: '1'.repeat(64),
+    world_revision_id: 'world-revision', world_catalog_digest: '2'.repeat(64),
+    compatible_world_pin_manifest_digest: '3'.repeat(64)
   };
   const worldPool = { query: async () => ({ rows: [{
     event_id: 'event', catalog_scope: release.runtime_catalog_scope,
-    catalog_revision_id: 'revision', catalog_digest: 'catalog-digest',
-    import_id: 'import', import_audit_digest: 'import-digest',
-    record_registry_digest: 'registry-digest',
+    catalog_revision_id: 'revision', catalog_digest: '4'.repeat(64),
+    import_id: 'import', import_audit_digest: '5'.repeat(64),
+    record_registry_digest: '6'.repeat(64),
     runtime_contract_digest: release.runtime_catalog_contract_digest,
     compatible_world_revision_id: release.world_revision_id,
     compatible_world_catalog_digest: release.world_catalog_digest,
@@ -374,6 +439,8 @@ async function capturedTraceRuntime(spatialSemanticProfile = null) {
     spatialSemanticProfile
   }, {
     createNpcRuntimePorts: () => ({}),
+    actorBaseAttributesBindingLoader:
+      loadApprovedActorBaseAttributesTestBinding,
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; }
   });
   await bindings.createPublicRuntimeFacade({

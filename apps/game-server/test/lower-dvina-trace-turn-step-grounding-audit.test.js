@@ -33,7 +33,46 @@ test('turn-step grounding audit is skipped outside discovery and production',
       roleRunner: { async run() { calls += 1; } }
     });
     assert.equal(await validate({ request, plan: { operations: [] } }), true);
+  assert.equal(calls, 0);
+});
+
+test('exact eligible background NPC detail bypasses stochastic grounding audit',
+  async () => {
+    let calls = 0;
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run() {
+        calls += 1;
+        return { output: { pass: false,
+          concerns: [{ kind: 'operation_semantic_grounding' }] } };
+      } }
+    });
+    const intent = 'разглядываю лицо и одежду стоящего рядом незнакомца';
+    const operation = { op: 'request_discovery', actor_ref: 'actor:1',
+      discovery_kind: 'inspect', target_refs: ['npc:ordinary'], query: intent };
+    const backgroundRequest = { request_id: 'turn-step:n1',
+      remaining_intent: intent, actor: { actor_ref: 'actor:1' },
+      player_safe_state: { background_npc_remainder: {
+        eligible_npc_refs: ['npc:ordinary'] }, current_visible_context: {
+        visible_npc: [{ entity_ref: { entity_kind: 'npc',
+          entity_id: 'npc:ordinary' }, visible_status: 'чинит снасти' }]
+      } } };
+    const backgroundPlan = { interpretation: { grounded_attempt: intent,
+      adaptation: 'literal' }, resolution: 'domain_request',
+      operations: [operation], check: null, continuation: null,
+      clarification: null, direct_result_kind: null };
+    assert.equal(await validate({ request: backgroundRequest,
+      plan: backgroundPlan, resolved_domain_operations: [{
+        path: '$.operations.0', owner_kind: 'background_npc_remainder'
+      }] }), true);
     assert.equal(calls, 0);
+
+    await assert.rejects(validate({ request: backgroundRequest, plan: {
+      ...backgroundPlan, operations: [{ ...operation,
+        target_refs: ['npc:other'] }]
+    }, resolved_domain_operations: [{ path: '$.operations.0',
+      owner_kind: 'background_npc_remainder' }] }),
+    (error) => error.code === 'TURN_STEP_PLAN_INVALID');
+    assert.equal(calls, 1);
   });
 
 test('a whole-item move is audited against the requested quantity', async () => {

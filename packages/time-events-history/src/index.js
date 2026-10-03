@@ -24,3 +24,14 @@ export {
   projectHistoricalPhaseVisibleEffects,
   provideHistoricalPhaseBoundaries
 } from './historical-phases.js';
+
+export {
+  StartedHistoricalError,
+  startedHistoricalEventIds,
+  startedHistoricalEventsAndPhases
+} from './started-historical.js';
+
+export {
+  APPROVED_EVENT_DATE_GATE_RECORDS,
+  projectApprovedPartyHistoricalEvents
+} from './approved-event-date-gate.js';

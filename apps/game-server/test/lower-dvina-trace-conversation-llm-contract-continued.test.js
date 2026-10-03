@@ -221,6 +221,29 @@ test('player speech binds code-owned target and verbatim text', () => {
     request.player_safe_context.verbatim_utterance_text);
 });
 
+test('player leave-conversation lifecycle clears speech-only carrier fields',
+  () => {
+    for (const raw_text of [
+      'Прекращаю разговор и отхожу осмотреть стан.',
+      'Заканчиваю беседу, затем иду осмотреться.'
+    ]) {
+      const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1') });
+      request.player_safe_context.raw_text = raw_text;
+      const semantic = playerPlan(request, {
+        contribution_kind: 'leave_conversation',
+        intended_addressee_refs: [ref('npc', 'npc-1')],
+        affected_actor_refs: [ref('npc', 'npc-1')]
+      });
+      const assembled = assemblePlayerConversationPlan(semantic, request);
+      assert.deepEqual(assembled.primary_addressee_ref, null);
+      assert.deepEqual(assembled.intended_addressee_refs, []);
+      assert.deepEqual(assembled.affected_actor_refs, []);
+      assert.equal(assembled.speech, null);
+      assert.equal(validatePlayerConversationContributionPlan(
+        assembled, request), true);
+    }
+  });
+
 test('player required candidate is validator-valid and preserves operation', () => {
   const required = {
     verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',
@@ -266,6 +289,35 @@ test('player promise candidate is validator-valid with target from safe context'
   const prompt = playerConversationInstructions(null, request);
   assert.match(prompt,
     /offer_conditional_protection[\s\S]*actually offers the target protection[\s\S]*different proposal, bargain, cooperation/u);
+});
+
+test('player assembly canonicalizes one exact operation-contract value', () => {
+  const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1'),
+    available_check: { attribute_ref: 'influence',
+      skill_ref: 'communication', difficulty_band: 'hard' } });
+  request.operation_contract = { offer_conditional_protection: {
+    owner: '@rus/social-law', policy_ref: 'promise-policy'
+  } };
+  const semantic = playerPlan(request, {
+    speech: { ...playerPlan(request).speech, dominant_act: 'offer' },
+    resolution: 'check_required',
+    supporting_operations: [{ owner: '@rus/social-law',
+      policy_ref: 'promise-policy' }],
+    check: { purpose: 'предложить защиту за сдачу',
+      ...request.player_safe_context.available_check, outcomes: outcomes() }
+  });
+
+  const assembled = assemblePlayerConversationPlan(semantic, request);
+  assert.deepEqual(assembled.supporting_operations,
+    [{ op: 'offer_conditional_protection' }]);
+  assert.equal(validatePlayerConversationContributionPlan(
+    assembled, request), true);
+
+  request.operation_contract.emit_interaction = {
+    owner: '@rus/social-law', policy_ref: 'promise-policy'
+  };
+  assert.deepEqual(assemblePlayerConversationPlan(semantic, request)
+    .supporting_operations, semantic.supporting_operations);
 });
 
 test('player required candidate is omitted for target outside allowed actors', () => {

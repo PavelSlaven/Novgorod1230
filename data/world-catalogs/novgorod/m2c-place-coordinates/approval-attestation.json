@@ -1,0 +1,122 @@
+{
+  "schema": "rus.m2c_place_coordinates_authoring_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "candidate_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json",
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; authors: claude-sonnet-5-5, earlier Codex)",
+  "approved_on": "2026-09-30",
+  "approved_commit": "93206de25e8486a4eb3f64422920800f4254e45a",
+  "candidate_sha256": "900448717b804ecc9f3dc031600cc1341e81411d71165fcee533584a8000f605",
+  "derived_report_sha256": "feea5c50c60bd3473a20f617949ecba94cac900bbe64b79e930eef9eddcee0e6",
+  "derive_inputs": {
+    "line_names_candidate_commit": "bb0d2802"
+  },
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Authored game-map reconstruction of G1 cell gn_nov_g1_xp017_yp026: 32 G4 sectors, 195 G5 points and footprints, 16 water-body skeletons with width and current, 32 shoreline skeletons, 48 of 49 route traces (all except cross_g4_23), topology result valid with 0 exceptions, compass directions of all 540 lines, river-direction labels except the 30 listed in pending_mechanical_continuation F1, proposed minutes only as a draft for a Spatial CR (except cross_g4_23).",
+  "checks": "derive.test.mjs 25/25; derive.mjs with line-names bb0d2802 run twice, byte-identical to the committed report; diff 92e61510..93206de2 touches only the 7 catalog files. Independent approver scripts: end-access rule re-implemented, 0 violations over 173 dry lines; dry-mask components and shortest dry paths for all 35 pairs; all 20 A* traces re-routed byte-identical; no same-body spikes; G4 sector clipping 0 m2 overlap; shoreline skeletons at half-width; flow drainage; minute before/after table of DONE-place-geo-5 reconciled.",
+  "limits": [
+    "The map is an authored game reconstruction, not 1230 geometry; precision_m is a game-map tolerance. Precision classes: anchored 0, reconstructed 46, schematic 181. Vikh Tuy and Zaostrovye are area-level only.",
+    "Widths, currents and speeds (travel-calibration.json) are editorial assumptions, not measurements.",
+    "Proposed minutes are a draft for a Spatial CR, not active values. Graph, line-names, spatial-v3 and runtime are unchanged.",
+    "river_direction of the 30 lines and trace legs on still water listed in F1 is not approved until F1 is applied.",
+    "The cross_g4_23 trace and its minutes are not approved until F2 is applied.",
+    "A water end may run into water up to max(half-width + 50 m), at most 300 m. This is a map access rule, not a crossing.",
+    "large_island_channels lies entirely inside the central_head_branch corridor (axis within 9 m of the chb axis, edge up to 116 m inside); it is a label of a chb reach and its shorelines lie in water.",
+    "shore_reed_backwater_pool_left is degenerate: one point.",
+    "The 'берегом' metric for drawn traces is distance-only; new traces need sampled alignment as well.",
+    "The island_split_channels current (main to west, southward, 0.65 km/h) is editorial and runs against the general delta gradient.",
+    "The reasoning text of the four moved G5 points still carries the old 'authored offset' figure; the clarification is appended. Cosmetic.",
+    "Places with waterbody_ref count as water ends for access (35 of them lack the water_endpoint flag), while shore_to_water_link still reads water_endpoint. No effect on the current data."
+  ],
+  "pending_mechanical_continuation": {
+    "note": "F1/F2 are a mechanical continuation, accepted by deterministic checks without a new Opus pass. Any other change requires a new Opus pass.",
+    "F1": {
+      "rule": "current_bias_kmh = 0 gives 'без течения' for both the line and the leg; a line label comes from its first leg on flowing water; with no such leg, 'без течения'.",
+      "to_no_current_both_directions": [
+        "flooded_interior_basin_cross",
+        "large_island_head_1",
+        "large_island_head_2",
+        "large_island_head_5",
+        "large_island_head_cycle",
+        "sheltered_landing_terrace_1",
+        "tributary_mouth_1",
+        "tributary_mouth_2",
+        "tributary_mouth_3",
+        "vikhtuy_river_approach_1",
+        "zaostrovye_landing_1",
+        "zaostrovye_settlement_center_1",
+        "cross_g4_06",
+        "cross_g4_22"
+      ],
+      "to_downstream_reverse_only": [
+        "cross_g4_07",
+        "cross_g4_08"
+      ],
+      "expected_label_totals": {
+        "upstream": 68,
+        "downstream": 66,
+        "no_current": 48,
+        "across": 12
+      },
+      "minutes_unchanged": true
+    },
+    "F2": {
+      "rule": "Re-route cross_g4_23 along the shortest water path; the last stretch stays in the backwater, so the name remains valid. Add a blocking check: water trace length <= 1.15 x shortest water path.",
+      "observed": "trace 6531 m vs shortest water path 4191 m (x1.56); other 13 water traces <= 1.10",
+      "expected_effect": "cross_g4_23 minutes (108/107 against base 45) drop by about 35 min"
+    },
+    "acceptance": "Tests green; report byte-reproducible; a comparison script shows exactly the 30 F1 labels plus the cross_g4_23 trace, its two lines (minutes and labels) and its legs changed, nothing else."
+  },
+  "owner_findings": {
+    "spatial": [
+      "cross_g4_10: 16.8 km over bog (741 min vs base 90); split the edge or accept a multi-hour route.",
+      "cross_g4_11: about 15 km (302 min vs base 120).",
+      "cross_g4_09: shore_transfer at 15 min, but chb separates the ends; the detour around the dead end is 4.1 km (108 min); a water crossing of about 0.5 km is an option.",
+      "cross_g4_14: shore_transfer at 15 min vs 121 min over 4.6 km.",
+      "Water route bases of 60 min vs 142-344 min (cross_g4_04/05/07/12/21).",
+      "Local links with base 6-8 min over 0.6-1.3 km (29-48 min on the map): flooded_interior_basin_3/5/cycle, forest_stream_route_cross/cycle, wet_conifer_tract_1/cycle, vikhtuy_resource_edge_1/cycle.",
+      "Reverse case, base 60-75 min vs 10-17 min: zaostrovye_archaeological_area_1/cycle, vikhtuy_local_area_1.",
+      "central_current_split_1/cycle: 5/7 min vs 10-22 after the nose moved.",
+      "Current direction of isc; chb is a 500 m wide dead-end arm."
+    ],
+    "line_names": [
+      "large_island_head_2 'меж речных струй' on the now-still lic.",
+      "Five short 'берегом' lines between water and shore could be renamed."
+    ]
+  },
+  "import_authorized": false,
+  "activation_authorized": false,
+  "mechanical_continuation": {
+    "applied_commit": "540420fe",
+    "accepted_by": "claude-opus-5-5 (lead reviewer; deterministic checks only, per the approver note)",
+    "accepted_on": "2026-09-30",
+    "candidate_sha256": "f47aa3c42f5ea22fb41c00dfc20b89fc5de6e3cdad5b53022f6cc8c4499c3acd",
+    "derived_report_sha256": "cb9c87db6969ffa376893be2cb28ff748e4a0848605991ac0c2b987aeb9bd82c",
+    "checks": [
+      "derive.test.mjs 27/27 (25 + F1 and F2 tests); derive.mjs with line-names bb0d2802 run twice, byte-identical to the committed report.",
+      "Reviewer field diff 93206de2..540420fe (pg-diff.mjs): candidate.json changes only route_traces.cross_g4_23; 34 report lines change; river_direction changes on exactly the 30 F1 lines plus cross_g4_23 r (F2); minutes change only on cross_g4_23 (f 108->77, r 107->58); geometry validation and name mismatches unchanged; topology gains water_trace_detours = 0.",
+      "Label totals after F1 and F2: upstream 67, downstream 67, no current 48, across 12 (F1 alone 68/66; cross_g4_23 r flips upstream->downstream because its first flowing leg now runs down the east arm)."
+    ],
+    "accepted_consequences": [
+      "cross_g4_07 f and cross_g4_08 f: line label unchanged, their legs on central_head_branch (current 0) now read no current (F1 leg rule).",
+      "Label-dependent derived fields of the same lines follow the label: crossing_geometry_valid true->null on 28 lines now without current; travel_band/speed_band/expected and tolerated speed on 17 lines; speed_mismatches 166->167 (4 added on F1 lines, 3 removed: cross_g4_07 r and both cross_g4_23). Legacy review flags on base minutes, no minute change.",
+      "cross_g4_23 rerouted 6531 m -> 4136 m (shortest water path 4191 m on the approver raster); max water trace ratio now 1.102 (cross_g4_13)."
+    ],
+    "now_approved": "F1 labels and the cross_g4_23 trace with its minutes (draft for a Spatial CR, like all minutes). Limits 4 and 5 are closed by this continuation; limits 1-3 and 6-12 stay."
+  },
+  "mechanical_continuation_2": {
+    "change": "derived-report.json rebuilt with the line-names candidate as of 42c121d8 (line renames c2419868, 42c121d8); candidate.json unchanged.",
+    "accepted_by": "claude-opus-5-5 (lead reviewer; deterministic checks only: a rebuild with renamed lines, no new map data)",
+    "accepted_on": "2026-10-01",
+    "candidate_sha256": "f47aa3c42f5ea22fb41c00dfc20b89fc5de6e3cdad5b53022f6cc8c4499c3acd",
+    "derived_report_sha256": "6642e73ac7431183d6e187eeeeab314dfa4783fee5849b6a152ce9ddd3320f9f",
+    "derive_inputs": {
+      "line_names_candidate_commit": "42c121d8"
+    },
+    "checks": [
+      "derive.mjs with line-names 42c121d8 run by the executor and again by the reviewer: byte-identical, sha256 above.",
+      "Reviewer leaf diff of derived-report.json against 422e72ba: 24 leaf changes, all lines[].line_name (12 pairs, forward and reverse); every new value is a name_ru of the line-names candidate; no other field changes.",
+      "derive.test.mjs 27/27."
+    ],
+    "now_approved": "Nothing new. Minutes, geometry, river labels, topology and limits are unchanged; line names come from the line-names catalog."
+  }
+}

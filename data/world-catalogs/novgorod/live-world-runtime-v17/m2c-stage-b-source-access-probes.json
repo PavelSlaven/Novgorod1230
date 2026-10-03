@@ -1,0 +1,19 @@
+{
+  "schema": "rus.live_world_runtime.m2c_stage_b_source_access_probes.v1",
+  "source_profile_sha256": "de2cee442d6f1eaf0c585a4b096b53367becfcd84c22f67aecb0a7f077fddff5",
+  "cases": [
+    { "id": "reeds", "source_class_ref": "reeds", "source_quantity": 20, "access_decision": "allow" },
+    { "id": "reeds-kamysh", "source_class_ref": "reeds", "source_quantity": 20, "access_decision": "allow" },
+    { "id": "deadwood", "source_class_ref": "deadwood", "source_quantity": 60, "access_decision": "allow" },
+    { "id": "deadwood-khvorost", "source_class_ref": "deadwood", "source_quantity": 60, "access_decision": "allow" },
+    { "id": "deadwood-sushnyak", "source_class_ref": "deadwood", "source_quantity": 60, "access_decision": "allow" },
+    { "id": "driftwood", "source_class_ref": "driftwood", "source_quantity": 30, "access_decision": "allow" },
+    { "id": "standing-wood", "source_class_ref": "standing_wood", "source_quantity": 10, "access_decision": "allow" },
+    { "id": "berries-absent", "source_class_ref": "berries", "source_quantity": null, "access_decision": "allow" },
+    { "id": "fungi-absent", "source_class_ref": "fungi", "source_quantity": null, "access_decision": "allow" },
+    { "id": "stone-absent", "source_class_ref": "stone", "source_quantity": null, "access_decision": "allow" },
+    { "id": "exhausted-source", "source_class_ref": "deadwood", "source_quantity": 0, "access_decision": "allow" },
+    { "id": "exhausted-synonym", "source_class_ref": "deadwood", "source_quantity": 0, "access_decision": "allow" },
+    { "id": "owned-wood", "source_class_ref": "standing_wood", "source_quantity": 10, "access_decision": "deny" }
+  ]
+}

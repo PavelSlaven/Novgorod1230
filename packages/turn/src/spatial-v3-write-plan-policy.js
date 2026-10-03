@@ -27,6 +27,12 @@ export const TABLE_MODES = Object.freeze({
   party_server_sessions: ['updates'],
   party_state_snapshots: ['inserts'],
   party_v3_change_sets: ['appends'],
+  party_materialization_runs: ['appends'],
+  party_materialization_choices: ['appends'],
+  party_ordinary_materialization_aggregates: ['inserts'],
+  party_ordinary_materialization_contexts: ['inserts'],
+  party_ordinary_materialization_basis_catalog: ['inserts'],
+  party_ordinary_materialization_enablements: ['inserts'],
   party_route_plan_execution_events: ['appends'],
   party_traversal_interval_results: ['appends'],
   party_timed_activity_attempts: ['appends'],
@@ -57,7 +63,7 @@ export const TABLE_MODES = Object.freeze({
   party_clocks: ['updates'],
   party_positions: ['updates'],
   party_carrier_attachments: ['inserts', 'updates'],
-  party_npc_spatial_schedules: ['updates'],
+  party_npc_spatial_schedules: ['inserts', 'updates'],
   entity_placements: ['inserts', 'updates', 'deletes'],
   party_entity_controls: ['inserts', 'updates'],
   party_actor_profile_bindings: ['inserts', 'updates'],
@@ -66,8 +72,13 @@ export const TABLE_MODES = Object.freeze({
   party_resource_nodes: ['inserts', 'updates'],
   party_transports: ['inserts', 'updates'],
   party_actor_relations: ['inserts', 'updates'],
-  expansion_frontiers: ['updates'],
-  expansion_capacity_reservations: ['updates'],
+  expansion_frontiers: ['inserts', 'updates'],
+  expansion_capacity_reservations: ['inserts', 'updates'],
+  party_continuation_chains: ['inserts', 'updates'],
+  party_g4_expansion_ledgers: ['inserts', 'updates'],
+  scene_frontier_bindings: ['inserts', 'updates'],
+  g5_site_connections: ['inserts'],
+  party_site_connection_endpoint_bindings: ['inserts'],
   party_activity_participant_bindings: ['inserts', 'updates'],
   party_temporal_events: ['inserts', 'updates'],
   party_remote_aggregate_states: ['inserts', 'updates'],
@@ -124,6 +135,15 @@ export const CHILD_TABLES = new Set([
 ]);
 export const validIdentity = (write) => write?.target_table === 'entity_placements'
   ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+  : write?.target_table === 'party_materialization_runs' ? write.id === write.record?.run_id
+  : write?.target_table === 'party_materialization_choices' ? write.id === `${write.record?.run_id}:${write.record?.choice_ordinal}`
+  : write?.target_table === 'party_ordinary_materialization_basis_catalog'
+    ? write.id === `${write.record?.party_id}:${write.record?.scope_kind}:${write.record?.scope_id}:${write.record?.basis_ref}`
+  : ['party_ordinary_materialization_aggregates', 'party_ordinary_materialization_contexts', 'party_ordinary_materialization_enablements'].includes(write?.target_table)
+    ? write.id === `${write.record?.party_id}:${write.record?.scope_kind}:${write.record?.scope_id}`
+  : write?.target_table === 'party_g4_expansion_ledgers'
+    ? write.id === `${write.record?.party_id}:${write.record?.g4_id}:${write.record?.profile_ref?.entity_id}`
+      && write.record?.profile_ref_id === undefined
   : write?.target_table === 'g6_acoustic_profiles'
     ? write.record?.g6_instance_id === write.id
   : write?.target_table === 'party_combat_sessions'
@@ -184,6 +204,8 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                                   : write?.record?.id === write?.id;
 export function childParentIdentities(write) {
   switch (write?.target_table) {
+    case 'party_materialization_choices':
+      return [`party_runtime.party_materialization_runs:${write.record?.run_id}`];
     case 'party_combat_sessions':
       return [`party_runtime.party_v3_change_sets:${write.record?.last_change_set_id}`];
     case 'party_activity_participant_bindings':

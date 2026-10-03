@@ -1,0 +1,415 @@
+[
+ {
+  "need_id": "SOC-12-n2",
+  "target_ref": "claim:residual-law-boundaries-and-marked-trees",
+  "target_kind": "claim",
+  "add_aliases_ru": ["потрава посева", "потоптал поле", "чужое добро"],
+  "note": "Точного claim про потраву поля боярским всадником нет; ближайший имеющийся закон о порче межи и межевых деревьев (ст.64-66 РП). Про то, что с боярина реально возьмут лишь возмещение, текста нет."
+ },
+ {
+  "need_id": "SOC-13-n1",
+  "target_ref": "claim:rp-property-claim-relates-acquisition-chain",
+  "target_kind": "claim",
+  "add_aliases_ru": ["находка", "закликать находку", "чужой кошель"],
+  "note": "Отдельного claim про обычай закликать находку на Торгу в паке нет; ближайшее — свод (ст.29 РП) про узнанную утраченную/похищенную вещь и цепочку приобретения."
+ },
+ {
+  "need_id": "SOC-13-n2",
+  "target_ref": "claim:social-grivna-accounting-unit",
+  "target_kind": "claim",
+  "add_aliases_ru": ["серебряный слиток", "обрубок гривны", "денарии"],
+  "note": "Про обрубки гривны и иноземные денарии отдельного claim нет; ближайшее — гривна как счётная единица в новгородской долговой записи."
+ },
+ {
+  "need_id": "SOC-14-n1",
+  "target_ref": "claim:residual-law-widow-separate-property",
+  "target_kind": "claim",
+  "add_aliases_ru": ["вдова ведёт двор", "держит постоялый двор", "право вдовы"],
+  "note": "Про залог саней/товара постояльца отдельного claim нет; ближайшее — ст.88 РП про отдельную долю вдовы."
+ },
+ {
+  "need_id": "WLD-16-n2",
+  "target_ref": "claim:agriculture-fauna-ash-hunting-bow",
+  "target_kind": "claim",
+  "add_aliases_ru": ["оружейный ряд", "что продают из оружия", "лук", "самострел"],
+  "note": "Общего списка оружия эпохи в паке нет. Из конкретных находок есть цельнодеревянный охотничий лук (эта claim) и полумаска шлема (claim:candidate-novgorod-helmet-half-mask-find, уже имеет алиасы шлем/полумаска)."
+ },
+ {
+  "need_id": "SOC-17-n1",
+  "target_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+  "target_kind": "claim",
+  "add_aliases_ru": ["ряд с князем", "приглашение князя", "Городище"],
+  "note": "Про то, что вече выбирает посадника/тысяцкого и что князь не может приобретать землю в волости, отдельного claim нет; ближайшее — датированный эпизод 1215 г. о совместном выезде посадника и тысяцкого приглашать князя."
+ },
+ {
+  "need_id": "SOC-17-n2",
+  "target_ref": "claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
+  "target_kind": "claim",
+  "add_aliases_ru": ["кто такой тысяцкий", "начальник ополчения", "тысяча"],
+  "note": "Прямого определения тысяцкого как выборного начальника ополчения нет; ближайшее — роль тысяцкого как контекст обращения по городским/военным/торговым делам."
+ },
+ {
+  "need_id": "SOC-17-n3",
+  "target_ref": "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+  "target_kind": "claim",
+  "add_aliases_ru": ["где собирается вече", "вечевая площадь", "Ярославово дворище"],
+  "note": "Claim прямо называет вече на Ярославовом дворе под 1230 годом — хорошее совпадение, просто не находилось поиском."
+ },
+ {
+  "need_id": "SOC-17-n4",
+  "target_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+  "target_kind": "claim",
+  "add_aliases_ru": ["изгнали князя", "смута 1230", "Ростислав", "призвали Ярослава"],
+  "note": "Про изгнание Ростислава и призвание Ярослава Всеволодовича отдельного claim нет; ближайшее — перечень должностных лиц кризиса 1230 года. Need помечен domain=outside — вне штатной ответственности WK."
+ },
+ {
+  "need_id": "ACT-18-n4",
+  "target_ref": "claim:population-pine-float",
+  "target_kind": "claim",
+  "add_aliases_ru": ["поплавок для сети", "грузило для сети", "подлёдная сеть"],
+  "note": "Про нить сети из льна/конопли и глиняные грузила отдельных claims нет. Про материал поплавков — claim:population-pine-float (сосновая кора), про крепление грузила — claim:population-weight-strap (ремешок) и claim:population-weight-bark (береста); все три стоит связать с 'подлёдная сеть'."
+ },
+ {
+  "need_id": "SOC-18-n2",
+  "target_ref": "claim:residual-law-visible-injury-and-witness",
+  "target_kind": "claim",
+  "add_aliases_ru": ["послух", "видок", "свидетель доброй славы"],
+  "note": "Про запрет ставить холопа послухом отдельного claim нет; по видоку/побоям — ст.23 РП уже здесь, добавляю более разговорные формулировки."
+ },
+ {
+  "need_id": "SOC-18-n3",
+  "target_ref": "claim:rp-property-claim-relates-acquisition-chain",
+  "target_kind": "claim",
+  "add_aliases_ru": ["цепочка продавцов", "у кого купил", "кто вор"],
+  "note": "Alias 'свод' уже есть; добавляю формулировки про цепочку продавцов и определение вора, которые использует situation (обвинение в краже без свидетелей)."
+ },
+ {
+  "need_id": "WLD-18-n1",
+  "target_ref": "claim:clothing-onuchi-wrap",
+  "target_kind": "claim",
+  "add_aliases_ru": ["онучи", "обмотки на ногу", "зимняя обувь дружинника"],
+  "note": "Про кожух/шубу, меховую шапку и рукавицы целиком отдельных claims нет. Онучи покрывают только часть statement (ноги/обувь). claim:clothing-pointed-cap-xii-depiction — про островерхий колпак гусляра, это не зимний меховой убор дружинника, алиасы туда добавлять не стоит (сменило бы смысл находки)."
+ },
+ {
+  "need_id": "WLD-19-n1",
+  "target_ref": "wk:material_culture:candidate-v7-novgorod-play-artefacts",
+  "target_kind": "concept",
+  "add_aliases_ru": ["кубарь", "свистулька", "кукла", "деревянный конь"],
+  "note": "Концепт новгородских игровых артефактов уже содержит алиасы игрушка/мяч/волчок/коньки/кораблик, покрывающие большую часть statement; добавляю недостающие термины (кубарь, свистулька, кукла, деревянный конь)."
+ },
+ {
+  "need_id": "WLD-21-n1",
+  "target_ref": "claim:civic-public-market",
+  "target_kind": "claim",
+  "add_aliases_ru": ["Ярославово дворище", "Торг у дворища"],
+  "note": "Про именно Ярославово дворище claim нет (см. note аудитора); ближайшее — Торг как часть средневекового городского пространства."
+ },
+ {
+  "need_id": "SOC-23-n1",
+  "target_ref": "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
+  "target_kind": "claim",
+  "add_aliases_ru": ["Щитная улица", "где живут кузнецы", "ремесленные улицы"],
+  "note": "Claim прямо называет концы и Кузьмодемьянскую улицу кузнецов — хорошее совпадение (см. note аудитора). Про цехи по немецкому образцу текста нет, алиас 'цех' не добавляю, чтобы не менять смысл."
+ },
+ {
+  "need_id": "SOC-24-n3",
+  "target_ref": "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+  "target_kind": "claim",
+  "add_aliases_ru": ["писало костяное", "чем пишут на бересте"],
+  "note": "Alias 'писало' уже есть; добавляю разговорные формулировки вопроса игрока про письмо."
+ },
+ {
+  "need_id": "WLD-24-n1",
+  "target_ref": "claim:rural-household-economy-context",
+  "target_kind": "claim",
+  "add_aliases_ru": ["сколько дворов в деревне", "несколько дворов"],
+  "note": "Конкретное число дворов (1-5) в паке не зафиксировано; ближайшее — общий контекст севернорусского сельского поселения."
+ },
+ {
+  "need_id": "ACT-25-n4",
+  "target_ref": "claim:probable-travel-chalice-communion",
+  "target_kind": "claim",
+  "add_aliases_ru": ["зовут священника", "причастить больного", "исповедать"],
+  "note": "Прямого факта про вызов священника к тяжелобольному в паке нет; ближайшее косвенное — вероятный походный потир для причастия."
+ },
+ {
+  "need_id": "SOC-25-n3",
+  "target_ref": "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues",
+  "target_kind": "claim",
+  "add_aliases_ru": ["который час", "узнать время", "нет часов"],
+  "note": "Про отсутствие механических часов и звон к церковным службам отдельного claim нет; ближайшее — солнце и тень как качественные ориентиры времени."
+ },
+ {
+  "need_id": "WLD-25-n3",
+  "target_ref": "claim:ordinary-life-apron-when-work-warrants",
+  "target_kind": "claim",
+  "add_aliases_ru": ["кожевенный двор", "передник кожевника"],
+  "note": "Про передник у грязной работы (уместен у кузни/кожевни) уже есть claim. Раздражение рук известью — отдельный claim:streak01-wet-lime-contact, для него стоит добавить алиас 'разъедены руки известью'."
+ },
+ {
+  "need_id": "SOC-26-n3",
+  "target_ref": "claim:population-processes-fur-exchange",
+  "target_kind": "claim",
+  "add_aliases_ru": ["вывоз мехов", "торговля с немцами", "за море"],
+  "note": "Про ввоз сукна/соли/вина отдельного claim нет; про вывоз пушнины из Новгорода — есть."
+ },
+ {
+  "need_id": "WLD-26-n3",
+  "target_ref": "claim:construction-compared-church-masonry",
+  "target_kind": "claim",
+  "add_aliases_ru": ["каменная церковь", "кладка храма", "звон колокола"],
+  "note": "Про пятиглавие Софийского собора конкретно claim нет; ближайшее — общая характеристика кладки домонгольских каменных храмов Новгородской земли."
+ },
+ {
+  "need_id": "ACT-27-n1",
+  "target_ref": "claim:bathing-wooden-bathhouse-wood",
+  "target_kind": "claim",
+  "add_aliases_ru": ["роды в бане", "рожает в бане"],
+  "note": "Про повитуху и запрет мужчинам при родах claim нет; про баню как деревянное сооружение — есть, про общий уход при уже начавшихся родах — claim:macro-gap-birth-needs-practical-support-and-time (алиас 'уход при родах')."
+ },
+ {
+  "need_id": "SOC-27-n1",
+  "target_ref": "claim:residual-law-debt-denial-witness-oath",
+  "target_kind": "claim",
+  "add_aliases_ru": ["поручители за долг", "лихва сверх долга"],
+  "note": "Конкретный порог в 3 гривны claim не задаёт; ближайшее — ст.43 РП про отрицание денежного долга и послухов."
+ },
+ {
+  "need_id": "WLD-27-n1",
+  "target_ref": "claim:settlement-oven-heating",
+  "target_kind": "claim",
+  "add_aliases_ru": ["курная изба", "дым под потолком", "волоковое окно"],
+  "note": "Про слоение дыма под потолком — отдельный физический claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer, для него тоже стоит добавить 'дым стоит под потолком'."
+ },
+ {
+  "need_id": "WLD-27-n2",
+  "target_ref": "claim:fuel-iron-splinter-holder-form",
+  "target_kind": "claim",
+  "add_aliases_ru": ["светец", "лучина вечером"],
+  "note": "Про задвижку волокового окна доской отдельного claim нет; про освещение лучиной вечером — светец есть."
+ },
+ {
+  "need_id": "WLD-27-n3",
+  "target_ref": "claim:mb14-practical-ewe-lamb-postbirth-observation",
+  "target_kind": "claim",
+  "add_aliases_ru": ["ягнёнок в избе", "новорождённый ягнёнок зимой"],
+  "note": "Про содержание телят/ягнят именно в избе зимой отдельного claim нет; ближайшее — уход за овцой и ягнёнком после окота."
+ },
+ {
+  "need_id": "SOC-28-n1",
+  "target_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+  "target_kind": "claim",
+  "add_aliases_ru": ["кто владыка", "архиепископ Спиридон", "глава церкви"],
+  "note": "Архиепископ Спиридон 1230 года прямо назван в этом claim — хорошее совпадение."
+ },
+ {
+  "need_id": "SOC-28-n2",
+  "target_ref": "claim:civic-public-market",
+  "target_kind": "claim",
+  "add_aliases_ru": ["Ярославово дворище", "вечевая площадь Торговой стороны"],
+  "note": "Торг и вечевая площадь есть (эта claim и claim:civic-public-assembly); Ярославово дворище явно не названо ни в одной из них."
+ },
+ {
+  "need_id": "SOC-28-n3",
+  "target_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+  "target_kind": "claim",
+  "add_aliases_ru": ["поставили Спиридона владыкой"],
+  "note": "Про смещение Арсения в 1229 г. отдельного claim нет; про поставление/наличие Спиридона к 1230 году — есть. Need помечен domain=outside — вне штатной ответственности WK."
+ },
+ {
+  "need_id": "WLD-28-n2",
+  "target_ref": "claim:transport-sledge-summer-cargo",
+  "target_kind": "claim",
+  "add_aliases_ru": ["хоронят на санях летом", "похоронные сани"],
+  "note": "Про плач женщин отдельного claim нет; про сани летом как транспорт (в т.ч. в похоронном переносе через claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage) — есть."
+ },
+ {
+  "need_id": "WLD-28-n3",
+  "target_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+  "target_kind": "claim",
+  "add_aliases_ru": ["поминки после похорон", "дни поминовения"],
+  "note": "Про конкретно 3-й/9-й/40-й день отдельного claim нет; ближайшее — церковный месяцеслов с памятями по дням."
+ },
+ {
+  "need_id": "ACT-29-n3",
+  "target_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
+  "target_kind": "claim",
+  "add_aliases_ru": ["тушить пожар водой", "заливать огонь"],
+  "note": "Про разбор соседних построек при тушении отдельного claim нет; про охлаждение огня водой — есть, добавляю более разговорные формулировки."
+ },
+ {
+  "need_id": "ACT-31-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: claim про использование пергамена (и его дороговизну) для книг и официальных грамот в паке не найден; есть только claims о хрупкости пергамена и уходе за ним (консервация), это другой вопрос."
+ },
+ {
+  "need_id": "ACT-31-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: прямого подтверждения широкой бытовой грамотности горожан (купцов, ремесленников, женщин) в паке нет; ближайшие claims про берестяной корпус (claim:practical-document-genres и др.) явно отказываются делать вывод о всеобщей грамотности."
+ },
+ {
+  "need_id": "WLD-31-n1",
+  "target_ref": "claim:construction-rjaz-bridge-support",
+  "target_kind": "claim",
+  "add_aliases_ru": ["Великий мост", "мост через Волхов", "мост на ряжах"],
+  "note": "Хорошее совпадение — деревянный мост на ряжевых опорах, засвидетельствованный для Новгорода; не находилось поиском (см. также note аудитора для WLD-21-n1)."
+ },
+ {
+  "need_id": "WLD-32-n1",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: claim про расположение кузниц на окраине/у воды из-за пожарной опасности в паке не найден."
+ },
+ {
+  "need_id": "ACT-33-n2",
+  "target_ref": "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues",
+  "target_kind": "claim",
+  "add_aliases_ru": ["узнать час в бане", "сколько времени париться", "нет часов"],
+  "note": "Тот же факт, что и need SOC-25-n3 (нет механических часов); ближайшее — солнце/тень как ориентир времени. Про звон к службам claim нет."
+ },
+ {
+  "need_id": "SOC-33-n1",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: обряд сватовства (сваты, ряд о приданом) в паке не найден."
+ },
+ {
+  "need_id": "SOC-33-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: венчание в церкви и народный свадебный обычай (сговор, пир, поезд) в паке не найдены."
+ },
+ {
+  "need_id": "WLD-33-n1",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: Антониев монастырь и каменный собор Рождества Богородицы в паке не найдены."
+ },
+ {
+  "need_id": "ACT-35-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: сезонная привязка (в мае соха и борона в поле, при хозяевах) в паке отсутствует; есть только находка металлического наконечника рала (claim:household-ploughshare-tillage) без сезонного и хозяйственного контекста — недостаточно точное совпадение для алиасов."
+ },
+ {
+  "need_id": "SOC-35-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: правило о том, что публичное бесчестье (оскорбление боярина) не прощают и влечёт месть/суд, в паке не найдено."
+ },
+ {
+  "need_id": "WLD-35-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: форма и вкус хлеба (круглый, кисловатый) в паке не описаны; есть только claims о сырье (ржаная мука) и процессе замеса/выпечки теста."
+ },
+ {
+  "need_id": "ACT-36-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: деление Торга на ряды и то, что ремесленники сами продают свои изделия, в паке не найдено; есть только общий claim о доходе ремесленника от заказов."
+ },
+ {
+  "need_id": "WLD-36-n1",
+  "target_ref": "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
+  "target_kind": "claim",
+  "add_aliases_ru": ["концы города", "Неревский конец", "Людин конец", "Загородский конец", "Славенский конец", "Плотницкий конец"],
+  "note": "Claim прямо называет Прусский/Людин/Неревский концы — лучшее доступное совпадение для вопроса о делении города на концы, хотя Загородский, Славенский и Плотницкий там не перечислены."
+ },
+ {
+  "need_id": "ACT-37-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: то, что рыбаки уходят на лов с рассвета и сушат снасти на берегу, в паке не найдено."
+ },
+ {
+  "need_id": "SOC-37-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: содержание задержанного до суда в порубе или оковах в паке не найдено."
+ },
+ {
+  "need_id": "SOC-37-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: институт поручительства уличан (взять на поруки) в паке не найден."
+ },
+ {
+  "need_id": "WLD-37-n1",
+  "target_ref": "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+  "target_kind": "claim",
+  "add_aliases_ru": ["вече на Ярославовом дворище", "звон вечевого колокола", "как проходит вече"],
+  "note": "Точное совпадение сцены (need просит описать вече) с эпизодом 1230 года про вече на Ярославовом дворе; не находилось поиском (см. также note аудитора для WLD-21-n1/SOC-17-n3)."
+ },
+ {
+  "need_id": "WLD-37-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: принятие решений вечем криком/перевесом силы и драки концов между собой в паке не найдены."
+ },
+ {
+  "need_id": "SOC-38-n3",
+  "target_ref": "claim:public-world-unfamiliar-speech-allows-clarification",
+  "target_kind": "claim",
+  "add_aliases_ru": ["не понимает просьбу", "чудак или иноземец", "незнакомое слово"],
+  "note": "Общий механизм уточнения при непонятной речи — ближайшее применимое к сцене с анахронизмом (просьба картошки/табака); прямого текста про сами анахронизмы в паке нет и не должно быть."
+ },
+ {
+  "need_id": "WLD-39-n2",
+  "target_ref": "wk:social_behavior:reconstructed-recreation-oral-culture",
+  "target_kind": "concept",
+  "add_aliases_ru": ["посиделки", "вечерние посиделки", "прядут и поют", "сказки вечером"],
+  "note": "Концепт про устный досуг (голос/память/предметы, неравное добровольное участие) хорошо покрывает need про зимние посиделки при лучине, но не подхватывался поиском."
+ },
+ {
+  "need_id": "WLD-39-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: явное отрицание самопрялки (прялки с колесом) в Руси XIII века в паке не найдено."
+ },
+ {
+  "need_id": "ACT-40-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: про раннюю трудовую помощь детей ремесленников по хозяйству и в мастерской claim в паке не найден. Игрушки (wk:material_culture:candidate-v7-novgorod-play-artefacts) в паке есть, но statement need отдельно про трудовую помощь детей, а не про игрушки — добавлять туда алиасы значило бы подменить факт."
+ },
+ {
+  "need_id": "WLD-40-n1",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: описание боярской охоты на лося/медведя/кабана/зайца с гончими и ловчими птицами как практики в паке не найдено; есть только отдельные видовые заметки о кабане и общий экономический контекст охоты/пушнины."
+ },
+ {
+  "need_id": "WLD-40-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: охотничье снаряжение (рогатина на медведя, сети-перевесы на птиц, ловчие ямы) в паке не описано."
+ },
+ {
+  "need_id": "WLD-40-n3",
+  "target_ref": "claim:agriculture-fauna-hunting-economic-context",
+  "target_kind": "claim",
+  "add_aliases_ru": ["источник богатства Новгорода", "пушной промысел", "мех на продажу"],
+  "note": "Claim прямо относит охоту и добычу пушнины к важным промыслам средневекового Новгорода и его земли — хорошее совпадение. Также стоит проаллиасить claim:population-processes-fur-exchange (пушнина поступала в Новгород с севера) теми же словами."
+ }
+]

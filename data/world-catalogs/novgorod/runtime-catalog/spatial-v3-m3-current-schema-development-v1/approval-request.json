@@ -1,0 +1,57 @@
+{
+  "schema": "rus.spatial_v3_m3_current_schema_development_release_approval_request.v1",
+  "version": 1,
+  "status": "pending_independent_runtime_approval",
+  "subject_commit": "9b9749f63b0b98fb5246714976b8892c87ff8bb1",
+  "operation": "append_only_current_schema_development_release_rebind",
+  "candidate_ref": "data/world-catalogs/novgorod/runtime-catalog/spatial-v3-m3-current-schema-development-v1/candidate.json",
+  "candidate_digest": "1d00f12e2ee3ea25920acafe070644b3fe43be3af05facdb3a3255599e20edab",
+  "requested_release": {
+    "release_id": "spatial-v3-m3-development-v14",
+    "baseline_revision_id": "world_revision_novgorod_1230_runtime_catalog_baseline_m3_dev_001",
+    "domain_revision_id": "runtime_catalog_lower_dvina_spatial_v3_m3_dev_001",
+    "catalog_scope": "item_container_materialization_v2",
+    "world_schema_migration_id": "world_runtime_catalog_activation_v3",
+    "world_schema_migration_digest": "27ba1022d58edad89f6caed270667b7b5b5a09f885747c6e23c8a35c987e3e99",
+    "world_schema_source_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
+    "world_schema_target_fingerprint": "9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6",
+    "bindings_file": "spatial-v3-production-v12-bindings.js"
+  },
+  "compatible_world": {
+    "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+    "world_manifest_sha256": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"
+  },
+  "requested_permissions": {
+    "activate_for_new_development_parties_only": true,
+    "production_activation": false,
+    "default_runtime_cutover": false,
+    "existing_party_migration": false,
+    "old_save_rematerialization": false,
+    "runtime_item_creation": false,
+    "functional_allocation_runtime_selection": false,
+    "equipment_allocation_activation": false,
+    "actor_world_owner_migration_execution": false,
+    "actor_party_pin_migration_execution": false,
+    "broader_m3_activation": false
+  },
+  "authority": {
+    "approval_attestation_present": false,
+    "runtime_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "default_runtime_cutover_authorized": false,
+    "new_development_party_activation_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false,
+    "runtime_item_creation_authorized": false,
+    "functional_allocation_runtime_selection_authorized": false,
+    "equipment_allocation_activation_authorized": false,
+    "actor_world_owner_migration_execution_authorized": false,
+    "actor_party_pin_migration_execution_authorized": false,
+    "broader_m3_attested": false
+  },
+  "required_independent_decision": "approve_exact_current_schema_m3_development_release_for_new_parties_only",
+  "independent_runtime_approval_attestation": null,
+  "request_digest": "3fefc169db96f2f3d0757a5af1f751b54e0b0c5a7c0d9d08756d8d8e812cfc59"
+}

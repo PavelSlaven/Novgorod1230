@@ -1,0 +1,158 @@
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
+const APPROVAL_PATH = 'data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json';
+export const WAVE_MANIFEST_PATH = 'data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json';
+const APPROVAL_SCHEMA_VERSION = 'rus.m2c_npc_wave_approval.v1';
+const CHECKED_AT_DATE = /^(\d{4})-(\d{2})-(\d{2})$/u;
+export const GENERATOR_SOURCE_PATHS = [
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv',
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/places/node_binding.csv',
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv',
+  'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/households_kinship/relationship_rules.csv',
+  'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/speech_address/address_forms.csv',
+  'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/households_kinship/household_composition_profiles.csv',
+  'data/world-catalogs/novgorod/game-base-v1/places-binding/slots/slot_instance_variants.json',
+  'data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/weather_climate/water_profiles.csv',
+  'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/phase_activity.csv',
+  'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/phase_activity.csv',
+];
+
+export const REQUIRED_VERIFICATION_REFS = Object.freeze({
+  places_binding: 'data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md',
+  households_psychology_speech: 'data/world-catalogs/novgorod/game-base-v1/households-psychology-speech/VERIFICATION.md',
+  nature_materials_weather: 'data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/VERIFICATION.md',
+  fauna_fish_invertebrates_livestock: 'data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/VERIFICATION.md',
+  fauna_mammals_birds: 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/VERIFICATION.md',
+});
+
+const REVIEWER_FIELD = /^.+ \((owner|reviewer)\)$/u;
+const EXECUTOR_FIELD = /^.+ \(executor\)$/u;
+
+function normalizeRepoPath(root, value) {
+  const projectRoot = resolve(root);
+  const raw = String(value ?? '').trim().replaceAll('\\', '/');
+  if (!raw) return '';
+  const abs = resolve(projectRoot, raw);
+  return abs.startsWith(projectRoot) ? abs.slice(projectRoot.length + 1) : raw;
+}
+
+export function approvalFieldIdentity(field) {
+  const trimmed = String(field ?? '').trim();
+  const withoutRole = trimmed.replace(/\s+\((owner|reviewer|executor)\)\s*$/u, '');
+  return withoutRole.toLowerCase().replace(/\s+/gu, ' ').trim();
+}
+
+function manifestDatasetDigest(manifest) {
+  return [...(manifest?.datasets ?? [])]
+    .map((dataset) => `${dataset.table}:${dataset.sha256}`)
+    .sort()
+    .join('|');
+}
+
+async function manifestsSameApprovedBundle(root, approvedManifestPath, bundleManifestPath) {
+  try {
+    const approved = JSON.parse(await readFile(resolve(root, approvedManifestPath), 'utf8'));
+    const bundle = JSON.parse(await readFile(resolve(root, bundleManifestPath), 'utf8'));
+    if (approved.world_revision_id !== bundle.world_revision_id) return false;
+    return manifestDatasetDigest(approved) === manifestDatasetDigest(bundle);
+  } catch {
+    return false;
+  }
+}
+
+function validateAuthoredBy(value, errors, approvalPath) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_AUTHORED_BY_MISSING', subject_ref: approvalPath });
+    return '';
+  }
+  if (!EXECUTOR_FIELD.test(trimmed)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_AUTHORED_BY_FORMAT_INVALID', subject_ref: trimmed });
+  }
+  return trimmed;
+}
+
+function validateCheckedBy(value, errors, approvalPath) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_MISSING', subject_ref: approvalPath });
+    return '';
+  }
+  if (!REVIEWER_FIELD.test(trimmed)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_FORMAT_INVALID', subject_ref: trimmed });
+  }
+  return trimmed;
+}
+
+function validateCheckedAt(value, errors) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_MISSING', subject_ref: '' });
+    return;
+  }
+  const match = CHECKED_AT_DATE.exec(trimmed);
+  if (!match) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_INVALID', subject_ref: trimmed });
+    return;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const utc = Date.UTC(year, month - 1, day);
+  const probe = new Date(utc);
+  if (probe.getUTCFullYear() !== year || probe.getUTCMonth() !== month - 1 || probe.getUTCDate() !== day) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_AT_INVALID', subject_ref: trimmed });
+  }
+}
+
+export async function validateM2cNpcWaveApproval({ root = process.cwd(), approvalPath = APPROVAL_PATH, bundleManifestPath } = {}) {
+  const projectRoot = resolve(root);
+  const errors = [];
+  let approval;
+  try {
+    approval = JSON.parse(await readFile(resolve(projectRoot, approvalPath), 'utf8'));
+  } catch {
+    return Object.freeze({ ok: false, errors: Object.freeze([{ code: 'M2C_WAVE_APPROVAL_MISSING', subject_ref: approvalPath }]) });
+  }
+  if (String(approval.schema_version ?? '') !== APPROVAL_SCHEMA_VERSION) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_SCHEMA_VERSION_INVALID', subject_ref: String(approval.schema_version ?? '') });
+  }
+  const allowedVerdicts = new Set(['approve', 'approve_with_limits']);
+  if (!allowedVerdicts.has(approval.verdict)) errors.push({ code: 'M2C_WAVE_APPROVAL_VERDICT_INVALID', subject_ref: String(approval.verdict ?? '') });
+  const manifestPathInApproval = normalizeRepoPath(projectRoot, approval.manifest_path);
+  if (!manifestPathInApproval) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_MANIFEST_PATH_MISSING', subject_ref: approvalPath });
+  } else if (bundleManifestPath) {
+    const bundlePath = normalizeRepoPath(projectRoot, bundleManifestPath);
+    if (manifestPathInApproval !== bundlePath) {
+      const sameBundle = await manifestsSameApprovedBundle(projectRoot, approval.manifest_path, bundleManifestPath);
+      if (!sameBundle) {
+        errors.push({ code: 'M2C_WAVE_APPROVAL_MANIFEST_PATH_MISMATCH', subject_ref: `${manifestPathInApproval}|${bundlePath}` });
+      }
+    }
+  } else if (manifestPathInApproval !== WAVE_MANIFEST_PATH) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_MANIFEST_PATH_MISMATCH', subject_ref: manifestPathInApproval });
+  }
+  if (!String(approval.source_commit ?? '').match(/^[0-9a-f]{40}$/u)) errors.push({ code: 'M2C_WAVE_APPROVAL_COMMIT_INVALID', subject_ref: String(approval.source_commit ?? '') });
+  const paths = new Set((approval.source_paths ?? []).map(String));
+  for (const path of GENERATOR_SOURCE_PATHS) {
+    if (!paths.has(path)) errors.push({ code: 'M2C_WAVE_APPROVAL_SOURCE_PATH_MISSING', subject_ref: path });
+  }
+  const authoredBy = validateAuthoredBy(approval.authored_by, errors, approvalPath);
+  const checkedBy = validateCheckedBy(approval.checked_by, errors, approvalPath);
+  if (authoredBy && checkedBy && approvalFieldIdentity(authoredBy) === approvalFieldIdentity(checkedBy)) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_CHECKED_BY_EQUALS_AUTHORED', subject_ref: checkedBy });
+  }
+  validateCheckedAt(approval.checked_at, errors);
+  const refs = approval.references ?? {};
+  if (String(refs.game_base_status ?? '') !== 'data/world-catalogs/novgorod/game-base-v1/STATUS.md') {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_STATUS_REF_INVALID', subject_ref: String(refs.game_base_status ?? '') });
+  }
+  for (const [key, expectedPath] of Object.entries(REQUIRED_VERIFICATION_REFS)) {
+    if (String(refs[key] ?? '') !== expectedPath) {
+      errors.push({ code: 'M2C_WAVE_APPROVAL_VERIFICATION_REF_MISSING', subject_ref: key });
+    }
+  }
+  return Object.freeze({ ok: errors.length === 0, errors: Object.freeze(errors), approval });
+}

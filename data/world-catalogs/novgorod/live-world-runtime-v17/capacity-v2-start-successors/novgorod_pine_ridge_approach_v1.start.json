@@ -1,0 +1,263 @@
+{
+  "schema": "rus.live_world_runtime.target_start_authoring_candidate.v1",
+  "candidate_id": "novgorod_target_pine_ridge_start_v1",
+  "version": 1,
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "release_id": "spatial-v3-production-v17",
+  "scenario_id": "novgorod_pine_ridge_approach_v1",
+  "world_pin": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "manifest_path": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+    "manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
+  },
+  "public_metadata": {
+    "title": "На подходе к лесной гряде",
+    "description": "Начало пути лесного промысловика в Новгородской земле.",
+    "available": false
+  },
+  "authored_premise": {
+    "directness": "editorial_gameplay_initial_condition",
+    "text": "Игрок — взрослый свободный лесной промысловик. Партия начинается на существующем подходе к лесной гряде. Родство, поручители, долги, задания, право рубки и произошедшее путешествие не задаются.",
+    "historical_event_claim": false,
+    "new_historical_site_claim": false,
+    "player_known_facts": [],
+    "hidden_facts": []
+  },
+  "initial_placement": {
+    "mode": "canonical_g4_entry_initial_state",
+    "g4_ref": {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1
+    },
+    "entry_binding_ref": {
+      "id": "g4entryv3__g3_to_g4_access_028",
+      "version": 1
+    },
+    "canonical_g5_ref": {
+      "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+      "version": 1
+    },
+    "scene_materialization_profile_ref": {
+      "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+      "version": 2
+    },
+    "scene_template_ref": {
+      "id": "stfv3__g5_route_approach_v1",
+      "version": 2
+    },
+    "g6_scene_slot_key": "main",
+    "scene_endpoint_slot_key": "arrival",
+    "position_slot_key": "arrival",
+    "position_instance_ordinal": 0,
+    "placement_cause": "authored_initial_state",
+    "travel_time": null,
+    "directness": "exact_approved_spatial_reference"
+  },
+  "expansion_binding": {
+    "manifest_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json",
+    "manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
+    "profile_ref": {
+      "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1
+    },
+    "eligible_generated_template_ref": {
+      "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+      "version": 1
+    },
+    "generation_owner": "@rus/materialization",
+    "selection_policy": "Use the approved expansion profile and normal requested directional exit. Do not force a generated outcome, override zero-length terminal selection, preseed all frontiers, or move the player during topology preparation.",
+    "start_does_not_authorize_generation_outside_profile": true
+  },
+  "player_inputs": {
+    "name": {
+      "display_name": "Микула",
+      "source_name_id": "nov_name_mikula_v1",
+      "source_path": "data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+      "directness": "proposed_personal_name_transfer_not_character_or_story_transfer"
+    },
+    "role_ref": "nov_role_forest_promyslovik",
+    "occupation_ref": "nov_occ_forest_worker",
+    "sex_category": "male",
+    "age_category": "adult",
+    "role_and_occupation_directness": "exact_approved_catalog_pair",
+    "sex_and_age_directness": "editorial_gameplay_initial_condition",
+    "body_profile_transfer": {
+      "source_path": "data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+      "source_sha256": "03b866679392eee2c68605965744a7d1be3e6aeb6ccf2a98132e288cbffa44b3",
+      "source_profile_id": "body_ready_traveller_v1",
+      "health": 100,
+      "energy": 80,
+      "satiety": 70,
+      "directness": "proposed_explicit_gameplay_profile_transfer",
+      "target_transfer_approved": false
+    },
+    "attributes": {
+      "source_profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+      "source_profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+      "target_catalog_revision_id": "actor_base_attributes_spatial_v3_target_001",
+      "runtime_pin": null,
+      "occupation_archetype_id": "forest_hunting",
+      "actor_slot_ref": "player",
+      "player_applicability_approved": false,
+      "policy": "Use the existing actor attribute owner only after explicit player applicability approval; no anonymous constant attribute array or NPC-only authority transfer."
+    },
+    "equipment": {
+      "candidate_path": "data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json",
+      "candidate_sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635",
+      "candidate_profile_id": "m2c_npc_ordinary_personal_clothing_v1",
+      "candidate_variant_id": "m2c_npc_clothing_male_summer_v1",
+      "target_player_transfer_approved": false,
+      "policy": "Review an explicit player transfer of the exact Stage 16 clothing entries. Actual item instances, ownership and equipped relations must be created by existing Stage 16/item owners. Do not copy NPC approval or invent tools, food, money or a container."
+    }
+  },
+  "initial_environment_inputs": {
+    "owner": "deriveApprovedInitialEnvironment",
+    "calendar_record_ref": {
+      "id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "version": 1
+    },
+    "weather_record_ref": {
+      "id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "version": 1
+    },
+    "calendar_date": {
+      "year": 1230,
+      "month": 7,
+      "day": 1
+    },
+    "local_minute_of_day": 480,
+    "game_timestamp": {
+      "whole_minutes": "261120",
+      "subminute_numerator": "0",
+      "subminute_denominator": "1"
+    },
+    "rng_version": "mulberry32_v1",
+    "random_stream": "existing_new_game_materialization_seed",
+    "weather_selection": "existing_approved_weighted_seasonal_candidates",
+    "directness": "editorial_initial_date_and_time_with_approved_calendar_and_weather_mechanics",
+    "weather_is_not_a_historical_observation": true
+  },
+  "initial_perception_rule": {
+    "id": "novgorod_target_pine_ridge_initial_perception_v1",
+    "version": 1,
+    "status": "pending_independent_data_approval",
+    "scope": "exact_canonical_initial_scene_only",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "canonical_g5_ref": {
+      "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+      "version": 1
+    },
+    "g4_ref": {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1
+    },
+    "scene_template_ref": {
+      "id": "stfv3__g5_route_approach_v1",
+      "version": 2,
+      "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+    },
+    "source_binding_kind": "approved_canonical_initial_endpoint",
+    "source_endpoint_slot_key": "arrival",
+    "g6_scene_slot_key": "main",
+    "required_position_slot_key": "arrival",
+    "required_position_instance_ordinal": 0,
+    "placement_cause": "authored_initial_state",
+    "placement_candidate": {
+      "path": "data/world-catalogs/novgorod/m2c-natural-placement/candidate.json",
+      "sha256": "71de9afaeb73825fd32db2e57cf9ad7c5390b427c6b6c7892e81777740429099",
+      "placement_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge__stfv3__g5_route_approach_v1__arrival",
+        "version": 1
+      },
+      "requires_independent_approval": true
+    },
+    "required_committed_facts": [
+      "party world tuple equals world_pin",
+      "site canonical G5 ref equals initial_placement.canonical_g5_ref and parent G4 equals initial_placement.g4_ref",
+      "active scene baseline has the approved exact scene template",
+      "exact approved endpoint slot resolves to one active committed position by template_slot_key and instance ordinal",
+      "player current actor location references that active committed position",
+      "current initial-state body and environment remain available from their authoritative owners"
+    ],
+    "does_not_create_site_connection": true,
+    "does_not_fabricate_committed_endpoint_binding": true,
+    "actor_initial_state": {
+      "visual_capability": "clear",
+      "hearing_capability": "clear",
+      "directness": "explicit_editorial_initial_actor_condition"
+    },
+    "visual_initial_state": {
+      "stable_cover": "partial",
+      "dynamic_occlusion": "clear",
+      "concealment": "clear",
+      "directness": "explicit_editorial_initial_local_source_condition",
+      "limits": "Partial cover models the approved pine-forest exposure. These values apply only to the authored initial observer/source situation, never all later observations or all scenes."
+    },
+    "visual_source_presence": "Only layers placed at the approved arrival source by the independently approved natural placement profile and present in the exact natural baseline are initial visual sources. This initial applicability transfer does not create harvestable stocks or items.",
+    "water_state": {
+      "applicability": "not_applicable",
+      "source_ref": "m2c_natural_g4_dry_pine_ridge@1:water_body",
+      "does_not_assert_flow_ice_depth_or_potability": true
+    },
+    "audible_initial_state": {
+      "source_state": "absent",
+      "limits": "No initial sound occurrence is authored. Do not narrate silence; later wind, footsteps, people or water sounds require a current cause from their existing owners."
+    },
+    "lighting_and_weather": "Apply the approved natural perception condition policy to the actual seeded initial environment; do not hardcode clear weather or daylight.",
+    "after_initial_state": "Re-evaluate through current body, Temporal, visibility and source owners. Missing current state produces a typed gap; do not reuse this initial rule as a later-state fallback."
+  },
+  "new_game_stage_bindings": {
+    "materialization_owner": "@rus/materialization",
+    "validation_owner": "@rus/new-game",
+    "persistence_owner": "Stage 24/25",
+    "world_base_reference_snapshot_required": true,
+    "verified_item_catalog_schema": "rus.verified_item_catalog.v2",
+    "item_catalog_revision_id": "item_container_spatial_v3_target_001",
+    "item_runtime_pin": null,
+    "actor_catalog_revision_id": "actor_base_attributes_spatial_v3_target_001",
+    "actor_runtime_pin": null,
+    "snapshot_schema": "rus.authored_start_initial_party_snapshot.v3",
+    "initial_npc_policy": "Only independently approved applicable NPC composition and exact placement; empty or nonempty output must follow that profile, not a fixed story participant.",
+    "initial_resources_policy": "No generated-G5 finite-stock profile is applied to this canonical entry without a separately reviewed canonical applicability binding.",
+    "presentation_policy": "After commit and rehydrate, read actual actor placement and current Temporal/body/visibility/acoustic state through P22; project approved natural descriptors before narration. No hand-authored visibility, sounds or weather as observed facts.",
+    "required_generation_llm_calls": 0,
+    "narrator_calls_are_separate": true
+  },
+  "source_catalogs": [
+    {
+      "path": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+      "sha256": "8bece789c58e930cace79ccb8aa7e7e4baeffb7e1e9a29d1e01be6cb84c72cea",
+      "directness": "direct_catalog_reference"
+    },
+    {
+      "path": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+      "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+      "directness": "direct_catalog_reference"
+    }
+  ],
+  "approval_request": {
+    "reviewer_role": "independent_data_approver",
+    "model": "gpt-6-sol",
+    "reasoning": "high",
+    "scope": "target_start_identity_placement_editorial_player_transfers_and_initial_perception_rule",
+    "author_may_approve": false,
+    "approval_attestation": null
+  },
+  "runtime_readiness": {
+    "status": "blocked",
+    "typed_gate": "SPATIAL_V3_TARGET_START_BINDING_REQUIRED",
+    "required_before_runtime": [
+      "Independent exact candidate approval; no data approval implies import or activation.",
+      "Explicit player body, attribute, appearance and clothing applicability approval and exact imported owner records.",
+      "Approved initial Temporal/date inputs and initial perception rule; current environment must be calculated by its existing owner.",
+      "Canonical-entry natural/NPC applicability or another independently approved initial-site binding; generated-only profiles cannot be relabelled canonical.",
+      "Existing authored-start owner must accept canonical scene closure without requiring a second location, invented structure, fixed NPC or fictitious prior work.",
+      "Stage 24/25 exact validation and real PostgreSQL save/load/restart/replay evidence.",
+      "Issued target item/actor activation approvals and actual operational readbacks."
+    ]
+  }
+}

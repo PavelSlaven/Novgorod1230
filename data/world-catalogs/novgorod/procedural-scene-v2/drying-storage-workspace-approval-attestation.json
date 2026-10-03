@@ -1,0 +1,54 @@
+{
+  "schema": "rus.procedural_scene_row_approval_attestation.v1",
+  "candidate_ref": "novgorod_drying_storage_workspace_v3@1",
+  "candidate_source_commit_sha": "e5f6abad33d1bf54cf71622434afc3f08dfad0bf",
+  "candidate_path": "data/world-catalogs/novgorod/procedural-scene-v2/authoring-overlay.json",
+  "candidate_digest": "0bfe111d4cd73e480a88c11639b3a45dc785bad2b83040aa49a8a95955cd31d5",
+  "reviewed_overlay_digest": "ce72077addc4392426a346f575fe5c01b5a0b8c37b0518af1814ef3020797b03",
+  "rebound_candidate_digest": "49a3eb3582a9b28493fb573742c44d4e41e7c2f29f93f7bb6eabb4cb59034b2d",
+  "overlay_digest": "52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3",
+  "authoring_approved": true,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "approved_by": "independent_reaudit",
+  "approval_basis": "re_audit_of_e5f6abad_route_free_candidate",
+  "authority": "editorial_reconstruction",
+  "confidence": "medium",
+  "data_gap_codes": [
+    "FUNCTIONAL_TOOL_MAPPING_MISSING",
+    "FUNCTIONAL_STORAGE_MAPPING_MISSING",
+    "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING",
+    "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
+  ],
+  "forbidden_implications": [
+    "water",
+    "heat",
+    "fire",
+    "fuel",
+    "container",
+    "tool",
+    "material",
+    "npc"
+  ],
+  "variants": [
+    {
+      "id": "dormant",
+      "process_owned_requirements": []
+    },
+    {
+      "id": "active",
+      "process_owned_requirements": [
+        "material_ref",
+        "tool_ref"
+      ]
+    }
+  ],
+  "research_report_refs": [
+    "data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#5. Семейство: старая сушильня / ремесленно-складское место",
+    "data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#7. Human approval checklist",
+    "data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#8. Research verdict"
+  ],
+  "approval_scope": "authoring_row_only",
+  "attestation_digest": "965995aae64b72a6329ac97e33b09700733e69c609a247d2d76716d5d68333c3"
+}

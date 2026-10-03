@@ -11,6 +11,7 @@
       "novgorod"
     ],
     "source_ids": [
+      "source:historical_phase_local_effect_rules:book_667380_svod_letopisnyh_izvestiy",
       "source:historical_phase_local_effect_rules:canonical_historical_policy",
       "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
       "source:historical_phase_local_effect_rules:temporal_world_v4_normative",

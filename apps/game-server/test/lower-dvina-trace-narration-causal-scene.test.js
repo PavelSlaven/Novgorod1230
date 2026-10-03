@@ -40,7 +40,8 @@ async function assertCurrentWire(visible, required, omitted = []) {
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible.visible_scene });
     const facts = wire.required_current_beat.changes.map(({ text }) => text);
     for (const fact of required) assert.ok(facts.includes(fact), fact);
     for (const fact of omitted) assert.equal(call.messages[1].content.includes(fact), false, fact);
@@ -275,7 +276,7 @@ test('compound direct speech and failed later action preserve results without el
         operations: [], check: null, interpretation: { player_goal: goal } } }] }
     } });
   assert.deepEqual(visible.visible_changes, [
-    `Вы произнесли: «${speech}»`, `Не удалось достичь цели «${goal}».`]);
+    `Вы произнесли: «${speech}»`, `Цель «${goal}» не достигнута.`]);
   assert.deepEqual(visible.uncertainties, []);
 });
 

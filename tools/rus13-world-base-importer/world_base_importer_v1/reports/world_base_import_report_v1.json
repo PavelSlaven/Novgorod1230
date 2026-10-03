@@ -2,102 +2,195 @@
   "summary": {
     "tables": {
       "source_records": {
-        "rows": 182,
+        "rows": 183,
         "datasets": [
           "source_records_unified",
           "auto_unresolved_source_stubs"
-        ]
+        ],
+        "payload_sha256": "b99c502a884f01fa10af3701af1f84972d2cf8d2717888a5d3f9681444459341"
       },
       "graph_scale_rules": {
         "rows": 6,
         "datasets": [
           "graph_scale_rules"
-        ]
+        ],
+        "payload_sha256": "8a2e53dcaebabfd56ac555d354b3e0bcc0247f014c80eb4720fbc612098c4154"
       },
       "graph_edge_modifiers": {
         "rows": 49,
         "datasets": [
           "graph_edge_modifiers"
-        ]
+        ],
+        "payload_sha256": "718b651cfb665c350d08767750ecb0378a6f982317c908eebf107ca717b72c93"
       },
       "landscape_templates": {
         "rows": 70,
         "datasets": [
           "landscape_templates"
-        ]
+        ],
+        "payload_sha256": "a24c8cc6d7c7986b012435345e80a0e56611f06f2fd044f8e00477021e034c17"
       },
       "water_body_templates": {
         "rows": 41,
         "datasets": [
           "water_body_templates"
-        ]
+        ],
+        "payload_sha256": "c59442b1df644366987b856cb9adec1f2baa88d53128d4f9ec01a9c5ba23c2e3"
       },
       "route_templates": {
         "rows": 21,
         "datasets": [
           "route_templates"
-        ]
+        ],
+        "payload_sha256": "5f051f0324b497906dd4e47ded3e7974484dd859cfc922fe3e3a6aa94fa08849"
       },
       "land_use_templates": {
         "rows": 45,
         "datasets": [
           "land_use_templates"
-        ]
+        ],
+        "payload_sha256": "ba139f872a4a19a2303368f856fba42d543be35a4ed3f261a7f7fc8ae2ffecfb"
       },
       "place_templates": {
         "rows": 64,
         "datasets": [
           "place_templates"
-        ]
+        ],
+        "payload_sha256": "e2c786804d8b998935d07e9716388e56ea913ff2af8338c9a6e30d2f47446e9e"
       },
       "regions": {
         "rows": 7,
         "datasets": [
           "regions_novgorod_from_profile",
           "region_neighbors_novgorod_from_json_stubs"
-        ]
+        ],
+        "payload_sha256": "a2bd54c857ccfa1e81ea8377e01048f8d4c52f7dc1e93674c95854583bd31d7a"
       },
       "region_landscape_templates": {
         "rows": 34,
         "datasets": [
           "region_landscape_templates_novgorod"
-        ]
+        ],
+        "payload_sha256": "3f38b4b566006ee8f1ffcaf6bcb3e1e111ae38375a4b358e4a41db4891edc32d"
       },
       "region_water_body_templates": {
         "rows": 24,
         "datasets": [
           "region_water_body_templates_novgorod"
-        ]
+        ],
+        "payload_sha256": "9f717afe2172cc8da12bbff1791815010914ec00c0a9a591257ffc9ff4036b99"
       },
       "region_land_use_templates": {
         "rows": 31,
         "datasets": [
           "region_land_use_templates_novgorod"
-        ]
+        ],
+        "payload_sha256": "69e19e141b65376c717aadaf0930fe1bca4457460ac7c3e322c0439cf7a815b5"
       },
       "region_place_templates": {
         "rows": 39,
         "datasets": [
           "region_place_templates_novgorod"
-        ]
+        ],
+        "payload_sha256": "23d1dcfe60ab2bd0b8fef45801f9709c173f6971954158e3e9dadc8504beae97"
       },
       "region_neighbors": {
         "rows": 6,
         "datasets": [
           "region_neighbors_novgorod_from_json"
-        ]
+        ],
+        "payload_sha256": "ab61a1acc7bef702c1dc46e45c5a4115b625a60361cf8c5d881243d93b6cf2eb"
+      },
+      "social_classes": {
+        "rows": 10,
+        "datasets": [
+          "social_classes_universal"
+        ],
+        "payload_sha256": "d4386bc0a2ca745a7c207e267f0d1ce1b0d539b37cd583d235bce7cd1a0183d2"
+      },
+      "social_role_archetypes": {
+        "rows": 16,
+        "datasets": [
+          "social_role_archetypes_universal"
+        ],
+        "payload_sha256": "afd80474fd3f90f21589f49f595182b8845544bde4a14482900580220af3ec89"
+      },
+      "legal_status_archetypes": {
+        "rows": 8,
+        "datasets": [
+          "legal_status_archetypes_universal"
+        ],
+        "payload_sha256": "69cbc0bed126fa92b9a085a59344ea7c735ab7ad56b0defc4c7db16e3403fdf7"
+      },
+      "dependency_archetypes": {
+        "rows": 14,
+        "datasets": [
+          "dependency_archetypes_universal"
+        ],
+        "payload_sha256": "ea3de1383e51357844341a3c7876911233d207725ea5e6ef0d51f4d9b277af21"
+      },
+      "mobility_archetypes": {
+        "rows": 8,
+        "datasets": [
+          "mobility_archetypes_universal"
+        ],
+        "payload_sha256": "7f3a76fefcc14c9cab7754cb98760635b66de348a4cc0ef8dccbff028faa7b44"
+      },
+      "social_position_archetypes": {
+        "rows": 30,
+        "datasets": [
+          "social_position_archetypes_universal"
+        ],
+        "payload_sha256": "9a590377e819cd1d4e5d2906f26d15e8b2792072e3c50649ec1e78a383dcef80"
+      },
+      "class_role_rules": {
+        "rows": 29,
+        "datasets": [
+          "class_role_rules_universal"
+        ],
+        "payload_sha256": "74f946ae02f78cbdb147614651e96abc7aa1dcb691e9c85b7e2ea97c8bc21d02"
+      },
+      "occupation_archetypes": {
+        "rows": 15,
+        "datasets": [
+          "occupation_archetypes_universal"
+        ],
+        "payload_sha256": "7267bbd7fc8276f9a46d4d2a8f1f9f9812c09a51c52387790c307d9c13ef8b18"
+      },
+      "skill_catalog": {
+        "rows": 12,
+        "datasets": [
+          "skill_catalog_universal"
+        ],
+        "payload_sha256": "4a7f3ee7c90f229a9e5ddfa92064a820235f7a5bf4acb36b373dca9eefcfef3a"
+      },
+      "occupation_skill_defaults": {
+        "rows": 15,
+        "datasets": [
+          "occupation_skill_defaults_universal"
+        ],
+        "payload_sha256": "041fb9652826d1ad810454b5fce1dc9307f7d108e2936377be6a137068449401"
+      },
+      "role_occupation_rules": {
+        "rows": 26,
+        "datasets": [
+          "role_occupation_rules_universal"
+        ],
+        "payload_sha256": "fe521b33660e5adcd2e9117633cb5a74d186092c86c5c922b171e65f2e17de3d"
       },
       "region_social_roles": {
         "rows": 71,
         "datasets": [
           "region_social_roles_novgorod"
-        ]
+        ],
+        "payload_sha256": "e679756df3bf39c2bff89149f340bfc1b6c9db9ca9cf87560382f93de61f58a2"
       },
       "region_occupations": {
         "rows": 68,
         "datasets": [
           "region_occupations_novgorod"
-        ]
+        ],
+        "payload_sha256": "6b5a543d526249e26fff96f8e7d02ccf55f79f121d7f7716fd79d58e8cf0a501"
       },
       "graph_nodes": {
         "rows": 11359,
@@ -106,19 +199,22 @@
           "graph_nodes_novgorod_g2",
           "graph_nodes_novgorod_g3",
           "graph_nodes_novgorod_g4"
-        ]
+        ],
+        "payload_sha256": "c4622d0db2bd087cd90ba30a2e68c27cbd6c2bd4d27e16313bd48096179bc8c3"
       },
       "graph_edges": {
         "rows": 30248,
         "datasets": [
           "graph_edges_novgorod_g1_g4"
-        ]
+        ],
+        "payload_sha256": "23f9f1c4ff6410aad81b5ba550002f1e66eb22eb1e33e9198da29e111259fe5e"
       },
       "historical_anchors": {
         "rows": 28,
         "datasets": [
           "historical_anchors_novgorod_g1"
-        ]
+        ],
+        "payload_sha256": "4cef77eefa919cf10ca8b0fc69c7d9c2dd8a4974803d2c96c4779188cea8bf20"
       }
     },
     "datasets": [
@@ -126,145 +222,211 @@
         "name": "source_records_unified",
         "table": "source_records",
         "rows": 137,
-        "source_path": "/mnt/data/source_records_unified_v1.csv"
+        "source_path": "source_records_unified_v1.csv"
       },
       {
         "name": "auto_unresolved_source_stubs",
         "table": "source_records",
-        "rows": 45,
+        "rows": 46,
         "source_path": "generated by importer"
       },
       {
         "name": "graph_scale_rules",
         "table": "graph_scale_rules",
         "rows": 6,
-        "source_path": "/mnt/data/graph_scale_rules_scientific_v1.csv"
+        "source_path": "graph_scale_rules_scientific_v1.csv"
       },
       {
         "name": "graph_edge_modifiers",
         "table": "graph_edge_modifiers",
         "rows": 49,
-        "source_path": "/mnt/data/graph_edge_modifiers_scientific_v1.csv"
+        "source_path": "graph_edge_modifiers_scientific_v1.csv"
       },
       {
         "name": "landscape_templates",
         "table": "landscape_templates",
         "rows": 70,
-        "source_path": "/mnt/data/landscape_templates_scientific_v1_fixed.xlsx"
+        "source_path": "landscape_templates_scientific_v1_fixed.xlsx"
       },
       {
         "name": "water_body_templates",
         "table": "water_body_templates",
         "rows": 41,
-        "source_path": "/mnt/data/water_body_templates_scientific_v2_fixed.xlsx"
+        "source_path": "water_body_templates_scientific_v2_fixed.xlsx"
       },
       {
         "name": "route_templates",
         "table": "route_templates",
         "rows": 21,
-        "source_path": "/mnt/data/route_templates_scientific_v2_fixed.xlsx"
+        "source_path": "route_templates_scientific_v2_fixed.xlsx"
       },
       {
         "name": "land_use_templates",
         "table": "land_use_templates",
         "rows": 45,
-        "source_path": "/mnt/data/land_use_templates_scientific_v3_fixed.xlsx"
+        "source_path": "land_use_templates_scientific_v3_fixed.xlsx"
       },
       {
         "name": "place_templates",
         "table": "place_templates",
         "rows": 64,
-        "source_path": "/mnt/data/place_templates_scientific_v2_fixed.xlsx"
+        "source_path": "place_templates_scientific_v2_fixed.xlsx"
       },
       {
         "name": "regions_novgorod_from_profile",
         "table": "regions",
         "rows": 1,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_region_profile_v1.json"
+        "source_path": "nov_region_audit/novgorod_region_profile_v1.json"
       },
       {
         "name": "region_neighbors_novgorod_from_json_stubs",
         "table": "regions",
         "rows": 6,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_neighbor_regions_v1.json"
+        "source_path": "nov_region_audit/novgorod_neighbor_regions_v1.json"
       },
       {
         "name": "region_landscape_templates_novgorod",
         "table": "region_landscape_templates",
         "rows": 34,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_landscape_templates.tsv"
+        "source_path": "nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_landscape_templates.tsv"
       },
       {
         "name": "region_water_body_templates_novgorod",
         "table": "region_water_body_templates",
         "rows": 24,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_water_body_templates.tsv"
+        "source_path": "nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_water_body_templates.tsv"
       },
       {
         "name": "region_land_use_templates_novgorod",
         "table": "region_land_use_templates",
         "rows": 31,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_land_use_templates.tsv"
+        "source_path": "nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_land_use_templates.tsv"
       },
       {
         "name": "region_place_templates_novgorod",
         "table": "region_place_templates",
         "rows": 39,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_place_templates.tsv"
+        "source_path": "nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_place_templates.tsv"
       },
       {
         "name": "region_neighbors_novgorod_from_json",
         "table": "region_neighbors",
         "rows": 6,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_neighbor_regions_v1.json"
+        "source_path": "nov_region_audit/novgorod_neighbor_regions_v1.json"
+      },
+      {
+        "name": "social_classes_universal",
+        "table": "social_classes",
+        "rows": 10,
+        "source_path": "world-base-seeds/social_classes_v1.csv"
+      },
+      {
+        "name": "social_role_archetypes_universal",
+        "table": "social_role_archetypes",
+        "rows": 16,
+        "source_path": "world-base-seeds/social_role_archetypes_v1.csv"
+      },
+      {
+        "name": "legal_status_archetypes_universal",
+        "table": "legal_status_archetypes",
+        "rows": 8,
+        "source_path": "world-base-seeds/legal_status_archetypes_v1.csv"
+      },
+      {
+        "name": "dependency_archetypes_universal",
+        "table": "dependency_archetypes",
+        "rows": 14,
+        "source_path": "world-base-seeds/dependency_archetypes_v1.csv"
+      },
+      {
+        "name": "mobility_archetypes_universal",
+        "table": "mobility_archetypes",
+        "rows": 8,
+        "source_path": "world-base-seeds/mobility_archetypes_v1.csv"
+      },
+      {
+        "name": "social_position_archetypes_universal",
+        "table": "social_position_archetypes",
+        "rows": 30,
+        "source_path": "world-base-seeds/social_position_archetypes_v1.csv"
+      },
+      {
+        "name": "class_role_rules_universal",
+        "table": "class_role_rules",
+        "rows": 29,
+        "source_path": "world-base-seeds/class_role_rules_v1.csv"
+      },
+      {
+        "name": "occupation_archetypes_universal",
+        "table": "occupation_archetypes",
+        "rows": 15,
+        "source_path": "world-base-seeds/occupation_archetypes_v1.csv"
+      },
+      {
+        "name": "skill_catalog_universal",
+        "table": "skill_catalog",
+        "rows": 12,
+        "source_path": "world-base-seeds/skill_catalog_v1.csv"
+      },
+      {
+        "name": "occupation_skill_defaults_universal",
+        "table": "occupation_skill_defaults",
+        "rows": 15,
+        "source_path": "world-base-seeds/occupation_skill_defaults_v1.csv"
+      },
+      {
+        "name": "role_occupation_rules_universal",
+        "table": "role_occupation_rules",
+        "rows": 26,
+        "source_path": "world-base-seeds/role_occupation_rules_v1.csv"
       },
       {
         "name": "region_social_roles_novgorod",
         "table": "region_social_roles",
         "rows": 71,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_social_roles_v1.tsv"
+        "source_path": "novgorod-region/novgorod_social_roles_v1_enriched.tsv"
       },
       {
         "name": "region_occupations_novgorod",
         "table": "region_occupations",
         "rows": 68,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_occupations_v1.tsv"
+        "source_path": "novgorod-region/novgorod_occupations_v1_enriched.tsv"
       },
       {
         "name": "graph_nodes_novgorod_g1",
         "table": "graph_nodes",
         "rows": 70,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g1_cells.tsv"
+        "source_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g1_cells.tsv"
       },
       {
         "name": "graph_nodes_novgorod_g2",
         "table": "graph_nodes",
         "rows": 1046,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g2_zones.tsv"
+        "source_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g2_zones.tsv"
       },
       {
         "name": "graph_nodes_novgorod_g3",
         "table": "graph_nodes",
         "rows": 911,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g3_places.tsv"
+        "source_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g3_places.tsv"
       },
       {
         "name": "graph_nodes_novgorod_g4",
         "table": "graph_nodes",
         "rows": 9332,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g4_locations.tsv"
+        "source_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g4_locations.tsv"
       },
       {
         "name": "graph_edges_novgorod_g1_g4",
         "table": "graph_edges",
         "rows": 30248,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_graph_edges_g1_g4_full_v6.tsv"
+        "source_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_graph_edges_g1_g4_full_v6.tsv"
       },
       {
         "name": "historical_anchors_novgorod_g1",
         "table": "historical_anchors",
         "rows": 28,
-        "source_path": "/mnt/data/nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g1_70_active_cells_v6_historical_anchors_g1.tsv"
+        "source_path": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g1_70_active_cells_v6_historical_anchors_g1.tsv"
       }
     ]
   },

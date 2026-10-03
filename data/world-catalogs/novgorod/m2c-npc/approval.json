@@ -1,0 +1,43 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_npc_mapped_authoring_v1",
+  "decision": "APPROVE_DATA_ONLY_DRAFT",
+  "reviewer": {
+    "agent": "/root/m2c_contract_audit_sol",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independent_from_author": true
+  },
+  "reviewed_manifest_sha256": "215bd9466e77cb5f0e86639cb94145c8a1afe82e49f8490dab91eeb49305ba63",
+  "reviewed_datasets": {
+    "spatial_v3_g4_npc_composition_bindings": "ce012b9ab9fc667aebef1cd17a443fa14652488900a5de1c637955bce8858933",
+    "spatial_v3_npc_runtime_profiles": "eef2ce01c522c6818fee73fbe9b36154fd733e25ad0bdc82aa02b94d78c60e57",
+    "spatial_v3_npc_regional_context_profiles": "e60e5ab1c6123ba859a42761acc0dbaa84160bfda3d78a55adc6a907136e2052",
+    "spatial_v3_authoring_versions": "1a92acc07270afc23907d6448ee14511b66e8a1da1b351b0356e3634d1648f1f",
+    "source_records": "8a07e9761be3c5e7d7e94f3d4b0df9fa9772d7248aa6b824702cdbcb2bd8f3f1",
+    "record_sources": "e58d4f883182dd71363f4008df4bbf89739b6517c634c6cb3592bbba87bf5966"
+  },
+  "reviewed_raw_sources": {
+    "candidate.json": "2a9a15527f0d69b72273c4debc163127bb79e40dca57cdad60e1ea194501abce",
+    "runtime-bindings.json": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635"
+  },
+  "checks": [
+    "P12 validation passed without errors or gaps",
+    "73 exact row-authoring-version-source bindings",
+    "32 G4 bindings match approved expansion templates",
+    "Five regional contexts preserve reviewed source semantics",
+    "Existing dependency-union rows are unchanged",
+    "All nine mapped profiles pass consumer-shape verification for both sexes and five seasons"
+  ],
+  "authorized_next_step": "Mechanical status promotion and isolated import test; submit promoted hashes for independent exact recheck.",
+  "runtime_activation_authorized": false,
+  "postpromotion_verification": {
+    "decision": "PASS",
+    "reviewer_agent": "/root/m2c_contract_audit_sol",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "manifest_sha256": "d1e975b8d92a5f5b44a1f19c0e2b9c9ec3a0698ed936e52dae9250fa14fe6575",
+    "scope": "Exact promoted rows, AV, provenance and unchanged source dependency unions; data-only verification.",
+    "runtime_activation_authorized": false
+  }
+}

@@ -316,6 +316,44 @@ test('valid A1 non-weapons resolve as unarmed while classification failures clos
     }
   });
 
+test('weapon classification takes only qualitative_class from model output',
+  async () => {
+    const item = actionProducedItem('a1-spear', ['конец заострён'], 'long');
+    const danger = (reply) => classifyTraceActionProducedWeapon({
+      items: [item], actor_ref: player, request_id: 'combat-weapon:model-only',
+      classify: async (request) => reply(request) });
+    // model copied the request schema and request_id
+    assert.deepEqual(await danger((request) => ({ schema: request.schema,
+      request_id: request.request_id,
+      qualitative_class: 'improvised_puncture_light' })),
+    { item_ref: 'a1-spear', weapon_danger: 1 });
+    // model returned only the semantic choice
+    assert.deepEqual(await danger(() => ({
+      qualitative_class: 'improvised_two_hand_heavy' })),
+    { item_ref: 'a1-spear', weapon_danger: 2 });
+    // extra fields are ignored, danger comes from the class only
+    assert.deepEqual(await danger(() => ({ request_id: 'other',
+      qualitative_class: 'improvised_impact_light', weapon_danger: 900 })),
+    { item_ref: 'a1-spear', weapon_danger: 1 });
+    for (const reply of [{ qualitative_class: 'royal_spear' },
+      { qualitative_class: null }, { schema: 'x' }, null, 'improvised_impact_light']) {
+      assert.equal(await danger(() => reply), null);
+    }
+  });
+
+test('weapon classifier prompt asks only for qualitative_class', async () => {
+  let system = null;
+  const classify = createLowerDvinaTraceActionProducedWeaponClassifier({
+    roleRunner: { run: async ({ messages }) => {
+      system = messages[0].content;
+      return { output: { qualitative_class: 'not_weapon_capable' } };
+    } } });
+  await classify({ request_id: 'combat-weapon:prompt' });
+  assert.match(system, /qualitative_class/);
+  assert.doesNotMatch(system, /Return only schema, request_id/);
+  assert.match(system, /Do not return schema or request_id/);
+});
+
 test('production LLM role resolves A1 weapon classification at combat boundary',
   async () => {
     const previousFetch = globalThis.fetch;

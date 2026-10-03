@@ -217,6 +217,30 @@ test('exact inspection commits', async () => {
   ]);
 });
 
+test('runtime catalog context is loaded lazily only when a turn invokes the blocker guard',
+  async () => {
+    let catalogLoads = 0;
+    let guardCalls = 0;
+    const f = fixture({
+      loadTurnRuntimeCatalogContext: async () => {
+        catalogLoads += 1;
+        return { schema: 'rus.runtime_catalog_context.v2' };
+      },
+      turnStepNeedsCheckGuard: async ({ catalogContext }) => {
+        guardCalls += 1;
+        assert.equal(catalogContext?.schema, 'rus.runtime_catalog_context.v2');
+      }
+    });
+    await f.runtime.submitTurn({ partyId: f.partyId, input: {
+      request_id: 'phase2-lazy-catalog',
+      idempotency_key: 'phase2-lazy-catalog',
+      raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+    } });
+    assert.equal(guardCalls, 0);
+    assert.equal(catalogLoads, 0,
+      'an ordinary turn must not load the full pinned catalog');
+  });
+
 test('revision 9 pickup preserves inventory owner', async () => {
   const f = fixture({ scenarioBundle: bundle9, rollValue: 0.99 });
   const result = await f.runtime.submitTurn({

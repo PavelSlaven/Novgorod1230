@@ -1,5 +1,7 @@
 import { resolveConversationVisualPerception } from '@rus/npc-runtime';
 import { ref } from './lower-dvina-trace-m2-conversation-shared.js';
+import { sameSceneLocus, sceneLocus } from
+  './lower-dvina-trace-scene-presence.js';
 
 export function evidencePresentationPerception(context) {
   const presentation = context.evidencePresentation;
@@ -8,17 +10,15 @@ export function evidencePresentationPerception(context) {
     ({ instance_id: instanceId }) => instanceId === context.targetRef.entity_id
   );
   const machine = target?.machine_state ?? {};
-  const targetAnchor = target?.anchor_id;
-  const actorAnchor = context.state.position.g5_anchor_id;
+  const together = sameSceneLocus(sceneLocus(context.state, target),
+    sceneLocus(context.state, context.state.position));
   const perceptionId = `perception:${presentation.event_id}:${
     context.targetRef.entity_id}`;
   const resolved = resolveConversationVisualPerception({
     observer_ref: context.targetRef,
     perception_result_ref: ref('perception_result', perceptionId),
-    visual_path: targetAnchor && targetAnchor === actorAnchor
-      ? 'clear' : 'blocked',
-    distance_band: targetAnchor && targetAnchor === actorAnchor
-      ? 'conversation' : 'distant',
+    visual_path: together ? 'clear' : 'blocked',
+    distance_band: together ? 'conversation' : 'distant',
     ambient_visibility:
       context.state.environment?.ambient_visibility ?? 'clear',
     visual_capability: machine.visual_capability ?? 'full',

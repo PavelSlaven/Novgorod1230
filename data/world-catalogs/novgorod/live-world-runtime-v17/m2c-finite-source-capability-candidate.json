@@ -1,0 +1,3798 @@
+{
+  "schema": "rus.live_world_runtime.m2c_finite_source_capability_authoring_candidate.v1",
+  "candidate_id": "novgorod_m2c_finite_source_capabilities_v1",
+  "version": 1,
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_count": 32,
+    "generation_template_count": 25
+  },
+  "provenance": {
+    "directness": "exact target scope join; finite source designs copied from M2c items candidate without converting authored source plans into current resource nodes",
+    "confidence": "high_for_exact_scope_join; low_for_editorial_source_form_and_quantities",
+    "historical_claim": false,
+    "authority": "Issue #133 M2c owner authoring authorization; target profile authoring assignment 2026-09-24.",
+    "limits": "Candidate stock amounts are authored per-generated-G5 gameplay budgets, not measured landscape abundance. No live node, committed party quantity, named source location, successful access, or historical ownership is asserted. Existing committed parcel rules override the general free-gathering default."
+  },
+  "source_set": [
+    {
+      "path": "data/world-catalogs/novgorod/m2c-items/candidate.json",
+      "sha256": "55a6b48eda10e80af2bb4db200941a22037697afb4e50941ecfec4709c18868d",
+      "use": "Exact finite source rows, quantity bounds, extraction mechanics and G4/family applicability."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json",
+      "sha256": "7352d869d11fc1d903ba6a48b62f0a878500b3b54ece7f0c6b5336a11551f926",
+      "use": "Exact generated G4 profile joins and default gathering policy; explicit overrides remain authoritative."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+      "sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93",
+      "use": "Exact G4 identity, classification and natural profile identity only."
+    }
+  ],
+  "selection_rule": "Select by exact world_revision_id + G4 id/version + generation template id/version. No family fallback. Both item family profile and property G4 binding must agree. Canonical initial G5 is outside this generated-G5 source profile.",
+  "finite_source_profiles": [
+    {
+      "profile_id": "m2c_finite_reeds_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "reeds",
+      "operation": "cut_reeds",
+      "source_form": "small accessible reed patch",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "reed_material_portion",
+      "public_name": "стебли тростника",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater"
+      ],
+      "initial_quantity": 20,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 20,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 20,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 5,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "cutting capability required for intact stems; detached material is outside this operation",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": null
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_reeds_v1:mechanics",
+        "max_mass_grams": 250,
+        "allowed_external_hand_costs": [
+          1
+        ],
+        "allowed_carry_forms": [
+          "regular"
+        ],
+        "max_packing_slot_cost": 2,
+        "max_quantity": 5
+      },
+      "output_mechanics": {
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 2,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "reed_backwater"
+          ],
+          "environment": "small accessible reed patch"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 1000
+    },
+    {
+      "profile_id": "m2c_finite_deadwood_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "deadwood",
+      "operation": "gather_deadwood",
+      "source_form": "small patch of fallen detached dead wood",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "deadwood_material_portion",
+      "public_name": "валежник",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_forest__forest_resource_use__forest_tract",
+        "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "m2c_g5_settlement_landscape__forest_resource_use__forest_tract"
+      ],
+      "initial_quantity": 60,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 60,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 60,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 20,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "none for already detached hand-carriable material; breaking or cutting requires separately validated action capability",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": null
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_deadwood_v1:mechanics",
+        "max_mass_grams": 1000,
+        "allowed_external_hand_costs": [
+          1
+        ],
+        "allowed_carry_forms": [
+          "regular"
+        ],
+        "max_packing_slot_cost": 4,
+        "max_quantity": 20
+      },
+      "output_mechanics": {
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 4,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "forest_tract",
+            "pine_ridge"
+          ],
+          "environment": "small patch of fallen detached dead wood"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 3000
+    },
+    {
+      "profile_id": "m2c_finite_driftwood_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "driftwood",
+      "operation": "salvage_driftwood",
+      "source_form": "small deposit of unworked stranded wood",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "driftwood_material_portion",
+      "public_name": "плавник",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar"
+      ],
+      "initial_quantity": 100,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 100,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 100,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 40,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "none for loose hand-carriable wood; freeing embedded material requires separately validated action capability",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": null
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_driftwood_v1:mechanics",
+        "max_mass_grams": 2000,
+        "allowed_external_hand_costs": [
+          2
+        ],
+        "allowed_carry_forms": [
+          "long"
+        ],
+        "max_packing_slot_cost": 8,
+        "max_quantity": 40
+      },
+      "output_mechanics": {
+        "external_hand_cost": 2,
+        "carry_form": "long",
+        "packing_slot_cost": 8,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "driftwood_bar"
+          ],
+          "environment": "small deposit of unworked stranded wood"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 5000
+    },
+    {
+      "profile_id": "m2c_finite_standing_wood_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "standing_wood",
+      "operation": "cut_standing_wood",
+      "source_form": "harvestable stem wood of one small ordinary living tree",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "fresh_wood_material_portion",
+      "public_name": "стволовая древесина небольшого живого дерева",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_forest__forest_resource_use__forest_tract",
+        "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "m2c_g5_settlement_landscape__forest_resource_use__forest_tract"
+      ],
+      "initial_quantity": 200,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 200,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 200,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 100,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "validated wood-cutting capability and accessible cutting tool; successful activity result required; no free instant felling",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": "Budget covers harvestable stem wood only, not roots/foliage or an adult timber stand. Felling/result/facts belong to the existing action owner; source permission does not establish success."
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_standing_wood_v1:mechanics",
+        "max_mass_grams": 5000,
+        "allowed_external_hand_costs": [
+          2
+        ],
+        "allowed_carry_forms": [
+          "long"
+        ],
+        "max_packing_slot_cost": 16,
+        "max_quantity": 100
+      },
+      "output_mechanics": {
+        "external_hand_cost": 2,
+        "carry_form": "long",
+        "packing_slot_cost": 16,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "forest_tract",
+            "pine_ridge"
+          ],
+          "environment": "harvestable stem wood of one small ordinary living tree"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 10000
+    }
+  ],
+  "ordinary_materialization_owner": {
+    "owner": "existing ordinary first-entry capabilityOnly provisioning and finite-source persistence owner",
+    "source_profile_fields": [
+      "technical_limits",
+      "context_refs",
+      "policy_refs",
+      "execution.candidate_context.normalizer_version",
+      "execution.density_policy",
+      "execution.allowed_disclosure_policy_refs",
+      "stage_b_classification_eval"
+    ],
+    "target_profile": null,
+    "blocker": "No target ordinary materialization base profile is present in the exact M2c authoring sources. The Lower-Dvina profile is not adopted; define and independently approve target context/policy refs before capabilityOnly provisioning.",
+    "mechanics_transfer": "Use each finite source row mechanics_policy and output_mechanics as authored. Do not substitute Lower-Dvina O2a source, permissions, context, or stock."
+  },
+  "applicability": [
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__channel_split",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__channel_split",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_current_split",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "channel_split",
+        "family_ref": "m2c_g5_river_channel__waterway_access__channel_split",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/16",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/0",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/0"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_navigation_reach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/17",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/1",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/1"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_channel_split_islet",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head",
+        "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/11",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/2",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/6"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_shoal__low_intensity_natural_use__driftwood_bar",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_driftwood_bar",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "driftwood_bar",
+        "family_ref": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [
+        "m2c_finite_driftwood_v1"
+      ],
+      "finite_source_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "profile_status": "candidate_finite_source_profile_available",
+      "source_directness": {
+        "capability": "editorial",
+        "confidence": "low",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/23",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/3",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/8"
+      ],
+      "gaps": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ]
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_floodplain__low_intensity_natural_use__island_ridge",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_island_ridge",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_ridge",
+        "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/8",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/4",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/9"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_forest__forest_resource_use__pine_ridge",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "pine_ridge",
+        "family_ref": "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ],
+      "finite_source_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "profile_status": "candidate_finite_source_profile_available",
+      "source_directness": {
+        "capability": "editorial",
+        "confidence": "low",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/10",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/5",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/10"
+      ],
+      "gaps": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ]
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_flood_bypass",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/18",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/6",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/11"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_side_channel",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/18",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/7",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/12"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_floodplain__low_intensity_natural_use__floodplain_basin",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_flooded_interior_basin",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "floodplain_basin",
+        "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/7",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/8",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/14"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_ridge__waterway_access__dry_ridge_route",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_floodplain_ridge_route",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "dry_ridge_route",
+        "family_ref": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/12",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/9",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/15"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__forest_resource_use__forest_stream",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_forest_stream_route",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "forest_resource_use",
+        "function": "forest_stream",
+        "family_ref": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/14",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/10",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/16"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_large_island_head",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head",
+        "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/11",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/11",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/7"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_estuary__low_intensity_natural_use__estuary_mixing",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_mixing_reach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "estuary",
+        "land_use": "low_intensity_natural_use",
+        "function": "estuary_mixing",
+        "family_ref": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/5",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/12",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/17"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_exposed_turn",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/17",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/13",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/2"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_outflow_reach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/17",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/14",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/3"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_backwater_wetland__waterway_access__old_channel",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_old_channel_pool",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "waterway_access",
+        "function": "old_channel",
+        "family_ref": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/4",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/15",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/18"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_estuary__waterway_access__outer_exposed",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_outer_exposed_approach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "estuary",
+        "land_use": "waterway_access",
+        "function": "outer_exposed",
+        "family_ref": "m2c_g5_estuary__waterway_access__outer_exposed",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/6",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/16",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/19"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_reed_backwater",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "low_intensity_natural_use",
+        "function": "reed_backwater",
+        "family_ref": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [
+        "m2c_finite_reeds_v1"
+      ],
+      "finite_source_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "profile_status": "candidate_finite_source_profile_available",
+      "source_directness": {
+        "capability": "editorial",
+        "confidence": "low",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/3",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/17",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/20"
+      ],
+      "gaps": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ]
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_inner_reach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/17",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/18",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/4"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_ridge__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_landing_terrace",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "landing_terrace",
+        "family_ref": "m2c_g5_ridge__waterway_access__landing_terrace",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/13",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/19",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/21"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_shoal__low_intensity_natural_use__shoal_field",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_shifting_shoal_field",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "shoal_field",
+        "family_ref": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/24",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/20",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/22"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_south_entry_reach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/17",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/21",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/5"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__tributary_mouth",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_tributary_mouth",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "tributary_mouth",
+        "family_ref": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/19",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/22",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/23"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "recurrent_settlement_use",
+        "function": "vikhtuy_locality",
+        "family_ref": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_SCHAPOV_1976_CHARTER"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_SCHAPOV_1976_CHARTER"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "one_kindling_bundle_only_when_occupied_household_predicate_true",
+      "profile_status": "one_kindling_bundle_only_when_occupied_household_predicate_true",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/21",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/23",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/24"
+      ],
+      "gaps": [
+        "M2C_COMMITTED_HOUSEHOLD_PROPERTY_BINDING_REQUIRED",
+        "M2C_OCCUPIED_HOUSEHOLD_CAUSAL_BASIS_REQUIRED"
+      ]
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_settlement_landscape__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract",
+        "family_ref": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ],
+      "finite_source_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "profile_status": "candidate_finite_source_profile_available",
+      "source_directness": {
+        "capability": "editorial",
+        "confidence": "low",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/20",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/24",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/25"
+      ],
+      "gaps": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ]
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_settlement_landscape__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_river_approach",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "waterway_access",
+        "function": "landing_terrace",
+        "family_ref": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_MASK_REV002",
+              "SRC_G1R2_SCHAPOV_1976_CHARTER"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_MASK_REV002",
+              "SRC_G1R2_SCHAPOV_1976_CHARTER"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/22",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/25",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/26"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__low_intensity_natural_use__backwater",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_hidden_backwater",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "low_intensity_natural_use",
+        "function": "backwater",
+        "family_ref": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/15",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/26",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/27"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_side_channel",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_GSHHS",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/18",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/27",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/13"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_forest__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_wet_conifer_tract",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract",
+        "family_ref": "m2c_g5_forest__forest_resource_use__forest_tract",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_CHALOV_DVINA_2012",
+              "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+              "SRC_G1R2_GSHHS"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ],
+      "finite_source_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "profile_status": "candidate_finite_source_profile_available",
+      "source_directness": {
+        "capability": "editorial",
+        "confidence": "low",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/9",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/28",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/28"
+      ],
+      "gaps": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ]
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_archaeological_area__heritage_access_limited__burial_area",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_burial_area",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "burial_area",
+        "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/1",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/29",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/29"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_archaeological_area__waterway_access__local_landing",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_landing",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "waterway_access",
+        "function": "local_landing",
+        "family_ref": "m2c_g5_archaeological_area__waterway_access__local_landing",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_MASK_REV002"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/2",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/30",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/30"
+      ],
+      "gaps": []
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "version": 1
+      },
+      "item_family_profile_ref": {
+        "id": "m2c_items_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "property_profile_ref": {
+        "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "archaeological_settlement",
+        "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "directness": {
+          "landscape": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+            "applicability": "family classification only"
+          },
+          "land_use": {
+            "type": "inferred",
+            "confidence": "low",
+            "source": [
+              "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_SCHAPOV_1976_CHARTER"
+            ],
+            "applicability": "family classification only"
+          },
+          "function": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+              "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+              "SRC_G1R2_SCHAPOV_1976_CHARTER"
+            ],
+            "applicability": "exact G4 functional role"
+          },
+          "canonical_g5_scene_templates": {
+            "type": "direct",
+            "confidence": "high",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone"
+            ],
+            "applicability": "reusable scene candidates only"
+          },
+          "scene_template_selection": {
+            "type": "inferred",
+            "confidence": "medium",
+            "source": [
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source@1",
+              "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone@1"
+            ],
+            "applicability": "one modal materialization template is used to honor the active single_candidate rule"
+          }
+        }
+      },
+      "finite_source_capability_profile_refs": [],
+      "finite_source_decision": "no_stock_authorized_by_this_candidate",
+      "profile_status": "no_stock_authorized_by_this_candidate",
+      "source_directness": {
+        "capability": "not_applicable",
+        "confidence": "not_applicable",
+        "scope_match": "direct_exact_g4_and_generation_family_refs",
+        "property_default": "m2c_natural_gathering_access_v1",
+        "explicit_authored_property_override": null,
+        "current_node_state": null,
+        "current_quantity": null,
+        "historical_ownership": null
+      },
+      "source_refs": [
+        "data/world-catalogs/novgorod/m2c-items/candidate.json#/family_profiles/0",
+        "data/world-catalogs/novgorod/m2c-natural/candidate.json#/31",
+        "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json#/g4_bindings/31"
+      ],
+      "gaps": [
+        "M2C_ARCHAEOLOGICAL_CURRENT_OCCUPANCY_UNRESOLVED"
+      ]
+    }
+  ],
+  "access_and_state": {
+    "policy_ref": "m2c_natural_gathering_access_v1",
+    "explicit_property_overrides": [],
+    "precedence": [
+      "exact committed source/parcel assignment",
+      "exact approved authored override",
+      "this approved scoped editorial default"
+    ],
+    "runtime_lookup_required": true,
+    "no_optional_absence_fallback": true,
+    "initial_stock_semantics": "Provision an exact candidate quantity only when the ordinary owner creates a committed finite source for the selected generated G5. This candidate itself creates no state.",
+    "depletion_semantics": "Existing finite-source owner persists decrements and depleted state; reload does not restore stock."
+  },
+  "promotion_rule": "Keep pending. Independent Sol high data review must bind exact candidate/source SHAs; activation and target ordinary profile consumption require separate authorization and existing-owner readback."
+}

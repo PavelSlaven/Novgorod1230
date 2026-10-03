@@ -1,0 +1,33 @@
+{
+  "schema": "rus.m2c_nature_successor_data_approval.v1",
+  "decision": "APPROVE_AUTHORING_DATA_ONLY",
+  "reviewed_on": "2026-09-24",
+  "reviewer_role": "independent_substantive_data_reviewer",
+  "candidates": {
+    "natural": {
+      "path": "data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json",
+      "sha256": "3fc9f2e539dcb5d5e1f52e49100044f19d5810316f2798c6993936f45bc379ea"
+    },
+    "presentation": {
+      "path": "data/world-catalogs/novgorod/m2c-natural-presentation/nature-successor-candidate-v2.json",
+      "sha256": "4fa96a816bba4281b49a0740c73493b995343f5f93bdb5c02c883fc203496dd6"
+    }
+  },
+  "scope": "Exact authoring successors for 32 G4 profiles, four seasonal matrices per profile, 142 conditional natural alternatives and their gated presentation phrases.",
+  "provenance": {
+    "approved_richness_candidate_sha256": "a6bb9dc862ae9257c3f588776a10395769d06ef56744f7b9c8c55d18e6bbf4e6",
+    "richness_approval": "data/world-catalogs/novgorod/m2c-natural/nature-richness-data-approval.json",
+    "historical_scope": "Regional medieval archaeological compatibility; no exact G4 occurrence evidence.",
+    "ecological_scope": "Modern or general habitat and seasonal analogy, marked low-confidence inferred or analogical in every alternative.",
+    "spatial_scope": "Exact G4 baseline and template context delimit applicability; they do not prove local taxon presence."
+  },
+  "review_result": "Every applicable baseline layer is represented in all four seasons. Willow is excluded at driftwood_bar and shifting_shoal_field; decomposer fungi require organic substrate and never imply a fruiting body. Fauna remains conditional habitat compatibility, with player phrases limited to separately committed static traces or ambient sounds and exact current-source plus perception or acoustic admission. The text does not identify a present animal or create harvestable stock.",
+  "limits": [
+    "Approval does not establish current local species, animal, trace, sound, visibility, stock, yield or access.",
+    "Seasonal selection needs current world date, phenology, water, weather and physical source state; a season row alone does not admit a phrase.",
+    "The current 13-layer natural and presentation runtime cannot import the conditional fauna layer without existing-owner contract, loader, validator and projection work.",
+    "Mapped import, runtime activation, first-screen readiness and M2c final acceptance remain separate gates."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false
+}

@@ -13,6 +13,8 @@ Browser-клиент, который получает только versioned pub
 - HTTP API client `/api/v1`;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- persisted pending new-game request identity reused after timeout/reload until
+  the same committed party opening succeeds; success clears it;
 - постоянным указанием управляемого персонажа в header из уже публичных
   `panels.character.data.name/role`; другие люди не становятся этим персонажем;
 - отображением готового `presentation_context` в header; календарь, место и
@@ -25,6 +27,7 @@ Browser-клиент, который получает только versioned pub
   input, не показывает `main_prose`/`prose`, narrator output, digest,
   audit/provider/retry diagnostics или новую causal фразу;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- кнопками подписей ходов из `panels.route.data.movement.options`: клик подставляет точную подпись в черновик и поле ввода (`app/movement-draft.js`), ничего не отправляет и контракт сервера не меняет;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
   виден сразу, полная формула и signed modifiers доступны через `<details>`;
 - Character отображает уже безопасные предысторию, память и известные сведения;
@@ -45,8 +48,8 @@ Browser-клиент, который получает только versioned pub
   факт commit без ETA/percent либо private role/provider/trace. Polling optional:
   ошибка или null не прерывает authoritative turn/recovery, после их завершения
   polling останавливается; reload продолжает тот же сохранённый request ID.
-- компактным LLM settings overlay для default, локального Gemma preset и
-  произвольного OpenAI-compatible endpoint: browser вызывает только game-server
+- компактным LLM settings overlay для unconfigured/default Qwen identity и
+  пользовательского OpenAI-compatible vLLM endpoint: browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
   browser storage, logs или telemetry. Server возвращает сохранённые non-secret
   поля после reload; gameplay provider и transport UI не выбирает сам.

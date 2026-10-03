@@ -3,6 +3,8 @@ import test from 'node:test';
 
 import { SPATIAL_V3_PRODUCTION_V12_RELEASE } from
   '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
+import { SPATIAL_V3_DEVELOPMENT_V13_RELEASE } from
+  '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
 import { buildS1AuthoringV5ImportSql, buildS1AuthoringV6ImportSql } from
   '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 
@@ -28,6 +30,15 @@ test('v12 activation registry pins runtime catalog to v6 world manifest', () => 
     baselineTitle: 'Spatial-v3 production v12 runtime catalog baseline',
     activationBasis: 'S1 production runtime acceptance'
   });
+});
+
+test('current disposable schema uses separately versioned development release', () => {
+  assert.equal(SPATIAL_V3_DEVELOPMENT_V13_RELEASE.releaseId,
+    'spatial-v3-development-v13');
+  assert.equal(SPATIAL_V3_DEVELOPMENT_V13_RELEASE.worldSchemaFingerprint,
+    '9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6');
+  assert.notEqual(SPATIAL_V3_DEVELOPMENT_V13_RELEASE.releaseId,
+    SPATIAL_V3_PRODUCTION_V12_RELEASE.releaseId);
 });
 
 test('v5 loader imports exact S1 world revision before v12 activation', async () => {

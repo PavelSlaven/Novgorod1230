@@ -7,7 +7,7 @@ import { initializeRuntimeState } from './lower-dvina-trace-turn-step-item-suppo
 const ACCESS_KINDS = ['open', 'close', 'unlock', 'force', 'open_and_view'];
 
 export function createNpcContainerCapability({ state, npc, partyId, inputDigest,
-  createOrdinaryContainerContentsResolver }) {
+  createOrdinaryContainerContentsResolver, assertNeedsCheckAllowed = null }) {
   const containers = npcSafeContainers(state, npc);
   if (containers.length === 0) return null;
   const committed = snapshotO2bCommittedContainerInput(
@@ -16,7 +16,8 @@ export function createNpcContainerCapability({ state, npc, partyId, inputDigest,
   const handler = createContainerAccessHandler(initializeRuntimeState(committed), {
     ordinaryContainerContentsResolver:
       typeof createOrdinaryContainerContentsResolver === 'function'
-        ? createOrdinaryContainerContentsResolver({ partyId, inputDigest }) : null
+        ? createOrdinaryContainerContentsResolver({ partyId, inputDigest,
+          assertNeedsCheckAllowed }) : null
   });
   const byRef = new Map(containers.map(({ container, accessKinds }) =>
     [containerRef(container), accessKinds]));

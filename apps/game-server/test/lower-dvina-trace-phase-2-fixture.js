@@ -55,10 +55,15 @@ function fixture({
   createTurnStepWorldProcessResolver = null,
   worldBaseReferenceSnapshot = undefined,
   llmDiagnostics = null,
+  authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
+  spatialExpansionRuntime = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
   afterCommittedVisibleRead = null,
   afterNarration = null,
+  loadTurnRuntimeCatalogContext = null,
+  turnStepNeedsCheckGuard = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle,
@@ -198,14 +203,26 @@ function fixture({
         max_repairs: 1,
       });
       if (narration?.status !== 'approved' || narration.pass !== true) {
-        throw new Error('narration_flow_result invalid');
+        const error = new Error('Narration did not produce an approved presentation.');
+        error.code = 'TURN_NARRATION_REJECTED';
+        throw error;
       }
+      const screen = {
+        version: 1,
+        schema: 'lower_dvina_trace_turn_screen',
+        party_id: partyId,
+        turn_id: replay.screen?.turn_id ?? replay.factual?.mode_resolution?.turn_id,
+        turn_number: state.party_state.turn_number,
+        screen_status: 'ready',
+        main_prose: narration.approved_output?.prose ?? 'Готово.'
+      };
       const publicResult = {
         party_id: partyId,
         turn_number: state.party_state.turn_number,
         state_version: state.party_state.state_version,
         completion: structuredClone(state.completion ?? null),
         narration,
+        screen,
       };
       const stored = replays.get(replay.factual.player_input.idempotency_key);
       if (stored) stored.public_result = structuredClone(publicResult);
@@ -528,10 +545,11 @@ function fixture({
     },
     ...(turnStepModel
       ? {
-          turnStepModel: async (input, repairContext) => {
+          // Forward 3rd arg (services historical_events wrap); do not swallow.
+          turnStepModel: async (input, repairContext, modelCallContext) => {
             turnStepCount += 1;
             turnStepInput = structuredClone(input);
-            return turnStepModel(input, repairContext);
+            return turnStepModel(input, repairContext, modelCallContext);
           },
         }
       : {}),
@@ -556,6 +574,8 @@ function fixture({
     createTurnStepOrdinaryDiscoveryResolver,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
+    loadTurnRuntimeCatalogContext,
+    turnStepNeedsCheckGuard,
     actionProductionProfile,
     createTurnStepActionProductionOwner,
     localFireProfile,
@@ -602,6 +622,9 @@ function fixture({
       },
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),
+    ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
+    postActionPerceptionProfile,
+    ...(spatialExpansionRuntime ? { spatialExpansionRuntime } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,

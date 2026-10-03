@@ -1,0 +1,20 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+      "claim_ref": "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+      "claim_digest": "129799e52707ea6788c944421ad1d0440fc95275522eb13aa27bfdba4327dd17",
+      "candidate_ref": "git:37e407817f0c8fd30e5d9b7b93ac8923de7ac979:data/world-catalogs/novgorod/world-knowledge/production-v1/place-garden-birds-dyes-v1.json#claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-skin-emollient-protective-film"
+      ],
+      "review_ref": "verification/place-garden-birds-dyes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Only actual emollient/occlusive skin preparation and dry-skin moisture retention; no automatic ordinary-fat suitability, prescription, cure, historical treatment or application to burns, infected or weeping skin."
+    }
+  ]
+}

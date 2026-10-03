@@ -1,0 +1,28 @@
+{
+  "schema": "rus.regional_environment_authoring_manifest.v1",
+  "revision_id": "novgorod_regional_environment_1230_1250_v1",
+  "region_id": "region_novgorod_land",
+  "period": {
+    "from_year": 1230,
+    "to_year": 1250
+  },
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "approval_request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f",
+  "files": [
+    {
+      "path": "source-authoring.json",
+      "sha256": "6e9b319e838eba4903c81a26686cf6c6b22d8fe3dc3a4d290c8d1abe28b77a75"
+    },
+    {
+      "path": "candidate.json",
+      "sha256": "4bed25cb62d1be00c9ac053b73aa2fc85d9f633d5377071831657279b4abda51"
+    },
+    {
+      "path": "approval-request.json",
+      "sha256": "860286a00453c86c07898fa91a5c1cca6b2bc4af485310da4bdd40094ece4025"
+    }
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "manifest_digest": "05acb07d066ff349a5b5ff965a73e325b730c5e14e5c6b018f4e882fbacbf2ed"
+}

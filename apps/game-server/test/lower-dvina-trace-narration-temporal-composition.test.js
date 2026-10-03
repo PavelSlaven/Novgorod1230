@@ -110,7 +110,7 @@ for (const sample of [
     checklist: 'Вы произнесли: «Стой!» Прямо перед вами — ворота; за ними виден всадник. Справа от вас тянется частокол.',
     repaired: 'Вы произносите: «Стой!»; прямо перед вами, за воротами, виден всадник, а справа от вас тянется частокол.'
   }
-]) test(`${sample.name}: source-order checklist fails literary audit and is repaired as an action-centered scene`, async () => {
+]) test(`${sample.name}: source-order literary finding does not block delivery`, async () => {
   const visible = { ...scene(), visible_scene: 'Невиденная тестовая сцена',
     visible_changes: sample.changes };
   const calls = [];
@@ -140,12 +140,12 @@ for (const sample of [
   const result = await service.run({ version: 1, schema: 'narration_request',
     request_id: sample.name, surface: 'turn', visible_context: visible, context: {} });
   assert.equal(result.status, 'approved');
-  assert.equal(result.approved_output.prose, sample.repaired);
-  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
-    'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+  assert.equal(result.approved_output.prose, sample.checklist);
+  assert.equal(result.final_audit.artistic_verdict, 'fail');
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
 });
 
-test('captured repair preserves completed-before action order and regroups scene facts by supplied anchors', async (t) => {
+test('completed-before literary findings remain non-blocking delivery metadata', async (t) => {
   const samples = [
     {
       name: 'captured shore observation then call',
@@ -239,16 +239,15 @@ test('captured repair preserves completed-before action order and regroups scene
         surface: 'turn', visible_context: {
           ...scene(), visible_scene: sample.scene, visible_changes: sample.changes
         }, context: {} });
-      const shouldApprove = repair.accepted;
-      assert.equal(result.status, shouldApprove ? 'approved' : 'blocked');
-      if (shouldApprove) assert.equal(result.approved_output.prose, repair.prose);
-      assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
-        'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+      assert.equal(result.status, 'approved');
+      assert.equal(result.approved_output.prose, sample.changes.join(' '));
+      assert.equal(result.final_audit.artistic_verdict, 'fail');
+      assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
     }
   });
 });
 
-test('dense required current beat is repaired into focal clusters while a flat sibling remains blocked', async (t) => {
+test('dense literary variants remain deliverable with recorded artistic failure', async (t) => {
   const changes = [
     'Вы осмотрели кладовую.',
     'У дальней стены стоят ящики.',
@@ -306,14 +305,12 @@ test('dense required current beat is repaired into focal clusters while a flat s
       request_id: `dense-current-${repair.accepted}-${repair.name}`, surface: 'turn', visible_context: {
         ...scene(), visible_changes: changes, uncertainties: [uncertainty]
       }, context: {} });
-    assert.equal(result.status, repair.accepted ? 'approved' : 'blocked');
-    if (repair.accepted) {
-      assert.equal(result.approved_output.prose, focused);
-      assert.equal(result.final_audit.coverage.visible_changes.length, changes.length);
-      assert.equal(result.final_audit.coverage.uncertainties.length, 1);
-    } else assert.equal(result.diagnostics.phase, 'final_audit_failed');
-    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
-      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+    assert.equal(result.status, 'approved');
+    assert.equal(result.approved_output.prose, flat);
+    assert.equal(result.final_audit.artistic_verdict, 'fail');
+    assert.equal(result.final_audit.coverage.visible_changes.length, changes.length);
+    assert.equal(result.final_audit.coverage.uncertainties.length, 1);
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   });
 });
 

@@ -1,0 +1,452 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "craft_technology": {
+      "historical_availability": {
+        "subject_domains": [
+          "craft_technology"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Dated historical availability of the identified technology family; never a whitelist of attempts or a ban on its ordinary components."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:technology-newcomen",
+      "title": "Drawing of Thomas Newcomen's Pumping Engine, 1712",
+      "authors": [],
+      "publication": "Science Museum Group collection 1897-120",
+      "source_kind": "official_documentation",
+      "citation": "https://collection.sciencemuseumgroup.org.uk/objects/co50887/drawing-of-thomas-newcomens-pumping-engine-1712",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:technology-faraday",
+      "title": "A small revolution: Michael Faraday and the origins of the electric motor",
+      "authors": [],
+      "publication": "Richard Dunn, Science Museum (2021)",
+      "source_kind": "official_documentation",
+      "citation": "https://blog.sciencemuseum.org.uk/a-small-revolution-michael-faraday-and-the-origins-of-the-electric-motor/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:technology-current",
+      "title": "Electrical Current",
+      "authors": [],
+      "publication": "OpenStax University Physics, volume 2, section 9.1",
+      "source_kind": "official_documentation",
+      "citation": "https://openstax.org/books/university-physics-volume-2/pages/9-1-electrical-current",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:technology-newcomen",
+      "source_ref": "source:technology-newcomen",
+      "anchor": {
+        "section": "Collection description, introduction circa 1712"
+      },
+      "note": "Independently reopened: verification-population-technology-boundaries.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:technology-faraday",
+      "source_ref": "source:technology-faraday",
+      "anchor": {
+        "section": "September 1821 experiment and continuous rotation"
+      },
+      "note": "Independently reopened: verification-population-technology-boundaries.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:technology-current",
+      "source_ref": "source:technology-current",
+      "anchor": {
+        "section": "Current in a Circuit; external source of electric potential"
+      },
+      "note": "Independently reopened: verification-population-technology-boundaries.md.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:atmospheric-reciprocating-engine",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:electromagnetic-motor",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:physics_material_science:conducting-circuit",
+        "wk:physics_material_science:electromagnetic-rotation"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:conducting-circuit",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:electromagnetic-rotation",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:technology-newcomen-boundary",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:atmospheric-reciprocating-engine",
+      "predicate": "historical_availability",
+      "object": {
+        "kind": "literal",
+        "value": "introduced_circa_1712"
+      },
+      "polarity": "exclude",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": {
+        "eligible": true,
+        "basis_kind": "introduced_after_context"
+      },
+      "evidence_refs": [
+        "evidence:technology-newcomen"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:technology-motor-boundary",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:electromagnetic-motor",
+      "predicate": "historical_availability",
+      "object": {
+        "kind": "literal",
+        "value": "introduced_1821"
+      },
+      "polarity": "exclude",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": {
+        "eligible": true,
+        "basis_kind": "introduced_after_context"
+      },
+      "evidence_refs": [
+        "evidence:technology-faraday"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:technology-circuit-prerequisite",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:conducting-circuit",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "closed_conducting_path_and_potential_source"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:technology-current"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:technology-rotation-prerequisite",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:electromagnetic-rotation",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "current_interacting_with_magnetic_field"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:technology-faraday"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:atmospheric-reciprocating-engine",
+      "locale": "ru",
+      "labels": [
+        "Практическая атмосферная поршневая паровая машина"
+      ],
+      "short_definition": "Практическая атмосферная поршневая паровая машина",
+      "search_aliases": [
+        "паровой двигатель",
+        "поршневая паровая машина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:atmospheric-reciprocating-engine",
+      "locale": "en",
+      "labels": [
+        "Practical atmospheric reciprocating steam engine"
+      ],
+      "short_definition": "Practical atmospheric reciprocating steam engine",
+      "search_aliases": [
+        "Newcomen engine",
+        "atmospheric steam engine"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:electromagnetic-motor",
+      "locale": "ru",
+      "labels": [
+        "Электромагнитный двигатель непрерывного вращения"
+      ],
+      "short_definition": "Электромагнитный двигатель непрерывного вращения",
+      "search_aliases": [
+        "электродвигатель",
+        "электрический мотор"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:electromagnetic-motor",
+      "locale": "en",
+      "labels": [
+        "Continuous electromagnetic rotation motor"
+      ],
+      "short_definition": "Continuous electromagnetic rotation motor",
+      "search_aliases": [
+        "electric motor",
+        "electromagnetic motor"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:conducting-circuit",
+      "locale": "ru",
+      "labels": [
+        "Замкнутая электрическая цепь"
+      ],
+      "short_definition": "Замкнутая электрическая цепь",
+      "search_aliases": [
+        "ток",
+        "проводящая цепь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:conducting-circuit",
+      "locale": "en",
+      "labels": [
+        "Closed conducting circuit"
+      ],
+      "short_definition": "Closed conducting circuit",
+      "search_aliases": [
+        "current",
+        "conducting path"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:electromagnetic-rotation",
+      "locale": "ru",
+      "labels": [
+        "Электромагнитное вращение"
+      ],
+      "short_definition": "Электромагнитное вращение",
+      "search_aliases": [
+        "ток и магнитное поле"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:electromagnetic-rotation",
+      "locale": "en",
+      "labels": [
+        "Electromagnetic rotation"
+      ],
+      "short_definition": "Electromagnetic rotation",
+      "search_aliases": [
+        "current and magnetic field"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-newcomen-boundary",
+      "locale": "ru",
+      "runtime_text": "Практическая атмосферная поршневая паровая машина типа Ньюкомена появилась около 1712 года и недоступна в исторической рамке 1230 года. Это ограничение данного класса машины, не пара, давления или любой попытки сделать насос.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-newcomen-boundary",
+      "locale": "en",
+      "runtime_text": "The practical Newcomen-type atmospheric reciprocating engine was introduced around 1712 and is unavailable in the historical setting of 1230. This limits that machine class, not steam, pressure or an attempted pump.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-motor-boundary",
+      "locale": "ru",
+      "runtime_text": "Непрерывное электромагнитное вращение как принцип электродвигателя было продемонстрировано в 1821 году; работающий электромотор не является доступной технологией 1230 года. Магнит или неработающая сборка этим не запрещены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-motor-boundary",
+      "locale": "en",
+      "runtime_text": "Continuous electromagnetic rotation demonstrating the motor principle dates to 1821; a working electric motor is not an available technology in 1230. This does not exclude a magnet or nonworking assembly.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-circuit-prerequisite",
+      "locale": "ru",
+      "runtime_text": "Для поддерживаемого тока через устройство нужна замкнутая проводящая цепь и источник разности потенциалов. Одна проволока не создаёт питание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-circuit-prerequisite",
+      "locale": "en",
+      "runtime_text": "Maintained current through a device needs a closed conducting path and a potential source. Wire alone does not supply power.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-rotation-prerequisite",
+      "locale": "ru",
+      "runtime_text": "Электромагнитное вращение использует взаимодействие электрического тока с магнитным полем; один неподвижный магнит не заменяет работающую цепь.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:technology-rotation-prerequisite",
+      "locale": "en",
+      "runtime_text": "Electromagnetic rotation uses interaction between current and magnetic field; a stationary magnet alone does not replace an operating circuit.",
+      "search_aliases": []
+    }
+  ]
+}

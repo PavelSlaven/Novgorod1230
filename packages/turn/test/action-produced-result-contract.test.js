@@ -150,6 +150,19 @@ test('partial independent output has one surviving source with its own form',
           physical_form: 'regular' } } });
     assert.equal(validateActionProducedResultPlan(partial,
       { request: partialRequest }).ok, true);
+    assert.equal(validateActionProducedResultPlan({ ...partial,
+      result_class: 'ordinary_physical_result' },
+    { request: partialRequest }).ok, false);
+    assert.equal(validateActionProducedResultPlan({ ...partial,
+      identity_mode: 'preserve_source' },
+    { request: partialRequest }).ok, false);
+    assert.equal(validateActionProducedResultPlan({ ...partial,
+      material_extent: 'whole' },
+    { request: partialRequest }).ok, false);
+    assert.equal(validateActionProducedResultPlan({ ...partial,
+      result_descriptor: { ...partial.result_descriptor,
+        source_fact_delta: null } },
+    { request: partialRequest }).ok, false);
 
     const multiRequest = request({ source_refs: ['item:board', 'item:rope'],
       tool_refs: ['item:knife'], material_extent: 'minor' });

@@ -2,6 +2,7 @@ import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createServer } from 'node:net';
 import { dirname, resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 import pg from 'pg';
@@ -11,18 +12,21 @@ import { loadActiveRuntimeCatalogPin } from
 import {
   SPATIAL_V3_PRODUCTION_RELEASE
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
-import { createLlmSettingsFileStore } from
-  '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import {
   ensureLocalPostgres,
+  localV17ApprovalsPath,
   localPlayError
 } from './local-postgres.js';
 import { provisionManagedRuntime } from './managed-runtime.js';
-import { installActivatedRuntimeCatalog } from './production-setup.js';
+import { installActivatedRuntimeCatalog,
+  installM3DevelopmentV14NewPartyRuntime } from './production-setup.js';
+import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from './runtime-capabilities.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const RELEASE_ID = 'spatial-v3-production-v16';
-const SCENARIO_ID = 'lower_dvina_trace_v1';
+const RELEASES = Object.freeze({
+  16: { releaseId: 'spatial-v3-production-v16', scenarioId: 'lower_dvina_trace_v1' },
+  17: { releaseId: 'spatial-v3-production-v17', scenarioId: 'novgorod_pine_ridge_approach_v1' }
+});
 const execFileAsync = promisify(execFile);
 
 export function validateLocalPlay({ env = process.env, nodeVersion = process.versions.node } = {}) {
@@ -38,7 +42,8 @@ export function validateLocalPlay({ env = process.env, nodeVersion = process.ver
 }
 
 export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
-  pinManifestDigest, port, managedRuntime, git }) {
+  pinManifestDigest, port, managedRuntime, git, releaseVersion = 16,
+  approvalsPath }) {
   const childEnv = { ...env };
   delete childEnv.RUS_RUNTIME_BINDINGS_MODULE;
   delete childEnv.RUS_RUN_PARTY_MIGRATIONS;
@@ -51,8 +56,11 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
     RUS_RUNTIME_ROUTE: 'modular',
     RUS_CUTOVER_STAGE: '13',
     RUS_COMPOSITION_MODULE: 'builtin:production-spatial-v3',
-    RUS_SPATIAL_V3_BINDINGS_MODULE: 'builtin:spatial-v3-production-v16',
+    RUS_SPATIAL_V3_BINDINGS_MODULE: `builtin:${RELEASES[releaseVersion].releaseId}`,
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST: pinManifestDigest,
+    ...(releaseVersion === 17 ? {
+      RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH: approvalsPath
+    } : {}),
     RUS_WORLD_DATABASE_URL: worldUrl,
     RUS_PARTY_DATABASE_URL: partyUrl,
     RUS_DATABASE_SSL: 'false',
@@ -67,12 +75,12 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
       ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: managedRuntime.giga.modelPath } : {}),
     ...(managedRuntime.giga.hfHome ? { HF_HOME: managedRuntime.giga.hfHome } : {}),
     HF_HUB_OFFLINE: '1',
-    TRANSFORMERS_OFFLINE: '1',
-    RUS_LOCAL_LLM_RUNTIME_STATUS: JSON.stringify(runtimeStatus(managedRuntime))
+    TRANSFORMERS_OFFLINE: '1'
   };
 }
 
-export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = delay, child, attempts = 480 } = {}) {
+export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = delay, child,
+  attempts = 480, releaseVersion = 16 } = {}) {
   let lastError = null;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (child?.exitCode != null) {
@@ -80,11 +88,11 @@ export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = dela
     }
     try {
       const health = await readSuccess(fetchImpl, `${baseUrl}/api/v1/health`);
-      assertHealth(health);
+      assertHealth(health, releaseVersion);
       const scenarios = await readSuccess(fetchImpl, `${baseUrl}/api/v1/scenarios`);
       if (!Array.isArray(scenarios.scenarios)
-        || !scenarios.scenarios.some((scenario) => scenario?.scenario_id === SCENARIO_ID && scenario.available === true)) {
-        throw localPlayError('LOCAL_PLAY_SCENARIO_UNAVAILABLE', `${SCENARIO_ID} is not available.`);
+        || !scenarios.scenarios.some((scenario) => scenario?.scenario_id === RELEASES[releaseVersion].scenarioId && scenario.available === true)) {
+        throw localPlayError('LOCAL_PLAY_SCENARIO_UNAVAILABLE', `${RELEASES[releaseVersion].scenarioId} is not available.`);
       }
       return Object.freeze({ health, scenarios });
     } catch (error) {
@@ -102,11 +110,10 @@ export async function startLocalPlay({
   ensurePostgres = ensureLocalPostgres,
   localPostgresSettings,
   setupProduction = installActivatedRuntimeCatalog,
+  setupM3Development = installM3DevelopmentV14NewPartyRuntime,
   loadPin = loadActiveRuntimeCatalogPin,
   createPool = (options) => new pg.Pool(options),
   provisionRuntime = provisionManagedRuntime,
-  startManagedLlm = true,
-  loadLlmSettings = loadSavedLlmSettings,
   spawnServer = defaultSpawnServer,
   fetchImpl = fetch,
   sleep = delay,
@@ -130,20 +137,31 @@ export async function startLocalPlay({
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
-  const savedLlmSettings = await loadLlmSettings(env);
   const managedRuntime = await provisionRuntime({ repositoryRoot: ROOT,
-    env, fetchImpl, log, startLlm: startManagedLlm
-      && savedLlmSettings?.settings?.mode !== 'custom' });
+    env, fetchImpl, log });
   let postgres;
   try { postgres = await ensurePostgres({ settings: localPostgresSettings }); }
   catch (error) { await managedRuntime.close(); throw error; }
   const worldPool = createPool({ connectionString: postgres.worldUrl, max: 1 });
   const partyPool = createPool({ connectionString: postgres.partyUrl, max: 1 });
   let pin;
+  const releaseVersion = postgres.releaseVersion ?? 16;
+  let runtimeCapabilities = LOCAL_PLAY_RUNTIME_CAPABILITIES_V1;
+  const m3DevelopmentRequested = env.RUS_RUNTIME_SETUP ===
+    'spatial-v3-m3-development-v14';
   try {
     try {
-      if (postgres.state === 'fresh') await setupProduction({ worldPool,
-        partyPool, worldUrl: postgres.worldUrl, repositoryRoot: ROOT });
+      if (releaseVersion === 17 && (postgres.state !== 'existing' || m3DevelopmentRequested)) {
+        throw localPlayError('LOCAL_PLAY_V17_NOT_READY',
+          'Local v17 requires completed bootstrap and cannot run v16 setup.');
+      }
+      if (releaseVersion === 16 && (postgres.state === 'fresh' || m3DevelopmentRequested)) {
+        const setup = await (m3DevelopmentRequested
+          ? setupM3Development : setupProduction)({ worldPool, partyPool,
+          worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
+          repositoryRoot: ROOT });
+        runtimeCapabilities = setup.runtimeCapabilities;
+      }
       pin = await loadPin(worldPool,
         SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_scope);
     } finally { await Promise.all([worldPool.end(), partyPool.end()]); }
@@ -151,33 +169,59 @@ export async function startLocalPlay({
     await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw error;
   }
+  if (runtimeCapabilities?.schema !== LOCAL_PLAY_RUNTIME_CAPABILITIES_V1.schema) {
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+    throw localPlayError('LOCAL_PLAY_CAPABILITY_CONTRACT_INVALID',
+      'Production setup returned an invalid runtime capability contract.');
+  }
   const pinManifestDigest = pin?.compatible_world_pin_manifest_digest;
   if (!/^[a-f0-9]{64}$/u.test(String(pinManifestDigest ?? ''))) {
     await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw localPlayError('LOCAL_PLAY_RUNTIME_PIN_INVALID', 'Active runtime catalog has no compatible pin manifest digest.');
   }
+  if (pin.catalog_revision_id === 'procedural_scene_final_candidate_v1_001'
+      && pin.activation_scope !== 'new_development_parties_only') {
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+    throw localPlayError('LOCAL_PLAY_RUNTIME_PIN_INVALID',
+      'Final procedural catalog is not development-scoped.');
+  }
+  const approvalsPath = releaseVersion === 17
+    ? (env.RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH || localV17ApprovalsPath(env))
+    : undefined;
+  if (releaseVersion === 17) {
+    try {
+      const approvals = JSON.parse(await readFile(approvalsPath, 'utf8'));
+      if (!approvals.itemApproval?.request || !approvals.itemApproval?.attestation
+          || !approvals.actorApproval?.request || !approvals.actorApproval?.attestation)
+        throw new Error('Incomplete activation approvals');
+      if (approvals.itemApproval.request.compatible_world_pin_manifest_digest !== pinManifestDigest)
+        throw new Error('Activation approvals do not match active pin');
+    } catch (error) {
+      await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+      throw localPlayError('LOCAL_PLAY_V17_APPROVALS_INVALID',
+        `Local v17 activation approvals are missing or invalid: ${error.message}`);
+    }
+  }
   const child = spawnServer({ env: buildServerEnv({ env,
     worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
-    pinManifestDigest, port, managedRuntime, git }) });
+    pinManifestDigest, port, managedRuntime, git, releaseVersion, approvalsPath }) });
   const baseUrl = `http://127.0.0.1:${port}`;
   try {
-    await assertReadiness({ baseUrl, fetchImpl, sleep, child });
-    const settings = await readSuccess(fetchImpl,
-      `${baseUrl}/api/v1/llm-settings`);
-    if (managedRuntime.llm && settings.mode === 'local') {
-      await applyManagedLocalProvider(fetchImpl, baseUrl);
-    }
+    await assertReadiness({ baseUrl, fetchImpl, sleep, child, releaseVersion });
+    await readSuccess(fetchImpl, `${baseUrl}/api/v1/llm-settings`);
   } catch (error) {
     child.kill?.('SIGTERM');
     await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw error;
   }
-  if (!managedRuntime.hardware.supported) {
-    log(`Локальная Gemma недоступна: ${managedRuntime.hardware.reasons.join(' ')} Открой настройки LLM и выбери внешний OpenAI-compatible provider.`);
-  }
   log(`Local game ready: ${baseUrl}`);
+  log(`Runtime capabilities: m2_runtime=${runtimeCapabilities.capabilities
+    .m2_runtime.status}; m3_procedural_equipment=${runtimeCapabilities
+    .capabilities.m3_procedural_equipment.status} (${runtimeCapabilities
+    .capabilities.m3_procedural_equipment.code})`);
   let closed = false;
   return Object.freeze({ child, url: baseUrl, postgres, managedRuntime,
+    runtimeCapabilities,
     async close(signal = 'SIGTERM') {
       if (closed) return; closed = true;
       if (child.exitCode == null) child.kill(signal);
@@ -222,9 +266,9 @@ async function openPullRequest({ exec, branch, head }) {
   return record.number;
 }
 
-function assertHealth(health) {
+function assertHealth(health, releaseVersion) {
   const expected = {
-    status: 'ok', release_id: RELEASE_ID, activation: 'sole_owner',
+    status: 'ok', release_id: RELEASES[releaseVersion].releaseId, activation: 'sole_owner',
     authoritative_reads: 'spatial_v3_only', authoritative_writes: 'spatial_v3_only',
     runtime_fallback: 'forbidden', production_activation: true,
     runtime_selectable_in_canonical_production: true
@@ -243,31 +287,8 @@ async function readSuccess(fetchImpl, url) {
   return payload.data;
 }
 
-async function applyManagedLocalProvider(fetchImpl, baseUrl) {
-  const response = await fetchImpl(`${baseUrl}/api/v1/llm-settings`, {
-    method: 'PUT', headers: { 'content-type': 'application/json',
-      accept: 'application/json' }, body: JSON.stringify({ mode: 'local' })
-  });
-  const payload = await response.json().catch(() => null);
-  if (!response.ok || payload?.ok !== true) throw localPlayError(
-    'LOCAL_PLAY_PROVIDER_UNAVAILABLE',
-    `Локальная Gemma не прошла readiness: ${payload?.error?.code ?? `HTTP ${response.status}`}.`);
-}
-
-function runtimeStatus(runtime) {
-  return runtime.llm ? { ready: true, ...runtime.llm.identity }
-    : { ready: false, reasons: runtime.hardware.reasons,
-        hardware: runtime.hardware.facts };
-}
-
 function defaultSpawnServer({ env }) {
   return spawn(process.execPath, ['apps/game-server/src/server.js'], { cwd: ROOT, env, stdio: 'inherit' });
-}
-
-function loadSavedLlmSettings(env) {
-  return createLlmSettingsFileStore({
-    ...(env.RUS_LLM_SETTINGS_PATH ? { filePath: env.RUS_LLM_SETTINGS_PATH } : {})
-  }).load();
 }
 
 function delay(milliseconds) { return new Promise((resolve) => setTimeout(resolve, milliseconds)); }

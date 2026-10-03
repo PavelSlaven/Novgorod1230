@@ -1,0 +1,20 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-floating-weather-envelope-v1-wind-pressure-rain-opening",
+      "claim_ref": "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "claim_digest": "ec19ab39b6da03ed02490d268fd7c256cf2c634c81952dac099d7a0e31cdecfd",
+      "candidate_ref": "git:6d021ea5403f3850528d09a59a0d112d10c9a630:data/world-catalogs/novgorod/world-knowledge/production-v1/static-floating-weather-envelope-v1.json#claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-wind-pressure-can-force-rain-across-openings"
+      ],
+      "review_ref": "verification/static-floating-weather-envelope-v1.md#claimresearchwindpressuredifferencecanforcerainacrossbuildingopening",
+      "verdict": "APPROVE",
+      "limits": "Supports wind-driven rain forced across a relevant building-enclosure opening or imperfection by a pressure difference only; no building, opening, rain, wind, leak, water amount, damage, indoor wetness, repair, historical practice, or scene outcome follows."
+    }
+  ]
+}

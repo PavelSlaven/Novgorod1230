@@ -1,0 +1,28 @@
+{
+  "schema": "rus.live_world_runtime.catalog_manifest.v1",
+  "catalog_id": "novgorod_live_world_runtime_v1",
+  "revision": 6,
+  "status": "integration_candidate",
+  "activation": "not_active",
+  "authored_starts": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v1/authored-starts.json",
+    "status": "approved"
+  },
+  "profile_sets": [
+    {
+      "profile_set_id": "novgorod_live_world_runtime_m1_v1",
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v1/m1-profiles.json",
+      "status": "approved"
+    },
+    {
+      "profile_set_id": "novgorod_live_world_turn_step_owner_profiles_v1",
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json",
+      "status": "approved"
+    },
+    {
+      "profile_set_id": "novgorod_live_world_ordinary_profiles_v1",
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v1/ordinary-profiles.json",
+      "status": "approved"
+    }
+  ]
+}

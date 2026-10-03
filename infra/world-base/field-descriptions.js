@@ -123,11 +123,29 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Spatial architecture v3: scene dependency closure (target only)',
-    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules']
+    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules', 'spatial_v3_g6_acoustic_baselines']
+  },
+  {
+    title: 'Spatial architecture v3: NPC composition authoring (target only)',
+    tables: ['spatial_v3_g4_npc_composition_bindings', 'spatial_v3_npc_runtime_profiles', 'spatial_v3_npc_regional_context_profiles']
+  },
+  {
+    title: 'M2c place families and presence authoring (CR #158)',
+    tables: [
+      'place_families',
+      'spatial_node_place_family_bindings',
+      'presence_rules',
+      'npc_relationship_materialization_rules',
+      'speech_address_forms',
+      'household_composition_profiles',
+      'slot_instance_variants',
+      'water_body_presence_facets',
+      'fauna_phase_activity_rules'
+    ]
   },
   {
     title: 'Materialization v2: NPC-профили',
-    tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
+    tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets', 'npc_regional_context_name_bindings', 'npc_psychology_scale_entries', 'occupation_character_items']
   },
   {
     title: 'Materialization v2: G4 и G5',
@@ -139,7 +157,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: решения и импорт',
-    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables']
+    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables', 'procedural_scene_compiled_records']
   },
   {
     title: 'Temporal World v4: утверждённые авторские данные',
@@ -219,6 +237,19 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_regional_scene_template_bases: 'Утверждённые региональные основы scene templates с topological-only geometry claim.',
   spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
   spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
+  spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
+  spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о составе NPC для G4 и ровно одного G5 generation template либо canonical G5; запись не создаёт NPC.',
+  place_families: 'Справочник типов мест (pf_*); единственный слой scope для presence/routines/water/slots (D26). Без per-row canonical_digest.',
+  spatial_node_place_family_bindings: 'Привязка узла G4/G5 к place_family: primary (ровно одна на узел) и опциональные secondary; secondary только субъекты, которых нет у primary.',
+  presence_rules: 'Единый носитель правил наличия вещей, природы и людей (§3A.1 / §8.1); scope_kind=place_family|container_template.',
+  npc_relationship_materialization_rules: 'Правила материализации отношений NPC (D-3); без per-row digest.',
+  speech_address_forms: 'Формы обращения (D-3); без per-row digest.',
+  household_composition_profiles: 'Профили состава двора (D-3); без per-row digest.',
+  slot_instance_variants: 'Варианты слотов материализации (D-4); без per-row digest.',
+  water_body_presence_facets: 'Фасеты воды по place_family/сезону (D-4); no_source допускается.',
+  fauna_phase_activity_rules: 'Фильтр видимости/голоса фауны по фазе суток (D-5); не отдельная fauna_presence таблица.',
+  spatial_v3_npc_runtime_profiles: 'Переиспользуемые утверждённые target NPC/runtime bindings с точными role, occupation, body, activity, routine, clothing и item refs.',
+  spatial_v3_npc_regional_context_profiles: 'Утверждённый региональный контекст NPC с exact applicability по G4 и одному из G5 target refs.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
   spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
   spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',
@@ -238,6 +269,8 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_movement_method_cost_options: 'Нормализованные baseline/rational-factor cost варианты.',
   spatial_v3_dynamic_recheck_policies: 'Политика recheck segment movement; slicing не меняет итоговую длительность.',
   spatial_v3_dynamic_recheck_policy_points: 'Явные возрастающие interior progress points recheck policy.',
+  spatial_v3_line_kind_profiles: 'Профиль вида линии (Spatial 4.7.0): метод по умолчанию, среда, ориентация, политика срезов и вид маршрута; один approved профиль на вид линии.',
+  spatial_v3_line_kind_alternative_methods: 'Способы пройти линию вместо базового метода профиля: класс риска и ссылка на правило опасности.',
   spatial_v3_activity_contracts: 'Time-only activity authoring без physical segment progress.',
   spatial_v3_action_contracts: 'Action-only contracts; blocked/failed action preserves exact departure endpoint.',
   spatial_v3_movement_mode_transition_contracts: 'Board/disembark/load/control transitions без transfer active execution.',
@@ -255,7 +288,10 @@ export const TABLE_PURPOSE_FALLBACK = {
   region_npc_archetypes: 'Региональные NPC templates без конкретной identity и биографии.',
   region_demographic_profiles: 'Региональные демографические варианты и ограничения.',
   region_name_pools: 'Региональные пулы имён для периода и ревизии.',
-  region_name_pool_entries: 'Конкретные утверждённые формы имён и веса.',
+  region_name_pool_entries: 'Формы личных имён и веса; одна строка на (пул, форма, пол, народ); runtime выбирает только selection_class = ordinary и status = approved.',
+  npc_regional_context_name_bindings: 'Пул имён и народ (pp_*), из которого NPC регионального контекста получает личное имя.',
+  npc_psychology_scale_entries: 'Закрытый словарь черт темперамента и ценностей NPC с весом выбора.',
+  occupation_character_items: 'Кандидаты целей и страхов занятия; NPC выбирает из них по seed.',
   region_appearance_profiles: 'Региональные варианты внешности из разрешённых категорий.',
   region_clothing_profiles: 'Региональные garment slots и ограничения одежды.',
   region_equipment_profiles: 'Профили снаряжения для ролей и занятий.',
@@ -295,6 +331,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   g4_container_materialization_rules: 'G4-specific правила контейнеров, содержимого и доступа.',
   catalog_imports: 'Проверяемые импорты versioned authoring manifest.',
   catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.',
+  procedural_scene_compiled_records: 'Неизменяемый generated cache нормализованных procedural-scene profiles, mappings и approval metadata; authoring sources и runtime instances здесь не хранятся.',
   temporal_source_history: 'Точные источники утверждённых Temporal World v4 записей и контрольные суммы их байтов.',
   temporal_provenance: 'Утверждённая трассировка происхождения каждой семьи Temporal World v4.',
   temporal_authoring_records: 'Нормализованные утверждённые авторские записи Temporal World v4; runtime читает их без права изменения.',
@@ -314,6 +351,12 @@ export const common = {
   audit_notes: 'Заметки редактора: споры, TODO, ссылки на проверку.',
   created_at: 'Время создания записи (UTC).',
   updated_at: 'Время последнего изменения (обновляется триггером).',
+  record_id: 'Стабильный идентификатор скомпилированной записи.',
+  record_kind: 'Тип скомпилированной записи: profile, mapping или approval_metadata.',
+  family_candidate_ref: 'Версионированная ссылка на утверждённую procedural-scene family.',
+  payload: 'Нормализованный compiler output без исходного authoring descriptor.',
+  payload_digest: 'SHA-256 канонического payload.',
+  source_pack_digest: 'SHA-256 полного набора утверждённых входов compiler.',
   region_id: 'FK → regions(id): регион, к которому относится запись.',
   place_id: 'FK → places(id): конкретное место, если применимо.',
   location_id: 'FK → place_locations(id): локация внутри места.',
@@ -356,6 +399,43 @@ export const common = {
 
 /** Поля по таблицам — только там, где нужно уточнение сверх common. */
 export const fields = {
+  npc_regional_context_name_bindings: {
+    regional_context_id: 'id регионального контекста NPC v3 (spatial_v3_npc_regional_context_profiles.id), без версии; полиморфная ссылка без FK.',
+    world_revision_id: 'FK → world_revisions(id): ревизия, в которой действует привязка.',
+    name_pool_id: 'FK → region_name_pools(id): пул личных имён контекста.',
+    people_ref: 'Народ (pp_*), чьи формы имён берутся из пула для этого контекста.',
+    status: 'Статус допуска привязки: draft, approved или deprecated (как в CHECK).',
+    provenance_ref: 'Источник привязки: файл и id контекста в npc-identity-v17/v1/context-bindings.json.'
+  },
+  npc_psychology_scale_entries: {
+    world_revision_id: 'FK → world_revisions(id): ревизия шкалы.',
+    scale_kind: 'trait — темперамент, value — ценность.',
+    entry_id: 'Код записи шкалы (calm, honour, …); попадает в semantic_state.character.',
+    label_ru: 'Русский ярлык записи для проекции в разговор.',
+    weight: 'Вес выбора (D29: ровный, игровое допущение).',
+    status: 'Статус допуска записи: draft, approved или deprecated (как в CHECK).',
+    provenance_ref: 'Источник записи: psychology_scales.json#<id>.'
+  },
+  occupation_character_items: {
+    world_revision_id: 'FK → world_revisions(id): ревизия данных.',
+    occupation_id: 'id занятия (nov_occ_*); мягкая ссылка без FK, часть занятий вне реестра region_occupations.',
+    item_kind: 'goal — цель, fear — страх.',
+    item_id: 'Номер кандидата внутри занятия и вида (goal_01, fear_01).',
+    text_ru: 'Текст кандидата, который код кладёт в semantic_state.character.',
+    basis: 'sourced, logical_necessity или analogy.',
+    confidence: 'Буква уверенности источника (C = низкая).',
+    status: 'Статус допуска записи: draft, approved или deprecated (как в CHECK).',
+    provenance_ref: 'source_refs строки occupation_goals/fears.csv.'
+  },
+  region_name_pool_entries: {
+    status: 'Статус допуска записи: draft, approved или deprecated (как в CHECK); runtime читает только approved.',
+    provenance_ref: 'Ссылки на источники строки (game-base pool CSV и snapshot evidence); текст, не FK.',
+    sex_category: 'Пол носителя формы имени: female или male.',
+    people_ref: 'Народ (pp_* из peoples_origins), которому принадлежит форма имени.',
+    selection_class: 'ordinary выбирается процедурно; dynastic, monastic и significant в выбор NPC не входят.',
+    social_position_archetype_id: 'FK → social_position_archetypes(id): ограничение по положению; NULL — без ограничения.',
+    derivation_class: 'Почему форма считается ordinary (например календарное христианское имя); NULL, если не задано.'
+  },
   item_templates: {
     category_id: 'FK → universal_categories(id): object-type category template; legacy item_type не является вторым классификатором.',
     world_revision_id: 'FK → world_revisions(id): pinned revision для нового нормализованного authoring template.',
@@ -555,6 +635,41 @@ export const fields = {
     dependency_role: 'Controlled dependency role из digest-pinned registry; не free text.',
     canonical_ordinal: 'Контрактный порядок dependency edge внутри source и role.',
     provenance_ref: 'FK → source_records(id): evidence dependency edge.'
+  },
+  spatial_v3_g6_acoustic_baselines: {
+    entity_kind: 'Константный discriminator g6_acoustic_baseline для exact authoring version.',
+    world_revision_id: 'Ревизия, к которой одновременно привязаны G5 source и scene template.',
+    g5_template_id: 'Один из двух точных источников baseline: G5 generation template; взаимно исключает canonical_g5_id.',
+    canonical_g5_id: 'Один из двух точных источников baseline: canonical G5 node; взаимно исключает g5_template_id.',
+    g5_template_version: 'Точная версия G5 generation template; парная с g5_template_id.',
+    canonical_g5_version: 'Точная версия canonical G5 node; парная с canonical_g5_id.',
+    scene_template_id: 'FK → scene template: физическая сцена для выбранного G5 source.',
+    scene_template_version: 'Точная версия scene template.',
+    g6_scene_slot_key: 'Точный G6 slot в выбранном scene template.',
+    ambient_noise: 'Постоянный акустический baseline G6: 0, 1 или 2; временный шум сюда не записывается.',
+    directness: 'Связь авторского утверждения с исходными данными.',
+    confidence: 'Уверенность в утверждении baseline.',
+    provenance_ref: 'FK → source_records(id): источник авторского baseline.',
+    canonical_digest: 'SHA-256 canonical aggregate representation.'
+  },
+  spatial_v3_g4_npc_composition_bindings: {
+    g4_id: 'Точный G4 node ID в той же Spatial v3 revision.',
+    generation_template_id: 'Nullable exact G5 generation template ID; задан ровно один G5 target selector.',
+    generation_template_version: 'Nullable точная версия generation template; парная с generation_template_id.',
+    canonical_g5_id: 'Nullable exact canonical G5 node ID; задан ровно один G5 target selector.',
+    canonical_g5_version: 'Nullable точная версия canonical G5 node; парная с canonical_g5_id.',
+    min_count: 'Нижняя граница авторского количества NPC.',
+    max_count: 'Верхняя граница авторского количества NPC.',
+    payload: 'JSON: count weights и взвешенные exact refs переиспользуемых NPC bindings.'
+  },
+  spatial_v3_npc_runtime_profiles: {
+    profile_kind: 'Тип reusable NPC/runtime profile.',
+    role_ref: 'Опциональный exact source role ID.',
+    occupation_ref: 'Опциональный exact source occupation ID.',
+    payload: 'JSON: source-backed runtime bindings and explicit exact profile refs.'
+  },
+  spatial_v3_npc_regional_context_profiles: {
+    payload: 'JSON: regional origin/language claims and exact G4 plus one generation-template or canonical-G5 applicability tuple.'
   },
   spatial_v3_graph_node_migration_inventory: {
     legacy_graph_node_id: 'FK → legacy graph_nodes(id); mapping только по explicit source ID.',
@@ -780,5 +895,44 @@ export const fields = {
     generation_allowed: 'Разрешена ли LLM-генерация по этому правилу.',
     layout_rules: 'JSON: правила планировки места.',
     npc_generation_rules: 'JSON: правила NPC для места.'
+  },
+  spatial_v3_line_kind_profiles: {
+    line_kind_id: 'Вид линии из controlled_line_kind (line.path, line.river_channel, …); один профиль на (вид, версия).',
+    transition_environment_profile_id: 'Среда перехода линии (с версией в соседнем поле): FK → spatial_v3_transition_environment_profiles.',
+    topological_orientation_profile_id: 'Топологическая ориентация линии (с версией): FK → spatial_v3_topological_movement_orientation_profiles.',
+    baseline_movement_method_id: 'Метод движения по умолчанию (movement_method.*); минуты лежат на binding, не здесь.',
+    movement_method_cost_profile_id: 'Профиль стоимости методов (с версией): базовый метод и rational_factor-варианты альтернатив.',
+    dynamic_recheck_policy_id: 'Политика перепроверки (с версией): отрезки длиннее 30 минут она режет на срезы не длиннее 30 минут.',
+    route_kind_id: 'Вид маршрута (route.*), по которому линия входит в world route segment.',
+    status: 'Статус профиля: approved, deprecated или retired (как в CHECK).',
+    provenance_ref: 'FK → source_records(id): источник профиля.',
+    canonical_digest: 'sha256 канонического вида строки; совпадает с digest её authoring version.'
+  },
+  spatial_v3_line_kind_alternative_methods: {
+    profile_id: 'Профиль вида линии (с версией в profile_version): FK → spatial_v3_line_kind_profiles, каскадное удаление.',
+    movement_method_id: 'Альтернативный метод движения (movement_method.*); должен быть rational_factor-вариантом профиля стоимости, проверяет валидатор волны.',
+    risk_class: 'Класс риска альтернативы: low, moderate, high или extreme.',
+    hazard_rule_ref: 'Текстовая версионированная ссылка на правило опасности (записей об опасностях ещё нет, LW-097).'
+  },
+  spatial_v3_canonical_g5_connection_bindings: {
+    connection_profile_id: 'Профиль связи старого стиля (binding@1/@2, с версией); NULL у binding нового стиля, ровно одно из connection/line профилей.',
+    line_kind_profile_id: 'Профиль вида линии нового стиля (binding@3 и позже, с версией); NULL у старого стиля.',
+    line_name: 'Имя линии для игрока («тропой вдоль ручья»): непустое, без цифр и порядковых слов; у обратного слота то же имя.',
+    line_discriminator: 'Различитель двух линий одного места с одинаковым именем; необязателен.',
+    line_direction_id: 'Направление линии (east, …); необязательно, без линии не задаётся.',
+    line_toponym: 'Топоним линии, если он есть; необязателен.',
+    base_minutes: 'Минуты пути по линии в этом направлении (целое > 0, стороны независимы); потолка нет, длинный отрезок режет политика срезов.',
+    capacity: 'Вместимость линии (целое > 0); необязательна.',
+    capacity_semantics_ref: 'Версионированная ссылка на смысл вместимости; обязательна у binding нового стиля.',
+    risk_profile_ref: 'Версионированная ссылка на профиль риска; обязательна у binding нового стиля.',
+    availability_condition_set_ref: 'Условие доступности (портал и т. п.); NULL, если у связи нет портала.'
+  },
+  spatial_v3_world_route_segments: {
+    line_kind_id: 'Вид линии (controlled_line_kind) segment нового стиля; NULL у старого, все line-поля заданы вместе.',
+    line_kind_profile_id: 'Профиль вида линии (с версией в line_kind_profile_version): FK → spatial_v3_line_kind_profiles.',
+    line_name: 'Имя линии для игрока; непустое, задано вместе с видом линии.',
+    line_discriminator: 'Различитель одноимённых линий места; необязателен, требует профиль линии.',
+    line_direction_id: 'Направление линии; необязательно, требует профиль линии.',
+    line_toponym: 'Топоним линии; необязателен, требует профиль линии.'
   }
 };

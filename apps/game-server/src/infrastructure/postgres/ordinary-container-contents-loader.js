@@ -5,12 +5,16 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
   return async function load({ party_id: partyId, container_ref: containerRef }) {
     if (!text(partyId) || !text(containerRef)) return null;
     const core = await pool.query(`SELECT p.state_version AS party_state_version,
+        p.world_revision_id,p.world_catalog_digest,
         pc.character_id AS actor_id,
         CASE WHEN journey.id IS NULL
           OR snapshot.state_payload#>>'{position,position_id}'
             IS DISTINCT FROM journey.scene_position_id
           THEN pos.g5_anchor_id ELSE journey.scene_position_id
         END AS actor_position_ref,
+        pos.g4_id AS actor_g4_id,
+        snapshot.state_payload->'clock' AS party_clock,
+        snapshot.state_payload->'historical_events' AS historical_events,
         x.container_id,x.template_id,x.state_version AS container_state_version,
         x.closure_state,x.state AS container_state,x.anchor_id,
         x.parent_container_id,x.holder_npc_id,x.holder_character_id,
@@ -65,8 +69,14 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
     const capacitySnapshot = capacity.rows.map(capacityRow);
     const context = row.container_state?.ordinary_contents_context;
     return clone({ party_state_version:Number(row.party_state_version),
+      world_identity:{world_revision_id:row.world_revision_id,
+        world_catalog_digest:row.world_catalog_digest},
+      party_clock: row.party_clock ?? null,
+      historical_events: Array.isArray(row.historical_events)
+        ? row.historical_events : [],
       container:{ actor_id:row.actor_id,
         actor_position_ref:row.actor_position_ref,
+        actor_g4_id:row.actor_g4_id,
         container_id:row.container_id,template_id:row.template_id,
         state_version:Number(row.container_state_version),
         closure_state:row.closure_state,state:row.container_state,

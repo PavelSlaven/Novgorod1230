@@ -19,8 +19,6 @@ import { LOCAL_POSTGRES, ensureLocalPostgres, localDataRoot } from
   '../../tools/local-play/local-postgres.js';
 import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js';
 import { startLocalPlay } from '../../tools/local-play/local-play.js';
-import { loadLowerDvinaTraceScenePresentation } from '../../apps/game-server/src/internal/lower-dvina-trace-scene-presentation.js';
-import { scenePresentationForLocation } from '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presentation.js';
 
 test('local play persists a free turn and replays it after a server restart',
   { timeout: 600_000, skip: process.platform !== 'win32'
@@ -49,7 +47,7 @@ test('local play persists a free turn and replays it after a server restart',
       settings: { mode: 'custom', compatibility: provider.compatibility,
         base_url: provider.baseUrl, model: provider.model, api_key: null },
       ordinary_materialization_identity: identity,
-      qualification_version: 70 })}\n`);
+      qualification_version: 71 })}\n`);
     let localPlay = null;
     context.after(async () => {
       await localPlay?.close().catch(() => {});
@@ -94,9 +92,6 @@ test('local play persists a free turn and replays it after a server restart',
     });
     const beforeTurn = await committedState(localPlay.postgres.partyUrl, partyId);
     const names = beforeTurn.owned_item_names;
-    const scenePresentation = await loadLowerDvinaTraceScenePresentation({
-      scenarioDefinitionRevision: beforeTurn.state_payload.materialization_trace.seed_context.scenario_definition_revision
-    });
     for (const name of ['хозяйственный нож', 'нижняя рубаха', 'верхняя шерстяная одежда']) assert.ok(names.includes(name));
     let turnRequest = {
       request_id: requestId,
@@ -131,14 +126,11 @@ test('local play persists a free turn and replays it after a server restart',
       assert.deepEqual(committed.state_payload.player_profile.memory.records.map(record => record.text),
         plannerInput.actor.memory.map(record => record.text));
       const sourceScene = playerSafe.current_visible_context;
-      const profile = scenePresentationForLocation({ scenePresentation, locationRef: playerSafe.position.location_ref });
       const narrated = roleInputs.filter(input => input?.schema === 'narration_request');
       assert.ok(narrated.length > 0, 'the real narrator receives the committed search projection');
       for (const { optional_support: visible, required_current_beat: beat } of narrated) {
-        assert.deepEqual(Object.keys(visible).sort(), ['sensory_details', 'visible_scene']);
+        assert.deepEqual(Object.keys(visible).sort(), ['visible_scene']);
         assert.equal(visible.visible_scene, sourceScene.visible_scene);
-        assert.ok(profile.player_visible_physical_facts.length > 0);
-        for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
         if (resolution === 'no_change' || resolution === 'authority_required') {
           assert.ok(beat.changes.some(({ text }) => text.includes(
             `Поиск по вопросу «${turnRequest.raw_text}» не дал подтверждённой находки.`)));
@@ -189,6 +181,46 @@ test('local play persists a free turn and replays it after a server restart',
     const beforeRestart = await committedState(localPlay.postgres.partyUrl, partyId);
     assert.equal(beforeRestart.state_version, beforeTurn.state_version + 5);
 
+    fixtureResolution = 'materialize';
+    const authoredStart = await post(port, '/api/v1/new-games', {
+      scenario_id: 'vikhtuy_fishing_camp_v1',
+      request_id: `local-play-authored-${suffix}`
+    });
+    const authoredPartyId = authoredStart.party_id;
+    await post(port,
+      `/api/v1/parties/${encodeURIComponent(authoredPartyId)}/opening-ack`, {
+        client_ack_id: `local-play-authored-opening-${suffix}`
+      });
+    const authoredBefore = await committedState(localPlay.postgres.partyUrl,
+      authoredPartyId);
+    const authoredRequest = { request_id: `${requestId}-authored-ordinary`,
+      idempotency_key: `${requestId}-authored-ordinary`,
+      raw_text: 'Ищу у стоянки подходящую деревянную щепку.' };
+    const authoredResult = await post(port,
+      `/api/v1/parties/${encodeURIComponent(authoredPartyId)}/turns`,
+      authoredRequest);
+    const authoredCommitted = await committedState(localPlay.postgres.partyUrl,
+      authoredPartyId);
+    assert.equal(authoredCommitted.item_ids.length,
+      authoredBefore.item_ids.length + 1);
+    assert.equal(authoredResult.screen.scenario_id,
+      'vikhtuy_fishing_camp_v1');
+    const chipId = authoredCommitted.item_ids.find((id) =>
+      !authoredBefore.item_ids.includes(id));
+    const authoredChangeRequest = {
+      request_id: `${requestId}-authored-change`,
+      idempotency_key: `${requestId}-authored-change`,
+      raw_text: 'Расщепляю найденную щепку и отделяю тонкую лучину.'
+    };
+    const authoredChangeResult = await post(port,
+      `/api/v1/parties/${encodeURIComponent(authoredPartyId)}/turns`,
+      authoredChangeRequest);
+    const authoredChanged = await committedState(localPlay.postgres.partyUrl,
+      authoredPartyId);
+    assert.equal(authoredChanged.item_ids.includes(chipId), true);
+    assert.equal(authoredChanged.item_ids.length,
+      authoredCommitted.item_ids.length + 1);
+
     await localPlay.close();
     localPlay = await start();
     assert.equal(localPlay.postgres.state, 'existing');
@@ -196,6 +228,16 @@ test('local play persists a free turn and replays it after a server restart',
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
     assert.equal(JSON.stringify(screen).includes('hidden_truth'), false);
     assert.deepEqual(await committedState(localPlay.postgres.partyUrl, partyId), beforeRestart);
+    assert.deepEqual(await committedState(localPlay.postgres.partyUrl,
+      authoredPartyId), authoredChanged);
+    const authoredCalls = llm.requests.length;
+    assert.deepEqual(await post(port,
+      `/api/v1/parties/${encodeURIComponent(authoredPartyId)}/turns`,
+      authoredRequest), authoredResult);
+    assert.deepEqual(await post(port,
+      `/api/v1/parties/${encodeURIComponent(authoredPartyId)}/turns`,
+      authoredChangeRequest), authoredChangeResult);
+    assert.equal(llm.requests.length, authoredCalls);
     const llmCalls = llm.requests.length;
 
     for (const attempt of attempts) {
@@ -329,6 +371,13 @@ function searchFixtureResponse(input, resolution) {
   if (resolution === 'inspect' && request?.schema === 'turn_step_request_v1') {
     return existingInspectionFixtureResponse(request);
   }
+  if (request?.schema === 'turn_step_request_v1'
+      && request.root_player_action?.includes('Расщепляю')) {
+    const source = request.player_safe_state.items.find((item) =>
+      item.name === 'щепка');
+    assert.ok(source, 'materialized authored ordinary source is player-safe');
+    return actionProductionPlan(request, source.item_id);
+  }
   if (request?.schema === 'turn_step_request_v1') return {
     interpretation: { player_goal: request.root_player_action,
       grounded_attempt: request.remaining_intent, adaptation: 'literal' },
@@ -354,4 +403,35 @@ function searchFixtureResponse(input, resolution) {
       mechanics_proposal: { mass_grams: 10,
         external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
+}
+
+function actionProductionPlan(request, sourceRef) {
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{ op: 'request_item_use', actor_ref: request.actor.actor_id,
+      item_ref: sourceRef, use_kind: 'other', target_refs: [],
+      action_production: { source_refs: [sourceRef], tool_refs: [],
+        requested_output_count: 1, identity_mode: 'independent_outputs',
+        origin: 'direct_partition', result_class: 'partial_transformation',
+        material_extent: 'minor', result_descriptor: {
+          display_name: 'тонкая лучина',
+          physical_description: 'тонкая лучина, отделённая от щепки',
+          qualitative_facts: [], removed_physical_fact_refs: [],
+          inscription_text: null, physical_form: 'compact',
+          source_fact_delta: {
+            physical_description: 'щепка с отколотым краем',
+            qualitative_facts: [], removed_physical_fact_refs: [],
+            physical_form: 'compact'
+          }
+        }, output_class: 'ordinary_mundane' }
+    }], check: null, continuation: null, clarification: null,
+    direct_result_kind: null, reason_code: 'authored_ordinary_partition',
+    reason: 'От обычного источника отделяется самостоятельная часть.'
+  };
 }

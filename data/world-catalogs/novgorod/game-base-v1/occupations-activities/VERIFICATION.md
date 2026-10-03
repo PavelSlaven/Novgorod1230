@@ -530,3 +530,13 @@ F2: slot override в `actor_appearance_authoring.json` выбирает `nov_clo
 - occupations/occupations_additions.csv — approve_with_limits: дельта D47 чистая, изменён только архетип трёх занятий, файл равен пересборке; прежняя оговорка OA-6 остаётся
 - occupations/scripts/build_occupations_additions.py — approve: три reviewer mapping
 - occupations/scripts/check_occupations_additions.py — approve: словарь берётся из канонического сида, у трёх занятий обязателен `performance_entertainment`
+
+## Независимая проверка D53 (Claude Opus 5.5, 2026-09-30)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор (автор — исполнитель fleet ferry-guard, Claude Sonnet 5.5). Проверен диапазон `c3b6fc0d..8fc15870`.
+- **Основание:** решение владельца D53 — сторожа переправы на пристанях нет в источниках (в индексе книг «сторож брода/переправы/перевоза» — 0 попаданий); на `pf_ferry_landing` остаётся перевозчик; запись занятия остаётся (D38).
+- **Проверено:** перегенерация волны на пине 81d96576 совпала побайтно; из производных таблиц удалены только строки со сторожем, добавленных строк нет; `build_schedules.py --check` (161), `households check.py`, `occupations validate.py`, `check-people-composition --self-test` (17 PF, 7 групп, 41 проба) — PASS.
+- **Что:** термин «сторож брода» помечен `not_attested` в `occupations/occupation_term_status.csv`; `validate.py` проверяет совпадение пометки с TSV и перестанет проходить, когда TSV поправят. TSV не тронут (перепин authored start и v17 — позже).
+- occupations/occupation_term_status.csv — approve: пометка термина, основание D53
+
+Вердикт группы: **approve_with_limits** (прежние ограничения группы в силе).

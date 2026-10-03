@@ -1,4 +1,5 @@
 import { buildPlayerConversationInput } from '@rus/npc-runtime';
+import { sceneLocationRef } from './lower-dvina-trace-scene-presence.js';
 import {
   allowedPlayerContributionReferences,
   committedPlayerKnowledgeRefs
@@ -27,7 +28,7 @@ export function buildPlayerRequest(context) {
     received_at: `turn-input:${context.inputDigest}`,
     player_safe_context: {
       phase: context.phase,
-      location_ref: context.state.position.location_ref,
+      location_ref: sceneLocationRef(context.state),
       current_game_timestamp: structuredClone(context.state.clock),
       target_npc_ref: context.targetRef,
       verbatim_utterance_text: requiredVerbatimUtteranceText(

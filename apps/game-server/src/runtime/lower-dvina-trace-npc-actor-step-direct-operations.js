@@ -16,6 +16,7 @@ import { applyBodyEvent } from
 export function createLowerDvinaTraceNpcActorStepDirectOperations({ state,
   phase7Contracts, workingProjection = null, priorLocalFirePlans = [],
   ordinaryResultPolicy = null, packingCalculator = null,
+  assertNeedsCheckAllowed = null,
   bodyEventOwner = null, createAmbientOrdinaryPortionAdmission = null } = {}) {
   state = projectTracePhase7CurrentBoundaryState({ state, workingProjection,
     priorLocalFirePlans });
@@ -52,6 +53,7 @@ export function createLowerDvinaTraceNpcActorStepDirectOperations({ state,
     strength: actorStrength, locationRef, runtimeState, resolveItemMechanics });
   const all = createItemOperationHandlers(runtimeState, {
     ordinaryResultPolicy,
+    assertNeedsCheckAllowed,
     ambientOrdinaryPortionAdmission,
     requireAmbientOrdinaryAdmission: ambientOrdinaryPortionAdmission != null,
     resolveItemMechanics

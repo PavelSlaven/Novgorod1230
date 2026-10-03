@@ -1,5 +1,6 @@
 import { serverError } from '../errors.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 
 const GENERIC_CHECK_OUTCOMES = Object.fromEntries([
   'clean_success', 'success', 'success_with_cost',
@@ -63,8 +64,16 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner,
   return async function planNpcAutonomousAction(request, context = {}) {
     const repair = context.repair ?? null;
     const genericCheckAvailable = hasAllowedAttributeRefs(request);
-    const modelRequest = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'npc_decision');
+    // Explicit party events from model-call context / phase-7 wrap (F2).
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events
+      : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'npc_decision', {
+        clock: request.occurred_at ?? null,
+        historical_events: historicalEvents
+      });
+    const modelRequest = omitWorldKnowledgeContextText(grounded);
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -108,7 +117,7 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner,
           'Use only the supplied subjective knowledge, perception, memory,',
           'goals, relationships, body state and available resources.',
           'Use only supplied refs and the registered operation contract.',
-          ...worldKnowledgeFactualClosure(modelRequest),
+          ...worldKnowledgeFactualClosure(grounded),
           'emit_interaction is only an observable nonverbal action; never put spoken words, dialogue, or a verbal message in its content.',
           'For hailing, asking, ordering aloud, calling, or replying, use request_conversation.',
           'Do not roll RNG or declare success, movement, destruction, escape,',

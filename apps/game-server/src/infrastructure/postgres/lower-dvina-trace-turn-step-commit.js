@@ -2,6 +2,7 @@ import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvin
 import { canonicalDigest } from '@rus/materialization';
 import { requireTurnStepCommitEnvelope } from '@rus/turn';
 import { serverError } from '../../errors.js';
+import { SCENE_NPC_SOURCE, withoutSceneNpcs } from './scene-npcs-readback.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -42,10 +43,15 @@ import {
   backgroundNpcPlanMatchesEnvelope,
   projectBackgroundNpcRemainder
 } from './lower-dvina-trace-turn-step-commit-projections.js';
+import { applySiteTraversalTransition, siteTraversalWrites } from
+  './spatial-v3-site-traversal-commit.js';
+import { projectPreparedDomainState } from
+  '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
-  turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null
+  turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null,
+  projectEnvironmentAtClock = null
 }) {
   const envelope = requireEnvelope(writePlan);
   assertRootInput({ partyId, inputDigest, envelope });
@@ -62,6 +68,14 @@ export async function commitLowerDvinaTraceTurnStep({
       { status: 409 }
     );
   }
+  const preparedRoute = envelope.time_update?.prepared_effect_ledger?.slices
+    ?.find((slice) => slice.operation_ref === 'request_movement'
+      && slice.consequence?.position_transition?.destination_site_id != null);
+  const preparedMovementState = preparedRoute != null
+      && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
+      ? await turnStepApprovedOwners.loadPreparedMovementScene(
+        { partyId, state: projectPreparedDomainState(state, preparedRoute) })
+    : null;
   const nextVersion = state.party_state.state_version + 1;
   const turnNumber = state.party_state.turn_number + 1;
   const changeSetId = `change:${partyId}:turn-step:${turnNumber}`;
@@ -151,7 +165,9 @@ export async function commitLowerDvinaTraceTurnStep({
   const visibleEnvelopeInput = visibleContext === envelope.visible_context ? envelope
     : { ...envelope, visible_context: visibleContext };
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
-    partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts
+    partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts,
+    currentLightPhase: projectEnvironmentAtClock?.({ state,
+      clock: envelope.time_update.clock_after }).light_state ?? null
   });
   const base = buildLowerDvinaTraceTurnStepSnapshot({
     state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,
@@ -161,6 +177,8 @@ export async function commitLowerDvinaTraceTurnStep({
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
   applyS1LocalPositionTransition({ snapshot: base.snapshot, state,
     transition: envelope.consequence.position_transition });
+  applySiteTraversalTransition({ snapshot: base.snapshot, state,
+    consequence: envelope.consequence });
   for (const plan of actionProductionPlans) {
     applyActionProductionProjection({ next: base.snapshot, plan });
   }
@@ -178,11 +196,28 @@ export async function commitLowerDvinaTraceTurnStep({
   };
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
-    changeSetId, idemId, turnStepAmbientPortionProfileRef, turnStepApprovedOwners
+    changeSetId, idemId, turnStepAmbientPortionProfileRef,
+    turnStepApprovedOwners, preparedMovementState
+  });
+  // Scene NPCs are read from party tables for projection, but never kept in the snapshot.
+  const persistedSnapshot = withoutSceneNpcs(turnStep.snapshot);
+  const pendingScenePosition = persistedSnapshot.position;
+  const pendingPositionChanged = canonicalDigest(pendingScenePosition)
+    !== canonicalDigest(state.position);
+  const pendingSceneState = (preparedMovementState != null
+      || pendingPositionChanged)
+      && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
+    ? await turnStepApprovedOwners.loadPreparedMovementScene({
+      partyId, state: { ...persistedSnapshot, position: pendingScenePosition }
+    })
+    : preparedMovementState ?? state;
+  const pendingProjectionState = withSceneNpcProjectionState({
+    persistedSnapshot, sourceState: pendingSceneState,
+    preparedPosition: pendingScenePosition
   });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
-    state: turnStep.snapshot,
-    presentation: await loadLowerDvinaTraceScreenPresentation(turnStep.snapshot),
+    state: pendingProjectionState,
+    presentation: await loadLowerDvinaTraceScreenPresentation(pendingProjectionState),
     turnId: envelope.root_turn_id,
     nextVersion,
     turnNumber,
@@ -190,7 +225,7 @@ export async function commitLowerDvinaTraceTurnStep({
     turnConsequence: factual.consequence
   });
   const rootWrites = buildLowerDvinaTraceTurnStepRootWrites({
-    partyId, state, snapshot: turnStep.snapshot, envelope, nextVersion,
+    partyId, state, snapshot: persistedSnapshot, envelope, nextVersion,
     turnNumber, changeSetId, idemId, pendingScreen,
     clockChanged: base.clockChanged
   });
@@ -208,10 +243,18 @@ export async function commitLowerDvinaTraceTurnStep({
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
+  const siteTraversal = siteTraversalWrites({ partyId, envelope,
+    changeSetId, idemId, turnNumber });
+  if (siteTraversal.writes != null) {
+    for (const key of ['inserts', 'updates', 'appends', 'deletes']) {
+      writes[key].push(...siteTraversal.writes[key]);
+    }
+  }
     const built = await buildLowerDvinaTraceTurnStepCommitPlan({
       partyId, state, envelope, inputDigest, visibleEnvelope, writes,
       turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
       localFirePlans, spatialSemanticPlan,
+      siteTraversalRechecks: siteTraversal.rechecks,
       temporalResults: envelope.time_update.temporal_results ?? []
     });
   const committed = await committer.commit({
@@ -234,6 +277,23 @@ export async function commitLowerDvinaTraceTurnStep({
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
+  };
+}
+
+function withSceneNpcProjectionState({ persistedSnapshot, sourceState,
+  preparedPosition = null }) {
+  const existingIds = new Set((persistedSnapshot.npcs ?? []).map(
+    ({ instance_id: id }) => id).filter(Boolean));
+  const sceneNpcs = (sourceState?.npcs ?? []).filter(({ instance_id: id,
+    runtime_source: source }) => source === SCENE_NPC_SOURCE
+      && id != null && !existingIds.has(id));
+  return {
+    ...persistedSnapshot,
+    ...(preparedPosition == null ? {} : { position: preparedPosition }),
+    npcs: [...(persistedSnapshot.npcs ?? []), ...sceneNpcs],
+    ...(sourceState?.scene_position_g6 == null ? {} : {
+      scene_position_g6: sourceState.scene_position_g6
+    })
   };
 }
 

@@ -48,6 +48,7 @@ export function projectSharedSemanticExchange(semanticExchange) {
       factual_status: 'not_applied',
       time_budget: structuredClone(semanticExchange.exchange.time_budget),
       statement_refs: [],
+      player_contribution_kind: null,
       route_disclosure: null,
       commitment: null,
       surrender: null,
@@ -59,6 +60,10 @@ export function projectSharedSemanticExchange(semanticExchange) {
       && semanticExchange?.decision_plan === null
       && record(firstContribution)) {
     const resumed = semanticExchange.resumed_npc_execution ?? null;
+    const playerContributionKind = resumed === null
+      && firstContribution.speaker_ref?.entity_kind === 'player_character'
+      && firstContribution.contribution_kind === 'leave_conversation'
+      ? 'leave_conversation' : null;
     return {
       request_id: resumed?.decision_trace_ref?.entity_id ?? null,
       boundary_id: null,
@@ -76,6 +81,7 @@ export function projectSharedSemanticExchange(semanticExchange) {
           entity_kind: 'conversation_statement', entity_id: statementId
         })
       ),
+      player_contribution_kind: playerContributionKind,
       route_disclosure: semanticExchange.route_disclosure == null
         ? null : {
             route_ref: semanticExchange.route_disclosure.route_ref,
@@ -140,6 +146,7 @@ export function projectSharedSemanticExchange(semanticExchange) {
           }))
       : responseStatementRef === null ? []
         : [structuredClone(responseStatementRef)],
+    player_contribution_kind: null,
     route_disclosure: semanticExchange.route_disclosure == null
       ? null
       : {
@@ -203,7 +210,7 @@ export function assertSharedSemanticSnapshotSafe(state) {
     const allowed = new Set([
       'request_id', 'boundary_id', 'conversation_id', 'exchange_id',
       'npc_ref', 'response_kind', 'factual_status', 'time_budget',
-      'statement_refs',
+      'statement_refs', 'player_contribution_kind',
       'route_disclosure',
       'commitment', 'surrender', 'knife_transition_eligibility',
       'terminal_npc_outcomes'

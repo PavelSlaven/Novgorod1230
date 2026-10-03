@@ -1,0 +1,17 @@
+{
+  "schema": "rus.m2c_natural_baseline_authoring_approval.v1",
+  "decision": "APPROVE_M2C_NATURAL_BASELINE_AUTHORING_V1",
+  "candidate_ref": "novgorod_m2c_natural_baseline_g4_v1@1",
+  "candidate_sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93",
+  "approved_by": "gpt-6-astra/high — independent reviewer /root/m2c_data_approval",
+  "approval_scope": "natural_baseline_authoring_data_only",
+  "source_issue": "Issue #133 §4",
+  "approved_on": "2026-09-23",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "limits": [
+    "Approval covers candidate natural-layer authoring data only.",
+    "Import and runtime activation require separate authorization.",
+    "This record does not alter candidate content or applicability semantics."
+  ]
+}

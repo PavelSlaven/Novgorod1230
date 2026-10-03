@@ -1,4 +1,5 @@
 import { compareGameTimestamp } from '@rus/time-events-history';
+import { npcSharesPlayerScene, sceneLocationRef } from './lower-dvina-trace-scene-presence.js';
 
 export function tracePhase3PreconditionSatisfied(
   precondition,
@@ -6,7 +7,7 @@ export function tracePhase3PreconditionSatisfied(
   contracts
 ) {
   if (precondition.kind === 'committed_location') {
-    return state.position?.location_ref === precondition.location_ref;
+    return sceneLocationRef(state) === precondition.location_ref;
   }
   if (precondition.kind === 'committed_evidence_access') {
     return accessibleBlueWoolItem(state, contracts) !== null;
@@ -16,12 +17,11 @@ export function tracePhase3PreconditionSatisfied(
       ({ ref }) => ref === precondition.ref);
     const actor = (state.npcs ?? []).find(
       ({ instance_id: id }) => id === contractActor?.instance_id);
-    return actor?.anchor_id != null
-      && actor.anchor_id === state.position?.g5_anchor_id;
+    return actor != null && npcSharesPlayerScene(state, actor);
   }
   if (precondition.kind === 'approved_access_policy') {
     return contracts.access.policy_id === precondition.policy_ref
-      && contracts.access.location_ref === state.position?.location_ref
+      && contracts.access.location_ref === sceneLocationRef(state)
       && contracts.access.hidden_or_open_state === 'open'
       && contracts.access.unmaterialized_access === 'forbidden';
   }
@@ -43,12 +43,10 @@ export function tracePhase3PreconditionSatisfied(
 }
 
 export function presentPhase3NpcActors(state, contracts) {
-  const anchorId = state.position?.g5_anchor_id;
-  if (anchorId == null) return [];
   return contracts.actors.flatMap((contractActor) => {
     const current = (state.npcs ?? []).find(({ instance_id: id }) =>
       id === contractActor.instance_id);
-    return current?.anchor_id === anchorId ? [{
+    return current != null && npcSharesPlayerScene(state, current) ? [{
       ...structuredClone(contractActor),
       ...structuredClone(current),
       ref: contractActor.ref

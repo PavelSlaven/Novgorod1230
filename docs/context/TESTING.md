@@ -1,6 +1,6 @@
 # Тестирование: карта и команды
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Это карта, а не норма. Правила проверок задаёт [AGENTS.md §24](../governance/WORKFLOW_RULES.md) (и §22 для отладки, §29 для
 отчёта). Все команды по группам перечислены в [генерируемом каталоге](../../generated/npm-script-catalog.md)
@@ -50,27 +50,64 @@ PostgreSQL-тесты: часть из них пропускается без п
 `test/integration/party-runtime-v2-postgres.test.js` — `skip: !process.env.PARTY_DATABASE_URL`). Зелёный прогон
 без базы не доказывает DB semantics — смотрите `skip` в выводе. Только local/test база (AGENTS §23).
 
+`spatial-v3:test-p12-postgres` запускается с `node --test --test-concurrency=1`. Точная первопричина
+параллельных падений `p12-text-array-postgres` **не установлена**; наблюдаемый симптом — при параллельном
+`node --test` несколько Docker-PG тестов (имена контейнеров, порты, массовый DDL) гоняются одновременно и
+`p12-text-array-postgres` стабильно падает; изолированно тот же файл зелёный.
+
+`spatial-v3:test-all-starts-postgres` — один bootstrap v17 и публичный старт каждого из 7 стартов манифеста
+(`binding_revision` 1..7) в мире без bindings стартовых узлов (предпосылка воспроизводится в тесте: `DELETE` bindings в
+одноразовой БД, т.к. штатный bootstrap импортирует волну): старт сам решает присутствие своего canonical G5 (перехват
+запросов bindings), у партии нет агрегата и enablement. Отдельно от p12-скрипта (~6 мин bootstrap + старты); запуск только через `pg-slot`.
+
+`spatial-v3:test-m2c-wave-bootstrap-postgres` — один bootstrap v17 с этапом волны (D27): строки в БД равны закреплённому
+`m2c-npc-wave/v1/v17-import-request.json`, нет правил `environment` и легаси-региона, каждый из 7 стартов бросает правила
+своего place family; повторный импорт волны отвергает изменённую строку.
+
+**Бюджет времени CI (реальный).** Лимит — `timeout-minutes: 45` джоба в `.github/workflows/test.yml`. Этап волны (D27)
+добавил ~80–120 с на каждый bootstrap: bootstrap-тесты идут ~465 с. `spatial-v3:test-p12-postgres` (~1700 с на servak,
+3 таких bootstrap-теста) поэтому выделен в **отдельный джоб** `full-npm-test-p12` (matrix `suite: p12`, те же шаги
+подготовки PG, что у `integration`); `test:integration` остаётся в своём джобе. Значение «1800 с», которое встречается
+в тестах (`timeout` отдельных PG-тестов) и в правилах исполнителей флота, — не лимит скрипта p12 и в документах проекта
+не используется.
+
+**Флейк `p12-text-array-postgres`** (`test/spatial-v3/p12-text-array-postgres.test.js:25`, `psql` DDL завершается с кодом 2
+за ~2 с): проявлялся в полном последовательном p12 (2 из ~7 прогонов), изолированно всегда зелёный. Гипотеза:
+`pg_isready` без `-h` отвечает по unix-сокету временному серверу initdb, `psql` затем обрывается при рестарте. Проба теперь
+`pg_isready -h 127.0.0.1` (как в остальных PG-тестах main). Изолированно тест зелёный 10/10 и до, и после правки, так что
+воспроизвести флейк отдельно не удалось: эффект правки подтвердят следующие полные p12 / CI.
+
 ## 3. Состав `npm test` и CI
 
-`npm test` = последовательно: `test:modules` → `test:domain` → `test:apps` → `test:tools` → `test:shadow` →
-`test:cutover` → `docs:check` → `test:integration` → `test:acceptance` → `test:browser-e2e` →
-`architecture:check` (package.json, скрипт `test`).
+`npm test` последовательно запускает `test:modules`, `test:domain`, `test:apps`, `test:tools`, `test:game-base`,
+`test:shadow`, `test:cutover`, `docs:check`, `test:integration`, `test:acceptance`, `test:browser-e2e` и
+`architecture:check` (скрипт `test` в [package.json](../../package.json)).
 
-CI (`test.yml`, один job `full-npm-test`, профиль `full` для pull_request) до `npm test` выполняет: Node 22 и
-`npm ci`; Python 3.12; проверку World Knowledge encoder; dry-run импорта world_base и FK-аудит; `world-db:schema-check`
-и `world-db:schema-doc-check`; контейнер `postgres:16`, DDL world_base с проверкой 201 таблицы и grants
-`world_reader`; две PostgreSQL-интеграции (`world-db:import:stage3b1:integration`,
-`character-appearance:test-world-v4-postgres`); `knowledge:check-corpus`; `docs:generate` и
-`character-appearance:generate`, затем `git diff --exit-code` по `MODULE_INDEX.md`, `generated/`,
-`infra/world-base/SCHEMA_REFERENCE.md` и нескольким каталогам lower-dvina. Незакоммиченный generated-артефакт
-роняет CI. Профиль `evidence_only` (push в main по `p28-ci-profile.mjs`) гоняет только P28-проверки и `docs:check`.
+CI описан в [.github/workflows/test.yml](../../.github/workflows/test.yml). Для `pull_request` выбирается профиль
+`full`; job matrix `full-npm-test-${{ matrix.suite }}` включает `fast`, `integration`, `p12`, `acceptance` и
+`browser-architecture`, `fail-fast: false`. Все jobs требуют Node 22; полный профиль устанавливает зависимости через
+`npm ci`. Python 3.12 и проверка WK encoder нужны для `fast`, `acceptance` и `browser-architecture`.
 
-> ⚠ PR #98 меняет: job становится матрицей `full-npm-test-${{ matrix.suite }}` с `suite: [fast, integration,
-> acceptance, browser-architecture]` и `fail-fast: false`; `fast` = `test:modules … docs:check`, остальные jobs —
-> `test:integration`, `test:acceptance`, `test:browser-e2e && architecture:check`; `evidence-only` выносится в
-> отдельный job; `test:integration` запускается через `scripts/run-integration-tests.mjs`. Источник — `test.yml`
-> и `package.json` в ветке `codex/live-world-runtime`. После merge #98 раздел нужно обновить по
-> [CONTEXT_DUMP](../process/CONTEXT_DUMP.md).
+- `fast`: подготовка и dry-run импорта world_base с FK-аудитом; schema checks и DDL world_base в PostgreSQL 16 с
+  проверкой 224 таблиц и grants `world_reader`; интеграции `world-db:import:stage3b1:integration` и
+  `character-appearance:test-world-v4-postgres`; `knowledge:check-corpus`; `docs:generate` и
+  `character-appearance:generate` с проверкой generated-файлов на чистый diff; затем `test:modules`, `test:domain`,
+  `test:apps`, `test:tools`, `test:game-base`, `test:shadow`, `test:cutover` и `docs:check`.
+- `integration`: schema checks и DDL world_base в PostgreSQL 16, затем `test:integration` через
+  `scripts/run-integration-tests.mjs`.
+- `p12`: PostgreSQL 16 и `spatial-v3:test-p12-postgres`.
+- `acceptance`: `test:acceptance`.
+- `browser-architecture`: `test:browser-e2e` и `architecture:check`.
+
+Отдельный `evidence-only` job выбирает профиль `evidence_only` и запускает P28 checks с `docs:check`. В полном профиле
+CI также проверяет, что generated-файлы после генерации не имеют diff.
+
+На servak тесты, которым нужен PostgreSQL в Docker, запускают через `/srv/novgorod-work/fleet/bin/pg-slot`.
+Если тест передаётся исполнителю Codex, запрос можно отправить через
+`/srv/novgorod-work/fleet/bin/pg-request [--timeout-min N] path/to/test.js`; передаются только относительные пути
+тестовых файлов. На servak AppArmor блокирует unix-сокеты PostgreSQL в Docker, поэтому обвязка запускает тестовые
+контейнеры с `apparmor=unconfined` при `NOVGOROD_TEST_DOCKER_APPARMOR_UNCONFINED=1`; переменную выставляют `fleet` и
+`pg-slot`. Это относится к тестам на servak; в CI PostgreSQL запускается отдельным Docker-контейнером в job.
 
 ## 4. Матрица «тип изменения → команды»
 

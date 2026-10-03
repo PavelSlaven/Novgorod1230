@@ -1,0 +1,146 @@
+{
+  "schema": "rus.gate1_v5_v6_runtime_activation_approval_attestation.v1",
+  "status": "approved_new_development_parties_only_not_executed",
+  "decision": "approve_exact_new_development_runtime_activation",
+  "subject_commit_sha": "d416c0ea76e0f94c34c12d73eb0880bed30ca4fa",
+  "reviewed_repository_head": "d416c0ea76e0f94c34c12d73eb0880bed30ca4fa",
+  "auditor_ref": "claude-opus-5.5-independent-approval-2026-09-27-v3",
+  "independence_basis": "Independent approver separate from authoring of activation-amendment v3, its generator, the Gate1 runtime activation code and tests. Review was read-only on a throwaway detached checkout at the reviewed head: git history/diff, sha256 recomputation, generator stdout reproduction and validator calls on in-memory objects; no database connection, activation, bootstrap or import was performed.",
+  "reviewed_at": "2026-09-27",
+  "activation_amendment_request_digest": "8c78faf72900bc6bb67f7f8e0cff7cb54c138ca41aea2388956b7f036b0e0691",
+  "activation_scope": "new_development_parties_only",
+  "approved_permissions": {
+    "activate_for_new_development_parties_only": true,
+    "import_approved_item_container_catalog": false,
+    "production_activation": false,
+    "existing_party_migration": false,
+    "old_save_rematerialization": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation": false
+  },
+  "approved_bindings": {
+    "predecessor_request_digest": "81435027867fdc0060c117c0afaa4b20ed6cb3650a4f6067855c15e299457f29",
+    "import_readback": {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/import-readback-result.json",
+      "sha256": "45287a72231589b5b257c5e0f129b6213893660a285ee57207dc87dbb16dc2f1",
+      "canonical_digest": "8fd919db006f54cb74e997be7d800b884f1743e54a2df9bfa3efd29230ac29e5",
+      "status": "imported_exact_readback_verified",
+      "rollback": "pass",
+      "repeat_clean_apply": true,
+      "restart_verified": true,
+      "restart_verification": {
+        "path": "test/integration/gate1-owner-data-import-postgres.test.js",
+        "sha256": "67c08266fd5bf8a225f6aad1cf2b0227433b03f026f6d14c7484d37422c28601"
+      },
+      "import_completed": true,
+      "requests_new_import_authority": false
+    },
+    "reconciled_stage3c": {
+      "candidate": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/candidate.json",
+        "sha256": "96b1e3e65faf4bbf9de5b88215044d4dd9ecd1ab306544f6f81e53e8db0e9103",
+        "reconciliation_candidate_digest": "48c005a29f7cf59cbcab551239ecebbc0917037b13cc44c0b6aabe8f777ecda3",
+        "amended_stage3c_candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28"
+      },
+      "request": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/request.json",
+        "sha256": "54ad01310ad227f6b1a6cac17455683a47c5c368c707dbc60e5a4b59ab832ee9",
+        "reconciliation_request_digest": "3bc1e64ac5f52d42ed72f58c62468f61f40039360816c343c53f759ede9f950c",
+        "amended_stage3c_candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28",
+        "amended_stage3c_approval_request_digest": "06acf781d0a2c7eb3deba1884f4d1d004e50676ff1d95cd089498d87a79557d9"
+      }
+    },
+    "target_catalog": {
+      "revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+      "catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+      "status": "approved"
+    },
+    "approval_chain": {
+      "parent": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/authoring-approval-attestation.json",
+        "sha256": "21ef98e8ebbc4c28b3f1d4dcb32566a54258d66bf4c226b66491822ecd5b9b7c",
+        "attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061"
+      },
+      "reconciliation": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/authoring-approval-attestation.json",
+        "sha256": "9910353d273a97163472a8e203cba3e85871813d300065ae9f3bc4e08f194d15",
+        "attestation_digest": "d8fa62d4b7783c95ce3c6ebfede7f7e80ef1902fd8de57b1aee83adb3080d1f7"
+      },
+      "seed_closure": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/seed-closure-v1/authoring-approval-attestation.json",
+        "sha256": "054212eb613b4718948c7a87984007aada6eefd97bf42b888126bc5ef0440230",
+        "attestation_digest": "19fa5e4ee8f7663bfc354b7d67498366f9d111021fb8d9b235645e7bfb474d89"
+      }
+    },
+    "compatible_world_pins": [
+      {
+        "release_id": "spatial-v3-production-v5",
+        "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+        "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad",
+        "world_manifest": {
+          "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+          "sha256": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c"
+        },
+        "current_release_status": "validated_candidate_not_active",
+        "current_production_activation": false
+      },
+      {
+        "release_id": "spatial-v3-production-v6",
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+        "world_manifest": {
+          "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+          "sha256": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"
+        },
+        "current_release_status": "validated_candidate_not_active",
+        "current_production_activation": false
+      }
+    ],
+    "world_revisions_digest": "539c7191d85397403566e3562c9ce6ff7086a685dc291d93507512cb8c61b932"
+  },
+  "restart_evidence": {
+    "verified": true,
+    "verification": {
+      "path": "test/integration/gate1-owner-data-import-postgres.test.js",
+      "sha256": "67c08266fd5bf8a225f6aad1cf2b0227433b03f026f6d14c7484d37422c28601"
+    },
+    "managed_postgresql_result": "pass"
+  },
+  "supersedes_attestation": {
+    "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/activation-amendment-v2/runtime-activation-approval-attestation.json",
+    "sha256": "669362c84f87ad6967bf9ac6e54170d7e2d8196c37f5583fd3f8e5f96c4f223b",
+    "attestation_digest": "4427354a4336dc666952ff9069a87bddb97a79645840ac2f388ff49006c0c0c0"
+  },
+  "review_evidence": [
+    "Generator scripts/generate-gate1-activation-amendment-request.mjs run in stdout mode (no --write) at d416c0ea reproduces activation-amendment-v3/request.json byte-exactly.",
+    "request_digest v3 recomputed as canonicalDigest(request without request_digest): 8c78faf72900bc6bb67f7f8e0cff7cb54c138ca41aea2388956b7f036b0e0691; validatePendingGate1ActivationAmendment(v3) passes.",
+    "Leaf diff v2 -> v3 request: only completed_import_readback.restart_verification.sha256 (1235aa31... -> 67c08266...), supersedes {path activation-amendment-v2/request.json, request_digest 61384359..., reason} and request_digest changed; no other leaf changed.",
+    "All ten sha256 pins in v3 (predecessor activation-request, import-readback-result, restart test, reconciliation candidate/request, three approval-chain attestations, v5/v6 world manifests) match file bytes at d416c0ea; predecessor and import-result canonical digests and the three chain attestation_digest values match.",
+    "git diff 162a86b9..d416c0ea touches none of the pinned Gate1 data files, the activation-amendment v1/v2 requests, the v2 attestation (sha256 669362c8... unchanged) or import-readback-result.json; Gate1 data was not regenerated (CR #158 decision C11).",
+    "Restart test test/integration/gate1-owner-data-import-postgres.test.js hashes 67c08266... at d416c0ea; against the v2 pin (1235aa31..., identical at 67f07b07 and 162a86b9) the only change is inside the v17-local-play fresh-schema test: world_base parts are loaded from inspectWorldBaseSchema().part_files instead of a hardcoded 1..26 loop, and the expected world_base table count is inspectWorldBaseSchema().table_names.length instead of the literal 208. Cause: CR #158 adds infra/world-base/schema/27.sql (included by schema.sql) and party migration 037. The Gate1 canonical import/restart test (apply, readback, rollback, repeat-clean-apply, managed server close/reopen, restarted target revision, zero activation events) and the v17 schema-mismatch rejection test are unchanged.",
+    "Runtime gate tools/runtime-catalog-activation/src/gate1-runtime-activation.js reads the activation-amendment-v3 request and attestation paths exported by the generator, fails with GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V3_REQUIRED when the attestation is absent, re-checks sha256 and canonical digests of every binding, then calls assertGate1Authority -> validateGate1RuntimeActivationAttestation.",
+    "This attestation v3 was validated in memory by validateGate1RuntimeActivationAttestation, assertGate1ActivationAmendmentV3Attestation and assertGate1Authority (import-readback-result; worldReleaseId spatial-v3-production-v5 and v6); the v2 attestation is rejected against the v3 request; in-memory forgeries (status, activation_executed, v2 request digest, v2 restart sha, production permission, payload edit without re-digest, unknown world release) are rejected.",
+    "managed_postgresql_result pass is carried forward from the v1 managed PostgreSQL restart run: the Gate1 restart assertions are unchanged, but this reviewer did not execute the PostgreSQL test (read-only review, no database connection) and no CI run for d416c0ea existed at review time."
+  ],
+  "authority": {
+    "approval_attestation_present": true,
+    "activation_authorized": true,
+    "new_development_party_activation_authorized": true,
+    "import_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation_authorized": false
+  },
+  "activation_executed": false,
+  "database_mutated": false,
+  "conditions": [
+    "Before any real activation execution, run test/integration/gate1-owner-data-import-postgres.test.js green on managed PostgreSQL at d416c0ea or at a commit where every file pinned by activation-amendment v3 (including the restart test, sha256 67c08266...) is byte-identical; with world_base schema part 27 present, this run is also the first evidence that the unchanged Gate1 import/restart assertions hold on the extended schema.",
+    "When committing this attestation as activation-amendment-v3/runtime-activation-approval-attestation.json, restore in tools/world-catalog-workflow/test/gate1-activation-amendment.test.js a positive test of the v3 attestation (validateGate1RuntimeActivationAttestation and assertGate1Authority) together with the tamper cases that were removed with the v2 positive test.",
+    "Local v17 pair handling follows owner decision D27 on #133: novgorod_world_v17/novgorod_party_v17 are renamed to *_bak_20260927 (never dropped) before a fresh standard bootstrap; this attestation authorizes neither the rename, the bootstrap nor any import.",
+    "Any change to a pinned file, including the restart test, requires a new amendment request and a new independent approval; this attestation must not be edited in place."
+  ],
+  "limits": "Approval authorizes only a future activation operation for new development parties against the exact activation-amendment v3 request and immutable imported catalogue bindings. It does not authorize import, production activation, existing-party migration, old-save rematerialization, authoring-only functional allocation for runtime selection, runtime item creation, database rename or bootstrap, or execution by this attestation step.",
+  "attestation_digest": "d34abd3e461db8bd768ad4471766a3fee335517d6245ab5507238dbfbc3f71b5"
+}

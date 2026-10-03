@@ -66,6 +66,12 @@ function validContext(context) {
     && context.verified_catalog?.schema === 'rus.verified_item_catalog.v2'
     && context.verified_catalog.verified === true
     && samePin(context.verified_catalog.pin, context.pin)
+    && (context.verified_procedural_compiled_catalog == null
+      || (context.verified_procedural_compiled_catalog.schema
+          === 'rus.verified_procedural_compiled_catalog.v1'
+        && context.verified_procedural_compiled_catalog.verified === true
+        && samePin(context.verified_procedural_compiled_catalog.pin,
+          context.pin)))
     && (context.actor_profile_catalog == null
       || (context.actor_profile_catalog.schema
           === 'rus.verified_actor_profile_catalog.v1'

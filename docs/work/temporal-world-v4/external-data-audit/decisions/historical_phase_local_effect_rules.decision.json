@@ -7,6 +7,7 @@
     "record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
   ],
   "source_ids_reviewed": [
+    "source:historical_phase_local_effect_rules:book_667380_svod_letopisnyh_izvestiy",
     "source:historical_phase_local_effect_rules:canonical_historical_policy",
     "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
     "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
@@ -17,14 +18,21 @@
   ],
   "data_gaps": [],
   "auditor": {
-    "name": "OpenAI GPT-5.6 Thinking",
+    "name": "Claude Opus 5.5, independent approval pass",
     "organization_or_role": "independent external data authoring auditor"
   },
-  "decision_id": "decision:historical_phase_local_effect_rules:2026-07-24-reaudit-2",
-  "decided_at": "2026-07-24T17:45:00+03:00",
-  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
-  "rationale": "The rule binds a concrete cited 1230 Novgorod famine record at its source precision, represents the year as an exact calendar interval without inventing a narrower date, keeps numerical magnitudes unauthored, and preserves hidden-phase/knowledge separation.",
+  "decision_id": "decision:historical_phase_local_effect_rules:2026-09-26-reaudit-3",
+  "prior_decisions": [
+    {
+      "decision_id": "decision:historical_phase_local_effect_rules:2026-07-24-reaudit-2",
+      "path": "docs/work/temporal-world-v4/external-data-audit/historical-decisions/historical_phase_local_effect_rules.2026-07-24-reaudit-2.decision.json",
+      "sha256": "2d55b644868b15f189d3994dc12faa2373b3c2141281756c3831dc91a3a56b93"
+    }
+  ],
+  "decided_at": "2026-09-26T21:29:41+03:00",
+  "method": "independent approval pass (separate from the authoring pass): re-verified excerpt bytes and sha256 (90ec964e...eca19) of book_667380 against Novgorod-game-base books-evidence-v1/history-events-knowledge.csv rows book_id 667380 para_no 486 and 487 (each quote one sentence, byte-exact); recomputed formal_range and formal_game_timestamp_range against owner decisions D19 and D22 and the novgorod_julian_lmst_1230_1233_v2 epoch (Julian common years 1230 and 1231; 256*1440=368640; 730*1440=1051200); checked that source_precision and range_semantics state a day-exact start and a year-level end without overclaiming; checked that no price, population, inventory or mortality magnitude is inferred; checked prior-decision snapshot sha256 equals the previously approved decision bytes; checked the diff touches only this family's files.",
+  "rationale": "Reissues the record to add source book_667380 (¶486 frost on Воздвижение 1230-09-14; ¶487 arrival of German bread during 1231) and to narrow the formal range accordingly: start_inclusive moves from calendar-year precision (1230-01-01) to calendar-day precision (1230-09-14, owner decision D19); end_exclusive moves from 1231-01-01 to 1232-01-01 at year precision, reflecting the source's year-level dating of the famine's continuation through 1231 and its cessation (owner decision D22). The record still keeps numerical magnitudes unauthored and preserves hidden-phase/knowledge separation.",
   "limitations": [
-    "The source gives year-level precision; the rule intentionally does not infer month/day, price, population, inventory or mortality magnitudes. Local effect magnitudes remain separate approved-profile dependencies rather than hidden defaults."
+    "The end boundary (1232-01-01) is authored at year precision, not day precision: ¶487 dates the German bread's arrival, and hence the famine's practical cessation, only to source year 1231 without an exact month or day. The start boundary (1230-09-14) is day-exact per ¶486. Local effect magnitudes remain separate approved-profile dependencies rather than hidden defaults."
   ]
 }

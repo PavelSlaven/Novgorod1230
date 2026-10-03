@@ -4,14 +4,9 @@
 // Nothing in the working tree is touched. Needs Node and (for the .py builders) python3/python; no network, no Docker.
 //
 // NOT covered (need inputs outside the repo or the network; run them by hand):
-//   buildings-interiors-containers/scripts/build.py     MATCULT_DIR, MASTER_DIR, NOV1230_DB (external datasets and sqlite)
-//   names-peoples/scripts/build-peoples-origins.mjs     absolute Windows paths (costume-dataset copy)
-//   names-peoples/scripts/build-personal-names.mjs      onomastics candidate from the Novgorod-runtime checkout
-//   names-peoples/scripts/build-place-names.mjs         DOCUMENTS/... v6 naming register outside this checkout
-//   social-strata-law/incidents_conflicts/scripts/build_incidents.py   PR #98 worktree (schema/05.sql)
 //   places-binding/scripts/build-all.mjs --extract, extract-pr98-inputs.mjs   PR98_ROOT
 //   nature-materials-weather/_shared/scripts/refresh-inputs.mjs   PR98_ROOT, MAIN_ROOT
-//   flora-trees-shrubs (source tables from the Kolchin PDF), flora-herbs extract-sources.py, fauna-mammals-birds
+//   flora-trees-shrubs source-table extraction from the Kolchin PDF, flora-herbs extract-sources.py, fauna-mammals-birds
 //   extract_regional_bird_sources.py, history-events-knowledge export_novgorod_1230_extract.py   book/PDF extraction
 //   fetch-gbif.cjs, check-urls.cjs   network
 //   history-events-knowledge knowledge_rumors/scripts/build_knowledge.js, polities_external_relations/scripts/build_polities.js
@@ -20,8 +15,7 @@
 //   occupations-activities/npc_runtime_profiles/export_pr98.py   exports from a pinned commit of the PR #98 checkout
 //   history-events-knowledge/historical_events/scripts/validate_events.cjs   needs an output-dir argument (fails without)
 //   validators that write reports and depend on the machine or on external files: crafts validate.cjs,
-//   flora-trees validate.mjs, items-weapons-armour validate.cjs (sqlite), items-household validate.py,
-//   fauna-mammals-birds validate.cjs (report depends on the NOVGOROD_MAIN world-knowledge path)
+//   items-weapons-armour validate.cjs (sqlite), items-household validate.py
 // crafts build.cjs reads MATCULT_CATALOG when set; the env below strips it, so the committed output must not depend on it.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -37,6 +31,7 @@ const GB = 'data/world-catalogs/novgorod/game-base-v1';
 // [cwd relative to game-base-v1, interpreter, script, ...args]. Order: group builders, then places-binding, catalog, status.
 const N = 'node', P = 'py';
 const BUILDERS = [
+  ['buildings-interiors-containers', P, 'scripts/build.py'],
   ['clothing-appearance', P, 'scripts/build.py'],
   ['crafts-tools-processes', N, 'scripts/build.cjs'],
   ['crafts-tools-processes', N, 'scripts/crosswalk.cjs'],
@@ -52,9 +47,11 @@ const BUILDERS = [
   ['economy-trade-measures', N, 'currencies_measures/scripts/run_household_bench_c3.mjs'],
   ['fauna-fish-invertebrates-livestock', P, 'scripts/build.py'],
   ['fauna-mammals-birds', N, 'scripts/build.cjs'],
+  ['fauna-mammals-birds', N, 'scripts/validate.cjs'],
   ['flora-herbs-berries-mushrooms', N, 'scripts/build.cjs'],
   ['flora-herbs-berries-mushrooms', N, 'scripts/validate.cjs'],
   ['flora-trees-shrubs', N, 'scripts/build.mjs'],
+  ['flora-trees-shrubs', N, 'scripts/validate.mjs'],
   ['food-drink', P, 'scripts/build.py'],
   ['food-drink', P, 'scripts/pf_crosswalk.py'],
   ['history-events-knowledge/historical_events', N, 'scripts/build_events.cjs'],
@@ -68,6 +65,9 @@ const BUILDERS = [
   ['misc/hazards_dangers', N, 'scripts/build.mjs'],
   ['names-peoples', N, 'scripts/build-b2-name-pool.mjs'],
   ['names-peoples', N, 'scripts/build-name-components.mjs'],
+  ['names-peoples', N, 'scripts/build-peoples-origins.mjs'],
+  ['names-peoples', N, 'scripts/build-personal-names.mjs'],
+  ['names-peoples', N, 'scripts/build-place-names.mjs'],
   ['nature-materials-weather', N, '_shared/scripts/run-all.mjs'],
   ['occupations-activities/activities_observable', P, 'scripts/build_activities_for_new_occupations.py'],
   ['occupations-activities/carried_inventories', P, 'scripts/build_carried_inventories.py'],
@@ -77,6 +77,7 @@ const BUILDERS = [
   ['resource-catalog', N, 'scripts/build.mjs'],
   ['social-strata-law/law_justice_governance', P, 'scripts/build_law.py'],
   ['social-strata-law/social_strata_legal_status', P, 'scripts/build_roles.py'],
+  ['social-strata-law/incidents_conflicts', P, 'scripts/build_incidents.py'],
   ['time-calendar-church/religion', P, 'scripts/build_religion.py'],
   ['time-calendar-church/time', P, 'scripts/build_calendar.py'],
   ['time-calendar-church/time', P, 'scripts/build_schedules.py'],

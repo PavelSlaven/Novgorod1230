@@ -2,6 +2,10 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
   const npc = state.npcs?.find(
     ({ instance_id: id }) => id === actorRef.entity_id
   );
+  const body = projectQualitativeBody(qualitativeBodySources(actorRef, state, npc));
+  if (Object.keys(body).length === 0) {
+    fail('TRACE_COMBAT_SUBJECTIVE_BODY_GAP', actorRef);
+  }
   return {
     identity: { name_or_label:
       npc?.semantic_profile?.identity?.canonical_name
@@ -10,7 +14,7 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
     combat_experience: 'limited',
     attributes: [],
     skills: [],
-    body: projectQualitativeBody(qualitativeBodySources(actorRef, state, npc)),
+    body,
     mood: {},
     temperament: [],
     goals: [],
@@ -22,6 +26,11 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
         || item.ownership?.controller_npc_id === actorRef.entity_id)
       .map((item) => ({ entity_kind: 'item', entity_id: item.item_id }))
   };
+}
+
+function fail(code, actorRef) {
+  throw Object.assign(new Error(code), { code,
+    details: { actor_ref: structuredClone(actorRef) } });
 }
 
 function qualitativeBodySources(actorRef, state, npc) {

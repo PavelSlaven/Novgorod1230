@@ -106,30 +106,16 @@ test('NPC combat model receives qualitative own body, not numeric profile metada
   }
 });
 
-test('numeric current body does not fall back to stale NPC prose', async () => {
-  let prompt = '';
-  const output = { decision: { intent_summary: 'Действовать.',
-    grounded_goal: 'Продолжить.', adaptation: 'literal' },
-  operation_choice: 'operation_1', force_choice: 'force_1',
-  risk_choice: 'risk_1', combat_statement: null, reason: 'Угроза.' };
-  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
-    run: async ({ messages }) => {
-      prompt = messages.find(({ role }) => role === 'user').content;
-      return { output };
-    }
-  } });
+test('missing qualitative body bands return NPC-scoped typed gap', () => {
   const state = { npcs: [{ instance_id: 'npc-1', subjective_body_state: {
     condition_summary: 'устаревшее описание', pain: 'прежняя боль'
   } }], actor_states: { 'npc:npc-1': { body_state: {
     health: 73, energy: 41, satiety: 62
   } } } };
   const request = combatRequest();
-  request.npc_subjective_state = projectTraceCombatSubjectiveState(
-    request.npc_ref, state);
-  assert.deepEqual(request.npc_subjective_state.body, {});
-  await model(request);
-  assert.doesNotMatch(prompt,
-    /устаревшее описание|прежняя боль|"health"|"energy"|"satiety"/u);
+  assert.throws(() => projectTraceCombatSubjectiveState(request.npc_ref, state),
+    (error) => error.code === 'TRACE_COMBAT_SUBJECTIVE_BODY_GAP'
+      && error.details.actor_ref.entity_id === 'npc-1');
 });
 
 test('combat assembly does not default omitted semantic operation or statement', () => {

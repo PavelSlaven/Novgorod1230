@@ -18,9 +18,14 @@ const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'p
   body_profile_ref: { id: 'body:npc', schema: 'body-profile-v1', revision: 2 },
   health: '73', energy: '61', satiety: '49', body_state_version: '4',
   position_id: `pos:${id}`, g6_instance_id: 'g6:main', ...extra });
-const pool = (rows, positions = [{ id: 'pos:me', g6_instance_id: 'g6:main' }]) => {
+const pool = (rows, positions = [{ id: 'pos:me', g6_instance_id: 'g6:main' }],
+  bodyRows = []) => {
   const calls = []; return { calls, async query(text, values) {
     calls.push({ text, values });
+    if (/FROM party_runtime.party_actor_body_states/u.test(text)) {
+      return { rows: bodyRows.filter(({ actor_id: id }) =>
+        values[1].includes(id)) };
+    }
     return { rows: /FROM party_runtime.party_npcs/.test(text) ? rows : positions }; } }; };
 const base = (extra = {}) => ({ position: { site_id: 'site:1', position_id: 'pos:me',
   g6_instance_id: 'g6:main' }, npcs: [{ instance_id: 'npc_start', anchor_id: 'a' }], ...extra });
@@ -125,6 +130,32 @@ test('existing records win by instance_id; no site or no rows leaves the state a
   assert.equal(p.calls.length, 0);
   const empty = base();
   assert.deepEqual((await withSceneNpcs(pool([]), 'party', empty)).npcs, empty.npcs);
+});
+
+test('combat participant body reloads by actor ref without site or placement', async () => {
+  const body = { actor_id: 'npc_start', body_profile_ref: { id: 'body:npc' },
+    health: '73', energy: '61', satiety: '49', body_state_version: '4' };
+  const profile = { schema: 'rus.body_state.initialization_profile.v1' };
+  const snapshot = base({ position: { position_id: 'pos:me' },
+    combat_sessions: [{ status: 'paused_for_player', participant_refs: [
+      { entity_kind: 'npc', entity_id: 'npc_start' }
+    ] }], npcs: [{ instance_id: 'npc_start', body_state_profile: profile,
+      body_state: { health: 72, energy: 61, satiety: 49 },
+      body_state_persisted: false }] });
+  const p = pool([], [], [body]);
+  const loaded = await withSceneNpcs(p, 'party', snapshot);
+  assert.deepEqual(p.calls.map(({ values }) => values), [
+    ['party', ['npc_start']]
+  ]);
+  assert.match(p.calls[0].text, /FROM party_runtime\.party_actor_body_states/u);
+  assert.doesNotMatch(p.calls[0].text,
+    /entity_placements|scene_position_nodes|party_g6_instances/u);
+  assert.deepEqual(loaded.npcs[0].body_state,
+    { health: 73, energy: 61, satiety: 49 });
+  assert.equal(loaded.npcs[0].body_state_version, 4);
+  assert.equal(loaded.npcs[0].body_state_persisted, true);
+  assert.equal(loaded.npcs[0].body_profile_ref.id, 'body:npc');
+  assert.equal(loaded.npcs[0].body_state_profile, profile);
 });
 
 test('scene-loaded NPCs are stripped before a snapshot and nothing else is touched', () => {

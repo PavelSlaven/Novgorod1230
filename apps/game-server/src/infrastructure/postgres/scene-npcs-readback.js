@@ -10,6 +10,7 @@ export { SCENE_NPC_SOURCE, withoutSceneNpcs };
  * G6 of their position (same-G6 is the conversation co-presence rule).
  */
 export async function withSceneNpcs(pool, partyId, state) {
+  state = await withCombatParticipantBodies(pool, partyId, state);
   const siteId = state?.position?.site_id;
   if (typeof siteId !== 'string' || siteId === '') return state;
   const { rows } = await pool.query(
@@ -85,8 +86,33 @@ export async function withSceneNpcs(pool, partyId, state) {
     npcs: [...current.values(), ...loaded] };
 }
 
-function sceneNpcBodyState(row) {
-  return { body_state_profile: row.semantic_state?.body_state_profile ?? null,
+async function withCombatParticipantBodies(pool, partyId, state) {
+  const participantIds = [...new Set((state?.combat_sessions ?? [])
+    .filter(({ status }) => status !== 'ended')
+    .flatMap(({ participant_refs: refs }) => refs ?? [])
+    .filter(({ entity_kind: kind, entity_id: id }) => kind === 'npc'
+      && typeof id === 'string' && id !== '')
+    .map(({ entity_id: id }) => id))];
+  if (participantIds.length === 0) return state;
+  const { rows } = await pool.query(
+    `SELECT actor_id,body_profile_ref,health,energy,satiety,
+            state_version AS body_state_version
+       FROM party_runtime.party_actor_body_states
+      WHERE party_id=$1 AND actor_kind='npc' AND actor_id=ANY($2::text[])
+      ORDER BY actor_id`, [partyId, participantIds]);
+  if (rows.length === 0) return state;
+  const persisted = new Map(rows.map((row) => [row.actor_id, row]));
+  const npcs = (state.npcs ?? []).map((npc) => {
+    const body = persisted.get(npc.instance_id);
+    return body == null ? npc : { ...npc,
+      ...sceneNpcBodyState(body, npc.body_state_profile) };
+  });
+  return { ...state, npcs };
+}
+
+function sceneNpcBodyState(row, existingProfile = null) {
+  return { body_state_profile: row.semantic_state?.body_state_profile
+      ?? existingProfile ?? null,
     body_state: row.body_state_version == null ? null : {
       health: Number(row.health), energy: Number(row.energy),
       satiety: Number(row.satiety)

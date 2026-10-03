@@ -8,6 +8,8 @@ import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/regis
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { withSceneNpcs } from
+  '../../apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, {
@@ -151,6 +153,22 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   [partyId, npcId])).rows[0], {
     health: '80', energy: '70', satiety: '60', state_version: '1'
   });
+  const participantRef = { entity_kind: 'npc', entity_id: npcId };
+  const reloadSnapshot = () => ({ combat_sessions: [{ status: 'paused_for_player',
+    participant_refs: [participantRef] }], npcs: [{ instance_id: npcId,
+    body_state_profile: { schema: 'fixture-profile' },
+    body_state_persisted: false }] });
+  const afterInsert = await withSceneNpcs(pool, partyId, reloadSnapshot());
+  assert.deepEqual(afterInsert.npcs[0].body_state,
+    { health: 80, energy: 70, satiety: 60 });
+  assert.equal(afterInsert.npcs[0].body_state_version, 1);
+  assert.equal(afterInsert.npcs[0].body_state_persisted, true);
+  assert.deepEqual(afterInsert.npcs[0].body_profile_ref, profileRef);
+  const afterRestart = await withSceneNpcs(pool, partyId,
+    structuredClone(reloadSnapshot()));
+  assert.deepEqual(afterRestart.npcs[0].body_state,
+    afterInsert.npcs[0].body_state);
+  assert.equal(afterRestart.npcs[0].body_state_version, 1);
 
   const updatedPlan = await makePlan({ ordinal: 2,
     idempotencyKey: `combat-body-update-${suffix}`, mode: 'update',
@@ -161,6 +179,10 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
     FROM party_runtime.party_actor_body_states
     WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
   [partyId, npcId])).rows[0], { health: '55', state_version: '2' });
+  const afterUpdate = await withSceneNpcs(pool, partyId, reloadSnapshot());
+  assert.deepEqual(afterUpdate.npcs[0].body_state,
+    { health: 55, energy: 70, satiety: 60 });
+  assert.equal(afterUpdate.npcs[0].body_state_version, 2);
 
   const failingPlan = await makePlan({ ordinal: 3,
     idempotencyKey: `combat-body-rollback-${suffix}`, mode: 'update',

@@ -5,6 +5,8 @@ import { combatWrites } from
   '../src/infrastructure/postgres/lower-dvina-trace-combat-writes.js';
 import { expectedVersions } from
   '../src/infrastructure/postgres/lower-dvina-trace-combat-commit.js';
+import { withSceneNpcs } from
+  '../src/infrastructure/postgres/scene-npcs-readback.js';
 
 test('combat body write preserves a first-entry NPC legacy anchor', () => {
   const player = { entity_kind: 'player_character', entity_id: 'player-1' };
@@ -71,7 +73,7 @@ test('combat body histories have stable distinct idempotency records', () => {
   ]);
 });
 
-test('combat first P16 persists participant body and updates persisted body row', () => {
+test('combat first P16 persists participant body and updates persisted body row', async () => {
   const player = { entity_kind: 'player_character', entity_id: 'player-1' };
   const npc = { entity_kind: 'npc', entity_id: 'npc-1' };
   const session = createCombatSession({ combat_id: 'combat-1',
@@ -92,10 +94,11 @@ test('combat first P16 persists participant body and updates persisted body row'
       actor_states: { [`npc:${npc.entity_id}`]: { body_state: {
         health: 80, energy: 70, satiety: 60 } } } }
     } } };
-  const writesFor = (priorNpc) => combatWrites({ partyId: 'party-1',
-    state: { ...baseState, npcs: [priorNpc] },
+  const writesFor = (priorNpc, exchangeFactual = factual,
+    priorSession = session) => combatWrites({ partyId: 'party-1',
+    state: { ...baseState, combat_sessions: [priorSession], npcs: [priorNpc] },
     next: { party_state: { state_version: 2, body_state_version: 1 },
-      clock: stamp(), npcs: [priorNpc] }, factual,
+      clock: stamp(), npcs: [priorNpc] }, factual: exchangeFactual,
     turnNumber: 2, changeSetId: 'change-1', idemId: 'idem-1',
     visibleEnvelope: {}, pendingScreen: {} });
 
@@ -111,17 +114,46 @@ test('combat first P16 persists participant body and updates persisted body row'
   assert.equal(inserted.updates.some(({ target_table }) =>
     target_table === 'party_actor_body_states'), false);
 
-  const updated = writesFor({ instance_id: npc.entity_id,
+  const profileRef = factual.consequence.combat.working_state_after.npcs[0]
+    .body_profile_ref;
+  const reloaded = await withSceneNpcs({ query: async () => ({ rows: [{
+    actor_id: npc.entity_id, body_profile_ref: profileRef,
+    health: '80', energy: '70', satiety: '60', body_state_version: '1'
+  }] }) }, 'party-1', { npcs: [{ instance_id: npc.entity_id,
     machine_state: {},
-    body_state_persisted: true, body_state_version: 4,
-    body_profile_ref: { id: 'body:existing' },
-    body_state: { health: 90, energy: 70, satiety: 60 } });
+    body_state_profile: { schema: 'test-profile' },
+    body_state_persisted: false }],
+  combat_sessions: [session] });
+  assert.equal(reloaded.npcs[0].body_state_persisted, true);
+  assert.equal(reloaded.npcs[0].body_state_version, 1);
+  assert.deepEqual(reloaded.npcs[0].body_state,
+    { health: 80, energy: 70, satiety: 60 });
+
+  const secondFactual = structuredClone(factual);
+  const firstSession = { ...session, state_version: '2', exchange_ordinal: 1,
+    last_exchange_ref: { entity_kind: 'combat_exchange',
+      entity_id: 'combat-exchange:1' } };
+  secondFactual.consequence.combat.session_after = { ...firstSession,
+    state_version: '3', exchange_ordinal: 2,
+    last_exchange_ref: { entity_kind: 'combat_exchange',
+      entity_id: 'combat-exchange:2' } };
+  secondFactual.consequence.combat.working_state_after.actor_states[
+    `npc:${npc.entity_id}`].body_state.health = 65;
+  const updated = writesFor(reloaded.npcs[0], secondFactual, firstSession);
+  assert.deepEqual(expectedVersions({ partyId: 'party-1',
+    state: { ...baseState, combat_sessions: [firstSession],
+      npcs: [reloaded.npcs[0]] }, factual: secondFactual
+  }).filter(({ target_table }) =>
+    target_table === 'party_actor_body_states'), [{
+    target_table: 'party_actor_body_states', id: `npc:${npc.entity_id}`,
+    state_version: 1
+  }]);
   assert.equal(updated.inserts.some(({ target_table }) =>
     target_table === 'party_actor_body_states'), false);
   assert.deepEqual(updated.updates.find(({ target_table }) =>
     target_table === 'party_actor_body_states').record, {
-    party_id: 'party-1', actor_kind: 'npc', actor_id: 'npc-1',
-    body_profile_ref: { id: 'body:existing' }, health: 80, energy: 70,
+    party_id: 'party-1', actor_kind: 'npc', actor_id: npc.entity_id,
+    body_profile_ref: profileRef, health: 65, energy: 70,
     satiety: 60, updated_change_set_id: 'change-1'
   });
 });

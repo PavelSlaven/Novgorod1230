@@ -394,14 +394,15 @@ test('production LLM role resolves A1 weapon classification at combat boundary',
     }
   });
 
-test('post-exchange subjective projection omits numeric body and reads equipment',
+test('post-exchange subjective projection reads qualitative body and equipment',
   () => {
     const state = {
       npcs: [{ instance_id: 'ratsha-1',
         participant_slot_ref: 'ratsha_storehouse_helper',
-        body_state: { health: 63, condition_summary: 'ранен' },
+        body_state: { health: 63, condition_summary: 'test fixture band' },
         machine_state: { body_condition: { health: 100 } } }],
-      actor_states: { 'npc:ratsha-1': { body_state: { health: 63 } } },
+      actor_states: { 'npc:ratsha-1': { body_state: { health: 63,
+        condition_summary: 'test fixture band' } } },
       items: [{ item_id: 'knife-1', placement: {
         holder_npc_id: 'ratsha-1' }, ownership: {
         controller_npc_id: 'ratsha-1' } }, { item_id: 'axe-1', placement: {
@@ -409,8 +410,8 @@ test('post-exchange subjective projection omits numeric body and reads equipment
         controller_npc_id: 'other-npc' } }]
     };
     const projected = projectTraceCombatSubjectiveState(ratsha, state);
-    assert.deepEqual(projected.body, {});
-    assert.equal('health' in projected.body, false);
+    assert.deepEqual(projected.body,
+      { condition_summary: 'test fixture band' });
     assert.deepEqual(projected.available_equipment, [{
       entity_kind: 'item', entity_id: 'knife-1' }]);
   });

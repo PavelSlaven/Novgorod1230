@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   loadCategoryParentMap,
+  loadG1NodeIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules,
@@ -157,6 +158,40 @@ test('loadPresenceRulesForPlaceFamilies returns frozen rows after gate', async (
   });
   assert.equal(rows.length, 1);
   assert.equal(rows[0].rule_id, 'pr_a');
+});
+
+test('loadG1NodeIdForSpatialNode returns the unique pinned G1 ancestor', async () => {
+  const calls = [];
+  const worldBaseReader = {
+    read: async (sql, params) => {
+      calls.push({ sql, params });
+      if (sql.includes("spatial_level = 'G1'")) return { rows: [{ id: 'gn_nov_g1_xp017_yp026' }] };
+      return gateReader().read(sql, params);
+    },
+  };
+  const id = await loadG1NodeIdForSpatialNode({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+    nodeId: 'canonical-g5', nodeVersion: 1,
+  });
+  assert.equal(id, 'gn_nov_g1_xp017_yp026');
+  const ancestry = calls.find(({ sql }) => sql.includes("spatial_level = 'G1'"));
+  assert.deepEqual(ancestry.params, ['canonical-g5', 1, 'rev-spatial']);
+  assert.match(ancestry.sql, /p\.world_revision_id = \$3/u);
+  assert.match(ancestry.sql, /pn\.status = 'approved'/u);
+});
+
+test('loadG1NodeIdForSpatialNode fails closed when the pinned G1 ancestor is missing or ambiguous', async () => {
+  for (const rows of [[], [{ id: 'g1-a' }, { id: 'g1-b' }]]) {
+    const worldBaseReader = {
+      read: async (sql, params) => sql.includes("spatial_level = 'G1'")
+        ? { rows } : gateReader().read(sql, params),
+    };
+    await assert.rejects(() => loadG1NodeIdForSpatialNode({
+      worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+      nodeId: 'canonical-g5', nodeVersion: 1,
+    }), (error) => error instanceof RuntimeCatalogError
+      && error.code === 'PRESENCE_G1_REGION_AMBIGUOUS');
+  }
 });
 
 test('loadCategoryParentMap returns ancestor links for object_type facet', async () => {

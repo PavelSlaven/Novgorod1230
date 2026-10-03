@@ -249,6 +249,85 @@ test('O1 template closure rejects an unmapped variant instead of filtering it', 
   assert.deepEqual(aggregate.presence_resolutions, []);
 });
 
+test('O1 selector gaps only its exact rule while a same-tuple nonmember PF stays generic', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-o1-scoped' }, resolution_record_cap: 8 });
+  const o1Rule = rule({ rule_id: 'pr_o1_selected', scope_ref: 'pf_o1', item_ref: 'it_missing',
+    presence_probability_ppm: Symbol('selected gap must precede RNG') });
+  const unrelatedRule = rule({ rule_id: 'pr_pf_nonmember', scope_ref: 'pf_o1', item_ref: 'it_unlisted',
+    presence_probability_ppm: 0 });
+  const gaps = [];
+  const after = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-o1-scoped',
+    scopeInstanceRef: 'g5:o1-scoped',
+    rules: [o1Rule, unrelatedRule],
+    o1Applicability: {
+      templateBackedItemRefs: new Set(['it_approved']),
+      selector: { applicability: {
+        selectors: [{ g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+          place_family_ref: 'pf_o1@1', source_pf_id: 'pf_o1' }],
+        rule_refs: [{ rule_id: 'pr_o1_selected', rule_version: 1 }],
+      } },
+      tuple: { g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+        place_family_refs: [{ source_pf_id: 'pf_o1', place_family_ref: 'pf_o1@1' }] },
+    },
+    onO1TemplateGap: (entry) => gaps.push(entry),
+  });
+  assert.equal(gaps.length, 1);
+  assert.deepEqual(gaps[0], { code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    rule_ref: 'pr_o1_selected@1', reason: 'template_missing',
+    missing_item_refs: ['it_missing'] });
+  assert.deepEqual(after.presence_resolutions.map((entry) => entry.rule_ref), ['pr_pf_nonmember@1']);
+});
+
+test('selected O1 rejects a broken nested template closure before discovery RNG', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-o1-broken-closure' }, resolution_record_cap: 8 });
+  assert.throws(() => applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-o1-broken-closure',
+    scopeInstanceRef: 'g5:o1-broken-closure',
+    rules: [rule({ rule_id: 'pr_o1_selected', scope_ref: 'pf_o1', item_ref: 'it_test',
+      presence_probability_ppm: Symbol('RNG must not run') })],
+    o1Applicability: {
+      selector: { applicability: {
+        selectors: [{ g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+          place_family_ref: 'pf_o1@1', source_pf_id: 'pf_o1' }],
+        rule_refs: [{ rule_id: 'pr_o1_selected', rule_version: 1 }],
+      } },
+      tuple: { g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+        place_family_refs: [{ source_pf_id: 'pf_o1', place_family_ref: 'pf_o1@1' }] },
+      templateBackedItemRefs: [],
+    },
+  }), {
+    code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP',
+    details: { rule_ref: 'pr_o1_selected@1', reason: 'template_closure_invalid' },
+  });
+  assert.deepEqual(aggregate.presence_resolutions, []);
+});
+
+test('O1 selector rule on a different tuple keeps the generic path', () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-o1-wrong-tuple' }, resolution_record_cap: 8 });
+  const after = applyPresenceRulesFirstArrival({
+    aggregate,
+    partyId: 'party-o1-wrong-tuple',
+    scopeInstanceRef: 'g5:o1-wrong-tuple',
+    rules: [rule({ rule_id: 'pr_o1_selected', scope_ref: 'pf_o1', item_ref: 'it_unlisted',
+      presence_probability_ppm: 0 })],
+    templateBackedItemRefs: new Set(['it_approved']),
+    o1Applicability: {
+      selector: { applicability: {
+        selectors: [{ g1_ref: 'g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+          place_family_ref: 'pf_o1@1', source_pf_id: 'pf_o1' }],
+        rule_refs: [{ rule_id: 'pr_o1_selected', rule_version: 1 }],
+      } },
+      tuple: { g1_ref: 'other-g1', g4_ref: 'g4@1', canonical_g5_ref: 'g5@1',
+        place_family_refs: [{ source_pf_id: 'pf_o1', place_family_ref: 'pf_o1@1' }] },
+    },
+    onO1TemplateGap: () => assert.fail('wrong tuple must not be strict O1'),
+  });
+  assert.equal(after.presence_resolutions.length, 1);
+});
+
 test('O1 template closure rejects malformed variant refs as a typed gap', () => {
   const aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'g6-template-malformed' }, resolution_record_cap: 8 });
   assert.throws(() => applyPresenceRulesFirstArrival({

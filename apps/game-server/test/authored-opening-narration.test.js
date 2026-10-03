@@ -64,6 +64,9 @@ test('rich environment remains prose evidence without violating screen vocabular
 test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   const pkg = openingPackage();
   const digest = computeVisibleContextPackageDigest(pkg);
+  const initialMaterializationGaps = [{ rule_ref: 'rule_o1_missing_template@1',
+    reason: 'template_missing', missing_item_refs: ['item_internal_o1_gap'] }];
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
   const approval = buildVisibleContextAuditApproval({ request_id: 'opening:1',
     pass: true, visible_context_package_digest: digest,
     visible_context_audit: { request_id: 'opening:1', pass: true,
@@ -71,10 +74,11 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
     commit_permission: { can_send_to_narrator: true,
       can_write_visible_context_snapshot: true,
       can_generate_player_facing_prose: true } });
-  const roles = [];
-  const service = createAuthoredOpeningNarrationService({ roleRunner: {
+  const roles = [], modelMessages = [];
+  const service = createAuthoredOpeningNarrationService({ llmDiagnostics: diagnostics, roleRunner: {
     async run(call) {
       roles.push(call.role_id);
+      modelMessages.push(call.messages);
       if (call.role_id === 'gameplay_narrator') return { output: {
         version: 1, schema: 'narrator_starting_prose',
         request_id: 'opening:1', prose_status: 'drafted',
@@ -94,13 +98,21 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
       throw new Error(`unexpected role ${call.role_id}`);
     }
   } });
-  const result = await service.run({ requestId: 'opening:1',
-    visibleContextPackage: pkg, visibleContextApproval: approval });
+  const result = await service.run({ partyId: 'party:1', requestId: 'opening:1',
+    visibleContextPackage: pkg, visibleContextApproval: approval,
+    initialMaterializationGaps });
   assert.match(result.prose, /Любава/u);
   assert.equal(result.flow.status, 'approved');
   assert.equal(result.stage23_result.pass, true);
   assert.equal(result.original_stage23_audit.pass, true);
   assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+  const diagnosticReport = diagnostics.takeLogReport({ party_id: 'party:1', request_id: 'opening:1' });
+  assert.deepEqual(diagnosticReport.gameplay_traces[0], {
+    event: 'initial_materialization_presence_gaps',
+    presence_gaps: initialMaterializationGaps, sequence: 1,
+  });
+  assert.doesNotMatch(JSON.stringify(modelMessages), /item_internal_o1_gap/u);
+  assert.doesNotMatch(JSON.stringify(result), /item_internal_o1_gap/u);
 });
 
 test('opening repairs unsupported negative prose once and blocks hard findings', async () => {
@@ -337,7 +349,9 @@ test('first screen receives natural perception after committed rehydrate without
       if (observation.visual_conditions) observation.visual_conditions.lighting = lighting;
     }
     const surfaceText = perception.presentation_profile.layers.find((row) => row.layer === 'surface').clear_text;
-    let committed = false, session, narratorInput;
+    let committed = false, session, narratorInput, narratorMaterializationGaps;
+    const startPresenceGaps = [{ rule_ref: 'rule_start_gap@1', reason: 'template_missing',
+      missing_item_refs: ['internal_start_gap_item'] }];
     const order = [];
     const result = await startLowerDvinaTrace({ requestId: 'opening:1', partyId: 'party:1',
       creationIdentity: { scenario_id: 'scenario' },
@@ -354,7 +368,8 @@ test('first screen receives natural perception after committed rehydrate without
         async loadInternal() { if (committed) order.push('rehydrate'); return committed ? internal : null; },
         async materialize(request) { internal.request_identity = request; committed = true; order.push('commit'); return { status: 'committed' }; },
         async loadVisible() { return visible; },
-        async provisionInitialOrdinary() { order.push('provision'); },
+        async provisionInitialOrdinary() { order.push('provision'); return canonical
+          ? { ordinary: { presence_gaps: startPresenceGaps } } : null; },
         async loadNaturalScenePerceptionInput() { order.push('perception'); return {
           ...perception, entity_observations: canonical && lighting === 'clear'
             ? [{ entity_kind: 'npc', entity_id: 'npc:arrival', visibility: 'clear',
@@ -365,6 +380,7 @@ test('first screen receives natural perception after committed rehydrate without
       },
       authoredOpeningNarration: { async run(input) {
         order.push('narrate'); narratorInput = input.visibleContextPackage;
+        narratorMaterializationGaps = input.initialMaterializationGaps;
         const descriptions = narratorInput.visible_scene_facts.filter(({ fact_id }) => fact_id.startsWith('opening:natural:'));
         return { prose: `Вы стоите у берега. ${descriptions.map(({ text }) => text).join(' ')} ${narratorInput.visible_npcs.map(({ label }) => label).join(' ')}`,
           flow: {}, original_stage23_audit: {} };
@@ -379,6 +395,9 @@ test('first screen receives natural perception after committed rehydrate without
     assert.ok(order.lastIndexOf('rehydrate') < order.indexOf('perception'));
     assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
+    assert.deepEqual(narratorMaterializationGaps, canonical ? startPresenceGaps : undefined);
+    assert.doesNotMatch(JSON.stringify(narratorInput), /internal_start_gap_item/u);
+    assert.doesNotMatch(JSON.stringify(result.screen), /internal_start_gap_item/u);
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);
     assert.deepEqual(result.screen.panels.route.data.movement?.options ?? [], canonical
       ? [{ label: 'Проход 3', knowledge_state: 'known' }] : []);

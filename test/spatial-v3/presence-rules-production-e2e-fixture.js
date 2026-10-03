@@ -258,6 +258,8 @@ export function installPresenceProductionE2eFetch({
   observeText = TARGET_SMOKE_INPUT,
   movementPrefs = { exactMovement: false },
   narrationLog = null,
+  requestLog = null,
+  movementLog = null,
 } = {}) {
   const MATERIALIZATION_ROLES = Object.freeze([
     'ordinary_materialization', 'spatial_semantic_descriptor',
@@ -270,6 +272,7 @@ export function installPresenceProductionE2eFetch({
     const call = JSON.parse(init.body);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    requestLog?.push({ system, user: modelInput });
     let output;
     if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       output = {
@@ -301,6 +304,8 @@ export function installPresenceProductionE2eFetch({
             reason: 'Названного прохода нет.' }) } }] }), { status: 200 });
         }
         assert.ok(pick, `no movement operation in planner request: ${request.root_player_action}`);
+        movementLog?.push({ movement_kind: pick.operation.movement_kind,
+          route_ref: pick.operation.route_ref ?? null, target_ref: pick.operation.target_ref ?? null });
         output = {
           interpretation: {
             player_goal: request.root_player_action,

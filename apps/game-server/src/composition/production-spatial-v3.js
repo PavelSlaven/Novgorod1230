@@ -58,7 +58,8 @@ import { createSpatialV3GenerationAdmission } from
   '../infrastructure/postgres/spatial-v3-generation-admission.js';
 import { createTargetGeneratedFirstEntry } from
   '../infrastructure/postgres/target-generated-first-entry.js';
-import { createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
+import { createApprovedO1TemplateBackedItemRefs,
+  createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { readTargetPartyPresenceCalendar as resolveTargetPartyPresenceCalendar } from
   '../infrastructure/postgres/target-party-presence-calendar.js';
@@ -125,6 +126,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
       rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
+      o1ArtifactPins: release.target_o1_profile_artifact_pins,
       verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
       ...(config.a1ApplicabilityClassPath == null ? {}
         : { a1ApplicabilityClassPath: config.a1ApplicabilityClassPath }) });
@@ -318,6 +320,9 @@ export async function createSpatialV3ProductionCompositionRoot({
         worldPin,
         runtimeCatalogPin: bindings.runtimeCatalogPin,
         readPartyPresenceCalendar: readTargetPartyPresenceCalendar,
+        o1Selector: targetProfiles.materialization_profiles.ordinaryMaterializationProfile.o1_presence.selector,
+        templateBackedItemRefs: createApprovedO1TemplateBackedItemRefs(
+          targetContext.runtime.materialization_inputs.domain_catalog),
       });
       targetFiniteFirstEntry = createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry, {
         resolvePresenceRulesFirstArrival: targetPresenceResolverPort.resolve,
@@ -341,19 +346,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         profile: targetPartyStartProfile,
         includeContextBoundCapabilities: false,
         partyStartPresenceOnly: true,
-        resolvePresenceRulesFirstArrival: createTargetPresenceRulesFirstArrivalResolver({
-          worldBaseReader: runtimeCatalogWorldBaseReader,
-          spatialWorldPin: {
-            world_revision_id: release.world_revision_id,
-            catalog_digest: release.world_catalog_digest,
-          },
-          worldPin: {
-            world_revision_id: release.world_revision_id,
-            world_catalog_digest: release.world_catalog_digest,
-          },
-          runtimeCatalogPin: bindings.runtimeCatalogPin,
-          readPartyPresenceCalendar: readTargetPartyPresenceCalendar,
-        }),
+        resolvePresenceRulesFirstArrival: targetPresenceResolverPort.resolve,
       }));
     const spatialSemanticFirstEntryProvisioner = targetContext == null
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;

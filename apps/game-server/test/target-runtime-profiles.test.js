@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { loadTargetRuntimeProfiles, loadTargetFiniteFirstEntryProfile,
-  readApprovedPostActionPerceptionProfile } from
+  isUniqueTargetO1Applicability, readApprovedPostActionPerceptionProfile } from
   '../src/internal/target-runtime-profiles.js';
 import { createTargetFiniteFirstEntryPorts } from '../src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { targetFiniteProfileCatalogFixture } from '../../../test/spatial-v3/target-finite-profile-fixture.js';
@@ -62,7 +62,13 @@ test('target mapped approval admits generic mechanics and preserves explicit mis
   assert.equal(readApprovedPostActionPerceptionProfile(candidate, worldRevisionId),
     null);
   assert.equal(loaded.ordinary_profiles.s1, null);
-  assert.equal(loaded.materialization_profiles.ordinaryMaterializationProfile, null);
+  const o1Profile = loaded.materialization_profiles.ordinaryMaterializationProfile;
+  assert.equal(o1Profile.schema, 'rus.live_world_runtime.ordinary_materialization_profile.v1');
+  assert.equal(o1Profile.fallback_policy, 'forbidden');
+  assert.equal(o1Profile.o1_presence.selector.applicability.rule_refs.length, 75);
+  assert.equal(o1Profile.o1_presence.selector.applicability.selectors.length, 4);
+  assert.ok(o1Profile.o1_presence.approval.limits.length > 0);
+  assert.equal(o1Profile.o2a_ambient, null);
   assert.equal(loaded.materialization_profiles.localFireProfile, null);
   const action = loaded.materialization_profiles.actionProductionProfile;
   assert.ok(validNeutralActionProductionProfile(action.profile));
@@ -75,6 +81,52 @@ test('target mapped approval admits generic mechanics and preserves explicit mis
     pool: { query: async () => ({ rows: [] }) } }), /Exact loaded A1 profile/u);
   await assert.rejects(loadTargetRuntimeProfiles({ worldRevisionId: 'historical-world' }),
     { code: 'SPATIAL_V3_TARGET_RUNTIME_PROFILE_APPROVAL_REQUIRED' });
+});
+
+test('target O1 profile fails startup when any approved artifact or F01 source pin is missing or stale', async () => {
+  const { TARGET_O1_PROFILE_ARTIFACT_PINS } = await import('../src/internal/target-o1-profile-pins.js');
+  const cases = [
+    ['missing profile', (pins) => { pins.profile.path += '.missing'; }],
+    ['stale profile', (pins) => { pins.profile.sha256 = '0'.repeat(64); }],
+    ['missing selector', (pins) => { pins.selector.path += '.missing'; }],
+    ['stale selector', (pins) => { pins.selector.sha256 = '0'.repeat(64); }],
+    ['missing approval', (pins) => { pins.approval.path += '.missing'; }],
+    ['stale approval', (pins) => { pins.approval.sha256 = '0'.repeat(64); }],
+    ['missing F01 source 1', (pins) => { pins.sources[0].path += '.missing'; }],
+    ['stale F01 source 1', (pins) => { pins.sources[0].sha256 = '0'.repeat(64); }],
+    ['missing F01 source 2', (pins) => { pins.sources[1].path += '.missing'; }],
+    ['stale F01 source 2', (pins) => { pins.sources[1].sha256 = '0'.repeat(64); }],
+  ];
+  for (const [name, mutate] of cases) {
+    const pins = structuredClone(TARGET_O1_PROFILE_ARTIFACT_PINS);
+    mutate(pins);
+    await assert.rejects(loadTargetRuntimeProfiles({ worldRevisionId, o1ArtifactPins: pins }), {
+      code: 'SPATIAL_V3_TARGET_O1_PROFILE_APPROVAL_REQUIRED',
+    }, name);
+  }
+  await assert.rejects(loadTargetRuntimeProfiles({ worldRevisionId,
+    o1ArtifactPins: { ...structuredClone(TARGET_O1_PROFILE_ARTIFACT_PINS), sources: [] } }),
+  { code: 'SPATIAL_V3_TARGET_O1_PROFILE_APPROVAL_REQUIRED' }, 'broken F01 source set');
+});
+
+test('target O1 applicability rejects duplicate rules, duplicate tuples and ambiguous site selectors', async () => {
+  const { materialization_profiles: profiles } = await loadTargetRuntimeProfiles({ worldRevisionId });
+  const applicability = profiles.ordinaryMaterializationProfile.o1_presence.selector.applicability;
+  assert.equal(isUniqueTargetO1Applicability(applicability), true);
+
+  const duplicateRule = structuredClone(applicability);
+  duplicateRule.rule_refs[1] = structuredClone(duplicateRule.rule_refs[0]);
+  assert.equal(isUniqueTargetO1Applicability(duplicateRule), false);
+
+  const duplicateTuple = structuredClone(applicability);
+  duplicateTuple.selectors[1] = structuredClone(duplicateTuple.selectors[0]);
+  assert.equal(isUniqueTargetO1Applicability(duplicateTuple), false);
+
+  const ambiguousSite = structuredClone(applicability);
+  ambiguousSite.selectors[1] = { ...ambiguousSite.selectors[1],
+    g4_ref: ambiguousSite.selectors[0].g4_ref,
+    canonical_g5_ref: ambiguousSite.selectors[0].canonical_g5_ref };
+  assert.equal(isUniqueTargetO1Applicability(ambiguousSite), false);
 });
 
 test('target post-action perception requires matching independent approval fields', async () => {

@@ -249,6 +249,22 @@ function assertPresenceRuleTemplateCoverage(rule, templateBackedItemRefs, requir
   }
 }
 
+function selectedO1PresenceRule(rule, o1Applicability) {
+  if (o1Applicability == null) return false;
+  const { selector, tuple } = o1Applicability;
+  const refs = selector?.applicability?.rule_refs;
+  const tuples = selector?.applicability?.selectors;
+  if (!Array.isArray(refs) || !Array.isArray(tuples) || !tuple
+      || !Array.isArray(tuple.place_family_refs)) return false;
+  const place = tuples.some((entry) => entry.g1_ref === tuple.g1_ref
+    && entry.g4_ref === tuple.g4_ref
+    && entry.canonical_g5_ref === tuple.canonical_g5_ref
+    && tuple.place_family_refs.some((binding) => binding.source_pf_id === rule.scope_ref
+      && binding.place_family_ref === entry.place_family_ref));
+  return place && refs.some((entry) => entry.rule_id === rule.rule_id
+    && entry.rule_version === rule.rule_version);
+}
+
 export function applyPresenceRulesFirstArrival({
   aggregate,
   partyId,
@@ -259,6 +275,8 @@ export function applyPresenceRulesFirstArrival({
   requestIdentityPrefix = 'presence-first-arrival',
   templateBackedItemRefs = null,
   requireTemplateBackedItemRefs = false,
+  o1Applicability = null,
+  onO1TemplateGap = null,
 }) {
   let current = aggregate;
   for (const rule of sortPresenceRulesForFirstArrival(rules, parentById)) {
@@ -286,9 +304,24 @@ export function applyPresenceRulesFirstArrival({
       })) {
       continue;
     }
-    // Target O1 callers pass the complete exact-ref closure from the approved item catalog.
-    // Validating every alternative prevents a seeded draw from hiding a missing template.
-    assertPresenceRuleTemplateCoverage(rule, templateBackedItemRefs, requireTemplateBackedItemRefs);
+    if (selectedO1PresenceRule(rule, o1Applicability)) {
+      // Check every alternative before RNG. A missing template blocks only this O1 rule.
+      try {
+        assertPresenceRuleTemplateCoverage(rule, o1Applicability.templateBackedItemRefs, true);
+      } catch (error) {
+        if (error?.code !== 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP'
+            || error.details?.reason !== 'template_missing'
+            || typeof onO1TemplateGap !== 'function') throw error;
+        onO1TemplateGap(Object.freeze({ code: error.code, ...error.details }));
+        continue;
+      }
+    } else if (requireTemplateBackedItemRefs && o1Applicability == null) {
+      // Preserve the explicit generic seam for non-target callers and its direct tests.
+      assertPresenceRuleTemplateCoverage(rule, templateBackedItemRefs, true);
+    } else {
+      // The O1 closure must never turn generic PF presence into a global allowlist.
+      assertPresenceRuleTemplateCoverage(rule, null, false);
+    }
     const discoveryModeConfig = presenceDiscoveryModeConfiguration(rule);
     if (!discoveryModeConfig.ok) {
       throw new MaterializationError('PRESENCE_RULE_DISCOVERY_MODE_DATA_GAP',

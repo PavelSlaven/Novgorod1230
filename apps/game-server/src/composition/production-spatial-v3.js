@@ -207,12 +207,20 @@ export async function createSpatialV3ProductionCompositionRoot({
         readLocalMovementAdmission: createLocalMovementDisclosureReader({
           readLocalMovementEligibility })
       });
-    const readCurrentEntityObservations = currentVisibility == null ? null
+    const readCurrentVisibleContext = currentVisibility == null ? null
       : async ({ partyId, actorId, positionId, turnBudget } = {}) => {
         const read = async (transaction) => {
-          return currentVisibility.readEntityObservations({
+          const state = { party_id: partyId, actor_id: actorId,
+            journey_location: { scene_position_id: positionId } };
+          const sources = await currentVisibility.readCurrentSources({
+            transaction, partyId, actorId, positionId, state,
+            directionalExits: [], observedPositionId: positionId
+          });
+          const directionalExits = await currentVisibility.readCurrentExitDisclosure({
             transaction, partyId, actorId, observedPositionId: positionId
           });
+          return projectSpatialV3CurrentVisibleContext({ ...sources,
+            directionalExits, partyId, actorId, positionId });
         };
         if (hasActiveTurnDeadline(turnBudget)) return withTurnDeadlineTransaction(
           pools.partyPool, turnBudget, read,
@@ -307,7 +315,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
         spatialExpansionRuntime,
-        readCurrentEntityObservations,
+        readCurrentVisibleContext,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
           readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
           readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,

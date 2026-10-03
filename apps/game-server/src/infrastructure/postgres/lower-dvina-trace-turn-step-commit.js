@@ -140,11 +140,16 @@ export async function commitLowerDvinaTraceTurnStep({
       'Background NPC semantic plan failed its sealed contract.',
       { status: 409 });
   }
-  const ordinaryVisibleContext = ordinaryPlan == null ? envelope.visible_context
+  const destinationVisibleContext = preparedMovementState?.current_visible_context
+    ?? envelope.consequence?.visible_seed?.destination_visible_context ?? null;
+  const sourceVisibleContext = destinationVisibleContext
+    ?? envelope.visible_context;
+  const ordinaryVisibleContext = ordinaryPlan == null ? sourceVisibleContext
     : applyOrdinaryMaterializationProjection({
-      next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
+      next: structuredClone(state), visibleContext: sourceVisibleContext, ordinaryPlan
     });
-  const currentPosition = state.position?.position_id
+  const currentPosition = envelope.consequence?.position_transition?.to_position_ref
+    ?? state.position?.position_id
     ?? state.position?.position_ref;
   const committedSpatialResolutions = (state.spatial_semantic ?? [])
     .flatMap(({ resolutions = [] }) => resolutions)
@@ -208,7 +213,9 @@ export async function commitLowerDvinaTraceTurnStep({
       || pendingPositionChanged)
       && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
     ? await turnStepApprovedOwners.loadPreparedMovementScene({
-      partyId, state: { ...persistedSnapshot, position: pendingScenePosition }
+      partyId, state: { ...persistedSnapshot, position: pendingScenePosition,
+        ...(destinationVisibleContext == null ? {}
+          : { prepared_destination_visible_context: visibleContext }) }
     })
     : preparedMovementState ?? state;
   const pendingProjectionState = withSceneNpcProjectionState({

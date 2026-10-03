@@ -7,6 +7,8 @@ import { createPostgresTestBackend } from '../../../test/fixtures/postgres-test-
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { projectSpatialV3CurrentVisibleNpcs } from
+  '../src/runtime/spatial-v3-current-visible-context.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { projectSpatialV3ProposedVisiblePackage } from
@@ -219,7 +221,7 @@ test('Phase 2 refresh reads committed NPCs through Spatial after arrival and res
     });
     return createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool,
       committer: { async commit() {} },
-      readCurrentEntityObservations: async ({ partyId: currentPartyId, actorId: currentActorId,
+      readCurrentVisibleContext: async ({ partyId: currentPartyId, actorId: currentActorId,
         positionId: currentPositionId }) => {
         const transaction = await pool.connect();
         try {
@@ -227,8 +229,9 @@ test('Phase 2 refresh reads committed NPCs through Spatial after arrival and res
           const observations = await provider.readEntityObservations({ transaction,
             partyId: currentPartyId, actorId: currentActorId,
             observedPositionId: currentPositionId });
+          const visible_npc = projectSpatialV3CurrentVisibleNpcs(observations);
           await transaction.query('COMMIT');
-          return observations;
+          return { ...emptyVisibleContext(), visible_npc };
         } catch (error) {
           await transaction.query('ROLLBACK').catch(() => {});
           throw error;

@@ -1,6 +1,5 @@
 import { serverError } from '../errors.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
 
 const GENERIC_CHECK_OUTCOMES = Object.fromEntries([
   'clean_success', 'success', 'success_with_cost',
@@ -73,7 +72,7 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner,
         clock: request.occurred_at ?? null,
         historical_events: historicalEvents
       });
-    const modelRequest = omitWorldKnowledgeContextText(grounded);
+    const modelRequest = grounded;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair

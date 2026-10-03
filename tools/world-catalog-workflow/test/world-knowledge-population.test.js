@@ -63,7 +63,7 @@ function query(domains, focus_refs, overrides = {}) {
     domains, focus_refs, requested_predicates: [], search_hints: [],
     context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'],
       actor_facets: {} },
-    budget: { max_facts: 24, max_candidates: 24, max_context_chars: 7000 },
+    budget: { max_facts: 24, max_candidates: 24 },
     ...overrides
   });
 }
@@ -240,9 +240,9 @@ test('officeholder episodes and burial containers retain dated individual eviden
         fact.qualifiers.confidence === 'medium' && fact.predicate === 'supported_fact'));
       assert.equal(slice.hard_constraints.length, 0);
       if (domain === 'npc_daily_life') {
-        assert.match(slice.context_text, /1224/u);
-        assert.match(slice.context_text, /1228/u);
-      } else assert.match(slice.context_text, query_locale === 'ru' ? /предварительн/u : /preliminary|preliminarily/u);
+        assert.match(sliceText(slice), /1224/u);
+        assert.match(sliceText(slice), /1228/u);
+      } else assert.match(sliceText(slice), query_locale === 'ru' ? /предварительн/u : /preliminary|preliminarily/u);
     }
     for (const purpose of ['conversation', 'narration']) {
       assert.equal(query([domain], focus, { purpose }).facts.length, 0);
@@ -473,7 +473,7 @@ test('mixed tool and material focus retains both requested stone-working relatio
         'conditions for effective sawing of hard stone',
         'conditions for effective smoothing of hard stone',
         'dependence of sawing and smoothing on tool and material properties'],
-      budget: { max_facts: 12, max_candidates: 12, max_context_chars: 5000 }
+      budget: { max_facts: 12, max_candidates: 12 }
     });
   const refs = new Set(slice.facts.map(({ claim_ref }) => claim_ref));
   assert.ok(refs.has('claim:hard-stone-abrasive-sawing'));
@@ -538,7 +538,7 @@ test('material-focused queries include scientific classification and origin with
   ], {
     search_hints: ['Как волокна пеньковой верёвки реагируют на воду?',
       'Вызывает ли намокание необратимую порчу пеньковой верёвки?'],
-    budget: { max_facts: 12, max_candidates: 12, max_context_chars: 5000 }
+    budget: { max_facts: 12, max_candidates: 12 }
   });
   for (const ref of ['claim:material-water-hemp-cellulosic-fibre',
     'claim:material-water-natural-fibres-water-swelling']) {
@@ -693,8 +693,8 @@ test('an unseen soaked wooden wedge uses uptake and swelling facts without grant
   const dimensional = slice.facts.find(({ claim_ref }) =>
     claim_ref === 'claim:population-material-wood-shrinkage');
   assert.equal(dimensional.object.value, 'bound_water_gain_or_loss_below_fibre_saturation');
-  assert.match(slice.context_text, /разбухание древесины/u);
-  assert.match(slice.context_text, /потеря — усушку/u);
+  assert.match(sliceText(slice), /разбухание древесины/u);
+  assert.match(sliceText(slice), /потеря — усушку/u);
   assert.equal(slice.hard_constraints.length, 0);
   const conversation = query(domains, focus, { purpose: 'conversation' });
   assert.ok(conversation.facts.every(({ claim_ref }) => !technical.includes(claim_ref)));
@@ -867,7 +867,7 @@ test('ordinary smithing retrieval is not excluded by irrelevant later-machine fa
   const slice = query(['material_culture', 'craft_technology', 'npc_daily_life'], [], {
     query_locale: 'en',
     search_hints: ['What material and tools supported a smith working metal: anvil, hammer and tongs?'],
-    budget: { max_facts: 10, max_candidates: 10, max_context_chars: 7000 }
+    budget: { max_facts: 10, max_candidates: 10 }
   });
   assert.equal(slice.hard_constraints.length, 0);
   const refs = new Set(slice.facts.map(({ claim_ref }) => claim_ref));
@@ -887,8 +887,8 @@ test('an unfamiliar porous insert separates surface wetting, capillary geometry 
   const refs = new Set(slice.facts.map(({ claim_ref }) => claim_ref));
   for (const suffix of ['wetting-forces', 'capillary-rise-depression', 'capillary-height',
     'percolation-openings', 'permeability-connected-pores']) assert.ok(refs.has('claim:water-' + suffix));
-  assert.match(slice.context_text, /Изолированные поры не доказывают сквозной путь/u);
-  assert.match(slice.context_text, /Смачиваемость не устанавливает пористость/u);
+  assert.match(sliceText(slice), /Изолированные поры не доказывают сквозной путь/u);
+  assert.match(sliceText(slice), /Смачиваемость не устанавливает пористость/u);
   assert.equal(slice.hard_constraints.length, 0);
   assert.equal(query(domains, focus, { purpose: 'conversation' }).facts.length, 0);
 });
@@ -937,8 +937,8 @@ test('regional geology supplies a qualified source envelope, not a deposit or me
   assert.ok(slice.facts.every(({ predicate, qualifiers }) =>
     predicate === 'supported_fact' && qualifiers.directness === 'inferred' &&
     qualifiers.confidence === 'medium'));
-  assert.match(slice.context_text, /не наличие всех пород/u);
-  assert.match(slice.context_text, /свидетельство средневековой добычи/u);
+  assert.match(sliceText(slice), /не наличие всех пород/u);
+  assert.match(sliceText(slice), /свидетельство средневековой добычи/u);
   assert.equal(slice.hard_constraints.length, 0);
   assert.equal(query(domains, focus, { purpose: 'conversation' }).facts.length, 0);
   assert.equal(query(domains, focus, {
@@ -988,8 +988,8 @@ test('monumental construction separates observed work from inferred procurement 
     assert.equal(fact.qualifiers.confidence, directness === 'direct' ? 'high' : 'medium');
   }
   assert.equal(slice.hard_constraints.length, 0);
-  assert.match(slice.context_text, /1207/u);
-  assert.match(slice.context_text, /видимо/u);
+  assert.match(sliceText(slice), /1207/u);
+  assert.match(sliceText(slice), /видимо/u);
   for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(domains, focus, { purpose }).facts.length, 0);
   }
@@ -1062,8 +1062,8 @@ test('bathing context retains literary limits without granting medical effects o
   ]));
   assert.ok(slice.facts.every(({ qualifiers }) =>
     qualifiers.confidence === 'medium' && qualifiers.directness === 'inferred'));
-  assert.match(slice.context_text, /летописном|Летописное/u);
-  assert.match(slice.context_text, /не задаёт.*лечебный эффект/u);
+  assert.match(sliceText(slice), /летописном|Летописное/u);
+  assert.match(sliceText(slice), /не задаёт.*лечебный эффект/u);
   assert.equal(query(domains, focus, { purpose: 'conversation' }).facts.length, 0);
   assert.equal(query(domains, focus, {
     context: { time: { year: 1500 }, place_refs: ['region_novgorod_land'], actor_facets: {} }
@@ -1104,3 +1104,8 @@ test('harvest tools and cereal processing retain regional, inferential and actor
     ]) assert.ok(query([domain], focus, { context }).facts.every(fact => !refs.includes(fact.claim_ref)));
   }
 });
+
+function sliceText(slice) {
+  return [...slice.hard_constraints, ...slice.facts]
+    .map(({ runtime_text }) => runtime_text).join('\n');
+}

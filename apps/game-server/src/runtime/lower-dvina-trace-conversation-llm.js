@@ -11,7 +11,6 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -31,7 +30,7 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
         historical_events: historicalEvents,
         actor_facets: context.actor_facets ?? {}
       });
-    const modelRequest = omitWorldKnowledgeContextText(grounded);
+    const modelRequest = grounded;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -103,7 +102,7 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     const promptRequest = { ...grounded,
       allowed_references: preparedRequest.allowed_references };
     const preparedContext = { grounded_request: promptRequest,
-      audit_request: omitWorldKnowledgeContextText(promptRequest) };
+      audit_request: promptRequest };
     const prepared = { request: preparedRequest, context: preparedContext };
     groundedRequestsByRequest.set(request, prepared);
     groundedRequestsByRequest.set(preparedRequest, prepared);

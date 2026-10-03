@@ -1,6 +1,6 @@
 import {
   canAccess, coverageStatus, isApplicable, lexicalCandidates, normalizeScores,
-  normalizeRerankScores, packCandidates, packContext, projectClaim, compareClaims,
+  normalizeRerankScores, packCandidates, projectClaim, compareClaims,
   structuredPrefilter
 } from './resolution.js';
 
@@ -21,7 +21,7 @@ const ACCESS_FACETS = Object.freeze({
 const TYPICALITIES = new Set(['common', 'attested', 'uncommon', 'exceptional', 'unknown']);
 const CONFIDENCES = new Set(['high', 'medium', 'low', 'unknown']);
 const DIRECTNESSES = new Set(['direct', 'inferred', 'analogical', 'editorial', 'unknown']);
-const DEFAULT_BUDGET = Object.freeze({ max_facts: 24, max_candidates: 12, max_context_chars: 7000 });
+const DEFAULT_BUDGET = Object.freeze({ max_facts: 24, max_candidates: 12 });
 
 export class WorldKnowledgeError extends Error {
   constructor(code, message, details = {}) {
@@ -212,7 +212,6 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
   const gaps = coverage.filter((entry) => entry.status !== 'covered').map((entry) => ({ domain: entry.domain, status: entry.status }));
   for (const conflict_group_ref of omittedConflictGroups) gaps.push({ domain: query.domains.join(','), status: 'conflict_group_exceeds_candidate_budget', conflict_group_ref });
   if (verdict === 'unresolved' && gaps.length === 0) gaps.push({ domain: query.domains.join(','), status: 'unresolved' });
-  const contextText = packContext({ coverage, hardConstraints: selectedHard, facts: selectedFacts, disputes, gaps }, query.budget.max_context_chars);
   // Orchestrator maps these hits into §63 sufficiency; not a model-facing field.
   const search_hint_hits = Object.freeze(hintScores.map(({ strongest }) => strongest > 0));
   // Topical score per hint: when rerank applied — min-max bge over admitted;
@@ -239,7 +238,6 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
     disputes,
     gaps,
     evidence_fragments: [],
-    context_text: contextText,
     search_hint_hits,
     search_hint_relevance,
     // Orchestrator/audit diagnostic: true only when all-or-nothing rerank ran.

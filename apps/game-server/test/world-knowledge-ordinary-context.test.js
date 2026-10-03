@@ -34,11 +34,11 @@ test('ordinary lookup preserves approved scene and complete need without opaque-
   assert.match(need, /visible_surface/u);
   assert.doesNotMatch(need, /[{}"]/);
   assert.deepEqual(request, before);
-  const { context_text, ...structured } = first.world_knowledge;
+  const structured = first.world_knowledge;
   assert.deepEqual(traces[0].core_result, structured);
   assert.deepEqual(traces[0].consumer.input.world_knowledge, structured);
   assert.deepEqual(traces[0].query.budget,
-    { max_facts: 12, max_candidates: 12, max_context_chars: 5000 });
+    { max_facts: 12, max_candidates: 12 });
 
   const alternateRefs = structuredClone(request);
   alternateRefs.request_id = 'PRIVATE_WRITING_BOAT_CRAFT_TOKEN';

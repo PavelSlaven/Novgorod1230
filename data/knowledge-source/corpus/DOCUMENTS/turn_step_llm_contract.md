@@ -611,8 +611,8 @@ Exact query остаётся вопросом, не
 доказательством собственности или исполнения. Prepared semantic chain допускает
 уже разрешённого A1 owner при отсутствии selected authored command; проверки
 source scope, preflight, revalidation, conservation и atomic commit сохраняются.
-Private O1 wire опускает только дублирующий `world_knowledge.context_text`, если
-передан полный structured slice; claim binding и telemetry используют полный request.
+Private O1 wire передаёт структурированный `world_knowledge` slice; claim binding
+и telemetry используют полный request.
 При законной player-response boundary скрытого продолжения нет; общий visible
 projector сохраняет уже полученные domain facts и отдельно показывает exact
 неисполненный остаток как попытку с неустановленным результатом, без выдуманных

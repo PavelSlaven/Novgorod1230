@@ -61,23 +61,20 @@ test('finite Stage B qualification uses pinned source data, not evaluator answer
   assert.deepEqual(calls.map(({ messages }) => messages), originalMessages);
 });
 
-test('O1 wire omits duplicate WK prose only when the full structured slice is present', () => {
-  const knowledge = { schema: 'world_knowledge_slice_v1', context_text: 'duplicate factual prose',
+test('O1 wire preserves the structured WK slice', () => {
+  const knowledge = { schema: 'world_knowledge_slice_v1',
     facts: [{ fact_id: 'wood', claim: 'Древесина доступна.', qualifiers: ['при наличии основания'] }],
     coverage: [{ topic: 'wood', status: 'covered' }], hard_constraints: ['no hidden truth'],
     disputes: [{ topic: 'origin' }], gaps: [{ topic: 'quantity' }] };
   const request = { ...presenceRequest('жердь'), world_knowledge: knowledge };
   const before = structuredClone(request);
   const wire = JSON.parse(buildOrdinaryMaterializationMessages(request)[1].content);
-  const { context_text, ...structured } = knowledge;
-  assert.deepEqual(wire.world_knowledge, structured);
+  assert.deepEqual(wire.world_knowledge, knowledge);
   assert.deepEqual(request, before);
-  // #152 F8: shared strip always removes context_text for model consumers,
-  // including incomplete slices that still carry structured WK fields.
+  // Private wire builder forwards input unchanged, including incomplete slices.
   const incomplete = { ...knowledge }; delete incomplete.gaps;
-  const { context_text: _drop, ...incompleteStructured } = incomplete;
   assert.deepEqual(JSON.parse(buildOrdinaryMaterializationMessages({ ...request,
-    world_knowledge: incomplete })[1].content).world_knowledge, incompleteStructured);
+    world_knowledge: incomplete })[1].content).world_knowledge, incomplete);
 });
 
 async function evalContract() {

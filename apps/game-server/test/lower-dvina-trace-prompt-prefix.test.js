@@ -66,7 +66,7 @@ test('narration audit keeps stable rules before dynamic shape and choices', asyn
   t.diagnostic(`Stable narration audit prefix: ${prefix.length} chars.`);
 });
 
-test('planner private wire drops only the duplicate WK rendering and retains structured semantics', async (t) => {
+test('planner private wire drops legacy prose and preserves structured WK semantics', async (t) => {
   const knowledge = { schema: 'world_knowledge_slice_v1', pack_ref: 'pack:test',
     pack_revision: 'revision:test', purpose: 'semantic_resolution', verdict: 'insufficient',
     coverage: [{ domain: 'material', status: 'partial' }],
@@ -78,7 +78,7 @@ test('planner private wire drops only the duplicate WK rendering and retains str
     disputes: [{ conflict_group_ref: 'dispute:strength', claims: [{ claim_ref: 'claim:uncertain',
       runtime_text: 'Прочность неизвестна.', qualifiers: { directness: 'unknown' } }] }],
     gaps: [{ domain: 'material', status: 'missing_coverage' }],
-    context_text: 'COVERAGE material: partial\nINFERENCE claim:fibre: Некоторые волокна допускают скручивание.\nHARD claim:limit: Нельзя заключать о прочности изделия.\nDISPUTE dispute:strength: claim:uncertain\nGAP material: missing_coverage' };
+    context_text: 'Legacy prose projection must not reach the model.' };
   const canonical = request({ world_knowledge: knowledge });
   const before = structuredClone(canonical);
   const wires = [];
@@ -93,10 +93,11 @@ test('planner private wire drops only the duplicate WK rendering and retains str
   for (const wire of wires) {
     assert.deepEqual(wire, { ...canonical, world_knowledge: structured });
     assert.deepEqual(wire.world_knowledge.facts[0].qualifiers, knowledge.facts[0].qualifiers);
+    assert.equal(Object.hasOwn(wire.world_knowledge, 'context_text'), false);
   }
   assert.deepEqual(canonical, before);
   const textOnly = request({ world_knowledge: { context_text: 'Only available grounding.' } });
-  await model(textOnly);
-  assert.deepEqual(wires.at(-1), textOnly);
-  t.diagnostic(`WK wire reduction: ${JSON.stringify(canonical).length - JSON.stringify(wires[0]).length} chars.`);
+  await assert.rejects(() => model(textOnly), /World Knowledge prompt slice is invalid/u);
+  assert.equal(wires.length, 2);
+  t.diagnostic('Legacy prose is dropped; text-only slices are rejected before the model wire.');
 });

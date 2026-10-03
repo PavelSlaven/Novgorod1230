@@ -19,7 +19,7 @@ const plan = {
 const authoritative = {
   pack_revision: bundle.manifest.revision_id,
   context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
-  budget: { max_facts: 8, max_candidates: 8, max_context_chars: 2000 }
+  budget: { max_facts: 8, max_candidates: 8 }
 };
 
 test('planner gets one structural repair over the same immutable request', async () => {

@@ -1,6 +1,6 @@
 # Current sprint
 
-> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98 и его ветка. Эта редакция сверена в локальном checkout `fleet/docs-2a`, HEAD `96066df6d614f2131bd0b58c44f77810762c65b2` (2026-10-02); это не проверка свежести `main`, remote, PR #98, CI или production. Коммиты в ветке PR не означают merge в `main`, закрытие issue или приёмку этапа. Текущие статусы задач флота — в [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133).
+> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98 и его ветка. Эта редакция сверена в локальном checkout `codex/live-world-runtime`, HEAD `68bb6645cc1c9f752edd27865ffeff0334fcdc9c` (2026-10-02, вечерний разбор #229); это не проверка свежести `main`, remote, PR #98, CI или production. Коммиты в ветке PR не означают merge в `main`, закрытие issue или приёмку этапа. Текущие статусы задач флота — в [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133).
 
 ## Цели
 
@@ -9,7 +9,7 @@
 | Runtime | переход к общему рантайму живого мира: сначала M2c «Процедурная материализация мест», затем M3–M8 | [PR #98](https://github.com/PavelSlaven/Novgorod1230/pull/98), milestone [Runtime M3–M8](https://github.com/PavelSlaven/Novgorod1230/milestone/2); текущий этап подтверждает владелец |
 | Backlog | снять временные оговорки роутера и индекса, затем техдолг по LW | issues без milestone, label `P2` раньше `P3` |
 | World Knowledge | исправить цепочку WK по аудиту [#151](https://github.com/PavelSlaven/Novgorod1230/issues/151) | CR [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152), [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153); очерёдность относительно M2c назначает владелец |
-| Экономика | базовая условная единица (БУЕ = 1 мг чистого серебра), курсы по регионам и эпохам, якорные цены и ценовые полосы c1230; модуль экономики — отдельным CR после данных (D44) | [#184](https://github.com/PavelSlaven/Novgorod1230/issues/184) |
+| Экономика | базовая условная единица (БУЕ = 1 мг чистого серебра), курсы по регионам и эпохам, якорные цены и ценовые полосы c1230; модуль `@rus/economy` добавлен в ветку PR #98 коммитом [`9ba0c438`](https://github.com/PavelSlaven/Novgorod1230/commit/9ba0c438) | [#184](https://github.com/PavelSlaven/Novgorod1230/issues/184) |
 
 Трек Docs (DOC-01…03, #99–#101) завершён: milestone «Docs & agent context 2026-09» закрыт.
 
@@ -51,7 +51,7 @@
 
 Единица работы и проверки — задача с CR, ревью после каждой задачи. Актуальные исполнители и модели — [HOW_WE_WORK](../process/HOW_WE_WORK.md), разделы 5 и 10.
 
-#### Срез Runtime на 2026-10-01
+#### Срез Runtime на 2026-10-02
 
 На `codex/live-world-runtime` влиты следующие подтверждённые изменения (короткие hash ведут на коммиты в ветке PR #98):
 
@@ -62,6 +62,12 @@
 - follow-ups — [`eed0aa27`](https://github.com/PavelSlaven/Novgorod1230/commit/eed0aa27); фильтр `needs_check` по D59 — [`d30c327d`](https://github.com/PavelSlaven/Novgorod1230/commit/d30c327d).
 
 Это список вливаний в ветку PR #98 по её Git log; он не подтверждает закрытие связанных issues, импорт данных, runtime activation или приёмку M2c. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) открыт, M2c — `IN_PROGRESS`; [PR #98](https://github.com/PavelSlaven/Novgorod1230/pull/98) открыт как Draft с base `main`. В описании PR остаются условия merge: bootstrap/rebuild v17, сквозной UI с real provider, runtime activation richness/stock, финальные audit и CI. D60 (`npc-epoch-guard`) — исследование/стенд; реализация и приёмка не подтверждены ([решение D60](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5928266458)).
+
+Вечерний разбор #229 уточнил статус нескольких работ:
+
+- **O1:** коммит [`261bca77`](https://github.com/PavelSlaven/Novgorod1230/commit/261bca77) отменён коммитом [`68bb6645`](https://github.com/PavelSlaven/Novgorod1230/commit/68bb6645): строгий `requireTemplateBackedItemRefs` на всём caller присутствия ломал directional exits при первом входе в следующее место. Новый путь O1 v1 описан и одобрен в задаче `v17-channels` 5.4: использовать существующие строки M2c без изменений, 75 правил и селектор применимости для четырёх кортежей G1/G4/канонического G5/PF; O1 включается только при совпадении правила и кортежа, остальные правила идут generic path. Селектор условно одобрен с ограничениями; реализация и focused tests в рабочей копии задачи пройдены и переданы на CA, production-root PG, D41 и срез ещё не подтверждены. Это не свидетельство завершённой активации O1.
+- **Opening audit:** отчёт N=10 на HEAD `68bb6645` фиксирует 7/10 успешных вступлений; в трёх отказах writer добавлял неподтверждённые факты, а repair исправлял их не полностью. A/B со старой головой `476c3011` и текущей `68bb6645` запущен; итог и происхождение дефекта пока не установлены (отчёт `opening-audit/out/REPORT.md`, ответ ревьюера `opening-audit/answers.md`).
+- **NPC:** задача [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) готовит миграцию 038 в ветке задачи `fleet/npc-season` (в PR #98 ещё не влита). Аттестация fresh schema v9 условно одобрена только для закреплённой свежей схемы; последующий PG bootstrap остановился на `MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN`, поэтому полный bootstrap/readback не подтверждён (`npc-season/out/report-1k.md`).
 
 Плановые M2c issues и зависимости остаются в [Runtime_Plan §6](https://github.com/PavelSlaven/Novgorod1230/blob/codex/live-world-runtime/docs/plans/Novgorod1230_Runtime_Plan.md) и [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133); отдельные коммиты выше сами по себе не заменяют их статусы.
 

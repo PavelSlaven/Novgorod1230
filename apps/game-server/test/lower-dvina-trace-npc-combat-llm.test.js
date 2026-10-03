@@ -5,6 +5,8 @@ import { createLowerDvinaTraceNpcCombatModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { assembleNpcCombatPlan } from
   '../src/runtime/lower-dvina-trace-combat-llm.js';
+import { projectTraceCombatSubjectiveState } from
+  '../src/runtime/lower-dvina-trace-combat-subjective.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 
@@ -60,6 +62,74 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
     assert.match(prompt, /"choice_id":"operation_1"/u);
     assert.doesNotMatch(prompt, /Copy request_id/u);
   }
+});
+
+test('NPC combat model receives qualitative own body, not numeric profile metadata', async () => {
+  const calls = [];
+  const output = { decision: { intent_summary: 'Удержать противника.',
+    grounded_goal: 'Защитить себя.', adaptation: 'literal' },
+  operation_choice: 'operation_1', force_choice: 'force_1', risk_choice: 'risk_1',
+  combat_statement: null, reason: 'Угроза.' };
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
+    run: async (request) => { calls.push(request); return { output }; }
+  } });
+  const state = { npcs: [{ instance_id: 'npc-1', subjective_body_state: {
+    condition_summary: 'старое описание', pain: 'умеренная', mobility: 'ограничена',
+    usable_hands: 1, active_conditions: ['injury-id:closed-wound'], health: 73, satiety: 62,
+    energy: 41, calibration_marker: 'internal-calibration-only',
+    body_state_profile: { status: 'approved', private_id: 'profile-secret' }
+  } }], actor_states: { 'npc:npc-1': { body_state: {
+    condition_summary: 'свежее описание', pain: 'умеренная',
+    mobility: 'ограничена', usable_hands: 1,
+    health: 73, satiety: 62, energy: 41,
+    calibration_marker: 'internal-calibration-only'
+  } } } };
+  const request = combatRequest();
+  request.npc_subjective_state = projectTraceCombatSubjectiveState(
+    request.npc_ref, state);
+  for (const context of [undefined, { repair: { original_output: {},
+    validation_errors: ['invalid'] } }]) {
+    await model(request, context);
+  }
+
+  assert.equal(calls.length, 2);
+  for (const call of calls) {
+    const userMessage = call.messages.find(({ role }) => role === 'user').content;
+    assert.match(userMessage, /свежее описание/u);
+    assert.doesNotMatch(userMessage, /старое описание/u);
+    assert.match(userMessage, /умеренная/u);
+    assert.match(userMessage, /ограничена/u);
+    assert.match(userMessage, /usable_hands/u);
+    assert.doesNotMatch(userMessage,
+      /"health"|"satiety"|"energy"|internal-calibration-only|profile-secret|body_state_profile/u);
+    assert.doesNotMatch(userMessage, /injury-id:closed-wound/u);
+  }
+});
+
+test('numeric current body does not fall back to stale NPC prose', async () => {
+  let prompt = '';
+  const output = { decision: { intent_summary: 'Действовать.',
+    grounded_goal: 'Продолжить.', adaptation: 'literal' },
+  operation_choice: 'operation_1', force_choice: 'force_1',
+  risk_choice: 'risk_1', combat_statement: null, reason: 'Угроза.' };
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
+    run: async ({ messages }) => {
+      prompt = messages.find(({ role }) => role === 'user').content;
+      return { output };
+    }
+  } });
+  const state = { npcs: [{ instance_id: 'npc-1', subjective_body_state: {
+    condition_summary: 'устаревшее описание', pain: 'прежняя боль'
+  } }], actor_states: { 'npc:npc-1': { body_state: {
+    health: 73, energy: 41, satiety: 62
+  } } } };
+  const request = combatRequest();
+  request.npc_subjective_state = projectTraceCombatSubjectiveState(
+    request.npc_ref, state);
+  assert.deepEqual(request.npc_subjective_state.body, {});
+  await model(request);
+  assert.doesNotMatch(prompt,
+    /устаревшее описание|прежняя боль|"health"|"energy"|"satiety"/u);
 });
 
 test('combat assembly does not default omitted semantic operation or statement', () => {

@@ -58,6 +58,7 @@ export function applyBodyStateChange(state = {}, change = {}) {
 }
 
 export { applyApprovedFixedBodyEffect } from './fixed-approved-effect.js';
+export { initializeBodyState } from './initialization.js';
 export { detectBodyThresholdCrossings } from './thresholds.js';
 
 export function stateModifier(state = {}, relevantMetrics = BODY_METRICS) {

@@ -15,6 +15,8 @@ const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'p
   role_ref: 'role_fisher', occupation_ref: 'occ_fisher',
   skill_profile_snapshot: { approved_defaults: [] }, knowledge_profile_snapshot: { local: 'x' },
   attribute_profile_snapshot: { strength: 3 }, profile_candidate_set_digest: 'digest',
+  body_profile_ref: { id: 'body:npc', schema: 'body-profile-v1', revision: 2 },
+  health: '73', energy: '61', satiety: '49', body_state_version: '4',
   position_id: `pos:${id}`, g6_instance_id: 'g6:main', ...extra });
 const pool = (rows, positions = [{ id: 'pos:me', g6_instance_id: 'g6:main' }]) => {
   const calls = []; return { calls, async query(text, values) {
@@ -36,9 +38,25 @@ test('scene NPCs are read from the database for the current site with the G6', a
   assert.deepEqual(loaded.role_ref, { id: 'role_fisher', source: 'approved_social_roles' });
   assert.deepEqual(loaded.occupation_ref, { id: 'occ_fisher', source: 'approved_occupations' });
   assert.deepEqual(loaded.base_attributes, { strength: 3 });
+  assert.deepEqual(loaded.body_state, { health: 73, energy: 61, satiety: 49 });
+  assert.deepEqual(loaded.body_profile_ref, row('x').body_profile_ref);
+  assert.equal(loaded.body_state_version, 4);
+  assert.equal(loaded.body_state_persisted, true);
   assert.equal(loaded.location_profile_ref, 'loc');
   assert.equal(loaded.runtime_source, SCENE_NPC_SOURCE);
   assert.equal(state.npcs.length, 2);
+});
+
+test('scene body readback refreshes existing NPC instead of duplicating it', async () => {
+  const npc = { instance_id: 'npc_start', body_profile_ref: { id: 'body:old' },
+    body_state: { health: 10 } };
+  const state = await withSceneNpcs(pool([row('npc_start')]), 'party',
+    base({ npcs: [npc] }));
+  assert.equal(state.npcs.length, 1);
+  assert.deepEqual(state.npcs[0].body_state,
+    { health: 73, energy: 61, satiety: 49 });
+  assert.equal(state.npcs[0].body_profile_ref.id, 'body:npc');
+  assert.equal(state.npcs[0].body_state_version, 4);
 });
 
 test('prepared destination readback exposes scene NPCs on arrival and next-turn reload', async () => {
@@ -95,7 +113,11 @@ test('prepared destination readback exposes scene NPCs on arrival and next-turn 
 
 test('existing records win by instance_id; no site or no rows leaves the state alone', async () => {
   const kept = await withSceneNpcs(pool([row('npc_start')]), 'party', base());
-  assert.deepEqual(kept.npcs, [{ instance_id: 'npc_start', anchor_id: 'a' }]);
+  assert.equal(kept.npcs.length, 1);
+  assert.equal(kept.npcs[0].anchor_id, 'a');
+  assert.deepEqual(kept.npcs[0].body_state,
+    { health: 73, energy: 61, satiety: 49 });
+  assert.equal(kept.npcs[0].body_state_version, 4);
   assert.deepEqual(kept.scene_position_g6, { 'pos:me': 'g6:main' });
   const p = pool([row('npc_gen')]);
   const noSite = base({ position: { position_id: 'pos:me' } });

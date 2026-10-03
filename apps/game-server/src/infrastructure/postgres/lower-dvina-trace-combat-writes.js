@@ -91,6 +91,8 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
       health: next.body_state.health, energy: next.body_state.energy,
       satiety: next.body_state.satiety, updated_change_set_id: changeSetId }));
   appendNpcBodyWrites({ updates, state, next, partyId });
+  appendNpcBodyStateWrites({ inserts, updates, state, factual, partyId,
+    changeSetId });
   appendCombatItemWrites({ updates, state, next, partyId });
   const appends = [row('party_v3_change_sets', changeSetId, { id: changeSetId,
     party_id: partyId, operation_kind: 'combat_exchange',
@@ -155,6 +157,34 @@ function appendNpcBodyWrites({ updates, state, next, partyId }) {
         !== canonicalDigest(npc.machine_state)) updates.push(row('party_npcs',
       npc.instance_id, { party_id: partyId, npc_id: npc.instance_id,
         machine_state: npc.machine_state }));
+  }
+}
+
+function appendNpcBodyStateWrites({ inserts, updates, state, factual,
+  partyId, changeSetId }) {
+  const combat = factual.consequence.combat;
+  const before = new Map((state.npcs ?? []).map((npc) => [npc.instance_id, npc]));
+  const after = new Map((combat.working_state_after?.npcs ?? [])
+    .map((npc) => [npc.instance_id, npc]));
+  for (const { entity_kind: kind, entity_id: id } of
+    combat.session_after.participant_refs ?? []) {
+    if (kind !== 'npc') continue;
+    const prior = before.get(id);
+    const body = combat.working_state_after?.actor_states?.[`npc:${id}`]
+      ?.body_state;
+    if (!prior || !body) continue;
+    const bodyRow = { party_id: partyId, actor_kind: 'npc', actor_id: id,
+      body_profile_ref: prior.body_profile_ref
+        ?? after.get(id)?.body_profile_ref,
+      health: body.health, energy: body.energy, satiety: body.satiety,
+      updated_change_set_id: changeSetId };
+    if (!prior.body_state_persisted) {
+      inserts.push(row('party_actor_body_states', `npc:${id}`, bodyRow));
+    } else if (prior.body_state.health !== body.health
+        || prior.body_state.energy !== body.energy
+        || prior.body_state.satiety !== body.satiety) {
+      updates.push(row('party_actor_body_states', `npc:${id}`, bodyRow));
+    }
   }
 }
 

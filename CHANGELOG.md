@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- feat(combat): persist participating NPC body through P16 from approved versioned profile; keep numeric body state internal pending combat-data/D67 (#224)
+
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).

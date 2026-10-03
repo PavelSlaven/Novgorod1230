@@ -18,6 +18,8 @@ export async function withSceneNpcs(pool, partyId, state) {
             apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
             apb.knowledge_profile_snapshot,apb.attribute_profile_snapshot,
             apb.profile_candidate_set_digest,
+            body.body_profile_ref,body.health,body.energy,body.satiety,
+            body.state_version AS body_state_version,
             placement.position_node_id AS position_id,pos.g6_instance_id
        FROM party_runtime.party_npcs n
        JOIN party_runtime.party_actor_profile_bindings apb
@@ -29,6 +31,9 @@ export async function withSceneNpcs(pool, partyId, state) {
          ON pos.party_id=placement.party_id AND pos.id=placement.position_node_id
        JOIN party_runtime.party_g6_instances g6
          ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
+       LEFT JOIN party_runtime.party_actor_body_states body
+         ON body.party_id=n.party_id AND body.actor_kind='npc'
+        AND body.actor_id=n.npc_id
       WHERE n.party_id=$1 AND g6.host_id=$2 AND g6.host_kind='g5_site' AND pos.status='active' AND g6.status='active'
       ORDER BY n.npc_id`,
     [partyId, siteId]);
@@ -40,8 +45,19 @@ export async function withSceneNpcs(pool, partyId, state) {
       WHERE pos.party_id=$1 AND g6.host_id=$2 AND g6.host_kind='g5_site' AND pos.status='active' AND g6.status='active'`, [partyId, siteId]);
   const scene_position_g6 = Object.fromEntries(
     positions.rows.map(({ id, g6_instance_id: g6 }) => [id, g6]));
-  const existing = new Set((state.npcs ?? []).map(({ instance_id: id }) => id));
-  const loaded = rows.filter(({ npc_id: id }) => !existing.has(id)).map((row) => ({
+  const current = new Map((state.npcs ?? []).map((npc) =>
+    [npc.instance_id, npc]));
+  const loaded = [];
+  for (const row of rows) {
+    if (current.has(row.npc_id)) {
+      const prior = current.get(row.npc_id);
+      current.set(row.npc_id, { ...current.get(row.npc_id),
+        ...sceneNpcBodyState(row),
+        body_state_profile: row.semantic_state?.body_state_profile
+          ?? prior.body_state_profile ?? null });
+      continue;
+    }
+    loaded.push({
     instance_id: row.npc_id,
     participant_slot_ref: row.semantic_state?.participant_slot_ref,
     profile_id: row.profile_set_id,
@@ -54,6 +70,7 @@ export async function withSceneNpcs(pool, partyId, state) {
     identity_state: row.identity_state,
     machine_state: row.machine_state,
     semantic_state: row.semantic_state,
+    ...sceneNpcBodyState(row),
     relationships: [],
     skill_profile_snapshot: row.skill_profile_snapshot,
     knowledge_profile_snapshot: row.knowledge_profile_snapshot,
@@ -62,7 +79,19 @@ export async function withSceneNpcs(pool, partyId, state) {
     position_id: row.position_id,
     g6_instance_id: row.g6_instance_id,
     runtime_source: SCENE_NPC_SOURCE
-  }));
+    });
+  }
   return { ...state, scene_position_g6,
-    npcs: [...(state.npcs ?? []), ...loaded] };
+    npcs: [...current.values(), ...loaded] };
+}
+
+function sceneNpcBodyState(row) {
+  return { body_state_profile: row.semantic_state?.body_state_profile ?? null,
+    body_state: row.body_state_version == null ? null : {
+      health: Number(row.health), energy: Number(row.energy),
+      satiety: Number(row.satiety)
+    }, body_profile_ref: row.body_profile_ref ?? null,
+    body_state_version: row.body_state_version == null ? null
+      : Number(row.body_state_version),
+    body_state_persisted: row.body_state_version != null };
 }

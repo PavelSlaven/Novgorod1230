@@ -8,6 +8,7 @@ import {
   applyApprovedFixedBodyEffect,
   applyBodyStateChange,
   calculateBodyTimeEffectProposal,
+  initializeBodyState,
   normalizeBodyState,
   predictNearestBodyThreshold,
   stateModifier,
@@ -56,6 +57,50 @@ test('body-state applies bounded approved change formula', () => {
   assert.equal(Object.isFrozen(next), true);
   assert.equal(validateBodyState({ health:101 }).ok, false);
   assert.equal(normalizeBodyState({ health:'70' }).health, 70);
+});
+
+test('body-state initializer requires approved versioned profile and is deterministic', () => {
+  const profile = {
+    schema: 'rus.body_state.initialization_profile.v1',
+    profile_ref: {
+      entity_ref: { entity_kind: 'body_state_profile', entity_id: 'test-npc' },
+      authoring_version: 'v1'
+    },
+    status: 'approved',
+    initial_state: { health: 72, satiety: 61, energy: 48 }
+  };
+  const result = initializeBodyState({ body_state_profile: profile });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.body_state, { health: 72, satiety: 61, energy: 48 });
+  assert.deepEqual(result.profile_ref, profile.profile_ref);
+  assert.deepEqual(initializeBodyState({ body_state_profile: profile }), result);
+  assert.equal(Object.isFrozen(result), true);
+  assert.equal(Object.isFrozen(result.body_state), true);
+});
+
+test('body-state initializer returns typed gap for missing profile or required metric', () => {
+  const missingProfile = initializeBodyState();
+  const missingMetric = initializeBodyState({ body_state_profile: {
+    schema: 'rus.body_state.initialization_profile.v1',
+    profile_ref: {
+      entity_ref: { entity_kind: 'body_state_profile', entity_id: 'test-npc' },
+      authoring_version: 'v1'
+    },
+    status: 'approved',
+    initial_state: { health: 72, satiety: 61 }
+  } });
+
+  for (const result of [missingProfile, missingMetric]) {
+    assert.deepEqual(result, {
+      ok: false,
+      status: 'hard_block',
+      error: {
+        code: 'body_state_profile_gap',
+        message: 'approved versioned body-state profile with health, satiety and energy is required'
+      }
+    });
+  }
 });
 
 const rational = (numerator, denominator = '1') => ({ numerator, denominator });

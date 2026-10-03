@@ -2,9 +2,6 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
   const npc = state.npcs?.find(
     ({ instance_id: id }) => id === actorRef.entity_id
   );
-  const body = state.actor_states?.[
-    `${actorRef.entity_kind}:${actorRef.entity_id}`]?.body_state
-    ?? npc?.machine_state?.body_condition ?? {};
   return {
     identity: { name_or_label:
       npc?.semantic_profile?.identity?.canonical_name
@@ -13,7 +10,7 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
     combat_experience: 'limited',
     attributes: [],
     skills: [],
-    body: structuredClone(body),
+    body: projectQualitativeBody(qualitativeBodySources(actorRef, state, npc)),
     mood: {},
     temperament: [],
     goals: [],
@@ -25,6 +22,32 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
         || item.ownership?.controller_npc_id === actorRef.entity_id)
       .map((item) => ({ entity_kind: 'item', entity_id: item.item_id }))
   };
+}
+
+function qualitativeBodySources(actorRef, state, npc) {
+  const current = state.actor_states?.[
+    `${actorRef.entity_kind}:${actorRef.entity_id}`]?.body_state;
+  if (current != null) return [current];
+  return [npc?.subjective_body_state, npc?.check_body_state, npc?.body_state,
+    npc?.machine_state?.body_condition];
+}
+
+function projectQualitativeBody(sources) {
+  const body = {};
+  for (const key of ['condition_summary', 'pain', 'mobility']) {
+    const value = sources.map((source) => source?.[key]).find(
+      (candidate) => typeof candidate === 'string'
+        && candidate.trim() !== '');
+    if (value != null) {
+      body[key] = value;
+    }
+  }
+  const usableHands = sources.map((source) => source?.usable_hands).find(
+    (candidate) => Number.isSafeInteger(candidate) && candidate >= 0);
+  if (usableHands != null) {
+    body.usable_hands = usableHands;
+  }
+  return body;
 }
 
 export function projectTracePerceivedCombatState(session, state, actorRef,

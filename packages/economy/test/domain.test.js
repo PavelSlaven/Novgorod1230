@@ -64,6 +64,27 @@ test('half-up rounds once to the approved quantum, including to zero', () => {
   assert.equal(renderLocalAmount({ quote: result, unitLabel: 'целевой счёт' }).text, '0 целевой счёт');
 });
 
+test('half-up rounds exact half steps upward and renders the rounded amount', () => {
+  const wholeUnit = quote({
+    amount: { numerator: '1', denominator: '2' },
+    economyView: view({ rates: [rate('cu_source', '1', '1'), rate('cu_target', '1', '1')] })
+  });
+  assert.equal(wholeUnit.status, 'quoted');
+  assert.deepEqual(wholeUnit.roundedAmount, { numerator: '1', denominator: '1' });
+  assert.equal(renderLocalAmount({ quote: wholeUnit, unitLabel: 'целевой счёт' }).text, '1 целевой счёт');
+
+  const halfUnit = quote({
+    amount: { numerator: '3', denominator: '8' },
+    economyView: view({
+      rates: [rate('cu_source', '1', '1'), rate('cu_target', '1', '1')],
+      quantum: { unitId: 'cu_target', numerator: '1', denominator: '4', approval: 'approved' }
+    })
+  });
+  assert.equal(halfUnit.status, 'quoted');
+  assert.deepEqual(halfUnit.roundedAmount, { numerator: '1', denominator: '2' });
+  assert.equal(renderLocalAmount({ quote: halfUnit, unitLabel: 'целевой счёт' }).text, '0.5 целевой счёт');
+});
+
 test('missing approved display quantum leaves even a small nonzero value unresolved', () => {
   const result = quote({
     amount: { numerator: '1', denominator: '1000' },
@@ -86,6 +107,19 @@ test('exact dates include period endpoints and do not fall back to adjacent days
   assert.equal(quote({ economyView: view({ rates }) }).status, 'quoted');
   assert.equal(quote({ date: '1230-06-02', economyView: view({ rates }) }).status, 'unresolved');
   assert.equal(quote({ date: '1230-02-30' }).status, 'invalid');
+});
+
+test('invalid applicable rate periods remain invalid in the public quote result', () => {
+  const target = rate('cu_target', '1', '1');
+  const invalidPeriods = [
+    rate('cu_source', '1', '1', { validFrom: '1230-02-30' }),
+    rate('cu_source', '1', '1', { validFrom: '1240-01-01', validTo: '1200-01-01' })
+  ];
+  for (const invalidRate of invalidPeriods) {
+    const result = quote({ economyView: view({ rates: [invalidRate, target] }) });
+    assert.equal(result.status, 'invalid');
+    assert.equal(result.reason, 'rate_invalid');
+  }
 });
 
 test('region and unit matching are exact', () => {

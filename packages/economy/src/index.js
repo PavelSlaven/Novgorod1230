@@ -8,6 +8,7 @@ export function quoteLocalAmount(input = {}) {
 
   const from = lookupRate(input.economyView.rates, input.fromUnitId, input.regionId, input.date);
   const to = lookupRate(input.economyView.rates, input.toUnitId, input.regionId, input.date);
+  if (from.status === 'invalid' || to.status === 'invalid') return result('invalid', 'rate_invalid');
   if (from.status === 'conflict' || to.status === 'conflict') return result('conflict', 'rate_conflict');
   if (from.status !== 'quoted' || to.status !== 'quoted') return result('unresolved', 'rate_unresolved');
 

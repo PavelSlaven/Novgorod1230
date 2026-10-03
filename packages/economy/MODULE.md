@@ -58,6 +58,7 @@ No package dependencies. Only Node.js standard language features are used.
 
 ## Errors and tests
 
-Malformed request structures return `invalid`. Missing or ineligible coverage
-returns `unresolved`; incompatible overlapping rates or duplicate applicable
-metadata return `conflict`. Focused contract tests are in `test/domain.test.js`.
+Malformed request structures and malformed date ranges on a matching rate row
+return `invalid`. Missing or ineligible coverage returns `unresolved`;
+incompatible overlapping rates or duplicate applicable metadata return
+`conflict`. Focused contract tests are in `test/domain.test.js`.

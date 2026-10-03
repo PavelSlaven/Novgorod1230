@@ -1,0 +1,27 @@
+{
+  "schema": "rus.live_world_runtime.start_activation_approval.v1",
+  "decision": "ACTIVATE",
+  "decided_by": "project owner PavelSlaven (decision D77, 2026-10-03), recorded by the lead reviewer",
+  "decided_on": "2026-10-03",
+  "reason": "The seven v17 canonical starts were switched on by commit 5886a419 (2026-09-25) while the 2026-09-24 data approval said APPROVE_DATA_ONLY with activation_authorized=false. The owner confirmed the activation; the runtime and the v17 slice already start from these scenarios.",
+  "manifest": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json",
+    "sha256": "09c92b749a9842fa6bbeee1b0fc8433995191e604b016015244b799b7d706675"
+  },
+  "data_approval": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-data-approval.json",
+    "sha256": "dfc1f300c20b25bc6234ab084dc29ca9300f0a2216d298f7a1b12b5b06e1d496",
+    "decision": "APPROVE_DATA_ONLY"
+  },
+  "activated_scenarios": [
+    "novgorod_pine_ridge_approach_v1",
+    "novgorod_riverbank_approach_v1",
+    "novgorod_reed_backwater_entrance_v1",
+    "novgorod_vikhtuy_resource_edge_approach_v1",
+    "novgorod_zaostrovye_settlement_approach_v1",
+    "novgorod_vikhtuy_work_storage_v1",
+    "novgorod_vikhtuy_household_cluster_v1"
+  ],
+  "limits": "No player body, attributes, appearance, skills, language or clothing applicability approval; no independent natural-placement activation or initial observer/source-state and entity-perception approval; no current scene, water, visibility, sound, stock, inhabitants, property or access assertion; no evidence yet that work or habitation scenes have full functional materialization under M2c section 12; no import, PostgreSQL readback, runtime or release activation.",
+  "activation_authorized": true
+}

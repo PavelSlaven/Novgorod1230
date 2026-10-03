@@ -89,9 +89,35 @@ test('approved party projection includes ten news dates and canonical famine sou
       && /^[0-9a-f]{40}$/u.test(record.commit)));
   const proposals = JSON.parse(await readFile(new URL(
     `../../../${APPROVED_EVENT_DATE_GATE_RECORDS[0].path}`, import.meta.url), 'utf8'));
+  const review = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/temporal-v4/news-date-gate-v1/opus-review-4a3.json',
+    import.meta.url), 'utf8'));
   assert.deepEqual(
     proposals.entries.map((entry) => [entry.event_id, entry.first_phase_meaning]).sort(),
     APPROVED_EVENT_DATE_GATE_RECORDS.map((record) => [record.event_id, record.phase_meaning]).sort());
+  const decision = review.time_owner_proposals_decision;
+  assert.equal(decision.verdict, 'approved_as_candidate_input');
+  assert.equal(decision.per_event.length, proposals.entries.length);
+  assert.ok(decision.per_event.every((entry) => entry.verdict === 'approved'));
+  const approvalById = new Map(decision.per_event.map((entry) => [entry.event_id, entry.start]));
+  const proposalById = new Map(proposals.entries.map((entry) => [
+    entry.event_id, entry.proposed_first_phase_start_julian
+  ]));
+  assert.deepEqual([...approvalById].sort(), [...proposalById].sort());
+
+  const [calendarRecord] = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json',
+    import.meta.url), 'utf8'));
+  const calendar = calendarRecord.payload;
+  assert.equal(calendar.calendar_system, proposals.calendar);
+  const sourceMinutes = proposals.entries.map((entry) => {
+    const approvedStart = approvalById.get(entry.event_id);
+    assert.equal(entry.proposed_first_phase_start_julian, approvedStart);
+    return [entry.event_id, julianMinutesFromEpoch(approvedStart, calendar)];
+  });
+  assert.deepEqual(sourceMinutes.sort(([a], [b]) => a.localeCompare(b)),
+    APPROVED_EVENT_DATE_GATE_RECORDS.map((record) => [record.event_id, record.start_at_minutes])
+      .sort(([a], [b]) => a.localeCompare(b)));
   assert.equal(events.length, 11);
   const famineStart = Number(temporalRecord.payload.source_backed_exact_boundaries_or_authored_ranges
     .formal_game_timestamp_range.start_inclusive.whole_minutes);
@@ -102,12 +128,12 @@ test('approved party projection includes ten news dates and canonical famine sou
   const neva = events.find((event) => event.id === 'nov_hist_news_neva_victory_lower_dvina');
   assert.deepEqual(startedHistoricalEventIds(ts(5_785_919), [neva]), []);
   assert.deepEqual(startedHistoricalEventIds(ts(5_785_920), [neva]), [neva.id]);
-  for (const record of APPROVED_EVENT_DATE_GATE_RECORDS) {
-    const event = events.find((entry) => entry.id === record.event_id);
+  for (const [eventId, startAtMinutes] of sourceMinutes) {
+    const event = events.find((entry) => entry.id === eventId);
     assert.deepEqual(startedHistoricalEventIds(
-      ts(record.start_at_minutes - 1), [event]), []);
+      ts(startAtMinutes - 1), [event]), []);
     assert.deepEqual(startedHistoricalEventIds(
-      ts(record.start_at_minutes), [event]), [record.event_id]);
+      ts(startAtMinutes), [event]), [eventId]);
   }
   assert.deepEqual(events.at(-1).source_ref, {
     record_id: temporalRecord.record_id,
@@ -136,4 +162,31 @@ async function famineRecord() {
     '../../../data/world-catalogs/novgorod/temporal-v4/datasets/'
       + 'historical_phase_local_effect_rules.json', import.meta.url), 'utf8'));
   return { ...record, canonical_digest: 'a'.repeat(64) };
+}
+
+function julianMinutesFromEpoch(date, calendar) {
+  const rules = calendar.day_month_leap_rules;
+  assert.equal(rules.leap_rule, 'Julian year divisible by 4');
+  assert.equal(rules.year_numbering, 'common_era_no_year_zero');
+  const leapMonth = rules.month_lengths_leap.findIndex((length, index) => (
+    Number(length) > Number(rules.month_lengths_common[index])
+  )) + 1;
+  assert.ok(leapMonth > 0);
+  const ordinal = (isoDate) => {
+    const [yearText, monthText, dayText] = isoDate.split('-');
+    const year = BigInt(yearText);
+    const month = Number(monthText);
+    let days = 365n * (year - 1n) + (year - 1n) / 4n;
+    for (let currentMonth = 1; currentMonth < month; currentMonth += 1) {
+      days += BigInt(rules.month_lengths_common[currentMonth - 1]);
+      if (currentMonth === leapMonth && year % 4n === 0n) days += 1n;
+    }
+    return days + BigInt(dayText) - 1n;
+  };
+  const epoch = calendar.epoch_reference.calendar_date_at_zero;
+  const epochDate = `${epoch.year}-${epoch.month.padStart(2, '0')}-${epoch.day.padStart(2, '0')}`;
+  const minutes = (ordinal(date) - ordinal(epochDate)) * 1440n;
+  const result = Number(minutes);
+  assert.ok(Number.isSafeInteger(result));
+  return result;
 }

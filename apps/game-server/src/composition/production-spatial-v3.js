@@ -46,7 +46,7 @@ import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
-import { withTurnDeadlineTransaction } from
+import { hasActiveTurnDeadline, withTurnDeadlineTransaction } from
   '../infrastructure/postgres/query-with-turn-deadline.js';
 import { createSpatialV3ExpansionContextReader } from
   '../infrastructure/postgres/spatial-v3-expansion-context.js';
@@ -210,13 +210,13 @@ export async function createSpatialV3ProductionCompositionRoot({
     const readCurrentEntityObservations = currentVisibility == null ? null
       : async ({ partyId, actorId, positionId, turnBudget } = {}) => {
         const read = async (transaction) => {
-          await transaction.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY');
           return currentVisibility.readEntityObservations({
             transaction, partyId, actorId, observedPositionId: positionId
           });
         };
-        if (turnBudget != null) return withTurnDeadlineTransaction(
-          pools.partyPool, turnBudget, read);
+        if (hasActiveTurnDeadline(turnBudget)) return withTurnDeadlineTransaction(
+          pools.partyPool, turnBudget, read,
+          { beginMode: 'repeatable_read_read_only' });
         const transaction = await pools.partyPool.connect();
         try {
           await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');

@@ -214,8 +214,7 @@ export function proposeNpcRoutineTransition({ runtime, npc_state, recheck_snapsh
   const profileRef = versioned('activity_profile', profile.profile_id, profile.revision);
   const sourceRef = versioned('source_record', profile.profile_id, profile.revision);
   const policyRef = versioned('condition_set', 'npc-approved-routine', 1);
-  const work = nextPhase.activity_ref === profile.phases[0].activity_ref
-    || nextPhase.uses_current_activity === true ? runtime.work_activity : null;
+  const work = usesCurrentActivity(profile, nextPhase) ? runtime.work_activity : null;
   const nextActivity = versioned('activity_profile', work?.activity_ref ?? nextPhase.activity_ref, profile.revision);
   const dependencyPins = seal({ pins: [pin('profile', profileRef),
     pin('source_dependency', sourceRef), pin('condition_rule', policyRef),
@@ -274,12 +273,16 @@ export function proposeNpcRoutineTransition({ runtime, npc_state, recheck_snapsh
 
 export function npcRoutineActivity(runtime) {
   const phase = runtime.profile.phases[runtime.phase_index];
-  const work = phase.activity_ref === runtime.profile.phases[0].activity_ref
-    || phase.uses_current_activity === true
-    ? runtime.work_activity : null;
+  const work = usesCurrentActivity(runtime.profile, phase) ? runtime.work_activity : null;
   return freeze({ activity_ref: work?.activity_ref ?? phase.activity_ref,
     summary: work?.summary ?? phase.summary, status: phase.activity_status,
     can_continue_automatically: phase.can_continue_automatically });
+}
+
+function usesCurrentActivity(profile, phase) {
+  return phase.uses_current_activity === true
+    || (phase.uses_current_activity === undefined
+      && phase.activity_ref === profile.phases[0].activity_ref);
 }
 
 function seal(value) { return { ...value, canonical_digest: digest(value) }; }

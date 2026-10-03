@@ -239,6 +239,8 @@ test('season seam at route end completes route once before applying selected sea
   assert.equal(transition.proposal?.movement_transition?.route_ref, 'work-home');
   assert.equal(transition.after.causal_state_ref.routine_state.profile.profile_id,
     'warm-routine');
+  assert.deepEqual(transition.after.causal_state_ref.routine_state.work_activity,
+    { activity_ref: 'work', summary: 'Перевозит людей.' });
   assert.equal(transition.after.causal_state_ref.routine_state.schedule_context
     .selected_rule_ref.schedule_id, 'schedule-warm');
   assert.equal(transition.after.current_position_node_id, 'home-position');
@@ -575,6 +577,7 @@ function seasonalRouteStarted({ seamOffset, adjacentMovement = false }) {
   coldProfile.phases = coldProfile.phases.map((phase) => ({ ...phase,
     presence_state: 'on_site', location_ref: 'pf_home' }));
   const warmProfile = presenceProfile('warm-routine', 'pf_home');
+  const work = { activity_ref: 'work', summary: 'Перевозит людей.' };
   const scheduleContext = { home_scope_ref: 'pf_home', subject_kind: 'occupation',
     subject_ref: 'nov_occ_worker', day_type: 'normal', calendar_profile: calendar,
     approved_rule_rows: [scheduleRow('cold', coldProfile),
@@ -582,7 +585,7 @@ function seasonalRouteStarted({ seamOffset, adjacentMovement = false }) {
   const initial = selectNpcRoutineSchedule({ schedule_context: scheduleContext,
     scheduled_at: at(42050) });
   const runtime = structuredClone(createNpcRoutineState({ profile: initial.rule.routine_profile,
-    started_at: at(42050), current_activity: { activity_ref: 'work' },
+    started_at: at(42050), current_activity: work,
     calendar_profile: calendar, schedule_context: initial.schedule_context }));
   runtime.presence_state = 'on_site';
   const activity = npcRoutineActivity(runtime);

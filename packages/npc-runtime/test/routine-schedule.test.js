@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { createNpcRoutineState, proposeNpcRoutineTransition,
-  resolveNpcRoutinePresence, selectNpcRoutineSchedule, validateNpcRoutineProfile } from '../src/index.js';
+  npcRoutineActivity, resolveNpcRoutinePresence, selectNpcRoutineSchedule,
+  validateNpcRoutineProfile } from '../src/index.js';
 
 const at = (value) => ({ whole_minutes: String(value), subminute_numerator: '0', subminute_denominator: '1' });
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
@@ -93,6 +95,85 @@ test('factual activity refs and summary preserve the individual duty across a fu
   assert.equal(resumed.factual_transition.to_activity_ref, resumed.activity_after.activity_ref);
   assert.equal(resumed.factual_transition.summary, work.summary);
   assert.equal(resumed.activity_after.summary, work.summary);
+});
+
+test('approved D-1 ferryman sleep phase keeps its explicit activity on first arrival at night', () => {
+  const rows = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_schedule_routine_rules.json',
+    import.meta.url), 'utf8'));
+  const ferryman = rows.find((row) => row.schedule_id
+    === 'sch_nov_occ_ferryman_pf_ferry_landing_normal_summer');
+  assert.equal(ferryman.status, 'approved');
+  assert.equal(ferryman.schedule_version, 2);
+  const work = { activity_ref: 'ferrying_people', summary: 'Перевозит людей.' };
+  const runtime = createNpcRoutineState({ profile: ferryman.routine_profile,
+    started_at: at(0), current_activity: work, calendar_profile: calendarProfile });
+  const sleep = npcRoutineActivity(runtime);
+  assert.equal(runtime.phase_index, 0);
+  assert.equal(sleep.activity_ref, 'routine_sleep_before_dawn_v1');
+  assert.equal(sleep.summary, 'Ночной сон; место неизвестно.');
+  assert.equal(runtime.runtime_status, 'sleeping');
+
+  const value = input('ferryman');
+  value.runtime = runtime;
+  value.scheduled_at = runtime.next_transition_at;
+  const afterSleep = proposeNpcRoutineTransition(value);
+  assert.equal(afterSleep.activity_after.activity_ref, 'routine_preparation_v1');
+  assert.equal(afterSleep.activity_after.summary,
+    'Готовится к работе дома; место не установлено.');
+  assert.equal(afterSleep.runtime_after.runtime_status, 'available');
+});
+
+test('activity inheritance honors explicit true and false while legacy first phase remains inherited for a full day', () => {
+  const work = { activity_ref: 'individual_ferry_duty', summary: 'Перевозит людей.' };
+  const base = { schema: 'npc_routine_profile_v1', profile_id: 'activity-flags',
+    revision: 1, status: 'approved', phases: [
+      { state_id: 'duty', duration_minutes: 480, activity_ref: 'routine_duty',
+        summary: 'Рабочая фаза.', activity_status: 'active', runtime_status: 'available',
+        can_continue_automatically: true, decision_required: false },
+      { state_id: 'meal', duration_minutes: 60, activity_ref: 'routine_meal',
+        summary: 'Ест.', activity_status: 'active', runtime_status: 'available',
+        uses_current_activity: false, can_continue_automatically: true,
+        decision_required: false },
+      { state_id: 'return_to_duty', duration_minutes: 480, activity_ref: 'routine_return',
+        summary: 'Возвращается к работе.', activity_status: 'active', runtime_status: 'available',
+        uses_current_activity: true, can_continue_automatically: true,
+        decision_required: false },
+      { state_id: 'sleep', duration_minutes: 420, activity_ref: 'routine_sleep',
+        summary: 'Спит.', activity_status: 'active', runtime_status: 'sleeping',
+        uses_current_activity: false, can_continue_automatically: true,
+        decision_required: false }
+    ] };
+
+  for (const firstFlag of [undefined, true, false]) {
+    const cycle = structuredClone(base);
+    if (firstFlag !== undefined) cycle.phases[0].uses_current_activity = firstFlag;
+    assert.equal(cycle.phases.reduce((sum, phase) => sum + phase.duration_minutes, 0), 1440);
+    let runtime = createNpcRoutineState({ profile: cycle, started_at: at(0),
+      current_activity: work });
+    const initial = npcRoutineActivity(runtime);
+    const inheritsLegacyOrTrue = firstFlag !== false;
+    assert.equal(initial.activity_ref, inheritsLegacyOrTrue
+      ? work.activity_ref : 'routine_duty');
+    assert.equal(initial.summary, inheritsLegacyOrTrue ? work.summary : 'Рабочая фаза.');
+    assert.equal(runtime.runtime_status, 'available');
+
+    const expected = [
+      { minute: 480, ref: 'routine_meal', summary: 'Ест.', status: 'available' },
+      { minute: 540, ref: work.activity_ref, summary: work.summary, status: 'available' },
+      { minute: 1020, ref: 'routine_sleep', summary: 'Спит.', status: 'sleeping' },
+      { minute: 1440, ref: inheritsLegacyOrTrue ? work.activity_ref : 'routine_duty',
+        summary: inheritsLegacyOrTrue ? work.summary : 'Рабочая фаза.', status: 'available' }
+    ];
+    for (const step of expected) {
+      const transitioned = proposeNpcRoutineTransition({ ...input('cycle'), runtime,
+        scheduled_at: at(step.minute) });
+      assert.equal(transitioned.activity_after.activity_ref, step.ref);
+      assert.equal(transitioned.activity_after.summary, step.summary);
+      assert.equal(transitioned.runtime_after.runtime_status, step.status);
+      runtime = transitioned.runtime_after;
+    }
+  }
 });
 
 test('routine movement is a started interval before its completion', () => {

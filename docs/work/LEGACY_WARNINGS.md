@@ -112,6 +112,8 @@
 | 120 | `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json` | approval-валидатор не проверяет `resign_required`; зелёная проверка может принять подпись старого пина | — |
 | 121 | `data/novgorod-region/novgorod_occupations_v1_enriched.tsv`, `data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/occupation_term_status.csv`, `game-base-v1/items-weapons-armour/military/security.csv` | недоказанный термин «сторож брода» и его занятие/снаряжение остаются; term-status помечен not_attested | — |
 | 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
+| 125 | `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `packages/npc-runtime`, `apps/game-server/src/runtime/npc-routine-temporal.js` | typed gap при first-entry может потерять D-1 schedule context и не получить следующую календарную переоценку | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability может дать `time_calendar_profile_gap` в високосный год из-за пропуска leap day в `dayOfYear` | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -665,3 +667,15 @@
 - **Что.** A1 проверяет массу, доступ, количество, класс выхода, требование инструмента и режим идентичности, но не сохраняет и не проверяет вид материала и не устанавливает, может ли результат работать по своему назначению. Если модель предложит такой план, «прялка из рубахи» или «меч из рубахи» могут пройти A1. Снятие `needs_check` с действий игрока в D59 не создаёт этот пробел, но делает его видимым и для имён из прежнего списка.
 - **Как жить.** Не считать положительный A1 admission доказательством подходящего материала или работоспособности. Отдельная задача `a1-physics` должна использовать знания мира о технологии и сохранять/проверять вид материала.
 - **Issue.** —
+
+### LW-125 — first-entry location gap может потерять календарный D-1 контекст (npc-season)
+- **Где.** `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js` (обработка typed selection gap), `packages/npc-runtime` (schedule context и следующая boundary), интеграция в `apps/game-server/src/runtime/npc-routine-temporal.js`.
+- **Что.** Если будущий утверждённый стартовый D-1 bundle одновременно даёт `location_gap` и не позволяет выбрать ровно одно правило, first-entry сохраняет typed gap, но после сборки runtime может не сохранить schedule context для повторного выбора на календарной границе. Для текущих утверждённых стартов issue #227 это условие недостижимо; проверено по доступным правилам, не отдельным live-сценарием.
+- **Как жить.** Не подставлять generic routine или выдуманное место. Если появится утверждённый случай с таким gap, владелец `@rus/npc-runtime` решает сохранение/переоценку контекста, а game-server только интегрирует; сначала покрыть first-entry и календарную границу тестом.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-126 — month-boundary D-1 applicability зависит от исправления leap-year календаря (npc-season)
+- **Где.** `packages/time-events-history/src/calendar.js` (`dayOfYear`), вызывается month-boundary applicability в `packages/npc-runtime/src/routine-schedule.js`.
+- **Что.** `dayOfYear` не учитывает дополнительный день юлианского високосного года. При переоценке D-1 на границе февраля и марта високосного года (начиная с 1232) кандидат расписания может завершиться `time_calendar_profile_gap`, хотя следующая обычная фаза наступает раньше.
+- **Как жить.** Не активировать month-boundary переоценку D-1 до исправления календарного owner `@rus/time-events-history`; вернуть её отдельной задачей после исправления и покрыть високосную границу тестом. Для текущих данных применимость задана на сезон.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)

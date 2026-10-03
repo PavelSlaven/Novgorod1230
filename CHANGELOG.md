@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- feat(npc): select pinned D-1 routines on first entry and exact season boundaries; preserve identity through typed offstage/location gaps without invented placement (#227)
+- feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability deferred pending the leap-year calendar fix) (#227)
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(governance): PC §8.1 — a scenario is a plot laid through the free world: it defines only plot NPCs, facts, scenes, items and completion; it owns no mechanics (time, body, combat, checks, perception, conversation, knowledge and lies, materialization, ownership, movement stay with their general owners and work the same inside and outside a scenario); finishing a plot does not end the game (owner decision D66) (#226)

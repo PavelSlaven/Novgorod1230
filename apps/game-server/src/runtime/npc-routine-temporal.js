@@ -92,7 +92,7 @@ export function npcRoutineTemporalRegistration() {
       seasonRuntime = createNpcRoutineState({ profile: selected.rule.routine_profile,
         started_at: candidate.scheduled_at,
         calendar_profile: runtime.schedule_context.calendar_profile,
-        current_activity: machine.current_activity,
+        current_activity: runtime.work_activity,
         schedule_context: selected.schedule_context });
     } else if (!interrupted) {
       proposed = proposeNpcRoutineTransition({ runtime, scheduled_at: candidate.scheduled_at,
@@ -115,7 +115,7 @@ export function npcRoutineTemporalRegistration() {
       seasonRuntime = createNpcRoutineState({ profile: selected.rule.routine_profile,
         started_at: candidate.scheduled_at,
         calendar_profile: runtime.schedule_context.calendar_profile,
-        current_activity: machine.current_activity,
+        current_activity: runtime.work_activity,
         schedule_context: selected.schedule_context });
     }
     const interruption = interrupted

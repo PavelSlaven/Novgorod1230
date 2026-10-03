@@ -47,3 +47,15 @@ test('participating NPC without persisted body or profile fails with NPC-scoped 
   ]), session), (error) => error.code === 'body_state_profile_gap'
     && error.details.actor_ref.entity_id === 'npc:one');
 });
+
+test('left NPC participant remains in history but is not required in exchange state', () => {
+  const departed = { entity_kind: 'npc', entity_id: 'npc:one' };
+  const sessionAfterExit = { participant_refs: [departed], participant_states: [{
+    actor_ref: departed, combat_status: 'left', current_intent: null,
+    next_action_boundary_ref: null
+  }] };
+  const working = projectTraceCombatWorkingState(state([]), sessionAfterExit);
+  assert.deepEqual(working.actor_states, {
+    'player_character:player': { body_state: { health: 90 } }
+  });
+});

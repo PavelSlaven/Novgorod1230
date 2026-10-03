@@ -10,6 +10,8 @@ import { createSpatialV3PostgresCombinedAtomicCommitter } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { withSceneNpcs } from
   '../../apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js';
+import { projectTraceCombatWorkingState } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-combat-working-state.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, {
@@ -56,6 +58,8 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
     assert.ok(match, `party schema migration ${file} must exist`);
     await client.query(await readFile(`schemas/party-db/${match}`, 'utf8'));
   }
+  await client.query(await readFile(
+    'schemas/party-db/034_party_runtime_actor_base_attributes.sql', 'utf8'));
 
   const partyId = `combat-body-party-${suffix}`;
   const npcId = `combat-body-npc-${suffix}`;
@@ -169,6 +173,38 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   assert.deepEqual(afterRestart.npcs[0].body_state,
     afterInsert.npcs[0].body_state);
   assert.equal(afterRestart.npcs[0].body_state_version, 1);
+
+  await client.query(`INSERT INTO party_runtime.party_materialization_runs
+    (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,
+     materializer_version,rng_version,result_digest,idempotency_key,status)
+    VALUES ($1,'run:1','g4:1','baseline','seed','input','catalog','test','test',
+      'result','run-key','committed')`, [partyId]);
+  await client.query(`INSERT INTO party_runtime.party_npcs
+    (party_id,npc_id,run_id,profile_set_id,profile_level,machine_state)
+    VALUES ($1,$2,'run:1','npc-profile','scene',$3::jsonb)`,
+  [partyId, npcId, JSON.stringify({ runtime_status: 'available' })]);
+  await client.query(`INSERT INTO party_runtime.party_actor_profile_bindings
+    (party_id,actor_kind,actor_id,role_ref,occupation_ref,
+     skill_profile_snapshot,name_profile_snapshot,language_profile_snapshot,
+     knowledge_profile_snapshot,profile_candidate_set_digest,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
+  [partyId, npcId, `combat-body-change-${suffix}-1`]);
+  const activeSession = { status: 'paused_for_player',
+    participant_refs: [participantRef], participant_states: [{
+      actor_ref: participantRef, combat_status: 'active', current_intent: null,
+      next_action_boundary_ref: null
+    }] };
+  const offScene = await withSceneNpcs(pool, partyId, {
+    actor_id: 'player', body_state: { health: 90 },
+    position: { site_id: `site:other-${suffix}` },
+    combat_sessions: [activeSession], npcs: []
+  });
+  assert.equal(offScene.npcs.length, 1);
+  assert.equal(offScene.npcs[0].instance_id, npcId);
+  assert.equal(offScene.npcs[0].body_state.health, 80);
+  assert.equal(projectTraceCombatWorkingState(offScene, activeSession)
+    .actor_states[`npc:${npcId}`].body_state.health, 80);
 
   const updatedPlan = await makePlan({ ordinal: 2,
     idempotencyKey: `combat-body-update-${suffix}`, mode: 'update',

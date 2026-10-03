@@ -7,6 +7,8 @@ import { projectPreparedDomainState } from
 import { routineNpcSnapshot, withoutSceneRead } from '../src/runtime/lower-dvina-trace-scene-presence.js';
 import { bindLowerDvinaTraceTurnStepIdempotency } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-idempotency.js';
+import { projectTraceCombatWorkingState } from
+  '../src/runtime/lower-dvina-trace-combat-working-state.js';
 
 const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'profile',
   profile_level: 'background', anchor_id: null,
@@ -19,11 +21,16 @@ const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'p
   health: '73', energy: '61', satiety: '49', body_state_version: '4',
   position_id: `pos:${id}`, g6_instance_id: 'g6:main', ...extra });
 const pool = (rows, positions = [{ id: 'pos:me', g6_instance_id: 'g6:main' }],
-  bodyRows = []) => {
+  bodyRows = [], participantRows = []) => {
   const calls = []; return { calls, async query(text, values) {
     calls.push({ text, values });
     if (/FROM party_runtime.party_actor_body_states/u.test(text)) {
       return { rows: bodyRows.filter(({ actor_id: id }) =>
+        values[1].includes(id)) };
+    }
+    if (/FROM party_runtime.party_npcs n/u.test(text)
+        && Array.isArray(values[1])) {
+      return { rows: participantRows.filter(({ npc_id: id }) =>
         values[1].includes(id)) };
     }
     return { rows: /FROM party_runtime.party_npcs/.test(text) ? rows : positions }; } }; };
@@ -156,6 +163,44 @@ test('combat participant body reloads by actor ref without site or placement', a
   assert.equal(loaded.npcs[0].body_state_persisted, true);
   assert.equal(loaded.npcs[0].body_profile_ref.id, 'body:npc');
   assert.equal(loaded.npcs[0].body_state_profile, profile);
+});
+
+test('active combat participant reloads from party records after leaving player scene', async () => {
+  const profile = { schema: 'rus.body_state.initialization_profile.v1' };
+  const npc = row('npc_departed_scene', { semantic_state: {
+    participant_slot_ref: 'slot:npc_departed_scene',
+    body_state_profile: profile
+  } });
+  const session = { status: 'paused_for_player', participant_refs: [
+    { entity_kind: 'npc', entity_id: npc.npc_id },
+    { entity_kind: 'player_character', entity_id: 'player' }
+  ], participant_states: [
+    { actor_ref: { entity_kind: 'npc', entity_id: npc.npc_id },
+      combat_status: 'active' },
+    { actor_ref: { entity_kind: 'player_character', entity_id: 'player' },
+      combat_status: 'active' }
+  ] };
+  const snapshot = base({ position: { site_id: 'site:elsewhere',
+    position_id: 'pos:player', g6_instance_id: 'g6:elsewhere' },
+  combat_sessions: [session], npcs: [] });
+  const p = pool([], [{ id: 'pos:player', g6_instance_id: 'g6:elsewhere' }],
+    [], [npc]);
+
+  const loaded = await withSceneNpcs(p, 'party', snapshot);
+  const participant = loaded.npcs.find(({ instance_id: id }) => id === npc.npc_id);
+  assert.ok(participant);
+  assert.equal(participant.runtime_source, SCENE_NPC_SOURCE);
+  assert.equal(participant.position_id, npc.position_id);
+  const participantRead = p.calls.find(({ text }) =>
+    /FROM party_runtime\.party_npcs n/u.test(text)
+      && /ANY\(\$2::text\[\]\)/u.test(text));
+  assert.ok(participantRead);
+  assert.deepEqual(participantRead.values, ['party', [npc.npc_id]]);
+  assert.doesNotMatch(participantRead.text, /g6\.host_id=\$2/u);
+
+  const working = projectTraceCombatWorkingState({ ...loaded,
+    actor_id: 'player', body_state: { health: 90 } }, session);
+  assert.equal(working.actor_states[`npc:${npc.npc_id}`].body_state.health, 73);
 });
 
 test('scene-loaded NPCs are stripped before a snapshot and nothing else is touched', () => {

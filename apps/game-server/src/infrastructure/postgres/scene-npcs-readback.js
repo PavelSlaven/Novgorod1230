@@ -58,7 +58,71 @@ export async function withSceneNpcs(pool, partyId, state) {
           ?? prior.body_state_profile ?? null });
       continue;
     }
-    loaded.push({
+    loaded.push(sceneNpcSnapshot(row));
+  }
+  return { ...state, scene_position_g6,
+    npcs: [...current.values(), ...loaded] };
+}
+
+async function withCombatParticipantBodies(pool, partyId, state) {
+  const participantIds = combatNpcParticipantIds(state);
+  if (participantIds.length === 0) return state;
+  const { rows } = await pool.query(
+    `SELECT actor_id,body_profile_ref,health,energy,satiety,
+            state_version AS body_state_version
+       FROM party_runtime.party_actor_body_states
+      WHERE party_id=$1 AND actor_kind='npc' AND actor_id=ANY($2::text[])
+      ORDER BY actor_id`, [partyId, participantIds]);
+  const persisted = new Map(rows.map((row) => [row.actor_id, row]));
+  const npcs = (state.npcs ?? []).map((npc) => {
+    const body = persisted.get(npc.instance_id);
+    return body == null ? npc : { ...npc,
+      ...sceneNpcBodyState(body, npc.body_state_profile) };
+  });
+  const known = new Set(npcs.map(({ instance_id: id }) => id));
+  const missingIds = participantIds.filter((id) => !known.has(id));
+  if (missingIds.length === 0) return { ...state, npcs };
+  const { rows: missing } = await pool.query(
+    `SELECT n.npc_id,n.profile_set_id,n.profile_level,n.anchor_id,
+            n.identity_state,n.machine_state,n.semantic_state,
+            apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
+            apb.knowledge_profile_snapshot,apb.attribute_profile_snapshot,
+            apb.profile_candidate_set_digest,
+            body.body_profile_ref,body.health,body.energy,body.satiety,
+            body.state_version AS body_state_version,
+            placement.position_node_id AS position_id,pos.g6_instance_id
+       FROM party_runtime.party_npcs n
+       JOIN party_runtime.party_actor_profile_bindings apb
+         ON apb.party_id=n.party_id AND apb.actor_kind='npc' AND apb.actor_id=n.npc_id
+       LEFT JOIN party_runtime.entity_placements placement
+         ON placement.party_id=n.party_id AND placement.entity_kind='npc'
+        AND placement.entity_id=n.npc_id AND placement.placement_kind='scene_position'
+       LEFT JOIN party_runtime.scene_position_nodes pos
+         ON pos.party_id=placement.party_id AND pos.id=placement.position_node_id
+       LEFT JOIN party_runtime.party_actor_body_states body
+         ON body.party_id=n.party_id AND body.actor_kind='npc'
+        AND body.actor_id=n.npc_id
+      WHERE n.party_id=$1 AND n.npc_id=ANY($2::text[])
+      ORDER BY n.npc_id`, [partyId, missingIds]);
+  return { ...state, npcs: [...npcs, ...missing.map(sceneNpcSnapshot)] };
+}
+
+function combatNpcParticipantIds(state) {
+  return [...new Set((state?.combat_sessions ?? [])
+    .filter(({ status }) => status !== 'ended')
+    .flatMap(({ participant_refs: refs, participant_states: states }) => {
+      const left = new Set((states ?? [])
+        .filter(({ combat_status }) => combat_status === 'left')
+        .map(({ actor_ref }) => actor_ref?.entity_kind === 'npc'
+          ? actor_ref.entity_id : null));
+      return (refs ?? []).filter(({ entity_kind: kind, entity_id: id }) =>
+        kind === 'npc' && typeof id === 'string' && id !== ''
+          && !left.has(id)).map(({ entity_id: id }) => id);
+    }))];
+}
+
+function sceneNpcSnapshot(row) {
+  return {
     instance_id: row.npc_id,
     participant_slot_ref: row.semantic_state?.participant_slot_ref,
     profile_id: row.profile_set_id,
@@ -80,34 +144,7 @@ export async function withSceneNpcs(pool, partyId, state) {
     position_id: row.position_id,
     g6_instance_id: row.g6_instance_id,
     runtime_source: SCENE_NPC_SOURCE
-    });
-  }
-  return { ...state, scene_position_g6,
-    npcs: [...current.values(), ...loaded] };
-}
-
-async function withCombatParticipantBodies(pool, partyId, state) {
-  const participantIds = [...new Set((state?.combat_sessions ?? [])
-    .filter(({ status }) => status !== 'ended')
-    .flatMap(({ participant_refs: refs }) => refs ?? [])
-    .filter(({ entity_kind: kind, entity_id: id }) => kind === 'npc'
-      && typeof id === 'string' && id !== '')
-    .map(({ entity_id: id }) => id))];
-  if (participantIds.length === 0) return state;
-  const { rows } = await pool.query(
-    `SELECT actor_id,body_profile_ref,health,energy,satiety,
-            state_version AS body_state_version
-       FROM party_runtime.party_actor_body_states
-      WHERE party_id=$1 AND actor_kind='npc' AND actor_id=ANY($2::text[])
-      ORDER BY actor_id`, [partyId, participantIds]);
-  if (rows.length === 0) return state;
-  const persisted = new Map(rows.map((row) => [row.actor_id, row]));
-  const npcs = (state.npcs ?? []).map((npc) => {
-    const body = persisted.get(npc.instance_id);
-    return body == null ? npc : { ...npc,
-      ...sceneNpcBodyState(body, npc.body_state_profile) };
-  });
-  return { ...state, npcs };
+  };
 }
 
 function sceneNpcBodyState(row, existingProfile = null) {

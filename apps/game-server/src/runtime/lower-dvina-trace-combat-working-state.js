@@ -7,8 +7,13 @@ export function projectTraceCombatWorkingState(state, combatSession = null) {
     [`player_character:${state.actor_id}`]: {
       body_state: structuredClone(state.body_state) }
   };
+  const left = new Set((combatSession?.participant_states ?? [])
+    .filter(({ actor_ref: actor, combat_status: status }) =>
+      actor?.entity_kind === 'npc' && status === 'left')
+    .map(({ actor_ref: actor }) => actor.entity_id));
   const participants = new Set((combatSession?.participant_refs ?? [])
     .filter(({ entity_kind }) => entity_kind === 'npc')
+    .filter(({ entity_id }) => !left.has(entity_id))
     .map(({ entity_id }) => entity_id));
   const npcs = new Map((working.npcs ?? []).map((npc) => [npc.instance_id, npc]));
   for (const npcId of participants) {

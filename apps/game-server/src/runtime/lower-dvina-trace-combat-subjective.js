@@ -1,8 +1,19 @@
-export function projectTraceCombatSubjectiveState(actorRef, state) {
+import { projectCombatBodyStateDescriptions } from '@rus/body-state';
+
+export function projectTraceCombatSubjectiveState(actorRef, state,
+  { combatDataProbe = null } = {}) {
   const npc = state.npcs?.find(
     ({ instance_id: id }) => id === actorRef.entity_id
   );
-  const body = projectQualitativeBody(qualitativeBodySources(actorRef, state, npc));
+  const current = state.actor_states?.[
+    `${actorRef.entity_kind}:${actorRef.entity_id}`]?.body_state;
+  let body;
+  if (combatDataProbe?.mode === 'D65_PROBE') {
+    if (current == null) fail('TRACE_COMBAT_SUBJECTIVE_BODY_GAP', actorRef);
+    body = projectD65Body(current, combatDataProbe, actorRef);
+  } else {
+    body = projectQualitativeBody(qualitativeBodySources(actorRef, state, npc));
+  }
   if (Object.keys(body).length === 0) {
     fail('TRACE_COMBAT_SUBJECTIVE_BODY_GAP', actorRef);
   }
@@ -26,6 +37,17 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
         || item.ownership?.controller_npc_id === actorRef.entity_id)
       .map((item) => ({ entity_kind: 'item', entity_id: item.item_id }))
   };
+}
+
+function projectD65Body(bodyState, probe, actorRef) {
+  const projected = projectCombatBodyStateDescriptions({
+    body_state: bodyState,
+    qualitative_profile: probe.qualitativeProfile,
+    data_approval: probe.dataApproval,
+    mode: probe.mode
+  });
+  if (!projected.ok) fail(projected.error.code, actorRef);
+  return { body_state_descriptions: projected.body_state_descriptions };
 }
 
 function fail(code, actorRef) {

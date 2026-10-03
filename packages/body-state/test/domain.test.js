@@ -9,11 +9,54 @@ import {
   applyBodyStateChange,
   calculateBodyTimeEffectProposal,
   initializeBodyState,
+  projectCombatBodyStateDescriptions,
   normalizeBodyState,
   predictNearestBodyThreshold,
   stateModifier,
   validateBodyState
 } from '../src/index.js';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+const COMBAT_DATA = 'data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1';
+
+test('D65 combat body projection emits only package-authored phrases', async () => {
+  const bundle = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'minimal-combat-bundle.candidate.json'), 'utf8'));
+  const approval = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'combat-data-approval.json'), 'utf8'));
+  const profile = bundle.npc_decision.body_state_qualitative_context;
+  const result = projectCombatBodyStateDescriptions({
+    body_state: { health: 29, energy: 70, satiety: 100 },
+    qualitative_profile: profile, data_approval: approval, mode: 'D65_PROBE'
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.body_state_descriptions, [
+    { metric: 'health', npc_description: 'Здоровье низкое.' },
+    { metric: 'energy', npc_description: 'Запас энергии высокий.' },
+    { metric: 'satiety', npc_description: 'Сытость высокая.' }
+  ]);
+  const serialized = JSON.stringify(result);
+  for (const forbidden of ['29', '70', '100', 'band_id', 'thresholds',
+    'calibration', 'D71']) assert.equal(serialized.includes(forbidden), false);
+});
+
+test('candidate combat body bands remain unavailable outside D65 probe mode', async () => {
+  const bundle = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'minimal-combat-bundle.candidate.json'), 'utf8'));
+  const approval = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'combat-data-approval.json'), 'utf8'));
+  const result = projectCombatBodyStateDescriptions({
+    body_state: { health: 29, energy: 70, satiety: 100 },
+    qualitative_profile: bundle.npc_decision.body_state_qualitative_context,
+    data_approval: approval, mode: 'runtime'
+  });
+  assert.equal(result.ok, false);
+  assert.equal(result.error.code, 'body_state_qualitative_profile_gap');
+});
 
 test('fixed body effect clones and transitions existing conditions', () => {
   const result = applyApprovedFixedBodyEffect({

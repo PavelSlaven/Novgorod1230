@@ -3,7 +3,11 @@ import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+import { initializeBodyState, projectCombatBodyStateDescriptions } from
+  '@rus/body-state';
+import { prepareCombatExchange } from '@rus/turn';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from
@@ -12,11 +16,106 @@ import { withSceneNpcs } from
   '../../apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js';
 import { projectTraceCombatWorkingState } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-combat-working-state.js';
+import { createCombatMinD65ProbeData, loadCombatMinDataPackage } from
+  '../../apps/game-server/src/runtime/combat-min-data.js';
+import { projectTraceCombatSubjectiveState } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-combat-subjective.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
+import { combatWrites } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-combat-writes.js';
+import { expectedVersions } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-combat-commit.js';
 
 const docker = (args) => spawnSync('docker', args, {
   encoding: 'utf8', timeout: 45_000
 });
+const at = { whole_minutes: '1', subminute_numerator: '0',
+  subminute_denominator: '1' };
+const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const bodyMetrics = ({ health, energy, satiety }) => ({
+  health, energy, satiety
+});
+
+function combatSession(npcId) {
+  const npc = ref('npc', npcId);
+  const player = ref('player_character', 'player-1');
+  return { schema: 'combat_session_v1', combat_id: 'combat-p16',
+    state_version: '1', status: 'active', started_at: at,
+    scope_ref: ref('location', 'combat-site'),
+    participant_refs: [npc, player], participant_states: [
+      { actor_ref: npc, combat_status: 'active', current_intent: null,
+        next_action_boundary_ref: null },
+      { actor_ref: player, combat_status: 'active', current_intent: {
+        schema: 'combat_intent_v1', intent_id: 'intent-player-1',
+        combat_id: 'combat-p16', actor_ref: player, intent_kind: 'engage',
+        target_refs: [npc], protected_refs: [], scope_ref: null,
+        destination_ref: null, force_limit: 'ordinary',
+        risk_posture: 'ordinary', persistence: 'until_decision_boundary',
+        created_from_boundary_ref: ref('npc_decision_boundary',
+          'boundary-player-1'), state_version: '1', status: 'active' },
+      next_action_boundary_ref: null }
+    ], exchange_ordinal: 0, last_exchange_ref: null,
+    player_response_required: false, last_change_set_ref: null };
+}
+
+async function runOwnerExchange({ session, npcId, bodyState, idempotencyKey }) {
+  return prepareCombatExchange({ session,
+    working_state: { actor_states: {
+      [`npc:${npcId}`]: { body_state: structuredClone(bodyState) },
+      'player_character:player-1': { body_state: {
+        health: 100, energy: 100, satiety: 100 } }
+    } }, occurred_at: at, idempotency_key: idempotencyKey,
+    random_source: { next: () => 0.5 }, body_threshold_profile: null,
+    ports: {
+      resolveCombatTiming: () => ({ occurred_at: at,
+        exact_duration: { exact_minutes: { numerator: '1', denominator: '1' } } }),
+      resolveExecutionProfile: () => ({ preconditions_digest: 'fixture-approved',
+        check_request: { target_defense: 1, attribute_value: 20,
+          skill_bonus: 0, weapon_danger: 4, target_protection: 0,
+          target_vulnerability: 0 } }),
+      orderTechnicalSteps: ({ proposals }) => proposals,
+      applyItemTransitions: ({ working_state }) => ({ working_state }),
+      applyPositionTransitions: ({ working_state }) => ({ working_state }),
+      resolvePerceptionAndDecisionContexts: async ({ session: current,
+        working_state }) => ({ session_after: current, working_state,
+        signal_records: [] })
+    }
+  });
+}
+
+function productionBodyWrite({ partyId, npcId, ordinal, changeSetId,
+  idempotencyKey, priorSession, priorNpc, prepared }) {
+  const runtimeNpc = { ...priorNpc,
+    machine_state: priorNpc.machine_state ?? {} };
+  const factual = { player_input: { idempotency_key: idempotencyKey,
+    request_id: `request-${ordinal}` },
+  mode_resolution: { turn_id: `turn-${ordinal}`, decision_trace: {} },
+  time_update: { clock_after: at },
+  consequence: { combat_kind: 'exchange', combat: prepared } };
+  const state = { party_id: partyId, actor_id: 'player-1',
+    party_state: { state_version: ordinal, session_state_version: ordinal,
+      clock_state_version: ordinal, body_state_version: 1 },
+    body_state: { health: 100, energy: 100, satiety: 100 }, clock: at,
+    knowledge: [], items: [], combat_sessions: [priorSession],
+    npcs: [runtimeNpc], opening_identity: { opening_screen_digest: 'fixture' } };
+  const next = { ...state, party_state: { ...state.party_state,
+    state_version: ordinal + 1 }, npcs: [runtimeNpc] };
+  const writes = combatWrites({ partyId, state, next, factual,
+    turnNumber: ordinal + 1, changeSetId, idemId: `idem-${ordinal}`,
+    visibleEnvelope: {}, pendingScreen: {} });
+  const inserted = writes.inserts.filter(({ target_table }) =>
+    target_table === 'party_actor_body_states');
+  const updated = writes.updates.filter(({ target_table }) =>
+    target_table === 'party_actor_body_states');
+  assert.equal(inserted.length + updated.length, 1,
+    'production combat writer must emit one NPC body write');
+  const bodyWrite = inserted[0] ?? updated[0];
+  const expectedBodyVersions = expectedVersions({ partyId, state, factual })
+    .filter(({ target_table }) =>
+      target_table === 'party_actor_body_states');
+  return { mode: inserted.length === 1 ? 'insert' : 'update', bodyWrite,
+    expectedBodyVersions };
+}
 
 test('combat NPC body P16 insert/update rolls back atomically and replays idempotently', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
@@ -63,8 +162,36 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
 
   const partyId = `combat-body-party-${suffix}`;
   const npcId = `combat-body-npc-${suffix}`;
-  const profileRef = { entity_ref: { entity_kind: 'body_state_profile',
-    entity_id: `test-profile-${suffix}` }, authoring_version: 'fixture-v1' };
+  const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url));
+  const packageData = await loadCombatMinDataPackage(repositoryRoot);
+  const probe = createCombatMinD65ProbeData(packageData);
+  const initializedBody = initializeBodyState({ body_state_profile: {
+    schema: probe.bodyInitializationProfileFixture.schema,
+    status: probe.bodyInitializationProfileFixture.status,
+    profile_ref: probe.bodyInitializationProfileFixture.profile_ref,
+    initial_state: probe.bodyInitializationProfileFixture.initial_state
+  } });
+  assert.equal(initializedBody.ok, true);
+  const profileRef = initializedBody.profile_ref;
+  const firstExchange = await runOwnerExchange({ session: combatSession(npcId),
+    npcId, bodyState: initializedBody.body_state,
+    idempotencyKey: `combat-body-exchange-1-${suffix}` });
+  assert.equal(firstExchange.status, 'prepared');
+  assert.equal(firstExchange.prepared.check_results.length, 1);
+  assert.equal(firstExchange.prepared.harm_packages.length, 1);
+  assert.equal(firstExchange.prepared.body_transitions.some(({ actor_ref: actor }) =>
+    actor.entity_kind === 'npc' && actor.entity_id === npcId), true);
+  const afterFirstExchange = firstExchange.prepared.working_state_after
+    .actor_states[`npc:${npcId}`].body_state;
+  assert.ok(afterFirstExchange.health < initializedBody.body_state.health);
+  const firstOwnerWrite = productionBodyWrite({ partyId, npcId, ordinal: 1,
+    changeSetId: `combat-body-change-${suffix}-1`,
+    idempotencyKey: `combat-body-exchange-1-${suffix}`,
+    priorSession: combatSession(npcId), priorNpc: { instance_id: npcId,
+      body_profile_ref: profileRef, body_state_persisted: false,
+      machine_state: {} }, prepared: firstExchange.prepared });
+  assert.equal(firstOwnerWrite.mode, 'insert');
+  assert.deepEqual(firstOwnerWrite.expectedBodyVersions, []);
   await client.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,
      materializer_version,rng_version,command_catalog_digest,
@@ -76,8 +203,7 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool,
     recheck: async () => ({ ok: true }) });
 
-  const makePlan = async ({ ordinal, idempotencyKey, mode, stateVersion,
-    health }) => {
+  const makePlan = async ({ ordinal, idempotencyKey, ownerWrite }) => {
     const changeSetId = `combat-body-change-${suffix}-${ordinal}`;
     const idempotencyId = `combat-body-idem-${suffix}-${ordinal}`;
     const packageId = `combat-body-visible-${suffix}-${ordinal}`;
@@ -104,33 +230,28 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
           .replace('sha256:', '') },
       idempotency_record_id: idempotencyId
     };
-    const body = { party_id: partyId, actor_kind: 'npc', actor_id: npcId,
-      body_profile_ref: profileRef, health, energy: 70, satiety: 60,
-      updated_change_set_id: changeSetId };
     const record = { id: changeSetId, party_id: partyId,
       operation_kind: 'combat_exchange', idempotency_record_id: idempotencyId,
       expected_state_version_set_digest: 'expected',
       expected_state_version_set: [], committed_state_version_set_digest: 'committed',
       write_plan_digest: `${changeSetId}-digest`, created_at_turn: 0,
       committed_at_turn: 0 };
-    const write = { target_table: 'party_actor_body_states',
-      id: `npc:${npcId}`, record: body };
     const built = await buildCombinedWritePlan({
       plan_id: `combat-body-plan-${suffix}-${ordinal}`,
       party_id: partyId, write_plan_kind: 'semantic_commit',
       operation_kind: 'combat_exchange',
       canonical_input_digest: computeSpatialV3CanonicalDigest({
-        partyId, npcId, ordinal, health }),
-      expected_state_versions: mode === 'update'
-        ? [{ target_table: 'party_actor_body_states',
-          id: `npc:${npcId}`, state_version: stateVersion }]
-        : [],
+        partyId, npcId, ordinal, idempotencyKey }),
+      expected_state_versions: ownerWrite.expectedBodyVersions,
       validation_report: { status: 'pass', digest:
-        computeSpatialV3CanonicalDigest({ ordinal, health }) },
+        computeSpatialV3CanonicalDigest({ ordinal,
+          bodyWrite: ownerWrite.bodyWrite }) },
       idempotency: { id: idempotencyId, key: idempotencyKey },
       change_set: { id: changeSetId }, visible_package_envelope: envelope,
-      approved_write_sets: [{ inserts: mode === 'insert' ? [write] : [],
-        updates: mode === 'update' ? [write] : [], appends: [{
+      approved_write_sets: [{
+        inserts: ownerWrite.mode === 'insert' ? [ownerWrite.bodyWrite] : [],
+        updates: ownerWrite.mode === 'update' ? [ownerWrite.bodyWrite] : [],
+        appends: [{
           target_table: 'party_v3_change_sets', id: changeSetId, record
         }] }],
       lock_context: { owner_keys: [`actor:${npcId}`], execution_keys: [],
@@ -147,15 +268,18 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   };
 
   const insertedPlan = await makePlan({ ordinal: 1,
-    idempotencyKey: `combat-body-insert-${suffix}`, mode: 'insert', health: 80 });
+    idempotencyKey: `combat-body-exchange-1-${suffix}`,
+    ownerWrite: firstOwnerWrite });
   const inserted = await committer.commit({ plan: insertedPlan });
-  assert.equal(inserted.ok, true);
+  assert.equal(inserted.ok, true, JSON.stringify(inserted));
   assert.equal((await committer.commit({ plan: insertedPlan })).replay, true);
   assert.deepEqual((await client.query(`SELECT health,energy,satiety,state_version
     FROM party_runtime.party_actor_body_states
     WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
   [partyId, npcId])).rows[0], {
-    health: '80', energy: '70', satiety: '60', state_version: '1'
+    health: String(afterFirstExchange.health),
+    energy: String(afterFirstExchange.energy),
+    satiety: String(afterFirstExchange.satiety), state_version: '1'
   });
   const participantRef = { entity_kind: 'npc', entity_id: npcId };
   const reloadSnapshot = () => ({ combat_sessions: [{ status: 'paused_for_player',
@@ -164,7 +288,7 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
     body_state_persisted: false }] });
   const afterInsert = await withSceneNpcs(pool, partyId, reloadSnapshot());
   assert.deepEqual(afterInsert.npcs[0].body_state,
-    { health: 80, energy: 70, satiety: 60 });
+    bodyMetrics(afterFirstExchange));
   assert.equal(afterInsert.npcs[0].body_state_version, 1);
   assert.equal(afterInsert.npcs[0].body_state_persisted, true);
   assert.deepEqual(afterInsert.npcs[0].body_profile_ref, profileRef);
@@ -173,6 +297,22 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   assert.deepEqual(afterRestart.npcs[0].body_state,
     afterInsert.npcs[0].body_state);
   assert.equal(afterRestart.npcs[0].body_state_version, 1);
+  const firstHandoff = projectCombatBodyStateDescriptions({
+    body_state: afterRestart.npcs[0].body_state,
+    qualitative_profile: probe.qualitativeProfile,
+    data_approval: probe.dataApproval, mode: probe.mode
+  });
+  assert.equal(firstHandoff.ok, true);
+  assert.equal(firstHandoff.body_state_descriptions[0].npc_description,
+    'Здоровье высокое.');
+  const firstSubjective = projectTraceCombatSubjectiveState(participantRef, {
+    npcs: [{ instance_id: npcId, subjective_body_state: {
+      condition_summary: 'устаревшая проза' } }],
+    actor_states: { [`npc:${npcId}`]: { body_state: afterRestart.npcs[0].body_state } }
+  }, { combatDataProbe: probe });
+  assert.deepEqual(firstSubjective.body.body_state_descriptions,
+    firstHandoff.body_state_descriptions);
+  assert.doesNotMatch(JSON.stringify(firstSubjective), /100|80|70|устаревшая/u);
 
   await client.query(`INSERT INTO party_runtime.party_materialization_runs
     (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,
@@ -202,33 +342,83 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   });
   assert.equal(offScene.npcs.length, 1);
   assert.equal(offScene.npcs[0].instance_id, npcId);
-  assert.equal(offScene.npcs[0].body_state.health, 80);
+  assert.equal(offScene.npcs[0].body_state.health,
+    afterFirstExchange.health);
   assert.equal(projectTraceCombatWorkingState(offScene, activeSession)
-    .actor_states[`npc:${npcId}`].body_state.health, 80);
+    .actor_states[`npc:${npcId}`].body_state.health,
+    afterFirstExchange.health);
 
+  const secondExchange = await runOwnerExchange({
+    session: { ...firstExchange.prepared.session_after, status: 'active',
+      player_response_required: false }, npcId,
+    bodyState: afterRestart.npcs[0].body_state,
+    idempotencyKey: `combat-body-exchange-2-${suffix}` });
+  assert.equal(secondExchange.status, 'prepared');
+  assert.equal(secondExchange.prepared.check_results.length, 1);
+  assert.equal(secondExchange.prepared.harm_packages.length, 1);
+  const afterSecondExchange = secondExchange.prepared.working_state_after
+    .actor_states[`npc:${npcId}`].body_state;
+  assert.ok(afterSecondExchange.health < afterRestart.npcs[0].body_state.health);
+  const secondOwnerWrite = productionBodyWrite({ partyId, npcId, ordinal: 2,
+    changeSetId: `combat-body-change-${suffix}-2`,
+    idempotencyKey: `combat-body-exchange-2-${suffix}`,
+    priorSession: firstExchange.prepared.session_after,
+    priorNpc: afterRestart.npcs[0], prepared: secondExchange.prepared });
+  assert.equal(secondOwnerWrite.mode, 'update');
+  assert.deepEqual(secondOwnerWrite.expectedBodyVersions, [{
+    target_table: 'party_actor_body_states', id: `npc:${npcId}`,
+    state_version: 1
+  }]);
   const updatedPlan = await makePlan({ ordinal: 2,
-    idempotencyKey: `combat-body-update-${suffix}`, mode: 'update',
-    stateVersion: 1, health: 55 });
+    idempotencyKey: `combat-body-exchange-2-${suffix}`,
+    ownerWrite: secondOwnerWrite });
   assert.equal((await committer.commit({ plan: updatedPlan })).ok, true);
   assert.equal((await committer.commit({ plan: updatedPlan })).replay, true);
   assert.deepEqual((await client.query(`SELECT health,state_version
     FROM party_runtime.party_actor_body_states
     WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
-  [partyId, npcId])).rows[0], { health: '55', state_version: '2' });
+  [partyId, npcId])).rows[0], {
+    health: String(afterSecondExchange.health), state_version: '2' });
   const afterUpdate = await withSceneNpcs(pool, partyId, reloadSnapshot());
   assert.deepEqual(afterUpdate.npcs[0].body_state,
-    { health: 55, energy: 70, satiety: 60 });
+    bodyMetrics(afterSecondExchange));
   assert.equal(afterUpdate.npcs[0].body_state_version, 2);
+  const secondHandoff = projectCombatBodyStateDescriptions({
+    body_state: afterUpdate.npcs[0].body_state,
+    qualitative_profile: probe.qualitativeProfile,
+    data_approval: probe.dataApproval, mode: probe.mode
+  });
+  assert.equal(secondHandoff.ok, true);
+  assert.deepEqual(secondHandoff.body_state_descriptions,
+    projectCombatBodyStateDescriptions({
+      body_state: afterSecondExchange, qualitative_profile: probe.qualitativeProfile,
+      data_approval: probe.dataApproval, mode: probe.mode
+    }).body_state_descriptions);
+  const secondSubjective = projectTraceCombatSubjectiveState(participantRef, {
+    npcs: [{ instance_id: npcId, subjective_body_state: {
+      condition_summary: 'устаревшая проза' } }],
+    actor_states: { [`npc:${npcId}`]: { body_state: afterUpdate.npcs[0].body_state } }
+  }, { combatDataProbe: probe });
+  assert.deepEqual(secondSubjective.body.body_state_descriptions,
+    secondHandoff.body_state_descriptions);
+  assert.doesNotMatch(JSON.stringify(secondSubjective), /\b\d+\b|устаревшая/u);
 
   const failingPlan = await makePlan({ ordinal: 3,
-    idempotencyKey: `combat-body-rollback-${suffix}`, mode: 'update',
-    stateVersion: 2, health: -1 });
+    idempotencyKey: `combat-body-rollback-${suffix}`,
+    ownerWrite: { ...secondOwnerWrite,
+      expectedBodyVersions: [{ target_table: 'party_actor_body_states',
+        id: `npc:${npcId}`, state_version: 2 }],
+      bodyWrite: { ...secondOwnerWrite.bodyWrite,
+        record: { ...secondOwnerWrite.bodyWrite.record,
+          health: -1, updated_change_set_id:
+            `combat-body-change-${suffix}-3` } } } });
   const failed = await committer.commit({ plan: failingPlan });
   assert.equal(failed.ok, false);
   assert.deepEqual((await client.query(`SELECT health,state_version
     FROM party_runtime.party_actor_body_states
     WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
-  [partyId, npcId])).rows[0], { health: '55', state_version: '2' });
+  [partyId, npcId])).rows[0], {
+    health: String(afterSecondExchange.health), state_version: '2' });
   assert.equal((await client.query(`SELECT count(*)::int AS count
     FROM party_runtime.party_v3_change_sets WHERE id=$1`,
   [`combat-body-change-${suffix}-3`])).rows[0].count, 0);

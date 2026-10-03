@@ -7,8 +7,13 @@ import { assembleNpcCombatPlan } from
   '../src/runtime/lower-dvina-trace-combat-llm.js';
 import { projectTraceCombatSubjectiveState } from
   '../src/runtime/lower-dvina-trace-combat-subjective.js';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+import { createCombatMinD65ProbeData, loadCombatMinDataPackage } from
+  '../src/runtime/combat-min-data.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
 function combatRequest() {
   return {
@@ -116,6 +121,58 @@ test('missing qualitative body bands return NPC-scoped typed gap', () => {
   assert.throws(() => projectTraceCombatSubjectiveState(request.npc_ref, state),
     (error) => error.code === 'TRACE_COMBAT_SUBJECTIVE_BODY_GAP'
       && error.details.actor_ref.entity_id === 'npc-1');
+});
+
+test('D65 body handoff uses candidate package bands and excludes stale prose', async () => {
+  const packageData = await loadCombatMinDataPackage(ROOT);
+  const probe = createCombatMinD65ProbeData(packageData);
+  const state = { npcs: [{ instance_id: 'npc-1', subjective_body_state: {
+    condition_summary: 'устаревшая проза с числом 17', pain: 'старое'
+  } }], actor_states: { 'npc:npc-1': { body_state: {
+    health: 29, energy: 70, satiety: 100, calibration: 'private-D71'
+  } } } };
+  const body = projectTraceCombatSubjectiveState(ref('npc', 'npc-1'), state,
+    { combatDataProbe: probe }).body;
+  assert.deepEqual(body, { body_state_descriptions: [
+    { metric: 'health', npc_description: 'Здоровье низкое.' },
+    { metric: 'energy', npc_description: 'Запас энергии высокий.' },
+    { metric: 'satiety', npc_description: 'Сытость высокая.' }
+  ] });
+  const serialized = JSON.stringify(body);
+  for (const forbidden of ['29', '70', '100', '17', 'private-D71',
+    'band_id', 'thresholds', 'calibration']) {
+    assert.equal(serialized.includes(forbidden), false);
+  }
+});
+
+test('D65 body handoff fails closed without current body and ignores stale prose', async () => {
+  const packageData = await loadCombatMinDataPackage(ROOT);
+  const probe = createCombatMinD65ProbeData(packageData);
+  const state = { npcs: [{ instance_id: 'npc-1', subjective_body_state: {
+    condition_summary: 'устаревшая проза' } }] };
+  assert.throws(() => projectTraceCombatSubjectiveState(ref('npc', 'npc-1'),
+    state, { combatDataProbe: probe }),
+  (error) => error.code === 'TRACE_COMBAT_SUBJECTIVE_BODY_GAP');
+});
+
+test('combat data package stays off in runtime and body init uses only test DTO', async () => {
+  const packageData = await loadCombatMinDataPackage(ROOT);
+  assert.deepEqual(packageData.production_activation, { enabled: false,
+    reason: 'combat_min_production_activation_not_authorized' });
+  const probe = createCombatMinD65ProbeData(packageData);
+  assert.equal(probe.productionActivationEnabled, false);
+  const initialized = await import('@rus/body-state').then(({ initializeBodyState }) =>
+    initializeBodyState({ body_state_profile: {
+      schema: probe.bodyInitializationProfileFixture.schema,
+      status: probe.bodyInitializationProfileFixture.status,
+      profile_ref: probe.bodyInitializationProfileFixture.profile_ref,
+      initial_state: probe.bodyInitializationProfileFixture.initial_state
+    } }));
+  assert.equal(initialized.ok, true);
+  assert.deepEqual(initialized.body_state, { health: 100, satiety: 70, energy: 80 });
+  const bodyInitialization = packageData.bundle.execution.health_transition
+    .body_initialization.owner_initialization_profile_adapter;
+  assert.equal(bodyInitialization.candidate_emission, null);
 });
 
 test('combat assembly does not default omitted semantic operation or statement', () => {

@@ -1,0 +1,542 @@
+{
+  "status": "synthetic_script_dry_run_pass",
+  "model_called": false,
+  "game_server_or_database_used": false,
+  "combat_case_count": 15,
+  "body_mapping_case_count": 15,
+  "body_mapping_cases": [
+    {
+      "id": "bm01",
+      "disposition": "candidate_profile",
+      "observed": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 80
+        }
+      }
+    },
+    {
+      "id": "bm02",
+      "disposition": "candidate_profile",
+      "observed": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 78,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 78
+        }
+      }
+    },
+    {
+      "id": "bm03",
+      "disposition": "candidate_profile",
+      "observed": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 84,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 84
+        }
+      }
+    },
+    {
+      "id": "bm04",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 76,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 76
+        }
+      }
+    },
+    {
+      "id": "bm05",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 86,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 86
+        }
+      }
+    },
+    {
+      "id": "bm06",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 82,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 82
+        }
+      }
+    },
+    {
+      "id": "bm07",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm08",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm09",
+      "disposition": "read_persisted",
+      "observed": {
+        "health": 43,
+        "energy": 22,
+        "satiety": 11
+      }
+    },
+    {
+      "id": "bm10",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm11",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm12",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 80
+        }
+      }
+    },
+    {
+      "id": "bm13",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm14",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm15",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    }
+  ],
+  "body_variant_outputs": {
+    "A": {
+      "health": {
+        "min": 100,
+        "max": 100,
+        "values": [
+          100,
+          100,
+          100
+        ]
+      },
+      "energy": {
+        "min": 80,
+        "max": 80,
+        "values": [
+          80,
+          80,
+          80
+        ]
+      },
+      "satiety": {
+        "min": 70,
+        "max": 70,
+        "values": [
+          70,
+          70,
+          70
+        ]
+      }
+    },
+    "B": {
+      "health": {
+        "min": 100,
+        "max": 100,
+        "values": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "energy": {
+        "min": 76,
+        "max": 86,
+        "values": [
+          80,
+          78,
+          84,
+          76,
+          86,
+          82,
+          80
+        ]
+      },
+      "satiety": {
+        "min": 70,
+        "max": 70,
+        "values": [
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70
+        ]
+      }
+    },
+    "C": {
+      "health": {
+        "min": 100,
+        "max": 100,
+        "values": [
+          100,
+          100,
+          100
+        ]
+      },
+      "energy": {
+        "min": 60,
+        "max": 60,
+        "values": [
+          60,
+          60,
+          60
+        ]
+      },
+      "satiety": {
+        "min": 60,
+        "max": 60,
+        "values": [
+          60,
+          60,
+          60
+        ]
+      }
+    }
+  },
+  "check_boundary_assertions": 12,
+  "harm_boundary_assertions": 10,
+  "npc_state_description_eval": {
+    "case_count": 15,
+    "case_results": [
+      {
+        "id": "q-energy-29",
+        "disposition": "description",
+        "band_id": "low",
+        "description": "Запас энергии низкий."
+      },
+      {
+        "id": "q-energy-30",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Запас энергии умеренный."
+      },
+      {
+        "id": "q-energy-69",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Запас энергии умеренный."
+      },
+      {
+        "id": "q-energy-70",
+        "disposition": "description",
+        "band_id": "high",
+        "description": "Запас энергии высокий."
+      },
+      {
+        "id": "q-energy-unknown",
+        "disposition": "omitted_typed_gap",
+        "description": null
+      },
+      {
+        "id": "q-health-29",
+        "disposition": "description",
+        "band_id": "low",
+        "description": "Здоровье низкое."
+      },
+      {
+        "id": "q-health-30",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Здоровье умеренное."
+      },
+      {
+        "id": "q-health-69",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Здоровье умеренное."
+      },
+      {
+        "id": "q-health-70",
+        "disposition": "description",
+        "band_id": "high",
+        "description": "Здоровье высокое."
+      },
+      {
+        "id": "q-health-unknown",
+        "disposition": "omitted_typed_gap",
+        "description": null
+      },
+      {
+        "id": "q-satiety-29",
+        "disposition": "description",
+        "band_id": "low",
+        "description": "Сытость низкая."
+      },
+      {
+        "id": "q-satiety-30",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Сытость умеренная."
+      },
+      {
+        "id": "q-satiety-69",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Сытость умеренная."
+      },
+      {
+        "id": "q-satiety-70",
+        "disposition": "description",
+        "band_id": "high",
+        "description": "Сытость высокая."
+      },
+      {
+        "id": "q-satiety-unknown",
+        "disposition": "omitted_typed_gap",
+        "description": null
+      }
+    ],
+    "exhaustive_integer_values_checked": 303,
+    "fractional_boundary_checks": 36,
+    "fractional_values_checked_per_metric": [
+      0,
+      0.001,
+      29.5,
+      29.999,
+      30,
+      30.001,
+      69.5,
+      69.999,
+      70,
+      70.001,
+      99.999,
+      100
+    ],
+    "out_of_range_and_non_finite_rejected": true,
+    "scorer_version": "exact-candidate-mapping.v1",
+    "model_called": false,
+    "naturalness_assessed": false,
+    "interpretation_limit": "Script checks exact mapping, finite fractional coverage at boundaries, and omission policy. It does not assess naturalness, readability, tone, variation, NPC decisions, or model behavior; those require separate blinded human review."
+  },
+  "candidate_status_after_run": "candidate_not_approved",
+  "seed": 2246701,
+  "synthetic_sample_size": 1000,
+  "synthetic_quality_counts": {
+    "0": 615,
+    "1": 162,
+    "2": 189,
+    "3": 34,
+    "4": 0
+  },
+  "synthetic_health_loss_counts": {
+    "0": 615,
+    "5": 351,
+    "12": 34,
+    "25": 0,
+    "45": 0
+  },
+  "duration_comparison": {
+    "5": {
+      "one_step_minutes": {
+        "numerator": 1,
+        "denominator": 12
+      },
+      "ten_step_minutes": {
+        "numerator": 5,
+        "denominator": 6
+      },
+      "ten_step_seconds": 50
+    },
+    "6": {
+      "one_step_minutes": {
+        "numerator": 1,
+        "denominator": 10
+      },
+      "ten_step_minutes": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "ten_step_seconds": 60
+    },
+    "10": {
+      "one_step_minutes": {
+        "numerator": 1,
+        "denominator": 6
+      },
+      "ten_step_minutes": {
+        "numerator": 5,
+        "denominator": 3
+      },
+      "ten_step_seconds": 100
+    }
+  },
+  "typed_gap_count": 14,
+  "interpretation": "Synthetic arithmetic and D71 candidate comparison only; no gameplay winner, historical result, D41, D67, or production approval."
+}

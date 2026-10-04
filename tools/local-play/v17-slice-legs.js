@@ -17,6 +17,7 @@ const TAKE_PHRASES = Object.freeze([
   { match: /.*/u, texts: ['Беру то, что лежит рядом.'] }
 ]);
 const OPENING_REJECTED = 'AUTHORED_OPENING_AUDIT_REJECTED';
+const PRESENTATION_PENDING = 'committed_presentation_pending';
 
 class Blocked extends Error {}
 
@@ -66,7 +67,8 @@ export async function runLegs({
   const legs = Object.fromEntries(['start', 'walk', 'meet', 'talk', 'take', 'make'].map((id) => [id,
     { id, status: 'blocked', reason: 'не достигнута', detail: null }]));
   const state = { legs, turns: [], opening: null, party_id: null, final_snapshot: null,
-    transport_errors: [] };
+    transport_errors: [],
+    presentation_recovery: { attempts: 0, recovered: 0, still_pending: 0 } };
   const set = (id, status, reason, detail = null) => { Object.assign(legs[id], { status, reason, detail }); };
   const blockRest = (from, reason) => {
     for (const leg of Object.values(legs)) if (leg.status === 'blocked' && leg.reason === 'не достигнута' && from.includes(leg.id)) leg.reason = reason;
@@ -95,7 +97,22 @@ export async function runLegs({
     return last;
   }
 
-  /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when the text is missing. */
+  const recordPresentationRecovery = (attempts, outcome) => {
+    if (attempts > 0) state.presentation_recovery.attempts += attempts;
+    if (outcome === 'recovered') state.presentation_recovery.recovered += 1;
+    if (outcome === 'still_pending') state.presentation_recovery.still_pending += 1;
+  };
+
+  async function recoverPendingPresentation(phase, leg, requestId) {
+    const recoverResponse = await apiCall('recover', 'presentation_recovery', leg, partyId,
+      { request_id: requestId });
+    const view = await refresh(phase, leg);
+    const screen = recoverResponse.data?.screen ?? view.screen;
+    const stillPending = screen?.screen_status === PRESENTATION_PENDING;
+    return { view: { screen, snap: view.snap }, stillPending };
+  }
+
+  /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when pending or prose missing. */
   async function play(leg, text, { reserved = false } = {}) {
     if (now() >= deadlineAt) throw new Blocked('дедлайн прогона');
     if (reserved ? total() >= maxTurns : exploreBudget() <= 0) throw new Blocked('бюджет ходов исчерпан');
@@ -108,22 +125,51 @@ export async function runLegs({
     const calls = llm.count();
     const roleCalls = llm.roleCalls?.length ?? 0;
     const errorsBefore = llm.serverErrorCount?.() ?? 0;
+    let presentationRecoveryAttempts = 0;
+    let presentationRecoveryOutcome = null;
+    if (last?.screen?.screen_status === PRESENTATION_PENDING) {
+      const priorRequestId = state.turns.at(-1)?.request_id;
+      if (!priorRequestId) throw new Blocked('доставка прозы не завершена: pending без request_id');
+      const { view: cleared, stillPending } = await recoverPendingPresentation(
+        'screen_before_turn', leg, priorRequestId);
+      last = { screen: cleared.screen, snap: cleared.snap };
+      presentationRecoveryAttempts += 1;
+      if (stillPending) {
+        recordPresentationRecovery(presentationRecoveryAttempts, 'still_pending');
+        throw new Blocked('доставка прозы не завершена: committed_presentation_pending до хода');
+      }
+      presentationRecoveryOutcome = 'recovered';
+    }
     const response = await apiCall('turn', 'turn', leg, partyId,
       { raw_text: text, request_id: requestId });
-    let recovered = false;
+    let recovered = presentationRecoveryOutcome === 'recovered';
     let view = await refresh('screen_after_turn', leg);
     let prose = view.screen?.main_prose ?? response.data?.screen?.main_prose ?? '';
     const committed = Number(view.snap?.state_version) > Number(before?.state_version);
-    if (committed && !String(prose).trim()) {
-      await apiCall('recover', 'presentation_recovery', leg, partyId,
-        { request_id: requestId });
-      recovered = true;
-      view = await refresh('screen_after_recovery', leg);
+    const responsePending = response.data?.screen?.screen_status === PRESENTATION_PENDING
+      || view.screen?.screen_status === PRESENTATION_PENDING;
+    if (responsePending || (committed && !String(prose).trim())) {
+      const { view: recoveredView, stillPending } = await recoverPendingPresentation(
+        'screen_after_recovery', leg, requestId);
+      presentationRecoveryAttempts += 1;
+      view = recoveredView;
       prose = view.screen?.main_prose ?? '';
+      recovered = !stillPending;
+      presentationRecoveryOutcome = stillPending ? 'still_pending' : 'recovered';
+      if (stillPending) {
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        throw new Blocked('доставка прозы не завершена: committed_presentation_pending после presentation-recovery');
+      }
+    }
+    if (presentationRecoveryAttempts > 0) {
+      recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome ?? 'recovered');
     }
     const turn = {
       n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
-      committed, recovered, prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
+      committed, recovered,
+      presentation_recovery_attempts: presentationRecoveryAttempts,
+      presentation_recovery_outcome: presentationRecoveryOutcome,
+      prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
       llm_calls: llm.count() - calls,
       llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
       people_panel: capturePeoplePanel(view.screen, view.snap),

@@ -145,8 +145,10 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
   priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
   npcSite = null, resourceSites = ['B'], routeThroughC = false,
-  walkLocalLabels = [], walkExits = null } = {}) {
-  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
+  walkLocalLabels = [], walkExits = null,
+  presentationPendingOnce = false, presentationStaysPending = false } = {}) {
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', pendingTurnOnce: presentationPendingOnce,
+    presentationStaysPending, statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
   }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
@@ -195,9 +197,22 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     },
     async ack() { return env({}); },
     async screen() { return env({ screen: screen() }); },
-    async recover() { w.recovered += 1; w.prose = 'Восстановлено.'; return env({}); },
+    async recover() {
+      w.recovered += 1;
+      if (w.presentationStaysPending) {
+        return env({ screen: { screen_status: 'committed_presentation_pending', main_prose: '' } });
+      }
+      w.prose = 'Восстановлено.';
+      return env({ screen: screen() });
+    },
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
+      if (w.pendingTurnOnce) {
+        w.pendingTurnOnce = false;
+        w.sv += 1;
+        return env({ screen: { ...screen(), screen_status: 'committed_presentation_pending',
+          main_prose: '' } });
+      }
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
       if (walkLocalLabels.includes(text)) {
         w.slot = w.slot === 'arrival' ? 'local_bend' : 'arrival';
@@ -495,6 +510,23 @@ test('legs: a committed turn without text triggers one presentation-recovery', a
   assert.ok(world.w.recovered >= 1);
   assert.equal(result.turns[0].recovered, true);
   assert.equal(result.turns[0].prose, 'Восстановлено.');
+});
+
+test('legs: committed_presentation_pending triggers presentation-recovery like the web client', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true });
+  const result = await runFake(world, { maxTurns: 6 });
+  assert.ok(world.w.recovered >= 1);
+  assert.equal(result.presentation_recovery.attempts, 1);
+  assert.equal(result.presentation_recovery.recovered, 1);
+  assert.equal(result.turns[0].presentation_recovery_outcome, 'recovered');
+  assert.equal(statusOf(result).walk, 'pass');
+});
+
+test('legs: still pending after presentation-recovery stops the leg with delivery diagnostics', async () => {
+  const result = await runFake(fakeWorld({ presentationPendingOnce: true, presentationStaysPending: true }),
+    { maxTurns: 6 });
+  assert.equal(result.presentation_recovery.still_pending, 1);
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason, /доставка прозы не завершена/u);
 });
 
 test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {

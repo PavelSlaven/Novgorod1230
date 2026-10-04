@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
@@ -370,9 +370,11 @@ test('HTTP publishes only exact player-safe live turn progress', async (t) => {
   assert.equal(JSON.stringify(live).includes('provider'), false);
 });
 
-test('static asset resolver serves only allowlisted web paths', async () => {
+test('static asset resolver serves only allowlisted web paths', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'rus-web-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   const contractsRoot = await mkdtemp(join(tmpdir(), 'rus-contracts-'));
+  t.after(() => rm(contractsRoot, { recursive: true, force: true }));
   await mkdir(join(root, 'public'), { recursive: true });
   await mkdir(join(root, 'public', 'assets'), { recursive: true });
   await mkdir(join(root, 'src'), { recursive: true });

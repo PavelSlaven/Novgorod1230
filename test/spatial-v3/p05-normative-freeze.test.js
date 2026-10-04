@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { appendFile, cp, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { appendFile, cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -17,8 +17,9 @@ function execute(script, root, args = []) {
   return spawnSync(process.execPath, [script, '--root', root, ...args], { encoding: 'utf8' });
 }
 
-async function fixture() {
+async function fixture(t) {
   const root = await mkdtemp(path.join(tmpdir(), 'p05-historical-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   for (const source of [baselinePath, freezePath, declarationPath, schemaPath, currentDocumentPath]) {
     const destination = path.join(root, source);
     await mkdir(path.dirname(destination), { recursive: true });
@@ -36,8 +37,8 @@ function assertBothReject(root, pattern) {
   assert.match(`${generated.stderr}${generated.stdout}`, pattern);
 }
 
-test('P05 checker verifies immutable history and generator copies exact historical bytes', async () => {
-  const root = await fixture();
+test('P05 checker verifies immutable history and generator copies exact historical bytes', async (t) => {
+  const root = await fixture(t);
   assert.equal(execute(checker, root).status, 0);
   assert.equal(execute(generator, root, ['--output', 'generated-freeze.json']).status, 0);
   assert.equal(
@@ -46,38 +47,38 @@ test('P05 checker verifies immutable history and generator copies exact historic
   );
 });
 
-test('current normative evolution does not rewrite or invalidate historical P05 evidence', async () => {
-  const root = await fixture();
+test('current normative evolution does not rewrite or invalidate historical P05 evidence', async (t) => {
+  const root = await fixture(t);
   await appendFile(path.join(root, currentDocumentPath), '\nCurrent post-P28 status clarification.\n');
   assert.equal(execute(checker, root).status, 0);
 });
 
-test('tampered historical freeze is rejected', async () => {
-  const root = await fixture();
+test('tampered historical freeze is rejected', async (t) => {
+  const root = await fixture(t);
   const freeze = JSON.parse(await readFile(path.join(root, freezePath), 'utf8'));
   freeze.status = 'active';
   await writeFile(path.join(root, freezePath), `${JSON.stringify(freeze, null, 2)}\n`);
   assertBothReject(root, /immutable trust anchor/);
 });
 
-test('tampered independently reviewed baseline is rejected', async () => {
-  const root = await fixture();
+test('tampered independently reviewed baseline is rejected', async (t) => {
+  const root = await fixture(t);
   const baseline = JSON.parse(await readFile(path.join(root, baselinePath), 'utf8'));
   baseline.review_status = 'self-approved';
   await writeFile(path.join(root, baselinePath), `${JSON.stringify(baseline, null, 2)}\n`);
   assertBothReject(root, /hardcoded trust anchor/);
 });
 
-test('tampered historical P02 declaration is rejected', async () => {
-  const root = await fixture();
+test('tampered historical P02 declaration is rejected', async (t) => {
+  const root = await fixture(t);
   const declaration = JSON.parse(await readFile(path.join(root, declarationPath), 'utf8'));
   declaration.active_owner = 'v3';
   await writeFile(path.join(root, declarationPath), `${JSON.stringify(declaration, null, 2)}\n`);
   assertBothReject(root, /historical P02 declaration digest mismatch/);
 });
 
-test('tampered historical P02 schema is rejected', async () => {
-  const root = await fixture();
+test('tampered historical P02 schema is rejected', async (t) => {
+  const root = await fixture(t);
   const schema = JSON.parse(await readFile(path.join(root, schemaPath), 'utf8'));
   schema.properties.active_owner.const = 'v3';
   await writeFile(path.join(root, schemaPath), `${JSON.stringify(schema, null, 2)}\n`);

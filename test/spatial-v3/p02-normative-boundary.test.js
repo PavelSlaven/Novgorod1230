@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, cp, appendFile, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, cp, appendFile, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -20,14 +20,36 @@ const files = [
   'spatial_v3_target_map_g0_g4_workflow.txt'
 ];
 
-async function fixture(t) {
+async function fixture(t, documentsRoot = sourceRoot) {
   const root = await mkdtemp(path.join(tmpdir(), 'p02-normative-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  await Promise.all(files.map((file) => cp(path.join(sourceRoot, file), path.join(root, file))));
+  const copies = await Promise.allSettled(files.map((file) => cp(
+    path.join(documentsRoot, file), path.join(root, file))));
+  const failedCopy = copies.find((copy) => copy.status === 'rejected');
+  if (failedCopy) throw failedCopy.reason;
   await cp(declarationSource, path.join(root, 'p02-boundary-declaration.json'));
   await cp(schemaSource, path.join(root, 'p02-boundary-declaration.schema.json'));
   return root;
 }
+
+test('P02 fixture waits for document copies before reporting a missing source', async (t) => {
+  const documentsRoot = await mkdtemp(path.join(tmpdir(), 'p02-incomplete-documents-'));
+  t.after(() => rm(documentsRoot, { recursive: true, force: true }));
+  for (const file of files.slice(0, -1)) {
+    const destination = path.join(documentsRoot, file);
+    await mkdir(path.dirname(destination), { recursive: true });
+    await cp(path.join(sourceRoot, file), destination);
+  }
+  const rootsBefore = new Set((await readdir(tmpdir())).filter((entry) =>
+    entry.startsWith('p02-normative-')));
+  await assert.rejects(fixture(t, documentsRoot), { code: 'ENOENT' });
+  const rootsAfter = (await readdir(tmpdir())).filter((entry) =>
+    entry.startsWith('p02-normative-') && !rootsBefore.has(entry));
+  assert.equal(rootsAfter.length, 1);
+  for (const file of files.slice(0, -1)) {
+    await readFile(path.join(tmpdir(), rootsAfter[0], file));
+  }
+});
 
 function run(root) {
   return spawnSync(

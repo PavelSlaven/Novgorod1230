@@ -152,16 +152,16 @@ export async function runLegs({
       attempts += 1;
       const response = await apiCall('newGame', 'new_game', 'start',
         { scenario_id: scenarioId, request_id: requestId });
-      let devFailure = null;
-      if (!response.ok && response.error?.code === OPENING_REJECTED && api.llmTurnReport) {
+      let devReport = null;
+      if (api.llmTurnReport) {
         try {
           const report = await api.llmTurnReport(
             partyIdFromNewGameRequestId(requestId), requestId);
-          devFailure = report.ok ? report.data?.failure ?? null : null;
+          devReport = report.ok ? report.data ?? null : null;
         } catch { /* diagnostic fetch must not change opening retry semantics */ }
       }
       const attemptRecord = openingAttemptFromNewGame({ n: attempts, ok: response.ok,
-        data: response.data, error: response.error, devFailure });
+        data: response.data, error: response.error, devReport });
       if (attemptRecord) openingAttempts.push(attemptRecord);
       if (response.ok) opening = response.data;
       else if (response.error?.code === OPENING_REJECTED) rejections += 1;

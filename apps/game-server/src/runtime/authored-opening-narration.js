@@ -114,7 +114,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
           try {
             return await runBoundedOpening({ requestId,
               visibleContextPackage, visibleContextApproval, writer, auditor,
-              auditOutput, semanticRepairer, repair });
+              auditOutput, semanticRepairer, repair, llmDiagnostics });
           } catch (error) {
             const handoffRetry = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
               && Array.isArray(error?.details?.codes)
@@ -151,7 +151,8 @@ function canAffordAnotherCall(turnBudget) {
 }
 
 async function runBoundedOpening({ requestId, visibleContextPackage,
-  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer, repair }) {
+  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer, repair,
+  llmDiagnostics = null }) {
       const stage22Input = buildStage22NarratorInput({ request_id: requestId,
         visible_context_package: visibleContextPackage,
         visible_context_package_digest:
@@ -218,6 +219,13 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
           } });
   const flow = adaptApprovedOpeningNarration({ stage22Result: stage22,
     stage23Result: stage23.result });
+      try {
+        llmDiagnostics?.recordOpeningAttempt?.(buildOpeningRejectionSnapshot({
+          prose: flow.approved_output.prose,
+          audit: stage23.result.narrator_prose_audit,
+          repair: { attempted: repair.spent === true }
+        }));
+      } catch { /* diagnostics must not affect opening */ }
       return Object.freeze({ prose: flow.approved_output.prose,
         literary_pass: stage23.result.narrator_prose_audit
           .checks.literary_composition_check.pass,

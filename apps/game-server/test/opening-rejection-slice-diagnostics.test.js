@@ -8,6 +8,14 @@ import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { buildOpeningRejectionSnapshot } from '../src/runtime/opening-rejection-snapshot.js';
 import { createGameHttpServer, listen } from '../src/index.js';
 
+function openingAcceptSnapshot(prose, { repairAttempted = true } = {}) {
+  return buildOpeningRejectionSnapshot({
+    prose,
+    audit: { pass: true, concerns: [], evidence: [], codes: [] },
+    repair: { attempted: repairAttempted }
+  });
+}
+
 function openingRejectSnapshot(prose) {
   return buildOpeningRejectionSnapshot({
     prose,
@@ -32,6 +40,9 @@ test('runLegs reads opening rejection from developer LLM report after public new
     async newGame() {
       newGames += 1;
       if (newGames > 1) {
+        await diagnostics.runTurn({ party_id: partyId, request_id: requestId }, async () => {
+          diagnostics.recordOpeningAttempt(openingAcceptSnapshot('Финал.', { repairAttempted: true }));
+        });
         return { status: 200, ok: true,
           data: { party_id: 'p1', screen: { main_prose: 'Финал.', labels: [] } } };
       }
@@ -66,6 +77,8 @@ test('runLegs reads opening rejection from developer LLM report after public new
   assert.equal(result.opening.rejections, 1);
   assert.equal(result.opening.opening_attempts[0].writer_prose, prose);
   assert.equal(result.opening.opening_attempts[0].stage23.codes[0], 'NARRATOR_PROSE_MUST_INCLUDE_MISSING');
+  assert.equal(result.opening.opening_attempts[1].repair.attempted, true);
+  assert.equal(result.opening.opening_attempts[1].stage23.pass, true);
   assert.equal(result.legs.find(({ id }) => id === 'start').status, 'pass');
 });
 
@@ -80,7 +93,10 @@ test('createHttpApi developer GET and runLegs expose stage23 without forbidden a
     async startNewGame() {
       newGames += 1;
       if (newGames > 1) {
-        return { party_id: 'p1', screen: { main_prose: 'Финал.', labels: [] } };
+        return await diagnostics.runTurn({ party_id: partyId, request_id: requestId }, async () => {
+          diagnostics.recordOpeningAttempt(openingAcceptSnapshot('Финал.', { repairAttempted: true }));
+          return { party_id: 'p1', screen: { main_prose: 'Финал.', labels: [] } };
+        });
       }
       await assert.rejects(diagnostics.runTurn({ party_id: partyId, request_id: requestId },
         async () => {
@@ -120,8 +136,8 @@ test('createHttpApi developer GET and runLegs expose stage23 without forbidden a
   const report = await api.llmTurnReport(partyId, requestId);
   assert.equal(report.ok, true);
   assert.equal(report.status, 200);
-  assert.equal(report.data.failure.opening_rejection.writer_prose, prose);
-  assert.equal(report.data.failure.opening_rejection.stage23.codes[0],
-    'NARRATOR_PROSE_MUST_INCLUDE_MISSING');
+  assert.equal(report.data.opening_attempt.writer_prose, 'Финал.');
+  assert.equal(report.data.opening_attempt.stage23.pass, true);
+  assert.equal(report.data.opening_attempt.repair.attempted, true);
   assert.equal(JSON.stringify(report.data).includes('"audit"'), false);
 });

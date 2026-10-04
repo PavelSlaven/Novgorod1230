@@ -5,6 +5,12 @@ import { openingAttemptFromNewGame, partyIdFromNewGameRequestId, renderOpeningAt
 import { renderPlaytestMarkdown } from '../v17-slice-report.js';
 import { safeTurnFailure } from '../../../apps/game-server/src/runtime/llm-diagnostics-failures.js';
 
+const ACCEPT_SNAPSHOT = {
+  writer_prose: 'Финал.',
+  stage23: { pass: true, concerns: [], evidence: [], codes: [] },
+  repair: { observed: true, attempted: true }
+};
+
 const REJECT_SNAPSHOT = {
   writer_prose: 'Вы стоите у сруба.',
   stage23: {
@@ -27,12 +33,30 @@ test('openingAttemptFromNewGame uses developer failure, not the public HTTP erro
   const attempt = openingAttemptFromNewGame({
     n: 1, ok: false,
     error: { code: 'AUTHORED_OPENING_AUDIT_REJECTED' },
-    devFailure: { code: 'AUTHORED_OPENING_AUDIT_REJECTED', opening_rejection: REJECT_SNAPSHOT }
+    devReport: { failure: { code: 'AUTHORED_OPENING_AUDIT_REJECTED', opening_rejection: REJECT_SNAPSHOT } }
   });
   assert.equal(attempt.outcome, 'rejected');
   assert.equal(attempt.writer_prose, REJECT_SNAPSHOT.writer_prose);
   assert.deepEqual(attempt.stage23.codes, ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
   assert.equal(attempt.repair.outcome, 'still_rejected');
+});
+
+test('openingAttemptFromNewGame records stage23 and repair for accepted attempts from developer report', () => {
+  const immediate = openingAttemptFromNewGame({
+    n: 2, ok: true, data: { screen: { main_prose: 'Финал.' } },
+    devReport: { opening_attempt: {
+      writer_prose: 'Финал.',
+      stage23: { pass: true, concerns: [], evidence: [], codes: [] },
+      repair: { observed: true, attempted: false }
+    } }
+  });
+  assert.equal(immediate.stage23.pass, true);
+  assert.equal(immediate.repair.attempted, false);
+  const afterRepair = openingAttemptFromNewGame({
+    n: 2, ok: true, data: { screen: { main_prose: 'Финал.' } },
+    devReport: { opening_attempt: ACCEPT_SNAPSHOT }
+  });
+  assert.equal(afterRepair.repair.attempted, true);
 });
 
 test('openingAttemptFromNewGame ignores opening_rejection on the public error envelope', () => {
@@ -64,8 +88,9 @@ test('report opening_attempts shape is stable in playtest markdown table', () =>
       opening_attempts: [
         openingAttemptFromNewGame({ n: 1, ok: false,
           error: { code: 'AUTHORED_OPENING_AUDIT_REJECTED' },
-          devFailure: { opening_rejection: REJECT_SNAPSHOT } }),
-        openingAttemptFromNewGame({ n: 2, ok: true, data: { screen: { main_prose: 'Финал.' } } })
+          devReport: { failure: { opening_rejection: REJECT_SNAPSHOT } } }),
+        openingAttemptFromNewGame({ n: 2, ok: true, data: { screen: { main_prose: 'Финал.' } },
+          devReport: { opening_attempt: ACCEPT_SNAPSHOT } })
       ],
       route_labels: []
     },
@@ -80,5 +105,5 @@ test('report opening_attempts shape is stable in playtest markdown table', () =>
   const md = renderPlaytestMarkdown(report);
   assert.ok(md.includes('Попытки вступления (new-game):'));
   assert.ok(md.includes('| 1 | rejected | NARRATOR_PROSE_MUST_INCLUDE_MISSING | still_rejected |'));
-  assert.ok(md.includes('| 2 | accepted |'));
+  assert.ok(md.includes('| 2 | accepted | — | attempted |'));
 });

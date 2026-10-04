@@ -1,5 +1,5 @@
 // Maps new-game outcomes into slice report opening-attempt records (no extra LLM calls).
-// Rejection diagnostics come from developer LLM turn reports, not the public HTTP error.
+// Opening diagnostics come from developer LLM turn reports, not the public HTTP error.
 
 import { createHash } from 'node:crypto';
 
@@ -8,16 +8,22 @@ const OPENING_REJECTED = 'AUTHORED_OPENING_AUDIT_REJECTED';
 export const partyIdFromNewGameRequestId = (requestId) =>
   `party:${createHash('sha256').update(String(requestId)).digest('hex').slice(0, 24)}`;
 
-export function openingAttemptFromNewGame({ n, ok, data, error, devFailure = null }) {
+export function openingDiagnosticsFromReport(report) {
+  if (!report || typeof report !== 'object') return null;
+  return report.opening_attempt ?? report.failure?.opening_rejection ?? null;
+}
+
+export function openingAttemptFromNewGame({ n, ok, data, error, devReport = null }) {
+  const snapshot = openingDiagnosticsFromReport(devReport);
   if (ok) {
-    const prose = data?.screen?.main_prose ?? '';
+    const prose = snapshot?.writer_prose ?? data?.screen?.main_prose ?? '';
     return Object.freeze({
       n, outcome: 'accepted', writer_prose: String(prose ?? ''),
-      stage23: null, repair: null
+      stage23: snapshot?.stage23 ?? null,
+      repair: snapshot?.repair ?? Object.freeze({ observed: false, attempted: null })
     });
   }
   if (error?.code !== OPENING_REJECTED) return null;
-  const snapshot = devFailure?.opening_rejection ?? null;
   if (snapshot) {
     return Object.freeze({
       n, outcome: 'rejected',

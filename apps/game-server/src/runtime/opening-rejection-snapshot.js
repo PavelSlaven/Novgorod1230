@@ -3,7 +3,7 @@ import { STAGE23_CONCERN_CODES } from '@rus/new-game';
 const ALLOWED_SEVERITIES = new Set(['warning', 'repairable', 'hard_block', 'upstream_block']);
 const REPAIR_OUTCOMES = new Set(['still_rejected', 'handoff_blocked']);
 
-/** Player-safe opening rejection facts for harness / developer LLM reports. */
+/** Player-safe opening attempt facts for harness / developer LLM reports. */
 export function buildOpeningRejectionSnapshot({ prose, audit, codes = [], repair = {} } = {}) {
   const concerns = Array.isArray(audit?.concerns) ? audit.concerns : [];
   const safeConcerns = concerns
@@ -53,4 +53,9 @@ export function safeOpeningRejectionFromDetails(details) {
       && rebuilt.stage23.concerns.length === 0 && rebuilt.stage23.evidence.length === 0
       && rebuilt.repair.attempted !== true) return null;
   return rebuilt;
+}
+
+export function safeOpeningAttemptSnapshot(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  return safeOpeningRejectionFromDetails({ opening_rejection: raw });
 }

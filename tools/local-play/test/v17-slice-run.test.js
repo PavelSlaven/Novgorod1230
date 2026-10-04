@@ -144,7 +144,8 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   hidePeople = false, hidePanelPeople = hidePeople, hideSqlPeople = hidePeople, npcAtStart = false, npcAtDestination = true,
   peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
   priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
-  npcSite = null, resourceSites = ['B'], routeThroughC = false } = {}) {
+  npcSite = null, resourceSites = ['B'], routeThroughC = false,
+  walkLocalLabels = [], walkExits = null } = {}) {
   const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
@@ -163,8 +164,16 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     resource_nodes: resourceSites.map((site) => ({
       resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
     })) });
-  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']
-    : w.site === 'B' && routeThroughC ? ['Дальше'] : (hideReturnPassage ? [] : ['Назад']),
+  const labelsAt = () => {
+    if (w.looks < blindLooks) return [];
+    if (w.site === 'A' && (walkLocalLabels.length > 0 || walkExits != null)) {
+      return [...walkLocalLabels, ...Object.keys(walkExits ?? { 'Тропа': 'B' })];
+    }
+    if (w.site === 'A') return ['Тропа'];
+    if (w.site === 'B' && routeThroughC) return ['Дальше'];
+    return hideReturnPassage ? [] : ['Назад'];
+  };
+  const screen = () => ({ main_prose: w.prose, labels: labelsAt(),
     visible_context: { schema: 'visible_context_package', visible_npc: npcHere()
       ? [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc1' }, display_label: 'человек' }] : [] },
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
@@ -190,7 +199,12 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
-      if (text === 'Тропа') {
+      if (walkLocalLabels.includes(text)) { w.sv += 1; }
+      else if (walkExits != null && Object.hasOwn(walkExits, text)) {
+        w.site = walkExits[text]; w.sv += 1;
+        w.prose = w.site === 'B' ? 'Лесная тропа.' : w.site === 'C' ? 'У реки.' : 'Дальше.';
+      }
+      else if (text === 'Тропа') {
         if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
         w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
       }
@@ -369,6 +383,30 @@ test('legs: committed walks without a site change stay visible in the walk detai
   const walk = result.legs.find(({ id }) => id === 'walk');
   assert.equal(walk.status, 'pass');
   assert.match(walk.detail, /ходов движения: 3, из них без смены места: 2/u);
+});
+
+test('legs: local committed walks do not reset stuck counter; exits still found', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkExits: { 'Тропа': 'B', 'К реке': 'C' },
+    resourceSites: ['B', 'C']
+  }));
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length <= 7, `too many walk turns: ${walkTurns.length}`);
+  assert.ok(walkTurns.some(({ before, after }) => before?.position?.site_id !== after?.position?.site_id));
+});
+
+test('legs: when every passage label fails to change site, walk ends with label diagnostics', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkExits: {},
+    npcAtStart: true,
+    npcAtDestination: false
+  }));
+  assert.equal(statusOf(result).walk, 'fail');
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason,
+    /все подписи проходов.*Петля на месте.*Ещё петля/u);
 });
 
 test('D49 harness minimum passes with take alone, make alone, and fails the item requirement without either', async () => {

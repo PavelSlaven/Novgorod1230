@@ -303,11 +303,25 @@ export async function runLegs({
       tried.set(key, counts);
       const label = [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
       counts.set(label, (counts.get(label) ?? 0) + 1);
-      const sitesBefore = visited.size;
       const turn = await play('walk', label);
       noteHere();
-      stuck = turn.committed || visited.size > sitesBefore ? 0 : stuck + 1;
-      if (stuck >= 3) { exploreEnd.reason = `3 хода подряд без сдвига (последняя ошибка: ${turn.error?.code ?? 'нет'})`; break; }
+      const siteChanged = turn.before?.position?.site_id != null
+        && turn.after?.position?.site_id != null
+        && turn.before.position.site_id !== turn.after.position.site_id;
+      if (siteChanged) stuck = 0;
+      else {
+        stuck += 1;
+        if (stuck >= 3) {
+          exploreEnd.reason = `3 хода подряд без смены места (последняя ошибка: ${turn.error?.code ?? 'нет'})`;
+          break;
+        }
+        const triedAllOnce = labels.length > 1
+          && labels.every((entry) => (counts.get(entry) ?? 0) >= 1);
+        if (triedAllOnce) {
+          exploreEnd.reason = `на месте ${placeName(turn.after ?? last.snap)} все подписи проходов (${labels.join(', ')}) не сменили место`;
+          break;
+        }
+      }
     }
   } catch (error) {
     exploreEnd.reason = error instanceof Blocked ? error.message : `сбой: ${error.message}`;

@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: test-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.head_ref != 'codex/live-world-runtime' }}
 
 jobs:
   full-profile:

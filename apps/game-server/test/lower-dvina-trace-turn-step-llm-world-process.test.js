@@ -53,12 +53,12 @@ test('world process model assembles exact envelope from qualitative choice', asy
   assert.doesNotMatch(user, /request_id|party_state_version|process_ref|scope_ref|causal_basis_ref|started_at|next_boundary_at|current_timestamp|mass_grams|quantities|source_refs|water:1|fire:1/u);
   assert.doesNotMatch(prompt, /"source":/u);
   assert.doesNotMatch(user, /ordinary_solid_fuel_unit|water_portion|actor_affected|process_kind|process_status|environment_facts":\[\]/u);
-  assert.match(prompt, /Ground every semantic claim in supplied facts/u);
-  assert.match(prompt, /Choose one outcome from outcomes and, if needed, refs from affected_ref_choices/u);
+  assert.match(prompt, /Каждое смысловое утверждение опирай на переданные факты/u);
+  assert.match(prompt, /Выбери один исход из outcomes и, если нужно, ссылки из affected_ref_choices/u);
   assert.doesNotMatch(prompt, /outcome_1|ref_1|"meaning"|"role"/u);
   assert.doesNotMatch(prompt, /server binds choices/u);
   assert.match(prompt, /"outcome_choice":"<choice_id>"/u);
-  assert.match(prompt, /every affected_ref_choices element is one string ID/u);
+  assert.match(prompt, /каждый элемент affected_ref_choices — один строковый идентификатор из переданного списка ссылок/u);
 });
 
 test('world-process outcome meanings distinguish unchanged from changed process', async () => {

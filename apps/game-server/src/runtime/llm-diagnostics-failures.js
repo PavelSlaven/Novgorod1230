@@ -74,7 +74,8 @@ export function safeTurnFailure(value = {}) {
 
 function safeOpeningFailure(value = {}) {
   if (text(value?.code) !== 'AUTHORED_OPENING_AUDIT_REJECTED') return null;
-  const openingRejection = safeOpeningRejectionFromDetails(value?.details);
+  const openingRejection = safeOpeningRejectionFromDetails(value?.details)
+    ?? safeOpeningRejectionFromDetails({ opening_rejection: value?.opening_rejection });
   if (!openingRejection) return Object.freeze({ code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
   return Object.freeze({
     code: 'AUTHORED_OPENING_AUDIT_REJECTED',

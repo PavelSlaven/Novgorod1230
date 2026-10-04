@@ -32,6 +32,7 @@ export function buildOpeningRejectionSnapshot({ prose, audit, codes = [], repair
       codes: Object.freeze(codeList)
     }),
     repair: Object.freeze({
+      observed: true,
       attempted: repair?.attempted === true,
       ...(outcome ? { outcome } : {})
     })

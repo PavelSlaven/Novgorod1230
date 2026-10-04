@@ -201,6 +201,39 @@ export async function createSpatialV3ProductionBindings(
         ...(targetStartRuntime == null ? {} : { targetStartRuntime }),
         ...(authoredInitialProvisioner == null ? {} : { initialOrdinaryProvisioner: authoredInitialProvisioner })
       });
+      const traceTurnRuntime = createTraceTurnRuntime({
+        partyPool: ports.partyPool,
+        worldPool: ports.worldPool,
+        committer,
+        env,
+        config,
+        ordinaryMaterializationProfile,
+        ordinaryContainerContentsProfile,
+        ordinaryStageBApproval,
+        actionProductionProfile,
+        localFireProfile,
+        spatialSemanticProfile,
+        npcSemanticRemainderProfile,
+        authoredTurnProfile: authoredStartCatalog.turn_profile,
+        postActionPerceptionProfile:
+          targetRuntimeProfiles?.post_action_perception_profile ?? null,
+        authoredSpatialSemanticProfile:
+          authoredStartCatalog.ordinary_profiles?.s1 ?? null,
+        authoredNpcSemanticRemainderProfile:
+          authoredStartCatalog.ordinary_profiles?.n1 ?? null,
+        authoredRuntimeBindingResolver:
+          authoredStartCatalog.resolveRuntimeBinding,
+        targetStartRuntime,
+        worldKnowledge,
+        spatialExpansionRuntime,
+        spatialLocalSceneRuntime,
+        readLocalEdgeDisclosure,
+        readCurrentExitDisclosure,
+        readCurrentConnectionDisclosure,
+        loadInitialNaturalScenePerceptionInput: traceStartAdapter.loadNaturalScenePerceptionInput ?? null,
+        createPhase2RuntimeFactory,
+        createNpcRuntimePorts
+      });
       publicRuntime ??= createLowerDvinaTracePublicRuntime({
         partyPool: ports.partyPool,
         committer,
@@ -215,41 +248,9 @@ export async function createSpatialV3ProductionBindings(
           ? { idFactory: config.idFactory }
           : {}),
         traceStartAdapter,
-        traceTurnRuntime: createTraceTurnRuntime({
-          partyPool: ports.partyPool,
-          worldPool: ports.worldPool,
-          committer,
-          env,
-          config,
-          ordinaryMaterializationProfile,
-          ordinaryContainerContentsProfile,
-          ordinaryStageBApproval,
-          actionProductionProfile,
-          localFireProfile,
-          spatialSemanticProfile,
-          npcSemanticRemainderProfile,
-          authoredTurnProfile: authoredStartCatalog.turn_profile,
-          postActionPerceptionProfile:
-            targetRuntimeProfiles?.post_action_perception_profile ?? null,
-          authoredSpatialSemanticProfile:
-            authoredStartCatalog.ordinary_profiles?.s1 ?? null,
-          authoredNpcSemanticRemainderProfile:
-            authoredStartCatalog.ordinary_profiles?.n1 ?? null,
-          authoredRuntimeBindingResolver:
-            authoredStartCatalog.resolveRuntimeBinding,
-          targetStartRuntime,
-          worldKnowledge,
-          spatialExpansionRuntime,
-          spatialLocalSceneRuntime,
-          readLocalEdgeDisclosure,
-          readCurrentExitDisclosure,
-          readCurrentConnectionDisclosure,
-          loadInitialNaturalScenePerceptionInput: traceStartAdapter.loadNaturalScenePerceptionInput ?? null,
-          createPhase2RuntimeFactory,
-          createNpcRuntimePorts
-        })
+        traceTurnRuntime
       });
-      return Object.freeze(Object.fromEntries([
+      const gameplayFacade = Object.fromEntries([
         'listScenarios',
         'startNewGame',
         'acknowledgeOpening',
@@ -260,7 +261,11 @@ export async function createSpatialV3ProductionBindings(
         method,
         (...args) =>
           technicalCore.executeReleaseOperation(method, ...args)
-      ])));
+      ]));
+      return Object.freeze({
+        ...gameplayFacade,
+        getLlmTurnReport: (input) => traceTurnRuntime.llmDiagnostics.report(input)
+      });
     },
     releaseBinding: Object.freeze({ ...release }),
     runtimeCatalogPin

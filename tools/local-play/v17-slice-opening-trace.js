@@ -23,7 +23,7 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devFailure = nul
       n, outcome: 'rejected',
       writer_prose: snapshot.writer_prose ?? '',
       audit: snapshot.audit ?? { pass: false, concerns: [], evidence: [], codes: [] },
-      repair: snapshot.repair ?? { attempted: false }
+      repair: snapshot.repair ?? { observed: true, attempted: false }
     });
   }
   const codes = Array.isArray(error?.codes) ? error.codes
@@ -32,7 +32,7 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devFailure = nul
     n, outcome: 'rejected', writer_prose: '',
     audit: Object.freeze({ pass: false, concerns: [], evidence: [],
       codes: Object.freeze(codes.map((code) => String(code))) }),
-    repair: Object.freeze({ attempted: false })
+    repair: Object.freeze({ observed: false, attempted: null })
   });
 }
 
@@ -44,8 +44,10 @@ export function renderOpeningAttemptsTable(attempts = []) {
   ];
   for (const attempt of attempts) {
     const codes = attempt.audit?.codes?.join(', ') ?? '—';
-    const repair = attempt.repair?.attempted
-      ? (attempt.repair.outcome ?? 'attempted') : '—';
+    const repair = attempt.repair?.observed === false ? 'неизвестно'
+      : attempt.repair?.attempted === true
+        ? (attempt.repair.outcome ?? 'attempted')
+        : attempt.repair?.attempted === false ? 'нет' : '—';
     const concerns = attempt.audit?.concerns?.map(({ code }) => code).join(', ') ?? '—';
     const prose = String(attempt.writer_prose ?? '').replace(/\s+/gu, ' ').slice(0, 80)
       .replaceAll('|', '/') || '—';

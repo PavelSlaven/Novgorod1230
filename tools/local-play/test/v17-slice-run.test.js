@@ -180,7 +180,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
           writer_prose: 'Черновик вступления.',
           audit: { pass: false, concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
             severity: 'repairable', message: 'gap' }], evidence: ['gap'], codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'] },
-          repair: { attempted: false }
+          repair: { observed: true, attempted: false }
         }
       } });
     },
@@ -424,6 +424,17 @@ test('legs: an opening rejected three times fails start and blocks the rest; two
   assert.equal(flaky.opening.rejections, 2);
   assert.equal(flaky.opening.opening_attempts.filter(({ outcome }) => outcome === 'rejected').length, 2);
   assert.equal(flaky.opening.opening_attempts[0].writer_prose, 'Черновик вступления.');
+});
+
+test('legs: a failed opening diagnostics fetch does not block later new-game retries', async () => {
+  const world = fakeWorld({ openingRejections: 2 });
+  world.api.llmTurnReport = async () => {
+    throw Object.assign(new TypeError('fetch failed'), { transport: { phase: 'opening_llm_report' } });
+  };
+  const result = await runFake(world);
+  assert.equal(statusOf(result).start, 'pass');
+  assert.equal(result.opening.opening_attempts[0].repair.observed, false);
+  assert.equal(result.opening.opening_attempts[0].repair.attempted, null);
 });
 
 test('legs: a committed turn without text triggers one presentation-recovery', async () => {

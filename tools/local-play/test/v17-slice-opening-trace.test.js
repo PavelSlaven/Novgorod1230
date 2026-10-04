@@ -14,7 +14,7 @@ const REJECT_SNAPSHOT = {
     evidence: ['Shore was required.'],
     codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
   },
-  repair: { attempted: true, outcome: 'still_rejected' }
+  repair: { observed: true, attempted: true, outcome: 'still_rejected' }
 };
 
 test('partyIdFromNewGameRequestId is stable and matches runtime shape', () => {
@@ -41,6 +41,8 @@ test('openingAttemptFromNewGame ignores opening_rejection on the public error en
     error: { code: 'AUTHORED_OPENING_AUDIT_REJECTED', opening_rejection: REJECT_SNAPSHOT }
   });
   assert.equal(attempt.writer_prose, '');
+  assert.equal(attempt.repair.observed, false);
+  assert.equal(attempt.repair.attempted, null);
 });
 
 test('safeTurnFailure keeps opening_rejection for developer LLM reports', () => {

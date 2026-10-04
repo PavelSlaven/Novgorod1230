@@ -63,7 +63,7 @@ function placeFamilyCategories() {
 
 function listCsv(dir) {
   const out = [];
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'en'))) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) { if (!['node_modules', '.git', 'source_snapshot', 'sources', 'authoring'].includes(e.name)) out.push(...listCsv(p)); }
     else if (e.name.endsWith('.csv')) out.push(p);
@@ -146,7 +146,7 @@ export function build() {
   const out = rows.map((r) => ({
     category_id: r.category_id, domain: r.domain, facet: r.facet, stable_code: r.stable_code, parent_category_id: r.parent_category_id,
     name_ru: r.name_ru, name_en: r.name_en, region_id: r.region_id ?? '', origin: r.origin, source_domain_file: r.source_file, status: r.status,
-  })).sort((a, b) => (a.domain + a.category_id).localeCompare(b.domain + b.category_id));
+  })).sort((a, b) => (a.domain + a.category_id).localeCompare(b.domain + b.category_id, 'en'));
   const n = writeCsv(path.join(GROUP, 'categories/category_registry.csv'), Object.keys(out[0]), out);
   const byOrigin = out.reduce((a, r) => ((a[r.origin] = (a[r.origin] ?? 0) + 1), a), {});
   const byDomain = out.reduce((a, r) => ((a[r.domain] = (a[r.domain] ?? 0) + 1), a), {});

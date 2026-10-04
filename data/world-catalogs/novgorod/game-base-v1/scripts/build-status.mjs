@@ -156,7 +156,7 @@ export function buildStatus(root = base) {
   rows.push(`| **Итого** | | **${counts.approve}** | **${counts.approve_with_limits}** | **${counts.rework}** |`, '', '## Вердикты по файлам', '');
   for (const { group, files } of results) {
     rows.push(`### ${group}`, '', '| Файл | Последний verdict |', '|---|---|');
-    for (const [file, { status, anchor }] of [...files].sort(([a], [b]) => a.localeCompare(b))) {
+    for (const [file, { status, anchor }] of [...files].sort(([a], [b]) => a.localeCompare(b, 'en'))) {
       rows.push(`| [\`${display(file)}\`](${group}/${file}) | [${status}](${link(group, anchor)}) |`);
     }
     rows.push('');

@@ -5,6 +5,7 @@
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - fix(test): remove temporary fixture directories after tests, including setup failures (#231)
 
+- fix(game-base): sort builder file scans and pin sort locale; two-environment byte determinism check (#201)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).

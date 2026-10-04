@@ -55,9 +55,9 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §18.2, §21.1, §24, §24.1–§24.4, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §26.2, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
 
-- **Код:** WR §2, §18, §18.2, §19, §21, §21.1, §24, §24.2, §29; AI §16; GS §26, §27.
+- **Код:** WR §2, §18, §18.2, §19, §21, §21.1, §24, §24.2, §29; AI §16; GS §26, §26.2, §27.
 - **Docs:** WR §2, §18, §18.2, §20, §24, §29; GS §26, §27.
-- **Домен:** «Код» + PC целиком + AI §13–17, §28 + строка IDX §8.1 + MODULE.md владельцев.
+- **Домен:** «Код» + PC целиком + AI §13–17, §28 + WR §24.3, §24.4 + строка IDX §8.1 + MODULE.md владельцев.
 
 Строки только добавляют к пакету; роутер ничего не запрещает читать.
 
@@ -67,7 +67,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 | governance (этот корпус) | Docs | весь корпус, AR | — |
 | нормативный корпус | Docs | IDX целиком, AR, [CORPUS_EDIT](docs/process/CORPUS_EDIT.md) | PC, AI |
 | tooling / CI | Код | AI §17; ctx TESTING, STACK | PC |
-| gameplay / turn / LLM | Домен | AI §10, §12; WR §24.3, §24.4; IDX «Player semantic action / LLM»; для провайдера и конфигурации — «Production LLM provider/configuration» | — |
+| gameplay / turn / LLM | Домен | AI §10, §12; IDX «Player semantic action / LLM»; для провайдера и конфигурации — «Production LLM provider/configuration» | — |
 | NPC | Домен | IDX «NPC agency», «Conversation», «Combat» | — |
 | spatial | Домен | AI §11; IDX «Spatial/map» | — |
 | time / processes | Домен | IDX «Time/activities/processes» | — |
@@ -101,27 +101,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 ## Навигация по коду
 
-В каждой нетривиальной задаче разработки используй `codebase-memory-mcp` в режиме Verify (Tier 2).
-
-До реализации:
-
-1. проверь проект и состояние индекса через `list_projects` и `index_status`;
-2. найди authoritative owner и зависимости через релевантные `get_architecture`, `search_graph` и `trace_path`;
-3. сверь существенные графовые результаты с исходными файлами, contracts и tests.
-
-Перед завершением:
-
-1. вызови `detect_changes` для фактического diff;
-2. вызови `check_index_coverage` для всех путей, на которые опираются выводы;
-3. перед отрицательным или исчерпывающим выводом дополнительно проверь соответствующий scope через `check_index_coverage`;
-4. при skipped, partial, excluded, stale, pending или unknown coverage прочитай или проверь через `rg` указанные файлы и диапазоны напрямую.
-
-Если `codebase-memory-mcp` недоступен в среде исполнения, не имитируй его вызовы и их результаты. Зафиксируй недоступность в итоговом отчёте и устанавливай owners, зависимости и полноту выводов прямым чтением файлов и `rg` по затронутому scope. Недоступность инструмента сама по себе не блокирует задачу.
-
-Граф является навигационным инструментом, а не нормативным источником. `@rus/knowledge-source` остаётся отдельным нормативным каналом; графовый результат не заменяет запрос к нему и чтение исходного canonical document.
-
-Для очевидной локальной задачи с заранее известным owner допустим прямой `rg` и точечное чтение без графа.
-
+В каждой нетривиальной задаче разработки используй `codebase-memory-mcp` в режиме Verify (Tier 2): до реализации — `list_projects`, `index_status`, поиск owner и зависимостей через `get_architecture`, `search_graph`, `trace_path` со сверкой с исходниками; перед завершением — `detect_changes` для фактического diff и `check_index_coverage` для всех путей, на которые опираются выводы, а при неполном покрытии — прямое чтение и `rg`. Порядок и правило недоступности инструмента — WR §19; его вызовы не имитируй. Граф — навигация, не норматив: `@rus/knowledge-source` остаётся отдельным нормативным каналом. Для очевидной локальной задачи с известным owner допустим прямой `rg` без графа.
 
 ## Всегда действующие правила
 

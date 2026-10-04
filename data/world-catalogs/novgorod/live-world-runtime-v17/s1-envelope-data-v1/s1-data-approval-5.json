@@ -1,0 +1,112 @@
+{
+  "decision": "APPROVE_WITH_LIMITS",
+  "reviewer": "Codex /root, независимый утверждающий; автор данных — luna",
+  "approved_at": "2026-10-04T18:47:21Z",
+  "approved_path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/",
+  "approved_commit": "1431499d821e1b915efc8ba6cbab989d2b73a1b8",
+  "approved_files": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/s1-v17-candidate.json",
+      "sha256": "b856386b30a662dda24cbad80cff05e1c01ca077b8cc89eb995f689a2e82d706",
+      "bytes": 7211
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/s1-source-map.json",
+      "sha256": "c52abf5b0e372b6b695b52bcce3abc5e0125f562d74f40440c7d42f4d39e8f1b",
+      "bytes": 925007
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/s1-typed-gaps.json",
+      "sha256": "b725a9c475cf7b23015fbf0e5ea20dc591db3c3a705b1f3eecf074774aa6e365",
+      "bytes": 836342
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/validate-s1-candidate.mjs",
+      "sha256": "5a040500184aeade7f12640effece9fd22a7c8094baa4f496bde00c129587d61",
+      "bytes": 54272
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/report-b4-s1-data.md",
+      "sha256": "c59fd0ea36fa04b0874f1a918e344049db1f3fe05c76809d4cc4c1ca7a24715f",
+      "bytes": 21539
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-envelope/README.md",
+      "sha256": "712a8df04f6e8e1f663566de7f508354d11c9b60941cb09779fede6998479114",
+      "bytes": 1147
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-envelope/cases.json",
+      "sha256": "c264fa059bd1ffb46197ff81c179513c6dbcbaa95ebd73c3cf96d1af3077ecbd",
+      "bytes": 4028
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-envelope/dry-run-result.json",
+      "sha256": "82a60c0d41b0532d9a69d6277cf123b3591ad427176a2c912daf8f835bb37469",
+      "bytes": 1964
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-envelope/run.mjs",
+      "sha256": "3adc290382ce82817af6f5399d06ad9c60859657f44fe519a34a789cd44e2ba3",
+      "bytes": 1990
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-validator/make-fixtures.mjs",
+      "sha256": "ad75c4bbb64d8bae196fa7cf22b825794f76b3ed22207b0db664ac87c68a207e",
+      "bytes": 5549
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-validator/expected-list.txt",
+      "sha256": "3178831b93da8a20ac7a82fc9e4215a6ed5f7ddb7e425373c3819bcf3859a1fd",
+      "bytes": 1256
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-validator/results.json",
+      "sha256": "46ff384d01c28e6e40c1bdf7d247f7645ce226f1b46bc396aff8b6dbaeb06969",
+      "bytes": 5161
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-validator/run-cli-selftests.sh",
+      "sha256": "40041100fe5a41afea48b425c28fce9aee28abbf58ed639896248a83f4936f7d",
+      "bytes": 1733
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-validator/summarize.mjs",
+      "sha256": "049eb2f2e03389eeb7b827ad435b2e0c342526fd23b86d9c9673c87d7a27db4b",
+      "bytes": 2047
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/bench/s1-validator/test-resolver-ambiguity.mjs",
+      "sha256": "c7385cc479b844b65f71161834fdb5717c6c22506beb3e3ffbc870c4ae41c02b",
+      "bytes": 523
+    }
+  ],
+  "scope": "Только 15 перечисленных файлов: exact target applicability/source/typed-gap inventory для 33 selectors, 297 полевых gaps, partial authored topology evidence и task-local validator. Отчёт и bench artifacts входят как документация и свидетельства механической проверки. Утверждённая authoring chain @1 охватывает 32 generated selectors, 25 generation templates и 9 scenes; это не допуск S1 envelope.",
+  "limits": [
+    "Кандидат остаётся candidate_only_gap, profile=null, approved=false. Готовность S1 envelope, закрытие data-gap и #163 не утверждены; candidate/pending refs не получают runtime approval этой записью.",
+    "APPROVE_DATA_ONLY цепочки @1 подтверждает authoring evidence; S1 admission и selector-to-position binding из этого не следуют.",
+    "Reciprocal movement здесь означает только обратные endpoints. Все 128 @1 movement rows не имеют 12 из 22 обязательных owner keys, включая reverse_edge_slot_key; contract-complete directedPair и full physical closure не утверждены.",
+    "Primary unapproved у movement gaps не означает единственного препятствия: physical/topology closure также отсутствует. Одного approval или binding для закрытия этих gaps недостаточно.",
+    "Один G6 в каждой сцене не даёт distinct base/S1 G6. Отсутствие enclosing structure не является основанием запретить S1.",
+    "Runtime readback в required_evidence — будущий handoff, не новое условие data-only source approval и не доказательство выполненной DB-проверки.",
+    "Generated topology @2 остаётся только диагностикой; она не подменяет применимое target @1 evidence.",
+    "Import, activation, runtime integration и production acceptance не разрешены.",
+    "Модельный D41, player prose и данные для рассказчика/NPC не утверждены. 12 D41 inventory cases остаются not_run; CLI tests не являются модельным стендом.",
+    "DB/party/production readback, PG/Docker и полные repository suites не проверены; commit binding не добавляет таких доказательств.",
+    "Прежняя s1-data-approval.json относится только к d97c5307374301359b7a91563e81b896be45ac4d и не распространяется на изменённые pass-5 bytes."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "issue_closure_authorized": false,
+  "excluded_files": [
+    "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/s1-data-approval.json"
+  ],
+  "review_reference": {
+    "task_id": "ap-b4-s1",
+    "submission": "DONE-ap-b4-s1-5",
+    "report": "/srv/novgorod-work/fleet/tasks/ap-b4-s1/out/report-ap-b4-s1-5.md",
+    "verdict": "/srv/novgorod-work/fleet/tasks/ap-b4-s1/out/verdict-ap-b4-s1-5.json"
+  },
+  "file_sha_reference": "SHA-256 перечисленных commit blobs добавлены по явному поручению A-ap-b4-s1-record5; это сверка содержимого файлов, не подпись или receipt.",
+  "approval_validity": "Любая последующая правка утверждённого содержимого снимает утверждение до нового независимого прохода (WR §21.1)."
+}

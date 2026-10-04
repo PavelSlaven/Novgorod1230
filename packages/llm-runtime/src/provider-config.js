@@ -67,7 +67,7 @@ const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
 const TURN_ROLE_DEFAULTS = Object.freeze({
   [TurnRuntimeRoles.INTENT_ROUTER]: {
     envPrefix: 'TURN_INTENT_ROUTER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 20_000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_intent_route', parseJson: true,
+    responseFormat: 'json_object', maxTokens: 20_000, outputContractMode: OutputContractModes.JSON_OBJECT, expectedSchema: null, parseJson: true,
     targetInputTokens: 20000, comfortableInputTokens: 20000, hardInputLimitTokens: 80000, reserveOutputTokens: 2500, reserveRepairTokens: 10000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER]: {

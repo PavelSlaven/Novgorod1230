@@ -1,6 +1,8 @@
 // Report side of the v17 slice driver (v17-slice-run.mjs): secret redaction, verdict, Markdown playtest skeleton.
 // Deterministic text only: facts from the run, no diagnosis (WR §24.1; docs/playtests/README.md).
 
+import { renderOpeningAttemptsTable } from './v17-slice-opening-trace.js';
+
 export const LEG_IDS = Object.freeze(['start', 'walk', 'meet', 'talk', 'take', 'make']);
 export const LEG_TITLES = Object.freeze({
   start: 'start', walk: 'walk out', meet: 'meet', talk: 'talk', take: 'take', make: 'make'
@@ -116,8 +118,10 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
   out.push('## Gameplay transcript', '');
   if (opening) {
     out.push('### Открытие партии', '',
-      `- Партия \`${opening.party_id ?? '—'}\`; попыток new-game: ${opening.attempts}; отказов открытия (AUTHORED_OPENING_AUDIT_REJECTED): ${opening.rejections}.`, '',
-      'Что увидел игрок (дословно):', '', opening.prose ? quote(opening.prose) : '> (текста нет)', '');
+      `- Партия \`${opening.party_id ?? '—'}\`; попыток new-game: ${opening.attempts}; отказов открытия (AUTHORED_OPENING_AUDIT_REJECTED): ${opening.rejections}.`, '');
+    const attemptsTable = renderOpeningAttemptsTable(opening.opening_attempts);
+    if (attemptsTable) out.push('Попытки вступления (new-game):', '', attemptsTable, '');
+    out.push('Что увидел игрок (дословно):', '', opening.prose ? quote(opening.prose) : '> (текста нет)', '');
     out.push(`Проходы на первом экране: ${opening.route_labels?.length > 0 ? opening.route_labels.map((label) => `«${label}»`).join(', ') : '(нет)'}`, '');
   }
   for (const turn of turns) out.push(turnSection(turn), '');

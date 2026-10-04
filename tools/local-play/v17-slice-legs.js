@@ -2,6 +2,8 @@
 // Pure of I/O: `api` (HTTP client) and `sql` (snapshot reader) are injected, so unit tests use fakes.
 // A turn that fails is data (fail with the API error code), not an exception.
 
+import { openingAttemptFromNewGame, partyIdFromNewGameRequestId } from './v17-slice-opening-trace.js';
+
 export const RESERVE_MAKE_TURNS = 3;
 const LOOK = 'Осматриваюсь вокруг.';
 const MAKE_PHRASES = Object.freeze([
@@ -144,16 +146,28 @@ export async function runLegs({
     let attempts = 0;
     let rejections = 0;
     let opening = null;
+    const openingAttempts = [];
     const requestId = `slice-${runId}-start`;
     while (attempts < 3 && opening == null) {
       attempts += 1;
       const response = await apiCall('newGame', 'new_game', 'start',
         { scenario_id: scenarioId, request_id: requestId });
+      let devFailure = null;
+      if (!response.ok && response.error?.code === OPENING_REJECTED && api.llmTurnReport) {
+        const report = await apiCall('llmTurnReport', 'opening_llm_report', 'start',
+          partyIdFromNewGameRequestId(requestId), requestId);
+        devFailure = report.ok ? report.data?.failure ?? null : null;
+      }
+      const attemptRecord = openingAttemptFromNewGame({ n: attempts, ok: response.ok,
+        data: response.data, error: response.error, devFailure });
+      if (attemptRecord) openingAttempts.push(attemptRecord);
       if (response.ok) opening = response.data;
       else if (response.error?.code === OPENING_REJECTED) rejections += 1;
-      else { state.opening = { attempts, rejections, party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
+      else { state.opening = { attempts, rejections, opening_attempts: openingAttempts,
+        party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
     }
-    state.opening = { attempts, rejections, party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
+    state.opening = { attempts, rejections, opening_attempts: openingAttempts,
+      party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
       route_labels: routeLabels(opening?.screen), people_panel_initial: capturePeoplePanel(opening?.screen) };
     if (opening == null) throw new Error(`${OPENING_REJECTED} ×${rejections}`);
     partyId = opening.party_id;

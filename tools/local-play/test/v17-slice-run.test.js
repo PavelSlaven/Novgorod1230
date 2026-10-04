@@ -173,6 +173,17 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     async newGame() { w.newGames += 1; return w.newGames <= openingRejections
       ? { status: 409, ok: false, data: null, error: { code: 'AUTHORED_OPENING_AUDIT_REJECTED' } }
       : env({ party_id: 'p1', screen: { main_prose: 'Открытие.' } }); },
+    async llmTurnReport() {
+      return env({ failure: {
+        code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+        opening_rejection: {
+          writer_prose: 'Черновик вступления.',
+          audit: { pass: false, concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
+            severity: 'repairable', message: 'gap' }], evidence: ['gap'], codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'] },
+          repair: { attempted: false }
+        }
+      } });
+    },
     async ack() { return env({}); },
     async screen() { return env({ screen: screen() }); },
     async recover() { w.recovered += 1; w.prose = 'Восстановлено.'; return env({}); },
@@ -411,6 +422,8 @@ test('legs: an opening rejected three times fails start and blocks the rest; two
   const flaky = await runFake(fakeWorld({ openingRejections: 2 }));
   assert.equal(statusOf(flaky).start, 'pass');
   assert.equal(flaky.opening.rejections, 2);
+  assert.equal(flaky.opening.opening_attempts.filter(({ outcome }) => outcome === 'rejected').length, 2);
+  assert.equal(flaky.opening.opening_attempts[0].writer_prose, 'Черновик вступления.');
 });
 
 test('legs: a committed turn without text triggers one presentation-recovery', async () => {

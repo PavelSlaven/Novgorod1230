@@ -192,9 +192,12 @@ export function createHttpApi(baseUrl, httpFetch) {
       error: envelope?.ok === true ? null : (envelope?.error ?? { code: `HTTP_${response.status}`, message: 'unreadable response' }) };
   };
   const party = (id) => `/api/v1/parties/${encodeURIComponent(id)}`;
+  const developer = (partyId, requestId) =>
+    `/api/v1/developer/llm-turn-reports/${encodeURIComponent(partyId)}/${encodeURIComponent(requestId)}`;
   return {
     health: () => call('GET', '/api/v1/health'),
     newGame: (input) => call('POST', '/api/v1/new-games', input, HTTP_TURN_TIMEOUT_MS),
+    llmTurnReport: (partyId, requestId) => call('GET', developer(partyId, requestId)),
     ack: (id, input) => call('POST', `${party(id)}/opening-ack`, input),
     screen: (id) => call('GET', `${party(id)}/screen`),
     turn: (id, input) => call('POST', `${party(id)}/turns`, input, HTTP_TURN_TIMEOUT_MS),
@@ -307,7 +310,7 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
     createRoot: ({ bootstrapEnv, llmSettings, telemetry,
       onNpcSceneProjection }) => fixture.createPresenceProductionRoot({
       ...bootstrapEnv, llmSettings,
-      extraConfig: { telemetry, onNpcSceneProjection },
+      extraConfig: { telemetry, onNpcSceneProjection, developerMode: true },
       env: options.wkEncoder === 'giga'
         ? { RUS_WORLD_KNOWLEDGE_PYTHON: env.RUS_WORLD_KNOWLEDGE_PYTHON,
             ...(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: env.RUS_WORLD_KNOWLEDGE_MODEL_PATH } : {}),
@@ -316,7 +319,7 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
       ...(options.wkEncoder === 'giga' ? { worldKnowledgeEncoderFactory: null } : {})
     }),
     async startServer(root) {
-      const server = createGameHttpServer({ root, maxBodyBytes: 1024 * 1024 });
+      const server = createGameHttpServer({ root, maxBodyBytes: 1024 * 1024, developerMode: true });
       const address = await listen(server, { host: '127.0.0.1', port: 0 });
       return { server, url: `http://127.0.0.1:${address.port}`,
         close: () => new Promise((done) => { server.close(done); server.closeAllConnections?.(); }) };

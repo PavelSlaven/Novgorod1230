@@ -210,10 +210,7 @@ async function startNewGame({
     launch_branch: launchBranch,
     scenario_id: scenario,
     effective_player_name: effectivePlayerName,
-    branch_input_digest: branchInputDigest,
-    ...(startParameterExtraction == null ? {} : {
-      start_parameter_extraction: startParameterExtraction
-    })
+    branch_input_digest: branchInputDigest
   });
   await repository.assertNewGameCreationIdentity({
     partyId,
@@ -231,6 +228,9 @@ async function startNewGame({
     requestId,
     partyId,
     creationIdentity,
+    diagnostics: startParameterExtraction == null ? null : {
+      start_parameter_extraction: startParameterExtraction
+    },
     release,
     repository,
     traceStartAdapter,

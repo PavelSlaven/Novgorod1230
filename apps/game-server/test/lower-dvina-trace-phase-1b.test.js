@@ -14,6 +14,9 @@ import {
   buildLowerDvinaTraceOpeningScreen
 } from '../src/runtime/lower-dvina-trace-opening.js';
 import { hash } from '../src/runtime/first-playable/shared.js';
+import {
+  createFirstPlayablePartyRepository
+} from '../src/infrastructure/postgres/first-playable/repository.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { assertOpeningPublication } from
@@ -81,8 +84,13 @@ test('free-text extraction stays diagnostic while current start and replay stay 
   const started = await runtime.startNewGame(request);
   assert.equal(started.screen.scenario_id, 'lower_dvina_trace_v1');
   const session = f.repository.sessions.get(started.party_id);
-  const extraction = session.stage26_result.creation_identity
+  const extraction = session.stage26_result.diagnostics
     .start_parameter_extraction;
+  assert.equal(session.stage26_result.creation_identity
+    .start_parameter_extraction, undefined);
+  assert.equal(extraction.vocabulary_ref.catalog_id,
+    'start-parameter-extraction-candidate-v1');
+  assert.equal(extraction.vocabulary_ref.revision, 1);
   assert.equal(extraction.schema,
     'rus.game_server.start_parameter_extraction.v1');
   assert.equal(extraction.slots.region.state, 'candidate_only');
@@ -97,28 +105,74 @@ test('free-text extraction stays diagnostic while current start and replay stay 
   const replayed = await runtime.startNewGame(request);
   assert.equal(replayed.party_id, started.party_id);
   assert.equal(f.materializeCalls.length, 1);
-  await assert.rejects(() => runtime.startNewGame({
-    ...request,
-    start_text: 'Хочу начать зимой лодочником в Новгородской земле.'
-  }), { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' });
 });
 
-test('a pre-extraction identity conflicts with the current exact identity',
+test('orphan Phase 1A free-text start retries through the production identity guard',
   async () => {
-    const f = fixture();
+    const requestId = 'm7-d41-orphan-free-text';
+    const partyId = `party:${hash(requestId).slice(0, 24)}`;
+    const publication = await loadLowerDvinaTracePhase1BPublication({
+      scenarioDefinitionRevision: 25
+    });
+    const binding = publication.binding;
+    const world = binding.world_compatibility;
+    const committedRequest = {
+      party_id: partyId,
+      scenario_id: binding.scenario_id,
+      scenario_definition_revision:
+        binding.scenario_definition_ref.revision,
+      scenario_manifest_digest: binding.phase_1a_manifest_ref.digest,
+      world_revision_id: world.production_world_revision_id,
+      world_catalog_digest: world.production_world_catalog_digest,
+      world_compatibility: structuredClone(world),
+      materializer_version:
+        binding.execution_identity.materializer_version,
+      rng_algorithm_id: binding.execution_identity.rng_algorithm_id,
+      seed_context: binding.execution_identity.seed_context,
+      idempotency_key:
+        `new-game:${binding.scenario_id}:${hash(requestId)}`,
+      trigger: binding.execution_identity.trigger,
+      occurrence: binding.execution_identity.occurrence,
+      existing_party_state: { baseline_exists: false }
+    };
+    const orphanStatePayload = {
+      schema: 'rus.lower_dvina_trace_initial_party_snapshot.v2',
+      request_identity: {
+        party_id: partyId,
+        scenario_id: 'lower_dvina_trace_v1',
+        idempotency_key:
+          `new-game:lower_dvina_trace_v1:${hash(requestId)}`
+      }
+    };
+    const f = fixture({ committedRequest });
+    const productionRepository = createFirstPlayablePartyRepository({
+      partyPool: {
+        connect() {},
+        async query(_sql, params) {
+          assert.equal(params[0], partyId);
+          return { rows: [{
+            state_payload: orphanStatePayload,
+            stage26_result: null
+          }] };
+        }
+      }
+    });
+    f.repository.assertNewGameCreationIdentity =
+      productionRepository.assertNewGameCreationIdentity;
     const runtime = createRuntime(f);
     const request = {
       start_text: 'Хочу начать весной рыбаком под Ладогой, положение свободное.',
-      request_id: 'm7-d41-pre-extraction-identity'
+      request_id: requestId
     };
-    const started = await runtime.startNewGame(request);
-    const stored = f.repository.sessions.get(started.party_id)
-      .stage26_result.creation_identity;
-    delete stored.start_parameter_extraction;
-
-    await assert.rejects(() => runtime.startNewGame(request), {
-      code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT'
-    });
+    const recovered = await runtime.startNewGame(request);
+    const session = f.repository.sessions.get(recovered.party_id);
+    assert.equal(recovered.party_id, partyId);
+    assert.equal(f.materializeCalls.length, 0);
+    assert.equal(f.repository.sessions.size, 1);
+    assert.equal(session.stage26_result.creation_identity
+      .start_parameter_extraction, undefined);
+    assert.equal(session.stage26_result.diagnostics
+      .start_parameter_extraction.slots.season.state, 'candidate_match');
   });
 
 test('trace dispatch commits before its safe screen', async () => {

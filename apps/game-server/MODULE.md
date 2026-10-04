@@ -663,11 +663,10 @@ execution ledger or A1-specific plan hashes.
 A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
 
 Public new-game replay uses an exact persisted creation identity. The
-diagnostic-only `start_parameter_extraction` records its candidate-vocabulary
-catalog id and revision; it does not affect start selection or compatibility.
-Creation identity equality remains exact, including the complete extraction
-and vocabulary revision. Older parties without extraction are not adapted for
-replay by the current build. Trace
+diagnostic-only `diagnostics.start_parameter_extraction` records its
+candidate-vocabulary catalog id and revision outside that identity; it does not
+affect creation identity equality, Phase 1A recovery, start selection or
+compatibility. Trace
 publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.

@@ -395,24 +395,38 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     /start_parameter_extraction|candidate_match|candidate_only/u);
 
   const partyId = start.data.party_id;
-  const persistedIdentity = (await pool.query(
-    `SELECT stage26_result->'creation_identity' AS creation_identity
+  const persistedSessionIdentity = (await pool.query(
+    `SELECT stage26_result->'creation_identity' AS creation_identity,
+            stage26_result->'diagnostics' AS diagnostics
        FROM party_runtime.party_server_sessions WHERE party_id=$1`,
     [partyId]
-  )).rows[0].creation_identity;
-  const extraction = persistedIdentity.start_parameter_extraction;
+  )).rows[0];
+  assert.equal(persistedSessionIdentity.creation_identity
+    .start_parameter_extraction, undefined);
+  const extraction = persistedSessionIdentity.diagnostics
+    .start_parameter_extraction;
   assert.equal(extraction.schema,
     'rus.game_server.start_parameter_extraction.v1');
+  assert.deepEqual(extraction.vocabulary_ref, {
+    catalog_id: 'start-parameter-extraction-candidate-v1', revision: 1
+  });
   assert.deepEqual(Object.fromEntries(Object.entries(extraction.slots)
     .map(([slot, value]) => [slot, value.state])), {
     region: 'candidate_only', season: 'candidate_match',
     occupation: 'candidate_match', social_position: 'candidate_match'
   });
   assert.equal(extraction.compatibility.state, 'no_compatible_start');
-  await assert.rejects(() => api(base, '/api/v1/new-games', {
-    ...publicRequest,
-    start_text: 'Хочу начать зимой лодочником в Новгородской земле.'
-  }), { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' });
+  const repeatedStart = await api(base, '/api/v1/new-games', publicRequest);
+  assert.equal(repeatedStart.status, 201);
+  assert.equal(repeatedStart.data.party_id, partyId);
+  assert.deepEqual(repeatedStart.data.screen, start.data.screen);
+  assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_materialization_runs',
+    partyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_player_characters',
+    partyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_server_sessions',
+    partyId), 1);
   const publicTrace = (await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [partyId]

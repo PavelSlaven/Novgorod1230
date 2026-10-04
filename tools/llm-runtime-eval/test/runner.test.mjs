@@ -41,10 +41,12 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
     assert.equal(report.fixture_count, 38);
+    const worldProcessResult = report.results.find(({ fixture_id }) =>
+      fixture_id === 'world-process-water-affect');
+    assert.ok(worldProcessResult, 'world-process fixture result must exist');
+    assert.equal(worldProcessResult.pass, true);
     assert.equal(report.aggregates.total.passed, 38,
       JSON.stringify(report.results.filter(({ pass }) => !pass)));
-    assert.equal(report.results.find(({ id }) =>
-      id === 'world-process-water-affect').pass, true);
     assert.equal(report.aggregates.total.errors, 0);
     assert.equal(report.aggregates.total.scored, 38);
     assert.equal(report.aggregates.total.unscored, 0);

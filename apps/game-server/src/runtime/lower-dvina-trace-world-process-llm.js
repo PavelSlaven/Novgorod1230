@@ -61,11 +61,9 @@ function worldProcessRefChoices(request) {
 function worldProcessProjection(request, outcomeChoices, refChoices) {
   const environmentFacts = qualitativeFacts(request.environment_state);
   const subjectFacts = qualitativeFacts(request.subject_state);
+  const normalizedSubjectFacts = new Set(subjectFacts.map(normalizeFact));
   const processFactsForModel = processFacts(request).filter((fact) =>
-    !(fact === 'Огонь горит.' && subjectFacts.some((subjectFact) =>
-      subjectFact.toLocaleLowerCase('ru').includes('огонь')
-      && (subjectFact.toLocaleLowerCase('ru').includes('горит')
-        || subjectFact.toLocaleLowerCase('ru').includes('продолжает гореть')))));
+    !normalizedSubjectFacts.has(normalizeFact(fact)));
   const quantityFacts = waterQuantityFacts(request.subject_state, subjectFacts);
   const fuelFacts = [...new Set((request.process?.fuel_bindings ?? [])
     .map(({ fuel_class }) => fuelFact(fuel_class))
@@ -101,6 +99,10 @@ function qualitativeFacts(value) {
     ...(Array.isArray(value.qualitative_facts) ? value.qualitative_facts : [])];
   return [...new Set(facts.filter((fact) => typeof fact === 'string'
     && fact.trim().length > 0 && !/^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/u.test(fact)))];
+}
+
+function normalizeFact(fact) {
+  return fact.trim().replace(/\s+/gu, ' ').toLocaleLowerCase('ru');
 }
 
 function waterQuantityFacts(subject, facts) {

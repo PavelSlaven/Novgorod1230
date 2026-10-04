@@ -6,6 +6,22 @@ import { assembleWorldProcessStepPlan,
   '../src/runtime/lower-dvina-trace-world-process-llm.js';
 import { worldProcessRequest } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+async function captureProjection(input) {
+  let user;
+  const model = createLowerDvinaTraceWorldProcessStepModel({
+    roleRunner: { async run(call) {
+      user = call.messages.at(-1).content;
+      const projection = JSON.parse(user);
+      return { output: { interpretation: {
+        grounded_transition: 'Проверка проекции.' },
+      outcome_choice: 'outcome_1',
+      affected_ref_choices: projection.affected_ref_choices.map(({ choice_id }) => choice_id) } };
+    } }
+  });
+  await model(input);
+  return JSON.parse(user);
+}
+
 test('world process model assembles exact envelope from qualitative choice', async () => {
   let prompt, user;
   const input = worldProcessRequest();
@@ -30,6 +46,7 @@ test('world process model assembles exact envelope from qualitative choice', asy
   assert.deepEqual(plan.fact_changes, []);
   const projected = JSON.parse(user);
   assert.deepEqual(projected, {
+    process_facts: ['Огонь горит.'],
     fuel_facts: ['обычное твёрдое топливо'],
     subject_facts: ['цельная порция воды',
       'Действие персонажа: воздействовать водой на огонь.',
@@ -59,6 +76,25 @@ test('world process model assembles exact envelope from qualitative choice', asy
   assert.doesNotMatch(prompt, /server binds choices/u);
   assert.match(prompt, /"outcome_choice":"<choice_id>"/u);
   assert.match(prompt, /каждый элемент affected_ref_choices — один строковый идентификатор из переданного списка ссылок/u);
+});
+
+test('world-process projection removes only normalized exact duplicate facts', async (t) => {
+  const cases = [
+    { name: 'negative fact', fact: 'Огонь не горит.', keepsProcessFact: true },
+    { name: 'conditional action',
+      fact: 'Пока огонь не догорит, поддерживать его.', keepsProcessFact: true },
+    { name: 'exact positive duplicate', fact: 'Огонь горит.', keepsProcessFact: false },
+    { name: 'case and whitespace normalized duplicate',
+      fact: '  ОГОНЬ   ГОРИТ.  ', keepsProcessFact: false }
+  ];
+  for (const { name, fact, keepsProcessFact } of cases) await t.test(name, async () => {
+    const input = worldProcessRequest();
+    input.subject_state.facts.push(fact);
+    const projected = await captureProjection(input);
+    assert.ok(projected.subject_facts.includes(fact));
+    assert.equal(projected.process_facts?.includes('Огонь горит.') ?? false,
+      keepsProcessFact);
+  });
 });
 
 test('world-process outcome meanings distinguish unchanged from changed process', async () => {

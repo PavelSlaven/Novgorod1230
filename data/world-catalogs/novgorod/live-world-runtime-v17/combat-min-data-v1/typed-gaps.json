@@ -35,9 +35,9 @@
         "execution.weapon_capability_mapping game-base catalog rows"
       ],
       "owner": "@rus/items-property + @rus/combat-health",
-      "reason": "seven candidate game-base row links match explicit generic norm examples (sword, spear, battle axe, knife, club), but the catalog remains candidate and no row/profile has independent D67 approval; remaining melee variants and their applicability are unresolved",
+      "reason": "The listed game-base rows establish item identity/category but do not provide exact combat mechanics. No weapon_danger is assigned from the row; absent exact owner mechanics or independently source-pinned physical-form facts that satisfy D47, each row remains blocked by this typed gap.",
       "consumer": "weapon capability and danger resolution",
-      "closure": "independently approve or revise each listed norm-to-row candidate mapping; add a source-bound mapping for each other supported item or keep its use blocked; do not infer from military tier, occupation, frequency, mass, or category alone"
+      "closure": "For each row, supply exact approved owner mechanics or independently source-pinned physical-form facts and an applicable D47 mapping; otherwise keep the row blocked. Do not infer danger from item name, category, military tier, role, mass, frequency, or access."
     },
     {
       "id": "G-TARGET-PROTECTION-VULNERABILITY",

@@ -540,63 +540,6 @@
       ],
       "unknown_damaged_ambiguous_or_multiple_items": "typed_gap_fail_closed_for_this_step",
       "approval": "pending",
-      "catalog_row_candidates": [
-        {
-          "wp_id": "wp_sword",
-          "category_id": "cat_item_object_sword_v1",
-          "weapon_danger": 3,
-          "basis": "catalog identity exactly matches normative example “sword”; candidate row only",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        },
-        {
-          "wp_id": "wp_spear",
-          "category_id": "cat_item_object_spear_v1",
-          "weapon_danger": 3,
-          "basis": "catalog identity exactly matches normative example “spear”; candidate row only",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        },
-        {
-          "wp_id": "wp_rogatina",
-          "category_id": "cat_item_object_rogatina_v1",
-          "weapon_danger": 3,
-          "basis": "catalog identity is explicitly a hunting/combat spear and matches normative example “spear”; candidate row only",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        },
-        {
-          "wp_id": "wp_battle_axe",
-          "category_id": "cat_item_object_combat_axe_v1",
-          "weapon_danger": 3,
-          "basis": "catalog identity exactly matches normative example “battle axe”; candidate row only",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        },
-        {
-          "wp_id": "wp_knife",
-          "category_id": "cat_item_object_utility_knife_v1",
-          "weapon_danger": 2,
-          "basis": "catalog identity exactly matches normative example “knife”; candidate row only",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        },
-        {
-          "wp_id": "wp_long_knife",
-          "category_id": "cat_item_object_long_knife_v1",
-          "weapon_danger": 2,
-          "basis": "candidate classification under normative “knife” term; distinct length class requires separate approval",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        },
-        {
-          "wp_id": "wp_club",
-          "category_id": "cat_item_object_mace_v1",
-          "weapon_danger": 2,
-          "basis": "catalog identity exactly matches normative example “club”; candidate row only",
-          "source_ref": "src.game-base-weapons-rows.v1"
-        }
-      ],
-      "catalog_row_mapping_conditions": [
-        "item_ref resolves to the same catalog row and current instance",
-        "kind is weapon and current access, holding, condition and physical capability are verified by their owners",
-        "danger is a candidate mapping from the active norm example, not from military tier, role, mass, frequency, or access",
-        "no attack is admitted from a candidate row until independent D67 approval"
-      ],
       "unmapped_catalog_melee_rows": {
         "typed_gap_wp_ids": [
           "wp_sabre",
@@ -614,7 +557,51 @@
           "wp_sling"
         ],
         "reason": "normative example does not resolve the relevant variant or its size/use; ranged/mounted actions are excluded"
-      }
+      },
+      "catalog_rows_without_exact_mechanics": [
+        {
+          "wp_id": "wp_sword",
+          "category_id": "cat_item_object_sword_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        },
+        {
+          "wp_id": "wp_spear",
+          "category_id": "cat_item_object_spear_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        },
+        {
+          "wp_id": "wp_rogatina",
+          "category_id": "cat_item_object_rogatina_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        },
+        {
+          "wp_id": "wp_battle_axe",
+          "category_id": "cat_item_object_combat_axe_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        },
+        {
+          "wp_id": "wp_knife",
+          "category_id": "cat_item_object_utility_knife_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        },
+        {
+          "wp_id": "wp_long_knife",
+          "category_id": "cat_item_object_long_knife_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        },
+        {
+          "wp_id": "wp_club",
+          "category_id": "cat_item_object_mace_v1",
+          "source_ref": "src.game-base-weapons-rows.v1",
+          "disposition": "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+        }
+      ]
     }
   },
   "durations": {
@@ -992,7 +979,7 @@
         "source_ref": "src.combat_system.weapon-danger.v-current"
       },
       {
-        "path": "execution.weapon_capability_mapping.catalog_row_candidates",
+        "path": "execution.weapon_capability_mapping.catalog_rows_without_exact_mechanics",
         "kind": "normative_example_matched_to_candidate_catalog_identity",
         "source_ref": "src.combat_system.weapon-danger.v-current"
       },

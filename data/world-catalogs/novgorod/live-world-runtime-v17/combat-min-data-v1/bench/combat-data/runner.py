@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Script-first synthetic candidate checks; no model, server, database, or network."""
+import copy
 import json
+import re
 import math
 import random
 import sys
@@ -99,12 +101,25 @@ def validated_inputs(case):
 
 
 def owner_initialization_profile_fixture(body_initialization, initial_state):
-    """Test-only output DTO after an explicit fixture approval gate."""
+    """Execute the candidate selector mapping on a test-only approved fixture."""
     adapter = body_initialization["owner_initialization_profile_adapter"]
     mapping = body_initialization["profile_mapping"]
     target = adapter["target_dto_mapping"]
     if adapter["candidate_emission"] is not None or adapter["status"] != "blocked_until_owner_and_D67_approval":
         raise ValueError("candidate adapter must remain blocked")
+    entity_selector = target["profile_ref"]["entity_ref"]["entity_id"]
+    version_selector = target["profile_ref"]["authoring_version"]
+    if entity_selector != "profile_mapping.output_profile.profile_id" or version_selector != "String(profile_mapping.output_profile.version)":
+        raise ValueError("unsupported profile reference selector")
+    state = {}
+    for target_key, selector in target["initial_state"].items():
+        match = re.search(r"metrics\.(health|satiety|energy)", selector)
+        if not match:
+            raise ValueError("unsupported DTO metric selector: " + str(selector))
+        source_key = match.group(1)
+        if source_key not in initial_state:
+            raise ValueError("missing resolved metric source: " + source_key)
+        state[target_key] = initial_state[source_key]
     return {
         "schema": target["schema"], "status": "approved",
         "profile_ref": {
@@ -112,8 +127,79 @@ def owner_initialization_profile_fixture(body_initialization, initial_state):
                            "entity_id": mapping["output_profile"]["profile_id"]},
             "authoring_version": str(mapping["output_profile"]["version"])
         },
-        "initial_state": {key: initial_state[key] for key in ("health", "satiety", "energy")}
+        "initial_state": state
     }
+
+
+def assert_candidate_emission_mutation_rejected(manifest, candidate, gaps):
+    mutated = copy.deepcopy(candidate)
+    mutated["execution"]["health_transition"]["body_initialization"]["owner_initialization_profile_adapter"]["candidate_emission"] = {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "profile_ref": {"entity_id": "fixture:unapproved-profile"},
+        "initial_state": {"health": 100, "energy": 86, "satiety": 70}
+    }
+    try:
+        evaluate_combat_cases(manifest, mutated, gaps)
+    except ValueError as error:
+        expected = "data assertion failed: cd03/candidate_never_emits_unapproved"
+        if str(error) != expected:
+            raise ValueError("candidate emission negative probe failed at wrong assertion: " + str(error)) from error
+        return {"status":"pass", "mutated_nested_field":"execution.health_transition.body_initialization.owner_initialization_profile_adapter.candidate_emission",
+                "mutation_nonempty":True, "rejected_by_assertion":expected}
+    raise ValueError("candidate emission assertion accepted a non-empty nested emission")
+
+
+def evaluate_combat_cases(manifest, candidate, gaps):
+    cases = manifest.get("cases", [])
+    if len(cases) != 15 or len({case.get("id") for case in cases}) != 15:
+        raise ValueError("expected 15 unique declared combat cases")
+    weapon = candidate["execution"]["weapon_capability_mapping"]
+    rules = weapon["rules"]
+    fist = next((r for r in rules if "bare-hand punch" in r.get("input", "")), {})
+    d47 = next((r for r in rules if r.get("source_ref") == "src.action-produced-weapon-mechanics.v1"), {})
+    gap_ids = {g.get("id") for g in gaps.get("gaps", [])}
+    checks = {
+        "generic_applicability_closed": lambda: candidate["applicability"].get("values") is None and candidate["applicability"].get("fallback_to_scenario_profile") is False,
+        "fist_danger_rule_pinned": lambda: fist.get("result", {}).get("weapon_danger") == 1 and fist.get("source_ref") == "src.combat_system.weapon-danger.v-current",
+        "scenario_fallback_disabled": lambda: candidate["applicability"].get("fallback_to_scenario_profile") is False and candidate["applicability"].get("values") is None,
+        "candidate_never_emits_unapproved": lambda: candidate.get("status") == "candidate_not_approved" and candidate.get("production_usable") is False and candidate["execution"]["health_transition"]["body_initialization"]["owner_initialization_profile_adapter"].get("candidate_emission") is None,
+        "exact_owner_capability_required": lambda: any("exact owner-supplied combat mechanics capability" in str(r.get("input", "")) for r in rules),
+        "ordinary_armament_condition_scoped": lambda: any(r.get("source_ref") == "src.ordinary-armament-mechanics.v1" and "serviceable/damaged map is 1/0" in str(r.get("result", "")) for r in rules),
+        "d47_enum_map_exact": lambda: d47.get("result", {}).get("enum_mappings") == [{"d47_enum":k,"weapon_danger":v} for k,v in (("not_weapon_capable",0),("improvised_puncture_light",1),("improvised_impact_light",1),("improvised_cutting_light",1),("improvised_two_hand_heavy",2))],
+        "unknown_items_fail_closed": lambda: weapon.get("unknown_damaged_ambiguous_or_multiple_items") == "typed_gap_fail_closed_for_this_step",
+        "target_facts_gap_present": lambda: "G-TARGET-PROTECTION-VULNERABILITY" in gap_ids,
+        "perception_boundary_is_declared": lambda: bool(candidate["npc_decision"].get("meaningful_boundary", {}).get("rule")) and bool(candidate["npc_decision"].get("decision_context_required")),
+        "surrender_has_no_universal_threshold": lambda: candidate["npc_decision"].get("percentages_or_universal_hp_threshold") is False and "G-INDIVIDUAL-SURRENDER-BASIS" in gap_ids,
+        "retreat_movement_gap_present": lambda: "G-RETREAT-MOVEMENT" in gap_ids,
+        "health_transition_clamps_at_zero": lambda: candidate["execution"]["health_transition"].get("rule") == "next_health = max(0, current_health - committed_health_loss)" and max(0,5-5)==0 and max(0,2-5)==0 and max(0,10-5)==5,
+        "duration_is_exact_rational": lambda: candidate["durations"]["per_action_profiles"][0].get("duration_minutes", {}).get("numerator") == 1 and candidate["durations"]["per_action_profiles"][0].get("duration_minutes", {}).get("denominator") == 10 and Fraction(2,10)==Fraction(1,5) and candidate["durations"].get("round_clock") is False,
+        "persistence_and_replay_are_gaps": lambda: "G-BODY-READBACK-COMMIT" in gap_ids and "G-ACTOR-CHECK-FACTS" in gap_ids,
+    }
+    results=[]; declared=[]; executed=[]; not_run=[]
+    for case in cases:
+        ids=case.get("declared_assertion_ids", [])
+        data_ids=case.get("data_assertion_ids", [])
+        missed=case.get("not_run_assertions", [])
+        if len(ids) != len(set(ids)) or set(ids) != set(data_ids) | {x.get("id") for x in missed}:
+            raise ValueError("declared assertion partition invalid: " + str(case.get("id")))
+        for assertion_id in data_ids:
+            if assertion_id not in checks or not checks[assertion_id]():
+                raise ValueError("data assertion failed: " + str(case.get("id")) + "/" + str(assertion_id))
+            executed.append({"case_id":case["id"],"assertion_id":assertion_id,"status":"pass"})
+        for item in missed:
+            if not item.get("reason"):
+                raise ValueError("not_run assertion needs reason: " + str(case.get("id")))
+            not_run.append({"case_id":case["id"],"assertion_id":item["id"],"reason":item["reason"]})
+        declared.extend({"case_id":case["id"],"assertion_id":i} for i in ids)
+        results.append({"case_id":case["id"],"status":"pass_with_not_run" if missed else "pass",
+                        "declared_assertion_ids":ids,"executed_assertion_ids":data_ids,
+                        "not_run_assertions":missed})
+    if len(declared) != len(executed)+len(not_run):
+        raise ValueError("declared/executed/not_run totals do not reconcile")
+    return {"case_count":len(cases),"case_results":results,"declared_assertions":declared,
+            "executed_assertions":executed,"not_run_assertions":not_run,
+            "declared_assertion_count":len(declared),"executed_assertion_count":len(executed),
+            "not_run_assertion_count":len(not_run)}
 
 
 def resolve_body_case(case, mapping):
@@ -261,8 +347,8 @@ def main():
         raise SystemExit("FAIL: live/model or historical claim must remain disabled")
     cases = manifest.get("cases", [])
     ids = [case.get("id") for case in cases]
-    if len(cases) != 15 or len(set(ids)) != 15 or any(not c.get("assertions") for c in cases):
-        raise SystemExit("FAIL: manifest must contain 15 unique combat cases with assertions")
+    if len(cases) != 15 or len(set(ids)) != 15 or any(not c.get("declared_assertion_ids") for c in cases):
+        raise SystemExit("FAIL: manifest must contain 15 unique combat cases with declared assertion IDs")
     body_cases = manifest.get("body_mapping_cases", [])
     body_ids = [case.get("id") for case in body_cases]
     if len(body_cases) != 15 or len(set(body_ids)) != 15:
@@ -277,6 +363,8 @@ def main():
     mapping = body_initialization["profile_mapping"]
     qualitative_evaluation = evaluate_qualitative_cases(
         manifest, candidate["npc_decision"]["body_state_qualitative_context"])
+    combat_case_evaluation = evaluate_combat_cases(manifest, candidate, gaps)
+    candidate_emission_mutation_probe = assert_candidate_emission_mutation_rejected(manifest, candidate, gaps)
     if candidate["status"] != "candidate_not_approved" or candidate["production_usable"] is not False:
         raise SystemExit("FAIL: synthetic bench must not promote candidate")
     variants = manifest.get("body_mapping_calibration", {}).get("variants", [])
@@ -346,6 +434,18 @@ def main():
         case_results.append({"id": case["id"], "disposition": disposition, "observed": observed,
                              **({"owner_dto_fixture": owner_dto} if disposition == "candidate_profile" else {})})
 
+    # Adapter transformation itself: bound endurance 13 must yield energy 86, not the endurance-10 fixture value.
+    non_ten_state = value_from_profile(mapping["output_profile"], 13)
+    non_ten_dto = owner_initialization_profile_fixture(body_initialization, non_ten_state)
+    if non_ten_state != {"health":100,"energy":86,"satiety":70} or non_ten_dto["initial_state"] != non_ten_state:
+        raise ValueError("adapter non-10 endurance transform mismatch")
+    swapped_body = copy.deepcopy(body_initialization)
+    selectors = swapped_body["owner_initialization_profile_adapter"]["target_dto_mapping"]["initial_state"]
+    selectors["energy"], selectors["satiety"] = selectors["satiety"], selectors["energy"]
+    swapped_dto = owner_initialization_profile_fixture(swapped_body, non_ten_state)
+    if swapped_dto["initial_state"] == non_ten_state:
+        raise ValueError("adapter accepted swapped energy/satiety selectors")
+
     check_boundary_count, harm_boundary_count = check_boundaries(candidate)
     # Fixed deterministic arithmetic sample, with explicit test-only neutral inputs.
     rng = random.Random(224_6701)
@@ -375,7 +475,11 @@ def main():
 
     result = {
         "status":"synthetic_script_dry_run_pass","model_called":False,"game_server_or_database_used":False,
-        "combat_case_count":len(cases),"body_mapping_case_count":len(body_cases),"body_mapping_cases":case_results,
+        "combat_case_count":len(cases),"combat_case_assertion_evaluation":combat_case_evaluation,
+        "candidate_emission_mutation_probe":candidate_emission_mutation_probe,
+        "body_mapping_case_count":len(body_cases),"body_mapping_cases":case_results,
+        "adapter_transformation_probes":{"endurance_13_energy":non_ten_dto["initial_state"]["energy"],
+            "swapped_energy_satiety_rejected":swapped_dto["initial_state"] != non_ten_state},
         "body_variant_outputs":{arm:{metric:{"min":min(values),"max":max(values),"values":values} for metric,values in metrics.items() if values} for arm,metrics in variant_aggregate.items()},
         "check_boundary_assertions":check_boundary_count,"harm_boundary_assertions":harm_boundary_count,
         "npc_state_description_eval":qualitative_evaluation,

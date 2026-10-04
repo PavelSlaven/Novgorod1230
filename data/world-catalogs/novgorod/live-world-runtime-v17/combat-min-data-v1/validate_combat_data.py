@@ -23,13 +23,13 @@ EXPECTED_QUALITY = [
 EXPECTED_HEALTH = [(0, 1, 0), (2, 3, 5), (4, 5, 12), (6, 7, 25), (8, None, 45)]
 EXPECTED_ACTION_PROFILES = {"melee_attack_step"}
 EXPECTED_CATALOG_WEAPONS = {
-    "wp_sword": ("cat_item_object_sword_v1", 3),
-    "wp_spear": ("cat_item_object_spear_v1", 3),
-    "wp_rogatina": ("cat_item_object_rogatina_v1", 3),
-    "wp_battle_axe": ("cat_item_object_combat_axe_v1", 3),
-    "wp_knife": ("cat_item_object_utility_knife_v1", 2),
-    "wp_long_knife": ("cat_item_object_long_knife_v1", 2),
-    "wp_club": ("cat_item_object_mace_v1", 2),
+    "wp_sword": "cat_item_object_sword_v1",
+    "wp_spear": "cat_item_object_spear_v1",
+    "wp_rogatina": "cat_item_object_rogatina_v1",
+    "wp_battle_axe": "cat_item_object_combat_axe_v1",
+    "wp_knife": "cat_item_object_utility_knife_v1",
+    "wp_long_knife": "cat_item_object_long_knife_v1",
+    "wp_club": "cat_item_object_mace_v1",
 }
 EXPECTED_WEAPON_MAP = {
     "not_weapon_capable": 0,
@@ -76,16 +76,32 @@ def issue(errors, condition, code):
         errors.append(code)
 
 
-def bands_match(bands, expected, keys):
+def bands_match(bands, expected, kind):
+    if not isinstance(bands, list) or len(bands) != len(expected):
+        return False
     actual = []
-    for band in bands:
-        row = []
-        for key in keys:
-            value = band.get(key)
-            if value in ("-infinity", "infinity"):
-                value = None
-            row.append(value)
-        actual.append(tuple(row))
+    for index, band in enumerate(bands):
+        if not isinstance(band, dict):
+            return False
+        if kind == "quality":
+            low, high, score = band.get("min_margin"), band.get("max_margin"), band.get("quality")
+            low_ok = low == "-infinity" if index == 0 else type(low) is int
+            high_ok = high == "infinity" if index == len(bands) - 1 else type(high) is int
+            if not low_ok or not high_ok or type(score) is not int:
+                return False
+            actual.append((None if index == 0 else low, None if index == len(bands)-1 else high, score))
+        elif kind == "health":
+            low, high, loss = band.get("damage_score_min"), band.get("damage_score_max"), band.get("health_loss")
+            if type(low) is not int or type(loss) is not int:
+                return False
+            if index == len(bands) - 1:
+                if high is not None:
+                    return False
+            elif type(high) is not int:
+                return False
+            actual.append((low, high, loss))
+        else:
+            return False
     return actual == expected
 
 
@@ -223,12 +239,10 @@ def validate_bundle(bundle, source_map, gaps):
     ]
     issue(errors, any(not owner for owner in required_owners), "OWNER_MISSING")
     check = execution.get("check", {}).get("normative_rule", {})
-    issue(errors, not bands_match(check.get("quality_bands", []), EXPECTED_QUALITY,
-                                 ("min_margin", "max_margin", "quality")),
+    issue(errors, not bands_match(check.get("quality_bands", []), EXPECTED_QUALITY, "quality"),
           "CHECK_BANDS_INVALID")
     harm = execution.get("harm", {})
-    issue(errors, not bands_match(harm.get("health_loss_bands", []), EXPECTED_HEALTH,
-                                 ("damage_score_min", "damage_score_max", "health_loss")),
+    issue(errors, not bands_match(harm.get("health_loss_bands", []), EXPECTED_HEALTH, "health"),
           "HEALTH_BANDS_INVALID")
     issue(errors, check.get("attack") != EXPECTED_ATTACK_FORMULA
           or check.get("defense") != EXPECTED_DEFENSE_FORMULA
@@ -366,26 +380,26 @@ def validate_bundle(bundle, source_map, gaps):
     issue(errors, not any("bare-hand punch" in str(item.get("input", ""))
                           and item.get("result", {}).get("weapon_danger") == 1 for item in mappings),
           "FIST_MAPPING_MISSING")
-    catalog_rows = execution.get("weapon_capability_mapping", {}).get("catalog_row_candidates", [])
-    catalog_by_id = {row.get("wp_id"): row for row in catalog_rows}
-    issue(errors, set(catalog_by_id) != set(EXPECTED_CATALOG_WEAPONS), "WEAPON_ROW_CANDIDATE_COVERAGE")
+    catalog_rows = execution.get("weapon_capability_mapping", {}).get("catalog_rows_without_exact_mechanics", [])
+    catalog_by_id = {row.get("wp_id"): row for row in catalog_rows if isinstance(row, dict)}
+    issue(errors, set(catalog_by_id) != set(EXPECTED_CATALOG_WEAPONS), "WEAPON_ROW_GAP_COVERAGE")
     row_source = next((entry for entry in source_entries if entry.get("id") == "src.game-base-weapons-rows.v1"), None)
     csv_rows = {}
     if row_source and Path(row_source["path"]).is_file():
         with Path(row_source["path"]).open(encoding="utf-8-sig", newline="") as stream:
             csv_rows = {row.get("wp_id"): row for row in csv.DictReader(stream)}
-    for wp_id, expected in EXPECTED_CATALOG_WEAPONS.items():
+    for wp_id, expected_category in EXPECTED_CATALOG_WEAPONS.items():
         candidate_row = catalog_by_id.get(wp_id)
         data_row = csv_rows.get(wp_id)
         if not candidate_row or not data_row or data_row.get("kind") != "weapon":
             errors.append("WEAPON_ROW_UNRESOLVED")
             continue
-        if (candidate_row.get("category_id") != expected[0]
-                or candidate_row.get("weapon_danger") != expected[1]
-                or data_row.get("category_id") != expected[0]
+        if (candidate_row.get("category_id") != expected_category
+                or data_row.get("category_id") != expected_category
                 or candidate_row.get("source_ref") != "src.game-base-weapons-rows.v1"
-                or candidate_row.get("approval_status") not in (None, "candidate")):
-            errors.append("WEAPON_DANGER_MISMATCH")
+                or candidate_row.get("disposition") != "typed_gap_until_exact_mechanics_or_source_pinned_physical_facts_and_D47_mapping"
+                or "weapon_danger" in candidate_row):
+            errors.append("WEAPON_ROW_GAP_INVALID")
     action_map = next((item for item in mappings if item.get("source_ref") == "src.action-produced-weapon-mechanics.v1"), None)
     if not action_map:
         errors.append("D47_MAPPING_MISSING")
@@ -514,8 +528,8 @@ def validate_bundle(bundle, source_map, gaps):
             band = bands[index]
             actual = (band.get("band_id"), band.get("min_value"), band.get("min_inclusive"),
                       band.get("max_value"), band.get("max_inclusive"))
-            issue(errors, actual != expected
-                  or not finite_number(band.get("min_value")) or not finite_number(band.get("max_value")),
+            numeric_bounds = finite_number(band.get("min_value")) and finite_number(band.get("max_value"))
+            issue(errors, not numeric_bounds or actual != expected,
                   "BODY_QUALITATIVE_PARTITION_INVALID")
             phrase = band.get("npc_description")
             issue(errors, phrase != phrases[index], "BODY_QUALITATIVE_DESCRIPTION_INVALID")
@@ -637,12 +651,20 @@ def run_self_test(bundle, source_map, gaps):
            lambda b: b["execution"]["health_transition"].update(at_zero="death"))
     expect("broken-quality-boundary", "CHECK_BANDS_INVALID",
            lambda b: b["execution"]["check"]["normative_rule"]["quality_bands"].pop())
-    expect("missing-catalog-row-map", "WEAPON_ROW_CANDIDATE_COVERAGE",
-           lambda b: b["execution"]["weapon_capability_mapping"]["catalog_row_candidates"].pop())
-    expect("wrong-catalog-danger", "WEAPON_DANGER_MISMATCH",
-           lambda b: b["execution"]["weapon_capability_mapping"]["catalog_row_candidates"][0].update(weapon_danger=5))
+    expect("wrong-lower-sentinel", "CHECK_BANDS_INVALID",
+           lambda b: b["execution"]["check"]["normative_rule"]["quality_bands"][0].update(min_margin="infinity"))
+    expect("boolean-quality", "CHECK_BANDS_INVALID",
+           lambda b: b["execution"]["check"]["normative_rule"]["quality_bands"][3].update(quality=True))
+    expect("string-qualitative-bound", "BODY_QUALITATIVE_PARTITION_INVALID",
+           lambda b: b["npc_decision"]["body_state_qualitative_context"]["metrics"]["health"]["bands"][2].update(max_value="100"))
+    expect("float-qualitative-bound", "BODY_QUALITATIVE_PARTITION_INVALID",
+           lambda b: b["npc_decision"]["body_state_qualitative_context"]["metrics"]["health"]["bands"][2].update(max_value=1000.5))
+    expect("missing-catalog-row-gap", "WEAPON_ROW_GAP_COVERAGE",
+           lambda b: b["execution"]["weapon_capability_mapping"]["catalog_rows_without_exact_mechanics"].pop())
+    expect("catalog-row-invents-danger", "WEAPON_ROW_GAP_INVALID",
+           lambda b: b["execution"]["weapon_capability_mapping"]["catalog_rows_without_exact_mechanics"][0].update(weapon_danger=3))
     expect("unknown-catalog-row", "WEAPON_ROW_UNRESOLVED",
-           lambda b: b["execution"]["weapon_capability_mapping"]["catalog_row_candidates"][0].update(wp_id="wp_missing"))
+           lambda b: b["execution"]["weapon_capability_mapping"]["catalog_rows_without_exact_mechanics"][0].update(wp_id="wp_missing"))
     metrics_path = lambda b: b["execution"]["health_transition"]["body_initialization"]["profile_mapping"]["output_profile"]["metrics"]
     expect("body-health-below-range", "BODY_METRIC_BOUNDS_INVALID",
            lambda b: metrics_path(b)["health"].update(candidate_value=-1))

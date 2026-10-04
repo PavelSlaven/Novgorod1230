@@ -132,8 +132,8 @@
       "id": "src.duration.calibration.v1",
       "path": "minimal-combat-bundle.candidate.json",
       "lines": [
-        619,
-        667
+        612,
+        612
       ],
       "sha256": null,
       "contract_status": "self-authored D71 proposal locator; not an independent factual source",
@@ -256,7 +256,7 @@
         1,
         38
       ],
-      "sha256": "9acfcb7428f86174f17ad540332def675b8c0728143434e41a5269e971f3599a",
+      "sha256": "41711124c96444a6aa3c2da9a6a5e95a9b04eb4b89c9deee4a3be5398367fdf6",
       "contract_status": "pre-runtime probe fixture; not calibration or D41 result",
       "use": "source for ordinary/authored, unknown weapon, new signal, surrender and exit cases"
     },

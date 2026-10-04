@@ -25,6 +25,21 @@
       "assertions": [
         "generic refs are required",
         "fist danger maps only through the sourced norm"
+      ],
+      "declared_assertion_ids": [
+        "generic_applicability_closed",
+        "fist_danger_rule_pinned",
+        "paraphrase_or_player_action_execution"
+      ],
+      "data_assertion_ids": [
+        "generic_applicability_closed",
+        "fist_danger_rule_pinned"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "paraphrase_or_player_action_execution",
+          "reason": "Requires parser/runtime; not executed by data-only bench."
+        }
       ]
     },
     {
@@ -33,6 +48,19 @@
       "assertions": [
         "same common owner path",
         "no scenario-name allowlist"
+      ],
+      "declared_assertion_ids": [
+        "scenario_fallback_disabled",
+        "authored_scene_runtime_parity"
+      ],
+      "data_assertion_ids": [
+        "scenario_fallback_disabled"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "authored_scene_runtime_parity",
+          "reason": "Requires runtime scenario execution; not run."
+        }
       ]
     },
     {
@@ -41,6 +69,19 @@
       "assertions": [
         "same action class",
         "one nearest player action"
+      ],
+      "declared_assertion_ids": [
+        "candidate_never_emits_unapproved",
+        "paraphrase_mapping"
+      ],
+      "data_assertion_ids": [
+        "candidate_never_emits_unapproved"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "paraphrase_mapping",
+          "reason": "Requires player-action parser/runtime; not run."
+        }
       ]
     },
     {
@@ -49,6 +90,19 @@
       "assertions": [
         "exact owner profile has priority",
         "current item ref and condition are pinned"
+      ],
+      "declared_assertion_ids": [
+        "exact_owner_capability_required",
+        "current_item_snapshot_resolution"
+      ],
+      "data_assertion_ids": [
+        "exact_owner_capability_required"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "current_item_snapshot_resolution",
+          "reason": "Requires live owner facts; not run."
+        }
       ]
     },
     {
@@ -57,6 +111,19 @@
       "assertions": [
         "capability scope is checked",
         "damaged state does not silently resolve as usable"
+      ],
+      "declared_assertion_ids": [
+        "ordinary_armament_condition_scoped",
+        "damaged_instance_resolution"
+      ],
+      "data_assertion_ids": [
+        "ordinary_armament_condition_scoped"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "damaged_instance_resolution",
+          "reason": "Requires owner runtime state; not run."
+        }
       ]
     },
     {
@@ -65,6 +132,19 @@
       "assertions": [
         "one item and bounded physical facts",
         "only D47 enum reaches code-owned mapping"
+      ],
+      "declared_assertion_ids": [
+        "d47_enum_map_exact",
+        "physical_facts_from_action"
+      ],
+      "data_assertion_ids": [
+        "d47_enum_map_exact"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "physical_facts_from_action",
+          "reason": "Requires action-produced item runtime; not run."
+        }
       ]
     },
     {
@@ -73,6 +153,19 @@
       "assertions": [
         "no item materialization",
         "typed gap blocks this step"
+      ],
+      "declared_assertion_ids": [
+        "unknown_items_fail_closed",
+        "item_nonmaterialization"
+      ],
+      "data_assertion_ids": [
+        "unknown_items_fail_closed"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "item_nonmaterialization",
+          "reason": "Requires action parser/runtime; not run."
+        }
       ]
     },
     {
@@ -81,6 +174,19 @@
       "assertions": [
         "unknown factors do not become zero",
         "no armor-zone mechanics claimed"
+      ],
+      "declared_assertion_ids": [
+        "target_facts_gap_present",
+        "armor_and_vulnerability_resolution"
+      ],
+      "data_assertion_ids": [
+        "target_facts_gap_present"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "armor_and_vulnerability_resolution",
+          "reason": "Requires combat profile/runtime facts; not run."
+        }
       ]
     },
     {
@@ -89,6 +195,19 @@
       "assertions": [
         "only NPC-perceived causal facts",
         "decision boundary aggregates the signal"
+      ],
+      "declared_assertion_ids": [
+        "perception_boundary_is_declared",
+        "npc_perception_of_threat"
+      ],
+      "data_assertion_ids": [
+        "perception_boundary_is_declared"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "npc_perception_of_threat",
+          "reason": "Requires NPC perception/runtime; not run."
+        }
       ]
     },
     {
@@ -97,6 +216,19 @@
       "assertions": [
         "no universal HP threshold",
         "intent is not an invented physical reaction"
+      ],
+      "declared_assertion_ids": [
+        "surrender_has_no_universal_threshold",
+        "npc_surrender_choice"
+      ],
+      "data_assertion_ids": [
+        "surrender_has_no_universal_threshold"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "npc_surrender_choice",
+          "reason": "Requires individual context/model/runtime; not run."
+        }
       ]
     },
     {
@@ -105,6 +237,19 @@
       "assertions": [
         "route owner proves feasibility",
         "candidate does not claim unapproved movement success"
+      ],
+      "declared_assertion_ids": [
+        "retreat_movement_gap_present",
+        "route_feasibility_and_success"
+      ],
+      "data_assertion_ids": [
+        "retreat_movement_gap_present"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "route_feasibility_and_success",
+          "reason": "Requires movement owner/runtime; not run."
+        }
       ]
     },
     {
@@ -113,6 +258,19 @@
       "assertions": [
         "no invented destination",
         "retreat remains typed gap"
+      ],
+      "declared_assertion_ids": [
+        "retreat_movement_gap_present",
+        "blocked_route_outcome"
+      ],
+      "data_assertion_ids": [
+        "retreat_movement_gap_present"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "blocked_route_outcome",
+          "reason": "Requires movement owner/runtime; not run."
+        }
       ]
     },
     {
@@ -121,6 +279,19 @@
       "assertions": [
         "transition is incapacitation",
         "no automatic death event"
+      ],
+      "declared_assertion_ids": [
+        "health_transition_clamps_at_zero",
+        "runtime_incapacitation_event"
+      ],
+      "data_assertion_ids": [
+        "health_transition_clamps_at_zero"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "runtime_incapacitation_event",
+          "reason": "Requires health owner/runtime; not run."
+        }
       ]
     },
     {
@@ -129,6 +300,19 @@
       "assertions": [
         "rational duration is preserved",
         "no rounding or round clock"
+      ],
+      "declared_assertion_ids": [
+        "duration_is_exact_rational",
+        "clock_owner_subminute_handoff"
+      ],
+      "data_assertion_ids": [
+        "duration_is_exact_rational"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "clock_owner_subminute_handoff",
+          "reason": "Requires clock integration; not run."
+        }
       ]
     },
     {
@@ -137,6 +321,19 @@
       "assertions": [
         "candidate makes no persistence claim",
         "replay cannot be scored by this data-only dry run"
+      ],
+      "declared_assertion_ids": [
+        "persistence_and_replay_are_gaps",
+        "duplicate_delivery_behavior"
+      ],
+      "data_assertion_ids": [
+        "persistence_and_replay_are_gaps"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "duplicate_delivery_behavior",
+          "reason": "Requires persistence/runtime; not run."
+        }
       ]
     }
   ],
@@ -4684,5 +4881,18 @@
       }
     },
     "scope": "synthetic, deterministic snapshots generated by the pinned actor_base_attributes_v1 materializer for validator and arithmetic checks only; not live NPC records or approval evidence"
+  },
+  "owner_api_compatibility_probe": {
+    "required": false,
+    "script": "bench/combat-data/body-interface.mjs",
+    "default_runtime_root": "/srv/novgorod-work/worktrees/combat-min",
+    "runtime_root_argument": "--runtime-root",
+    "expected_head": "8ef2b6494a88589ef88b7bacf13a9c427408e91d",
+    "pinned_source_paths": [
+      "packages/materialization/src/actor-base-attributes.js",
+      "packages/materialization/src/core.js",
+      "packages/body-state/src/initialization.js"
+    ],
+    "policy": "optional compatibility probe only; require exact HEAD and clean pinned source paths before dynamic import; never part of script-first runner result or approval gate"
   }
 }

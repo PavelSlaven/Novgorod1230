@@ -137,10 +137,38 @@
       "actual_error": "CANONICAL_START_SOURCE_PATH_MISMATCH",
       "exit_status": 1,
       "matched": true
+    },
+    {
+      "id": "P2-20-expansion-v1-generation-ref",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-21-expansion-v1-scene-ref",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-22-expansion-v1-topology",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-23-expansion-v1-gap-pointer",
+      "expected_error": "EXPANSION_V1_GAP_EVIDENCE_MISMATCH",
+      "actual_error": "EXPANSION_V1_GAP_EVIDENCE_MISMATCH",
+      "exit_status": 1,
+      "matched": true
     }
   ],
-  "negative_case_count": 19,
-  "rejected": 19,
+  "negative_case_count": 23,
+  "rejected": 23,
   "accepted_invalid": 0,
   "duplicate_source_unit": {
     "exit_status": 0,

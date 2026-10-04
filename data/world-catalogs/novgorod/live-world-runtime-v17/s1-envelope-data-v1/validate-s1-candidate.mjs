@@ -31,7 +31,20 @@ const pinPaths = {
   spatialApprovalIndex:'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.json',
   sceneClosure:'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1/data/scene-templates.json',
   naturalCandidate:'data/world-catalogs/novgorod/m2c-natural/candidate.json',
-  naturalPresentation:'data/world-catalogs/novgorod/m2c-natural-presentation/nature-successor-candidate-v2.json'
+  naturalPresentation:'data/world-catalogs/novgorod/m2c-natural-presentation/nature-successor-candidate-v2.json',
+  expansionApproval:'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json',
+  expansionManifest:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json',
+  expansionG4Profiles:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g4_expansion_profiles.json',
+  expansionTemplateLimits:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_profile_template_limits.json',
+  expansionGenerationV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json',
+  expansionSceneProfilesV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_materialization_profiles.json',
+  expansionSceneCandidatesV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_materialization_candidates.json',
+  expansionApplicabilityV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_applicability_rules.json',
+  expansionSceneTemplatesV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_templates.json',
+  expansionG6V1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json',
+  expansionPositionsV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json',
+  expansionEndpointsV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json',
+  expansionMovementV1:'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json'
 };
 const fileByKey = Object.fromEntries(Object.entries(pinPaths).map(([k,v]) => [k, path.join(repo,v)]));
 const sha256 = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
@@ -101,7 +114,7 @@ function validate(inputDir) {
   const sourceMap=readJson(path.join(inputDir,'s1-source-map.json'));
   const gapDoc=readJson(path.join(inputDir,'s1-typed-gaps.json'));
   exactKeys(candidate,['schema','task_id','issue','status','approved','import_authorized','activation_authorized','world_revision_id','profile','applicability_selector_count','selector_summary','exact_existing_refs','limits'],'CANDIDATE_UNKNOWN_KEY','candidate');
-  exactKeys(sourceMap,['schema','task_id','issue','source_checkout','source_pins','scope','selectors','canonical_scene_evidence','generated_selector_scene_topology_audit','status_limits'],'SOURCE_MAP_UNKNOWN_KEY','source map');
+  exactKeys(sourceMap,['schema','task_id','issue','source_checkout','source_pins','scope','selectors','canonical_scene_evidence','generated_selector_scene_topology_audit','approved_expansion_v1_chain','status_limits'],'SOURCE_MAP_UNKNOWN_KEY','source map');
   exactKeys(gapDoc,['schema','task_id','issue','profile','gap_count','field_gap_categories','target_selector_count','gaps','scope_assessment'],'GAP_DOCUMENT_UNKNOWN_KEY','gap document');
   exactKeys(candidate.exact_existing_refs,['canonical_selector','canonical_start_position'],'CANDIDATE_UNKNOWN_KEY','candidate exact refs');
   exactKeys(candidate.exact_existing_refs.canonical_selector,['g4_ref','canonical_g5_ref','scene_template_ref','scene_template_dataset_record'],'CANDIDATE_UNKNOWN_KEY','candidate canonical selector');
@@ -110,7 +123,7 @@ function validate(inputDir) {
   if(sourceMap.schema!=='fleet.b4_s1_data.source_applicability_map.v1'||sourceMap.task_id!=='b4-s1-data'||sourceMap.issue!==163) reject('SOURCE_MAP_SHAPE_INVALID','source map identity mismatch');
   if(sourceMap.source_checkout.path!==repo||sourceMap.source_checkout.head!==pinnedHead||sourceMap.source_checkout.task_expected_head!=='7a33888c3208e049100436e2c4652556f92439bd') reject('SOURCE_COMMIT_MISMATCH','pinned source checkout metadata changed');
   const expectedPinKeys=Object.keys(pinPaths).sort();
-  if(!same(Object.keys(sourceMap.source_pins).sort(),expectedPinKeys)) reject('SOURCE_PIN_SET_MISMATCH','source pin key set differs from the required 23 pins');
+  if(!same(Object.keys(sourceMap.source_pins).sort(),expectedPinKeys)) reject('SOURCE_PIN_SET_MISMATCH','source pin key set differs from the required pinned source set');
   for(const [key,relative] of Object.entries(pinPaths)){
     const pin=sourceMap.source_pins[key];
     if(pin.path!==relative||pin.checkout_head!==pinnedHead||sha256(fileByKey[key])!==pin.sha256) reject('SOURCE_PIN_MISMATCH',`pin bytes/path/head mismatch for ${key}`);
@@ -216,6 +229,72 @@ function validate(inputDir) {
     }
     if(!same(r.topology_v2.visibility,[]))reject('GENERATED_VISIBILITY_NOT_AUTHORED',`visibility rows are not pinned for generated row ${i}`);
   }
+  const chain=sourceMap.approved_expansion_v1_chain;
+  exactKeys(chain,['approval','manifest','bundle_id','world_revision_id','status','selector_count','unique_generation_template_count','unique_scene_template_count','rows'],'EXPANSION_V1_CHAIN_SHAPE_INVALID','approved expansion-v1 chain');
+  locator(docs,sourceMap.source_pins,chain.approval,'approved expansion data approval');
+  locator(docs,sourceMap.source_pins,chain.manifest,'approved expansion manifest');
+  const approval=docs.expansionApproval,manifest=docs.expansionManifest;
+  if(chain.approval.source_key!=='expansionApproval'||chain.manifest.source_key!=='expansionManifest'||approval.decision!=='APPROVE_DATA_ONLY'||manifest.status!=='approved'||chain.status!=='approved_authoring_chain_not_s1_admission'||chain.bundle_id!==manifest.bundle_id||chain.world_revision_id!==manifest.world_revision_id||chain.world_revision_id!==target.target.world_revision_id||approval.expansion_manifest_sha256!==sha256(fileByKey.expansionManifest))reject('EXPANSION_V1_APPROVAL_MISMATCH','approved expansion bundle/approval does not match pinned target revision or bytes');
+  const manifestDatasets=new Map(manifest.datasets.map(x=>[x.file,x]));
+  for(const key of Object.keys(pinPaths).filter(k=>k.startsWith('expansion')&&!['expansionApproval','expansionManifest'].includes(k))){
+    const rel=pinPaths[key].slice(pinPaths.expansionManifest.length - 'import-manifest.json'.length).replace(/^.*?datasets\//,'datasets/');
+    const entry=manifestDatasets.get(rel);
+    if(!entry||entry.status!=='approved'||entry.sha256!==sha256(fileByKey[key]))reject('EXPANSION_V1_MANIFEST_MISMATCH',`approved manifest does not pin ${key}`);
+  }
+  if(!Array.isArray(chain.rows)||chain.rows.length!==32||chain.selector_count!==32||chain.unique_generation_template_count!==25||chain.unique_scene_template_count!==9)reject('EXPANSION_V1_CHAIN_SHAPE_INVALID','approved expansion-v1 chain summary/counts changed');
+  const fieldEvidenceKey={property_refs:'generation_template',function_refs:'generation_template',environment_refs:'generation_template',semantic_context_refs:'generation_template',scene_template_ref:'scene_template',position_ref:'positions',g6_slot_ref:'g6_slots',movement_topology_refs:'movement_edges',visibility_topology_refs:'visibility_finding'};
+  const fieldReason={property_refs:'unapproved',function_refs:'unapproved',environment_refs:'unapproved',semantic_context_refs:'unapproved',scene_template_ref:'unapproved',position_ref:'ambiguous',g6_slot_ref:'missing_topology',movement_topology_refs:'unapproved',visibility_topology_refs:'missing_topology'};
+  const fieldScope={
+    property_refs:['G4 profile and generation family are exact; no approved S1 property payload is selected or bound.','exact_g4_generation_chain_no_s1_property_payload','Approved target S1 property ref with exact id/version and selector binding.'],
+    function_refs:['G4 profile and generation family are exact; no approved S1 function payload is selected or bound.','exact_g4_generation_chain_no_s1_function_payload','Approved target S1 function ref with exact id/version and selector binding.'],
+    environment_refs:['G4 profile and generation family are exact; no approved S1 environment payload is selected or bound.','exact_g4_generation_chain_no_s1_environment_payload','Approved target S1 environment ref with exact id/version and selector binding.'],
+    semantic_context_refs:['G4 profile and generation family are exact; no approved S1 semantic-context payload is selected or bound.','exact_g4_generation_chain_no_s1_semantic_payload','Approved target S1 semantic-context ref with exact id/version and selector binding.'],
+    scene_template_ref:['Exact approved @1 scene template exists through the G4/G5/profile/candidate/applicability chain; no target S1 binding admits it.','approved_scene_exact_no_s1_binding','Approved S1 binding from this target selector to the exact scene template.'],
+    position_ref:['Exact authored @1 positions exist, but this selector has multiple position choices and no S1 binding to a single slot/ordinal.','multiple_authored_positions_no_selector_binding','Approved exact S1 position slot and ordinal binding for this selector.'],
+    g6_slot_ref:['Exact authored @1 G6 is open or water with no enclosing structure; no structural slot or complete physical payload supports S1.','non_enclosing_g6_no_structural_slot_or_physical_closure','Approved structural G6 slot and complete physical payload bound to S1.'],
+    movement_topology_refs:['Exact authored @1 movement edges include reciprocal pairs, but no S1 binding or complete structural closure admits them.','reciprocal_authored_movement_no_s1_binding_or_closure','Approved S1 movement binding with complete structural closure and runtime readback.'],
+    visibility_topology_refs:['The approved expansion manifest contains no visibility-link dataset; reciprocal visibility topology is absent.','visibility_dataset_absent_from_approved_bundle','Approved reciprocal visibility-link records bound to the exact scene/positions.']
+  };
+  const wrapperRecords=(actual,expected,key,code,label)=>{
+    if(!Array.isArray(actual)||actual.length!==expected.length)reject(code,`${label} count differs from exact @1 source`);
+    for(let j=0;j<expected.length;j++){locator(docs,sourceMap.source_pins,actual[j],`${label}[${j}]`);if(actual[j].source_key!==key||!same(actual[j].record,expected[j]))reject(code,`${label}[${j}] differs from exact @1 source`);}
+  };
+  const generatedExpected=expectedSelectors.filter(x=>x.selector_kind==='generated_template');
+  for(let i=0;i<generatedExpected.length;i++){
+    const selector=generatedExpected[i],r=chain.rows[i];
+    exactKeys(r,['row_index','target_selector','chain_status','g4_profile','profile_template_limit','generation_template','scene_materialization_profile','scene_candidate','applicability_rule','scene_template','g6_slots','positions','endpoint_slots','movement_edges','visibility_finding'],'EXPANSION_V1_CHAIN_SHAPE_INVALID',`expansion-v1 row ${i}`);
+    if(r.row_index!==selector.row_index||r.chain_status!=='approved_authoring_chain_exact_refs_only'||!same(r.target_selector,{row_index:selector.row_index,g4_ref:selector.g4_ref,generation_template_ref:selector.generation_template_ref}))reject('EXPANSION_V1_SELECTOR_MISMATCH',`expansion-v1 row ${i} selector does not match target`);
+    const get=(key,w,label)=>{locator(docs,sourceMap.source_pins,w,label);return w.record;};
+    const g4Profiles=docs.expansionG4Profiles.filter(x=>x.g4_id===selector.g4_ref.id&&x.g4_version===selector.g4_ref.version);
+    if(g4Profiles.length!==1)reject('EXPANSION_V1_CHAIN_MISMATCH',`G4 profile missing/ambiguous at row ${i}`);
+    const profile=get('expansionG4Profiles',r.g4_profile,`G4 profile ${i}`);
+    if(!same(profile,g4Profiles[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`G4 profile mismatch at row ${i}`);
+    const limits=docs.expansionTemplateLimits.filter(x=>x.profile_id===profile.id&&x.profile_version===profile.version&&x.template_id===selector.generation_template_ref.id&&x.template_version===selector.generation_template_ref.version);
+    if(limits.length!==1||!same(get('expansionTemplateLimits',r.profile_template_limit,`profile template limit ${i}`),limits[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`G4 template applicability mismatch at row ${i}`);
+    const generations=docs.expansionGenerationV1.filter(x=>x.id===selector.generation_template_ref.id&&x.version===selector.generation_template_ref.version);
+    if(generations.length!==1||!same(get('expansionGenerationV1',r.generation_template,`generation template ${i}`),generations[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`exact generation template mismatch at row ${i}`);
+    const generation=generations[0];
+    const profiles=docs.expansionSceneProfilesV1.filter(x=>x.id===generation.scene_materialization_profile_id&&x.version===generation.scene_materialization_profile_version&&x.source_kind==='g5_generation_template'&&x.source_entity_id===generation.id&&x.source_entity_version===generation.version);
+    if(profiles.length!==1||!same(get('expansionSceneProfilesV1',r.scene_materialization_profile,`scene materialization profile ${i}`),profiles[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`exact scene profile mismatch at row ${i}`);
+    const smp=profiles[0];const candidates=docs.expansionSceneCandidatesV1.filter(x=>x.profile_id===smp.id&&x.profile_version===smp.version);
+    if(candidates.length!==1||!same(get('expansionSceneCandidatesV1',r.scene_candidate,`scene candidate ${i}`),candidates[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`exact scene candidate mismatch at row ${i}`);
+    const candidateRow=candidates[0];const rules=docs.expansionApplicabilityV1.filter(x=>x.id===candidateRow.applicability_rule_id&&x.version===candidateRow.applicability_rule_version&&x.rule_kind==='exact_source_ref'&&x.status==='approved');
+    if(rules.length!==1||!same(get('expansionApplicabilityV1',r.applicability_rule,`applicability rule ${i}`),rules[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`exact-source applicability mismatch at row ${i}`);
+    const scenes=docs.expansionSceneTemplatesV1.filter(x=>x.id===candidateRow.scene_template_id&&x.version===candidateRow.scene_template_version&&x.status==='approved');
+    if(scenes.length!==1||!same(get('expansionSceneTemplatesV1',r.scene_template,`scene template ${i}`),scenes[0]))reject('EXPANSION_V1_CHAIN_MISMATCH',`exact scene template mismatch at row ${i}`);
+    const scene=scenes[0];
+    const expectedByKey={g6_slots:docs.expansionG6V1.filter(x=>x.scene_template_id===scene.id&&x.scene_template_version===scene.version),positions:docs.expansionPositionsV1.filter(x=>x.scene_template_id===scene.id&&x.scene_template_version===scene.version),endpoint_slots:docs.expansionEndpointsV1.filter(x=>x.scene_template_id===scene.id&&x.scene_template_version===scene.version),movement_edges:docs.expansionMovementV1.filter(x=>x.scene_template_id===scene.id&&x.scene_template_version===scene.version)};
+    wrapperRecords(r.g6_slots,expectedByKey.g6_slots,'expansionG6V1','EXPANSION_V1_TOPOLOGY_MISMATCH',`G6 slots ${i}`);
+    wrapperRecords(r.positions,expectedByKey.positions,'expansionPositionsV1','EXPANSION_V1_TOPOLOGY_MISMATCH',`positions ${i}`);
+    wrapperRecords(r.endpoint_slots,expectedByKey.endpoint_slots,'expansionEndpointsV1','EXPANSION_V1_TOPOLOGY_MISMATCH',`endpoint slots ${i}`);
+    wrapperRecords(r.movement_edges,expectedByKey.movement_edges,'expansionMovementV1','EXPANSION_V1_TOPOLOGY_MISMATCH',`movement edges ${i}`);
+    if(r.g6_slots.length!==1||r.positions.length<1||r.endpoint_slots.length<1||r.movement_edges.length<1)reject('EXPANSION_V1_TOPOLOGY_MISMATCH',`incomplete authored topology refs at row ${i}`);
+    const pairs=new Set(r.movement_edges.map(x=>`${x.record.from_position_slot_key}\u0000${x.record.to_position_slot_key}`));
+    if(r.movement_edges.some(x=>!pairs.has(`${x.record.to_position_slot_key}\u0000${x.record.from_position_slot_key}`)))reject('EXPANSION_V1_TOPOLOGY_MISMATCH',`movement topology has no reciprocal edge at row ${i}`);
+    const visibilityDatasets=manifest.datasets.filter(x=>/visibility/i.test(`${x.table} ${x.file}`));
+    if(!same(r.visibility_finding,{manifest_has_visibility_dataset:false,finding:'no_visibility_dataset_in_approved_bundle_manifest'})||visibilityDatasets.length!==0)reject('EXPANSION_V1_VISIBILITY_MISMATCH',`visibility absence finding differs at row ${i}`);
+  }
+  if(new Set(chain.rows.map(x=>x.generation_template.record.id)).size!==25||new Set(chain.rows.map(x=>x.scene_template.record.id)).size!==9)reject('EXPANSION_V1_CHAIN_SHAPE_INVALID','unique generation or scene-template count changed');
   const actualGapFields=gapDoc.field_gap_categories;
   if(!same(actualGapFields,fields)||gapDoc.profile!==null||gapDoc.target_selector_count!==33||gapDoc.gap_count!==297||gapDoc.gaps.length!==297)reject('GAP_SHAPE_INVALID','gap matrix must be exact 33 × 9 with profile null');
   const expectedGapKeys=['gap_id','target_selector','field_path','field','reason_code','status','inspected_source_keys','required_evidence','note','observed_candidate_only_refs','partial_evidence','field_scope','observed_source_status','unmet_requirement'];
@@ -234,13 +313,25 @@ function validate(inputDir) {
       const observed={generation_template_ref:diag.observed_source_ref,scene_materialization_profile_ref:diag.scene_materialization_profile_ref,scene_template_ref:diag.observed_scene_template_ref};
       if(!same(g.observed_candidate_only_refs,observed))reject('GAP_DIAGNOSTIC_REF_MISMATCH',`candidate-only diagnostic refs changed for ${key}`);
     }else if(g.observed_candidate_only_refs!==undefined)reject('GAP_DIAGNOSTIC_REF_MISMATCH',`canonical selector cannot carry generated candidate refs for ${key}`);
-    const expectedReason=(g.field==='property_refs'||g.field==='function_refs'||g.field==='environment_refs'||g.field==='semantic_context_refs')?'unapproved':g.field==='visibility_topology_refs'?'missing_topology':g.field==='movement_topology_refs'?(index===32?'missing_topology':'version_or_scope_mismatch'):g.field==='g6_slot_ref'?(index===32?'unapproved':'version_or_scope_mismatch'):((g.field==='scene_template_ref'||g.field==='position_ref')?(index===32?'unapproved':'version_or_scope_mismatch'):null);
+    const expectedReason=index<32?fieldReason[g.field]:(g.field==='property_refs'||g.field==='function_refs'||g.field==='environment_refs'||g.field==='semantic_context_refs')?'unapproved':g.field==='visibility_topology_refs'?'missing_topology':g.field==='movement_topology_refs'?'missing_topology':(g.field==='g6_slot_ref'?'unapproved':((g.field==='scene_template_ref'||g.field==='position_ref')?'unapproved':null));
     if(g.reason_code!==expectedReason)reject('GAP_REASON_MISMATCH',`reason ${g.reason_code} is inconsistent with ${key}`);
     const expectedNote=(g.field==='property_refs'||g.field==='function_refs'||g.field==='environment_refs'||g.field==='semantic_context_refs')?'Approved target selectors expose classification/natural profile IDs, but candidate content is pending approval; ID or classification is not admitted property/function/environment/semantic payload.':null;
     if((expectedNote===null&&g.note!==undefined)||(expectedNote!==null&&g.note!==expectedNote))reject('GAP_EVIDENCE_MISMATCH',`gap note is not field-authorized for ${key}`);
     if(!Array.isArray(g.inspected_source_keys)||!g.inspected_source_keys.length||g.inspected_source_keys.some(k=>!Object.hasOwn(sourceMap.source_pins,k))||new Set(g.inspected_source_keys).size!==g.inspected_source_keys.length)reject('GAP_SOURCE_KEYS_INVALID',`gap inspected source set invalid for ${key}`);
     if(typeof g.required_evidence!=='string'||!g.required_evidence.trim())reject('GAP_EVIDENCE_MISSING',`gap required evidence missing for ${key}`);
-    if(index===32&&(g.field==='scene_template_ref'||g.field==='g6_slot_ref')){
+    if(index<32){
+      const expectedScopeRow=fieldScope[g.field];
+      const expectedEvidence={source_map_pointer:`/approved_expansion_v1_chain/rows/${index}`,field_evidence_key:fieldEvidenceKey[g.field],field_scope:expectedScopeRow[0],observed_source_status:expectedScopeRow[1],unmet_requirement:expectedScopeRow[2]};
+      if(!same(g.partial_evidence,expectedEvidence)||g.field_scope!==expectedScopeRow[0]||g.observed_source_status!==expectedScopeRow[1]||g.unmet_requirement!==expectedScopeRow[2]||g.required_evidence!==expectedScopeRow[2])reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`generated field gap lacks exact @1 partial evidence/scope for ${key}`);
+      const chainRow=chain.rows[index];
+      if(!chainRow||resolvePointer(sourceMap,g.partial_evidence.source_map_pointer)!==chainRow||!g.inspected_source_keys.includes('expansionManifest')||!g.inspected_source_keys.includes('expansionGenerationV1'))reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`generated field gap pointer or inspected sources mismatch for ${key}`);
+      const fieldKey=g.partial_evidence.field_evidence_key;
+      if(fieldKey==='scene_template'&&!chainRow.scene_template?.record)reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`scene evidence missing for ${key}`);
+      if(fieldKey==='positions'&&chainRow.positions.length<2)reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`position ambiguity is not supported by multiple exact rows for ${key}`);
+      if(fieldKey==='g6_slots'&&(chainRow.g6_slots.length!==1||!['spatial.g6.open','spatial.g6.water'].includes(chainRow.g6_slots[0].record.physical_class_id)||chainRow.g6_slots[0].record.enclosing_structure_slot_key!==null))reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`non-enclosing G6 evidence does not support typed gap for ${key}`);
+      if(fieldKey==='movement_edges'&&!chainRow.movement_edges.length)reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`movement evidence missing for ${key}`);
+      if(fieldKey==='visibility_finding'&&chainRow.visibility_finding.manifest_has_visibility_dataset!==false)reject('EXPANSION_V1_GAP_EVIDENCE_MISMATCH',`visibility gap evidence mismatch for ${key}`);
+    }else if(index===32&&(g.field==='scene_template_ref'||g.field==='g6_slot_ref')){
       if(typeof g.field_scope!=='string'||typeof g.observed_source_status!=='string'||typeof g.unmet_requirement!=='string'||!g.partial_evidence)reject('CANONICAL_GAP_SCOPE_MISSING',`canonical partial evidence/scope missing for ${key}`);
       if(g.field==='scene_template_ref'&&(!g.field_scope.toLowerCase().includes('exact approved canonical scene-template ref exists')||!g.observed_source_status.includes('scene_template_approved')))reject('CANONICAL_GAP_SCOPE_MISMATCH','canonical scene gap must distinguish existing approved scene from missing S1 binding');
       if(g.field==='g6_slot_ref'&&(!g.field_scope.toLowerCase().includes('authored canonical main g6 exists and is open')||!g.observed_source_status.includes('authored_main_open_slot')))reject('CANONICAL_GAP_SCOPE_MISMATCH','canonical G6 gap must distinguish existing main slot from missing S1 structural slot');
@@ -252,11 +343,11 @@ function validate(inputDir) {
   }
   if(seen.size!==297)reject('GAP_SHAPE_INVALID','gap field coverage is incomplete');
   const scope=gapDoc.scope_assessment;
-  exactKeys(scope,['candidate_only_generation_topology_refs_exist','topology_candidate_versions_do_not_match_target_generation_selector_version','open_capacity_v2_data_approval','target_spatial_package_intake_status','target_spatial_materialization_authorized','approved_property_function_environment_semantic_payload_found','interior_or_enclosing_g6_found','reciprocal_visibility_link_templates_found'],'GAP_SCOPE_MISMATCH','gap scope assessment');
-  const expectedScope={candidate_only_generation_topology_refs_exist:true,topology_candidate_versions_do_not_match_target_generation_selector_version:true,open_capacity_v2_data_approval:'data-only; candidate import_authorized=false and activation_authorized=false',target_spatial_package_intake_status:docs.spatialApprovalIndex.intake_status,target_spatial_materialization_authorized:false,approved_property_function_environment_semantic_payload_found:false,interior_or_enclosing_g6_found:false,reciprocal_visibility_link_templates_found:false};
+  exactKeys(scope,['approved_expansion_v1_chain_covers_generated_selectors','generated_selector_count','unique_generation_template_count','unique_scene_template_count','target_s1_binding_present','approved_property_function_environment_semantic_payload_found','interior_or_enclosing_g6_found','reciprocal_visibility_link_templates_found','approved_expansion_data_only_not_s1_admission','target_spatial_package_intake_status','target_spatial_materialization_authorized','import_authorized','activation_authorized'],'GAP_SCOPE_MISMATCH','gap scope assessment');
+  const expectedScope={approved_expansion_v1_chain_covers_generated_selectors:true,generated_selector_count:32,unique_generation_template_count:25,unique_scene_template_count:9,target_s1_binding_present:false,approved_property_function_environment_semantic_payload_found:false,interior_or_enclosing_g6_found:false,reciprocal_visibility_link_templates_found:false,approved_expansion_data_only_not_s1_admission:true,target_spatial_package_intake_status:docs.spatialApprovalIndex.intake_status,target_spatial_materialization_authorized:false,import_authorized:false,activation_authorized:false};
   if(!same(scope,expectedScope))reject('GAP_SCOPE_MISMATCH','gap scope assessment changed');
   if(candidate.exact_existing_refs.property_refs!==undefined||candidate.exact_existing_refs.environment_refs!==undefined)reject('CANDIDATE_UNKNOWN_KEY','unapproved payload refs cannot appear in candidate envelope');
-  return {selectors:33,gaps:297,generatedRows:audit.rows.length,recordLocators:countExactValues(sourceMap,sourceMap.canonical_scene_evidence.scene_template.record)+0,pins:expectedPinKeys.length};
+  return {selectors:33,gaps:297,generatedRows:audit.rows.length,recordLocators:countExactValues(sourceMap,sourceMap.canonical_scene_evidence.scene_template.record)+0,pins:expectedPinKeys.length,approvedV1Rows:chain.rows.length,uniqueV1Scenes:chain.unique_scene_template_count};
 }
 function parseInputDir(argv) {
   const index=argv.indexOf('--input-dir');
@@ -268,7 +359,7 @@ function parseInputDir(argv) {
   return dir;
 }
 async function main(){
- try{const result=validate(parseInputDir(process.argv.slice(2)));console.log(`PASS selectors=${result.selectors} typed_gaps=${result.gaps} generated_diagnostics=${result.generatedRows} source_pins=${result.pins}`);}
+ try{const result=validate(parseInputDir(process.argv.slice(2)));console.log(`PASS selectors=${result.selectors} typed_gaps=${result.gaps} generated_diagnostics=${result.generatedRows} approved_v1_rows=${result.approvedV1Rows} v1_scenes=${result.uniqueV1Scenes} source_pins=${result.pins}`);}
  catch(error){const code=error instanceof ValidationError?error.code:'VALIDATOR_INTERNAL_ERROR';console.error(`S1_VALIDATION_ERROR[${code}]: ${error.message}`);process.exitCode=1;}
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await main();

@@ -25,6 +25,10 @@ const cases=[
  ['R5-17-start-source-status','CANONICAL_START_STATUS_MISMATCH',d=>d.candidate.exact_existing_refs.canonical_start_position.source_status='approved'],
  ['R5-18-start-candidate-status','CANONICAL_START_STATUS_MISMATCH',d=>d.candidate.exact_existing_refs.canonical_start_position.start_candidate_status='approved'],
  ['R5-19-start-source-path','CANONICAL_START_SOURCE_PATH_MISMATCH',d=>d.candidate.exact_existing_refs.canonical_start_position.source_path='data/world-catalogs/novgorod/lower-dvina/not-a-target-source.json'],
+ ['P2-20-expansion-v1-generation-ref','SOURCE_RECORD_MISMATCH',d=>d.map.approved_expansion_v1_chain.rows[0].generation_template.record.version=2],
+ ['P2-21-expansion-v1-scene-ref','SOURCE_RECORD_MISMATCH',d=>d.map.approved_expansion_v1_chain.rows[0].scene_template.record.id='stfv3__invented'],
+ ['P2-22-expansion-v1-topology','SOURCE_RECORD_MISMATCH',d=>d.map.approved_expansion_v1_chain.rows[0].g6_slots[0].record.physical_class_id='spatial.g6.invented'],
+ ['P2-23-expansion-v1-gap-pointer','EXPANSION_V1_GAP_EVIDENCE_MISMATCH',d=>d.gaps.gaps.find(g=>g.target_selector.row_index===0&&g.field==='scene_template_ref').partial_evidence.source_map_pointer='/approved_expansion_v1_chain/rows/1'],
 ];
 for(const [id,expected_code,mutate] of cases){
  const dir=path.join(fixtureRoot,id);fs.mkdirSync(dir,{recursive:true});

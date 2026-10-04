@@ -3,7 +3,8 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 out="$(cd "$here/../.." && pwd)"
 validator="$out/validate-s1-candidate.mjs"
-if [ ! -f "$here/expected-list.txt" ]; then node "$here/make-fixtures.mjs"; fi
+# Always regenerate fixtures and expected-list from the current candidate/gap set.
+node "$here/make-fixtures.mjs"
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
 backup_if_present() { if [ -e "$1" ]; then cp -a "$1" "$1.$stamp.bak"; fi; }
 backup_if_present "$here/baseline.log"

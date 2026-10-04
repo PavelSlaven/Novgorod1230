@@ -89,3 +89,24 @@ Approved target applicability несёт G4 ids, classification triple и natura
 - JSON parse шести current candidate/source-map/gap/bench artifact files — PASS; `bench/s1-validator/results.json` reports 19/19 rejected, 0 accepted-invalid, `passed=true`.
 
 Timestamped `.bak` files — обязательные author backups предыдущих версий при изменении собственных output artifacts; они не являются текущими deliverables. Ни один pinned repository file не изменялся. Не выполнены independent re-review, production schema validator, project suites, DB/party/production readback и D41 model call.
+
+## Исправление по BLOCK P2/P3 — pass 4
+
+Этот раздел supersedes вывод pass 3 о generated topology refs. В pinned `integ-98` HEAD `cc80771c56a2c4a93bccd154360243f96371c990` обнаружена подтверждённая reviewer-ом цепочка из approved authoring bundle `data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/`. Approval pin `data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json` имеет `APPROVE_DATA_ONLY`; его manifest SHA совпадает с `import-manifest.json`, а source-map содержит pins для approval, manifest и 11 участвующих datasets. Validator проверяет SHA, `approved` status manifest entries и exact row pointers.
+
+Для всех 32 generated selectors source map теперь связывает G4 expansion profile → profile/template limit → exact G5 generation `@1` → scene materialization profile → candidate → `exact_source_ref` applicability rule → scene template `@1` → G6, positions, endpoint slots и movement edges. Это 25 уникальных generation templates и 9 unique scene templates; topology каждого выбранного scene template содержит один G6, три позиции, два endpoint slots и четыре reciprocal movement edges. Данные являются approved authoring evidence в указанном bundle; это не S1 admission, не selector-to-position binding и не разрешение на import или activation. Старые @2 refs сохранены отдельно как диагностика и больше не обосновывают причины generated gaps.
+
+Причины пересчитаны по отсутствующему S1 evidence: `unapproved=199`, `ambiguous=32`, `missing_topology=66`; `version_or_scope_mismatch=0`. На каждую generated field gap добавлено поле `partial_evidence` с указателем на exact @1 chain row и отдельными scope/status/unmet requirement. Три позиции без однозначного S1 slot дают `ambiguous`; один open/water G6 без enclosing structure — `missing_topology`; reciprocal authored movement существует, но его S1 binding/closure отсутствуют — `unapproved`; visibility dataset отсутствует в manifest. Поля property/function/environment/semantic остаются gaps: approved G4/G5 family не содержит выбранного S1 field payload. Candidate по-прежнему `profile:null`.
+
+Validator проверяет всю цепочку по exact pinned rows и manifest SHA, требует reciprocal movement pairs, сверяет field-local evidence pointers и допускает только эти reason codes. Добавлены четыре P2 CLI mutation cases для подмены generation `@1`, scene, G6 topology и gap evidence pointer. P3 исправлен: `run-cli-selftests.sh` каждый раз заново строит fixtures и `expected-list.txt` из `make-fixtures.mjs` перед baseline и negative cases.
+
+### Проверки pass 4
+
+- `node --check validate-s1-candidate.mjs` — PASS.
+- `timeout 30s node validate-s1-candidate.mjs` — PASS: 33 selectors, 297 gaps, 32 approved @1 chain rows, 9 unique scenes, 36 source pins.
+- `timeout 300s bash bench/s1-validator/run-cli-selftests.sh` — PASS: fixtures/list пересозданы перед прогоном; baseline принят, 23/23 invalid mutations отклонены ожидаемым кодом, accepted-invalid=0, duplicate exact source rejected. Первый запуск с внешним лимитом 30s остановился до конца case list и не засчитан.
+- `node --check` для валидатора, fixture generator, summarizer и D41 runner — PASS; JSON parse шести candidate/source-map/gap/bench result artifacts — PASS; пересчитанные причины: `unapproved=199`, `ambiguous=32`, `missing_topology=66`.
+- Новый byte manifest для независимого прохода 5 — `reapproval-5/input-snapshot.json` (15 artifact pins; его SHA-256 записан в сдаче).
+- LLM, DB, project suites и runtime/readback не запускались.
+
+Pass 4 подготовил новый task-owned snapshot для повторного independent review (ap-b4-s1, проход 5); независимое утверждение и commit владельца ожидаются. По действующим RULES ведущий временно недоступен; этот авторский handoff не является approval. Данные не импортированы и не активированы.

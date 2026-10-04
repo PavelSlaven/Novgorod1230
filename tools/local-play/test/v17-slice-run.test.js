@@ -199,7 +199,10 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
-      if (walkLocalLabels.includes(text)) { w.sv += 1; }
+      if (walkLocalLabels.includes(text)) {
+        w.slot = w.slot === 'arrival' ? 'local_bend' : 'arrival';
+        w.sv += 1;
+      }
       else if (walkExits != null && Object.hasOwn(walkExits, text)) {
         w.site = walkExits[text]; w.sv += 1;
         w.prose = w.site === 'B' ? 'Лесная тропа.' : w.site === 'C' ? 'У реки.' : 'Дальше.';
@@ -379,10 +382,21 @@ test('legs: an errored snapshot cannot make an old NPC answer pass after an unco
 });
 
 test('legs: committed walks without a site change stay visible in the walk detail', async () => {
-  const result = await runFake(fakeWorld({ samePlaceWalks: 2 }));
+  const result = await runFake(fakeWorld({ samePlaceWalks: 1 }));
   const walk = result.legs.find(({ id }) => id === 'walk');
   assert.equal(walk.status, 'pass');
-  assert.match(walk.detail, /ходов движения: 3, из них без смены места: 2/u);
+  assert.match(walk.detail, /ходов движения: 2, из них без смены места: 1/u);
+});
+
+test('legs: three local slot changes at one site still allow finding the exit label', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля', 'Третья петля'],
+    walkExits: { 'Тропа': 'B' }
+  }));
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length <= 8);
+  assert.ok(walkTurns.some(({ input }) => input === 'Тропа'));
 });
 
 test('legs: local committed walks do not reset stuck counter; exits still found', async () => {

@@ -42,7 +42,7 @@ const peopleOf = (screen) => {
   const data = panel.data ?? {};
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
-const positionKey = (snap) => `${snap?.position?.site_id ?? '?'}|${snap?.position?.slot ?? '?'}`;
+const siteKey = (snap) => String(snap?.position?.site_id ?? '?');
 const npcsHere = (snap) => (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc');
 const liveNodes = (snap) => (snap?.resource_nodes ?? []).filter((row) => Number(row.quantity_numerator) > 0);
 const liveNodesHere = (snap) => liveNodes(snap).filter((row) => row.site_id === snap?.position?.site_id);
@@ -193,8 +193,8 @@ export async function runLegs({
 
   // --- explore: walk out, meeting, talk, take ---
   const visited = new Map(); // site_id -> place name
-  const tried = new Map(); // positionKey -> Map(label -> count)
-  const looked = new Map(); // positionKey -> looks done; a second look is cheap and shows whether the first was a fluke
+  const tried = new Map(); // site_id -> Map(label -> count)
+  const looked = new Map(); // site_id -> looks done; a second look is cheap and shows whether the first was a fluke
   const seen = { npc: null, hiddenNpc: null };
   const placesAfterTalk = new Map();
   let stuck = 0;
@@ -295,12 +295,13 @@ export async function runLegs({
       }
       if (legs.talk.status === 'pass' && done('take')) break;
       // a step: the first least-tried passage label of this spot, or a look when the spot offers none yet
-      const key = positionKey(last.snap);
+      const key = siteKey(last.snap);
       const labels = routeLabels(last.screen);
       if (labels.length === 0 && (looked.get(key) ?? 0) < 2) { looked.set(key, (looked.get(key) ?? 0) + 1); await play('walk', LOOK); continue; }
       if (labels.length === 0) { exploreEnd.reason = `на месте ${placeName(last.snap)} экран не показывает проходов после ${looked.get(key)} осмотров`; break; }
       const counts = tried.get(key) ?? new Map();
       tried.set(key, counts);
+      const noProgressLimit = labels.length + 1;
       const label = [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
       counts.set(label, (counts.get(label) ?? 0) + 1);
       const turn = await play('walk', label);
@@ -311,8 +312,8 @@ export async function runLegs({
       if (siteChanged) stuck = 0;
       else {
         stuck += 1;
-        if (stuck >= 3) {
-          exploreEnd.reason = `3 хода подряд без смены места (последняя ошибка: ${turn.error?.code ?? 'нет'})`;
+        if (stuck >= noProgressLimit) {
+          exploreEnd.reason = `${stuck} ходов подряд без смены места (порог ${noProgressLimit}; последняя ошибка: ${turn.error?.code ?? 'нет'})`;
           break;
         }
         const triedAllOnce = labels.length > 1

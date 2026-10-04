@@ -291,7 +291,7 @@ test('generator excludes subject_kind=environment presence rules with a typed co
     ['category', 'occupation', 'social_role']);
 });
 
-test('generator refuses a presence subject_kind it neither imports nor explicitly excludes', async () => {
+test('generator refuses a presence subject_kind it neither imports nor explicitly excludes', async (t) => {
   const gitShow = (path) => {
     const text = fixtureGitShow(path);
     if (!path.endsWith('places-binding/presence/presence_rules.csv')) return text;
@@ -302,11 +302,8 @@ test('generator refuses a presence subject_kind it neither imports nor explicitl
     cells[index] = 'mystery_kind';
     return [header, cells.join(','), ...rest].join('\n');
   };
-  const outRoot = join(tmpdir(), 'm2c-unsupported-kind-out');
-  try {
-    await assert.rejects(buildM2cNpcWaveDatasets({ sourceCommit: 'f'.repeat(40), gitShow, outRoot }),
-      /M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED/u);
-  } finally {
-    await rm(outRoot, { recursive: true, force: true });
-  }
+  const outRoot = await mkdtemp(join(tmpdir(), 'm2c-unsupported-kind-out-'));
+  t.after(() => rm(outRoot, { recursive: true, force: true }));
+  await assert.rejects(buildM2cNpcWaveDatasets({ sourceCommit: 'f'.repeat(40), gitShow, outRoot }),
+    /M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED/u);
 });

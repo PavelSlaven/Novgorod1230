@@ -1,6 +1,6 @@
 {
   "schema": "rus.llm_runtime_frozen_role_requests.v1",
-  "corpus_version": 70,
+  "corpus_version": 74,
   "provenance": "Exact production messages and request DTOs frozen from active role builders and public owner validator fixtures. Excludes fragments without a public validator/callable boundary available to this runner.",
   "fixtures": [
     {
@@ -15,16 +15,16 @@
       "provenance": {
         "source": "apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js; apps/game-server/src/runtime/releases/lower-dvina-trace-f1-production.js; packages/turn/test/world-process-step.test.js",
         "test": "world process semantic step accepts only a bounded qualitative result",
-        "kind": "production builder + production request DTO + public-validator plan"
+        "kind": "production builder + separate authoritative request DTO + public-validator plan"
       },
       "messages": [
         {
           "role": "system",
-          "content": "Return only the qualitative world-process semantic choice. Use this complete semantic shape:\n{\"interpretation\":{\"grounded_transition\":\"<grounded_transition>\"},\"outcome_choice\":\"<supplied outcome choice_id>\",\"affected_ref_choices\":[]} Choose one applicable code-owned outcome by choice_id: [{\"choice_id\":\"outcome_1\",\"applicability\":\"the supplied water reaches and extinguishes the active fire\"}] Choose affected refs only through these opaque code-owned choices: [{\"choice_id\":\"ref_1\",\"source\":\"process.process_ref\"},{\"choice_id\":\"ref_2\",\"source\":\"process.scope_ref\"},{\"choice_id\":\"ref_3\",\"source\":\"process.causal_basis_ref\"},{\"choice_id\":\"ref_4\",\"source\":\"process.fuel_bindings[0].fuel_ref\"},{\"choice_id\":\"ref_5\",\"source\":\"subject_state.source_refs[0]\"}] The server assembles schema, request/process identity, exact outcome pair, affected_refs, and empty fact_changes. Never copy or invent exact refs. Do not invent numbers, resources, timestamps, process IDs, damage, hidden facts, or authority."
+          "content": "Return this exact JSON shape: {\"interpretation\":{\"grounded_transition\":\"<переход>\"},\"outcome_choice\":\"<choice_id>\",\"affected_ref_choices\":[]}. outcome_choice is one string ID from the supplied outcomes; every affected_ref_choices element is one string ID from the supplied refs. The affected_ref_choices array may be empty. Set interpretation.grounded_transition to a concise account grounded in the supplied facts. Choose one outcome from outcomes and, if needed, refs from affected_ref_choices. Ground every semantic claim in supplied facts; treat missing facts as unknown and preserve unresolved conflicts."
         },
         {
           "role": "user",
-          "content": "{\"schema\":\"world_process_step_request_v1\",\"request_id\":\"req:water:world-process\",\"party_state_version\":7,\"process_state_version\":2,\"process_mode\":\"local_exact\",\"process_kind\":\"fire\",\"process\":{\"process_ref\":\"fire:1\",\"scope_ref\":\"anchor:shore\",\"causal_basis_ref\":\"item:hearth\",\"status\":\"active\",\"started_at\":{\"whole_minutes\":\"0\",\"subminute_numerator\":\"0\",\"subminute_denominator\":\"1\"},\"next_boundary_at\":{\"whole_minutes\":\"10\",\"subminute_numerator\":\"0\",\"subminute_denominator\":\"1\"},\"fuel_bindings\":[{\"fuel_ref\":\"item:wood\",\"fuel_class\":\"ordinary_solid_fuel_unit\"}]},\"current_timestamp\":{\"whole_minutes\":\"2\",\"subminute_numerator\":\"0\",\"subminute_denominator\":\"1\"},\"trigger\":\"actor_affected\",\"subject_state\":{\"source_refs\":[\"water\"],\"facts\":[\"existing water portion\"],\"quantities\":[{\"ref\":\"water\",\"value\":1,\"unit\":\"item\",\"mass_grams\":1000}]},\"environment_state\":{\"scope_ref\":\"anchor:shore\",\"facts\":[]},\"outcome_contract\":[{\"process_outcome\":\"complete\",\"reason_code\":\"water_extinguishes\",\"applicability\":\"the supplied water reaches and extinguishes the active fire\"}]}"
+          "content": "{\"process_facts\":[\"Огонь горит.\"],\"fuel_facts\":[\"обычное твёрдое топливо\"],\"subject_facts\":[\"цельная порция воды\",\"Действие персонажа: воздействовать водой на огонь.\"],\"quantity_facts\":[\"Около трёх четвертей литра воды (750 г).\"],\"outcomes\":[{\"choice_id\":\"outcome_1\",\"meaning\":\"Воздействие завершает процесс.\"}],\"affected_ref_choices\":[{\"choice_id\":\"ref_1\",\"role\":\"процесс\"},{\"choice_id\":\"ref_2\",\"role\":\"место процесса\"},{\"choice_id\":\"ref_3\",\"role\":\"причина процесса\"},{\"choice_id\":\"ref_4\",\"role\":\"топливо процесса\"},{\"choice_id\":\"ref_5\",\"role\":\"затронутый предмет\"}]}"
         }
       ],
       "expected_output": {
@@ -42,7 +42,71 @@
           "reason_code": "water_extinguishes"
         }
       },
-      "validator": "world_process_step_plan"
+      "validator": "world_process_step_plan",
+      "request": {
+        "schema": "world_process_step_request_v1",
+        "request_id": "req:water:world-process",
+        "party_state_version": 7,
+        "process_state_version": 2,
+        "process_mode": "local_exact",
+        "process_kind": "fire",
+        "process": {
+          "process_ref": "fire:1",
+          "scope_ref": "anchor:shore",
+          "causal_basis_ref": "item:hearth",
+          "status": "active",
+          "started_at": {
+            "whole_minutes": "0",
+            "subminute_numerator": "0",
+            "subminute_denominator": "1"
+          },
+          "next_boundary_at": {
+            "whole_minutes": "10",
+            "subminute_numerator": "0",
+            "subminute_denominator": "1"
+          },
+          "fuel_bindings": [
+            {
+              "fuel_ref": "item:wood",
+              "fuel_class": "ordinary_solid_fuel_unit"
+            }
+          ]
+        },
+        "current_timestamp": {
+          "whole_minutes": "2",
+          "subminute_numerator": "0",
+          "subminute_denominator": "1"
+        },
+        "trigger": "actor_affected",
+        "subject_state": {
+          "source_refs": [
+            "water"
+          ],
+          "facts": [
+            "цельная порция воды",
+            "Действие персонажа: воздействовать водой на огонь."
+          ],
+          "quantities": [
+            {
+              "ref": "water",
+              "value": 1,
+              "unit": "item",
+              "mass_grams": 750
+            }
+          ]
+        },
+        "environment_state": {
+          "scope_ref": "anchor:shore",
+          "facts": []
+        },
+        "outcome_contract": [
+          {
+            "process_outcome": "complete",
+            "reason_code": "water_extinguishes",
+            "applicability": "the supplied water reaches and extinguishes the active fire"
+          }
+        ]
+      }
     },
     {
       "id": "planner-reality-limited",

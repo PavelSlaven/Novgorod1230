@@ -8,7 +8,17 @@ import { safeTurnFailure } from '../../../apps/game-server/src/runtime/llm-diagn
 const ACCEPT_SNAPSHOT = {
   writer_prose: 'Финал.',
   stage23: { pass: true, concerns: [], evidence: [], codes: [] },
-  repair: { observed: true, attempted: true }
+  repair: { observed: true, attempted: true },
+  pre_repair: {
+    writer_prose: 'Черновик.',
+    stage23: {
+      pass: false,
+      concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+        message: 'gap' }],
+      evidence: ['gap'],
+      codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+    }
+  }
 };
 
 const REJECT_SNAPSHOT = {
@@ -57,6 +67,15 @@ test('openingAttemptFromNewGame records stage23 and repair for accepted attempts
     devReport: { opening_attempt: ACCEPT_SNAPSHOT }
   });
   assert.equal(afterRepair.repair.attempted, true);
+  assert.equal(afterRepair.pre_repair.writer_prose, 'Черновик.');
+});
+
+test('openingAttemptFromNewGame preserves pre_repair only when repair succeeded', () => {
+  const attempt = openingAttemptFromNewGame({
+    n: 1, ok: true, data: { screen: { main_prose: 'Финал.' } },
+    devReport: { opening_attempt: ACCEPT_SNAPSHOT }
+  });
+  assert.equal(attempt.pre_repair.stage23.codes[0], 'NARRATOR_PROSE_MUST_INCLUDE_MISSING');
 });
 
 test('openingAttemptFromNewGame ignores opening_rejection on the public error envelope', () => {
@@ -105,5 +124,5 @@ test('report opening_attempts shape is stable in playtest markdown table', () =>
   const md = renderPlaytestMarkdown(report);
   assert.ok(md.includes('Попытки вступления (new-game):'));
   assert.ok(md.includes('| 1 | rejected | NARRATOR_PROSE_MUST_INCLUDE_MISSING | still_rejected |'));
-  assert.ok(md.includes('| 2 | accepted | — | attempted |'));
+  assert.ok(md.includes('| 2 | accepted | — | attempted | — | Финал. | Черновик. | NARRATOR_PROSE_MUST_INCLUDE_MISSING |'));
 });

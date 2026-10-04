@@ -183,7 +183,9 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
   let stage23 = await audit();
   const originalStage23Audit = structuredClone(
     stage23.result.narrator_prose_audit);
+  let preRepairWriterProse = null;
   if (stage23.result.pass !== true) {
+    preRepairWriterProse = stage22.narrator_starting_prose?.prose;
     if (stage23.result.narrator_prose_audit.concerns.some(({ severity }) =>
       ['hard_block', 'upstream_block'].includes(severity))) {
       throwOpeningAuditRejected({ stage22, stage23, repair,
@@ -223,7 +225,10 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
         llmDiagnostics?.recordOpeningAttempt?.(buildOpeningRejectionSnapshot({
           prose: flow.approved_output.prose,
           audit: stage23.result.narrator_prose_audit,
-          repair: { attempted: repair.spent === true }
+          repair: { attempted: repair.spent === true },
+          ...(repair.spent === true && preRepairWriterProse != null ? {
+            preRepair: { prose: preRepairWriterProse, audit: originalStage23Audit }
+          } : {})
         }));
       } catch { /* diagnostics must not affect opening */ }
       return Object.freeze({ prose: flow.approved_output.prose,

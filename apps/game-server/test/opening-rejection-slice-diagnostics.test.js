@@ -8,11 +8,23 @@ import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { buildOpeningRejectionSnapshot } from '../src/runtime/opening-rejection-snapshot.js';
 import { createGameHttpServer, listen } from '../src/index.js';
 
-function openingAcceptSnapshot(prose, { repairAttempted = true } = {}) {
+function openingAcceptSnapshot(prose, { repairAttempted = true, draftProse = 'Черновик.' } = {}) {
   return buildOpeningRejectionSnapshot({
     prose,
     audit: { pass: true, concerns: [], evidence: [], codes: [] },
-    repair: { attempted: repairAttempted }
+    repair: { attempted: repairAttempted },
+    ...(repairAttempted ? {
+      preRepair: {
+        prose: draftProse,
+        audit: {
+          pass: false,
+          concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+            message: 'gap' }],
+          evidence: ['gap'],
+          codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+        }
+      }
+    } : {})
   });
 }
 
@@ -79,6 +91,9 @@ test('runLegs reads opening rejection from developer LLM report after public new
   assert.equal(result.opening.opening_attempts[0].stage23.codes[0], 'NARRATOR_PROSE_MUST_INCLUDE_MISSING');
   assert.equal(result.opening.opening_attempts[1].repair.attempted, true);
   assert.equal(result.opening.opening_attempts[1].stage23.pass, true);
+  assert.equal(result.opening.opening_attempts[1].pre_repair.writer_prose, 'Черновик.');
+  assert.equal(result.opening.opening_attempts[1].pre_repair.stage23.codes[0],
+    'NARRATOR_PROSE_MUST_INCLUDE_MISSING');
   assert.equal(result.legs.find(({ id }) => id === 'start').status, 'pass');
 });
 
@@ -139,5 +154,6 @@ test('createHttpApi developer GET and runLegs expose stage23 without forbidden a
   assert.equal(report.data.opening_attempt.writer_prose, 'Финал.');
   assert.equal(report.data.opening_attempt.stage23.pass, true);
   assert.equal(report.data.opening_attempt.repair.attempted, true);
+  assert.equal(report.data.opening_attempt.pre_repair.writer_prose, 'Черновик.');
   assert.equal(JSON.stringify(report.data).includes('"audit"'), false);
 });

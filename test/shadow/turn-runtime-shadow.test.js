@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, copyFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, copyFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -250,10 +250,11 @@ function normalizeModular(result) {
   };
 }
 
-test('legacy and modular turn routes preserve approved structural properties on one input', async () => {
+test('legacy and modular turn routes preserve approved structural properties on one input', async (t) => {
   const runtime = createLegacyRuntime({ partyScreenPayload: { first_game_screen: firstScreen() }, now: NOW });
   const originalCwd = process.cwd();
   const compatibilityRoot = await mkdtemp(join(tmpdir(), 'rus-shadow-turn-'));
+  t.after(() => rm(compatibilityRoot, { recursive: true, force: true }));
   const runbookDir = join(compatibilityRoot, 'DOCUMENTS', 'documents-kg', 'corpus', 'DOCUMENTS');
   await mkdir(runbookDir, { recursive: true });
   await copyFile(new URL('../../data/shadow-corpus/base_turn_orcestration.txt', import.meta.url), join(runbookDir, 'base_turn_orcestration.txt'));

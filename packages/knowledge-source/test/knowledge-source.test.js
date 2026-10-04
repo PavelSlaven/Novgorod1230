@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -14,8 +14,9 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } = {}) {
+async function fixture(t, { text = '# Alpha\n\nCanonical text.\nSecond line.\n' } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'rus-knowledge-source-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   const corpus = join(root, 'corpus', 'DOCUMENTS');
   const generated = join(root, 'generated');
   await mkdir(corpus, { recursive: true });
@@ -68,8 +69,8 @@ async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } =
   return { root, corpus, generated, text };
 }
 
-test('reader exposes immutable explicit document contracts without inventing content', async () => {
-  const fx = await fixture();
+test('reader exposes immutable explicit document contracts without inventing content', async (t) => {
+  const fx = await fixture(t);
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated });
   const reader = createKnowledgeSourceReader({ storage });
   const listed = await reader.listDocuments({});
@@ -88,8 +89,8 @@ test('reader exposes immutable explicit document contracts without inventing con
   assert.equal((await authoringReader.getDocument({ document_id: 'beta' })).text, '# Beta\n\nProposed text.\n');
 });
 
-test('reader is fail-closed for unknown ids, path traversal, hash mismatch and invalid ranges', async () => {
-  const fx = await fixture();
+test('reader is fail-closed for unknown ids, path traversal, hash mismatch and invalid ranges', async (t) => {
+  const fx = await fixture(t);
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated });
   const reader = createKnowledgeSourceReader({ storage });
   await assert.rejects(() => reader.getDocument({ document_id: 'missing' }), (error) => error instanceof KnowledgeSourceError && error.code === 'DOCUMENT_NOT_REGISTERED');
@@ -99,8 +100,8 @@ test('reader is fail-closed for unknown ids, path traversal, hash mismatch and i
   await assert.rejects(() => reader.getDocument({ document_id: 'alpha' }), (error) => error.code === 'DOCUMENT_HASH_MISMATCH');
 });
 
-test('reader rejects ambiguous section headings', async () => {
-  const fx = await fixture({ text: '# Alpha\n## Repeat\none\n## Repeat\ntwo\n' });
+test('reader rejects ambiguous section headings', async (t) => {
+  const fx = await fixture(t, { text: '# Alpha\n## Repeat\none\n## Repeat\ntwo\n' });
   const reader = createKnowledgeSourceReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated })
   });
@@ -108,8 +109,8 @@ test('reader rejects ambiguous section headings', async () => {
     (error) => error.code === 'SOURCE_LOCATION_INVALID');
 });
 
-test('full-text search is explicit, source-backed and restricted by allowed ids', async () => {
-  const fx = await fixture();
+test('full-text search is explicit, source-backed and restricted by allowed ids', async (t) => {
+  const fx = await fixture(t);
   const reader = createKnowledgeSourceReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated })
   });
@@ -121,8 +122,8 @@ test('full-text search is explicit, source-backed and restricted by allowed ids'
   assert.deepEqual((await reader.searchDocuments({ query: 'Canonical', allowed_document_ids: [] })).results, []);
 });
 
-test('generated status detects stale corpus binding', async () => {
-  const fx = await fixture();
+test('generated status detects stale corpus binding', async (t) => {
+  const fx = await fixture(t);
   const reader = createKnowledgeSourceReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated })
   });
@@ -141,7 +142,7 @@ test('generated status detects stale corpus binding', async () => {
   assert.equal(stale.rag.status, 'stale');
 });
 
-test('v2 generated status rejects invalid, missing and corrupt lexical artifacts', async () => {
+test('v2 generated status rejects invalid, missing and corrupt lexical artifacts', async (t) => {
   const cases = [
     ['lexical digest mismatch', async (fx) => writeFile(join(fx.generated, 'rag', 'lexical-index.json'), '{"changed":true}'), 'stale', 'lexical_artifact_hash_mismatch'],
     ['lexical artifact missing', async (fx) => rename(join(fx.generated, 'rag', 'lexical-index.json'), join(fx.generated, 'rag', 'lexical-index.json.missing')), 'missing', 'lexical_artifact_missing'],
@@ -155,7 +156,7 @@ test('v2 generated status rejects invalid, missing and corrupt lexical artifacts
   ];
 
   for (const [label, corrupt, status, reason] of cases) {
-    const fx = await fixture();
+    const fx = await fixture(t);
     await corrupt(fx);
     const reader = createKnowledgeSourceReader({
       storage: createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated })

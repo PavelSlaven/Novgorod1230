@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, cp, appendFile, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, cp, appendFile, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -20,8 +20,9 @@ const files = [
   'spatial_v3_target_map_g0_g4_workflow.txt'
 ];
 
-async function fixture() {
+async function fixture(t) {
   const root = await mkdtemp(path.join(tmpdir(), 'p02-normative-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   await Promise.all(files.map((file) => cp(path.join(sourceRoot, file), path.join(root, file))));
   await cp(declarationSource, path.join(root, 'p02-boundary-declaration.json'));
   await cp(schemaSource, path.join(root, 'p02-boundary-declaration.schema.json'));
@@ -54,8 +55,8 @@ async function replaceRequiredText(file, expected, replacement) {
   await writeFile(file, content.replace(expected, replacement));
 }
 
-test('P02 checker accepts the repository active/target document pairs', async () => {
-  const root = await fixture();
+test('P02 checker accepts the repository active/target document pairs', async (t) => {
+  const root = await fixture(t);
   const result = run(root);
   assert.equal(result.status, 0, result.stderr);
 });
@@ -101,8 +102,8 @@ const unsafeCases = [
 ];
 
 for (const [name, file, assertion, diagnostic] of unsafeCases) {
-  test(`P02 checker rejects ${name}`, async () => {
-    const root = await fixture();
+  test(`P02 checker rejects ${name}`, async (t) => {
+    const root = await fixture(t);
     await appendFile(path.join(root, file), `\n${assertion}\n`);
     const result = run(root);
     assert.notEqual(result.status, 0, `checker accepted unsafe assertion: ${assertion}`);
@@ -124,8 +125,8 @@ const routingOmissions = [
 ];
 
 for (const [name, expected, replacement, diagnostic] of routingOmissions) {
-  test(`P02 checker rejects active routing omission: ${name}`, async () => {
-    const root = await fixture();
+  test(`P02 checker rejects active routing omission: ${name}`, async (t) => {
+    const root = await fixture(t);
     const activePath = path.join(root, 'code_driven_world_materialization_architecture.md');
     await replaceRequiredText(activePath, expected, replacement);
     const result = run(root);
@@ -134,15 +135,15 @@ for (const [name, expected, replacement, diagnostic] of routingOmissions) {
   });
 }
 
-test('P02 checker permits non-semantic evolution of a current active normative', async () => {
-  const root = await fixture();
+test('P02 checker permits non-semantic evolution of a current active normative', async (t) => {
+  const root = await fixture(t);
   await appendFile(path.join(root, 'code_driven_world_materialization_architecture.md'), '\nEditorial clarification.\n');
   const result = run(root);
   assert.equal(result.status, 0, result.stderr);
 });
 
-test('P02 checker rejects mutation of the immutable historical declaration', async () => {
-  const root = await fixture();
+test('P02 checker rejects mutation of the immutable historical declaration', async (t) => {
+  const root = await fixture(t);
   await mutateDeclaration(root, (declaration) => {
     declaration.documents[0].active.sha256 = '0'.repeat(64);
     declaration.documents[0].active.section_sha256 = '0'.repeat(64);
@@ -152,8 +153,8 @@ test('P02 checker rejects mutation of the immutable historical declaration', asy
   assert.match(`${result.stderr}\n${result.stdout}`, /immutable trust anchor/);
 });
 
-test('P02 checker accepts explicit prohibition wording', async () => {
-  const root = await fixture();
+test('P02 checker accepts explicit prohibition wording', async (t) => {
+  const root = await fixture(t);
   const targetPath = path.join(root, 'spatial_v3_target_code_driven_world_materialization_architecture.md');
   await appendFile(
     targetPath,
@@ -180,8 +181,8 @@ const declarationFieldMutations = {
 };
 
 for (const [field, mutate] of Object.entries(declarationFieldMutations)) {
-  test(`P02 checker rejects declaration mutation: ${field}`, async () => {
-    const root = await fixture();
+  test(`P02 checker rejects declaration mutation: ${field}`, async (t) => {
+    const root = await fixture(t);
     await mutateDeclaration(root, (declaration) => {
       declaration[field] = mutate(declaration[field]);
     });
@@ -203,8 +204,8 @@ const structuralDeclarationMutations = [
 ];
 
 for (const [name, mutate] of structuralDeclarationMutations) {
-  test(`P02 checker rejects declaration structure: ${name}`, async () => {
-    const root = await fixture();
+  test(`P02 checker rejects declaration structure: ${name}`, async (t) => {
+    const root = await fixture(t);
     await mutateDeclaration(root, mutate);
     assert.notEqual(run(root).status, 0, `checker accepted declaration mutation: ${name}`);
   });
@@ -227,8 +228,8 @@ const schemaMutations = [
 ];
 
 for (const [name, mutate] of schemaMutations) {
-  test(`P02 checker rejects schema mutation: ${name}`, async () => {
-    const root = await fixture();
+  test(`P02 checker rejects schema mutation: ${name}`, async (t) => {
+    const root = await fixture(t);
     await mutateSchema(root, mutate);
     assert.notEqual(run(root).status, 0, `checker accepted untrusted schema mutation: ${name}`);
   });

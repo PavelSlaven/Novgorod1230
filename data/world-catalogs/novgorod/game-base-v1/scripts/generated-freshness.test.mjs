@@ -95,19 +95,24 @@ function python() {
 
 function makeRepoCopy() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'game-base-fresh-'));
-  let real = REPO, copy = tmp;
-  const parts = GB.split('/');
-  for (const [index, part] of parts.entries()) {
-    for (const entry of fs.readdirSync(real, { withFileTypes: true })) {
-      if (entry.name === part || !entry.isDirectory() || entry.name === '.git') continue;
-      fs.symlinkSync(path.join(real, entry.name), path.join(copy, entry.name), 'junction');
+  try {
+    let real = REPO, copy = tmp;
+    const parts = GB.split('/');
+    for (const [index, part] of parts.entries()) {
+      for (const entry of fs.readdirSync(real, { withFileTypes: true })) {
+        if (entry.name === part || !entry.isDirectory() || entry.name === '.git') continue;
+        fs.symlinkSync(path.join(real, entry.name), path.join(copy, entry.name), 'junction');
+      }
+      real = path.join(real, part);
+      copy = path.join(copy, part);
+      if (index < parts.length - 1) fs.mkdirSync(copy);
     }
-    real = path.join(real, part);
-    copy = path.join(copy, part);
-    if (index < parts.length - 1) fs.mkdirSync(copy);
+    fs.cpSync(real, copy, { recursive: true });
+    return { tmp, copy, real };
+  } catch (error) {
+    fs.rmSync(tmp, { recursive: true, force: true });
+    throw error;
   }
-  fs.cpSync(real, copy, { recursive: true });
-  return { tmp, copy, real };
 }
 
 function files(root) {

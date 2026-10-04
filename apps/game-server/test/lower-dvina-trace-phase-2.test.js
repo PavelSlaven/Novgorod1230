@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
-import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
@@ -23,7 +23,7 @@ import {
   fixture
 } from './lower-dvina-trace-phase-2-fixture.js';
 
-test('Phase 2 package excludes Phase 3', async () => {
+test('Phase 2 package excludes Phase 3', async (t) => {
   const phase2 = await loadLowerDvinaTracePhase2Bundle();
   assert.equal(phase2.manifest.scenario_definition_revision, 7);
   assert.equal(phase2.manifest.phase_3_content, 'forbidden');
@@ -35,6 +35,7 @@ test('Phase 2 package excludes Phase 3', async () => {
   );
 
   const rootDir = await mkdtemp(join(tmpdir(), 'trace-phase2-bundle-'));
+  t.after(() => rm(rootDir, { recursive: true, force: true }));
   await cp(resolve('data'), join(rootDir, 'data'), { recursive: true });
   const bindingPath = join(
     rootDir,

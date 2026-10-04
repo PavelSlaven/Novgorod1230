@@ -45,21 +45,125 @@ test('D65 combat body projection emits only package-authored phrases', async () 
     'calibration', 'D71']) assert.equal(serialized.includes(forbidden), false);
 });
 
-test('candidate combat body bands remain unavailable outside D65 probe mode', async () => {
+test('approved combat body profile matches approval-7 intervals and phrase snapshot', async () => {
   const bundle = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
     'minimal-combat-bundle.candidate.json'), 'utf8'));
   const approval = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
-    'combat-data-approval.json'), 'utf8'));
+    'body-bands-production-approval-7.json'), 'utf8'));
+  const pointer = approval.json_pointer.split('/').slice(1);
+  const profile = pointer.reduce((value, key) => value[key.replaceAll('~1', '/')
+    .replaceAll('~0', '~')], bundle);
+  // Approval-7 authorizes these intervals, outputs, and nine state-only phrases.
+  const expectedPhrases = {
+    health: ['Здоровье низкое.', 'Здоровье умеренное.', 'Здоровье высокое.'],
+    energy: ['Запас энергии низкий.', 'Запас энергии умеренный.', 'Запас энергии высокий.'],
+    satiety: ['Сытость низкая.', 'Сытость умеренная.', 'Сытость высокая.']
+  };
+
+  assert.equal(approval.json_pointer,
+    '/npc_decision/body_state_qualitative_context');
+  assert.equal(profile.profile_id, 'candidate.npc-body-state-description.v1');
+  assert.equal(profile.version, 1);
+  assert.deepEqual(approval.approved_use.intervals,
+    ['[0,30)', '[30,70)', '[70,100]']);
+  assert.deepEqual(approval.approved_use.owner_projection_output,
+    ['metric', 'npc_description']);
+  assert.equal(approval.data_checks.state_only_phrases, 9);
+  for (const [metric, phrases] of Object.entries(expectedPhrases)) {
+    const bands = profile.metrics[metric].bands;
+    const intervals = bands.map(({ min_value, min_inclusive,
+      max_value, max_inclusive }) => `${min_inclusive ? '[' : '('}${min_value},${max_value}${max_inclusive ? ']' : ')'}`);
+    assert.deepEqual(intervals, approval.approved_use.intervals, metric);
+    assert.deepEqual(bands.map((band) => band.npc_description), phrases, metric);
+  }
+});
+
+test('general production flags do not authorize candidate combat body bands', async () => {
+  const bundle = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'minimal-combat-bundle.candidate.json'), 'utf8'));
   const result = projectCombatBodyStateDescriptions({
     body_state: { health: 29, energy: 70, satiety: 100 },
     qualitative_profile: bundle.npc_decision.body_state_qualitative_context,
-    data_approval: approval, mode: 'runtime'
+    data_approval: {
+      approval_granted: true,
+      import_authorized: true,
+      activation_authorized: true,
+      production_authorized: true
+    },
+    production_usable: true,
+    mode: 'runtime'
   });
   assert.equal(result.ok, true);
   assert.deepEqual(result.body_state_descriptions, []);
   assert.deepEqual(result.gaps, ['health', 'energy', 'satiety'].map((metric) => ({
     metric, code: 'body_state_qualitative_metric_gap'
   })));
+});
+
+test('scoped production approval gate matches profile id and version', async () => {
+  const bundle = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'minimal-combat-bundle.candidate.json'), 'utf8'));
+  const profile = bundle.npc_decision.body_state_qualitative_context;
+  const approval = {
+    schema: 'npc_body_qualitative_profile_scoped_approval_v1',
+    repository: 'PavelSlaven/Novgorod1230',
+    branch: 'fleet/combat-data',
+    path: 'data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/minimal-combat-bundle.candidate.json',
+    commit: 'feed71c2647b38e3ba4ab7bc613aa1483beaa774',
+    json_pointer: '/npc_decision/body_state_qualitative_context',
+    profile_id: 'candidate.npc-body-state-description.v1',
+    version: 1,
+    verdict: 'APPROVE_WITH_LIMITS',
+    approval_granted: true,
+    production_authorized: true,
+    import_authorized: false,
+    activation_authorized: false,
+    bundle_production_authorized: false,
+    approved_use: {
+      actor: 'ordinary combat NPC only',
+      source: 'Текущий authoritative @rus/body-state readback, привязанный к тому же NPC; только его собственные доступные ему метрики.',
+      metrics: ['health', 'energy', 'satiety'],
+      numeric_domain: 'finite JSON/JS number in [0,100], без округления и преобразования строки/bool',
+      intervals: ['[0,30)', '[30,70)', '[70,100]'],
+      owner_projection_output: ['metric', 'npc_description']
+    }
+  };
+  const result = projectCombatBodyStateDescriptions({
+    body_state: { health: 29, energy: 70, satiety: 100 },
+    qualitative_profile: profile,
+    scoped_production_approval: approval,
+    mode: 'runtime'
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.body_state_descriptions, [
+    { metric: 'health', npc_description: 'Здоровье низкое.' },
+    { metric: 'energy', npc_description: 'Запас энергии высокий.' },
+    { metric: 'satiety', npc_description: 'Сытость высокая.' }
+  ]);
+  assert.deepEqual(result.gaps, []);
+  assert.equal(JSON.stringify(result).includes('29'), false);
+
+  for (const mismatch of [
+    { approval: { ...approval, profile_id: 'other-profile' } },
+    { approval: { ...approval, version: 2 } },
+    { approval: { ...approval, approval_granted: false } },
+    { approval: { ...approval, production_authorized: false } },
+    { profile: { ...profile, profile_id: 'other-profile' } },
+    { profile: { ...profile, version: 2 } },
+    { profile: { ...profile, status: 'approved' } }
+  ]) {
+    const blocked = projectCombatBodyStateDescriptions({
+      body_state: { health: 29, energy: 70, satiety: 100 },
+      qualitative_profile: mismatch.profile ?? profile,
+      scoped_production_approval: mismatch.approval,
+      mode: 'runtime'
+    });
+    assert.deepEqual(blocked.body_state_descriptions, []);
+    assert.deepEqual(blocked.gaps, ['health', 'energy', 'satiety'].map((metric) => ({
+      metric, code: 'body_state_qualitative_metric_gap'
+    })));
+  }
 });
 
 test('unavailable body metric returns a gap without discarding other bands', async () => {

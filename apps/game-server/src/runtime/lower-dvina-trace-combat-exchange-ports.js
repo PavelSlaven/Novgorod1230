@@ -130,7 +130,9 @@ async function resolvePostExchangeDecisions(input, context) {
       current_intent: participant.current_intent,
       npc_subjective_state: projectTraceCombatSubjectiveState(
         participant.actor_ref, input.working_state,
-        { combatDataProbe: context.combatDataProbe ?? null }),
+        { combatDataProbe: context.combatDataProbe ?? null,
+          combatBodyBandContext:
+            context.npcCombatModel?.combatBodyBandContext ?? null }),
       perceived_combat_state: projectTracePerceivedCombatState(input.session,
         input.working_state, participant.actor_ref,
         operationContract.break_contact_destination_refs),

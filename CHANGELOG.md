@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- feat(combat): persist participating NPC body through P16 from approved versioned profile; keep numeric body state internal pending combat-data/D67 (#224)
+- feat(combat): persist participating NPC body through P16 from approved versioned profile; keep numeric state internal; scoped body bands approved, v17 remains fail-closed pending actor scope and versioned cutover; LW-099 updated (#224)
 
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed

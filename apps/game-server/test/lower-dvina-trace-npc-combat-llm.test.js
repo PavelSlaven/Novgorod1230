@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { copyFile, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { validateNpcCombatIntentPlan } from '@rus/npc-runtime';
 import { createLowerDvinaTraceNpcCombatModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
@@ -9,11 +11,25 @@ import { projectTraceCombatSubjectiveState } from
   '../src/runtime/lower-dvina-trace-combat-subjective.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { createCombatMinD65ProbeData, loadCombatMinDataPackage } from
+import { createCombatMinD65ProbeData, loadCombatMinDataPackage,
+  loadCombatMinScopedBodyProfile } from
   '../src/runtime/combat-min-data.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+const COMBAT_DATA = 'data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1';
+
+async function copyCombatDataFixture(t) {
+  const root = await mkdtemp(resolve(tmpdir(), 'combat-min-scoped-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const directory = resolve(root, COMBAT_DATA);
+  await mkdir(directory, { recursive: true });
+  for (const name of ['minimal-combat-bundle.candidate.json',
+    'combat-data-approval.json', 'body-bands-production-approval-7.json']) {
+    await copyFile(resolve(ROOT, COMBAT_DATA, name), resolve(directory, name));
+  }
+  return { root, directory };
+}
 
 function combatRequest() {
   return {
@@ -59,6 +75,8 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
     known_exits: [ref('location', 'private-exit-5')],
     visible_context: 'Воин стоит напротив.'
   };
+  request.npc_subjective_state = { social_role: {}, mood: {},
+    combat_experience: 'limited' };
   request.operation_contract.reachable_destination_refs = [
     ref('location', 'private-exit-5')];
   request.operation_contract.allowed_intent_kinds.push('reach');
@@ -84,7 +102,13 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
   assert.equal(calls[1].role_id, 'npc_combat_decider_format_repair');
   for (const call of calls) {
     const prompt = call.messages[0].content;
-    assert.match(prompt, /Return only the semantic NPC combat choice/u);
+    assert.match(prompt, /Return only the NPC combat choice/u);
+    assert.doesNotMatch(prompt,
+      /server assembles|request identity, npc_ref|set_combat_intent operation/u);
+    assert.match(prompt,
+      /Choose one action, one way to use force, and one risk level from the lists\. Copy each selected key exactly as shown\./u);
+    assert.doesNotMatch(prompt,
+      /opaque code-owned choices|exact closed values or refs|intent_kind to refs with the required cardinality|operation contract/iu);
     assert.match(prompt, /"choice_id":"operation_1"/u);
     assert.match(prompt, /"destination_choice":"ref_2"/u);
     assert.match(prompt, /сразиться с указанным противником/u);
@@ -96,6 +120,21 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
     const userMessage = call.messages.find(({ role }) => role === 'user').content;
     assert.doesNotMatch(userMessage, /\[\]/u);
     assert.match(userMessage, /Воин стоит напротив/u);
+    assert.match(userMessage,
+      /Доступный выход; описание пути и места неизвестно/u);
+    const user = JSON.parse(userMessage);
+    const projectedRequest = user.request ?? user;
+    assert.equal(Object.hasOwn(projectedRequest, 'combat_situation'), false);
+    assert.equal(Object.hasOwn(projectedRequest.npc_subjective_state,
+      'social_role'), false);
+    assert.equal(Object.hasOwn(projectedRequest.npc_subjective_state,
+      'mood'), false);
+    assert.equal(projectedRequest.npc_subjective_state.combat_experience,
+      'боевой опыт небольшой');
+    assert.equal(Object.hasOwn(projectedRequest.perceived_combat_state,
+      'scope'), false);
+    assert.deepEqual(projectedRequest.decision_reasons.perceived_changes,
+      ['Угроза приблизилась.']);
     assert.doesNotMatch(userMessage,
       /combat-request-1|boundary-1|combat-1|npc-1|private-target-77|private-scope-3|private-exit-5|"ordinary"|force_limit|risk_posture|state_version|exchange_ordinal|decided_at|npc_ref|signal-1/u);
     if (call.role_id === 'npc_combat_decider_format_repair') {
@@ -117,6 +156,28 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
         /ref_1|operation_1|force_1|risk_1/u);
     }
   }
+});
+
+test('combat model emits a repeated visible fact only once', async () => {
+  let captured;
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
+    run: async (request) => {
+      captured = request;
+      return { output: { decision: { intent_summary: 'Оценить угрозу.',
+        grounded_goal: 'Защитить себя.', adaptation: 'literal' },
+      operation_choice: 'operation_1', force_choice: 'force_1',
+      risk_choice: 'risk_1', combat_statement: null, reason: 'Угроза.' } };
+    }
+  } });
+  const request = combatRequest();
+  request.decision_reasons.perceived_changes = ['Воин стоит напротив.'];
+  request.perceived_combat_state = { visible_context: 'Воин стоит напротив.' };
+  await model(request);
+  const user = JSON.parse(captured.messages.find(({ role }) =>
+    role === 'user').content);
+  assert.equal(user.perceived_combat_state.visible_context,
+    'Воин стоит напротив.');
+  assert.equal(Object.hasOwn(user.decision_reasons, 'perceived_changes'), false);
 });
 
 test('NPC combat model omits stale body prose and reports unavailable metric gaps', async () => {
@@ -229,6 +290,87 @@ test('combat data package stays off in runtime and body init uses only test DTO'
     .body_initialization.owner_initialization_profile_adapter;
   assert.equal(bodyInitialization.candidate_emission, null);
 });
+
+test('scoped body profile loader returns only the exactly approved profile', async () => {
+  const loaded = await loadCombatMinScopedBodyProfile(ROOT);
+  assert.equal(loaded.mode, 'runtime');
+  assert.deepEqual(Object.keys(loaded).sort(), [
+    'mode', 'qualitativeProfile', 'scopedProductionApproval'
+  ]);
+  assert.equal(loaded.qualitativeProfile.profile_id,
+    'candidate.npc-body-state-description.v1');
+  assert.equal(loaded.qualitativeProfile.version, 1);
+  assert.equal(loaded.qualitativeProfile.status, 'candidate_not_approved');
+  assert.equal(loaded.scopedProductionApproval.import_authorized, false);
+  assert.equal(loaded.scopedProductionApproval.activation_authorized, false);
+  assert.equal(loaded.scopedProductionApproval.bundle_production_authorized, false);
+});
+
+test('scoped body profile loader fails closed on changed bytes or approval provenance',
+  async (t) => {
+    const tampered = await copyCombatDataFixture(t);
+    const bundlePath = resolve(tampered.directory,
+      'minimal-combat-bundle.candidate.json');
+    await writeFile(bundlePath, Buffer.concat([
+      await readFile(bundlePath), Buffer.from(' ')
+    ]));
+    await assert.rejects(loadCombatMinScopedBodyProfile(tampered.root), {
+      code: 'combat_min_scoped_body_profile_approval_gap'
+    });
+
+    for (const mutate of [
+      (approval) => { approval.commit = '0'.repeat(40); },
+      (approval) => { approval.approved_use.actor = 'player'; },
+      (approval) => { approval.approved_use.metrics.push('body_condition'); },
+      (approval) => { approval.approved_use.numeric_domain = 'any number'; },
+      (approval) => { approval.approved_use.intervals[0] = '[0,30]'; },
+      (approval) => {
+        approval.approved_use.owner_projection_output.push('band_id');
+      }
+    ]) {
+      const mismatched = await copyCombatDataFixture(t);
+      const approvalPath = resolve(mismatched.directory,
+        'body-bands-production-approval-7.json');
+      const approval = JSON.parse(await readFile(approvalPath, 'utf8'));
+      mutate(approval);
+      await writeFile(approvalPath, JSON.stringify(approval));
+      await assert.rejects(loadCombatMinScopedBodyProfile(mismatched.root), {
+        code: 'combat_min_scoped_body_profile_approval_gap'
+      });
+    }
+  });
+
+test('runtime body projection uses only persisted owner state and scoped bands',
+  async () => {
+    const combatBodyBandContext = await loadCombatMinScopedBodyProfile(ROOT);
+    const actorRef = ref('npc', 'npc-1');
+    const state = {
+      npcs: [{ instance_id: 'npc-1', body_state: { health: 99,
+        energy: 99, satiety: 99 }, body_state_persisted: false }],
+      actor_states: { 'npc:npc-1': { body_state: {
+        health: 20, energy: 85, satiety: 75
+      }, body_state_persisted: true } }
+    };
+    const projected = projectTraceCombatSubjectiveState(actorRef, state,
+      { combatBodyBandContext });
+    assert.deepEqual(projected.body, { body_state_descriptions: [
+      { metric: 'health', npc_description: 'Здоровье низкое.' },
+      { metric: 'energy', npc_description: 'Запас энергии высокий.' },
+      { metric: 'satiety', npc_description: 'Сытость высокая.' }
+    ], body_state_gaps: [] });
+    assert.equal(JSON.stringify(projected.body).includes('20'), false);
+
+    const unpersisted = projectTraceCombatSubjectiveState(actorRef, {
+      npcs: state.npcs,
+      actor_states: { 'npc:npc-1': { body_state: {
+        health: 20, energy: 85, satiety: 75
+      }, body_state_persisted: false } }
+    }, { combatBodyBandContext });
+    assert.deepEqual(unpersisted.body, { body_state_descriptions: [],
+      body_state_gaps: ['health', 'energy', 'satiety'].map((metric) => ({
+        metric, code: 'body_state_qualitative_metric_gap'
+      })) });
+  });
 
 test('combat assembly does not default omitted semantic operation or statement', () => {
   const request = combatRequest();

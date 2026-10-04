@@ -29,7 +29,10 @@ export function projectTraceCombatWorkingState(state, combatSession = null) {
         prose: null };
       npc.body_profile_ref = initialized.profile_ref;
     }
-    actorStates[`npc:${npcId}`] = { body_state: structuredClone(body) };
+    actorStates[`npc:${npcId}`] = {
+      body_state: structuredClone(body),
+      body_state_persisted: npc.body_state_persisted === true
+    };
   }
   return { ...working, actor_states: actorStates };
 }

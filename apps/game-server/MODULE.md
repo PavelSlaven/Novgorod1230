@@ -726,6 +726,8 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
+Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, while the active v17 bindings intentionally omit `combatBodyBandContext`. Combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved; the scoped profile approval alone does not activate them.
+
 The separately callable v17 target release factory remains outside the default
 selector. It requires the exact issued item and actor successor approvals,
 committed activation events, approved Spatial revision, and verified catalog

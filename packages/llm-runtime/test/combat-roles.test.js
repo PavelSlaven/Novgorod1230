@@ -15,6 +15,7 @@ test('LLM runtime exposes combat planner, repair and weapon classifier roles',
   assert.equal(roles.npc_combat_decider.model, 'deepseek-v4-flash');
   assert.equal(roles.npc_combat_decider.thinking, 'disabled');
   assert.equal(roles.npc_combat_decider.reasoningEffort, null);
+  assert.equal(roles.npc_combat_decider.temperature, 0);
   assert.equal(roles.npc_combat_decider.expectedSchema, null);
   assert.equal(roles.npc_combat_decider_format_repair.expectedSchema, null);
   assert.deepEqual(roles.combat_weapon_classification, {

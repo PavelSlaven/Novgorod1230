@@ -1,28 +1,37 @@
 import { projectCombatBodyStateDescriptions } from '@rus/body-state';
+import { projectNpcCharacterBehavior } from
+  './lower-dvina-trace-m2-conversation-projections.js';
 
 export function projectTraceCombatSubjectiveState(actorRef, state,
-  { combatDataProbe = null } = {}) {
+  { combatDataProbe = null, combatBodyBandContext = null } = {}) {
   const npc = state.npcs?.find(
     ({ instance_id: id }) => id === actorRef.entity_id
   );
   const current = state.actor_states?.[
     `${actorRef.entity_kind}:${actorRef.entity_id}`];
-  const bodyState = current?.body_state !== undefined
-    ? current.body_state : npc?.body_state;
-  const body = projectD65Body(bodyState ?? {}, combatDataProbe ?? {});
+  const bodyState = (current?.body_state_persisted === true
+      || combatDataProbe?.mode === 'D65_PROBE')
+    ? current?.body_state ?? {} : {};
+  const body = combatDataProbe != null
+    ? projectBody(bodyState, combatDataProbe.qualitativeProfile,
+      combatDataProbe.dataApproval, combatDataProbe.mode)
+    : projectBody(bodyState, combatBodyBandContext?.qualitativeProfile,
+      combatBodyBandContext?.scopedProductionApproval,
+      combatBodyBandContext?.mode ?? 'runtime');
+  const character = projectNpcCharacterBehavior(npc);
   return {
-    identity: { name_or_label:
-      npc?.semantic_profile?.identity?.canonical_name
-        ?? npc?.participant_slot_ref ?? 'NPC' },
+    identity: { name_or_label: npc?.identity_state?.canonical_name
+      ?? npc?.semantic_profile?.identity?.canonical_name
+      ?? npc?.participant_slot_ref ?? 'NPC' },
     social_role: {},
     combat_experience: 'limited',
     attributes: [],
     skills: [],
     body,
     mood: {},
-    temperament: [],
-    goals: [],
-    fears: [],
+    temperament: character === null ? [] : [character.temperament],
+    goals: character?.goals ?? [],
+    fears: character?.fears ?? [],
     obligations: [],
     relationships: [],
     available_equipment: (state.items ?? []).filter((item) =>
@@ -32,12 +41,13 @@ export function projectTraceCombatSubjectiveState(actorRef, state,
   };
 }
 
-function projectD65Body(bodyState, probe) {
+function projectBody(bodyState, profile, approval, mode) {
   const projected = projectCombatBodyStateDescriptions({
     body_state: bodyState,
-    qualitative_profile: probe.qualitativeProfile,
-    data_approval: probe.dataApproval,
-    mode: probe.mode
+    qualitative_profile: profile,
+    data_approval: mode === 'D65_PROBE' ? approval : null,
+    scoped_production_approval: mode === 'runtime' ? approval : null,
+    mode
   });
   return { body_state_descriptions: projected.body_state_descriptions,
     body_state_gaps: projected.gaps };

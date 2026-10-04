@@ -3,16 +3,23 @@ import { deepFreeze } from '@rus/kernel';
 const METRICS = ['health', 'energy', 'satiety'];
 
 /**
- * Projects current numeric body metrics through the explicitly D65-only
- * qualitative data profile. Candidate bands are never a production fallback.
+ * Projects current numeric body metrics through the D65 probe or an approved
+ * versioned qualitative profile.
  */
 export function projectCombatBodyStateDescriptions({ body_state: bodyState,
-  qualitative_profile: profile, data_approval: approval, mode } = {}) {
-  const allowed = mode === 'D65_PROBE' && validD65Approval(approval)
+  qualitative_profile: profile, data_approval: approval,
+  scoped_production_approval: productionApproval, mode } = {}) {
+  const allowed = (mode === 'D65_PROBE' && validD65Approval(approval)
     && profile?.status === 'candidate_not_approved'
     && profile?.context_projection?.field === 'body_state_descriptions'
     && profile?.context_projection?.include_only?.join(',')
-      === 'metric,npc_description';
+      === 'metric,npc_description')
+    || (mode === 'runtime'
+      && validScopedProductionApproval(productionApproval, profile)
+      && profile?.status === 'candidate_not_approved'
+      && profile?.context_projection?.field === 'body_state_descriptions'
+      && profile?.context_projection?.include_only?.join(',')
+        === 'metric,npc_description');
 
   const descriptions = [];
   const gaps = [];
@@ -53,4 +60,13 @@ function validD65Approval(approval) {
     && approval.import_authorized === false
     && approval.activation_authorized === false
     && approval.production_authorized === false;
+}
+
+function validScopedProductionApproval(approval, profile) {
+  return approval?.approval_granted === true
+    && approval.profile_id === 'candidate.npc-body-state-description.v1'
+    && approval.profile_id === profile?.profile_id
+    && approval.version === 1
+    && approval.version === profile?.version
+    && approval.production_authorized === true;
 }

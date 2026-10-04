@@ -1,7 +1,58 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const DATA_DIR = 'data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1';
+const BODY_PROFILE_SOURCE_SHA256 = 'dc1a53306ec363d49b9286221e13782cba25c651b489547aa9094a015e4cee01';
+const BODY_PROFILE_SOURCE_COMMIT = 'feed71c2647b38e3ba4ab7bc613aa1483beaa774';
+const BODY_PROFILE_POINTER = '/npc_decision/body_state_qualitative_context';
+const BODY_PROFILE_ID = 'candidate.npc-body-state-description.v1';
+
+/** Loads only the body profile covered by its scoped production approval. */
+export async function loadCombatMinScopedBodyProfile(repositoryRoot) {
+  const directory = resolve(repositoryRoot, DATA_DIR);
+  let bundleBytes;
+  let outerApproval;
+  let scopedApproval;
+  try {
+    [bundleBytes, outerApproval, scopedApproval] = await Promise.all([
+      readFile(resolve(directory, 'minimal-combat-bundle.candidate.json')),
+      readJson(resolve(directory, 'combat-data-approval.json')),
+      readJson(resolve(directory, 'body-bands-production-approval-7.json'))
+    ]);
+  } catch {
+    throw scopedBodyApprovalGap();
+  }
+
+  if (createHash('sha256').update(bundleBytes).digest('hex')
+        !== BODY_PROFILE_SOURCE_SHA256
+      || !hasScopedBodyApproval(scopedApproval)
+      || outerApproval?.approval_granted !== true
+      || outerApproval?.verdict !== 'APPROVE_WITH_LIMITS'
+      || outerApproval?.import_authorized !== false
+      || outerApproval?.activation_authorized !== false
+      || outerApproval?.production_authorized !== false) {
+    throw scopedBodyApprovalGap();
+  }
+
+  let bundle;
+  try {
+    bundle = JSON.parse(bundleBytes.toString('utf8'));
+  } catch {
+    throw scopedBodyApprovalGap();
+  }
+  const qualitativeProfile = bundle.npc_decision?.body_state_qualitative_context;
+  if (bundle.status !== 'candidate_not_approved'
+      || bundle.production_usable !== false
+      || qualitativeProfile?.status !== 'candidate_not_approved'
+      || qualitativeProfile?.profile_id !== BODY_PROFILE_ID
+      || qualitativeProfile?.version !== 1) {
+    throw scopedBodyApprovalGap();
+  }
+
+  return Object.freeze({ qualitativeProfile,
+    scopedProductionApproval: scopedApproval, mode: 'runtime' });
+}
 
 /** Reads the approved authoring package without activating it in gameplay. */
 export async function loadCombatMinDataPackage(repositoryRoot) {
@@ -66,4 +117,47 @@ function productionActivation(bundle, approval) {
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, 'utf8'));
+}
+
+function hasScopedBodyApproval(approval) {
+  return approval?.schema === 'npc_body_qualitative_profile_scoped_approval_v1'
+    && approval.repository === 'PavelSlaven/Novgorod1230'
+    && approval.branch === 'fleet/combat-data'
+    && approval.path === `${DATA_DIR}/minimal-combat-bundle.candidate.json`
+    && approval.commit === BODY_PROFILE_SOURCE_COMMIT
+    && approval.json_pointer === BODY_PROFILE_POINTER
+    && approval.profile_id === BODY_PROFILE_ID
+    && approval.version === 1
+    && approval.verdict === 'APPROVE_WITH_LIMITS'
+    && approval.approval_granted === true
+    && approval.production_authorized === true
+    && approval.import_authorized === false
+    && approval.activation_authorized === false
+    && approval.bundle_production_authorized === false
+    && hasSupportedBodyScope(approval.approved_use);
+}
+
+function hasSupportedBodyScope(use) {
+  return use?.actor === 'ordinary combat NPC only'
+    && use.numeric_domain === 'finite JSON/JS number in [0,100], без округления и преобразования строки/bool'
+    && Array.isArray(use.metrics)
+    && use.metrics.length === 3
+    && use.metrics[0] === 'health'
+    && use.metrics[1] === 'energy'
+    && use.metrics[2] === 'satiety'
+    && Array.isArray(use.intervals)
+    && use.intervals.length === 3
+    && use.intervals[0] === '[0,30)'
+    && use.intervals[1] === '[30,70)'
+    && use.intervals[2] === '[70,100]'
+    && Array.isArray(use.owner_projection_output)
+    && use.owner_projection_output.length === 2
+    && use.owner_projection_output[0] === 'metric'
+    && use.owner_projection_output[1] === 'npc_description';
+}
+
+function scopedBodyApprovalGap() {
+  return Object.assign(new Error('combat_min_scoped_body_profile_approval_gap'), {
+    code: 'combat_min_scoped_body_profile_approval_gap'
+  });
 }

@@ -16,7 +16,8 @@ import { withSceneNpcs } from
   '../../apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js';
 import { projectTraceCombatWorkingState } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-combat-working-state.js';
-import { createCombatMinD65ProbeData, loadCombatMinDataPackage } from
+import { createCombatMinD65ProbeData, loadCombatMinDataPackage,
+  loadCombatMinScopedBodyProfile } from
   '../../apps/game-server/src/runtime/combat-min-data.js';
 import { projectTraceCombatSubjectiveState } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-combat-subjective.js';
@@ -165,6 +166,19 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url));
   const packageData = await loadCombatMinDataPackage(repositoryRoot);
   const probe = createCombatMinD65ProbeData(packageData);
+  const approvedBodyBands = await loadCombatMinScopedBodyProfile(repositoryRoot);
+  const testOnlyBodyBandContext = {
+    ...approvedBodyBands,
+    qualitativeProfile: {
+      ...structuredClone(approvedBodyBands.qualitativeProfile),
+      test_fixture_only: true,
+      metrics: Object.fromEntries(Object.entries(
+        approvedBodyBands.qualitativeProfile.metrics).map(([metric, data]) => [
+        metric, { ...data, bands: data.bands.map((band) => ({ ...band,
+          npc_description: `Тестовая фраза: ${band.npc_description}` })) }
+      ]))
+    }
+  };
   const initializedBody = initializeBodyState({ body_state_profile: {
     schema: probe.bodyInitializationProfileFixture.schema,
     status: probe.bodyInitializationProfileFixture.status,
@@ -313,7 +327,6 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   assert.deepEqual(firstSubjective.body.body_state_descriptions,
     firstHandoff.body_state_descriptions);
   assert.doesNotMatch(JSON.stringify(firstSubjective), /100|80|70|устаревшая/u);
-
   await client.query(`INSERT INTO party_runtime.party_materialization_runs
     (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,
      materializer_version,rng_version,result_digest,idempotency_key,status)
@@ -347,6 +360,20 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   assert.equal(projectTraceCombatWorkingState(offScene, activeSession)
     .actor_states[`npc:${npcId}`].body_state.health,
     afterFirstExchange.health);
+  const firstScopedWorkingState = projectTraceCombatWorkingState(offScene,
+    activeSession);
+  firstScopedWorkingState.npcs[0] = { ...firstScopedWorkingState.npcs[0],
+    body_state: { health: 1 }, body_state_persisted: false };
+  const firstScopedSubjective = projectTraceCombatSubjectiveState(
+    participantRef, firstScopedWorkingState,
+    { combatBodyBandContext: testOnlyBodyBandContext });
+  assert.equal(testOnlyBodyBandContext.qualitativeProfile.test_fixture_only,
+    true);
+  assert.ok(firstScopedSubjective.body.body_state_descriptions.length > 0);
+  assert.ok(firstScopedSubjective.body.body_state_descriptions.every(
+    ({ npc_description }) => npc_description.startsWith('Тестовая фраза: ')));
+  assert.equal(firstScopedSubjective.body.body_state_gaps.length, 0);
+  assert.doesNotMatch(JSON.stringify(firstScopedSubjective.body), /100|80|70/u);
 
   const secondExchange = await runOwnerExchange({
     session: { ...firstExchange.prepared.session_after, status: 'active',
@@ -402,6 +429,19 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   assert.deepEqual(secondSubjective.body.body_state_descriptions,
     secondHandoff.body_state_descriptions);
   assert.doesNotMatch(JSON.stringify(secondSubjective), /\b\d+\b|устаревшая/u);
+  const secondScopedWorkingState = projectTraceCombatWorkingState({
+    ...reloadSnapshot(), actor_id: 'player', body_state: { health: 90 },
+    npcs: afterUpdate.npcs
+  }, activeSession);
+  secondScopedWorkingState.npcs[0] = { ...secondScopedWorkingState.npcs[0],
+    body_state: { health: 1 }, body_state_persisted: false };
+  const secondScopedSubjective = projectTraceCombatSubjectiveState(
+    participantRef, secondScopedWorkingState,
+    { combatBodyBandContext: testOnlyBodyBandContext });
+  assert.ok(secondScopedSubjective.body.body_state_descriptions.length > 0);
+  assert.equal(secondScopedSubjective.body.body_state_gaps.length, 0);
+  assert.ok(secondScopedSubjective.body.body_state_descriptions.every(
+    ({ npc_description }) => npc_description.startsWith('Тестовая фраза: ')));
 
   const failingPlan = await makePlan({ ordinal: 3,
     idempotencyKey: `combat-body-rollback-${suffix}`,

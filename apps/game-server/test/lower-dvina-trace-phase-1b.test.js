@@ -71,6 +71,56 @@ test('public start maps free text to the current published trace', async () => {
   );
 });
 
+test('free-text extraction stays diagnostic while current start and replay stay stable', async () => {
+  const f = fixture();
+  const runtime = createRuntime(f);
+  const request = {
+    start_text: 'Хочу начать весной рыбаком под Ладогой, положение свободное.',
+    request_id: 'm7-d41-free-text-start'
+  };
+  const started = await runtime.startNewGame(request);
+  assert.equal(started.screen.scenario_id, 'lower_dvina_trace_v1');
+  const session = f.repository.sessions.get(started.party_id);
+  const extraction = session.stage26_result.creation_identity
+    .start_parameter_extraction;
+  assert.equal(extraction.schema,
+    'rus.game_server.start_parameter_extraction.v1');
+  assert.equal(extraction.slots.region.state, 'candidate_only');
+  assert.equal(extraction.slots.season.state, 'candidate_match');
+  assert.equal(extraction.slots.occupation.state, 'candidate_match');
+  assert.equal(extraction.slots.social_position.state, 'candidate_match');
+  assert.equal(extraction.compatibility.state, 'no_compatible_start');
+  assert.equal(JSON.stringify(started).includes('start_parameter_extraction'),
+    false);
+  assert.equal(JSON.stringify(started).includes('candidate_match'), false);
+
+  const replayed = await runtime.startNewGame(request);
+  assert.equal(replayed.party_id, started.party_id);
+  assert.equal(f.materializeCalls.length, 1);
+  await assert.rejects(() => runtime.startNewGame({
+    ...request,
+    start_text: 'Хочу начать зимой лодочником в Новгородской земле.'
+  }), { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' });
+});
+
+test('a pre-extraction identity conflicts with the current exact identity',
+  async () => {
+    const f = fixture();
+    const runtime = createRuntime(f);
+    const request = {
+      start_text: 'Хочу начать весной рыбаком под Ладогой, положение свободное.',
+      request_id: 'm7-d41-pre-extraction-identity'
+    };
+    const started = await runtime.startNewGame(request);
+    const stored = f.repository.sessions.get(started.party_id)
+      .stage26_result.creation_identity;
+    delete stored.start_parameter_extraction;
+
+    await assert.rejects(() => runtime.startNewGame(request), {
+      code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT'
+    });
+  });
+
 test('trace dispatch commits before its safe screen', async () => {
   const f = fixture();
   const runtime = createRuntime(f);

@@ -381,17 +381,38 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.equal(await count(pool, 'party_runtime.parties',
     `party:${hashForTest('m2a-false-geography-alias').slice(0, 24)}`), 0);
   const publicRequest = {
-    scenario_id: 'lower_dvina_trace_v1',
+    start_text: 'Хочу начать весной рыбаком под Ладогой, положение свободное.',
     request_id: 'phase-1b-postgres-public'
   };
   const start = await api(base, '/api/v1/new-games', publicRequest);
   assert.equal(start.status, 201);
   assert.equal(start.data.screen.schema, 'first_game_screen');
+  assert.equal(start.data.screen.scenario_id, 'lower_dvina_trace_v1');
   assert.equal(start.data.screen.panels.character.data.name, 'Микула');
   assert.deepEqual(start.data.screen.action_panel.suggested_actions, []);
   assertPublic(start);
+  assert.doesNotMatch(JSON.stringify(start.data),
+    /start_parameter_extraction|candidate_match|candidate_only/u);
 
   const partyId = start.data.party_id;
+  const persistedIdentity = (await pool.query(
+    `SELECT stage26_result->'creation_identity' AS creation_identity
+       FROM party_runtime.party_server_sessions WHERE party_id=$1`,
+    [partyId]
+  )).rows[0].creation_identity;
+  const extraction = persistedIdentity.start_parameter_extraction;
+  assert.equal(extraction.schema,
+    'rus.game_server.start_parameter_extraction.v1');
+  assert.deepEqual(Object.fromEntries(Object.entries(extraction.slots)
+    .map(([slot, value]) => [slot, value.state])), {
+    region: 'candidate_only', season: 'candidate_match',
+    occupation: 'candidate_match', social_position: 'candidate_match'
+  });
+  assert.equal(extraction.compatibility.state, 'no_compatible_start');
+  await assert.rejects(() => api(base, '/api/v1/new-games', {
+    ...publicRequest,
+    start_text: 'Хочу начать зимой лодочником в Новгородской земле.'
+  }), { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' });
   const publicTrace = (await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [partyId]

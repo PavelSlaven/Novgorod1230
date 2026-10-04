@@ -24,6 +24,7 @@ import {
   validateLowerDvinaTraceSessionRead
 } from './lower-dvina-trace-session.js';
 import { validateAuthoredStartSessionRead } from './authored-start-session.js';
+import { matchStartParameters } from './start-parameter-matcher.js';
 
 export function createLowerDvinaTracePublicRuntime({
   partyPool,
@@ -179,7 +180,10 @@ async function startNewGame({
   authoredStartCatalog
 }) {
   const startText = String(input.start_text ?? '').trim();
-  const scenario = String(input.scenario_id ?? '').trim()
+  const requestedScenario = String(input.scenario_id ?? '').trim();
+  const startParameterExtraction = startText && !requestedScenario
+    ? matchStartParameters(startText) : null;
+  const scenario = requestedScenario
     || (startText ? TRACE_SCENARIO_ID : '');
   const supported = scenario === TRACE_SCENARIO_ID
     || authoredStartCatalog?.hasScenario(scenario) === true;
@@ -206,7 +210,10 @@ async function startNewGame({
     launch_branch: launchBranch,
     scenario_id: scenario,
     effective_player_name: effectivePlayerName,
-    branch_input_digest: branchInputDigest
+    branch_input_digest: branchInputDigest,
+    ...(startParameterExtraction == null ? {} : {
+      start_parameter_extraction: startParameterExtraction
+    })
   });
   await repository.assertNewGameCreationIdentity({
     partyId,

@@ -1,0 +1,25 @@
+{
+  "schema": "m7-d41.start-parameter-value-oracle.v1",
+  "status": "development_test_oracle",
+  "source": "bench-cases.json frozen C01-C16 plus candidate-vocabulary.json lexical labels",
+  "note": "Oracle only; values are labels, not canonical IDs, eligibility, compatible starts, or activation data.",
+  "slots": ["region", "season", "occupation", "social_position"],
+  "cases": [
+    { "id": "C01", "expected_values": { "region": null, "season": "весна", "occupation": "рыбак", "social_position": "Свободный" } },
+    { "id": "C02", "expected_values": { "region": null, "season": "весна", "occupation": "рыбак", "social_position": "Свободный" } },
+    { "id": "C03", "expected_values": { "region": null, "season": null, "occupation": "рыбак", "social_position": "Свободный" } },
+    { "id": "C04", "expected_values": { "region": null, "season": null, "occupation": "рыбак", "social_position": null } },
+    { "id": "C05", "expected_values": { "region": null, "season": null, "occupation": null, "social_position": null } },
+    { "id": "C06", "expected_values": { "region": null, "season": "весна", "occupation": null, "social_position": null } },
+    { "id": "C07", "expected_values": { "region": "Новгородская земля", "season": "лето", "occupation": null, "social_position": null } },
+    { "id": "C08", "expected_values": { "region": "Новгородская земля", "season": "лето", "occupation": null, "social_position": null } },
+    { "id": "C09", "expected_values": { "region": "Новгородская земля", "season": "лето", "occupation": "рыбак", "social_position": "Свободный" } },
+    { "id": "C10", "expected_values": { "region": null, "season": "зима", "occupation": "рыбак", "social_position": null } },
+    { "id": "C11", "expected_values": { "region": "Новгородская земля", "season": "весна", "occupation": "рыбак", "social_position": "Свободный" } },
+    { "id": "C12", "expected_values": { "region": "Новгородская земля", "season": "лето", "occupation": "рыбак", "social_position": null } },
+    { "id": "C13", "expected_values": { "region": "Новгородская земля", "season": "лето", "occupation": "лесной промысловик", "social_position": null } },
+    { "id": "C14", "expected_values": { "region": "Новгородская земля", "season": "весна", "occupation": "рыбак", "social_position": null } },
+    { "id": "C15", "expected_values": { "region": null, "season": "лето", "occupation": "лодочник", "social_position": null } },
+    { "id": "C16", "expected_values": { "region": "Новгородская земля", "season": "осень", "occupation": "перевозчик", "social_position": null } }
+  ]
+}

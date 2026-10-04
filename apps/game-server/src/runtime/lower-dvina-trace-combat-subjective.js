@@ -6,17 +6,10 @@ export function projectTraceCombatSubjectiveState(actorRef, state,
     ({ instance_id: id }) => id === actorRef.entity_id
   );
   const current = state.actor_states?.[
-    `${actorRef.entity_kind}:${actorRef.entity_id}`]?.body_state;
-  let body;
-  if (combatDataProbe?.mode === 'D65_PROBE') {
-    if (current == null) fail('TRACE_COMBAT_SUBJECTIVE_BODY_GAP', actorRef);
-    body = projectD65Body(current, combatDataProbe, actorRef);
-  } else {
-    body = projectQualitativeBody(qualitativeBodySources(actorRef, state, npc));
-  }
-  if (Object.keys(body).length === 0) {
-    fail('TRACE_COMBAT_SUBJECTIVE_BODY_GAP', actorRef);
-  }
+    `${actorRef.entity_kind}:${actorRef.entity_id}`];
+  const bodyState = current?.body_state !== undefined
+    ? current.body_state : npc?.body_state;
+  const body = projectD65Body(bodyState ?? {}, combatDataProbe ?? {});
   return {
     identity: { name_or_label:
       npc?.semantic_profile?.identity?.canonical_name
@@ -39,46 +32,15 @@ export function projectTraceCombatSubjectiveState(actorRef, state,
   };
 }
 
-function projectD65Body(bodyState, probe, actorRef) {
+function projectD65Body(bodyState, probe) {
   const projected = projectCombatBodyStateDescriptions({
     body_state: bodyState,
     qualitative_profile: probe.qualitativeProfile,
     data_approval: probe.dataApproval,
     mode: probe.mode
   });
-  if (!projected.ok) fail(projected.error.code, actorRef);
-  return { body_state_descriptions: projected.body_state_descriptions };
-}
-
-function fail(code, actorRef) {
-  throw Object.assign(new Error(code), { code,
-    details: { actor_ref: structuredClone(actorRef) } });
-}
-
-function qualitativeBodySources(actorRef, state, npc) {
-  const current = state.actor_states?.[
-    `${actorRef.entity_kind}:${actorRef.entity_id}`]?.body_state;
-  if (current != null) return [current];
-  return [npc?.subjective_body_state, npc?.check_body_state, npc?.body_state,
-    npc?.machine_state?.body_condition];
-}
-
-function projectQualitativeBody(sources) {
-  const body = {};
-  for (const key of ['condition_summary', 'pain', 'mobility']) {
-    const value = sources.map((source) => source?.[key]).find(
-      (candidate) => typeof candidate === 'string'
-        && candidate.trim() !== '');
-    if (value != null) {
-      body[key] = value;
-    }
-  }
-  const usableHands = sources.map((source) => source?.usable_hands).find(
-    (candidate) => Number.isSafeInteger(candidate) && candidate >= 0);
-  if (usableHands != null) {
-    body.usable_hands = usableHands;
-  }
-  return body;
+  return { body_state_descriptions: projected.body_state_descriptions,
+    body_state_gaps: projected.gaps };
 }
 
 export function projectTracePerceivedCombatState(session, state, actorRef,

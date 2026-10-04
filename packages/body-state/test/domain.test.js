@@ -39,6 +39,7 @@ test('D65 combat body projection emits only package-authored phrases', async () 
     { metric: 'energy', npc_description: 'Запас энергии высокий.' },
     { metric: 'satiety', npc_description: 'Сытость высокая.' }
   ]);
+  assert.deepEqual(result.gaps, []);
   const serialized = JSON.stringify(result);
   for (const forbidden of ['29', '70', '100', 'band_id', 'thresholds',
     'calibration', 'D71']) assert.equal(serialized.includes(forbidden), false);
@@ -54,8 +55,33 @@ test('candidate combat body bands remain unavailable outside D65 probe mode', as
     qualitative_profile: bundle.npc_decision.body_state_qualitative_context,
     data_approval: approval, mode: 'runtime'
   });
-  assert.equal(result.ok, false);
-  assert.equal(result.error.code, 'body_state_qualitative_profile_gap');
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.body_state_descriptions, []);
+  assert.deepEqual(result.gaps, ['health', 'energy', 'satiety'].map((metric) => ({
+    metric, code: 'body_state_qualitative_metric_gap'
+  })));
+});
+
+test('unavailable body metric returns a gap without discarding other bands', async () => {
+  const bundle = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'minimal-combat-bundle.candidate.json'), 'utf8'));
+  const approval = JSON.parse(await readFile(resolve(ROOT, COMBAT_DATA,
+    'combat-data-approval.json'), 'utf8'));
+  const result = projectCombatBodyStateDescriptions({
+    body_state: { health: 29, energy: null, satiety: 100 },
+    qualitative_profile: bundle.npc_decision.body_state_qualitative_context,
+    data_approval: approval, mode: 'D65_PROBE'
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.body_state_descriptions, [
+    { metric: 'health', npc_description: 'Здоровье низкое.' },
+    { metric: 'satiety', npc_description: 'Сытость высокая.' }
+  ]);
+  assert.deepEqual(result.gaps, [{ metric: 'energy',
+    code: 'body_state_qualitative_metric_gap' }]);
+  assert.equal(JSON.stringify(result).includes('29'), false);
+  assert.equal(JSON.stringify(result).includes('100'), false);
 });
 
 test('fixed body effect clones and transitions existing conditions', () => {

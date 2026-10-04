@@ -382,7 +382,7 @@ Domain-command ledger contracts сохраняются.
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy вне ролей, явно назначенных активными контрактами (NPC combat: `lower-dvina-trace-combat-llm.js`, §§32–33), narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 

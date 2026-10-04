@@ -394,7 +394,7 @@ test('production LLM role resolves A1 weapon classification at combat boundary',
     }
   });
 
-test('post-exchange subjective projection reads qualitative body and equipment',
+test('post-exchange projection gaps body without approved bands and keeps equipment',
   () => {
     const state = {
       npcs: [{ instance_id: 'ratsha-1',
@@ -410,8 +410,12 @@ test('post-exchange subjective projection reads qualitative body and equipment',
         controller_npc_id: 'other-npc' } }]
     };
     const projected = projectTraceCombatSubjectiveState(ratsha, state);
-    assert.deepEqual(projected.body,
-      { condition_summary: 'test fixture band' });
+    assert.deepEqual(projected.body, {
+      body_state_descriptions: [],
+      body_state_gaps: ['health', 'energy', 'satiety'].map((metric) => ({
+        metric, code: 'body_state_qualitative_metric_gap'
+      }))
+    });
     assert.deepEqual(projected.available_equipment, [{
       entity_kind: 'item', entity_id: 'knife-1' }]);
   });

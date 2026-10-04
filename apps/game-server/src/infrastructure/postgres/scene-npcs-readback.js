@@ -151,10 +151,19 @@ function sceneNpcBodyState(row, existingProfile = null) {
   return { body_state_profile: row.semantic_state?.body_state_profile
       ?? existingProfile ?? null,
     body_state: row.body_state_version == null ? null : {
-      health: Number(row.health), energy: Number(row.energy),
-      satiety: Number(row.satiety)
+      health: bodyMetric(row.health), energy: bodyMetric(row.energy),
+      satiety: bodyMetric(row.satiety)
     }, body_profile_ref: row.body_profile_ref ?? null,
     body_state_version: row.body_state_version == null ? null
       : Number(row.body_state_version),
     body_state_persisted: row.body_state_version != null };
+}
+
+function bodyMetric(value) {
+  if (value == null || typeof value === 'string' && value.trim() === '') {
+    return null;
+  }
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric >= 0 && numeric <= 100
+    ? numeric : null;
 }

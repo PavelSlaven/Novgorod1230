@@ -606,7 +606,7 @@ test('opening makes at most two attempts and the second fails with the standard 
       assert.deepEqual(error.details.codes, ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
       assert.equal(error.details.opening_rejection.writer_prose, GOOD_PROSE);
       assert.equal(error.details.opening_rejection.repair.outcome, 'still_rejected');
-      assert.deepEqual(error.details.opening_rejection.audit.concerns.map(({ code }) => code),
+      assert.deepEqual(error.details.opening_rejection.stage23.concerns.map(({ code }) => code),
         ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
       return true;
     });

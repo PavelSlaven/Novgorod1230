@@ -25,7 +25,7 @@ export function buildOpeningRejectionSnapshot({ prose, audit, codes = [], repair
   const outcome = REPAIR_OUTCOMES.has(repair?.outcome) ? repair.outcome : null;
   return Object.freeze({
     writer_prose: String(prose ?? '').slice(0, 12_000),
-    audit: Object.freeze({
+    stage23: Object.freeze({
       pass: audit?.pass === true,
       concerns: Object.freeze(safeConcerns),
       evidence: Object.freeze(evidence),
@@ -42,14 +42,15 @@ export function buildOpeningRejectionSnapshot({ prose, audit, codes = [], repair
 export function safeOpeningRejectionFromDetails(details) {
   const raw = details?.opening_rejection;
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const stage23 = raw.stage23 ?? raw.audit;
   const rebuilt = buildOpeningRejectionSnapshot({
     prose: raw.writer_prose,
-    audit: raw.audit,
-    codes: raw.audit?.codes,
+    audit: stage23,
+    codes: stage23?.codes,
     repair: raw.repair
   });
-  if (rebuilt.writer_prose === '' && rebuilt.audit.codes.length === 0
-      && rebuilt.audit.concerns.length === 0 && rebuilt.audit.evidence.length === 0
+  if (rebuilt.writer_prose === '' && rebuilt.stage23.codes.length === 0
+      && rebuilt.stage23.concerns.length === 0 && rebuilt.stage23.evidence.length === 0
       && rebuilt.repair.attempted !== true) return null;
   return rebuilt;
 }

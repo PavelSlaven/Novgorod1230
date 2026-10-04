@@ -7,7 +7,7 @@ import { safeTurnFailure } from '../../../apps/game-server/src/runtime/llm-diagn
 
 const REJECT_SNAPSHOT = {
   writer_prose: 'Вы стоите у сруба.',
-  audit: {
+  stage23: {
     pass: false,
     concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
       message: 'Missing shore fact.' }],
@@ -31,7 +31,7 @@ test('openingAttemptFromNewGame uses developer failure, not the public HTTP erro
   });
   assert.equal(attempt.outcome, 'rejected');
   assert.equal(attempt.writer_prose, REJECT_SNAPSHOT.writer_prose);
-  assert.deepEqual(attempt.audit.codes, ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
+  assert.deepEqual(attempt.stage23.codes, ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
   assert.equal(attempt.repair.outcome, 'still_rejected');
 });
 

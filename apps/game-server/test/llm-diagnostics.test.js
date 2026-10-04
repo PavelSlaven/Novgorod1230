@@ -472,7 +472,7 @@ test('authored opening rejection survives runTurn report sanitization', async ()
           codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'],
           opening_rejection: {
             writer_prose: prose,
-            audit: {
+            stage23: {
               pass: false,
               concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
                 message: 'gap' }],

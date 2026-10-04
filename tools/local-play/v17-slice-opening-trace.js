@@ -13,7 +13,7 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devFailure = nul
     const prose = data?.screen?.main_prose ?? '';
     return Object.freeze({
       n, outcome: 'accepted', writer_prose: String(prose ?? ''),
-      audit: null, repair: null
+      stage23: null, repair: null
     });
   }
   if (error?.code !== OPENING_REJECTED) return null;
@@ -22,7 +22,7 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devFailure = nul
     return Object.freeze({
       n, outcome: 'rejected',
       writer_prose: snapshot.writer_prose ?? '',
-      audit: snapshot.audit ?? { pass: false, concerns: [], evidence: [], codes: [] },
+      stage23: snapshot.stage23 ?? { pass: false, concerns: [], evidence: [], codes: [] },
       repair: snapshot.repair ?? { observed: true, attempted: false }
     });
   }
@@ -30,7 +30,7 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devFailure = nul
     : Array.isArray(error?.details?.codes) ? error.details.codes : [];
   return Object.freeze({
     n, outcome: 'rejected', writer_prose: '',
-    audit: Object.freeze({ pass: false, concerns: [], evidence: [],
+    stage23: Object.freeze({ pass: false, concerns: [], evidence: [],
       codes: Object.freeze(codes.map((code) => String(code))) }),
     repair: Object.freeze({ observed: false, attempted: null })
   });
@@ -43,12 +43,12 @@ export function renderOpeningAttemptsTable(attempts = []) {
     '|---:|---|---|---|---|---|'
   ];
   for (const attempt of attempts) {
-    const codes = attempt.audit?.codes?.join(', ') ?? '—';
+    const codes = attempt.stage23?.codes?.join(', ') ?? '—';
     const repair = attempt.repair?.observed === false ? 'неизвестно'
       : attempt.repair?.attempted === true
         ? (attempt.repair.outcome ?? 'attempted')
         : attempt.repair?.attempted === false ? 'нет' : '—';
-    const concerns = attempt.audit?.concerns?.map(({ code }) => code).join(', ') ?? '—';
+    const concerns = attempt.stage23?.concerns?.map(({ code }) => code).join(', ') ?? '—';
     const prose = String(attempt.writer_prose ?? '').replace(/\s+/gu, ' ').slice(0, 80)
       .replaceAll('|', '/') || '—';
     lines.push(`| ${attempt.n} | ${attempt.outcome} | ${codes || '—'} | ${repair} | ${concerns || '—'} | ${prose} |`);

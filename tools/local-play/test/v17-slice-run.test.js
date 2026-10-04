@@ -178,7 +178,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
         code: 'AUTHORED_OPENING_AUDIT_REJECTED',
         opening_rejection: {
           writer_prose: 'Черновик вступления.',
-          audit: { pass: false, concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
+          stage23: { pass: false, concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
             severity: 'repairable', message: 'gap' }], evidence: ['gap'], codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'] },
           repair: { observed: true, attempted: false }
         }

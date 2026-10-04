@@ -31,6 +31,7 @@
 | 17. Жёсткий запрет гипотетической integrity/security-инфраструктуры | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 18. Начало работы над задачей | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 18.1. Обязательные навыки `caveman` и `ponytail` (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 18.2. Задача под ведущим (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 19. Изучение репозитория и инструменты | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 20. Документация и её владельцы | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 21. Реализация и изменение контрактов | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
@@ -40,8 +41,11 @@
 | 24. Тестирование и проверки | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 24.1. Обязательный отчёт настоящего gameplay run (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 24.2. Проверки не подгоняются под реализацию (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 24.3. Модельный стенд (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 24.4. Промпт и вход LLM-роли (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 25. Субагенты и независимый аудит | [AR — AUDIT_RULES.md](AUDIT_RULES.md) |
 | 26. Git, GitHub и stacked PR | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |
+| 26.2. Слияние в интеграционную ветку (добавлен после переноса) | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |
 | 27. Защита пользовательской работы и опасные действия | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |
 | 28. Критерии архитектурной ревизии | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 29. Завершение задачи | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |

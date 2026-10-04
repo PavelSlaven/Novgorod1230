@@ -14,7 +14,7 @@
 //   items-weapons-armour/scripts/snapshot-master.cjs   takes the MASTER archive path from argv, outside the repo
 //   occupations-activities/npc_runtime_profiles/export_pr98.py   exports from a pinned commit of the PR #98 checkout
 //   history-events-knowledge/historical_events/scripts/validate_events.cjs   needs an output-dir argument (fails without)
-//   validators that write reports and depend on the machine or on external files: crafts validate.cjs,
+//   validators that write reports and depend on the machine or on external files:
 //   items-weapons-armour validate.cjs (sqlite), items-household validate.py
 // crafts build.cjs reads MATCULT_CATALOG when set; the env below strips it, so the committed output must not depend on it.
 import assert from 'node:assert/strict';
@@ -36,6 +36,7 @@ const BUILDERS = [
   ['crafts-tools-processes', N, 'scripts/build.cjs'],
   ['crafts-tools-processes', N, 'scripts/crosswalk.cjs'],
   ['crafts-tools-processes', P, 'scripts/pf_crosswalk.py'],
+  ['crafts-tools-processes', N, 'scripts/validate.cjs'],
   ['economy-trade-measures', N, 'currencies_measures/scripts/build_currencies_measures.mjs'],
   ['economy-trade-measures', N, 'currencies_measures/scripts/build_econ_rates.mjs'],
   ['economy-trade-measures', N, 'price_bands/scripts/build_category_price_bands.mjs'],
@@ -93,21 +94,27 @@ function python() {
   return ['python3', 'python'].find(name => spawnSync(name, ['--version']).status === 0);
 }
 
-function makeRepoCopy() {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'game-base-fresh-'));
-  let real = REPO, copy = tmp;
-  const parts = GB.split('/');
-  for (const [index, part] of parts.entries()) {
-    for (const entry of fs.readdirSync(real, { withFileTypes: true })) {
-      if (entry.name === part || !entry.isDirectory() || entry.name === '.git') continue;
-      fs.symlinkSync(path.join(real, entry.name), path.join(copy, entry.name), 'junction');
+function makeRepoCopy(parent, afterFirstSymlink = () => {}) {
+  const tmp = fs.mkdtempSync(path.join(parent, 'game-base-fresh-'));
+  try {
+    let real = REPO, copy = tmp, injected = false;
+    const parts = GB.split('/');
+    for (const [index, part] of parts.entries()) {
+      for (const entry of fs.readdirSync(real, { withFileTypes: true })) {
+        if (entry.name === part || !entry.isDirectory() || entry.name === '.git') continue;
+        fs.symlinkSync(path.join(real, entry.name), path.join(copy, entry.name), 'junction');
+        if (!injected) { injected = true; afterFirstSymlink(); }
+      }
+      real = path.join(real, part);
+      copy = path.join(copy, part);
+      if (index < parts.length - 1) fs.mkdirSync(copy);
     }
-    real = path.join(real, part);
-    copy = path.join(copy, part);
-    if (index < parts.length - 1) fs.mkdirSync(copy);
+    fs.cpSync(real, copy, { recursive: true });
+    return { tmp, copy, real };
+  } catch (error) {
+    fs.rmSync(tmp, { recursive: true, force: true });
+    throw error;
   }
-  fs.cpSync(real, copy, { recursive: true });
-  return { tmp, copy, real };
 }
 
 function files(root) {
@@ -131,25 +138,156 @@ function differing(committed, rebuilt) {
   });
 }
 
-test('committed game-base-v1 generated files match a fresh rebuild', { timeout: 900_000 }, () => {
-  const py = python();
-  const { tmp, copy, real } = makeRepoCopy();
-  try {
-    const env = { ...process.env, NOVGOROD_MAIN: tmp, PYTHONDONTWRITEBYTECODE: '1', PYTHONIOENCODING: 'utf-8' };
-    for (const name of ['MATCULT_CATALOG', 'MATCULT_DIR', 'MASTER_DIR', 'MASTER_TP_DIR', 'NOV1230_DB', 'PR98_ROOT', 'MAIN_ROOT']) delete env[name];
-    const failed = [];
-    for (const [cwd, kind, script, ...args] of BUILDERS) {
-      const command = kind === P ? py : process.execPath;
-      if (!command) { failed.push(`${cwd}: ${script} needs python3 or python`); continue; }
-      const run = spawnSync(command, [script, ...args], { cwd: path.join(copy, cwd), env, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, timeout: 300_000 });
-      if (run.status !== 0) failed.push(`${cwd}: ${script} exited ${run.status}: ${(run.stderr || run.error?.message || '').slice(-300)}`);
-    }
-    assert.deepEqual(failed, [], `builders failed in the temporary copy:\n${failed.join('\n')}`);
+function installOrderHooks(root) {
+const nodeHook = path.join(root, 'readdir-hook.cjs');
+const pythonHook = path.join(root, 'sitecustomize.py');
+  fs.writeFileSync(nodeHook, `
+const fs = require('node:fs');
+const { syncBuiltinESMExports } = require('node:module');
+if (process.env.GAME_BASE_HOOK_MARKER) fs.appendFileSync(process.env.GAME_BASE_HOOK_MARKER, 'node\\t' + process.env.TMPDIR + '\\n');
+const order = (entries) => {
+  const sorted = [...entries].sort((a, b) => String(a.name ?? a) < String(b.name ?? b) ? -1 : String(a.name ?? a) > String(b.name ?? b) ? 1 : 0);
+  return process.env.GAME_BASE_READDIR_ORDER === 'reverse' ? sorted.reverse() : sorted;
+};
+const readdirSync = fs.readdirSync.bind(fs);
+fs.readdirSync = (...args) => order(readdirSync(...args));
+const readdir = fs.promises.readdir.bind(fs.promises);
+fs.promises.readdir = async (...args) => order(await readdir(...args));
+syncBuiltinESMExports();
+`);
+  fs.writeFileSync(pythonHook, `
+import os
 
-    const changed = differing(real, copy);
-    assert.deepEqual(changed, [], `stale or machine-dependent generated files in ${GB}:\n${changed.join('\n')}\n`
+if os.environ.get("GAME_BASE_HOOK_MARKER"):
+    with open(os.environ["GAME_BASE_HOOK_MARKER"], "a", encoding="utf-8") as marker:
+        marker.write("python\\t" + os.environ.get("TMPDIR", "") + "\\n")
+
+_listdir = os.listdir
+_scandir = os.scandir
+
+def _ordered(entries):
+    result = sorted(entries, key=lambda entry: entry.name if hasattr(entry, "name") else entry)
+    return list(reversed(result)) if os.environ.get("GAME_BASE_READDIR_ORDER") == "reverse" else result
+
+def listdir(path="."):
+    return _ordered(_listdir(path))
+
+class _Scandir:
+    def __init__(self, path):
+        self.entries = iter(_ordered(list(_scandir(path))))
+    def __iter__(self):
+        return self
+    def __next__(self):
+        return next(self.entries)
+    def __enter__(self):
+        return self
+    def __exit__(self, *args):
+        return False
+
+def scandir(path="."):
+    return _Scandir(path)
+
+os.listdir = listdir
+os.scandir = scandir
+`);
+  return { nodeHook, pythonHook };
+}
+
+function environment(profile, hooks, mainRoot) {
+  const env = { ...process.env, NOVGOROD_MAIN: mainRoot, LC_ALL: profile.locale, LANG: profile.locale, TZ: profile.timezone,
+    PYTHONHASHSEED: profile.hashSeed, PYTHONDONTWRITEBYTECODE: '1', PYTHONIOENCODING: 'utf-8',
+    GAME_BASE_READDIR_ORDER: profile.order, PYTHONPATH: path.dirname(hooks.pythonHook),
+    TMPDIR: mainRoot, GAME_BASE_HOOK_MARKER: hooks.marker,
+    NODE_OPTIONS: `--require="${hooks.nodeHook}"` };
+  for (const name of ['MATCULT_CATALOG', 'MATCULT_DIR', 'MASTER_DIR', 'MASTER_TP_DIR', 'NOV1230_DB', 'PR98_ROOT', 'MAIN_ROOT']) delete env[name];
+  return env;
+}
+
+function runBuilders(copy, cwdMode, env, py) {
+  const failed = [];
+  for (const [group, kind, script, ...args] of BUILDERS) {
+    const command = kind === P ? py : process.execPath;
+    if (!command) { failed.push(`${group}: ${script} needs python3 or python`); continue; }
+    const scriptPath = path.join(copy, group, script);
+    const cwd = cwdMode === 'group' ? path.join(copy, group) : copy;
+    const run = spawnSync(command, [scriptPath, ...args], { cwd, env, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, timeout: 300_000 });
+    if (run.status !== 0) failed.push(`${group}: ${script} exited ${run.status}: ${(run.stderr || run.error?.message || '').slice(-300)}`);
+  }
+  return failed;
+}
+
+function assertOrderHooks(hooks, root, py) {
+  assert.ok(py, 'determinism test needs python3 or python');
+  const fixture = path.join(root, 'order-fixture');
+  fs.mkdirSync(fixture);
+  for (const name of ['m', 'z', 'a']) fs.writeFileSync(path.join(fixture, name), '');
+  const observed = [];
+  for (const profile of [
+    { locale: 'C', timezone: 'UTC', hashSeed: '1', order: 'sorted' },
+    { locale: 'sv_SE.UTF-8', timezone: 'Pacific/Honolulu', hashSeed: '8675309', order: 'reverse' },
+  ]) {
+    const env = environment(profile, hooks);
+    const js = spawnSync(process.execPath, ['-e', 'process.stdout.write(require("node:fs").readdirSync(process.argv[1]).join(","))', fixture], { env, encoding: 'utf8' });
+    const pythonResult = spawnSync(py, ['-c', 'import os,sys; print(",".join(os.listdir(sys.argv[1])), end="")', fixture], { env, encoding: 'utf8' });
+    const scandirResult = spawnSync(py, ['-c', 'import os,sys; first=next(os.scandir(sys.argv[1])).name; files=next(os.walk(sys.argv[1]))[2]; print(first+"|"+",".join(files), end="")', fixture], { env, encoding: 'utf8' });
+    const localeResult = spawnSync(process.execPath, ['-e', 'process.stdout.write(Intl.Collator().resolvedOptions().locale + ":" + ["ä","z"].sort((a,b)=>a.localeCompare(b)).join(""))'], { env, encoding: 'utf8' });
+    assert.equal(js.status, 0, js.stderr);
+    assert.equal(pythonResult.status, 0, pythonResult.stderr);
+    assert.equal(scandirResult.status, 0, scandirResult.stderr);
+    assert.equal(localeResult.status, 0, localeResult.stderr);
+    observed.push([js.stdout, pythonResult.stdout, scandirResult.stdout, localeResult.stdout]);
+  }
+  assert.deepEqual(observed, [['a,m,z', 'a,m,z', 'a|a,m,z', 'en-US:äz'], ['z,m,a', 'z,m,a', 'z|z,m,a', 'sv-SE:zä']],
+    'test profiles must change Node locale and force opposite Node/Python directory orders');
+}
+
+function assertByteEqualOutputs(first, second) {
+  for (const output of [
+    'crafts-tools-processes/materials_registry/material_resolution.csv',
+    'crafts-tools-processes/validation-report.json',
+  ]) {
+    const a = fs.readFileSync(path.join(first, output));
+    const b = fs.readFileSync(path.join(second, output));
+    assert.ok(a.equals(b), `${output} differs byte-for-byte between identical inputs`);
+  }
+}
+
+test('game-base-v1 builders produce identical bytes across machine-like environments', { timeout: 1_800_000 }, () => {
+  const py = python();
+  let root, hooks, first, second;
+  try {
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'game base determinism-'));
+    hooks = installOrderHooks(root);
+    hooks.marker = path.join(root, 'hook-loads.log');
+    const beforeFaultInjection = fs.readdirSync(root).sort();
+    assert.throws(() => makeRepoCopy(root, () => { throw new Error('injected partial-copy failure'); }), /injected partial-copy failure/);
+    assert.deepEqual(fs.readdirSync(root).sort(), beforeFaultInjection, 'makeRepoCopy removes its partial copy after setup failure');
+    first = makeRepoCopy(root);
+    second = makeRepoCopy(root);
+    assertOrderHooks(hooks, root, py);
+    const profiles = [
+      { locale: 'C', timezone: 'UTC', hashSeed: '1', order: 'sorted', cwd: 'group' },
+      { locale: 'sv_SE.UTF-8', timezone: 'Pacific/Honolulu', hashSeed: '8675309', order: 'reverse', cwd: 'root' },
+    ];
+    const outcomes = profiles.map((profile, index) => {
+      const env = environment(profile, hooks, index === 0 ? first.tmp : second.tmp);
+      const copy = index === 0 ? first.copy : second.copy;
+      const failed = runBuilders(copy, profile.cwd, env, py);
+      assert.deepEqual(failed, [], `builders failed in ${profile.locale}/${profile.timezone}/${profile.order}:\n${failed.join('\n')}`);
+      return copy;
+    });
+    assertByteEqualOutputs(outcomes[0], outcomes[1]);
+    const hookLoads = fs.readFileSync(hooks.marker, 'utf8').trim().split('\n');
+    assert.ok(hookLoads.some(line => line.startsWith(`node\t${root}${path.sep}`)), 'Node preload ran with TMPDIR containing spaces');
+    assert.ok(hookLoads.some(line => line.startsWith(`python\t${root}${path.sep}`)), 'Python sitecustomize ran with TMPDIR containing spaces');
+    const different = differing(outcomes[0], outcomes[1]);
+    assert.deepEqual(different, [], `machine-dependent generated files in ${GB}:\n${different.slice(0, 100).join('\n')}`);
+
+    const stale = differing(second.real, outcomes[1]);
+    assert.deepEqual(stale, [], `stale generated files in ${GB}:\n${stale.join('\n')}\n`
       + 'Rebuild them with the builders listed in scripts/generated-freshness.test.mjs and commit the result.');
   } finally {
-    fs.rmSync(tmp, { recursive: true, force: true });
+    for (const copy of [first, second]) if (copy) fs.rmSync(copy.tmp, { recursive: true, force: true });
+    if (root) fs.rmSync(root, { recursive: true, force: true });
   }
 });

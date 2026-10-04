@@ -8,6 +8,7 @@ import { computeVisibleContextPackageDigest } from '@rus/contracts';
 import { adaptApprovedOpeningNarration } from '@rus/narration';
 import { serverError } from '../errors.js';
 import { GAMEPLAY_LLM_CALL_TIMEOUT_MS } from './llm-turn-budget.js';
+import { buildOpeningRejectionSnapshot } from './opening-rejection-snapshot.js';
 
 const WRITER = `Return only {"prose":"<complete opening>"}. Write 2-4 connected
 paragraphs of restrained literary Russian in second person. Use only the supplied
@@ -113,7 +114,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
           try {
             return await runBoundedOpening({ requestId,
               visibleContextPackage, visibleContextApproval, writer, auditor,
-              auditOutput, semanticRepairer, repair });
+              auditOutput, semanticRepairer, repair, llmDiagnostics });
           } catch (error) {
             const handoffRetry = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
               && Array.isArray(error?.details?.codes)
@@ -150,7 +151,8 @@ function canAffordAnotherCall(turnBudget) {
 }
 
 async function runBoundedOpening({ requestId, visibleContextPackage,
-  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer, repair }) {
+  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer, repair,
+  llmDiagnostics = null }) {
       const stage22Input = buildStage22NarratorInput({ request_id: requestId,
         visible_context_package: visibleContextPackage,
         visible_context_package_digest:
@@ -184,12 +186,12 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
   if (stage23.result.pass !== true) {
     if (stage23.result.narrator_prose_audit.concerns.some(({ severity }) =>
       ['hard_block', 'upstream_block'].includes(severity))) {
-      openingError('AUTHORED_OPENING_AUDIT_REJECTED',
-        stage23.result.narrator_prose_audit.concerns);
+      throwOpeningAuditRejected({ stage22, stage23, repair,
+        outcome: null });
     }
     if (repair.spent) {
-      openingError('AUTHORED_OPENING_AUDIT_REJECTED',
-        stage23.result.narrator_prose_audit.concerns);
+      throwOpeningAuditRejected({ stage22, stage23, repair,
+        outcome: 'still_rejected' });
     }
     repair.spent = true;
     stage22 = stage22Result(stage22Input,
@@ -206,9 +208,24 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
         stage22_result: stage22, stage23_result: stage23.result });
       if (handoff.length > 0) throw serverError('AUTHORED_OPENING_AUDIT_REJECTED',
         'Stage 23 rejected the authored opening.', { status: 409,
-          details: { codes: handoff.map(({ code }) => code) } });
+          details: {
+            codes: handoff.map(({ code }) => code),
+            opening_rejection: buildOpeningRejectionSnapshot({
+              prose: stage22.narrator_starting_prose?.prose,
+              audit: stage23.result.narrator_prose_audit,
+              codes: handoff.map(({ code }) => code),
+              repair: { attempted: repair.spent === true, outcome: 'handoff_blocked' }
+            })
+          } });
   const flow = adaptApprovedOpeningNarration({ stage22Result: stage22,
     stage23Result: stage23.result });
+      try {
+        llmDiagnostics?.recordOpeningAttempt?.(buildOpeningRejectionSnapshot({
+          prose: flow.approved_output.prose,
+          audit: stage23.result.narrator_prose_audit,
+          repair: { attempted: repair.spent === true }
+        }));
+      } catch { /* diagnostics must not affect opening */ }
       return Object.freeze({ prose: flow.approved_output.prose,
         literary_pass: stage23.result.narrator_prose_audit
           .checks.literary_composition_check.pass,
@@ -277,4 +294,23 @@ function openingError(code, concerns) {
   throw serverError(code, 'Authored opening narration failed closed.', {
     status: 409, details: { codes: concerns.map(({ code: item }) => item) }
   });
+}
+
+function throwOpeningAuditRejected({ stage22, stage23, repair, outcome }) {
+  const audit = stage23.result.narrator_prose_audit;
+  const codes = audit.concerns.map(({ code }) => code);
+  throw serverError('AUTHORED_OPENING_AUDIT_REJECTED',
+    'Authored opening narration failed closed.', {
+      status: 409,
+      details: {
+        codes,
+        opening_rejection: buildOpeningRejectionSnapshot({
+          prose: stage22.narrator_starting_prose?.prose,
+          audit,
+          codes,
+          repair: { attempted: repair.spent === true || outcome === 'still_rejected',
+            ...(outcome ? { outcome } : {}) }
+        })
+      }
+    });
 }

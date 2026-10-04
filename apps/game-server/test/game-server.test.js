@@ -62,6 +62,31 @@ test('unresolved ordinary discovery is a non-5xx conflict without private detail
   assert.equal(error.details.reason, 'budget_or_cap_exhausted');
 });
 
+test('authored opening audit rejection stays code-only on the public HTTP envelope', () => {
+  const response = errorEnvelope(Object.assign(new Error('internal'), {
+    code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+    status: 409,
+    details: {
+      codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'],
+      opening_rejection: {
+        writer_prose: 'Вы у берега.',
+        audit: {
+          pass: false,
+          concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+            message: 'Missing fact.' }],
+          evidence: ['Shore required.'],
+          codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+        },
+        repair: { attempted: true, outcome: 'still_rejected' }
+      }
+    }
+  }));
+  assert.equal(response.status, 409);
+  assert.equal(response.body.error.code, 'AUTHORED_OPENING_AUDIT_REJECTED');
+  assert.equal(response.body.error.opening_rejection, undefined);
+  assert.equal(JSON.stringify(response.body).includes('Вы у берега'), false);
+});
+
 test('known turn failures use safe public categories and never expose internal diagnostics', () => {
   for (const [internalCode, publicCode, publicMessage] of [
     ['TURN_STEP_PLAN_INVALID', 'TURN_NOT_SAVED', 'Ход не сохранён. Попробуйте сформулировать действие иначе.'],

@@ -604,6 +604,10 @@ test('opening makes at most two attempts and the second fails with the standard 
     await assert.rejects(h.run(), (error) => {
       assert.equal(error.code, 'AUTHORED_OPENING_AUDIT_REJECTED');
       assert.deepEqual(error.details.codes, ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
+      assert.equal(error.details.opening_rejection.writer_prose, GOOD_PROSE);
+      assert.equal(error.details.opening_rejection.repair.outcome, 'still_rejected');
+      assert.deepEqual(error.details.opening_rejection.stage23.concerns.map(({ code }) => code),
+        ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
       return true;
     });
     assert.equal(h.count('gameplay_narrator'), 2);

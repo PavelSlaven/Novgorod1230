@@ -1,3 +1,5 @@
+import { safeOpeningRejectionFromDetails } from './opening-rejection-snapshot.js';
+
 const SAFE_WRITE_PLAN_FAILURES = new Set([
   'write_plan_invariant:visible_package_persistence_gap:presentation_write_owner_invalid',
   'write_plan_invariant:generated_schema_mismatch:write_record_shape_or_mode_invalid',
@@ -64,9 +66,21 @@ export function safeWritePlanFailure(value = {}) {
       || !SAFE_WRITE_PLAN_FAILURES.has(`${stage}:${detailCode}:${reason}`)) return null;
   return Object.freeze({ code, detail_code: detailCode, stage, reason });
 }
+
 export function safeTurnFailure(value = {}) {
   return safeWritePlanFailure(value) ?? safeNarrationFailure(value)
-    ?? safeNpcFailure(value) ?? safeTurnStepFailure(value);
+    ?? safeOpeningFailure(value) ?? safeNpcFailure(value) ?? safeTurnStepFailure(value);
+}
+
+function safeOpeningFailure(value = {}) {
+  if (text(value?.code) !== 'AUTHORED_OPENING_AUDIT_REJECTED') return null;
+  const openingRejection = safeOpeningRejectionFromDetails(value?.details)
+    ?? safeOpeningRejectionFromDetails({ opening_rejection: value?.opening_rejection });
+  if (!openingRejection) return Object.freeze({ code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+  return Object.freeze({
+    code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+    opening_rejection: openingRejection
+  });
 }
 function safeTurnStepFailure(value = {}) {
   if (text(value?.code) !== 'TURN_STEP_PLAN_INVALID') return null;

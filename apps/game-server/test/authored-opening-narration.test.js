@@ -304,26 +304,33 @@ test('opening translates all approved initial Temporal phases and rejects unknow
         weight: '1', weather_state_ref: { entity_ref: { entity_kind: 'weather_state',
           entity_id: 'clear' }, authoring_version: '1' } }] } },
       weather_states: [{ weather_state_id: 'clear', sky: 'clear' }] } };
-  const phases = [...new Set([0, 250, 300, 1100, 1150, 1439].map((minute) =>
+  const environments = Array.from({ length: 1440 }, (_, local_minute_of_day) =>
     deriveApprovedInitialEnvironment({ calendar_record: calendarRecord,
       weather_record: weatherRecord, calendar_date: { year: 1230, month: 8, day: 20 },
-      local_minute_of_day: minute, random: { nextUint32: () => 0 } }).day_part))]
-    .map((source) => ({ source, day: ({ night: 'Ночь.', civil_dawn: 'Рассвет.',
-      daylight: 'День.', civil_dusk: 'Сумерки.' })[source], light: ({ night: 'Ночь.',
-      civil_dawn: 'Светает.', daylight: 'Стоит светлое время дня.',
-      civil_dusk: 'Сгущаются сумерки.' })[source] }));
-  assert.equal(phases.length, 4);
-  for (const phase of phases) {
-    for (const [field, expected] of [['day_part', phase.day],
-      ['light_state', phase.light]]) {
+      local_minute_of_day, random: { nextUint32: () => 0 } }));
+  const dayParts = [...new Set(environments.map(({ day_part }) => day_part))];
+  const lightStates = [...new Set(environments.map(({ light_state }) => light_state))];
+  assert.deepEqual(dayParts, ['night', 'civil_dawn', 'daylight', 'civil_dusk']);
+  assert.deepEqual(lightStates, ['night', 'civil_dawn', 'daylight', 'civil_dusk']);
+  const translations = {
+    day_part: { night: 'Ночь.', civil_dawn: 'Рассвет.', daylight: 'День.',
+      civil_dusk: 'Сумерки.' },
+    light_state: { night: 'Ночь.', civil_dawn: 'Светает.',
+      daylight: 'Стоит светлое время дня.', civil_dusk: 'Сгущаются сумерки.' }
+  };
+  for (const [field, values] of [['day_part', dayParts],
+    ['light_state', lightStates]]) {
+    for (const source of values) {
+      const expected = translations[field][source];
+      assert.equal(typeof expected, 'string', `${field} translation missing: ${source}`);
       let captured = null;
       const pkg = structuredClone(openingPackage());
       pkg.frame = { ...pkg.frame, season: 'summer',
-        day_part: field === 'day_part' ? phase.source : null,
-        light_profile: field === 'light_state' ? phase.source : null };
+        day_part: field === 'day_part' ? source : null,
+        light_profile: field === 'light_state' ? source : null };
       pkg.weather_light_context = [{ season: 'summer',
-        day_part: field === 'day_part' ? phase.source : null,
-        light_state: field === 'light_state' ? phase.source : null }];
+        day_part: field === 'day_part' ? source : null,
+        light_state: field === 'light_state' ? source : null }];
       const service = createAuthoredOpeningNarrationService({ roleRunner: {
         async run(call) {
           captured = JSON.parse(call.messages[1].content);
@@ -333,10 +340,10 @@ test('opening translates all approved initial Temporal phases and rejects unknow
       try {
         await service.run({ requestId: 'opening:1', visibleContextPackage: pkg,
           visibleContextApproval: openingApproval(pkg) });
-      } catch {}
-      assert.ok(captured, `${phase.source} ${field} did not reach the writer`);
+      } catch (error) { assert.equal(error.message, 'payload captured'); }
+      assert.ok(captured, `${source} ${field} did not reach the writer`);
       assert.ok(captured.сцена.факты.includes(expected),
-        `${phase.source} ${field} missing from ${JSON.stringify(captured)}`);
+        `${source} ${field} missing from ${JSON.stringify(captured)}`);
       assert.doesNotMatch(JSON.stringify(captured),
         /civil_dawn|civil_dusk|daylight|light_profile|day_part/u);
     }
@@ -357,6 +364,112 @@ test('opening translates all approved initial Temporal phases and rejects unknow
     (error) => error.code === 'OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED'
       && error.details.field === field);
     assert.equal(calls, 0);
+  }
+});
+
+test('opening scene facts suppress duplicate anchor, item, and exit facts', async () => {
+  const pkg = structuredClone(openingPackage());
+  pkg.visible_scene_facts = [
+    { fact_id: 'opening:shore', text: 'Вы стоите у берега.',
+      source_refs: ['anchor:shore'] },
+    { fact_id: 'opening:rope', text: 'На доске лежит верёвка.',
+      source_refs: ['item:rope'] },
+    { fact_id: 'opening:wharf', text: 'Тропа ведёт к пристани.',
+      source_refs: ['edge:wharf'] }
+  ];
+  pkg.visible_anchors = [{ anchor_id: 'anchor:shore', label: 'берега' }];
+  pkg.visible_items = [{ item_instance_id: 'item:rope', label: 'верёвка',
+    placement: 'on_ground' }];
+  pkg.visible_exits = [{ edge_id: 'edge:wharf', label: 'пристани' }];
+  const calls = [];
+  const service = createAuthoredOpeningNarrationService({ roleRunner: {
+    async run(call) {
+      const input = JSON.parse(call.messages[1].content);
+      calls.push({ role: call.role_id, facts: input.сцена.факты });
+      if (call.role_id === 'gameplay_narrator') {
+        return { output: { prose: 'Вы стоите на берегу. На доске лежит верёвка. Тропа ведёт к пристани.' } };
+      }
+      return { output: { pass: true, failed_checks: [], concerns: [],
+        evidence: ['f1 подтверждает сцену.'] } };
+    }
+  } });
+  await service.run({ requestId: 'opening:1', visibleContextPackage: pkg,
+    visibleContextApproval: openingApproval(pkg) });
+  assert.deepEqual(calls.map(({ role }) => role),
+    ['gameplay_narrator', 'gameplay_narrator_auditor']);
+  const expected = ['Вы стоите у берега.', 'На доске лежит верёвка.',
+    'Тропа ведёт к пристани.'];
+  for (const { role, facts } of calls) {
+    const sceneFacts = facts.map((fact) => typeof fact === 'string' ? fact : fact.текст);
+    for (const text of expected) assert.equal(sceneFacts.filter((fact) => fact === text).length,
+      1, `${role}: ${text}`);
+    for (const duplicate of ['берега', 'верёвка', 'пристани']) {
+      assert.equal(sceneFacts.includes(duplicate), false, `${role}: duplicate ${duplicate}`);
+    }
+  }
+  assert.equal(new Set(calls[1].facts.map(({ ключ }) => ключ)).size,
+    calls[1].facts.length);
+});
+
+test('opening deduplicates only whole visible scene tokens with matching item refs', async () => {
+  const project = async (pkg) => {
+    const calls = [];
+    const service = createAuthoredOpeningNarrationService({ roleRunner: {
+      async run(call) {
+        const payload = JSON.parse(call.messages[1].content);
+        calls.push({ role: call.role_id, facts: payload.сцена.факты });
+        if (call.role_id === 'gameplay_narrator') {
+          return { output: { prose: 'Вы стоите на берегу. Пристань, лес и верёвка видны.' } };
+        }
+        return { output: { pass: true, failed_checks: [], concerns: [],
+          evidence: ['f1 подтверждает сцену.'] } };
+      }
+    } });
+    await service.run({ requestId: 'opening:1', visibleContextPackage: pkg,
+      visibleContextApproval: openingApproval(pkg) });
+    return Object.fromEntries(calls.map(({ role, facts }) => [role,
+      facts.map((fact) => typeof fact === 'string' ? fact : fact.текст)]));
+  };
+  const base = structuredClone(openingPackage());
+  const cases = [
+    { name: 'exit_named_in_known_context', pkg: (() => {
+      const pkg = structuredClone(base);
+      pkg.visible_scene_facts = [];
+      pkg.known_context.push({ text: 'Брат ушёл к пристани за лодкой.',
+        basis_refs: ['player:1'] });
+      pkg.visible_exits = [{ edge_id: 'edge:wharf', label: 'пристани' }];
+      return pkg;
+    })(), expected: ['Брат ушёл к пристани за лодкой.', 'пристани'] },
+    { name: 'anchor_substring_of_other_word', pkg: (() => {
+      const pkg = structuredClone(base);
+      pkg.visible_scene_facts = [{ fact_id: 'opening:ladder',
+        text: 'У стены стоит лестница.', source_refs: ['anchor:forest'] }];
+      pkg.visible_anchors = [{ anchor_id: 'anchor:forest', label: 'лес' }];
+      return pkg;
+    })(), expected: ['У стены стоит лестница.', 'лес'] },
+    { name: 'ground_item_same_label_as_held', pkg: (() => {
+      const pkg = structuredClone(base);
+      pkg.visible_items.push({ item_instance_id: 'item:rope-ground',
+        label: 'верёвка', placement: 'on_ground' });
+      return pkg;
+    })(), expected: ['верёвка при вас; состояние — пригодное к использованию.',
+      'верёвка'] },
+    { name: 'item_named_in_uncertain_only', pkg: (() => {
+      const pkg = structuredClone(base);
+      pkg.visible_scene_facts = [];
+      pkg.visible_anchors = [{ anchor_id: 'anchor:shore', label: 'берег' }];
+      pkg.uncertain_context = [{ text: 'Лодки у берега нет.',
+        inference_basis_refs: [] }];
+      return pkg;
+    })(), expected: ['Не подтверждено: Лодки у берега нет.', 'берег'] }
+  ];
+  for (const { name, pkg, expected } of cases) {
+    const roleFacts = await project(pkg);
+    for (const role of ['gameplay_narrator', 'gameplay_narrator_auditor']) {
+      for (const text of expected) {
+        assert.ok(roleFacts[role].includes(text), `${name}/${role}: ${text}`);
+      }
+    }
   }
 });
 
@@ -1031,6 +1144,10 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
   }
   assert.equal(JSON.stringify(pkg).includes('невидимый предмет'), false);
   assert.equal(JSON.stringify(pkg).includes('canonical_source_binding'), false);
+  const rolePackage = structuredClone(pkg);
+  assert.ok(rolePackage.known_context.some(({ text }) => text === 'При вас: верёвка.'));
+  rolePackage.visible_items.push({ item_instance_id: 'item:canonical-seen-rope',
+    label: 'верёвка' });
   for (const key of ['party_id', 'actor_id', 'position_id', 'scenario_id']) {
     assert.throws(() => buildCanonicalOpeningVisibleContext({ ...input,
       canonicalSourceBinding: { ...input.canonicalSourceBinding, [key]: 'wrong' } }),
@@ -1049,11 +1166,15 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
       assert.ok(modelInput.сцена.факты.includes('Небо не видно.'));
       assert.ok(modelInput.сцена.факты.includes('Осадков нет.'));
       assert.ok(modelInput.сцена.факты.includes('Видимость плохая.'));
+      assert.ok(modelInput.сцена.факты.includes('При вас: верёвка.'));
+      assert.ok(modelInput.сцена.факты.includes('верёвка'));
       assert.doesNotMatch(JSON.stringify(modelInput),
         /player:1|source_refs|weather_state_id|dense_fog|movement_factor|private-movement-factor|obscured|summer|civil_dawn|whole_minutes/u);
       return { output: { prose: 'Вы — Любава, рыбачка. Тело готово к работе.\n\nПри вас верёвка.' } };
     }
     const auditInput = JSON.parse(call.messages[1].content);
+    assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'При вас: верёвка.'));
+    assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'верёвка'));
     assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'Рассвет.'));
     assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'Светает.'));
     weatherEvidenceKey = auditInput.сцена.факты.find(({ текст }) =>
@@ -1062,7 +1183,7 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
       evidence: [`${weatherEvidenceKey} подтверждает погодный факт.`] } };
   } } });
   const result = await service.run({ requestId: input.requestId,
-    visibleContextPackage: pkg, visibleContextApproval: openingApproval(pkg) });
+    visibleContextPackage: rolePackage, visibleContextApproval: openingApproval(rolePackage) });
   assert.equal(result.stage23_result.pass, true);
   assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   assert.equal(result.original_stage23_audit.evidence[0],

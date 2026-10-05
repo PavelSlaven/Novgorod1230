@@ -260,6 +260,7 @@ function projectOpeningFacts(source) {
   const seenByScope = new Map();
   const npcIndexByRef = new Map((source?.visible_npcs ?? []).map((npc, index) =>
     [npc?.npc_instance_id, index]).filter(([ref]) => typeof ref === 'string' && ref));
+  const visibleSceneFacts = [];
   const add = (text, factId = null, refs = [], npcIndex = null) => {
     if (typeof text !== 'string') return;
     const normalized = text.normalize('NFC').replace(/\s+/gu, ' ').trim();
@@ -274,8 +275,8 @@ function projectOpeningFacts(source) {
       return;
     }
     const fact = { key, text: normalized, fact_ids: factId ? [factId] : [],
-      source_refs: [...new Set(refs.filter((ref) => typeof ref === 'string' && ref))] };
-    if (npcIndex != null) fact.npc_index = npcIndex;
+      source_refs: [...new Set(refs.filter((ref) => typeof ref === 'string' && ref))],
+      npc_index: Number.isInteger(npcIndex) ? npcIndex : null };
     seen.set(key, fact);
     seenByScope.set(scope, seen);
     facts.push(fact);
@@ -283,8 +284,13 @@ function projectOpeningFacts(source) {
   for (const fact of source?.visible_scene_facts ?? []) {
     const npcIndexes = [...new Set((fact.source_refs ?? [])
       .map((ref) => npcIndexByRef.get(ref)).filter(Number.isInteger))];
-    add(fact.text, fact.fact_id, fact.source_refs ?? [],
-      npcIndexes.length === 1 ? npcIndexes[0] : null);
+    const npcIndex = npcIndexes.length === 1 ? npcIndexes[0] : null;
+    const sourceRefs = fact.source_refs ?? [];
+    if (typeof fact.text === 'string') {
+      visibleSceneFacts.push({ text: fact.text, npc_index: npcIndex,
+        source_refs: sourceRefs });
+    }
+    add(fact.text, fact.fact_id, sourceRefs, npcIndex);
   }
   const heldItemLabels = new Set((source?.visible_items ?? [])
     .filter((item) => item?.placement === 'held_by_player')
@@ -298,12 +304,21 @@ function projectOpeningFacts(source) {
     if (!repeatsHeldItem) add(entry?.text, null, entry?.basis_refs ?? []);
   }
   for (const entry of source?.touch_body_context ?? []) add(entry?.text);
-  const containsFact = (text, npcIndex = null) => typeof text === 'string' && text.trim().length > 2
-    && facts.some((fact) => fact.npc_index === npcIndex
-      && fact.text.toLocaleLowerCase('ru')
-      .includes(text.trim().toLocaleLowerCase('ru')));
+  const containsFact = (text, npcIndex = null, sourceRef = null) => {
+    if (typeof text !== 'string' || text.trim().length <= 2) return false;
+    const tokens = (value) => value.normalize('NFC').toLocaleLowerCase('ru')
+      .match(/[\p{L}\p{N}_]+/gu) ?? [];
+    const label = tokens(text);
+    return label.length > 0 && visibleSceneFacts.some((fact) => {
+      if (fact.npc_index !== npcIndex
+          || (sourceRef && !fact.source_refs.includes(sourceRef))) return false;
+      const words = tokens(fact.text);
+      return words.some((_, index) => label.every((word, offset) =>
+        words[index + offset] === word));
+    });
+  };
   for (const [npcIndex, npc] of (source?.visible_npcs ?? []).entries()) {
-    if (!containsFact(npc?.label, npcIndex)) add(npc?.label, null,
+    if (!containsFact(npc?.label, npcIndex, npc?.npc_instance_id)) add(npc?.label, null,
       [npc?.npc_instance_id], npcIndex);
     add(npc?.current_activity, null, [npc?.npc_instance_id], npcIndex);
     for (const fact of projectNpcCueFacts(npc?.observable_cues)) {
@@ -326,7 +341,9 @@ function projectOpeningFacts(source) {
         null, [item.item_instance_id]);
       continue;
     }
-    if (!containsFact(label)) add(label, null, [item.item_instance_id]);
+    if (!containsFact(label, null, item.item_instance_id)) {
+      add(label, null, [item.item_instance_id]);
+    }
     if (condition) add(`${label}; состояние — ${condition}.`, null,
       [item.item_instance_id]);
     else if (typeof item.visible_status === 'string'
@@ -335,10 +352,10 @@ function projectOpeningFacts(source) {
     }
   }
   for (const anchor of source?.visible_anchors ?? []) {
-    if (!containsFact(anchor?.label)) add(anchor?.label);
+    if (!containsFact(anchor?.label, null, anchor?.anchor_id)) add(anchor?.label);
   }
   for (const exit of source?.visible_exits ?? []) {
-    if (!containsFact(exit?.label)) add(exit?.label);
+    if (!containsFact(exit?.label, null, exit?.edge_id)) add(exit?.label);
   }
   for (const collection of [source?.audible_context, source?.smell_context]) {
     for (const entry of collection ?? []) add(entry?.text);

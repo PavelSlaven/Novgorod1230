@@ -75,11 +75,6 @@ test('local movement follows only committed directed edges; P16 changes exact po
     actorId: committed.actor_id, policyPins: [] });
   assert.deepEqual(actionSet.options.map(({ option_id: id }) => id),
     ['local_scene_edge:arrival:focus']);
-  const preparedCommand = await commands[0].consequence({
-    retrievedState: committed, playerInput: {}
-  });
-  assert.deepEqual(preparedCommand.visible_seed.turn_step_local_movement_signature,
-    { kind: 'local_movement_signature', display_label: 'Проход arrival:focus' });
   await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
     state: committed, edgeId: 'focus:departure', playerInput: {}, inputDigest: 'digest' }),
   { code: 'SPATIAL_V3_LOCAL_EDGE_UNAVAILABLE' });

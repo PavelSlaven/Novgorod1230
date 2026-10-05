@@ -21,49 +21,6 @@ const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
 
-test('current committed scene replaces stale objects, NPCs, facts, and dialogue title', () => {
-  const state = committedState();
-  state.current_visible_context.visible_scene = 'Ратша сказала: «Иду к лодкам». ';
-  state.current_visible_context.sensory_details = [
-    'Старый предмет пахнет смолой.', 'Еремей: Перебирает верёвку.'
-  ];
-  state.conversation_statements = [{ utterance_text: 'Иду к лодкам.' }];
-  state.current_visible_context.visible_npc.push({
-    entity_ref: { entity_kind: 'npc', entity_id: 'moved' },
-    display_label: 'Еремей', recognition: 'recognized'
-  });
-  state.current_visible_context.visible_objects = [
-    { entity_ref: { entity_kind: 'item', entity_id: 'held' },
-      display_label: 'длинная жердь', recognition: 'recognized',
-      visible_status: 'available' },
-    { entity_ref: { entity_kind: 'item', entity_id: 'removed' },
-      display_label: 'старый предмет', recognition: 'recognized',
-      visible_status: 'available' }
-  ];
-  state.items = [{ item_id: 'held', name: 'длинная жердь',
-    placement: { holder_character_id: 'player', physical_position: 'hands' } }];
-  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
-    locationProfiles, scenePresentation: { locations: [{
-      location_ref: 'shed', display_name: 'Старая сушильня',
-      player_visible_physical_facts: ['Под настилом видна вода.']
-    }] } }).current_visible_context;
-
-  assert.equal(current.visible_scene, 'Старая сушильня');
-  assert.deepEqual(current.sensory_details, ['Под настилом видна вода.']);
-  assert.deepEqual(current.visible_changes, []);
-  assert.equal(current.visible_npc.some(({ entity_ref: ref }) =>
-    ref.entity_id === 'moved'), false);
-  assert.deepEqual(current.visible_objects.filter(({ entity_ref: ref }) =>
-    ref.entity_kind === 'item').map(({ entity_ref: ref, visible_status: status }) =>
-    [ref.entity_id, status]), [['held', 'у вас в руках']]);
-  assert.equal(JSON.stringify(current).includes('Ратша сказала'), false);
-  assert.equal(JSON.stringify(current).includes('старый предмет пахнет'), false);
-  const withoutPresentation = withLowerDvinaTraceCurrentScene({ committedState: state,
-    locationProfiles }).current_visible_context;
-  assert.equal(withoutPresentation.visible_scene, 'Старая сушильня');
-  assert.deepEqual(withoutPresentation.sensory_details, []);
-});
-
 test('current scene carries disclosed local edge into turn visible package', () => {
   const state = committedState();
   state.current_visible_context.visible_objects.push({

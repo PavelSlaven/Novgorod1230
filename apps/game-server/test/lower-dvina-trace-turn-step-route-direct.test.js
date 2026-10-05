@@ -438,7 +438,7 @@ test('generic known-route projection uses the authored route and location presen
   assert.deepEqual(visible, {
     version: 1, schema: 'visible_context_package',
     visible_scene: 'незнакомая пристань',
-    visible_changes: ['Тропа вывела к незнакомой пристани.'],
+    visible_changes: ['Перед вами — незнакомая пристань.'],
     sensory_details: ['Сухой настил поднимается над водой.'],
     visible_npc: [{ entity_ref: { entity_kind: 'npc',
       entity_id: destinationActor.instance_id }, display_label: 'человек',

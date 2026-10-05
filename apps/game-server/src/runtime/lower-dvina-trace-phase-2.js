@@ -372,7 +372,7 @@ export function createLowerDvinaTracePhase2Runtime({
   });
 }
 
-function liveWorldTurnBundle({ authoredTurnProfile,
+function liveWorldTurnBundle({ state, authoredTurnProfile,
   postActionPerceptionProfile = null }) {
   if (authoredTurnProfile?.profile?.schema
       !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
@@ -381,6 +381,9 @@ function liveWorldTurnBundle({ authoredTurnProfile,
     throw serverError('LIVE_WORLD_TURN_PROFILE_MISSING',
       'Approved live-world turn profile is required.', { status: 409 });
   }
+  const locationRef = state.position?.location_ref;
+  const displayName = state.current_visible_context?.visible_scene
+    ?? state.visible_context?.visible_scene ?? locationRef;
   return Object.freeze({
     definition_revision: null,
     profile: 'live_world_authored',
@@ -388,7 +391,9 @@ function liveWorldTurnBundle({ authoredTurnProfile,
       turn_step_owner_profiles: structuredClone(authoredTurnProfile.pin)
     },
     turn_step_owner_profiles: structuredClone(authoredTurnProfile.profile),
-    location_topology_set: { location_profiles: [] },
+    location_topology_set: { location_profiles: [{
+      location_profile_id: locationRef, display_name: displayName
+    }] },
     calendar_profile: null,
     scene_presentation: null,
     post_action_perception_profile: postActionPerceptionProfile

@@ -25,8 +25,6 @@ import { nextPhase9State } from '../src/infrastructure/postgres/lower-dvina-trac
 import { buildTracePhase10Completion } from '../src/runtime/lower-dvina-trace-phase-10-completion.js';
 import { nextPhase10State, phase10VisibleEnvelope } from '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
 import { phase2VisibleContextFromPayload } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
-import { phase2InitialCurrentVisibleContext } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { fixturePhase2VisibleState } from './lower-dvina-trace-phase-2-fixture-current-visible.js';
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
@@ -158,11 +156,6 @@ function fixture({
           },
         }
       : structuredClone(committedState);
-  if (committedState == null) {
-    state.current_visible_context = fixtureOpeningCurrentVisibleContext({
-      state, materializationBundle
-    });
-  }
   const replays = new Map();
   const events = [];
   let committedVisible = null;
@@ -188,12 +181,7 @@ function fixture({
   const repository = {
     async loadPhase2State() {
       events.push('load_state');
-      const current = structuredClone(state);
-      if (committedVisible?.visible_payload != null) {
-        current.current_visible_context = phase2VisibleContextFromPayload(
-          committedVisible.visible_payload);
-      }
-      return current;
+      return structuredClone(state);
     },
     async loadPhase2Replay({ idempotencyKey }) {
       return structuredClone(replays.get(idempotencyKey) ?? null);
@@ -666,28 +654,6 @@ function fixture({
     turnStepInput: () => turnStepInput,
     state,
   };
-}
-
-export function fixtureOpeningCurrentVisibleContext({ state, materializationBundle }) {
-  const profiles = materializationBundle?.location_topology_set?.location_profiles;
-  const matches = Array.isArray(profiles)
-    ? profiles.filter(({ location_profile_id }) =>
-      location_profile_id === state?.position?.location_ref) : [];
-  if (matches.length !== 1 || typeof matches[0].display_name !== 'string'
-      || matches[0].display_name.length === 0) {
-    throw new TypeError('Fixture opening screen requires its exact authored location.');
-  }
-  const screen = {
-    version: 1,
-    schema: 'first_game_screen',
-    screen_status: 'ready',
-    party_id: state.party_id,
-    main_prose: 'Тестовая начальная сцена.',
-    visible_context: { place: matches[0].display_name,
-      calendar: 'утро', environment: { facts: [] } }
-  };
-  return phase2InitialCurrentVisibleContext({ screen,
-    openingScreenDigest: canonicalDigest(screen), initialState: state });
 }
 export { bundle, bundle9, fixture, loadScenarioBundle };
 export { currentWorldBaseReferenceSnapshot };

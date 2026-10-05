@@ -649,3 +649,5 @@
 - LLM provider transport.
 - UI и database schemas.
 - test(spatial): #199 — add v17 PG regression for first-action request_movement and commit/replay in two dense-fog starts; D41 prompt variants not integrated
+- feat(local-play): v17 slice walk driver treats slot or site as progress, chains multi-step exits, site walk budget 8 (slice-reject-trace)
+- feat(local-play): v17 slice report persists opening-attempt trace, presentation_recovery and failed delivery turns (slice-reject-trace)

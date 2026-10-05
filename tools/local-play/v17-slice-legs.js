@@ -44,6 +44,13 @@ const peopleOf = (screen) => {
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
 const siteKey = (snap) => String(snap?.position?.site_id ?? '?');
+export const positionProgressed = (before, after) => {
+  const left = before?.position;
+  const right = after?.position;
+  if (!left?.site_id || !right?.site_id) return false;
+  return left.site_id !== right.site_id
+    || String(left.slot ?? '') !== String(right.slot ?? '');
+};
 const npcsHere = (snap) => (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc');
 const liveNodes = (snap) => (snap?.resource_nodes ?? []).filter((row) => Number(row.quantity_numerator) > 0);
 const liveNodesHere = (snap) => liveNodes(snap).filter((row) => row.site_id === snap?.position?.site_id);
@@ -158,33 +165,48 @@ export async function runLegs({
       presentationRecoveryOutcome = stillPending ? 'still_pending' : 'recovered';
       if (stillPending) {
         recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        commitTurn({
+          recovered: false,
+          delivery_failed: true,
+          prose: '',
+          error: { code: 'PRESENTATION_PENDING',
+            message: 'Факты хода сохранены; экран ещё готовится.' }
+        });
         throw new Blocked('доставка прозы не завершена: committed_presentation_pending после presentation-recovery');
       }
     }
     if (presentationRecoveryAttempts > 0) {
       recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome ?? 'recovered');
     }
-    const turn = {
-      n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
-      committed, recovered,
-      presentation_recovery_attempts: presentationRecoveryAttempts,
-      presentation_recovery_outcome: presentationRecoveryOutcome,
-      prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
-      llm_calls: llm.count() - calls,
-      llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
-      people_panel: capturePeoplePanel(view.screen, view.snap),
-      current_visible_context: {
-        before: visibleContextBefore,
-        response: structuredClone(response.data?.screen?.visible_context ?? null),
-        after: structuredClone(view.screen?.visible_context ?? null)
-      },
-      npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
-        .filter((event) => event?.request_id === requestId),
-      server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [], route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
-    };
-    state.turns.push(turn);
-    persist(result());
-    return turn;
+    return commitTurn();
+
+    function commitTurn(overrides = {}) {
+      const turn = {
+        n, leg, input: text, request_id: requestId, http_status: response.status,
+        error: overrides.error ?? (response.ok ? null : response.error),
+        committed, recovered: overrides.recovered ?? recovered,
+        delivery_failed: overrides.delivery_failed === true,
+        presentation_recovery_attempts: presentationRecoveryAttempts,
+        presentation_recovery_outcome: presentationRecoveryOutcome,
+        prose: String(overrides.prose ?? prose ?? ''), before,
+        after: overrides.after ?? view.snap, ms: now() - started,
+        llm_calls: llm.count() - calls,
+        llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
+        people_panel: capturePeoplePanel(view.screen, view.snap),
+        current_visible_context: {
+          before: visibleContextBefore,
+          response: structuredClone(response.data?.screen?.visible_context ?? null),
+          after: structuredClone(view.screen?.visible_context ?? null)
+        },
+        npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
+          .filter((event) => event?.request_id === requestId),
+        server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [],
+        route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
+      };
+      state.turns.push(turn);
+      persist(result());
+      return turn;
+    }
   }
 
   // --- start ---
@@ -240,10 +262,14 @@ export async function runLegs({
   // --- explore: walk out, meeting, talk, take ---
   const visited = new Map(); // site_id -> place name
   const tried = new Map(); // site_id -> Map(label -> count)
+  const progressedLabels = new Map(); // site_id -> Set(label) that ever moved slot or site
   const looked = new Map(); // site_id -> looks done; a second look is cheap and shows whether the first was a fluke
   const seen = { npc: null, hiddenNpc: null };
   const placesAfterTalk = new Map();
   let stuck = 0;
+  let walksAtSite = 0;
+  let continueWalkLabel = null;
+  let walkChainSlots = [];
   let startSiteId = null;
   let walkedOut = false;
   const exploreEnd = { reason: null };
@@ -347,25 +373,51 @@ export async function runLegs({
       if (labels.length === 0) { exploreEnd.reason = `на месте ${placeName(last.snap)} экран не показывает проходов после ${looked.get(key)} осмотров`; break; }
       const counts = tried.get(key) ?? new Map();
       tried.set(key, counts);
+      const progressed = progressedLabels.get(key) ?? new Set();
+      progressedLabels.set(key, progressed);
       const noProgressLimit = labels.length + 1;
-      const label = [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
+      const continuing = Boolean(continueWalkLabel && labels.includes(continueWalkLabel));
+      if (!continuing) walkChainSlots = [];
+      const label = continuing
+        ? continueWalkLabel
+        : [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
       counts.set(label, (counts.get(label) ?? 0) + 1);
       const turn = await play('walk', label);
       noteHere();
+      const moved = positionProgressed(turn.before, turn.after);
       const siteChanged = turn.before?.position?.site_id != null
         && turn.after?.position?.site_id != null
         && turn.before.position.site_id !== turn.after.position.site_id;
-      if (siteChanged) stuck = 0;
-      else {
+      if (siteChanged) walksAtSite = 0;
+      else walksAtSite += 1;
+      if (walksAtSite >= 8) {
+        exploreEnd.reason = `8 ходов движения на месте ${placeName(turn.after ?? last.snap)} без смены site`;
+        break;
+      }
+      if (moved) {
+        stuck = 0;
+        progressed.add(label);
+        const slotAfter = String(turn.after?.position?.slot ?? '');
+        if (continuing && walkChainSlots.includes(slotAfter)) {
+          continueWalkLabel = null;
+          walkChainSlots = [];
+        } else {
+          if (slotAfter) walkChainSlots.push(slotAfter);
+          continueWalkLabel = label;
+        }
+      } else {
+        continueWalkLabel = null;
+        walkChainSlots = [];
         stuck += 1;
         if (stuck >= noProgressLimit) {
-          exploreEnd.reason = `${stuck} ходов подряд без смены места (порог ${noProgressLimit}; последняя ошибка: ${turn.error?.code ?? 'нет'})`;
+          exploreEnd.reason = `${stuck} ходов подряд без смены позиции (порог ${noProgressLimit}; последняя ошибка: ${turn.error?.code ?? 'нет'})`;
           break;
         }
         const triedAllOnce = labels.length > 1
-          && labels.every((entry) => (counts.get(entry) ?? 0) >= 1);
+          && labels.every((entry) => (counts.get(entry) ?? 0) >= 1)
+          && progressed.size === 0;
         if (triedAllOnce) {
-          exploreEnd.reason = `на месте ${placeName(turn.after ?? last.snap)} все подписи проходов (${labels.join(', ')}) не сменили место`;
+          exploreEnd.reason = `на месте ${placeName(turn.after ?? last.snap)} ни одна подпись (${labels.join(', ')}) не продвинула позицию`;
           break;
         }
       }

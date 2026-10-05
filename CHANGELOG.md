@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix(npc): preserve model speech claims through required conversation assembly so the grounding audit receives them (#230)
+- docs(tech-debt): record rejected NPC conversation projection; LW-129 added (#230)
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed

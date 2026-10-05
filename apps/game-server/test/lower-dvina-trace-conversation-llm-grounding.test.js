@@ -767,12 +767,12 @@ test('conversation production model receives planner-selected role, material, an
   assert.match(instructions, /do not recite or apply a conditional historical rule whose stated trigger is not established/u);
   assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
   assert.match(instructions,
-    /Missing or empty memory is not evidence/u);
+    /Missing or empty memory is not evidence|Отсутствующая или пустая память не доказывает/u);
   assert.match(instructions,
-      /Never infer a current object, condition, resource, amenity/u);
-  assert.match(instructions, /A missing personal field means unknown/u);
+      /Never infer a current object, condition, resource, amenity|Никогда не выводи наличие текущего предмета, состояния, ресурса, удобства/u);
+  assert.match(instructions, /A missing personal field means unknown|Отсутствующее личное поле означает/u);
   assert.match(instructions,
-    /A knowingly_false posture describes the NPC assertion/u);
+    /A knowingly_false posture describes the NPC assertion|knowingly_false описывает утверждение NPC/u);
   const auditorCalls = calls.filter((call) =>
     call.role_id === 'npc_conversation_grounding_auditor');
   const groundedResponderRequests = calls.filter((call) =>

@@ -113,6 +113,7 @@
 | 121 | `data/novgorod-region/novgorod_occupations_v1_enriched.tsv`, `data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/occupation_term_status.csv`, `game-base-v1/items-weapons-armour/military/security.csv` | недоказанный термин «сторож брода» и его занятие/снаряжение остаются; term-status помечен not_attested | — |
 | 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
 | 123 | D-1 `presence_state`/`location_ref`, D-2 `scheduled_absences`; `packages/npc-runtime` routine movement | сезонное местонахождение/отсутствие людей не исполняются | — |
+| 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -671,4 +672,10 @@
 - **Где.** `packages/runtime-catalog/src/m2c-npc-wave-readers.js` (D-1 `presence_state`/`location_ref` and D-2 `scheduled_absences`); `packages/npc-runtime/src/routine-schedule.js`; first-arrival composition in `apps/game-server/src/infrastructure/postgres/ordinary-materialization-presence-first-arrival.js` and `packages/materialization/src/place-people-first-arrival.js`.
 - **Что.** Runtime catalog отдаёт сезонные поля распорядка, но routine runtime игнорирует D-1 `presence_state`/`location_ref`; D-2 `scheduled_absences` не передаётся в first-arrival materialization. Поэтому субъект создаётся вместе с местом без учёта сезона, а сезонное перемещение возможно только через явный `movement_handoff`. Перехода по сезонной границе из D-1 данных нет.
 - **Как жить.** Не считать авторские поля отсутствия/места исполненным состоянием NPC. Существование остаётся за first-arrival composition, местонахождение — за `@rus/npc-runtime`; сезонное местонахождение требует отдельной задачи владельца со связью распорядка, перемещения и persistence, собственными PLAN и CA.
+- **Issue.** —
+
+### LW-129 — разговорные роли передают модели канонический DTO (npc-conversation)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js` и builders разговора с NPC.
+- **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отвергнута судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
+- **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —

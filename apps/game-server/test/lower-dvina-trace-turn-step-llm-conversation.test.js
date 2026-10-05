@@ -37,13 +37,13 @@ test('conversation prompts supply complete shapes and request-bound mappings',
       /Используй эту полную семантическую форму JSON;[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
     const npcShape = JSON.parse(npc.match(
-      /Use this complete semantic JSON shape;[^\n]*:\n(\{[^\n]+\})/u
+      /(?:Use this complete semantic JSON shape|Используй эту полную семантическую форму JSON);[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
     const mappings = JSON.parse(player.match(
       /Для подходящих случаев используй эти соответствия:\n(\{[^\n]+\})/u
     )[1]);
     assert.equal('schema' in playerShape, false);
-    assert.equal(playerShape.input_mode, '<verbatim или intent_paraphrase>');
+    assert.equal(playerShape.input_mode, '<verbatim or intent_paraphrase>');
     assert.deepEqual(Object.keys(playerShape), [
       'input_mode', 'contribution_kind', 'primary_addressee_ref',
       'intended_addressee_refs', 'affected_actor_refs', 'speech',
@@ -87,7 +87,7 @@ test('conversation prompts supply complete shapes and request-bound mappings',
       assert.match(prompt, /do not invent or substitute refs|не выдумывай и не подменяй refs/u);
     }
     assert.match(player, /input_mode verbatim/u);
-    assert.match(npc, /decision_scope allowed check refs/u);
+    assert.match(npc, /decision_scope allowed check refs|Одни лишь разрешённые decision_scope refs для проверки/u);
     for (const prompt of [player, npc]) {
       assert.match(prompt, /speech: null/u);
       assert.match(prompt, /refs\/handoff only from request contract|refs\/handoff — только из контракта запроса/u);
@@ -96,7 +96,7 @@ test('conversation prompts supply complete shapes and request-bound mappings',
       assert.match(prompt, /never entity-ref objects|никогда не объекты entity-ref/u);
       assert.match(prompt, /supporting_operations must be \[required_supporting_operation\]|supporting_operations должен быть \[required_supporting_operation\]/u);
     }
-    assert.match(npc, /required_check\.attribute_ref, skill_ref, and difficulty_band/u);
+  assert.match(npc, /required_check\.attribute_ref, skill_ref, and difficulty_band|decision_scope\.required_check\.attribute_ref, skill_ref и difficulty_band/u);
   });
 
 test('conversation non-speech mappings have validator-valid shapes', () => {

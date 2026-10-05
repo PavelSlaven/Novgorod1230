@@ -109,6 +109,9 @@ export async function runLegs({
     if (outcome === 'recovered') state.presentation_recovery.recovered += 1;
     if (outcome === 'still_pending') state.presentation_recovery.still_pending += 1;
   };
+  const recoveryOutcome = (screen, stillPending) => stillPending ? 'still_pending'
+    : screen?.schema === 'factual_turn_delivery_screen' ? 'factual'
+      : String(screen?.main_prose ?? '').trim() ? 'recovered' : 'empty';
 
   async function recoverPendingPresentation(phase, leg, requestId) {
     const recoverResponse = await apiCall('recover', 'presentation_recovery', leg, partyId,
@@ -141,11 +144,11 @@ export async function runLegs({
         'screen_before_turn', leg, priorRequestId);
       last = { screen: cleared.screen, snap: cleared.snap };
       presentationRecoveryAttempts += 1;
+      presentationRecoveryOutcome = recoveryOutcome(cleared.screen, stillPending);
       if (stillPending) {
-        recordPresentationRecovery(presentationRecoveryAttempts, 'still_pending');
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
         throw new Blocked('доставка прозы не завершена: committed_presentation_pending до хода');
       }
-      presentationRecoveryOutcome = 'recovered';
     }
     const response = await apiCall('turn', 'turn', leg, partyId,
       { raw_text: text, request_id: requestId });
@@ -153,16 +156,18 @@ export async function runLegs({
     let view = await refresh('screen_after_turn', leg);
     let prose = view.screen?.main_prose ?? response.data?.screen?.main_prose ?? '';
     const committed = Number(view.snap?.state_version) > Number(before?.state_version);
-    const responsePending = response.data?.screen?.screen_status === PRESENTATION_PENDING
-      || view.screen?.screen_status === PRESENTATION_PENDING;
-    if (responsePending || (committed && !String(prose).trim())) {
+    const currentScreen = response.data?.screen ?? view.screen;
+    const factualDelivery = currentScreen?.schema === 'factual_turn_delivery_screen';
+    const responsePending = !factualDelivery && (response.data?.screen?.screen_status === PRESENTATION_PENDING
+      || view.screen?.screen_status === PRESENTATION_PENDING);
+    if (!factualDelivery && (responsePending || (committed && !String(prose).trim()))) {
       const { view: recoveredView, stillPending } = await recoverPendingPresentation(
         'screen_after_recovery', leg, requestId);
       presentationRecoveryAttempts += 1;
       view = recoveredView;
       prose = view.screen?.main_prose ?? '';
-      recovered = !stillPending;
-      presentationRecoveryOutcome = stillPending ? 'still_pending' : 'recovered';
+      presentationRecoveryOutcome = recoveryOutcome(view.screen, stillPending);
+      recovered = presentationRecoveryOutcome === 'recovered';
       if (stillPending) {
         recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
         commitTurn({
@@ -181,10 +186,34 @@ export async function runLegs({
     return commitTurn();
 
     function commitTurn(overrides = {}) {
+      const screen = view.screen ?? response.data?.screen ?? null;
+      const factualScreen = screen?.schema === 'factual_turn_delivery_screen'
+        ? {
+            visible_scene: screen.visible_context?.visible_scene ?? '',
+            visible_changes: [...(screen.visible_changes ?? [])],
+            uncertainties: [...(screen.uncertainties ?? [])],
+            visible_people: (screen.panels?.people?.visible === false ? []
+              : screen.panels?.people?.data?.visible_npcs
+                ?? screen.panels?.people?.data?.people ?? [])
+              .map((person) => typeof person === 'string'
+                ? person : person?.display_label)
+              .filter((label) => typeof label === 'string' && label.trim())
+          } : null;
+      const factualText = factualScreen == null ? '' : [
+        factualScreen.visible_scene,
+        ...factualScreen.visible_changes,
+        ...factualScreen.uncertainties,
+        ...factualScreen.visible_people.map((person) => `Рядом: ${person}.`)
+      ].filter((value) => typeof value === 'string' && value.trim()).join('\n');
+      const deliveryKind = screen?.screen_status === PRESENTATION_PENDING ? 'pending'
+        : String(overrides.prose ?? prose ?? '').trim() ? 'narrated'
+          : factualText ? 'factual' : 'empty';
       const turn = {
         n, leg, input: text, request_id: requestId, http_status: response.status,
         error: overrides.error ?? (response.ok ? null : response.error),
         committed, recovered: overrides.recovered ?? recovered,
+        delivery_kind: deliveryKind,
+        factual_screen: factualScreen,
         delivery_failed: overrides.delivery_failed === true,
         presentation_recovery_attempts: presentationRecoveryAttempts,
         presentation_recovery_outcome: presentationRecoveryOutcome,

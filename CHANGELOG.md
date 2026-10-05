@@ -11,6 +11,7 @@
 - fix(turn): world_process_step drops only exact duplicate facts, so a negated or conditional fact no longer hides the code-owned process state (#230)
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - fix(test): remove temporary fixture directories after tests, including setup failures (#231)
+- fix(test): copy only the Phase 2 bundle closure and surface rollback errors (#235)
 - fix(test): route Russian opening writer and audit fixtures by payload shape (#98)
 
 - fix(game-base): sort builder file scans and pin sort locale; two-environment byte determinism check (#201)
